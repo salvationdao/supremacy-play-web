@@ -5,6 +5,8 @@ export enum CompletedTraining {
 }
 export enum TrainingLobby {
     All = "All",
+    FactionIntro = "FactionIntro",
+    FactionSelect = "FactionSelect",
     BattleAbility = "BattleAbility",
     MechAbility = "MechAbility",
     PlayerAbility = "PlayerAbility",

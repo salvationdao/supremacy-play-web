@@ -86,8 +86,8 @@ const BattleTraining = () => {
     }, [user, toggleShowIntro])
 
     // if (showIntro) return <FactionIntro />
-    if (showIntro) return <FactionSelect />
-    // if (showIntro) return <Intro toggleTrainingIntro={toggleShowIntro} />
+    // if (showIntro) return <FactionSelect />
+    if (showIntro) return <Intro toggleTrainingIntro={toggleShowIntro} />
 
     if (!(trainingStage === TrainingLobby.All))
         return (
@@ -104,6 +104,7 @@ const BattleTraining = () => {
                     border: (theme) => `1px solid ${theme.factionTheme.primary}`,
                 }}
             >
+                {trainingStage === TrainingLobby.FactionIntro && <FactionIntro />}
                 {(trainingStage === TrainingLobby.BattleAbility || trainingStage in BattleAbilityStages) && <TrainingBattleAbility />}
                 {(trainingStage === TrainingLobby.MechAbility || trainingStage in MechAbilityStages) && <TrainingMechAbility />}
                 {(trainingStage === TrainingLobby.PlayerAbility || trainingStage in PlayerAbilityStages) && <TrainingPlayerAbility />}
