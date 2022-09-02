@@ -35,7 +35,8 @@ export const RepairBay = ({
                 setRepairSlots(undefined)
                 return
             }
-            setRepairSlots(payload.sort((a, b) => (a.slot_number > b.slot_number ? 1 : -1)))
+            const sortedPayload = payload.sort((a, b) => (a.slot_number > b.slot_number ? 1 : -1))
+            setRepairSlots(sortedPayload)
         },
     )
 
@@ -57,30 +58,36 @@ export const RepairBay = ({
         }
     }, [selectedMechs, send, setSelectedMechs])
 
-    // const removeRepairBay = useCallback(async () => {
-    //     try {
-    //         await send<boolean>(GameServerKeys.RemoveRepairBay, {
-    //             mech_ids: [],
-    //         })
-    //     } catch (err) {
-    //         const message = typeof err === "string" ? err : "Failed to remove from repair bay."
-    //         setError(message)
-    //         console.error(err)
-    //     }
-    // }, [send])
+    const removeRepairBay = useCallback(
+        async (mechIDs: string[]) => {
+            try {
+                await send<boolean>(GameServerKeys.RemoveRepairBay, {
+                    mech_ids: mechIDs,
+                })
+            } catch (err) {
+                const message = typeof err === "string" ? err : "Failed to remove from repair bay."
+                setError(message)
+                console.error(err)
+            }
+        },
+        [send],
+    )
 
-    // const swapRepairBay = useCallback(async () => {
-    //     try {
-    //         await send<boolean>(GameServerKeys.SwapRepairBay, {
-    //             from_mech_id: "",
-    //             to_mech_id: "",
-    //         })
-    //     } catch (err) {
-    //         const message = typeof err === "string" ? err : "Failed to swap repair bay slots."
-    //         setError(message)
-    //         console.error(err)
-    //     }
-    // }, [send])
+    const swapRepairBay = useCallback(
+        async (mechIDs: [string, string]) => {
+            try {
+                await send<boolean>(GameServerKeys.SwapRepairBay, {
+                    from_mech_id: mechIDs[0],
+                    to_mech_id: mechIDs[1],
+                })
+            } catch (err) {
+                const message = typeof err === "string" ? err : "Failed to swap repair bay slots."
+                setError(message)
+                console.error(err)
+            }
+        },
+        [send],
+    )
 
     const activeRepairSlot = useMemo(() => (repairSlots ? repairSlots[0] : undefined), [repairSlots])
     const queuedRepairSlots = useMemo(() => repairSlots?.slice(1), [repairSlots])
@@ -118,7 +125,13 @@ export const RepairBay = ({
 
                     <Stack alignItems="center" justifyContent="center" sx={{ minHeight: "20rem", p: "2rem 1.3rem" }}>
                         {activeRepairSlot ? (
-                            <RepairBayItem isBigVersion repairSlot={activeRepairSlot} />
+                            <RepairBayItem
+                                isBigVersion
+                                repairSlot={activeRepairSlot}
+                                belowSlot={queuedRepairSlots ? queuedRepairSlots[0] : undefined}
+                                removeRepairBay={removeRepairBay}
+                                swapRepairBay={swapRepairBay}
+                            />
                         ) : (
                             <Typography variant="body2" sx={{ color: colors.grey, textAlign: "center", fontFamily: fonts.nostromoBold }}>
                                 Repair bay is not being used.
@@ -154,15 +167,13 @@ export const RepairBay = ({
                             direction: "ltr",
                             scrollbarWidth: "none",
                             "::-webkit-scrollbar": {
-                                width: ".4rem",
+                                width: "1rem",
                             },
                             "::-webkit-scrollbar-track": {
                                 background: "#FFFFFF15",
-                                borderRadius: 3,
                             },
                             "::-webkit-scrollbar-thumb": {
                                 background: colors.bronze,
-                                borderRadius: 3,
                             },
                         }}
                     >
@@ -170,10 +181,19 @@ export const RepairBay = ({
                             <Stack>
                                 <FlipMove>
                                     {queuedRepairSlots &&
-                                        queuedRepairSlots.map((repairSlot) => {
+                                        queuedRepairSlots.map((repairSlot, index) => {
+                                            const aboveSlot = queuedRepairSlots[index - 1] || activeRepairSlot
+                                            const belowSlot = queuedRepairSlots[index + 1]
+
                                             return (
                                                 <div key={repairSlot.id} style={{ width: "100%", marginBottom: "1rem" }}>
-                                                    <RepairBayItem repairSlot={repairSlot} />
+                                                    <RepairBayItem
+                                                        repairSlot={repairSlot}
+                                                        belowSlot={belowSlot}
+                                                        aboveSlot={aboveSlot}
+                                                        removeRepairBay={removeRepairBay}
+                                                        swapRepairBay={swapRepairBay}
+                                                    />
                                                 </div>
                                             )
                                         })}
@@ -190,7 +210,7 @@ export const RepairBay = ({
                     </Box>
 
                     {/* Bottom buttons */}
-                    <Stack spacing=".8rem" sx={{ p: "1rem" }}>
+                    <Stack spacing=".8rem" sx={{ p: "1rem", pt: 0 }}>
                         {error && <Typography sx={{ color: colors.red }}>{error}</Typography>}
 
                         <FancyButton

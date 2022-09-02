@@ -74,15 +74,13 @@ export const Bar = () => {
 
                     zIndex: siteZIndex.Bar,
                     "::-webkit-scrollbar": {
-                        height: ".3rem",
+                        height: ".6rem",
                     },
                     "::-webkit-scrollbar-track": {
                         background: "#FFFFFF15",
-                        borderRadius: 3,
                     },
                     "::-webkit-scrollbar-thumb": {
                         background: "#FFFFFF50",
-                        borderRadius: 3,
                     },
                 }}
             >

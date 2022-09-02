@@ -139,15 +139,13 @@ const WarMachineMarketDetailsInner = ({
                 direction: "ltr",
                 scrollbarWidth: "none",
                 "::-webkit-scrollbar": {
-                    width: ".4rem",
+                    width: "1rem",
                 },
                 "::-webkit-scrollbar-track": {
                     background: "#FFFFFF15",
-                    borderRadius: 3,
                 },
                 "::-webkit-scrollbar-thumb": {
                     background: primaryColor,
-                    borderRadius: 3,
                 },
             }}
         >

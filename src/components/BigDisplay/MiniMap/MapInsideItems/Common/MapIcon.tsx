@@ -35,8 +35,6 @@ export const MapIcon = ({
     const sizeX = useMemo(() => gridWidth * sizeGrid, [sizeGrid, gridWidth])
     const sizeY = useMemo(() => gridHeight * sizeGrid, [sizeGrid, gridHeight])
 
-    const imageBackgroundColour = !!backgroundImageUrl && noBackgroundColour !== true
-
     return useMemo(() => {
         return (
             <Stack
@@ -51,10 +49,10 @@ export const MapIcon = ({
                     transform: locationInPixels
                         ? `translate(${position.x - sizeX / 2}px, ${position.y - sizeY / 2}px)`
                         : `translate(${position.x * gridWidth - sizeX / 2}px, ${position.y * gridHeight - sizeY / 2}px)`,
-                    backgroundColor: imageBackgroundColour ? (insideRender ? "#030409" : primaryColor) : "unset",
-                    border: imageBackgroundColour ? `5px solid ${primaryColor}` : "unset",
-                    borderRadius: imageBackgroundColour ? 1 : "unset",
-                    boxShadow: imageBackgroundColour ? 2 : "unset",
+                    backgroundColor: !noBackgroundColour ? (insideRender ? "#030409" : primaryColor) : "unset",
+                    border: !noBackgroundColour ? `5px solid ${primaryColor}` : "unset",
+                    borderRadius: !noBackgroundColour ? 1 : "unset",
+                    boxShadow: !noBackgroundColour ? 2 : "unset",
                     zIndex: zIndex || 100,
                     pointerEvents: onClick ? "all" : "none",
                     ...sx,
@@ -85,17 +83,17 @@ export const MapIcon = ({
         onClick,
         sizeX,
         sizeY,
+        locationInPixels,
         position.x,
         position.y,
         gridWidth,
         gridHeight,
+        noBackgroundColour,
+        insideRender,
+        primaryColor,
+        zIndex,
         sx,
         backgroundImageUrl,
-        primaryColor,
-        insideRender,
         iconSx,
-        locationInPixels,
-        imageBackgroundColour,
-        zIndex,
     ])
 }

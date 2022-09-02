@@ -427,8 +427,7 @@ const SubmodelsHangarInner = ({
                             <Box
                                 sx={{
                                     ml: "1.9rem",
-                                    mr: ".5rem",
-                                    pr: "1.4rem",
+                                    pr: "1.9rem",
                                     my: "1rem",
                                     flex: 1,
                                     overflowY: "auto",
@@ -436,15 +435,13 @@ const SubmodelsHangarInner = ({
                                     direction: "ltr",
 
                                     "::-webkit-scrollbar": {
-                                        width: ".4rem",
+                                        width: "1rem",
                                     },
                                     "::-webkit-scrollbar-track": {
                                         background: "#FFFFFF15",
-                                        borderRadius: 3,
                                     },
                                     "::-webkit-scrollbar-thumb": {
                                         background: theme.factionTheme.primary,
-                                        borderRadius: 3,
                                     },
                                 }}
                             >
