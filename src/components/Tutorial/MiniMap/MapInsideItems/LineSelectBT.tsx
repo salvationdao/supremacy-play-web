@@ -2,7 +2,7 @@ import { Stack, Typography, useTheme } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { MapSelection, useTraining } from "../../../../containers"
 import { diff } from "../../../../helpers"
-import { pulseEffect } from "../../../../theme/keyframes"
+import { glowEffect } from "../../../../theme/keyframes"
 import { colors, fonts } from "../../../../theme/theme"
 import { Position } from "../../../../types"
 
@@ -161,7 +161,7 @@ export const LineSelectBT = ({ mapScale }: { mapScale: number }) => {
                             _selection.startCoords.y * gridHeight - indicatorDiameter / 2
                         }px)`,
                         zIndex: 100,
-                        animation: selectStage === SelectStage.StartCoord ? `${pulseEffect} 2s infinite` : "unset",
+                        animation: selectStage === SelectStage.StartCoord ? (theme) => `${glowEffect(theme.factionTheme.primary, true)} 2s infinite` : "unset",
                         opacity: selectStage === SelectStage.StartCoord ? 0.8 : 1,
                     }}
                 >
@@ -195,7 +195,7 @@ export const LineSelectBT = ({ mapScale }: { mapScale: number }) => {
                         }px)`,
                         zIndex: 100,
                         opacity: selectStage !== SelectStage.Submit ? 0.8 : 1,
-                        animation: selectStage === SelectStage.EndCoord ? `${pulseEffect} 2s infinite` : "unset",
+                        animation: selectStage === SelectStage.EndCoord ? (theme) => `${glowEffect(theme.factionTheme.primary, true)} 2s infinite` : "unset",
                     }}
                 >
                     <Typography sx={{ fontSize: `${indicatorDiameter / 2}px`, fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}>

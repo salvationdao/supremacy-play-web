@@ -1,17 +1,8 @@
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward"
-import { Box, Button, Fade, Stack, Typography } from "@mui/material"
-import { Mask } from "@reactour/mask"
-import { Popover } from "@reactour/popover"
-import { useRect } from "@reactour/utils"
 import { useEffect, useRef, useState } from "react"
 import { TRAINING_ASSETS } from "../../constants"
 import { useAuth, useTraining } from "../../containers"
-import { zoomEffect } from "../../theme/keyframes"
-import { fonts } from "../../theme/theme"
-import { BattleAbilityStages, BribeStage, GameAbility, LocationSelectType, Map, WarMachineState } from "../../types"
-import { TOP_BAR_HEIGHT } from "../BigDisplay/MiniMap/MiniMap"
-import { tourStyles } from "../HowToPlay/Tutorial/SetupTutorial"
-import { Congratulations } from "./Congratulations"
+import { BattleAbilityStages, BribeStage, Context, GameAbility, LocationSelectType, Map, TrainingAbility, WarMachineState } from "../../types"
+import { TutorialContainer } from "./TutorialContainer"
 import { trainingAirStrike } from "./VotingSystem/BattleAbility/BattleAbilityItemBT"
 
 export const VIDEO_SOURCE_BA = {
@@ -35,27 +26,11 @@ export interface TrainingWinnerResponse {
 
 export const TrainingBattleAbility = () => {
     const { userID } = useAuth()
-    const {
-        tutorialRef,
-        setTrainingStage,
-        trainingStage,
-        setBribeStage,
-        setMap,
-        setWarMachines,
-        setIsTargeting,
-        toggleIsEnlarged,
-        setWinner,
-        toggleIsMapOpen,
-        isStreamBigDisplay,
-        smallDisplayRef,
-        bigDisplayRef,
-    } = useTraining()
+    const { setTrainingStage, trainingStage, setBribeStage, setMap, setWarMachines, setIsTargeting, setWinner, toggleIsMapOpen } = useTraining()
     const [videoSource, setVideoSource] = useState(VIDEO_SOURCE_BA.intro)
     const [stage, setStage] = useState<Context | null>(null)
     const [popoverOpen, setPopoverOpen] = useState(true)
-    const sizes = useRect(tutorialRef)
     const videoRef = useRef<HTMLVideoElement>(null)
-    const ref = useRef<HTMLDivElement>(null)
     const [end, setEnd] = useState(false)
 
     useEffect(() => {
@@ -69,12 +44,11 @@ export const TrainingBattleAbility = () => {
             setStage(locationStage)
             setPopoverOpen(true)
             setIsTargeting(true)
-            toggleIsEnlarged(true)
         } else if (trainingStage === BattleAbilityStages.ShowAbilityBA) {
             setPopoverOpen(false)
             videoRef.current?.play()
         }
-    }, [setIsTargeting, setPopoverOpen, toggleIsEnlarged, trainingStage, toggleIsMapOpen])
+    }, [setIsTargeting, setPopoverOpen, trainingStage, toggleIsMapOpen])
 
     // Initialise
     useEffect(() => {
@@ -82,31 +56,18 @@ export const TrainingBattleAbility = () => {
         setWarMachines(trainingMechs(userID))
     }, [setMap, setWarMachines, userID])
 
-    useEffect(() => {
-        const thisElement = ref.current
-        const newContainerElement = isStreamBigDisplay ? bigDisplayRef : smallDisplayRef
-
-        if (thisElement && newContainerElement) {
-            newContainerElement.appendChild(thisElement)
-        }
-    }, [isStreamBigDisplay, smallDisplayRef, bigDisplayRef])
-
     return (
-        <Box ref={ref} sx={{ background: "#000", width: "100%", height: "100%" }}>
-            {/* Top bar */}
-            <Stack
-                spacing="1rem"
-                direction="row"
-                alignItems="center"
-                sx={{
-                    p: ".6rem 1.6rem",
-                    height: `${TOP_BAR_HEIGHT}rem`,
-                    background: (theme) => `linear-gradient(${theme.factionTheme.background} 26%, ${theme.factionTheme.background}BB)`,
-                }}
-            >
-                <Typography sx={{ fontFamily: fonts.nostromoHeavy }}>BATTLE TRAINING</Typography>
-            </Stack>
-
+        <TutorialContainer
+            stage={stage}
+            currentAbility={TrainingAbility.Battle}
+            context={context}
+            videoSource={videoSource}
+            setStage={setStage}
+            end={end}
+            videoRef={videoRef}
+            popoverOpen={popoverOpen}
+            setPopoverOpen={setPopoverOpen}
+        >
             <video
                 key={videoSource}
                 ref={videoRef}
@@ -242,55 +203,13 @@ export const TrainingBattleAbility = () => {
             >
                 <source src={videoSource} />
             </video>
-            {end && <Congratulations ability="battle" />}
-            {stage && (
-                <Fade in={popoverOpen}>
-                    <Box>
-                        <Popover sizes={sizes} styles={{ popover: tourStyles?.popover }} position="right">
-                            <p>{stage.text}</p>
-                            {stage.showNext && (
-                                <Button
-                                    onClick={() => {
-                                        const i = context.findIndex((s) => s === stage)
-                                        const nextStage = context[i + 1]
-                                        if (nextStage.videoSource !== videoSource) {
-                                            videoRef.current?.play()
-                                            setPopoverOpen(false)
-                                        } else {
-                                            setStage(context[i + 1])
-                                            setTrainingStage(context[i + 1].state)
-                                        }
-                                    }}
-                                    sx={{
-                                        fontFamily: fonts.nostromoBlack,
-                                        mt: "1rem",
-                                        ml: "auto",
-                                        display: "flex",
-                                        gap: ".5rem",
-                                        animation: `${zoomEffect(1.35)} 2s infinite`,
-                                    }}
-                                >
-                                    Next <ArrowForwardIcon />
-                                </Button>
-                            )}
-                        </Popover>
-                        <Mask sizes={sizes} styles={{ maskWrapper: tourStyles?.maskWrapper }} />
-                    </Box>
-                </Fade>
-            )}
-        </Box>
+        </TutorialContainer>
     )
-}
-interface Context {
-    videoSource: string
-    text: string
-    showNext: boolean
-    state: BattleAbilityStages
 }
 
 const context: Context[] = [
     {
-        text: "This is where you you can influence the success of your Faction by opting in to deploy a battle ability.",
+        text: "Battle Ability is where you you can influence the success of your Faction by opting in to deploy an airstrike, nuke or repair crate.",
         showNext: true,
         state: BattleAbilityStages.ExplainBA,
         videoSource: VIDEO_SOURCE_BA.explain,
@@ -314,7 +233,7 @@ const context: Context[] = [
         videoSource: VIDEO_SOURCE_BA.airstrike,
     },
     {
-        text: "Defeat the opposition and destroy Red Mountain Offworld Corporation! Click the greyed guided points (1 and 2) by order, to deploy the battle ability!",
+        text: "Defeat the opposition and destroy Red Mountain Offworld Corporation! Click the guided points (1 and 2) by order, to deploy the battle ability!",
         showNext: false,
         state: BattleAbilityStages.LocationActionBA,
         videoSource: VIDEO_SOURCE_BA.airstrike,
@@ -360,7 +279,7 @@ const trainingMechs = (userID: string): WarMachineState[] => {
         {
             id: "088132f5-ee2f-47f7-bd18-9b7dfb466ff5",
             hash: "JkRNuNlljO",
-            ownedByID: userID,
+            ownedByID: "sds",
             ownerUsername: "",
             modelID: "",
             name: "Thumbgeode Killer",
@@ -398,7 +317,7 @@ const trainingMechs = (userID: string): WarMachineState[] => {
             modelID: "",
             id: "088132f5-ee2f-47f7-bd18-9b7dfb466ff5",
             hash: "JkRNuNlljO",
-            ownedByID: userID,
+            ownedByID: "sds",
             name: "Thumbgeode Killer",
             participantID: 2,
             factionID: "880db344-e405-428d-84e5-6ebebab1fe6d",

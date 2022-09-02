@@ -2,17 +2,65 @@ import { Box, Stack, Typography, useMediaQuery } from "@mui/material"
 import { useState } from "react"
 import { TRAINING_ASSETS } from "../../../constants"
 import { useSupremacy } from "../../../containers"
+import { colors } from "../../../theme/theme"
 import { Faction } from "../../../types"
+import { FancyButton } from "../../Common/FancyButton"
 import { FactionLabel } from "./FactionSelect"
 
-export const FactionIntro = () => {
+export const FactionIntro = ({ nextStep }: { nextStep: () => void }) => {
     const { factionsAll } = useSupremacy()
     const below950 = useMediaQuery(`(max-width:1380px)`)
 
     // for mobile view (enlarges the faction being viewed)
     const [viewing, setViewing] = useState<FactionLabel>()
     return (
-        <Stack sx={{ display: "flex", width: "100%", height: "100%" }}>
+        <Stack sx={{ display: "flex", width: "100%", height: "100%", position: "relative" }}>
+            <Box
+                sx={{
+                    zIndex: 5,
+                    pl: "3rem",
+                    pr: "3rem",
+                    position: "absolute",
+                    bottom: "2rem",
+
+                    right: 0,
+                    marginLeft: "auto",
+                    marginRight: "auto",
+                    width: "30rem",
+                    textAlign: "center",
+                }}
+            >
+                <FancyButton
+                    clipThingsProps={{
+                        clipSize: "9px",
+                        clipSlantSize: "0px",
+                        backgroundColor: colors.darkNavyBlue,
+                        opacity: 1,
+                        border: { borderColor: colors.neonBlue, borderThickness: "1px" },
+                        sx: {
+                            position: "relative",
+
+                            textAlign: "center",
+                        },
+                    }}
+                    onClick={() => {
+                        console.log("clicking")
+                        nextStep()
+                    }}
+                >
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            fontWeight: "fontWeightBold",
+                            textAlign: "center !important",
+                            color: colors.neonBlue,
+                            fontSize: "2rem",
+                        }}
+                    >
+                        Next
+                    </Typography>
+                </FancyButton>
+            </Box>
             <Box sx={{ display: "flex", width: "100%", height: "100%" }}>
                 {Object.values(factionsAll).map((f) => (
                     <FactionBox

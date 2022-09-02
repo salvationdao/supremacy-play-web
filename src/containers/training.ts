@@ -79,7 +79,7 @@ export const TrainingContainer = createContainer(() => {
     // Map triggers
     const [winner, setWinner] = useState<TrainingWinnerResponse>()
     const [playerAbility, setPlayerAbility] = useState<PlayerAbility>()
-    const [isEnlarged, toggleIsEnlarged] = useToggle(false)
+    const isEnlarged = false
     const [isTargeting, setIsTargeting] = useState(false)
 
     // Other stuff
@@ -164,7 +164,7 @@ export const TrainingContainer = createContainer(() => {
     const mechMove = useCallback(
         (cellX: number, cellY: number, warMachine: WarMachineState, currentTime: number, duration: number) => {
             if (!map || !warMachines) return
-            const wm = warMachines.find((w) => w.id === warMachine.id)
+            const wm = { ...warMachines.find((w) => w.id === warMachine.id) } as WarMachineState
             if (!wm) return
             const { x, y } = convertCellsToGameLocation(cellX, cellY, map?.Pixel_Left, map?.Pixel_Top)
             const rate = currentTime / duration
@@ -230,7 +230,37 @@ export const TrainingContainer = createContainer(() => {
         [map, warMachines],
     )
 
+    const rotationChange = useCallback(
+        (rotation: number, warMachine: WarMachineState, currentTime: number, duration: number) => {
+            if (!map || !warMachines) return
+            const wm = warMachines.find((w) => w.id === warMachine.id)
+            if (!wm) return
+            const rate = currentTime / duration
+
+            const delta = (rotation - warMachine.rotation) * rate
+            wm.rotation = Math.round(warMachine.rotation + delta)
+
+            const group = [...warMachines]
+            const i = group.findIndex((w) => w.id === wm.id)
+            setWarMachines((prevState) => {
+                if (!prevState) return
+                const newGroup = [...prevState]
+                newGroup[i] = wm
+                return newGroup
+            })
+        },
+        [map, warMachines],
+    )
+
+    const empCoords = useMemo(() => {
+        const empX = 987.838
+        const empY = 750.444
+
+        return { x: empX, y: empY }
+    }, [])
+
     return {
+        empCoords,
         bribeStage,
         setBribeStage,
         map,
@@ -263,7 +293,6 @@ export const TrainingContainer = createContainer(() => {
         gridWidth,
         gridHeight,
         isEnlarged,
-        toggleIsEnlarged,
         isMapOpen,
         toggleIsMapOpen,
         completed,
@@ -285,6 +314,7 @@ export const TrainingContainer = createContainer(() => {
         isStreamBigDisplay,
         updater,
         setUpdater,
+        rotationChange,
     }
 })
 

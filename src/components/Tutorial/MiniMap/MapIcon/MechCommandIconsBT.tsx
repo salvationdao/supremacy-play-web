@@ -32,7 +32,7 @@ export const MechCommandIconsBT = () => {
                                 sx={{
                                     zIndex: 9,
                                     borderRadius: "50%",
-                                    animation: trainingStage === MechAbilityStages.MoveMA ? `${pulseEffect} 2s infinite ease-out` : "unset",
+                                    animation: trainingStage === MechAbilityStages.MoveMA ? `${pulseEffect} 2s infinite` : "unset",
                                 }}
                                 sizeGrid={1.2}
                                 icon={

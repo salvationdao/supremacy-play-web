@@ -1,16 +1,9 @@
-import { Box, Fade, Stack, Typography } from "@mui/material"
-import { Mask } from "@reactour/mask"
-import { Popover } from "@reactour/popover"
-import { useRect } from "@reactour/utils"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { TRAINING_ASSETS } from "../../constants"
 import { useAuth, useTraining } from "../../containers"
-import { fonts } from "../../theme/theme"
-import { BribeStage, Map, MechAbilityStages } from "../../types"
-import { TOP_BAR_HEIGHT } from "../BigDisplay/MiniMap/MiniMap"
-import { tourStyles } from "../HowToPlay/Tutorial/SetupTutorial"
-import { Congratulations } from "./Congratulations"
+import { BribeStage, Context, Map, MechAbilityStages, TrainingAbility, WarMachineState } from "../../types"
 import { TrainingBribeStageResponse } from "./TrainingBattleAbility"
+import { TutorialContainer } from "./TutorialContainer"
 
 export const VIDEO_SOURCE_MA = {
     intro: TRAINING_ASSETS + "/mech_ability/1.mp4",
@@ -24,7 +17,6 @@ export const VIDEO_SOURCE_MA_LIST = Object.values(VIDEO_SOURCE_MA)
 export const TrainingMechAbility = () => {
     const { userID } = useAuth()
     const {
-        tutorialRef,
         setTrainingStage,
         trainingStage,
         setMap,
@@ -37,23 +29,25 @@ export const TrainingMechAbility = () => {
         setBribeStage,
         setWinner,
         setIsTargeting,
-        isStreamBigDisplay,
-        smallDisplayRef,
-        bigDisplayRef,
         setPlayerAbility,
         setHighlightedMechParticipantID,
-        bribeStage,
+        rotationChange,
     } = useTraining()
     const [videoSource, setVideoSource] = useState(VIDEO_SOURCE_MA.intro)
     const [stage, setStage] = useState<Context | null>(null)
     const [popoverOpen, setPopoverOpen] = useState(true)
-    const [updater, setUpdater] = useState<unknown[]>([])
     const [end, setEnd] = useState(false)
-    const [bribeStageTime, setBribeStageTime] = useState(45)
 
-    const sizes = useRect(tutorialRef, updater)
+    // Tutorial mech state
+    const tutorialMechs = useRef<{ [key: string]: WarMachineState | undefined }>({
+        bc1: trainingMechs(userID).find((w) => w.id === MechIDs.BC1),
+        zb1: trainingMechs(userID).find((w) => w.id === MechIDs.ZB1),
+        zb2: trainingMechs(userID).find((w) => w.id === MechIDs.ZB2),
+        zb3: trainingMechs(userID).find((w) => w.id === MechIDs.ZB3),
+        rm3: trainingMechs(userID).find((w) => w.id === MechIDs.RM3),
+    })
+
     const videoRef = useRef<HTMLVideoElement>(null)
-    const ref = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
         switch (trainingStage) {
@@ -104,47 +98,64 @@ export const TrainingMechAbility = () => {
         }
     }, [trainingStage, setStage, toggleIsMapOpen, setWinner, setIsTargeting])
 
-    useEffect(() => {
-        window.addEventListener("scroll", () => {
-            setUpdater([tutorialRef])
-        })
-        return () => {
-            window.removeEventListener("scroll", () => {
-                setUpdater([tutorialRef])
-            })
-        }
-    }, [setUpdater, tutorialRef])
-
     // Initialise
     useEffect(() => {
         setMap(trainingMap)
         setWarMachines(trainingMechs(userID))
-    }, [setMap, setWarMachines, userID])
-
-    useEffect(() => {
-        const thisElement = ref.current
-        const newContainerElement = isStreamBigDisplay ? bigDisplayRef : smallDisplayRef
-
-        if (thisElement && newContainerElement) {
-            newContainerElement.appendChild(thisElement)
+        const trainingBribeStage: TrainingBribeStageResponse = {
+            phase: BribeStage.Cooldown,
+            time: 30,
         }
-    }, [isStreamBigDisplay, smallDisplayRef, bigDisplayRef])
-    console.log(bribeStage)
+        setBribeStage(trainingBribeStage)
+    }, [setBribeStage, setMap, setWarMachines, userID])
+
+    const updateTutorialMechs = useCallback(() => {
+        // Update tutorial mechs
+        if (!warMachines) return
+
+        // Cant copy object but need to copy value
+        const wmBC1 = warMachines?.find((w) => w.id === MechIDs.BC1)
+        const wmZB1 = warMachines?.find((w) => w.id === MechIDs.ZB1)
+        const wmZB2 = warMachines?.find((w) => w.id === MechIDs.ZB2)
+        const wmZB3 = warMachines?.find((w) => w.id === MechIDs.ZB3)
+        const wmRM3 = warMachines?.find((w) => w.id === MechIDs.RM3)
+        if (!wmBC1 || !wmZB1 || !wmZB2 || !wmZB3 || !wmRM3) return
+
+        tutorialMechs.current = {
+            bc1: {
+                ...wmBC1,
+                position: { ...wmBC1.position },
+            },
+            zb1: {
+                ...wmZB1,
+                position: { ...wmZB1.position },
+            },
+            zb2: {
+                ...wmZB2,
+                position: { ...wmZB2.position },
+            },
+            zb3: {
+                ...wmZB3,
+                position: { ...wmZB3.position },
+            },
+            rm3: {
+                ...wmRM3,
+                position: { ...wmRM3.position },
+            },
+        }
+    }, [warMachines])
     return (
-        <Box ref={ref} sx={{ background: "#000", width: "100%", height: "100%" }}>
-            {/* Top bar */}
-            <Stack
-                spacing="1rem"
-                direction="row"
-                alignItems="center"
-                sx={{
-                    p: ".6rem 1.6rem",
-                    height: `${TOP_BAR_HEIGHT}rem`,
-                    background: (theme) => `linear-gradient(${theme.factionTheme.background} 26%, ${theme.factionTheme.background}BB)`,
-                }}
-            >
-                <Typography sx={{ fontFamily: fonts.nostromoHeavy }}>BATTLE TRAINING</Typography>
-            </Stack>
+        <TutorialContainer
+            stage={stage}
+            currentAbility={TrainingAbility.Mech}
+            context={context}
+            videoSource={videoSource}
+            setStage={setStage}
+            end={end}
+            videoRef={videoRef}
+            popoverOpen={popoverOpen}
+            setPopoverOpen={setPopoverOpen}
+        >
             <video
                 key={videoSource}
                 ref={videoRef}
@@ -155,29 +166,28 @@ export const TrainingMechAbility = () => {
                 }}
                 onTimeUpdate={(e) => {
                     const { currentTime, duration } = e.currentTarget
-                    // BattleAbility
-                    const trainingBribeStage: TrainingBribeStageResponse = {
-                        phase: BribeStage.Cooldown,
-                        time: Math.floor(bribeStageTime - currentTime),
-                    }
-                    setBribeStage(trainingBribeStage)
-
-                    const bc1_init = trainingMechs(userID).find((w) => w.id === MechIDs.BC1)
-                    const zb1 = warMachines?.find((w) => w.id === MechIDs.ZB1)
-                    const zb2 = warMachines?.find((w) => w.id === MechIDs.ZB2)
-                    const zb3 = warMachines?.find((w) => w.id === MechIDs.ZB3)
-                    const rm3 = warMachines?.find((w) => w.id === MechIDs.RM3)
-                    if (!bc1_init || !zb1 || !zb2 || !zb3 || !rm3) return
+                    const { bc1, zb1, zb2, zb3, rm3 } = tutorialMechs.current
+                    if (!bc1 || !zb1 || !zb2 || !zb3 || !rm3) return
 
                     // INTRO BATTLE
                     if (videoSource === VIDEO_SOURCE_MA.intro) {
-                        healthChange(800, bc1_init, currentTime, duration)
+                        rotationChange(175, bc1, currentTime, duration)
+                        rotationChange(350, zb1, currentTime, duration)
+                        rotationChange(150, zb2, currentTime, duration)
+                        rotationChange(120, zb3, currentTime, duration)
+                        rotationChange(300, rm3, currentTime, duration)
+
+                        mechMove(38.4, 20.42, bc1, currentTime, duration)
+                        mechMove(19.82, 12.27, zb2, currentTime, duration)
+                        mechMove(17.21, 12.67, zb3, currentTime, duration)
+                        mechMove(15.92, 14.5, rm3, currentTime, duration)
+
                         healthChange(1000, zb1, currentTime, duration)
                         healthChange(1500, zb2, currentTime, duration)
                         healthChange(1500, zb3, currentTime, duration)
                         healthChange(900, rm3, currentTime, duration)
 
-                        shieldChange(700, bc1_init, currentTime, duration)
+                        shieldChange(700, bc1, currentTime, duration)
                         shieldChange(700, zb2, currentTime, duration)
                         shieldChange(600, zb3, currentTime, duration)
                         return
@@ -185,17 +195,24 @@ export const TrainingMechAbility = () => {
 
                     // REPAIR
                     if (trainingStage === MechAbilityStages.RepairMA) {
-                        // Get current health
-                        const bc1 = warMachines?.find((w) => w.id === MechIDs.BC1)
-                        if (!bc1) return
+                        mechMove(36.15, 19.92, bc1, currentTime, duration)
+                        mechMove(37.2, 19.85, zb1, currentTime, duration)
+                        mechMove(17.82, 13.27, zb2, currentTime, duration)
+                        mechMove(16.82, 14.88, zb3, currentTime, duration)
+                        mechMove(15.69, 15.67, rm3, currentTime, duration)
+
+                        rotationChange(290, bc1, currentTime, duration)
+                        rotationChange(450, zb1, currentTime, duration)
+                        rotationChange(140, zb3, currentTime, duration)
+
+                        // ZB1 dead
+                        healthChange(0, zb1, currentTime, duration - 0.5)
                         healthChange(1200, zb2, currentTime, duration)
                         healthChange(1100, zb3, currentTime, duration)
                         healthChange(500, rm3, currentTime, duration)
 
-                        // ZB1 dead
-                        healthChange(0, zb1, currentTime, duration - 0.5)
-
                         // Shield
+                        shieldChange(500, bc1, currentTime, duration)
                         shieldChange(600, zb2, currentTime, duration)
                         shieldChange(500, zb3, currentTime, duration)
 
@@ -207,31 +224,43 @@ export const TrainingMechAbility = () => {
 
                     // MECH MOVE
                     if (videoSource === VIDEO_SOURCE_MA.move) {
+                        const rmDead = duration / 3
+                        if (currentTime <= 2) {
+                            rotationChange(185, bc1, currentTime, 2)
+                        }
+                        if (currentTime <= 8 && currentTime >= rmDead - 1) {
+                            rotationChange(45, zb2, currentTime, 8)
+                            rotationChange(15, zb3, currentTime, 8)
+                        } else if (currentTime <= 8) {
+                            rotationChange(110, zb2, currentTime, rmDead - 1)
+                            rotationChange(125, zb3, currentTime, rmDead - 1)
+                        }
+
                         // Get current health
-                        const bc1 = warMachines?.find((w) => w.id === MechIDs.BC1)
-                        if (!bc1) return
                         healthChange(800, zb2, currentTime, duration)
                         healthChange(700, zb3, currentTime, duration)
-                        healthChange(0, rm3, currentTime, duration / 3)
+                        healthChange(0, rm3, currentTime, rmDead)
 
                         // Shield change
-                        shieldChange(200, bc1, currentTime, duration)
+                        shieldChange(400, bc1, currentTime, duration)
                         shieldChange(400, zb2, currentTime, duration)
                         shieldChange(400, zb3, currentTime, duration)
 
                         const moveCommand = trainingMoveCommand(userID)
-                        if (currentTime <= 8 || currentTime >= 10) {
-                            mechMove(moveCommand.cell_x, moveCommand.cell_y, bc1_init, currentTime, duration)
+                        if (currentTime <= 8 || currentTime >= 9) {
+                            mechMove(moveCommand.cell_x, moveCommand.cell_y, bc1, currentTime, duration)
                         }
-                        if (currentTime >= 10) healthChange(1000, bc1, currentTime, duration)
+                        if (currentTime >= 10) {
+                            shieldChange(200, bc1, currentTime, duration)
+                        }
+                        if (currentTime >= duration - 2) {
+                            rotationChange(270, bc1, currentTime, duration)
+                        }
                     }
 
                     // Overcharge
                     if (videoSource === VIDEO_SOURCE_MA.overcharge) {
                         // Get current health
-                        const bc1 = warMachines?.find((w) => w.id === MechIDs.BC1)
-                        if (!bc1) return
-                        healthChange(800, bc1, currentTime, 8)
                         shieldChange(100, bc1, currentTime, 8)
                         if (currentTime >= 7.5 && currentTime <= 8.4) {
                             healthChange(0, zb2, currentTime, 8)
@@ -241,8 +270,7 @@ export const TrainingMechAbility = () => {
                         }
                     }
                 }}
-                onEnded={(e) => {
-                    const { duration } = e.currentTarget
+                onEnded={() => {
                     const finalVideo = VIDEO_SOURCE_MA_LIST[VIDEO_SOURCE_MA_LIST.length - 1]
                     if (videoSource === finalVideo) {
                         setStage(null)
@@ -251,12 +279,11 @@ export const TrainingMechAbility = () => {
                         setHighlightedMechParticipantID(undefined)
                         return
                     }
+
                     // Next video
+                    updateTutorialMechs()
                     const index = VIDEO_SOURCE_MA_LIST.findIndex((v) => v === videoSource)
                     const nextVideo = VIDEO_SOURCE_MA_LIST[index + 1]
-
-                    // Set bribe stage time based on current duration time
-                    setBribeStageTime((prev) => Math.floor(prev - duration))
 
                     const currentStage = context.find((s) => {
                         // Automatically goes next stage
@@ -280,25 +307,8 @@ export const TrainingMechAbility = () => {
             >
                 <source src={videoSource} />
             </video>
-            {end && <Congratulations ability="mech" />}
-            {stage && (
-                <Fade in={popoverOpen}>
-                    <Box>
-                        <Popover sizes={sizes} styles={{ popover: tourStyles?.popover }} position="right">
-                            <p>{stage.text}</p>
-                        </Popover>
-                        <Mask sizes={sizes} styles={{ maskWrapper: tourStyles?.maskWrapper }} />
-                    </Box>
-                </Fade>
-            )}
-        </Box>
+        </TutorialContainer>
     )
-}
-interface Context {
-    videoSource: string
-    text: string
-    showNext: boolean
-    state: MechAbilityStages
 }
 
 const context: Context[] = [
@@ -321,7 +331,7 @@ const context: Context[] = [
         videoSource: VIDEO_SOURCE_MA.move,
     },
     {
-        text: "Aim mech command to get closer to the two Zaibatsu mechs. In-game you are able to cancel this at anytime. As the mech-owner there is no limit to how many times you use mech command.",
+        text: "Aim mech command to get closer to the two Zaibatsu mechs. There is no limit to how many times you use mech command.",
         showNext: false,
         state: MechAbilityStages.MoveMA,
         videoSource: VIDEO_SOURCE_MA.move,
@@ -380,8 +390,8 @@ export const trainingMoveCommand = (userID: string) => {
         id: "test",
         mech_id: MechIDs.BC1,
         triggered_by_id: userID,
-        cell_x: 17.4,
-        cell_y: 13.1,
+        cell_x: 18.24,
+        cell_y: 14.51,
         cancelled_at: "",
         reached_at: "",
         remain_cooldown_seconds: 5,
@@ -401,7 +411,7 @@ const trainingMechs = (userID: string) => {
             factionID: "7c6dde21-b067-46cf-9e56-155c88a520e2",
             maxHealth: 3600,
             maxShield: 3000,
-            health: 1500,
+            health: 1000,
             model: "XFVS",
             skin: "BlueWhite",
             speed: 2750,
@@ -413,7 +423,7 @@ const trainingMechs = (userID: string) => {
                 x: 49748.57142857142,
                 y: -21745.513392857145,
             },
-            rotation: 210,
+            rotation: 90,
             isHidden: false,
             shield: 1600,
             shieldRechargeRate: 240,
@@ -430,8 +440,8 @@ const trainingMechs = (userID: string) => {
             ownerUsername: "",
             modelID: "",
             id: MechIDs.BC2,
-            hash: "JkRNuNlljO",
-            ownedByID: userID,
+            hash: "JkRNuNldsdsdljO",
+            ownedByID: "test",
             name: "Boston Cybernetics 2",
             participantID: 2,
             factionID: "7c6dde21-b067-46cf-9e56-155c88a520e2",
@@ -466,8 +476,8 @@ const trainingMechs = (userID: string) => {
             ownerUsername: "",
             modelID: "",
             id: MechIDs.BC3,
-            hash: "JkRNuNlljO",
-            ownedByID: userID,
+            hash: "JkRNuNllsdsdjO",
+            ownedByID: "test",
             name: "Boston Cybernetics 3",
             participantID: 3,
             factionID: "7c6dde21-b067-46cf-9e56-155c88a520e2",
@@ -521,7 +531,7 @@ const trainingMechs = (userID: string) => {
                 x: 50731.428571428565,
                 y: -17588.37053571429,
             },
-            rotation: 70,
+            rotation: 270,
             isHidden: false,
             shield: 0,
             shieldRechargeRate: 240,
@@ -554,10 +564,10 @@ const trainingMechs = (userID: string) => {
             image: "https://afiles.ninja-cdn.com/passport/genesis/img/zaibatsu_tenshi-mk1_black-digi.png",
             imageAvatar: "https://afiles.ninja-cdn.com/passport/genesis/avatar/zaibatsu_tenshi-mk1_black-digi_avatar.png",
             position: {
-                x: 14980,
-                y: -33611.22767857143,
+                x: 18320.123604320113,
+                y: -35506.425248746666,
             },
-            rotation: 70,
+            rotation: 120,
             isHidden: false,
             shield: 1000,
             shieldRechargeRate: 240,
@@ -590,10 +600,10 @@ const trainingMechs = (userID: string) => {
             image: "https://afiles.ninja-cdn.com/passport/genesis/img/zaibatsu_tenshi-mk1_black-digi.png",
             imageAvatar: "https://afiles.ninja-cdn.com/passport/genesis/avatar/zaibatsu_tenshi-mk1_black-digi_avatar.png",
             position: {
-                x: 11662.857142857145,
-                y: -29885.513392857145,
+                x: 11499.166899701719,
+                y: -35941.50348751515,
             },
-            rotation: 40,
+            rotation: 105,
             isHidden: false,
             shield: 1200,
             shieldRechargeRate: 240,
@@ -698,10 +708,10 @@ const trainingMechs = (userID: string) => {
             image: "https://afiles.ninja-cdn.com/passport/genesis/img/red_mountain_bxsd_pink.png",
             imageAvatar: "https://afiles.ninja-cdn.com/passport/genesis/avatar/red-mountain_olympus-mons-ly07_red-hex_avatar.png",
             position: {
-                x: 10082.857142857145,
-                y: -27145.513392857145,
+                x: 11105.113636363632,
+                y: -32995.05504261363,
             },
-            rotation: 70,
+            rotation: 280,
             isHidden: false,
             shield: 0,
             shieldRechargeRate: 240,

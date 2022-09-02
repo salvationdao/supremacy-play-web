@@ -5,11 +5,12 @@ export enum CompletedTraining {
 }
 export enum TrainingLobby {
     All = "All",
-    FactionIntro = "FactionIntro",
-    FactionSelect = "FactionSelect",
     BattleAbility = "BattleAbility",
     MechAbility = "MechAbility",
     PlayerAbility = "PlayerAbility",
+    Intro = "Intro",
+    FactionIntro = "FactionIntro",
+    FactionEnlist = "FactionEnlist",
     Signup = "Signup",
 }
 
@@ -24,6 +25,11 @@ export enum BattleAbilityStages {
     ShowAbilityBA = "ShowAbilityBA",
 }
 
+export enum BattleAbilityHighlight {
+    ExplainBA = BattleAbilityStages.ExplainBA,
+    OptIn = BattleAbilityStages.OptIn,
+}
+
 export enum MechAbilityStages {
     NullMA = "NullMA",
     ExplainMA = "ExplainMA", // Explain Mech Avatar
@@ -34,6 +40,11 @@ export enum MechAbilityStages {
     MoveActionMA = "MoveActionMA",
     OverchargeMA = "OverchargeMA",
     OverchargeActionMA = "OverchargeActionMA",
+}
+
+export enum MechAbilitiesHighlight {
+    MapMA = MechAbilityStages.MapMA,
+    OverchargeMA = MechAbilityStages.OverchargeMA,
 }
 
 export enum PlayerAbilityStages {
@@ -80,3 +91,16 @@ export enum TrainingVotingSystem {
 }
 
 export type TrainingStages = TrainingLobby | BattleAbilityStages | TrainingLocationSelects | MechAbilityStages | PlayerAbilityStages
+
+export interface Context {
+    videoSource: string
+    text: string
+    showNext: boolean
+    state: PlayerAbilityStages | MechAbilityStages | BattleAbilityStages
+}
+
+export enum TrainingAbility {
+    Battle = "battle",
+    Player = "player",
+    Mech = "mech",
+}

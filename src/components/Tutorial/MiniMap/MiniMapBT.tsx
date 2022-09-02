@@ -1,8 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useRef } from "react"
-import { SvgFullscreen, SvgMinimize } from "../../../assets"
 import { useDimension, useTraining } from "../../../containers"
-import { useToggle } from "../../../hooks"
 import { fonts } from "../../../theme/theme"
 import { BattleAbilityStages, Map, PlayerAbilityStages, TrainingLocationSelects } from "../../../types"
 import { TOP_BAR_HEIGHT } from "../../BigDisplay/MiniMap/MiniMap"
@@ -31,7 +29,7 @@ export const MiniMapBT = () => {
         if (!map) return null
 
         return (
-            <Box ref={ref} sx={{ width: "100%", height: "100%" }}>
+            <Box ref={ref}>
                 <MiniMapInner map={map} />
             </Box>
         )
@@ -44,8 +42,7 @@ const MiniMapInner = ({ map }: { map: Map }) => {
         remToPxRatio,
         gameUIDimensions: { width, height },
     } = useDimension()
-    const { setTutorialRef, trainingStage, setIsStreamBigDisplay, isStreamBigDisplay } = useTraining()
-    const [isEnlarged, toggleIsEnlarged] = useToggle(false)
+    const { setTutorialRef, trainingStage, setIsStreamBigDisplay, isStreamBigDisplay, isEnlarged } = useTraining()
 
     const ref = useRef<HTMLDivElement>(null)
     const mapHeightWidthRatio = useRef(1)
@@ -118,6 +115,8 @@ const MiniMapInner = ({ map }: { map: Map }) => {
         }
     }, [map, width, isStreamBigDisplay, isEnlarged, height, remToPxRatio])
 
+    console.log(sizes)
+
     return useMemo(() => {
         return (
             <Stack
@@ -125,8 +124,6 @@ const MiniMapInner = ({ map }: { map: Map }) => {
                 justifyContent="center"
                 sx={{
                     position: "relative",
-                    width: "100%",
-                    height: "100%",
                     pb: !isStreamBigDisplay ? `${BOTTOM_PADDING}rem` : 0,
                     boxShadow: 2,
                     border: (theme) => `${theme.factionTheme.primary}60 1px solid`,
@@ -164,12 +161,6 @@ const MiniMapInner = ({ map }: { map: Map }) => {
                             zIndex: 99,
                         }}
                     >
-                        {!isStreamBigDisplay && (
-                            <Box onClick={() => toggleIsEnlarged()} sx={{ cursor: "pointer", opacity: 0.4, ":hover": { opacity: 1 } }}>
-                                {isEnlarged ? <SvgMinimize size="1.6rem" /> : <SvgFullscreen size="1.6rem" />}
-                            </Box>
-                        )}
-
                         <Typography sx={{ fontFamily: fonts.nostromoHeavy }}>
                             {map.Name.replace(/([A-Z])/g, " $1")
                                 .trim()
@@ -200,15 +191,5 @@ const MiniMapInner = ({ map }: { map: Map }) => {
                 />
             </Stack>
         )
-    }, [
-        isEnlarged,
-        sizes.outsideWidth,
-        sizes.outsideHeight,
-        sizes.insideWidth,
-        sizes.insideHeight,
-        map.Name,
-        map?.Image_Url,
-        isStreamBigDisplay,
-        toggleIsEnlarged,
-    ])
+    }, [sizes.outsideWidth, sizes.outsideHeight, sizes.insideWidth, sizes.insideHeight, map.Name, map?.Image_Url, isStreamBigDisplay])
 }

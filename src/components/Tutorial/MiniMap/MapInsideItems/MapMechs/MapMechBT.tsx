@@ -137,7 +137,7 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                     cursor: trainingStage in MechAbilityStages ? "unset" : "pointer",
                     padding: "1rem 1.3rem",
                     transform: `translate(-50%, -50%) translate3d(${mechMapX}px, ${mechMapY}px, 0)`,
-                    transition: `transform ${TRANSITION_DURATION}s linear`,
+                    transition: `transform .5s linear`,
                     opacity: 1,
                     zIndex,
                 }}
@@ -266,7 +266,7 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
                                 left: "50%",
                                 top: "50%",
                                 transform: `translate(-50%, -50%) rotate(${rotation + 90}deg)`,
-                                transition: `all ${TRANSITION_DURATION}s`,
+                                transition: `all 1s`,
                                 zIndex: 3,
                             }}
                         >

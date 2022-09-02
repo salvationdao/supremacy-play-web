@@ -1,19 +1,11 @@
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward"
-import { Box, Button, Fade, Stack, Typography } from "@mui/material"
-import { Mask } from "@reactour/mask"
-import { Popover } from "@reactour/popover"
-import { useRect } from "@reactour/utils"
 import { useEffect, useRef, useState } from "react"
 import { TRAINING_ASSETS } from "../../constants"
 import { useAuth, useTraining } from "../../containers"
-import { zoomEffect } from "../../theme/keyframes"
-import { fonts } from "../../theme/theme"
 import { BribeStage, Map } from "../../types"
-import { PlayerAbilityStages } from "../../types/training"
-import { TOP_BAR_HEIGHT } from "../BigDisplay/MiniMap/MiniMap"
-import { tourStyles } from "../HowToPlay/Tutorial/SetupTutorial"
-import { Congratulations } from "./Congratulations"
+import { Context, PlayerAbilityStages } from "../../types/training"
+import { TrainingAbility } from "./Congratulations"
 import { TrainingBribeStageResponse } from "./TrainingBattleAbility"
+import { TutorialContainer } from "./TutorialContainer"
 
 export const VIDEO_SOURCE_PA = {
     intro: TRAINING_ASSETS + "/player_ability/1.mp4",
@@ -25,30 +17,13 @@ export const VIDEO_SOURCE_PA_LIST = Object.values(VIDEO_SOURCE_PA)
 
 export const TrainingPlayerAbility = () => {
     const { userID } = useAuth()
-    const {
-        tutorialRef,
-        setTrainingStage,
-        trainingStage,
-        setMap,
-        setWarMachines,
-        toggleIsMapOpen,
-        setBribeStage,
-        setWinner,
-        setIsTargeting,
-        isStreamBigDisplay,
-        smallDisplayRef,
-        bigDisplayRef,
-        setUpdater,
-        updater,
-    } = useTraining()
+    const { tutorialRef, setTrainingStage, trainingStage, setMap, setWarMachines, toggleIsMapOpen, setBribeStage, setWinner, setIsTargeting, setUpdater } =
+        useTraining()
     const [videoSource, setVideoSource] = useState(VIDEO_SOURCE_PA.intro)
     const [stage, setStage] = useState<Context | null>(null)
     const [popoverOpen, setPopoverOpen] = useState(true)
     const [end, setEnd] = useState(false)
-    const sizes = useRect(tutorialRef, updater)
     const videoRef = useRef<HTMLVideoElement>(null)
-    const ref = useRef<HTMLDivElement>(null)
-    const [bribeStageTime, setBribeStageTime] = useState(45)
 
     useEffect(() => {
         switch (trainingStage) {
@@ -97,31 +72,25 @@ export const TrainingPlayerAbility = () => {
     useEffect(() => {
         setMap(trainingMap)
         setWarMachines(trainingMechs(userID))
-    }, [setMap, setWarMachines, userID])
-
-    useEffect(() => {
-        const thisElement = ref.current
-        const newContainerElement = isStreamBigDisplay ? bigDisplayRef : smallDisplayRef
-
-        if (thisElement && newContainerElement) {
-            newContainerElement.appendChild(thisElement)
+        const trainingBribeStage: TrainingBribeStageResponse = {
+            phase: BribeStage.Cooldown,
+            time: 30,
         }
-    }, [isStreamBigDisplay, smallDisplayRef, bigDisplayRef])
+        setBribeStage(trainingBribeStage)
+    }, [setBribeStage, setMap, setWarMachines, userID])
+
     return (
-        <Box ref={ref} sx={{ background: "#000", width: "100%", height: "100%" }}>
-            {/* Top bar */}
-            <Stack
-                spacing="1rem"
-                direction="row"
-                alignItems="center"
-                sx={{
-                    p: ".6rem 1.6rem",
-                    height: `${TOP_BAR_HEIGHT}rem`,
-                    background: (theme) => `linear-gradient(${theme.factionTheme.background} 26%, ${theme.factionTheme.background}BB)`,
-                }}
-            >
-                <Typography sx={{ fontFamily: fonts.nostromoHeavy }}>BATTLE TRAINING</Typography>
-            </Stack>
+        <TutorialContainer
+            stage={stage}
+            currentAbility={TrainingAbility.Player}
+            context={context}
+            videoSource={videoSource}
+            setStage={setStage}
+            end={end}
+            videoRef={videoRef}
+            popoverOpen={popoverOpen}
+            setPopoverOpen={setPopoverOpen}
+        >
             <video
                 key={videoSource}
                 ref={videoRef}
@@ -130,17 +99,7 @@ export const TrainingPlayerAbility = () => {
                         videoRef.current?.pause()
                     }
                 }}
-                onTimeUpdate={(e) => {
-                    const { currentTime } = e.currentTarget
-                    // BattleAbility
-                    const trainingBribeStage: TrainingBribeStageResponse = {
-                        phase: BribeStage.Cooldown,
-                        time: Math.floor(bribeStageTime - currentTime),
-                    }
-                    setBribeStage(trainingBribeStage)
-                }}
                 onEnded={(e) => {
-                    const { duration } = e.currentTarget
                     const finalVideo = VIDEO_SOURCE_PA_LIST[VIDEO_SOURCE_PA_LIST.length - 1]
                     if (videoSource === finalVideo) {
                         setStage(null)
@@ -150,9 +109,6 @@ export const TrainingPlayerAbility = () => {
                     // Next video
                     const index = VIDEO_SOURCE_PA_LIST.findIndex((v) => v === videoSource)
                     const nextVideo = VIDEO_SOURCE_PA_LIST[index + 1]
-
-                    // Set bribe stage time based on current duration time
-                    setBribeStageTime((prev) => Math.floor(prev - duration))
 
                     const currentStage = context.find((s) => {
                         // Automatically goes next stage
@@ -176,52 +132,9 @@ export const TrainingPlayerAbility = () => {
             >
                 <source src={videoSource} />
             </video>
-            {end && <Congratulations ability="player" />}
-            {stage && (
-                <Fade in={popoverOpen}>
-                    <Box>
-                        <Popover sizes={sizes} styles={{ popover: tourStyles?.popover }} position="right">
-                            <p>{stage.text}</p>
-                            {stage.showNext && (
-                                <Button
-                                    onClick={() => {
-                                        const i = context.findIndex((s) => s === stage)
-                                        const nextStage = context[i + 1]
-                                        if (nextStage.videoSource !== videoSource) {
-                                            videoRef.current?.play()
-                                            setPopoverOpen(false)
-                                        } else {
-                                            setStage(context[i + 1])
-                                            setTrainingStage(context[i + 1].state)
-                                        }
-                                    }}
-                                    sx={{
-                                        fontFamily: fonts.nostromoBlack,
-                                        mt: "1rem",
-                                        ml: "auto",
-                                        display: "flex",
-                                        gap: ".5rem",
-                                        animation: `${zoomEffect(1.35)} 2s infinite`,
-                                    }}
-                                >
-                                    Next <ArrowForwardIcon />
-                                </Button>
-                            )}
-                        </Popover>
-                        <Mask sizes={sizes} styles={{ maskWrapper: tourStyles?.maskWrapper }} />
-                    </Box>
-                </Fade>
-            )}
-        </Box>
+        </TutorialContainer>
     )
 }
-interface Context {
-    videoSource: string
-    text: string
-    showNext: boolean
-    state: PlayerAbilityStages
-}
-
 const context: Context[] = [
     {
         text: "This is where you will find your player abilities, they are purchasable from the store window or in your storefront.",
