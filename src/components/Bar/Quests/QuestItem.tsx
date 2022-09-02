@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import Confetti from "react-confetti"
 import { SvgChest, SvgInfoCircular } from "../../../assets"
 import { colors, fonts } from "../../../theme/theme"
@@ -7,7 +7,21 @@ import { QuestProgress, QuestStat } from "../../../types"
 import { ProgressBar } from "../../Common/ProgressBar"
 import { TooltipHelper } from "../../Common/TooltipHelper"
 
-export const QuestItem = ({ questStat, progress, showConfetti }: { questStat: QuestStat; progress?: QuestProgress; showConfetti: boolean }) => {
+interface QuestItemProps {
+    questStat: QuestStat
+    progress?: QuestProgress
+    showConfetti: boolean
+}
+
+const propsAreEqual = (prevProps: QuestItemProps, nextProps: QuestItemProps) => {
+    return (
+        prevProps.questStat.id === nextProps.questStat.id &&
+        prevProps.progress?.current === nextProps.progress?.current &&
+        prevProps.showConfetti === nextProps.showConfetti
+    )
+}
+
+export const QuestItem = React.memo(function QuestItem({ questStat, progress, showConfetti }: QuestItemProps) {
     const cappedCurrent = progress ? Math.min(progress.current, progress.goal) : 0
     const progressPercent = progress ? (100 * cappedCurrent) / progress.goal : 0
     const [showShowConfetti, setShowShowConfetti] = useState(false)
@@ -117,4 +131,4 @@ export const QuestItem = ({ questStat, progress, showConfetti }: { questStat: Qu
             </Stack>
         </Stack>
     )
-}
+}, propsAreEqual)
