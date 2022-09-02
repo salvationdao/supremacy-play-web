@@ -326,7 +326,7 @@ export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
     repairs: {
         id: "repairs",
         icon: <SvgRepair size="1.1rem" sx={{ pt: ".3rem" }} />,
-        label: "Repairs",
+        label: "Repairs Jobs",
         Component: RepairJobs,
         requireAuth: true,
         mountAllTime: false,

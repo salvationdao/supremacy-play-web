@@ -28,12 +28,12 @@ export const DimensionContainer = createContainer(() => {
 
     // Please refer to `src/theme/global.css`
     useEffect(() => {
-        if (below600) return setRemToPxRatio(0.39 * 16)
-        if (below900) return setRemToPxRatio(0.44 * 16)
-        if (below1300) return setRemToPxRatio(0.46 * 16)
-        if (below1500) return setRemToPxRatio(0.5 * 16)
-        if (below1922) return setRemToPxRatio(0.52 * 16)
-        setRemToPxRatio(0.59 * 16)
+        if (below600) return setRemToPxRatio(0.37 * 16)
+        if (below900) return setRemToPxRatio(0.42 * 16)
+        if (below1300) return setRemToPxRatio(0.44 * 16)
+        if (below1500) return setRemToPxRatio(0.48 * 16)
+        if (below1922) return setRemToPxRatio(0.5 * 16)
+        setRemToPxRatio(0.57 * 16)
     }, [below1922, below1500, below900, below600, below1300])
 
     const setupResizeObserver = useCallback(() => {
