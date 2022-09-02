@@ -18,12 +18,7 @@ export const SystemMessageMech = ({ mech }: { mech: SystemMessageMechStruct }) =
 
     return (
         <Stack spacing="1rem" sx={{ width: "20rem" }}>
-            <ClipThing
-                clipSize="6px"
-                opacity={0.8}
-                border={{ borderColor: theme.factionTheme.primary, borderThickness: killed ? "0" : "1px" }}
-                backgroundColor={theme.factionTheme.background}
-            >
+            <ClipThing clipSize="6px" opacity={0.8} border={{ borderColor: theme.factionTheme.primary }} backgroundColor={theme.factionTheme.background}>
                 <Stack
                     spacing="1.2rem"
                     alignItems="stretch"
