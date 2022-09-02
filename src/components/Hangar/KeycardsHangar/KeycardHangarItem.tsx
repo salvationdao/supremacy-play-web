@@ -1,4 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
+import React from "react"
 import { FancyButton } from "../.."
 import { IS_TESTING_MODE } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
@@ -9,12 +10,16 @@ import { ItemType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 
-interface MysteryCrateStoreItemProps {
+interface KeycardHangarItemProps {
     keycard: Keycard
     itemSaleID?: string
 }
 
-export const KeycardHangarItem = ({ keycard }: MysteryCrateStoreItemProps) => {
+const propsAreEqual = (prevProps: KeycardHangarItemProps, nextProps: KeycardHangarItemProps) => {
+    return prevProps.itemSaleID === nextProps.itemSaleID && prevProps.keycard.id === nextProps.keycard.id
+}
+
+export const KeycardHangarItem = React.memo(function KeycardHangarItem({ keycard }: KeycardHangarItemProps) {
     return (
         <>
             {keycard.count > 0 && <KeycardHangarItemInner keycard={keycard} />}
@@ -23,9 +28,9 @@ export const KeycardHangarItem = ({ keycard }: MysteryCrateStoreItemProps) => {
             })}
         </>
     )
-}
+}, propsAreEqual)
 
-export const KeycardHangarItemInner = ({ keycard, itemSaleID }: MysteryCrateStoreItemProps) => {
+export const KeycardHangarItemInner = ({ keycard, itemSaleID }: KeycardHangarItemProps) => {
     const theme = useTheme()
 
     const primaryColor = theme.factionTheme.primary
