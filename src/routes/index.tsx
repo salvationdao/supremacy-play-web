@@ -14,6 +14,7 @@ import { LeaderboardPage } from "../pages/LeaderboardPage"
 import { MarketplaceItemPage } from "../pages/MarketplaceItemPage"
 import { MarketplaceSellPage } from "../pages/MarketplaceSellPage"
 import { MechPage } from "../pages/MechPage"
+import { ReplayItemPage } from "../pages/ReplayItemPage"
 import { ReplayPage } from "../pages/ReplayPage"
 import { StorefrontPage } from "../pages/StorefrontPage"
 import { WeaponPage } from "../pages/WeaponPage"
@@ -201,6 +202,16 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
     },
 
     // Replays
+    replays_item: {
+        id: "replays_item",
+        path: "/replay",
+        exact: true,
+        Component: ReplayItemPage,
+        requireAuth: false,
+        requireFaction: false,
+        matchNavLinkID: "replays",
+        enable: true,
+    },
     replays: {
         id: "replays",
         path: "/replays/:type?",

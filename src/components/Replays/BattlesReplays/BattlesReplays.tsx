@@ -14,7 +14,6 @@ import { SortDir, SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { ArenaTypeSelect } from "./ArenaTypeSelect"
-import { BattleReplayDetails } from "./BattleReplayDetails/BattleReplayDetails"
 import { BattleReplayItem } from "./BattleReplayItem"
 import { SearchBattle } from "./SearchBattle"
 
@@ -42,38 +41,10 @@ const sortOptions = [
 ]
 
 export const BattlesReplays = () => {
-    const [query, updateQuery] = useUrlQuery()
-    const [selectedGID, setSelectedGID] = useState(parseString(query.get("selectedGID"), -1))
-    const [battleGID, setBattleGID] = useState(parseString(query.get("battleGID"), -1))
-    const [battleNumber, setBattleNumber] = useState(parseString(query.get("battleNumber"), -1))
-
-    useEffect(() => {
-        updateQuery({
-            selectedGID: selectedGID > 0 ? `${selectedGID}` : "",
-            battleGID: battleGID > 0 ? `${battleGID}` : "",
-            battleNumber: battleNumber > 0 ? `${battleNumber}` : "",
-        })
-    }, [selectedGID, battleNumber, updateQuery, battleGID])
-
-    // If both battle gid and battle number are present, show the individual page
-    if (battleGID > 0 && battleNumber > 0) {
-        return <BattleReplayDetails gid={selectedGID} battleNumber={battleNumber} setBattleGID={setBattleGID} setBattleNumber={setBattleNumber} />
-    }
-
-    return <BattlesReplaysInner setSelectedGID={setSelectedGID} setBattleGID={setBattleGID} setBattleNumber={setBattleNumber} />
-}
-
-const BattlesReplaysInner = ({
-    setSelectedGID,
-    setBattleGID,
-    setBattleNumber,
-}: {
-    setSelectedGID: React.Dispatch<React.SetStateAction<number>>
-    setBattleGID: React.Dispatch<React.SetStateAction<number>>
-    setBattleNumber: React.Dispatch<React.SetStateAction<number>>
-}) => {
     const theme = useTheme()
     const { arenaList } = useArena()
+    const [query, updateQuery] = useUrlQuery()
+    const [selectedGID, setSelectedGID] = useState(parseString(query.get("selectedGID"), -1))
     const { send } = useGameServerCommands("/public/commander")
 
     // Items
@@ -91,6 +62,12 @@ const BattlesReplaysInner = ({
         pageSize: 10,
         page: 1,
     })
+
+    useEffect(() => {
+        updateQuery({
+            selectedGID: selectedGID > 0 ? `${selectedGID}` : "",
+        })
+    }, [selectedGID, updateQuery])
 
     useEffect(() => {
         setSelectedGID((prev) => {
@@ -143,14 +120,6 @@ const BattlesReplaysInner = ({
         [setSelectedGID],
     )
 
-    const onItemClick = useCallback(
-        (gid: number, battleNumber: number) => {
-            setBattleGID(gid)
-            setBattleNumber(battleNumber)
-        },
-        [setBattleNumber, setBattleGID],
-    )
-
     const content = useMemo(() => {
         if (loadError) {
             return (
@@ -201,7 +170,7 @@ const BattlesReplaysInner = ({
                         }}
                     >
                         {replays.map((replay) => {
-                            return <BattleReplayItem key={replay.id} battleReplay={replay} onItemClick={onItemClick} />
+                            return <BattleReplayItem key={replay.id} battleReplay={replay} />
                         })}
                     </Box>
                 </Box>
@@ -259,7 +228,7 @@ const BattlesReplaysInner = ({
                 </Stack>
             </Stack>
         )
-    }, [loadError, replays, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary, onItemClick])
+    }, [loadError, replays, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary])
 
     return (
         <ClipThing
