@@ -1,24 +1,23 @@
 import { Box } from "@mui/system"
 import { SvgChat, SvgDamage1, SvgHistoryClock, SvgRepair, SvgRobot } from "../assets"
 import { BattleArena } from "../components/LeftDrawer/BattleArena/BattleArena"
-import { QuickDeploy } from "../components/LeftDrawer/QuickDeploy/QuickDeploy"
 import { BattleEndScreen } from "../components/LeftDrawer/BattleEndScreen/BattleEndScreen"
+import { QuickDeploy } from "../components/LeftDrawer/QuickDeploy/QuickDeploy"
 import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
 import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
 import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
 import { RepairJobs } from "../components/RightDrawer/RepairJobs/RepairJobs"
 import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../constants"
 import { BattleArenaPage, BillingHistoryPage, ClaimPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
+import { LandingPage } from "../pages/LandingPage"
 import { LeaderboardPage } from "../pages/LeaderboardPage"
 import { MarketplaceItemPage } from "../pages/MarketplaceItemPage"
 import { MarketplaceSellPage } from "../pages/MarketplaceSellPage"
 import { MechPage } from "../pages/MechPage"
+import { ReplayPage } from "../pages/ReplayPage"
 import { StorefrontPage } from "../pages/StorefrontPage"
 import { WeaponPage } from "../pages/WeaponPage"
 import { colors } from "../theme/theme"
-import { LandingPage } from "../pages/LandingPage"
-import { ReplayPage } from "../pages/ReplayPage"
-import { ReplayItemPage } from "../pages/ReplayItemPage"
 
 // ************
 // ** ROUTES **
@@ -202,16 +201,6 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
     },
 
     // Replays
-    replays_item: {
-        id: "replays_item",
-        path: "/replays/:type/:gid/:battleNumber",
-        exact: true,
-        Component: ReplayItemPage,
-        requireAuth: false,
-        requireFaction: false,
-        matchNavLinkID: "replays",
-        enable: true,
-    },
     replays: {
         id: "replays",
         path: "/replays/:type?",

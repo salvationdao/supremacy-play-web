@@ -4,7 +4,8 @@ import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, ThreeMechsJPG } from "../../../assets"
 import { useArena } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { useDebounce, usePagination } from "../../../hooks"
+import { parseString } from "../../../helpers"
+import { useDebounce, usePagination, useUrlQuery } from "../../../hooks"
 import { useGameServerCommands } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
@@ -13,6 +14,7 @@ import { SortDir, SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { ArenaTypeSelect } from "./ArenaTypeSelect"
+import { BattleReplayDetails } from "./BattleReplayDetails/BattleReplayDetails"
 import { BattleReplayItem } from "./BattleReplayItem"
 import { SearchBattle } from "./SearchBattle"
 
@@ -40,6 +42,17 @@ const sortOptions = [
 ]
 
 export const BattlesReplays = () => {
+    const [query] = useUrlQuery()
+
+    const gid = parseString(query.get("gid"), -1)
+    const battleNumber = parseString(query.get("battleNumber"), -1)
+
+    if (gid > 0 && battleNumber > 0) return <BattleReplayDetails gid={gid} battleNumber={battleNumber} />
+
+    return <BattlesReplaysInner gid={gid} />
+}
+
+const BattlesReplaysInner = ({ gid }: { gid: number }) => {
     const theme = useTheme()
     const { arenaList } = useArena()
     const { send } = useGameServerCommands("/public/commander")
@@ -59,6 +72,10 @@ export const BattlesReplays = () => {
         pageSize: 10,
         page: 1,
     })
+
+    useEffect(() => {
+        setSelectedArenaType(arenaList.find((arena) => arena.gid === gid))
+    }, [arenaList, gid])
 
     const getItems = useCallback(async () => {
         try {

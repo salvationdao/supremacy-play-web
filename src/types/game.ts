@@ -36,10 +36,10 @@ export interface Map {
 }
 
 export interface GameMap {
-    background_url: string
     id: string
-    logo_url: string
     name: string
+    logo_url: string
+    background_url: string
 }
 
 export interface BattleZoneStruct {
