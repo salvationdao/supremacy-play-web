@@ -58,7 +58,7 @@ export const BattleReplayPlayer = (
             )}
 
             {!isLoading && replay && (
-                <Stream controls src={replay.stream_id} autoplay={true} />
+                <Stream controls src={replay.stream_id} autoplay={true} primaryColor={primaryColor} />
             )}
         </>
     )
