@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo } from "react"
+import React, { useEffect, useMemo } from "react"
 import { SvgCubes, SvgSupToken } from "../../../assets"
 import { useAuth, useSupremacy } from "../../../containers"
 import { supFormatterNoFixed, timeSinceInWords } from "../../../helpers"
@@ -11,17 +11,18 @@ import { Player } from "../../Common/Player"
 import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
 import { General } from "../../Marketplace/Common/MarketItem/General"
 
-export const RepairJobItem = ({
-    repairJob,
-    removeByID,
-    repairJobModal,
-    setRepairJobModal,
-}: {
+interface RepairJobItemProps {
     repairJob: RepairJob
     removeByID: (id: string) => void
     repairJobModal?: RepairJob
     setRepairJobModal: React.Dispatch<React.SetStateAction<RepairJob | undefined>>
-}) => {
+}
+
+const propsAreEqual = (prevProps: RepairJobItemProps, nextProps: RepairJobItemProps) => {
+    return prevProps.repairJobModal?.id === nextProps.repairJobModal?.id && prevProps.repairJob.id === nextProps.repairJob.id
+}
+
+export const RepairJobItem = React.memo(function RepairJobItem({ repairJob, removeByID, repairJobModal, setRepairJobModal }: RepairJobItemProps) {
     const { userID } = useAuth()
     const { getFaction } = useSupremacy()
 
@@ -146,7 +147,7 @@ export const RepairJobItem = ({
         ),
         [backgroundColor, isFinished, primaryColor, remainDamagedBlocks, repairJob, setRepairJobModal, userID],
     )
-}
+}, propsAreEqual)
 
 const CountdownGeneral = ({ isGridViewCompact, endTime }: { isGridViewCompact?: boolean; endTime: Date }) => {
     const { totalSecRemain } = useTimer(endTime)

@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useMemo } from "react"
+import React, { useMemo } from "react"
 import { ClipThing, TooltipHelper } from "../.."
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
@@ -11,7 +11,11 @@ export interface PlayerAbilityHangarItemProps {
     playerAbility: PlayerAbility
 }
 
-export const PlayerAbilityHangarItem = ({ playerAbility }: PlayerAbilityHangarItemProps) => {
+const propsAreEqual = (prevProps: PlayerAbilityHangarItemProps, nextProps: PlayerAbilityHangarItemProps) => {
+    return prevProps.playerAbility.id === nextProps.playerAbility.id
+}
+
+export const PlayerAbilityHangarItem = React.memo(function PlayerAbilityHangarItem({ playerAbility }: PlayerAbilityHangarItemProps) {
     const theme = useTheme()
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
@@ -95,4 +99,4 @@ export const PlayerAbilityHangarItem = ({ playerAbility }: PlayerAbilityHangarIt
             </Stack>
         </ClipThing>
     )
-}
+}, propsAreEqual)
