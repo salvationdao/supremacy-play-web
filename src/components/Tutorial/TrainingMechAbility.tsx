@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { TRAINING_ASSETS } from "../../constants"
 import { useAuth, useTraining } from "../../containers"
-import { BribeStage, Context, Map, MechAbilityStages, TrainingAbility } from "../../types"
+import { BribeStage, Context, Map, MechAbilityStages, TrainingAbility, WarMachineState } from "../../types"
 import { TrainingBribeStageResponse } from "./TrainingBattleAbility"
 import { TutorialContainer } from "./TutorialContainer"
 
@@ -31,11 +31,21 @@ export const TrainingMechAbility = () => {
         setIsTargeting,
         setPlayerAbility,
         setHighlightedMechParticipantID,
+        rotationChange,
     } = useTraining()
     const [videoSource, setVideoSource] = useState(VIDEO_SOURCE_MA.intro)
     const [stage, setStage] = useState<Context | null>(null)
     const [popoverOpen, setPopoverOpen] = useState(true)
     const [end, setEnd] = useState(false)
+
+    // Tutorial mech state
+    const tutorialMechs = useRef<{ [key: string]: WarMachineState | undefined }>({
+        bc1: trainingMechs(userID).find((w) => w.id === MechIDs.BC1),
+        zb1: trainingMechs(userID).find((w) => w.id === MechIDs.ZB1),
+        zb2: trainingMechs(userID).find((w) => w.id === MechIDs.ZB2),
+        zb3: trainingMechs(userID).find((w) => w.id === MechIDs.ZB3),
+        rm3: trainingMechs(userID).find((w) => w.id === MechIDs.RM3),
+    })
 
     const videoRef = useRef<HTMLVideoElement>(null)
 
@@ -99,6 +109,41 @@ export const TrainingMechAbility = () => {
         setBribeStage(trainingBribeStage)
     }, [setBribeStage, setMap, setWarMachines, userID])
 
+    const updateTutorialMechs = useCallback(() => {
+        // Update tutorial mechs
+        if (!warMachines) return
+
+        // Cant copy object but need to copy value
+        const wmBC1 = warMachines?.find((w) => w.id === MechIDs.BC1)
+        const wmZB1 = warMachines?.find((w) => w.id === MechIDs.ZB1)
+        const wmZB2 = warMachines?.find((w) => w.id === MechIDs.ZB2)
+        const wmZB3 = warMachines?.find((w) => w.id === MechIDs.ZB3)
+        const wmRM3 = warMachines?.find((w) => w.id === MechIDs.RM3)
+        if (!wmBC1 || !wmZB1 || !wmZB2 || !wmZB3 || !wmRM3) return
+
+        tutorialMechs.current = {
+            bc1: {
+                ...wmBC1,
+                position: { ...wmBC1.position },
+            },
+            zb1: {
+                ...wmZB1,
+                position: { ...wmZB1.position },
+            },
+            zb2: {
+                ...wmZB2,
+                position: { ...wmZB2.position },
+            },
+            zb3: {
+                ...wmZB3,
+                position: { ...wmZB3.position },
+            },
+            rm3: {
+                ...wmRM3,
+                position: { ...wmRM3.position },
+            },
+        }
+    }, [warMachines])
     return (
         <TutorialContainer
             stage={stage}
@@ -121,21 +166,28 @@ export const TrainingMechAbility = () => {
                 }}
                 onTimeUpdate={(e) => {
                     const { currentTime, duration } = e.currentTarget
-                    const bc1_init = trainingMechs(userID).find((w) => w.id === MechIDs.BC1)
-                    const zb1 = warMachines?.find((w) => w.id === MechIDs.ZB1)
-                    const zb2 = warMachines?.find((w) => w.id === MechIDs.ZB2)
-                    const zb3 = warMachines?.find((w) => w.id === MechIDs.ZB3)
-                    const rm3 = warMachines?.find((w) => w.id === MechIDs.RM3)
-                    if (!bc1_init || !zb1 || !zb2 || !zb3 || !rm3) return
+                    const { bc1, zb1, zb2, zb3, rm3 } = tutorialMechs.current
+                    if (!bc1 || !zb1 || !zb2 || !zb3 || !rm3) return
 
                     // INTRO BATTLE
                     if (videoSource === VIDEO_SOURCE_MA.intro) {
+                        rotationChange(175, bc1, currentTime, duration)
+                        rotationChange(350, zb1, currentTime, duration)
+                        rotationChange(150, zb2, currentTime, duration)
+                        rotationChange(120, zb3, currentTime, duration)
+                        rotationChange(300, rm3, currentTime, duration)
+
+                        mechMove(38.4, 20.42, bc1, currentTime, duration)
+                        mechMove(19.82, 12.27, zb2, currentTime, duration)
+                        mechMove(17.21, 12.67, zb3, currentTime, duration)
+                        mechMove(15.92, 14.5, rm3, currentTime, duration)
+
                         healthChange(1000, zb1, currentTime, duration)
                         healthChange(1500, zb2, currentTime, duration)
                         healthChange(1500, zb3, currentTime, duration)
                         healthChange(900, rm3, currentTime, duration)
 
-                        shieldChange(700, bc1_init, currentTime, duration)
+                        shieldChange(700, bc1, currentTime, duration)
                         shieldChange(700, zb2, currentTime, duration)
                         shieldChange(600, zb3, currentTime, duration)
                         return
@@ -143,15 +195,21 @@ export const TrainingMechAbility = () => {
 
                     // REPAIR
                     if (trainingStage === MechAbilityStages.RepairMA) {
-                        // Get current health
-                        const bc1 = warMachines?.find((w) => w.id === MechIDs.BC1)
-                        if (!bc1) return
-                        healthChange(1200, zb2, currentTime, duration)
-                        healthChange(1100, zb3, currentTime, duration)
-                        healthChange(500, rm3, currentTime, duration)
+                        mechMove(36.15, 19.92, bc1, currentTime, duration)
+                        mechMove(37.2, 19.85, zb1, currentTime, duration)
+                        mechMove(17.82, 13.27, zb2, currentTime, duration)
+                        mechMove(16.82, 14.88, zb3, currentTime, duration)
+                        mechMove(15.69, 15.67, rm3, currentTime, duration)
+
+                        rotationChange(290, bc1, currentTime, duration)
+                        rotationChange(450, zb1, currentTime, duration)
+                        rotationChange(140, zb3, currentTime, duration)
 
                         // ZB1 dead
                         healthChange(0, zb1, currentTime, duration - 0.5)
+                        healthChange(1200, zb2, currentTime, duration)
+                        healthChange(1100, zb3, currentTime, duration)
+                        healthChange(500, rm3, currentTime, duration)
 
                         // Shield
                         shieldChange(500, bc1, currentTime, duration)
@@ -166,12 +224,22 @@ export const TrainingMechAbility = () => {
 
                     // MECH MOVE
                     if (videoSource === VIDEO_SOURCE_MA.move) {
+                        const rmDead = duration / 3
+                        if (currentTime <= 2) {
+                            rotationChange(185, bc1, currentTime, 2)
+                        }
+                        if (currentTime <= 8 && currentTime >= rmDead - 1) {
+                            rotationChange(45, zb2, currentTime, 8)
+                            rotationChange(15, zb3, currentTime, 8)
+                        } else if (currentTime <= 8) {
+                            rotationChange(110, zb2, currentTime, rmDead - 1)
+                            rotationChange(125, zb3, currentTime, rmDead - 1)
+                        }
+
                         // Get current health
-                        const bc1 = warMachines?.find((w) => w.id === MechIDs.BC1)
-                        if (!bc1) return
                         healthChange(800, zb2, currentTime, duration)
                         healthChange(700, zb3, currentTime, duration)
-                        healthChange(0, rm3, currentTime, duration / 3)
+                        healthChange(0, rm3, currentTime, rmDead)
 
                         // Shield change
                         shieldChange(400, bc1, currentTime, duration)
@@ -180,16 +248,19 @@ export const TrainingMechAbility = () => {
 
                         const moveCommand = trainingMoveCommand(userID)
                         if (currentTime <= 8 || currentTime >= 9) {
-                            mechMove(moveCommand.cell_x, moveCommand.cell_y, bc1_init, currentTime, duration)
+                            mechMove(moveCommand.cell_x, moveCommand.cell_y, bc1, currentTime, duration)
                         }
-                        if (currentTime >= 10) shieldChange(200, bc1, currentTime, duration)
+                        if (currentTime >= 10) {
+                            shieldChange(200, bc1, currentTime, duration)
+                        }
+                        if (currentTime >= duration - 2) {
+                            rotationChange(270, bc1, currentTime, duration)
+                        }
                     }
 
                     // Overcharge
                     if (videoSource === VIDEO_SOURCE_MA.overcharge) {
                         // Get current health
-                        const bc1 = warMachines?.find((w) => w.id === MechIDs.BC1)
-                        if (!bc1) return
                         shieldChange(100, bc1, currentTime, 8)
                         if (currentTime >= 7.5 && currentTime <= 8.4) {
                             healthChange(0, zb2, currentTime, 8)
@@ -208,7 +279,9 @@ export const TrainingMechAbility = () => {
                         setHighlightedMechParticipantID(undefined)
                         return
                     }
+
                     // Next video
+                    updateTutorialMechs()
                     const index = VIDEO_SOURCE_MA_LIST.findIndex((v) => v === videoSource)
                     const nextVideo = VIDEO_SOURCE_MA_LIST[index + 1]
 
@@ -258,7 +331,7 @@ const context: Context[] = [
         videoSource: VIDEO_SOURCE_MA.move,
     },
     {
-        text: "Aim mech command to get closer to the two Zaibatsu mechs. In-game you are able to cancel this at anytime. As the mech-owner there is no limit to how many times you use mech command.",
+        text: "Aim mech command to get closer to the two Zaibatsu mechs. There is no limit to how many times you use mech command.",
         showNext: false,
         state: MechAbilityStages.MoveMA,
         videoSource: VIDEO_SOURCE_MA.move,
@@ -317,8 +390,8 @@ export const trainingMoveCommand = (userID: string) => {
         id: "test",
         mech_id: MechIDs.BC1,
         triggered_by_id: userID,
-        cell_x: 17.4,
-        cell_y: 13.1,
+        cell_x: 18.24,
+        cell_y: 14.51,
         cancelled_at: "",
         reached_at: "",
         remain_cooldown_seconds: 5,
@@ -350,7 +423,7 @@ const trainingMechs = (userID: string) => {
                 x: 49748.57142857142,
                 y: -21745.513392857145,
             },
-            rotation: 210,
+            rotation: 90,
             isHidden: false,
             shield: 1600,
             shieldRechargeRate: 240,
@@ -458,7 +531,7 @@ const trainingMechs = (userID: string) => {
                 x: 50731.428571428565,
                 y: -17588.37053571429,
             },
-            rotation: 70,
+            rotation: 270,
             isHidden: false,
             shield: 0,
             shieldRechargeRate: 240,
@@ -491,10 +564,10 @@ const trainingMechs = (userID: string) => {
             image: "https://afiles.ninja-cdn.com/passport/genesis/img/zaibatsu_tenshi-mk1_black-digi.png",
             imageAvatar: "https://afiles.ninja-cdn.com/passport/genesis/avatar/zaibatsu_tenshi-mk1_black-digi_avatar.png",
             position: {
-                x: 14980,
-                y: -33611.22767857143,
+                x: 18320.123604320113,
+                y: -35506.425248746666,
             },
-            rotation: 70,
+            rotation: 120,
             isHidden: false,
             shield: 1000,
             shieldRechargeRate: 240,
@@ -527,10 +600,10 @@ const trainingMechs = (userID: string) => {
             image: "https://afiles.ninja-cdn.com/passport/genesis/img/zaibatsu_tenshi-mk1_black-digi.png",
             imageAvatar: "https://afiles.ninja-cdn.com/passport/genesis/avatar/zaibatsu_tenshi-mk1_black-digi_avatar.png",
             position: {
-                x: 11662.857142857145,
-                y: -29885.513392857145,
+                x: 11499.166899701719,
+                y: -35941.50348751515,
             },
-            rotation: 40,
+            rotation: 105,
             isHidden: false,
             shield: 1200,
             shieldRechargeRate: 240,
@@ -635,10 +708,10 @@ const trainingMechs = (userID: string) => {
             image: "https://afiles.ninja-cdn.com/passport/genesis/img/red_mountain_bxsd_pink.png",
             imageAvatar: "https://afiles.ninja-cdn.com/passport/genesis/avatar/red-mountain_olympus-mons-ly07_red-hex_avatar.png",
             position: {
-                x: 10082.857142857145,
-                y: -27145.513392857145,
+                x: 11105.113636363632,
+                y: -32995.05504261363,
             },
-            rotation: 70,
+            rotation: 280,
             isHidden: false,
             shield: 0,
             shieldRechargeRate: 240,

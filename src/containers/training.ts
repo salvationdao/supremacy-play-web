@@ -164,7 +164,7 @@ export const TrainingContainer = createContainer(() => {
     const mechMove = useCallback(
         (cellX: number, cellY: number, warMachine: WarMachineState, currentTime: number, duration: number) => {
             if (!map || !warMachines) return
-            const wm = warMachines.find((w) => w.id === warMachine.id)
+            const wm = { ...warMachines.find((w) => w.id === warMachine.id) } as WarMachineState
             if (!wm) return
             const { x, y } = convertCellsToGameLocation(cellX, cellY, map?.Pixel_Left, map?.Pixel_Top)
             const rate = currentTime / duration

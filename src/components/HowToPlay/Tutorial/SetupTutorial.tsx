@@ -12,6 +12,7 @@ export const tourStyles: (PopoverStylesObj & StylesObj & MaskStylesObj & Partial
     popover: (base, state) => ({
         ...base,
         ...doArrow(state?.position, state?.verticalAlign, state?.horizontalAlign),
+        margin: "0 2rem",
         color: "#FFFFFF",
         backgroundColor: `${colors.navy}D9`,
         borderRadius: "5px",
