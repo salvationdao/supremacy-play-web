@@ -1,7 +1,9 @@
 import { Stack, Typography } from "@mui/material"
 import { useCallback } from "react"
 import { HangarBg, SvgBack } from "../../../../assets"
+import { useTheme } from "../../../../containers/theme"
 import { fonts, siteZIndex } from "../../../../theme/theme"
+import { ClipThing } from "../../../Common/ClipThing"
 import { FancyButton } from "../../../Common/FancyButton"
 
 export const BattleReplayDetails = ({
@@ -13,6 +15,8 @@ export const BattleReplayDetails = ({
     battleNumber: number
     setBattleNumber: React.Dispatch<React.SetStateAction<number>>
 }) => {
+    const theme = useTheme()
+
     const goBack = useCallback(() => {
         setBattleNumber(-1)
     }, [setBattleNumber])
@@ -55,7 +59,25 @@ export const BattleReplayDetails = ({
                     </Stack>
                 </FancyButton>
 
-                <Typography>{`TODO: get video for gid: <${gid}> and battle number: <${battleNumber}>`}</Typography>
+                <ClipThing
+                    clipSize="10px"
+                    border={{
+                        borderColor: theme.factionTheme.primary,
+                        borderThickness: ".3rem",
+                    }}
+                    corners={{
+                        topRight: true,
+                        bottomLeft: true,
+                        bottomRight: true,
+                    }}
+                    opacity={0.7}
+                    backgroundColor={theme.factionTheme.background}
+                    sx={{ height: "100%" }}
+                >
+                    <Stack sx={{ height: "100%" }}>
+                        <Typography>{`TODO: get video for gid: <${gid}> and battle number: <${battleNumber}>`}</Typography>
+                    </Stack>
+                </ClipThing>
             </Stack>
         </Stack>
     )

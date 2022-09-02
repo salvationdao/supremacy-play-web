@@ -48,8 +48,8 @@ export const BattlesReplays = () => {
 
     useEffect(() => {
         updateQuery({
-            gid: `${gid}`,
-            battleNumber: `${battleNumber}`,
+            gid: gid ? `${gid}` : "",
+            battleNumber: battleNumber ? `${battleNumber}` : "",
         })
     }, [gid, battleNumber, updateQuery])
 
