@@ -2,6 +2,7 @@ import { Battle, Faction, User, Vector2i } from "."
 
 export enum MechStatusEnum {
     Idle = "IDLE",
+    PendingQueue = "PENDING_QUEUE",
     Queue = "QUEUE",
     Battle = "BATTLE",
     Market = "MARKET",
@@ -61,7 +62,8 @@ export interface RepairSlot {
 
 export interface MechStatus {
     status: MechStatusEnum
-    can_deploy?: boolean
+    can_deploy: boolean
+    battle_eta_seconds: number | null
 }
 
 export interface Images {

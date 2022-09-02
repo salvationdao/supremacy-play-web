@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useCallback, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { SvgRepair } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction, useGameServerSubscriptionSecured } from "../../../../hooks/useGameServer"
@@ -64,6 +64,10 @@ export const MechGeneralStatus = ({
                 case MechStatusEnum.Idle:
                     text = "IDLE"
                     color = colors.green
+                    break
+                case MechStatusEnum.PendingQueue:
+                    text = "PENDING DEPLOY"
+                    color = colors.yellow
                     break
                 case MechStatusEnum.Queue:
                     text = "IN QUEUE"
@@ -142,9 +146,12 @@ export const MechGeneralStatus = ({
                         variant={smallVersion ? "caption" : "body1"}
                         sx={{ lineHeight: 1, color, textAlign: hideBox ? "start" : "center", fontFamily: fonts.nostromoBlack }}
                     >
-                        {textValue.current}
+                        {mechStatus?.status === MechStatusEnum.Queue && mechStatus.battle_eta_seconds != null ? (
+                            <BattleETA battleETASeconds={mechStatus.battle_eta_seconds} />
+                        ) : (
+                            textValue.current
+                        )}
                     </Typography>
-
                     <Stack
                         direction="row"
                         alignItems="center"
@@ -217,4 +224,25 @@ export const MechGeneralStatus = ({
             )}
         </>
     )
+}
+
+interface BattleETAProps {
+    battleETASeconds: number
+}
+
+const BattleETA = ({ battleETASeconds }: BattleETAProps) => {
+    const countdownRef = useRef<HTMLDivElement>()
+    const secondsLeftRef = useRef(battleETASeconds)
+
+    useEffect(() => {
+        const t = setInterval(() => {
+            if (!countdownRef.current) return
+            secondsLeftRef.current -= 10
+            countdownRef.current.innerText = secondsLeftRef.current < 60 ? "< 1 MINUTE" : `~ ${Math.round(secondsLeftRef.current / 60)} MINUTES`
+        }, 1000 * 10) // Every 10 seconds
+
+        return () => clearInterval(t)
+    }, [battleETASeconds])
+
+    return <Box ref={countdownRef}>{battleETASeconds < 60 ? "< 1 MINUTE" : `~ ${Math.round(battleETASeconds / 60)} MINUTES`}</Box>
 }

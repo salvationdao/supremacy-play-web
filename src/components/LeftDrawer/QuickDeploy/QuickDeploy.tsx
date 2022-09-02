@@ -119,7 +119,6 @@ const QuickDeployInner = () => {
             if (!resp) return
             setLoadError(undefined)
             setMechs(resp.mechs)
-            console.log(resp.mechs)
             setTotalItems(resp.total)
         } catch (e) {
             setLoadError(typeof e === "string" ? e : "Failed to get war machines.")
