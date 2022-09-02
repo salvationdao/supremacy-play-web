@@ -268,7 +268,7 @@ const SubmodelsHangarInner = () => {
                             width: "100%",
                             py: "1rem",
                             display: "grid",
-                            gridTemplateColumns: "repeat(auto-fill, minmax(30rem, 1fr))",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(25rem, 1fr))",
                             gap: "1.5rem",
                             alignItems: "center",
                             justifyContent: "center",

@@ -46,12 +46,8 @@ const SubmodelItemInner = ({ submodel }: SubmodelItemProps) => {
             >
                 <Stack spacing={"1.5rem"} justifyContent="center" sx={{ height: "100%", p: "1.5rem" }}>
                     {/* Image */}
-                    <Box sx={{ position: "relative", height: "20rem" }}>
-                        <MediaPreview
-                            sx={{ p: "1.5rem" }}
-                            imageUrl={submodel.images.image_url ?? submodel.images.avatar_url ?? ""}
-                            videoUrls={[submodel.images.card_animation_url, submodel.images.animation_url]}
-                        />
+                    <Box sx={{ position: "relative", height: "23rem" }}>
+                        <MediaPreview sx={{ p: "1.5rem" }} imageUrl={submodel.images.image_url ?? submodel.images.avatar_url ?? ""} />
                     </Box>
 
                     <Stack direction="row" alignItems="flex-start">
@@ -73,18 +69,21 @@ const SubmodelItemInner = ({ submodel }: SubmodelItemProps) => {
                                     {rarityDeets.label}
                                 </Typography>
                                 <SvgSkin fill={rarityDeets.color} size="1.7rem" />
+
+                                {submodel.level && (
+                                    <Typography
+                                        variant="body2"
+                                        sx={{ ml: "auto !important", color: theme.factionTheme.secondary, fontFamily: fonts.nostromoBlack }}
+                                    >
+                                        Level: {submodel.level}
+                                    </Typography>
+                                )}
                             </Stack>
 
                             <Typography variant="h6" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
                                 {submodel.label}
                             </Typography>
                         </Stack>
-
-                        {submodel.level && (
-                            <Typography variant="body2" sx={{ color: theme.factionTheme.secondary, fontFamily: fonts.nostromoBlack }}>
-                                Level: {submodel.level}
-                            </Typography>
-                        )}
                     </Stack>
                 </Stack>
             </ClipThing>
