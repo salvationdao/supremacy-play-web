@@ -6,16 +6,27 @@ import { useGameServerSubscription } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { dropEffect, explosionEffect, fadeEffect, landmineEffect, rippleEffect } from "../../../../theme/keyframes"
 import { fonts } from "../../../../theme/theme"
-import { DisplayedAbility, LocationSelectType, MechDisplayEffectType, MiniMapDisplayEffectType } from "../../../../types"
+import { DisplayedAbility, LocationSelectType, Map as GameMap, MechDisplayEffectType, MiniMapDisplayEffectType } from "../../../../types"
 import { MapIcon } from "./Common/MapIcon"
 import { decode } from "base64-arraybuffer"
+import { HiveHexes } from "./HiveHexes"
 
 export enum MapEventType {
+    // Airstrike Explosions - The locations of airstrike missile impacts.
     AirstrikeExplosions,
+    // Landmine Activations - The id, location and faction of a mine that got activated.
     LandmineActivations,
+    // Landmine Explosions - The ids of mines that exploded.
     LandmineExplosions,
-    HiveHexUpdate,
+    // Hive State - The full state of The Hive map.
+    HiveState,
+    // Hive Hex Raised - The ids of the hexes that have recently raised.
+    HiveHexRaised,
+    // Hive Hex Lowered - The ids of the hexes that have recently lowered.
+    HiveHexLowered,
 }
+
+const TheHiveMapID: string = "bf84dd8e-e124-4c77-99a1-f515a81752b1"
 
 interface PendingMapEvent {
     ability: DisplayedAbility
@@ -23,12 +34,18 @@ interface PendingMapEvent {
     replace?: boolean // if set, will replace existing ability
     remove_after?: number
 }
+interface PendingHiveStateChange {
+    id: number
+    raised: boolean
+    delay: number
+}
 
-export const MiniMapAbilitiesDisplay = () => {
+export const MiniMapAbilitiesDisplay = ({ map }: { map: GameMap }) => {
     const { currentArenaID } = useArena()
     const [abilityList, setAbilityList] = useState<DisplayedAbility[]>([])
     const [mapEvents, setMapEvents] = useState<DisplayedAbility[]>([])
     const timeouts = useRef<Map<string, NodeJS.Timeout>>(new Map<string, NodeJS.Timeout>())
+    const [hiveState, setHiveState] = useState<boolean[]>([])
 
     useGameServerSubscription<DisplayedAbility[]>(
         {
@@ -62,6 +79,7 @@ export const MiniMapAbilitiesDisplay = () => {
 
             const newMapEvents: DisplayedAbility[] = [] // events to be added
             const pendingMapEvents: PendingMapEvent[] = [] // events to be added after their individual timeout
+            const pendingHiveState: PendingHiveStateChange[] = []
 
             do {
                 const count = dv.getUint8(offset)
@@ -219,6 +237,37 @@ export const MiniMapAbilitiesDisplay = () => {
                                 }
                                 pendingMapEvents.push({ ability, delay: timeOffset, replace: true, remove_after: 4000 })
                             }
+                            break
+                        }
+                        case MapEventType.HiveState: {
+                            // Hive state is 589 booleans packed into 74 bytes (589 / 8bits)
+                            let newHiveState: boolean[] = []
+                            for (let b = 0; b < 74; b++) {
+                                let byte = dv.getUint8(offset)
+                                offset++
+                                for (let i = 0; i < 8; i++) {
+                                    newHiveState.push((byte & (1 << i)) != 0)
+                                    if (newHiveState.length >= 589) break
+                                }
+                            }
+                            setHiveState(newHiveState)
+                            break
+                        }
+                        case MapEventType.HiveHexRaised: {
+                            const changeCount = dv.getUint16(offset)
+                            offset += 2
+
+                            for (let i = 0; i < changeCount; i++) {
+                                const hexID = dv.getUint16(offset)
+                                offset += 2
+                                let timeOffset = dv.getUint8(offset)
+                                offset++
+
+                                timeOffset = 250 - timeOffset
+
+                                pendingHiveState.push({ id: hexID, raised: true, delay: timeOffset })
+                            }
+                            break
                         }
                     }
                 }
@@ -227,36 +276,56 @@ export const MiniMapAbilitiesDisplay = () => {
             // Add new map events
             setMapEvents((events) => [...events, ...newMapEvents])
 
-            // Timeouts (map events come with time offsets, so they can show on the map in the same order as they occurred in-game)
+            // Delayed map events (map events come with time offsets, so they can show on the map in the same order as they occurred in-game)
             for (const pendingMapEvent of pendingMapEvents) {
-                const t = setTimeout(() => {
-                    if (pendingMapEvent.replace) {
-                        // Replace existing ability
-                        setMapEvents((events) =>
-                            events.map((item) => {
-                                if (item.offering_id === pendingMapEvent.ability.offering_id) {
-                                    return { ...pendingMapEvent.ability, location: item.location }
-                                }
-                                return item
-                            }),
-                        )
-                    } else {
-                        // Add ability
-                        setMapEvents((events) => [...events, pendingMapEvent.ability])
-                    }
+                const t = setTimeout(
+                    (pendingMapEvent: PendingMapEvent) => {
+                        if (pendingMapEvent.replace) {
+                            // Replace existing ability
+                            setMapEvents((events) =>
+                                events.map((item) => {
+                                    if (item.offering_id === pendingMapEvent.ability.offering_id) {
+                                        return { ...pendingMapEvent.ability, location: item.location }
+                                    }
+                                    return item
+                                }),
+                            )
+                        } else {
+                            // Add ability
+                            setMapEvents((events) => [...events, pendingMapEvent.ability])
+                        }
 
-                    if (pendingMapEvent.remove_after) {
-                        // Remove after delay
-                        const rt = setTimeout(() => {
-                            setMapEvents((events) => events.filter((item) => item.offering_id !== pendingMapEvent.ability.offering_id))
+                        if (pendingMapEvent.remove_after) {
+                            // Remove after delay
+                            const rt = setTimeout(() => {
+                                setMapEvents((events) => events.filter((item) => item.offering_id !== pendingMapEvent.ability.offering_id))
+                                timeouts.current.delete(pendingMapEvent.ability.offering_id)
+                            }, pendingMapEvent.remove_after)
+                            timeouts.current.set(pendingMapEvent.ability.offering_id, rt)
+                        } else {
                             timeouts.current.delete(pendingMapEvent.ability.offering_id)
-                        }, pendingMapEvent.remove_after)
-                        timeouts.current.set(pendingMapEvent.ability.offering_id, rt)
-                    } else {
-                        timeouts.current.delete(pendingMapEvent.ability.offering_id)
-                    }
-                }, pendingMapEvent.delay)
+                        }
+                    },
+                    pendingMapEvent.delay,
+                    pendingMapEvent,
+                )
                 timeouts.current.set(pendingMapEvent.ability.offering_id, t)
+            }
+
+            // Delayed hive hex update
+            for (let pendingChange of pendingHiveState) {
+                const hiveTimeoutID = `hive-hex-${pendingChange.id}`
+                const t = setTimeout(
+                    (id: number, raised: boolean, hiveTimeoutID: string) => {
+                        setHiveState((prev) => ({ ...prev, [id]: raised }))
+                        timeouts.current.delete(hiveTimeoutID)
+                    },
+                    pendingChange.delay,
+                    pendingChange.id,
+                    pendingChange.raised,
+                    hiveTimeoutID,
+                )
+                timeouts.current.set(hiveTimeoutID, t)
             }
         },
     )
@@ -275,6 +344,8 @@ export const MiniMapAbilitiesDisplay = () => {
                 abilityList.map((displayAbility) => <MiniMapAbilityDisplay key={displayAbility.offering_id} displayAbility={displayAbility} />)}
             {mapEvents.length > 0 &&
                 mapEvents.map((displayAbility) => <MiniMapAbilityDisplay key={displayAbility.offering_id} displayAbility={displayAbility} />)}
+
+            {map.ID === TheHiveMapID && <HiveHexes map={map} state={hiveState} />}
         </>
     )
 }
