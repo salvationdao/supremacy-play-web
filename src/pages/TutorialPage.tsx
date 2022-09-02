@@ -61,8 +61,6 @@ const TutorialPageInner = () => {
                         <Box id="game-ui-container" sx={{ position: "relative", flex: 1 }}>
                             <MiniMapBT />
                             {(trainingStage in MechAbilityStages || trainingStage === TrainingLobby.MechAbility) && <WarMachineStatsBT />}
-                            {/* <Congratulations ability={TrainingAbility.Battle} /> */}
-
                             <BattleTraining />
                         </Box>
                     </Stack>
