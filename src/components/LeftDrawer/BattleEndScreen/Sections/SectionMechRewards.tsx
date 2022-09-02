@@ -76,11 +76,13 @@ export const SectionMechRewards = ({ battleEndDetail }: { battleEndDetail: Battl
                                         <Typography sx={{ lineHeight: 1 }}>{supFormatterNoFixed(wm.rewarded_sups, 2)}</Typography>
                                     </Stack>
 
-                                    <Stack direction="row" alignItems="center">
-                                        <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold", color: colors.offWhite }}>BONUS:&nbsp;</Typography>
-                                        <SvgSupToken fill={colors.yellow} size="1.8rem" />
-                                        <Typography sx={{ lineHeight: 1 }}>{supFormatterNoFixed(wm.rewarded_sups_bonus, 2)}</Typography>
-                                    </Stack>
+                                    {wm.rewarded_sups_bonus && (
+                                        <Stack direction="row" alignItems="center">
+                                            <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold", color: colors.offWhite }}>BONUS:&nbsp;</Typography>
+                                            <SvgSupToken fill={colors.yellow} size="1.8rem" />
+                                            <Typography sx={{ lineHeight: 1 }}>{supFormatterNoFixed(wm.rewarded_sups_bonus, 2)}</Typography>
+                                        </Stack>
+                                    )}
                                 </Stack>
                             </Stack>
                         )
