@@ -115,8 +115,6 @@ const MiniMapInner = ({ map }: { map: Map }) => {
         }
     }, [map, width, isStreamBigDisplay, isEnlarged, height, remToPxRatio])
 
-    console.log(sizes)
-
     return useMemo(() => {
         return (
             <Stack

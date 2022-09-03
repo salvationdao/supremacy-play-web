@@ -35,7 +35,7 @@ export const NavLinks = () => {
     )
 }
 
-const NavLink = ({ isActive, label, to }: { isActive: boolean; label: string; to: string }) => {
+export const NavLink = ({ isActive, label, to }: { isActive: boolean; label: string; to: string }) => {
     const theme = useTheme()
 
     const primaryColor = theme.factionTheme.primary

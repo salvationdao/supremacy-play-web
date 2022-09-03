@@ -2,6 +2,7 @@ import { Box, Fade, Stack, Typography, useMediaQuery } from "@mui/material"
 import { useCallback, useState } from "react"
 import { HangarBg } from "../assets"
 import { ClipThing, FancyButton } from "../components"
+import { FactionSelect } from "../components/Tutorial/Faction/FactionSelect"
 import { useGlobalNotifications, useSupremacy } from "../containers"
 import { useGameServerCommandsUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
@@ -13,6 +14,8 @@ export const EnlistPage = () => {
     const below1200 = useMediaQuery("(max-width:1200px)")
 
     if (Object.keys(factionsAll).length < 3) return null
+
+    return <FactionSelect />
 
     return (
         <Stack
@@ -55,9 +58,9 @@ const renderLastDescription = (faction: Faction) => {
 }
 
 const ExtendedFactionEnlist = ({ faction }: { faction: Faction }) => {
+    const below1250 = useMediaQuery("(max-width:1250px)")
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
-    const below1250 = useMediaQuery("(max-width:1250px)")
 
     const enlistFaction = useCallback(async () => {
         try {

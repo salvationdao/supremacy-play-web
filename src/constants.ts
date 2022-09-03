@@ -21,8 +21,10 @@ let PASSPORT_WEB = process.env.REACT_APP_PASSPORT_WEB || "https://passport.xsynd
 let PASSPORT_SERVER_HOST = process.env.REACT_APP_PASSPORT_SERVER_HOST || "passport.supremacygame.io"
 let PASSPORT_SERVER_HOST_IMAGES = process.env.REACT_APP_SERVER_HOST_IMAGES || "https://api.supremacygame.io"
 export const PASSPORT_SIGNUP = DEV_ONLY
-    ? "https://passport.xsyndev.io/external/login?signup=true&tenant=supremacy&redirectURL=https%3A%2F%2Fplay.supremacygame.io"
-    : "/signup"
+    ? "https://passport.xsyndev.io/external/login?signup=true&tenant=supremacy&redirectURL=https%3A%2F%2Fplay.supremacygame.io/?training=false"
+    : PROD_ONLY
+    ? "https://passport.xsyn.io/external/login?signup=true&tenant=supremacy&redirectURL=https%3A%2F%2Fplay.supremacy.game/?training=false"
+    : "https://staging.xsyn.dev/external/login?signup=true&tenant=supremacy&redirectURL=https%3A%2F%2Fsupremacygame.dev/?training=false"
 
 export const BATTLE_ARENA_OPEN = STAGING_OR_DEV_ONLY
 

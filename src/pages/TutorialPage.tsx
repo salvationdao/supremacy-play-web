@@ -1,8 +1,9 @@
 import { Box, Button, Modal, Stack, Typography } from "@mui/material"
 import { useTour } from "@reactour/tour"
 import { useEffect, useMemo, useState } from "react"
+import { Helmet } from "react-helmet"
 import { BattleTrainingBG } from "../assets"
-import { ClipThing, LeftDrawerBT, MiniMapBT, TrainingBattleAbility, TrainingMechAbility, TrainingPlayerAbility } from "../components"
+import { ClipThing, FancyButton, LeftDrawerBT, MiniMapBT, TrainingBattleAbility, TrainingMechAbility, TrainingPlayerAbility } from "../components"
 import { FactionIntro } from "../components/Tutorial/Faction/FactionIntro"
 import { Intro } from "../components/Tutorial/Intro"
 import { WarMachineStatsBT } from "../components/Tutorial/WarMachine/WarMachineStatsBT"
@@ -17,9 +18,15 @@ import { PlayerAbilityStages } from "../types/training"
 const searchParams = new URLSearchParams(window.location.search)
 
 export const TutorialPage = () => (
-    <TrainingProvider>
-        <TutorialPageInner />
-    </TrainingProvider>
+    <>
+        <Helmet>
+            <title>Battle Training - Supremacy Battle Arena</title>
+            <link rel="canonical" href="/training" />
+        </Helmet>
+        <TrainingProvider>
+            <TutorialPageInner />
+        </TrainingProvider>
+    </>
 )
 const TutorialPageInner = () => {
     const { user } = useAuth()
@@ -58,14 +65,33 @@ const TutorialPageInner = () => {
                             {(trainingStage in MechAbilityStages || trainingStage === TrainingLobby.MechAbility) && <WarMachineStatsBT />}
                             <Modal
                                 open={lobbyStage === TrainingLobby.FactionIntro}
-                                onClose={() => setLobbyStage(TrainingLobby.All)}
                                 BackdropProps={{
                                     style: {
                                         background: "rgba(0,0,0,0.7)",
                                     },
                                 }}
+                                onBackdropClick={() => {
+                                    setLobbyStage(TrainingLobby.All)
+                                }}
                             >
-                                <FactionIntro />
+                                <Stack gap="2rem">
+                                    <FactionIntro />
+                                    <FancyButton
+                                        onClick={() => setLobbyStage(TrainingLobby.All)}
+                                        clipThingsProps={{
+                                            clipSize: "10px",
+                                            backgroundColor: colors.neonBlue,
+                                            opacity: 1,
+                                            border: { borderColor: colors.neonBlue, borderThickness: "1px" },
+                                            sx: { position: "absolute", bottom: "5%", left: "50%", transform: "translate(-50%, -50%)", gap: "5px" },
+                                        }}
+                                        sx={{ px: "2em", py: 0, color: colors.darkestNeonBlue }}
+                                    >
+                                        <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold, color: colors.darkestNeonBlue, fontSize: "3rem" }}>
+                                            Enter Battle Training
+                                        </Typography>
+                                    </FancyButton>
+                                </Stack>
                             </Modal>
                             <BattleTraining />
                         </Box>
@@ -78,7 +104,10 @@ const TutorialPageInner = () => {
     }, [lobbyStage, trainingStage])
 
     return (
-        <Box key={lobbyStage} sx={{ width: "100%", height: "100%", display: "flex", animation: `${opacityEffect} 1s`, position: "relative" }}>
+        <Box
+            key={trainingStage === TrainingLobby.All ? lobbyStage : "training"}
+            sx={{ width: "100%", height: "100%", display: "flex", animation: `${opacityEffect} 1s`, position: "relative" }}
+        >
             {component}
         </Box>
     )
@@ -170,6 +199,7 @@ const BattleTraining = () => {
                                 transition: "all .5s",
                                 opacity: isOpen ? 0 : 1,
                                 position: "relative",
+                                filter: "drop-shadow(5px 10px 3px rgba(0,0,0,0.5))",
                             }}
                             onClick={() => {
                                 setTrainingStage(t.stage)
@@ -179,14 +209,14 @@ const BattleTraining = () => {
                                 <Typography
                                     component="span"
                                     sx={{
-                                        fontSize: "2rem",
+                                        fontSize: "3rem",
                                         fontFamily: fonts.nostromoBlack,
                                         position: "absolute",
-                                        top: smallScreen ? "40%" : "50%",
+                                        top: "50%",
                                         left: "50%",
-                                        transform: "translate(-50%,-50%)",
+                                        transform: smallScreen ? "translate(-50%,-50%)" : "translate(-50%,calc(-50% - 75px))",
                                         background: `${colors.darkNavy}99`,
-                                        p: "1em",
+                                        p: "1rem 2rem",
                                         width: "calc(100% - 2rem)",
                                         zIndex: 10,
                                     }}
@@ -195,7 +225,6 @@ const BattleTraining = () => {
                                 </Typography>
                             )}
                             <ClipThing
-                                border={{ borderThickness: "5px", isFancy: true, borderColor: colors.black2 }}
                                 sx={{
                                     width: "100%",
                                     height: "100%",
@@ -215,12 +244,13 @@ const BattleTraining = () => {
                                         controlsList="nodownload"
                                         style={{
                                             width: "100%",
-                                            height: smallScreen ? "60%" : "100%",
+                                            height: "100%",
                                             objectFit: "cover",
                                         }}
                                     />
                                     <Stack
                                         sx={{
+                                            width: "100%",
                                             position: "absolute",
                                             bottom: 0,
                                             background: "rgba(0,0,0,0.7)",
@@ -231,7 +261,16 @@ const BattleTraining = () => {
                                             height: "max-content",
                                         }}
                                     >
-                                        <Typography variant="h3" sx={{ fontFamily: fonts.nostromoBlack, fontSize: "3rem" }}>
+                                        <Typography
+                                            variant="h3"
+                                            sx={{
+                                                fontFamily: fonts.nostromoBlack,
+                                                fontSize: "3rem",
+                                                width: "100%",
+                                                borderBottom: `1px solid ${colors.darkGrey}99`,
+                                                pb: "1rem",
+                                            }}
+                                        >
                                             {t.title}
                                         </Typography>
                                         <Typography sx={{ fontFamily: fonts.shareTech, textTransform: "none", fontSize: "2rem" }}>{t.description}</Typography>

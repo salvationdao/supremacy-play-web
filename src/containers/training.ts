@@ -51,7 +51,7 @@ export const TrainingContainer = createContainer(() => {
     const [tutorialRef, setTutorialRef] = useState<React.MutableRefObject<HTMLDivElement | null> | undefined>(undefined)
     const [updater, setUpdater] = useState<unknown[]>([])
     const [completed, setCompleted] = useState({
-        [CompletedTraining.BattleAbility]: true,
+        [CompletedTraining.BattleAbility]: false,
         [CompletedTraining.MechAbility]: false,
         [CompletedTraining.PlayerAbility]: false,
     })

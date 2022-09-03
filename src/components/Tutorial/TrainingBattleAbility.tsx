@@ -233,7 +233,7 @@ const context: Context[] = [
         videoSource: VIDEO_SOURCE_BA.airstrike,
     },
     {
-        text: "Defeat the opposition and destroy Red Mountain Offworld Corporation! Click the guided points (1 and 2) by order, to deploy the battle ability!",
+        text: "Defeat the opposition! You need to select two points to deploy an airstrike, click the guided points by order, to deploy the battle ability!",
         showNext: false,
         state: BattleAbilityStages.LocationActionBA,
         videoSource: VIDEO_SOURCE_BA.airstrike,

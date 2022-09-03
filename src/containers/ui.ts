@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react"
+import { useLocation } from "react-router-dom"
 import { createContainer } from "unstated-next"
 import { useToggle } from "../hooks"
 import { LEFT_DRAWER_ARRAY, RIGHT_DRAWER_ARRAY } from "../routes"
@@ -7,6 +8,7 @@ import { useMobile } from "./mobile"
 // Control overlays, side drawers etc
 const uiContainer = createContainer(() => {
     const isTraining = window.location.pathname.includes("/training")
+    const { pathname } = useLocation()
     const { isMobile } = useMobile()
     const [isNavLinksDrawerOpen, toggleIsNavLinksDrawerOpen] = useToggle(false)
     const [leftDrawerActiveTabID, setLeftDrawerActiveTabID] = useState(localStorage.getItem("leftDrawerActiveTabID") || LEFT_DRAWER_ARRAY[0]?.id || "")
@@ -29,6 +31,12 @@ const uiContainer = createContainer(() => {
     useEffect(() => {
         localStorage.setItem("rightDrawerActiveTabID", rightDrawerActiveTabID)
     }, [rightDrawerActiveTabID])
+
+    useEffect(() => {
+        if (pathname.includes("/training")) {
+            setRightDrawerActiveTabID("")
+        }
+    }, [pathname])
 
     useEffect(() => {
         if (isMobile) {
