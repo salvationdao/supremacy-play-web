@@ -176,7 +176,7 @@ const FactionBox = ({ faction }: { faction: Faction }) => {
                 <Typography
                     sx={{
                         textAlign: "left",
-                        fontSize: "2.2rem",
+                        fontSize: "2rem",
                         position: "relative",
                         zIndex: 1,
                         maxWidth: "480px",
@@ -185,7 +185,7 @@ const FactionBox = ({ faction }: { faction: Faction }) => {
                 >
                     {description}
                     <br />
-                    <a href={wiki} target="_blank" rel="noreferrer" style={{ fontSize: "2rem" }}>
+                    <a href={wiki} target="_blank" rel="noreferrer" style={{ fontSize: "1.8rem" }}>
                         Learn more <ArrowForward />
                     </a>
                 </Typography>

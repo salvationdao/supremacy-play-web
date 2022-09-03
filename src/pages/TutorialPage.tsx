@@ -39,7 +39,7 @@ const TutorialPageInner = () => {
     }, [triggerReset])
 
     useEffect(() => {
-        if (user.training_completed || searchParams.get("skip") === "true") {
+        if (searchParams.get("skip") === "true") {
             setLobbyStage(TrainingLobby.FactionIntro)
         }
         setTutorialRef(undefined)

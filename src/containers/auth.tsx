@@ -18,7 +18,6 @@ export const FallbackUser: User = {
     gid: 0,
     rank: "NEW_RECRUIT",
     features: [],
-    training_completed: false,
 }
 
 export const FallbackFaction: Faction = {
