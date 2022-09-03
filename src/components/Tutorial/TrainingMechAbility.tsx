@@ -313,7 +313,7 @@ export const TrainingMechAbility = () => {
 
 const context: Context[] = [
     {
-        text: "When you're a mech owner, you are able to deploy mech abilities. Click the skills button to view the abilities.",
+        text: "When your mech is in battle, you are able to deploy mech abilities. Click the skills button to view the abilities.",
         showNext: false,
         state: MechAbilityStages.ExplainMA,
         videoSource: VIDEO_SOURCE_MA.heal,
@@ -331,13 +331,13 @@ const context: Context[] = [
         videoSource: VIDEO_SOURCE_MA.move,
     },
     {
-        text: "Aim mech command to get closer to the two Zaibatsu mechs. There is no limit to how many times you use mech command.",
+        text: "Aim mech command to get closer to the two enemy mechs. There is no limit to how many times you use mech command.",
         showNext: false,
         state: MechAbilityStages.MoveMA,
         videoSource: VIDEO_SOURCE_MA.move,
     },
     {
-        text: "Your mech is in range to use Overcharge. Use Overcharge and defeat Zaibatsu!",
+        text: "Your mech is in range to use Overcharge. Use Overcharge and defeat the enemy!",
         showNext: false,
         state: MechAbilityStages.OverchargeMA,
         videoSource: VIDEO_SOURCE_MA.overcharge,

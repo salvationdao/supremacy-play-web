@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { TRAINING_ASSETS } from "../../constants"
 import { useAuth, useTraining } from "../../containers"
-import { BribeStage, Map } from "../../types"
+import { BribeStage, Map, WarMachineState } from "../../types"
 import { Context, PlayerAbilityStages } from "../../types/training"
 import { TrainingAbility } from "./Congratulations"
 import { TrainingBribeStageResponse } from "./TrainingBattleAbility"
@@ -17,13 +17,30 @@ export const VIDEO_SOURCE_PA_LIST = Object.values(VIDEO_SOURCE_PA)
 
 export const TrainingPlayerAbility = () => {
     const { userID } = useAuth()
-    const { tutorialRef, setTrainingStage, trainingStage, setMap, setWarMachines, toggleIsMapOpen, setBribeStage, setWinner, setIsTargeting, setUpdater } =
-        useTraining()
+    const {
+        tutorialRef,
+        healthChange,
+        shieldChange,
+        setTrainingStage,
+        trainingStage,
+        setMap,
+        setWarMachines,
+        toggleIsMapOpen,
+        setBribeStage,
+        setWinner,
+        setIsTargeting,
+        setUpdater,
+    } = useTraining()
     const [videoSource, setVideoSource] = useState(VIDEO_SOURCE_PA.intro)
     const [stage, setStage] = useState<Context | null>(null)
     const [popoverOpen, setPopoverOpen] = useState(true)
     const [end, setEnd] = useState(false)
     const videoRef = useRef<HTMLVideoElement>(null)
+
+    // Tutorial mech state
+    const tutorialMechs = useRef<{ [key: string]: WarMachineState | undefined }>({
+        zb1: trainingMechs(userID).find((w) => w.id === MechIDs.ZB1),
+    })
 
     useEffect(() => {
         switch (trainingStage) {
@@ -97,6 +114,17 @@ export const TrainingPlayerAbility = () => {
                 onPlay={() => {
                     if (videoSource !== VIDEO_SOURCE_PA.intro && popoverOpen) {
                         videoRef.current?.pause()
+                    }
+                }}
+                onTimeUpdate={(e) => {
+                    const { currentTime } = e.currentTarget
+                    const { zb1 } = tutorialMechs.current
+                    if (!zb1) return
+
+                    if (videoSource === VIDEO_SOURCE_PA.interim) {
+                        healthChange(0, zb1, currentTime, 1.5)
+                        shieldChange(0, zb1, currentTime, 1.5)
+                        return
                     }
                 }}
                 onEnded={() => {
