@@ -215,7 +215,7 @@ export const MysteryCratesMarket = () => {
                             py: "1rem",
                             display: "grid",
                             gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(30rem, 1fr))" : "100%",
-                            gap: "1.3rem",
+                            gap: "1.5rem",
                             alignItems: "center",
                             justifyContent: "center",
                             overflow: "visible",
@@ -338,15 +338,13 @@ export const MysteryCratesMarket = () => {
                                     direction: "ltr",
 
                                     "::-webkit-scrollbar": {
-                                        width: ".4rem",
+                                        width: "1rem",
                                     },
                                     "::-webkit-scrollbar-track": {
                                         background: "#FFFFFF15",
-                                        borderRadius: 3,
                                     },
                                     "::-webkit-scrollbar-thumb": {
                                         background: theme.factionTheme.primary,
-                                        borderRadius: 3,
                                     },
                                 }}
                             >

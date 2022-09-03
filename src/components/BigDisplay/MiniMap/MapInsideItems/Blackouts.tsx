@@ -32,7 +32,10 @@ export const Blackouts = () => {
             key: GameServerKeys.MinimapUpdatesSubscribe,
         },
         (payload) => {
-            if (!payload) return
+            if (!payload) {
+                setPayload([])
+                return
+            }
             setPayload(payload)
         },
     )

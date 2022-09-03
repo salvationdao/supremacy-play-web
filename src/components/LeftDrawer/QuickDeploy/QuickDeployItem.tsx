@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useCallback, useMemo, useState } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 import { FancyButton } from "../.."
 import { useGlobalNotifications } from "../../../containers"
 import { getRarityDeets } from "../../../helpers"
@@ -23,11 +23,20 @@ interface QuickDeployItemProps {
     }>
 }
 
-export const QuickDeployItem = ({ isSelected, toggleIsSelected, mech, childrenMechStatus }: QuickDeployItemProps) => {
+const propsAreEqual = (prevProps: QuickDeployItemProps, nextProps: QuickDeployItemProps) => {
+    return (
+        prevProps.isSelected === nextProps.isSelected &&
+        prevProps.mech.id === nextProps.mech.id &&
+        prevProps.queueFeed?.queue_cost === nextProps.queueFeed?.queue_cost &&
+        prevProps.queueFeed?.queue_length === nextProps.queueFeed?.queue_length
+    )
+}
+
+export const QuickDeployItem = React.memo(function QuickDeployItem({ isSelected, toggleIsSelected, mech, childrenMechStatus }: QuickDeployItemProps) {
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
-    const rarityDeets = useMemo(() => getRarityDeets(mech.tier || mechDetails?.tier || ""), [mech, mechDetails])
+    const rarityDeets = useMemo(() => getRarityDeets(mechDetails?.tier || mech.tier || ""), [mech, mechDetails])
     const [mechStatus, setMechStatus] = useState<MechStatus>()
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string>()
@@ -187,4 +196,4 @@ export const QuickDeployItem = ({ isSelected, toggleIsSelected, mech, childrenMe
             </Stack>
         </Stack>
     )
-}
+}, propsAreEqual)

@@ -11,7 +11,7 @@ export const MechThumbnail = ({ mech, mechDetails, smallSize }: { mech: MechBasi
     const primaryColor = theme.factionTheme.primary
     const rarityDeets = useMemo(() => getRarityDeets(mech.tier || mechDetails?.tier || ""), [mech, mechDetails])
     const skin = mechDetails ? mechDetails.chassis_skin || mechDetails.default_chassis_skin : undefined
-    const imageUrl = skin?.avatar_url || skin?.image_url || mech.avatar_url || mech.image_url
+    const imageUrl = skin?.avatar_url || skin?.image_url || mechDetails?.avatar_url || mechDetails?.image_url || mech.avatar_url || mech.image_url
 
     return (
         <ClipThing

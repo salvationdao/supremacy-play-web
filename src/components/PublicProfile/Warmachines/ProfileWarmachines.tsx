@@ -140,7 +140,7 @@ export const ProfileWarmachines = ({ playerID, primaryColour, secondaryColor, ba
                             py: "1rem",
                             display: "grid",
                             gridTemplateColumns: "repeat(auto-fill, minmax(30rem, 1fr))",
-                            gap: "1.3rem",
+                            gap: "1.5rem",
                             alignItems: "center",
                             justifyContent: "center",
                             overflow: "visible",
@@ -234,15 +234,13 @@ export const ProfileWarmachines = ({ playerID, primaryColour, secondaryColor, ba
                                         direction: "ltr",
 
                                         "::-webkit-scrollbar": {
-                                            width: ".4rem",
+                                            width: "1rem",
                                         },
                                         "::-webkit-scrollbar-track": {
                                             background: "#FFFFFF15",
-                                            borderRadius: 3,
                                         },
                                         "::-webkit-scrollbar-thumb": {
                                             background: primaryColour,
-                                            borderRadius: 3,
                                         },
                                     }}
                                 >

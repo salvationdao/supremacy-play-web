@@ -17,7 +17,7 @@ export const LeftDrawer = () => {
     let activeRouteID = ""
     if (match) {
         const r = ROUTES_ARRAY.find((r) => r.path === match.path)
-        activeRouteID = r?.id || ""
+        activeRouteID = r?.matchNavLinkID || ""
     }
 
     // Hide the drawer if on mobile OR none of the tabs are visible on the page
@@ -52,15 +52,7 @@ export const LeftDrawer = () => {
                     if (isActive || r.mountAllTime) {
                         return (
                             <Fade key={r.id} in>
-                                <Box
-                                    sx={{
-                                        height: isActive ? "100%" : 0,
-                                        visibility: isActive ? "visible" : "hidden",
-                                        pointerEvents: isActive ? "all" : "none",
-                                    }}
-                                >
-                                    {r.Component && <r.Component />}
-                                </Box>
+                                <Box sx={{ display: isActive ? "block" : "none", height: "100%" }}>{r.Component && <r.Component />}</Box>
                             </Fade>
                         )
                     }

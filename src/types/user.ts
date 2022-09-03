@@ -1,3 +1,5 @@
+import { BlueprintPlayerAbility } from "./game"
+
 export interface UserFromPassport {
     id: string
     avatar_id?: string
@@ -112,10 +114,10 @@ export enum FeatureName {
 
 export enum SystemMessageDataType {
     MechQueue = "MECH_QUEUE",
+    MechBattleBegin = "MECH_BATTLE_BEGIN",
     MechBattleComplete = "MECH_BATTLE_COMPLETE",
     Global = "GLOBAL",
     Faction = "FACTION",
-    MechOwnerBattleReward = "MECH_OWNER_BATTLE_REWARD",
     PlayerAbilityRefunded = "PLAYER_ABILITY_REFUNDED",
 }
 
@@ -132,19 +134,35 @@ export interface SystemMessage {
     sender: User
 }
 
-export interface SystemMessageDataMechBattleComplete {
+export interface SystemMessageMechStruct {
     mech_id: string
-    faction_won: boolean
-    briefs: MechBattleBrief[]
+    name: string
+    faction_id: string
+    image_url: string
+    tier: string
+    // For battle begin
+    total_blocks?: number
+    damaged_blocks?: number
+    // For battle complete
+    kills?: KillInfo[]
+    killed?: KillInfo | null
 }
 
-export interface MechBattleBrief {
-    mech_id: string
-    faction_id: string
-    kills: number
-    killed: Date | null
-    label: string
+export interface SystemMessageDataMechBattleBegin {
+    player_id: string
+    mechs: SystemMessageMechStruct[]
+}
+
+export interface SystemMessageDataMechBattleComplete {
+    rewarded_sups: string
+    rewarded_sups_bonus: string
+    rewarded_player_ability?: BlueprintPlayerAbility
+    mech_battle_briefs: SystemMessageMechStruct[]
+}
+
+export interface KillInfo {
     name: string
+    faction_id: string
 }
 
 export enum QuestKey {

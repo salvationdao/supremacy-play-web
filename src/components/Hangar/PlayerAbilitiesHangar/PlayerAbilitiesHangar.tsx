@@ -109,9 +109,9 @@ export const PlayerAbilitiesHangar = () => {
                             overflow: "visible",
                             display: "grid",
                             width: "100%",
-                            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(30rem, 1fr))",
                             gridTemplateRows: "repeat(1, min-content)",
-                            gap: "3rem",
+                            gap: "1.5rem",
                             alignItems: "stretch",
                             justifyContent: "center",
                             py: "1rem",
@@ -229,28 +229,25 @@ export const PlayerAbilitiesHangar = () => {
                         toggleIsFiltersExpanded={toggleIsFiltersExpanded}
                     />
 
-                    <Stack sx={{ px: "2rem", flex: 1 }}>
+                    <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
                         <Box
                             sx={{
-                                flex: 1,
                                 ml: "1.9rem",
-                                mr: ".5rem",
-                                pr: "1.4rem",
+                                pr: "1.9rem",
                                 my: "1rem",
+                                flex: 1,
                                 overflowY: "auto",
                                 overflowX: "hidden",
                                 direction: "ltr",
 
                                 "::-webkit-scrollbar": {
-                                    width: ".4rem",
+                                    width: "1rem",
                                 },
                                 "::-webkit-scrollbar-track": {
                                     background: "#FFFFFF15",
-                                    borderRadius: 3,
                                 },
                                 "::-webkit-scrollbar-thumb": {
                                     background: theme.factionTheme.primary,
-                                    borderRadius: 3,
                                 },
                             }}
                         >

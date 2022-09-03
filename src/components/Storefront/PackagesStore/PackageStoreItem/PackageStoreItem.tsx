@@ -1,22 +1,27 @@
-import { Box, Stack, Skeleton, Typography } from "@mui/material"
+import { Box, Skeleton, Stack, Typography } from "@mui/material"
 import { useStripe } from "@stripe/react-stripe-js"
+import React from "react"
 import { useMutation } from "react-fetching-library"
 import { SafePNG } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
+import { CreateCheckoutSession } from "../../../../fetching"
 import { generatePriceText } from "../../../../helpers"
 import { fonts } from "../../../../theme/theme"
 import { StorefrontPackage } from "../../../../types"
 import { ClipThing } from "../../../Common/ClipThing"
 import { FancyButton } from "../../../Common/FancyButton"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
-import { CreateCheckoutSession } from "../../../../fetching"
 
 interface PackageStoreItemProps {
     enlargedView?: boolean
     item: StorefrontPackage
 }
 
-export const PackageStoreItem = ({ enlargedView, item }: PackageStoreItemProps) => {
+const propsAreEqual = (prevProps: PackageStoreItemProps, nextProps: PackageStoreItemProps) => {
+    return prevProps.enlargedView === nextProps.enlargedView && prevProps.item.id === nextProps.item.id
+}
+
+export const PackageStoreItem = React.memo(function PackageStoreItem({ enlargedView, item }: PackageStoreItemProps) {
     const theme = useTheme()
     const stripe = useStripe()
     const { loading, mutate } = useMutation(CreateCheckoutSession)
@@ -148,7 +153,7 @@ export const PackageStoreItem = ({ enlargedView, item }: PackageStoreItemProps) 
             </Box>
         </>
     )
-}
+}, propsAreEqual)
 
 export const PackageStoreItemLoadingSkeleton = () => {
     const theme = useTheme()
