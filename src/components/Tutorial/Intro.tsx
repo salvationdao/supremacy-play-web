@@ -1,6 +1,7 @@
 import { Box, Typography } from "@mui/material"
 import { useRef, useState } from "react"
 import { TRAINING_ASSETS } from "../../constants"
+import { useUrlQuery } from "../../hooks"
 import { opacityEffect } from "../../theme/keyframes"
 import { fonts } from "../../theme/theme"
 import { FancyButton } from "../Common/FancyButton"
@@ -21,7 +22,7 @@ const context: Context[] = [
 ]
 
 export const Intro = ({ toggleTrainingIntro }: { toggleTrainingIntro: (value?: boolean | undefined) => void }) => {
-    const searchParams = new URLSearchParams(window.location.search)
+    const [query] = useUrlQuery()
     const [stage, setStage] = useState<Context | null>(context[0])
     const videoRef = useRef<HTMLVideoElement>(null)
     return (
@@ -69,7 +70,7 @@ export const Intro = ({ toggleTrainingIntro }: { toggleTrainingIntro: (value?: b
                 controlsList="nofullscreen nodownload"
                 disablePictureInPicture
                 autoPlay
-                muted={searchParams.get("muted") === "false" ? false : true}
+                muted={query.get("muted") === "false" ? false : true}
                 style={{
                     width: "100%",
                     height: "100%",

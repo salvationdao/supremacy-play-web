@@ -575,4 +575,5 @@ export const convertCellsToGameLocation = (x: number, y: number, mapLeft: number
         y: y * gameClientTileSize + gameClientTileSize / 2 + mapTop,
     }
 }
+
 export const diff = (a: number, b: number) => (a > b ? a - b : b - a)

@@ -1,19 +1,18 @@
-import { Box, CircularProgress, Stack, Tooltip, Typography } from "@mui/material"
+import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import Marquee from "react-fast-marquee"
-import { Link } from "react-router-dom"
 import { FancyButton, Logo, ProfileCard, WalletDetails } from ".."
 import { SvgDisconnected } from "../../assets"
 import { DRAWER_TRANSITION_DURATION, FEEDBACK_FORM_URL, GAME_BAR_HEIGHT, IS_TESTING_MODE, NEXT_RESET_TIME } from "../../constants"
 import { useAuth, useSupremacy } from "../../containers"
 import { hexToRGB, timeSinceInWords } from "../../helpers"
 import { useTimer } from "../../hooks"
-import { zoomEffect } from "../../theme/keyframes"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { User } from "../../types"
 import { Messages } from "./Messages/Messages"
-import { NavLink, NavLinks } from "./NavLinks/NavLinks"
+import { NavLinks } from "./NavLinks/NavLinks"
 import { Quests } from "./Quests/Quests"
-const searchParams = new URLSearchParams(window.location.search)
+import { Tutorial } from "./Tutorial"
+
 const Countdown = ({ endTime }: { endTime: Date }) => {
     const { totalSecRemain } = useTimer(endTime)
     if (totalSecRemain <= 0) return <>very shortly</>
@@ -148,47 +147,7 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
                     </Typography>
                 </FancyButton>
             )}
-            {/* Tutorial */}
-            <Tooltip
-                title={
-                    <Stack gap=".5rem" alignItems="center">
-                        <Typography
-                            sx={{
-                                fontSize: "1.8rem",
-                                p: "1rem",
-                                animation: userID && !user.faction_id ? `${zoomEffect(1.05)} 2s infinite` : "unset",
-                            }}
-                        >
-                            Learn how to play and{" "}
-                            <Link to="/training?muted=false">
-                                <span style={{ color: colors.neonBlue, fontWeight: "bold" }}>start battle training</span>
-                            </Link>
-                            !
-                        </Typography>
-                    </Stack>
-                }
-                componentsProps={{
-                    tooltip: {
-                        style: {
-                            filter: "drop-shadow(0 3px 3px #00000050)",
-                        },
-                    },
-                    arrow: {
-                        style: {
-                            fontSize: "3rem",
-                        },
-                    },
-                }}
-                arrow
-                open={window.location.pathname.includes("/training") ? false : !userID || (!user.faction_id && searchParams.get("training") !== "false")}
-            >
-                <Box>
-                    <NavLink label="Tutorial" isActive={false} to="/training?muted=false" />
-                </Box>
-            </Tooltip>
-
-            {/* <HowToPlay /> */}
-            {/* {userID && <Enlist />} */}
+            <Tutorial />
             {userID && <WalletDetails />}
             {userID && <Quests />}
             {userID && <Messages />}

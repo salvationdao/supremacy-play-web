@@ -1,7 +1,7 @@
 import { MaskStylesObj } from "@reactour/mask"
 import { PopoverStylesObj } from "@reactour/popover"
 import { Styles, StylesObj } from "@reactour/tour/dist/styles"
-import { colors, fonts, siteZIndex } from "../../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../theme/theme"
 
 export const tourStyles: (PopoverStylesObj & StylesObj & MaskStylesObj & Partial<Styles>) | undefined = {
     maskWrapper: (base) => ({

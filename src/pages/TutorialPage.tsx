@@ -10,12 +10,11 @@ import { WarMachineStatsBT } from "../components/Tutorial/WarMachine/WarMachineS
 import { TRAINING_ASSETS } from "../constants"
 import { TrainingProvider, useDimension, useTraining } from "../containers"
 import { useAuth } from "../containers/auth"
+import { useUrlQuery } from "../hooks"
 import { opacityEffect } from "../theme/keyframes"
 import { colors, fonts, siteZIndex } from "../theme/theme"
 import { BattleAbilityStages, CompletedTraining, MechAbilityStages, TrainingLobby } from "../types"
 import { PlayerAbilityStages } from "../types/training"
-
-const searchParams = new URLSearchParams(window.location.search)
 
 export const TutorialPage = () => (
     <>
@@ -23,6 +22,7 @@ export const TutorialPage = () => (
             <title>Battle Training - Supremacy Battle Arena</title>
             <link rel="canonical" href="/training" />
         </Helmet>
+
         <TrainingProvider>
             <TutorialPageInner />
         </TrainingProvider>
@@ -30,6 +30,7 @@ export const TutorialPage = () => (
 )
 const TutorialPageInner = () => {
     const { user } = useAuth()
+    const [query] = useUrlQuery()
     const { trainingStage, setTutorialRef } = useTraining()
     const { triggerReset } = useDimension()
     const [lobbyStage, setLobbyStage] = useState<TrainingLobby>(TrainingLobby.Intro)
@@ -39,11 +40,11 @@ const TutorialPageInner = () => {
     }, [triggerReset])
 
     useEffect(() => {
-        if (searchParams.get("skip") === "true") {
+        if (query.get("skip") === "true") {
             setLobbyStage(TrainingLobby.FactionIntro)
         }
         setTutorialRef(undefined)
-    }, [user, setTutorialRef, setLobbyStage])
+    }, [user, setTutorialRef, setLobbyStage, query])
 
     const component = useMemo(() => {
         if (lobbyStage === TrainingLobby.Intro) {

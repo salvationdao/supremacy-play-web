@@ -7,7 +7,7 @@ import { useMobile } from "./mobile"
 
 // Control overlays, side drawers etc
 const uiContainer = createContainer(() => {
-    const isTraining = window.location.pathname.includes("/training")
+    const isTraining = location.pathname.includes("/training")
     const { pathname } = useLocation()
     const { isMobile } = useMobile()
     const [isNavLinksDrawerOpen, toggleIsNavLinksDrawerOpen] = useToggle(false)

@@ -10,7 +10,7 @@ import { fonts } from "../../theme/theme"
 import { Context, TrainingLobby } from "../../types"
 import { TOP_BAR_HEIGHT } from "../BigDisplay/MiniMap/MiniMap"
 import { FancyButton } from "../Common/FancyButton"
-import { tourStyles } from "../HowToPlay/Tutorial/SetupTutorial"
+import { tourStyles } from "./SetupTutorial"
 import { Congratulations, TrainingAbility } from "./Congratulations"
 
 interface TutorialContainerProps {
