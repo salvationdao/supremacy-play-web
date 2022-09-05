@@ -34,23 +34,6 @@ export const UnauthPrompt = () => {
                     <ConnectButton clipBorderColor={colors.yellow} clipBackgroundColor={colors.yellow} sx={{ minWidth: "18rem" }} />
                 </Stack>
 
-                {/* Background */}
-                <Box
-                    sx={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        opacity: 0.3,
-                        zIndex: -2,
-                        background: `url(${LightningBackgroundPNG})`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "center",
-                        backgroundSize: "cover",
-                    }}
-                />
-
                 {/* Coin left decorations */}
                 <Box
                     sx={{
@@ -82,6 +65,23 @@ export const UnauthPrompt = () => {
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "bottom",
                         backgroundSize: "contain",
+                    }}
+                />
+
+                {/* Background */}
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        opacity: 0.3,
+                        zIndex: -2,
+                        background: `url(${LightningBackgroundPNG})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
                     }}
                 />
             </ClipThing>
