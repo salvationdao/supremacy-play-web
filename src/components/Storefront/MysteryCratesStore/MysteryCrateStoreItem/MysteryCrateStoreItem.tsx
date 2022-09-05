@@ -4,7 +4,7 @@ import { ClipThing, FancyButton } from "../../.."
 import { SafePNG, SvgArrow, SvgSupToken } from "../../../../assets"
 import { useGlobalNotifications } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
-import { numberCommaFormatter, supFormatterNoFixed } from "../../../../helpers"
+import { generatePriceText, numberCommaFormatter, supFormatterNoFixed } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -165,6 +165,9 @@ export const MysteryCrateStoreItem = React.memo(function MysteryCrateStoreItem({
                                         {singleCratePrice}
                                     </Typography>
                                 </Stack>
+                                <Typography sx={{ fontFamily: fonts.nostromoMedium }}>
+                                    {generatePriceText(mysteryCrate.fiat_product.price_dollars, mysteryCrate.fiat_product.price_cents)}
+                                </Typography>
                             </Stack>
 
                             <Box

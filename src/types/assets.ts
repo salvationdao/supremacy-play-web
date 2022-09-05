@@ -1,4 +1,5 @@
 import { Battle, Faction, User, Vector2i } from "."
+import { FiatProduct } from "./fiat"
 
 export enum MechStatusEnum {
     Idle = "IDLE",
@@ -411,6 +412,7 @@ export enum MysteryCrateType {
 export interface StorefrontMysteryCrate extends Images {
     id: string
     fiat_product_id: string
+    fiat_product: FiatProduct
     mystery_crate_type: MysteryCrateType
     price: string
     amount: number
