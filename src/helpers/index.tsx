@@ -566,3 +566,13 @@ export const autoTextColor = (hex: string) => {
         return "#FFFFFF"
     }
 }
+
+export const convertCellsToGameLocation = (x: number, y: number, mapLeft: number, mapTop: number) => {
+    const gameClientTileSize = 2000
+    return {
+        x: x * gameClientTileSize + gameClientTileSize / 2 + mapLeft,
+        y: y * gameClientTileSize + gameClientTileSize / 2 + mapTop,
+    }
+}
+
+export const diff = (a: number, b: number) => (a > b ? a - b : b - a)

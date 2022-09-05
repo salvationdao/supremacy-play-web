@@ -182,6 +182,7 @@ export interface BattleMechReward {
     faction_id: FactionIDs
     avatar_url: string
     rewarded_sups: string
+    rewarded_sups_bonus: string
     owner_id: string
 }
 

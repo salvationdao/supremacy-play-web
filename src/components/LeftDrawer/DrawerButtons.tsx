@@ -17,7 +17,7 @@ export const DrawerButtons = () => {
     let activeRouteID = ""
     if (match) {
         const r = ROUTES_ARRAY.find((r) => r.path === match.path)
-        activeRouteID = r?.matchNavLinkID || ""
+        activeRouteID = r?.id || ""
     }
 
     return (

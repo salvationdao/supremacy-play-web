@@ -13,6 +13,7 @@ import { SortDir, SortTypeLabel } from "../../../types/marketplace"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { BulkDeployConfirmModal } from "../../Hangar/WarMachinesHangar/Common/BulkDeployConfirmModal"
 import { QueueFeed } from "../../Hangar/WarMachinesHangar/WarMachineDetails/Modals/DeployModal"
+import { ChallengeFundsRemain } from "./ChallengeFundsRemain"
 import { QueueDetails } from "./QueueDetails"
 import { QuickDeployItem } from "./QuickDeployItem"
 
@@ -35,7 +36,7 @@ interface GetMechsRequest {
 }
 
 interface GetAssetsResponse {
-    mechs: MechBasic[]
+    mechs: MechBasicWithQueueStatus[]
     total: number
 }
 
@@ -50,7 +51,7 @@ const QuickDeployInner = () => {
     const { send } = useGameServerCommandsUser("/user_commander")
 
     // Mechs
-    const [mechs, setMechs] = useState<MechBasic[]>([])
+    const [mechs, setMechs] = useState<MechBasicWithQueueStatus[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
 
@@ -152,6 +153,8 @@ const QuickDeployInner = () => {
                 </Stack>
 
                 <Stack sx={{ flex: 1 }}>
+                    <ChallengeFundsRemain />
+
                     <TotalAndPageSizeOptions
                         countItems={mechs?.length}
                         totalItems={totalItems}
@@ -245,7 +248,6 @@ const QuickDeployInner = () => {
                                                 }}
                                                 childrenMechStatus={childrenMechStatus}
                                                 mech={mech}
-                                                queueFeed={queueFeed}
                                             />
                                         )
                                     })}

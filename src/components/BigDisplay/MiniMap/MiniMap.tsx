@@ -111,7 +111,6 @@ const BattleNotStarted = () => {
                     position: "relative",
                     width: "100%",
                     height: isStreamBigDisplay ? "28rem" : "100%",
-                    border: (theme) => `${theme.factionTheme.primary}60 1px solid`,
                 }}
             >
                 <Typography
@@ -245,7 +244,6 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
                     height: "100%",
                     pb: !isPoppedout && !isStreamBigDisplay ? `${BOTTOM_PADDING}rem` : 0,
                     boxShadow: 2,
-                    border: (theme) => `${theme.factionTheme.primary}60 1px solid`,
                 }}
             >
                 <Box

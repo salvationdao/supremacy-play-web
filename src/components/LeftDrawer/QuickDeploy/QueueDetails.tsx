@@ -1,5 +1,5 @@
-import { IconButton, Stack, Typography } from "@mui/material"
-import { useState } from "react"
+import { Box, IconButton, Stack, Typography } from "@mui/material"
+import { useEffect, useRef, useState } from "react"
 import { TooltipHelper } from "../.."
 import { SvgNotification, SvgSupToken } from "../../../assets"
 import { supFormatter } from "../../../helpers"
@@ -9,27 +9,28 @@ import { PreferencesModal } from "../../Bar/ProfileCard/PreferencesModal/Prefere
 import { TelegramRegisterModal } from "../../Bar/ProfileCard/PreferencesModal/TelegramRegisterModal"
 import { QueueFeed } from "../../Hangar/WarMachinesHangar/WarMachineDetails/Modals/DeployModal"
 
-export const QueueDetails = ({ queueFeed }: { queueFeed?: QueueFeed }) => {
+interface QueueDetailsProps {
+    queueFeed?: QueueFeed
+}
+
+export const QueueDetails = ({ queueFeed }: QueueDetailsProps) => {
     const [preferencesModalOpen, togglePreferencesModalOpen] = useToggle()
     const [addDeviceModalOpen, toggleAddDeviceModalOpen] = useToggle()
     const [telegramShortcode, setTelegramShortcode] = useState<string>("")
 
-    const queueLength = queueFeed?.queue_length || 0
     const queueCost = queueFeed?.queue_cost || "0"
 
     return (
         <>
             <Stack spacing="1.5rem" direction="row">
-                {queueLength >= 0 && (
-                    <AmountItem
-                        key={`${queueLength}-queue_length`}
-                        title={"NEXT POSITION: "}
-                        color="#FFFFFF"
-                        value={`${queueLength + 1}`}
-                        tooltip="The queue position of your war machine if you deploy now."
-                        disableIcon
-                    />
-                )}
+                <AmountItem
+                    key={`${queueFeed?.minimum_wait_time_seconds}-${queueFeed?.average_game_length_seconds}-queue_time`}
+                    title={"WAIT TIME: "}
+                    color={colors.offWhite}
+                    value={queueFeed ? <QueueETA queueETASeconds={queueFeed.minimum_wait_time_seconds} /> : undefined}
+                    tooltip="The minimum time it will take before your mech is placed into battle."
+                    disableIcon
+                />
 
                 {queueCost && (
                     <AmountItem
@@ -59,6 +60,7 @@ export const QueueDetails = ({ queueFeed }: { queueFeed?: QueueFeed }) => {
         </>
     )
 }
+
 const AmountItem = ({
     title,
     color,
@@ -68,7 +70,7 @@ const AmountItem = ({
 }: {
     title: string
     color: string
-    value: string | number
+    value?: React.ReactNode
     tooltip: string
     disableIcon?: boolean
 }) => {
@@ -82,5 +84,33 @@ const AmountItem = ({
                 <Typography sx={{ color: color, fontWeight: "fontWeightBold" }}>{value || "---"}</Typography>
             </Stack>
         </TooltipHelper>
+    )
+}
+
+interface QueueETAProps {
+    queueETASeconds: number
+}
+
+const QueueETA = ({ queueETASeconds }: QueueETAProps) => {
+    const countdownRef = useRef<HTMLDivElement>()
+    const secondsLeftRef = useRef(queueETASeconds)
+
+    useEffect(() => {
+        const t = setInterval(() => {
+            if (!countdownRef.current) return
+            secondsLeftRef.current -= 10
+            countdownRef.current.innerText =
+                secondsLeftRef.current < 60
+                    ? "LESS THAN A MINUTE"
+                    : `${Math.round(secondsLeftRef.current / 60)} MINUTE${Math.round(secondsLeftRef.current / 60) > 1 ? "S" : ""}`
+        }, 1000 * 10) // Every 10 seconds
+
+        return () => clearInterval(t)
+    }, [queueETASeconds])
+
+    return (
+        <Box ref={countdownRef}>
+            {queueETASeconds < 60 ? "LESS THAN A MINUTE" : `${Math.round(queueETASeconds / 60)} MINUTE${Math.round(queueETASeconds / 60) > 1 ? "S" : ""}`}
+        </Box>
     )
 }
