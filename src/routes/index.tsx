@@ -1,14 +1,15 @@
 import { Box } from "@mui/system"
 import { SvgChat, SvgDamage1, SvgHistoryClock, SvgRepair, SvgRobot } from "../assets"
 import { BattleArena } from "../components/LeftDrawer/BattleArena/BattleArena"
-import { QuickDeploy } from "../components/LeftDrawer/QuickDeploy/QuickDeploy"
 import { BattleEndScreen } from "../components/LeftDrawer/BattleEndScreen/BattleEndScreen"
+import { QuickDeploy } from "../components/LeftDrawer/QuickDeploy/QuickDeploy"
 import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
 import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
 import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
 import { RepairJobs } from "../components/RightDrawer/RepairJobs/RepairJobs"
 import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../constants"
 import { BattleArenaPage, BillingHistoryPage, ClaimPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
+import { LandingPage } from "../pages/LandingPage"
 import { LeaderboardPage } from "../pages/LeaderboardPage"
 import { MarketplaceItemPage } from "../pages/MarketplaceItemPage"
 import { MarketplaceSellPage } from "../pages/MarketplaceSellPage"
@@ -16,7 +17,6 @@ import { MechPage } from "../pages/MechPage"
 import { StorefrontPage } from "../pages/StorefrontPage"
 import { WeaponPage } from "../pages/WeaponPage"
 import { colors } from "../theme/theme"
-import { LandingPage } from "../pages/LandingPage"
 
 // ************
 // ** ROUTES **
@@ -36,6 +36,7 @@ interface RouteStruct {
     }
     matchNavLinkID?: string // The /route which will make this button highlighted
     enable: boolean
+    pageTitle: string // Sets the tab title etc. with react helmet
 }
 
 export const ROUTES_MAP: { [name: string]: RouteStruct } = {
@@ -45,13 +46,14 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         exact: true,
         Component: BattleArenaPage,
         requireAuth: false,
-        requireFaction: false,
+        requireFaction: true,
         navLink: {
             enable: BATTLE_ARENA_OPEN,
             label: "Battle Arena",
         },
         matchNavLinkID: "home",
         enable: true,
+        pageTitle: "Supremacy - Battle Arena",
     },
 
     // Landing
@@ -67,6 +69,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             enable: BATTLE_ARENA_OPEN,
             label: "Upcoming Battle",
         },
+        pageTitle: "Supremacy - Next Battle",
     },
 
     // Leaderboard
@@ -83,6 +86,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         },
         matchNavLinkID: "leaderboard",
         enable: true,
+        pageTitle: "Supremacy - Leaderboard",
     },
 
     // Mech
@@ -95,6 +99,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireFaction: true,
         matchNavLinkID: "fleet",
         enable: true,
+        pageTitle: "Supremacy - War Machine",
     },
 
     // Weapon
@@ -107,6 +112,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireFaction: true,
         matchNavLinkID: "fleet",
         enable: true,
+        pageTitle: "Supremacy - Weapon",
     },
 
     // Fleet
@@ -123,6 +129,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         },
         matchNavLinkID: "fleet",
         enable: true,
+        pageTitle: "Supremacy - Fleet",
     },
 
     // Storefront
@@ -139,6 +146,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         },
         matchNavLinkID: "storefront",
         enable: true,
+        pageTitle: "Supremacy - Storefront",
     },
 
     // Marketplace
@@ -151,6 +159,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireFaction: true,
         matchNavLinkID: "marketplace",
         enable: !IS_TESTING_MODE,
+        pageTitle: "Supremacy - Sell",
     },
     marketplace_item: {
         id: "marketplace_item",
@@ -161,6 +170,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireFaction: true,
         matchNavLinkID: "marketplace",
         enable: !IS_TESTING_MODE,
+        pageTitle: "Supremacy - Marketplace Item",
     },
     marketplace: {
         id: "marketplace",
@@ -175,6 +185,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         },
         matchNavLinkID: "marketplace",
         enable: !IS_TESTING_MODE,
+        pageTitle: "Supremacy - Marketplace",
     },
 
     // Player profile
@@ -186,6 +197,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireAuth: false,
         requireFaction: false,
         enable: true,
+        pageTitle: "Supremacy - Player Profile",
     },
 
     // FIAT related
@@ -197,6 +209,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireAuth: true,
         requireFaction: true,
         enable: true,
+        pageTitle: "Supremacy - Billing",
     },
 
     // Others
@@ -206,11 +219,12 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         exact: true,
         Component: ClaimPage,
         requireAuth: true,
+        requireFaction: true,
         authTitle: "Connect to XSYN to Claim Your Rewards",
         authDescription:
             "You will receive assets that are of Supremacy's next generation collection: Supremacy Nexus, which will allow you to equip your war machines to defeat your enemies in the battle arena.",
-        requireFaction: true,
         enable: true,
+        pageTitle: "Supremacy - Claim",
     },
 
     not_found_page: {
@@ -221,6 +235,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireAuth: false,
         requireFaction: false,
         enable: true,
+        pageTitle: "Supremacy - 404",
     },
 }
 
