@@ -139,6 +139,7 @@ import WarningIcon from "@mui/icons-material/Warning"
 import WorkspacesSharpIcon from "@mui/icons-material/WorkspacesSharp"
 import { Box, BoxProps } from "@mui/system"
 import { colors } from "../theme/theme"
+import BattleArenaOpeningWebP from "./images/BattleArenaOpening.webp"
 import BostonCyberneticsLogo from "./images/BostonCyberneticsLogo.png"
 import BottomMechWEBP from "./images/BottomMech.webp"
 import ClaimsBg from "./images/ClaimsBg.jpg"
@@ -220,6 +221,7 @@ export {
     RainingSupsPNG,
     WarMachineIconPNG,
     PlayerAbilityPNG,
+    BattleArenaOpeningWebP,
 }
 
 export interface SvgWrapperProps extends BoxProps {

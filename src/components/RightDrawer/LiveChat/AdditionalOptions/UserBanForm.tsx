@@ -5,7 +5,7 @@ import { SvgClose, SvgCooldown, SvgSupToken } from "../../../../assets"
 import { MAX_BAN_PROPOSAL_REASON_LENGTH } from "../../../../constants"
 import { useAuth, useSnackbar } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
-import {  snakeToTitle } from "../../../../helpers"
+import { snakeToTitle } from "../../../../helpers"
 import { useDebounce, useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -23,14 +23,17 @@ interface SubmitRequest {
 const UserItem = ({ banUser, sx }: { banUser: BanUser; sx?: SxProps }) => {
     return (
         <Stack direction="row" spacing=".6rem" alignItems="center" sx={sx}>
-            <Player player={{
-                id: banUser.id,
-                username: banUser.username,
-                gid: banUser.gid,
-                faction_id: "",
-                rank: "NEW_RECRUIT",
-                features: []
-            }} styledImageTextProps={{ textColor: "#FFFFFF" }} />
+            <Player
+                player={{
+                    id: banUser.id,
+                    username: banUser.username,
+                    gid: banUser.gid,
+                    faction_id: "",
+                    rank: "NEW_RECRUIT",
+                    features: [],
+                }}
+                styledImageTextProps={{ textColor: "#FFFFFF" }}
+            />
         </Stack>
     )
 }
