@@ -16,7 +16,7 @@ export const NavLinks = () => {
     let activeRouteID = ""
     if (match) {
         const r = ROUTES_ARRAY.find((r) => r.path === match.path)
-        activeRouteID = r?.matchNavLinkID || ""
+        activeRouteID = r?.id || ""
     }
 
     if (hideNavLinks) return null
@@ -35,7 +35,7 @@ export const NavLinks = () => {
     )
 }
 
-const NavLink = ({ isActive, label, to }: { isActive: boolean; label: string; to: string }) => {
+export const NavLink = ({ isActive, label, to }: { isActive: boolean; label: string; to: string }) => {
     const theme = useTheme()
 
     const primaryColor = theme.factionTheme.primary
