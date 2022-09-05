@@ -23,7 +23,6 @@ export enum LocationSelectType {
 }
 
 export interface Map {
-    ID: string
     Name: string
     Image_Url: string
     Width: number
