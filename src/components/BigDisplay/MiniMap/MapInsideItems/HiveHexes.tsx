@@ -29,7 +29,7 @@ export const HiveHexes = ({ map, state, poppedOutContainerRef }: HiveHexesProps)
             if (!hexInner) continue
             hexInner.style.clipPath = hex.half ? "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%)" : "polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%)"
         }
-    }, [map])
+    }, [map, poppedOutContainerRef])
 
     useEffect(() => {
         for (let i = 0; i < state.length; i++) {
@@ -37,7 +37,7 @@ export const HiveHexes = ({ map, state, poppedOutContainerRef }: HiveHexesProps)
             if (!hexEl) continue
             hexEl.style.opacity = state[i] ? "0.6" : "0"
         }
-    }, [state])
+    }, [state, poppedOutContainerRef])
 
     return useMemo(() => {
         return (
