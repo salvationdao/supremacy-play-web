@@ -146,22 +146,22 @@ const AppInner = () => {
                                     {ROUTES_ARRAY.map((r) => {
                                         const { id, path, exact, Component, requireAuth, requireFaction, authTitle, authDescription, enable, pageTitle } = r
                                         if (!enable) return null
-
-                                        let component = Component
+                                        let PageComponent = Component
                                         if (requireAuth && !userID) {
                                             const Comp = () => <AuthPage authTitle={authTitle} authDescription={authDescription} />
-                                            component = Comp
+                                            PageComponent = Comp
                                         } else if (userID && requireFaction && !factionID) {
-                                            component = EnlistPage
+                                            PageComponent = EnlistPage
                                         }
+                                        if (!PageComponent) return null
                                         return (
-                                            <>
+                                            <Route key={id} path={path} exact={exact}>
                                                 <Helmet>
                                                     <title>{pageTitle}</title>
                                                     <link rel="canonical" href={path} />
                                                 </Helmet>
-                                                <Route key={id} path={path} exact={exact} component={component} />
-                                            </>
+                                                <PageComponent />
+                                            </Route>
                                         )
                                     })}
                                     <Redirect to={ROUTES_MAP.not_found_page.path} />

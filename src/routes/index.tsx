@@ -46,7 +46,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         exact: true,
         Component: BattleArenaPage,
         requireAuth: false,
-        requireFaction: false,
+        requireFaction: true,
         navLink: {
             enable: BATTLE_ARENA_OPEN,
             label: "Battle Arena",

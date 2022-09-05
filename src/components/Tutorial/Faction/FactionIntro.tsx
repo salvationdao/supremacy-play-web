@@ -1,11 +1,37 @@
 import { Box, Stack, Typography } from "@mui/material"
+import { useCallback, useMemo } from "react"
 import { TRAINING_ASSETS } from "../../../constants"
 import { useSupremacy } from "../../../containers"
 import { colors, fonts } from "../../../theme/theme"
 import { Faction } from "../../../types"
 
+enum FactionLabels {
+    BC = "Boston Cybernetics",
+    RM = "Red Mountain Offworld Mining Corporation",
+    ZB = "Zaibatsu Heavy Industries",
+}
+
 export const FactionIntro = () => {
     const { factionsAll } = useSupremacy()
+
+    const getFaction = useCallback((faction: FactionLabels) => {
+        return {
+            id: "",
+            label: faction,
+            logo_url: "",
+            background_url: "",
+            wallpaper_url: "",
+            primary_color: "",
+            secondary_color: "",
+            background_color: "",
+            description: "",
+        }
+    }, [])
+
+    const getAllFactions = useMemo(() => {
+        return [getFaction(FactionLabels.BC), getFaction(FactionLabels.RM), getFaction(FactionLabels.ZB)]
+    }, [getFaction])
+
     return (
         <Box
             sx={{
@@ -24,18 +50,20 @@ export const FactionIntro = () => {
                 },
             }}
         >
-            {Object.values(factionsAll)
-                .sort((a, b) => a.label.localeCompare(b.label))
-                .map((f) => (
-                    <FactionBox key={f.id} faction={f} />
-                ))}
+            {Object.values(factionsAll).length === 0
+                ? getAllFactions.map((f) => <FactionBox key={f.label} faction={f} />)
+                : Object.values(factionsAll)
+                      .sort((a, b) => a.label.localeCompare(b.label))
+                      .map((f) => <FactionBox key={f.id} faction={f} />)}
         </Box>
     )
 }
 
 const getFactionInfo = (factionLabel: string) => {
-    if (factionLabel === "Boston Cybernetics") {
+    if (factionLabel === FactionLabels.BC) {
         return {
+            label: FactionLabels.BC,
+            logo: "https://afiles.ninja-cdn.com/supremacy-stream-site/assets/img/factions/bc-alt-logo.svg",
             description:
                 "Boston Cybernetics is the major commercial leader within the Supremacy Era. It has secure territories comprising 275 districts located on the east coast of the former United States. ",
             mechImage: `${TRAINING_ASSETS}/factions/bc/bc-mech.png`,
@@ -44,8 +72,10 @@ const getFactionInfo = (factionLabel: string) => {
         }
     }
 
-    if (factionLabel === "Zaibatsu Heavy Industries") {
+    if (factionLabel === FactionLabels.ZB) {
         return {
+            label: FactionLabels.ZB,
+            logo: "https://afiles.ninja-cdn.com/supremacy-stream-site/assets/img/factions/zai-alt-logo.svg",
             description:
                 "Zaibatsu is the industrial leader within the Supremacy Era, with territories on the islands formerly known as Japan. Zaibatsu’s economy is built on production, as well as the development of cloud cities.",
             mechImage: `${TRAINING_ASSETS}/factions/zhi/zhi-mech.png`,
@@ -56,6 +86,8 @@ const getFactionInfo = (factionLabel: string) => {
 
     if (factionLabel === "Red Mountain Offworld Mining Corporation") {
         return {
+            label: FactionLabels.RM,
+            logo: "https://afiles.ninja-cdn.com/supremacy-stream-site/assets/img/factions/rm-alt-logo.svg",
             description:
                 "Red Mountain is the leader in autonomous mining operations in the Supremacy Era. It controls territory on Mars, as well as secure city locations on the continent formerly known as Australia on Earth.",
             mechImage: `${TRAINING_ASSETS}/factions/rm/rm-mech.png`,
@@ -65,6 +97,7 @@ const getFactionInfo = (factionLabel: string) => {
     }
 
     return {
+        label: FactionLabels.BC,
         description: "Some information about what territories we have a hold of, some information about mechs and weapons? ",
         mechImage: `${TRAINING_ASSETS}/factions/bc/bc-mech.png`,
         colorOverlay: "#000000",
@@ -73,7 +106,7 @@ const getFactionInfo = (factionLabel: string) => {
 }
 
 const FactionBox = ({ faction }: { faction: Faction }) => {
-    const { description, mechImage, colorOverlay, wallpaper } = getFactionInfo(faction.label)
+    const { description, mechImage, colorOverlay, wallpaper, logo, label } = getFactionInfo(faction.label)
     return (
         <Stack
             sx={{
@@ -174,10 +207,10 @@ const FactionBox = ({ faction }: { faction: Faction }) => {
         >
             {/* logo */}
             <Stack sx={{ position: "relative", zIndex: 1, gap: "1rem" }}>
-                <Box component="img" src={faction.logo_url} alt={`${faction.label}'s logo`} />
+                <Box component="img" src={faction.logo_url || logo} alt={`${faction.label || label}'s logo`} />
 
                 {/* statement */}
-                <Typography variant="h2">{faction.label}</Typography>
+                <Typography variant="h2">{faction.label || label}</Typography>
             </Stack>
 
             {/* descrioption */}
@@ -185,7 +218,7 @@ const FactionBox = ({ faction }: { faction: Faction }) => {
 
             {/* mech image */}
 
-            <Box component="img" src={mechImage} alt={`${faction.label}'s mech`} />
+            <Box component="img" src={mechImage} alt={`${faction.label || label}'s mech`} />
         </Stack>
     )
 }
