@@ -42,6 +42,7 @@ export const MechCommandIcons = () => {
                                 sizeGrid={1.3}
                                 primaryColor={theme.factionTheme.primary}
                                 insideRender={<SvgDrag size="3rem" sx={{ pb: 0 }} fill={theme.factionTheme.primary} />}
+                                backgroundImageUrl="xxx"
                                 sx={{ zIndex: 9, borderRadius: "50%" }}
                             />
                         )
