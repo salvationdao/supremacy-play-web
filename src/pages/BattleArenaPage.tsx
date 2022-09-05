@@ -9,7 +9,6 @@ import { QuickDeploy } from "../components/LeftDrawer/QuickDeploy/QuickDeploy"
 import { BATTLE_ARENA_OPEN } from "../constants"
 import { useAuth, useDimension, useMobile } from "../containers"
 import { siteZIndex } from "../theme/theme"
-import { EnlistPage } from "./EnlistPage"
 
 export const BattleArenaPage = () => {
     const { userID } = useAuth()
@@ -39,7 +38,6 @@ export const BattleArenaPage = () => {
 }
 
 const BattleArenaPageInner = () => {
-    const { userID, factionID } = useAuth()
     const { isMobile, setAdditionalTabs, setIsNavOpen, allowCloseNav } = useMobile()
     const { triggerReset } = useDimension()
 
@@ -74,15 +72,13 @@ const BattleArenaPageInner = () => {
                                 direction: "ltr",
                                 scrollbarWidth: "none",
                                 "::-webkit-scrollbar": {
-                                    width: ".4rem",
+                                    width: "1rem",
                                 },
                                 "::-webkit-scrollbar-track": {
                                     background: "#FFFFFF15",
-                                    borderRadius: 3,
                                 },
                                 "::-webkit-scrollbar-thumb": {
                                     background: (theme) => theme.factionTheme.primary,
-                                    borderRadius: 3,
                                 },
                             }}
                         >
@@ -158,10 +154,6 @@ const BattleArenaPageInner = () => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [allowCloseNav, isMobile, triggerReset, setAdditionalTabs, setIsNavOpen])
-
-    if (userID && !factionID) {
-        return <EnlistPage />
-    }
 
     return (
         <Stack id="battle-arena-all" sx={{ width: "100%", height: "100%", zIndex: siteZIndex.RoutePage }}>

@@ -6,6 +6,7 @@ import { fonts, siteZIndex } from "../../theme/theme"
 
 export const TooltipHelper = ({
     text,
+    renderNode,
     children,
     isCentered,
     placement,
@@ -13,7 +14,8 @@ export const TooltipHelper = ({
     color,
     textColor: tColor,
 }: {
-    text: string | React.ReactNode
+    text?: string
+    renderNode?: React.ReactNode
     children: ReactElement
     isCentered?: boolean
     placement?:
@@ -33,7 +35,7 @@ export const TooltipHelper = ({
     color?: string
     textColor?: string
 }) => {
-    if (!text) return <>{children}</>
+    if (!text && !renderNode) return <>{children}</>
 
     const primaryColor = color || "#555555"
     const textColor = tColor || autoTextColor(primaryColor)
@@ -66,12 +68,14 @@ export const TooltipHelper = ({
                     sx={{ height: "100%" }}
                 >
                     <Stack sx={{ height: "100%", px: "1.1rem", py: ".6rem" }}>
-                        <Typography
-                            variant="body1"
-                            sx={{ color: textColor || "#FFFFFF", fontFamily: fonts.shareTech, textAlign: isCentered ? "center" : "start" }}
-                        >
-                            <strong>{text}</strong>
-                        </Typography>
+                        {renderNode || (
+                            <Typography
+                                variant="body1"
+                                sx={{ color: textColor || "#FFFFFF", fontFamily: fonts.shareTech, textAlign: isCentered ? "center" : "start" }}
+                            >
+                                <strong>{text}</strong>
+                            </Typography>
+                        )}
                     </Stack>
                 </ClipThing>
             }

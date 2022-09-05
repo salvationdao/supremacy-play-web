@@ -216,7 +216,7 @@ export const theme = createTheme({
     components: {
         MuiButtonBase: {
             defaultProps: {
-                disableRipple: false,
+                disableRipple: true,
             },
             styleOverrides: {
                 root: {

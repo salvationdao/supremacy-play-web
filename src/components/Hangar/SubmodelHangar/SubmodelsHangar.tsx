@@ -50,18 +50,10 @@ interface GetSubmodelsResponse {
 }
 
 export const SubmodelsHangar = () => {
-    // The tabs
-    const [submodelType, setSubmodelType] = useState<SubmodelType>(SubmodelType.warMachine)
-    return <SubmodelsHangarInner key={submodelType} submodelType={submodelType} setSubmodelType={setSubmodelType} />
+    return <SubmodelsHangarInner />
 }
 
-const SubmodelsHangarInner = ({
-    submodelType,
-    setSubmodelType,
-}: {
-    submodelType: SubmodelType
-    setSubmodelType: React.Dispatch<React.SetStateAction<SubmodelType>>
-}) => {
+const SubmodelsHangarInner = () => {
     const [query, updateQuery] = useUrlQuery()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
@@ -77,17 +69,21 @@ const SubmodelsHangarInner = ({
     })
 
     // Filters and sorts
-    const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isWarMachinesHangarFiltersExpanded") === "true")
+    const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isSubmodelHangarFiltersExpanded") === "true")
     const [search, setSearch] = useState("")
     const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.Alphabetical)
-    const [equippedStatus, setEquippedStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || ["UNEQUIPPED"])
+    const [equippedStatus, setEquippedStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
     const [rarities, setRarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
     const [modelFilter, setModelFilter] = useState<string[]>((query.get("models") || undefined)?.split("||") || [])
 
     const [sortFilterReRender, toggleSortFilterReRender] = useToggle()
 
+    // The tabs
+    const [submodelType, setSubmodelType] = useState<SubmodelType>(SubmodelType.warMachine)
+    const previousSubmodelType = useRef<SubmodelType>(SubmodelType.warMachine)
+
     useEffect(() => {
-        localStorage.setItem("isWarMachinesHangarFiltersExpanded", isFiltersExpanded.toString())
+        localStorage.setItem("isSubmodelHangarFiltersExpanded", isFiltersExpanded.toString())
     }, [isFiltersExpanded])
 
     // Filters
@@ -214,6 +210,12 @@ const SubmodelsHangarInner = ({
                     return { value: r.id, label: r.label, color: colors.blue2 }
                 })
 
+                //on submodel change, set the initial selected to reflect current selections
+                modelFilterSection.current.initialSelected = []
+                statusFilterSection.current.initialSelected = equippedStatus
+                rarityChipFilter.current.initialSelected = rarities
+
+                setModelFilter([])
                 toggleSortFilterReRender()
             } catch (e) {
                 setLoadError(typeof e === "string" ? e : `Failed to get ${submodelType} submodels.`)
@@ -222,7 +224,7 @@ const SubmodelsHangarInner = ({
                 setIsLoading(false)
             }
         })()
-    }, [send, submodelType, toggleSortFilterReRender])
+    }, [send, submodelType, equippedStatus, rarities, toggleSortFilterReRender])
 
     const content = useMemo(() => {
         if (loadError) {
@@ -266,7 +268,7 @@ const SubmodelsHangarInner = ({
                             width: "100%",
                             py: "1rem",
                             display: "grid",
-                            gridTemplateColumns: "repeat(auto-fill, minmax(30rem, 1fr))",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(25rem, 1fr))",
                             gap: "1.5rem",
                             alignItems: "center",
                             justifyContent: "center",
@@ -402,7 +404,10 @@ const SubmodelsHangarInner = ({
                         <Stack direction={"row"} sx={{ borderBottom: `${theme.factionTheme.primary}70 1.5px solid` }}>
                             <Tabs
                                 value={submodelType}
-                                onChange={(e, v) => setSubmodelType(v)}
+                                onChange={(e, v) => {
+                                    previousSubmodelType.current = submodelType
+                                    setSubmodelType(v)
+                                }}
                                 variant="scrollable"
                                 scrollButtons="auto"
                                 sx={{
@@ -427,8 +432,7 @@ const SubmodelsHangarInner = ({
                             <Box
                                 sx={{
                                     ml: "1.9rem",
-                                    mr: ".5rem",
-                                    pr: "1.4rem",
+                                    pr: "1.9rem",
                                     my: "1rem",
                                     flex: 1,
                                     overflowY: "auto",
@@ -436,15 +440,13 @@ const SubmodelsHangarInner = ({
                                     direction: "ltr",
 
                                     "::-webkit-scrollbar": {
-                                        width: ".4rem",
+                                        width: "1rem",
                                     },
                                     "::-webkit-scrollbar-track": {
                                         background: "#FFFFFF15",
-                                        borderRadius: 3,
                                     },
                                     "::-webkit-scrollbar-thumb": {
                                         background: theme.factionTheme.primary,
-                                        borderRadius: 3,
                                     },
                                 }}
                             >

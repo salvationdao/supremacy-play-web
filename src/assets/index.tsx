@@ -72,8 +72,10 @@ import Chat from "!react-svg-loader!./svg/Chat.svg"
 import ChatSplit from "!react-svg-loader!./svg/ChatSplit.svg"
 import ChatTabbed from "!react-svg-loader!./svg/ChatTabbed.svg"
 import Damage from "!react-svg-loader!./svg/Damage.svg"
+import Delete from "!react-svg-loader!./svg/Delete.svg"
 import Disconnected from "!react-svg-loader!./svg/Disconnected.svg"
 import Discord from "!react-svg-loader!./svg/Discord.svg"
+import DownArrow from "!react-svg-loader!./svg/DownArrow.svg"
 import Drag from "!react-svg-loader!./svg/Drag.svg"
 import Edit from "!react-svg-loader!./svg/Edit.svg"
 import Emergency from "!react-svg-loader!./svg/Emergency.svg"
@@ -124,6 +126,7 @@ import Target from "!react-svg-loader!./svg/Target.svg"
 import Telegram from "!react-svg-loader!./svg/Telegram.svg"
 import Twitter from "!react-svg-loader!./svg/Twitter.svg"
 import Unknown from "!react-svg-loader!./svg/Unknown.svg"
+import UpArrow from "!react-svg-loader!./svg/UpArrow.svg"
 import User from "!react-svg-loader!./svg/User.svg"
 import Volume from "!react-svg-loader!./svg/Volume.svg"
 import VolumeMute from "!react-svg-loader!./svg/VolumeMute.svg"
@@ -150,6 +153,12 @@ import WorkspacesSharpIcon from "@mui/icons-material/WorkspacesSharp"
 import { Box, BoxProps } from "@mui/system"
 import { useMemo } from "react"
 import { colors } from "../theme/theme"
+import BattleRewardsBannerPNG from "./BattleRewardsBanners/BattleRewardsBanner.png"
+import CoinsLeftPNG from "./BattleRewardsBanners/CoinsLeft.png"
+import CoinsRightPNG from "./BattleRewardsBanners/CoinsRight.png"
+import LightningBackgroundPNG from "./BattleRewardsBanners/LightningBackground.png"
+import LightningBackgroundBluePNG from "./BattleRewardsBanners/LightningBackgroundBlue.png"
+import SkyHighGroupedTextPNG from "./BattleRewardsBanners/SkyHighGroupedText.png"
 import BattleBgWebP from "./images/BattleBg.webp"
 import BostonCyberneticsLogo from "./images/BostonCyberneticsLogo.png"
 import BottomMechWEBP from "./images/BottomMech.webp"
@@ -207,6 +216,7 @@ import Stack9bJPG from "./images/TowerStackSkins/Stack9b.jpg"
 import Stack9cJPG from "./images/TowerStackSkins/Stack9c.jpg"
 import StackTowerBackgroundJPG from "./images/TowerStackSkins/StackTowerBackground.jpg"
 import TrailerThumbPNG from "./images/TrailerThumb.png"
+import BattleTrainingBG from "./images/TrainingBg.png"
 import WarMachineIconPNG from "./images/WarMachineIcon.png"
 import ZaibatsuLogo from "./images/ZaibatsuLogo.png"
 import BcBorder from "./svg/Landing/bc/BCBorder.svg"
@@ -257,6 +267,13 @@ export {
     Stack10cJPG,
 }
 export {
+    BattleTrainingBG,
+    SkyHighGroupedTextPNG,
+    BattleRewardsBannerPNG,
+    LightningBackgroundPNG,
+    LightningBackgroundBluePNG,
+    CoinsLeftPNG,
+    CoinsRightPNG,
     KeycardPNG,
     HangarBg,
     ClaimsBg,
@@ -1218,5 +1235,23 @@ export const SvgQuest: React.VoidFunctionComponent<SvgWrapperProps> = (props) =>
 export const SvgSwap: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Swap />
+    </SvgWrapper>
+)
+
+export const SvgUpArrow: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <UpArrow />
+    </SvgWrapper>
+)
+
+export const SvgDownArrow: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <DownArrow />
+    </SvgWrapper>
+)
+
+export const SvgDelete: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Delete />
     </SvgWrapper>
 )

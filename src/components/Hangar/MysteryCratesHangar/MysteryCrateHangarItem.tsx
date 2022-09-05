@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useCallback, useState } from "react"
+import React, { useCallback, useState } from "react"
 import { SafePNG } from "../../../assets"
 import { IS_TESTING_MODE } from "../../../constants"
 import { useGlobalNotifications } from "../../../containers"
@@ -23,7 +23,16 @@ interface MysteryCrateStoreItemProps {
     getCrates: () => Promise<void>
 }
 
-export const MysteryCrateHangarItem = ({ crate, setOpeningCrate, setOpenedRewards, getCrates }: MysteryCrateStoreItemProps) => {
+const propsAreEqual = (prevProps: MysteryCrateStoreItemProps, nextProps: MysteryCrateStoreItemProps) => {
+    return prevProps.crate.id === nextProps.crate.id && prevProps.getCrates === nextProps.getCrates
+}
+
+export const MysteryCrateHangarItem = React.memo(function MysteryCrateHangarItem({
+    crate,
+    setOpeningCrate,
+    setOpenedRewards,
+    getCrates,
+}: MysteryCrateStoreItemProps) {
     const theme = useTheme()
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -172,7 +181,8 @@ export const MysteryCrateHangarItem = ({ crate, setOpeningCrate, setOpenedReward
             </Box>
         </>
     )
-}
+},
+propsAreEqual)
 
 export const Countdown = ({ dateTo }: { dateTo: Date | undefined }) => {
     const { days, hours, minutes, seconds, totalSecRemain } = useTimer(dateTo)

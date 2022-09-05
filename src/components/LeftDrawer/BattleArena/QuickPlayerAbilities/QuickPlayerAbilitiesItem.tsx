@@ -1,5 +1,5 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useCallback, useMemo, useState } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgSupToken, SvgTarget } from "../../../../assets"
 import { useGlobalNotifications } from "../../../../containers"
 import { supFormatter } from "../../../../helpers"
@@ -24,7 +24,7 @@ export interface QuickPlayerAbilitiesItemProps {
     availability: SaleAbilityAvailability
 }
 
-export const QuickPlayerAbilitiesItem = ({
+export const QuickPlayerAbilitiesItem = React.memo(function QuickPlayerAbilitiesItem({
     saleAbility,
     price = saleAbility.current_price,
     amount = 0,
@@ -32,7 +32,7 @@ export const QuickPlayerAbilitiesItem = ({
     onPurchase: onPurchaseCallback,
     setClaimError,
     availability,
-}: QuickPlayerAbilitiesItemProps) => {
+}: QuickPlayerAbilitiesItemProps) {
     // Purchasing
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -345,4 +345,4 @@ export const QuickPlayerAbilitiesItem = ({
             )}
         </>
     )
-}
+})

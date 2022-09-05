@@ -1,6 +1,6 @@
 import { Box } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { ReactNode, useMemo } from "react"
+import React, { ReactNode, useMemo } from "react"
 import { FancyButton } from "../../.."
 import { useTheme } from "../../../../containers/theme"
 import { calculateDutchAuctionCurrentPrice, numFormatter, shadeColor } from "../../../../helpers"
@@ -20,7 +20,11 @@ interface MarketItemProps {
     linkSubPath: MARKETPLACE_TABS
 }
 
-export const MarketItem = ({ item, isGridView, children, linkSubPath }: MarketItemProps) => {
+const propsAreEqual = (prevProps: MarketItemProps, nextProps: MarketItemProps) => {
+    return prevProps.item.id === nextProps.item.id && prevProps.isGridView === nextProps.isGridView && prevProps.linkSubPath === nextProps.linkSubPath
+}
+
+export const MarketItem = React.memo(function MarketItem({ item, isGridView, children, linkSubPath }: MarketItemProps) {
     const theme = useTheme()
 
     const formattedBuyoutPrice = useMemo(() => {
@@ -125,4 +129,4 @@ export const MarketItem = ({ item, isGridView, children, linkSubPath }: MarketIt
             </FancyButton>
         </Box>
     )
-}
+}, propsAreEqual)
