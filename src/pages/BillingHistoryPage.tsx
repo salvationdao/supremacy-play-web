@@ -115,9 +115,7 @@ export const BillingHistoryPage = () => {
                                                 <Typography key={1}>{item.receipt_number || "N/A"}</Typography>,
                                                 <Typography key={2}>{moment(item.created_at).format("DD/MM/YYYY h:mm A")}</Typography>,
                                                 <Typography key={3}>{status}</Typography>,
-                                                <Typography key={4}>
-                                                    {generatePriceText(item.total_dollars, item.total_cents)} {item.currency.toUpperCase()}
-                                                </Typography>,
+                                                <Typography key={4}>{generatePriceText(item.total_dollars, item.total_cents)}</Typography>,
                                                 <Typography key={5}>
                                                     <Link href={item.receipt_url} target={"_blank"}>
                                                         View Receipt
