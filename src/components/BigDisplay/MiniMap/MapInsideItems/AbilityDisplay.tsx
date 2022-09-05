@@ -40,7 +40,11 @@ interface PendingHiveStateChange {
     delay: number
 }
 
-export const MiniMapAbilitiesDisplay = ({ map }: { map: GameMap }) => {
+interface MiniMapAbilitiesDisplayProps {
+    map: GameMap
+}
+
+export const MiniMapAbilitiesDisplay = ({ map }: MiniMapAbilitiesDisplayProps) => {
     const { currentArenaID } = useArena()
     const [abilityList, setAbilityList] = useState<DisplayedAbility[]>([])
     const [mapEvents, setMapEvents] = useState<DisplayedAbility[]>([])
@@ -241,7 +245,6 @@ export const MiniMapAbilitiesDisplay = ({ map }: { map: GameMap }) => {
                         }
                         case MapEventType.HiveState: {
                             // Hive state is 589 booleans packed into 74 bytes (589 / 8bits)
-                            console.log("hive state")
                             const newHiveState: boolean[] = []
                             for (let b = 0; b < 74; b++) {
                                 const byte = dv.getUint8(offset)
@@ -334,7 +337,7 @@ export const MiniMapAbilitiesDisplay = ({ map }: { map: GameMap }) => {
                 const hiveTimeoutID = `hive-hex-${pendingChange.id}`
                 const t = setTimeout(
                     (id: number, raised: boolean, hiveTimeoutID: string) => {
-                        setHiveState((prev) => ({ ...prev, [id]: raised }))
+                        setHiveState((prev) => [...prev.slice(0, id), raised, ...prev.slice(id + 1)])
                         timeouts.current.delete(hiveTimeoutID)
                     },
                     pendingChange.delay,
