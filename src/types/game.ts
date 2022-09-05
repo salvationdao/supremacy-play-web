@@ -1,4 +1,3 @@
-import { MechDetails } from "./assets"
 import { Faction, WarMachineState } from "."
 import { FactionIDs } from "./../constants"
 import { User } from "./user"
