@@ -1,5 +1,5 @@
 import { Box, Stack, styled, Typography } from "@mui/material"
-import { useDimension, useGlobalNotifications, useSupremacy } from "../../../containers"
+import { useDimension, useGlobalNotifications, useSupremacy, useUI } from "../../../containers"
 import { Faction } from "../../../types"
 
 import { ArrowForward } from "@mui/icons-material"
@@ -7,6 +7,7 @@ import { useCallback, useEffect } from "react"
 import { TRAINING_ASSETS } from "../../../constants"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { LEFT_DRAWER_ARRAY, RIGHT_DRAWER_ARRAY } from "../../../routes"
 import { colors, fonts } from "../../../theme/theme"
 import { FancyButton } from "../../Common/FancyButton"
 
@@ -125,6 +126,7 @@ const getFactionInfo = (factionLabel: string) => {
 }
 
 const FactionBox = ({ faction }: { faction: Faction }) => {
+    const { setLeftDrawerActiveTabID, setRightDrawerActiveTabID } = useUI()
     const { description, fleetImages, abilities, wallpaper, colorOverlay, wiki, logo } = getFactionInfo(faction.label)
     const { gameUIDimensions } = useDimension()
     const { newSnackbarMessage } = useGlobalNotifications()
@@ -134,15 +136,17 @@ const FactionBox = ({ faction }: { faction: Faction }) => {
         try {
             await send<null, { faction_id: string }>(GameServerKeys.EnlistFaction, { faction_id: faction.id })
             newSnackbarMessage("Successfully enlisted into faction.", "success")
+            setLeftDrawerActiveTabID(LEFT_DRAWER_ARRAY[0]?.id)
+            setRightDrawerActiveTabID(RIGHT_DRAWER_ARRAY[0]?.id)
         } catch (err) {
             newSnackbarMessage(typeof err === "string" ? err : "Failed to enlist into faction.", "error")
             console.error(err)
         }
         return
-    }, [send, faction.id, newSnackbarMessage])
+    }, [send, faction.id, newSnackbarMessage, setLeftDrawerActiveTabID, setRightDrawerActiveTabID])
 
     // Responsiveness
-    const shortHeight = gameUIDimensions.height <= 850 && gameUIDimensions.height > 0
+    const shortHeight = gameUIDimensions.height <= 900 && gameUIDimensions.height > 0
     const mediumScreen = gameUIDimensions.width <= 1300 && gameUIDimensions.width > 0
 
     return (
@@ -160,7 +164,7 @@ const FactionBox = ({ faction }: { faction: Faction }) => {
                 <Typography variant="h2">{faction.label}</Typography>
             </Box>
             <InnerStack id="inner-stack" shortScreen={shortHeight} color={faction.primary_color} mediumScreen={mediumScreen}>
-                {/* descrioption */}
+                {/* description */}
                 <Typography
                     sx={{
                         textAlign: "left",
@@ -372,7 +376,7 @@ const InnerStack = styled("div")((props: { shortScreen: boolean; color: string; 
     return {
         display: "flex",
         flexDirection: "column",
-        maxHeight: props.shortScreen ? "400px" : "unset",
+        maxHeight: props.shortScreen ? "35vh" : "unset",
         gap: "4rem",
         overflowY: "auto",
         scrollbarWidth: "none",
