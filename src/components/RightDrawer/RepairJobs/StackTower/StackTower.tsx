@@ -8,6 +8,21 @@ import { RepairAgent } from "../../../../types/jobs"
 import { ProgressBar } from "../../../Common/ProgressBar"
 import { Game, GamePattern, GameState } from "./src/game"
 
+interface StackTowerProps {
+    primaryColor: string
+    disableGame: boolean
+    repairAgent?: RepairAgent
+    setIsSubmitting: React.Dispatch<React.SetStateAction<boolean>>
+    setSubmitError: React.Dispatch<React.SetStateAction<string | undefined>>
+    onSubmitted: () => void
+}
+
+const propsAreEqual = (prevProps: StackTowerProps, nextProps: StackTowerProps) => {
+    return (
+        prevProps.primaryColor === nextProps.primaryColor && prevProps.disableGame === nextProps.disableGame && prevProps.repairAgent === nextProps.repairAgent
+    )
+}
+
 export const StackTower = React.memo(function StackTower({
     primaryColor,
     disableGame,
@@ -15,14 +30,7 @@ export const StackTower = React.memo(function StackTower({
     setIsSubmitting,
     setSubmitError,
     onSubmitted,
-}: {
-    primaryColor: string
-    disableGame: boolean
-    repairAgent?: RepairAgent
-    setIsSubmitting: React.Dispatch<React.SetStateAction<boolean>>
-    setSubmitError: React.Dispatch<React.SetStateAction<string | undefined>>
-    onSubmitted: () => void
-}) {
+}: StackTowerProps) {
     const { send } = useGameServerCommandsUser("/user_commander")
 
     // Game data
@@ -162,21 +170,27 @@ export const StackTower = React.memo(function StackTower({
             </Stack>
         </Box>
     )
-})
+},
+propsAreEqual)
 
-const TowerStackInner = ({
-    score,
-    gameState,
-    setGameState,
-    oneNewGamePattern,
-    disableGame,
-}: {
+interface TowerStackInnerProps {
     score: number
     gameState: GameState
     setGameState: React.Dispatch<React.SetStateAction<GameState>>
     oneNewGamePattern: (gamePattern: GamePattern) => void
     disableGame: boolean
-}) => {
+}
+
+const propsAreEqualTowerStackInner = (prevProps: TowerStackInnerProps, nextProps: TowerStackInnerProps) => {
+    return (
+        prevProps.score === nextProps.score &&
+        prevProps.gameState === nextProps.gameState &&
+        prevProps.oneNewGamePattern === nextProps.oneNewGamePattern &&
+        prevProps.disableGame === nextProps.disableGame
+    )
+}
+
+const TowerStackInner = React.memo(function TowerStackInner({ score, gameState, setGameState, oneNewGamePattern, disableGame }: TowerStackInnerProps) {
     const theme = useTheme()
 
     return useMemo(() => {
@@ -283,19 +297,24 @@ const TowerStackInner = ({
             </Box>
         )
     }, [disableGame, gameState, oneNewGamePattern, score, setGameState, theme.factionTheme.background])
-}
+}, propsAreEqualTowerStackInner)
 
-const StaticGame = React.memo(function StaticGame({
-    backgroundColor,
-    setGameState,
-    oneNewGamePattern,
-    disableGame,
-}: {
+interface StaticGameProps {
     backgroundColor: string
     setGameState: React.Dispatch<React.SetStateAction<GameState>>
     oneNewGamePattern: (gamePattern: GamePattern) => void
     disableGame: boolean
-}) {
+}
+
+const propsAreEqualStaticGame = (prevProps: StaticGameProps, nextProps: StaticGameProps) => {
+    return (
+        prevProps.backgroundColor === nextProps.backgroundColor &&
+        prevProps.oneNewGamePattern === nextProps.oneNewGamePattern &&
+        prevProps.disableGame === nextProps.disableGame
+    )
+}
+
+const StaticGame = React.memo(function StaticGame({ backgroundColor, setGameState, oneNewGamePattern, disableGame }: StaticGameProps) {
     const gameStarted = useRef(false)
 
     // Initialize game
@@ -326,4 +345,4 @@ const StaticGame = React.memo(function StaticGame({
             }}
         />
     )
-})
+}, propsAreEqualStaticGame)

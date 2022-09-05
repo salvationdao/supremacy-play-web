@@ -252,7 +252,7 @@ export interface SideTabsStruct {
     Component?: () => JSX.Element | null
     icon: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
     label: string
-    matchNavLinkID?: string // Leave blank to have the tab available on all pages, else specify the route
+    matchNavLinkIDs?: string[] // Leave undefined to have the tab available on all pages, else specify the routes
     mountAllTime: boolean // Whether to keep component mounted even not on the tab
     requireAuth: boolean
 }
@@ -264,7 +264,7 @@ export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         label: "Battle Commands",
         Component: BattleArena,
         requireAuth: false,
-        matchNavLinkID: "home",
+        matchNavLinkIDs: BATTLE_ARENA_OPEN ? ["home"] : [],
         mountAllTime: true,
     },
     quick_deploy: {
@@ -273,7 +273,7 @@ export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         label: "Quick Deploy",
         Component: QuickDeploy,
         requireAuth: true,
-        matchNavLinkID: "home",
+        matchNavLinkIDs: BATTLE_ARENA_OPEN ? ["home"] : [],
         mountAllTime: false,
     },
     previous_battle: {
@@ -282,7 +282,7 @@ export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         label: "Previous Battle",
         Component: BattleEndScreen,
         requireAuth: false,
-        matchNavLinkID: "home",
+        matchNavLinkIDs: BATTLE_ARENA_OPEN ? ["home"] : [],
         mountAllTime: true,
     },
 }

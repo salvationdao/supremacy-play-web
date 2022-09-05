@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
 import { createContainer } from "unstated-next"
-import { useGlobalNotifications } from "."
+import { useGlobalNotifications, useSupremacy } from "."
 import { GetOvenStreamList } from "../fetching"
 import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
@@ -90,6 +90,7 @@ interface OvenPlayerInstance {
 
 export const OvenStreamContainer = createContainer(() => {
     const { newSnackbarMessage } = useGlobalNotifications()
+    const { hasInteracted } = useSupremacy()
     const { query: queryOvenGetStreamList } = useParameterizedQuery(GetOvenStreamList)
 
     const ovenPlayer = useRef<OvenPlayerInstance>()
@@ -110,19 +111,13 @@ export const OvenStreamContainer = createContainer(() => {
     const [ovenResolutions, setOvenResolutions] = useState<string[]>([])
 
     const [isEnlarged, toggleIsEnlarged] = useToggle((localStorage.getItem("isStreamEnlarged") || "true") === "true")
-    const hasInteracted = useRef(false)
 
     // Unmute stream / trailers etc. after user has interacted with the site.
     // This is needed for autoplay to work
     useEffect(() => {
-        const resetMute = () => {
-            toggleIsMute(localStorage.getItem("isMute") == "true")
-            toggleIsMusicMute(localStorage.getItem("isMusicMute") == "true")
-            hasInteracted.current = true
-        }
-
-        document.addEventListener("mousedown", resetMute, { once: true })
-    }, [toggleIsMusicMute, toggleIsMute])
+        toggleIsMute(localStorage.getItem("isMute") == "true")
+        toggleIsMusicMute(localStorage.getItem("isMusicMute") == "true")
+    }, [toggleIsMusicMute, toggleIsMute, hasInteracted])
 
     // Fetch stream list
     useEffect(() => {
@@ -141,12 +136,12 @@ export const OvenStreamContainer = createContainer(() => {
     }, [newSnackbarMessage, queryOvenGetStreamList])
 
     useEffect(() => {
-        if (hasInteracted.current) localStorage.setItem("isMute", isMute ? "true" : "false")
-    }, [isMute])
+        if (hasInteracted) localStorage.setItem("isMute", isMute ? "true" : "false")
+    }, [hasInteracted, isMute])
 
     useEffect(() => {
-        if (hasInteracted.current) localStorage.setItem("isMusicMute", isMusicMute ? "true" : "false")
-    }, [isMusicMute])
+        if (hasInteracted) localStorage.setItem("isMusicMute", isMusicMute ? "true" : "false")
+    }, [hasInteracted, isMusicMute])
 
     useEffect(() => {
         if (!selectedOvenResolution) return
@@ -161,8 +156,8 @@ export const OvenStreamContainer = createContainer(() => {
             return
         }
 
-        if (hasInteracted.current) toggleIsMute(false)
-    }, [toggleIsMute, volume])
+        if (hasInteracted) toggleIsMute(false)
+    }, [hasInteracted, toggleIsMute, volume])
 
     useEffect(() => {
         localStorage.setItem("musicVolume", musicVolume.toString())
@@ -218,7 +213,7 @@ export const OvenStreamContainer = createContainer(() => {
 
     const changeResolutionSource = useCallback((resolution: string) => {
         if (ovenPlayer && ovenPlayer.current) {
-            // get availible sources from oven palyer (resolutions)
+            // get available sources from oven player (resolutions)
             const availSources = ovenPlayer.current.getSources()
             if (Array.isArray(availSources)) {
                 const _availSources = availSources as OvenPlayerSource[]
