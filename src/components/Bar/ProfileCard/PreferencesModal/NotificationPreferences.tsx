@@ -123,7 +123,7 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
 
                 <TooltipHelper
                     placement="right-start"
-                    text={
+                    renderNode={
                         <Box>
                             <Typography sx={{ display: "inline" }}>
                                 You will be notified via your chosen notification preference(s) when your war machine is within the top 10 position in the
