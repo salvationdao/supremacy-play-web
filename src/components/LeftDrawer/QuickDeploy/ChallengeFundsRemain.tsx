@@ -53,7 +53,7 @@ const ChallengeFundsRemainInner = () => {
                             fontFamily: fonts.nostromoBold,
                         }}
                     >
-                        {challengeSupsRemain} SUPS BONUS BATTLE REWARDS
+                        {challengeSupsRemain} SUPS REMAIN IN BONUS POOL
                     </Typography>
                 </span>
 

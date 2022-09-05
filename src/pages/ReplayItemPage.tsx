@@ -3,7 +3,7 @@ import { useCallback, useEffect } from "react"
 import { useHistory } from "react-router-dom"
 import { HangarBg, SvgBack } from "../assets"
 import { FancyButton } from "../components"
-import { BattleReplayDetails } from "../components/Replays/BattlesReplays/BattleReplayDetails/BattleReplayDetails"
+import { ReplayDetails } from "../components/Replays/ReplayDetails/ReplayDetails"
 import { parseString } from "../helpers"
 import { useUrlQuery } from "../hooks"
 import { fonts, siteZIndex } from "../theme/theme"
@@ -73,7 +73,7 @@ const ReplayItemPageInner = () => {
     }, [battleNumber, gid, history])
 
     if (gid > 0 && battleNumber > 0) {
-        return <BattleReplayDetails gid={gid} battleNumber={battleNumber} />
+        return <ReplayDetails gid={gid} battleNumber={battleNumber} />
     }
 
     return null
