@@ -75,9 +75,36 @@ export const ReplayDetails = ({ gid, battleNumber }: { gid: number; battleNumber
         }
 
         return (
-            <Box>
-                <ReplayPlayer battleReplay={replay.battle_replay} />
-                <Typography>Hello</Typography>
+            <Box
+                sx={{
+                    flex: 1,
+                    overflowY: "auto",
+                    overflowX: "hidden",
+                    ml: "2rem",
+                    pr: "1rem",
+                    mr: "1rem",
+                    my: "2rem",
+                    direction: "ltr",
+                    scrollbarWidth: "none",
+                    "::-webkit-scrollbar": {
+                        width: "1rem",
+                    },
+                    "::-webkit-scrollbar-track": {
+                        background: "#FFFFFF15",
+                    },
+                    "::-webkit-scrollbar-thumb": {
+                        background: primaryColor,
+                    },
+                }}
+            >
+                <Box sx={{ direction: "ltr", height: 0 }}>
+                    <Stack spacing="2rem">
+                        <ReplayPlayer battleReplay={replay.battle_replay} />
+                        <Stack direction="row" spacing="2rem">
+                            <Typography>Hello</Typography>
+                        </Stack>
+                    </Stack>
+                </Box>
             </Box>
         )
     }, [loadError, primaryColor, replay])
