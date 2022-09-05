@@ -1,7 +1,6 @@
 import { Box, Stack } from "@mui/material"
-import { CoinsLeftPNG, CoinsRightPNG, LightningBackgroundPNG, SkyHighGroupedTextPNG } from "../../assets"
-import { colors } from "../../theme/theme"
 import { zoomEffect } from "../..//theme/keyframes"
+import { CoinsLeftPNG, CoinsRightPNG, LightningBackgroundPNG, SkyHighGroupedTextPNG } from "../../assets"
 
 export const BattleArenaBanner = () => {
     return (
@@ -12,7 +11,6 @@ export const BattleArenaBanner = () => {
                 height: "6rem",
                 width: "100%",
                 zIndex: 9,
-                border: `${colors.yellow}50 2px solid`,
             }}
         >
             {/* Text */}
