@@ -100,10 +100,24 @@ export const MechGeneralStatus = ({
                     break
                 case MechStatusEnum.PendingQueue:
                     text = "PENDING DEPLOY"
+                    if (payload.battle_eta_seconds != null) {
+                        text = `> ${
+                            payload.battle_eta_seconds < 60
+                                ? "1 MINUTE"
+                                : timeSinceInWords(new Date(), new Date(new Date().getTime() + payload.battle_eta_seconds * 1000))
+                        }`
+                    }
                     color = colors.yellow
                     break
                 case MechStatusEnum.Queue:
                     text = "IN QUEUE"
+                    if (payload.battle_eta_seconds != null) {
+                        text = `${
+                            payload.battle_eta_seconds < 60
+                                ? "< 1 MINUTE"
+                                : timeSinceInWords(new Date(), new Date(new Date().getTime() + payload.battle_eta_seconds * 1000))
+                        }`
+                    }
                     color = colors.yellow
                     break
                 case MechStatusEnum.Battle:
@@ -125,14 +139,6 @@ export const MechGeneralStatus = ({
                 default:
                     text = payload.status
                     color = colors.lightGrey
-            }
-
-            if (payload.battle_eta_seconds != null && (payload.status === MechStatusEnum.Queue || payload.status === MechStatusEnum.PendingQueue)) {
-                text = `${
-                    payload.battle_eta_seconds < 60
-                        ? "< 1 MINUTE"
-                        : timeSinceInWords(new Date(), new Date(new Date().getTime() + payload.battle_eta_seconds * 1000))
-                }`
             }
 
             textValue.current = text
