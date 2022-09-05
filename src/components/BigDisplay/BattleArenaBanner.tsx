@@ -34,7 +34,7 @@ export const BattleArenaBanner = () => {
             <Box
                 sx={{
                     position: "absolute",
-                    left: 0,
+                    left: "1rem",
                     top: 0,
                     bottom: 0,
                     width: "20rem",
@@ -50,7 +50,7 @@ export const BattleArenaBanner = () => {
             <Box
                 sx={{
                     position: "absolute",
-                    right: 0,
+                    right: "1rem",
                     top: 0,
                     bottom: 0,
                     width: "20rem",
