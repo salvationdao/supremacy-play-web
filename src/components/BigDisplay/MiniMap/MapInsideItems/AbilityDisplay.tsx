@@ -42,9 +42,10 @@ interface PendingHiveStateChange {
 
 interface MiniMapAbilitiesDisplayProps {
     map: GameMap
+    poppedOutContainerRef?: React.MutableRefObject<HTMLElement | null>
 }
 
-export const MiniMapAbilitiesDisplay = ({ map }: MiniMapAbilitiesDisplayProps) => {
+export const MiniMapAbilitiesDisplay = ({ map, poppedOutContainerRef }: MiniMapAbilitiesDisplayProps) => {
     const { currentArenaID } = useArena()
     const [abilityList, setAbilityList] = useState<DisplayedAbility[]>([])
     const [mapEvents, setMapEvents] = useState<DisplayedAbility[]>([])
@@ -366,7 +367,7 @@ export const MiniMapAbilitiesDisplay = ({ map }: MiniMapAbilitiesDisplayProps) =
             {mapEvents.length > 0 &&
                 mapEvents.map((displayAbility) => <MiniMapAbilityDisplay key={displayAbility.offering_id} displayAbility={displayAbility} />)}
 
-            {map.Name === TheHiveMapName && <HiveHexes map={map} state={hiveState} />}
+            {map.Name === TheHiveMapName && <HiveHexes map={map} state={hiveState} poppedOutContainerRef={poppedOutContainerRef} />}
         </>
     )
 }
