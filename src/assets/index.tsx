@@ -62,7 +62,6 @@ import View from "!@svgr/webpack!./svg/View.svg"
 import Wallet from "!@svgr/webpack!./svg/Wallet.svg"
 import Weapons from "!@svgr/webpack!./svg/Weapons.svg"
 import ZaibatsuMechKillIcon from "!@svgr/webpack!./svg/ZaibatsuKillIcon.svg"
-import SkyHighGroupedText from "!react-svg-loader!./BattleRewardsBanners/SkyHighGroupedText.svg"
 import Angle from "!react-svg-loader!./svg/Angle.svg"
 import Announcement from "!react-svg-loader!./svg/Announcement.svg"
 import Applause from "!react-svg-loader!./svg/Applause.svg"
@@ -159,6 +158,7 @@ import CoinsLeftPNG from "./BattleRewardsBanners/CoinsLeft.png"
 import CoinsRightPNG from "./BattleRewardsBanners/CoinsRight.png"
 import LightningBackgroundPNG from "./BattleRewardsBanners/LightningBackground.png"
 import LightningBackgroundBluePNG from "./BattleRewardsBanners/LightningBackgroundBlue.png"
+import SkyHighGroupedTextPNG from "./BattleRewardsBanners/SkyHighGroupedText.png"
 import BattleBgWebP from "./images/BattleBg.webp"
 import BostonCyberneticsLogo from "./images/BostonCyberneticsLogo.png"
 import BottomMechWEBP from "./images/BottomMech.webp"
@@ -268,6 +268,7 @@ export {
 }
 export {
     BattleTrainingBG,
+    SkyHighGroupedTextPNG,
     BattleRewardsBannerPNG,
     LightningBackgroundPNG,
     LightningBackgroundBluePNG,
@@ -1252,11 +1253,5 @@ export const SvgDownArrow: React.VoidFunctionComponent<SvgWrapperProps> = (props
 export const SvgDelete: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Delete />
-    </SvgWrapper>
-)
-
-export const SvgSkyHighGroupedText: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
-    <SvgWrapper {...props}>
-        <SkyHighGroupedText />
     </SvgWrapper>
 )

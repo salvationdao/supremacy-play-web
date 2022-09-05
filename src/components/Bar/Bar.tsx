@@ -127,8 +127,10 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
         <>
             <Logo />
             <NavLinks />
+
             <Box sx={{ flexGrow: 1 }} />
 
+            <Tutorial />
             {userID && (
                 <FancyButton
                     clipThingsProps={{
@@ -147,7 +149,6 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
                     </Typography>
                 </FancyButton>
             )}
-            <Tutorial />
             {userID && <WalletDetails />}
             {userID && <Quests />}
             {userID && <Messages />}
