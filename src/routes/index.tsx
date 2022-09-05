@@ -252,7 +252,7 @@ export interface SideTabsStruct {
     Component?: () => JSX.Element | null
     icon: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
     label: string
-    matchNavLinkIDs?: string[] // Leave blank to have the tab available on all pages, else specify the routes
+    matchNavLinkIDs?: string[] // Leave undefined to have the tab available on all pages, else specify the routes
     mountAllTime: boolean // Whether to keep component mounted even not on the tab
     requireAuth: boolean
 }

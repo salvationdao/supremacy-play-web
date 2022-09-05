@@ -2,6 +2,7 @@ import { Box, Stack } from "@mui/material"
 import { useEffect, useState } from "react"
 import { SvgAbility, SvgHistory, SvgHistoryClock, SvgRobot } from "../assets"
 import { BattleAbility, BattleEndScreen, BattleHistory, BigDisplay, Controls, EarlyAccessWarning, Notifications, WarMachineStats } from "../components"
+import { BattleRewardsSkyHighBanner } from "../components/Common/BannersPromotions/BattleRewardsSkyHighBanner"
 import { PlayerAbilities } from "../components/LeftDrawer/BattleArena/PlayerAbilities/PlayerAbilities"
 import { QuickPlayerAbilities } from "../components/LeftDrawer/BattleArena/QuickPlayerAbilities/QuickPlayerAbilities"
 import { QuickDeploy } from "../components/LeftDrawer/QuickDeploy/QuickDeploy"
@@ -157,6 +158,8 @@ const BattleArenaPageInner = () => {
 
     return (
         <Stack id="battle-arena-all" sx={{ width: "100%", height: "100%", zIndex: siteZIndex.RoutePage }}>
+            <BattleRewardsSkyHighBanner />
+
             <Box id="game-ui-container" sx={{ position: "relative", flex: 1, height: 0 }}>
                 <BigDisplay />
 
