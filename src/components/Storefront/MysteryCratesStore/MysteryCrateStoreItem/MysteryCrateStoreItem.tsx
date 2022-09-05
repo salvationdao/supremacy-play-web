@@ -1,5 +1,5 @@
 import { Box, Modal, Stack, TextField, Typography } from "@mui/material"
-import { useCallback, useMemo, useState } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SafePNG, SvgArrow, SvgSupToken } from "../../../../assets"
 import { useGlobalNotifications } from "../../../../containers"
@@ -23,7 +23,17 @@ interface MysteryCrateStoreItemProps {
     setFutureCratesToOpen: React.Dispatch<React.SetStateAction<(StorefrontMysteryCrate | MysteryCrate)[]>>
 }
 
-export const MysteryCrateStoreItem = ({ enlargedView, crate, setOpeningCrate, setOpenedRewards, setFutureCratesToOpen }: MysteryCrateStoreItemProps) => {
+const propsAreEqual = (prevProps: MysteryCrateStoreItemProps, nextProps: MysteryCrateStoreItemProps) => {
+    return prevProps.enlargedView === nextProps.enlargedView && prevProps.crate.id === nextProps.crate.id
+}
+
+export const MysteryCrateStoreItem = React.memo(function MysteryCrateStoreItem({
+    enlargedView,
+    crate,
+    setOpeningCrate,
+    setOpenedRewards,
+    setFutureCratesToOpen,
+}: MysteryCrateStoreItemProps) {
     const theme = useTheme()
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -356,7 +366,8 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, setOpeningCrate, se
             )}
         </>
     )
-}
+},
+propsAreEqual)
 
 const PurchaseSuccessModal = ({
     rewards,

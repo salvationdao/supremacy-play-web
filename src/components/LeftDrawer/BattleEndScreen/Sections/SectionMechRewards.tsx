@@ -37,8 +37,8 @@ export const SectionMechRewards = ({ battleEndDetail }: { battleEndDetail: Battl
                                 <Box
                                     sx={{
                                         flexShrink: 0,
-                                        width: "4.5rem",
-                                        height: "4.5rem",
+                                        width: "6rem",
+                                        height: "6rem",
                                         background: `url(${wm.avatar_url || GenericWarMachinePNG})`,
                                         backgroundRepeat: "no-repeat",
                                         backgroundPosition: "center",
@@ -75,6 +75,14 @@ export const SectionMechRewards = ({ battleEndDetail }: { battleEndDetail: Battl
                                         <SvgSupToken fill={colors.yellow} size="1.8rem" />
                                         <Typography sx={{ lineHeight: 1 }}>{supFormatterNoFixed(wm.rewarded_sups, 2)}</Typography>
                                     </Stack>
+
+                                    {wm.rewarded_sups_bonus && (
+                                        <Stack direction="row" alignItems="center">
+                                            <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold", color: colors.offWhite }}>BONUS:&nbsp;</Typography>
+                                            <SvgSupToken fill={colors.yellow} size="1.8rem" />
+                                            <Typography sx={{ lineHeight: 1 }}>{supFormatterNoFixed(wm.rewarded_sups_bonus, 2)}</Typography>
+                                        </Stack>
+                                    )}
                                 </Stack>
                             </Stack>
                         )

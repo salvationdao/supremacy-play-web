@@ -105,9 +105,12 @@ import Quest from "!react-svg-loader!./svg/Quest.svg"
 import QuestionMark from "!react-svg-loader!./svg/QuestionMark.svg"
 import Radar from "!react-svg-loader!./svg/Radar.svg"
 import Corporal from "!react-svg-loader!./svg/Ranks/Corporal.svg"
+import Delete from "!react-svg-loader!./svg/Delete.svg"
+import DownArrow from "!react-svg-loader!./svg/DownArrow.svg"
 import General from "!react-svg-loader!./svg/Ranks/General.svg"
 import NewRecruit from "!react-svg-loader!./svg/Ranks/NewRecruit.svg"
 import Private from "!react-svg-loader!./svg/Ranks/Private.svg"
+import UpArrow from "!react-svg-loader!./svg/UpArrow.svg"
 import Repair from "!react-svg-loader!./svg/Repair.svg"
 import ResizeX from "!react-svg-loader!./svg/ResizeX.svg"
 import ResizeXY from "!react-svg-loader!./svg/ResizeXY.svg"
@@ -1232,5 +1235,23 @@ export const SvgQuest: React.VoidFunctionComponent<SvgWrapperProps> = (props) =>
 export const SvgSwap: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Swap />
+    </SvgWrapper>
+)
+
+export const SvgUpArrow: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <UpArrow />
+    </SvgWrapper>
+)
+
+export const SvgDownArrow: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <DownArrow />
+    </SvgWrapper>
+)
+
+export const SvgDelete: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Delete />
     </SvgWrapper>
 )

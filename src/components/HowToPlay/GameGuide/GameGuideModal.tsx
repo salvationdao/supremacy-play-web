@@ -99,15 +99,13 @@ export const GameGuideModal = ({ onClose }: { onClose: () => void }) => {
                                         pr: "2rem",
                                         my: "2.6rem",
                                         "::-webkit-scrollbar": {
-                                            width: ".4rem",
+                                            width: "1rem",
                                         },
                                         "::-webkit-scrollbar-track": {
                                             background: "#FFFFFF15",
-                                            borderRadius: 3,
                                         },
                                         "::-webkit-scrollbar-thumb": {
                                             background: `${primaryColor}`,
-                                            borderRadius: 3,
                                         },
                                         a: {
                                             color: colors.neonBlue,
@@ -240,15 +238,13 @@ const LoadingSkeleton = () => (
 
                 scrollBehavior: "smooth",
                 "::-webkit-scrollbar": {
-                    width: ".4rem",
+                    width: "1rem",
                 },
                 "::-webkit-scrollbar-track": {
                     background: "#FFFFFF15",
-                    borderRadius: 3,
                 },
                 "::-webkit-scrollbar-thumb": {
                     background: `${colors.neonBlue}`,
-                    borderRadius: 3,
                 },
             }}
         >

@@ -2,6 +2,7 @@ import { useState, useCallback } from "react"
 import { Box, Stack, Skeleton, Typography, TextField } from "@mui/material"
 import { SafePNG, SvgArrow } from "../../../../assets"
 import { useGlobalNotifications } from "../../../../containers"
+import React from "react"
 import { useTheme } from "../../../../containers/theme"
 import { generatePriceText } from "../../../../helpers"
 import { fonts } from "../../../../theme/theme"
@@ -17,7 +18,11 @@ interface PackageStoreItemProps {
     item: FiatProduct
 }
 
-export const PackageStoreItem = ({ enlargedView, item }: PackageStoreItemProps) => {
+const propsAreEqual = (prevProps: PackageStoreItemProps, nextProps: PackageStoreItemProps) => {
+    return prevProps.enlargedView === nextProps.enlargedView && prevProps.item.id === nextProps.item.id
+}
+
+export const PackageStoreItem = React.memo(function PackageStoreItem({ enlargedView, item }: PackageStoreItemProps) {
     const theme = useTheme()
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -219,7 +224,7 @@ export const PackageStoreItem = ({ enlargedView, item }: PackageStoreItemProps) 
             </Box>
         </>
     )
-}
+}, propsAreEqual)
 
 export const PackageStoreItemLoadingSkeleton = () => {
     const theme = useTheme()

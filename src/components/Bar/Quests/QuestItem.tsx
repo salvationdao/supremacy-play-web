@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import Confetti from "react-confetti"
 import { SvgChest, SvgInfoCircular } from "../../../assets"
 import { colors, fonts } from "../../../theme/theme"
@@ -7,17 +7,32 @@ import { QuestProgress, QuestStat } from "../../../types"
 import { ProgressBar } from "../../Common/ProgressBar"
 import { TooltipHelper } from "../../Common/TooltipHelper"
 
-export const QuestItem = ({ questStat, progress, showConfetti }: { questStat: QuestStat; progress?: QuestProgress; showConfetti: boolean }) => {
+interface QuestItemProps {
+    questStat: QuestStat
+    progress?: QuestProgress
+    showConfetti: boolean
+}
+
+const propsAreEqual = (prevProps: QuestItemProps, nextProps: QuestItemProps) => {
+    return (
+        prevProps.questStat.id === nextProps.questStat.id &&
+        prevProps.progress?.current === nextProps.progress?.current &&
+        prevProps.showConfetti === nextProps.showConfetti
+    )
+}
+
+export const QuestItem = React.memo(function QuestItem({ questStat, progress, showConfetti }: QuestItemProps) {
     const cappedCurrent = progress ? Math.min(progress.current, progress.goal) : 0
     const progressPercent = progress ? (100 * cappedCurrent) / progress.goal : 0
     const [showShowConfetti, setShowShowConfetti] = useState(false)
+    const [completed, setCompleted] = useState(questStat.obtained)
 
-    // This timeout allows the popover to fully animate before we do other animations, else it will lage
+    // This timeout allows the popover to fully animate before we do other animations, else it will lag
     useEffect(() => {
         if (!showConfetti) return
         setTimeout(() => {
             setShowShowConfetti(true)
-        }, 400)
+        }, 500)
     }, [showConfetti])
 
     return (
@@ -33,21 +48,27 @@ export const QuestItem = ({ questStat, progress, showConfetti }: { questStat: Qu
                 borderRadius: 1,
                 backgroundColor: `${colors.purple}16`,
                 userSelect: "none",
-                opacity: questStat.obtained && !showConfetti ? 0.4 : 1,
-                border: questStat.obtained && !showConfetti ? "none" : `${colors.purple}50 1px solid`,
+                opacity: completed && !showConfetti ? 0.4 : 1,
+                border: completed && !showConfetti ? "none" : `${colors.purple}50 1px solid`,
                 overflow: "hidden",
             }}
         >
-            <Confetti
-                width={400}
-                height={80}
-                gravity={0.04}
-                initialVelocityX={1}
-                tweenDuration={10000}
-                run={showShowConfetti}
-                numberOfPieces={600}
-                recycle={false}
-            />
+            {showShowConfetti && (
+                <Confetti
+                    width={400}
+                    height={80}
+                    gravity={0.04}
+                    initialVelocityX={1}
+                    tweenDuration={8000}
+                    run={showShowConfetti}
+                    numberOfPieces={100}
+                    recycle={false}
+                    onConfettiComplete={() => {
+                        setCompleted(true)
+                        setShowShowConfetti(false)
+                    }}
+                />
+            )}
 
             <TooltipHelper color={colors.purple} placement="top-end" text={questStat.description}>
                 <Box sx={{ position: "absolute", top: ".4rem", right: ".4rem", opacity: 0.4, ":hover": { opacity: 1 } }}>
@@ -110,4 +131,4 @@ export const QuestItem = ({ questStat, progress, showConfetti }: { questStat: Qu
             </Stack>
         </Stack>
     )
-}
+}, propsAreEqual)
