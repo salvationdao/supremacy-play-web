@@ -1,8 +1,9 @@
-import { Box, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { Stack, Typography } from "@mui/material"
+import { useCallback, useRef, useState } from "react"
 import { SvgRepair } from "../../../../assets"
 import { useGlobalNotifications } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
+import { timeSinceInWords } from "../../../../helpers"
 import {
     useGameServerCommandsFaction,
     useGameServerCommandsUser,
@@ -126,6 +127,14 @@ export const MechGeneralStatus = ({
                     color = colors.lightGrey
             }
 
+            if (payload.battle_eta_seconds != null && (payload.status === MechStatusEnum.Queue || payload.status === MechStatusEnum.PendingQueue)) {
+                text = `${
+                    payload.battle_eta_seconds < 60
+                        ? "< 1 MINUTE"
+                        : timeSinceInWords(new Date(), new Date(new Date().getTime() + payload.battle_eta_seconds * 1000))
+                }`
+            }
+
             textValue.current = text
             setColour(color)
             setPrimaryColor && setPrimaryColor(color)
@@ -192,11 +201,7 @@ export const MechGeneralStatus = ({
                         variant={smallVersion ? "caption" : "body1"}
                         sx={{ lineHeight: 1, color, textAlign: hideBox ? "start" : "center", fontFamily: fonts.nostromoBlack }}
                     >
-                        {mechStatus?.battle_eta_seconds != null && mechStatus.status === MechStatusEnum.Queue ? (
-                            <BattleETA battleETASeconds={mechStatus.battle_eta_seconds} />
-                        ) : (
-                            textValue.current
-                        )}
+                        {textValue.current}
                     </Typography>
 
                     {showButtons && (
@@ -311,33 +316,5 @@ export const MechGeneralStatus = ({
                 />
             )}
         </>
-    )
-}
-
-interface BattleETAProps {
-    battleETASeconds: number
-}
-
-const BattleETA = ({ battleETASeconds }: BattleETAProps) => {
-    const countdownRef = useRef<HTMLDivElement>()
-    const secondsLeftRef = useRef(battleETASeconds)
-
-    useEffect(() => {
-        const t = setInterval(() => {
-            if (!countdownRef.current) return
-            secondsLeftRef.current -= 10
-            countdownRef.current.innerText =
-                secondsLeftRef.current < 60
-                    ? "< 1 MINUTE"
-                    : `~ ${Math.round(secondsLeftRef.current / 60)} MINUTE${Math.round(secondsLeftRef.current / 60) > 1 ? "S" : ""}`
-        }, 1000 * 10) // Every 10 seconds
-
-        return () => clearInterval(t)
-    }, [battleETASeconds])
-
-    return (
-        <Box ref={countdownRef}>
-            {battleETASeconds < 60 ? "< 1 MINUTE" : `~ ${Math.round(battleETASeconds / 60)} MINUTE${Math.round(battleETASeconds / 60) > 1 ? "S" : ""}`}
-        </Box>
     )
 }
