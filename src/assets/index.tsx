@@ -159,6 +159,7 @@ import CoinsRightPNG from "./BattleRewardsBanners/CoinsRight.png"
 import LightningBackgroundPNG from "./BattleRewardsBanners/LightningBackground.png"
 import LightningBackgroundBluePNG from "./BattleRewardsBanners/LightningBackgroundBlue.png"
 import SkyHighGroupedTextPNG from "./BattleRewardsBanners/SkyHighGroupedText.png"
+import BattleArenaOpeningWebP from "./images/BattleArenaOpening.webp"
 import BattleBgWebP from "./images/BattleBg.webp"
 import BostonCyberneticsLogo from "./images/BostonCyberneticsLogo.png"
 import BottomMechWEBP from "./images/BottomMech.webp"
@@ -304,6 +305,7 @@ export {
     WarMachineZAIPNG,
     BattleBgWebP,
     ThreeMechsJPG,
+    BattleArenaOpeningWebP,
 }
 export { BcBorder, BcBorderBottom, BcBottom, RmBorder, RmBorderBottom, RmBottom, ZhiBorder, ZhiBorderBottom, ZhiBottom, ZhiMask, BcMask, RmMask }
 
