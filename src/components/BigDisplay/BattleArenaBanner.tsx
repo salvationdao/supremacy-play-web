@@ -2,12 +2,12 @@ import { Box, Grow, Modal, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { zoomEffect } from "../..//theme/keyframes"
 import { BattleRewardsBannerPNG, CoinsLeftPNG, CoinsRightPNG, LightningBackgroundPNG, SkyHighGroupedTextPNG } from "../../assets"
-import { PROD_ONLY } from "../../constants"
+import { DEV_ONLY, PROD_ONLY } from "../../constants"
 import { colors, fonts } from "../../theme/theme"
 import { FancyButton } from "../Common/FancyButton"
 
 export const BattleArenaBanner = () => {
-    if (!PROD_ONLY) return null
+    if (!PROD_ONLY && !DEV_ONLY) return null
 
     return (
         <>
