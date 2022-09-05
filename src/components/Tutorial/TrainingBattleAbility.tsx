@@ -243,6 +243,7 @@ const context: Context[] = [
 const trainingMap: Map = {
     Name: "CityBlockArena",
     Image_Url: "https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/maps/CityBlockArena.jpg",
+    Background_Url: "https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/maps/CityBlockArena.jpg",
     Width: 1900,
     Height: 1700,
     Cells_X: 38,

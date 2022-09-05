@@ -224,6 +224,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireFaction: false,
         matchNavLinkID: "replays",
         enable: true,
+        pageTitle: "Supremacy - Replay Item",
     },
     replays: {
         id: "replays",
@@ -238,6 +239,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         },
         matchNavLinkID: "replays",
         enable: true,
+        pageTitle: "Supremacy - Replays",
     },
 
     // Claim
