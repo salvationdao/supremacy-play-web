@@ -98,17 +98,27 @@ export const MiniMapContainer = createContainer(() => {
         })
     }, [addToHotkeyRecord, resetSelection])
 
-    const onTargetConfirm = useCallback(() => {
+    const onTargetConfirm = useCallback(async () => {
         if (!selection || !currentArenaID) return
-
+        let payload: {
+            arena_id: string
+            blueprint_ability_id: string
+            location_select_type: string
+            start_coords?: Position
+            end_coords?: Position
+            mech_hash?: string
+        } | null = null
+        let hubKey = GameServerKeys.PlayerAbilityUse
         try {
             if (winner?.game_ability) {
                 if (!selection.startCoords) {
                     throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
                 }
 
-                send<boolean>(GameServerKeys.SubmitAbilityLocationSelect, {
+                payload = {
                     arena_id: currentArenaID,
+                    blueprint_ability_id: "",
+                    location_select_type: "",
                     start_coords: {
                         x: selection.startCoords.x,
                         y: selection.startCoords.y,
@@ -120,16 +130,10 @@ export const MiniMapContainer = createContainer(() => {
                                   y: selection.endCoords.y,
                               }
                             : undefined,
-                })
+                }
+
+                hubKey = GameServerKeys.SubmitAbilityLocationSelect
             } else if (playerAbility) {
-                let payload: {
-                    arena_id: string
-                    blueprint_ability_id: string
-                    location_select_type: string
-                    start_coords?: Position
-                    end_coords?: Position
-                    mech_hash?: string
-                } | null = null
                 switch (playerAbility.ability.location_select_type) {
                     case LocationSelectType.LineSelect:
                         if (!selection.startCoords || !selection.endCoords) {
@@ -182,7 +186,6 @@ export const MiniMapContainer = createContainer(() => {
                 if (!payload) {
                     throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
                 }
-                send<boolean, typeof payload>(GameServerKeys.PlayerAbilityUse, payload)
             }
 
             // If it's mech move command, dont reset so player can keep moving the mech
@@ -196,6 +199,7 @@ export const MiniMapContainer = createContainer(() => {
             if (playerAbility?.ability.location_select_type === LocationSelectType.MechSelect) {
                 setHighlightedMechParticipantID(undefined)
             }
+            await send<boolean, typeof payload>(hubKey, payload)
             newSnackbarMessage("Successfully submitted target location.", "success")
         } catch (err) {
             newSnackbarMessage(typeof err === "string" ? err : "Failed to submit target location.", "error")
