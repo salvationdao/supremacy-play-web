@@ -19,8 +19,6 @@ export const ReplayDetails = ({ gid, battleNumber }: { gid: number; battleNumber
     const [replay, setReplay] = useState<GetReplayResponse>()
     const [loadError, setLoadError] = useState<string>()
 
-    const primaryColor = theme.factionTheme.primary
-
     // Get replay details
     useEffect(() => {
         ;(async () => {
@@ -39,6 +37,29 @@ export const ReplayDetails = ({ gid, battleNumber }: { gid: number; battleNumber
             }
         })()
     }, [battleNumber, gid, send])
+
+    useEffect(() => {
+        ;(async () => {
+            try {
+                setIsLoading(true)
+                const resp = await send<RESPONSE_TYPE>(GameServerKeys.XXXXXX, {
+                    payload: something,
+                })
+
+                if (!resp) return
+                setFactionsData(resp)
+            } catch (err) {
+                const message = typeof err === "string" ? err : "Failed to get key card listings."
+                newSnackbarMessage(message, "error")
+                setLoadError(message)
+                console.error(err)
+            } finally {
+                setIsLoading(true)
+            }
+        })()
+    }, [send])
+
+    const primaryColor = theme.factionTheme.primary
 
     const content = useMemo(() => {
         if (loadError) {
@@ -100,8 +121,28 @@ export const ReplayDetails = ({ gid, battleNumber }: { gid: number; battleNumber
                 <Box sx={{ direction: "ltr", height: 0 }}>
                     <Stack spacing="2rem">
                         <ReplayPlayer battleReplay={replay.battle_replay} />
+
                         <Stack direction="row" spacing="2rem">
-                            <Typography>Hello</Typography>
+                            {/* Left side */}
+                            <Stack>
+                                <Typography variant="h4" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                    BATTLE #{replay.battle_replay?.battle.battle_number}
+                                </Typography>
+
+                                <Typography sx={{ fontFamily: fonts.nostromoBold, color: colors.lightGrey }}>
+                                    {replay.battle_replay?.battle.ended_at?.toLocaleDateString("en-us", {
+                                        month: "short",
+                                        day: "numeric",
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                        timeZoneName: "short",
+                                        hour12: false,
+                                    })}
+                                </Typography>
+                            </Stack>
+
+                            {/* Right side */}
+                            <Stack sx={{ width: "30rem" }}></Stack>
                         </Stack>
                     </Stack>
                 </Box>
