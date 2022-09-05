@@ -115,7 +115,7 @@ export const MiniMapInside = ({ containerDimensions, poppedOutContainerRef }: Mi
                         <Blackouts />
 
                         {/* Show any abilities on the minimap */}
-                        <MiniMapAbilitiesDisplay />
+                        <MiniMapAbilitiesDisplay map={map} />
                     </Box>
                 </Stack>
 
