@@ -27,8 +27,8 @@ export const PASSPORT_SIGNUP = DEV_ONLY
     : "https://staging.xsyn.dev/external/login?signup=true&tenant=supremacy&redirectURL=https%3A%2F%2Fsupremacygame.dev/?training=false"
 
 // Battle arena related
-export const BATTLE_ARENA_OPEN = STAGING_OR_DEV_ONLY
-export const BATTLE_ARENA_OPEN_DATE = new Date("Sep 07 2022 14:00:00 GMT+0800 (AWST)")
+export const BATTLE_ARENA_OPEN = false //STAGING_OR_DEV_ONLY
+export const BATTLE_ARENA_OPEN_DATE: Date | undefined = new Date("Sep 07 2022 14:00:00 GMT+0800 (AWST)")
 
 // Testing related
 export const IS_TESTING_MODE = STAGING_ONLY

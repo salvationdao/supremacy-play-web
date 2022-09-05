@@ -264,7 +264,7 @@ export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         label: "Battle Commands",
         Component: BattleArena,
         requireAuth: false,
-        matchNavLinkIDs: ["home"],
+        matchNavLinkIDs: BATTLE_ARENA_OPEN ? ["home"] : [],
         mountAllTime: true,
     },
     quick_deploy: {
@@ -273,7 +273,7 @@ export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         label: "Quick Deploy",
         Component: QuickDeploy,
         requireAuth: true,
-        matchNavLinkIDs: ["home"],
+        matchNavLinkIDs: BATTLE_ARENA_OPEN ? ["home"] : [],
         mountAllTime: false,
     },
     previous_battle: {
@@ -282,7 +282,7 @@ export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         label: "Previous Battle",
         Component: BattleEndScreen,
         requireAuth: false,
-        matchNavLinkIDs: ["home"],
+        matchNavLinkIDs: BATTLE_ARENA_OPEN ? ["home"] : [],
         mountAllTime: true,
     },
 }

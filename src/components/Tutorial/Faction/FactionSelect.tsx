@@ -146,7 +146,7 @@ const FactionBox = ({ faction }: { faction: Faction }) => {
     }, [send, faction.id, newSnackbarMessage, setLeftDrawerActiveTabID, setRightDrawerActiveTabID])
 
     // Responsiveness
-    const shortHeight = gameUIDimensions.height <= 850 && gameUIDimensions.height > 0
+    const shortHeight = gameUIDimensions.height <= 900 && gameUIDimensions.height > 0
     const mediumScreen = gameUIDimensions.width <= 1300 && gameUIDimensions.width > 0
 
     return (
@@ -164,7 +164,7 @@ const FactionBox = ({ faction }: { faction: Faction }) => {
                 <Typography variant="h2">{faction.label}</Typography>
             </Box>
             <InnerStack id="inner-stack" shortScreen={shortHeight} color={faction.primary_color} mediumScreen={mediumScreen}>
-                {/* descrioption */}
+                {/* description */}
                 <Typography
                     sx={{
                         textAlign: "left",
@@ -376,7 +376,7 @@ const InnerStack = styled("div")((props: { shortScreen: boolean; color: string; 
     return {
         display: "flex",
         flexDirection: "column",
-        maxHeight: props.shortScreen ? "400px" : "unset",
+        maxHeight: props.shortScreen ? "35vh" : "unset",
         gap: "4rem",
         overflowY: "auto",
         scrollbarWidth: "none",
