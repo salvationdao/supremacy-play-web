@@ -1,41 +1,89 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { ClipThing } from "../../../Common/ClipThing"
+import { CoinsLeftPNG, CoinsRightPNG, LightningBackgroundPNG } from "../../../../assets"
 import { colors, fonts } from "../../../../theme/theme"
-import { shadeColor } from "../../../../helpers"
 import { ConnectButton } from "../../../Bar/ProfileCard/ConnectButton"
-import { useMemo } from "react"
+import { ClipThing } from "../../../Common/ClipThing"
 
 export const UnauthPrompt = () => {
-    const backgroundColor = useMemo(() => {
-        return shadeColor(colors.neonBlue, -75)
-    }, [])
-
     return (
         <Box sx={{ py: "1rem" }}>
             <ClipThing
-                sx={{ p: ".8rem 1.1rem" }}
                 clipSize="6px"
                 border={{
-                    borderColor: `${colors.darkNeonBlue}`,
+                    borderColor: `${colors.yellow}`,
                     borderThickness: ".3rem",
                 }}
-                backgroundColor={backgroundColor}
-                // opacity={0.7}
+                opacity={0.6}
+                backgroundColor={colors.darkestNeonBlue}
+                sx={{ position: "relative" }}
             >
                 <Stack
-                    spacing="1.2rem"
                     alignItems="center"
                     sx={{
                         flex: 1,
                         minWidth: "32.5rem",
-                        p: "1rem",
+                        p: "1.8rem 2.1rem",
                     }}
                 >
-                    <Typography fontFamily={fonts.nostromoBold} variant="body2" textAlign={"center"}>
-                        log in for full access to the battle arena- claim and use abilities, visit the marketplace and deploy mechs
+                    <Typography fontFamily={fonts.nostromoBlack} variant="h5" textAlign={"center"} sx={{ mb: ".8rem" }}>
+                        UNLOCK FEATURES
                     </Typography>
-                    <ConnectButton />
+                    <Typography fontFamily={fonts.nostromoBold} variant="body2" textAlign={"center"} sx={{ mb: "1.6rem", fontSize: "1.4rem" }}>
+                        log in for full access to the battle arena: claim and use abilities, visit the marketplace and deploy mechs!
+                    </Typography>
+                    <ConnectButton clipBorderColor={colors.yellow} clipBackgroundColor={colors.yellow} sx={{ minWidth: "18rem" }} />
                 </Stack>
+
+                {/* Background */}
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        opacity: 0.3,
+                        zIndex: -2,
+                        background: `url(${LightningBackgroundPNG})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                    }}
+                />
+
+                {/* Coin left decorations */}
+                <Box
+                    sx={{
+                        position: "absolute",
+                        left: "2rem",
+                        top: "2rem",
+                        bottom: "2rem",
+                        width: "10rem",
+                        opacity: 0.3,
+                        zIndex: -1,
+                        background: `url(${CoinsLeftPNG})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "bottom",
+                        backgroundSize: "contain",
+                    }}
+                />
+
+                {/* Coin right decorations */}
+                <Box
+                    sx={{
+                        position: "absolute",
+                        right: "2rem",
+                        top: "2rem",
+                        bottom: "2rem",
+                        width: "10rem",
+                        opacity: 0.3,
+                        zIndex: -1,
+                        background: `url(${CoinsRightPNG})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "bottom",
+                        backgroundSize: "contain",
+                    }}
+                />
             </ClipThing>
         </Box>
     )
