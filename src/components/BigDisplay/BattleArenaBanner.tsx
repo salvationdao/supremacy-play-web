@@ -1,10 +1,21 @@
 import { Box, Stack } from "@mui/material"
 import { CoinsLeftPNG, CoinsRightPNG, LightningBackgroundPNG, SkyHighGroupedTextPNG } from "../../assets"
+import { colors } from "../../theme/theme"
+import { zoomEffect } from "../..//theme/keyframes"
 
 export const BattleArenaBanner = () => {
     return (
-        <Stack alignItems="center" sx={{ position: "relative", height: "6rem", width: "100%", zIndex: 9 }}>
-            {/* Coin left decorations */}
+        <Stack
+            alignItems="center"
+            sx={{
+                position: "relative",
+                height: "6rem",
+                width: "100%",
+                zIndex: 9,
+                border: `${colors.yellow}50 2px solid`,
+            }}
+        >
+            {/* Text */}
             <Box
                 sx={{
                     position: "absolute",
@@ -13,6 +24,7 @@ export const BattleArenaBanner = () => {
                     left: "2rem",
                     right: "2rem",
                     zIndex: 6,
+                    animation: `${zoomEffect(1.03)} 18s infinite`,
                     background: `url(${SkyHighGroupedTextPNG})`,
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",
