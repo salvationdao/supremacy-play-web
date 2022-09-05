@@ -207,7 +207,7 @@ const FactionBox = ({ faction }: { faction: Faction }) => {
         >
             {/* logo */}
             <Stack sx={{ position: "relative", zIndex: 1, gap: "1rem" }}>
-                <Box component="img" src={faction.logo_url || logo} alt={`${faction.label || label}'s logo`} />
+                <Box component="img" src={logo} alt={`${faction.label || label}'s logo`} />
 
                 {/* statement */}
                 <Typography variant="h2">{faction.label || label}</Typography>

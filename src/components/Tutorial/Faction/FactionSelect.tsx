@@ -43,6 +43,7 @@ export const FactionSelect = () => {
 const getFactionInfo = (factionLabel: string) => {
     if (factionLabel === "Zaibatsu Heavy Industries") {
         return {
+            logo: "https://afiles.ninja-cdn.com/supremacy-stream-site/assets/img/factions/zai-alt-logo.svg",
             description:
                 "Zaibatsu is the industrial leader within the Supremacy Era, with territories on the islands formerly known as Japan. Zaibatsu’s economy is built on production, as well as the development of cloud cities.",
             wiki: "https://supremacy.game/wiki/zaibatsu-lore",
@@ -62,11 +63,6 @@ const getFactionInfo = (factionLabel: string) => {
                     description: "Lightning Gun",
                     image: `${TRAINING_ASSETS}/factions/zhi/lightning-gun.png`,
                 },
-                // {
-                //     title: "Faction Abillity",
-                //     description: "Drone Swarm",
-                //     image: `${TRAINING_ASSETS}/factions/zhi/drones.png`,
-                // },
             ],
             colorOverlay: "#000000",
             wallpaper: "https://afiles.ninja-cdn.com/supremacy-stream-site/assets/img/factions/zai-wall.png",
@@ -75,6 +71,7 @@ const getFactionInfo = (factionLabel: string) => {
 
     if (factionLabel === "Red Mountain Offworld Mining Corporation") {
         return {
+            logo: "https://afiles.ninja-cdn.com/supremacy-stream-site/assets/img/factions/rm-alt-logo.svg",
             description:
                 "Red Mountain is the leader in autonomous mining operations in the Supremacy Era. It controls territory on Mars, as well as secure city locations on the continent formerly known as Australia on Earth.",
             wiki: "https://supremacy.game/wiki/red-mountain-lore",
@@ -94,11 +91,6 @@ const getFactionInfo = (factionLabel: string) => {
                     description: "Flamethrower",
                     image: `${TRAINING_ASSETS}/factions/rm/flamethrower.png`,
                 },
-                // {
-                //     title: "Faction Abillity",
-                //     description: "Turret",
-                //     image: `${TRAINING_ASSETS}/factions/rm/turret.png`,
-                // },
             ],
             colorOverlay: "#330315",
             wallpaper: "https://afiles.ninja-cdn.com/supremacy-stream-site/assets/img/factions/rm-wall.png",
@@ -106,6 +98,7 @@ const getFactionInfo = (factionLabel: string) => {
     }
 
     return {
+        logo: "https://afiles.ninja-cdn.com/supremacy-stream-site/assets/img/factions/bc-alt-logo.svg",
         description:
             "Boston Cybernetics is the major commercial leader within the Supremacy Era. It has secure territories comprising 275 districts located on the east coast of the former United States. ",
         wiki: "https://supremacy.game/wiki/boston-cybernetics-lore",
@@ -125,11 +118,6 @@ const getFactionInfo = (factionLabel: string) => {
                 description: "BFG",
                 image: `${TRAINING_ASSETS}/factions/bc/bfg.png`,
             },
-            // {
-            //     title: "Faction Abillity",
-            //     description: "Dogs",
-            //     image: `${TRAINING_ASSETS}/factions/bc/dogs.png`,
-            // },
         ],
         wallpaper: "https://afiles.ninja-cdn.com/supremacy-stream-site/assets/img/factions/bc-wall.png",
         colorOverlay: "#110333",
@@ -137,7 +125,7 @@ const getFactionInfo = (factionLabel: string) => {
 }
 
 const FactionBox = ({ faction }: { faction: Faction }) => {
-    const { description, fleetImages, abilities, wallpaper, colorOverlay, wiki } = getFactionInfo(faction.label)
+    const { description, fleetImages, abilities, wallpaper, colorOverlay, wiki, logo } = getFactionInfo(faction.label)
     const { gameUIDimensions } = useDimension()
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -168,7 +156,7 @@ const FactionBox = ({ faction }: { faction: Faction }) => {
                     width: "100%",
                 }}
             >
-                <Box component="img" src={faction.logo_url} alt={`${faction.label}'s logo`} />
+                <Box component="img" src={logo} alt={`${faction.label}'s logo`} />
                 <Typography variant="h2">{faction.label}</Typography>
             </Box>
             <InnerStack id="inner-stack" shortScreen={shortHeight} color={faction.primary_color} mediumScreen={mediumScreen}>
@@ -305,6 +293,9 @@ const InnerFaction = styled("div")(
             alignItems: "center",
             "&, & *": {
                 transition: "all .5s ease-out, opacity 2s ease-out, visibility .2s",
+            },
+            "& > *": {
+                maxWidth: "700px",
             },
             "&::before": {
                 content: "''",
