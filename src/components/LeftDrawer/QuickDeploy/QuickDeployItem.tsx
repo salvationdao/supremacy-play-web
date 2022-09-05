@@ -11,11 +11,9 @@ import { MechGeneralStatus } from "../../Hangar/WarMachinesHangar/Common/MechGen
 import { MechRepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
 import { MechThumbnail } from "../../Hangar/WarMachinesHangar/Common/MechThumbnail"
 import { MechName } from "../../Hangar/WarMachinesHangar/WarMachineDetails/MechName"
-import { QueueFeed } from "../../Hangar/WarMachinesHangar/WarMachineDetails/Modals/DeployModal"
 
 interface QuickDeployItemProps {
     mech: MechBasic
-    queueFeed?: QueueFeed
     isSelected?: boolean
     toggleIsSelected?: () => void
     childrenMechStatus: React.MutableRefObject<{
@@ -24,12 +22,7 @@ interface QuickDeployItemProps {
 }
 
 const propsAreEqual = (prevProps: QuickDeployItemProps, nextProps: QuickDeployItemProps) => {
-    return (
-        prevProps.isSelected === nextProps.isSelected &&
-        prevProps.mech.id === nextProps.mech.id &&
-        prevProps.queueFeed?.queue_cost === nextProps.queueFeed?.queue_cost &&
-        prevProps.queueFeed?.queue_length === nextProps.queueFeed?.queue_length
-    )
+    return prevProps.isSelected === nextProps.isSelected && prevProps.mech.id === nextProps.mech.id
 }
 
 export const QuickDeployItem = React.memo(function QuickDeployItem({ isSelected, toggleIsSelected, mech, childrenMechStatus }: QuickDeployItemProps) {

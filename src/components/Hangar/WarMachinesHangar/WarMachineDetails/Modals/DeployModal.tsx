@@ -1,17 +1,18 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { FancyButton, TooltipHelper } from "../../../.."
 import { SvgInfoCircular, SvgSupToken } from "../../../../../assets"
 import { useGlobalNotifications } from "../../../../../containers"
+import { supFormatter, timeSinceInWords } from "../../../../../helpers"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
-import { MechModal } from "../../Common/MechModal"
 import { MechDetails } from "../../../../../types"
-import { supFormatter } from "../../../../../helpers"
+import { MechModal } from "../../Common/MechModal"
 
 export interface QueueFeed {
-    queue_length: number
+    minimum_wait_time_seconds: number
+    average_game_length_seconds: number
     queue_cost: string
 }
 
@@ -63,25 +64,34 @@ export const DeployModal = ({
         [newSnackbarMessage, send, onClose],
     )
 
-    if (!deployMechDetails) return null
+    const estimatedTimeOfBattle = useMemo(() => {
+        if (typeof queueFeed?.minimum_wait_time_seconds === "undefined") return
 
-    const queueLength = queueFeed?.queue_length || 0
+        if (queueFeed.minimum_wait_time_seconds < 60) {
+            return "LESS THAN A MINUTE"
+        }
+
+        const t = new Date()
+        t.setSeconds(t.getSeconds() + queueFeed.minimum_wait_time_seconds)
+
+        return timeSinceInWords(new Date(), t)
+    }, [queueFeed?.minimum_wait_time_seconds])
     const queueCost = queueFeed?.queue_cost || "0"
+
+    if (!deployMechDetails) return null
     const { id } = deployMechDetails
 
     return (
         <MechModal open={deployMechModalOpen} mechDetails={deployMechDetails} onClose={onClose}>
             <Stack spacing="1.5rem">
                 <Stack spacing=".2rem">
-                    {queueLength >= 0 && (
-                        <AmountItem
-                            key={`${queueLength}-queue_length`}
-                            title={"Next Position: "}
-                            value={`${queueLength + 1}`}
-                            tooltip="The queue position of your war machine if you deploy now."
-                            disableIcon
-                        />
-                    )}
+                    <AmountItem
+                        key={`${queueFeed?.minimum_wait_time_seconds}-queue_time`}
+                        title={"Min Wait Time: "}
+                        value={estimatedTimeOfBattle || "UNKNOWN"}
+                        tooltip="The minimum time it will take before your mech is placed into battle."
+                        disableIcon
+                    />
 
                     <AmountItem
                         title={"Fee: "}
