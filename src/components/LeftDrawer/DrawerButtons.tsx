@@ -47,7 +47,7 @@ export const DrawerButtons = () => {
         >
             <Tabs value={0} orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ flex: 1 }}>
                 {LEFT_DRAWER_ARRAY.map((r) => {
-                    if ((r.requireAuth && !userID) || (r.matchNavLinkID && activeRouteID && activeRouteID !== r.matchNavLinkID)) return null
+                    if ((r.requireAuth && !userID) || (r.matchNavLinkIDs && activeRouteID && !r.matchNavLinkIDs.includes(activeRouteID))) return null
                     return (
                         <TabButton
                             key={r.id}

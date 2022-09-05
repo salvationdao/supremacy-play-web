@@ -21,7 +21,7 @@ export const LeftDrawer = () => {
     }
 
     // Hide the drawer if on mobile OR none of the tabs are visible on the page
-    if (isMobile || (activeRouteID && LEFT_DRAWER_ARRAY.filter((r) => !r.matchNavLinkID || r.matchNavLinkID === activeRouteID).length <= 0)) return null
+    if (isMobile || (activeRouteID && LEFT_DRAWER_ARRAY.filter((r) => !r.matchNavLinkIDs || r.matchNavLinkIDs.includes(activeRouteID)).length <= 0)) return null
 
     const isOpen = !!LEFT_DRAWER_MAP[leftDrawerActiveTabID]
 
@@ -47,7 +47,7 @@ export const LeftDrawer = () => {
                 }}
             >
                 {LEFT_DRAWER_ARRAY.map((r) => {
-                    if ((r.requireAuth && !userID) || (r.matchNavLinkID && activeRouteID && activeRouteID !== r.matchNavLinkID)) return null
+                    if ((r.requireAuth && !userID) || (r.matchNavLinkIDs && activeRouteID && !r.matchNavLinkIDs.includes(activeRouteID))) return null
                     const isActive = r.id === leftDrawerActiveTabID
                     if (isActive || r.mountAllTime) {
                         return (

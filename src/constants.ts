@@ -26,11 +26,13 @@ export const PASSPORT_SIGNUP = DEV_ONLY
     ? "https://passport.xsyn.io/external/login?signup=true&tenant=supremacy&redirectURL=https%3A%2F%2Fplay.supremacy.game/?training=false"
     : "https://staging.xsyn.dev/external/login?signup=true&tenant=supremacy&redirectURL=https%3A%2F%2Fsupremacygame.dev/?training=false"
 
+// Battle arena related
 export const BATTLE_ARENA_OPEN = STAGING_OR_DEV_ONLY
+export const BATTLE_ARENA_OPEN_DATE = new Date("Sep 07 2022 14:00:00 GMT+0800 (AWST)")
 
 // Testing related
 export const IS_TESTING_MODE = STAGING_ONLY
-export const NEXT_RESET_TIME = new Date("Wed Sep 07 2022 14:00:00 GMT+0800 (AWST)")
+export const NEXT_RESET_TIME = new Date("Sep 07 2022 14:00:00 GMT+0800 (AWST)")
 
 if (USE_PROD) {
     GAME_SERVER_HOSTNAME = process.env.REACT_APP_GAME_SERVER_HOSTNAME || "api.supremacy.game"
