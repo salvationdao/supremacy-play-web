@@ -16,6 +16,10 @@ let PASSPORT_WEB = process.env.REACT_APP_PASSPORT_WEB || "https://passport.xsynd
 let PASSPORT_SERVER_HOST = process.env.REACT_APP_PASSPORT_SERVER_HOST || "passport.supremacygame.io"
 let PASSPORT_SERVER_HOST_IMAGES = process.env.REACT_APP_SERVER_HOST_IMAGES || "https://api.supremacygame.io"
 
+// Battle arena related
+export const BATTLE_ARENA_OPEN = STAGING_OR_DEV_ONLY
+export const BATTLE_ARENA_OPEN_DATE: Date | undefined = new Date("Sep 08 2022 08:00:00 GMT+0800 (AWST)")
+
 if (USE_PROD) {
     GAME_SERVER_HOSTNAME = process.env.REACT_APP_GAME_SERVER_HOSTNAME || "api.supremacy.game"
     PASSPORT_WEB = process.env.REACT_APP_PASSPORT_WEB || "https://passport.xsyn.io/"
@@ -98,5 +102,3 @@ export const PRISMIC_ACCESS_TOKEN = process.env.REACT_APP_PRISMIC_ACCESS_TOKEN
 
 // note: telegram notifications does not work on develop
 export const TELEGRAM_BOT_URL = process.env.REACT_APP_TELEGRAM_BOT_URL || "https://t.me/SupremacyNotifyBot"
-
-export const BATTLE_ARENA_OPEN = STAGING_OR_DEV_ONLY

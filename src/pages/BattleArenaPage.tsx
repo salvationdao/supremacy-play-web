@@ -1,6 +1,5 @@
 import { Box, Stack } from "@mui/material"
 import { useEffect, useState } from "react"
-import { Redirect } from "react-router-dom"
 import { SvgAbility, SvgHistory, SvgHistoryClock, SvgRobot } from "../assets"
 import {
     BattleEndScreen,
@@ -15,6 +14,7 @@ import {
     WarMachineStats,
 } from "../components"
 import { TutorialModal } from "../components/HowToPlay/Tutorial/TutorialModal"
+import { BattleArenaCountDown } from "../components/Maintenance/BattleArenaCountDown"
 import { QuickDeploy } from "../components/QuickDeploy/QuickDeploy"
 import { QuickPlayerAbilities } from "../components/QuickPlayerAbilities/QuickPlayerAbilities"
 import { BATTLE_ARENA_OPEN } from "../constants"
@@ -43,7 +43,7 @@ export const BattleArenaPage = () => {
     }
 
     if (!BATTLE_ARENA_OPEN) {
-        return <Redirect to="/fleet#live_chat" />
+        return <BattleArenaCountDown />
     }
 
     return <BattleArenaPageInner />

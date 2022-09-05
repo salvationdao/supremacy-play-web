@@ -1,9 +1,11 @@
 import moment from "moment"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useInterval } from "."
 
 export const useTimer = (endTime: Date | undefined, speed: number = 1000, stopCountingOnEnd: boolean = true) => {
     const [endTimeState, setEndTimeState] = useState<Date | undefined>(endTime)
+    const prevEndTimeState = useRef<Date | undefined>(endTime)
+
     const [totalSecRemain, setTotalSecRemain] = useState<number>(9999999)
     const [delay, setDelay] = useState<number | null>(null)
     const [days, setDays] = useState<number>()
@@ -12,10 +14,18 @@ export const useTimer = (endTime: Date | undefined, speed: number = 1000, stopCo
     const [seconds, setSeconds] = useState<number>()
 
     useEffect(() => {
+        setEndTimeState((prev) => {
+            prevEndTimeState.current = prev
+            return endTime
+        })
+    }, [endTime])
+
+    useEffect(() => {
         if (endTimeState) {
             setDelay(speed)
             const d = moment.duration(moment(endTimeState).diff(moment()))
             setTotalSecRemain(Math.max(Math.round(d.asSeconds()), 0))
+            prevEndTimeState.current = endTimeState
             return
         }
         setDelay(null)
@@ -25,7 +35,10 @@ export const useTimer = (endTime: Date | undefined, speed: number = 1000, stopCo
         setTotalSecRemain((t) => Math.max(t - 1, 0))
         const d = moment.duration(moment(endTimeState).diff(moment()))
 
-        if (stopCountingOnEnd && d.milliseconds() < 0) return
+        if (stopCountingOnEnd && d.asMilliseconds() < 0 && endTimeState === prevEndTimeState.current) {
+            setDelay(null)
+            return
+        }
 
         const days = Math.floor(d.asDays())
         const hours = Math.floor(d.asHours()) - days * 24
