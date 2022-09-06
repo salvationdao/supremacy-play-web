@@ -17,6 +17,7 @@ import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { QueueDetails } from "../../LeftDrawer/QuickDeploy/QueueDetails"
+import { PlayerQueueStatus } from "../../LeftDrawer/QuickDeploy/QuickDeploy"
 import { BulkDeployConfirmModal } from "./Common/BulkDeployConfirmModal"
 import { BulkRepairConfirmModal } from "./Common/BulkRepairConfirmModal"
 import { RepairBay } from "./RepairBay/RepairBay"
@@ -53,6 +54,9 @@ export const WarMachinesHangar = () => {
     const [query, updateQuery] = useUrlQuery()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
+
+    // Player Queue Status
+    const [playerQueueStatus, setPlayerQueueStatus] = useState<PlayerQueueStatus>()
 
     // Items
     const [isLoading, setIsLoading] = useState(true)
@@ -188,6 +192,10 @@ export const WarMachinesHangar = () => {
                 page_size: pageSize,
                 include_market_listed: true,
             })
+
+            const resp2 = await send<PlayerQueueStatus>(GameServerKeys.PlayerQueueStatus)
+            console.log(resp2)
+            setPlayerQueueStatus(resp2)
 
             updateQuery({
                 sort,
@@ -443,7 +451,7 @@ export const WarMachinesHangar = () => {
                                     onSelectAll={onSelectAll}
                                     onUnselectedAll={onUnSelectAll}
                                 >
-                                    <QueueDetails queueFeed={queueFeed} />
+                                    <QueueDetails queueFeed={queueFeed} playerQueueStatus={playerQueueStatus} />
                                 </TotalAndPageSizeOptions>
 
                                 <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
@@ -541,6 +549,7 @@ export const WarMachinesHangar = () => {
             onUnSelectAll,
             page,
             pageSize,
+            playerQueueStatus,
             queueFeed,
             search,
             selectedMechs,
