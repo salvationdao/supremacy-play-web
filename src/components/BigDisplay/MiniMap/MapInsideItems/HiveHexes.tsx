@@ -1,5 +1,5 @@
 import { Map as GameMap } from "../../../../types"
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useRef } from "react"
 import { HiveHexLocations } from "../../../../types/hive"
 import { Box } from "@mui/material"
 
@@ -12,6 +12,7 @@ interface HiveHexesProps {
 const hexSize = 80
 
 export const HiveHexes = ({ map, state, poppedOutContainerRef }: HiveHexesProps) => {
+    const cachedHexState = useRef<boolean[]>(new Array(589).fill(false))
     useEffect(() => {
         const mapScale = map ? map.Width / (map.Cells_X * 2000) : 0
 
@@ -35,7 +36,11 @@ export const HiveHexes = ({ map, state, poppedOutContainerRef }: HiveHexesProps)
         for (let i = 0; i < state.length; i++) {
             const hexEl = (poppedOutContainerRef?.current || document).querySelector(`#map-hex-${i}`) as HTMLElement
             if (!hexEl) continue
-            hexEl.style.opacity = state[i] ? "0.6" : "0"
+            const raised = state[i]
+            if (cachedHexState.current && cachedHexState.current[i] != raised) {
+                hexEl.style.opacity = raised ? "0.6" : "0"
+                cachedHexState.current[i] = raised
+            }
         }
     }, [state, poppedOutContainerRef])
 
@@ -50,6 +55,7 @@ export const HiveHexes = ({ map, state, poppedOutContainerRef }: HiveHexesProps)
                             sx={{
                                 position: "absolute",
                                 filter: "drop-shadow(0px 0px 10px #000)",
+                                opacity: 0,
                                 transition: "opacity 0.5s ease-in-out",
                                 pointerEvents: "none",
                             }}
