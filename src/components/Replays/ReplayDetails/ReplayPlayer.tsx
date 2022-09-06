@@ -10,8 +10,8 @@ import { BattleReplay } from "../../../types"
 export const ReplayPlayer = ({ battleReplay }: { battleReplay?: BattleReplay }) => {
     const theme = useTheme()
     const { hasInteracted } = useSupremacy()
-    const streamRef = useRef<StreamPlayerApi>()
     const [hasError, setHasError] = useState(false)
+    const streamRef = useRef<StreamPlayerApi>()
 
     useEffect(() => {
         streamRef?.current?.play()
