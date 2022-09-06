@@ -27,7 +27,7 @@ export const SocialsShare = () => {
                 size="small"
                 sx={{ opacity: 0.6, ":hover": { opacity: 1 } }}
                 target="_blank"
-                href={`https://www.facebook.com/sharer/sharer.php?u=${location.href}`}
+                href={`https://www.facebook.com/sharer/sharer.php?u=${location.href}&t=${encodeURIComponent("Check out this #Supremacy battle!")}`}
             >
                 <SvgFacebook size="2rem" />
             </IconButton>
@@ -36,7 +36,7 @@ export const SocialsShare = () => {
                 size="small"
                 sx={{ opacity: 0.6, ":hover": { opacity: 1 } }}
                 target="_blank"
-                href={`https://twitter.com/intent/tweet?url=${location.href}&text=Check out this %23Supremacy battle!`}
+                href={`https://twitter.com/intent/tweet?url=${location.href}&text=${encodeURIComponent("Check out this #Supremacy battle!")}`}
             >
                 <SvgTwitter size="2rem" />
             </IconButton>
