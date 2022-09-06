@@ -45,6 +45,7 @@ export const ReplayDetails = ({ gid, battleNumber }: { gid: number; battleNumber
     }, [battleNumber, gid, send])
 
     const seekToSeconds = useCallback((seconds: number) => {
+        streamRef.current?.play()
         if (streamRef.current?.currentTime) {
             streamRef.current.currentTime = seconds
         }
