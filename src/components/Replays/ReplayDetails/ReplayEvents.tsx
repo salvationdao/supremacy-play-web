@@ -1,6 +1,6 @@
 import { StreamPlayerApi } from "@cloudflare/stream-react"
 import { Box, Button, Stack, Typography } from "@mui/material"
-import React, { useMemo, useState } from "react"
+import React, { useMemo, useRef, useState } from "react"
 import { useSupremacy } from "../../../containers"
 import { timeSinceInWords } from "../../../helpers"
 import { useInterval } from "../../../hooks"
@@ -33,9 +33,16 @@ export const ReplayEvents = ({
     streamRef: React.MutableRefObject<StreamPlayerApi | undefined>
 }) => {
     const [videoTime, setVideoTime] = useState(0)
+    const isMouseHovered = useRef(false)
 
     useInterval(() => {
         setVideoTime(streamRef.current?.currentTime || 0)
+
+        const passedItems = document.getElementsByClassName(`replay-event-item-true`)
+        if (passedItems && !isMouseHovered.current) {
+            const lastPassedItem = passedItems[passedItems.length - 1]
+            lastPassedItem.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" })
+        }
     }, 1000)
 
     if (!battleReplay?.events || battleReplay.events.length <= 0) {
@@ -50,6 +57,8 @@ export const ReplayEvents = ({
                 p: "1.8rem 2rem",
                 backgroundColor: "#00000070",
             }}
+            onMouseEnter={() => (isMouseHovered.current = true)}
+            onMouseLeave={() => (isMouseHovered.current = false)}
         >
             <Typography sx={{ fontFamily: fonts.nostromoBlack }}>BATTLE EVENTS</Typography>
 
@@ -62,7 +71,7 @@ export const ReplayEvents = ({
                     direction: "ltr",
                     scrollbarWidth: "none",
                     "::-webkit-scrollbar": {
-                        width: "1rem",
+                        width: ".8rem",
                     },
                     "::-webkit-scrollbar-track": {
                         background: "#FFFFFF15",
@@ -150,11 +159,11 @@ const ReplayEventItem = React.memo(function ReplayEventItem({ seekToSeconds, rep
     }, [getFaction, notification.data, notification.type])
 
     return (
-        <Stack alignItems="flex-start" sx={{ opacity: isPassed ? 0.25 : 1 }}>
+        <Stack className={`replay-event-item-${isPassed}`} alignItems="flex-start" sx={{ opacity: isPassed ? 0.25 : 1 }}>
             <Typography variant="caption" sx={{ px: ".6rem", borderRadius: 0.3, backgroundColor: `${colors.darkNavy}AA` }}>
                 {tooltipText}
             </Typography>
-            <Button sx={{ p: 0, width: "100%", display: "block", textAlign: "start" }} onClick={() => seekToSeconds(Math.max(timeSeconds - 5, 0))}>
+            <Button sx={{ p: 0, width: "100%", display: "block", textAlign: "start" }} onClick={() => seekToSeconds(Math.max(timeSeconds - 2, 0))}>
                 {content}
             </Button>
         </Stack>
