@@ -24,43 +24,34 @@ export const QueueDetails = ({ queueFeed, playerQueueStatus }: QueueDetailsProps
 
     return (
         <>
-            <Stack spacing="1.5rem" direction="row" justifyContent="space-between" width="100%">
-                <Box
-                    sx={{
-                        display: "grid",
-                        gap: "1.5rem",
-                        gridTemplateColumns: "repeat(auto-fit, minmax(10rem, 1fr))",
-                        width: "100%",
-                    }}
-                >
+            <Stack spacing="1.5rem" direction="row" width="100%">
+                <AmountItem
+                    key={`${queueFeed?.minimum_wait_time_seconds}-${queueFeed?.average_game_length_seconds}-queue_time`}
+                    title={"WAIT TIME: "}
+                    color={colors.offWhite}
+                    value={queueFeed ? <QueueETA queueETASeconds={queueFeed.minimum_wait_time_seconds} /> : undefined}
+                    tooltip="The minimum time it will take before your mech is placed into battle."
+                    disableIcon
+                />
+
+                {queueCost && (
                     <AmountItem
-                        key={`${queueFeed?.minimum_wait_time_seconds}-${queueFeed?.average_game_length_seconds}-queue_time`}
-                        title={"WAIT TIME: "}
-                        color={colors.offWhite}
-                        value={queueFeed ? <QueueETA queueETASeconds={queueFeed.minimum_wait_time_seconds} /> : undefined}
-                        tooltip="The minimum time it will take before your mech is placed into battle."
+                        title={"FEE: "}
+                        color={colors.yellow}
+                        value={supFormatter(queueCost, 2)}
+                        tooltip="The cost to place your war machine into the battle queue."
+                    />
+                )}
+
+                {playerQueueStatus && (
+                    <AmountItem
+                        title="LIMIT: "
+                        color={playerQueueStatus.total_queued / playerQueueStatus.queue_limit === 1 ? colors.red : "white"}
+                        value={`${playerQueueStatus.total_queued} / ${playerQueueStatus.queue_limit}`}
+                        tooltip="The total amount of mechs you have queued."
                         disableIcon
                     />
-
-                    {queueCost && (
-                        <AmountItem
-                            title={"FEE: "}
-                            color={colors.yellow}
-                            value={supFormatter(queueCost, 2)}
-                            tooltip="The cost to place your war machine into the battle queue."
-                        />
-                    )}
-
-                    {playerQueueStatus && (
-                        <AmountItem
-                            title="LIMIT: "
-                            color={playerQueueStatus.total_queued / playerQueueStatus.queue_limit === 1 ? colors.red : "white"}
-                            value={`${playerQueueStatus.total_queued} / ${playerQueueStatus.queue_limit}`}
-                            tooltip="The total amount of mechs you have queued."
-                            disableIcon
-                        />
-                    )}
-                </Box>
+                )}
 
                 <IconButton size="small" onClick={() => togglePreferencesModalOpen(true)}>
                     <SvgNotification size="1.3rem" />
@@ -122,7 +113,7 @@ const QueueETA = ({ queueETASeconds }: QueueETAProps) => {
             secondsLeftRef.current -= 10
             countdownRef.current.innerText =
                 secondsLeftRef.current < 60
-                    ? "LESS THAN A MINUTE"
+                    ? "< 1min"
                     : `${Math.round(secondsLeftRef.current / 60)} MINUTE${Math.round(secondsLeftRef.current / 60) > 1 ? "S" : ""}`
         }, 1000 * 10) // Every 10 seconds
 
@@ -131,7 +122,7 @@ const QueueETA = ({ queueETASeconds }: QueueETAProps) => {
 
     return (
         <Box ref={countdownRef}>
-            {queueETASeconds < 60 ? "LESS THAN A MINUTE" : `${Math.round(queueETASeconds / 60)} MINUTE${Math.round(queueETASeconds / 60) > 1 ? "S" : ""}`}
+            {queueETASeconds < 60 ? "< 1min" : `${Math.round(queueETASeconds / 60)} MINUTE${Math.round(queueETASeconds / 60) > 1 ? "S" : ""}`}
         </Box>
     )
 }
