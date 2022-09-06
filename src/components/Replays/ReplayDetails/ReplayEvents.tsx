@@ -41,7 +41,7 @@ export const ReplayEvents = ({
         const passedItems = document.getElementsByClassName(`replay-event-item-true`)
         if (passedItems && !isMouseHovered.current) {
             const lastPassedItem = passedItems[passedItems.length - 1]
-            lastPassedItem.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" })
+            lastPassedItem.scrollIntoView({ behavior: "smooth", block: "nearest" })
         }
     }, 1000)
 
