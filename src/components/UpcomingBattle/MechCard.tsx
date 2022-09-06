@@ -116,7 +116,7 @@ export const MechCard = ({ mechID, faction }: { mechID: string; faction: Faction
                         variant="h6"
                         sx={{
                             textAlign: "center",
-                            opacity: !mechID ? 0.5 : 1,
+                            opacity: !mechID ? 0.4 : 1,
                             display: "-webkit-box",
                             overflow: "hidden",
                             overflowWrap: "anywhere",
