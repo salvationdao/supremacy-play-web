@@ -2,7 +2,7 @@ import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/mater
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
-import { HANGAR_PAGE } from "../../../constants"
+import { BATTLE_ARENA_OPEN, HANGAR_PAGE } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, parseString } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
@@ -366,7 +366,7 @@ export const WarMachinesHangar = () => {
                                 <PageHeader title="WAR MACHINES" description="Your war machines." imageUrl={WarMachineIconPNG}>
                                     <Stack spacing="1rem" direction="row" alignItems="center" sx={{ ml: "auto !important", pr: "2rem" }}>
                                         <FancyButton
-                                            disabled={selectedMechs.length <= 0}
+                                            disabled={!BATTLE_ARENA_OPEN || selectedMechs.length <= 0}
                                             clipThingsProps={{
                                                 clipSize: "9px",
                                                 backgroundColor: colors.green,
