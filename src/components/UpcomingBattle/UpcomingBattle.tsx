@@ -22,7 +22,17 @@ export const UpcomingBattle = () => {
     const [nextBattle, setNextBattle] = useState<NextBattle | undefined>()
     const { gameUIDimensions } = useDimension()
 
-    const isSmall = useMemo(() => gameUIDimensions.width < 500 || gameUIDimensions.height < 720, [gameUIDimensions.height, gameUIDimensions.width])
+    const { size, spacing } = useMemo(() => {
+        let size = "18rem"
+        let spacing = "6rem"
+
+        if (gameUIDimensions.width < 500 || gameUIDimensions.height < 720) {
+            size = "16rem"
+            spacing = "4rem"
+        }
+
+        return { size, spacing }
+    }, [gameUIDimensions.height, gameUIDimensions.width])
 
     // Subscribe on battle end information
     useGameServerSubscription<NextBattle>(
@@ -50,8 +60,8 @@ export const UpcomingBattle = () => {
                 <Box
                     sx={{
                         display: "grid",
-                        gridTemplateColumns: `repeat(3, ${isSmall ? "16rem" : "18rem"})`,
-                        gridTemplateRows: `repeat(3, ${isSmall ? "16rem" : "18rem"})`,
+                        gridTemplateColumns: `repeat(3, ${size})`,
+                        gridTemplateRows: `repeat(3, ${size})`,
                         columnGap: "1rem",
                         rowGap: "5.8rem",
                         alignItems: "center",
@@ -65,11 +75,11 @@ export const UpcomingBattle = () => {
                 <img style={{ height: "9rem" }} src={nextBattle?.map?.logo_url} alt={`Upcoming battle on map: ${nextBattle?.map?.name}`} />
             </>
         )
-    }, [isSmall, nextBattle])
+    }, [size, nextBattle])
 
     return (
         <Stack
-            spacing={isSmall ? "4rem" : "6rem"}
+            spacing={spacing}
             alignItems="center"
             justifyContent="center"
             sx={{
