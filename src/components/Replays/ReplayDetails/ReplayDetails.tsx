@@ -120,7 +120,7 @@ export const ReplayDetails = ({ gid, battleNumber }: { gid: number; battleNumber
 
                         {/* Right side */}
                         <Stack spacing="2rem" sx={{ width: "38rem" }}>
-                            <ReplayEvents battleReplay={replay.battle_replay} seekToSeconds={seekToSeconds} />
+                            <ReplayEvents battleReplay={replay.battle_replay} seekToSeconds={seekToSeconds} streamRef={streamRef} />
                             <RelatedReplayVideos battleReplay={replay.battle_replay} />
                         </Stack>
                     </Stack>
