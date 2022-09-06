@@ -38,26 +38,26 @@ export const ReplayDetails = ({ gid, battleNumber }: { gid: number; battleNumber
         })()
     }, [battleNumber, gid, send])
 
-    useEffect(() => {
-        ;(async () => {
-            try {
-                setIsLoading(true)
-                const resp = await send<RESPONSE_TYPE>(GameServerKeys.XXXXXX, {
-                    payload: something,
-                })
+    // useEffect(() => {
+    //     ;(async () => {
+    //         try {
+    //             setIsLoading(true)
+    //             const resp = await send<RESPONSE_TYPE>(GameServerKeys.XXXXXX, {
+    //                 payload: something,
+    //             })
 
-                if (!resp) return
-                setFactionsData(resp)
-            } catch (err) {
-                const message = typeof err === "string" ? err : "Failed to get key card listings."
-                newSnackbarMessage(message, "error")
-                setLoadError(message)
-                console.error(err)
-            } finally {
-                setIsLoading(true)
-            }
-        })()
-    }, [send])
+    //             if (!resp) return
+    //             setFactionsData(resp)
+    //         } catch (err) {
+    //             const message = typeof err === "string" ? err : "Failed to get key card listings."
+    //             newSnackbarMessage(message, "error")
+    //             setLoadError(message)
+    //             console.error(err)
+    //         } finally {
+    //             setIsLoading(true)
+    //         }
+    //     })()
+    // }, [send])
 
     const primaryColor = theme.factionTheme.primary
 
