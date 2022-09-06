@@ -17,19 +17,19 @@ import { ArenaTypeSelect } from "./ArenaTypeSelect"
 import { BattleReplayItem } from "./BattleReplayItem"
 import { SearchBattle } from "./SearchBattle"
 
-interface GetReplaysRequest {
+export interface GetReplaysRequest {
     sort?: {
         table?: string
         column?: string
         direction: SortDir
     }
-    search: string
+    search?: string
     page: number
     page_size: number
     arena_id: string
 }
 
-interface GetReplaysResponse {
+export interface GetReplaysResponse {
     battle_replays: BattleReplay[]
     total: number
 }
@@ -50,7 +50,7 @@ export const BattlesReplays = () => {
     // Items
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const [replays, setReplays] = useState<BattleReplay[]>([])
+    const [battleReplays, setBattleReplays] = useState<BattleReplay[]>([])
 
     // Search, sort, filters
     const [selectedArenaType, setSelectedArenaType] = useState<Arena>()
@@ -98,7 +98,7 @@ export const BattlesReplays = () => {
 
             if (!resp) return
             setLoadError(undefined)
-            setReplays(resp.battle_replays)
+            setBattleReplays(resp.battle_replays)
             setTotalItems(resp.total)
         } catch (e) {
             setLoadError(typeof e === "string" ? e : "Failed to get replays.")
@@ -144,7 +144,7 @@ export const BattlesReplays = () => {
             )
         }
 
-        if (!replays || isLoading) {
+        if (!battleReplays || isLoading) {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
@@ -154,7 +154,7 @@ export const BattlesReplays = () => {
             )
         }
 
-        if (replays && replays.length > 0) {
+        if (battleReplays && battleReplays.length > 0) {
             return (
                 <Box sx={{ direction: "ltr", height: 0 }}>
                     <Box
@@ -169,8 +169,8 @@ export const BattlesReplays = () => {
                             overflow: "visible",
                         }}
                     >
-                        {replays.map((replay) => {
-                            return <BattleReplayItem key={replay.id} battleReplay={replay} />
+                        {battleReplays.map((battleReplay) => {
+                            return <BattleReplayItem key={battleReplay.id} battleReplay={battleReplay} />
                         })}
                     </Box>
                 </Box>
@@ -228,7 +228,7 @@ export const BattlesReplays = () => {
                 </Stack>
             </Stack>
         )
-    }, [loadError, replays, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary])
+    }, [loadError, battleReplays, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary])
 
     return (
         <ClipThing
@@ -259,7 +259,7 @@ export const BattlesReplays = () => {
                     ></PageHeader>
 
                     <TotalAndPageSizeOptions
-                        countItems={replays?.length}
+                        countItems={battleReplays?.length}
                         totalItems={totalItems}
                         pageSize={pageSize}
                         changePageSize={changePageSize}
