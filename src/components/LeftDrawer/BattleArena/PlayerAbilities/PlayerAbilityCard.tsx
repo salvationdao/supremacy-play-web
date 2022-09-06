@@ -14,7 +14,14 @@ interface PlayerAbilityCardProps {
 }
 
 const propsAreEqual = (prevProps: PlayerAbilityCardProps, nextProps: PlayerAbilityCardProps) => {
-    return prevProps.viewOnly === nextProps.viewOnly && prevProps.playerAbility.id === nextProps.playerAbility.id
+    return (
+        prevProps.viewOnly === nextProps.viewOnly &&
+        prevProps.playerAbility.id === nextProps.playerAbility.id &&
+        prevProps.playerAbility.count === nextProps.playerAbility.count &&
+        prevProps.playerAbility.last_purchased_at === nextProps.playerAbility.last_purchased_at &&
+        prevProps.playerAbility.cooldown_expires_on === nextProps.playerAbility.cooldown_expires_on &&
+        prevProps.playerAbility.ability.id === nextProps.playerAbility.ability.id
+    )
 }
 
 export const PlayerAbilityCard = React.memo(function PlayerAbilityCard({ playerAbility, viewOnly }: PlayerAbilityCardProps) {
