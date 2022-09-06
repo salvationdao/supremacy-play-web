@@ -15,6 +15,7 @@ export enum GameServerKeys {
     SubGameNotification = "GAME:NOTIFICATION",
 
     // Battle Arena
+    SubArenaStatus = "ARENA:STATUS:UPDATED",
     SubBattleArenaList = "BATTLE:ARENA:LIST",
     SubBattleArenaClosed = "BATTLE:ARENA:CLOSED",
     SubMiniMapAbilityDisplayList = "MINI:MAP:ABILITY:DISPLAY:LIST",
