@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useAuth, useGlobalNotifications } from "."
+import { useDebounce } from "../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 import { BribeStage, GameAbility, LocationSelectType, PlayerAbility, Position } from "../types"
@@ -37,7 +38,7 @@ export const MiniMapContainer = createContainer(() => {
 
     // Map triggers
     const [winner, setWinner] = useState<WinnerAnnouncementResponse>()
-    const [playerAbility, setPlayerAbility] = useState<PlayerAbility>()
+    const [playerAbility, setPlayerAbility] = useDebounce<PlayerAbility | undefined>(undefined, 300)
     const [isTargeting, setIsTargeting] = useState(false)
 
     // Other stuff
@@ -88,7 +89,7 @@ export const MiniMapContainer = createContainer(() => {
         setPlayerAbility(undefined)
         setSelection(undefined)
         setIsTargeting(!!winner?.game_ability)
-    }, [winner?.game_ability])
+    }, [setPlayerAbility, winner?.game_ability])
 
     const resetWinnerSelection = useCallback(() => {
         setSelection(undefined)
