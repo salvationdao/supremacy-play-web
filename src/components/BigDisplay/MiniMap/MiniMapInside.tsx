@@ -47,7 +47,7 @@ export const MiniMapInside = ({ containerDimensions, poppedOutContainerRef }: Mi
                 const x = e.clientX - rect.left
                 const y = e.clientY - rect.top
 
-                if (playerAbility?.ability.location_select_type === LocationSelectType.MechCommand) {
+                if (!winner?.game_ability && playerAbility?.ability.location_select_type === LocationSelectType.MechCommand) {
                     setSelectionDebounced({
                         startCoords: {
                             x: x / (gridWidth * mapScale),
@@ -64,7 +64,7 @@ export const MiniMapInside = ({ containerDimensions, poppedOutContainerRef }: Mi
                 }
             }
         },
-        [mapElement, gridWidth, gridHeight, mapScale, setSelection, setSelectionDebounced, playerAbility?.ability.location_select_type],
+        [mapElement, gridWidth, gridHeight, mapScale, setSelection, setSelectionDebounced, winner?.game_ability, playerAbility?.ability.location_select_type],
     )
 
     // i.e. is battle ability or player ability of type LOCATION_SELECT
