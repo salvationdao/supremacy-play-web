@@ -67,12 +67,12 @@ const ReplayItemPageInner = () => {
 
     useEffect(() => {
         // If the page is invalid, redirect to /replays
-        if (gid <= 0 && battleNumber <= 0) {
+        if (gid < 0 && battleNumber < 0) {
             history.push("/replays")
         }
     }, [battleNumber, gid, history])
 
-    if (gid > 0 && battleNumber > 0) {
+    if (gid >= 0 && battleNumber >= 0) {
         return <ReplayDetails gid={gid} battleNumber={battleNumber} />
     }
 
