@@ -13,13 +13,13 @@ import {
     ZhiBorderBottom,
     ZhiBottom,
     ZhiMask,
-} from "../assets"
-import { useSupremacy, useUI } from "../containers"
-import { useGameServerSubscription } from "../hooks/useGameServer"
-import { GameServerKeys } from "../keys"
-import { theme } from "../theme/theme"
-import { Faction } from "../types"
-import { MechDetails } from "../types/assets"
+} from "../../assets"
+import { useSupremacy, useUI } from "../../containers"
+import { useGameServerSubscription } from "../../hooks/useGameServer"
+import { GameServerKeys } from "../../keys"
+import { theme } from "../../theme/theme"
+import { Faction } from "../../types"
+import { MechDetails } from "../../types/assets"
 
 interface BattleMap {
     name: string
@@ -36,7 +36,7 @@ interface NextBattle {
     rm_mech_ids: string[]
 }
 
-export const LandingPage = () => {
+export const UpcomingBattle = () => {
     const [nextBattle, setNextBattle] = useState<NextBattle | undefined>()
     const { rightDrawerActiveTabID } = useUI()
     const below1150 = useMediaQuery("(max-width:1150px)")
