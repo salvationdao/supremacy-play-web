@@ -43,7 +43,7 @@ export const MiniMapContainer = createContainer(() => {
 
     // Other stuff
     const [highlightedMechParticipantID, setHighlightedMechParticipantID] = useState<number>()
-    const [selection, setSelectionDebounced, , setSelection] = useDebounce<MapSelection | undefined>(undefined, 250)
+    const [selection, setSelectionDebounced, selectionInstant, setSelection] = useDebounce<MapSelection | undefined>(undefined, 250)
 
     // Subscribe on winner announcements
     useGameServerSubscriptionSecuredUser<WinnerAnnouncementResponse | undefined>(
@@ -243,6 +243,7 @@ export const MiniMapContainer = createContainer(() => {
         setHighlightedMechParticipantID,
         isTargeting,
         selection,
+        selectionInstant,
         setSelection,
         setSelectionDebounced,
         resetWinnerSelection,
