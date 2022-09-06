@@ -59,7 +59,7 @@ export const BattlesReplays = () => {
 
     // Pagination
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
-        pageSize: 10,
+        pageSize: 15,
         page: 1,
     })
 
@@ -263,7 +263,7 @@ export const BattlesReplays = () => {
                         totalItems={totalItems}
                         pageSize={pageSize}
                         changePageSize={changePageSize}
-                        pageSizeOptions={[10, 20, 30]}
+                        pageSizeOptions={[15, 25, 35]}
                         changePage={changePage}
                         manualRefresh={getItems}
                         sortOptions={sortOptions}
