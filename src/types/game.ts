@@ -263,13 +263,13 @@ export interface BattleReplay {
     recording_status: string
     started_at?: Date
     stopped_at?: Date
-    events?: Event[]
+    events?: ReplayEvent[]
     battle: Battle
     arena: Arena
     game_map?: GameMap
 }
 
-export interface Event {
+export interface ReplayEvent {
     timestamp: Date
     notification: NotificationStruct
 }
