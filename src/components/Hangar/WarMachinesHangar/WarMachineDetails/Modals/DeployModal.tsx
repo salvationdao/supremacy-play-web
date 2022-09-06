@@ -1,9 +1,9 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { FancyButton, TooltipHelper } from "../../../.."
 import { SvgInfoCircular, SvgSupToken } from "../../../../../assets"
 import { useGlobalNotifications } from "../../../../../containers"
-import { supFormatter, timeSinceInWords } from "../../../../../helpers"
+import { supFormatter } from "../../../../../helpers"
 import { useGameServerCommandsFaction, useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
@@ -12,8 +12,7 @@ import { PlayerQueueStatus } from "../../../../LeftDrawer/QuickDeploy/QuickDeplo
 import { MechModal } from "../../Common/MechModal"
 
 export interface QueueFeed {
-    minimum_wait_time_seconds: number
-    average_game_length_seconds: number
+    queue_position: number
     queue_cost: string
 }
 
@@ -72,19 +71,6 @@ export const DeployModal = ({ selectedMechDetails: deployMechDetails, deployMech
         },
         [newSnackbarMessage, send, onClose],
     )
-
-    const estimatedTimeOfBattle = useMemo(() => {
-        if (typeof queueFeed?.minimum_wait_time_seconds === "undefined") return
-
-        if (queueFeed.minimum_wait_time_seconds < 60) {
-            return "< 1 MINUTE"
-        }
-
-        const t = new Date()
-        t.setSeconds(t.getSeconds() + queueFeed.minimum_wait_time_seconds)
-
-        return timeSinceInWords(new Date(), t)
-    }, [queueFeed?.minimum_wait_time_seconds])
     const queueCost = queueFeed?.queue_cost || "0"
 
     if (!deployMechDetails) return null
@@ -95,10 +81,10 @@ export const DeployModal = ({ selectedMechDetails: deployMechDetails, deployMech
             <Stack spacing="1.5rem">
                 <Stack spacing=".2rem">
                     <AmountItem
-                        key={`${queueFeed?.minimum_wait_time_seconds}-queue_time`}
-                        title={"Min Wait Time: "}
-                        value={estimatedTimeOfBattle || "UNKNOWN"}
-                        tooltip="The minimum time it will take before your mech is placed into battle."
+                        key={`${queueFeed?.queue_position}-queue_time`}
+                        title={"Position: "}
+                        value={queueFeed?.queue_position || "UNKNOWN"}
+                        tooltip="The current queue position of your faction."
                         disableIcon
                     />
 
