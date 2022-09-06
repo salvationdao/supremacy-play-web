@@ -14,6 +14,7 @@ export interface FiatProduct {
     currency: string
     price_dollars: number
     price_cents: number
+    avatar_url: string
 }
 
 export interface FiatBillingHistory {

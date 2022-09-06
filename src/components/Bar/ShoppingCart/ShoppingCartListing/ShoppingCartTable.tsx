@@ -60,7 +60,14 @@ export const ShoppingCartTable = ({ shoppingCart, loading, primaryColor, backgro
                 </Stack>
 
                 {shoppingCart?.items.map((item) => {
-                    return <ShoppingCartRow key={`shopping-cart-item-${item.id}`} item={item} primaryColor={primaryColor} backgroundColor={backgroundColor} />
+                    return (
+                        <ShoppingCartRow
+                            key={`shopping-cart-item-${fullPage ? "full" : "popover"}-${item.id}`}
+                            item={item}
+                            primaryColor={primaryColor}
+                            backgroundColor={backgroundColor}
+                        />
+                    )
                 })}
 
                 <Stack direction="row" justifyContent="flex-end" spacing={1} sx={{ mt: "2rem" }}>
@@ -184,8 +191,19 @@ const ShoppingCartRow = ({ item, primaryColor, backgroundColor }: ShoppingCartRo
 
     return (
         <Stack direction="row" spacing={1} sx={{ borderBottom: `1px solid ${primaryColor}`, pb: "2rem", mb: "2rem" }}>
-            {/* TODO: Product Image */}
-            <Box sx={{ backgroundColor: "#666", width: "64px", height: "64px" }} />
+            <Box
+                sx={{
+                    width: "12rem",
+                    height: "100%",
+                    minHeight: "12rem",
+                    backgroundColor,
+                    background: `url(${item.product.avatar_url})`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    backgroundSize: "contain",
+                    transform: "scale(1.1)",
+                }}
+            />
 
             <Stack flexGrow={1}>
                 <Typography
@@ -318,6 +336,7 @@ const ShoppingCartRow = ({ item, primaryColor, backgroundColor }: ShoppingCartRo
                 <Typography
                     sx={{
                         fontFamily: fonts.shareTech,
+                        textAlign: "right",
                     }}
                 >
                     {generatePriceText(item.product.price_dollars * quantity, item.product.price_cents * quantity)}
