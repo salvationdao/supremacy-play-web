@@ -376,7 +376,7 @@ const InnerStack = styled("div")((props: { shortScreen: boolean; color: string; 
     return {
         display: "flex",
         flexDirection: "column",
-        maxHeight: props.shortScreen ? "35vh" : "unset",
+        maxHeight: props.shortScreen ? "45%" : "unset",
         gap: "4rem",
         overflowY: "auto",
         scrollbarWidth: "none",

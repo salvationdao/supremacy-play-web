@@ -127,7 +127,6 @@ export const supFormatterNoFixed = (num: string, maxDecimals?: number): string =
 
 export const parseString = (val: string | null, defaultVal: number): number => {
     if (!val) return defaultVal
-
     return parseFloat(val)
 }
 

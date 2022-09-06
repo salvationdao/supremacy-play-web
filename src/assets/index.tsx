@@ -79,6 +79,7 @@ import DownArrow from "!react-svg-loader!./svg/DownArrow.svg"
 import Drag from "!react-svg-loader!./svg/Drag.svg"
 import Edit from "!react-svg-loader!./svg/Edit.svg"
 import Emergency from "!react-svg-loader!./svg/Emergency.svg"
+import Facebook from "!react-svg-loader!./svg/Facebook.svg"
 import Filter from "!react-svg-loader!./svg/Filter.svg"
 import Fullscreen from "!react-svg-loader!./svg/Fullscreen.svg"
 import GoldBars from "!react-svg-loader!./svg/GoldBars.svg"
@@ -185,6 +186,7 @@ import SafePNG from "./images/Safe.png"
 import SupBackground from "./images/SupBackground.webp"
 import SupremacyPNG from "./images/Supremacy.png"
 import RainingSupsPNG from "./images/supsRain.png"
+import ThreeMechsJPG from "./images/ThreeMechs.jpeg"
 import Stack10aJPG from "./images/TowerStackSkins/Stack10a.jpg"
 import Stack10bJPG from "./images/TowerStackSkins/Stack10b.jpg"
 import Stack10cJPG from "./images/TowerStackSkins/Stack10c.jpg"
@@ -304,6 +306,7 @@ export {
     WarMachineZAIPNG,
     BattleBgWebP,
     BattleArenaOpeningWebP,
+    ThreeMechsJPG,
 }
 export { BcBorder, BcBorderBottom, BcBottom, RmBorder, RmBorderBottom, RmBottom, ZhiBorder, ZhiBorderBottom, ZhiBottom, ZhiMask, BcMask, RmMask }
 
@@ -1255,5 +1258,11 @@ export const SvgDownArrow: React.VoidFunctionComponent<SvgWrapperProps> = (props
 export const SvgDelete: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Delete />
+    </SvgWrapper>
+)
+
+export const SvgFacebook: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Facebook />
     </SvgWrapper>
 )
