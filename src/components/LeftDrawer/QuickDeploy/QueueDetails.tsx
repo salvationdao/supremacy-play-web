@@ -26,11 +26,11 @@ export const QueueDetails = ({ queueFeed, playerQueueStatus }: QueueDetailsProps
         <>
             <Stack spacing="1.5rem" direction="row" width="100%">
                 <AmountItem
-                    key={`${queueFeed?.minimum_wait_time_seconds}-${queueFeed?.average_game_length_seconds}-queue_time`}
-                    title={"WAIT TIME: "}
+                    key={`${queueFeed?.queue_position}-queue_time`}
+                    title={"QUEUE POSITION: "}
                     color={colors.offWhite}
-                    value={queueFeed ? <QueueETA queueETASeconds={queueFeed.minimum_wait_time_seconds} /> : undefined}
-                    tooltip="The minimum time it will take before your mech is placed into battle."
+                    value={queueFeed?.queue_position}
+                    tooltip="The current queue position of your faction."
                     disableIcon
                 />
 
