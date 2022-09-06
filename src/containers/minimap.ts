@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useAuth, useGlobalNotifications } from "."
+import { useDebounce } from "../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 import { BribeStage, GameAbility, LocationSelectType, PlayerAbility, Position } from "../types"
@@ -42,7 +43,7 @@ export const MiniMapContainer = createContainer(() => {
 
     // Other stuff
     const [highlightedMechParticipantID, setHighlightedMechParticipantID] = useState<number>()
-    const [selection, setSelection] = useState<MapSelection>()
+    const [selection, setSelectionDebounced, selectionInstant, setSelection] = useDebounce<MapSelection | undefined>(undefined, 300)
 
     // Subscribe on winner announcements
     useGameServerSubscriptionSecuredUser<WinnerAnnouncementResponse | undefined>(
@@ -82,19 +83,19 @@ export const MiniMapContainer = createContainer(() => {
         } else if (playerAbility) {
             setIsTargeting(true)
         }
-    }, [winner, bribeStage, playerAbility])
+    }, [winner, bribeStage, playerAbility, setSelection])
 
     const resetPlayerAbilitySelection = useCallback(() => {
         setPlayerAbility(undefined)
         setSelection(undefined)
         setIsTargeting(!!winner?.game_ability)
-    }, [winner?.game_ability])
+    }, [winner?.game_ability, setSelection])
 
     const resetWinnerSelection = useCallback(() => {
         setSelection(undefined)
         setWinner(undefined)
         setIsTargeting(!!playerAbility)
-    }, [playerAbility])
+    }, [playerAbility, setSelection])
 
     useEffect(() => {
         addToHotkeyRecord(RecordType.MiniMap, "Escape", () => {
@@ -222,6 +223,7 @@ export const MiniMapContainer = createContainer(() => {
         newSnackbarMessage,
         setHighlightedMechParticipantID,
         currentArenaID,
+        setSelection,
     ])
 
     useEffect(() => {
@@ -241,7 +243,9 @@ export const MiniMapContainer = createContainer(() => {
         setHighlightedMechParticipantID,
         isTargeting,
         selection,
+        selectionInstant,
         setSelection,
+        setSelectionDebounced,
         resetWinnerSelection,
         resetPlayerAbilitySelection,
         playerAbility,
