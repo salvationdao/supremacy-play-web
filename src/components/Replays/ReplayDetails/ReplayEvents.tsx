@@ -62,7 +62,7 @@ export const ReplayEvents = ({
                     direction: "ltr",
                     scrollbarWidth: "none",
                     "::-webkit-scrollbar": {
-                        width: "1rem",
+                        width: ".8rem",
                     },
                     "::-webkit-scrollbar-track": {
                         background: "#FFFFFF15",
