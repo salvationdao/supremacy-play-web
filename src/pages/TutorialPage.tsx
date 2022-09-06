@@ -7,7 +7,7 @@ import { ClipThing, FancyButton, LeftDrawerBT, MiniMapBT, TrainingBattleAbility,
 import { FactionIntro } from "../components/Tutorial/Faction/FactionIntro"
 import { Intro } from "../components/Tutorial/Intro"
 import { WarMachineStatsBT } from "../components/Tutorial/WarMachine/WarMachineStatsBT"
-import { TRAINING_ASSETS } from "../constants"
+import { LINK, TRAINING_ASSETS } from "../constants"
 import { TrainingProvider, useDimension, useTraining } from "../containers"
 import { useAuth } from "../containers/auth"
 import { useUrlQuery } from "../hooks"
@@ -20,7 +20,7 @@ export const TutorialPage = () => (
     <>
         <Helmet>
             <title>Battle Training - Supremacy Battle Arena</title>
-            <link rel="canonical" href="/training" />
+            <link rel="canonical" href={`${LINK}/training`} />
         </Helmet>
 
         <TrainingProvider>
