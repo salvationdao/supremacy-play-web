@@ -102,21 +102,18 @@ export const ReplayDetails = ({ gid, battleNumber }: { gid: number; battleNumber
                 }}
             >
                 <Box sx={{ direction: "ltr", height: 0 }}>
-                    <Stack spacing="2rem">
-                        <ReplayPlayer battleReplay={replay.battle_replay} />
-
-                        <Stack direction="row" spacing="2rem" justifyContent="space-between">
-                            {/* Left side */}
-                            <Stack sx={{ flex: 1 }}>
-                                <ReplayInfo battleReplay={replay.battle_replay} />
-                                <ReplayMechs mechs={replay.mechs} />
-                            </Stack>
-
-                            {/* Right side */}
-                            <Box sx={{ width: "30rem" }}>
-                                <RelatedReplayVideos battleReplay={replay.battle_replay} />
-                            </Box>
+                    <Stack direction="row" spacing="2rem" justifyContent="space-between">
+                        {/* Left side */}
+                        <Stack spacing="2rem" sx={{ flex: 1 }}>
+                            <ReplayPlayer battleReplay={replay.battle_replay} />
+                            <ReplayInfo battleReplay={replay.battle_replay} />
+                            <ReplayMechs mechs={replay.mechs} />
                         </Stack>
+
+                        {/* Right side */}
+                        <Box sx={{ width: "30rem" }}>
+                            <RelatedReplayVideos battleReplay={replay.battle_replay} />
+                        </Box>
                     </Stack>
                 </Box>
             </Box>

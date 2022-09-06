@@ -25,7 +25,7 @@ export const BattleReplayItem = ({ battleReplay }: { battleReplay: BattleReplay 
                     bottomRight: true,
                 },
                 backgroundColor: theme.factionTheme.background,
-                opacity: 0.7,
+                opacity: 0.6,
                 sx: { position: "relative", height: "100%" },
             }}
             sx={{ color: theme.factionTheme.primary, textAlign: "start", height: "100%", ":hover": { opacity: 1 } }}

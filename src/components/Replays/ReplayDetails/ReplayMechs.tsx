@@ -21,7 +21,6 @@ export const ReplayMechs = ({ mechs }: { mechs?: MechDetails[] }) => {
             <Box
                 sx={{
                     width: "100%",
-                    py: "1rem",
                     display: "grid",
                     gridTemplateColumns: "repeat(3, minmax(26rem, 1fr))",
                     gap: "2rem",
