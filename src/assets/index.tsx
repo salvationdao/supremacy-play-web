@@ -223,16 +223,10 @@ import BattleTrainingBG from "./images/TrainingBg.png"
 import WarMachineIconPNG from "./images/WarMachineIcon.png"
 import ZaibatsuLogo from "./images/ZaibatsuLogo.png"
 import BcBorder from "./svg/Landing/bc/BCBorder.svg"
-import BcBorderBottom from "./svg/Landing/bc/BCBorderBottom.svg"
-import BcBottom from "./svg/Landing/bc/BCBottom.svg"
 import BcMask from "./svg/Landing/bc/BCMask.png"
 import RmBorder from "./svg/Landing/rm/RmBorder.svg"
-import RmBorderBottom from "./svg/Landing/rm/RmBorderBottom.svg"
-import RmBottom from "./svg/Landing/rm/RmBottom.svg"
 import RmMask from "./svg/Landing/rm/RmMask.png"
 import ZhiBorder from "./svg/Landing/zhi/ZHIBorder.svg"
-import ZhiBorderBottom from "./svg/Landing/zhi/ZHIBorderBottom.svg"
-import ZhiBottom from "./svg/Landing/zhi/ZHIBottom.svg"
 import ZhiMask from "./svg/Landing/zhi/ZHIMask.png"
 
 // Tower stack mini game skins
@@ -308,7 +302,7 @@ export {
     BattleArenaOpeningWebP,
     ThreeMechsJPG,
 }
-export { BcBorder, BcBorderBottom, BcBottom, RmBorder, RmBorderBottom, RmBottom, ZhiBorder, ZhiBorderBottom, ZhiBottom, ZhiMask, BcMask, RmMask }
+export { BcBorder, RmBorder, ZhiBorder, ZhiMask, BcMask, RmMask }
 
 export interface SvgWrapperProps extends BoxProps {
     size?: string
