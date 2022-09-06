@@ -36,7 +36,7 @@ export const ReplayEvents = ({
 
     useInterval(() => {
         setVideoTime(streamRef.current?.currentTime || 0)
-    }, 800)
+    }, 1000)
 
     if (!battleReplay?.events || battleReplay.events.length <= 0) {
         return null
@@ -81,7 +81,13 @@ export const ReplayEvents = ({
                                 const isPassed = videoTime > timeSeconds
 
                                 return (
-                                    <EventItem key={i} seekToSeconds={seekToSeconds} replayEvent={replayEvent} timeSeconds={timeSeconds} isPassed={isPassed} />
+                                    <ReplayEventItem
+                                        key={i}
+                                        seekToSeconds={seekToSeconds}
+                                        replayEvent={replayEvent}
+                                        timeSeconds={timeSeconds}
+                                        isPassed={isPassed}
+                                    />
                                 )
                             })}
                     </Stack>
@@ -91,14 +97,14 @@ export const ReplayEvents = ({
     )
 }
 
-interface EventItemProps {
+interface ReplayEventItemProps {
     seekToSeconds: (seconds: number) => void
     replayEvent: ReplayEvent
     timeSeconds: number
     isPassed: boolean
 }
 
-const propsAreEqual = (prevProps: EventItemProps, nextProps: EventItemProps) => {
+const propsAreEqual = (prevProps: ReplayEventItemProps, nextProps: ReplayEventItemProps) => {
     return (
         prevProps.replayEvent.timestamp === nextProps.replayEvent.timestamp &&
         prevProps.replayEvent.notification.type === nextProps.replayEvent.notification.type &&
@@ -107,7 +113,7 @@ const propsAreEqual = (prevProps: EventItemProps, nextProps: EventItemProps) => 
     )
 }
 
-const EventItem = React.memo(function EventItem({ seekToSeconds, replayEvent, timeSeconds, isPassed }: EventItemProps) {
+const ReplayEventItem = React.memo(function ReplayEventItem({ seekToSeconds, replayEvent, timeSeconds, isPassed }: ReplayEventItemProps) {
     const { getFaction } = useSupremacy()
 
     const { notification } = replayEvent
