@@ -3,7 +3,6 @@ import { useCallback, useRef, useState } from "react"
 import { SvgRepair } from "../../../../assets"
 import { useGlobalNotifications } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
-import { timeSinceInWords } from "../../../../helpers"
 import {
     useGameServerCommandsFaction,
     useGameServerCommandsUser,
@@ -101,22 +100,14 @@ export const MechGeneralStatus = ({
                 case MechStatusEnum.PendingQueue:
                     text = "PENDING DEPLOY"
                     if (payload.battle_eta_seconds != null) {
-                        text = `> ${
-                            payload.battle_eta_seconds < 60
-                                ? "1 MINUTE"
-                                : timeSinceInWords(new Date(), new Date(new Date().getTime() + payload.battle_eta_seconds * 1000), true)
-                        }`
+                        text = `> ${payload.battle_eta_seconds < 60 ? "1 MINUTE" : `${Math.ceil(payload.battle_eta_seconds / 60)} MINUTES`}`
                     }
                     color = colors.yellow
                     break
                 case MechStatusEnum.Queue:
                     text = "IN QUEUE"
                     if (payload.battle_eta_seconds != null) {
-                        text = `${
-                            payload.battle_eta_seconds < 60
-                                ? "< 1 MINUTE"
-                                : timeSinceInWords(new Date(), new Date(new Date().getTime() + payload.battle_eta_seconds * 1000), true)
-                        }`
+                        text = `${payload.battle_eta_seconds < 60 ? "< 1 MINUTE" : `~${Math.ceil(payload.battle_eta_seconds / 60)} MINUTES`}`
                     }
                     color = colors.yellow
                     break
