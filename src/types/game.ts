@@ -247,6 +247,11 @@ export interface Arena {
     id: string
     type: ArenaType
     gid: number
+    status?: ArenaStatus
+}
+
+export interface ArenaStatus {
+    is_idle: boolean
 }
 
 export interface BattleReplay {

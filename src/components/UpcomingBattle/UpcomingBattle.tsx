@@ -13,13 +13,13 @@ import {
     ZhiBorderBottom,
     ZhiBottom,
     ZhiMask,
-} from "../assets"
-import { useSupremacy, useUI } from "../containers"
-import { useGameServerSubscription } from "../hooks/useGameServer"
-import { GameServerKeys } from "../keys"
-import { theme } from "../theme/theme"
-import { Faction, GameMap } from "../types"
-import { MechDetails } from "../types/assets"
+} from "../../assets"
+import { useSupremacy, useUI } from "../../containers"
+import { useGameServerSubscription } from "../../hooks/useGameServer"
+import { GameServerKeys } from "../../keys"
+import { theme } from "../../theme/theme"
+import { Faction, GameMap } from "../../types"
+import { MechDetails } from "../../types/assets"
 
 interface NextBattle {
     map: GameMap
