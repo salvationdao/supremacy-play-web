@@ -8,10 +8,9 @@ export const TextAlert = ({ data }: { data: string }) => {
             clipSize="3px"
             border={{
                 borderColor: colors.offWhite,
-                isFancy: true,
                 borderThickness: ".2rem",
             }}
-            opacity={0.8}
+            opacity={0.6}
             backgroundColor={colors.darkNavy}
         >
             <Box

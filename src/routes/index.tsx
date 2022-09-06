@@ -13,6 +13,8 @@ import { LeaderboardPage } from "../pages/LeaderboardPage"
 import { MarketplaceItemPage } from "../pages/MarketplaceItemPage"
 import { MarketplaceSellPage } from "../pages/MarketplaceSellPage"
 import { MechPage } from "../pages/MechPage"
+import { ReplayItemPage } from "../pages/ReplayItemPage"
+import { ReplayPage } from "../pages/ReplayPage"
 import { StorefrontPage } from "../pages/StorefrontPage"
 import { WeaponPage } from "../pages/WeaponPage"
 import { colors } from "../theme/theme"
@@ -195,7 +197,35 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         pageTitle: "Supremacy - Billing",
     },
 
-    // Others
+    // Replays
+    replays_item: {
+        id: "replays_item",
+        path: "/replay",
+        exact: true,
+        Component: ReplayItemPage,
+        requireAuth: false,
+        requireFaction: false,
+        matchNavLinkID: "replays",
+        enable: true,
+        pageTitle: "Supremacy - Replay Item",
+    },
+    replays: {
+        id: "replays",
+        path: "/replays/:type?",
+        exact: true,
+        Component: ReplayPage,
+        requireAuth: false,
+        requireFaction: false,
+        navLink: {
+            enable: true,
+            label: "Replays",
+        },
+        matchNavLinkID: "replays",
+        enable: true,
+        pageTitle: "Supremacy - Replays",
+    },
+
+    // Claim
     claim: {
         id: "claim",
         path: "/claim",

@@ -3,9 +3,9 @@ import { useUI } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { FancyButton } from "../Common/FancyButton"
 
-export const ShowTrailerButton = () => {
+export const ShowUpcomingBattleButton = () => {
     const theme = useTheme()
-    const { showTrailer, toggleShowTrailer } = useUI()
+    const { showUpcomingBattle, toggleShowUpcomingBattle } = useUI()
 
     return (
         <FancyButton
@@ -13,15 +13,15 @@ export const ShowTrailerButton = () => {
                 clipSize: "4px",
                 clipSlantSize: "0px",
                 backgroundColor: theme.factionTheme.primary,
-                opacity: showTrailer ? 0.5 : 0.1,
+                opacity: showUpcomingBattle ? 0.5 : 0.1,
                 border: { borderColor: theme.factionTheme.primary, borderThickness: "1px" },
-                sx: { position: "relative", opacity: showTrailer ? 1 : 0.8 },
+                sx: { position: "relative", opacity: showUpcomingBattle ? 1 : 0.8 },
             }}
             sx={{ px: "1rem", pt: ".1rem", pb: 0, color: "#FFFFFF" }}
-            onClick={() => toggleShowTrailer()}
+            onClick={() => toggleShowUpcomingBattle()}
         >
-            <Typography variant="body2" sx={{ color: showTrailer ? theme.factionTheme.secondary : "#FFFFFF" }}>
-                WATCH TRAILER
+            <Typography variant="body2" sx={{ color: showUpcomingBattle ? theme.factionTheme.secondary : "#FFFFFF" }}>
+                NEXT BATTLE
             </Typography>
         </FancyButton>
     )

@@ -2,21 +2,7 @@ import { useState } from "react"
 import { createContainer } from "unstated-next"
 import { useGameServerSubscription } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-
-enum ArenaType {
-    Story = "STORY",
-    Expedition = "EXPEDITION",
-}
-
-interface Arena {
-    id: string
-    type: ArenaType
-    status?: ArenaStatus
-}
-
-interface ArenaStatus {
-    is_idle: boolean
-}
+import { Arena, ArenaStatus, ArenaType } from "../types"
 
 export const ArenaContainer = createContainer(() => {
     const [arenaList, setArenaList] = useState<Arena[]>([])

@@ -18,10 +18,10 @@ export interface QuickPlayerAbilitiesItemProps {
     saleAbility: SaleAbility
     price?: string
     amount?: number
+    availability: SaleAbilityAvailability
     onClaim: () => void
     onPurchase: () => void
     setClaimError: React.Dispatch<React.SetStateAction<string | undefined>>
-    availability: SaleAbilityAvailability
 }
 
 const propsAreEqual = (prevProps: QuickPlayerAbilitiesItemProps, nextProps: QuickPlayerAbilitiesItemProps) => {

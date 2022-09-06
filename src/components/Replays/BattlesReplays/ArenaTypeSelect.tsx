@@ -1,25 +1,25 @@
 import { MenuItem, Select, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { useTheme } from "../../../../containers/theme"
-import { colors } from "../../../../theme/theme"
-import { LeaderboardRound } from "../../../../types"
+import { useTheme } from "../../../containers/theme"
+import { colors } from "../../../theme/theme"
+import { Arena } from "../../../types"
 
-export const RoundSelect = ({
-    roundOptions,
-    selectedRound,
-    setSelectedRound,
+export const ArenaTypeSelect = ({
+    arenaTypeOptions,
+    selectedArenaType,
+    onChangeArenaType,
 }: {
-    roundOptions: LeaderboardRound[]
-    selectedRound?: LeaderboardRound
-    setSelectedRound: React.Dispatch<React.SetStateAction<LeaderboardRound | undefined>>
+    arenaTypeOptions: Arena[]
+    selectedArenaType?: Arena
+    onChangeArenaType: (arena: Arena | undefined) => void
 }) => {
     const theme = useTheme()
 
     const label = useMemo(() => {
-        const selected = roundOptions.find((i) => i.id === selectedRound?.id)
+        const selected = arenaTypeOptions.find((i) => i.id === selectedArenaType?.id)
         if (!selected) return null
-        return `${selected.name}`
-    }, [roundOptions, selectedRound?.id])
+        return `${selected.type}`
+    }, [arenaTypeOptions, selectedArenaType?.id])
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
@@ -53,7 +53,7 @@ export const RoundSelect = ({
                     },
                 }}
                 displayEmpty
-                value={selectedRound || ""}
+                value={selectedArenaType || ""}
                 MenuProps={{
                     variant: "menu",
                     sx: {
@@ -79,23 +79,23 @@ export const RoundSelect = ({
                     )
                 }}
             >
-                <MenuItem value="" onClick={() => setSelectedRound(undefined)}>
+                <MenuItem value="" onClick={() => onChangeArenaType(undefined)}>
                     <Typography textTransform="uppercase" sx={{ fontWeight: "fontWeightBold" }}>
-                        ALL TIME
+                        ANY
                     </Typography>
                 </MenuItem>
-                {roundOptions.map((x, i) => {
+                {arenaTypeOptions.map((x, i) => {
                     return (
                         <MenuItem
                             key={x.id + i}
                             value={x.id}
                             onClick={() => {
-                                setSelectedRound(x)
+                                onChangeArenaType(x)
                             }}
                             sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                         >
                             <Typography textTransform="uppercase" sx={{ fontWeight: "fontWeightBold" }}>
-                                {x.name}
+                                {x.type}
                             </Typography>
                         </MenuItem>
                     )
