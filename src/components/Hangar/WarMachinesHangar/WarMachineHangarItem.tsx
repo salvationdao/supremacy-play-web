@@ -213,6 +213,7 @@ export const MechCommonArea = ({
     isExpanded,
     toggleIsExpanded,
     label,
+    hideRepairBlocks,
 }: {
     primaryColor: string
     secondaryColor: string
@@ -222,6 +223,7 @@ export const MechCommonArea = ({
     isExpanded?: boolean
     toggleIsExpanded?: (value?: boolean) => void
     label?: string
+    hideRepairBlocks?: boolean
 }) => {
     const backgroundColor = useMemo(() => shadeColor(primaryColor, -90), [primaryColor])
 
@@ -280,7 +282,7 @@ export const MechCommonArea = ({
                         {mech1?.name || mech1?.label || label}
                     </Typography>
 
-                    <MechRepairBlocks mechID={mech?.id || mechDetails?.id} defaultBlocks={mechDetails?.repair_blocks} />
+                    {!hideRepairBlocks && <MechRepairBlocks mechID={mech?.id || mechDetails?.id} defaultBlocks={mechDetails?.repair_blocks} />}
 
                     {toggleIsExpanded && !isGridView && (
                         <Stack
@@ -335,19 +337,20 @@ export const MechCommonArea = ({
             </Stack>
         ),
         [
-            avatarUrl,
-            backgroundColor,
-            imageUrl,
-            isExpanded,
             isGridView,
-            label,
+            avatarUrl,
+            imageUrl,
             largeImageUrl,
-            mech?.id,
+            toggleIsExpanded,
             mechDetails,
             mech1,
+            label,
+            hideRepairBlocks,
+            mech?.id,
+            isExpanded,
             primaryColor,
             secondaryColor,
-            toggleIsExpanded,
+            backgroundColor,
         ],
     )
 }

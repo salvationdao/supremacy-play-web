@@ -8,6 +8,7 @@ import { BattleReplay, MechDetails } from "../../../types"
 import { ClipThing } from "../../Common/ClipThing"
 import { RelatedReplayVideos } from "./RelatedReplayVideos"
 import { ReplayInfo } from "./ReplayInfo"
+import { ReplayMechs } from "./ReplayMechs"
 import { ReplayPlayer } from "./ReplayPlayer"
 
 interface GetReplayResponse {
@@ -106,8 +107,9 @@ export const ReplayDetails = ({ gid, battleNumber }: { gid: number; battleNumber
 
                         <Stack direction="row" spacing="2rem" justifyContent="space-between">
                             {/* Left side */}
-                            <Stack>
+                            <Stack sx={{ flex: 1 }}>
                                 <ReplayInfo battleReplay={replay.battle_replay} />
+                                <ReplayMechs mechs={replay.mechs} />
                             </Stack>
 
                             {/* Right side */}
