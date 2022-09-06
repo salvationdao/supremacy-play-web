@@ -9,7 +9,6 @@ export const PROD_ONLY = process.env.REACT_APP_ENVIRONMENT === "production"
 export const STAGING_ONLY = process.env.REACT_APP_ENVIRONMENT === "staging"
 export const DEV_ONLY = process.env.REACT_APP_ENVIRONMENT !== "production" && process.env.REACT_APP_ENVIRONMENT !== "staging"
 export const CAPTCHA_KEY = process.env.REACT_APP_CAPTCHA_SITE_KEY || "87f715ba-98ff-43da-b970-cfc30fd7c5a0"
-export const LINK = PROD_ONLY ? "https://play.supremacy.game" : STAGING_ONLY ? "https://supremacygame.dev" : "https://play.supremacygame.io"
 const VERSION = process.env.REACT_APP_COMMIT_REF || "development"
 const TOKEN_SALE_PAGE = process.env.REACT_APP_TOKEN_SALE_PAGE || "https://passport.xsyn.io/external/buy"
 const SUPREMACY_PAGE = process.env.REACT_APP_SUPREMACY_PAGE || "https://supremacy.game/"
@@ -29,7 +28,7 @@ export const PASSPORT_SIGNUP = DEV_ONLY
 
 // Battle arena related
 export const BATTLE_ARENA_OPEN = STAGING_OR_DEV_ONLY
-export const BATTLE_ARENA_OPEN_DATE: Date | undefined = new Date("Sep 07 2022 14:00:00 GMT+0800 (AWST)")
+export const BATTLE_ARENA_OPEN_DATE: Date | undefined = new Date("Sep 08 2022 08:00:00 GMT+0800 (AWST)")
 
 // Testing related
 export const IS_TESTING_MODE = STAGING_ONLY
