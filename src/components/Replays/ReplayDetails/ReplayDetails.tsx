@@ -7,6 +7,7 @@ import { colors, fonts } from "../../../theme/theme"
 import { BattleReplay, MechDetails } from "../../../types"
 import { ClipThing } from "../../Common/ClipThing"
 import { RelatedReplayVideos } from "./RelatedReplayVideos"
+import { ReplayEvents } from "./ReplayEvents"
 import { ReplayInfo } from "./ReplayInfo"
 import { ReplayMechs } from "./ReplayMechs"
 import { ReplayPlayer } from "./ReplayPlayer"
@@ -44,7 +45,6 @@ export const ReplayDetails = ({ gid, battleNumber }: { gid: number; battleNumber
     const primaryColor = theme.factionTheme.primary
 
     const content = useMemo(() => {
-        console.log(replay)
         if (loadError) {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
@@ -111,9 +111,10 @@ export const ReplayDetails = ({ gid, battleNumber }: { gid: number; battleNumber
                         </Stack>
 
                         {/* Right side */}
-                        <Box sx={{ width: "30rem" }}>
+                        <Stack spacing="2rem" sx={{ width: "38rem" }}>
+                            <ReplayEvents battleReplay={replay.battle_replay} />
                             <RelatedReplayVideos battleReplay={replay.battle_replay} />
-                        </Box>
+                        </Stack>
                     </Stack>
                 </Box>
             </Box>

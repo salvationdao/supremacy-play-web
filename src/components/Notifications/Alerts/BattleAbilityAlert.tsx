@@ -17,10 +17,9 @@ export const BattleAbilityAlert = ({ data, getFaction }: { data: BattleFactionAb
             clipSize="3px"
             border={{
                 borderColor: mainColor || colors.grey,
-                isFancy: true,
                 borderThickness: ".2rem",
             }}
-            opacity={0.8}
+            opacity={0.6}
             backgroundColor={colors.darkNavy}
         >
             <Stack spacing=".5rem" sx={{ px: "1.44rem", pt: "1.2rem", pb: ".8rem" }}>
