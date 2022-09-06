@@ -12,7 +12,7 @@ export const ReplayItemPage = () => {
     const history = useHistory()
 
     const goBack = useCallback(() => {
-        history.goBack()
+        history.push("/replays")
     }, [history])
 
     return (
