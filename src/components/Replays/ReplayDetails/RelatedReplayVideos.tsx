@@ -1,6 +1,5 @@
 import { Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
-import { useTheme } from "../../../containers/theme"
 import { useGameServerCommands } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { fonts } from "../../../theme/theme"

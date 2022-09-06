@@ -43,6 +43,7 @@ export const ReplayDetails = ({ gid, battleNumber }: { gid: number; battleNumber
     const primaryColor = theme.factionTheme.primary
 
     const content = useMemo(() => {
+        console.log(replay)
         if (loadError) {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
@@ -83,8 +84,8 @@ export const ReplayDetails = ({ gid, battleNumber }: { gid: number; battleNumber
                     overflowY: "auto",
                     overflowX: "hidden",
                     ml: "2rem",
-                    pr: "1rem",
-                    mr: "1rem",
+                    pr: "1.4rem",
+                    mr: ".6rem",
                     my: "2rem",
                     direction: "ltr",
                     scrollbarWidth: "none",
