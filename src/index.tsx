@@ -6,14 +6,15 @@ import { useEffect } from "react"
 import ReactDOM from "react-dom"
 import { ErrorBoundary } from "react-error-boundary"
 import { Action, ClientContextProvider, createClient } from "react-fetching-library"
+import { Helmet } from "react-helmet"
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom"
 import { SupremacyPNG } from "./assets"
 import { Bar, GlobalSnackbar, Maintenance, RightDrawer } from "./components"
 import { NavLinksDrawer } from "./components/Bar/NavLinks/NavLinksDrawer"
 import { BottomNav } from "./components/BottomNav/BottomNav"
-import { tourStyles } from "./components/HowToPlay/Tutorial/SetupTutorial"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
-import { GAME_SERVER_HOSTNAME, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
+import { tourStyles } from "./components/Tutorial/SetupTutorial"
+import { GAME_SERVER_HOSTNAME, LINK, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
 import {
     ChatProvider,
     DimensionProvider,
@@ -35,7 +36,7 @@ import { OvenStreamProvider } from "./containers/oven"
 import { ThemeProvider } from "./containers/theme"
 import { ws } from "./containers/ws"
 import { useToggle } from "./hooks"
-import { NotFoundPage } from "./pages"
+import { NotFoundPage, TutorialPage } from "./pages"
 import { AuthPage } from "./pages/AuthPage"
 import { EnlistPage } from "./pages/EnlistPage"
 import { ErrorFallbackPage } from "./pages/ErrorFallbackPage"
@@ -45,6 +46,7 @@ import { colors, fonts } from "./theme/theme"
 import { FiatProvider } from "./containers/fiat"
 
 const AppInner = () => {
+    const isTraining = location.pathname.includes("/training")
     const { isServerDown, serverConnectedBefore, firstConnectTimedOut } = useSupremacy()
     const { isMobile } = useMobile()
     const { userID, factionID } = useAuth()
@@ -100,10 +102,6 @@ const AppInner = () => {
         )
     }
 
-    if (isServerDown || UNDER_MAINTENANCE) {
-        return <Maintenance />
-    }
-
     return (
         <>
             <Stack
@@ -130,8 +128,7 @@ const AppInner = () => {
                     }}
                 >
                     <NavLinksDrawer />
-
-                    <LeftDrawer />
+                    {!isTraining && <LeftDrawer />}
 
                     <Stack
                         sx={{
@@ -143,28 +140,42 @@ const AppInner = () => {
                         }}
                     >
                         <Box sx={{ flex: 1, position: "relative", overflow: "hidden" }}>
-                            <Switch>
-                                {ROUTES_ARRAY.map((r) => {
-                                    const { id, path, exact, Component, requireAuth, requireFaction, authTitle, authDescription, enable } = r
-                                    if (!enable) return null
-
-                                    let component = Component
-                                    if (requireAuth && !userID) {
-                                        const Comp = () => <AuthPage authTitle={authTitle} authDescription={authDescription} />
-                                        component = Comp
-                                    } else if (requireFaction && !factionID) {
-                                        component = EnlistPage
-                                    }
-                                    return <Route key={id} path={path} exact={exact} component={component} />
-                                })}
-                                <Redirect to={ROUTES_MAP.not_found_page.path} />
-                            </Switch>
+                            {isTraining ? (
+                                <TutorialPage />
+                            ) : !isServerDown && !UNDER_MAINTENANCE ? (
+                                <Switch>
+                                    {ROUTES_ARRAY.map((r) => {
+                                        const { id, path, exact, Component, requireAuth, requireFaction, authTitle, authDescription, enable, pageTitle } = r
+                                        if (!enable) return null
+                                        let PageComponent = Component
+                                        if (requireAuth && !userID) {
+                                            const Comp = () => <AuthPage authTitle={authTitle} authDescription={authDescription} />
+                                            PageComponent = Comp
+                                        } else if (userID && requireFaction && !factionID) {
+                                            PageComponent = EnlistPage
+                                        }
+                                        if (!PageComponent) return null
+                                        return (
+                                            <Route key={id} path={path} exact={exact}>
+                                                <Helmet>
+                                                    <title>{pageTitle}</title>
+                                                    <link rel="canonical" href={`${LINK}/${path}`} />
+                                                </Helmet>
+                                                <PageComponent />
+                                            </Route>
+                                        )
+                                    })}
+                                    <Redirect to={ROUTES_MAP.not_found_page.path} />
+                                </Switch>
+                            ) : (
+                                <Maintenance />
+                            )}
                         </Box>
 
                         {isMobile && <BottomNav />}
                     </Stack>
 
-                    <RightDrawer />
+                    {!isServerDown && !UNDER_MAINTENANCE && <RightDrawer />}
                 </Stack>
             </Stack>
 
@@ -215,7 +226,7 @@ const tourProviderProps = {
     styles: tourStyles,
     showBadge: false,
     disableKeyboardNavigation: false,
-    disableDotsNavigation: true,
+    disableDotsNavigation: false,
 }
 
 const App = () => {
@@ -225,9 +236,9 @@ const App = () => {
                 <FingerprintProvider>
                     <GlobalNotificationsProvider>
                         <ClientContextProvider client={client}>
-                            <SupremacyProvider>
-                                <AuthProvider>
-                                    <BrowserRouter>
+                            <BrowserRouter>
+                                <SupremacyProvider>
+                                    <AuthProvider>
                                         <ChatProvider>
                                             <WalletProvider>
                                                 <TourProvider {...tourProviderProps}>
@@ -259,9 +270,9 @@ const App = () => {
                                                 </TourProvider>
                                             </WalletProvider>
                                         </ChatProvider>
-                                    </BrowserRouter>
-                                </AuthProvider>
-                            </SupremacyProvider>
+                                    </AuthProvider>
+                                </SupremacyProvider>
+                            </BrowserRouter>
                         </ClientContextProvider>
                     </GlobalNotificationsProvider>
                 </FingerprintProvider>

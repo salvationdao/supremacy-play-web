@@ -9,7 +9,7 @@ import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MechBasic, MechStatus, MechStatusEnum } from "../../../types"
+import { MechBasic, MechBasicWithQueueStatus, MechStatus, MechStatusEnum } from "../../../types"
 import { RepairOffer, RepairStatus } from "../../../types/jobs"
 import { SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
@@ -45,7 +45,7 @@ interface GetMechsRequest {
 }
 
 interface GetMechsResponse {
-    mechs: MechBasic[]
+    mechs: MechBasicWithQueueStatus[]
     total: number
 }
 
@@ -57,7 +57,7 @@ export const WarMachinesHangar = () => {
     // Items
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const [mechs, setMechs] = useState<MechBasic[]>([])
+    const [mechs, setMechs] = useState<MechBasicWithQueueStatus[]>([])
 
     // Bulk action
     const [selectedMechs, setSelectedMechs] = useState<MechBasic[]>([])

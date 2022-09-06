@@ -3,6 +3,7 @@ import { FiatProduct } from "./fiat"
 
 export enum MechStatusEnum {
     Idle = "IDLE",
+    PendingQueue = "PENDING_QUEUE",
     Queue = "QUEUE",
     Battle = "BATTLE",
     Market = "MARKET",
@@ -62,8 +63,8 @@ export interface RepairSlot {
 
 export interface MechStatus {
     status: MechStatusEnum
-    queue_position?: number
-    can_deploy?: boolean
+    can_deploy: boolean
+    battle_eta_seconds: number | null
 }
 
 export interface Images {
@@ -115,8 +116,13 @@ export interface MechBasic extends Collection, Images {
     intro_animation_id: string
     outro_animation_id: string
     power_core_id: string
+    queue_position: number | null
     updated_at: Date
     created_at: Date
+}
+
+export interface MechBasicWithQueueStatus extends MechBasic {
+    in_queue: boolean
 }
 
 export interface MechDetails extends MechBasic {

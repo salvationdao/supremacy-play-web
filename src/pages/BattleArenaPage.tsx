@@ -1,15 +1,15 @@
 import { Box, Stack } from "@mui/material"
 import { useEffect, useState } from "react"
-import { Redirect } from "react-router-dom"
 import { SvgAbility, SvgHistory, SvgHistoryClock, SvgRobot } from "../assets"
 import { BattleAbility, BattleEndScreen, BattleHistory, BigDisplay, Controls, EarlyAccessWarning, Notifications, WarMachineStats } from "../components"
+import { BattleRewardsSkyHighBanner } from "../components/Common/BannersPromotions/BattleRewardsSkyHighBanner"
 import { PlayerAbilities } from "../components/LeftDrawer/BattleArena/PlayerAbilities/PlayerAbilities"
 import { QuickPlayerAbilities } from "../components/LeftDrawer/BattleArena/QuickPlayerAbilities/QuickPlayerAbilities"
 import { QuickDeploy } from "../components/LeftDrawer/QuickDeploy/QuickDeploy"
+import { BattleArenaCountDown } from "../components/Maintenance/BattleArenaCountDown"
 import { BATTLE_ARENA_OPEN } from "../constants"
 import { useAuth, useDimension, useMobile } from "../containers"
 import { siteZIndex } from "../theme/theme"
-import { EnlistPage } from "./EnlistPage"
 
 export const BattleArenaPage = () => {
     const { userID } = useAuth()
@@ -32,14 +32,13 @@ export const BattleArenaPage = () => {
     }
 
     if (!BATTLE_ARENA_OPEN) {
-        return <Redirect to="/fleet#live_chat" />
+        return <BattleArenaCountDown />
     }
 
     return <BattleArenaPageInner />
 }
 
 const BattleArenaPageInner = () => {
-    const { userID, factionID } = useAuth()
     const { isMobile, setAdditionalTabs, setIsNavOpen, allowCloseNav } = useMobile()
     const { triggerReset } = useDimension()
 
@@ -157,12 +156,10 @@ const BattleArenaPageInner = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [allowCloseNav, isMobile, triggerReset, setAdditionalTabs, setIsNavOpen])
 
-    if (userID && !factionID) {
-        return <EnlistPage />
-    }
-
     return (
         <Stack id="battle-arena-all" sx={{ width: "100%", height: "100%", zIndex: siteZIndex.RoutePage }}>
+            <BattleRewardsSkyHighBanner />
+
             <Box id="game-ui-container" sx={{ position: "relative", flex: 1, height: 0 }}>
                 <BigDisplay />
 

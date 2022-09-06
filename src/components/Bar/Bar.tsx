@@ -1,17 +1,18 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
+import Marquee from "react-fast-marquee"
 import { FancyButton, Logo, ProfileCard, WalletDetails } from ".."
-import { DRAWER_TRANSITION_DURATION, FEEDBACK_FORM_URL, GAME_BAR_HEIGHT, NEXT_RESET_TIME, IS_TESTING_MODE } from "../../constants"
+import { SvgDisconnected } from "../../assets"
+import { DRAWER_TRANSITION_DURATION, FEEDBACK_FORM_URL, GAME_BAR_HEIGHT, IS_TESTING_MODE, NEXT_RESET_TIME } from "../../constants"
 import { useAuth, useSupremacy } from "../../containers"
+import { hexToRGB, timeSinceInWords } from "../../helpers"
+import { useTimer } from "../../hooks"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { User } from "../../types"
 import { Messages } from "./Messages/Messages"
 import { NavLinks } from "./NavLinks/NavLinks"
-import Marquee from "react-fast-marquee"
-import { hexToRGB, timeSinceInWords } from "../../helpers"
-import { useTimer } from "../../hooks"
-import { SvgDisconnected } from "../../assets"
 import { Quests } from "./Quests/Quests"
 import { ShoppingCart } from "./ShoppingCart/ShoppingCart"
+import { Tutorial } from "./Tutorial"
 
 const Countdown = ({ endTime }: { endTime: Date }) => {
     const { totalSecRemain } = useTimer(endTime)
@@ -21,7 +22,6 @@ const Countdown = ({ endTime }: { endTime: Date }) => {
 
 export const Bar = () => {
     const { userID, user } = useAuth()
-
     const rgb = hexToRGB(colors.lightRed)
 
     return (
@@ -128,8 +128,10 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
         <>
             <Logo />
             <NavLinks />
+
             <Box sx={{ flexGrow: 1 }} />
 
+            <Tutorial />
             {userID && (
                 <FancyButton
                     clipThingsProps={{
@@ -148,9 +150,6 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
                     </Typography>
                 </FancyButton>
             )}
-
-            {/* <HowToPlay /> */}
-            {/* {userID && <Enlist />} */}
             {userID && <WalletDetails />}
             {userID && <Quests />}
             {userID && <ShoppingCart />}

@@ -1,4 +1,5 @@
 import { keyframes } from "@emotion/react"
+import { colors } from "./theme"
 
 export const zoomEffect = (scale = 1.5) => keyframes`
 	0% { transform: scale(1); }
@@ -122,4 +123,32 @@ export const shake = (shakeScale = 1) => keyframes`
 40%, 60% {
 	transform: translate3d(calc(3px * ${shakeScale}), 0, 0);
 }
+`
+
+export const glowEffect = (color: string, all?: boolean) => keyframes`
+	0% {
+		box-shadow: inset 0 0 ${all ? "20px" : "5px"} ${all ? "20px" : "5px"} ${color};
+	}
+
+	50% {
+		box-shadow: inset 0 0 0px 0px ${color};
+	}
+
+	100% {
+		box-shadow: inset 0 0 ${all ? "20px" : "5px"} ${all ? "20px" : "5px"}  ${color};
+	}
+`
+
+export const dropShadowEffect = keyframes`
+	0% {
+			filter: drop-shadow(0 0 0 ${colors.neonBlue});
+	}
+
+	25% {
+		filter: drop-shadow(0 0 20px ${colors.neonBlue});
+	}
+
+	100% {
+				filter: drop-shadow(0 0 0 ${colors.neonBlue});
+	}
 `

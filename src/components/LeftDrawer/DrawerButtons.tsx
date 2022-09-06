@@ -14,10 +14,10 @@ export const DrawerButtons = () => {
     const { userID } = useAuth()
 
     const match = useRouteMatch(ROUTES_ARRAY.filter((r) => r.path !== "/").map((r) => r.path))
-    let activeRouteID = ""
+    let activeRouteID = "home"
     if (match) {
         const r = ROUTES_ARRAY.find((r) => r.path === match.path)
-        activeRouteID = r?.matchNavLinkID || ""
+        activeRouteID = r?.id || ""
     }
 
     return (
@@ -47,7 +47,7 @@ export const DrawerButtons = () => {
         >
             <Tabs value={0} orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ flex: 1 }}>
                 {LEFT_DRAWER_ARRAY.map((r) => {
-                    if ((r.requireAuth && !userID) || (r.matchNavLinkID && activeRouteID && activeRouteID !== r.matchNavLinkID)) return null
+                    if ((r.requireAuth && !userID) || (r.matchNavLinkIDs && !r.matchNavLinkIDs.includes(activeRouteID))) return null
                     return (
                         <TabButton
                             key={r.id}

@@ -1,5 +1,6 @@
 import { Box, Stack } from "@mui/material"
 import { useMemo } from "react"
+import { shadeColor } from "../../helpers"
 import { colors } from "../../theme/theme"
 
 export const ProgressBar = ({
@@ -19,6 +20,8 @@ export const ProgressBar = ({
     thickness: string
     orientation?: "vertical" | "horizontal"
 }) => {
+    const darkerShadeBackgroundColor = useMemo(() => shadeColor(color, 5), [color])
+
     return useMemo(() => {
         const percent2 = Math.min(percent, 100)
         const linePercent2 = Math.min(linePercent || 0, 100)
@@ -35,6 +38,7 @@ export const ProgressBar = ({
                             height: "100%",
                             width: `${percent2}%`,
                             backgroundColor: color,
+                            background: `linear-gradient(${darkerShadeBackgroundColor} 26%, ${color})`,
                             transition: "all .25s",
                             transform: "translateY(-50%) scaleY(1.08)",
                         }}
@@ -67,6 +71,7 @@ export const ProgressBar = ({
                         height: `${percent2}%`,
                         width: "100%",
                         backgroundColor: color,
+                        background: `linear-gradient(${darkerShadeBackgroundColor} 26%, ${color})`,
                         transition: "all .25s",
                         transform: "translateX(-50%) scaleX(1.08)",
                     }}
@@ -86,5 +91,5 @@ export const ProgressBar = ({
                 )}
             </Stack>
         )
-    }, [backgroundColor, color, id, linePercent, orientation, percent, thickness])
+    }, [backgroundColor, color, darkerShadeBackgroundColor, id, linePercent, orientation, percent, thickness])
 }

@@ -16,10 +16,10 @@ export const NavLinksDrawer = () => {
     const { isNavLinksDrawerOpen, toggleIsNavLinksDrawerOpen } = useUI()
 
     const match = useRouteMatch(ROUTES_ARRAY.filter((r) => r.path !== "/").map((r) => r.path))
-    let activeRouteID = ""
+    let activeRouteID = "home"
     if (match) {
         const r = ROUTES_ARRAY.find((r) => r.path === match.path)
-        activeRouteID = r?.matchNavLinkID || ""
+        activeRouteID = r?.id || ""
     }
 
     return (
