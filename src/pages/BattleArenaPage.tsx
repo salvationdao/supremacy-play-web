@@ -10,7 +10,7 @@ import { BattleArenaCountDown } from "../components/Maintenance/BattleArenaCount
 import { BATTLE_ARENA_OPEN } from "../constants"
 import { useArena, useAuth, useDimension, useMobile } from "../containers"
 import { siteZIndex } from "../theme/theme"
-import { LandingPage } from "./LandingPage"
+import { UpcomingBattle } from "../components/UpcomingBattle/UpcomingBattle"
 
 export const BattleArenaPage = () => {
     const { userID } = useAuth()
@@ -38,7 +38,7 @@ export const BattleArenaPage = () => {
     }
 
     if (currentArena?.status?.is_idle) {
-        return <LandingPage />
+        return <UpcomingBattle />
     }
 
     return <BattleArenaPageInner />

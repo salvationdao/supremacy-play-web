@@ -9,7 +9,6 @@ import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
 import { RepairJobs } from "../components/RightDrawer/RepairJobs/RepairJobs"
 import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../constants"
 import { BattleArenaPage, BillingHistoryPage, ClaimPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
-import { LandingPage } from "../pages/LandingPage"
 import { LeaderboardPage } from "../pages/LeaderboardPage"
 import { MarketplaceItemPage } from "../pages/MarketplaceItemPage"
 import { MarketplaceSellPage } from "../pages/MarketplaceSellPage"
@@ -54,22 +53,6 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         matchNavLinkID: "home",
         enable: true,
         pageTitle: "Supremacy - Battle Arena",
-    },
-
-    // Landing
-    landing: {
-        id: "landing",
-        path: "/landing",
-        exact: true,
-        Component: LandingPage,
-        requireAuth: true,
-        requireFaction: true,
-        enable: true,
-        navLink: {
-            enable: BATTLE_ARENA_OPEN,
-            label: "Upcoming Battle",
-        },
-        pageTitle: "Supremacy - Next Battle",
     },
 
     // Leaderboard
