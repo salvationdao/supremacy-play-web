@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react"
+import { useLocation } from "react-router-dom"
 import { createContainer } from "unstated-next"
 import { useToggle } from "../hooks"
 import { LEFT_DRAWER_ARRAY, RIGHT_DRAWER_ARRAY } from "../routes"
@@ -6,11 +7,14 @@ import { useMobile } from "./mobile"
 
 // Control overlays, side drawers etc
 const uiContainer = createContainer(() => {
+    const isTraining = location.pathname.includes("/training")
+    const { pathname } = useLocation()
     const { isMobile } = useMobile()
     const [isNavLinksDrawerOpen, toggleIsNavLinksDrawerOpen] = useToggle(false)
     const [leftDrawerActiveTabID, setLeftDrawerActiveTabID] = useState(localStorage.getItem("leftDrawerActiveTabID") || LEFT_DRAWER_ARRAY[0]?.id || "")
-    const [rightDrawerActiveTabID, setRightDrawerActiveTabID] = useState(localStorage.getItem("rightDrawerActiveTabID") || RIGHT_DRAWER_ARRAY[0]?.id || "")
-
+    const [rightDrawerActiveTabID, setRightDrawerActiveTabID] = useState(
+        isTraining ? "" : localStorage.getItem("rightDrawerActiveTabID") || RIGHT_DRAWER_ARRAY[0]?.id || "",
+    )
     // Big display vs left drawer
     const [smallDisplayRef, setSmallDisplayRef] = useState<HTMLDivElement | null>(null)
     const [bigDisplayRef, setBigDisplayRef] = useState<HTMLDivElement | null>(null)
@@ -18,6 +22,7 @@ const uiContainer = createContainer(() => {
     const prevIsStreamBigDisplay = useRef<boolean>()
 
     const [showTrailer, toggleShowTrailer] = useToggle()
+    const [showUpcomingBattle, toggleShowUpcomingBattle] = useToggle()
     const [isBattleHistoryOpen, toggleIsBattleHistoryOpen] = useToggle()
 
     useEffect(() => {
@@ -27,6 +32,12 @@ const uiContainer = createContainer(() => {
     useEffect(() => {
         localStorage.setItem("rightDrawerActiveTabID", rightDrawerActiveTabID)
     }, [rightDrawerActiveTabID])
+
+    useEffect(() => {
+        if (pathname.includes("/training")) {
+            setRightDrawerActiveTabID("")
+        }
+    }, [pathname])
 
     useEffect(() => {
         if (isMobile) {
@@ -86,6 +97,8 @@ const uiContainer = createContainer(() => {
         isBattleHistoryOpen,
         toggleShowTrailer,
         toggleIsBattleHistoryOpen,
+        showUpcomingBattle,
+        toggleShowUpcomingBattle,
 
         hasModalsOpen,
     }

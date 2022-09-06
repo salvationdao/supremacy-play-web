@@ -23,7 +23,11 @@ import { DeployModal } from "./Modals/DeployModal"
 import { RentalModal } from "./Modals/RentalModal"
 import { RepairModal } from "./Modals/RepairModal/RepairModal"
 
-export const WarMachineHangarDetails = ({ mechID }: { mechID: string }) => {
+interface WarMachineHangarDetailsProps {
+    mechID: string
+}
+
+export const WarMachineHangarDetails = ({ mechID }: WarMachineHangarDetailsProps) => {
     const [selectedMechDetails, setSelectedMechDetails] = useState<MechDetails>()
     const [deployMechModalOpen, setDeployMechModalOpen] = useState<boolean>(false)
     const [rentalMechModalOpen, setRentalMechModalOpen] = useState<boolean>(false)
@@ -167,15 +171,13 @@ export const WarMachineHangarDetailsInner = ({
                             direction: "ltr",
                             scrollbarWidth: "none",
                             "::-webkit-scrollbar": {
-                                width: ".4rem",
+                                width: "1rem",
                             },
                             "::-webkit-scrollbar-track": {
                                 background: "#FFFFFF15",
-                                borderRadius: 3,
                             },
                             "::-webkit-scrollbar-thumb": {
                                 background: (theme) => theme.factionTheme.primary,
-                                borderRadius: 3,
                             },
                         }}
                     >

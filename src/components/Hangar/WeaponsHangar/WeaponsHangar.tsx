@@ -13,7 +13,7 @@ import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { Weapon, WeaponType } from "../../../types"
-import { SortTypeLabel } from "../../../types/marketplace"
+import { SortDir, SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { SliderRangeFilter } from "../../Common/SortAndFilters/SliderRangeFilterSection"
@@ -318,9 +318,9 @@ export const WeaponsHangar = () => {
         try {
             setIsLoading(true)
 
-            let sortDir = "asc"
+            let sortDir = SortDir.Asc
             let sortBy = ""
-            if (sort === SortTypeLabel.AlphabeticalReverse || sort === SortTypeLabel.RarestDesc) sortDir = "desc"
+            if (sort === SortTypeLabel.AlphabeticalReverse || sort === SortTypeLabel.RarestDesc) sortDir = SortDir.Desc
 
             switch (sort) {
                 case SortTypeLabel.Alphabetical:
@@ -664,8 +664,7 @@ export const WeaponsHangar = () => {
                             <Box
                                 sx={{
                                     ml: "1.9rem",
-                                    mr: ".5rem",
-                                    pr: "1.4rem",
+                                    pr: "1.9rem",
                                     my: "1rem",
                                     flex: 1,
                                     overflowY: "auto",
@@ -673,15 +672,13 @@ export const WeaponsHangar = () => {
                                     direction: "ltr",
 
                                     "::-webkit-scrollbar": {
-                                        width: ".4rem",
+                                        width: "1rem",
                                     },
                                     "::-webkit-scrollbar-track": {
                                         background: "#FFFFFF15",
-                                        borderRadius: 3,
                                     },
                                     "::-webkit-scrollbar-thumb": {
                                         background: theme.factionTheme.primary,
-                                        borderRadius: 3,
                                     },
                                 }}
                             >

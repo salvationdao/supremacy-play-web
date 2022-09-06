@@ -1,8 +1,8 @@
 import { Box } from "@mui/system"
 import { SvgChat, SvgDamage1, SvgHistoryClock, SvgRepair, SvgRobot } from "../assets"
 import { BattleArena } from "../components/LeftDrawer/BattleArena/BattleArena"
-import { QuickDeploy } from "../components/LeftDrawer/QuickDeploy/QuickDeploy"
 import { BattleEndScreen } from "../components/LeftDrawer/BattleEndScreen/BattleEndScreen"
+import { QuickDeploy } from "../components/LeftDrawer/QuickDeploy/QuickDeploy"
 import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
 import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
 import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
@@ -13,10 +13,11 @@ import { LeaderboardPage } from "../pages/LeaderboardPage"
 import { MarketplaceItemPage } from "../pages/MarketplaceItemPage"
 import { MarketplaceSellPage } from "../pages/MarketplaceSellPage"
 import { MechPage } from "../pages/MechPage"
+import { ReplayItemPage } from "../pages/ReplayItemPage"
+import { ReplayPage } from "../pages/ReplayPage"
 import { StorefrontPage } from "../pages/StorefrontPage"
 import { WeaponPage } from "../pages/WeaponPage"
 import { colors } from "../theme/theme"
-import { LandingPage } from "../pages/LandingPage"
 
 // ************
 // ** ROUTES **
@@ -36,6 +37,7 @@ interface RouteStruct {
     }
     matchNavLinkID?: string // The /route which will make this button highlighted
     enable: boolean
+    pageTitle: string // Sets the tab title etc. with react helmet
 }
 
 export const ROUTES_MAP: { [name: string]: RouteStruct } = {
@@ -45,28 +47,14 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         exact: true,
         Component: BattleArenaPage,
         requireAuth: false,
-        requireFaction: false,
+        requireFaction: true,
         navLink: {
             enable: BATTLE_ARENA_OPEN,
             label: "Battle Arena",
         },
         matchNavLinkID: "home",
         enable: true,
-    },
-
-    // Landing
-    landing: {
-        id: "landing",
-        path: "/landing",
-        exact: true,
-        Component: LandingPage,
-        requireAuth: true,
-        requireFaction: true,
-        enable: true,
-        navLink: {
-            enable: BATTLE_ARENA_OPEN,
-            label: "Upcoming Battle",
-        },
+        pageTitle: "Supremacy - Battle Arena",
     },
 
     // Leaderboard
@@ -83,6 +71,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         },
         matchNavLinkID: "leaderboard",
         enable: true,
+        pageTitle: "Supremacy - Leaderboard",
     },
 
     // Mech
@@ -95,6 +84,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireFaction: true,
         matchNavLinkID: "fleet",
         enable: true,
+        pageTitle: "Supremacy - War Machine",
     },
 
     // Weapon
@@ -107,6 +97,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireFaction: true,
         matchNavLinkID: "fleet",
         enable: true,
+        pageTitle: "Supremacy - Weapon",
     },
 
     // Fleet
@@ -123,6 +114,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         },
         matchNavLinkID: "fleet",
         enable: true,
+        pageTitle: "Supremacy - Fleet",
     },
 
     // Storefront
@@ -139,6 +131,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         },
         matchNavLinkID: "storefront",
         enable: true,
+        pageTitle: "Supremacy - Storefront",
     },
 
     // Marketplace
@@ -151,6 +144,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireFaction: true,
         matchNavLinkID: "marketplace",
         enable: !IS_TESTING_MODE,
+        pageTitle: "Supremacy - Sell",
     },
     marketplace_item: {
         id: "marketplace_item",
@@ -161,6 +155,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireFaction: true,
         matchNavLinkID: "marketplace",
         enable: !IS_TESTING_MODE,
+        pageTitle: "Supremacy - Marketplace Item",
     },
     marketplace: {
         id: "marketplace",
@@ -175,6 +170,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         },
         matchNavLinkID: "marketplace",
         enable: !IS_TESTING_MODE,
+        pageTitle: "Supremacy - Marketplace",
     },
 
     // Player profile
@@ -186,6 +182,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireAuth: false,
         requireFaction: false,
         enable: true,
+        pageTitle: "Supremacy - Player Profile",
     },
 
     // FIAT related
@@ -197,20 +194,50 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireAuth: true,
         requireFaction: true,
         enable: true,
+        pageTitle: "Supremacy - Billing",
     },
 
-    // Others
+    // Replays
+    replays_item: {
+        id: "replays_item",
+        path: "/replay",
+        exact: true,
+        Component: ReplayItemPage,
+        requireAuth: false,
+        requireFaction: false,
+        matchNavLinkID: "replays",
+        enable: true,
+        pageTitle: "Supremacy - Replay Item",
+    },
+    replays: {
+        id: "replays",
+        path: "/replays/:type?",
+        exact: true,
+        Component: ReplayPage,
+        requireAuth: false,
+        requireFaction: false,
+        navLink: {
+            enable: true,
+            label: "Replays",
+        },
+        matchNavLinkID: "replays",
+        enable: true,
+        pageTitle: "Supremacy - Replays",
+    },
+
+    // Claim
     claim: {
         id: "claim",
         path: "/claim",
         exact: true,
         Component: ClaimPage,
         requireAuth: true,
+        requireFaction: true,
         authTitle: "Connect to XSYN to Claim Your Rewards",
         authDescription:
             "You will receive assets that are of Supremacy's next generation collection: Supremacy Nexus, which will allow you to equip your war machines to defeat your enemies in the battle arena.",
-        requireFaction: true,
         enable: true,
+        pageTitle: "Supremacy - Claim",
     },
 
     not_found_page: {
@@ -221,6 +248,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireAuth: false,
         requireFaction: false,
         enable: true,
+        pageTitle: "Supremacy - 404",
     },
 }
 
@@ -237,7 +265,7 @@ export interface SideTabsStruct {
     Component?: () => JSX.Element | null
     icon: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
     label: string
-    matchNavLinkID?: string // Leave blank to have the tab available on all pages, else specify the route
+    matchNavLinkIDs?: string[] // Leave undefined to have the tab available on all pages, else specify the routes
     mountAllTime: boolean // Whether to keep component mounted even not on the tab
     requireAuth: boolean
 }
@@ -249,7 +277,7 @@ export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         label: "Battle Commands",
         Component: BattleArena,
         requireAuth: false,
-        matchNavLinkID: "home",
+        matchNavLinkIDs: BATTLE_ARENA_OPEN ? ["home"] : [],
         mountAllTime: true,
     },
     quick_deploy: {
@@ -258,7 +286,7 @@ export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         label: "Quick Deploy",
         Component: QuickDeploy,
         requireAuth: true,
-        matchNavLinkID: "home",
+        matchNavLinkIDs: BATTLE_ARENA_OPEN ? ["home"] : [],
         mountAllTime: false,
     },
     previous_battle: {
@@ -267,7 +295,7 @@ export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         label: "Previous Battle",
         Component: BattleEndScreen,
         requireAuth: false,
-        matchNavLinkID: "home",
+        matchNavLinkIDs: BATTLE_ARENA_OPEN ? ["home"] : [],
         mountAllTime: true,
     },
 }
@@ -304,7 +332,7 @@ export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
     repairs: {
         id: "repairs",
         icon: <SvgRepair size="1.1rem" sx={{ pt: ".3rem" }} />,
-        label: "Repairs",
+        label: "Repairs Jobs",
         Component: RepairJobs,
         requireAuth: true,
         mountAllTime: false,

@@ -48,7 +48,7 @@ export const DevicePreferences = ({ toggleAddDeviceModal }: DevicePreferencesPro
                 {/* Connected devices' helper information */}
                 <TooltipHelper
                     placement="right-start"
-                    text={
+                    renderNode={
                         <Box>
                             <Typography sx={{ display: "inline" }}>Devices that are connected to the Supremacy companion app.</Typography>
                         </Box>

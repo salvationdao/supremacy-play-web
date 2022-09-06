@@ -20,8 +20,19 @@ interface MiniMapInsideProps {
 
 export const MiniMapInside = ({ containerDimensions, poppedOutContainerRef }: MiniMapInsideProps) => {
     const { map } = useGame()
-    const { mapElement, setMapElement, gridWidth, gridHeight, isTargeting, selection, setSelection, playerAbility, winner, setHighlightedMechParticipantID } =
-        useMiniMap()
+    const {
+        mapElement,
+        setMapElement,
+        gridWidth,
+        gridHeight,
+        isTargeting,
+        selection,
+        setSelection,
+        setSelectionDebounced,
+        playerAbility,
+        winner,
+        setHighlightedMechParticipantID,
+    } = useMiniMap()
 
     const mapRef = useRef<HTMLDivElement>(null)
     const gestureRef = useRef<HTMLDivElement>(null)
@@ -36,15 +47,24 @@ export const MiniMapInside = ({ containerDimensions, poppedOutContainerRef }: Mi
                 const x = e.clientX - rect.left
                 const y = e.clientY - rect.top
 
-                setSelection({
-                    startCoords: {
-                        x: x / (gridWidth * mapScale),
-                        y: y / (gridHeight * mapScale),
-                    },
-                })
+                if (!winner?.game_ability && playerAbility?.ability.location_select_type === LocationSelectType.MechCommand) {
+                    setSelectionDebounced({
+                        startCoords: {
+                            x: x / (gridWidth * mapScale),
+                            y: y / (gridHeight * mapScale),
+                        },
+                    })
+                } else {
+                    setSelection({
+                        startCoords: {
+                            x: x / (gridWidth * mapScale),
+                            y: y / (gridHeight * mapScale),
+                        },
+                    })
+                }
             }
         },
-        [mapElement, gridWidth, gridHeight, mapScale, setSelection],
+        [mapElement, gridWidth, gridHeight, mapScale, setSelection, setSelectionDebounced, winner?.game_ability, playerAbility?.ability.location_select_type],
     )
 
     // i.e. is battle ability or player ability of type LOCATION_SELECT
@@ -115,7 +135,7 @@ export const MiniMapInside = ({ containerDimensions, poppedOutContainerRef }: Mi
                         <Blackouts />
 
                         {/* Show any abilities on the minimap */}
-                        <MiniMapAbilitiesDisplay />
+                        <MiniMapAbilitiesDisplay map={map} poppedOutContainerRef={poppedOutContainerRef} />
                     </Box>
                 </Stack>
 

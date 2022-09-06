@@ -18,6 +18,7 @@ export interface GameSettingsResponse {
     war_machines: WarMachineState[]
     spawned_ai: WarMachineState[]
     ability_details: AbilityDetail[]
+    server_time: Date
 }
 
 // Game data that needs to be shared between different components

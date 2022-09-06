@@ -1,9 +1,9 @@
-import { Box, Divider, Stack, Typography } from "@mui/material"
-import { useMemo } from "react"
-import { SvgCrown } from "../../../../../assets"
-import { useSupremacy } from "../../../../../containers"
-import { colors } from "../../../../../theme/theme"
-import { MechBattleBrief, SystemMessageDataMechBattleComplete } from "../../../../../types"
+import { Stack, Typography } from "@mui/material"
+import { fonts } from "../../../../../theme/theme"
+import { SystemMessageDataMechBattleComplete } from "../../../../../types"
+import { RewardAbility } from "./Common/RewardAbility"
+import { RewardSups } from "./Common/RewardSups"
+import { SystemMessageMech } from "./Common/SystemMessageMech"
 
 export interface MechBattleCompleteDetailsProps {
     message: string
@@ -11,109 +11,47 @@ export interface MechBattleCompleteDetailsProps {
 }
 
 export const MechBattleCompleteDetails = ({ message, data }: MechBattleCompleteDetailsProps) => {
-    const { getFaction } = useSupremacy()
+    return (
+        <Stack spacing="3rem" sx={{ px: "1rem", pt: "1rem", pb: "3rem" }}>
+            <Typography variant="h6">{message}</Typography>
+            <RewardsSection data={data} />
+            <MechsSection data={data} />
+        </Stack>
+    )
+}
 
-    const [ownedMechBrief, restOfTheBriefs] = useMemo(() => {
-        let ownedMechBrief: MechBattleBrief | null = null
-        const restOfTheBriefs: MechBattleBrief[] = []
-
-        for (let i = 0; i < data.briefs.length; i++) {
-            const e = data.briefs[i]
-            if (e.mech_id === data.mech_id) {
-                ownedMechBrief = e
-            } else {
-                restOfTheBriefs.push(e)
-            }
-        }
-
-        return [ownedMechBrief, restOfTheBriefs]
-    }, [data])
+const RewardsSection = ({ data }: { data: SystemMessageDataMechBattleComplete }) => {
+    const sups = data.rewarded_sups
+    const supsBonus = data.rewarded_sups_bonus
+    const ability = data.rewarded_player_ability
 
     return (
-        <Stack spacing=".3rem">
-            <Typography variant="h6">{message}</Typography>
+        <Stack spacing="1rem">
+            <Typography sx={{ fontFamily: fonts.nostromoBlack }}>YOUR REWARDS:</Typography>
 
-            <Divider sx={{ my: "1rem !important", borderColor: "#FFFFFF28" }} />
+            <Stack alignItems="center" direction="row" spacing="2rem">
+                {sups && sups != "0" && <RewardSups sups={sups} />}
+                {supsBonus && supsBonus != "0" && <RewardSups sups={supsBonus} label="BONUS" />}
+                {ability && <RewardAbility ability={ability} />}
+            </Stack>
+        </Stack>
+    )
+}
 
-            {ownedMechBrief && (
-                <>
-                    <Stack direction="row" spacing=".6rem" alignItems="center">
-                        {!ownedMechBrief.killed && <SvgCrown size="1.7rem" fill={colors.gold} />}
-                        <Typography
-                            variant="h6"
-                            sx={{
-                                fontWeight: "fontWeightBold",
-                                span: {
-                                    color: (theme) => theme.factionTheme.primary,
-                                },
-                            }}
-                        >
-                            YOUR MECH: <span>{ownedMechBrief.name || ownedMechBrief.label}</span>
-                        </Typography>
-                    </Stack>
+const MechsSection = ({ data }: { data: SystemMessageDataMechBattleComplete }) => {
+    if (!data.mech_battle_briefs || data.mech_battle_briefs.length <= 0) {
+        return null
+    }
 
-                    <Stack direction="row" spacing=".2rem" alignItems="center">
-                        <Typography
-                            sx={{
-                                fontWeight: "fontWeightBold",
-                                span: { color: ownedMechBrief.killed ? colors.red : colors.green },
-                            }}
-                        >
-                            STATUS: <span>{ownedMechBrief.killed ? "OUT OF COMMISSION" : "SURVIVED"}</span>
-                        </Typography>
-                    </Stack>
+    return (
+        <Stack spacing="1rem">
+            <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{`YOUR MECH${data.mech_battle_briefs.length > 1 ? "S" : ""}:`}</Typography>
 
-                    <Stack direction="row" spacing=".2rem" alignItems="center">
-                        <Typography
-                            sx={{
-                                fontWeight: "fontWeightBold",
-                                span: { color: ownedMechBrief.kills > 0 ? colors.red : colors.lightGrey },
-                            }}
-                        >
-                            KILLS: <span>{ownedMechBrief.kills}</span>
-                        </Typography>
-                    </Stack>
-
-                    <Divider sx={{ my: "1rem !important", borderColor: "#FFFFFF28" }} />
-                </>
-            )}
-
-            <Typography
-                variant="h6"
-                sx={{
-                    fontWeight: "fontWeightBold",
-                    span: { color: data.faction_won ? colors.green : colors.red },
-                }}
-            >
-                FACTION: <span>{data.faction_won ? " VICTORY!" : "DEFEATED!"}</span>
-            </Typography>
-
-            <Box
-                sx={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(2, 50%)",
-                    gap: ".2rem",
-                }}
-            >
-                {restOfTheBriefs.map((d, index) => (
-                    <Stack key={index} direction="row" spacing=".3rem" alignItems="center">
-                        {!d.killed && <SvgCrown size="1.2rem" fill={colors.gold} />}
-
-                        <Typography
-                            sx={{
-                                overflowX: "hidden",
-                                whiteSpace: "nowrap",
-                                textOverflow: "ellipsis",
-                                color: getFaction(d.faction_id).primary_color,
-                                textDecoration: d.killed ? "line-through" : "none",
-                                opacity: d.killed ? 0.9 : 1,
-                            }}
-                        >
-                            {d.name || d.label}
-                        </Typography>
-                    </Stack>
+            <Stack direction="row" spacing="1.4rem">
+                {data.mech_battle_briefs.map((mech) => (
+                    <SystemMessageMech key={mech.mech_id} mech={mech} />
                 ))}
-            </Box>
+            </Stack>
         </Stack>
     )
 }

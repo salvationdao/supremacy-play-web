@@ -7,6 +7,7 @@ import { useGameServerCommands } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { FactionName, MechBasic } from "../../../types"
+import { SortDir } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { PageHeader } from "../../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
@@ -72,7 +73,7 @@ export const ProfileWarmachines = ({ playerID, primaryColour, secondaryColor, ba
         try {
             setIsLoading(true)
 
-            const sortDir = "asc"
+            const sortDir = SortDir.Asc
             const resp = await send<GetMechsResponse, GetMechsRequest>(GameServerKeys.PlayerAssetMechListPublic, {
                 player_id: playerID,
                 queue_sort: sortDir,
@@ -234,15 +235,13 @@ export const ProfileWarmachines = ({ playerID, primaryColour, secondaryColor, ba
                                         direction: "ltr",
 
                                         "::-webkit-scrollbar": {
-                                            width: ".4rem",
+                                            width: "1rem",
                                         },
                                         "::-webkit-scrollbar-track": {
                                             background: "#FFFFFF15",
-                                            borderRadius: 3,
                                         },
                                         "::-webkit-scrollbar-thumb": {
                                             background: primaryColour,
-                                            borderRadius: 3,
                                         },
                                     }}
                                 >

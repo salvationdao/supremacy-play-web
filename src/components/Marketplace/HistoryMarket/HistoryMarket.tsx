@@ -8,7 +8,7 @@ import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MarketplaceEvent, MarketplaceEventType, SortTypeLabel } from "../../../types/marketplace"
+import { MarketplaceEvent, MarketplaceEventType, SortDir, SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
@@ -75,9 +75,9 @@ export const HistoryMarket = () => {
         try {
             setIsLoading(true)
 
-            let sortDir = "asc"
+            let sortDir = SortDir.Asc
             let sortBy = "alphabetical"
-            if (sort === SortTypeLabel.AlphabeticalReverse || sort === SortTypeLabel.CreateTimeNewestFirst) sortDir = "desc"
+            if (sort === SortTypeLabel.AlphabeticalReverse || sort === SortTypeLabel.CreateTimeNewestFirst) sortDir = SortDir.Desc
             if (sort === SortTypeLabel.CreateTimeOldestFirst || sort === SortTypeLabel.CreateTimeNewestFirst) sortBy = "created_at"
 
             const resp = await send<{ total: number; records: MarketplaceEvent[] }>(GameServerKeys.GetMarketplaceEvents, {
@@ -287,15 +287,13 @@ export const HistoryMarket = () => {
                                     direction: "ltr",
 
                                     "::-webkit-scrollbar": {
-                                        width: ".4rem",
+                                        width: "1rem",
                                     },
                                     "::-webkit-scrollbar-track": {
                                         background: "#FFFFFF15",
-                                        borderRadius: 3,
                                     },
                                     "::-webkit-scrollbar-thumb": {
                                         background: primaryColor,
-                                        borderRadius: 3,
                                     },
                                 }}
                             >

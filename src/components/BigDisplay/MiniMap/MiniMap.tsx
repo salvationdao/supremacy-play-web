@@ -111,7 +111,6 @@ const BattleNotStarted = () => {
                     position: "relative",
                     width: "100%",
                     height: isStreamBigDisplay ? "28rem" : "100%",
-                    border: (theme) => `${theme.factionTheme.primary}60 1px solid`,
                 }}
             >
                 <Typography
@@ -175,7 +174,9 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
         if (isTargeting) {
             toggleIsStreamBigDisplayMemorized(false)
         } else {
-            restoreIsStreamBigDisplayMemorized()
+            setTimeout(() => {
+                restoreIsStreamBigDisplayMemorized()
+            }, 3000)
         }
     }, [isTargeting, restoreIsStreamBigDisplayMemorized, toggleIsStreamBigDisplayMemorized])
 
@@ -245,7 +246,6 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
                     height: "100%",
                     pb: !isPoppedout && !isStreamBigDisplay ? `${BOTTOM_PADDING}rem` : 0,
                     boxShadow: 2,
-                    border: (theme) => `${theme.factionTheme.primary}60 1px solid`,
                 }}
             >
                 <Box
@@ -333,7 +333,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
                         left: 0,
                         width: "100%",
                         height: "100%",
-                        background: `url(${map?.Image_Url})`,
+                        background: `url(${map?.Background_Url || map?.Image_Url})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
                         backgroundSize: "cover",
@@ -352,6 +352,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
         sizes.insideWidth,
         sizes.insideHeight,
         map.Name,
+        map?.Background_Url,
         map?.Image_Url,
         isPoppedout,
         isStreamBigDisplay,

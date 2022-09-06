@@ -13,7 +13,7 @@ export const NavLinks = () => {
     const { userID } = useAuth()
 
     const match = useRouteMatch(ROUTES_ARRAY.filter((r) => r.path !== "/").map((r) => r.path))
-    let activeRouteID = ""
+    let activeRouteID = "home"
     if (match) {
         const r = ROUTES_ARRAY.find((r) => r.path === match.path)
         activeRouteID = r?.id || ""
@@ -35,7 +35,7 @@ export const NavLinks = () => {
     )
 }
 
-const NavLink = ({ isActive, label, to }: { isActive: boolean; label: string; to: string }) => {
+export const NavLink = ({ isActive, label, to }: { isActive: boolean; label: string; to: string }) => {
     const theme = useTheme()
 
     const primaryColor = theme.factionTheme.primary

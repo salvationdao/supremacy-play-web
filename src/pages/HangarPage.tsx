@@ -3,7 +3,7 @@ import { SyntheticEvent, useCallback, useEffect, useState } from "react"
 import { useHistory, useParams } from "react-router-dom"
 import { HangarBg } from "../assets"
 import { ClipThing } from "../components"
-import { MysteryCrateBanner } from "../components/Common/PageHeaderBanners/MysteryCrateBanner"
+import { MysteryCrateBanner } from "../components/Common/BannersPromotions/MysteryCrateBanner"
 import { KeycardsHangar } from "../components/Hangar/KeycardsHangar/KeycardsHangar"
 import { MysteryCratesHangar } from "../components/Hangar/MysteryCratesHangar/MysteryCratesHangar"
 import { PlayerAbilitiesHangar } from "../components/Hangar/PlayerAbilitiesHangar/PlayerAbilitiesHangar"
@@ -14,6 +14,7 @@ import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
 import { siteZIndex } from "../theme/theme"
 import { SubmodelsHangar } from "../components/Hangar/SubmodelHangar/SubmodelsHangar"
+import { DEV_ONLY } from "../constants"
 
 export enum HANGAR_TABS {
     WarMachines = "war-machines",
@@ -98,7 +99,7 @@ export const HangarPage = () => {
 
                                 <Tab label="WEAPONS" value={HANGAR_TABS.Weapons} />
 
-                                <Tab label="SUBMODELS" value={HANGAR_TABS.Submodels} />
+                                {DEV_ONLY && <Tab label="SUBMODELS" value={HANGAR_TABS.Submodels} />}
 
                                 <Tab label="KEY CARDS" value={HANGAR_TABS.Keycards} />
 
@@ -120,9 +121,11 @@ export const HangarPage = () => {
                     <WeaponsHangar />
                 </TabPanel>
 
-                <TabPanel currentValue={currentValue} value={HANGAR_TABS.Submodels}>
-                    <SubmodelsHangar />
-                </TabPanel>
+                {DEV_ONLY && (
+                    <TabPanel currentValue={currentValue} value={HANGAR_TABS.Submodels}>
+                        <SubmodelsHangar />
+                    </TabPanel>
+                )}
 
                 <TabPanel currentValue={currentValue} value={HANGAR_TABS.Keycards}>
                     <KeycardsHangar />

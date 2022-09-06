@@ -1,7 +1,8 @@
-import { Battle, Faction, User, Vector2i } from "."
+import { Battle, Faction, Map, User, Vector2i } from "."
 
 export enum MechStatusEnum {
     Idle = "IDLE",
+    PendingQueue = "PENDING_QUEUE",
     Queue = "QUEUE",
     Battle = "BATTLE",
     Market = "MARKET",
@@ -49,10 +50,20 @@ export interface MechRepairStatus {
     remain_seconds?: number
 }
 
+export interface RepairSlot {
+    id: string
+    player_id: string
+    mech_id: string
+    repair_case_id: string
+    status: string
+    next_repair_time: Date
+    slot_number: number
+}
+
 export interface MechStatus {
     status: MechStatusEnum
-    queue_position?: number
-    can_deploy?: boolean
+    can_deploy: boolean
+    queue_position: number | null
 }
 
 export interface Images {
@@ -104,8 +115,13 @@ export interface MechBasic extends Collection, Images {
     intro_animation_id: string
     outro_animation_id: string
     power_core_id: string
+    queue_position: number | null
     updated_at: Date
     created_at: Date
+}
+
+export interface MechBasicWithQueueStatus extends MechBasic {
+    in_queue: boolean
 }
 
 export interface MechDetails extends MechBasic {
@@ -312,7 +328,10 @@ export interface BattleMechHistory {
     created_at: Date
     faction_won?: boolean
     mech_survived?: boolean
-    battle?: Battle
+    battle?: {
+        battle: Battle
+        game_map?: Map
+    }
     mech?: MechDetails
 }
 
