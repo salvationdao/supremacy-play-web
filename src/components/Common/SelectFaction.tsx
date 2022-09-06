@@ -1,4 +1,4 @@
-import { useSnackbar, useSupremacy } from "../../containers"
+import { useGlobalNotifications, useSupremacy } from "../../containers"
 import { Faction } from "../../types"
 import { ClipThing } from "./ClipThing"
 import { fonts } from "../../theme/theme"
@@ -42,7 +42,7 @@ const renderLastDescription = (faction: Faction) => {
 }
 
 const ExtendedFactionEnlist = ({ faction }: { faction: Faction }) => {
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
     const below1250 = useMediaQuery("(max-width:1250px)")
 

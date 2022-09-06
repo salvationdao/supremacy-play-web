@@ -35,11 +35,8 @@ export const WarMachineMarketItem = ({ item, isGridView, isExpanded, toggleIsExp
 
     if (!mech || !collection_item) return null
 
-    const skin = mechDetails ? mechDetails.chassis_skin || mechDetails.default_chassis_skin : undefined
-    const largeImageUrl = skin?.large_image_url || mechDetails?.large_image_url || mech.large_image_url || collection_item.large_image_url || ""
-
     return (
-        <MarketItem item={item} backgroundImageUrl={largeImageUrl} isGridView={isGridView} linkSubPath={MARKETPLACE_TABS.WarMachines}>
+        <MarketItem item={item} isGridView={isGridView} linkSubPath={MARKETPLACE_TABS.WarMachines}>
             <MechCommonArea
                 primaryColor={theme.factionTheme.primary}
                 secondaryColor={theme.factionTheme.secondary}

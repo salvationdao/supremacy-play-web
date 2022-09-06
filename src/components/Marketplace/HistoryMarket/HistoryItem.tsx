@@ -85,8 +85,8 @@ export const HistoryItem = ({ eventItem, isGridView }: { eventItem: MarketplaceE
                     border: { isFancy: !isGridView, borderColor: itemRelatedData.primaryColor, borderThickness: ".25rem" },
                     sx: { position: "relative", height: "100%" },
                 }}
-                sx={{ color: itemRelatedData.primaryColor, textAlign: "start", height: "100%" }}
-                to={`/marketplace/${itemRelatedData.linkSubPath}/${eventItem.item.id}${location.hash}`}
+                sx={{ color: itemRelatedData.primaryColor, textAlign: "start", height: "100%", ":hover": { opacity: 1 } }}
+                to={`/marketplace/${itemRelatedData.linkSubPath}/${eventItem.item.id}`}
             >
                 <Box
                     sx={{
@@ -100,7 +100,7 @@ export const HistoryItem = ({ eventItem, isGridView }: { eventItem: MarketplaceE
                         ...(isGridView
                             ? {
                                   "&>*:not(:last-child)": {
-                                      mb: ".8rem",
+                                      mb: "1rem",
                                   },
                               }
                             : {}),
@@ -219,8 +219,8 @@ const ItemCommonArea = ({
                 isGridView={isGridView}
                 label={item.mystery_crate.label}
                 description={item.mystery_crate.description}
-                imageUrl={item.collection_item?.image_url}
-                videoUrls={[item.collection_item?.animation_url, item.collection_item?.card_animation_url]}
+                imageUrl={item.mystery_crate?.image_url || item.mystery_crate?.large_image_url}
+                videoUrls={[item.mystery_crate?.animation_url, item.mystery_crate?.card_animation_url]}
             />
         )
     }

@@ -40,7 +40,8 @@ body {
 }
 
 span {
-    font-family: "Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif";
+    font-family: inherit;
+    font-size: inherit;
 }
 
 body {
@@ -49,34 +50,45 @@ body {
 
 /* Update `src/containers/dimensions.ts` */
 html {
-    font-size: 60%; /* 62.5% of 16px is 10px */
+    font-size: 57%; /* 62.5% of 16px is 10px */
 }
 
 @media only screen and (max-width: 1922px) {
-    html {
-        font-size: 52%;
-    }
-}
-
-@media only screen and (max-width: 1500px) {
     html {
         font-size: 50%;
     }
 }
 
-@media only screen and (max-width: 900px) {
+@media only screen and (max-width: 1500px) {
+    html {
+        font-size: 48%;
+    }
+}
+
+@media only screen and (max-width: 1300px) {
     html {
         font-size: 44%;
     }
 }
 
+@media only screen and (max-width: 900px) {
+    html {
+        font-size: 42%;
+    }
+}
+
 @media only screen and (max-width: 600px) {
     html {
-        font-size: 39%;
+        font-size: 37%;
     }
 }
 
 a {
     text-decoration: none;
     color: #00ffff;
+}
+
+button,
+button * {
+    user-select: none;
 }

@@ -1,13 +1,12 @@
 import { Button, Popover, Stack, Typography } from "@mui/material"
 import { MutableRefObject, useEffect, useRef } from "react"
-import { UserBanForm } from "../../.."
-import { RIGHT_DRAWER_WIDTH } from "../../../../constants"
+import { RIGHT_DRAWER_WIDTH, UserBanForm } from "../../.."
 import { useAuth } from "../../../../containers"
 import { useToggle } from "../../../../hooks"
 import { colors, siteZIndex } from "../../../../theme/theme"
 
 export const AdditionalOptionsButton = () => {
-    const { userID, user } = useAuth()
+    const { userID } = useAuth()
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
     const [banModalOpen, toggleBanModalOpen] = useToggle()
@@ -47,7 +46,7 @@ export const AdditionalOptionsButton = () => {
                 />
             )}
 
-            {banModalOpen && <UserBanForm user={user} open={banModalOpen} onClose={() => toggleBanModalOpen(false)} />}
+            {banModalOpen && <UserBanForm open={banModalOpen} onClose={() => toggleBanModalOpen(false)} />}
         </>
     )
 }

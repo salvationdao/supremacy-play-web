@@ -1,6 +1,5 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
@@ -25,7 +24,6 @@ const sortOptions = [
 
 export const HistoryMarket = () => {
     const theme = useTheme()
-    const location = useLocation()
     const [query, updateQuery] = useUrlQuery()
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
@@ -38,11 +36,16 @@ export const HistoryMarket = () => {
         pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
     })
+    const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle((localStorage.getItem("isHistoryMarketFiltersExpanded") || "true") === "true")
     const [isGridView, toggleIsGridView] = useToggle(localStorage.getItem("marketHistoryGrid") === "true")
 
     useEffect(() => {
         localStorage.setItem("marketHistoryGrid", isGridView.toString())
     }, [isGridView])
+
+    useEffect(() => {
+        localStorage.setItem("isHistoryMarketFiltersExpanded", isFiltersExpanded.toString())
+    }, [isFiltersExpanded])
 
     // Filters and sorts
     const [search, setSearch] = useState("")
@@ -154,8 +157,8 @@ export const HistoryMarket = () => {
                             width: "100%",
                             py: "1rem",
                             display: "grid",
-                            gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(29rem, 1fr))" : "100%",
-                            gap: "1.3rem",
+                            gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(30rem, 1fr))" : "100%",
+                            gap: "1.5rem",
                             alignItems: "center",
                             justifyContent: "center",
                             overflow: "visible",
@@ -190,12 +193,10 @@ export const HistoryMarket = () => {
                             pt: "1.28rem",
                             color: colors.grey,
                             fontFamily: fonts.nostromoBold,
-                            userSelect: "text !important",
-                            opacity: 0.9,
                             textAlign: "center",
                         }}
                     >
-                        {"There are no marketplace events found, please try again."}
+                        {"There are no marketplace events found, please check your filters and try again."}
                     </Typography>
                 </Stack>
             </Stack>
@@ -203,40 +204,15 @@ export const HistoryMarket = () => {
     }, [loadError, eventItems, isLoading, primaryColor, isGridView])
 
     return (
-        <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
+        <Stack direction="row" sx={{ height: "100%" }}>
             <SortAndFilters
                 initialSearch={search}
                 onSetSearch={setSearch}
                 chipFilters={[eventTypeFilterSection.current]}
                 changePage={changePage}
                 primaryColor={primaryColor}
-            >
-                <Box sx={{ p: ".8rem 1rem" }}>
-                    <FancyButton
-                        clipThingsProps={{
-                            clipSize: "6px",
-                            clipSlantSize: "0px",
-                            corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
-                            backgroundColor: colors.red,
-                            opacity: 1,
-                            border: { isFancy: true, borderColor: colors.red, borderThickness: "2px" },
-                            sx: { position: "relative" },
-                        }}
-                        sx={{ px: "1.6rem", py: ".7rem", color: "#FFFFFF" }}
-                        to={`/marketplace/sell${location.hash}`}
-                    >
-                        <Typography
-                            variant="caption"
-                            sx={{
-                                color: "#FFFFFF",
-                                fontFamily: fonts.nostromoBlack,
-                            }}
-                        >
-                            SELL ITEM
-                        </Typography>
-                    </FancyButton>
-                </Box>
-            </SortAndFilters>
+                isExpanded={isFiltersExpanded}
+            />
 
             <ClipThing
                 clipSize="10px"
@@ -255,7 +231,30 @@ export const HistoryMarket = () => {
                             description="See your marketplace events and logs here."
                             imageUrl={WarMachineIconPNG}
                             primaryColor={primaryColor}
-                        ></PageHeader>
+                        >
+                            <Box sx={{ ml: "auto !important", pr: "2rem" }}>
+                                <FancyButton
+                                    clipThingsProps={{
+                                        clipSize: "9px",
+                                        backgroundColor: colors.red,
+                                        opacity: 1,
+                                        border: { borderColor: colors.red, borderThickness: "2px" },
+                                        sx: { position: "relative" },
+                                    }}
+                                    sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
+                                    to={`/marketplace/sell`}
+                                >
+                                    <Typography
+                                        variant="caption"
+                                        sx={{
+                                            fontFamily: fonts.nostromoBlack,
+                                        }}
+                                    >
+                                        SELL ITEM
+                                    </Typography>
+                                </FancyButton>
+                            </Box>
+                        </PageHeader>
 
                         <TotalAndPageSizeOptions
                             countItems={eventItems?.length}
@@ -271,6 +270,8 @@ export const HistoryMarket = () => {
                             selectedSort={sort}
                             onSetSort={setSort}
                             primaryColor={primaryColor}
+                            isFiltersExpanded={isFiltersExpanded}
+                            toggleIsFiltersExpanded={toggleIsFiltersExpanded}
                         />
 
                         <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
@@ -286,15 +287,13 @@ export const HistoryMarket = () => {
                                     direction: "ltr",
 
                                     "::-webkit-scrollbar": {
-                                        width: ".4rem",
+                                        width: "1rem",
                                     },
                                     "::-webkit-scrollbar-track": {
                                         background: "#FFFFFF15",
-                                        borderRadius: 3,
                                     },
                                     "::-webkit-scrollbar-thumb": {
                                         background: primaryColor,
-                                        borderRadius: 3,
                                     },
                                 }}
                             >

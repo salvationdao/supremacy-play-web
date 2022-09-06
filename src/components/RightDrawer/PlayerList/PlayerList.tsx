@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { Dispatch, useMemo, useState } from "react"
+import { useMemo } from "react"
 import { PlayerListContent } from "../.."
-import { useAuth, useSupremacy } from "../../../containers"
+import { useAuth, useChat, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { acronym, shadeColor } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
@@ -10,26 +10,16 @@ import { Faction, User } from "../../../types"
 export const PlayerList = () => {
     const { getFaction } = useSupremacy()
     const { user } = useAuth()
-    const [activePlayers, setActivePlayers] = useState<User[]>([])
+    const { activePlayers } = useChat()
 
     return (
         <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
-            <Content getFaction={getFaction} user={user} activePlayers={activePlayers} setActivePlayers={setActivePlayers} />
+            <Content getFaction={getFaction} user={user} activePlayers={activePlayers} />
         </Stack>
     )
 }
 
-const Content = ({
-    getFaction,
-    user,
-    activePlayers,
-    setActivePlayers,
-}: {
-    getFaction: (factionID: string) => Faction
-    user: User
-    activePlayers: User[]
-    setActivePlayers: Dispatch<React.SetStateAction<User[]>>
-}) => {
+const Content = ({ getFaction, user, activePlayers }: { getFaction: (factionID: string) => Faction; user: User; activePlayers: User[] }) => {
     const theme = useTheme()
     const bannerColor = useMemo(() => shadeColor(theme.factionTheme.primary, -60), [theme.factionTheme.primary])
 
@@ -93,20 +83,18 @@ const Content = ({
                     direction: "ltr",
 
                     "::-webkit-scrollbar": {
-                        width: ".4rem",
+                        width: "1rem",
                     },
                     "::-webkit-scrollbar-track": {
                         background: "#FFFFFF15",
-                        borderRadius: 3,
                     },
                     "::-webkit-scrollbar-thumb": {
                         background: (theme) => theme.factionTheme.primary,
-                        borderRadius: 3,
                     },
                 }}
             >
                 <Box sx={{ height: 0 }}>
-                    <PlayerListContent user={user} activePlayers={activePlayers} setActivePlayers={setActivePlayers} />
+                    <PlayerListContent activePlayers={activePlayers} />
                 </Box>
             </Box>
         </Stack>

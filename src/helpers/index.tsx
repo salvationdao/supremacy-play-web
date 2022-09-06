@@ -2,22 +2,6 @@ import BigNumber from "bignumber.js"
 import emojiRegex from "emoji-regex"
 import { VoidFunctionComponent } from "react"
 import {
-    MultiplierAdmiral,
-    MultiplierAFoolAndHisMoney,
-    MultiplierAirMarshal,
-    MultiplierAirSupport,
-    MultiplierContributor,
-    MultiplierDestroyerOfWorlds,
-    MultiplierFieldMechanic,
-    MultiplierGeneric,
-    MultiplierGreaseMonkey,
-    MultiplierJunkE,
-    MultiplierMechCommander,
-    MultiplierMechHead,
-    MultiplierNowIAmBecomeDeath,
-    MultiplierSniper,
-    MultiplierWonBattle,
-    MultiplierWonLastThreeBattles,
     SafePNG,
     SvgCorporal,
     SvgGeneral,
@@ -60,6 +44,12 @@ export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
  */
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
 export const mergeDeep = (target: any, ...sources: any): any => {
+    const targetClone = { ...target }
+    return mergeInPlace(targetClone, ...sources)
+}
+
+// eslint-disable-next-line  @typescript-eslint/no-explicit-any
+const mergeInPlace = (target: any, ...sources: any): any => {
     if (!sources.length) return target
     const source = sources.shift()
 
@@ -67,20 +57,22 @@ export const mergeDeep = (target: any, ...sources: any): any => {
         for (const key in source) {
             if (isObject(source[key])) {
                 if (!target[key]) Object.assign(target, { [key]: {} })
-                mergeDeep(target[key], source[key])
+                mergeInPlace(target[key], source[key])
             } else {
                 Object.assign(target, { [key]: source[key] })
             }
         }
     }
 
-    return mergeDeep(target, ...sources)
+    return mergeInPlace(target, ...sources)
 }
 
 export const shadeColor = (hexColor: string, factor: number) => {
-    let R = parseInt(hexColor.substring(1, 3), 16)
-    let G = parseInt(hexColor.substring(3, 5), 16)
-    let B = parseInt(hexColor.substring(5, 7), 16)
+    const hex = hexColor.toUpperCase()
+
+    let R = parseInt(hex.substring(1, 3), 16)
+    let G = parseInt(hex.substring(3, 5), 16)
+    let B = parseInt(hex.substring(5, 7), 16)
 
     R = parseInt((R * (100 + factor)) / 100 + "")
     G = parseInt((G * (100 + factor)) / 100 + "")
@@ -119,6 +111,7 @@ export const supFormatter = (num: string, fixedAmount: number | undefined = 0): 
     const a = !fixedAmount || fixedAmount == 0 ? 1 : fixedAmount * 10
     return (Math.floor(supTokens.dividedBy(new BigNumber("1000000000000000000")).toNumber() * a) / a).toFixed(fixedAmount)
 }
+
 export const supFormatterNoFixed = (num: string, maxDecimals?: number): string => {
     const supTokens = new BigNumber(num).shiftedBy(-18)
     if (maxDecimals) {
@@ -180,13 +173,14 @@ export function acronym(s: string): string {
     return x.join("").toUpperCase()
 }
 
-export const hexToRGB = (hex: string, alpha?: number): string => {
+export const hexToRGB = (hexx: string) => {
+    const hex = hexx.toUpperCase()
+
     const h = "0123456789ABCDEF"
     const r = h.indexOf(hex[1]) * 16 + h.indexOf(hex[2])
     const g = h.indexOf(hex[3]) * 16 + h.indexOf(hex[4])
     const b = h.indexOf(hex[5]) * 16 + h.indexOf(hex[6])
-    if (alpha) return "rgba(" + r + ", " + g + ", " + b + ", " + alpha + ")"
-    else return "rgb(" + r + ", " + g + ", " + b + ")"
+    return { r, g, b }
 }
 
 export const getRarityDeets = (rarityKey: string): Rarity => {
@@ -216,73 +210,6 @@ export const getRarityDeets = (rarityKey: string): Rarity => {
         default:
             return { label: "", color: colors.rarity.MEGA, textColor: "#FFFFFF" }
     }
-}
-
-export const getMultiplierDeets = (multiplierKey: string): { image: string } => {
-    let image
-
-    switch (multiplierKey.toLowerCase()) {
-        case "contributor":
-            image = MultiplierContributor
-            break
-        case "a fool and his money":
-            image = MultiplierAFoolAndHisMoney
-            break
-        case "air support":
-            image = MultiplierAirSupport
-            break
-        case "now i am become death":
-            image = MultiplierNowIAmBecomeDeath
-            break
-        case "destroyer of worlds":
-            image = MultiplierDestroyerOfWorlds
-            break
-        case "grease monkey":
-            image = MultiplierGreaseMonkey
-            break
-        case "field mechanic":
-            image = MultiplierFieldMechanic
-            break
-        case "combo breaker":
-            image = MultiplierFieldMechanic
-            break
-        case "mech commander":
-            image = MultiplierMechCommander
-            break
-        case "admiral":
-            image = MultiplierAdmiral
-            break
-        case "air marshal":
-            image = MultiplierAirMarshal
-            break
-        case "junk-e":
-            image = MultiplierJunkE
-            break
-        case "mech head":
-            image = MultiplierMechHead
-            break
-        case "sniper":
-            image = MultiplierSniper
-            break
-        case "won battle":
-            image = MultiplierWonBattle
-            break
-        case "won last three battles":
-            image = MultiplierWonLastThreeBattles
-            break
-        case "offline":
-        case "applause":
-        case "picked location":
-        case "battlerewardupdate":
-        case "supsmultiplierget":
-        case "checkmultiplierupdate":
-        case "supstick":
-        default:
-            image = MultiplierGeneric
-            break
-    }
-
-    return { image }
 }
 
 export const dateFormatter = (date: Date, showSeconds?: boolean, showDate?: boolean): string => {
@@ -404,20 +331,21 @@ export const timeSince = (
     fromDate: Date,
     toDate: Date,
 ): {
-    total: number
+    totalSeconds: number
     days: number
     hours: number
     minutes: number
     seconds: number
 } => {
     const total = toDate.getTime() - fromDate.getTime()
+    const totalSeconds = total / 1000
     const seconds = Math.floor((total / 1000) % 60)
     const minutes = Math.floor((total / 1000 / 60) % 60)
     const hours = Math.floor((total / (1000 * 60 * 60)) % 24)
     const days = Math.floor(total / (1000 * 60 * 60 * 24))
 
     return {
-        total,
+        totalSeconds,
         days,
         hours,
         minutes,
@@ -428,18 +356,18 @@ export const timeSince = (
 export const timeSinceInWords = (fromDate: Date, toDate: Date, abbreviated = false): string => {
     const { days, hours, minutes, seconds } = timeSince(fromDate, toDate)
 
-    let result = days > 0 ? days + " day" + (days === 1 ? "" : "s") : ""
-    result = (result ? result + " " : "") + (hours > 0 ? hours + (abbreviated ? "hr" : " hour") + (hours === 1 ? "" : "s") : "")
+    let result = days > 0 ? days + (abbreviated ? "d" : " day") + (days === 1 || abbreviated ? "" : "s") : ""
+    result = (result ? result + " " : "") + (hours > 0 ? hours + (abbreviated ? "h" : " hour") + (hours === 1 || abbreviated ? "" : "s") : "")
 
     // Return result if more than a day, else too long
     if (days > 0) return result
 
-    result = (result ? result + " " : "") + (minutes > 0 ? minutes + (abbreviated ? "min" : " minute") + (minutes === 1 ? "" : "s") : "")
+    result = (result ? result + " " : "") + (minutes > 0 ? minutes + (abbreviated ? "m" : " minute") + (minutes === 1 || abbreviated ? "" : "s") : "")
 
     // Return result if more than a day, else too long
     if (hours > 0) return result
 
-    result = (result ? result + " " : "") + (seconds > 0 ? seconds + (abbreviated ? "sec" : " second") + (seconds === 1 ? "" : "s") : "")
+    result = (result ? result + " " : "") + (seconds > 0 ? seconds + (abbreviated ? "s" : " second") + (seconds === 1 || abbreviated ? "" : "s") : "")
     return result
 }
 
@@ -619,3 +547,33 @@ export const getAssetItemDeets = (
 
     return { icon, color, label, subRoute }
 }
+
+export const generatePriceText = (dollars: number, cents: number) => {
+    const totalDollars = dollars + Math.floor(cents / 100)
+    const remainingCents = cents % 100
+
+    return `$${totalDollars}.${remainingCents < 10 ? `0${remainingCents}` : remainingCents}`
+}
+
+// Converts number to alphabet letter. E.g. 0 -> "a"
+export const intToLetter = (i: number) => String.fromCharCode(97 + i)
+
+export const autoTextColor = (hex: string) => {
+    const rgb = hexToRGB(hex)
+
+    if (rgb.r * 0.299 + rgb.g * 0.587 + rgb.b * 0.114 > 150) {
+        return "#000000"
+    } else {
+        return "#FFFFFF"
+    }
+}
+
+export const convertCellsToGameLocation = (x: number, y: number, mapLeft: number, mapTop: number) => {
+    const gameClientTileSize = 2000
+    return {
+        x: x * gameClientTileSize + gameClientTileSize / 2 + mapLeft,
+        y: y * gameClientTileSize + gameClientTileSize / 2 + mapTop,
+    }
+}
+
+export const diff = (a: number, b: number) => (a > b ? a - b : b - a)

@@ -3,15 +3,14 @@ import { useCallback, useEffect, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SvgClose, SvgCooldown, SvgSupToken } from "../../../../assets"
 import { MAX_BAN_PROPOSAL_REASON_LENGTH } from "../../../../constants"
-import { useAuth, useSnackbar } from "../../../../containers"
+import { useAuth, useGlobalNotifications } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { snakeToTitle } from "../../../../helpers"
 import { useDebounce, useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
-import { User } from "../../../../types"
-import { BanOption, BanUser } from "../../../../types"
+import { BanOption, BanUser } from "../../../../types/chat"
 import { Player } from "../../../Common/Player"
 
 interface SubmitRequest {
@@ -38,9 +37,9 @@ const UserItem = ({ banUser, sx }: { banUser: BanUser; sx?: SxProps }) => {
     )
 }
 
-export const UserBanForm = ({ open, onClose, prefillUser }: { user: User; open: boolean; onClose: () => void; prefillUser?: BanUser }) => {
+export const UserBanForm = ({ open, onClose, prefillUser }: { open: boolean; onClose: () => void; prefillUser?: BanUser }) => {
     const theme = useTheme()
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const { userStat, userRank } = useAuth()
     // Options and display only
@@ -75,6 +74,7 @@ export const UserBanForm = ({ open, onClose, prefillUser }: { user: User; open: 
 
     // When searching for player, update the dropdown list
     useEffect(() => {
+        if (search === "") return
         ;(async () => {
             toggleIsLoadingUsers(true)
             try {
@@ -84,11 +84,13 @@ export const UserBanForm = ({ open, onClose, prefillUser }: { user: User; open: 
 
                 if (!resp) return
                 setUserDropdown(resp)
+            } catch (e) {
+                newSnackbarMessage(typeof e === "string" ? e : "Failed to load ban options.", "error")
             } finally {
                 toggleIsLoadingUsers(false)
             }
         })()
-    }, [search, send, toggleIsLoadingUsers])
+    }, [search, send, toggleIsLoadingUsers, newSnackbarMessage])
 
     // When a player is selected, get the ban fee for that player
     useEffect(() => {
@@ -386,7 +388,7 @@ export const UserBanForm = ({ open, onClose, prefillUser }: { user: User; open: 
                     </Stack>
 
                     <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
-                        <SvgClose size="1.9rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                        <SvgClose size="2.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                     </IconButton>
                 </ClipThing>
             </Box>

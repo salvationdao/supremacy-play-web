@@ -1,6 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
-import { useLocation } from "react-router-dom"
 import { getRarityDeets } from "../../helpers"
 import { useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
@@ -14,13 +13,14 @@ export const ProfileWarmachineItem = ({
     isGridView,
     primaryColour,
     backgroundColour,
+    onClick,
 }: {
     mech: MechBasic
     isGridView?: boolean
     primaryColour: string
     backgroundColour: string
+    onClick: () => void
 }) => {
-    const location = useLocation()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 
     const rarityDeets = useMemo(() => getRarityDeets(mech.tier || mechDetails?.tier || ""), [mech, mechDetails])
@@ -28,7 +28,7 @@ export const ProfileWarmachineItem = ({
     useGameServerSubscription<MechDetails>(
         {
             URI: `/public/mech/${mech.id}/details`,
-            key: GameServerKeys.GetMechDetails,
+            key: GameServerKeys.PlayerAssetMechDetailPublic,
         },
         (payload) => {
             if (!payload) return
@@ -57,7 +57,7 @@ export const ProfileWarmachineItem = ({
                     sx: { position: "relative", height: "100%" },
                 }}
                 sx={{ color: primaryColour, textAlign: "start", height: "100%" }}
-                to={`/mech/${mech.id}${location.hash}`}
+                onClick={onClick}
             >
                 <Box
                     sx={{
@@ -71,7 +71,7 @@ export const ProfileWarmachineItem = ({
                         ...(isGridView
                             ? {
                                   "&>*:not(:last-child)": {
-                                      mb: ".8rem",
+                                      mb: "1rem",
                                   },
                               }
                             : {}),

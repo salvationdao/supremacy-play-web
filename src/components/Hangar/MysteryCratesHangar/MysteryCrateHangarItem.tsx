@@ -1,8 +1,8 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useCallback, useState } from "react"
-import { useLocation } from "react-router-dom"
+import React, { useCallback, useState } from "react"
 import { SafePNG } from "../../../assets"
-import { useSnackbar } from "../../../containers"
+import { IS_TESTING_MODE } from "../../../constants"
+import { useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useTimer } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
@@ -23,10 +23,18 @@ interface MysteryCrateStoreItemProps {
     getCrates: () => Promise<void>
 }
 
-export const MysteryCrateHangarItem = ({ crate, setOpeningCrate, setOpenedRewards, getCrates }: MysteryCrateStoreItemProps) => {
-    const location = useLocation()
+const propsAreEqual = (prevProps: MysteryCrateStoreItemProps, nextProps: MysteryCrateStoreItemProps) => {
+    return prevProps.crate.id === nextProps.crate.id && prevProps.getCrates === nextProps.getCrates
+}
+
+export const MysteryCrateHangarItem = React.memo(function MysteryCrateHangarItem({
+    crate,
+    setOpeningCrate,
+    setOpenedRewards,
+    getCrates,
+}: MysteryCrateStoreItemProps) {
     const theme = useTheme()
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [loading, setLoading] = useState(false)
 
@@ -140,30 +148,32 @@ export const MysteryCrateHangarItem = ({ crate, setOpeningCrate, setOpenedReward
                                     </Typography>
                                 </FancyButton>
 
-                                <FancyButton
-                                    to={
-                                        crate.locked_to_marketplace
-                                            ? !crate.item_sale_id
-                                                ? undefined
-                                                : `/marketplace/${MARKETPLACE_TABS.MysteryCrates}/${crate.item_sale_id}${location.hash}`
-                                            : `/marketplace/sell?itemType=${ItemType.MysteryCrate}&assetID=${crate.id}${location.hash}`
-                                    }
-                                    clipThingsProps={{
-                                        clipSize: "5px",
-                                        backgroundColor: crate.locked_to_marketplace ? backgroundColor : colors.red,
-                                        opacity: 1,
-                                        border: { isFancy: !crate.locked_to_marketplace, borderColor: colors.red, borderThickness: "1.5px" },
-                                        sx: { position: "relative", mt: "1rem", width: "100%" },
-                                    }}
-                                    sx={{ px: "1.6rem", py: ".6rem", color: crate.locked_to_marketplace ? colors.red : "#FFFFFF" }}
-                                >
-                                    <Typography
-                                        variant={"caption"}
-                                        sx={{ fontFamily: fonts.nostromoBlack, color: crate.locked_to_marketplace ? colors.red : "#FFFFFF" }}
+                                {!IS_TESTING_MODE && (
+                                    <FancyButton
+                                        to={
+                                            crate.locked_to_marketplace
+                                                ? !crate.item_sale_id
+                                                    ? undefined
+                                                    : `/marketplace/${MARKETPLACE_TABS.MysteryCrates}/${crate.item_sale_id}`
+                                                : `/marketplace/sell?itemType=${ItemType.MysteryCrate}&assetID=${crate.id}`
+                                        }
+                                        clipThingsProps={{
+                                            clipSize: "5px",
+                                            backgroundColor: crate.locked_to_marketplace ? backgroundColor : colors.red,
+                                            opacity: 1,
+                                            border: { isFancy: !crate.locked_to_marketplace, borderColor: colors.red, borderThickness: "1.5px" },
+                                            sx: { position: "relative", mt: "1rem", width: "100%" },
+                                        }}
+                                        sx={{ px: "1.6rem", py: ".6rem", color: crate.locked_to_marketplace ? colors.red : "#FFFFFF" }}
                                     >
-                                        {crate.locked_to_marketplace ? "VIEW LISTING" : "SELL ITEM"}
-                                    </Typography>
-                                </FancyButton>
+                                        <Typography
+                                            variant={"caption"}
+                                            sx={{ fontFamily: fonts.nostromoBlack, color: crate.locked_to_marketplace ? colors.red : "#FFFFFF" }}
+                                        >
+                                            {crate.locked_to_marketplace ? "VIEW LISTING" : "SELL ITEM"}
+                                        </Typography>
+                                    </FancyButton>
+                                )}
                             </Stack>
                         </Stack>
                     </Stack>
@@ -171,7 +181,8 @@ export const MysteryCrateHangarItem = ({ crate, setOpeningCrate, setOpenedReward
             </Box>
         </>
     )
-}
+},
+propsAreEqual)
 
 export const Countdown = ({ dateTo }: { dateTo: Date | undefined }) => {
     const { days, hours, minutes, seconds, totalSecRemain } = useTimer(dateTo)

@@ -1,4 +1,4 @@
-import { UserRank, User, UserStat } from "."
+import { User, UserRank, UserStat } from "."
 
 export interface BanProposalStruct {
     id: string
@@ -18,6 +18,12 @@ export interface BanProposalStruct {
     decision?: { is_agreed: boolean }
     instant_pass_fee: string
     instant_pass_user_ids: string[]
+}
+
+export enum PunishVoteStatus {
+    Passed = "PASSED",
+    Failed = "FAILED",
+    Pending = "PENDING",
 }
 
 export interface PunishListItem {
@@ -54,7 +60,7 @@ export interface PunishListItem {
         reported_player_id: string
         reported_player_username: string
         reported_player_gid: number
-        status: "PASSED" | "FAILED" | "PENDING"
+        status: PunishVoteStatus
         started_at: Date
         ended_at: Date
         created_at: Date
@@ -76,22 +82,44 @@ export interface BanOption {
     punish_duration_hours: number
 }
 
-export interface ChatMessageType {
-    type: "TEXT" | "PUNISH_VOTE" | "SYSTEM_BAN" | "NEW_BATTLE"
-    data: TextMessageData | PunishMessageData | SystemBanMessageData | NewBattleMessageData
-    sent_at: Date
-    locallySent?: boolean
+export enum ChatMessageType {
+    Text = "TEXT",
+    PunishVote = "PUNISH_VOTE",
+    SystemBan = "SYSTEM_BAN",
+    NewBattle = "NEW_BATTLE",
 }
 
+export interface ChatMessage {
+    id: string
+    type: ChatMessageType
+    data: TextMessageData | PunishMessageData | SystemBanMessageData | NewBattleMessageData
+    sent_at: Date
+    received_at?: Date
+}
+
+export interface Likes {
+    likes: string[]
+    dislikes: string[]
+    net: number
+}
+export interface TextMessageMetadata {
+    likes: Likes
+    tagged_users_read: TaggedUsersRead
+    reports: string[]
+}
+
+export type TaggedUsersRead = { [gid: number]: boolean }
+
 export interface TextMessageData {
+    id: string
     from_user: User
     message_color?: string
     avatar_id?: string
     message: string
     user_rank?: UserRank
-    total_multiplier?: number
-    is_citizen?: boolean
     from_user_stat?: UserStat
+    tagged_users_gids?: number[]
+    metadata?: TextMessageMetadata
 }
 
 export interface PunishMessageData {
@@ -120,3 +148,16 @@ export interface SystemBanMessageData {
 export interface NewBattleMessageData {
     battle_number: number
 }
+
+export interface IncomingMessage {
+    faction: string | null
+    messages: ChatMessage[]
+}
+
+export enum SplitOptionType {
+    Tabbed = "TABBED",
+    Split = "SPLIT",
+    None = "NONE",
+}
+
+export type FontSizeType = 0.8 | 1.2 | 1.35

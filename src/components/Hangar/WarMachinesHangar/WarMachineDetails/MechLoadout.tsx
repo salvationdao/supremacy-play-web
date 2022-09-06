@@ -60,7 +60,8 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                                 label={w.label}
                                 primaryColor={colors.weapons}
                                 Icon={SvgWeapons}
-                                imageTransform="rotate(-30deg) scale(.95)"
+                                rarity={w.weapon_skin ? getRarityDeets(w.weapon_skin.tier) : undefined}
+                                hasSkin={!!w.weapon_skin}
                             />
                         )
                     })}
@@ -121,6 +122,7 @@ export const MechLoadout = ({ mechDetails }: { mechDetails: MechDetails }) => {
                         imageUrl={chassisSkin.image_url || chassisSkin.avatar_url}
                         videoUrls={[chassisSkin.card_animation_url]}
                         label={chassisSkin.label}
+                        subLabel={`Level: ${chassisSkin.level}`}
                         primaryColor={colors.chassisSkin}
                         Icon={SvgSkin}
                         rarity={getRarityDeets(chassisSkin.tier)}

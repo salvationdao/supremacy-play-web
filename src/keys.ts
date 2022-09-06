@@ -1,11 +1,9 @@
 export enum GameServerKeys {
     // Old netMessage
-    SubSpoilsOfWar = "SPOIL:OF:WAR:UPDATED",
-    SubLiveGraph = "LIVE:VOTE:COUNT:UPDATED",
     SubMechLiveStats = "WAR:MACHINE:STAT:UPDATED",
-    SubBattleAbilityProgress = "BATTLE:ABILITY:PROGRESS:BAR:UPDATED",
-    SubAbilityProgress = "ABILITY:PRICE:UPDATED",
     SubMechAbilityCoolDown = "WAR:MACHINE:ABILITY:SUBSCRIBE",
+    SubBattleAbilityOptInCheck = "BATTLE:ABILITY:OPT:IN:CHECK",
+    OptInBattleAbility = "BATTLE:ABILITY:OPT:IN",
 
     // Auth container
     UserSubscribe = "USER:SUBSCRIBE",
@@ -13,27 +11,24 @@ export enum GameServerKeys {
     PlayerRank = "PLAYER:RANK:GET",
     ListPunishments = "PLAYER:PUNISHMENT:LIST",
 
-    // Contributor multiplier
-    ListenContributorMulti = "BATTLE:CONTRIBUTOR:UPDATE",
-    ListenContributorRate = "CONTRIBUTOR:MULTI:AMOUNT",
-
     // Notification container
     SubGameNotification = "GAME:NOTIFICATION",
+
+    // Battle Arena
+    SubBattleArenaList = "BATTLE:ARENA:LIST",
+    SubBattleArenaClosed = "BATTLE:ARENA:CLOSED",
+    SubMiniMapAbilityDisplayList = "MINI:MAP:ABILITY:DISPLAY:LIST",
 
     // Voting abilities
     SubBribeStageUpdated = "BRIBE:STAGE:UPDATED:SUBSCRIBE",
     SubBribeWinnerAnnouncement = "BRIBE:WINNER:SUBSCRIBE",
     SubBattleAbility = "BATTLE:ABILITY:UPDATED",
-    SubFactionUniqueAbilities = "FACTION:UNIQUE:ABILITIES:UPDATED",
     SubWarMachineAbilitiesUpdated = "WAR:MACHINE:ABILITIES:UPDATED",
-    ContributeFactionUniqueAbility = "FACTION:UNIQUE:ABILITY:CONTRIBUTE",
-    BribeBattleAbility = "BATTLE:ABILITY:BRIBE",
     TriggerWarMachineAbility = "WAR:MACHINE:ABILITY:TRIGGER",
     SubmitAbilityLocationSelect = "ABILITY:LOCATION:SELECT",
 
     SubMechCommands = "MECH:COMMANDS:SUBSCRIBE",
     SubMechMoveCommand = "MECH:MOVE:COMMAND:SUBSCRIBE",
-    MechMoveCommandCreate = "MECH:MOVE:COMMAND:CREATE",
     MechMoveCommandCancel = "MECH:MOVE:COMMAND:CANCEL",
 
     // Game Use
@@ -46,6 +41,7 @@ export enum GameServerKeys {
     SystemMessageList = "SYSTEM:MESSAGE:LIST",
     SystemMessageDismiss = "SYSTEM:MESSAGE:DISMISS",
     SubSystemMessageListUpdated = "SYSTEM:MESSAGE:LIST:UPDATED",
+    SystemMessageSend = "SYSTEM:MESSAGE:SEND",
 
     // Asset / queue
     SubQueueFeed = "BATTLE:QUEUE:STATUS:SUBSCRIBE",
@@ -56,36 +52,39 @@ export enum GameServerKeys {
     GetMechDetails = "PLAYER:ASSET:MECH:DETAIL",
     SubMechQueuePosition = "PLAYER:ASSET:MECH:QUEUE:SUBSCRIBE",
     JoinQueue = "BATTLE:QUEUE:JOIN",
-    LeaveQueue = "BATTLE:QUEUE:LEAVE",
-    SubRepairStatus = "ASSET:REPAIR:STATUS",
-    SubmitRepair = "ASSET:REPAIR:PAY:FEE",
     MechQueueUpdated = "PLAYER:ASSET:MECH:QUEUE:UPDATE",
     TriggerMechStatusUpdate = "PLAYER:ASSET:MECH:STATUS:UPDATE",
     MechRename = "PLAYER:MECH:RENAME",
 
     // Player Abilities
-    PlayerAbilitiesList = "PLAYER:ABILITIES:LIST:SUBSCRIBE",
-    SaleAbilitiesList = "SALE:ABILITIES:LIST:SUBSCRIBE",
+    SubPlayerAbilitiesList = "PLAYER:ABILITIES:LIST:SUBSCRIBE",
+    SubSaleAbilitiesPrice = "SALE:ABILITIES:PRICE:SUBSCRIBE",
+    SubSaleAbilitiesList = "SALE:ABILITIES:LIST:SUBSCRIBE",
+    SaleAbilitiesList = "SALE:ABILITIES:LIST",
     SaleAbilityClaim = "SALE:ABILITY:CLAIM",
+    SaleAbilityPurchase = "SALE:ABILITY:PURCHASE",
     PlayerAbilityUse = "PLAYER:ABILITY:USE",
 
     // Minimap ability updates
     MinimapUpdatesSubscribe = "MINIMAP:UPDATES:SUBSCRIBE",
+    MinimapEventsSubscribe = "MINIMAP:EVENTS:SUBSCRIBE",
 
     // Chat
     SubscribeFactionChat = "FACTION:CHAT:SUBSCRIBE",
     SubscribeGlobalChat = "GLOBAL:CHAT:SUBSCRIBE",
     SendChatMessage = "CHAT:MESSAGE",
+    ReadTaggedMessage = "READ:TAGGED:MESSAGE",
+    ReactToMessage = "REACT:MESSAGE",
+    ChatBanPlayer = "CHAT:BAN:PLAYER",
+    ChatReport = "CHAT:REPORT:MESSAGE",
 
-    BattleMechHistoryDetailed = "BATTLE:MECH:HISTORY:DETAILED",
     BattleMechHistoryList = "BATTLE:MECH:HISTORY:LIST",
     BattleMechStats = "BATTLE:MECH:STATS",
 
     // Get / sub to data
-    SubWarMachineDestroyed = "WAR:MACHINE:DESTROYED:UPDATED",
+    SubBattleAISpawned = "BATTLE:AI:SPAWNED:SUBSCRIBE",
     SubGameSettings = "GAME:SETTINGS:UPDATED",
     SubBattleEndDetailUpdated = "BATTLE:END:DETAIL:UPDATED",
-    SubscribeSupsMultiplier = "USER:MULTIPLIERS:SUBSCRIBE",
     SubViewersLiveCount = "VIEWER:LIVE:COUNT:UPDATED",
     SubscribeUserStat = "USER:STAT:SUBSCRIBE",
     UpdateSettings = "PLAYER:UPDATE_SETTINGS",
@@ -103,6 +102,8 @@ export enum GameServerKeys {
 
     // Player list
     SubPlayerList = "FACTION:ACTIVE:PLAYER:SUBSCRIBE",
+    SubGlobalPlayerList = "GLOBAL:ACTIVE:PLAYER:SUBSCRIBE",
+    GetPlayerByGid = "GET:PLAYER:GID",
 
     // Telegram
     UserTelegramShortcodeRegistered = "USER:TELEGRAM_SHORTCODE_REGISTERED",
@@ -120,6 +121,10 @@ export enum GameServerKeys {
     GetMysteryCrates = "STORE:MYSTERY:CRATES",
     SubMysteryCrate = "STORE:MYSTERY:CRATE:SUBSCRIBE",
     PurchaseMysteryCrate = "STORE:MYSTERY:CRATE:PURCHASE",
+    GetPackages = "STORE:PACKAGES",
+
+    // FIAT
+    BillingHistoryList = "FIAT:BILLING_HISTORY:LIST",
 
     // Marketplace
     MarketplaceSalesList = "MARKETPLACE:SALES:LIST",
@@ -143,25 +148,72 @@ export enum GameServerKeys {
     GetPlayerMysteryCrate = "PLAYER:ASSET:MYSTERY_CRATE:GET",
     OpenCrate = "CRATE:OPEN",
 
+    //submodels
+    GetMechSubmodels = "PLAYER:ASSET:MECH:SUBMODEL:LIST",
+    GetWeaponSubmodels = "PLAYER:ASSET:WEAPON:SUBMODEL:LIST",
+    GetMechBlueprints = "PLAYER:MECH:BLUEPRINT:LIST",
+    GetWeaponBlueprints = "PLAYER:WEAPON:BLUEPRINT:LIST",
+
     // Keycards
     GetPlayerKeycards = "PLAYER:ASSET:KEYCARD:LIST",
     GetPlayerKeycard = "PLAYER:ASSET:KEYCARD:GET",
 
     // Player profile
     PlayerProfileGet = "PLAYER:PROFILE:GET",
-    PlayerProfileUpdateUsername = "PLAYER:UPDATE:USERNAME",
-    PlayerProfileUpdateAboutMe = "PLAYER:UPDATE:ABOUT_ME",
+    PlayerProfileAvatarUpdate = "PLAYER:AVATAR:UPDATE",
+    PlayerProfileAvatarList = "PLAYER:AVATAR:LIST",
+
+    PlayerProfileUsernameUpdate = "PLAYER:UPDATE:USERNAME",
+    PlayerProfileAboutMeUpdate = "PLAYER:UPDATE:ABOUT_ME",
     PlayerAssetMechListPublic = "PLAYER:ASSET:MECH:LIST:PUBLIC",
     PlayerAssetMechDetailPublic = "PLAYER:ASSET:MECH:DETAIL:PUBLIC",
     PlayerBattleMechHistoryList = "PLAYER:BATTLE:MECH:HISTORY:LIST",
+    PlayerProfileLayerList = "PLAYER:PROFILE:LAYERS:LIST",
+
+    PlayerProfileCustomAvatarList = "PLAYER:CUSTOM_AVATAR:LIST",
+    PlayerProfileCustomAvatarDetails = "PLAYER:CUSTOM_AVATAR:DETAILS",
+    PlayerProfileCustomAvatarUpdate = "PLAYER:PROFILE:CUSTOM_AVATAR:UPDATE",
+    PlayerProfileCustomAvatarCreate = "PLAYER:PROFILE:CUSTOM_AVATAR:CREATE",
+    PlayerProfileCustomAvatarDelete = "PLAYER:PROFILE:CUSTOM_AVATAR:DELETE",
 
     // Leaderboard
+    GetLeaderboardRounds = "LEADERBOARD:ROUNDS",
     GetPlayerBattlesSpectated = "LEADERBOARD:PLAYER:BATTLE:SPECTATED",
     GetPlayerMechSurvives = "LEADERBOARD:PLAYER:MECH:SURVIVES",
     GetPlayerMechKills = "LEADERBOARD:PLAYER:MECH:KILLS",
     GetPlayerAbilityKills = "LEADERBOARD:PLAYER:ABILITY:KILLS",
     GetPlayerAbilityTriggers = "LEADERBOARD:PLAYER:ABILITY:TRIGGERS",
     GetPlayerMechsOwned = "LEADERBOARD:PLAYER:MECHS:OWNED",
+    GetPlayerRepairBlocks = "LEADERBOARD:PLAYER:REPAIR:BLOCK",
+
+    // Repairs
+    SubRepairJobListUpdated = "MECH:REPAIR:OFFER:LIST:UPDATE",
+    SubRepairJobStatus = "MECH:REPAIR:OFFER",
+    SubMechRepairStatus = "MECH:REPAIR:CASE",
+    GetMechRepairJob = "MECH:ACTIVE:REPAIR:OFFER",
+    RegisterMechRepair = "MECH:REPAIR:OFFER:ISSUE",
+    CancelMechRepair = "MECH:REPAIR:OFFER:CLOSE",
+    RegisterRepairAgent = "REPAIR:AGENT:REGISTER",
+    RepairAgentUpdate = "REPAIR:AGENT:RECORD",
+    CompleteRepairAgent = "REPAIR:AGENT:COMPLETE",
+    AbandonRepairAgent = "REPAIR:AGENT:ABANDON",
+
+    // Repair bay
+    GetRepairBaySlots = "MECH:REPAIR:SLOTS",
+    InsertRepairBay = "MECH:REPAIR:SLOT:INSERT",
+    RemoveRepairBay = "MECH:REPAIR:SLOT:REMOVE",
+    SwapRepairBay = "MECH:REPAIR:SLOT:SWAP",
+
+    // Companion App
+    AuthGenOneTimeToken = "GEN:ONE:TIME:TOKEN",
+    GetPlayerDeviceList = "PLAYER:DEVICE:LIST",
+
+    // Quests
+    SubPlayerQuestStats = "PLAYER:QUEST:STAT",
+    SubPlayerQuestStatsProgression = "PLAYER:QUEST:PROGRESSIONS",
+
+    NextBattleDetails = "BATTLE:NEXT:DETAILS",
+    SubChallengeFunds = "CHALLENGE:FUND",
 }
 
 export enum PassportServerKeys {

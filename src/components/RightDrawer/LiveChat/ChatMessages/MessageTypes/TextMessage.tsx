@@ -1,294 +1,530 @@
-import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useRef } from "react"
+import { ReactJSXElement } from "@emotion/react/types/jsx-namespace"
+import { Box, Stack, Typography } from "@mui/material"
+import React, { useEffect, useMemo, useRef, useState } from "react"
 import { UserBanForm } from "../../../.."
-import { SvgInfoCircular, SvgSkull2 } from "../../../../../assets"
+import { SvgInfoCircular, SvgReportFlag, SvgSkull2 } from "../../../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../../../constants"
-import { dateFormatter, getUserRankDeets, shadeColor, truncate } from "../../../../../helpers"
+import { useAuth, useChat, useGlobalNotifications, useSupremacy } from "../../../../../containers"
+import { checkIfIsEmoji, dateFormatter, getUserRankDeets, shadeColor, truncate } from "../../../../../helpers"
 import { useToggle } from "../../../../../hooks"
+import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
-import { ChatMessageType, Faction, TextMessageData, User } from "../../../../../types"
+import { ChatMessage, ChatMessageType, TextMessageData, User } from "../../../../../types"
 import { TooltipHelper } from "../../../../Common/TooltipHelper"
+import { Reactions } from "../../AdditionalOptions/Reactions"
+import { ReportModal } from "../../AdditionalOptions/ReportModal"
 import { UserDetailsPopover } from "./UserDetailsPopover"
 
-const getMultiplierColor = (multiplierInt: number): string => {
-    if (multiplierInt >= 2800) return "#3BFFDE"
-    if (multiplierInt >= 2000) return "#8BFF33"
-    if (multiplierInt >= 1400) return "#EEFF36"
-    if (multiplierInt >= 800) return "#FFC830"
-    if (multiplierInt >= 400) return "#FF6924"
-    if (multiplierInt >= 220) return "#B669FF"
-    if (multiplierInt >= 120) return "#FA5EFF"
-    if (multiplierInt >= 80) return "#FF547F"
-    if (multiplierInt >= 50) return "#FF4242"
-    return "#9791FF"
+interface TextMessageProps {
+    message: ChatMessage
+    containerRef: React.RefObject<HTMLDivElement>
+    isScrolling: boolean
+    previousMessage?: ChatMessage
+    latestMessage?: ChatMessage
+    isFailed: boolean
 }
 
-export const TextMessage = ({
-    data,
-    sentAt,
-    fontSize,
-    isSent,
-    isFailed,
-    filterZeros,
-    filterSystemMessages,
-    getFaction,
-    user,
-    isEmoji,
-    locallySent,
-    previousMessage,
-}: {
-    data: TextMessageData
-    sentAt: Date
-    fontSize: number
-    isSent?: boolean
-    isFailed?: boolean
-    filterZeros?: boolean
-    filterSystemMessages?: boolean
-    getFaction: (factionID: string) => Faction
-    user: User
-    isEmoji: boolean
-    locallySent?: boolean
-    previousMessage: ChatMessageType | undefined
-}) => {
-    const { from_user, user_rank, message_color, avatar_id, message, total_multiplier, is_citizen, from_user_stat } = data
-    const { id, username, gid, faction_id } = from_user
+const propsAreEqual = (prevProps: TextMessageProps, nextProps: TextMessageProps) => {
+    return (
+        prevProps.message.id === nextProps.message.id &&
+        prevProps.message.received_at === nextProps.message.received_at &&
+        prevProps.isScrolling === nextProps.isScrolling &&
+        prevProps.previousMessage?.id === nextProps.previousMessage?.id &&
+        prevProps.latestMessage?.id === nextProps.latestMessage?.id &&
+        prevProps.isFailed === nextProps.isFailed
+    )
+}
 
+export const TextMessage = React.memo(function TextMessage({ message, containerRef, isScrolling, previousMessage, latestMessage, isFailed }: TextMessageProps) {
+    const { newSnackbarMessage, sendBrowserNotification } = useGlobalNotifications()
+    const { getFaction } = useSupremacy()
+    const { send } = useGameServerCommandsUser("/user_commander")
+    const { user, userID, isHidden, isActive } = useAuth()
+    const { userGidRecord, addToUserGidRecord, tabValue, fontSize } = useChat()
+
+    // States
+    const [refreshMessage, toggleRefreshMessage] = useToggle()
+    const textMessageRef = useRef<HTMLDivElement>(null)
     const popoverRef = useRef(null)
     const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
     const [banModalOpen, toggleBanModalOpen] = useToggle()
-    const [displayTimestamp, setDisplayTimestamp] = useToggle()
-    const [isPreviousMessager, setIsPreviousMessager] = useToggle()
+    const [reportModalOpen, setReportModalOpen] = useToggle()
+    const [isHovered, setIsHovered] = useState(false)
 
-    const multiplierColor = useMemo(() => getMultiplierColor(total_multiplier || 0), [total_multiplier])
-    const abilityKillColor = useMemo(() => {
-        if (!from_user_stat || from_user_stat.ability_kill_count == 0 || !message_color) return colors.grey
-        if (from_user_stat.ability_kill_count < 0) return colors.red
-        return shadeColor(message_color, 30)
-    }, [from_user_stat, message_color])
-    const factionColor = useMemo(() => (faction_id ? getFaction(faction_id).primary_color : message_color), [faction_id, getFaction, message_color])
-    const factionSecondaryColor = useMemo(() => (faction_id ? getFaction(faction_id).secondary_color : "#FFFFFF"), [faction_id, getFaction])
-    const faction_logo_url = useMemo(() => (faction_id ? getFaction(faction_id).logo_url : ""), [faction_id, getFaction])
+    // Memorized values
+    const data = useMemo(() => message.data as TextMessageData, [message.data])
+
+    // Extract calculated data from the message
+    const {
+        user_rank,
+        avatar_id,
+        content,
+        from_user_stat,
+        metadata,
+        from_user,
+        isTagged,
+        isEmoji,
+        abilityKillColor,
+        factionColor,
+        factionSecondaryColor,
+        factionLogoUrl,
+    } = useMemo(() => {
+        const { from_user, user_rank, message_color, avatar_id, message: content, from_user_stat, metadata } = data
+        const isEmoji: boolean = checkIfIsEmoji(content)
+        const isTagged = metadata && user.gid in metadata.tagged_users_read
+
+        const fromUserFaction = from_user.faction_id ? getFaction(from_user.faction_id) : undefined
+        const factionColor = fromUserFaction ? fromUserFaction.primary_color : message_color
+        const factionSecondaryColor = fromUserFaction ? fromUserFaction.secondary_color : "#FFFFFF"
+        const factionLogoUrl = fromUserFaction ? fromUserFaction.logo_url : ""
+
+        let abilityKillColor = ""
+        if (!from_user_stat || from_user_stat.ability_kill_count == 0 || !message_color) {
+            abilityKillColor = colors.grey
+        } else if (from_user_stat.ability_kill_count < 0) {
+            abilityKillColor = colors.red
+        } else {
+            shadeColor(message_color, 30)
+        }
+
+        return {
+            user_rank,
+            avatar_id,
+            content,
+            from_user_stat,
+            metadata,
+            from_user,
+            isTagged,
+            isEmoji,
+            abilityKillColor,
+            factionColor,
+            factionSecondaryColor,
+            factionLogoUrl,
+        }
+    }, [data, getFaction, user.gid])
+
+    const isAlreadyReported = useMemo(() => metadata?.reports.includes(userID), [metadata?.reports, userID])
+    // const isFailed = useMemo(() => from_user.id === userID && failedMessages.includes(data.id), [data.id, failedMessages, from_user.id, userID])
     const rankDeets = useMemo(() => (user_rank ? getUserRankDeets(user_rank, ".8rem", "1.8rem") : undefined), [user_rank])
-    const smallFontSize = useMemo(() => (fontSize ? `${0.9 * fontSize}rem` : "0.9rem"), [fontSize])
+    const fontSizes = useMemo(
+        () => ({
+            small: fontSize ? `${1 * fontSize}rem` : "0.9rem",
+            normal: `${(fontSize || 1.1) * 1.35}rem`,
+            emoji: `${(fontSize || 1.1) * 3}rem`,
+        }),
+        [fontSize],
+    )
 
-    const renderFontSize = useCallback(() => {
-        if (isEmoji) return (fontSize || 1.1) * 3
-        return (fontSize || 1.1) * 1.35
-    }, [isEmoji, fontSize])
+    const isPreviousMessager = useMemo(() => {
+        if (previousMessage && previousMessage.type === ChatMessageType.Text) {
+            const prev = previousMessage.data as TextMessageData
+            if (prev.from_user.id === data.from_user.id) {
+                return true
+            }
+        }
+        return false
+    }, [data.from_user.id, previousMessage])
+
+    const isMessageVisibleInChat = useMemo(() => {
+        if (!containerRef.current || !textMessageRef.current || isScrolling) return false
+
+        //Get container properties
+        const cTop = containerRef.current?.scrollTop
+        const cBottom = cTop + containerRef.current?.clientHeight
+
+        //Get element properties
+        const eTop = textMessageRef.current?.offsetTop
+        const eBottom = textMessageRef.current?.clientHeight
+
+        // if (!cTop || !cBottom || !eTop || !eBottom) return
+        //Check if in view
+        return eTop >= cTop && eBottom <= cBottom
+    }, [containerRef, isScrolling])
+
+    // Send server user read tagged message or send user browser notifications about they got tagged
+    useEffect(() => {
+        if (!isTagged || !metadata || Object.keys(metadata?.tagged_users_read).length === 0) return
+        const isRead = metadata?.tagged_users_read[user.gid]
+
+        // Send browser notification to user if tab is not visible
+        if (isRead === false && (isHidden || !isActive)) {
+            // Check if its the last message
+            if (latestMessage?.id === message.id) {
+                sendBrowserNotification.current(`New Chat Message`, `${from_user.username} has tagged you in a message.`)
+            }
+            return
+        }
+
+        if (isMessageVisibleInChat && isRead === false) {
+            // Tell server user read the message
+            send<User>(GameServerKeys.ReadTaggedMessage, {
+                chat_history_id: message.id,
+            })
+        }
+    }, [from_user.username, isActive, isHidden, isMessageVisibleInChat, isTagged, latestMessage?.id, message.id, metadata, send, sendBrowserNotification, user.gid])
+
+    // Get tagged user details from cache, if not exist, fetch from server
+    useEffect(() => {
+        ;(async () => {
+            const matchedArray = content.match(/#\d+/g)
+            const taggedUserFetches = matchedArray?.map(
+                (match) =>
+                    new Promise<boolean>((resolve) => {
+                        const gidSubstring = parseInt(match.substring(1))
+                        const taggedUser = userGidRecord.current[gidSubstring] || undefined
+
+                        if (!taggedUser) {
+                            ;(async () => {
+                                try {
+                                    const resp = await send<User>(GameServerKeys.GetPlayerByGid, {
+                                        gid: gidSubstring,
+                                    })
+                                    if (resp) addToUserGidRecord(resp)
+                                } catch (err) {
+                                    console.error(err)
+                                } finally {
+                                    resolve(true)
+                                }
+                            })()
+                        } else {
+                            resolve(true)
+                        }
+                    }),
+            )
+            if (taggedUserFetches) {
+                await Promise.all(taggedUserFetches)
+                toggleRefreshMessage()
+            }
+        })()
+    }, [addToUserGidRecord, content, send, toggleRefreshMessage, userGidRecord])
 
     const chatMessage = useMemo(() => {
-        const messageFontSize = renderFontSize()
-        return <Typography sx={{ fontSize: `${messageFontSize}rem` }}>{message}</Typography>
-    }, [message, renderFontSize])
+        // If no tagged users, directly return the message
+        if (metadata && Object.keys(metadata?.tagged_users_read).length === 0) return <span>{content}</span>
 
-    useEffect(() => {
-        if (!previousMessage || previousMessage.type != "TEXT") return
-        const prev = previousMessage.data as TextMessageData
-        if (prev.from_user.id === data.from_user.id) {
-            setIsPreviousMessager(true)
-        }
-    }, [previousMessage, setIsPreviousMessager, data])
+        // Splitting the message on tags, identifying #12345 patterns e.g.: hi, #1234 how are you? => ['hi,', ' how are you'] (tags are stored in match array)
+        const matchedArray = content.match(/#\d+/g)
+        const stringsArray = content.split(/#\d+/g)
+        const newMessageArray: ReactJSXElement[] = []
 
-    // For the hide zero multi setting
-    if ((!locallySent && filterZeros && (!total_multiplier || total_multiplier <= 0)) || filterSystemMessages) return null
+        // Looping through the string array
+        stringsArray.map((str, i) => {
+            // Pushing the first string
+            newMessageArray.push(<span>{str}</span>)
+            // If there is an item in matchedArr with the same index, push it into the new string, even if the tag is the first thing, it will still be split with an empty string at the start of stringsArr
 
-    return (
-        <>
-            <Box sx={{ opacity: isSent ? 1 : 0.45, wordBreak: "break-word", "*": { userSelect: "text !important" } }}>
-                {(!isPreviousMessager || (previousMessage && sentAt > new Date(previousMessage.sent_at.getTime() + 2 * 60000))) && (
-                    <Stack direction="row" justifyContent="space-between">
-                        <Stack ref={popoverRef} direction="row" spacing=".3rem">
-                            <Stack direction="row" spacing=".4rem" alignItems="flex-start">
-                                {isFailed && <SvgInfoCircular size="1.2rem" fill={colors.red} sx={{ mt: ".2rem" }} />}
+            if (matchedArray && matchedArray[i]) {
+                // Getting the gid from tag
+                const gidSubstring = parseInt(matchedArray[i].substring(1))
+                // Finding the user in the GID Record (added in above useEffect)
+                const taggedUser = userGidRecord.current[gidSubstring]
 
-                                {avatar_id && (
-                                    <Box
-                                        sx={{
-                                            mt: "-0.1rem !important",
-                                            width: fontSize ? `${1.7 * fontSize}rem` : "1.7rem",
-                                            height: fontSize ? `${1.7 * fontSize}rem` : "1.7rem",
-                                            flexShrink: 0,
-                                            backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatar_id})`,
-                                            backgroundRepeat: "no-repeat",
-                                            backgroundPosition: "center",
-                                            backgroundSize: "contain",
-                                            backgroundColor: factionColor,
-                                            borderRadius: 0.8,
-                                            border: `${factionColor} 1px solid`,
-                                        }}
-                                    />
-                                )}
-                                {faction_logo_url && (
-                                    <Box
-                                        sx={{
-                                            mt: "-0.1rem !important",
-                                            width: fontSize ? `${1.7 * fontSize}rem` : "1.7rem",
-                                            height: fontSize ? `${1.7 * fontSize}rem` : "1.7rem",
-                                            flexShrink: 0,
-                                            backgroundImage: `url(${faction_logo_url})`,
-                                            backgroundRepeat: "no-repeat",
-                                            backgroundPosition: "center",
-                                            backgroundSize: "contain",
-                                            backgroundColor: factionColor,
-                                            borderRadius: 0.8,
-                                            border: `${factionColor} 1px solid`,
-                                        }}
-                                    />
-                                )}
-                                {user_rank && rankDeets && (
-                                    <TooltipHelper
-                                        placement="top"
-                                        text={
-                                            <>
-                                                <strong>RANK: </strong>
-                                                {rankDeets.title}
-                                                <br />
-                                                {rankDeets.desc}
-                                            </>
-                                        }
-                                    >
-                                        <Box>{rankDeets.icon}</Box>
-                                    </TooltipHelper>
-                                )}
+                // If taggedUser doesnt exist or the user tagged themselves or user tagged taggedUser of a different faction in faction chat, just push the whole string, not rendering the tag
+                if (!taggedUser || gidSubstring === from_user.gid || (taggedUser.faction_id !== user.faction_id && tabValue !== 0)) {
+                    newMessageArray.push(<span>{matchedArray[i]}</span>)
+                    return
+                }
+
+                newMessageArray.push(
+                    <span>
+                        <UsernameJSX data={data} fontSize={fontSizes.normal} user={taggedUser} />{" "}
+                    </span>,
+                )
+            }
+        })
+        return (
+            <>
+                {newMessageArray.map((x, i) => (
+                    <span key={i}>{x}</span>
+                ))}
+            </>
+        )
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data, from_user.gid, content, metadata, fontSizes, tabValue, user.faction_id, userGidRecord, refreshMessage])
+
+    return useMemo(
+        () => (
+            <>
+                <Box sx={{ position: "relative", opacity: message.received_at ? 1 : 0.45 }} ref={textMessageRef}>
+                    {isFailed && (
+                        <SvgInfoCircular size="1.2rem" fill={colors.red} sx={{ position: "absolute", top: "50%", left: 0, transform: "translateY(-38%)" }} />
+                    )}
+
+                    {(!isPreviousMessager || (previousMessage && message.sent_at > new Date(previousMessage.sent_at.getTime() + 2 * 60000))) && (
+                        <Stack direction="row" justifyContent="space-between" sx={{ mt: ".8rem", mb: ".5rem" }}>
+                            <Stack ref={popoverRef} direction="row" spacing=".3rem">
+                                <Stack direction="row" spacing=".4rem" alignItems="flex-start">
+                                    {avatar_id && (
+                                        <Box
+                                            sx={{
+                                                mt: "-0.1rem !important",
+                                                width: fontSize ? `${1.7 * fontSize}rem` : "1.7rem",
+                                                height: fontSize ? `${1.7 * fontSize}rem` : "1.7rem",
+                                                flexShrink: 0,
+                                                backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatar_id})`,
+                                                backgroundRepeat: "no-repeat",
+                                                backgroundPosition: "center",
+                                                backgroundSize: "contain",
+                                                backgroundColor: factionColor,
+                                                borderRadius: 0.8,
+                                                border: `${factionColor} 1px solid`,
+                                            }}
+                                        />
+                                    )}
+                                    {factionLogoUrl && (
+                                        <Box
+                                            sx={{
+                                                mt: "-0.1rem !important",
+                                                width: fontSize ? `${1.7 * fontSize}rem` : "1.7rem",
+                                                height: fontSize ? `${1.7 * fontSize}rem` : "1.7rem",
+                                                flexShrink: 0,
+                                                backgroundImage: `url(${factionLogoUrl})`,
+                                                backgroundRepeat: "no-repeat",
+                                                backgroundPosition: "center",
+                                                backgroundSize: "contain",
+                                                backgroundColor: factionColor,
+                                                borderRadius: 0.8,
+                                                border: `${factionColor} 1px solid`,
+                                            }}
+                                        />
+                                    )}
+                                    {user_rank && rankDeets && (
+                                        <TooltipHelper
+                                            placement="top"
+                                            renderNode={
+                                                <Typography
+                                                    variant="body1"
+                                                    sx={{
+                                                        color: "#FFFFFF",
+                                                        fontFamily: fonts.shareTech,
+                                                        textAlign: "start",
+                                                    }}
+                                                >
+                                                    <strong>RANK: </strong>
+                                                    {rankDeets.title}
+                                                    <br />
+                                                    {rankDeets.desc}
+                                                </Typography>
+                                            }
+                                        >
+                                            <Box>{rankDeets.icon}</Box>
+                                        </TooltipHelper>
+                                    )}
+                                </Stack>
+
+                                <Box>
+                                    <UsernameJSX data={data} fontSize={fontSizes.normal} user={from_user} toggleIsPopoverOpen={toggleIsPopoverOpen} />
+
+                                    {from_user_stat && (
+                                        <Box sx={{ flexShrink: 0, display: "inline-block", ml: ".4rem", cursor: "default" }}>
+                                            <Typography
+                                                sx={{
+                                                    display: "inline-block",
+                                                    lineHeight: 1,
+                                                    fontFamily: fonts.nostromoBold,
+                                                    fontSize: fontSizes.small,
+                                                    color: abilityKillColor,
+                                                }}
+                                            >
+                                                [
+                                            </Typography>
+                                            <SvgSkull2 size={fontSizes.small} fill={abilityKillColor} sx={{ display: "inline-block" }} />
+                                            <Typography
+                                                sx={{
+                                                    display: "inline-block",
+                                                    ml: ".1rem",
+                                                    lineHeight: 1,
+                                                    fontFamily: fonts.nostromoBold,
+                                                    fontSize: fontSizes.small,
+                                                    color: abilityKillColor,
+                                                }}
+                                            >
+                                                {from_user_stat.ability_kill_count}]
+                                            </Typography>
+                                        </Box>
+                                    )}
+                                </Box>
                             </Stack>
 
-                            <Box>
-                                <Typography
-                                    onClick={() => toggleIsPopoverOpen()}
-                                    sx={{
-                                        display: "inline",
-                                        color: message_color,
-                                        fontWeight: 700,
-                                        fontSize: fontSize ? `${1.33 * fontSize}rem` : "1.33rem",
-                                        verticalAlign: "middle",
-                                        ":hover": {
-                                            cursor: "pointer",
-                                            textDecoration: "underline",
-                                        },
-                                        ":active": {
-                                            opacity: 0.7,
-                                        },
-                                    }}
-                                >
-                                    {`${truncate(username, 20)}`}
-                                    <span
-                                        style={{ marginLeft: ".2rem", opacity: 0.7, fontSize: fontSize ? `${1.1 * fontSize}rem` : "1.1rem" }}
-                                    >{`#${gid}`}</span>
-                                </Typography>
-
-                                {from_user_stat && (
-                                    <Box sx={{ flexShrink: 0, display: "inline-block", ml: ".4rem", cursor: "default" }}>
-                                        <Typography
-                                            sx={{
-                                                display: "inline-block",
-                                                lineHeight: 1,
-                                                fontFamily: fonts.nostromoBold,
-                                                fontSize: smallFontSize,
-                                                color: abilityKillColor,
-                                            }}
-                                        >
-                                            [
-                                        </Typography>
-                                        <SvgSkull2 size={smallFontSize} fill={abilityKillColor} sx={{ display: "inline-block" }} />
-                                        <Typography
-                                            sx={{
-                                                display: "inline-block",
-                                                ml: ".1rem",
-                                                lineHeight: 1,
-                                                fontFamily: fonts.nostromoBold,
-                                                fontSize: smallFontSize,
-                                                color: abilityKillColor,
-                                            }}
-                                        >
-                                            {from_user_stat.ability_kill_count}]
-                                        </Typography>
-                                    </Box>
-                                )}
-
-                                <Typography
-                                    sx={{
-                                        display: "inline-block",
-                                        ml: ".4rem",
-                                        color: multiplierColor,
-                                        textAlign: "center",
-                                        fontFamily: fonts.nostromoBold,
-                                        fontSize: smallFontSize,
-                                        opacity: (total_multiplier || 0) > 0 ? 1 : 0.7,
-                                    }}
-                                >
-                                    {total_multiplier || 0}x
-                                </Typography>
-
-                                {is_citizen && (
-                                    <TooltipHelper placement="top" text={"CITIZEN"}>
-                                        <Typography
-                                            sx={{
-                                                display: "inline-block",
-                                                cursor: "default",
-                                                ml: ".4rem",
-                                                pb: ".3rem",
-                                                textAlign: "center",
-                                                fontFamily: fonts.nostromoBold,
-                                                fontSize: smallFontSize,
-                                            }}
-                                        >
-                                            🦾
-                                        </Typography>
-                                    </TooltipHelper>
-                                )}
-                            </Box>
+                            <Typography
+                                sx={{
+                                    alignSelf: "center",
+                                    flexShrink: 0,
+                                    ml: "auto",
+                                    color: colors.grey,
+                                    opacity: 0.7,
+                                    fontSize: fontSizes.normal,
+                                }}
+                            >
+                                {dateFormatter(message.sent_at)}
+                            </Typography>
                         </Stack>
-                    </Stack>
+                    )}
+
+                    <Box>
+                        <Stack
+                            direction={"column"}
+                            sx={{
+                                backgroundColor: isHovered ? "#121212" : "unset",
+                                borderRadius: ".3rem",
+                                position: "relative",
+                            }}
+                            onMouseEnter={() => setIsHovered(true)}
+                            onMouseLeave={() => setIsHovered(false)}
+                        >
+                            <Stack direction={"row"} sx={{ lineHeight: 1.2, color: "#FFFFFF", zIndex: 1, alignItems: "center" }}>
+                                {userID && (
+                                    <SvgReportFlag
+                                        fill={isAlreadyReported ? colors.red : "grey"}
+                                        size={"1.5rem"}
+                                        sx={{
+                                            mr: "1rem",
+                                            opacity: isHovered ? 1 : 0,
+                                            cursor: userID ? "pointer" : "cursor",
+                                        }}
+                                        onClick={() => {
+                                            if (isAlreadyReported) {
+                                                newSnackbarMessage("Your report has already been sent.", "warning")
+                                                return
+                                            }
+                                            setReportModalOpen(true)
+                                        }}
+                                    />
+                                )}
+                                <Box
+                                    sx={{
+                                        fontFamily: fonts.shareTech,
+                                        lineHeight: 1.2,
+                                        color: "#FFFFFF",
+                                        fontSize: isEmoji ? fontSizes.emoji : fontSizes.normal,
+                                        zIndex: isHovered ? 2 : 1,
+                                    }}
+                                >
+                                    {chatMessage}
+                                </Box>
+                            </Stack>
+
+                            {!!metadata?.likes.net && <Reactions fontSize={fontSize} data={data} />}
+
+                            {isHovered && <Reactions fontSize={fontSize} hoverOnly={true} data={data} />}
+                        </Stack>
+                    </Box>
+                </Box>
+
+                {isPopoverOpen && (
+                    <UserDetailsPopover
+                        factionColor={factionColor}
+                        factionSecondaryColor={factionSecondaryColor}
+                        userStat={from_user_stat}
+                        popoverRef={popoverRef}
+                        open={isPopoverOpen}
+                        onClose={() => toggleIsPopoverOpen(false)}
+                        toggleBanModalOpen={toggleBanModalOpen}
+                        user={user}
+                        fromUser={from_user}
+                    />
                 )}
 
-                <Stack direction={"row"} sx={{ ml: "2.1rem" }} onMouseEnter={() => setDisplayTimestamp(true)} onMouseLeave={() => setDisplayTimestamp(false)}>
-                    {chatMessage}
-                    <Fade in>
-                        <Typography
-                            sx={{
-                                display: displayTimestamp ? "inline-block" : "none",
-                                alignSelf: "flex-start",
-                                flexShrink: 0,
-                                ml: "auto",
-                                pt: ".2rem",
-                                color: "#FFFFFF",
-                                opacity: 0.4,
-                                ":hover": { opacity: 1 },
-                                fontSize: fontSize ? `${0.98 * fontSize}rem` : "0.98rem",
-                            }}
-                        >
-                            {dateFormatter(sentAt)}
-                        </Typography>
-                    </Fade>
-                </Stack>
-            </Box>
+                {banModalOpen && user && from_user.faction_id === user.faction_id && (
+                    <UserBanForm
+                        open={banModalOpen}
+                        onClose={() => toggleBanModalOpen(false)}
+                        prefillUser={{
+                            id: from_user.id,
+                            username: from_user.username,
+                            gid: from_user.gid,
+                        }}
+                    />
+                )}
 
-            {isPopoverOpen && (
-                <UserDetailsPopover
-                    factionColor={factionColor}
-                    factionSecondaryColor={factionSecondaryColor}
-                    fromUserFactionID={faction_id}
-                    userStat={from_user_stat}
-                    popoverRef={popoverRef}
-                    open={isPopoverOpen}
-                    onClose={() => toggleIsPopoverOpen(false)}
-                    toggleBanModalOpen={toggleBanModalOpen}
-                    user={user}
-                />
-            )}
+                {reportModalOpen && (
+                    <ReportModal fromUser={from_user} message={data} setReportModalOpen={setReportModalOpen} reportModalOpen={reportModalOpen} />
+                )}
+            </>
+        ),
+        [
+            abilityKillColor,
+            avatar_id,
+            banModalOpen,
+            chatMessage,
+            data,
+            factionColor,
+            factionLogoUrl,
+            factionSecondaryColor,
+            fontSize,
+            fontSizes.emoji,
+            fontSizes.normal,
+            fontSizes.small,
+            from_user,
+            from_user_stat,
+            isAlreadyReported,
+            isEmoji,
+            isFailed,
+            isHovered,
+            isPopoverOpen,
+            isPreviousMessager,
+            message.received_at,
+            message.sent_at,
+            metadata?.likes.net,
+            newSnackbarMessage,
+            previousMessage,
+            rankDeets,
+            reportModalOpen,
+            setReportModalOpen,
+            toggleBanModalOpen,
+            toggleIsPopoverOpen,
+            user,
+            userID,
+            user_rank,
+        ],
+    )
+}, propsAreEqual)
 
-            {banModalOpen && user && faction_id === user.faction_id && (
-                <UserBanForm
-                    user={user}
-                    open={banModalOpen}
-                    onClose={() => toggleBanModalOpen(false)}
-                    prefillUser={{
-                        id,
-                        username,
-                        gid,
-                    }}
-                />
-            )}
-        </>
+interface UsernameJSXProps {
+    data: TextMessageData
+    fontSize: string
+    toggleIsPopoverOpen?: (value?: boolean) => void
+    user: User | undefined
+}
+
+export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user }: UsernameJSXProps) => {
+    const { getFaction } = useSupremacy()
+    const { message_color } = data
+
+    const faction = useMemo(() => getFaction(user?.faction_id || ""), [getFaction, user?.faction_id])
+
+    return (
+        <Typography
+            onClick={() => (toggleIsPopoverOpen ? toggleIsPopoverOpen() : null)}
+            sx={{
+                display: "inline",
+                cursor: toggleIsPopoverOpen ? "pointer" : "unset",
+                p: toggleIsPopoverOpen ? "unset" : ".08rem .5rem",
+                color: toggleIsPopoverOpen ? message_color : faction.secondary_color,
+                backgroundColor: toggleIsPopoverOpen ? "unset" : faction.primary_color,
+                borderRadius: toggleIsPopoverOpen ? "unset" : 0.5,
+                fontWeight: toggleIsPopoverOpen ? 700 : "unset",
+                fontSize: `${fontSize}rem`,
+                verticalAlign: "middle",
+                ":hover": toggleIsPopoverOpen
+                    ? {
+                          cursor: "pointer",
+                          textDecoration: "underline",
+                      }
+                    : undefined,
+                ":active": {
+                    opacity: 0.8,
+                },
+            }}
+        >
+            {toggleIsPopoverOpen ? truncate(user?.username || "", 20) : `@${user?.username}`}
+            <span
+                style={{
+                    marginLeft: ".2rem",
+                    fontSize,
+                }}
+            >{`#${user?.gid}`}</span>
+        </Typography>
     )
 }

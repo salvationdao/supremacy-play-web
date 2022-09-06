@@ -1,6 +1,6 @@
 import { Box, Checkbox, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
-import { useHistory, useLocation } from "react-router-dom"
+import { useHistory } from "react-router-dom"
 import { FancyButton } from "../.."
 import { SvgSupToken, WarMachineIconPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
@@ -17,8 +17,8 @@ import { ConfirmModal } from "../../Common/ConfirmModal"
 import { SuccessModal } from "../../Common/SuccessModal"
 import { AssetToSell } from "./AssetToSell/AssetToSell"
 import { ItemTypeSelect } from "./ItemTypeSelect"
-import { PricingInput } from "./PricingInput"
 import { ListingDurationHoursEnum, ListingDurationSelect } from "./ListingDurationSelect"
+import { PricingInput } from "./PricingInput"
 
 export interface AssetToSellStruct {
     id: string
@@ -47,7 +47,6 @@ export const SellItem = () => {
 export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
     const theme = useTheme()
     const history = useHistory()
-    const location = useLocation()
     const [query] = useUrlQuery()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [understantDropRisk, toggleUnderstantDropRisk] = useToggle()
@@ -240,15 +239,13 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                             direction: "ltr",
                             scrollbarWidth: "none",
                             "::-webkit-scrollbar": {
-                                width: ".4rem",
+                                width: "1rem",
                             },
                             "::-webkit-scrollbar-track": {
                                 background: "#FFFFFF15",
-                                borderRadius: 3,
                             },
                             "::-webkit-scrollbar-thumb": {
                                 background: primaryColor,
-                                borderRadius: 3,
                             },
                         }}
                     >
@@ -406,7 +403,7 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                                 SUP by the end of the listing.
                             </Typography>
 
-                            <Stack direction="row" alignItems="center">
+                            <Stack spacing="1rem" direction="row" alignItems="center">
                                 <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
                                     I have read and understood the above.
                                 </Typography>
@@ -417,9 +414,11 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                                         toggleUnderstantDropRisk(e.currentTarget.checked)
                                     }}
                                     sx={{
-                                        transform: "scale(1.4)",
-                                        ".Mui-checked": { color: colors.neonBlue },
-                                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.neonBlue}50` },
+                                        p: 0,
+                                        color: colors.yellow,
+                                        "& > .MuiSvgIcon-root": { width: "2.8rem", height: "2.8rem" },
+                                        ".Mui-checked, .MuiSvgIcon-root": { color: `${colors.yellow} !important` },
+                                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.yellow}50 !important` },
                                     }}
                                 />
                             </Stack>
@@ -433,7 +432,7 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                     title="ITEM LISTED!"
                     leftLabel="SELL ANOTHER"
                     onLeftButton={() => {
-                        history.replace(`/marketplace/sell${location.hash}`)
+                        history.replace(`/marketplace/sell`)
                         toggleReset()
                     }}
                     rightLabel="VIEW LISTING"
@@ -454,7 +453,7 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                                 break
                         }
 
-                        history.replace(`/marketplace/${subPath}/${successPayload.id}${location.hash}`)
+                        history.replace(`/marketplace/${subPath}/${successPayload.id}`)
                     }}
                 >
                     <Typography variant="h6">

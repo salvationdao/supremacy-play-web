@@ -38,7 +38,7 @@ export const colors = {
     bronze: "#CB7431",
     blue: "#0074D9",
     blue2: "#309FFF",
-    purple: "#A985FF",
+    purple: "#9A73F5",
     black2: "#13161B",
     black3: "#080303",
 
@@ -121,25 +121,19 @@ export enum siteZIndex {
     Drawer = 298,
     Popover = 297,
     Tooltip = 296,
-    LoadMessage = 250,
 
     // Stream site top elements
     Bar = 199,
-    LeftDrawer = 198,
-    RightDrawer = 197,
     RoutePage = 101,
 
     // Battle areana
     Controls = 70,
-    Trailer = 69,
     BattleHistory = 70,
-    BattleEnd = 60,
-    MiniMap = 50,
+    Trailer = 69,
     MoveableResizableHover = 51,
     MoveableResizable = 42,
     Notifications = 40,
     MechStats = 30,
-    VotingSystem = 30,
     Stream = 5,
 }
 
@@ -200,7 +194,7 @@ export const theme = createTheme({
         },
         body1: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.6rem",
+            fontSize: "1.65rem",
         },
         body2: {
             fontFamily: fonts.shareTech,
@@ -209,21 +203,20 @@ export const theme = createTheme({
         subtitle1: {
             fontFamily: fonts.shareTech,
             fontSize: "1.3rem",
-            textAlign: "center",
         },
         subtitle2: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.3rem",
+            fontSize: "1.15rem",
         },
         caption: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.2rem",
+            fontSize: "1.25rem",
         },
     },
     components: {
         MuiButtonBase: {
             defaultProps: {
-                disableRipple: false,
+                disableRipple: true,
             },
             styleOverrides: {
                 root: {
@@ -247,9 +240,6 @@ export const theme = createTheme({
                 color: "text.primary",
             },
             styleOverrides: {
-                root: {
-                    userSelect: "none",
-                },
                 caption: {
                     display: "block",
                 },

@@ -35,7 +35,7 @@ export const PunishmentList = ({ open, onClose, punishments }: Props) => {
                     clipSize="8px"
                     border={{
                         borderColor: colors.red,
-                        borderThickness: ".3rem",
+                        borderThickness: ".2rem",
                     }}
                     sx={{ position: "relative" }}
                     backgroundColor={theme.factionTheme.background}
@@ -103,7 +103,7 @@ export const PunishmentList = ({ open, onClose, punishments }: Props) => {
                     </Box>
 
                     <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
-                        <SvgClose size="1.9rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                        <SvgClose size="2.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                     </IconButton>
                 </ClipThing>
             </Box>

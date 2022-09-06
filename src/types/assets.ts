@@ -1,16 +1,14 @@
 import { Battle, Faction, User, Vector2i } from "."
 
-export interface SaleAbilitiesAvailabilityResponse {
-    can_purchase: boolean
-}
-
 export enum MechStatusEnum {
     Idle = "IDLE",
+    PendingQueue = "PENDING_QUEUE",
     Queue = "QUEUE",
     Battle = "BATTLE",
     Market = "MARKET",
     Sold = "SOLD",
     BattleReady = "BATTLE_READY",
+    Damaged = "DAMAGED",
 }
 
 export enum WeaponType {
@@ -41,16 +39,41 @@ export enum AssetItemType {
     OutroAnimation = "outro_animation",
 }
 
-export interface MechStatus {
-    status: MechStatusEnum
-    queue_position?: number
+export enum MechRepairStatEnum {
+    Pending = "PENDING",
+    StandardRepair = "STANDARD_REPAIR",
+    FastRepair = "FAST_REPAIR",
 }
 
-export interface AssetDurability {
-    hash: string
-    started_at: Date
-    expect_completed_at: Date
-    repair_type: "FAST" | "STANDARD" | ""
+export interface MechRepairStatus {
+    repair_status: MechRepairStatEnum
+    remain_seconds?: number
+}
+
+export interface RepairSlot {
+    id: string
+    player_id: string
+    mech_id: string
+    repair_case_id: string
+    status: string
+    next_repair_time: Date
+    slot_number: number
+}
+
+export interface MechStatus {
+    status: MechStatusEnum
+    can_deploy: boolean
+    battle_eta_seconds: number | null
+}
+
+export interface Images {
+    image_url?: string
+    animation_url?: string
+    card_animation_url?: string
+    avatar_url?: string
+    large_image_url?: string
+    external_url?: string
+    youtube_url?: string
 }
 
 export interface Collection {
@@ -62,25 +85,23 @@ export interface Collection {
     tier: string
     owner_id: string
     on_chain_status: string
-    image_url?: string
-    animation_url?: string
-    card_animation_url?: string
-    avatar_url?: string
-    large_image_url?: string
     locked_to_marketplace: boolean
     item_sale_id?: string
 }
 
-export interface MechBasic extends Collection {
+export interface MechBasic extends Collection, Images {
     id: string
     label: string
     weapon_hardpoints: number
     utility_slots: number
     speed: number
+    boosted_speed: number
     max_hitpoints: number
+    boosted_max_hitpoints: number
     is_default: boolean
     is_insured: boolean
     name: string
+    repair_blocks: number
     genesis_token_id?: number
     limited_release_token_id?: number
     power_core_size: string
@@ -94,8 +115,13 @@ export interface MechBasic extends Collection {
     intro_animation_id: string
     outro_animation_id: string
     power_core_id: string
+    queue_position: number | null
     updated_at: Date
     created_at: Date
+}
+
+export interface MechBasicWithQueueStatus extends MechBasic {
+    in_queue: boolean
 }
 
 export interface MechDetails extends MechBasic {
@@ -103,7 +129,6 @@ export interface MechDetails extends MechBasic {
     brand: Brand
     user: User
     faction?: Faction
-    model: MechModel
     default_chassis_skin: BlueprintMechSkin
     chassis_skin?: MechSkin
     intro_animation?: MechAnimation
@@ -118,19 +143,19 @@ export interface BlueprintMech {
     id: string
     brand_id: string
     label: string
-    slug: string
-    skin: string
     weapon_hardpoints: number
     utility_slots: number
     speed: number
     max_hitpoints: number
-    updated_at: Date
     created_at: Date
-    model_id: string
     power_core_size?: string
     tier?: string
     default_chassis_skin_id: string
     collection: string
+    repair_blocks: number
+    boost_stat: string
+    mech_type: string
+    availability_id?: string
 }
 
 export interface Brand {
@@ -142,51 +167,23 @@ export interface Brand {
     created_at: Date
 }
 
-export interface MechModel extends Collection {
-    id: string
-    blueprint_id: string
-    genesis_token_id?: number
-    label: string
-    description: string
-    background_color: string
-    mech_model: string
-    equipped_on?: string
-    image_url?: string
-    animation_url?: string
-    card_animation_url?: string
-    avatar_url?: string
-    large_image_url?: string
-    external_url?: string
-    youtube_url?: string
-    created_at: Date
-}
-
-export interface BlueprintMechSkin extends Collection {
+export interface BlueprintMechSkin extends Collection, Images {
     id: string
     collection: string
     mech_model: string
     label: string
-    image_url?: string
-    animation_url?: string
-    card_animation_url?: string
-    large_image_url?: string
-    avatar_url?: string
     created_at: Date
 }
 
-export interface MechSkin extends Collection {
+export interface MechSkin extends Collection, Images {
     id: string
     label: string
-    image_url?: string
-    animation_url?: string
-    card_animation_url?: string
-    large_image_url?: string
-    avatar_url?: string
     created_at: Date
     equipped_on?: string
+    level: number
 }
 
-export interface MechAnimation extends Collection {
+export interface MechAnimation extends Collection, Images {
     id: string
     blueprint_id: string
     label: string
@@ -197,7 +194,7 @@ export interface MechAnimation extends Collection {
     created_at: Date
 }
 
-export interface PowerCore extends Collection {
+export interface PowerCore extends Collection, Images {
     id: string
     label: string
     size: string
@@ -210,7 +207,7 @@ export interface PowerCore extends Collection {
     created_at: Date
 }
 
-export interface Weapon extends Collection {
+export interface Weapon extends Collection, Images {
     id: string
     brand_id?: string
     label: string
@@ -237,7 +234,7 @@ export interface Weapon extends Collection {
     item_sale_id?: string
 }
 
-export interface WeaponSkin extends Collection {
+export interface WeaponSkin extends Collection, Images {
     id: string
     blueprint_id: string
     owner_id: string
@@ -262,7 +259,7 @@ export interface WeaponMaxStats {
     energy_cost?: number
 }
 
-export interface Utility extends Collection {
+export interface Utility extends Collection, Images {
     id: string
     brand_id?: string
     label: string
@@ -284,6 +281,7 @@ export interface UtilityShield {
     utility_id: string
     hitpoints: number
     recharge_rate: number
+    boosted_recharge_rate: number
     recharge_energy_cost: number
 }
 
@@ -307,8 +305,8 @@ export interface UtilityRepairDrone {
 export interface UtilityAccelerator {
     utility_id: string
     energy_cost: number
-    boost_seconds: number
-    boost_amount: number
+    boosted_seconds: number
+    boosted_amount: number
 }
 
 export interface UtilityAntiMissile {
@@ -354,6 +352,12 @@ export interface BattleMechStats {
     }
 }
 
+export enum AIType {
+    Reinforcement = "Reinforcement",
+    MiniMech = "Mini Mech",
+    RobotDog = "Robot Dog",
+}
+
 export interface AbilityDetail {
     radius: number
 }
@@ -368,6 +372,8 @@ export interface WarMachineState {
     imageAvatar: string
     maxShield: number
     ownedByID: string
+    ownerUsername: string
+    modelID: string
     description?: string | null
     externalUrl: string
     name: string
@@ -384,6 +390,7 @@ export interface WarMachineState {
     turretHardpoint: number
     utilitySlots: number
     weaponNames: string[]
+    aiType?: AIType | null // If null/undefined, it is a regular mech
 
     // Updated in subscription
     health: number
@@ -402,18 +409,12 @@ export interface WarMachineMetadata {
     image: string
 }
 
-export interface RepairStatus {
-    total_required_seconds: number
-    remain_seconds: number
-    full_repair_fee: string
-}
-
 export enum MysteryCrateType {
     Mech = "MECH",
     Weapon = "WEAPON",
 }
 
-export interface StorefrontMysteryCrate {
+export interface StorefrontMysteryCrate extends Images {
     id: string
     mystery_crate_type: MysteryCrateType
     price: string
@@ -422,16 +423,10 @@ export interface StorefrontMysteryCrate {
     faction_id: string
     label: string
     description: string
-    image_url?: string
-    card_animation_url?: string
-    avatar_url?: string
-    large_image_url?: string
-    background_color?: string
-    animation_url?: string
     youtube_url?: string
 }
 
-export interface MysteryCrate extends Collection {
+export interface MysteryCrate extends Collection, Images {
     id: string
     type: string
     faction_id: string
@@ -456,15 +451,12 @@ export interface Keycard {
     blueprints: KeycardBlueprint
 }
 
-export interface KeycardBlueprint {
+export interface KeycardBlueprint extends Images {
     id: string
     label: string
     description: string
     collection: string
     keycard_token_id: string
-    image_url: string
-    animation_url: string
-    card_animation_url: string
     keycard_group: string
     syndicate?: string | null
     created_at: Date
@@ -496,4 +488,62 @@ export interface Rarity {
     label: string
     color: string
     textColor: string
+}
+
+export interface StorefrontPackage {
+    id: string
+    name: string
+    description: string
+    currency: string
+    price_dollars: number
+    price_cents: number
+}
+
+export interface Submodel {
+    images: Images
+    collection_slug: string
+    hash: string
+    id: string
+    label: string
+    owner_id: string
+    tier: string
+    token_id: number
+    locked_to_marketplace: boolean
+    market_locked: boolean
+    xsyn_locked: boolean
+    updated_at: Date
+    created_at: Date
+    level?: number
+}
+
+export enum SubmodelStatus {
+    Equipped = "EQUIPPED",
+    Unequipped = "UNEQUIPPED",
+}
+
+export interface BlueprintWeapon {
+    id: string
+    label: string
+    damage: number
+    weapon_type: string
+    default_damage_type: string
+    damage_falloff?: number
+    damage_falloff_rate?: number
+    spread?: string
+    rate_of_fire?: string
+    radius?: number
+    radius_damage_falloff?: number
+    projectile_speed?: string
+    max_ammo?: number
+    power_cost?: string
+    collection: string
+    brand_id?: string
+    default_skin_id: string
+    is_melee: boolean
+    projectile_amount?: number
+    dot_tick_damage?: string
+    dot_max_ticks?: number
+    is_arced?: boolean
+    charge_time_seconds?: string
+    burst_rate_of_fire?: string
 }

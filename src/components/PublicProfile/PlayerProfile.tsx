@@ -1,8 +1,8 @@
-import { Avatar, Box, CircularProgress, Stack, Typography } from "@mui/material"
+import { Avatar, Box, CircularProgress, IconButton, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useHistory, useParams } from "react-router-dom"
-import { SvgAbility, SvgCake, SvgDeath, SvgSkull2, SvgView, WarMachineIconPNG } from "../../assets"
-import { useAuth, useSnackbar } from "../../containers"
+import { AboutMeSVG, BattleHistorySVG, StatsSVG, SvgAbility, SvgCake, SvgClose, SvgDeath, SvgSkull2, SvgView } from "../../assets"
+import { useAuth, useGlobalNotifications, useUI } from "../../containers"
 import { getUserRankDeets, snakeToTitle, timeSince } from "../../helpers"
 import { useGameServerCommands, useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
@@ -10,10 +10,11 @@ import { colors, fonts, theme } from "../../theme/theme"
 import { Faction, FeatureName, UserRank } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
 import { PageHeader } from "../Common/PageHeader"
+import { ProfileAvatar } from "./Avatar/AvatarSelect"
 import { AboutMe } from "./ProfileAboutMe"
 import { ProfileMechHistory } from "./ProfileBattleHistory"
 import { Username } from "./ProfileUsername"
-import { ProfileWarmachines } from "./ProfileWarmachines"
+import { ProfileWarmachines } from "./Warmachines/ProfileWarmachines"
 
 interface Player {
     id: string
@@ -33,8 +34,17 @@ interface Stats {
     total_ability_triggered: number
     mech_kill_count: number
 }
+
+interface AvatarType {
+    id: string
+    avatar_url: string
+    tier: string
+    is_custom: boolean
+}
+
 interface PlayerProfile {
     player: Player
+    avatar: AvatarType
     stats: Stats
     faction?: Faction
     active_log?: {
@@ -42,7 +52,7 @@ interface PlayerProfile {
     }
 }
 
-const cakeDay = (d: Date) => {
+const sameDay = (d: Date) => {
     const now = new Date()
     const result = d.getDate() === now.getDate() && d.getMonth() === now.getMonth()
     return result
@@ -89,32 +99,43 @@ export const PlayerProfilePage = () => {
     const [profile, setProfile] = useState<PlayerProfile>()
     const [username, setUsername] = useState<string>()
     const [aboutMe, setAboutMe] = useState<string>()
+    const [avatar, setAvatar] = useState<AvatarType>()
 
     const { send } = useGameServerCommands("/public/commander")
     const { send: userSend } = useGameServerCommandsUser("/user_commander")
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
+    const { rightDrawerActiveTabID } = useUI()
     const isMe = `${user?.gid}` === playerGID
-    const hasFeature = userHasFeature(FeatureName.publicProfilePage)
 
     const rankDeets = useMemo(() => (profile?.player.rank ? getUserRankDeets(profile?.player.rank, "1.6rem", "1.6rem") : undefined), [profile?.player.rank])
+
+    const viewAvatar = userHasFeature(FeatureName.profileAvatar)
 
     const onlineStatus = useMemo(
         () => (profile?.active_log?.active_at ? getOnlineStatus(profile?.active_log?.active_at) : undefined),
         [profile?.active_log?.active_at],
     )
 
+    const handleClose = () => {
+        if (history.length === 0) {
+            history.push("/")
+            return
+        }
+        history.goBack()
+    }
+
     // username
     const updateUsername = useCallback(
         async (newUsername: string) => {
             try {
-                const resp = await userSend<string>(GameServerKeys.PlayerProfileUpdateUsername, {
+                const resp = await userSend<string>(GameServerKeys.PlayerProfileUsernameUpdate, {
                     player_id: profile?.player.id,
                     new_username: newUsername,
                 })
                 setUsername(resp)
                 newSnackbarMessage("username updated successfully.", "success")
             } catch (e) {
-                let errorMessage = ""
+                let errorMessage = "Failed to update username, try again or contact support."
                 if (typeof e === "string") {
                     errorMessage = e
                 } else if (e instanceof Error) {
@@ -126,18 +147,65 @@ export const PlayerProfilePage = () => {
         [userSend, profile?.player.id, newSnackbarMessage],
     )
 
+    // avatar
+    const updateAvatar = useCallback(
+        async (avatarID: string, isCustom: boolean) => {
+            try {
+                const resp = await userSend<AvatarType>(GameServerKeys.PlayerProfileAvatarUpdate, {
+                    player_id: profile?.player.id,
+                    profile_avatar_id: avatarID,
+                    is_custom: isCustom,
+                })
+                setAvatar(resp)
+                newSnackbarMessage("avatar updated successfully.", "success")
+            } catch (e) {
+                let errorMessage = "Failed to update avatar, try again or contact support."
+                if (typeof e === "string") {
+                    errorMessage = e
+                } else if (e instanceof Error) {
+                    errorMessage = e.message
+                }
+                newSnackbarMessage(errorMessage, "error")
+            }
+        },
+        [userSend, profile?.player.id, newSnackbarMessage],
+    )
+
+    // delete a custom avatar
+    const deleteCustomAvatar = useCallback(
+        async (avatarID: string) => {
+            try {
+                const resp = await userSend<AvatarType>(GameServerKeys.PlayerProfileCustomAvatarDelete, {
+                    avatar_id: avatarID,
+                })
+                if (resp) {
+                    newSnackbarMessage("avatar deleted successfully.", "success")
+                }
+            } catch (e) {
+                let errorMessage = "Failed to update avatar, try again or contact support."
+                if (typeof e === "string") {
+                    errorMessage = e
+                } else if (e instanceof Error) {
+                    errorMessage = e.message
+                }
+                newSnackbarMessage(errorMessage, "error")
+            }
+        },
+        [userSend, newSnackbarMessage],
+    )
+
     // about me
     const updateAboutMe = useCallback(
         async (newAboutMe: string) => {
             try {
-                const resp = await userSend<{ about_me: string }>(GameServerKeys.PlayerProfileUpdateAboutMe, {
+                const resp = await userSend<{ about_me: string }>(GameServerKeys.PlayerProfileAboutMeUpdate, {
                     player_id: profile?.player.id,
                     about_me: newAboutMe,
                 })
                 setAboutMe(resp.about_me)
                 newSnackbarMessage("about me updated successfully.", "success")
             } catch (e) {
-                let errorMessage = ""
+                let errorMessage = "Failed to update about me, try again or contact support."
                 if (typeof e === "string") {
                     errorMessage = e
                 } else if (e instanceof Error) {
@@ -160,9 +228,10 @@ export const PlayerProfilePage = () => {
                 setProfile(resp)
                 setUsername(resp.player.username)
                 setAboutMe(resp.player.about_me)
+                setAvatar(resp.avatar)
                 setLoading(false)
             } catch (e) {
-                let errorMessage = ""
+                let errorMessage = "Failed to fetch profile, please try again or contact support"
                 if (typeof e === "string") {
                     errorMessage = e
                 } else if (e instanceof Error) {
@@ -188,6 +257,7 @@ export const PlayerProfilePage = () => {
 
     const faction = profile?.faction
     const primaryColor = faction?.primary_color || theme.factionTheme.primary
+    const secondaryColor = faction?.secondary_color || theme.factionTheme.secondary
     const backgroundColor = faction?.background_color || theme.factionTheme.background
 
     if (loading) {
@@ -206,18 +276,22 @@ export const PlayerProfilePage = () => {
         )
     }
 
-    if (!hasFeature) {
-        history.push("/404")
-        return <></>
-    }
-
     return (
         <Stack
             direction="column"
             sx={{
                 height: "100%",
-                "@media (max-width:1300px)": {
-                    overflowY: "auto",
+                scrollbarWidth: "none",
+                overflowY: "auto",
+
+                "::-webkit-scrollbar": {
+                    width: "1rem",
+                },
+                "::-webkit-scrollbar-track": {
+                    background: "#FFFFFF15",
+                },
+                "::-webkit-scrollbar-thumb": {
+                    background: primaryColor,
                 },
             }}
         >
@@ -231,44 +305,95 @@ export const PlayerProfilePage = () => {
                     backgroundSize: "cover",
                     height: "55.5rem",
                     position: "relative",
+                    "@media (max-width:900px)": {
+                        height: "72rem",
+                    },
                 }}
             >
-                <Stack spacing="1.6rem" sx={{ p: "1rem 1rem" }}>
+                <Stack spacing="1.6rem" sx={{ p: "1rem 1rem" }} position="relative">
                     <Stack spacing=".5rem"></Stack>
                     <Stack spacing="1.8rem">
                         <Stack>
-                            <Stack direction={"row"}>
-                                <Avatar
-                                    src={faction?.logo_url}
-                                    alt={`${profile.player.username}'s Avatar`}
-                                    sx={{
-                                        mr: "1rem",
-                                        height: "7rem",
-                                        width: "7rem",
-                                        borderRadius: 1,
-                                        border: `${primaryColor} 2px solid`,
-                                        backgroundColor: primaryColor,
-                                    }}
-                                    variant="square"
-                                />
-                                {isMe && (
-                                    <Typography sx={{ WebkitTextStroke: "1px black", fontFamily: fonts.nostromoBlack, fontSize: "5rem", color: primaryColor }}>
-                                        my profile
-                                    </Typography>
+                            <Stack
+                                sx={{
+                                    flexDirection: "row",
+                                    "@media (max-width:900px)": {
+                                        flexDirection: "column",
+                                    },
+                                }}
+                            >
+                                {viewAvatar ? (
+                                    <ProfileAvatar
+                                        playerID={profile.player.id}
+                                        avatarID={avatar?.id || ""}
+                                        isOwner={isMe}
+                                        updateAvatar={async (avatarID: string, isCustom: boolean) => {
+                                            updateAvatar(avatarID, isCustom)
+                                        }}
+                                        deleteCustomAvatar={async (avatarID: string) => {
+                                            deleteCustomAvatar(avatarID)
+                                        }}
+                                        isCustom={!!avatar?.is_custom}
+                                        avatarURL={avatar?.avatar_url || ""}
+                                        primaryColor={primaryColor}
+                                        backgroundColor={backgroundColor}
+                                        secondaryColor={secondaryColor}
+                                        factionName={profile.faction?.label}
+                                    />
+                                ) : (
+                                    <Box display="flex" justifyContent="center" alignItems="center">
+                                        <Avatar
+                                            src={profile.faction?.logo_url}
+                                            alt="Avatar"
+                                            sx={{
+                                                mr: "1rem",
+                                                height: "21rem",
+                                                width: "21rem",
+                                                borderRadius: 1,
+                                                border: `${primaryColor} 2px solid`,
+                                                backgroundColor: primaryColor,
+                                            }}
+                                            variant="square"
+                                        />
+                                    </Box>
                                 )}
-                            </Stack>
-
-                            <Stack direction="row" alignItems={"center"}>
-                                <Username
-                                    hide={!isMe}
-                                    userID={profile.player.id}
-                                    updateUsername={async (name: string) => {
-                                        updateUsername(name)
+                                <Stack
+                                    sx={{
+                                        "@media (max-width:900px)": {
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                        },
                                     }}
-                                    primaryColour={primaryColor}
-                                    gid={profile.player.gid}
-                                    username={username || ""}
-                                />
+                                >
+                                    {isMe && (
+                                        <Typography
+                                            sx={{
+                                                WebkitTextStroke: "1px black",
+                                                fontFamily: fonts.nostromoBlack,
+                                                fontSize: "5rem",
+                                                color: primaryColor,
+                                                "@media (max-width:900px)": {
+                                                    fontSize: "4rem",
+                                                },
+                                            }}
+                                        >
+                                            my profile
+                                        </Typography>
+                                    )}
+
+                                    <Stack direction="row" alignItems={"center"}>
+                                        <Username
+                                            hide={!isMe}
+                                            userID={profile.player.id}
+                                            updateUsername={async (name: string) => {
+                                                updateUsername(name)
+                                            }}
+                                            primaryColour={primaryColor}
+                                            gid={profile.player.gid}
+                                            username={username || ""}
+                                        />
+                                    </Stack>
+                                </Stack>
                             </Stack>
                         </Stack>
 
@@ -292,10 +417,16 @@ export const PlayerProfilePage = () => {
                             </Stack>
                         )}
                         <Stack direction="row" spacing="1rem">
-                            {cakeDay(profile.player.created_at) && <SvgCake size="1.9rem" sx={{ mb: "2rem" }} />}
+                            {sameDay(profile.player.created_at) && <SvgCake size="1.9rem" sx={{ mb: "2rem" }} />}
                             <Typography sx={{ fontFamily: fonts.nostromoBlack }}>Joined {profile.player.created_at.toLocaleDateString()}</Typography>
                         </Stack>
                     </Stack>
+
+                    <Box sx={{ position: "absolute", right: "1rem", top: 0, width: "4rem", height: "4rem" }}>
+                        <IconButton size="small" onClick={handleClose}>
+                            <SvgClose size="3.4rem" sx={{ opacity: 0.8, ":hover": { opacity: 1 } }} />
+                        </IconButton>
+                    </Box>
                 </Stack>
             </Stack>
 
@@ -304,6 +435,10 @@ export const PlayerProfilePage = () => {
                 sx={{
                     height: "100%",
                     background: primaryColor,
+                    // if drawers opened and less than 1700 => column
+                    "@media (max-width:1700px)": {
+                        flexDirection: rightDrawerActiveTabID ? "column" : "row",
+                    },
 
                     "@media (max-width:1300px)": {
                         flexDirection: "column",
@@ -318,9 +453,15 @@ export const PlayerProfilePage = () => {
 
                         flexShrink: 0,
                         height: "100%",
-                        width: "62rem",
+                        minWidth: "30rem",
+                        maxWidth: "62rem",
+                        "@media (max-width:1700px)": {
+                            maxWidth: rightDrawerActiveTabID ? "100%" : "62rem",
+                            height: rightDrawerActiveTabID ? "50%" : "100%",
+                        },
                         "@media (max-width:1300px)": {
                             width: "100%",
+                            maxWidth: "100%",
                             height: "50%",
                         },
                     }}
@@ -336,21 +477,26 @@ export const PlayerProfilePage = () => {
                             direction: "ltr",
                             scrollbarWidth: "none",
                             "::-webkit-scrollbar": {
-                                width: ".4rem",
+                                width: "1rem",
                             },
                             "::-webkit-scrollbar-track": {
                                 background: "#FFFFFF15",
-                                borderRadius: 3,
                             },
                             "::-webkit-scrollbar-thumb": {
                                 background: primaryColor,
-                                borderRadius: 3,
                             },
                         }}
                     >
                         <Box sx={{ direction: "ltr", height: 0, width: "100%" }}>
                             <Stack direction="column" spacing="1.6rem">
-                                <PageHeader title="ABOUT ME" description="" primaryColor={primaryColor} imageUrl={WarMachineIconPNG} />
+                                <PageHeader
+                                    title="ABOUT ME"
+                                    description=""
+                                    imageHeight="4rem"
+                                    imageWidth="4rem"
+                                    primaryColor={primaryColor}
+                                    imageUrl={AboutMeSVG}
+                                />
                                 <Stack sx={{ p: "1rem 3rem" }}>
                                     <AboutMe
                                         hide={!isMe}
@@ -404,7 +550,14 @@ export const PlayerProfilePage = () => {
                         >
                             <Stack sx={{ position: "relative", height: "100%" }}>
                                 <Stack sx={{ flex: 1 }}>
-                                    <PageHeader title="Stats" description="" primaryColor={primaryColor} imageUrl={WarMachineIconPNG} />
+                                    <PageHeader
+                                        title="Stats"
+                                        imageHeight="4rem"
+                                        imageWidth="4rem"
+                                        description=""
+                                        primaryColor={primaryColor}
+                                        imageUrl={StatsSVG}
+                                    />
                                     <Stack sx={{ flex: 1 }}>
                                         <Stack
                                             sx={{
@@ -414,36 +567,34 @@ export const PlayerProfilePage = () => {
                                                 direction: "ltr",
 
                                                 "::-webkit-scrollbar": {
-                                                    width: ".4rem",
+                                                    width: "1rem",
                                                 },
                                                 "::-webkit-scrollbar-track": {
                                                     background: "#FFFFFF15",
-                                                    borderRadius: 3,
                                                 },
                                                 "::-webkit-scrollbar-thumb": {
                                                     background: primaryColor,
-                                                    borderRadius: 3,
                                                 },
                                             }}
                                         >
                                             <StatItem
                                                 label="Abilities"
-                                                value={profile.stats.total_ability_triggered}
+                                                value={profile.stats?.total_ability_triggered || 0}
                                                 icon={<SvgAbility size="1.7rem" sx={{ pb: ".4rem" }} />}
                                             />
                                             <StatItem
                                                 label="Mech Kills"
-                                                value={profile.stats.mech_kill_count}
+                                                value={profile.stats?.mech_kill_count || 0}
                                                 icon={<SvgSkull2 size="1.7rem" sx={{ pb: ".4rem" }} />}
                                             />
                                             <StatItem
                                                 label="Ability Kills"
-                                                value={profile.stats.ability_kill_count}
+                                                value={profile.stats?.ability_kill_count || 0}
                                                 icon={<SvgDeath size="1.7rem" sx={{ pb: ".4rem" }} />}
                                             />
                                             <StatItem
                                                 label="Spectated"
-                                                value={profile.stats.view_battle_count}
+                                                value={profile.stats?.view_battle_count || 0}
                                                 icon={<SvgView size="1.7rem" sx={{ pb: ".4rem" }} />}
                                             />
                                         </Stack>
@@ -464,7 +615,14 @@ export const PlayerProfilePage = () => {
                         >
                             <Stack sx={{ position: "relative" }}>
                                 <Stack sx={{ flex: 1 }}>
-                                    <PageHeader title="Battle History" description="" primaryColor={primaryColor} imageUrl={WarMachineIconPNG} />
+                                    <PageHeader
+                                        title="Battle History"
+                                        imageHeight="4rem"
+                                        imageWidth="4rem"
+                                        description=""
+                                        primaryColor={primaryColor}
+                                        imageUrl={BattleHistorySVG}
+                                    />
                                     <Stack sx={{ flex: 1 }}>
                                         <Stack
                                             spacing="1rem"
@@ -478,15 +636,13 @@ export const PlayerProfilePage = () => {
                                                 direction: "ltr",
 
                                                 "::-webkit-scrollbar": {
-                                                    width: ".4rem",
+                                                    width: "1rem",
                                                 },
                                                 "::-webkit-scrollbar-track": {
                                                     background: "#FFFFFF15",
-                                                    borderRadius: 3,
                                                 },
                                                 "::-webkit-scrollbar-thumb": {
                                                     background: primaryColor,
-                                                    borderRadius: 3,
                                                 },
                                             }}
                                         >
@@ -512,7 +668,13 @@ export const PlayerProfilePage = () => {
                             },
                         }}
                     >
-                        <ProfileWarmachines playerID={profile.player.id} backgroundColour={backgroundColor} primaryColour={primaryColor} />
+                        <ProfileWarmachines
+                            factionName={profile.faction?.label || ""}
+                            playerID={profile.player.id}
+                            secondaryColor={secondaryColor}
+                            backgroundColour={backgroundColor}
+                            primaryColour={primaryColor}
+                        />
                     </Stack>
                 </Stack>
             </Stack>

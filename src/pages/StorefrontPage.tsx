@@ -1,44 +1,41 @@
 import { Box, Fade, Stack, Tab, Tabs } from "@mui/material"
 import { SyntheticEvent, useCallback, useEffect, useState } from "react"
-import { useHistory, useLocation, useParams } from "react-router-dom"
+import { useHistory, useParams } from "react-router-dom"
 import { HangarBg } from "../assets"
 import { ClipThing } from "../components"
-import { MysteryCrateBanner } from "../components/Common/PageHeaderBanners/MysteryCrateBanner"
+import { MysteryCrateBanner } from "../components/Common/BannersPromotions/MysteryCrateBanner"
 import { MysteryCratesStore } from "../components/Storefront/MysteryCratesStore/MysteryCratesStore"
 import { PlayerAbilitiesStore } from "../components/Storefront/PlayerAbilitiesStore/PlayerAbilitiesStore"
 import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
 import { siteZIndex } from "../theme/theme"
-import { useAuth } from "../containers"
-import { FeatureName } from "../types"
 
 export enum STOREFRONT_TABS {
     MysteryCrates = "mystery-crates",
     Skins = "skins",
     Abilities = "abilities",
     Merchandise = "merchandise",
+    Packages = "packages",
 }
 
 export const StorefrontPage = () => {
     const theme = useTheme()
-    const location = useLocation()
     const history = useHistory()
-    const { userHasFeature } = useAuth()
     const { type } = useParams<{ type: STOREFRONT_TABS }>()
     const [currentValue, setCurrentValue] = useState<STOREFRONT_TABS>()
 
     // Make sure that the param route is correct, fix it if invalid
     useEffect(() => {
         if (Object.values(STOREFRONT_TABS).includes(type)) return setCurrentValue(type)
-        history.replace(`${ROUTES_MAP.storefront.path.replace(":type", STOREFRONT_TABS.MysteryCrates)}${location.hash}`)
-    }, [history, location.hash, location.pathname, type])
+        history.replace(`${ROUTES_MAP.storefront.path.replace(":type", STOREFRONT_TABS.MysteryCrates)}`)
+    }, [history, type])
 
     const handleChange = useCallback(
         (event: SyntheticEvent, newValue: STOREFRONT_TABS) => {
             setCurrentValue(newValue)
-            history.push(`${ROUTES_MAP.storefront.path.replace(":type", newValue)}${location.hash}`)
+            history.push(`${ROUTES_MAP.storefront.path.replace(":type", newValue)}`)
         },
-        [history, location.hash],
+        [history],
     )
 
     if (!currentValue) return null
@@ -93,7 +90,9 @@ export const StorefrontPage = () => {
                             >
                                 <Tab label="MYSTERY CRATES" value={STOREFRONT_TABS.MysteryCrates} />
 
-                                {userHasFeature(FeatureName.playerAbility) && <Tab label="ABILITIES" value={STOREFRONT_TABS.Abilities} />}
+                                {/* <Tab label="PACKAGES" value={STOREFRONT_TABS.Packages} /> */}
+
+                                <Tab label="ABILITIES" value={STOREFRONT_TABS.Abilities} />
                             </Tabs>
                         </Box>
                     </ClipThing>
@@ -105,11 +104,13 @@ export const StorefrontPage = () => {
                     <MysteryCratesStore />
                 </TabPanel>
 
-                {userHasFeature(FeatureName.playerAbility) && (
-                    <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Abilities}>
-                        <PlayerAbilitiesStore />
-                    </TabPanel>
-                )}
+                <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Packages}>
+                    {/* <PackagesStore /> */}
+                </TabPanel>
+
+                <TabPanel currentValue={currentValue} value={STOREFRONT_TABS.Abilities}>
+                    <PlayerAbilitiesStore />
+                </TabPanel>
             </Stack>
         </Stack>
     )

@@ -1,13 +1,12 @@
 import { Stack, Typography } from "@mui/material"
 import { useCallback, useEffect } from "react"
-import { useHistory, useLocation, useParams } from "react-router-dom"
+import { useHistory, useParams } from "react-router-dom"
 import { HangarBg, SvgBack } from "../assets"
 import { FancyButton } from "../components"
 import { WeaponHangarDetailsInner } from "../components/Hangar/WeaponsHangar/WeaponDetails/WeaponHangarDetails"
 import { fonts, siteZIndex } from "../theme/theme"
 
 export const WeaponPage = () => {
-    const location = useLocation()
     const history = useHistory()
     const { weaponID } = useParams<{ weaponID: string }>()
 
@@ -17,8 +16,8 @@ export const WeaponPage = () => {
 
     // Make sure we have a mechID passed in, else redirect to /fleet page
     useEffect(() => {
-        if (!weaponID) history.replace(`/fleet${location.hash}`)
-    }, [history, location.hash, weaponID])
+        if (!weaponID) history.replace(`/fleet`)
+    }, [history, weaponID])
 
     return (
         <Stack
@@ -57,6 +56,7 @@ export const WeaponPage = () => {
                         </Typography>
                     </Stack>
                 </FancyButton>
+
                 <WeaponHangarDetailsInner weaponID={weaponID} />
             </Stack>
         </Stack>

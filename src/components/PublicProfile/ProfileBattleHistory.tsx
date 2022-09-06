@@ -85,8 +85,8 @@ export const ProfileMechHistory = ({ playerID }: { playerID: string }) => {
                             <HistoryEntry
                                 mech={h.mech}
                                 key={idx}
-                                mapName={camelToTitle(h.battle?.game_map?.name || "Unknown")}
-                                backgroundImage={h.battle?.game_map?.image_url}
+                                mapName={camelToTitle(h.battle?.game_map?.Name || "Unknown")}
+                                backgroundImage={h.battle?.game_map?.Image_Url}
                                 mechSurvived={!!h.mech_survived}
                                 status={!h.battle?.battle?.ended_at ? "pending" : h.faction_won ? "won" : "lost"}
                                 kills={h.kills}
@@ -119,8 +119,6 @@ export const ProfileMechHistory = ({ playerID }: { playerID: string }) => {
                             pt: "1.28rem",
                             color: colors.grey,
                             fontFamily: fonts.nostromoBold,
-                            userSelect: "text !important",
-                            opacity: 0.9,
                             textAlign: "center",
                         }}
                     >

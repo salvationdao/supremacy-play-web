@@ -1,11 +1,13 @@
-import { useCallback, useEffect, useRef, useState } from "react"
 import { Howl, Howler } from "howler"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { FactionIDs } from "../../constants"
-import { useGame, useStream } from "../../containers"
+import { useGame } from "../../containers"
+import { useArena } from "../../containers/arena"
+import { useOvenStream } from "../../containers/oven"
+import { useToggle } from "../../hooks"
+import { useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { WarMachineLiveState, WarMachineState } from "../../types"
-import { useGameServerSubscription } from "../../hooks/useGameServer"
-import { useToggle } from "../../hooks"
 
 enum Sounds {
     generalIntro = "generalIntro",
@@ -19,7 +21,7 @@ enum Sounds {
 }
 
 export const Music = () => {
-    const { musicVolume, isMusicMute } = useStream()
+    const { musicVolume, isMusicMute } = useOvenStream()
     const { warMachines, battleEndDetail } = useGame()
     const sounds = useRef<{ [name: string]: Howl }>({})
     const currentPlaying = useRef<Sounds>()
@@ -99,7 +101,7 @@ export const Music = () => {
 
     // Play the faction's victory track when battle ends
     useEffect(() => {
-        switch (battleEndDetail?.winning_faction.id) {
+        switch (battleEndDetail?.winning_faction_id_order[0]) {
             case FactionIDs.BC:
                 playNewSound(Sounds.bcVictory)
                 break
@@ -161,15 +163,16 @@ interface MechProps {
 
 const Mech = ({ warMachine, setDeathCount }: MechProps) => {
     const { participantID } = warMachine
+    const { currentArenaID } = useArena()
     const [isDead, toggleIsDead] = useToggle()
 
     // Listen on current war machine changes
     useGameServerSubscription<WarMachineLiveState | undefined>(
         {
-            URI: `/public/mech/${participantID}`,
+            URI: `/public/arena/${currentArenaID}/mech/${participantID}`,
             key: GameServerKeys.SubMechLiveStats,
-            ready: !!participantID,
-            batchURI: "/public/mech",
+            ready: !!participantID && !!currentArenaID,
+            batchURI: `/public/arena/${currentArenaID}/mech`,
         },
         (payload) => {
             if (payload?.health !== undefined) {

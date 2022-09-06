@@ -1,10 +1,10 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { FancyButton } from "../../.."
-import { SvgPlus, SvgWrapperProps } from "../../../../assets"
+import { SvgPlus, SvgSkin, SvgWrapperProps } from "../../../../assets"
 import { shadeColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
-import { fonts } from "../../../../theme/theme"
+import { colors, fonts } from "../../../../theme/theme"
 import { Rarity } from "../../../../types"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { MediaPreviewModal } from "../../../Common/MediaPreview/MediaPreviewModal"
@@ -13,22 +13,26 @@ export const MechLoadoutItem = ({
     imageUrl,
     videoUrls,
     label,
+    subLabel,
     primaryColor,
     onClick,
     isEmpty,
     Icon,
     rarity,
+    hasSkin,
     imageTransform,
     disabled,
 }: {
     imageUrl?: string
     videoUrls?: (string | undefined)[] | undefined
     label: string
+    subLabel?: string
     primaryColor: string
     onClick?: () => void
     isEmpty?: boolean
     Icon?: React.VoidFunctionComponent<SvgWrapperProps>
     rarity?: Rarity
+    hasSkin?: boolean
     imageTransform?: string
     disabled?: boolean
 }) => {
@@ -69,7 +73,10 @@ export const MechLoadoutItem = ({
                                 />
                             )}
 
-                            {Icon && <Icon fill={primaryColor} size="2rem" sx={{ position: "absolute", top: ".1rem", left: ".5rem" }} />}
+                            <Stack spacing=".3rem" direction="row" alignItems="center" sx={{ position: "absolute", top: ".1rem", left: ".5rem" }}>
+                                {Icon && <Icon fill={primaryColor} size="1.8rem" />}
+                                {hasSkin && <SvgSkin fill={colors.chassisSkin} size="1.8rem" />}
+                            </Stack>
 
                             {rarity && (
                                 <Typography
@@ -81,21 +88,41 @@ export const MechLoadoutItem = ({
                             )}
                         </Stack>
 
-                        <Typography
-                            variant="body2"
-                            sx={{
-                                color: primaryColor,
-                                fontFamily: fonts.nostromoBold,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 2,
-                                WebkitBoxOrient: "vertical",
-                            }}
-                        >
-                            {label}
-                        </Typography>
+                        <Box>
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    color: primaryColor,
+                                    fontFamily: fonts.nostromoBold,
+                                    display: "-webkit-box",
+                                    overflow: "hidden",
+                                    overflowWrap: "anywhere",
+                                    textOverflow: "ellipsis",
+                                    WebkitLineClamp: 2,
+                                    WebkitBoxOrient: "vertical",
+                                }}
+                            >
+                                {label}
+                            </Typography>
+
+                            {subLabel && (
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        color: primaryColor,
+                                        fontFamily: fonts.nostromoBold,
+                                        display: "-webkit-box",
+                                        overflow: "hidden",
+                                        overflowWrap: "anywhere",
+                                        textOverflow: "ellipsis",
+                                        WebkitLineClamp: 1,
+                                        WebkitBoxOrient: "vertical",
+                                    }}
+                                >
+                                    {subLabel}
+                                </Typography>
+                            )}
+                        </Box>
                     </Stack>
                 </FancyButton>
             </Box>

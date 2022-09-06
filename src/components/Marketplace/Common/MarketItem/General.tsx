@@ -8,17 +8,25 @@ export const General = ({
     title,
     text,
     textColor,
+    isGridViewCompact,
 }: {
     isGridView?: boolean
     children?: ReactNode
     title?: string
     text?: string
     textColor?: string
+    isGridViewCompact?: boolean
 }) => {
     return (
-        <Stack spacing={isGridView ? ".1rem" : ".6rem"} sx={{ flexShrink: 0 }}>
-            <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBlack, color: colors.grey }}>
+        <Stack
+            direction={isGridViewCompact ? "row" : "column"}
+            spacing={isGridView ? ".1rem" : ".6rem"}
+            sx={{ flexShrink: 0 }}
+            alignItems={isGridViewCompact ? "center" : "flex-start"}
+        >
+            <Typography variant="subtitle1" sx={{ fontFamily: fonts.nostromoBlack, color: colors.grey }}>
                 {title || "INFO"}
+                {isGridViewCompact ? ":" : ""}
             </Typography>
 
             {text && (

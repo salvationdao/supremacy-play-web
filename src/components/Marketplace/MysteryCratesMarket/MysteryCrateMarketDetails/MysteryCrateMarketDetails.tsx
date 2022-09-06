@@ -139,15 +139,13 @@ const WarMachineMarketDetailsInner = ({
                 direction: "ltr",
                 scrollbarWidth: "none",
                 "::-webkit-scrollbar": {
-                    width: ".4rem",
+                    width: "1rem",
                 },
                 "::-webkit-scrollbar-track": {
                     background: "#FFFFFF15",
-                    borderRadius: 3,
                 },
                 "::-webkit-scrollbar-thumb": {
                     background: primaryColor,
-                    borderRadius: 3,
                 },
             }}
         >
@@ -163,8 +161,8 @@ const WarMachineMarketDetailsInner = ({
                         <ImagesPreview
                             media={[
                                 {
-                                    imageUrl: marketItem?.collection_item?.image_url || SafePNG,
-                                    videoUrl: marketItem?.collection_item?.animation_url || SafePNG,
+                                    imageUrl: marketItem?.mystery_crate?.image_url || SafePNG,
+                                    videoUrl: marketItem?.mystery_crate?.animation_url || SafePNG,
                                 },
                             ]}
                             primaryColor={primaryColor}

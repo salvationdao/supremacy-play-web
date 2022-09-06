@@ -1,6 +1,5 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { SafePNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
@@ -29,7 +28,6 @@ const sortOptions = [
 ]
 
 export const MysteryCratesMarket = () => {
-    const location = useLocation()
     const [query, updateQuery] = useUrlQuery()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()
@@ -50,14 +48,19 @@ export const MysteryCratesMarket = () => {
     }, [isGridView])
 
     // Filters and sorts
+    const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle((localStorage.getItem("isCratesMarketFiltersExpanded") || "true") === "true")
     const [search, setSearch] = useState("")
-    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.CreateTimeNewestFirst)
+    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.PriceLowest)
     const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
     const [ownedBy, setOwnedBy] = useState<string[]>((query.get("ownedBy") || undefined)?.split("||") || [])
     const [listingTypes, setListingTypes] = useState<string[]>((query.get("listingTypes") || undefined)?.split("||") || [])
     const [price, setPrice] = useState<(number | undefined)[]>(
         (query.get("priceRanges") || undefined)?.split("||").map((p) => (p ? parseInt(p) : undefined)) || [undefined, undefined],
     )
+
+    useEffect(() => {
+        localStorage.setItem("isCratesMarketFiltersExpanded", isFiltersExpanded.toString())
+    }, [isFiltersExpanded])
 
     // Filters
     const statusFilterSection = useRef<ChipFilter>({
@@ -211,8 +214,8 @@ export const MysteryCratesMarket = () => {
                             width: "100%",
                             py: "1rem",
                             display: "grid",
-                            gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(29rem, 1fr))" : "100%",
-                            gap: "1.3rem",
+                            gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(30rem, 1fr))" : "100%",
+                            gap: "1.5rem",
                             alignItems: "center",
                             justifyContent: "center",
                             overflow: "visible",
@@ -247,12 +250,10 @@ export const MysteryCratesMarket = () => {
                             pt: "1.28rem",
                             color: colors.grey,
                             fontFamily: fonts.nostromoBold,
-                            userSelect: "text !important",
-                            opacity: 0.9,
                             textAlign: "center",
                         }}
                     >
-                        {"There are no mystery crates found, please try again."}
+                        {"There are no mystery crates found, please check your filters and try again."}
                     </Typography>
                 </Stack>
             </Stack>
@@ -260,40 +261,15 @@ export const MysteryCratesMarket = () => {
     }, [loadError, crateItems, isLoading, theme.factionTheme.primary, isGridView])
 
     return (
-        <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
+        <Stack direction="row" sx={{ height: "100%" }}>
             <SortAndFilters
                 initialSearch={search}
                 onSetSearch={setSearch}
                 chipFilters={[statusFilterSection.current, ownedByFilterSection.current, listingTypeFilterSection.current]}
                 rangeFilters={[priceRangeFilter.current]}
                 changePage={changePage}
-            >
-                <Box sx={{ p: ".8rem 1rem" }}>
-                    <FancyButton
-                        clipThingsProps={{
-                            clipSize: "6px",
-                            clipSlantSize: "0px",
-                            corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
-                            backgroundColor: colors.red,
-                            opacity: 1,
-                            border: { isFancy: true, borderColor: colors.red, borderThickness: "2px" },
-                            sx: { position: "relative" },
-                        }}
-                        sx={{ px: "1.6rem", py: ".7rem", color: "#FFFFFF" }}
-                        to={`/marketplace/sell${location.hash}`}
-                    >
-                        <Typography
-                            variant="caption"
-                            sx={{
-                                color: "#FFFFFF",
-                                fontFamily: fonts.nostromoBlack,
-                            }}
-                        >
-                            SELL ITEM
-                        </Typography>
-                    </FancyButton>
-                </Box>
-            </SortAndFilters>
+                isExpanded={isFiltersExpanded}
+            />
 
             <ClipThing
                 clipSize="10px"
@@ -307,7 +283,30 @@ export const MysteryCratesMarket = () => {
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <Stack sx={{ flex: 1 }}>
-                        <PageHeader title="MYSTERY CRATES" description="Explore what other citizens have to offer." imageUrl={SafePNG}></PageHeader>
+                        <PageHeader title="MYSTERY CRATES" description="Explore what other citizens have to offer." imageUrl={SafePNG}>
+                            <Box sx={{ ml: "auto !important", pr: "2rem" }}>
+                                <FancyButton
+                                    clipThingsProps={{
+                                        clipSize: "9px",
+                                        backgroundColor: colors.red,
+                                        opacity: 1,
+                                        border: { borderColor: colors.red, borderThickness: "2px" },
+                                        sx: { position: "relative" },
+                                    }}
+                                    sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
+                                    to={`/marketplace/sell`}
+                                >
+                                    <Typography
+                                        variant="caption"
+                                        sx={{
+                                            fontFamily: fonts.nostromoBlack,
+                                        }}
+                                    >
+                                        SELL ITEM
+                                    </Typography>
+                                </FancyButton>
+                            </Box>
+                        </PageHeader>
 
                         <TotalAndPageSizeOptions
                             countItems={crateItems?.length}
@@ -322,6 +321,8 @@ export const MysteryCratesMarket = () => {
                             sortOptions={sortOptions}
                             selectedSort={sort}
                             onSetSort={setSort}
+                            isFiltersExpanded={isFiltersExpanded}
+                            toggleIsFiltersExpanded={toggleIsFiltersExpanded}
                         />
 
                         <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
@@ -337,15 +338,13 @@ export const MysteryCratesMarket = () => {
                                     direction: "ltr",
 
                                     "::-webkit-scrollbar": {
-                                        width: ".4rem",
+                                        width: "1rem",
                                     },
                                     "::-webkit-scrollbar-track": {
                                         background: "#FFFFFF15",
-                                        borderRadius: 3,
                                     },
                                     "::-webkit-scrollbar-thumb": {
                                         background: theme.factionTheme.primary,
-                                        borderRadius: 3,
                                     },
                                 }}
                             >

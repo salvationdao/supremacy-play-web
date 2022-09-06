@@ -1,16 +1,19 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { FancyButton, TooltipHelper } from "../../../.."
 import { SvgInfoCircular, SvgSupToken } from "../../../../../assets"
-import { useSnackbar } from "../../../../../containers"
+import { useGlobalNotifications } from "../../../../../containers"
+import { supFormatter, timeSinceInWords } from "../../../../../helpers"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
-import { MechModal } from "../../Common/MechModal"
 import { MechDetails } from "../../../../../types"
+import { MechModal } from "../../Common/MechModal"
 
 export interface QueueFeed {
-    queue_length: number
+    minimum_wait_time_seconds: number
+    average_game_length_seconds: number
+    queue_cost: string
 }
 
 export const DeployModal = ({
@@ -20,9 +23,9 @@ export const DeployModal = ({
 }: {
     selectedMechDetails: MechDetails
     deployMechModalOpen: boolean
-    setDeployMechModalOpen: (close: boolean) => void
+    setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [isLoading, setIsLoading] = useState(false)
     const [deployQueueError, setDeployQueueError] = useState<string>()
@@ -39,20 +42,20 @@ export const DeployModal = ({
     }, [setDeployQueueError, setDeployMechModalOpen])
 
     const onDeployQueue = useCallback(
-        async ({ hash }: { hash: string }) => {
+        async ({ mechIDs }: { mechIDs: string[] }) => {
             try {
                 setIsLoading(true)
                 const resp = await send<{ success: boolean; code: string }>(GameServerKeys.JoinQueue, {
-                    asset_hash: hash,
+                    mech_ids: mechIDs,
                 })
 
                 if (resp && resp.success) {
                     newSnackbarMessage("Successfully deployed war machine.", "success")
                     onClose()
                 }
-            } catch (e) {
-                setDeployQueueError(typeof e === "string" ? e : "Failed to deploy war machine.")
-                console.error(e)
+            } catch (err) {
+                setDeployQueueError(typeof err === "string" ? err : "Failed to deploy war machine.")
+                console.error(err)
                 return
             } finally {
                 setIsLoading(false)
@@ -61,25 +64,41 @@ export const DeployModal = ({
         [newSnackbarMessage, send, onClose],
     )
 
-    if (!deployMechDetails) return null
+    const estimatedTimeOfBattle = useMemo(() => {
+        if (typeof queueFeed?.minimum_wait_time_seconds === "undefined") return
 
-    const queueLength = queueFeed?.queue_length || 0
-    const { hash } = deployMechDetails
+        if (queueFeed.minimum_wait_time_seconds < 60) {
+            return "LESS THAN A MINUTE"
+        }
+
+        const t = new Date()
+        t.setSeconds(t.getSeconds() + queueFeed.minimum_wait_time_seconds)
+
+        return timeSinceInWords(new Date(), t)
+    }, [queueFeed?.minimum_wait_time_seconds])
+    const queueCost = queueFeed?.queue_cost || "0"
+
+    if (!deployMechDetails) return null
+    const { id } = deployMechDetails
 
     return (
         <MechModal open={deployMechModalOpen} mechDetails={deployMechDetails} onClose={onClose}>
             <Stack spacing="1.5rem">
                 <Stack spacing=".2rem">
-                    {queueLength >= 0 && (
-                        <AmountItem
-                            key={`${queueLength}-queue_length`}
-                            title={"Position: "}
-                            color="#FFFFFF"
-                            value={`${queueLength + 1}`}
-                            tooltip="The queue position of your war machine if you deploy now."
-                            disableIcon
-                        />
-                    )}
+                    <AmountItem
+                        key={`${queueFeed?.minimum_wait_time_seconds}-queue_time`}
+                        title={"Min Wait Time: "}
+                        value={estimatedTimeOfBattle || "UNKNOWN"}
+                        tooltip="The minimum time it will take before your mech is placed into battle."
+                        disableIcon
+                    />
+
+                    <AmountItem
+                        title={"Fee: "}
+                        color={colors.yellow}
+                        value={supFormatter(queueCost, 2)}
+                        tooltip="The cost to place your war machine into the battle queue."
+                    />
                 </Stack>
 
                 <Box sx={{ mt: "auto" }}>
@@ -88,11 +107,11 @@ export const DeployModal = ({
                         clipThingsProps={{
                             clipSize: "5px",
                             backgroundColor: colors.green,
-                            border: { isFancy: true, borderColor: colors.green },
+                            border: { borderColor: colors.green },
                             sx: { position: "relative", width: "100%" },
                         }}
                         sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
-                        onClick={() => onDeployQueue({ hash })}
+                        onClick={() => onDeployQueue({ mechIDs: [id] })}
                     >
                         <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
                             DEPLOY
@@ -105,7 +124,7 @@ export const DeployModal = ({
                         variant="body2"
                         sx={{
                             mt: ".3rem",
-                            color: "red",
+                            color: colors.red,
                         }}
                     >
                         {deployQueueError}
@@ -116,7 +135,7 @@ export const DeployModal = ({
     )
 }
 
-const AmountItem = ({
+export const AmountItem = ({
     title,
     color,
     value,
@@ -124,28 +143,30 @@ const AmountItem = ({
     disableIcon,
 }: {
     title: string
-    color: string
+    color?: string
     value: string | number
-    tooltip: string
+    tooltip?: string
     disableIcon?: boolean
 }) => {
     return (
         <Stack direction="row" alignItems="center">
-            <Typography variant="caption" sx={{ mr: ".4rem", fontFamily: fonts.nostromoBlack }}>
+            <Typography variant="body2" sx={{ mr: ".4rem", fontFamily: fonts.nostromoHeavy }}>
                 {title}
             </Typography>
 
-            {!disableIcon && <SvgSupToken size="1.4rem" fill={color} sx={{ mr: ".1rem", pb: ".4rem" }} />}
+            {!disableIcon && <SvgSupToken size="1.8rem" fill={colors.yellow} sx={{ mr: ".1rem", pb: ".4rem" }} />}
 
-            <Typography variant="caption" sx={{ mr: "3.2rem", color: color, fontFamily: fonts.nostromoBold }}>
+            <Typography variant="body1" sx={{ mr: "3.2rem", color: color || colors.offWhite, fontWeight: "fontWeightBold" }}>
                 {value || "---"}
             </Typography>
 
-            <TooltipHelper placement="right-start" text={tooltip}>
-                <Box sx={{ ml: "auto" }}>
-                    <SvgInfoCircular size="1.2rem" sx={{ opacity: 0.4, ":hover": { opacity: 1 } }} />
-                </Box>
-            </TooltipHelper>
+            {tooltip && (
+                <TooltipHelper placement="right-start" text={tooltip}>
+                    <Box sx={{ ml: "auto" }}>
+                        <SvgInfoCircular size="1.2rem" sx={{ opacity: 0.4, ":hover": { opacity: 1 } }} />
+                    </Box>
+                </TooltipHelper>
+            )}
         </Stack>
     )
 }

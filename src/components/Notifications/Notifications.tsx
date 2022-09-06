@@ -8,7 +8,6 @@ import {
     KillAlertProps,
     LocationSelectAlert,
     LocationSelectAlertProps,
-    LocationSelectAlertType,
     NotificationItem,
     TextAlert,
     WarMachineAbilityAlert,
@@ -16,12 +15,14 @@ import {
 } from ".."
 import { NOTIFICATION_LINGER, NOTIFICATION_TIME } from "../../constants"
 import { useGame, useMobile, useSupremacy } from "../../containers"
+import { useArena } from "../../containers/arena"
 import { makeid } from "../../containers/ws/util"
 import { useArray } from "../../hooks"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { siteZIndex } from "../../theme/theme"
-import { WarMachineCommandAlert, WarMachineCommandAlertProps } from "./Alerts/WarMachineCommandAlert"
+import { BattleZoneStruct } from "../../types"
+import { BattleZoneAlert } from "./Alerts/BattleZoneAlert"
 import {
     battleAbilityNoti,
     factionAbilityNoti,
@@ -39,37 +40,34 @@ import {
 
 const SPAWN_TEST_NOTIFICATIONS = false
 
-/*
-    WAR_MACHINE_DESTROYED: when a war machine is destroyed
-    LOCATION_SELECTING: user is choosing a target location on map
-    BATTLE_ABILITY: when a faction has initiated a battle ability
-    FACTION_ABILITY: when a faction has initiated a faction ability
-    WARMACHINE_ABILITY: when a faction has initiated a war machine ability
-    TEXT: generic notification with no styles, just text
-*/
-
 export enum NotificationType {
-    Text = "TEXT",
-    LocationSelect = "LOCATION_SELECT",
-    BattleAbility = "BATTLE_ABILITY",
-    FactionAbility = "FACTION_ABILITY",
-    WarMachineAbility = "WAR_MACHINE_ABILITY",
-    WarMachineDestroyed = "WAR_MACHINE_DESTROYED",
-    WarMachineCommand = "WAR_MACHINE_COMMAND",
+    Text = "TEXT", // generic notification with no styles, just text
+    LocationSelect = "LOCATION_SELECT", // user is choosing a target location on map
+    BattleAbility = "BATTLE_ABILITY", // when a faction has initiated a battle ability
+    FactionAbility = "FACTION_ABILITY", // when a faction has initiated a faction ability
+    WarMachineAbility = "WAR_MACHINE_ABILITY", //
+    WarMachineDestroyed = "WAR_MACHINE_DESTROYED", // when a faction has initiated a war machine ability
+    BattleZoneChange = "BATTLE_ZONE_CHANGE", // when a war machine is destroyed
 }
 
 export interface NotificationResponse {
     type: NotificationType
-    data: BattleFactionAbilityAlertProps | KillAlertProps | LocationSelectAlertProps | WarMachineAbilityAlertProps | WarMachineCommandAlertProps | string
+    data: BattleFactionAbilityAlertProps | KillAlertProps | LocationSelectAlertProps | WarMachineAbilityAlertProps | BattleZoneStruct | string
+}
+
+interface Notification extends NotificationResponse {
+    notiID: string
+    duration: number
 }
 
 export const Notifications = () => {
     const { isMobile } = useMobile()
     const { getFaction } = useSupremacy()
-    const { setForceDisplay100Percentage } = useGame()
+    const { currentArenaID } = useArena()
+    const { setForceDisplay100Percentage, setBattleZone } = useGame()
 
     // Notification array
-    const { value: notifications, add: addNotification, removeByID } = useArray([], "notiID")
+    const { value: notifications, add: addNotification, removeByID } = useArray<Notification>([], "notiID")
 
     // Function to add new notification to array, and will clear itself out after certain time
     const newNotification = useCallback(
@@ -77,7 +75,15 @@ export const Notifications = () => {
             if (!notification) return
 
             const notiID = makeid()
-            const duration = SPAWN_TEST_NOTIFICATIONS ? NOTIFICATION_TIME * 10000 : NOTIFICATION_TIME
+
+            let duration = SPAWN_TEST_NOTIFICATIONS ? NOTIFICATION_TIME * 10000 : NOTIFICATION_TIME
+
+            if (notification.type === NotificationType.BattleZoneChange) {
+                const battleZoneChange = notification.data as BattleZoneStruct
+                duration = battleZoneChange.warn_time * 1000
+                setBattleZone(battleZoneChange)
+            }
+
             addNotification({ notiID, ...notification, duration })
 
             // Linger is for the slide animation to play before clearing off the component
@@ -86,46 +92,8 @@ export const Notifications = () => {
             }, duration + NOTIFICATION_LINGER)
 
             if (justOne) return
-
-            // These cases renders another notification (so two)
-            if (notification.type === NotificationType.LocationSelect) {
-                const noti = notification as { type: NotificationType; data: LocationSelectAlertProps }
-                if (noti.data.type !== LocationSelectAlertType.FailedTimeOut && noti.data.type !== LocationSelectAlertType.FailedDisconnected) return
-
-                const {
-                    data: { ability, nextUser },
-                } = noti
-                newNotification(
-                    {
-                        type: NotificationType.LocationSelect,
-                        data: {
-                            type: LocationSelectAlertType.Assigned,
-                            currentUser: nextUser,
-                            ability,
-                        },
-                    },
-                    true,
-                )
-            }
-
-            if (notification.type === NotificationType.BattleAbility) {
-                const {
-                    data: { ability, user },
-                } = notification as { type: NotificationType; data: BattleFactionAbilityAlertProps }
-                newNotification(
-                    {
-                        type: NotificationType.LocationSelect,
-                        data: {
-                            type: LocationSelectAlertType.Assigned,
-                            currentUser: user,
-                            ability,
-                        },
-                    },
-                    true,
-                )
-            }
         },
-        [addNotification, removeByID],
+        [addNotification, removeByID, setBattleZone],
     )
 
     // Test cases
@@ -149,8 +117,9 @@ export const Notifications = () => {
     // Notifications
     useGameServerSubscription<NotificationResponse | undefined>(
         {
-            URI: "/public/notification",
+            URI: `/public/arena/${currentArenaID}/notification`,
             key: GameServerKeys.SubGameNotification,
+            ready: !!currentArenaID,
         },
         (payload) => {
             if (!payload) return
@@ -188,43 +157,43 @@ export const Notifications = () => {
                         case NotificationType.Text:
                             return (
                                 <NotificationItem key={n.notiID} duration={n.duration}>
-                                    <TextAlert data={n.data} />
+                                    <TextAlert data={n.data as string} />
                                 </NotificationItem>
                             )
                         case NotificationType.LocationSelect:
                             return (
                                 <NotificationItem key={n.notiID} duration={n.duration}>
-                                    <LocationSelectAlert data={n.data} getFaction={getFaction} />
+                                    <LocationSelectAlert data={n.data as LocationSelectAlertProps} getFaction={getFaction} />
                                 </NotificationItem>
                             )
                         case NotificationType.BattleAbility:
                             return (
                                 <NotificationItem key={n.notiID} duration={n.duration}>
-                                    <BattleAbilityAlert data={n.data} getFaction={getFaction} />
+                                    <BattleAbilityAlert data={n.data as BattleFactionAbilityAlertProps} getFaction={getFaction} />
                                 </NotificationItem>
                             )
                         case NotificationType.FactionAbility:
                             return (
                                 <NotificationItem key={n.notiID} duration={n.duration}>
-                                    <FactionAbilityAlert data={n.data} getFaction={getFaction} />
+                                    <FactionAbilityAlert data={n.data as BattleFactionAbilityAlertProps} getFaction={getFaction} />
                                 </NotificationItem>
                             )
                         case NotificationType.WarMachineAbility:
                             return (
                                 <NotificationItem key={n.notiID} duration={n.duration}>
-                                    <WarMachineAbilityAlert data={n.data} getFaction={getFaction} />
+                                    <WarMachineAbilityAlert data={n.data as WarMachineAbilityAlertProps} getFaction={getFaction} />
                                 </NotificationItem>
                             )
                         case NotificationType.WarMachineDestroyed:
                             return (
                                 <NotificationItem key={n.notiID} duration={n.duration}>
-                                    <KillAlert data={n.data} getFaction={getFaction} />
+                                    <KillAlert data={n.data as KillAlertProps} getFaction={getFaction} />
                                 </NotificationItem>
                             )
-                        case NotificationType.WarMachineCommand:
+                        case NotificationType.BattleZoneChange:
                             return (
                                 <NotificationItem key={n.notiID} duration={n.duration}>
-                                    <WarMachineCommandAlert data={n.data} getFaction={getFaction} />
+                                    <BattleZoneAlert data={n.data as BattleZoneStruct} />
                                 </NotificationItem>
                             )
                     }
@@ -242,12 +211,13 @@ const NotificationsInner = ({ notificationsJsx }: { notificationsJsx: (JSX.Eleme
             sx={{
                 position: "absolute",
                 height: "100%",
-                top: "1rem",
+                top: "1.5rem",
                 right: "1rem",
                 zIndex: siteZIndex.Notifications,
                 overflow: "hidden",
                 transform: isMobile ? "scale(.9)" : "unset",
                 transformOrigin: "top right",
+                pointerEvents: "none",
             }}
         >
             <Box
@@ -261,20 +231,20 @@ const NotificationsInner = ({ notificationsJsx }: { notificationsJsx: (JSX.Eleme
                     direction: "ltr",
 
                     "::-webkit-scrollbar": {
-                        width: ".4rem",
+                        width: "1rem",
                     },
                     "::-webkit-scrollbar-track": {
                         background: "#FFFFFF15",
-                        borderRadius: 3,
                     },
                     "::-webkit-scrollbar-thumb": {
                         background: (theme) => theme.factionTheme.primary,
-                        borderRadius: 3,
                     },
                 }}
             >
                 <Box sx={{ direction: "ltr", height: 0 }}>
-                    <Stack spacing=".5rem">{notificationsJsx}</Stack>
+                    <Stack spacing=".5rem" alignItems="flex-end">
+                        {notificationsJsx}
+                    </Stack>
                 </Box>
             </Box>
         </Stack>

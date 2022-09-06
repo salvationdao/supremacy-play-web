@@ -20,7 +20,6 @@ export interface StyledImageTextProps {
     imageBorderThickness?: string
     imageBackgroundSize?: string
     noImageBackgroundColor?: boolean
-    imageMb?: number
 }
 
 export const StyledImageText = ({
@@ -40,22 +39,24 @@ export const StyledImageText = ({
     imageBorderThickness = "1px",
     imageBackgroundSize = "cover",
     noImageBackgroundColor,
-    imageMb,
 }: StyledImageTextProps) => {
     const truncateStyle: SxProps = useMemo(
         () =>
             truncateLine
                 ? {
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
+                      display: "-webkit-inline-box",
                       overflow: "hidden",
+                      overflowWrap: "anywhere",
+                      textOverflow: "ellipsis",
+                      WebkitLineClamp: 1, // change to max number of lines
+                      WebkitBoxOrient: "vertical",
                   }
                 : {},
         [truncateLine],
     )
 
     return (
-        <span style={{ display: "inline-block" }}>
+        <span style={{ display: "inline" }}>
             {imageUrl && (
                 <Box
                     component="span"
@@ -64,7 +65,6 @@ export const StyledImageText = ({
                         display: "inline-block",
                         width: `${imageSize}rem`,
                         height: `${imageSize}rem`,
-                        mb: imageMb || "-0.16rem",
                         mr: `${0.3 * imageSize}rem`,
                         backgroundImage: `url(${imageUrl})`,
                         backgroundRepeat: "no-repeat",

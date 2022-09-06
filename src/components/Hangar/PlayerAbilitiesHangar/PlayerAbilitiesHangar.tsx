@@ -1,11 +1,11 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { PlayerAbilityPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
-import { usePagination, useUrlQuery } from "../../../hooks"
-import { useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
+import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
+import { useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility } from "../../../types"
@@ -13,7 +13,6 @@ import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
-import { MysteryCrateStoreItemLoadingSkeleton } from "../../Storefront/MysteryCratesStore/MysteryCrateStoreItem/MysteryCrateStoreItem"
 import { PlayerAbilityHangarItem } from "./PlayerAbilityHangarItem"
 
 export const PlayerAbilitiesHangar = () => {
@@ -31,28 +30,42 @@ export const PlayerAbilitiesHangar = () => {
     })
 
     // Filters
+    const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isPlayerAbilitiesFiltersExpanded") === "true")
     const [search, setSearch] = useState("")
     const [locationSelectTypes, setLocationSelectTypes] = useState<string[]>((query.get("abilityTypes") || undefined)?.split("||") || [])
     const locationSelectTypeFilterSection = useRef<ChipFilter>({
         label: "ABILITY TYPE",
         options: [
-            { value: LocationSelectType.GLOBAL, label: LocationSelectType.GLOBAL.split("_").join(" "), color: colors.green },
-            { value: LocationSelectType.LOCATION_SELECT, label: LocationSelectType.LOCATION_SELECT.split("_").join(" "), color: colors.blue2 },
-            { value: LocationSelectType.MECH_SELECT, label: LocationSelectType.MECH_SELECT.split("_").join(" "), color: colors.gold },
-            { value: LocationSelectType.LINE_SELECT, label: LocationSelectType.LINE_SELECT.split("_").join(" "), color: colors.purple },
+            { value: LocationSelectType.Global, label: LocationSelectType.Global.split("_").join(" "), color: colors.green },
+            { value: LocationSelectType.LocationSelect, label: LocationSelectType.LocationSelect.split("_").join(" "), color: colors.blue2 },
+            { value: LocationSelectType.MechSelect, label: LocationSelectType.MechSelect.split("_").join(" "), color: colors.gold },
+            { value: LocationSelectType.MechSelectAllied, label: LocationSelectType.MechSelectAllied.split("_").join(" "), color: colors.bronze },
+            { value: LocationSelectType.MechSelectOpponent, label: LocationSelectType.MechSelectOpponent.split("_").join(" "), color: colors.orange },
+            { value: LocationSelectType.LineSelect, label: LocationSelectType.LineSelect.split("_").join(" "), color: colors.purple },
         ],
         initialSelected: locationSelectTypes,
         initialExpanded: true,
         onSetSelected: (value: string[]) => {
-            setLocationSelectTypes(value)
+            let newValue = [...value]
+
+            // Some manual logic, mech select should include mech select allied and mech select opponent
+            if (newValue.includes(LocationSelectType.MechSelect)) {
+                newValue = newValue.concat([LocationSelectType.MechSelectAllied, LocationSelectType.MechSelectOpponent])
+            }
+
+            setLocationSelectTypes(newValue)
             changePage(1)
         },
     })
 
-    useGameServerSubscriptionUser<PlayerAbility[]>(
+    useEffect(() => {
+        localStorage.setItem("isPlayerAbilitiesFiltersExpanded", isFiltersExpanded.toString())
+    }, [isFiltersExpanded])
+
+    useGameServerSubscriptionSecuredUser<PlayerAbility[]>(
         {
             URI: "/player_abilities",
-            key: GameServerKeys.PlayerAbilitiesList,
+            key: GameServerKeys.SubPlayerAbilitiesList,
         },
         (payload) => {
             if (!payload) return
@@ -68,6 +81,7 @@ export const PlayerAbilitiesHangar = () => {
         if (locationSelectTypes.length > 0) {
             result = result.filter((p) => locationSelectTypes.includes(p.ability.location_select_type))
         }
+
         if (search !== "") {
             result = result.filter((p) => p.ability.label.includes(search) || p.ability.description.includes(search))
         }
@@ -79,10 +93,10 @@ export const PlayerAbilitiesHangar = () => {
     const content = useMemo(() => {
         if (!isLoaded) {
             return (
-                <Stack direction="row" flexWrap="wrap" sx={{ height: 0 }}>
-                    {new Array(10).fill(0).map((_, index) => (
-                        <MysteryCrateStoreItemLoadingSkeleton key={index} />
-                    ))}
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
+                        <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
+                    </Stack>
                 </Stack>
             )
         }
@@ -95,9 +109,9 @@ export const PlayerAbilitiesHangar = () => {
                             overflow: "visible",
                             display: "grid",
                             width: "100%",
-                            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(30rem, 1fr))",
                             gridTemplateRows: "repeat(1, min-content)",
-                            gap: "3rem",
+                            gap: "1.5rem",
                             alignItems: "stretch",
                             justifyContent: "center",
                             py: "1rem",
@@ -134,8 +148,6 @@ export const PlayerAbilitiesHangar = () => {
                             pt: "1.28rem",
                             color: colors.grey,
                             fontFamily: fonts.nostromoBold,
-                            userSelect: "text !important",
-                            opacity: 0.9,
                             textAlign: "center",
                         }}
                     >
@@ -143,7 +155,7 @@ export const PlayerAbilitiesHangar = () => {
                     </Typography>
 
                     <FancyButton
-                        to={`/storefront/abilities${location.hash}`}
+                        to={`/storefront/abilities`}
                         clipThingsProps={{
                             clipSize: "9px",
                             backgroundColor: theme.factionTheme.primary,
@@ -169,8 +181,14 @@ export const PlayerAbilitiesHangar = () => {
     }, [isLoaded, shownPlayerAbilities, theme.factionTheme.primary, theme.factionTheme.secondary])
 
     return (
-        <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
-            <SortAndFilters initialSearch={search} onSetSearch={setSearch} chipFilters={[locationSelectTypeFilterSection.current]} changePage={changePage} />
+        <Stack direction="row" sx={{ height: "100%" }}>
+            <SortAndFilters
+                initialSearch={search}
+                onSetSearch={setSearch}
+                chipFilters={[locationSelectTypeFilterSection.current]}
+                changePage={changePage}
+                isExpanded={isFiltersExpanded}
+            />
 
             <ClipThing
                 clipSize="10px"
@@ -207,30 +225,29 @@ export const PlayerAbilitiesHangar = () => {
                         changePageSize={changePageSize}
                         pageSizeOptions={[10, 20, 40]}
                         changePage={changePage}
+                        isFiltersExpanded={isFiltersExpanded}
+                        toggleIsFiltersExpanded={toggleIsFiltersExpanded}
                     />
 
-                    <Stack sx={{ px: "2rem", flex: 1 }}>
+                    <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
                         <Box
                             sx={{
-                                flex: 1,
                                 ml: "1.9rem",
-                                mr: ".5rem",
-                                pr: "1.4rem",
+                                pr: "1.9rem",
                                 my: "1rem",
+                                flex: 1,
                                 overflowY: "auto",
                                 overflowX: "hidden",
                                 direction: "ltr",
 
                                 "::-webkit-scrollbar": {
-                                    width: ".4rem",
+                                    width: "1rem",
                                 },
                                 "::-webkit-scrollbar-track": {
                                     background: "#FFFFFF15",
-                                    borderRadius: 3,
                                 },
                                 "::-webkit-scrollbar-thumb": {
                                     background: theme.factionTheme.primary,
-                                    borderRadius: 3,
                                 },
                             }}
                         >

@@ -64,7 +64,7 @@ export const PricingInput = ({
                                     fontSize: "2rem",
                                     height: "unset",
                                     "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
-                                        "-webkit-appearance": "none",
+                                        WebkitAppearance: "none",
                                     },
                                 },
                                 ".MuiOutlinedInput-notchedOutline": { border: "unset" },
@@ -86,7 +86,6 @@ export const PricingInput = ({
                             mt: ".5rem",
                             color: colors.red,
                             fontWeight: "fontWeightBold",
-                            userSelect: "text",
                         }}
                     >
                         {error}

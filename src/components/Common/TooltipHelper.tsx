@@ -1,16 +1,21 @@
-import { Stack, Tooltip, Typography, useTheme } from "@mui/material"
+import { Stack, Tooltip, Typography } from "@mui/material"
 import { ReactElement } from "react"
 import { ClipThing } from ".."
+import { autoTextColor } from "../../helpers"
 import { fonts, siteZIndex } from "../../theme/theme"
 
 export const TooltipHelper = ({
     text,
+    renderNode,
     children,
     isCentered,
     placement,
     open,
+    color,
+    textColor: tColor,
 }: {
-    text: string | React.ReactNode
+    text?: string
+    renderNode?: React.ReactNode
     children: ReactElement
     isCentered?: boolean
     placement?:
@@ -27,10 +32,13 @@ export const TooltipHelper = ({
         | "top-start"
         | "top"
     open?: boolean
+    color?: string
+    textColor?: string
 }) => {
-    const theme = useTheme()
+    if (!text && !renderNode) return <>{children}</>
 
-    if (!text) return <>{children}</>
+    const primaryColor = color || "#555555"
+    const textColor = tColor || autoTextColor(primaryColor)
 
     return (
         <Tooltip
@@ -48,21 +56,26 @@ export const TooltipHelper = ({
                     clipSize="6px"
                     clipSlantSize="3px"
                     border={{
-                        borderColor: theme.factionTheme.primary,
-                        borderThickness: ".15rem",
+                        borderColor: primaryColor,
+                        borderThickness: "1.2px",
                     }}
                     corners={{
                         topRight: true,
                         bottomLeft: true,
                     }}
                     opacity={0.99}
-                    backgroundColor={theme.factionTheme.background}
+                    backgroundColor={primaryColor}
                     sx={{ height: "100%" }}
                 >
                     <Stack sx={{ height: "100%", px: "1.1rem", py: ".6rem" }}>
-                        <Typography variant="body1" sx={{ fontFamily: fonts.shareTech, textAlign: isCentered ? "center" : "start" }}>
-                            {text}
-                        </Typography>
+                        {renderNode || (
+                            <Typography
+                                variant="body1"
+                                sx={{ color: textColor || "#FFFFFF", fontFamily: fonts.shareTech, textAlign: isCentered ? "center" : "start" }}
+                            >
+                                <strong>{text}</strong>
+                            </Typography>
+                        )}
                     </Stack>
                 </ClipThing>
             }
@@ -70,7 +83,7 @@ export const TooltipHelper = ({
                 popper: {
                     style: { filter: "drop-shadow(0 3px 3px #00000050)", zIndex: 999999 },
                 },
-                arrow: { sx: { color: theme.factionTheme.primary } },
+                arrow: { sx: { color: primaryColor } },
                 tooltip: { sx: { padding: "0 !important", maxWidth: "25rem", background: "unset" } },
             }}
         >

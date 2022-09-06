@@ -1,6 +1,6 @@
 import { Box } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { ReactNode, useMemo } from "react"
+import React, { ReactNode, useMemo } from "react"
 import { FancyButton } from "../../.."
 import { useTheme } from "../../../../containers/theme"
 import { calculateDutchAuctionCurrentPrice, numFormatter, shadeColor } from "../../../../helpers"
@@ -9,19 +9,22 @@ import { colors } from "../../../../theme/theme"
 import { MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
 import { AuctionPrice } from "../../Common/MarketItem/AuctionPrice"
 import { BuyoutPrice } from "../../Common/MarketItem/BuyoutPrice"
-import { UserInfo } from "./UserInfo"
 import { Timeframe } from "../../Common/MarketItem/Timeframe"
 import { SoldPrice } from "./SoldPrice"
+import { UserInfo } from "./UserInfo"
 
 interface MarketItemProps {
-    backgroundImageUrl?: string
     item: MarketplaceBuyAuctionItem
     isGridView: boolean
     children: ReactNode
     linkSubPath: MARKETPLACE_TABS
 }
 
-export const MarketItem = ({ backgroundImageUrl, item, isGridView, children, linkSubPath }: MarketItemProps) => {
+const propsAreEqual = (prevProps: MarketItemProps, nextProps: MarketItemProps) => {
+    return prevProps.item.id === nextProps.item.id && prevProps.isGridView === nextProps.isGridView && prevProps.linkSubPath === nextProps.linkSubPath
+}
+
+export const MarketItem = React.memo(function MarketItem({ item, isGridView, children, linkSubPath }: MarketItemProps) {
     const theme = useTheme()
 
     const formattedBuyoutPrice = useMemo(() => {
@@ -73,8 +76,8 @@ export const MarketItem = ({ backgroundImageUrl, item, isGridView, children, lin
                     border: { isFancy: !isGridView, borderColor: sold_at ? colors.marketSold : primaryColor, borderThickness: ".25rem" },
                     sx: { position: "relative", height: "100%" },
                 }}
-                sx={{ color: primaryColor, textAlign: "start", height: "100%" }}
-                to={`/marketplace/${linkSubPath}/${id}${location.hash}`}
+                sx={{ color: primaryColor, textAlign: "start", height: "100%", ":hover": { opacity: 1 } }}
+                to={`/marketplace/${linkSubPath}/${id}`}
             >
                 <Box
                     sx={{
@@ -88,7 +91,7 @@ export const MarketItem = ({ backgroundImageUrl, item, isGridView, children, lin
                         ...(isGridView
                             ? {
                                   "&>*:not(:last-child)": {
-                                      mb: ".8rem",
+                                      mb: "1rem",
                                   },
                               }
                             : {}),
@@ -119,22 +122,6 @@ export const MarketItem = ({ backgroundImageUrl, item, isGridView, children, lin
                         right: 0,
                         top: 0,
                         bottom: 0,
-                        background: `url(${backgroundImageUrl})`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "top",
-                        backgroundSize: "cover",
-                        opacity: 0.06,
-                        zIndex: -2,
-                    }}
-                />
-
-                <Box
-                    sx={{
-                        position: "absolute",
-                        left: 0,
-                        right: 0,
-                        top: 0,
-                        bottom: 0,
                         background: `linear-gradient(to top, #FFFFFF08, ${backgroundColor}90)`,
                         zIndex: -1,
                     }}
@@ -142,4 +129,4 @@ export const MarketItem = ({ backgroundImageUrl, item, isGridView, children, lin
             </FancyButton>
         </Box>
     )
-}
+}, propsAreEqual)

@@ -1,9 +1,9 @@
 import { Box, Fade, Stack, Tab, Tabs } from "@mui/material"
 import { SyntheticEvent, useCallback, useEffect, useState } from "react"
-import { useHistory, useLocation, useParams } from "react-router-dom"
+import { useHistory, useParams } from "react-router-dom"
 import { HangarBg } from "../assets"
 import { ClipThing } from "../components"
-import { MysteryCrateBanner } from "../components/Common/PageHeaderBanners/MysteryCrateBanner"
+import { MysteryCrateBanner } from "../components/Common/BannersPromotions/MysteryCrateBanner"
 import { KeycardsHangar } from "../components/Hangar/KeycardsHangar/KeycardsHangar"
 import { MysteryCratesHangar } from "../components/Hangar/MysteryCratesHangar/MysteryCratesHangar"
 import { PlayerAbilitiesHangar } from "../components/Hangar/PlayerAbilitiesHangar/PlayerAbilitiesHangar"
@@ -13,8 +13,8 @@ import { WarMachinesHangar } from "../components/Hangar/WarMachinesHangar/WarMac
 import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
 import { siteZIndex } from "../theme/theme"
-import { useAuth } from "../containers"
-import { FeatureName } from "../types"
+import { SubmodelsHangar } from "../components/Hangar/SubmodelHangar/SubmodelsHangar"
+import { DEV_ONLY } from "../constants"
 
 export enum HANGAR_TABS {
     WarMachines = "war-machines",
@@ -22,28 +22,27 @@ export enum HANGAR_TABS {
     Keycards = "key-cards",
     Abilities = "abilities",
     Weapons = "weapons",
+    Submodels = "submodels",
 }
 
 export const HangarPage = () => {
     const theme = useTheme()
-    const location = useLocation()
     const history = useHistory()
-    const { userHasFeature } = useAuth()
     const { type } = useParams<{ type: HANGAR_TABS }>()
     const [currentValue, setCurrentValue] = useState<HANGAR_TABS>()
 
     // Make sure that the param route is correct, fix it if invalid
     useEffect(() => {
         if (Object.values(HANGAR_TABS).includes(type)) return setCurrentValue(type)
-        history.replace(`${ROUTES_MAP.fleet.path.replace(":type", HANGAR_TABS.WarMachines)}${location.hash}`)
-    }, [history, location.hash, location.pathname, type])
+        history.replace(`${ROUTES_MAP.fleet.path.replace(":type", HANGAR_TABS.WarMachines)}`)
+    }, [history, type])
 
     const handleChange = useCallback(
         (event: SyntheticEvent, newValue: HANGAR_TABS) => {
             setCurrentValue(newValue)
-            history.push(`${ROUTES_MAP.fleet.path.replace(":type", newValue)}${location.hash}`)
+            history.push(`${ROUTES_MAP.fleet.path.replace(":type", newValue)}`)
         },
-        [history, location.hash],
+        [history],
     )
 
     if (!currentValue) return null
@@ -100,11 +99,13 @@ export const HangarPage = () => {
 
                                 <Tab label="WEAPONS" value={HANGAR_TABS.Weapons} />
 
+                                {DEV_ONLY && <Tab label="SUBMODELS" value={HANGAR_TABS.Submodels} />}
+
                                 <Tab label="KEY CARDS" value={HANGAR_TABS.Keycards} />
 
                                 <Tab label="MYSTERY CRATES" value={HANGAR_TABS.MysteryCrates} />
 
-                                {userHasFeature(FeatureName.playerAbility) && <Tab label="ABILITIES" value={HANGAR_TABS.Abilities} />}
+                                <Tab label="ABILITIES" value={HANGAR_TABS.Abilities} />
                             </Tabs>
                         </Box>
                     </ClipThing>
@@ -120,6 +121,12 @@ export const HangarPage = () => {
                     <WeaponsHangar />
                 </TabPanel>
 
+                {DEV_ONLY && (
+                    <TabPanel currentValue={currentValue} value={HANGAR_TABS.Submodels}>
+                        <SubmodelsHangar />
+                    </TabPanel>
+                )}
+
                 <TabPanel currentValue={currentValue} value={HANGAR_TABS.Keycards}>
                     <KeycardsHangar />
                 </TabPanel>
@@ -128,11 +135,9 @@ export const HangarPage = () => {
                     <MysteryCratesHangar />
                 </TabPanel>
 
-                {userHasFeature(FeatureName.playerAbility) && (
-                    <TabPanel currentValue={currentValue} value={HANGAR_TABS.Abilities}>
-                        <PlayerAbilitiesHangar />
-                    </TabPanel>
-                )}
+                <TabPanel currentValue={currentValue} value={HANGAR_TABS.Abilities}>
+                    <PlayerAbilitiesHangar />
+                </TabPanel>
             </Stack>
         </Stack>
     )

@@ -1,6 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useLocation } from "react-router-dom"
+import React from "react"
 import { FancyButton } from "../.."
+import { IS_TESTING_MODE } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
 import { MARKETPLACE_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
@@ -9,12 +10,16 @@ import { ItemType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 
-interface MysteryCrateStoreItemProps {
+interface KeycardHangarItemProps {
     keycard: Keycard
     itemSaleID?: string
 }
 
-export const KeycardHangarItem = ({ keycard }: MysteryCrateStoreItemProps) => {
+const propsAreEqual = (prevProps: KeycardHangarItemProps, nextProps: KeycardHangarItemProps) => {
+    return prevProps.itemSaleID === nextProps.itemSaleID && prevProps.keycard.id === nextProps.keycard.id
+}
+
+export const KeycardHangarItem = React.memo(function KeycardHangarItem({ keycard }: KeycardHangarItemProps) {
     return (
         <>
             {keycard.count > 0 && <KeycardHangarItemInner keycard={keycard} />}
@@ -23,10 +28,9 @@ export const KeycardHangarItem = ({ keycard }: MysteryCrateStoreItemProps) => {
             })}
         </>
     )
-}
+}, propsAreEqual)
 
-export const KeycardHangarItemInner = ({ keycard, itemSaleID }: MysteryCrateStoreItemProps) => {
-    const location = useLocation()
+export const KeycardHangarItemInner = ({ keycard, itemSaleID }: KeycardHangarItemProps) => {
     const theme = useTheme()
 
     const primaryColor = theme.factionTheme.primary
@@ -81,27 +85,29 @@ export const KeycardHangarItemInner = ({ keycard, itemSaleID }: MysteryCrateStor
 
                         <Typography variant="h6">{keycard.blueprints.description}</Typography>
 
-                        <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
-                            <FancyButton
-                                to={
-                                    itemSaleID
-                                        ? `/marketplace/${MARKETPLACE_TABS.Keycards}/${itemSaleID}${location.hash}`
-                                        : `/marketplace/sell?itemType=${ItemType.Keycards}&assetID=${keycard.id}${location.hash}`
-                                }
-                                clipThingsProps={{
-                                    clipSize: "5px",
-                                    backgroundColor: itemSaleID ? backgroundColor : colors.red,
-                                    opacity: 1,
-                                    border: { isFancy: !itemSaleID, borderColor: colors.red, borderThickness: "1.5px" },
-                                    sx: { position: "relative", mt: "1rem", width: "100%" },
-                                }}
-                                sx={{ px: "1.6rem", py: ".6rem", color: itemSaleID ? colors.red : "#FFFFFF" }}
-                            >
-                                <Typography variant={"caption"} sx={{ fontFamily: fonts.nostromoBlack, color: itemSaleID ? colors.red : "#FFFFFF" }}>
-                                    {itemSaleID ? "VIEW LISTING" : "SELL ITEM"}
-                                </Typography>
-                            </FancyButton>
-                        </Stack>
+                        {!IS_TESTING_MODE && (
+                            <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
+                                <FancyButton
+                                    to={
+                                        itemSaleID
+                                            ? `/marketplace/${MARKETPLACE_TABS.Keycards}/${itemSaleID}`
+                                            : `/marketplace/sell?itemType=${ItemType.Keycards}&assetID=${keycard.id}`
+                                    }
+                                    clipThingsProps={{
+                                        clipSize: "5px",
+                                        backgroundColor: itemSaleID ? backgroundColor : colors.red,
+                                        opacity: 1,
+                                        border: { isFancy: !itemSaleID, borderColor: colors.red, borderThickness: "1.5px" },
+                                        sx: { position: "relative", mt: "1rem", width: "100%" },
+                                    }}
+                                    sx={{ px: "1.6rem", py: ".6rem", color: itemSaleID ? colors.red : "#FFFFFF" }}
+                                >
+                                    <Typography variant={"caption"} sx={{ fontFamily: fonts.nostromoBlack, color: itemSaleID ? colors.red : "#FFFFFF" }}>
+                                        {itemSaleID ? "VIEW LISTING" : "SELL ITEM"}
+                                    </Typography>
+                                </FancyButton>
+                            </Stack>
+                        )}
                     </Stack>
                 </Stack>
             </ClipThing>

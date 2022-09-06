@@ -2,7 +2,7 @@ import { Box, Checkbox, CircularProgress, Stack, Switch, TextField, Typography }
 import { Dispatch, useEffect, useState } from "react"
 import { FancyButton } from "../../.."
 import { SvgInfoCircular, SvgSupToken } from "../../../../assets"
-import { useSnackbar } from "../../../../containers"
+import { useGlobalNotifications } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
@@ -27,7 +27,7 @@ interface NotificationPreferencesProps {
 }
 
 export const NotificationPreferences = (props: NotificationPreferencesProps) => {
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [notificationPreferences, setNotificationPreferences] = useState<NotificationPreferences>()
 
@@ -64,7 +64,7 @@ interface InnerProps extends NotificationPreferencesProps {
 
 export const NotificationPreferencesInner = ({ notificationPreferences, setNotificationPreferences, setTelegramShortcode }: InnerProps) => {
     const theme = useTheme()
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [loading, setLoading] = useToggle(false)
     const [error, setError] = useState<string>()
@@ -123,7 +123,7 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
 
                 <TooltipHelper
                     placement="right-start"
-                    text={
+                    renderNode={
                         <Box>
                             <Typography sx={{ display: "inline" }}>
                                 You will be notified via your chosen notification preference(s) when your war machine is within the top 10 position in the
@@ -200,7 +200,7 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
                             queue. You will be charged when the notification has been delivered to you.
                         </Typography>
 
-                        <Stack direction="row" alignItems="center">
+                        <Stack spacing="1rem" direction="row" alignItems="center">
                             <Typography sx={{ fontWeight: "fontWeightBold", span: { color: colors.yellow } }}>
                                 I have read and agree to be charge <span>5</span> SUPS per notification.
                             </Typography>
@@ -212,9 +212,11 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
                                     setAgreeToBeCharged(e.currentTarget.checked)
                                 }}
                                 sx={{
-                                    transform: "scale(1.4)",
-                                    ".Mui-checked": { color: colors.neonBlue },
-                                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.neonBlue}50` },
+                                    p: 0,
+                                    color: colors.yellow,
+                                    "& > .MuiSvgIcon-root": { width: "2.8rem", height: "2.8rem" },
+                                    ".Mui-checked, .MuiSvgIcon-root": { color: `${colors.yellow} !important` },
+                                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.yellow}50 !important` },
                                 }}
                             />
                         </Stack>
@@ -262,23 +264,25 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
 interface PreferenceToggleProps {
     title: string
     checked: boolean
-    disabled: boolean
+    disabled?: boolean
     onChangeFunction: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-const PreferenceToggle = ({ title, checked, onChangeFunction, disabled }: PreferenceToggleProps) => {
+export const PreferenceToggle = ({ title, checked, onChangeFunction, disabled }: PreferenceToggleProps) => {
     return (
         <Stack direction="row" alignItems="center" justifyContent="space-between">
-            <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>{title}</Typography>
+            <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold }}>
+                {title}
+            </Typography>
             <Switch
                 disabled={disabled}
                 size="small"
                 checked={checked}
                 onChange={onChangeFunction}
                 sx={{
-                    transform: "scale(.7)",
-                    ".Mui-checked": { color: colors.neonBlue },
-                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.neonBlue}50` },
+                    transform: "scale(.7) translateY(-3px)",
+                    ".Mui-checked": { color: (theme) => theme.factionTheme.primary },
+                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: (theme) => `${theme.factionTheme.primary}50` },
                 }}
             />
         </Stack>

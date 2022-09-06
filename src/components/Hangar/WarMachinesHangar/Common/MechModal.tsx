@@ -1,12 +1,12 @@
 import { Box, IconButton, Modal, Stack, Typography } from "@mui/material"
-import { ReactNode, useMemo } from "react"
+import { ReactNode } from "react"
 import { ClipThing } from "../../.."
 import { SvgClose } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
-import { getRarityDeets } from "../../../../helpers"
 import { fonts, siteZIndex } from "../../../../theme/theme"
 import { MechDetails } from "../../../../types"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
+import { MechLoadoutIcons } from "./MechLoadoutIcons"
 
 export const MechModal = ({
     open,
@@ -23,8 +23,7 @@ export const MechModal = ({
 }) => {
     const theme = useTheme()
 
-    const { name, label, tier } = mechDetails
-    const rarityDeets = useMemo(() => getRarityDeets(tier || ""), [tier])
+    const { name, label } = mechDetails
     const skin = mechDetails ? mechDetails.chassis_skin || mechDetails.default_chassis_skin : undefined
     const avatarUrl = skin?.avatar_url || mechDetails.avatar_url
     const imageUrl = skin?.image_url || mechDetails.image_url
@@ -72,27 +71,17 @@ export const MechModal = ({
                             <MediaPreview imageUrl={imageUrl || avatarUrl} videoUrls={[cardAnimationUrl]} />
                         </Box>
 
-                        <Box>
-                            <Typography sx={{ fontFamily: fonts.nostromoBlack, letterSpacing: "1px" }}>{name || label}</Typography>
+                        <Stack spacing=".8rem">
+                            <MechLoadoutIcons mechDetails={mechDetails} />
 
-                            <Typography
-                                variant="body2"
-                                sx={{
-                                    mt: ".4rem",
-                                    lineHeight: 1,
-                                    color: rarityDeets.color,
-                                    fontFamily: fonts.nostromoHeavy,
-                                }}
-                            >
-                                {rarityDeets.label}
-                            </Typography>
-                        </Box>
+                            <Typography sx={{ fontFamily: fonts.nostromoBlack, letterSpacing: "1px" }}>{name || label}</Typography>
+                        </Stack>
 
                         {children}
                     </Stack>
 
                     <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
-                        <SvgClose size="1.9rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                        <SvgClose size="2.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                     </IconButton>
                 </ClipThing>
             </Box>

@@ -1,3 +1,42 @@
+import { BlueprintPlayerAbility } from "./game"
+
+export interface UserFromPassport {
+    id: string
+    avatar_id?: string
+    chat_banned_until: Date
+    created_at: Date
+    deleted_at: Date
+    discord_id: string
+    email: string
+    facebook_id: string
+    faction_id: string
+    first_name: string
+    google_id: string
+    keywords: string
+    last_name: string
+    metadata: Record<string, unknown>
+    mint_lock: boolean
+    mobile_number: string
+    nonce: string
+    old_password_required: boolean
+    permissions: string
+    private_address: string
+    public_address: string
+    rename_banned: boolean
+    role_id: string
+    sups: string
+    total_lock: boolean
+    twitch_id: string
+    twitter_id: string
+    two_factor_authentication_activated: boolean
+    two_factor_authentication_is_set: boolean
+    two_factor_authentication_secret: string
+    updated_at: Date
+    username: string
+    verified: boolean
+    withdraw_lock: boolean
+}
+
 export interface User {
     id: string
     username: string
@@ -32,6 +71,12 @@ export interface Transaction {
 
 export type UserRank = "NEW_RECRUIT" | "PRIVATE" | "CORPORAL" | "GENERAL"
 
+export enum FactionName {
+    RedMountainOffworldMiningCorporation = "Red Mountain Offworld Mining Corporation",
+    BostonCybernetics = "Boston Cybernetics",
+    ZaibatsuHeavyIndustries = "Zaibatsu Heavy Industries",
+}
+
 export interface Faction {
     id: string
     label: string
@@ -42,24 +87,6 @@ export interface Faction {
     secondary_color: string
     background_color: string
     description: string
-}
-
-export interface MultiplierUpdateResp {
-    battles: BattleMultipliers[]
-}
-
-export interface BattleMultipliers {
-    battle_number: number
-    total_multipliers: number
-    multipliers: Multiplier[]
-}
-
-export interface Multiplier {
-    key: string
-    value: string
-    description: string
-    is_multiplicative: boolean
-    battle_number: number
 }
 
 export interface UserStat {
@@ -79,34 +106,92 @@ export interface Feature {
 export enum FeatureName {
     mechMove = "MECH_MOVE",
     playerAbility = "PLAYER_ABILITY",
-    publicProfilePage = "PUBLIC_PROFILE",
+    systemMessages = "SYSTEM_MESSAGES",
+    chatBan = "CHAT_BAN",
+    profileAvatar = "PROFILE_AVATAR",
 }
 
-export enum SystemMessageType {
+export enum SystemMessageDataType {
     MechQueue = "MECH_QUEUE",
+    MechBattleBegin = "MECH_BATTLE_BEGIN",
     MechBattleComplete = "MECH_BATTLE_COMPLETE",
+    Global = "GLOBAL",
+    Faction = "FACTION",
+    PlayerAbilityRefunded = "PLAYER_ABILITY_REFUNDED",
 }
 
 export interface SystemMessage {
     id: string
     player_id: string
-    type: SystemMessageType
+    sender_id: string
+    data_type: SystemMessageDataType
+    title: string
     message: string
     data: unknown | null
     sent_at: Date
+    read_at?: Date
+    sender: User
+}
+
+export interface SystemMessageMechStruct {
+    mech_id: string
+    name: string
+    faction_id: string
+    image_url: string
+    tier: string
+    // For battle begin
+    total_blocks?: number
+    damaged_blocks?: number
+    // For battle complete
+    kills?: KillInfo[]
+    killed?: KillInfo | null
+}
+
+export interface SystemMessageDataMechBattleBegin {
+    player_id: string
+    mechs: SystemMessageMechStruct[]
 }
 
 export interface SystemMessageDataMechBattleComplete {
-    mech_id: string
-    faction_won: boolean
-    briefs: MechBattleBrief[]
+    rewarded_sups: string
+    rewarded_sups_bonus: string
+    rewarded_player_ability?: BlueprintPlayerAbility
+    mech_battle_briefs: SystemMessageMechStruct[]
 }
 
-export interface MechBattleBrief {
-    mech_id: string
-    faction_id: string
-    kills: number
-    killed: Date | null
-    label: string
+export interface KillInfo {
     name: string
+    faction_id: string
+}
+
+export enum QuestKey {
+    AbilityKill = "ability_kill",
+    MechKill = "mech_kill",
+    MechCommanderUsedInBattle = "mech_commander_used_in_battle",
+    RepairForOther = "repair_for_other",
+    ChatSent = "chat_sent",
+    MechJoinBattle = "mech_join_battle",
+}
+
+export interface QuestStat {
+    id: string
+    name: string
+    round_name: string
+    key: QuestKey
+    description: string
+    obtained: boolean
+    end_at: Date
+}
+
+export interface QuestProgress {
+    quest_id: string
+    current: number
+    goal: number
+}
+
+export interface LeaderboardRound {
+    id: string
+    name: string
+    started_at: Date
+    end_at: Date
 }
