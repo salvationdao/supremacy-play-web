@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Stack, Typography, useMediaQuery } from "@mui/material"
+import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useState } from "react"
 import {
     BcBorder,
@@ -14,7 +14,7 @@ import {
     ZhiBottom,
     ZhiMask,
 } from "../../assets"
-import { useSupremacy, useUI } from "../../containers"
+import { useDimension, useSupremacy, useUI } from "../../containers"
 import { useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { opacityEffect } from "../../theme/keyframes"
@@ -35,8 +35,10 @@ interface NextBattle {
 export const UpcomingBattle = () => {
     const [nextBattle, setNextBattle] = useState<NextBattle | undefined>()
     const { rightDrawerActiveTabID } = useUI()
-    const below1150 = useMediaQuery("(max-width:1150px)")
+    const { gameUIDimensions } = useDimension()
     const [loading, setLoading] = useState(true)
+
+    const below1150 = gameUIDimensions.width < 1150
 
     // Subscribe on battle end information
     useGameServerSubscription<NextBattle>(

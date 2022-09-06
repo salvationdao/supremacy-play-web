@@ -1,5 +1,5 @@
-import { Box, IconButton, Stack, Typography } from "@mui/material"
-import { useEffect, useRef, useState } from "react"
+import { IconButton, Stack, Typography } from "@mui/material"
+import { useState } from "react"
 import { TooltipHelper } from "../.."
 import { SvgNotification, SvgSupToken } from "../../../assets"
 import { supFormatter } from "../../../helpers"
@@ -96,33 +96,5 @@ const AmountItem = ({
                 <Typography sx={{ color: color, fontWeight: "fontWeightBold" }}>{value || "---"}</Typography>
             </Stack>
         </TooltipHelper>
-    )
-}
-
-interface QueueETAProps {
-    queueETASeconds: number
-}
-
-const QueueETA = ({ queueETASeconds }: QueueETAProps) => {
-    const countdownRef = useRef<HTMLDivElement>()
-    const secondsLeftRef = useRef(queueETASeconds)
-
-    useEffect(() => {
-        const t = setInterval(() => {
-            if (!countdownRef.current) return
-            secondsLeftRef.current -= 10
-            countdownRef.current.innerText =
-                secondsLeftRef.current < 60
-                    ? "< 1 MINUTE"
-                    : `${Math.round(secondsLeftRef.current / 60)} MINUTE${Math.round(secondsLeftRef.current / 60) > 1 ? "S" : ""}`
-        }, 1000 * 10) // Every 10 seconds
-
-        return () => clearInterval(t)
-    }, [queueETASeconds])
-
-    return (
-        <Box ref={countdownRef}>
-            {queueETASeconds < 60 ? "< 1 MINUTE" : `${Math.round(queueETASeconds / 60)} MINUTE${Math.round(queueETASeconds / 60) > 1 ? "S" : ""}`}
-        </Box>
     )
 }
