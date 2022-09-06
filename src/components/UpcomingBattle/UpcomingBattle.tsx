@@ -17,6 +17,7 @@ import {
 import { useSupremacy, useUI } from "../../containers"
 import { useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
+import { opacityEffect } from "../../theme/keyframes"
 import { theme } from "../../theme/theme"
 import { Faction, GameMap } from "../../types"
 import { MechDetails } from "../../types/assets"
@@ -58,11 +59,11 @@ export const UpcomingBattle = () => {
             sx={{
                 height: "100%",
                 width: "100%",
-
                 backgroundImage: `url(${nextBattle?.map?.background_url})`,
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
                 backgroundSize: "cover",
+                animation: `${opacityEffect} .1s ease-in`,
             }}
         >
             <Box

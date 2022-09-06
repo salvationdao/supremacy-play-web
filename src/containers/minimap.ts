@@ -84,19 +84,24 @@ export const MiniMapContainer = createContainer(() => {
         }
     }, [winner, bribeStage, playerAbility])
 
-    const resetSelection = useCallback(() => {
-        setWinner(undefined)
+    const resetPlayerAbilitySelection = useCallback(() => {
         setPlayerAbility(undefined)
         setSelection(undefined)
-        setIsTargeting(false)
-    }, [])
+        setIsTargeting(!!winner?.game_ability)
+    }, [winner?.game_ability])
+
+    const resetWinnerSelection = useCallback(() => {
+        setSelection(undefined)
+        setWinner(undefined)
+        setIsTargeting(!!playerAbility)
+    }, [playerAbility])
 
     useEffect(() => {
         addToHotkeyRecord(RecordType.MiniMap, "Escape", () => {
-            resetSelection()
+            resetPlayerAbilitySelection()
             setHighlightedMechParticipantID(undefined)
         })
-    }, [addToHotkeyRecord, resetSelection])
+    }, [addToHotkeyRecord, resetPlayerAbilitySelection])
 
     const onTargetConfirm = useCallback(async () => {
         if (!selection || !currentArenaID) return
@@ -133,6 +138,7 @@ export const MiniMapContainer = createContainer(() => {
                 }
 
                 hubKey = GameServerKeys.SubmitAbilityLocationSelect
+                resetWinnerSelection()
             } else if (playerAbility) {
                 switch (playerAbility.ability.location_select_type) {
                     case LocationSelectType.LineSelect:
@@ -183,22 +189,22 @@ export const MiniMapContainer = createContainer(() => {
                         break
                 }
 
+                // If it's mech move command, dont reset so player can keep moving the mech
+                if (playerAbility?.ability.location_select_type === LocationSelectType.MechCommand) {
+                    setSelection(undefined)
+                } else {
+                    resetPlayerAbilitySelection()
+                }
+
                 if (!payload) {
                     throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
                 }
             }
 
-            // If it's mech move command, dont reset so player can keep moving the mech
-            if (playerAbility?.ability.location_select_type === LocationSelectType.MechCommand) {
-                setWinner(undefined)
-                setSelection(undefined)
-            } else {
-                resetSelection()
-            }
-
             if (playerAbility?.ability.location_select_type === LocationSelectType.MechSelect) {
                 setHighlightedMechParticipantID(undefined)
             }
+
             await send<boolean, typeof payload>(hubKey, payload)
             newSnackbarMessage("Successfully submitted target location.", "success")
         } catch (err) {
@@ -206,24 +212,38 @@ export const MiniMapContainer = createContainer(() => {
             console.error(err)
             setSelection(undefined)
         }
-    }, [send, selection, resetSelection, winner?.game_ability, playerAbility, newSnackbarMessage, setHighlightedMechParticipantID, currentArenaID])
+    }, [
+        send,
+        selection,
+        resetPlayerAbilitySelection,
+        resetWinnerSelection,
+        winner?.game_ability,
+        playerAbility,
+        newSnackbarMessage,
+        setHighlightedMechParticipantID,
+        currentArenaID,
+    ])
 
     useEffect(() => {
-        if (!isBattleStarted) resetSelection()
-    }, [isBattleStarted, resetSelection])
+        if (!isBattleStarted) {
+            setWinner(undefined)
+            resetWinnerSelection()
+            resetPlayerAbilitySelection()
+        }
+    }, [isBattleStarted, resetWinnerSelection, resetPlayerAbilitySelection])
 
     return {
         mapElement,
         setMapElement,
 
         winner,
-        setWinner,
         highlightedMechParticipantID,
         setHighlightedMechParticipantID,
         isTargeting,
         selection,
         setSelection,
-        resetSelection,
+        resetWinnerSelection,
+        resetPlayerAbilitySelection,
         playerAbility,
         setPlayerAbility,
         onTargetConfirm,

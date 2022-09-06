@@ -57,9 +57,15 @@ const CountdownSubmitInner = React.memo(function CountdownSubmitInner() {
         setEndTimeState((prev) => {
             if (!hasSelected) return undefined
             if (isInstant) return new Date(new Date().getTime())
-            if (!prev) return new Date(new Date().getTime() + 3000)
+
+            // Prevents the count down thing to bne longer than the time left to target select
+            // The -2000 is to reserve some extra time incase of delays
+            const defaultCountEndTime = new Date().getTime() + 3000
+            const countEndTime = winner?.end_time ? Math.min(winner.end_time.getTime() - 2000, defaultCountEndTime) : defaultCountEndTime
+            if (!prev) return new Date(countEndTime)
             return prev
         })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [hasSelected, setEndTimeState, isInstant])
 
     useEffect(() => {
