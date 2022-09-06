@@ -24,7 +24,7 @@ export const RelatedReplayVideos = ({ battleReplay }: { battleReplay?: BattleRep
                 const resp = await send<GetReplaysResponse, GetReplaysRequest>(GameServerKeys.GetReplays, {
                     sort: { direction: SortDir.Desc },
                     page: 1,
-                    page_size: 3,
+                    page_size: 5,
                     arena_id: battleReplay?.arena_id || "",
                 })
 
@@ -57,7 +57,7 @@ export const RelatedReplayVideos = ({ battleReplay }: { battleReplay?: BattleRep
 
             <Stack spacing="2rem">
                 {battleReplays.map((battleReplay) => {
-                    return <BattleReplayItem key={battleReplay.id} battleReplay={battleReplay} />
+                    return <BattleReplayItem key={battleReplay.id} battleReplay={battleReplay} noBackgroundColor />
                 })}
             </Stack>
         </Stack>

@@ -4,7 +4,7 @@ import { fonts } from "../../../theme/theme"
 import { BattleReplay } from "../../../types"
 import { FancyButton } from "../../Common/FancyButton"
 
-export const BattleReplayItem = ({ battleReplay }: { battleReplay: BattleReplay }) => {
+export const BattleReplayItem = ({ battleReplay, noBackgroundColor }: { battleReplay: BattleReplay; noBackgroundColor?: boolean }) => {
     const theme = useTheme()
 
     if (!battleReplay.battle.ended_at) return null
@@ -25,7 +25,7 @@ export const BattleReplayItem = ({ battleReplay }: { battleReplay: BattleReplay 
                     bottomRight: true,
                 },
                 backgroundColor: theme.factionTheme.background,
-                opacity: 0.6,
+                opacity: noBackgroundColor ? 0.001 : 0.6,
                 sx: { position: "relative", height: "100%" },
             }}
             sx={{ color: theme.factionTheme.primary, textAlign: "start", height: "100%", ":hover": { opacity: 1 } }}

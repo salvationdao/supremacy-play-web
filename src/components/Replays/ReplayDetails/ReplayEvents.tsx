@@ -60,7 +60,7 @@ export const ReplayEvents = ({ battleReplay }: { battleReplay?: BattleReplay }) 
                         {battleReplay.events
                             .filter((event) => !!event)
                             .map((event, i) => {
-                                const { timestamp, notification } = event
+                                const { notification } = event
 
                                 switch (notification.type) {
                                     case NotificationType.Text:
