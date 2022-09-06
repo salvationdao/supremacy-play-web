@@ -36,7 +36,7 @@ export const ReplayEvents = ({
 
     useInterval(() => {
         setVideoTime(streamRef.current?.currentTime || 0)
-    }, 1000)
+    }, 800)
 
     if (!battleReplay?.events || battleReplay.events.length <= 0) {
         return null
