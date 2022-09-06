@@ -31,7 +31,7 @@ interface NextBattle {
     rm_mech_ids: string[]
 }
 
-export const LandingPage = () => {
+export const UpcomingBattle = () => {
     const [nextBattle, setNextBattle] = useState<NextBattle | undefined>()
     const { rightDrawerActiveTabID } = useUI()
     const below1150 = useMediaQuery("(max-width:1150px)")

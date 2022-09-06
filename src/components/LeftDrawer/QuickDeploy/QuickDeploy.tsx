@@ -40,6 +40,11 @@ interface GetAssetsResponse {
     total: number
 }
 
+export interface PlayerQueueStatus {
+    total_queued: number
+    queue_limit: number
+}
+
 export const QuickDeploy = () => {
     const { userID } = useAuth()
     if (!userID) return null
@@ -49,6 +54,9 @@ export const QuickDeploy = () => {
 const QuickDeployInner = () => {
     const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
+
+    // Player Queue Status
+    const [playerQueueStatus, setPlayerQueueStatus] = useState<PlayerQueueStatus>()
 
     // Mechs
     const [mechs, setMechs] = useState<MechBasicWithQueueStatus[]>([])
@@ -116,6 +124,9 @@ const QuickDeployInner = () => {
                 include_market_listed: false,
                 exclude_damaged_mech: true,
             })
+
+            const resp2 = await send<PlayerQueueStatus>(GameServerKeys.PlayerQueueStatus)
+            setPlayerQueueStatus(resp2)
 
             if (!resp) return
             setLoadError(undefined)
@@ -193,7 +204,7 @@ const QuickDeployInner = () => {
                     </TotalAndPageSizeOptions>
 
                     <Box sx={{ px: "1rem", mt: "1.5rem", backgroundColor: "#00000099" }}>
-                        <QueueDetails queueFeed={queueFeed} />
+                        <QueueDetails queueFeed={queueFeed} playerQueueStatus={playerQueueStatus} />
                     </Box>
 
                     {loadError && (
