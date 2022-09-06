@@ -14,7 +14,7 @@ import { NavLinksDrawer } from "./components/Bar/NavLinks/NavLinksDrawer"
 import { BottomNav } from "./components/BottomNav/BottomNav"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
 import { tourStyles } from "./components/Tutorial/SetupTutorial"
-import { GAME_SERVER_HOSTNAME, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
+import { GAME_SERVER_HOSTNAME, LINK, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
 import {
     ChatProvider,
     DimensionProvider,
@@ -158,7 +158,7 @@ const AppInner = () => {
                                             <Route key={id} path={path} exact={exact}>
                                                 <Helmet>
                                                     <title>{pageTitle}</title>
-                                                    <link rel="canonical" href={path} />
+                                                    <link rel="canonical" href={`${LINK}/${path}`} />
                                                 </Helmet>
                                                 <PageComponent />
                                             </Route>
