@@ -225,7 +225,7 @@ export const MechCommonArea = ({
 }) => {
     const backgroundColor = useMemo(() => shadeColor(primaryColor, -90), [primaryColor])
 
-    const mechh = mechDetails || mech
+    const mech1 = mechDetails || mech
 
     const avatarUrl = mechDetails?.chassis_skin?.avatar_url || mech?.avatar_url || ""
     const imageUrl = mechDetails?.chassis_skin?.image_url || mech?.image_url || ""
@@ -267,7 +267,7 @@ export const MechCommonArea = ({
 
                     <Typography
                         sx={{
-                            color: mechh?.name ? colors.offWhite : "#FFFFFF",
+                            color: mech1?.name ? colors.offWhite : "#FFFFFF",
                             fontFamily: fonts.nostromoBlack,
                             display: "-webkit-box",
                             overflow: "hidden",
@@ -277,7 +277,7 @@ export const MechCommonArea = ({
                             WebkitBoxOrient: "vertical",
                         }}
                     >
-                        {mechh?.name || mechh?.label || label}
+                        {mech1?.name || mech1?.label || label}
                     </Typography>
 
                     <MechRepairBlocks mechID={mech?.id || mechDetails?.id} defaultBlocks={mechDetails?.repair_blocks} />
@@ -322,9 +322,9 @@ export const MechCommonArea = ({
                                 }}
                             >
                                 <Stack direction="row" spacing="4rem" sx={{ p: "1.5rem 2.1rem", height: "100%" }}>
-                                    {mechh && (
+                                    {mech1 && (
                                         <Stack justifyContent="center" sx={{ width: "40rem" }}>
-                                            <MechBarStats fontSize="1.5rem" mech={mechh} mechDetails={mechDetails} color={primaryColor} iconVersion />
+                                            <MechBarStats fontSize="1.5rem" mech={mech1} mechDetails={mechDetails} color={primaryColor} iconVersion />
                                         </Stack>
                                     )}
                                 </Stack>
@@ -344,7 +344,7 @@ export const MechCommonArea = ({
             largeImageUrl,
             mech?.id,
             mechDetails,
-            mechh,
+            mech1,
             primaryColor,
             secondaryColor,
             toggleIsExpanded,
