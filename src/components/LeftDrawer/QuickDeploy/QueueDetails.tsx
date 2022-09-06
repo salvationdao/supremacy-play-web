@@ -113,7 +113,7 @@ const QueueETA = ({ queueETASeconds }: QueueETAProps) => {
             secondsLeftRef.current -= 10
             countdownRef.current.innerText =
                 secondsLeftRef.current < 60
-                    ? "< 1min"
+                    ? "< 1 MINUTE"
                     : `${Math.round(secondsLeftRef.current / 60)} MINUTE${Math.round(secondsLeftRef.current / 60) > 1 ? "S" : ""}`
         }, 1000 * 10) // Every 10 seconds
 
@@ -122,7 +122,7 @@ const QueueETA = ({ queueETASeconds }: QueueETAProps) => {
 
     return (
         <Box ref={countdownRef}>
-            {queueETASeconds < 60 ? "< 1min" : `${Math.round(queueETASeconds / 60)} MINUTE${Math.round(queueETASeconds / 60) > 1 ? "S" : ""}`}
+            {queueETASeconds < 60 ? "< 1 MINUTE" : `${Math.round(queueETASeconds / 60)} MINUTE${Math.round(queueETASeconds / 60) > 1 ? "S" : ""}`}
         </Box>
     )
 }

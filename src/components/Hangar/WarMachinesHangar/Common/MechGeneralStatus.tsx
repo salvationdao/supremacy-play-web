@@ -99,17 +99,23 @@ export const MechGeneralStatus = ({
                     break
                 case MechStatusEnum.PendingQueue:
                     text = "PENDING DEPLOY"
+                    color = colors.yellow
                     if (payload.battle_eta_seconds != null) {
                         text = `> ${payload.battle_eta_seconds < 60 ? "1 MINUTE" : `${Math.ceil(payload.battle_eta_seconds / 60)} MINUTES`}`
                     }
-                    color = colors.yellow
                     break
                 case MechStatusEnum.Queue:
                     text = "IN QUEUE"
-                    if (payload.battle_eta_seconds != null) {
-                        text = `${payload.battle_eta_seconds < 60 ? "< 1 MINUTE" : `~${Math.ceil(payload.battle_eta_seconds / 60)} MINUTES`}`
-                    }
                     color = colors.yellow
+                    if (payload.battle_eta_seconds != null) {
+                        text = `${
+                            payload.battle_eta_seconds === 0
+                                ? "ANY MINUTE NOW"
+                                : payload.battle_eta_seconds < 60
+                                ? "< 1 MINUTE"
+                                : `~${Math.ceil(payload.battle_eta_seconds / 60)} MINUTES`
+                        }`
+                    }
                     break
                 case MechStatusEnum.Battle:
                     text = "BATTLING"
