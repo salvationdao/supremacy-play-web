@@ -104,7 +104,7 @@ export const MechGeneralStatus = ({
                         text = `> ${
                             payload.battle_eta_seconds < 60
                                 ? "1 MINUTE"
-                                : timeSinceInWords(new Date(), new Date(new Date().getTime() + payload.battle_eta_seconds * 1000))
+                                : timeSinceInWords(new Date(), new Date(new Date().getTime() + payload.battle_eta_seconds * 1000), true)
                         }`
                     }
                     color = colors.yellow
@@ -115,7 +115,7 @@ export const MechGeneralStatus = ({
                         text = `${
                             payload.battle_eta_seconds < 60
                                 ? "< 1 MINUTE"
-                                : timeSinceInWords(new Date(), new Date(new Date().getTime() + payload.battle_eta_seconds * 1000))
+                                : timeSinceInWords(new Date(), new Date(new Date().getTime() + payload.battle_eta_seconds * 1000), true)
                         }`
                     }
                     color = colors.yellow
