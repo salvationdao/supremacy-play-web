@@ -108,7 +108,6 @@ const CardGroup = ({ factionID, mechIDs }: { factionID: string; mechIDs: string[
 
     return (
         <>
-            {/* <FactionLogoCard faction={faction} /> */}
             <MechCard mechID={mechIDs[0] || ""} faction={faction} />
             <MechCard mechID={mechIDs[1] || ""} faction={faction} />
             <MechCard mechID={mechIDs[2] || ""} faction={faction} />
