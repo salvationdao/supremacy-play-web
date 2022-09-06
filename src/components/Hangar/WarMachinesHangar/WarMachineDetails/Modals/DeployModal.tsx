@@ -77,7 +77,7 @@ export const DeployModal = ({ selectedMechDetails: deployMechDetails, deployMech
         if (typeof queueFeed?.minimum_wait_time_seconds === "undefined") return
 
         if (queueFeed.minimum_wait_time_seconds < 60) {
-            return "< 1min"
+            return "< 1 MINUTE"
         }
 
         const t = new Date()
