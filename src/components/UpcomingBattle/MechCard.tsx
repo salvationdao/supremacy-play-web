@@ -2,8 +2,11 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useState } from "react"
 import { BcBorder, BcMask, RmBorder, RmMask, ZhiBorder, ZhiMask } from "../../assets"
 import { FactionIDs } from "../../constants"
+import { useUI } from "../../containers"
 import { useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
+import { LEFT_DRAWER_MAP } from "../../routes"
+import { colors } from "../../theme/theme"
 import { Faction } from "../../types"
 import { MechDetails } from "../../types/assets"
 import { ClipThing } from "../Common/ClipThing"
@@ -37,6 +40,7 @@ const getCardStyles = (factionID: string) => {
 }
 
 export const MechCard = ({ mechID, faction }: { mechID: string; faction: Faction }) => {
+    const { setLeftDrawerActiveTabID } = useUI()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
     const { border, mask } = getCardStyles(faction.id)
 
@@ -57,21 +61,42 @@ export const MechCard = ({ mechID, faction }: { mechID: string; faction: Faction
     return (
         <Stack alignItems="center" sx={{ position: "relative", height: "100%", width: "100%", zIndex: 9, mt: "-2.8rem" }}>
             {/* The fancy box border */}
-            <img style={{ position: "absolute", top: "-.9rem", left: 0, width: "100%", height: "100%", zIndex: 4 }} src={border} alt="" />
+            <img
+                style={{ position: "absolute", top: "-.9rem", left: 0, width: "100%", height: "100%", zIndex: 4, pointerEvents: "none" }}
+                src={border}
+                alt=""
+            />
 
             {/* Mech image */}
             <Box
                 sx={{
                     width: "calc(100% - 2rem)",
                     height: "calc(100% - 2rem)",
-                    zIndex: 3,
-                    backgroundImage: `url(${avatarUrl || mask})`,
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                    backgroundSize: "cover",
+                    backgroundColor: colors.darkNavy,
                     clipPath: "polygon(10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%, 0% 10%)",
+                    zIndex: 3,
                 }}
-            />
+            >
+                <Box
+                    onClick={mechID ? undefined : () => setLeftDrawerActiveTabID(LEFT_DRAWER_MAP["quick_deploy"]?.id)}
+                    sx={{
+                        width: "100%",
+                        height: "100%",
+                        backgroundImage: `url(${avatarUrl || mask})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                        opacity: mechID ? 1 : 0.3,
+                        cursor: mechID ? "unset" : "pointer",
+                        ":hover": {
+                            opacity: 1,
+                        },
+                        ":active": {
+                            opacity: 0.8,
+                        },
+                    }}
+                />
+            </Box>
 
             {/* Mech name */}
             <ClipThing

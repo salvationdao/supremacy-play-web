@@ -84,7 +84,7 @@ export const UpcomingBattle = () => {
             }}
         >
             <Typography variant="h4" sx={{ lineHeight: 1, textAlign: "center", fontFamily: fonts.nostromoBlack }}>
-                <i>COMING UP</i>
+                <i>COMING UP...</i>
             </Typography>
 
             {content}
