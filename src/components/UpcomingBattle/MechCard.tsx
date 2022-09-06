@@ -57,7 +57,7 @@ export const MechCard = ({ mechID, faction }: { mechID: string; faction: Faction
     return (
         <Stack alignItems="center" sx={{ position: "relative", height: "100%", width: "100%", zIndex: 9, mt: "-2.8rem" }}>
             {/* The fancy box border */}
-            <img style={{ position: "absolute", top: "-1rem", left: 0, width: "100%", height: "100%", zIndex: 4 }} src={border} alt="" />
+            <img style={{ position: "absolute", top: "-.9rem", left: 0, width: "100%", height: "100%", zIndex: 4 }} src={border} alt="" />
 
             {/* Mech image */}
             <Box
@@ -82,7 +82,7 @@ export const MechCard = ({ mechID, faction }: { mechID: string; faction: Faction
                 }}
                 corners={{ bottomLeft: true, bottomRight: true }}
                 backgroundColor={faction.background_color}
-                sx={{ position: "absolute", left: ".7rem", right: ".7rem", bottom: "-3.4rem", zIndex: -1 }}
+                sx={{ position: "absolute", left: "1rem", right: "1rem", bottom: "-3.4rem", zIndex: -1 }}
             >
                 <Box sx={{ p: "1rem 2rem", pt: "2.5rem" }}>
                     <Typography

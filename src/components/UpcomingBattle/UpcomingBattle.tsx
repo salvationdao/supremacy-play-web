@@ -53,7 +53,7 @@ export const UpcomingBattle = () => {
                         gridTemplateColumns: `repeat(3, ${isSmall ? "16rem" : "18rem"})`,
                         gridTemplateRows: `repeat(3, ${isSmall ? "16rem" : "18rem"})`,
                         columnGap: "1rem",
-                        rowGap: "5.5rem",
+                        rowGap: "5.8rem",
                         alignItems: "center",
                         justifyContent: "center",
                     }}
