@@ -194,7 +194,6 @@ export const WarMachinesHangar = () => {
             })
 
             const resp2 = await send<PlayerQueueStatus>(GameServerKeys.PlayerQueueStatus)
-            console.log(resp2)
             setPlayerQueueStatus(resp2)
 
             updateQuery({

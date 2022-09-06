@@ -126,7 +126,6 @@ const QuickDeployInner = () => {
             })
 
             const resp2 = await send<PlayerQueueStatus>(GameServerKeys.PlayerQueueStatus)
-            console.log(resp2)
             setPlayerQueueStatus(resp2)
 
             if (!resp) return

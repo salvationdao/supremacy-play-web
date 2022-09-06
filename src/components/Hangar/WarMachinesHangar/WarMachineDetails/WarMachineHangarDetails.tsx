@@ -23,7 +23,11 @@ import { DeployModal } from "./Modals/DeployModal"
 import { RentalModal } from "./Modals/RentalModal"
 import { RepairModal } from "./Modals/RepairModal/RepairModal"
 
-export const WarMachineHangarDetails = ({ mechID }: { mechID: string }) => {
+interface WarMachineHangarDetailsProps {
+    mechID: string
+}
+
+export const WarMachineHangarDetails = ({ mechID }: WarMachineHangarDetailsProps) => {
     const [selectedMechDetails, setSelectedMechDetails] = useState<MechDetails>()
     const [deployMechModalOpen, setDeployMechModalOpen] = useState<boolean>(false)
     const [rentalMechModalOpen, setRentalMechModalOpen] = useState<boolean>(false)
