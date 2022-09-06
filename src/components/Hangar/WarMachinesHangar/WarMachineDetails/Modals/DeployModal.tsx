@@ -1,13 +1,14 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { FancyButton, TooltipHelper } from "../../../.."
 import { SvgInfoCircular, SvgSupToken } from "../../../../../assets"
 import { useGlobalNotifications } from "../../../../../containers"
 import { supFormatter, timeSinceInWords } from "../../../../../helpers"
-import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
 import { MechDetails } from "../../../../../types"
+import { PlayerQueueStatus } from "../../../../LeftDrawer/QuickDeploy/QuickDeploy"
 import { MechModal } from "../../Common/MechModal"
 
 export interface QueueFeed {
@@ -16,19 +17,27 @@ export interface QueueFeed {
     queue_cost: string
 }
 
-export const DeployModal = ({
-    selectedMechDetails: deployMechDetails,
-    deployMechModalOpen,
-    setDeployMechModalOpen,
-}: {
+interface DeployModalProps {
     selectedMechDetails: MechDetails
     deployMechModalOpen: boolean
     setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-}) => {
+}
+
+export const DeployModal = ({ selectedMechDetails: deployMechDetails, deployMechModalOpen, setDeployMechModalOpen }: DeployModalProps) => {
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
+    const { send: userSend } = useGameServerCommandsUser("/user_commander")
+
+    const [playerQueueStatus, setPlayerQueueStatus] = useState<PlayerQueueStatus>()
     const [isLoading, setIsLoading] = useState(false)
     const [deployQueueError, setDeployQueueError] = useState<string>()
+
+    useEffect(() => {
+        ;(async () => {
+            const resp = await userSend<PlayerQueueStatus>(GameServerKeys.PlayerQueueStatus)
+            setPlayerQueueStatus(resp)
+        })()
+    }, [userSend])
 
     // Queuing cost, queue length win reward etc.
     const queueFeed = useGameServerSubscriptionFaction<QueueFeed>({
@@ -99,6 +108,16 @@ export const DeployModal = ({
                         value={supFormatter(queueCost, 2)}
                         tooltip="The cost to place your war machine into the battle queue."
                     />
+
+                    {playerQueueStatus && (
+                        <AmountItem
+                            title="LIMIT: "
+                            color={playerQueueStatus.total_queued / playerQueueStatus.queue_limit === 1 ? colors.red : "white"}
+                            value={`${playerQueueStatus.total_queued} / ${playerQueueStatus.queue_limit}`}
+                            tooltip="The total amount of mechs you have queued."
+                            disableIcon
+                        />
+                    )}
                 </Stack>
 
                 <Box sx={{ mt: "auto" }}>

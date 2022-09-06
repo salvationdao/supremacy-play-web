@@ -11,6 +11,11 @@ enum ArenaType {
 interface Arena {
     id: string
     type: ArenaType
+    status?: ArenaStatus
+}
+
+interface ArenaStatus {
+    is_idle: boolean
 }
 
 export const ArenaContainer = createContainer(() => {
@@ -56,6 +61,25 @@ export const ArenaListener = () => {
             // above code will be refactor when players are able to select arena
 
             setArenaList(payload)
+        },
+    )
+
+    useGameServerSubscription<ArenaStatus>(
+        {
+            URI: `/public/arena/${currentArenaID}/status`,
+            key: GameServerKeys.SubArenaStatus,
+            ready: !!currentArenaID,
+        },
+        (payload) => {
+            if (!payload) return
+            setCurrentArena((prev) => {
+                if (!prev) return
+
+                return {
+                    ...prev,
+                    status: payload,
+                }
+            })
         },
     )
 

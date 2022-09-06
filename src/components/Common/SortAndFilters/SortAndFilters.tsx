@@ -28,7 +28,8 @@ const propsAreEqual = (prevProps: SortAndFiltersProps, nextProps: SortAndFilters
     return (
         prevProps.initialSearch === nextProps.initialSearch &&
         prevProps.isExpanded === nextProps.isExpanded &&
-        prevProps.primaryColor === nextProps.primaryColor
+        prevProps.primaryColor === nextProps.primaryColor &&
+        prevProps.children === nextProps.children
     )
 }
 

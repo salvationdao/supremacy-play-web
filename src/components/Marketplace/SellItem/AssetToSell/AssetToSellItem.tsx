@@ -185,7 +185,7 @@ export const AssetToSellItem = ({
         <Stack
             direction={orientation === "horizontal" ? "row" : "column"}
             spacing="1.5rem"
-            alignItems={orientation === "horizontal" ? "center" : "flex-start"}
+            alignItems={orientation === "horizontal" ? "center" : "stretch"}
             sx={{
                 position: "relative",
                 py: "1rem",
