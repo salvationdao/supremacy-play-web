@@ -21,7 +21,7 @@ import { WarMachineAbilityAlert } from "../../Notifications/Alerts/WarMachineAbi
 export const ReplayEvents = ({ battleReplay }: { battleReplay?: BattleReplay }) => {
     const { getFaction } = useSupremacy()
 
-    if (!battleReplay || battleReplay.events.length <= 0) {
+    if (!battleReplay?.events || battleReplay.events.length <= 0) {
         return null
     }
 
