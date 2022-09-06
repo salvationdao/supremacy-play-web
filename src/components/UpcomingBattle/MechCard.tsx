@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useState } from "react"
 import { BcBorder, BcMask, RmBorder, RmMask, ZhiBorder, ZhiMask } from "../../assets"
 import { FactionIDs } from "../../constants"
-import { useUI } from "../../containers"
+import { useAuth, useUI } from "../../containers"
 import { useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { LEFT_DRAWER_MAP } from "../../routes"
@@ -40,6 +40,7 @@ const getCardStyles = (factionID: string) => {
 }
 
 export const MechCard = ({ mechID, faction }: { mechID: string; faction: Faction }) => {
+    const { factionID } = useAuth()
     const { setLeftDrawerActiveTabID } = useUI()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
     const { border, mask } = getCardStyles(faction.id)
@@ -56,6 +57,7 @@ export const MechCard = ({ mechID, faction }: { mechID: string; faction: Faction
         },
     )
 
+    const clickToDeploy = faction.id === factionID && !mechID
     const avatarUrl = mechDetails?.chassis_skin?.avatar_url || mechDetails?.avatar_url
 
     return (
@@ -78,7 +80,7 @@ export const MechCard = ({ mechID, faction }: { mechID: string; faction: Faction
                 }}
             >
                 <Box
-                    onClick={mechID ? undefined : () => setLeftDrawerActiveTabID(LEFT_DRAWER_MAP["quick_deploy"]?.id)}
+                    onClick={clickToDeploy ? () => setLeftDrawerActiveTabID(LEFT_DRAWER_MAP["quick_deploy"]?.id) : undefined}
                     sx={{
                         width: "100%",
                         height: "100%",
@@ -86,8 +88,8 @@ export const MechCard = ({ mechID, faction }: { mechID: string; faction: Faction
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
                         backgroundSize: "cover",
-                        opacity: mechID ? 1 : 0.3,
-                        cursor: mechID ? "unset" : "pointer",
+                        opacity: clickToDeploy ? 0.3 : 1,
+                        cursor: clickToDeploy ? "pointer" : "unset",
                         ":hover": {
                             opacity: 1,
                         },
