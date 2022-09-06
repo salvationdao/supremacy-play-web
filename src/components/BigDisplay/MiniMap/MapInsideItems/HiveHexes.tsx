@@ -25,10 +25,7 @@ export const HiveHexes = ({ map, state, poppedOutContainerRef }: HiveHexesProps)
             const y = (hex.y - (map ? map.Pixel_Top : 0)) * mapScale
 
             hexEl.style.transform = `translate(${x - hexSize / 2}px, ${y - hexSize / 2}px) rotate(${hex.yaw}deg)`
-
-            const hexInner = hexEl.firstChild as HTMLElement
-            if (!hexInner) continue
-            hexInner.style.clipPath = hex.half ? "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%)" : "polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%)"
+            hexEl.style.clipPath = hex.half ? "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%)" : "polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%)"
         }
     }, [map, poppedOutContainerRef])
 
@@ -54,21 +51,15 @@ export const HiveHexes = ({ map, state, poppedOutContainerRef }: HiveHexesProps)
                             key={`map-hex-${i}`}
                             sx={{
                                 position: "absolute",
-                                filter: "drop-shadow(0px 0px 10px #000)",
+                                height: `${hexSize}px`,
+                                width: `${hexSize}px`,
+                                backgroundColor: "#000000",
+                                zIndex: 2,
                                 opacity: 0,
                                 transition: "opacity 0.5s ease-in-out",
                                 pointerEvents: "none",
                             }}
-                        >
-                            <Box
-                                sx={{
-                                    height: `${hexSize}px`,
-                                    width: `${hexSize}px`,
-                                    backgroundColor: "#000000",
-                                    zIndex: 2,
-                                }}
-                            />
-                        </Box>
+                        />
                     )
                 })}
             </Box>
