@@ -72,7 +72,6 @@ export const ArenaListener = () => {
         },
         (payload) => {
             if (!payload) return
-            console.log(payload)
             setCurrentArena((prev) => {
                 if (!prev) return
 
