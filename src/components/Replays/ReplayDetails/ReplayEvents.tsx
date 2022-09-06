@@ -1,5 +1,6 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, Button, Stack, Typography } from "@mui/material"
 import { useSupremacy } from "../../../containers"
+import { timeSinceInWords } from "../../../helpers"
 import { fonts } from "../../../theme/theme"
 import {
     BattleFactionAbilityAlertProps,
@@ -10,6 +11,7 @@ import {
     NotificationType,
     WarMachineAbilityAlertProps,
 } from "../../../types"
+import { TooltipHelper } from "../../Common/TooltipHelper"
 import { BattleAbilityAlert } from "../../Notifications/Alerts/BattleAbilityAlert"
 import { BattleZoneAlert } from "../../Notifications/Alerts/BattleZoneAlert"
 import { FactionAbilityAlert } from "../../Notifications/Alerts/FactionAbilityAlert"
@@ -18,7 +20,7 @@ import { LocationSelectAlert } from "../../Notifications/Alerts/LocationSelectAl
 import { TextAlert } from "../../Notifications/Alerts/TextAlert"
 import { WarMachineAbilityAlert } from "../../Notifications/Alerts/WarMachineAbilityAlert"
 
-export const ReplayEvents = ({ battleReplay }: { battleReplay?: BattleReplay }) => {
+export const ReplayEvents = ({ battleReplay, seekToSeconds }: { battleReplay?: BattleReplay; seekToSeconds: (seconds: number) => void }) => {
     const { getFaction } = useSupremacy()
 
     if (!battleReplay?.events || battleReplay.events.length <= 0) {
@@ -56,32 +58,48 @@ export const ReplayEvents = ({ battleReplay }: { battleReplay?: BattleReplay }) 
                 }}
             >
                 <Box sx={{ direction: "ltr", height: 0 }}>
-                    <Stack spacing=".8rem">
+                    <Stack>
                         {battleReplay.events
                             .filter((event) => !!event)
                             .map((event, i) => {
-                                const { notification } = event
+                                const { timestamp, notification } = event
+                                const timeSeconds = battleReplay.started_at ? (timestamp.getTime() - battleReplay.started_at.getTime()) / 1000 : 0
+                                const tooltipText = timeSinceInWords(new Date(), new Date(new Date().getTime() + timeSeconds * 1000))
+                                let notiRender = <></>
 
                                 switch (notification.type) {
                                     case NotificationType.Text:
-                                        return <TextAlert key={i} data={notification.data as string} />
+                                        notiRender = <TextAlert data={notification.data as string} />
+                                        break
                                     case NotificationType.LocationSelect:
-                                        return <LocationSelectAlert key={i} data={notification.data as LocationSelectAlertProps} getFaction={getFaction} />
+                                        notiRender = <LocationSelectAlert data={notification.data as LocationSelectAlertProps} getFaction={getFaction} />
+                                        break
                                     case NotificationType.BattleAbility:
-                                        return <BattleAbilityAlert key={i} data={notification.data as BattleFactionAbilityAlertProps} getFaction={getFaction} />
+                                        notiRender = <BattleAbilityAlert data={notification.data as BattleFactionAbilityAlertProps} getFaction={getFaction} />
+                                        break
                                     case NotificationType.FactionAbility:
-                                        return (
-                                            <FactionAbilityAlert key={i} data={notification.data as BattleFactionAbilityAlertProps} getFaction={getFaction} />
-                                        )
+                                        notiRender = <FactionAbilityAlert data={notification.data as BattleFactionAbilityAlertProps} getFaction={getFaction} />
+                                        break
                                     case NotificationType.WarMachineAbility:
-                                        return (
-                                            <WarMachineAbilityAlert key={i} data={notification.data as WarMachineAbilityAlertProps} getFaction={getFaction} />
-                                        )
+                                        notiRender = <WarMachineAbilityAlert data={notification.data as WarMachineAbilityAlertProps} getFaction={getFaction} />
+                                        break
                                     case NotificationType.WarMachineDestroyed:
-                                        return <KillAlert key={i} data={notification.data as KillAlertProps} getFaction={getFaction} />
+                                        notiRender = <KillAlert data={notification.data as KillAlertProps} getFaction={getFaction} />
+                                        break
                                     case NotificationType.BattleZoneChange:
-                                        return <BattleZoneAlert key={i} data={notification.data as BattleZoneStruct} />
+                                        notiRender = <BattleZoneAlert data={notification.data as BattleZoneStruct} />
+                                        break
                                 }
+
+                                return (
+                                    <TooltipHelper key={i} text={tooltipText} placement="left">
+                                        <Box>
+                                            <Button sx={{ width: "100%", display: "block", textAlign: "start" }} onClick={() => seekToSeconds(timeSeconds)}>
+                                                {notiRender}
+                                            </Button>
+                                        </Box>
+                                    </TooltipHelper>
+                                )
                             })}
                     </Stack>
                 </Box>

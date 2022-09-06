@@ -1,5 +1,6 @@
+import { StreamPlayerApi } from "@cloudflare/stream-react"
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useTheme } from "../../../containers/theme"
 import { useGameServerCommands } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -22,6 +23,7 @@ export const ReplayDetails = ({ gid, battleNumber }: { gid: number; battleNumber
     const { send } = useGameServerCommands("/public/commander")
     const [replay, setReplay] = useState<GetReplayResponse>()
     const [loadError, setLoadError] = useState<string>()
+    const streamRef = useRef<StreamPlayerApi>()
 
     // Get replay details
     useEffect(() => {
@@ -41,6 +43,12 @@ export const ReplayDetails = ({ gid, battleNumber }: { gid: number; battleNumber
             }
         })()
     }, [battleNumber, gid, send])
+
+    const seekToSeconds = useCallback((seconds: number) => {
+        if (streamRef.current?.currentTime) {
+            streamRef.current.currentTime = seconds
+        }
+    }, [])
 
     const primaryColor = theme.factionTheme.primary
 
@@ -105,21 +113,21 @@ export const ReplayDetails = ({ gid, battleNumber }: { gid: number; battleNumber
                     <Stack direction="row" spacing="2rem" justifyContent="space-between">
                         {/* Left side */}
                         <Stack spacing="2rem" sx={{ flex: 1 }}>
-                            <ReplayPlayer battleReplay={replay.battle_replay} />
+                            <ReplayPlayer battleReplay={replay.battle_replay} streamRef={streamRef} />
                             <ReplayInfo battleReplay={replay.battle_replay} />
                             <ReplayMechs mechs={replay.mechs} />
                         </Stack>
 
                         {/* Right side */}
                         <Stack spacing="2rem" sx={{ width: "38rem" }}>
-                            <ReplayEvents battleReplay={replay.battle_replay} />
+                            <ReplayEvents battleReplay={replay.battle_replay} seekToSeconds={seekToSeconds} />
                             <RelatedReplayVideos battleReplay={replay.battle_replay} />
                         </Stack>
                     </Stack>
                 </Box>
             </Box>
         )
-    }, [loadError, primaryColor, replay])
+    }, [loadError, primaryColor, replay, seekToSeconds])
 
     return (
         <ClipThing

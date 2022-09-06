@@ -1,25 +1,25 @@
 import { Stream, StreamPlayerApi } from "@cloudflare/stream-react"
 import { Box, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleReplay } from "../../../types"
 
-export const ReplayPlayer = ({ battleReplay }: { battleReplay?: BattleReplay }) => {
+export const ReplayPlayer = ({ battleReplay, streamRef }: { battleReplay?: BattleReplay; streamRef: React.MutableRefObject<StreamPlayerApi | undefined> }) => {
     const theme = useTheme()
     const { hasInteracted } = useSupremacy()
     const [hasError, setHasError] = useState(false)
-    const streamRef = useRef<StreamPlayerApi>()
 
     useEffect(() => {
-        streamRef?.current?.play()
-    }, [hasInteracted])
+        streamRef.current?.play()
+        if (streamRef?.current?.muted !== undefined) streamRef.current.muted = false
+    }, [hasInteracted, streamRef])
 
     const onVolumeChanged = useCallback(() => {
-        streamRef?.current?.volume && localStorage.setItem("replayPlaybackVolume", `${streamRef.current.volume}`)
-    }, [])
+        streamRef.current?.volume && localStorage.setItem("replayPlaybackVolume", `${streamRef.current.volume}`)
+    }, [streamRef])
 
     const primaryColor = theme.factionTheme.primary
 
