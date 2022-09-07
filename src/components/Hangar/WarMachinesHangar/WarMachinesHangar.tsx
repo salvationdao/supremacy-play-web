@@ -2,7 +2,7 @@ import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/mater
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
-import { HANGAR_PAGE } from "../../../constants"
+import { BATTLE_ARENA_OPEN, HANGAR_PAGE } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, parseString } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
@@ -11,12 +11,13 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MechBasic, MechBasicWithQueueStatus, MechStatus, MechStatusEnum } from "../../../types"
 import { RepairOffer, RepairStatus } from "../../../types/jobs"
-import { SortTypeLabel } from "../../../types/marketplace"
+import { SortDir, SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { QueueDetails } from "../../LeftDrawer/QuickDeploy/QueueDetails"
+import { PlayerQueueStatus } from "../../LeftDrawer/QuickDeploy/QuickDeploy"
 import { BulkDeployConfirmModal } from "./Common/BulkDeployConfirmModal"
 import { BulkRepairConfirmModal } from "./Common/BulkRepairConfirmModal"
 import { RepairBay } from "./RepairBay/RepairBay"
@@ -54,6 +55,9 @@ export const WarMachinesHangar = () => {
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
 
+    // Player Queue Status
+    const [playerQueueStatus, setPlayerQueueStatus] = useState<PlayerQueueStatus>()
+
     // Items
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
@@ -87,6 +91,17 @@ export const WarMachinesHangar = () => {
     useEffect(() => {
         localStorage.setItem("isWarMachinesHangarFiltersExpanded", isFiltersExpanded.toString())
     }, [isFiltersExpanded])
+
+    const updateTotalDeployed = (amount: number) => {
+        setPlayerQueueStatus((prev) => {
+            if (!prev) return
+
+            return {
+                ...prev,
+                total_queued: prev.total_queued + amount,
+            }
+        })
+    }
 
     const toggleSelected = useCallback((mech: MechBasic) => {
         setSelectedMechs((prev) => {
@@ -161,9 +176,9 @@ export const WarMachinesHangar = () => {
         try {
             setIsLoading(true)
 
-            let sortDir = "asc"
+            let sortDir = SortDir.Asc
             let sortBy = ""
-            if (sort === SortTypeLabel.MechQueueDesc || sort === SortTypeLabel.AlphabeticalReverse || sort === SortTypeLabel.RarestDesc) sortDir = "desc"
+            if (sort === SortTypeLabel.MechQueueDesc || sort === SortTypeLabel.AlphabeticalReverse || sort === SortTypeLabel.RarestDesc) sortDir = SortDir.Desc
 
             switch (sort) {
                 case SortTypeLabel.Alphabetical:
@@ -188,6 +203,9 @@ export const WarMachinesHangar = () => {
                 page_size: pageSize,
                 include_market_listed: true,
             })
+
+            const resp2 = await send<PlayerQueueStatus>(GameServerKeys.PlayerQueueStatus)
+            setPlayerQueueStatus(resp2)
 
             updateQuery({
                 sort,
@@ -366,7 +384,7 @@ export const WarMachinesHangar = () => {
                                 <PageHeader title="WAR MACHINES" description="Your war machines." imageUrl={WarMachineIconPNG}>
                                     <Stack spacing="1rem" direction="row" alignItems="center" sx={{ ml: "auto !important", pr: "2rem" }}>
                                         <FancyButton
-                                            disabled={selectedMechs.length <= 0}
+                                            disabled={!BATTLE_ARENA_OPEN || selectedMechs.length <= 0}
                                             clipThingsProps={{
                                                 clipSize: "9px",
                                                 backgroundColor: colors.green,
@@ -443,7 +461,7 @@ export const WarMachinesHangar = () => {
                                     onSelectAll={onSelectAll}
                                     onUnselectedAll={onUnSelectAll}
                                 >
-                                    <QueueDetails queueFeed={queueFeed} />
+                                    <QueueDetails queueFeed={queueFeed} playerQueueStatus={playerQueueStatus} />
                                 </TotalAndPageSizeOptions>
 
                                 <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
@@ -512,6 +530,7 @@ export const WarMachinesHangar = () => {
                         setSelectedMechs={setSelectedMechs}
                         childrenMechStatus={childrenMechStatus}
                         queueFeed={queueFeed}
+                        onBulkDeploy={(amount) => updateTotalDeployed(amount)}
                     />
                 )}
 
@@ -541,6 +560,7 @@ export const WarMachinesHangar = () => {
             onUnSelectAll,
             page,
             pageSize,
+            playerQueueStatus,
             queueFeed,
             search,
             selectedMechs,

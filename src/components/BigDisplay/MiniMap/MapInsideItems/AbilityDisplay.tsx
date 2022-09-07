@@ -167,19 +167,22 @@ export const MiniMapAbilitiesDisplay = ({ map, poppedOutContainerRef }: MiniMapA
                                 }
 
                                 // Show landmine activation after time offset
-                                let image_url = "https://i.imgur.com/hL62NOp.png"
+                                let image_url = "https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/mini-map/landmines/landmine.webp"
                                 let colour = "#000000"
                                 switch (factionNo) {
                                     case 1:
-                                        image_url = "https://i.imgur.com/cCyzXYu.png"
+                                        image_url =
+                                            "https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/mini-map/landmines/landmine_redmountain.webp"
                                         colour = "#C24242"
                                         break
                                     case 2:
-                                        image_url = "https://i.imgur.com/LLSGAz5.png"
+                                        image_url =
+                                            "https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/mini-map/landmines/landmine_boston.webp"
                                         colour = "#428EC1"
                                         break
                                     case 3:
-                                        image_url = "https://i.imgur.com/p3aIL4x.png"
+                                        image_url =
+                                            "https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/mini-map/landmines/landmine_zai.webp"
                                         colour = "#FFFFFF"
                                         break
                                 }

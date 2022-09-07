@@ -1,15 +1,14 @@
 import { IconButton, Slider, Stack } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import screenfull from "screenfull"
-import { SvgFullscreen, SvgMinimize, SvgMusic, SvgMusicMute, SvgVolume, SvgVolumeMute } from "../../assets"
-import { DEV_ONLY } from "../../constants"
+import { SvgFullscreen, SvgMinimize, SvgVolume, SvgVolumeMute } from "../../assets"
 import { useMobile } from "../../containers"
 import { useOvenStream } from "../../containers/oven"
 import { siteZIndex } from "../../theme/theme"
 
 export const VideoPlayerControls = () => {
     const { isMobile, isMobileHorizontal } = useMobile()
-    const { toggleIsMute, isMute, toggleIsMusicMute, isMusicMute, musicVolume, setMusicVolume, volume, setVolume } = useOvenStream()
+    const { toggleIsMute, isMute, volume, setVolume } = useOvenStream()
     const [fullscreen, setFullscreen] = useState(false)
 
     const handleVolumeChange = useCallback(
@@ -17,13 +16,6 @@ export const VideoPlayerControls = () => {
             setVolume(newValue as number)
         },
         [setVolume],
-    )
-
-    const handleMusicVolumeChange = useCallback(
-        (_: Event, newValue: number | number[]) => {
-            setMusicVolume(newValue as number)
-        },
-        [setMusicVolume],
     )
 
     const toggleFullscreen = useCallback(
@@ -103,28 +95,6 @@ export const VideoPlayerControls = () => {
                         }}
                     />
                 </Stack>
-
-                {DEV_ONLY && (
-                    <Stack direction="row" alignItems="center" sx={{ width: "15rem", mr: "1.6rem" }}>
-                        <IconButton size="small" onClick={() => toggleIsMusicMute()} sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}>
-                            {isMusicMute || musicVolume <= 0 ? <SvgMusicMute size="1.2rem" sx={{ pb: 0 }} /> : <SvgMusic size="1.2rem" sx={{ pb: 0 }} />}
-                        </IconButton>
-
-                        <Slider
-                            size="small"
-                            min={0}
-                            max={1}
-                            step={0.01}
-                            aria-label="Volume"
-                            value={isMusicMute ? 0 : musicVolume}
-                            onChange={handleMusicVolumeChange}
-                            sx={{
-                                ml: "1.2rem",
-                                color: (theme) => theme.factionTheme.primary,
-                            }}
-                        />
-                    </Stack>
-                )}
             </Stack>
 
             {(!isMobile || isMobileHorizontal) && (

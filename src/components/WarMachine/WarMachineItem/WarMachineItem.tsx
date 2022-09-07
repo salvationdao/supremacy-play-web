@@ -42,7 +42,7 @@ export const WarMachineItem = ({
     const { userID, factionID } = useAuth()
     const { getFaction } = useSupremacy()
     const { currentArenaID } = useArena()
-    const { setPlayerAbility, highlightedMechParticipantID, setHighlightedMechParticipantID, resetSelection } = useMiniMap()
+    const { setPlayerAbility, highlightedMechParticipantID, setHighlightedMechParticipantID, resetPlayerAbilitySelection } = useMiniMap()
     const { addToHotkeyRecord } = useHotkey()
 
     const { hash, participantID, factionID: wmFactionID, name, imageAvatar, tier, ownedByID, ownerUsername, aiType } = warMachine
@@ -91,9 +91,9 @@ export const WarMachineItem = ({
         if (selfOwned) {
             activateMechMoveCommand()
         } else {
-            resetSelection()
+            resetPlayerAbilitySelection()
         }
-    }, [participantID, highlightedMechParticipantID, selfOwned, setHighlightedMechParticipantID, activateMechMoveCommand, resetSelection])
+    }, [participantID, highlightedMechParticipantID, selfOwned, setHighlightedMechParticipantID, activateMechMoveCommand, resetPlayerAbilitySelection])
 
     // Toggle out isExpanded if other mech is highlighted
     useEffect(() => {

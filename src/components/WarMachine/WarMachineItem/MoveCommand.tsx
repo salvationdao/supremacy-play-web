@@ -1,7 +1,6 @@
 import { Stack, Typography } from "@mui/material"
-import { useEffect, useMemo } from "react"
+import { useMemo } from "react"
 import { SvgDrag } from "../../../assets"
-import { RecordType, useHotkey } from "../../../containers/hotkeys"
 import { shadeColor } from "../../../helpers"
 import { colors } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility, WarMachineState } from "../../../types"
@@ -58,14 +57,8 @@ interface MoveCommandInnerProps {
 }
 
 const MoveCommandInner = ({ activateMechMoveCommand }: MoveCommandInnerProps) => {
-    const { addToHotkeyRecord } = useHotkey()
-
     const primaryColor = MechMoveCommandAbility.ability.colour
     const backgroundColor = useMemo(() => shadeColor(primaryColor, -84), [primaryColor])
-
-    useEffect(() => {
-        addToHotkeyRecord(RecordType.MiniMap, "a", activateMechMoveCommand)
-    }, [activateMechMoveCommand, addToHotkeyRecord])
 
     return (
         <Stack
@@ -113,12 +106,6 @@ const MoveCommandInner = ({ activateMechMoveCommand }: MoveCommandInnerProps) =>
                     }}
                 >
                     {MechMoveCommandAbility.ability.label}
-                </Typography>
-
-                <Typography variant="body2" sx={{ color: colors.neonBlue }}>
-                    <i>
-                        <strong>[a]</strong>
-                    </i>
                 </Typography>
             </Stack>
         </Stack>

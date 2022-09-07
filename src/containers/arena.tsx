@@ -2,16 +2,7 @@ import { useState } from "react"
 import { createContainer } from "unstated-next"
 import { useGameServerSubscription } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-
-enum ArenaType {
-    Story = "STORY",
-    Expedition = "EXPEDITION",
-}
-
-interface Arena {
-    id: string
-    type: ArenaType
-}
+import { Arena, ArenaStatus, ArenaType } from "../types"
 
 export const ArenaContainer = createContainer(() => {
     const [arenaList, setArenaList] = useState<Arena[]>([])
@@ -56,6 +47,25 @@ export const ArenaListener = () => {
             // above code will be refactor when players are able to select arena
 
             setArenaList(payload)
+        },
+    )
+
+    useGameServerSubscription<ArenaStatus>(
+        {
+            URI: `/public/arena/${currentArenaID}/status`,
+            key: GameServerKeys.SubArenaStatus,
+            ready: !!currentArenaID,
+        },
+        (payload) => {
+            if (!payload) return
+            setCurrentArena((prev) => {
+                if (!prev) return
+
+                return {
+                    ...prev,
+                    status: payload,
+                }
+            })
         },
     )
 

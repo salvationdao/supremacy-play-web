@@ -217,6 +217,7 @@ const context: Context[] = [
 const trainingMap: Map = {
     Name: "RedMountainMine",
     Image_Url: "https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/maps/RedMountainMine.jpg",
+    Background_Url: "https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/maps/RedMountainMine.jpg",
     Width: 1884,
     Height: 1884,
     Cells_X: 90,

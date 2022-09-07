@@ -72,6 +72,7 @@ const MapMechInner = ({ warMachine, map, label, isAI, poppedOutContainerRef }: M
 
     // Mech move command related
     const mechMoveCommand = useRef<MechMoveCommand>()
+    const prevMechMoveCommandRotation = useRef(0)
     // Mech ability display
     const [abilityEffects, setAbilityEffects] = useState<DisplayedAbility[]>([])
     const abilityBorderEffect = useMemo(() => abilityEffects.find((da) => da.mech_display_effect_type === MechDisplayEffectType.Border), [abilityEffects])
@@ -117,15 +118,18 @@ const MapMechInner = ({ warMachine, map, label, isAI, poppedOutContainerRef }: M
                     // Update the mech move dash line length and rotation
                     const moveCommandEl = (poppedOutContainerRef?.current || document).querySelector(`#map-mech-move-command-${hash}`) as HTMLElement
                     if (moveCommandEl) {
-                        if (mechMoveCommand.current?.cell_x && mechMoveCommand.current?.cell_y) {
+                        if (mechMoveCommand.current?.cell_x && mechMoveCommand.current?.cell_y && !mechMoveCommand.current?.reached_at) {
                             const commandMapX = mechMoveCommand.current.cell_x * gridWidth
                             const commandMapY = mechMoveCommand.current.cell_y * gridHeight
                             const x = Math.abs(mechMapX - commandMapX)
                             const y = Math.abs(mechMapY - commandMapY)
-                            const rotation = (Math.atan2(commandMapY - mechMapY, commandMapX - mechMapX) * 180) / Math.PI
                             moveCommandEl.style.display = "block"
                             moveCommandEl.style.height = `${2 * Math.sqrt(x * x + y * y)}px`
-                            moveCommandEl.style.transform = `translate(-50%, -50%) rotate(${rotation + 90}deg)`
+
+                            const rotation = (Math.atan2(commandMapY - mechMapY, commandMapX - mechMapX) * 180) / Math.PI
+                            const newRotation = closestAngle(prevMechMoveCommandRotation.current, rotation || 0)
+                            moveCommandEl.style.transform = `translate(-50%, -50%) rotate(${newRotation + 90}deg)`
+                            prevMechMoveCommandRotation.current = newRotation
                         } else {
                             moveCommandEl.style.display = "none"
                         }

@@ -174,7 +174,9 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
         if (isTargeting) {
             toggleIsStreamBigDisplayMemorized(false)
         } else {
-            restoreIsStreamBigDisplayMemorized()
+            setTimeout(() => {
+                restoreIsStreamBigDisplayMemorized()
+            }, 3000)
         }
     }, [isTargeting, restoreIsStreamBigDisplayMemorized, toggleIsStreamBigDisplayMemorized])
 
@@ -331,7 +333,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
                         left: 0,
                         width: "100%",
                         height: "100%",
-                        background: `url(${map?.Image_Url})`,
+                        background: `url(${map?.Background_Url || map?.Image_Url})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
                         backgroundSize: "cover",
@@ -350,6 +352,7 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
         sizes.insideWidth,
         sizes.insideHeight,
         map.Name,
+        map?.Background_Url,
         map?.Image_Url,
         isPoppedout,
         isStreamBigDisplay,

@@ -2,15 +2,8 @@ import { Box } from "@mui/material"
 import { ClipThing, StyledImageText, StyledNormalText } from "../.."
 import { SvgDeath, SvgSkull2 } from "../../../assets"
 import { colors } from "../../../theme/theme"
-import { Faction, User, WarMachineState } from "../../../types"
+import { Faction, KillAlertProps } from "../../../types"
 import { Player } from "../../Common/Player"
-
-export interface KillAlertProps {
-    destroyed_war_machine: WarMachineState
-    killed_by_war_machine?: WarMachineState
-    killed_by?: string
-    killed_by_user?: User
-}
 
 export const KillAlert = ({ data, getFaction }: { data: KillAlertProps; getFaction: (factionID: string) => Faction }) => {
     const { destroyed_war_machine, killed_by_war_machine, killed_by, killed_by_user } = data
@@ -39,10 +32,9 @@ export const KillAlert = ({ data, getFaction }: { data: KillAlertProps; getFacti
             clipSize="3px"
             border={{
                 borderColor: mainColor || colors.grey,
-                isFancy: true,
                 borderThickness: ".2rem",
             }}
-            opacity={0.8}
+            opacity={0.6}
             backgroundColor={colors.darkNavy}
         >
             <Box sx={{ px: "1.44rem", pt: "1.2rem", pb: ".8rem" }}>

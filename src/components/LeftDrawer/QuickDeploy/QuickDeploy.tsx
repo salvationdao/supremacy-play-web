@@ -9,7 +9,7 @@ import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MechBasic, MechBasicWithQueueStatus, MechStatus } from "../../../types"
-import { SortTypeLabel } from "../../../types/marketplace"
+import { SortDir, SortTypeLabel } from "../../../types/marketplace"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { BulkDeployConfirmModal } from "../../Hangar/WarMachinesHangar/Common/BulkDeployConfirmModal"
 import { QueueFeed } from "../../Hangar/WarMachinesHangar/WarMachineDetails/Modals/DeployModal"
@@ -40,6 +40,11 @@ interface GetAssetsResponse {
     total: number
 }
 
+export interface PlayerQueueStatus {
+    total_queued: number
+    queue_limit: number
+}
+
 export const QuickDeploy = () => {
     const { userID } = useAuth()
     if (!userID) return null
@@ -49,6 +54,9 @@ export const QuickDeploy = () => {
 const QuickDeployInner = () => {
     const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
+
+    // Player Queue Status
+    const [playerQueueStatus, setPlayerQueueStatus] = useState<PlayerQueueStatus>()
 
     // Mechs
     const [mechs, setMechs] = useState<MechBasicWithQueueStatus[]>([])
@@ -79,6 +87,17 @@ const QuickDeployInner = () => {
         localStorage.setItem("quickDeployPageSize2", pageSize.toString())
     }, [pageSize])
 
+    const updateTotalDeployed = (amount: number) => {
+        setPlayerQueueStatus((prev) => {
+            if (!prev) return
+
+            return {
+                ...prev,
+                total_queued: prev.total_queued + amount,
+            }
+        })
+    }
+
     const toggleSelected = useCallback((mech: MechBasic) => {
         setSelectedMechs((prev) => {
             const newArray = [...prev]
@@ -105,8 +124,8 @@ const QuickDeployInner = () => {
         try {
             setIsLoading(true)
 
-            let sortDir = "asc"
-            if (sort === SortTypeLabel.MechQueueDesc) sortDir = "desc"
+            let sortDir = SortDir.Asc
+            if (sort === SortTypeLabel.MechQueueDesc) sortDir = SortDir.Desc
 
             const resp = await send<GetAssetsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
                 queue_sort: sortDir,
@@ -116,6 +135,9 @@ const QuickDeployInner = () => {
                 include_market_listed: false,
                 exclude_damaged_mech: true,
             })
+
+            const resp2 = await send<PlayerQueueStatus>(GameServerKeys.PlayerQueueStatus)
+            setPlayerQueueStatus(resp2)
 
             if (!resp) return
             setLoadError(undefined)
@@ -193,7 +215,7 @@ const QuickDeployInner = () => {
                     </TotalAndPageSizeOptions>
 
                     <Box sx={{ px: "1rem", mt: "1.5rem", backgroundColor: "#00000099" }}>
-                        <QueueDetails queueFeed={queueFeed} />
+                        <QueueDetails queueFeed={queueFeed} playerQueueStatus={playerQueueStatus} />
                     </Box>
 
                     {loadError && (
@@ -246,6 +268,7 @@ const QuickDeployInner = () => {
                                                 toggleIsSelected={() => {
                                                     toggleSelected(mech)
                                                 }}
+                                                onDeploy={() => updateTotalDeployed(1)}
                                                 childrenMechStatus={childrenMechStatus}
                                                 mech={mech}
                                             />
@@ -310,6 +333,7 @@ const QuickDeployInner = () => {
                     setSelectedMechs={setSelectedMechs}
                     childrenMechStatus={childrenMechStatus}
                     queueFeed={queueFeed}
+                    onBulkDeploy={(amount) => updateTotalDeployed(amount)}
                 />
             )}
         </>

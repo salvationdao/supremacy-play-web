@@ -21,7 +21,12 @@ interface MarketItemProps {
 }
 
 const propsAreEqual = (prevProps: MarketItemProps, nextProps: MarketItemProps) => {
-    return prevProps.item.id === nextProps.item.id && prevProps.isGridView === nextProps.isGridView && prevProps.linkSubPath === nextProps.linkSubPath
+    return (
+        prevProps.item.id === nextProps.item.id &&
+        prevProps.isGridView === nextProps.isGridView &&
+        prevProps.linkSubPath === nextProps.linkSubPath &&
+        prevProps.children === nextProps.children
+    )
 }
 
 export const MarketItem = React.memo(function MarketItem({ item, isGridView, children, linkSubPath }: MarketItemProps) {

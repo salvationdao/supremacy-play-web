@@ -15,6 +15,7 @@ export enum GameServerKeys {
     SubGameNotification = "GAME:NOTIFICATION",
 
     // Battle Arena
+    SubArenaStatus = "ARENA:STATUS:UPDATED",
     SubBattleArenaList = "BATTLE:ARENA:LIST",
     SubBattleArenaClosed = "BATTLE:ARENA:CLOSED",
     SubMiniMapAbilityDisplayList = "MINI:MAP:ABILITY:DISPLAY:LIST",
@@ -46,6 +47,7 @@ export enum GameServerKeys {
     // Asset / queue
     SubQueueFeed = "BATTLE:QUEUE:STATUS:SUBSCRIBE",
     GetMechs = "PLAYER:ASSET:MECH:LIST",
+    PlayerQueueStatus = "PLAYER:QUEUE:STATUS",
     // Weapons
     GetWeapons = "PLAYER:ASSET:WEAPON:LIST",
     GetWeaponDetails = "PLAYER:ASSET:WEAPON:DETAIL",
@@ -214,6 +216,10 @@ export enum GameServerKeys {
 
     NextBattleDetails = "BATTLE:NEXT:DETAILS",
     SubChallengeFunds = "CHALLENGE:FUND",
+
+    // Replays
+    GetReplays = "GET:BATTLE:REPLAYS",
+    GetReplayDetails = "GET:REPLAY:DETAILS",
 }
 
 export enum PassportServerKeys {

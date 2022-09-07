@@ -142,7 +142,7 @@ export const MechBarStats = ({
                     label="HEALTH"
                     current={health}
                     boostedTo={boostedHealth}
-                    total={6000}
+                    total={15000}
                     Icon={SvgHealth}
                 />
                 <BarStat

@@ -8,7 +8,7 @@ import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MarketplaceBuyAuctionItem, SortTypeLabel } from "../../../types/marketplace"
+import { MarketplaceBuyAuctionItem, SortDir, SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { RangeFilter } from "../../Common/SortAndFilters/RangeFilterSection"
@@ -100,7 +100,7 @@ export const KeycardsMarket = () => {
         try {
             setIsLoading(true)
 
-            let sortDir = "asc"
+            let sortDir = SortDir.Asc
             let sortBy = "alphabetical"
             if (
                 sort === SortTypeLabel.AlphabeticalReverse ||
@@ -108,7 +108,7 @@ export const KeycardsMarket = () => {
                 sort === SortTypeLabel.EndTimeEndingLast ||
                 sort === SortTypeLabel.PriceHighest
             )
-                sortDir = "desc"
+                sortDir = SortDir.Desc
             if (sort === SortTypeLabel.CreateTimeOldestFirst || sort === SortTypeLabel.CreateTimeNewestFirst) sortBy = "created_at"
             if (sort === SortTypeLabel.EndTimeEndingSoon || sort === SortTypeLabel.EndTimeEndingLast) sortBy = "time"
             if (sort === SortTypeLabel.PriceLowest || sort === SortTypeLabel.PriceHighest) sortBy = "price"

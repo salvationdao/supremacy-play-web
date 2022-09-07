@@ -103,8 +103,6 @@ export const OvenStreamContainer = createContainer(() => {
     // Volume control
     const [volume, setVolume] = useState(parseString(localStorage.getItem("streamVolume"), 0.3))
     const [isMute, toggleIsMute] = useToggle(true)
-    const [musicVolume, setMusicVolume] = useState(parseString(localStorage.getItem("musicVolume"), 0.3))
-    const [isMusicMute, toggleIsMusicMute] = useToggle(true)
 
     // oven resolution control
     const [selectedOvenResolution, setSelectedOvenResolution] = useState<string>()
@@ -116,8 +114,7 @@ export const OvenStreamContainer = createContainer(() => {
     // This is needed for autoplay to work
     useEffect(() => {
         toggleIsMute(localStorage.getItem("isMute") == "true")
-        toggleIsMusicMute(localStorage.getItem("isMusicMute") == "true")
-    }, [toggleIsMusicMute, toggleIsMute, hasInteracted])
+    }, [toggleIsMute, hasInteracted])
 
     // Fetch stream list
     useEffect(() => {
@@ -140,10 +137,6 @@ export const OvenStreamContainer = createContainer(() => {
     }, [hasInteracted, isMute])
 
     useEffect(() => {
-        if (hasInteracted) localStorage.setItem("isMusicMute", isMusicMute ? "true" : "false")
-    }, [hasInteracted, isMusicMute])
-
-    useEffect(() => {
         if (!selectedOvenResolution) return
         localStorage.setItem(`${currentOvenStream?.name}-resolution`, selectedOvenResolution.toString())
     }, [currentOvenStream?.name, selectedOvenResolution])
@@ -158,17 +151,6 @@ export const OvenStreamContainer = createContainer(() => {
 
         if (hasInteracted) toggleIsMute(false)
     }, [hasInteracted, toggleIsMute, volume])
-
-    useEffect(() => {
-        localStorage.setItem("musicVolume", musicVolume.toString())
-
-        if (musicVolume <= 0) {
-            toggleIsMusicMute(true)
-            return
-        }
-
-        toggleIsMusicMute(false)
-    }, [musicVolume, toggleIsMusicMute])
 
     const changeOvenStream = useCallback((s: OvenStream) => {
         if (!s) return
@@ -257,10 +239,6 @@ export const OvenStreamContainer = createContainer(() => {
         setVolume,
         isMute,
         toggleIsMute,
-        musicVolume,
-        setMusicVolume,
-        isMusicMute,
-        toggleIsMusicMute,
         isEnlarged,
         toggleIsEnlarged,
     }

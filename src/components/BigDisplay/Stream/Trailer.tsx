@@ -68,9 +68,9 @@ export const Trailer = () => {
                 ) : (
                     <FancyButton
                         clipThingsProps={{
-                            clipSize: "9px",
+                            clipSize: "8px",
                             backgroundColor: "#222222",
-                            opacity: 0.8,
+                            opacity: 0.6,
                             border: { borderColor: "#FFFFFF", borderThickness: "1px" },
                             sx: { position: "absolute", bottom: "3rem", right: "3rem", zIndex: 9 },
                         }}

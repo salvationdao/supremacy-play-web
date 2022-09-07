@@ -107,21 +107,21 @@ export const landmineEffect = (defaultImage: string, backgroundImageUrl: string)
 	100% { background-image: url(${backgroundImageUrl}); }
 `
 
-export const shake = (shakeScale = 1) => keyframes`
+export const shake = (intensity = 1) => keyframes`
 10%, 90% {
-	transform: translate3d(calc(-1px * ${shakeScale}), 0, 0);
+	transform: translate3d(calc(-1px * ${intensity}), 0, 0);
 }
 
 20%, 80% {
-	transform: translate3d(calc(2px * ${shakeScale}), 0, 0);
+	transform: translate3d(calc(2px * ${intensity}), 0, 0);
 }
 
 30%, 50%, 70% {
-	transform: translate3d(calc(-3px * ${shakeScale}), 0, 0);
+	transform: translate3d(calc(-3px * ${intensity}), 0, 0);
 }
 
 40%, 60% {
-	transform: translate3d(calc(3px * ${shakeScale}), 0, 0);
+	transform: translate3d(calc(3px * ${intensity}), 0, 0);
 }
 `
 
