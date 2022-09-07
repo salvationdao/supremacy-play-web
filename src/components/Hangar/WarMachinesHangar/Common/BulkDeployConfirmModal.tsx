@@ -9,13 +9,7 @@ import { MechBasic, MechStatus } from "../../../../types"
 import { ConfirmModal } from "../../../Common/ConfirmModal"
 import { QueueFeed } from "../WarMachineDetails/Modals/DeployModal"
 
-export const BulkDeployConfirmModal = ({
-    setBulkDeployConfirmModalOpen,
-    selectedMechs,
-    setSelectedMechs,
-    childrenMechStatus,
-    queueFeed,
-}: {
+interface BulkDeployConfirmModalProps {
     setBulkDeployConfirmModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     selectedMechs: MechBasic[]
     setSelectedMechs: React.Dispatch<React.SetStateAction<MechBasic[]>>
@@ -23,7 +17,17 @@ export const BulkDeployConfirmModal = ({
         [mechID: string]: MechStatus
     }>
     queueFeed: QueueFeed | undefined
-}) => {
+    onBulkDeploy: (amount: number) => void
+}
+
+export const BulkDeployConfirmModal = ({
+    setBulkDeployConfirmModalOpen,
+    selectedMechs,
+    setSelectedMechs,
+    childrenMechStatus,
+    queueFeed,
+    onBulkDeploy,
+}: BulkDeployConfirmModalProps) => {
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [isLoading, setIsLoading] = useState(false)
@@ -46,6 +50,7 @@ export const BulkDeployConfirmModal = ({
                 setSelectedMechs([])
                 setError(undefined)
                 setBulkDeployConfirmModalOpen(false)
+                onBulkDeploy(validMechs.length)
             }
         } catch (e) {
             setError(typeof e === "string" ? e : "Failed to deploy war machines.")
@@ -54,7 +59,7 @@ export const BulkDeployConfirmModal = ({
         } finally {
             setIsLoading(false)
         }
-    }, [newSnackbarMessage, send, setBulkDeployConfirmModalOpen, setSelectedMechs, validMechs])
+    }, [newSnackbarMessage, onBulkDeploy, send, setBulkDeployConfirmModalOpen, setSelectedMechs, validMechs])
 
     return (
         <ConfirmModal

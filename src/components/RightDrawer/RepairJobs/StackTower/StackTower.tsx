@@ -93,12 +93,7 @@ export const StackTower = React.memo(function StackTower({
                     const resp = await agentRepairUpdate(repairAgent.id, gamePattern)
                     if (resp) {
                         setCumulativeScore((prev) => {
-                            const newCumScore = prev + 1
-                            if (repairAgent?.id && newCumScore === repairAgent?.required_stacks) {
-                                completeAgentRepair(repairAgent.id)
-                                return 0
-                            }
-                            return newCumScore
+                            return prev + 1
                         })
                     }
                 } catch (err) {
@@ -106,8 +101,15 @@ export const StackTower = React.memo(function StackTower({
                 }
             }
         },
-        [agentRepairUpdate, completeAgentRepair, repairAgent?.id, repairAgent?.required_stacks],
+        [agentRepairUpdate, repairAgent?.id],
     )
+
+    // As the player complete the game
+    useEffect(() => {
+        if (repairAgent?.id && cumulativeScore === repairAgent?.required_stacks) {
+            completeAgentRepair(repairAgent.id)
+        }
+    }, [repairAgent?.id, repairAgent?.required_stacks, cumulativeScore, completeAgentRepair])
 
     return (
         <Box
