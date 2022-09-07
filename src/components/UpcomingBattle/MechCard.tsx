@@ -1,11 +1,12 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useState } from "react"
-import { BcBorder, BcMask, RmBorder, RmMask, ZhiBorder, ZhiMask } from "../../assets"
+import { BCBorder, BCDeploy, BCWaiting, RMBorder, RMDeploy, RMWaiting, ZHIBorder, ZHIDeploy, ZHIWaiting } from "../../assets"
 import { FactionIDs } from "../../constants"
 import { useAuth, useUI } from "../../containers"
 import { useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { LEFT_DRAWER_MAP } from "../../routes"
+import { zoomEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
 import { Faction } from "../../types"
 import { MechDetails } from "../../types/assets"
@@ -14,28 +15,32 @@ import { ClipThing } from "../Common/ClipThing"
 const getCardStyles = (factionID: string) => {
     if (factionID === FactionIDs.BC) {
         return {
-            border: BcBorder,
-            mask: BcMask,
+            border: BCBorder,
+            waiting: BCWaiting,
+            deploy: BCDeploy,
         }
     }
 
     if (factionID === FactionIDs.ZHI) {
         return {
-            border: ZhiBorder,
-            mask: ZhiMask,
+            border: ZHIBorder,
+            waiting: ZHIWaiting,
+            deploy: ZHIDeploy,
         }
     }
 
     if (factionID === FactionIDs.RM) {
         return {
-            border: RmBorder,
-            mask: RmMask,
+            border: RMBorder,
+            waiting: RMWaiting,
+            deploy: RMDeploy,
         }
     }
 
     return {
-        border: RmBorder,
-        mask: RmMask,
+        border: RMBorder,
+        waiting: RMWaiting,
+        deploy: RMDeploy,
     }
 }
 
@@ -43,7 +48,7 @@ export const MechCard = ({ mechID, faction }: { mechID: string; faction: Faction
     const { factionID } = useAuth()
     const { setLeftDrawerActiveTabID } = useUI()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
-    const { border, mask } = getCardStyles(faction.id)
+    const { border, waiting, deploy } = getCardStyles(faction.id)
 
     useGameServerSubscription<MechDetails>(
         {
@@ -64,7 +69,7 @@ export const MechCard = ({ mechID, faction }: { mechID: string; faction: Faction
         <Stack alignItems="center" sx={{ position: "relative", height: "100%", width: "100%", zIndex: 9, mt: "-2.8rem" }}>
             {/* The fancy box border */}
             <img
-                style={{ position: "absolute", top: "-.9rem", left: 0, width: "100%", height: "100%", zIndex: 4, pointerEvents: "none" }}
+                style={{ position: "absolute", top: "-.85rem", left: 0, width: "100%", height: "100%", zIndex: 4, pointerEvents: "none" }}
                 src={border}
                 alt=""
             />
@@ -72,30 +77,40 @@ export const MechCard = ({ mechID, faction }: { mechID: string; faction: Faction
             {/* Mech image */}
             <Box
                 sx={{
+                    position: "relative",
                     width: "calc(100% - 2rem)",
                     height: "calc(100% - 2rem)",
                     backgroundColor: colors.darkNavy,
                     clipPath: "polygon(10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%, 0% 10%)",
                     zIndex: 3,
+                    overflow: "hidden",
                 }}
             >
                 <Box
                     onClick={clickToDeploy ? () => setLeftDrawerActiveTabID(LEFT_DRAWER_MAP["quick_deploy"]?.id) : undefined}
                     sx={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
                         width: "100%",
                         height: "100%",
-                        backgroundImage: `url(${avatarUrl || mask})`,
+                        backgroundImage: `url(${avatarUrl || (clickToDeploy ? deploy : waiting)})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
                         backgroundSize: "cover",
-                        opacity: clickToDeploy ? 0.3 : 1,
+                        opacity: clickToDeploy ? 0.8 : !mechID ? 0.3 : 1,
                         cursor: clickToDeploy ? "pointer" : "unset",
-                        ":hover": {
-                            opacity: 1,
-                        },
-                        ":active": {
-                            opacity: 0.8,
-                        },
+                        ...(clickToDeploy
+                            ? {
+                                  animation: `${zoomEffect(1.08)} 3s infinite`,
+                                  ":hover": {
+                                      opacity: 1,
+                                  },
+                                  ":active": {
+                                      opacity: 0.8,
+                                  },
+                              }
+                            : {}),
                     }}
                 />
             </Box>
@@ -111,7 +126,7 @@ export const MechCard = ({ mechID, faction }: { mechID: string; faction: Faction
                 backgroundColor={faction.background_color}
                 sx={{ position: "absolute", left: "1rem", right: "1rem", bottom: "-3.4rem", zIndex: -1 }}
             >
-                <Box sx={{ p: "1rem", pt: "2.5rem" }}>
+                <Box sx={{ p: ".6rem", pt: "2.5rem" }}>
                     <Typography
                         variant="h6"
                         sx={{
