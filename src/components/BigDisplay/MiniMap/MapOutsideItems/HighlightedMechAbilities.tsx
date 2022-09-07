@@ -92,16 +92,9 @@ const HighlightedMechAbilitiesInner = ({
                 corners={{ bottomRight: true }}
                 opacity={0.3}
                 backgroundColor={theme.factionTheme.background}
-                sx={{ position: "absolute", top: "4.5rem", left: "1.2rem" }}
+                sx={{ position: "absolute", top: "4.5rem", left: "1.2rem", pointerEvents: "none" }}
             >
-                <Stack
-                    spacing=".8rem"
-                    onClick={(e) => {
-                        e.preventDefault()
-                        e.stopPropagation()
-                    }}
-                    sx={{ p: ".8rem .9rem", width: "17rem" }}
-                >
+                <Stack spacing=".8rem" sx={{ p: ".8rem .9rem", width: "17rem" }}>
                     {!isMiniMech &&
                         gameAbilities &&
                         gameAbilities.length > 0 &&
@@ -172,7 +165,6 @@ const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; pa
                 height: "3rem",
                 width: "100%",
                 opacity: ready ? 1 : 0.6,
-                pointerEvents: ready ? "all" : "none",
             }}
         >
             {/* Image */}
@@ -187,6 +179,7 @@ const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; pa
                     backgroundPosition: "center",
                     backgroundSize: "cover",
                     border: `${colour} 1.5px solid`,
+                    pointerEvents: "all",
                     ":hover": ready ? { borderWidth: "3px", transform: "scale(1.04)" } : undefined,
                 }}
                 onClick={ready ? onTrigger : undefined}
