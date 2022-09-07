@@ -13,7 +13,7 @@ import {
     SvgSkin,
     SvgUtilities,
     SvgWeapons,
-    SvgWrapperProps
+    SvgWrapperProps,
 } from "../assets"
 import { colors } from "../theme/theme"
 import { AssetItemType, MysteryCrateType, Rarity, UserRank } from "../types"
