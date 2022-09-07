@@ -30,6 +30,7 @@ import Logout from "!@svgr/webpack!./svg/Logout.svg"
 import Mail from "!@svgr/webpack!./svg/Mail.svg"
 import Meteor from "!@svgr/webpack!./svg/Meteor.svg"
 import Mobility from "!@svgr/webpack!./svg/Mobility.svg"
+import MoreOptions from "!@svgr/webpack!./svg/MoreOptions.svg"
 import NinjaSyndicateLogo from "!@svgr/webpack!./svg/NinjaSyndicateLogo.svg"
 import OutroAnimation from "!@svgr/webpack!./svg/OutroAnimation.svg"
 import Plus from "!@svgr/webpack!./svg/Plus.svg"
@@ -1258,5 +1259,11 @@ export const SvgDelete: React.VoidFunctionComponent<SvgWrapperProps> = (props) =
 export const SvgFacebook: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Facebook />
+    </SvgWrapper>
+)
+
+export const SvgMoreOptions: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <MoreOptions />
     </SvgWrapper>
 )
