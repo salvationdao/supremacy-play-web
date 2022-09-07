@@ -7,22 +7,6 @@ export const BattleAbilityCountdown = ({ bribeStage }: { bribeStage?: BribeStage
     const secondsLeftRef = useRef<number>()
     const containerRef = useRef<HTMLDivElement>()
 
-    // useEffect(() => {
-    //     if (!bribeStage) return
-
-    //     let endTime = bribeStage.end_time
-    //     const dateNow = new Date()
-    //     const diff = endTime.getTime() - dateNow.getTime()
-
-    //     // Just a temp fix, if user's pc time is not correct then at least set for them
-    //     // Checked by seeing if they have at least 8s to do stuff
-    //     if (endTime < dateNow || diff > 40000) {
-    //         endTime = new Date(dateNow.getTime() + (bribeStage.phase === BribeStage.OptIn ? 30000 : 20000))
-    //     }
-
-    //     setEndTimeState(endTime)
-    // }, [bribeStage, setEndTimeState])
-
     const updateSecondsLeft = useCallback(
         (value: number) => {
             if (!secondsLeftRef.current == null) return
