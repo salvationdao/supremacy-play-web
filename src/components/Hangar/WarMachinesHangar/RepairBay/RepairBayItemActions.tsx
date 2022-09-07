@@ -46,11 +46,11 @@ export const RepairBayItemActions = ({
             onClose={() => toggleLocalOpen(false)}
             anchorOrigin={{
                 vertical: "top",
-                horizontal: "center",
+                horizontal: "left",
             }}
             transformOrigin={{
                 vertical: "top",
-                horizontal: "center",
+                horizontal: "right",
             }}
             sx={{
                 mt: ".5rem",
@@ -71,13 +71,25 @@ export const RepairBayItemActions = ({
             >
                 <Stack justifyContent="center" sx={{ p: "1rem 1.3rem" }}>
                     {aboveSlot && swapRepairBay && (
-                        <IconButton size="small" onClick={() => swapRepairBay([mech_id, aboveSlot.mech_id])}>
+                        <IconButton
+                            size="small"
+                            onClick={() => {
+                                toggleLocalOpen(false)
+                                swapRepairBay([mech_id, aboveSlot.mech_id])
+                            }}
+                        >
                             <SvgUpArrow size="1.4rem" />
                         </IconButton>
                     )}
 
                     {belowSlot && swapRepairBay && (
-                        <IconButton size="small" onClick={() => swapRepairBay([mech_id, belowSlot.mech_id])}>
+                        <IconButton
+                            size="small"
+                            onClick={() => {
+                                toggleLocalOpen(false)
+                                swapRepairBay([mech_id, belowSlot.mech_id])
+                            }}
+                        >
                             <SvgDownArrow size="1.4rem" />
                         </IconButton>
                     )}
