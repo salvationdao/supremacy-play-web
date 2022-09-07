@@ -38,10 +38,11 @@ export const ReplayEvents = ({
     useInterval(() => {
         setVideoTime(streamRef.current?.currentTime || 0)
 
-        const passedItems = document.getElementsByClassName(`replay-event-item-true`)
-        if (passedItems && !isMouseHovered.current) {
-            const lastPassedItem = passedItems[passedItems.length - 1]
-            lastPassedItem.scrollIntoView({ behavior: "smooth", block: "nearest" })
+        const parentContainer = document.getElementById(`replay-events-container`)
+        const notPassedItems = document.getElementsByClassName(`replay-event-item-false`)
+        if (notPassedItems && !isMouseHovered.current && parentContainer) {
+            const firstNotPassedItem = notPassedItems[0] as HTMLDivElement
+            parentContainer.scrollTop = firstNotPassedItem.offsetTop - 80
         }
     }, 1000)
 
@@ -63,12 +64,14 @@ export const ReplayEvents = ({
             <Typography sx={{ fontFamily: fonts.nostromoBlack }}>BATTLE EVENTS</Typography>
 
             <Box
+                id={`replay-events-container`}
                 sx={{
                     height: "100%",
                     overflowY: "auto",
                     overflowX: "hidden",
                     pr: ".8rem",
                     direction: "ltr",
+                    scrollBehavior: "smooth",
                     scrollbarWidth: "none",
                     "::-webkit-scrollbar": {
                         width: ".8rem",
@@ -159,7 +162,7 @@ const ReplayEventItem = React.memo(function ReplayEventItem({ seekToSeconds, rep
     }, [getFaction, notification.data, notification.type])
 
     return (
-        <Stack className={`replay-event-item-${isPassed}`} alignItems="flex-start" sx={{ opacity: isPassed ? 0.25 : 1 }}>
+        <Stack className={`replay-event-item-${isPassed}`} alignItems="flex-start" sx={{ opacity: isPassed ? 0.25 : 1, transition: "all .2s" }}>
             <Typography variant="caption" sx={{ px: ".6rem", borderRadius: 0.3, backgroundColor: `${colors.darkNavy}AA` }}>
                 {tooltipText}
             </Typography>
