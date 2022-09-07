@@ -28,8 +28,8 @@ export const PASSPORT_SIGNUP = DEV_ONLY
     : "https://staging.xsyn.dev/external/login?signup=true&tenant=supremacy&redirectURL=https%3A%2F%2Fsupremacygame.dev/?training=false"
 
 // Battle arena related
-export const BATTLE_ARENA_OPEN = STAGING_OR_DEV_ONLY
 export const BATTLE_ARENA_OPEN_DATE: Date | undefined = new Date("Sep 08 2022 08:00:00 GMT+0800 (AWST)")
+export const BATTLE_ARENA_OPEN = !!(localStorage.getItem("openBattleArena") === "true" || (BATTLE_ARENA_OPEN_DATE && BATTLE_ARENA_OPEN_DATE < new Date()))
 
 // Testing related
 export const IS_TESTING_MODE = STAGING_ONLY
@@ -108,9 +108,6 @@ export enum FactionIDs {
 export const NullUUID = "00000000-0000-0000-0000-000000000000"
 export const TRAILER_VIDEO =
     "https://player.vimeo.com/progressive_redirect/playback/681913587/rendition/1080p?loc=external&signature=6d5bf3570be8bd5e9e57a6a786964a99d067957fbcf9e3a40b6914c085c9b3e9#t=10"
-
-// Maintenance (ENVAR). The local storage is a hack to let the team members in
-export const UNDER_MAINTENANCE = process.env.REACT_APP_MAINTENANCE_PAGE === "true" && !localStorage.getItem("NinjaSecrets@!")
 
 export const PRISMIC_ACCESS_TOKEN = process.env.REACT_APP_PRISMIC_ACCESS_TOKEN
 

@@ -1,4 +1,5 @@
 import { Stack, Typography, useMediaQuery } from "@mui/material"
+import { useEffect } from "react"
 import { BattleArenaOpeningWebP } from "../../assets"
 import { BATTLE_ARENA_OPEN_DATE } from "../../constants"
 import { useTimer } from "../../hooks"
@@ -39,6 +40,12 @@ export const BattleArenaCountDown = () => {
 const Countdown = () => {
     const below1080 = useMediaQuery("(max-width:1080px)")
     const { days, hours, minutes, seconds, totalSecRemain } = useTimer(BATTLE_ARENA_OPEN_DATE)
+
+    useEffect(() => {
+        if (totalSecRemain <= 0) {
+            location.reload()
+        }
+    }, [totalSecRemain])
 
     if (!BATTLE_ARENA_OPEN_DATE || seconds === undefined || totalSecRemain <= 0) {
         return null

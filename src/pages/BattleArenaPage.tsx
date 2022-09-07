@@ -1,5 +1,5 @@
 import { Box, Stack } from "@mui/material"
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { SvgAbility, SvgHistory, SvgHistoryClock, SvgRobot } from "../assets"
 import { BattleAbility, BattleEndScreen, BattleHistory, BigDisplay, Controls, EarlyAccessWarning, Notifications, WarMachineStats } from "../components"
 import { BattleRewardsSkyHighBanner } from "../components/Common/BannersPromotions/BattleRewardsSkyHighBanner"
@@ -7,10 +7,10 @@ import { PlayerAbilities } from "../components/LeftDrawer/BattleArena/PlayerAbil
 import { QuickPlayerAbilities } from "../components/LeftDrawer/BattleArena/QuickPlayerAbilities/QuickPlayerAbilities"
 import { QuickDeploy } from "../components/LeftDrawer/QuickDeploy/QuickDeploy"
 import { BattleArenaCountDown } from "../components/Maintenance/BattleArenaCountDown"
+import { UpcomingBattle } from "../components/UpcomingBattle/UpcomingBattle"
 import { BATTLE_ARENA_OPEN } from "../constants"
 import { useArena, useAuth, useDimension, useMobile } from "../containers"
 import { siteZIndex } from "../theme/theme"
-import { UpcomingBattle } from "../components/UpcomingBattle/UpcomingBattle"
 
 export const BattleArenaPage = () => {
     const { userID } = useAuth()
@@ -44,7 +44,7 @@ export const BattleArenaPage = () => {
     return <BattleArenaPageInner />
 }
 
-const BattleArenaPageInner = () => {
+const BattleArenaPageInner = React.memo(function BattleArenaPageInner() {
     const { isMobile, setAdditionalTabs, setIsNavOpen, allowCloseNav } = useMobile()
     const { triggerReset } = useDimension()
 
@@ -182,4 +182,4 @@ const BattleArenaPageInner = () => {
             <Controls />
         </Stack>
     )
-}
+})
