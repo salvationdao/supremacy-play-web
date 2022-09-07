@@ -47,7 +47,7 @@ export const ReplayDetails = ({ gid, battleNumber }: { gid: number; battleNumber
     const seekToSeconds = useCallback((seconds: number) => {
         streamRef.current?.play()
         if (streamRef.current?.currentTime) {
-            streamRef.current.currentTime = seconds
+            streamRef.current.currentTime = Math.max(seconds - 2, 0)
         }
     }, [])
 
@@ -114,7 +114,7 @@ export const ReplayDetails = ({ gid, battleNumber }: { gid: number; battleNumber
                     <Stack direction="row" spacing="2rem" justifyContent="space-between">
                         {/* Left side */}
                         <Stack spacing="2rem" sx={{ flex: 1 }}>
-                            <ReplayPlayer battleReplay={replay.battle_replay} streamRef={streamRef} />
+                            <ReplayPlayer battleReplay={replay.battle_replay} streamRef={streamRef} seekToSeconds={seekToSeconds} />
                             <ReplayInfo battleReplay={replay.battle_replay} />
                             <ReplayMechs mechs={replay.mechs} />
                         </Stack>

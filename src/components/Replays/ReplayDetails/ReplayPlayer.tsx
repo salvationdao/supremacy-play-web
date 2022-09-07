@@ -6,8 +6,17 @@ import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleReplay } from "../../../types"
+import { FancyButton } from "../../Common/FancyButton"
 
-export const ReplayPlayer = ({ battleReplay, streamRef }: { battleReplay?: BattleReplay; streamRef: React.MutableRefObject<StreamPlayerApi | undefined> }) => {
+export const ReplayPlayer = ({
+    battleReplay,
+    streamRef,
+    seekToSeconds,
+}: {
+    battleReplay?: BattleReplay
+    streamRef: React.MutableRefObject<StreamPlayerApi | undefined>
+    seekToSeconds: (seconds: number) => void
+}) => {
     const theme = useTheme()
     const { hasInteracted } = useSupremacy()
     const [hasError, setHasError] = useState(false)
@@ -36,6 +45,28 @@ export const ReplayPlayer = ({ battleReplay, streamRef }: { battleReplay?: Battl
                     onVolumeChange={onVolumeChanged}
                     onError={() => setHasError(true)}
                 />
+
+                {battleReplay?.intro_ended_at && battleReplay?.started_at && (
+                    <FancyButton
+                        clipThingsProps={{
+                            clipSize: "8px",
+                            backgroundColor: "#222222",
+                            opacity: 0.6,
+                            border: { borderColor: "#FFFFFF", borderThickness: "1px" },
+                            sx: { position: "absolute", top: "2rem", right: "3rem", zIndex: 9 },
+                        }}
+                        sx={{ px: "1.6rem", py: ".3rem", color: "#FFFFFF" }}
+                        onClick={() => {
+                            if (!battleReplay?.intro_ended_at || !battleReplay?.started_at) return
+                            const timeSeconds = (battleReplay.intro_ended_at.getTime() - battleReplay.started_at.getTime()) / 1000
+                            seekToSeconds(timeSeconds)
+                        }}
+                    >
+                        <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: "#FFFFFF" }}>
+                            SKIP INTRO
+                        </Typography>
+                    </FancyButton>
+                )}
             </Box>
 
             {hasError && (
