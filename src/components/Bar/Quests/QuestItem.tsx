@@ -48,8 +48,8 @@ export const QuestItem = React.memo(function QuestItem({ questStat, progress, sh
                 borderRadius: 1,
                 backgroundColor: `${colors.purple}16`,
                 userSelect: "none",
-                opacity: completed && !showConfetti ? 0.4 : 1,
-                border: completed && !showConfetti ? "none" : `${colors.purple}50 1px solid`,
+                opacity: completed ? 0.4 : 1,
+                border: completed ? "none" : `${colors.purple}50 1px solid`,
                 overflow: "hidden",
             }}
         >
