@@ -23,7 +23,10 @@ export const LeftDrawer = () => {
     // Hide the drawer if on mobile OR none of the tabs are visible on the page
     if (isMobile || LEFT_DRAWER_ARRAY.filter((r) => !r.matchNavLinkIDs || r.matchNavLinkIDs.includes(activeRouteID)).length <= 0) return null
 
-    const isOpen = !!LEFT_DRAWER_MAP[leftDrawerActiveTabID]
+    const isOpen =
+        LEFT_DRAWER_MAP[leftDrawerActiveTabID] &&
+        (LEFT_DRAWER_MAP[leftDrawerActiveTabID].matchNavLinkIDs === undefined ||
+            LEFT_DRAWER_MAP[leftDrawerActiveTabID].matchNavLinkIDs?.includes(activeRouteID))
 
     return (
         <>
