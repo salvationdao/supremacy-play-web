@@ -338,7 +338,6 @@ export const TimeLeft = ({ dateTo }: TimeLeftProps) => {
         const t = setInterval(() => {
             if (secondsLeftRef.current < 1) return
             secondsLeftRef.current -= 1
-            console.log(secondsLeftRef.current)
 
             if (!containerRef.current) return
             containerRef.current.innerText = secondsLeftRef.current > 0 ? secondsToWords(secondsLeftRef.current) : "REFRESHING"
