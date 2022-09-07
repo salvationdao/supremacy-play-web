@@ -113,7 +113,10 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
             <>
                 <Logo />
                 <Box sx={{ flexGrow: 1 }} />
-                <Stack direction="row" alignItems="center" spacing="1.3rem" sx={{ mr: "1.6rem" }}>
+
+                <Tutorial />
+
+                <Stack direction="row" alignItems="center" spacing="1.3rem" sx={{ mx: "1.6rem" }}>
                     <CircularProgress size="1.9rem" sx={{ color: colors.neonBlue, mb: ".5rem !important" }} />
                     <Typography sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoBold }} variant="caption">
                         RECONNECTING...
