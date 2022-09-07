@@ -166,7 +166,7 @@ const ReplayEventItem = React.memo(function ReplayEventItem({ seekToSeconds, rep
             <Typography variant="caption" sx={{ px: ".6rem", borderRadius: 0.3, backgroundColor: `${colors.darkNavy}AA` }}>
                 {tooltipText}
             </Typography>
-            <Button sx={{ p: 0, width: "100%", display: "block", textAlign: "start" }} onClick={() => seekToSeconds(Math.max(timeSeconds - 2, 0))}>
+            <Button sx={{ p: 0, width: "100%", display: "block", textAlign: "start" }} onClick={() => seekToSeconds(timeSeconds)}>
                 {content}
             </Button>
         </Stack>
