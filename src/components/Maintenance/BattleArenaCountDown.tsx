@@ -47,7 +47,7 @@ const Countdown = () => {
         }
     }, [totalSecRemain])
 
-    if (!BATTLE_ARENA_OPEN_DATE || seconds === undefined || totalSecRemain <= 0) {
+    if (!BATTLE_ARENA_OPEN_DATE || seconds === undefined || totalSecRemain < 0) {
         return null
     }
 
