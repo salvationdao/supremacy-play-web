@@ -221,7 +221,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             label: "Replays",
         },
         matchNavLinkID: "replays",
-        enable: true,
+        enable: BATTLE_ARENA_OPEN,
         pageTitle: "Supremacy - Replays",
     },
 
