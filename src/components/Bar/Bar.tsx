@@ -1,6 +1,6 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import Marquee from "react-fast-marquee"
-import { FancyButton, Logo, ProfileCard, WalletDetails } from ".."
+import { BuySupsButton, FancyButton, Logo, ProfileCard, WalletDetails } from ".."
 import { SvgDisconnected } from "../../assets"
 import { DRAWER_TRANSITION_DURATION, FEEDBACK_FORM_URL, GAME_BAR_HEIGHT, IS_TESTING_MODE, NEXT_RESET_TIME } from "../../constants"
 import { useAuth, useSupremacy } from "../../containers"
@@ -99,6 +99,7 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
                 <Logo />
                 <Box sx={{ flexGrow: 1 }} />
                 <Tutorial />
+                <BuySupsButton />
                 <Stack direction="row" alignItems="center" spacing="1.3rem" sx={{ mx: "1.6rem" }}>
                     <SvgDisconnected size="1.7rem" sx={{ pb: ".6rem" }} />
                     <Typography sx={{ fontFamily: fonts.nostromoBold }} variant="caption">
@@ -115,6 +116,7 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
                 <Logo />
                 <Box sx={{ flexGrow: 1 }} />
                 <Tutorial />
+                <BuySupsButton />
                 <Stack direction="row" alignItems="center" spacing="1.3rem" sx={{ mx: "1.6rem" }}>
                     <CircularProgress size="1.9rem" sx={{ color: colors.neonBlue, mb: ".5rem !important" }} />
                     <Typography sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoBold }} variant="caption">
@@ -150,6 +152,7 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
                 </FancyButton>
             )}
             {userID && <WalletDetails />}
+            <BuySupsButton />
             {userID && <Quests />}
             {userID && <Messages />}
             <ProfileCard userID={userID} user={user} />
