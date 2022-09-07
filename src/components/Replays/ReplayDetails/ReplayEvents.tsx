@@ -38,10 +38,10 @@ export const ReplayEvents = ({
     useInterval(() => {
         setVideoTime(streamRef.current?.currentTime || 0)
 
-        const passedItems = document.getElementsByClassName(`replay-event-item-true`)
-        if (passedItems && !isMouseHovered.current) {
-            const lastPassedItem = passedItems[passedItems.length - 1]
-            lastPassedItem.scrollIntoView({ behavior: "smooth", block: "nearest" })
+        const notPassedItems = document.getElementsByClassName(`replay-event-item-false`)
+        if (notPassedItems && !isMouseHovered.current) {
+            const firstNotPassedItem = notPassedItems[0]
+            firstNotPassedItem.scrollIntoView({ behavior: "smooth", block: "nearest" })
         }
     }, 1000)
 
@@ -159,7 +159,7 @@ const ReplayEventItem = React.memo(function ReplayEventItem({ seekToSeconds, rep
     }, [getFaction, notification.data, notification.type])
 
     return (
-        <Stack className={`replay-event-item-${isPassed}`} alignItems="flex-start" sx={{ opacity: isPassed ? 0.25 : 1 }}>
+        <Stack className={`replay-event-item-${isPassed}`} alignItems="flex-start" sx={{ opacity: isPassed ? 0.25 : 1, transition: "all .2s" }}>
             <Typography variant="caption" sx={{ px: ".6rem", borderRadius: 0.3, backgroundColor: `${colors.darkNavy}AA` }}>
                 {tooltipText}
             </Typography>
