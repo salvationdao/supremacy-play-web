@@ -111,7 +111,7 @@ export const MechCard = ({ mechID, faction }: { mechID: string; faction: Faction
                 backgroundColor={faction.background_color}
                 sx={{ position: "absolute", left: "1rem", right: "1rem", bottom: "-3.4rem", zIndex: -1 }}
             >
-                <Box sx={{ p: "1rem 2rem", pt: "2.5rem" }}>
+                <Box sx={{ p: "1rem", pt: "2.5rem" }}>
                     <Typography
                         variant="h6"
                         sx={{

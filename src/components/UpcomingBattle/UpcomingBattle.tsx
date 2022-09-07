@@ -4,7 +4,7 @@ import { useDimension, useSupremacy } from "../../containers"
 import { useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { opacityEffect } from "../../theme/keyframes"
-import { colors, fonts, theme } from "../../theme/theme"
+import { colors, fonts } from "../../theme/theme"
 import { GameMap } from "../../types"
 import { MechCard } from "./MechCard"
 
@@ -50,7 +50,7 @@ export const UpcomingBattle = () => {
         if (!nextBattle) {
             return (
                 <Stack justifyContent="center" alignItems="center" sx={{ height: "6rem" }}>
-                    <CircularProgress size="2rem" sx={{ mt: "2rem", color: theme.factionTheme.primary }} />
+                    <CircularProgress size="3rem" sx={{ color: "#FFFFFF" }} />
                 </Stack>
             )
         }
