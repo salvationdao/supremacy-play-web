@@ -98,7 +98,8 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
             <>
                 <Logo />
                 <Box sx={{ flexGrow: 1 }} />
-                <Stack direction="row" alignItems="center" spacing="1.3rem" sx={{ mr: "1.6rem" }}>
+                <Tutorial />
+                <Stack direction="row" alignItems="center" spacing="1.3rem" sx={{ mx: "1.6rem" }}>
                     <SvgDisconnected size="1.7rem" sx={{ pb: ".6rem" }} />
                     <Typography sx={{ fontFamily: fonts.nostromoBold }} variant="caption">
                         DISCONNECTED
@@ -113,9 +114,7 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
             <>
                 <Logo />
                 <Box sx={{ flexGrow: 1 }} />
-
                 <Tutorial />
-
                 <Stack direction="row" alignItems="center" spacing="1.3rem" sx={{ mx: "1.6rem" }}>
                     <CircularProgress size="1.9rem" sx={{ color: colors.neonBlue, mb: ".5rem !important" }} />
                     <Typography sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoBold }} variant="caption">
@@ -130,9 +129,7 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
         <>
             <Logo />
             <NavLinks />
-
             <Box sx={{ flexGrow: 1 }} />
-
             <Tutorial />
             {userID && (
                 <FancyButton
