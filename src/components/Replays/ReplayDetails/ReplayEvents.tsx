@@ -38,10 +38,11 @@ export const ReplayEvents = ({
     useInterval(() => {
         setVideoTime(streamRef.current?.currentTime || 0)
 
+        const parentContainer = document.getElementById(`replay-events-container`)
         const notPassedItems = document.getElementsByClassName(`replay-event-item-false`)
-        if (notPassedItems && !isMouseHovered.current) {
-            const firstNotPassedItem = notPassedItems[0]
-            firstNotPassedItem.scrollIntoView({ behavior: "smooth", block: "nearest" })
+        if (notPassedItems && !isMouseHovered.current && parentContainer) {
+            const firstNotPassedItem = notPassedItems[0] as HTMLDivElement
+            parentContainer.scrollTop = firstNotPassedItem.offsetTop - 60
         }
     }, 1000)
 
@@ -63,12 +64,14 @@ export const ReplayEvents = ({
             <Typography sx={{ fontFamily: fonts.nostromoBlack }}>BATTLE EVENTS</Typography>
 
             <Box
+                id={`replay-events-container`}
                 sx={{
                     height: "100%",
                     overflowY: "auto",
                     overflowX: "hidden",
                     pr: ".8rem",
                     direction: "ltr",
+                    scrollBehavior: "smooth",
                     scrollbarWidth: "none",
                     "::-webkit-scrollbar": {
                         width: ".8rem",
