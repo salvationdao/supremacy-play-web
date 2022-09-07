@@ -42,7 +42,7 @@ export const ReplayEvents = ({
         const notPassedItems = document.getElementsByClassName(`replay-event-item-false`)
         if (notPassedItems && !isMouseHovered.current && parentContainer) {
             const firstNotPassedItem = notPassedItems[0] as HTMLDivElement
-            parentContainer.scrollTop = firstNotPassedItem.offsetTop - 60
+            parentContainer.scrollTop = firstNotPassedItem.offsetTop - 80
         }
     }, 1000)
 
