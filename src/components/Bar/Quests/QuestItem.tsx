@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import Confetti from "react-confetti"
 import { SvgChest, SvgInfoCircular } from "../../../assets"
 import { colors, fonts } from "../../../theme/theme"
@@ -24,16 +24,8 @@ const propsAreEqual = (prevProps: QuestItemProps, nextProps: QuestItemProps) => 
 export const QuestItem = React.memo(function QuestItem({ questStat, progress, showConfetti }: QuestItemProps) {
     const cappedCurrent = progress ? Math.min(progress.current, progress.goal) : 0
     const progressPercent = progress ? (100 * cappedCurrent) / progress.goal : 0
-    const [showShowConfetti, setShowShowConfetti] = useState(false)
+    const [showShowConfetti, setShowShowConfetti] = useState(showConfetti)
     const [completed, setCompleted] = useState(questStat.obtained)
-
-    // This timeout allows the popover to fully animate before we do other animations, else it will lag
-    useEffect(() => {
-        if (!showConfetti) return
-        setTimeout(() => {
-            setShowShowConfetti(true)
-        }, 500)
-    }, [showConfetti])
 
     return (
         <Stack
@@ -48,8 +40,8 @@ export const QuestItem = React.memo(function QuestItem({ questStat, progress, sh
                 borderRadius: 1,
                 backgroundColor: `${colors.purple}16`,
                 userSelect: "none",
-                opacity: completed ? 0.4 : 1,
-                border: completed ? "none" : `${colors.purple}50 1px solid`,
+                opacity: completed && !showShowConfetti ? 0.4 : 1,
+                border: completed && !showShowConfetti ? "none" : `${colors.purple}50 1px solid`,
                 overflow: "hidden",
             }}
         >
@@ -64,8 +56,10 @@ export const QuestItem = React.memo(function QuestItem({ questStat, progress, sh
                     numberOfPieces={100}
                     recycle={false}
                     onConfettiComplete={() => {
-                        setCompleted(true)
-                        setShowShowConfetti(false)
+                        setTimeout(() => {
+                            setCompleted(true)
+                            setShowShowConfetti(false)
+                        }, 3000)
                     }}
                 />
             )}
