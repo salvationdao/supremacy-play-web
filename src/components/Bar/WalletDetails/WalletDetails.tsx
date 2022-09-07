@@ -1,12 +1,8 @@
 import { Divider, Stack } from "@mui/material"
-import { BuySupsButton } from "../.."
 import { SvgWallet } from "../../../assets"
-import { useAuth } from "../../../containers"
 import { WalletInfo } from "./WalletInfo/WalletInfo"
 
 export const WalletDetails = () => {
-    const { userID } = useAuth()
-
     return (
         <Stack
             direction="row"
@@ -41,8 +37,6 @@ export const WalletDetails = () => {
                     <SvgWallet size="2.3rem" sx={{ mr: ".8rem" }} />
                     <WalletInfo />
                 </Stack>
-
-                {userID && <BuySupsButton />}
             </Stack>
 
             <Divider
