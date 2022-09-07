@@ -62,17 +62,17 @@ export const ReplayItemPage = () => {
 const ReplayItemPageInner = () => {
     const [query] = useUrlQuery()
     const history = useHistory()
-    const gid = parseString(query.get("gid"), -1)
-    const battleNumber = parseString(query.get("battleNumber"), -1)
+    const gid = query.get("gid") ? parseString(query.get("gid"), -1) : undefined
+    const battleNumber = query.get("battleNumber") ? parseString(query.get("battleNumber"), -1) : undefined
 
     useEffect(() => {
         // If the page is invalid, redirect to /replays
-        if (gid < 0 && battleNumber < 0) {
+        if (!gid || !battleNumber) {
             history.push("/replays")
         }
     }, [battleNumber, gid, history])
 
-    if (gid >= 0 && battleNumber >= 0) {
+    if (gid && battleNumber) {
         return <ReplayDetails gid={gid} battleNumber={battleNumber} />
     }
 
