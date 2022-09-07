@@ -3,7 +3,7 @@ import BigNumber from "bignumber.js"
 import { useRef, useState } from "react"
 import { SvgSupToken } from "../../../assets"
 import { DEV_ONLY, PROD_ONLY } from "../../../constants"
-import { supFormatterNoFixed } from "../../../helpers"
+import { numFormatter } from "../../../helpers"
 import { useGameServerSubscription } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
@@ -27,8 +27,8 @@ const ChallengeFundsRemainInner = () => {
         },
         (payload) => {
             if (!payload) return
-            setChallengeSupsRemain(supFormatterNoFixed(payload))
-            progressPercent.current = new BigNumber(payload).shiftedBy(-18).dividedBy(MAX_FUNDS).toNumber()
+            setChallengeSupsRemain(numFormatter(new BigNumber(payload).shiftedBy(-18).toNumber()))
+            progressPercent.current = new BigNumber(payload).shiftedBy(-18).dividedBy(MAX_FUNDS).multipliedBy(100).toNumber()
         },
     )
 

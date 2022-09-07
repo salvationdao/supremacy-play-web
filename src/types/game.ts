@@ -263,6 +263,7 @@ export interface BattleReplay {
     recording_status: string
     started_at?: Date
     stopped_at?: Date
+    intro_ended_at?: Date
     events?: ReplayEvent[]
     battle: Battle
     arena: Arena
