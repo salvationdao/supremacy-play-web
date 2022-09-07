@@ -88,7 +88,7 @@ const AmountItem = ({
 }) => {
     return (
         <TooltipHelper placement="bottom-start" text={tooltip}>
-            <Stack direction="row" alignItems="center">
+            <Stack direction="row" alignItems="center" sx={{ flexShrink: 0 }}>
                 <Typography sx={{ mr: ".4rem", fontWeight: "fontWeightBold" }}>{title}</Typography>
 
                 {!disableIcon && <SvgSupToken size="1.7rem" fill={color} sx={{ mr: ".1rem", pb: ".2rem" }} />}
