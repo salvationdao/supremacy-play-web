@@ -13,7 +13,7 @@ import {
     SvgSkin,
     SvgUtilities,
     SvgWeapons,
-    SvgWrapperProps,
+    SvgWrapperProps
 } from "../assets"
 import { colors } from "../theme/theme"
 import { AssetItemType, MysteryCrateType, Rarity, UserRank } from "../types"
@@ -368,6 +368,10 @@ export const timeSinceInWords = (fromDate: Date, toDate: Date, abbreviated = fal
 
     result = (result ? result + " " : "") + (seconds > 0 ? seconds + (abbreviated ? "s" : " second") + (seconds === 1 || abbreviated ? "" : "s") : "")
     return result
+}
+
+export const secondsToWords = (secondsLeft: number) => {
+    return timeSinceInWords(new Date(), new Date(new Date().getTime() + secondsLeft * 1000))
 }
 
 export const camelToTitle = (str: string) => {
