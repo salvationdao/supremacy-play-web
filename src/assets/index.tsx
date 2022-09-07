@@ -30,6 +30,7 @@ import Logout from "!@svgr/webpack!./svg/Logout.svg"
 import Mail from "!@svgr/webpack!./svg/Mail.svg"
 import Meteor from "!@svgr/webpack!./svg/Meteor.svg"
 import Mobility from "!@svgr/webpack!./svg/Mobility.svg"
+import MoreOptions from "!@svgr/webpack!./svg/MoreOptions.svg"
 import NinjaSyndicateLogo from "!@svgr/webpack!./svg/NinjaSyndicateLogo.svg"
 import OutroAnimation from "!@svgr/webpack!./svg/OutroAnimation.svg"
 import Plus from "!@svgr/webpack!./svg/Plus.svg"
@@ -222,12 +223,15 @@ import TrailerThumbPNG from "./images/TrailerThumb.png"
 import BattleTrainingBG from "./images/TrainingBg.png"
 import WarMachineIconPNG from "./images/WarMachineIcon.png"
 import ZaibatsuLogo from "./images/ZaibatsuLogo.png"
-import BcBorder from "./svg/Landing/bc/BCBorder.svg"
-import BcMask from "./svg/Landing/bc/BCMask.png"
-import RmBorder from "./svg/Landing/rm/RmBorder.svg"
-import RmMask from "./svg/Landing/rm/RmMask.png"
-import ZhiBorder from "./svg/Landing/zhi/ZHIBorder.svg"
-import ZhiMask from "./svg/Landing/zhi/ZHIMask.png"
+import BCBorder from "./svg/Landing/bc/BCBorder.svg"
+import BCDeploy from "./svg/Landing/bc/BCDeploy.png"
+import BCWaiting from "./svg/Landing/bc/BCWaiting.png"
+import RMBorder from "./svg/Landing/rm/RmBorder.svg"
+import RMDeploy from "./svg/Landing/rm/RMDeploy.png"
+import RMWaiting from "./svg/Landing/rm/RMWaiting.png"
+import ZHIBorder from "./svg/Landing/zhi/ZHIBorder.svg"
+import ZHIDeploy from "./svg/Landing/zhi/ZHIDeploy.png"
+import ZHIWaiting from "./svg/Landing/zhi/ZHIWaiting.png"
 
 // Tower stack mini game skins
 export {
@@ -302,7 +306,7 @@ export {
     BattleArenaOpeningWebP,
     ThreeMechsJPG,
 }
-export { BcBorder, RmBorder, ZhiBorder, ZhiMask, BcMask, RmMask }
+export { BCBorder, RMBorder, ZHIBorder, BCWaiting, RMWaiting, ZHIWaiting, BCDeploy, RMDeploy, ZHIDeploy }
 
 export interface SvgWrapperProps extends BoxProps {
     size?: string
@@ -1258,5 +1262,11 @@ export const SvgDelete: React.VoidFunctionComponent<SvgWrapperProps> = (props) =
 export const SvgFacebook: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Facebook />
+    </SvgWrapper>
+)
+
+export const SvgMoreOptions: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <MoreOptions />
     </SvgWrapper>
 )

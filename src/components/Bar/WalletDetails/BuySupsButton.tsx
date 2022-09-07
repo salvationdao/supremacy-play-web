@@ -1,4 +1,4 @@
-import { Button } from "@mui/material"
+import { Button, Divider, Stack } from "@mui/material"
 import { useCallback } from "react"
 import { IS_TESTING_MODE, TOKEN_SALE_PAGE } from "../../../constants"
 import { colors, fonts } from "../../../theme/theme"
@@ -15,23 +15,44 @@ export const BuySupsButton = () => {
     if (IS_TESTING_MODE) return null
 
     return (
-        <Button
+        <Stack
+            direction="row"
+            alignItems="center"
             sx={{
-                px: "1.2rem",
-                pt: ".32rem",
-                pb: ".16rem",
-                flexShrink: 0,
-                justifyContent: "flex-start",
-                color: colors.neonBlue,
-                whiteSpace: "nowrap",
-                borderRadius: 0.2,
-                border: `1px solid ${colors.neonBlue}`,
-                overflow: "hidden",
-                fontFamily: fonts.nostromoBold,
+                mx: "1.2rem",
+                height: "100%",
             }}
-            onClick={openBuySupsPage}
         >
-            GET SUPS
-        </Button>
+            <Button
+                sx={{
+                    px: "1.2rem",
+                    pt: ".32rem",
+                    pb: ".16rem",
+                    flexShrink: 0,
+                    justifyContent: "flex-start",
+                    color: colors.neonBlue,
+                    whiteSpace: "nowrap",
+                    borderRadius: 0.2,
+                    border: `1px solid ${colors.neonBlue}`,
+                    overflow: "hidden",
+                    fontFamily: fonts.nostromoBold,
+                }}
+                onClick={openBuySupsPage}
+            >
+                GET SUPS
+            </Button>
+
+            <Divider
+                orientation="vertical"
+                flexItem
+                sx={{
+                    height: "2.3rem",
+                    my: "auto !important",
+                    ml: "2.4rem",
+                    borderColor: "#494949",
+                    borderRightWidth: 1.6,
+                }}
+            />
+        </Stack>
     )
 }

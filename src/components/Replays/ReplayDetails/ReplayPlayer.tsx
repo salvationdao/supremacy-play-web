@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react"
 import { useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
+import { useInterval } from "../../../hooks"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleReplay } from "../../../types"
 import { FancyButton } from "../../Common/FancyButton"
@@ -26,6 +27,20 @@ export const ReplayPlayer = ({
         if (streamRef?.current?.muted !== undefined) streamRef.current.muted = false
     }, [hasInteracted, streamRef])
 
+    useInterval(() => {
+        const videoTime = streamRef.current?.currentTime || 0
+        const playerEl = document.getElementById("replay-player-skip-button")
+
+        // Show/hide the skip button based on current video watch time
+        if (videoTime > 2 && playerEl && battleReplay?.intro_ended_at && battleReplay?.started_at) {
+            if (videoTime < (battleReplay.intro_ended_at.getTime() - battleReplay.started_at.getTime()) / 1000) {
+                playerEl.style.display = "block"
+            } else {
+                playerEl.style.display = "none"
+            }
+        }
+    }, 1000)
+
     const onVolumeChanged = useCallback(() => {
         streamRef.current?.volume && localStorage.setItem("replayPlaybackVolume", `${streamRef.current.volume}`)
     }, [streamRef])
@@ -47,25 +62,26 @@ export const ReplayPlayer = ({
                 />
 
                 {battleReplay?.intro_ended_at && battleReplay?.started_at && (
-                    <FancyButton
-                        clipThingsProps={{
-                            clipSize: "8px",
-                            backgroundColor: "#222222",
-                            opacity: 0.6,
-                            border: { borderColor: "#FFFFFF", borderThickness: "1px" },
-                            sx: { position: "absolute", top: "2rem", right: "3rem", zIndex: 9 },
-                        }}
-                        sx={{ px: "1.6rem", py: ".3rem", color: "#FFFFFF" }}
-                        onClick={() => {
-                            if (!battleReplay?.intro_ended_at || !battleReplay?.started_at) return
-                            const timeSeconds = (battleReplay.intro_ended_at.getTime() - battleReplay.started_at.getTime()) / 1000
-                            seekToSeconds(timeSeconds)
-                        }}
-                    >
-                        <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: "#FFFFFF" }}>
-                            SKIP INTRO
-                        </Typography>
-                    </FancyButton>
+                    <Box id="replay-player-skip-button" sx={{ display: "none", position: "absolute", top: "2rem", right: "2.5rem", zIndex: 9 }}>
+                        <FancyButton
+                            clipThingsProps={{
+                                clipSize: "8px",
+                                backgroundColor: "#222222",
+                                opacity: 0.6,
+                                border: { borderColor: "#FFFFFF", borderThickness: "1px" },
+                            }}
+                            sx={{ px: "1.6rem", py: ".3rem", color: "#FFFFFF" }}
+                            onClick={() => {
+                                if (!battleReplay?.intro_ended_at || !battleReplay?.started_at) return
+                                const timeSeconds = (battleReplay.intro_ended_at.getTime() - battleReplay.started_at.getTime()) / 1000
+                                seekToSeconds(timeSeconds)
+                            }}
+                        >
+                            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: "#FFFFFF" }}>
+                                SKIP INTRO
+                            </Typography>
+                        </FancyButton>
+                    </Box>
                 )}
             </Box>
 
