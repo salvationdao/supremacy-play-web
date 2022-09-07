@@ -315,7 +315,7 @@ export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         label: "Live Chat",
         Component: LiveChat,
         requireAuth: false,
-        matchNavLinkIDs: BATTLE_ARENA_OPEN ? undefined : [],
+        matchNavLinkIDs: undefined,
         mountAllTime: true,
     },
     active_players: {

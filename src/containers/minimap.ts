@@ -43,7 +43,7 @@ export const MiniMapContainer = createContainer(() => {
 
     // Other stuff
     const [highlightedMechParticipantID, setHighlightedMechParticipantID] = useState<number>()
-    const [selection, setSelectionDebounced, selectionInstant, setSelection] = useDebounce<MapSelection | undefined>(undefined, 300)
+    const [selection, setSelectionDebounced, selectionInstant, setSelection] = useDebounce<MapSelection | undefined>(undefined, 320)
 
     // Subscribe on winner announcements
     useGameServerSubscriptionSecuredUser<WinnerAnnouncementResponse | undefined>(
@@ -87,9 +87,10 @@ export const MiniMapContainer = createContainer(() => {
 
     const resetPlayerAbilitySelection = useCallback(() => {
         setPlayerAbility(undefined)
+        setSelectionDebounced(undefined)
         setSelection(undefined)
         setIsTargeting(!!winner?.game_ability)
-    }, [winner?.game_ability, setSelection])
+    }, [winner?.game_ability, setSelection, setSelectionDebounced])
 
     const resetWinnerSelection = useCallback(() => {
         setSelection(undefined)
@@ -106,6 +107,7 @@ export const MiniMapContainer = createContainer(() => {
 
     const onTargetConfirm = useCallback(async () => {
         if (!selection || !currentArenaID) return
+
         let payload: {
             arena_id: string
             blueprint_ability_id: string
@@ -114,7 +116,9 @@ export const MiniMapContainer = createContainer(() => {
             end_coords?: Position
             mech_hash?: string
         } | null = null
+
         let hubKey = GameServerKeys.PlayerAbilityUse
+
         try {
             if (winner?.game_ability) {
                 if (!selection.startCoords) {
@@ -197,13 +201,13 @@ export const MiniMapContainer = createContainer(() => {
                     resetPlayerAbilitySelection()
                 }
 
+                if (playerAbility?.ability.location_select_type === LocationSelectType.MechSelect) {
+                    setHighlightedMechParticipantID(undefined)
+                }
+
                 if (!payload) {
                     throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
                 }
-            }
-
-            if (playerAbility?.ability.location_select_type === LocationSelectType.MechSelect) {
-                setHighlightedMechParticipantID(undefined)
             }
 
             await send<boolean, typeof payload>(hubKey, payload)
@@ -216,14 +220,14 @@ export const MiniMapContainer = createContainer(() => {
     }, [
         send,
         selection,
-        resetPlayerAbilitySelection,
-        resetWinnerSelection,
         winner?.game_ability,
         playerAbility,
-        newSnackbarMessage,
-        setHighlightedMechParticipantID,
         currentArenaID,
+        newSnackbarMessage,
+        resetPlayerAbilitySelection,
+        resetWinnerSelection,
         setSelection,
+        setHighlightedMechParticipantID,
     ])
 
     useEffect(() => {
