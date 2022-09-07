@@ -370,6 +370,10 @@ export const timeSinceInWords = (fromDate: Date, toDate: Date, abbreviated = fal
     return result
 }
 
+export const secondsToWords = (secondsLeft: number) => {
+    return timeSinceInWords(new Date(), new Date(new Date().getTime() + secondsLeft * 1000))
+}
+
 export const camelToTitle = (str: string) => {
     const result = str.replace(/([A-Z])/g, " $1")
     return result.charAt(0).toUpperCase() + result.slice(1)
