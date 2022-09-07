@@ -328,7 +328,7 @@ export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         label: "Active Players",
         Component: PlayerList,
         requireAuth: true,
-        matchNavLinkIDs: BATTLE_ARENA_OPEN ? undefined : [],
+        matchNavLinkIDs: undefined,
         mountAllTime: false,
     },
     repairs: {
@@ -337,7 +337,7 @@ export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         label: "Repairs Jobs",
         Component: RepairJobs,
         requireAuth: true,
-        matchNavLinkIDs: BATTLE_ARENA_OPEN ? undefined : [],
+        matchNavLinkIDs: undefined,
         mountAllTime: false,
     },
 }
