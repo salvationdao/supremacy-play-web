@@ -1,43 +1,76 @@
-import { useEffect, useRef } from "react"
+import { Box } from "@mui/material"
+import { useCallback, useEffect, useRef } from "react"
 import { BribeStageResponse } from "../../../../containers"
-import { useTimer } from "../../../../hooks"
 import { BribeStage } from "../../../../types"
 
 export const BattleAbilityCountdown = ({ bribeStage }: { bribeStage?: BribeStageResponse }) => {
-    const { setEndTimeState, totalSecRemain } = useTimer(undefined)
-    const sentence = useRef("Loading...")
+    const secondsLeftRef = useRef<number>()
+    const containerRef = useRef<HTMLDivElement>()
 
-    const phase = bribeStage?.phase || ""
+    // useEffect(() => {
+    //     if (!bribeStage) return
 
-    switch (phase) {
-        case BribeStage.OptIn:
-            sentence.current = `BATTLE ABILITY (${totalSecRemain})`
-            break
+    //     let endTime = bribeStage.end_time
+    //     const dateNow = new Date()
+    //     const diff = endTime.getTime() - dateNow.getTime()
 
-        case BribeStage.LocationSelect:
-            sentence.current = `BATTLE ABILITY INITIATED (${totalSecRemain})`
-            break
+    //     // Just a temp fix, if user's pc time is not correct then at least set for them
+    //     // Checked by seeing if they have at least 8s to do stuff
+    //     if (endTime < dateNow || diff > 40000) {
+    //         endTime = new Date(dateNow.getTime() + (bribeStage.phase === BribeStage.OptIn ? 30000 : 20000))
+    //     }
 
-        case BribeStage.Cooldown:
-            sentence.current = `NEXT BATTLE ABILITY (${totalSecRemain})`
-            break
-    }
+    //     setEndTimeState(endTime)
+    // }, [bribeStage, setEndTimeState])
+
+    const updateSecondsLeft = useCallback(
+        (value: number) => {
+            if (!secondsLeftRef.current == null) return
+            secondsLeftRef.current = value
+            if (!containerRef.current) return
+            containerRef.current.innerText = getPhaseText(bribeStage?.phase, secondsLeftRef.current)
+        },
+        [bribeStage],
+    )
 
     useEffect(() => {
         if (!bribeStage) return
+        const diff = Math.round((bribeStage.end_time.getTime() - new Date().getTime()) / 1000)
 
-        let endTime = bribeStage.end_time
-        const dateNow = new Date()
-        const diff = endTime.getTime() - dateNow.getTime()
-
-        // Just a temp fix, if user's pc time is not correct then at least set for them
-        // Checked by seeing if they have at least 8s to do stuff
-        if (endTime < dateNow || diff > 40000) {
-            endTime = new Date(dateNow.getTime() + (bribeStage.phase === BribeStage.OptIn ? 30000 : 20000))
+        if (diff < 0 || diff > 40) {
+            updateSecondsLeft(20)
+        } else {
+            updateSecondsLeft(diff)
         }
+    }, [bribeStage, updateSecondsLeft])
 
-        setEndTimeState(endTime)
-    }, [bribeStage, setEndTimeState])
+    useEffect(() => {
+        const t = setInterval(() => {
+            if (!secondsLeftRef.current) return
+            updateSecondsLeft(secondsLeftRef.current - 1)
+        }, 1000)
 
-    return <>{sentence.current}</>
+        return () => clearInterval(t)
+    }, [updateSecondsLeft])
+
+    return (
+        <Box ref={containerRef} component="span">
+            {getPhaseText(bribeStage?.phase, secondsLeftRef.current)}
+        </Box>
+    )
+}
+
+const getPhaseText = (phase?: BribeStage, secondsLeft?: number) => {
+    if (!phase || secondsLeft == null) return "Loading..."
+
+    switch (phase) {
+        case BribeStage.OptIn:
+            return `BATTLE ABILITY (${secondsLeft})`
+        case BribeStage.LocationSelect:
+            return `BATTLE ABILITY INITIATED (${secondsLeft})`
+        case BribeStage.Cooldown:
+            return `NEXT BATTLE ABILITY (${secondsLeft})`
+    }
+
+    return "Loading..."
 }
