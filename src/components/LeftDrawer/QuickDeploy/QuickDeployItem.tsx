@@ -16,6 +16,7 @@ interface QuickDeployItemProps {
     mech: MechBasic
     isSelected?: boolean
     toggleIsSelected?: () => void
+    onDeploy: () => void
     childrenMechStatus: React.MutableRefObject<{
         [mechID: string]: MechStatus
     }>
@@ -25,7 +26,7 @@ const propsAreEqual = (prevProps: QuickDeployItemProps, nextProps: QuickDeployIt
     return prevProps.isSelected === nextProps.isSelected && prevProps.mech.id === nextProps.mech.id
 }
 
-export const QuickDeployItem = React.memo(function QuickDeployItem({ isSelected, toggleIsSelected, mech, childrenMechStatus }: QuickDeployItemProps) {
+export const QuickDeployItem = React.memo(function QuickDeployItem({ isSelected, toggleIsSelected, onDeploy, mech, childrenMechStatus }: QuickDeployItemProps) {
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
@@ -72,6 +73,7 @@ export const QuickDeployItem = React.memo(function QuickDeployItem({ isSelected,
                 if (resp && resp.success) {
                     newSnackbarMessage("Successfully deployed war machine.", "success")
                     setError(undefined)
+                    onDeploy()
                 }
             } catch (e) {
                 setError(typeof e === "string" ? e : "Failed to deploy war machine.")
@@ -81,7 +83,7 @@ export const QuickDeployItem = React.memo(function QuickDeployItem({ isSelected,
                 setIsLoading(false)
             }
         },
-        [send, mech.id, newSnackbarMessage],
+        [send, mech.id, newSnackbarMessage, onDeploy],
     )
 
     return (

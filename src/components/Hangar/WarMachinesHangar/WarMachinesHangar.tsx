@@ -92,6 +92,17 @@ export const WarMachinesHangar = () => {
         localStorage.setItem("isWarMachinesHangarFiltersExpanded", isFiltersExpanded.toString())
     }, [isFiltersExpanded])
 
+    const updateTotalDeployed = (amount: number) => {
+        setPlayerQueueStatus((prev) => {
+            if (!prev) return
+
+            return {
+                ...prev,
+                total_queued: prev.total_queued + amount,
+            }
+        })
+    }
+
     const toggleSelected = useCallback((mech: MechBasic) => {
         setSelectedMechs((prev) => {
             const newArray = [...prev]
@@ -519,6 +530,7 @@ export const WarMachinesHangar = () => {
                         setSelectedMechs={setSelectedMechs}
                         childrenMechStatus={childrenMechStatus}
                         queueFeed={queueFeed}
+                        onBulkDeploy={(amount) => updateTotalDeployed(amount)}
                     />
                 )}
 
