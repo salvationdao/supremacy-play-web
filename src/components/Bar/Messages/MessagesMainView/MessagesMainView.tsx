@@ -115,7 +115,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
     )
 
     const content = useMemo(() => {
-        if (messages.length === 0) {
+        if (messages.length === 0 && !focusedMessage) {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ flex: 1, p: "1rem" }}>
                     <Typography
