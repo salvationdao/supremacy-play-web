@@ -63,10 +63,9 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
     // Sets the caret (cursor) position back to where it was previously
     const focusCaretTextField = useCallback(() => {
         if (caretStartPosition.current) {
-            document.getElementById(`message-textfield-${faction_id}`)?.focus()
             textfieldRef.current?.setSelectionRange(caretStartPosition.current, caretStartPosition.current)
         }
-    }, [faction_id])
+    }, [])
 
     // Checks input is not too long etc.
     const setMessageWithCheck = useCallback(
@@ -74,7 +73,7 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
             setMessage((prev) => {
                 const m = append ? prev + newMessage : newMessage
                 if (m.length > MAX_CHAT_MESSAGE_LENGTH) return prev
-                return m
+                return m.trimStart()
             })
         },
         [setMessage],
@@ -84,9 +83,9 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
         if (clickedOnUser) {
             setMessageWithCheck(` @${clickedOnUser.username}#${clickedOnUser.gid} `, true)
             setClickedOnUser(undefined)
-            focusCaretTextField()
+            document.getElementById(`message-textfield-${faction_id}`)?.focus()
         }
-    }, [clickedOnUser, focusCaretTextField, setClickedOnUser, setMessageWithCheck])
+    }, [clickedOnUser, faction_id, focusCaretTextField, setClickedOnUser, setMessageWithCheck])
 
     const sendMessage = useCallback(async () => {
         if (!message.trim()) return
