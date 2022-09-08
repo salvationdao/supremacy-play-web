@@ -127,7 +127,6 @@ export const supFormatterNoFixed = (num: string, maxDecimals?: number): string =
 
 export const parseString = (val: string | null, defaultVal: number): number => {
     if (!val) return defaultVal
-
     return parseFloat(val)
 }
 
@@ -369,6 +368,10 @@ export const timeSinceInWords = (fromDate: Date, toDate: Date, abbreviated = fal
 
     result = (result ? result + " " : "") + (seconds > 0 ? seconds + (abbreviated ? "s" : " second") + (seconds === 1 || abbreviated ? "" : "s") : "")
     return result
+}
+
+export const secondsToWords = (secondsLeft: number) => {
+    return timeSinceInWords(new Date(), new Date(new Date().getTime() + secondsLeft * 1000))
 }
 
 export const camelToTitle = (str: string) => {

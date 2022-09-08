@@ -30,6 +30,7 @@ import Logout from "!@svgr/webpack!./svg/Logout.svg"
 import Mail from "!@svgr/webpack!./svg/Mail.svg"
 import Meteor from "!@svgr/webpack!./svg/Meteor.svg"
 import Mobility from "!@svgr/webpack!./svg/Mobility.svg"
+import MoreOptions from "!@svgr/webpack!./svg/MoreOptions.svg"
 import NinjaSyndicateLogo from "!@svgr/webpack!./svg/NinjaSyndicateLogo.svg"
 import OutroAnimation from "!@svgr/webpack!./svg/OutroAnimation.svg"
 import Plus from "!@svgr/webpack!./svg/Plus.svg"
@@ -80,6 +81,7 @@ import DownArrow from "!react-svg-loader!./svg/DownArrow.svg"
 import Drag from "!react-svg-loader!./svg/Drag.svg"
 import Edit from "!react-svg-loader!./svg/Edit.svg"
 import Emergency from "!react-svg-loader!./svg/Emergency.svg"
+import Facebook from "!react-svg-loader!./svg/Facebook.svg"
 import Filter from "!react-svg-loader!./svg/Filter.svg"
 import Fullscreen from "!react-svg-loader!./svg/Fullscreen.svg"
 import GoldBars from "!react-svg-loader!./svg/GoldBars.svg"
@@ -161,6 +163,7 @@ import CoinsRightPNG from "./BattleRewardsBanners/CoinsRight.png"
 import LightningBackgroundPNG from "./BattleRewardsBanners/LightningBackground.png"
 import LightningBackgroundBluePNG from "./BattleRewardsBanners/LightningBackgroundBlue.png"
 import SkyHighGroupedTextPNG from "./BattleRewardsBanners/SkyHighGroupedText.png"
+import BattleArenaOpeningWebP from "./images/BattleArenaOpening.webp"
 import BattleBgWebP from "./images/BattleBg.webp"
 import BostonCyberneticsLogo from "./images/BostonCyberneticsLogo.png"
 import BottomMechWEBP from "./images/BottomMech.webp"
@@ -186,6 +189,7 @@ import SafePNG from "./images/Safe.png"
 import SupBackground from "./images/SupBackground.webp"
 import SupremacyPNG from "./images/Supremacy.png"
 import RainingSupsPNG from "./images/supsRain.png"
+import ThreeMechsJPG from "./images/ThreeMechs.jpeg"
 import Stack10aJPG from "./images/TowerStackSkins/Stack10a.jpg"
 import Stack10bJPG from "./images/TowerStackSkins/Stack10b.jpg"
 import Stack10cJPG from "./images/TowerStackSkins/Stack10c.jpg"
@@ -221,18 +225,15 @@ import TrailerThumbPNG from "./images/TrailerThumb.png"
 import BattleTrainingBG from "./images/TrainingBg.png"
 import WarMachineIconPNG from "./images/WarMachineIcon.png"
 import ZaibatsuLogo from "./images/ZaibatsuLogo.png"
-import BcBorder from "./svg/Landing/bc/BCBorder.svg"
-import BcBorderBottom from "./svg/Landing/bc/BCBorderBottom.svg"
-import BcBottom from "./svg/Landing/bc/BCBottom.svg"
-import BcMask from "./svg/Landing/bc/BCMask.png"
-import RmBorder from "./svg/Landing/rm/RmBorder.svg"
-import RmBorderBottom from "./svg/Landing/rm/RmBorderBottom.svg"
-import RmBottom from "./svg/Landing/rm/RmBottom.svg"
-import RmMask from "./svg/Landing/rm/RmMask.png"
-import ZhiBorder from "./svg/Landing/zhi/ZHIBorder.svg"
-import ZhiBorderBottom from "./svg/Landing/zhi/ZHIBorderBottom.svg"
-import ZhiBottom from "./svg/Landing/zhi/ZHIBottom.svg"
-import ZhiMask from "./svg/Landing/zhi/ZHIMask.png"
+import BCBorder from "./svg/Landing/bc/BCBorder.svg"
+import BCDeploy from "./svg/Landing/bc/BCDeploy.png"
+import BCWaiting from "./svg/Landing/bc/BCWaiting.png"
+import RMBorder from "./svg/Landing/rm/RmBorder.svg"
+import RMDeploy from "./svg/Landing/rm/RMDeploy.png"
+import RMWaiting from "./svg/Landing/rm/RMWaiting.png"
+import ZHIBorder from "./svg/Landing/zhi/ZHIBorder.svg"
+import ZHIDeploy from "./svg/Landing/zhi/ZHIDeploy.png"
+import ZHIWaiting from "./svg/Landing/zhi/ZHIWaiting.png"
 
 // Tower stack mini game skins
 export {
@@ -304,8 +305,10 @@ export {
     WarMachineRMPNG,
     WarMachineZAIPNG,
     BattleBgWebP,
+    BattleArenaOpeningWebP,
+    ThreeMechsJPG,
 }
-export { BcBorder, BcBorderBottom, BcBottom, RmBorder, RmBorderBottom, RmBottom, ZhiBorder, ZhiBorderBottom, ZhiBottom, ZhiMask, BcMask, RmMask }
+export { BCBorder, RMBorder, ZHIBorder, BCWaiting, RMWaiting, ZHIWaiting, BCDeploy, RMDeploy, ZHIDeploy }
 
 export interface SvgWrapperProps extends BoxProps {
     size?: string
@@ -1267,5 +1270,17 @@ export const SvgDownArrow: React.VoidFunctionComponent<SvgWrapperProps> = (props
 export const SvgDelete: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Delete />
+    </SvgWrapper>
+)
+
+export const SvgFacebook: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Facebook />
+    </SvgWrapper>
+)
+
+export const SvgMoreOptions: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <MoreOptions />
     </SvgWrapper>
 )

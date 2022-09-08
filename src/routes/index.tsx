@@ -9,11 +9,12 @@ import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
 import { RepairJobs } from "../components/RightDrawer/RepairJobs/RepairJobs"
 import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../constants"
 import { BattleArenaPage, BillingHistoryPage, ClaimPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
-import { LandingPage } from "../pages/LandingPage"
 import { LeaderboardPage } from "../pages/LeaderboardPage"
 import { MarketplaceItemPage } from "../pages/MarketplaceItemPage"
 import { MarketplaceSellPage } from "../pages/MarketplaceSellPage"
 import { MechPage } from "../pages/MechPage"
+import { ReplayItemPage } from "../pages/ReplayItemPage"
+import { ReplayPage } from "../pages/ReplayPage"
 import { StorefrontPage } from "../pages/StorefrontPage"
 import { WeaponPage } from "../pages/WeaponPage"
 import { StorefrontCheckoutPage } from "../pages/StorefrontCheckoutPage"
@@ -56,22 +57,6 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         matchNavLinkID: "home",
         enable: true,
         pageTitle: "Supremacy - Battle Arena",
-    },
-
-    // Landing
-    landing: {
-        id: "landing",
-        path: "/landing",
-        exact: true,
-        Component: LandingPage,
-        requireAuth: true,
-        requireFaction: true,
-        enable: true,
-        navLink: {
-            enable: BATTLE_ARENA_OPEN,
-            label: "Upcoming Battle",
-        },
-        pageTitle: "Supremacy - Next Battle",
     },
 
     // Leaderboard
@@ -236,7 +221,35 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         pageTitle: "Supremacy - Billing",
     },
 
-    // Others
+    // Replays
+    replays_item: {
+        id: "replays_item",
+        path: "/replay",
+        exact: true,
+        Component: ReplayItemPage,
+        requireAuth: false,
+        requireFaction: false,
+        matchNavLinkID: "replays",
+        enable: true,
+        pageTitle: "Supremacy - Replay Item",
+    },
+    replays: {
+        id: "replays",
+        path: "/replays/:type?",
+        exact: true,
+        Component: ReplayPage,
+        requireAuth: false,
+        requireFaction: false,
+        navLink: {
+            enable: true,
+            label: "Replays",
+        },
+        matchNavLinkID: "replays",
+        enable: BATTLE_ARENA_OPEN,
+        pageTitle: "Supremacy - Replays",
+    },
+
+    // Claim
     claim: {
         id: "claim",
         path: "/claim",
@@ -326,6 +339,7 @@ export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         label: "Live Chat",
         Component: LiveChat,
         requireAuth: false,
+        matchNavLinkIDs: undefined,
         mountAllTime: true,
     },
     active_players: {
@@ -338,6 +352,7 @@ export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         label: "Active Players",
         Component: PlayerList,
         requireAuth: true,
+        matchNavLinkIDs: undefined,
         mountAllTime: false,
     },
     repairs: {
@@ -346,6 +361,7 @@ export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         label: "Repairs Jobs",
         Component: RepairJobs,
         requireAuth: true,
+        matchNavLinkIDs: undefined,
         mountAllTime: false,
     },
 }

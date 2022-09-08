@@ -1,5 +1,5 @@
-import { Box, IconButton, Stack, Typography } from "@mui/material"
-import { useEffect, useRef, useState } from "react"
+import { IconButton, Stack, Typography } from "@mui/material"
+import { useState } from "react"
 import { TooltipHelper } from "../.."
 import { SvgNotification, SvgSupToken } from "../../../assets"
 import { supFormatter } from "../../../helpers"
@@ -8,12 +8,14 @@ import { colors } from "../../../theme/theme"
 import { PreferencesModal } from "../../Bar/ProfileCard/PreferencesModal/PreferencesModal"
 import { TelegramRegisterModal } from "../../Bar/ProfileCard/PreferencesModal/TelegramRegisterModal"
 import { QueueFeed } from "../../Hangar/WarMachinesHangar/WarMachineDetails/Modals/DeployModal"
+import { PlayerQueueStatus } from "./QuickDeploy"
 
 interface QueueDetailsProps {
     queueFeed?: QueueFeed
+    playerQueueStatus?: PlayerQueueStatus
 }
 
-export const QueueDetails = ({ queueFeed }: QueueDetailsProps) => {
+export const QueueDetails = ({ queueFeed, playerQueueStatus }: QueueDetailsProps) => {
     const [preferencesModalOpen, togglePreferencesModalOpen] = useToggle()
     const [addDeviceModalOpen, toggleAddDeviceModalOpen] = useToggle()
     const [telegramShortcode, setTelegramShortcode] = useState<string>("")
@@ -22,13 +24,13 @@ export const QueueDetails = ({ queueFeed }: QueueDetailsProps) => {
 
     return (
         <>
-            <Stack spacing="1.5rem" direction="row">
+            <Stack spacing="1.5rem" direction="row" width="100%">
                 <AmountItem
-                    key={`${queueFeed?.minimum_wait_time_seconds}-${queueFeed?.average_game_length_seconds}-queue_time`}
-                    title={"WAIT TIME: "}
+                    key={`${queueFeed?.queue_position}-queue_time`}
+                    title={"QUEUE POSITION: "}
                     color={colors.offWhite}
-                    value={queueFeed ? <QueueETA queueETASeconds={queueFeed.minimum_wait_time_seconds} /> : undefined}
-                    tooltip="The minimum time it will take before your mech is placed into battle."
+                    value={queueFeed?.queue_position}
+                    tooltip="The current queue position of your faction."
                     disableIcon
                 />
 
@@ -38,6 +40,16 @@ export const QueueDetails = ({ queueFeed }: QueueDetailsProps) => {
                         color={colors.yellow}
                         value={supFormatter(queueCost, 2)}
                         tooltip="The cost to place your war machine into the battle queue."
+                    />
+                )}
+
+                {playerQueueStatus && (
+                    <AmountItem
+                        title="LIMIT: "
+                        color={playerQueueStatus.total_queued / playerQueueStatus.queue_limit === 1 ? colors.red : "white"}
+                        value={`${playerQueueStatus.total_queued} / ${playerQueueStatus.queue_limit}`}
+                        tooltip="The total amount of mechs you have queued."
+                        disableIcon
                     />
                 )}
 
@@ -76,7 +88,7 @@ const AmountItem = ({
 }) => {
     return (
         <TooltipHelper placement="bottom-start" text={tooltip}>
-            <Stack direction="row" alignItems="center">
+            <Stack direction="row" alignItems="center" sx={{ flexShrink: 0 }}>
                 <Typography sx={{ mr: ".4rem", fontWeight: "fontWeightBold" }}>{title}</Typography>
 
                 {!disableIcon && <SvgSupToken size="1.7rem" fill={color} sx={{ mr: ".1rem", pb: ".2rem" }} />}
@@ -84,33 +96,5 @@ const AmountItem = ({
                 <Typography sx={{ color: color, fontWeight: "fontWeightBold" }}>{value || "---"}</Typography>
             </Stack>
         </TooltipHelper>
-    )
-}
-
-interface QueueETAProps {
-    queueETASeconds: number
-}
-
-const QueueETA = ({ queueETASeconds }: QueueETAProps) => {
-    const countdownRef = useRef<HTMLDivElement>()
-    const secondsLeftRef = useRef(queueETASeconds)
-
-    useEffect(() => {
-        const t = setInterval(() => {
-            if (!countdownRef.current) return
-            secondsLeftRef.current -= 10
-            countdownRef.current.innerText =
-                secondsLeftRef.current < 60
-                    ? "LESS THAN A MINUTE"
-                    : `${Math.round(secondsLeftRef.current / 60)} MINUTE${Math.round(secondsLeftRef.current / 60) > 1 ? "S" : ""}`
-        }, 1000 * 10) // Every 10 seconds
-
-        return () => clearInterval(t)
-    }, [queueETASeconds])
-
-    return (
-        <Box ref={countdownRef}>
-            {queueETASeconds < 60 ? "LESS THAN A MINUTE" : `${Math.round(queueETASeconds / 60)} MINUTE${Math.round(queueETASeconds / 60) > 1 ? "S" : ""}`}
-        </Box>
     )
 }

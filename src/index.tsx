@@ -14,7 +14,7 @@ import { NavLinksDrawer } from "./components/Bar/NavLinks/NavLinksDrawer"
 import { BottomNav } from "./components/BottomNav/BottomNav"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
 import { tourStyles } from "./components/Tutorial/SetupTutorial"
-import { GAME_SERVER_HOSTNAME, LINK, SENTRY_CONFIG, UNDER_MAINTENANCE } from "./constants"
+import { GAME_SERVER_HOSTNAME, LINK, SENTRY_CONFIG } from "./constants"
 import {
     ChatProvider,
     DimensionProvider,
@@ -142,7 +142,7 @@ const AppInner = () => {
                         <Box sx={{ flex: 1, position: "relative", overflow: "hidden" }}>
                             {isTraining ? (
                                 <TutorialPage />
-                            ) : !isServerDown && !UNDER_MAINTENANCE ? (
+                            ) : !isServerDown ? (
                                 <Switch>
                                     {ROUTES_ARRAY.map((r) => {
                                         const { id, path, exact, Component, requireAuth, requireFaction, authTitle, authDescription, enable, pageTitle } = r
@@ -175,7 +175,7 @@ const AppInner = () => {
                         {isMobile && <BottomNav />}
                     </Stack>
 
-                    {!isServerDown && !UNDER_MAINTENANCE && <RightDrawer />}
+                    {!isServerDown && <RightDrawer />}
                 </Stack>
             </Stack>
 
