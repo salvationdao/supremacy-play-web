@@ -55,7 +55,7 @@ export const WeaponHangarItem = React.memo(function WeaponHangarItem({ weapon, i
                     },
                     backgroundColor: backgroundColor,
                     opacity: 0.9,
-                    border: { isFancy: !isGridView, borderColor: primaryColor, borderThickness: ".25rem" },
+                    border: { isFancy: !isGridView, borderColor: `${primaryColor}50`, borderThickness: ".25rem" },
                     sx: { position: "relative", height: "100%", ":hover": { opacity: 1 } },
                 }}
                 sx={{ color: primaryColor, textAlign: "start", height: "100%" }}

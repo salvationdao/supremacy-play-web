@@ -53,7 +53,7 @@ export const ProfileWarmachineItem = ({
                     },
                     backgroundColor: backgroundColour,
                     opacity: 0.9,
-                    border: { isFancy: !isGridView, borderColor: primaryColour, borderThickness: ".25rem" },
+                    border: { isFancy: !isGridView, borderColor: `${primaryColour}50`, borderThickness: ".25rem" },
                     sx: { position: "relative", height: "100%" },
                 }}
                 sx={{ color: primaryColour, textAlign: "start", height: "100%" }}

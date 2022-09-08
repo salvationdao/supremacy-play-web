@@ -505,7 +505,7 @@ export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user }: Usern
                 backgroundColor: toggleIsPopoverOpen ? "unset" : faction.primary_color,
                 borderRadius: toggleIsPopoverOpen ? "unset" : 0.5,
                 fontWeight: toggleIsPopoverOpen ? 700 : "unset",
-                fontSize: `${fontSize}rem`,
+                fontSize,
                 verticalAlign: "middle",
                 ":hover": toggleIsPopoverOpen
                     ? {

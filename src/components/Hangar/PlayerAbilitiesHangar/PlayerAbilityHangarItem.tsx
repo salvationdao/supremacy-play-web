@@ -43,8 +43,8 @@ export const PlayerAbilityHangarItem = React.memo(function PlayerAbilityHangarIt
         <ClipThing
             clipSize="12px"
             border={{
-                borderColor: primaryColor,
-                borderThickness: ".2rem",
+                borderColor: `${primaryColor}50`,
+                borderThickness: ".25rem",
             }}
             opacity={0.9}
             backgroundColor={backgroundColor}

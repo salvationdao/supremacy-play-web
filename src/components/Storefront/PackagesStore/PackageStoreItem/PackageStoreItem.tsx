@@ -69,7 +69,7 @@ export const PackageStoreItem = React.memo(function PackageStoreItem({ enlargedV
                 <ClipThing
                     clipSize="12px"
                     border={{
-                        borderColor: primaryColor,
+                        borderColor: `${primaryColor}50`,
                         borderThickness: enlargedView ? ".3rem" : ".2rem",
                     }}
                     opacity={0.9}
