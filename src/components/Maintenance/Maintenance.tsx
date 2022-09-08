@@ -17,7 +17,7 @@ export const Maintenance = () => {
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
-                zIndex: siteZIndex.Modal + 10,
+                zIndex: siteZIndex.Modal,
             }}
         >
             <Stack
@@ -27,7 +27,7 @@ export const Maintenance = () => {
                 sx={{
                     position: "absolute",
                     left: "12rem",
-                    top: "8rem",
+                    top: "10rem",
                     zIndex: siteZIndex.RoutePage,
                 }}
             >
