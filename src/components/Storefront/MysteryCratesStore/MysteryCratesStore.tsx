@@ -2,7 +2,7 @@ import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/mater
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { SafePNG } from "../../../assets"
-import { useSnackbar } from "../../../containers"
+import { useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
 import { usePagination, useUrlQuery } from "../../../hooks"
@@ -18,7 +18,7 @@ import { CrateRewardVideo } from "../../Hangar/MysteryCratesHangar/OpenCrate/Cra
 import { MysteryCrateStoreItem } from "./MysteryCrateStoreItem/MysteryCrateStoreItem"
 
 export const MysteryCratesStore = () => {
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const [query, updateQuery] = useUrlQuery()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()
@@ -94,7 +94,7 @@ export const MysteryCratesStore = () => {
 
         if (!crates || isLoading) {
             return (
-                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "10rem" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
                         <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
                     </Stack>
@@ -110,14 +110,13 @@ export const MysteryCratesStore = () => {
                             width: "100%",
                             pt: "1rem",
                             display: "grid",
-                            gridTemplateColumns: "repeat(auto-fill, minmax(min-content, 40%))",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(min-content, 45%))",
                             gridTemplateRows: "min-content",
                             gap: "5rem",
                             alignItems: "center",
                             alignContent: "center",
                             justifyContent: "center",
                             overflow: "visible",
-                            height: "90%",
                         }}
                     >
                         {crates.map((crate, index) => (
@@ -146,7 +145,6 @@ export const MysteryCratesStore = () => {
                             alignItems: "center",
                             justifyContent: "center",
                             overflow: "visible",
-                            height: "100%",
                         }}
                     >
                         {crates.map((crate, index) => (
@@ -234,7 +232,7 @@ export const MysteryCratesStore = () => {
                                         sx: { position: "relative" },
                                     }}
                                     sx={{ px: "1.6rem", py: ".6rem", color: theme.factionTheme.secondary }}
-                                    to={`/fleet/mystery-crates${location.hash}`}
+                                    to={`/fleet/mystery-crates`}
                                 >
                                     <Typography
                                         variant="caption"
@@ -271,19 +269,17 @@ export const MysteryCratesStore = () => {
                                     direction: "ltr",
 
                                     "::-webkit-scrollbar": {
-                                        width: ".4rem",
+                                        width: "1rem",
                                     },
                                     "::-webkit-scrollbar-track": {
                                         background: "#FFFFFF15",
-                                        borderRadius: 3,
                                     },
                                     "::-webkit-scrollbar-thumb": {
                                         background: theme.factionTheme.primary,
-                                        borderRadius: 3,
                                     },
                                 }}
                             >
-                                {content}
+                                <Box sx={{ height: 0 }}>{content}</Box>
                             </Box>
                         </Stack>
                     </Stack>

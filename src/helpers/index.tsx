@@ -2,22 +2,6 @@ import BigNumber from "bignumber.js"
 import emojiRegex from "emoji-regex"
 import { VoidFunctionComponent } from "react"
 import {
-    MultiplierAdmiral,
-    MultiplierAFoolAndHisMoney,
-    MultiplierAirMarshal,
-    MultiplierAirSupport,
-    MultiplierContributor,
-    MultiplierDestroyerOfWorlds,
-    MultiplierFieldMechanic,
-    MultiplierGeneric,
-    MultiplierGreaseMonkey,
-    MultiplierJunkE,
-    MultiplierMechCommander,
-    MultiplierMechHead,
-    MultiplierNowIAmBecomeDeath,
-    MultiplierSniper,
-    MultiplierWonBattle,
-    MultiplierWonLastThreeBattles,
     SafePNG,
     SvgCorporal,
     SvgGeneral,
@@ -60,6 +44,12 @@ export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
  */
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
 export const mergeDeep = (target: any, ...sources: any): any => {
+    const targetClone = { ...target }
+    return mergeInPlace(targetClone, ...sources)
+}
+
+// eslint-disable-next-line  @typescript-eslint/no-explicit-any
+const mergeInPlace = (target: any, ...sources: any): any => {
     if (!sources.length) return target
     const source = sources.shift()
 
@@ -67,20 +57,22 @@ export const mergeDeep = (target: any, ...sources: any): any => {
         for (const key in source) {
             if (isObject(source[key])) {
                 if (!target[key]) Object.assign(target, { [key]: {} })
-                mergeDeep(target[key], source[key])
+                mergeInPlace(target[key], source[key])
             } else {
                 Object.assign(target, { [key]: source[key] })
             }
         }
     }
 
-    return mergeDeep(target, ...sources)
+    return mergeInPlace(target, ...sources)
 }
 
 export const shadeColor = (hexColor: string, factor: number) => {
-    let R = parseInt(hexColor.substring(1, 3), 16)
-    let G = parseInt(hexColor.substring(3, 5), 16)
-    let B = parseInt(hexColor.substring(5, 7), 16)
+    const hex = hexColor.toUpperCase()
+
+    let R = parseInt(hex.substring(1, 3), 16)
+    let G = parseInt(hex.substring(3, 5), 16)
+    let B = parseInt(hex.substring(5, 7), 16)
 
     R = parseInt((R * (100 + factor)) / 100 + "")
     G = parseInt((G * (100 + factor)) / 100 + "")
@@ -135,7 +127,6 @@ export const supFormatterNoFixed = (num: string, maxDecimals?: number): string =
 
 export const parseString = (val: string | null, defaultVal: number): number => {
     if (!val) return defaultVal
-
     return parseFloat(val)
 }
 
@@ -181,21 +172,14 @@ export function acronym(s: string): string {
     return x.join("").toUpperCase()
 }
 
-export const hexToRGB = (hex: string, alpha?: number): string => {
-    const h = "0123456789ABCDEF"
-    const r = h.indexOf(hex[1]) * 16 + h.indexOf(hex[2])
-    const g = h.indexOf(hex[3]) * 16 + h.indexOf(hex[4])
-    const b = h.indexOf(hex[5]) * 16 + h.indexOf(hex[6])
-    if (alpha) return "rgba(" + r + ", " + g + ", " + b + ", " + alpha + ")"
-    else return "rgb(" + r + ", " + g + ", " + b + ")"
-}
+export const hexToRGB = (hexx: string) => {
+    const hex = hexx.toUpperCase()
 
-export const hexToRGBArray = (hex: string): [number, number, number] => {
     const h = "0123456789ABCDEF"
     const r = h.indexOf(hex[1]) * 16 + h.indexOf(hex[2])
     const g = h.indexOf(hex[3]) * 16 + h.indexOf(hex[4])
     const b = h.indexOf(hex[5]) * 16 + h.indexOf(hex[6])
-    return [r, g, b]
+    return { r, g, b }
 }
 
 export const getRarityDeets = (rarityKey: string): Rarity => {
@@ -225,73 +209,6 @@ export const getRarityDeets = (rarityKey: string): Rarity => {
         default:
             return { label: "", color: colors.rarity.MEGA, textColor: "#FFFFFF" }
     }
-}
-
-export const getMultiplierDeets = (multiplierKey: string): { image: string } => {
-    let image
-
-    switch (multiplierKey.toLowerCase()) {
-        case "contributor":
-            image = MultiplierContributor
-            break
-        case "a fool and his money":
-            image = MultiplierAFoolAndHisMoney
-            break
-        case "air support":
-            image = MultiplierAirSupport
-            break
-        case "now i am become death":
-            image = MultiplierNowIAmBecomeDeath
-            break
-        case "destroyer of worlds":
-            image = MultiplierDestroyerOfWorlds
-            break
-        case "grease monkey":
-            image = MultiplierGreaseMonkey
-            break
-        case "field mechanic":
-            image = MultiplierFieldMechanic
-            break
-        case "combo breaker":
-            image = MultiplierFieldMechanic
-            break
-        case "mech commander":
-            image = MultiplierMechCommander
-            break
-        case "admiral":
-            image = MultiplierAdmiral
-            break
-        case "air marshal":
-            image = MultiplierAirMarshal
-            break
-        case "junk-e":
-            image = MultiplierJunkE
-            break
-        case "mech head":
-            image = MultiplierMechHead
-            break
-        case "sniper":
-            image = MultiplierSniper
-            break
-        case "won battle":
-            image = MultiplierWonBattle
-            break
-        case "won last three battles":
-            image = MultiplierWonLastThreeBattles
-            break
-        case "offline":
-        case "applause":
-        case "picked location":
-        case "battlerewardupdate":
-        case "supsmultiplierget":
-        case "checkmultiplierupdate":
-        case "supstick":
-        default:
-            image = MultiplierGeneric
-            break
-    }
-
-    return { image }
 }
 
 export const dateFormatter = (date: Date, showSeconds?: boolean, showDate?: boolean): string => {
@@ -453,12 +370,16 @@ export const timeSinceInWords = (fromDate: Date, toDate: Date, abbreviated = fal
     return result
 }
 
+export const secondsToWords = (secondsLeft: number) => {
+    return timeSinceInWords(new Date(), new Date(new Date().getTime() + secondsLeft * 1000))
+}
+
 export const camelToTitle = (str: string) => {
     const result = str.replace(/([A-Z])/g, " $1")
     return result.charAt(0).toUpperCase() + result.slice(1)
 }
 
-const regex = emojiRegex()
+export const EMOJI_REGEX = emojiRegex()
 
 // Checks if the message contains all emojis and is less than the specified amount on characters
 export const checkIfIsEmoji = (message: string) => {
@@ -479,7 +400,7 @@ export const checkIfIsEmoji = (message: string) => {
             return
         }
         // Checks to see if each character matches the emoji regex from the library or a "regional indicator symbol letter" (apart of a flag emoji)
-        isCharEmojiArray.push(!!c.match(regex) || !!c.match(/[\uD83C][\uDDE6-\uDDFF]/))
+        isCharEmojiArray.push(!!c.match(EMOJI_REGEX) || !!c.match(/[\uD83C][\uDDE6-\uDDFF]/))
     })
 
     // Checks if the whole message is less than 8 character-some emojis can be 2+ characters and if all of them are emojis
@@ -639,3 +560,23 @@ export const generatePriceText = (dollars: number, cents: number) => {
 
 // Converts number to alphabet letter. E.g. 0 -> "a"
 export const intToLetter = (i: number) => String.fromCharCode(97 + i)
+
+export const autoTextColor = (hex: string) => {
+    const rgb = hexToRGB(hex)
+
+    if (rgb.r * 0.299 + rgb.g * 0.587 + rgb.b * 0.114 > 150) {
+        return "#000000"
+    } else {
+        return "#FFFFFF"
+    }
+}
+
+export const convertCellsToGameLocation = (x: number, y: number, mapLeft: number, mapTop: number) => {
+    const gameClientTileSize = 2000
+    return {
+        x: x * gameClientTileSize + gameClientTileSize / 2 + mapLeft,
+        y: y * gameClientTileSize + gameClientTileSize / 2 + mapTop,
+    }
+}
+
+export const diff = (a: number, b: number) => (a > b ? a - b : b - a)

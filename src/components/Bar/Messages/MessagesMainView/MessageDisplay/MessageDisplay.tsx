@@ -2,12 +2,13 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { colors } from "../../../../../theme/theme"
-import { SystemMessageDataMechBattleComplete, SystemMessageDataType } from "../../../../../types"
+import { SystemMessageDataMechBattleBegin, SystemMessageDataMechBattleComplete, SystemMessageDataType } from "../../../../../types"
 import { FancyButton } from "../../../../Common/FancyButton"
 import MessageRenderer from "../../MessageRenderer"
 import { SystemMessageDisplayable } from "../../Messages"
 import { MechBattleCompleteDetails } from "./MechBattleCompleteDetails"
-import { MechOwnerBattleReward, MechOwnerBattleRewardData } from "./MechOwnerBattleReward"
+import { PlayerAbilityRefundedData, PlayerAbilityRefundedMessage } from "./PlayerAbilityRefundedMessage"
+import { MechBattleBeginDetails } from "./MechBattleBeginDetails"
 
 export interface MessageDisplayProps {
     message: SystemMessageDisplayable
@@ -18,13 +19,11 @@ export const MessageDisplay = ({ message, onClose }: MessageDisplayProps) => {
     const details = useMemo(() => {
         switch (message.data_type) {
             case SystemMessageDataType.MechBattleComplete:
-                if (!message.data) break
-                const data = message.data as SystemMessageDataMechBattleComplete
-
-                return <MechBattleCompleteDetails message={message.message} data={data} />
-
-            case SystemMessageDataType.MechOwnerBattleReward:
-                return <MechOwnerBattleReward message={message.message} data={message.data as MechOwnerBattleRewardData} />
+                return <MechBattleCompleteDetails message={message.message} data={message.data as SystemMessageDataMechBattleComplete} />
+            case SystemMessageDataType.MechBattleBegin:
+                return <MechBattleBeginDetails message={message.message} data={message.data as SystemMessageDataMechBattleBegin} />
+            case SystemMessageDataType.PlayerAbilityRefunded:
+                return <PlayerAbilityRefundedMessage message={message.message} data={message.data as PlayerAbilityRefundedData[]} />
         }
 
         return <MessageRenderer markdown={message.message} />
@@ -57,15 +56,13 @@ export const MessageDisplay = ({ message, onClose }: MessageDisplayProps) => {
                     direction: "ltr",
                     scrollbarWidth: "none",
                     "::-webkit-scrollbar": {
-                        width: ".4rem",
+                        width: "1rem",
                     },
                     "::-webkit-scrollbar-track": {
                         background: "#FFFFFF15",
-                        borderRadius: 3,
                     },
                     "::-webkit-scrollbar-thumb": {
                         background: (theme) => theme.factionTheme.primary,
-                        borderRadius: 3,
                     },
                 }}
             >

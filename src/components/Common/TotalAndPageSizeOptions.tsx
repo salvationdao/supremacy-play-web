@@ -1,4 +1,5 @@
-import { Box, Button, Divider, IconButton, MenuItem, Select, Stack, Typography } from "@mui/material"
+import { Box, Button, Checkbox, Divider, IconButton, MenuItem, Select, Stack, Typography } from "@mui/material"
+import React, { ReactNode } from "react"
 import { SvgFilter, SvgGridView, SvgListView, SvgRefresh } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { colors, fonts } from "../../theme/theme"
@@ -16,39 +17,59 @@ interface TotalAndPageSizeOptionsProps {
     primaryColor?: string
     isFiltersExpanded?: boolean
     toggleIsFiltersExpanded?: (value?: boolean) => void
-
-    // Sorting
     sortOptions?: {
         label: string
         value: string
     }[]
     selectedSort?: string
     onSetSort?: React.Dispatch<React.SetStateAction<string>>
-
-    // Hide stuff
     hidePageSizeOptions?: boolean
+    selectedCount?: number
+    onSelectAll?: () => void
+    onUnselectedAll?: () => void
+    children?: ReactNode
 }
 
-export const TotalAndPageSizeOptions = ({
+// Pick and include the props you need
+export const TotalAndPageSizeOptions = React.memo(function TotalAndPageSizeOptions({
+    // Count of items on current page
     countItems,
+
+    // Total items there is
     totalItems,
+
+    // Pagination
     pageSize,
     pageSizeOptions = [5, 10, 20],
     changePageSize,
     changePage,
+    hidePageSizeOptions,
+
+    // Toggle for grid view or not
     isGridView,
     toggleIsGridView,
+
+    // Manual refresh button
     manualRefresh,
-    primaryColor: pColor,
+
+    // Toggle between showing or hiding the left filter panel
     isFiltersExpanded,
     toggleIsFiltersExpanded,
 
+    // For bulk selecting items
+    selectedCount,
+    onSelectAll,
+    onUnselectedAll,
+
+    // Sorting
     sortOptions,
     selectedSort,
     onSetSort,
 
-    hidePageSizeOptions,
-}: TotalAndPageSizeOptionsProps) => {
+    // Styles
+    primaryColor: pColor,
+    children,
+}: TotalAndPageSizeOptionsProps) {
     const theme = useTheme()
 
     const primaryColor = pColor || theme.factionTheme.primary
@@ -63,6 +84,7 @@ export const TotalAndPageSizeOptions = ({
                 pl: "1.5rem",
                 pr: ".5rem",
                 py: ".3rem",
+                height: "4.5rem",
                 backgroundColor: "#00000070",
                 borderBottom: `${primaryColor}70 1.5px solid`,
                 span: { fontFamily: fonts.nostromoBold },
@@ -76,20 +98,28 @@ export const TotalAndPageSizeOptions = ({
                     sx={{
                         minWidth: 0,
                         borderRadius: 1,
-                        backgroundColor: isFiltersExpanded ? "transparent !important" : primaryColor,
+                        backgroundColor: isFiltersExpanded ? primaryColor : "transparent !important",
                         border: `${primaryColor}90 1px solid`,
                         color: secondaryColor,
                         ":hover": { backgroundColor: primaryColor },
                     }}
                 >
-                    <SvgFilter size="1.2rem" fill={isFiltersExpanded ? primaryColor : secondaryColor} />
+                    <SvgFilter size="1.2rem" fill={isFiltersExpanded ? secondaryColor : primaryColor} />
                 </Button>
             )}
 
+            {/* Showing total items and count */}
             {totalItems && (
                 <Typography variant="caption" sx={{ lineHeight: 1 }}>
                     <strong>DISPLAYING:</strong> {countItems || 0} OF {totalItems}
                 </Typography>
+            )}
+
+            {children && (
+                <>
+                    <Divider orientation="vertical" sx={{ height: "unset", alignSelf: "stretch", my: ".4rem !important" }} />
+                    {children}{" "}
+                </>
             )}
 
             <Stack
@@ -110,6 +140,30 @@ export const TotalAndPageSizeOptions = ({
                     },
                 }}
             >
+                {/* For bulk selecting items */}
+                {countItems && onSelectAll && onUnselectedAll && (
+                    <Stack spacing="1rem" direction="row" alignItems="center">
+                        <Checkbox
+                            size="small"
+                            checked={(selectedCount || 0) >= countItems}
+                            indeterminate={!!(selectedCount && selectedCount > 0 && selectedCount < countItems)}
+                            onClick={(selectedCount || 0) >= countItems ? onUnselectedAll : onSelectAll}
+                            sx={{
+                                p: 0,
+                                color: primaryColor,
+                                "& > .MuiSvgIcon-root": { width: "2.5rem", height: "2.5rem" },
+                                ".Mui-checked, .MuiSvgIcon-root": { color: `${primaryColor} !important` },
+                                ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${primaryColor}50 !important` },
+                            }}
+                        />
+
+                        <Typography variant="caption" sx={{ pt: ".4rem" }}>
+                            {selectedCount}
+                        </Typography>
+                    </Stack>
+                )}
+
+                {/* Toggle grid view */}
                 {toggleIsGridView && (
                     <Stack direction="row" spacing=".6rem" alignItems="center">
                         <IconButton size="small" onClick={() => toggleIsGridView(false)}>
@@ -121,6 +175,7 @@ export const TotalAndPageSizeOptions = ({
                     </Stack>
                 )}
 
+                {/* Change page size */}
                 {!hidePageSizeOptions && changePage && changePageSize && (
                     <Stack direction="row" spacing=".6rem" alignItems="center">
                         {pageSizeOptions.map((size, i) => {
@@ -146,13 +201,17 @@ export const TotalAndPageSizeOptions = ({
                     </Stack>
                 )}
 
+                {/* Sorting */}
                 {sortOptions && selectedSort && onSetSort && (
                     <Stack direction="row" alignItems="center" spacing=".6rem">
-                        <Typography variant="caption">SORT:</Typography>
+                        <Typography variant="caption" sx={{ lineHeight: 1 }}>
+                            SORT:
+                        </Typography>
 
                         <Select
                             sx={{
                                 width: "100%",
+                                backgroundColor: `${theme.factionTheme.primary}50`,
                                 borderRadius: 0.5,
                                 "&:hover": {
                                     backgroundColor: primaryColor,
@@ -215,4 +274,4 @@ export const TotalAndPageSizeOptions = ({
             </Stack>
         </Stack>
     )
-}
+})

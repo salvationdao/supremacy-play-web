@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useLocation } from "react-router-dom"
+import React from "react"
 import { FancyButton } from "../.."
-import { STAGING_OR_DEV_ONLY } from "../../../constants"
+import { IS_TESTING_MODE } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
 import { MARKETPLACE_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
@@ -10,12 +10,16 @@ import { ItemType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 
-interface MysteryCrateStoreItemProps {
+interface KeycardHangarItemProps {
     keycard: Keycard
     itemSaleID?: string
 }
 
-export const KeycardHangarItem = ({ keycard }: MysteryCrateStoreItemProps) => {
+const propsAreEqual = (prevProps: KeycardHangarItemProps, nextProps: KeycardHangarItemProps) => {
+    return prevProps.itemSaleID === nextProps.itemSaleID && prevProps.keycard.id === nextProps.keycard.id
+}
+
+export const KeycardHangarItem = React.memo(function KeycardHangarItem({ keycard }: KeycardHangarItemProps) {
     return (
         <>
             {keycard.count > 0 && <KeycardHangarItemInner keycard={keycard} />}
@@ -24,10 +28,9 @@ export const KeycardHangarItem = ({ keycard }: MysteryCrateStoreItemProps) => {
             })}
         </>
     )
-}
+}, propsAreEqual)
 
-export const KeycardHangarItemInner = ({ keycard, itemSaleID }: MysteryCrateStoreItemProps) => {
-    const location = useLocation()
+export const KeycardHangarItemInner = ({ keycard, itemSaleID }: KeycardHangarItemProps) => {
     const theme = useTheme()
 
     const primaryColor = theme.factionTheme.primary
@@ -47,8 +50,8 @@ export const KeycardHangarItemInner = ({ keycard, itemSaleID }: MysteryCrateStor
             <ClipThing
                 clipSize="12px"
                 border={{
-                    borderColor: primaryColor,
-                    borderThickness: ".2rem",
+                    borderColor: `${primaryColor}50`,
+                    borderThickness: ".25rem",
                 }}
                 opacity={0.9}
                 backgroundColor={backgroundColor}
@@ -82,13 +85,13 @@ export const KeycardHangarItemInner = ({ keycard, itemSaleID }: MysteryCrateStor
 
                         <Typography variant="h6">{keycard.blueprints.description}</Typography>
 
-                        {!STAGING_OR_DEV_ONLY && (
+                        {!IS_TESTING_MODE && (
                             <Stack alignItems="center" sx={{ mt: "auto !important", pt: ".8rem", alignSelf: "stretch" }}>
                                 <FancyButton
                                     to={
                                         itemSaleID
-                                            ? `/marketplace/${MARKETPLACE_TABS.Keycards}/${itemSaleID}${location.hash}`
-                                            : `/marketplace/sell?itemType=${ItemType.Keycards}&assetID=${keycard.id}${location.hash}`
+                                            ? `/marketplace/${MARKETPLACE_TABS.Keycards}/${itemSaleID}`
+                                            : `/marketplace/sell?itemType=${ItemType.Keycards}&assetID=${keycard.id}`
                                     }
                                     clipThingsProps={{
                                         clipSize: "5px",

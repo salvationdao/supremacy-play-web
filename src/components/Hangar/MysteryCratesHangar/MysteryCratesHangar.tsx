@@ -1,6 +1,5 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { SafePNG } from "../../../assets"
 import { HANGAR_PAGE } from "../../../constants"
@@ -35,7 +34,6 @@ export interface OpeningCrate {
 }
 
 export const MysteryCratesHangar = () => {
-    const location = useLocation()
     const [query, updateQuery] = useUrlQuery()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
@@ -181,7 +179,7 @@ export const MysteryCratesHangar = () => {
                     </Typography>
 
                     <FancyButton
-                        to={`/storefront/mystery-crates${location.hash}`}
+                        to={`/storefront/mystery-crates`}
                         clipThingsProps={{
                             clipSize: "9px",
                             backgroundColor: theme.factionTheme.primary,
@@ -204,7 +202,7 @@ export const MysteryCratesHangar = () => {
                 </Stack>
             </Stack>
         )
-    }, [crates, isLoading, loadError, location.hash, theme.factionTheme.primary, theme.factionTheme.secondary, getItems])
+    }, [crates, isLoading, loadError, theme.factionTheme.primary, theme.factionTheme.secondary, getItems])
 
     return (
         <>
@@ -265,8 +263,7 @@ export const MysteryCratesHangar = () => {
                             <Box
                                 sx={{
                                     ml: "1.9rem",
-                                    mr: ".5rem",
-                                    pr: "1.4rem",
+                                    pr: "1.9rem",
                                     my: "1rem",
                                     flex: 1,
                                     overflowY: "auto",
@@ -274,15 +271,13 @@ export const MysteryCratesHangar = () => {
                                     direction: "ltr",
 
                                     "::-webkit-scrollbar": {
-                                        width: ".4rem",
+                                        width: "1rem",
                                     },
                                     "::-webkit-scrollbar-track": {
                                         background: "#FFFFFF15",
-                                        borderRadius: 3,
                                     },
                                     "::-webkit-scrollbar-thumb": {
                                         background: theme.factionTheme.primary,
-                                        borderRadius: 3,
                                     },
                                 }}
                             >

@@ -1,16 +1,19 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useCallback, useEffect, useMemo, useRef } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ClipThing, HealthShieldBars, WarMachineAbilitiesPopover, WarMachineDestroyedInfo } from "../.."
 import { GenericWarMachinePNG, SvgInfoCircular, SvgSkull } from "../../../assets"
+import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../../constants"
 import { useAuth, useMiniMap, useMobile, useSupremacy } from "../../../containers"
+import { useArena } from "../../../containers/arena"
+import { RecordType, useHotkey } from "../../../containers/hotkeys"
 import { getRarityDeets } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { GameAbility, WarMachineState } from "../../../types"
-import { MoveCommand } from "./MoveCommand"
+import { AIType, GameAbility, WarMachineState } from "../../../types"
+import { MechMoveCommandAbility } from "./MoveCommand"
 
 // in rems
 const WIDTH_AVATAR = 8.6
@@ -26,28 +29,33 @@ export const WarMachineItem = ({
     initialExpanded = false,
     transformOrigin,
     isPoppedout,
+    label,
 }: {
     warMachine: WarMachineState
     scale: number
     initialExpanded?: boolean
     transformOrigin?: string
     isPoppedout?: boolean
+    label?: number
 }) => {
     const { isMobile } = useMobile()
     const { userID, factionID } = useAuth()
     const { getFaction } = useSupremacy()
-    const { highlightedMechParticipantID, setHighlightedMechParticipantID } = useMiniMap()
+    const { currentArenaID } = useArena()
+    const { setPlayerAbility, highlightedMechParticipantID, setHighlightedMechParticipantID, resetPlayerAbilitySelection, playerAbility } = useMiniMap()
+    const { addToHotkeyRecord } = useHotkey()
 
-    const { hash, participantID, factionID: wmFactionID, name, imageAvatar, tier, ownedByID, ownerUsername } = warMachine
+    const { hash, participantID, factionID: wmFactionID, name, imageAvatar, tier, ownedByID, ownerUsername, aiType } = warMachine
+    const isMiniMech = aiType === AIType.MiniMech
 
     // Subscribe to war machine ability updates
     const gameAbilities = useGameServerSubscriptionFaction<GameAbility[] | undefined>({
-        URI: `/mech/${participantID}/abilities`,
+        URI: `/arena/${currentArenaID}/mech/${participantID}/abilities`,
         key: GameServerKeys.SubWarMachineAbilitiesUpdated,
-        ready: factionID === wmFactionID && !!participantID,
+        ready: factionID === wmFactionID && !!participantID && !!currentArenaID,
     })
 
-    const [isAlive, toggleIsAlive] = useToggle(warMachine.health > 0)
+    const [isAlive, setIsAlive] = useState(warMachine.health > 0)
     const [isExpanded, toggleIsExpanded] = useToggle(initialExpanded)
     const faction = getFaction(wmFactionID)
 
@@ -62,6 +70,23 @@ export const WarMachineItem = ({
     const primaryColor = useMemo(() => (selfOwned ? colors.gold : faction.primary_color), [faction.primary_color, selfOwned])
     const backgroundColor = useMemo(() => faction.background_color, [faction.background_color])
 
+    // On activate mech move command
+    const activateMechMoveCommand = useCallback(() => {
+        if (!isAlive || !currentArenaID) return
+
+        setPlayerAbility({
+            ...MechMoveCommandAbility,
+            mechHash: hash,
+        })
+    }, [isAlive, hash, setPlayerAbility, currentArenaID])
+
+    // If the mech dies and its mech move command it active, cancel it
+    useEffect(() => {
+        if (!isAlive && playerAbility?.mechHash === hash) {
+            setPlayerAbility(undefined)
+        }
+    }, [hash, isAlive, playerAbility?.mechHash, setPlayerAbility])
+
     // Highlighting on the map
     const handleClick = useCallback(() => {
         if (participantID === highlightedMechParticipantID) {
@@ -69,7 +94,13 @@ export const WarMachineItem = ({
         } else {
             setHighlightedMechParticipantID(participantID)
         }
-    }, [participantID, highlightedMechParticipantID, setHighlightedMechParticipantID])
+
+        if (selfOwned) {
+            activateMechMoveCommand()
+        } else {
+            resetPlayerAbilitySelection()
+        }
+    }, [participantID, highlightedMechParticipantID, selfOwned, setHighlightedMechParticipantID, activateMechMoveCommand, resetPlayerAbilitySelection])
 
     // Toggle out isExpanded if other mech is highlighted
     useEffect(() => {
@@ -79,6 +110,15 @@ export const WarMachineItem = ({
             toggleIsExpanded(true)
         }
     }, [highlightedMechParticipantID, initialExpanded, isMobile, setHighlightedMechParticipantID, toggleIsExpanded, participantID])
+
+    useEffect(() => {
+        if (!label || wmFactionID !== factionID) return
+        if (participantID > ADD_MINI_MECH_PARTICIPANT_ID) {
+            addToHotkeyRecord(RecordType.MiniMapCtrl, label.toString(), handleClick)
+            return
+        }
+        addToHotkeyRecord(RecordType.MiniMap, label.toString(), handleClick)
+    }, [handleClick, label, participantID, addToHotkeyRecord, factionID, wmFactionID])
 
     return (
         <>
@@ -93,16 +133,31 @@ export const WarMachineItem = ({
                     width: `${
                         WIDTH_AVATAR +
                         (isExpanded ? WIDTH_BODY : 2 * WIDTH_STAT_BAR) +
-                        (gameAbilities && gameAbilities.length > 0 && isAlive ? WIDTH_SKILL_BUTTON : 0) +
-                        (warMachine.ownedByID === userID ? WIDTH_SKILL_BUTTON : 0)
+                        (gameAbilities && gameAbilities.length > 0 && isAlive ? WIDTH_SKILL_BUTTON : 0)
                     }rem`,
+                    pointerEvents: "all",
                     transition: "width .1s",
                     transform: highlightedMechParticipantID === participantID ? `scale(${scale * 1.08})` : `scale(${scale})`,
                     transformOrigin: transformOrigin || "center",
+                    ":hover": {
+                        [`#hotkey-${hash}`]: {
+                            display: "block",
+                        },
+                    },
                 }}
             >
+                <Box id={`hotkey-${hash}`} sx={{ display: "none", position: "absolute", top: "-3rem", right: "0" }}>
+                    {label && wmFactionID === factionID && (
+                        <Typography sx={{ color: colors.neonBlue }}>
+                            <i>
+                                <strong>[{participantID > 100 ? `CTRL + ${label}` : label}]</strong>
+                            </i>
+                        </Typography>
+                    )}
+                </Box>
+
                 {/* Little info button to show the mech destroyed info */}
-                {!isAlive && (
+                {!isAlive && !isMiniMech && (
                     <IconButton
                         size="small"
                         onClick={() => toggleIsDestroyedInfoOpen()}
@@ -140,7 +195,7 @@ export const WarMachineItem = ({
                     corners={{ bottomLeft: true }}
                     border={{ isFancy: false, borderColor: primaryColor, borderThickness: ".25rem" }}
                     backgroundColor={primaryColor}
-                    sx={{ zIndex: 2 }}
+                    sx={{ zIndex: 2, flexShrink: 0 }}
                     innerSx={{ background: `linear-gradient(${primaryColor}, #000000)` }}
                 >
                     <Box
@@ -168,7 +223,7 @@ export const WarMachineItem = ({
                             }}
                         >
                             <Typography variant="h4" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
-                                {warMachine.participantID}
+                                {label}
                             </Typography>
                         </Box>
 
@@ -201,6 +256,7 @@ export const WarMachineItem = ({
                             sx={{
                                 flex: 1,
                                 position: "relative",
+                                width: `${WIDTH_BODY}rem`,
                                 height: "100%",
                                 px: "1rem",
                                 py: ".6rem",
@@ -227,81 +283,77 @@ export const WarMachineItem = ({
                                     WebkitLineClamp: 1,
                                 }}
                             >
-                                {name || hash}
+                                {isMiniMech ? "Support Machine" : name || hash}
                             </Typography>
 
-                            <Typography
-                                variant="h6"
-                                sx={{
-                                    lineHeight: 1,
-                                    textOverflow: "ellipsis",
-                                    overflow: "hidden",
-                                    whiteSpace: "normal",
-                                    display: "-webkit-box",
-                                    overflowWrap: "anywhere",
-                                    WebkitBoxOrient: "vertical",
-                                    WebkitLineClamp: 1,
-                                }}
-                            >
-                                @{ownerUsername}
-                            </Typography>
-                        </Stack>
-                    )}
-
-                    {/* Health and shield bars */}
-                    <HealthShieldBars warMachine={warMachine} toggleIsAlive={toggleIsAlive} />
-
-                    {/* Mech abilities */}
-                    {isAlive && gameAbilities && gameAbilities.length > 0 && (
-                        <>
-                            <Box
-                                sx={{
-                                    position: "relative",
-                                    width: `${WIDTH_SKILL_BUTTON}rem`,
-                                    height: "100%",
-                                    backgroundColor: (theme) => theme.factionTheme.primary,
-                                    boxShadow: 2,
-                                    cursor: isAlive ? "pointer" : "auto",
-                                    zIndex: 3,
-                                    opacity: isAlive ? 1 : DEAD_OPACITY,
-                                    ":hover #warMachineSkillsText": {
-                                        letterSpacing: isAlive ? 2.3 : 1,
-                                    },
-                                }}
-                                onClick={() => {
-                                    if (!isAlive) return
-                                    setHighlightedMechParticipantID(participantID)
-                                    // Need this time out so that it waits for it expand first then popover, else positioning is wrong
-                                    initialExpanded ? togglePopoverOpen(true) : setTimeout(() => togglePopoverOpen(true), 110)
-                                }}
-                            >
-                                <Box
+                            {!isMiniMech && (
+                                <Typography
+                                    variant="h6"
                                     sx={{
-                                        position: "absolute",
-                                        left: "2rem",
-                                        top: "50%",
-                                        transform: `translate(-50%, -50%) rotate(-${90}deg)`,
-                                        zIndex: 2,
+                                        lineHeight: 1,
+                                        textOverflow: "ellipsis",
+                                        overflow: "hidden",
+                                        whiteSpace: "normal",
+                                        display: "-webkit-box",
+                                        overflowWrap: "anywhere",
+                                        WebkitBoxOrient: "vertical",
+                                        WebkitLineClamp: 1,
                                     }}
                                 >
-                                    <Typography
-                                        id="warMachineSkillsText"
-                                        variant="body1"
-                                        sx={{
-                                            fontWeight: "fontWeightBold",
-                                            color: (theme) => theme.factionTheme.secondary,
-                                            letterSpacing: 1,
-                                            transition: "all .2s",
-                                        }}
-                                    >
-                                        SKILLS
-                                    </Typography>
-                                </Box>
-                            </Box>
-                        </>
+                                    @{ownerUsername}
+                                </Typography>
+                            )}
+                        </Stack>
                     )}
+                    {/* Health and shield bars */}
+                    <HealthShieldBars warMachine={warMachine} setIsAlive={setIsAlive} />
 
-                    {warMachine.ownedByID === userID && <MoveCommand isAlive={isAlive} warMachine={warMachine} />}
+                    {!isMiniMech && isAlive && gameAbilities && gameAbilities.length > 0 && (
+                        <Box
+                            sx={{
+                                position: "relative",
+                                width: `${WIDTH_SKILL_BUTTON}rem`,
+                                height: "100%",
+                                backgroundColor: (theme) => theme.factionTheme.primary,
+                                boxShadow: 2,
+                                cursor: isAlive ? "pointer" : "auto",
+                                zIndex: 3,
+                                opacity: isAlive ? 1 : DEAD_OPACITY,
+                                ":hover #warMachineSkillsText": {
+                                    letterSpacing: isAlive ? 2.3 : 1,
+                                },
+                            }}
+                            onClick={() => {
+                                if (!isAlive) return
+                                setHighlightedMechParticipantID(participantID)
+                                // Need this time out so that it waits for it expand first then popover, else positioning is wrong
+                                initialExpanded ? togglePopoverOpen(true) : setTimeout(() => togglePopoverOpen(true), 200)
+                            }}
+                        >
+                            <Box
+                                sx={{
+                                    position: "absolute",
+                                    left: "2rem",
+                                    top: "50%",
+                                    transform: `translate(-50%, -50%) rotate(-${90}deg)`,
+                                    zIndex: 2,
+                                }}
+                            >
+                                <Typography
+                                    id="warMachineSkillsText"
+                                    variant="body1"
+                                    sx={{
+                                        fontWeight: "fontWeightBold",
+                                        color: (theme) => theme.factionTheme.secondary,
+                                        letterSpacing: 1,
+                                        transition: "all .2s",
+                                    }}
+                                >
+                                    SKILLS
+                                </Typography>
+                            </Box>
+                        </Box>
+                    )}
                 </Stack>
             </Stack>
 

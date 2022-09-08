@@ -4,7 +4,7 @@ import { loadStripe } from "@stripe/stripe-js"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { SafePNG } from "../../../assets"
 import { STRIPE_PUBLISHABLE_KEY } from "../../../constants"
-import { useSnackbar } from "../../../containers"
+import { useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
 import { usePagination, useUrlQuery } from "../../../hooks"
@@ -20,7 +20,7 @@ import { PackageStoreItem } from "./PackageStoreItem/PackageStoreItem"
 const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY)
 
 export const PackagesStore = () => {
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const [query, updateQuery] = useUrlQuery()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const theme = useTheme()
@@ -233,15 +233,13 @@ export const PackagesStore = () => {
                                     direction: "ltr",
 
                                     "::-webkit-scrollbar": {
-                                        width: ".4rem",
+                                        width: "1rem",
                                     },
                                     "::-webkit-scrollbar-track": {
                                         background: "#FFFFFF15",
-                                        borderRadius: 3,
                                     },
                                     "::-webkit-scrollbar-thumb": {
                                         background: theme.factionTheme.primary,
-                                        borderRadius: 3,
                                     },
                                 }}
                             >

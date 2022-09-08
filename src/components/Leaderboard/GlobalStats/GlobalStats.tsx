@@ -1,18 +1,64 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Stack, Typography } from "@mui/material"
+import { useEffect, useMemo, useState } from "react"
 import { ClipThing } from "../.."
 import { Gabs } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
+import { useGameServerCommands } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
 import { fonts } from "../../../theme/theme"
+import { LeaderboardRound } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
+import { LeaderboardSelect, LeaderboardTypeEnum } from "./Common/LeaderboardSelect"
+import { RoundSelect } from "./Common/RoundSelect"
 import { PlayerAbilityKills } from "./PlayerAbilityKills"
 import { PlayerAbilityTriggers } from "./PlayerAbilityTriggers"
 import { PlayerBattlesSpectated } from "./PlayerBattlesSpectated"
 import { PlayerMechKills } from "./PlayerMechKills"
 import { PlayerMechsOwned } from "./PlayerMechsOwned"
 import { PlayerMechSurvives } from "./PlayerMechSurvives"
+import { PlayerRepairBlocks } from "./PlayerRepairBlocks"
 
 export const GlobalStats = () => {
     const theme = useTheme()
+    const { send } = useGameServerCommands("/public/commander")
+    const [roundOptions, setRoundOptions] = useState<LeaderboardRound[]>()
+    const [leaderboardType, setLeaderboardType] = useState<LeaderboardTypeEnum>(LeaderboardTypeEnum.PlayerAbilityKills)
+    const [selectedRound, setSelectedRound] = useState<LeaderboardRound>()
+
+    useEffect(() => {
+        ;(async () => {
+            try {
+                const resp = await send<LeaderboardRound[]>(GameServerKeys.GetLeaderboardRounds)
+
+                if (!resp) return
+                setRoundOptions(resp)
+            } catch (err) {
+                console.error(err)
+            }
+        })()
+    }, [send])
+
+    const leaderboard = useMemo(() => {
+        switch (leaderboardType) {
+            case LeaderboardTypeEnum.PlayerAbilityKills:
+                return <PlayerAbilityKills selectedRound={selectedRound} />
+            case LeaderboardTypeEnum.PlayerBattlesSpectated:
+                return <PlayerBattlesSpectated selectedRound={selectedRound} />
+            case LeaderboardTypeEnum.PlayerMechSurvives:
+                return <PlayerMechSurvives selectedRound={selectedRound} />
+            case LeaderboardTypeEnum.PlayerMechKills:
+                return <PlayerMechKills selectedRound={selectedRound} />
+            case LeaderboardTypeEnum.PlayerAbilityTriggers:
+                return <PlayerAbilityTriggers selectedRound={selectedRound} />
+            case LeaderboardTypeEnum.PlayerMechsOwned:
+                return <PlayerMechsOwned />
+            case LeaderboardTypeEnum.PlayerRepairBlocks:
+                return <PlayerRepairBlocks selectedRound={selectedRound} />
+
+            default:
+                return null
+        }
+    }, [leaderboardType, selectedRound])
 
     return (
         <ClipThing
@@ -26,7 +72,7 @@ export const GlobalStats = () => {
                 bottomLeft: true,
                 bottomRight: true,
             }}
-            opacity={0.7}
+            opacity={0.9}
             backgroundColor={theme.factionTheme.background}
             sx={{ height: "100%" }}
         >
@@ -46,42 +92,31 @@ export const GlobalStats = () => {
                         imageUrl={Gabs}
                     ></PageHeader>
 
-                    <Stack sx={{ px: "2rem", pb: "1rem", flex: 1 }}>
-                        <Box
-                            sx={{
-                                flex: 1,
-                                ml: "1.9rem",
-                                mr: ".5rem",
-                                pr: "1.4rem",
-                                my: "1rem",
-                                overflowY: "auto",
-                                overflowX: "hidden",
-                                direction: "ltr",
+                    <Stack
+                        spacing="2.6rem"
+                        direction="row"
+                        alignItems="center"
+                        sx={{ p: ".8rem 1.8rem", borderBottom: (theme) => `${theme.factionTheme.primary}70 1.5px solid` }}
+                    >
+                        <Stack spacing="1rem" direction="row" alignItems="center">
+                            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                LEADERBOARD:
+                            </Typography>
+                            <LeaderboardSelect leaderboardType={leaderboardType} setLeaderboardType={setLeaderboardType} />
+                        </Stack>
 
-                                "::-webkit-scrollbar": {
-                                    width: ".4rem",
-                                },
-                                "::-webkit-scrollbar-track": {
-                                    background: "#FFFFFF15",
-                                    borderRadius: 3,
-                                },
-                                "::-webkit-scrollbar-thumb": {
-                                    background: theme.factionTheme.primary,
-                                    borderRadius: 3,
-                                },
-                            }}
-                        >
-                            <Box sx={{ direction: "ltr", height: 0 }}>
-                                <Stack spacing="5rem" sx={{ p: "3rem 1.8rem" }}>
-                                    <PlayerBattlesSpectated />
-                                    <PlayerMechSurvives />
-                                    <PlayerMechKills />
-                                    <PlayerAbilityKills />
-                                    <PlayerAbilityTriggers />
-                                    <PlayerMechsOwned />
-                                </Stack>
-                            </Box>
-                        </Box>
+                        {roundOptions && leaderboardType !== LeaderboardTypeEnum.PlayerMechsOwned && (
+                            <Stack spacing="1rem" direction="row" alignItems="center">
+                                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                    EVENT:
+                                </Typography>
+                                <RoundSelect roundOptions={roundOptions} selectedRound={selectedRound} setSelectedRound={setSelectedRound} />
+                            </Stack>
+                        )}
+                    </Stack>
+
+                    <Stack spacing="2rem" sx={{ pb: "1rem", flex: 1 }}>
+                        {leaderboard}
                     </Stack>
                 </Stack>
             </Stack>

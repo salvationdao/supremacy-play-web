@@ -2,19 +2,26 @@ import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/mater
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
-import { HANGAR_PAGE } from "../../../constants"
+import { BATTLE_ARENA_OPEN, HANGAR_PAGE } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, parseString } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
-import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
+import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MechBasic, MechStatusEnum } from "../../../types"
-import { SortTypeLabel } from "../../../types/marketplace"
+import { MechBasic, MechBasicWithQueueStatus, MechStatus, MechStatusEnum } from "../../../types"
+import { RepairOffer, RepairStatus } from "../../../types/jobs"
+import { SortDir, SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
+import { QueueDetails } from "../../LeftDrawer/QuickDeploy/QueueDetails"
+import { PlayerQueueStatus } from "../../LeftDrawer/QuickDeploy/QuickDeploy"
+import { BulkDeployConfirmModal } from "./Common/BulkDeployConfirmModal"
+import { BulkRepairConfirmModal } from "./Common/BulkRepairConfirmModal"
+import { RepairBay } from "./RepairBay/RepairBay"
+import { QueueFeed } from "./WarMachineDetails/Modals/DeployModal"
 import { WarMachineHangarItem } from "./WarMachineHangarItem"
 
 const sortOptions = [
@@ -39,7 +46,7 @@ interface GetMechsRequest {
 }
 
 interface GetMechsResponse {
-    mechs: MechBasic[]
+    mechs: MechBasicWithQueueStatus[]
     total: number
 }
 
@@ -48,10 +55,21 @@ export const WarMachinesHangar = () => {
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
 
+    // Player Queue Status
+    const [playerQueueStatus, setPlayerQueueStatus] = useState<PlayerQueueStatus>()
+
     // Items
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const [mechs, setMechs] = useState<MechBasic[]>([])
+    const [mechs, setMechs] = useState<MechBasicWithQueueStatus[]>([])
+
+    // Bulk action
+    const [selectedMechs, setSelectedMechs] = useState<MechBasic[]>([])
+    const [bulkDeployConfirmModalOpen, setBulkDeployConfirmModalOpen] = useState(false)
+    const [bulkRepairConfirmModalOpen, setBulkRepairConfirmModalOpen] = useState(false)
+    const childrenMechStatus = useRef<{ [mechID: string]: MechStatus }>({})
+    const childrenRepairStatus = useRef<{ [mechID: string]: RepairStatus }>({})
+    const childrenRepairOffer = useRef<{ [mechID: string]: RepairOffer }>({})
 
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
@@ -73,6 +91,45 @@ export const WarMachinesHangar = () => {
     useEffect(() => {
         localStorage.setItem("isWarMachinesHangarFiltersExpanded", isFiltersExpanded.toString())
     }, [isFiltersExpanded])
+
+    const updateTotalDeployed = (amount: number) => {
+        setPlayerQueueStatus((prev) => {
+            if (!prev) return
+
+            return {
+                ...prev,
+                total_queued: prev.total_queued + amount,
+            }
+        })
+    }
+
+    const toggleSelected = useCallback((mech: MechBasic) => {
+        setSelectedMechs((prev) => {
+            const newArray = [...prev]
+            const isAlreadySelected = prev.findIndex((s) => s.id === mech.id)
+            if (isAlreadySelected >= 0) {
+                newArray.splice(isAlreadySelected, 1)
+            } else {
+                newArray.push(mech)
+            }
+
+            return newArray
+        })
+    }, [])
+
+    const onSelectAll = useCallback(() => {
+        setSelectedMechs(mechs)
+    }, [mechs])
+
+    const onUnSelectAll = useCallback(() => {
+        setSelectedMechs([])
+    }, [])
+
+    // Queuing cost, queue length win reward etc.
+    const queueFeed = useGameServerSubscriptionFaction<QueueFeed>({
+        URI: "/queue",
+        key: GameServerKeys.SubQueueFeed,
+    })
 
     // Filters
     const statusFilterSection = useRef<ChipFilter>({
@@ -119,9 +176,9 @@ export const WarMachinesHangar = () => {
         try {
             setIsLoading(true)
 
-            let sortDir = "asc"
+            let sortDir = SortDir.Asc
             let sortBy = ""
-            if (sort === SortTypeLabel.MechQueueDesc || sort === SortTypeLabel.AlphabeticalReverse || sort === SortTypeLabel.RarestDesc) sortDir = "desc"
+            if (sort === SortTypeLabel.MechQueueDesc || sort === SortTypeLabel.AlphabeticalReverse || sort === SortTypeLabel.RarestDesc) sortDir = SortDir.Desc
 
             switch (sort) {
                 case SortTypeLabel.Alphabetical:
@@ -147,6 +204,9 @@ export const WarMachinesHangar = () => {
                 include_market_listed: true,
             })
 
+            const resp2 = await send<PlayerQueueStatus>(GameServerKeys.PlayerQueueStatus)
+            setPlayerQueueStatus(resp2)
+
             updateQuery({
                 sort,
                 search,
@@ -160,6 +220,7 @@ export const WarMachinesHangar = () => {
             setLoadError(undefined)
             setMechs(resp.mechs)
             setTotalItems(resp.total)
+            setSelectedMechs([])
         } catch (e) {
             setLoadError(typeof e === "string" ? e : "Failed to get war machines.")
             console.error(e)
@@ -215,15 +276,29 @@ export const WarMachinesHangar = () => {
                             py: "1rem",
                             display: "grid",
                             gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(30rem, 1fr))" : "100%",
-                            gap: "1.3rem",
+                            gap: "1.5rem",
                             alignItems: "center",
                             justifyContent: "center",
                             overflow: "visible",
                         }}
                     >
-                        {mechs.map((mech) => (
-                            <WarMachineHangarItem key={`marketplace-${mech.id}`} mech={mech} isGridView={isGridView} />
-                        ))}
+                        {mechs.map((mech) => {
+                            const isSelected = selectedMechs.findIndex((s) => s.id === mech.id) >= 0
+                            return (
+                                <WarMachineHangarItem
+                                    key={`marketplace-${mech.id}`}
+                                    isSelected={isSelected}
+                                    toggleIsSelected={() => {
+                                        toggleSelected(mech)
+                                    }}
+                                    childrenMechStatus={childrenMechStatus}
+                                    childrenRepairStatus={childrenRepairStatus}
+                                    childrenRepairOffer={childrenRepairOffer}
+                                    mech={mech}
+                                    isGridView={isGridView}
+                                />
+                            )
+                        })}
                     </Box>
                 </Box>
             )
@@ -253,137 +328,249 @@ export const WarMachinesHangar = () => {
                             textAlign: "center",
                         }}
                     >
-                        {"There are no war machines found, please try again."}
+                        {"There are no war machines found, please check your filters and try again."}
                     </Typography>
+
+                    <FancyButton
+                        to={`/marketplace/war-machines`}
+                        clipThingsProps={{
+                            clipSize: "9px",
+                            backgroundColor: theme.factionTheme.primary,
+                            border: { isFancy: true, borderColor: theme.factionTheme.primary },
+                            sx: { position: "relative", mt: "2rem" },
+                        }}
+                        sx={{ px: "1.8rem", py: ".8rem", color: theme.factionTheme.secondary }}
+                    >
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                textAlign: "center",
+                                color: theme.factionTheme.secondary,
+                                fontFamily: fonts.nostromoBold,
+                            }}
+                        >
+                            GO TO MARKETPLACE
+                        </Typography>
+                    </FancyButton>
                 </Stack>
             </Stack>
         )
-    }, [loadError, mechs, isLoading, isGridView, theme.factionTheme.primary])
+    }, [loadError, mechs, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary, isGridView, selectedMechs, toggleSelected])
 
-    return (
-        <Stack direction="row" sx={{ height: "100%" }}>
-            <SortAndFilters
-                initialSearch={search}
-                onSetSearch={setSearch}
-                chipFilters={[statusFilterSection.current, rarityChipFilter.current]}
-                changePage={changePage}
-                isExpanded={isFiltersExpanded}
-            />
+    return useMemo(
+        () => (
+            <>
+                <Stack direction="row" sx={{ height: "100%" }}>
+                    <SortAndFilters
+                        initialSearch={search}
+                        onSetSearch={setSearch}
+                        chipFilters={[statusFilterSection.current, rarityChipFilter.current]}
+                        changePage={changePage}
+                        isExpanded={isFiltersExpanded}
+                    />
 
-            <ClipThing
-                clipSize="10px"
-                border={{
-                    borderColor: theme.factionTheme.primary,
-                    borderThickness: ".3rem",
-                }}
-                opacity={0.7}
-                backgroundColor={theme.factionTheme.background}
-                sx={{ height: "100%", flex: 1 }}
-            >
-                <Stack sx={{ position: "relative", height: "100%" }}>
-                    <Stack sx={{ flex: 1 }}>
-                        <PageHeader title="WAR MACHINES" description="Your war machines." imageUrl={WarMachineIconPNG}>
-                            <Box sx={{ ml: "auto !important", pr: "2rem" }}>
-                                <FancyButton
-                                    clipThingsProps={{
-                                        clipSize: "9px",
-                                        backgroundColor: colors.gold,
-                                        opacity: 1,
-                                        border: { borderColor: colors.gold, borderThickness: "2px" },
-                                        sx: { position: "relative" },
-                                    }}
-                                    sx={{ px: "1.6rem", py: ".6rem", color: "#000000" }}
-                                    href={HANGAR_PAGE}
-                                    target="_blank"
+                    <ClipThing
+                        clipSize="10px"
+                        border={{
+                            borderColor: theme.factionTheme.primary,
+                            borderThickness: ".3rem",
+                        }}
+                        opacity={0.7}
+                        backgroundColor={theme.factionTheme.background}
+                        sx={{ height: "100%", flex: 1 }}
+                    >
+                        <Stack sx={{ position: "relative", height: "100%" }}>
+                            <Stack sx={{ flex: 1 }}>
+                                <PageHeader title="WAR MACHINES" description="Your war machines." imageUrl={WarMachineIconPNG}>
+                                    <Stack spacing="1rem" direction="row" alignItems="center" sx={{ ml: "auto !important", pr: "2rem" }}>
+                                        <FancyButton
+                                            disabled={!BATTLE_ARENA_OPEN || selectedMechs.length <= 0}
+                                            clipThingsProps={{
+                                                clipSize: "9px",
+                                                backgroundColor: colors.green,
+                                                opacity: 1,
+                                                border: { borderColor: colors.green, borderThickness: "2px" },
+                                                sx: { position: "relative" },
+                                            }}
+                                            sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
+                                            onClick={() => setBulkDeployConfirmModalOpen(true)}
+                                        >
+                                            <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                                DEPLOY SELECTED
+                                            </Typography>
+                                        </FancyButton>
+
+                                        <FancyButton
+                                            disabled={selectedMechs.length <= 0}
+                                            clipThingsProps={{
+                                                clipSize: "9px",
+                                                backgroundColor: colors.blue2,
+                                                opacity: 1,
+                                                border: { borderColor: colors.blue2, borderThickness: "2px" },
+                                                sx: { position: "relative" },
+                                            }}
+                                            sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
+                                            onClick={() => setBulkRepairConfirmModalOpen(true)}
+                                        >
+                                            <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                                REPAIR SELECTED
+                                            </Typography>
+                                        </FancyButton>
+
+                                        <FancyButton
+                                            clipThingsProps={{
+                                                clipSize: "9px",
+                                                backgroundColor: colors.gold,
+                                                opacity: 1,
+                                                border: { borderColor: colors.gold, borderThickness: "2px" },
+                                                sx: { position: "relative" },
+                                            }}
+                                            sx={{ px: "1.6rem", py: ".6rem", color: "#000000" }}
+                                            href={HANGAR_PAGE}
+                                            target="_blank"
+                                        >
+                                            <Typography
+                                                variant="caption"
+                                                sx={{
+                                                    color: "#000000",
+                                                    fontFamily: fonts.nostromoBlack,
+                                                }}
+                                            >
+                                                WALKABLE HANGAR
+                                            </Typography>
+                                        </FancyButton>
+                                    </Stack>
+                                </PageHeader>
+
+                                <TotalAndPageSizeOptions
+                                    countItems={mechs?.length}
+                                    totalItems={totalItems}
+                                    pageSize={pageSize}
+                                    changePageSize={changePageSize}
+                                    pageSizeOptions={[10, 20, 30]}
+                                    changePage={changePage}
+                                    manualRefresh={getItems}
+                                    sortOptions={sortOptions}
+                                    selectedSort={sort}
+                                    onSetSort={setSort}
+                                    isGridView={isGridView}
+                                    toggleIsGridView={toggleIsGridView}
+                                    isFiltersExpanded={isFiltersExpanded}
+                                    toggleIsFiltersExpanded={toggleIsFiltersExpanded}
+                                    selectedCount={selectedMechs.length}
+                                    onSelectAll={onSelectAll}
+                                    onUnselectedAll={onUnSelectAll}
                                 >
-                                    <Typography
-                                        variant="caption"
+                                    <QueueDetails queueFeed={queueFeed} playerQueueStatus={playerQueueStatus} />
+                                </TotalAndPageSizeOptions>
+
+                                <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
+                                    <Box
                                         sx={{
-                                            color: "#000000",
-                                            fontFamily: fonts.nostromoBlack,
+                                            ml: "1.9rem",
+                                            pr: "1.9rem",
+                                            my: "1rem",
+                                            flex: 1,
+                                            overflowY: "auto",
+                                            overflowX: "hidden",
+                                            direction: "ltr",
+
+                                            "::-webkit-scrollbar": {
+                                                width: "1rem",
+                                            },
+                                            "::-webkit-scrollbar-track": {
+                                                background: "#FFFFFF15",
+                                            },
+                                            "::-webkit-scrollbar-thumb": {
+                                                background: theme.factionTheme.primary,
+                                            },
                                         }}
                                     >
-                                        WALKABLE HANGAR
-                                    </Typography>
-                                </FancyButton>
-                            </Box>
-                        </PageHeader>
+                                        {content}
+                                    </Box>
+                                </Stack>
+                            </Stack>
 
-                        <TotalAndPageSizeOptions
-                            countItems={mechs?.length}
-                            totalItems={totalItems}
-                            pageSize={pageSize}
-                            changePageSize={changePageSize}
-                            pageSizeOptions={[10, 20, 30]}
-                            changePage={changePage}
-                            manualRefresh={getItems}
-                            sortOptions={sortOptions}
-                            selectedSort={sort}
-                            onSetSort={setSort}
-                            isGridView={isGridView}
-                            toggleIsGridView={toggleIsGridView}
-                            isFiltersExpanded={isFiltersExpanded}
-                            toggleIsFiltersExpanded={toggleIsFiltersExpanded}
-                        />
-
-                        <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
-                            <Box
-                                sx={{
-                                    ml: "1.9rem",
-                                    mr: ".5rem",
-                                    pr: "1.4rem",
-                                    my: "1rem",
-                                    flex: 1,
-                                    overflowY: "auto",
-                                    overflowX: "hidden",
-                                    direction: "ltr",
-
-                                    "::-webkit-scrollbar": {
-                                        width: ".4rem",
-                                    },
-                                    "::-webkit-scrollbar-track": {
-                                        background: "#FFFFFF15",
-                                        borderRadius: 3,
-                                    },
-                                    "::-webkit-scrollbar-thumb": {
-                                        background: theme.factionTheme.primary,
-                                        borderRadius: 3,
-                                    },
-                                }}
-                            >
-                                {content}
-                            </Box>
+                            {totalPages > 1 && (
+                                <Box
+                                    sx={{
+                                        px: "1rem",
+                                        py: ".7rem",
+                                        borderTop: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
+                                        backgroundColor: "#00000070",
+                                    }}
+                                >
+                                    <Pagination
+                                        size="medium"
+                                        count={totalPages}
+                                        page={page}
+                                        sx={{
+                                            ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
+                                            ".Mui-selected": {
+                                                color: (theme) => theme.factionTheme.secondary,
+                                                backgroundColor: `${theme.factionTheme.primary} !important`,
+                                            },
+                                        }}
+                                        onChange={(e, p) => changePage(p)}
+                                        showFirstButton
+                                        showLastButton
+                                    />
+                                </Box>
+                            )}
                         </Stack>
-                    </Stack>
+                    </ClipThing>
 
-                    {totalPages > 1 && (
-                        <Box
-                            sx={{
-                                px: "1rem",
-                                py: ".7rem",
-                                borderTop: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
-                                backgroundColor: "#00000070",
-                            }}
-                        >
-                            <Pagination
-                                size="medium"
-                                count={totalPages}
-                                page={page}
-                                sx={{
-                                    ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
-                                    ".Mui-selected": {
-                                        color: (theme) => theme.factionTheme.secondary,
-                                        backgroundColor: `${theme.factionTheme.primary} !important`,
-                                    },
-                                }}
-                                onChange={(e, p) => changePage(p)}
-                                showFirstButton
-                                showLastButton
-                            />
-                        </Box>
-                    )}
+                    <RepairBay selectedMechs={selectedMechs} setSelectedMechs={setSelectedMechs} />
                 </Stack>
-            </ClipThing>
-        </Stack>
+
+                {bulkDeployConfirmModalOpen && (
+                    <BulkDeployConfirmModal
+                        setBulkDeployConfirmModalOpen={setBulkDeployConfirmModalOpen}
+                        selectedMechs={selectedMechs}
+                        setSelectedMechs={setSelectedMechs}
+                        childrenMechStatus={childrenMechStatus}
+                        queueFeed={queueFeed}
+                        onBulkDeploy={(amount) => updateTotalDeployed(amount)}
+                    />
+                )}
+
+                {bulkRepairConfirmModalOpen && (
+                    <BulkRepairConfirmModal
+                        setBulkRepairConfirmModalOpen={setBulkRepairConfirmModalOpen}
+                        selectedMechs={selectedMechs}
+                        setSelectedMechs={setSelectedMechs}
+                        childrenMechStatus={childrenMechStatus}
+                        childrenRepairStatus={childrenRepairStatus}
+                        childrenRepairOffer={childrenRepairOffer}
+                    />
+                )}
+            </>
+        ),
+        [
+            bulkDeployConfirmModalOpen,
+            bulkRepairConfirmModalOpen,
+            changePage,
+            changePageSize,
+            content,
+            getItems,
+            isFiltersExpanded,
+            isGridView,
+            mechs?.length,
+            onSelectAll,
+            onUnSelectAll,
+            page,
+            pageSize,
+            playerQueueStatus,
+            queueFeed,
+            search,
+            selectedMechs,
+            sort,
+            theme.factionTheme.background,
+            theme.factionTheme.primary,
+            toggleIsFiltersExpanded,
+            toggleIsGridView,
+            totalItems,
+            totalPages,
+        ],
     )
 }

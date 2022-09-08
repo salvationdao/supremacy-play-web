@@ -1,8 +1,7 @@
 import { Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
-import { Link } from "react-router-dom"
 import { FancyButton } from "../../../../.."
-import { useSnackbar } from "../../../../../../containers"
+import { useGlobalNotifications } from "../../../../../../containers"
 import { supFormatterNoFixed, timeSinceInWords } from "../../../../../../helpers"
 import { useTimer } from "../../../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../../../hooks/useGameServer"
@@ -12,7 +11,7 @@ import { RepairOffer } from "../../../../../../types/jobs"
 import { AmountItem } from "../DeployModal"
 
 export const ExistingRepairJobCard = ({ repairOffer, remainDamagedBlocks }: { repairOffer: RepairOffer; remainDamagedBlocks: number }) => {
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [submitError, setSubmitError] = useState<string>()
@@ -47,10 +46,6 @@ export const ExistingRepairJobCard = ({ repairOffer, remainDamagedBlocks }: { re
         >
             <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack, color: colors.blue2 }}>
                 Repair job posted!
-            </Typography>
-
-            <Typography variant="h6">
-                You have a repair job listed on the <Link to="/jobs">jobs page</Link>.
             </Typography>
 
             <Stack>

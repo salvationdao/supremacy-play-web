@@ -1,16 +1,15 @@
 import { Autocomplete, Box, CircularProgress, IconButton, MenuItem, Modal, Select, Stack, SxProps, TextField, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SvgClose, SvgCooldown, SvgSupToken } from "../../../../assets"
 import { MAX_BAN_PROPOSAL_REASON_LENGTH } from "../../../../constants"
-import { useAuth, useSnackbar } from "../../../../containers"
+import { useAuth, useGlobalNotifications } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
-import { mergeDeep, snakeToTitle } from "../../../../helpers"
+import { snakeToTitle } from "../../../../helpers"
 import { useDebounce, useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
-import { User } from "../../../../types"
 import { BanOption, BanUser } from "../../../../types/chat"
 import { Player } from "../../../Common/Player"
 
@@ -20,18 +19,27 @@ interface SubmitRequest {
     reason: string
 }
 
-const UserItem = ({ user, banUser, sx }: { user: User; banUser: BanUser; sx?: SxProps }) => {
-    const banUserMore = useMemo(() => mergeDeep(user, banUser), [banUser, user])
+const UserItem = ({ banUser, sx }: { banUser: BanUser; sx?: SxProps }) => {
     return (
         <Stack direction="row" spacing=".6rem" alignItems="center" sx={sx}>
-            <Player player={banUserMore} styledImageTextProps={{ textColor: "#FFFFFF" }} />
+            <Player
+                player={{
+                    id: banUser.id,
+                    username: banUser.username,
+                    gid: banUser.gid,
+                    faction_id: "",
+                    rank: "NEW_RECRUIT",
+                    features: [],
+                }}
+                styledImageTextProps={{ textColor: "#FFFFFF" }}
+            />
         </Stack>
     )
 }
 
-export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; open: boolean; onClose: () => void; prefillUser?: BanUser }) => {
+export const UserBanForm = ({ open, onClose, prefillUser }: { open: boolean; onClose: () => void; prefillUser?: BanUser }) => {
     const theme = useTheme()
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const { userStat, userRank } = useAuth()
     // Options and display only
@@ -66,6 +74,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; 
 
     // When searching for player, update the dropdown list
     useEffect(() => {
+        if (search === "") return
         ;(async () => {
             toggleIsLoadingUsers(true)
             try {
@@ -75,11 +84,13 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; 
 
                 if (!resp) return
                 setUserDropdown(resp)
+            } catch (e) {
+                newSnackbarMessage(typeof e === "string" ? e : "Failed to load ban options.", "error")
             } finally {
                 toggleIsLoadingUsers(false)
             }
         })()
-    }, [search, send, toggleIsLoadingUsers])
+    }, [search, send, toggleIsLoadingUsers, newSnackbarMessage])
 
     // When a player is selected, get the ban fee for that player
     useEffect(() => {
@@ -171,7 +182,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; 
                             onChange={(e, value) => setSelectedUser(value)}
                             renderOption={(props, u) => (
                                 <Box key={u.id} component="li" {...props}>
-                                    <UserItem user={user} banUser={u} />
+                                    <UserItem banUser={u} />
                                 </Box>
                             )}
                             getOptionLabel={(u) => `${u.username}#${u.gid}`}
@@ -226,7 +237,7 @@ export const UserBanForm = ({ user, open, onClose, prefillUser }: { user: User; 
                             <Stack spacing=".1rem">
                                 <Typography sx={{ color: primaryColor, fontWeight: "fontWeightBold" }}>USER:</Typography>
                                 {selectedUser ? (
-                                    <UserItem user={user} banUser={selectedUser} sx={{ pl: ".2rem" }} />
+                                    <UserItem banUser={selectedUser} sx={{ pl: ".2rem" }} />
                                 ) : (
                                     <Typography sx={{ opacity: 0.6 }}>
                                         <i>Use the search box to find a user...</i>

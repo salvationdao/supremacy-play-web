@@ -7,7 +7,9 @@ export const Maintenance = () => {
     return (
         <Box
             sx={{
-                position: "relative",
+                position: "fixed",
+                top: 0,
+                left: 0,
                 width: "100%",
                 height: "100%",
                 backgroundColor: "#040B10",
@@ -15,6 +17,7 @@ export const Maintenance = () => {
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
+                zIndex: siteZIndex.Modal,
             }}
         >
             <Stack
@@ -23,10 +26,8 @@ export const Maintenance = () => {
                 justifyContent="center"
                 sx={{
                     position: "absolute",
-                    top: "50%",
-                    left: "5rem",
-                    right: "5rem",
-                    transform: "translateY(-60%)",
+                    left: "12rem",
+                    top: "10rem",
                     zIndex: siteZIndex.RoutePage,
                 }}
             >
@@ -88,50 +89,7 @@ export const Maintenance = () => {
                         </Stack>
                     </Stack>
                 </Box>
-
-                {/* Perth time */}
-                {/* <CountdownTimer endTime={new Date("Wed Mar 02 2022 14:00:00 GMT+0800")} /> */}
             </Stack>
         </Box>
     )
 }
-
-// const CountdownTimer = ({ endTime }: { endTime: Date }) => {
-//     const { hours, minutes, seconds } = useTimer(endTime)
-
-//     return (
-//         <Stack
-//             direction="row"
-//             justifyContent="space-around"
-//             sx={{ mt: "1.6rem", backgroundColor: "#00000099", borderRadius: 1 }}
-//         >
-//             <Stack
-//                 alignItems="center"
-//                 sx={{ px: "1.6rem", py: "1.2rem", width: "11rem", backgroundColor: "#00000099" }}
-//             >
-//                 <Typography variant="h5" sx={{ color: colors.neonBlue }}>
-//                     {hours}
-//                 </Typography>
-//                 <Typography variant="h6">HOURS</Typography>
-//             </Stack>
-//             <Stack
-//                 alignItems="center"
-//                 sx={{ px: "1.6rem", py: "1.2rem", width: "11rem", backgroundColor: "#00000099" }}
-//             >
-//                 <Typography variant="h5" sx={{ color: colors.neonBlue }}>
-//                     {minutes}
-//                 </Typography>
-//                 <Typography variant="h6">MINUTES</Typography>
-//             </Stack>
-//             <Stack
-//                 alignItems="center"
-//                 sx={{ px: "1.6rem", py: "1.2rem", width: "11rem", backgroundColor: "#00000099" }}
-//             >
-//                 <Typography variant="h5" sx={{ color: colors.neonBlue }}>
-//                     {seconds}
-//                 </Typography>
-//                 <Typography variant="h6">SECONDS</Typography>
-//             </Stack>
-//         </Stack>
-//     )
-// }

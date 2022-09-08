@@ -1,22 +1,27 @@
-import { BattleArenaPage, ClaimPage, HangarPage, MarketplacePage, BillingHistoryPage, NotFoundPage } from "../pages"
-import { SvgChat } from "../assets"
 import { Box } from "@mui/system"
-import { colors } from "../theme/theme"
-import { StorefrontPage } from "../pages/StorefrontPage"
+import { SvgChat, SvgDamage1, SvgHistoryClock, SvgRepair, SvgRobot } from "../assets"
+import { BattleArena } from "../components/LeftDrawer/BattleArena/BattleArena"
+import { BattleEndScreen } from "../components/LeftDrawer/BattleEndScreen/BattleEndScreen"
+import { QuickDeploy } from "../components/LeftDrawer/QuickDeploy/QuickDeploy"
+import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
+import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
+import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
+import { RepairJobs } from "../components/RightDrawer/RepairJobs/RepairJobs"
+import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../constants"
+import { BattleArenaPage, BillingHistoryPage, ClaimPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
+import { LeaderboardPage } from "../pages/LeaderboardPage"
 import { MarketplaceItemPage } from "../pages/MarketplaceItemPage"
 import { MarketplaceSellPage } from "../pages/MarketplaceSellPage"
 import { MechPage } from "../pages/MechPage"
+import { ReplayItemPage } from "../pages/ReplayItemPage"
+import { ReplayPage } from "../pages/ReplayPage"
+import { StorefrontPage } from "../pages/StorefrontPage"
 import { WeaponPage } from "../pages/WeaponPage"
-import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
-import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
-import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
-import { BATTLE_ARENA_OPEN, STAGING_OR_DEV_ONLY } from "../constants"
-import { LeaderboardPage } from "../pages/LeaderboardPage"
-import { JobsPage } from "../pages/JobsPage"
+import { colors } from "../theme/theme"
 
-/**
- * Left drawer
- */
+// ************
+// ** ROUTES **
+// ************
 interface RouteStruct {
     id: string
     path: string
@@ -26,13 +31,13 @@ interface RouteStruct {
     authTitle?: string // If omitted, it'll have a default title
     authDescription?: string // If omitted, it'll have a default description
     requireFaction: boolean
-    leftDrawer?: {
+    navLink?: {
         enable: boolean
         label: string
-        comingSoonLabel?: string
     }
-    matchLeftDrawerID?: string // The /route which will make this button highlighted
+    matchNavLinkID?: string // The /route which will make this button highlighted
     enable: boolean
+    pageTitle: string // Sets the tab title etc. with react helmet
 }
 
 export const ROUTES_MAP: { [name: string]: RouteStruct } = {
@@ -42,14 +47,14 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         exact: true,
         Component: BattleArenaPage,
         requireAuth: false,
-        requireFaction: false,
-        leftDrawer: {
+        requireFaction: true,
+        navLink: {
             enable: BATTLE_ARENA_OPEN,
             label: "Battle Arena",
-            comingSoonLabel: "Returning Soon",
         },
-        matchLeftDrawerID: "home",
+        matchNavLinkID: "home",
         enable: true,
+        pageTitle: "Supremacy - Battle Arena",
     },
 
     // Leaderboard
@@ -60,12 +65,13 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: LeaderboardPage,
         requireAuth: false,
         requireFaction: false,
-        leftDrawer: {
+        navLink: {
             enable: true,
             label: "Leaderboard",
         },
-        matchLeftDrawerID: "leaderboard",
+        matchNavLinkID: "leaderboard",
         enable: true,
+        pageTitle: "Supremacy - Leaderboard",
     },
 
     // Mech
@@ -76,8 +82,9 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: MechPage,
         requireAuth: true,
         requireFaction: true,
-        matchLeftDrawerID: "fleet",
+        matchNavLinkID: "fleet",
         enable: true,
+        pageTitle: "Supremacy - War Machine",
     },
 
     // Weapon
@@ -88,8 +95,9 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: WeaponPage,
         requireAuth: true,
         requireFaction: true,
-        matchLeftDrawerID: "fleet",
+        matchNavLinkID: "fleet",
         enable: true,
+        pageTitle: "Supremacy - Weapon",
     },
 
     // Fleet
@@ -100,12 +108,13 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: HangarPage,
         requireAuth: true,
         requireFaction: true,
-        leftDrawer: {
+        navLink: {
             enable: true,
             label: "fleet",
         },
-        matchLeftDrawerID: "fleet",
+        matchNavLinkID: "fleet",
         enable: true,
+        pageTitle: "Supremacy - Fleet",
     },
 
     // Storefront
@@ -116,12 +125,13 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: StorefrontPage,
         requireAuth: true,
         requireFaction: true,
-        leftDrawer: {
+        navLink: {
             enable: true,
             label: "Storefront",
         },
-        matchLeftDrawerID: "storefront",
-        enable: !STAGING_OR_DEV_ONLY,
+        matchNavLinkID: "storefront",
+        enable: true,
+        pageTitle: "Supremacy - Storefront",
     },
 
     // Marketplace
@@ -132,8 +142,9 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: MarketplaceSellPage,
         requireAuth: true,
         requireFaction: true,
-        matchLeftDrawerID: "marketplace",
-        enable: !STAGING_OR_DEV_ONLY,
+        matchNavLinkID: "marketplace",
+        enable: !IS_TESTING_MODE,
+        pageTitle: "Supremacy - Sell",
     },
     marketplace_item: {
         id: "marketplace_item",
@@ -142,8 +153,9 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: MarketplaceItemPage,
         requireAuth: true,
         requireFaction: true,
-        matchLeftDrawerID: "marketplace",
-        enable: !STAGING_OR_DEV_ONLY,
+        matchNavLinkID: "marketplace",
+        enable: !IS_TESTING_MODE,
+        pageTitle: "Supremacy - Marketplace Item",
     },
     marketplace: {
         id: "marketplace",
@@ -152,12 +164,13 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         Component: MarketplacePage,
         requireAuth: true,
         requireFaction: true,
-        leftDrawer: {
+        navLink: {
             enable: true,
             label: "Marketplace",
         },
-        matchLeftDrawerID: "marketplace",
-        enable: !STAGING_OR_DEV_ONLY,
+        matchNavLinkID: "marketplace",
+        enable: !IS_TESTING_MODE,
+        pageTitle: "Supremacy - Marketplace",
     },
 
     // Player profile
@@ -169,22 +182,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireAuth: false,
         requireFaction: false,
         enable: true,
-    },
-
-    // Jobs
-    jobs: {
-        id: "jobs",
-        path: "/jobs/:type?",
-        exact: true,
-        Component: JobsPage,
-        requireAuth: true,
-        requireFaction: true,
-        leftDrawer: {
-            enable: true,
-            label: "Jobs",
-        },
-        matchLeftDrawerID: "jobs",
-        enable: true,
+        pageTitle: "Supremacy - Player Profile",
     },
 
     // FIAT related
@@ -196,20 +194,50 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireAuth: true,
         requireFaction: true,
         enable: true,
+        pageTitle: "Supremacy - Billing",
     },
 
-    // Others
+    // Replays
+    replays_item: {
+        id: "replays_item",
+        path: "/replay",
+        exact: true,
+        Component: ReplayItemPage,
+        requireAuth: false,
+        requireFaction: false,
+        matchNavLinkID: "replays",
+        enable: true,
+        pageTitle: "Supremacy - Replay Item",
+    },
+    replays: {
+        id: "replays",
+        path: "/replays/:type?",
+        exact: true,
+        Component: ReplayPage,
+        requireAuth: false,
+        requireFaction: false,
+        navLink: {
+            enable: true,
+            label: "Replays",
+        },
+        matchNavLinkID: "replays",
+        enable: BATTLE_ARENA_OPEN,
+        pageTitle: "Supremacy - Replays",
+    },
+
+    // Claim
     claim: {
         id: "claim",
         path: "/claim",
         exact: true,
         Component: ClaimPage,
         requireAuth: true,
+        requireFaction: true,
         authTitle: "Connect to XSYN to Claim Your Rewards",
         authDescription:
             "You will receive assets that are of Supremacy's next generation collection: Supremacy Nexus, which will allow you to equip your war machines to defeat your enemies in the battle arena.",
-        requireFaction: true,
         enable: true,
+        pageTitle: "Supremacy - Claim",
     },
 
     not_found_page: {
@@ -220,6 +248,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         requireAuth: false,
         requireFaction: false,
         enable: true,
+        pageTitle: "Supremacy - 404",
     },
 }
 
@@ -228,51 +257,92 @@ for (const [, value] of Object.entries(ROUTES_MAP)) {
     ROUTES_ARRAY.push(value)
 }
 
-/**
- * Right drawer
- */
-export enum RightDrawerHashes {
-    None = "",
-    LiveChat = "#live_chat",
-    PlayerList = "#player_list",
-}
-
-export interface HashRouteStruct {
+// *****************
+// ** LEFT DRAWER **
+// *****************
+export interface SideTabsStruct {
     id: string
-    hash: string
-    Component?: () => JSX.Element
+    Component?: () => JSX.Element | null
     icon: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
     label: string
-    mountAllTime?: boolean
+    matchNavLinkIDs?: string[] // Leave undefined to have the tab available on all pages, else specify the routes
+    mountAllTime: boolean // Whether to keep component mounted even not on the tab
     requireAuth: boolean
 }
 
-export const HASH_ROUTES_MAP: { [name: string]: HashRouteStruct } = {
+export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
+    battle_arena: {
+        id: "battle_arena",
+        icon: <SvgDamage1 size="1.2rem" sx={{ pt: ".3rem" }} />,
+        label: "Battle Commands",
+        Component: BattleArena,
+        requireAuth: false,
+        matchNavLinkIDs: BATTLE_ARENA_OPEN ? ["home"] : [],
+        mountAllTime: true,
+    },
+    quick_deploy: {
+        id: "quick_deploy",
+        icon: <SvgRobot size="1.3rem" sx={{ pt: ".3rem" }} />,
+        label: "Quick Deploy",
+        Component: QuickDeploy,
+        requireAuth: true,
+        matchNavLinkIDs: BATTLE_ARENA_OPEN ? ["home"] : [],
+        mountAllTime: false,
+    },
+    previous_battle: {
+        id: "previous_battle",
+        icon: <SvgHistoryClock size="1.3rem" sx={{ pt: ".3rem" }} />,
+        label: "Previous Battle",
+        Component: BattleEndScreen,
+        requireAuth: false,
+        matchNavLinkIDs: BATTLE_ARENA_OPEN ? ["home"] : [],
+        mountAllTime: true,
+    },
+}
+
+export const LEFT_DRAWER_ARRAY: SideTabsStruct[] = []
+for (const [, value] of Object.entries(LEFT_DRAWER_MAP)) {
+    LEFT_DRAWER_ARRAY.push(value)
+}
+
+// ******************
+// ** RIGHT DRAWER **
+// ******************
+export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
     live_chat: {
         id: "live_chat",
-        hash: RightDrawerHashes.LiveChat,
-        icon: <SvgChat size="1rem" sx={{ pt: ".3rem" }} />,
+        icon: <SvgChat size="1.1rem" sx={{ pt: ".3rem" }} />,
         label: "Live Chat",
         Component: LiveChat,
         requireAuth: false,
+        matchNavLinkIDs: undefined,
         mountAllTime: true,
     },
     active_players: {
         id: "active_players",
-        hash: RightDrawerHashes.PlayerList,
         icon: (
             <Box sx={{ pb: ".2rem" }}>
-                <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: colors.green }} />
+                <Box sx={{ width: ".9rem", height: ".9rem", borderRadius: "50%", backgroundColor: colors.green }} />
             </Box>
         ),
         label: "Active Players",
         Component: PlayerList,
         requireAuth: true,
+        matchNavLinkIDs: undefined,
+        mountAllTime: false,
+    },
+    repairs: {
+        id: "repairs",
+        icon: <SvgRepair size="1.1rem" sx={{ pt: ".3rem" }} />,
+        label: "Repairs Jobs",
+        Component: RepairJobs,
+        requireAuth: true,
+        matchNavLinkIDs: undefined,
         mountAllTime: false,
     },
 }
 
-export const HASH_ROUTES_ARRAY: HashRouteStruct[] = []
-for (const [, value] of Object.entries(HASH_ROUTES_MAP)) {
-    HASH_ROUTES_ARRAY.push(value)
+export const RIGHT_DRAWER_ARRAY: SideTabsStruct[] = []
+for (const [, value] of Object.entries(RIGHT_DRAWER_MAP)) {
+    RIGHT_DRAWER_ARRAY.push(value)
 }

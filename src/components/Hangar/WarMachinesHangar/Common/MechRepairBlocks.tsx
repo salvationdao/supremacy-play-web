@@ -1,8 +1,8 @@
 import { Stack, Typography } from "@mui/material"
 import React from "react"
-import { useAuth } from "../../../../containers"
-import { useGameServerSubscription } from "../../../../hooks/useGameServer"
+import { useGameServerSubscriptionSecured } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
+import { pulseEffect } from "../../../../theme/keyframes"
 import { colors, fonts } from "../../../../theme/theme"
 import { RepairStatus } from "../../../../types/jobs"
 
@@ -11,11 +11,13 @@ export const RepairBlocks = ({
     remainDamagedBlocks,
     hideNumber,
     size = 8,
+    pulsateEffectPercent,
 }: {
     defaultBlocks?: number
     remainDamagedBlocks: number
     hideNumber?: boolean
     size?: number
+    pulsateEffectPercent?: number // Out of 100
 }) => {
     return (
         <Stack direction="row" alignItems="center" spacing=".5rem" sx={{ width: "100%" }}>
@@ -26,16 +28,39 @@ export const RepairBlocks = ({
                     "& > div": {
                         p: `${size * 0.1875}px`,
                         ".single-block": {
+                            position: "relative",
                             height: `${size}px`,
                             width: `${size}px`,
                             backgroundColor: defaultBlocks ? colors.red : "#FFFFFF35",
                         },
                     },
+
                     [`& > div:nth-of-type(-n+${defaultBlocks ? defaultBlocks - remainDamagedBlocks : 0})`]: {
                         ".single-block": {
                             backgroundColor: colors.green,
                         },
                     },
+
+                    // Pulsate effect
+                    ...(pulsateEffectPercent && pulsateEffectPercent > 0
+                        ? {
+                              [`& > div:nth-of-type(${defaultBlocks ? Math.max(defaultBlocks - remainDamagedBlocks + 1, 1) : 1})`]: {
+                                  ".single-block": {
+                                      animation: `${pulseEffect} 3s infinite`,
+
+                                      "::after": {
+                                          content: '""',
+                                          position: "absolute",
+                                          top: 0,
+                                          left: 0,
+                                          bottom: 0,
+                                          width: `${pulsateEffectPercent}%`,
+                                          backgroundColor: colors.green,
+                                      },
+                                  },
+                              },
+                          }
+                        : {}),
                 }}
             >
                 {new Array(defaultBlocks || remainDamagedBlocks).fill(0).map((_, index) => (
@@ -67,20 +92,27 @@ export const MechRepairBlocks = React.memo(function MechRepairBlocks({
     mechID,
     defaultBlocks,
     hideNumber,
+    pulsateEffectPercent,
 }: {
     mechID?: string
     defaultBlocks?: number
     hideNumber?: boolean
+    pulsateEffectPercent?: number
 }) {
-    const { userID } = useAuth()
-
-    const repairStatus = useGameServerSubscription<RepairStatus>({
-        URI: `/secure_public/mech/${mechID}/repair_case`,
+    const repairStatus = useGameServerSubscriptionSecured<RepairStatus>({
+        URI: `/mech/${mechID}/repair_case`,
         key: GameServerKeys.SubMechRepairStatus,
-        ready: !!mechID && !!userID,
+        ready: !!mechID,
     })
 
     const remainDamagedBlocks = repairStatus ? repairStatus.blocks_required_repair - repairStatus.blocks_repaired : 0
 
-    return <RepairBlocks defaultBlocks={defaultBlocks} remainDamagedBlocks={remainDamagedBlocks} hideNumber={hideNumber} />
+    return (
+        <RepairBlocks
+            defaultBlocks={defaultBlocks}
+            remainDamagedBlocks={remainDamagedBlocks}
+            hideNumber={hideNumber}
+            pulsateEffectPercent={pulsateEffectPercent}
+        />
+    )
 })

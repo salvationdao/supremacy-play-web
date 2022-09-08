@@ -1,11 +1,13 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { createContainer } from "unstated-next"
-import { useAuth, useSnackbar } from "."
-import { useGameServerCommandsFaction, useGameServerSubscriptionUser } from "../hooks/useGameServer"
+import { useAuth, useGlobalNotifications } from "."
+import { useDebounce } from "../hooks"
+import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { Position, GameAbility, LocationSelectType, PlayerAbility } from "../types"
-import { useToggle } from "./../hooks/useToggle"
+import { BribeStage, GameAbility, LocationSelectType, PlayerAbility, Position } from "../types"
+import { useArena } from "./arena"
 import { useGame } from "./game"
+import { RecordType, useHotkey } from "./hotkeys"
 
 interface WinnerAnnouncementResponse {
     game_ability: GameAbility
@@ -22,28 +24,29 @@ export interface MapSelection {
 }
 
 export const MiniMapContainer = createContainer(() => {
-    const { bribeStage, map } = useGame()
+    const { bribeStage, map, isBattleStarted } = useGame()
     const { factionID } = useAuth()
-    const { newSnackbarMessage } = useSnackbar()
+    const { currentArenaID } = useArena()
+    const { addToHotkeyRecord } = useHotkey()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
     // Map
-    const mapElement = useRef<HTMLDivElement>()
-    const gridWidth = useMemo(() => (map ? map.width / map.cells_x : 50), [map])
-    const gridHeight = useMemo(() => (map ? map.height / map.cells_y : 50), [map])
+    const [mapElement, setMapElement] = useState<HTMLDivElement | null>(null)
+    const gridWidth = useMemo(() => (map ? map.Width / map.Cells_X : 50), [map])
+    const gridHeight = useMemo(() => (map ? map.Height / map.Cells_Y : 50), [map])
 
     // Map triggers
     const [winner, setWinner] = useState<WinnerAnnouncementResponse>()
     const [playerAbility, setPlayerAbility] = useState<PlayerAbility>()
-    const [isEnlarged, toggleIsEnlarged] = useToggle()
     const [isTargeting, setIsTargeting] = useState(false)
 
     // Other stuff
     const [highlightedMechParticipantID, setHighlightedMechParticipantID] = useState<number>()
-    const [selection, setSelection] = useState<MapSelection>()
+    const [selection, setSelectionDebounced, selectionInstant, setSelection] = useDebounce<MapSelection | undefined>(undefined, 320)
 
     // Subscribe on winner announcements
-    useGameServerSubscriptionUser<WinnerAnnouncementResponse | undefined>(
+    useGameServerSubscriptionSecuredUser<WinnerAnnouncementResponse | undefined>(
         {
             URI: "",
             key: GameServerKeys.SubBribeWinnerAnnouncement,
@@ -67,7 +70,7 @@ export const MiniMapContainer = createContainer(() => {
 
     // Toggle expand if user is using player ability or user is chosen to use battle ability
     useEffect(() => {
-        if (winner && bribeStage?.phase === "LOCATION_SELECT") {
+        if (winner && bribeStage?.phase === BribeStage.LocationSelect) {
             if (!playerAbility) return setIsTargeting(true)
             // If battle ability is overriding player ability selection
             setIsTargeting(false)
@@ -80,123 +83,180 @@ export const MiniMapContainer = createContainer(() => {
         } else if (playerAbility) {
             setIsTargeting(true)
         }
-    }, [winner, bribeStage, playerAbility])
+    }, [winner, bribeStage, playerAbility, setSelection])
 
-    const resetSelection = useCallback(() => {
-        setWinner(undefined)
+    const resetPlayerAbilitySelection = useCallback(() => {
         setPlayerAbility(undefined)
+        setSelectionDebounced(undefined)
         setSelection(undefined)
-        setIsTargeting(false)
-    }, [])
+        setIsTargeting(!!winner?.game_ability)
+    }, [winner?.game_ability, setSelection, setSelectionDebounced])
+
+    const resetWinnerSelection = useCallback(() => {
+        setSelection(undefined)
+        setWinner(undefined)
+        setIsTargeting(!!playerAbility)
+    }, [playerAbility, setSelection])
+
+    useEffect(() => {
+        addToHotkeyRecord(RecordType.MiniMap, "Escape", () => {
+            resetPlayerAbilitySelection()
+            setHighlightedMechParticipantID(undefined)
+        })
+    }, [addToHotkeyRecord, resetPlayerAbilitySelection])
 
     const onTargetConfirm = useCallback(async () => {
-        if (!selection) return
+        if (!selection || !currentArenaID) return
+
+        let payload: {
+            arena_id: string
+            blueprint_ability_id: string
+            location_select_type: string
+            start_coords?: Position
+            end_coords?: Position
+            mech_hash?: string
+        } | null = null
+
+        let hubKey = GameServerKeys.PlayerAbilityUse
+
         try {
             if (winner?.game_ability) {
                 if (!selection.startCoords) {
                     throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
                 }
 
-                await send<boolean>(GameServerKeys.SubmitAbilityLocationSelect, {
+                payload = {
+                    arena_id: currentArenaID,
+                    blueprint_ability_id: "",
+                    location_select_type: "",
                     start_coords: {
-                        x: Math.floor(selection.startCoords.x),
-                        y: Math.floor(selection.startCoords.y),
+                        x: selection.startCoords.x,
+                        y: selection.startCoords.y,
                     },
                     end_coords:
-                        winner?.game_ability.location_select_type === LocationSelectType.LINE_SELECT && selection.endCoords
+                        winner?.game_ability.location_select_type === LocationSelectType.LineSelect && selection.endCoords
                             ? {
-                                  x: Math.floor(selection.endCoords.x),
-                                  y: Math.floor(selection.endCoords.y),
+                                  x: selection.endCoords.x,
+                                  y: selection.endCoords.y,
                               }
                             : undefined,
-                })
-                setPlayerAbility(undefined)
+                }
+
+                hubKey = GameServerKeys.SubmitAbilityLocationSelect
+                resetWinnerSelection()
             } else if (playerAbility) {
-                let payload: {
-                    blueprint_ability_id: string
-                    location_select_type: string
-                    start_coords?: Position
-                    end_coords?: Position
-                    mech_hash?: string
-                } | null = null
                 switch (playerAbility.ability.location_select_type) {
-                    case LocationSelectType.LINE_SELECT:
+                    case LocationSelectType.LineSelect:
                         if (!selection.startCoords || !selection.endCoords) {
                             throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
                         }
                         payload = {
+                            arena_id: currentArenaID,
                             blueprint_ability_id: playerAbility.ability.id,
                             location_select_type: playerAbility.ability.location_select_type,
                             start_coords: {
-                                x: Math.floor(selection.startCoords.x),
-                                y: Math.floor(selection.startCoords.y),
+                                x: selection.startCoords.x,
+                                y: selection.startCoords.y,
                             },
                             end_coords: {
-                                x: Math.floor(selection.endCoords.x),
-                                y: Math.floor(selection.endCoords.y),
+                                x: selection.endCoords.x,
+                                y: selection.endCoords.y,
                             },
                         }
                         break
-                    case LocationSelectType.MECH_SELECT:
+                    case LocationSelectType.MechSelect:
+                    case LocationSelectType.MechSelectAllied:
+                    case LocationSelectType.MechSelectOpponent:
                         payload = {
+                            arena_id: currentArenaID,
                             blueprint_ability_id: playerAbility.ability.id,
                             location_select_type: playerAbility.ability.location_select_type,
                             mech_hash: selection.mechHash,
                         }
                         break
-                    case LocationSelectType.LOCATION_SELECT:
-                    case LocationSelectType.MECH_COMMAND:
+                    case LocationSelectType.LocationSelect:
+                    case LocationSelectType.MechCommand:
                         if (!selection.startCoords) {
                             throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
                         }
                         payload = {
+                            arena_id: currentArenaID,
                             blueprint_ability_id: playerAbility.ability.id,
                             location_select_type: playerAbility.ability.location_select_type,
                             start_coords: {
-                                x: Math.floor(selection.startCoords.x),
-                                y: Math.floor(selection.startCoords.y),
+                                x: selection.startCoords.x,
+                                y: selection.startCoords.y,
                             },
                             mech_hash: playerAbility.mechHash,
                         }
                         break
-                    case LocationSelectType.GLOBAL:
+                    case LocationSelectType.Global:
                         break
+                }
+
+                // If it's mech move command, dont reset so player can keep moving the mech
+                if (playerAbility?.ability.location_select_type === LocationSelectType.MechCommand) {
+                    setSelection(undefined)
+                } else {
+                    resetPlayerAbilitySelection()
+                }
+
+                if (playerAbility?.ability.location_select_type === LocationSelectType.MechSelect) {
+                    setHighlightedMechParticipantID(undefined)
                 }
 
                 if (!payload) {
                     throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
                 }
-                await send<boolean, typeof payload>(GameServerKeys.PlayerAbilityUse, payload)
             }
-            resetSelection()
-            if (playerAbility?.ability.location_select_type === LocationSelectType.MECH_SELECT) {
-                setHighlightedMechParticipantID(undefined)
-            }
+
+            await send<boolean, typeof payload>(hubKey, payload)
             newSnackbarMessage("Successfully submitted target location.", "success")
         } catch (err) {
             newSnackbarMessage(typeof err === "string" ? err : "Failed to submit target location.", "error")
             console.error(err)
             setSelection(undefined)
         }
-    }, [send, selection, resetSelection, winner?.game_ability, playerAbility, newSnackbarMessage, setHighlightedMechParticipantID])
+    }, [
+        send,
+        selection,
+        winner?.game_ability,
+        playerAbility,
+        currentArenaID,
+        newSnackbarMessage,
+        resetPlayerAbilitySelection,
+        resetWinnerSelection,
+        setSelection,
+        setHighlightedMechParticipantID,
+    ])
+
+    useEffect(() => {
+        if (!isBattleStarted) {
+            setWinner(undefined)
+            resetWinnerSelection()
+            resetPlayerAbilitySelection()
+        }
+    }, [isBattleStarted, resetWinnerSelection, resetPlayerAbilitySelection])
 
     return {
         mapElement,
+        setMapElement,
+
         winner,
-        setWinner,
         highlightedMechParticipantID,
         setHighlightedMechParticipantID,
         isTargeting,
         selection,
+        selectionInstant,
         setSelection,
-        resetSelection,
+        setSelectionDebounced,
+        resetWinnerSelection,
+        resetPlayerAbilitySelection,
         playerAbility,
         setPlayerAbility,
         onTargetConfirm,
         gridWidth,
         gridHeight,
-        isEnlarged,
-        toggleIsEnlarged,
     }
 })
 

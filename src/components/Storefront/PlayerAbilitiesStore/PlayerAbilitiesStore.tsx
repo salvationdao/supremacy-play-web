@@ -1,14 +1,13 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
 import { ClipThing, FancyButton } from "../.."
 import { PlayerAbilityPNG } from "../../../assets"
 import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { GetSaleAbilityAvailability } from "../../../fetching"
-import { timeSinceInWords } from "../../../helpers"
-import { useTimer } from "../../../hooks"
-import { useGameServerSubscription, useGameServerSubscriptionUser } from "../../../hooks/useGameServer"
+import { secondsToWords } from "../../../helpers"
+import { useGameServerSubscriptionSecured, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { HANGAR_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
@@ -31,6 +30,25 @@ export const PlayerAbilitiesStore = () => {
 
     const [ownedAbilities, setOwnedAbilities] = useState<Map<string, number>>(new Map())
 
+    const refetchSaleAvailability = useCallback(async () => {
+        if (!userID) return
+        try {
+            const resp = await queryAvailability(userID)
+            if (resp.error || resp.payload == null) return
+            setAvailability(resp.payload)
+            setAvailabilityError(undefined)
+        } catch (e) {
+            let message = "Failed to obtain purchase availability during this sale period."
+            if (typeof e === "string") {
+                message = e
+            } else if (e instanceof Error) {
+                message = e.message
+            }
+            console.error(e)
+            setAvailabilityError(message)
+        }
+    }, [queryAvailability, userID])
+
     useEffect(() => {
         if (!userID) return
         ;(async () => {
@@ -51,34 +69,10 @@ export const PlayerAbilitiesStore = () => {
         })()
     }, [queryAvailability, userID])
 
-    useGameServerSubscription<{
-        next_refresh_time: Date | null
-        refresh_period_duration_seconds: number
-        sale_abilities: SaleAbility[]
-    }>(
+    useGameServerSubscriptionSecured<{ id: string; current_price: string }>(
         {
-            URI: "/secure_public/sale_abilities",
-            key: GameServerKeys.SubSaleAbilitiesList,
-            ready: !!userID,
-        },
-        (payload) => {
-            if (!payload) return
-            const t = new Date()
-            t.setSeconds(t.getSeconds() + payload.refresh_period_duration_seconds)
-            setNextRefreshTime(payload.next_refresh_time || t)
-            setSaleAbilities(payload.sale_abilities)
-            setAvailability(SaleAbilityAvailability.CanClaim)
-            setAvailabilityError(undefined)
-            if (isLoaded) return
-            setIsLoaded(true)
-        },
-    )
-
-    useGameServerSubscription<{ id: string; current_price: string }>(
-        {
-            URI: "/secure_public/sale_abilities",
+            URI: "/sale_abilities",
             key: GameServerKeys.SubSaleAbilitiesPrice,
-            ready: !!userID,
         },
         (payload) => {
             if (!payload) return
@@ -88,7 +82,32 @@ export const PlayerAbilitiesStore = () => {
         },
     )
 
-    useGameServerSubscriptionUser<PlayerAbility[]>(
+    useGameServerSubscriptionSecured<{
+        next_refresh_time: Date | null
+        time_left_seconds: number
+        sale_abilities: SaleAbility[]
+    }>(
+        {
+            URI: "/sale_abilities",
+            key: GameServerKeys.SubSaleAbilitiesList,
+        },
+        (payload) => {
+            if (!payload) return
+
+            const t = new Date()
+            t.setSeconds(t.getSeconds() + Math.max(payload.time_left_seconds, 1))
+            setNextRefreshTime(t)
+            setSaleAbilities(payload.sale_abilities)
+
+            // Fetch sale availability
+            refetchSaleAvailability()
+
+            if (isLoaded) return
+            setIsLoaded(true)
+        },
+    )
+
+    useGameServerSubscriptionSecuredUser<PlayerAbility[]>(
         {
             URI: "/player_abilities",
             key: GameServerKeys.SubPlayerAbilitiesList,
@@ -109,7 +128,7 @@ export const PlayerAbilitiesStore = () => {
         if (nextRefreshTime) {
             return (
                 <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBold, textTransform: "uppercase" }}>
-                    <TimeLeft key={nextRefreshTime.getMilliseconds()} dateTo={nextRefreshTime} />
+                    <TimeLeft key={nextRefreshTime.getTime()} dateTo={nextRefreshTime} />
                 </Typography>
             )
         }
@@ -120,7 +139,7 @@ export const PlayerAbilitiesStore = () => {
     const content = useMemo(() => {
         if (!isLoaded) {
             return (
-                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "10rem" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
                         <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
                     </Stack>
@@ -289,19 +308,17 @@ export const PlayerAbilitiesStore = () => {
                             direction: "ltr",
 
                             "::-webkit-scrollbar": {
-                                width: ".4rem",
+                                width: "1rem",
                             },
                             "::-webkit-scrollbar-track": {
                                 background: "#FFFFFF15",
-                                borderRadius: 3,
                             },
                             "::-webkit-scrollbar-thumb": {
                                 background: theme.factionTheme.primary,
-                                borderRadius: 3,
                             },
                         }}
                     >
-                        {content}
+                        <Box sx={{ height: 0 }}>{content}</Box>
                     </Box>
                 </Stack>
             </Stack>
@@ -309,7 +326,29 @@ export const PlayerAbilitiesStore = () => {
     )
 }
 
-export const TimeLeft = ({ dateTo }: { dateTo: Date | undefined }) => {
-    const { totalSecRemain } = useTimer(dateTo)
-    return <>{totalSecRemain > 0 ? timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000)) : "0 SECONDS"}</>
+interface TimeLeftProps {
+    dateTo: Date
+}
+
+export const TimeLeft = ({ dateTo }: TimeLeftProps) => {
+    const secondsLeftRef = useRef(Math.round((dateTo.getTime() - new Date().getTime()) / 1000))
+    const containerRef = useRef<HTMLDivElement>()
+
+    useEffect(() => {
+        const t = setInterval(() => {
+            if (secondsLeftRef.current < 1) return
+            secondsLeftRef.current -= 1
+
+            if (!containerRef.current) return
+            containerRef.current.innerText = secondsLeftRef.current > 0 ? secondsToWords(secondsLeftRef.current) : "REFRESHING"
+        }, 1000)
+
+        return () => clearInterval(t)
+    }, [dateTo])
+
+    return (
+        <Box ref={containerRef} component="span">
+            {secondsLeftRef.current > 0 ? secondsToWords(secondsLeftRef.current) : "REFRESHING"}
+        </Box>
+    )
 }

@@ -2,9 +2,8 @@ import { Box, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { useCallback } from "react"
 import { ClipThing } from "../../../../.."
 import { SvgClose } from "../../../../../../assets"
-import { useAuth } from "../../../../../../containers"
 import { useTheme } from "../../../../../../containers/theme"
-import { useGameServerSubscription } from "../../../../../../hooks/useGameServer"
+import { useGameServerSubscriptionSecured } from "../../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../../../theme/theme"
 import { MechDetails } from "../../../../../../types"
@@ -15,27 +14,27 @@ import { HireContractorsCard } from "./HireContractorsCard"
 import { SelfRepairCard } from "./SelfRepairCard"
 
 export const RepairModal = ({
+    defaultOpenSelfRepair,
     selectedMechDetails,
     repairMechModalOpen,
     setRepairMechModalOpen,
 }: {
+    defaultOpenSelfRepair?: boolean
     selectedMechDetails: MechDetails
     repairMechModalOpen: boolean
     setRepairMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
-    const { userID } = useAuth()
     const theme = useTheme()
 
-    const repairStatus = useGameServerSubscription<RepairStatus>({
-        URI: `/secure_public/mech/${selectedMechDetails.id}/repair_case`,
+    const repairStatus = useGameServerSubscriptionSecured<RepairStatus>({
+        URI: `/mech/${selectedMechDetails.id}/repair_case`,
         key: GameServerKeys.SubMechRepairStatus,
-        ready: !!selectedMechDetails.id && !!userID,
+        ready: !!selectedMechDetails.id,
     })
 
-    const repairOffer = useGameServerSubscription<RepairOffer>({
-        URI: `/secure_public/mech/${selectedMechDetails.id}/active_repair_offer`,
+    const repairOffer = useGameServerSubscriptionSecured<RepairOffer>({
+        URI: `/mech/${selectedMechDetails.id}/active_repair_offer`,
         key: GameServerKeys.GetMechRepairJob,
-        ready: !!userID,
     })
 
     const remainDamagedBlocks = repairStatus ? repairStatus.blocks_required_repair - repairStatus.blocks_repaired : 0
@@ -44,10 +43,18 @@ export const RepairModal = ({
         setRepairMechModalOpen(false)
     }, [setRepairMechModalOpen])
 
-    if (!selectedMechDetails) return null
+    if (!selectedMechDetails || remainDamagedBlocks <= 0) return null
 
     return (
-        <Modal open={repairMechModalOpen} onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
+        <Modal
+            open={repairMechModalOpen}
+            onClose={onClose}
+            sx={{ zIndex: siteZIndex.Modal }}
+            onBackdropClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+            }}
+        >
             <Box
                 sx={{
                     position: "absolute",
@@ -57,6 +64,10 @@ export const RepairModal = ({
                     width: "50rem",
                     boxShadow: 6,
                     outline: "none",
+                }}
+                onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
                 }}
             >
                 <ClipThing
@@ -93,15 +104,15 @@ export const RepairModal = ({
                                 {remainDamagedBlocks} x DAMAGED BLOCKS
                             </Typography>
 
-                            <MechRepairBlocks mechID={selectedMechDetails?.id} defaultBlocks={selectedMechDetails?.model.repair_blocks} hideNumber />
+                            <MechRepairBlocks mechID={selectedMechDetails?.id} defaultBlocks={selectedMechDetails?.repair_blocks} hideNumber />
                         </Stack>
 
-                        <SelfRepairCard repairStatus={repairStatus} remainDamagedBlocks={remainDamagedBlocks} />
+                        <SelfRepairCard defaultOpenSelfRepair={defaultOpenSelfRepair} repairStatus={repairStatus} remainDamagedBlocks={remainDamagedBlocks} />
 
                         {repairOffer && !repairOffer.closed_at ? (
                             <ExistingRepairJobCard repairOffer={repairOffer} remainDamagedBlocks={remainDamagedBlocks} />
                         ) : (
-                            <HireContractorsCard mechDetails={selectedMechDetails} remainDamagedBlocks={remainDamagedBlocks} />
+                            <HireContractorsCard mechs={[selectedMechDetails]} remainDamagedBlocks={remainDamagedBlocks} />
                         )}
                     </Stack>
 

@@ -1,69 +1,53 @@
 import { Faction, WarMachineState } from "."
 import { FactionIDs } from "./../constants"
+import { User } from "./user"
 
 export interface FactionsAll {
     [faction_id: string]: Faction
 }
 
-export type BribeStage = "OPT_IN" | "LOCATION_SELECT" | "COOLDOWN" | "HOLD"
-
-export interface ViewerLiveCount {
-    red_mountain: number
-    boston: number
-    zaibatsu: number
-    other: number
+export enum BribeStage {
+    OptIn = "OPT_IN",
+    LocationSelect = "LOCATION_SELECT",
+    Cooldown = "COOLDOWN",
+    Hold = "HOLD",
 }
 
 export enum LocationSelectType {
-    LINE_SELECT = "LINE_SELECT",
-    MECH_SELECT = "MECH_SELECT",
-    LOCATION_SELECT = "LOCATION_SELECT",
-    GLOBAL = "GLOBAL",
-    MECH_COMMAND = "MECH_COMMAND",
+    LineSelect = "LINE_SELECT",
+    MechSelect = "MECH_SELECT",
+    MechSelectAllied = "MECH_SELECT_ALLIED",
+    MechSelectOpponent = "MECH_SELECT_OPPONENT",
+    LocationSelect = "LOCATION_SELECT",
+    Global = "GLOBAL",
+    MechCommand = "MECH_COMMAND",
 }
 
 export interface Map {
-    name: string
-    image_url: string
-    width: number
-    height: number
-    cells_x: number
-    cells_y: number
-    top_pixels: number
-    left_pixels: number
-    disabled_cells: number[]
+    Name: string
+    Image_Url: string
+    Background_Url: string
+    Width: number
+    Height: number
+    Cells_X: number
+    Cells_Y: number
+    Pixel_Top: number
+    Pixel_Left: number
+    Disabled_Cells: number[]
 }
 
-export interface BattleZone {
+export interface GameMap {
+    id: string
+    name: string
+    logo_url: string
+    background_url: string
+}
+
+export interface BattleZoneStruct {
     location: Position
     radius: number
-    shrinkTime: number
-    warnTime: number
-}
-
-export enum StreamService {
-    OvenMediaEngine = "OvenMediaEngine",
-    AntMedia = "AntMedia",
-    Softvelum = "Softvelum",
-    None = "None",
-}
-
-export interface Stream {
-    host: string
-    name: string
-    url: string
-    stream_id: string
-    region: string
-    resolution: string
-    bit_rates_k_bits: number
-    user_max: number
-    users_now: number
-    active: boolean
-    status: string
-    latitude: string
-    longitude: string
-    service: StreamService
-    distance?: number
+    shrink_time: number
+    warn_time: number
 }
 
 export interface Dimension {
@@ -162,14 +146,12 @@ export interface BattleAbilityProgress {
 }
 
 export interface Battle {
-    battle: {
-        id: string
-        game_map_id: string
-        started_at: Date
-        ended_at?: Date
-        battle_number: number
-    }
-    game_map?: Map
+    id: string
+    game_map_id: string
+    started_at: Date
+    ended_at?: Date
+    battle_number: number
+    arena_id: string
 }
 
 export interface WarMachineLiveState {
@@ -200,6 +182,7 @@ export interface BattleMechReward {
     faction_id: FactionIDs
     avatar_url: string
     rewarded_sups: string
+    rewarded_sups_bonus: string
     owner_id: string
 }
 
@@ -214,4 +197,152 @@ export interface DamageRecord {
     amount: number
     caused_by_war_machine?: WarMachineState
     source_name: string // weapon/ability name
+}
+
+export enum MiniMapDisplayEffectType {
+    None = "NONE",
+    Range = "RANGE",
+    Pulse = "PULSE",
+    Drop = "DROP",
+    Explosion = "EXPLOSION",
+    Fade = "FADE",
+    Landmine = "LANDMINE",
+}
+
+export enum MechDisplayEffectType {
+    None = "NONE",
+    Border = "BORDER",
+    Pulse = "PULSE",
+    Shake = "SHAKE",
+}
+
+export interface DisplayedAbility {
+    offering_id: string
+    mini_map_display_effect_type: MiniMapDisplayEffectType
+    mech_display_effect_type: MechDisplayEffectType
+    location_select_type: LocationSelectType
+    image_url: string
+    colour: string
+    radius?: number
+    mech_id?: string
+    location: {
+        x: number
+        y: number
+    }
+    launching_at?: Date
+    location_in_pixels?: boolean
+    border_width?: number
+    show_below_mechs?: boolean
+    no_background_colour?: boolean
+    // defaults to 1.5
+    size_grid_override?: number
+}
+
+export enum ArenaType {
+    Story = "STORY",
+    Expedition = "EXPEDITION",
+}
+
+export interface Arena {
+    id: string
+    type: ArenaType
+    gid: number
+    status?: ArenaStatus
+}
+
+export interface ArenaStatus {
+    is_idle: boolean
+}
+
+export interface BattleReplay {
+    id: string
+    stream_id: string
+    arena_id: string
+    battle_id: string
+    is_complete_battle: boolean
+    recording_status: string
+    started_at?: Date
+    stopped_at?: Date
+    intro_ended_at?: Date
+    events?: ReplayEvent[]
+    battle: Battle
+    arena: Arena
+    game_map?: GameMap
+}
+
+export interface ReplayEvent {
+    timestamp: Date
+    notification: NotificationStruct
+}
+
+// Notifications
+
+export enum NotificationType {
+    Text = "TEXT", // generic notification with no styles, just text
+    LocationSelect = "LOCATION_SELECT", // user is choosing a target location on map
+    BattleAbility = "BATTLE_ABILITY", // when a faction has initiated a battle ability
+    FactionAbility = "FACTION_ABILITY", // when a faction has initiated a faction ability
+    WarMachineAbility = "WAR_MACHINE_ABILITY", //
+    WarMachineDestroyed = "WAR_MACHINE_DESTROYED", // when a faction has initiated a war machine ability
+    BattleZoneChange = "BATTLE_ZONE_CHANGE", // when a war machine is destroyed
+}
+
+/*
+NOTE:
+Some examples:
+1. CANCELLED_NO_PLAYER
+=> {ability} is cancelled, due to no player select location
+
+2. CANCELLED_DISCONNECT
+=> {ability} is cancelled, due to the last player eligible to pick location is disconnected.
+
+3. FAILED_TIMEOUT
+=> {currentUsername} failed to select location in time, it is {nextUsername}'s turn to select the location for {ability}
+
+4. FAILED_DISCONNECTED
+=> {currentUsername} is disconnected, it is {nextUsername}'s turn to select the location for {ability}
+
+5. TRIGGER
+=> {currentUserName} has chosen a target location for {ability}
+*/
+
+export enum LocationSelectAlertType {
+    CancelledNoPlayer = "CANCELLED_NO_PLAYER",
+    CancelledDisconnect = "CANCELLED_DISCONNECT",
+    FailedTimeOut = "FAILED_TIMEOUT",
+    FailedDisconnected = "FAILED_DISCONNECTED",
+    Trigger = "TRIGGER",
+    Assigned = "ASSIGNED",
+}
+
+export interface LocationSelectAlertProps {
+    type: LocationSelectAlertType
+    currentUser?: User
+    nextUser?: User
+    ability: BattleAbility
+    x?: number
+    y?: number
+}
+
+export interface WarMachineAbilityAlertProps {
+    user: User
+    ability: BattleAbility
+    warMachine: WarMachineState
+}
+
+export interface KillAlertProps {
+    destroyed_war_machine: WarMachineState
+    killed_by_war_machine?: WarMachineState
+    killed_by?: string
+    killed_by_user?: User
+}
+
+export interface BattleFactionAbilityAlertProps {
+    user: User
+    ability: BattleAbility
+}
+
+export interface NotificationStruct {
+    type: NotificationType
+    data: BattleFactionAbilityAlertProps | KillAlertProps | LocationSelectAlertProps | WarMachineAbilityAlertProps | BattleZoneStruct | string
 }

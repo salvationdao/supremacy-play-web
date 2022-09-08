@@ -1,6 +1,6 @@
-import { Box, Stack, Switch, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { SvgAnnouncement, SvgDamage1, SvgHealth, SvgHistoryClock, SvgNotification, SvgSyndicateFlag } from "../../../../assets"
+import { SvgAbility, SvgAnnouncement, SvgDamage1, SvgHistoryClock, SvgNotification, SvgSyndicateFlag } from "../../../../assets"
 import { useAuth } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { usePagination } from "../../../../hooks"
@@ -10,6 +10,7 @@ import { colors, fonts } from "../../../../theme/theme"
 import { FeatureName, SystemMessage, SystemMessageDataType } from "../../../../types"
 import { CoolTable } from "../../../Common/CoolTable"
 import { FancyButton } from "../../../Common/FancyButton"
+import { PreferenceToggle } from "../../ProfileCard/PreferencesModal/NotificationPreferences"
 import { SystemMessageDisplayable } from "../Messages"
 import { MessageDisplay } from "./MessageDisplay/MessageDisplay"
 
@@ -26,11 +27,15 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
     const [messages, setMessages] = useState<SystemMessageDisplayable[]>([])
     const [focusedMessage, setFocusedMessage] = useState<SystemMessageDisplayable>()
     const [error, setError] = useState<string>()
-    const [hideRead, setHideRead] = useState(false)
+    const [hideRead, setHideRead] = useState(localStorage.getItem("hideReadMessages") === "true")
     const { page, changePage, setTotalItems, totalItems, changePageSize, pageSize } = usePagination({
         pageSize: 15,
         page: 0,
     })
+
+    useEffect(() => {
+        localStorage.setItem("hideReadMessages", hideRead.toString())
+    }, [hideRead])
 
     const fetchMessages = useCallback(async () => {
         try {
@@ -61,11 +66,14 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                     case SystemMessageDataType.MechBattleComplete:
                         icon = <SvgDamage1 fill={colors.green} size="1.6rem" />
                         break
+                    case SystemMessageDataType.MechBattleBegin:
+                        icon = <SvgNotification size="1.6rem" />
+                        break
                     case SystemMessageDataType.Faction:
                         icon = <SvgSyndicateFlag fill={theme.factionTheme.primary} size="1.6rem" />
                         break
-                    case SystemMessageDataType.MechOwnerBattleReward:
-                        icon = <SvgHealth fill={colors.yellow} size="1.6rem" />
+                    case SystemMessageDataType.PlayerAbilityRefunded:
+                        icon = <SvgAbility fill={colors.orange} size="1.6rem" />
                         break
                 }
 
@@ -107,7 +115,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
     )
 
     const content = useMemo(() => {
-        if (messages.length === 0) {
+        if (messages.length === 0 && !focusedMessage) {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ flex: 1, p: "1rem" }}>
                     <Typography
@@ -225,7 +233,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                         />
                     </Stack>
 
-                    <Box sx={{ height: "50%", borderTop: `${theme.factionTheme.primary} 1px solid` }}>
+                    <Box sx={{ height: "60%", borderTop: `${theme.factionTheme.primary} 1px solid` }}>
                         {focusedMessage ? (
                             <MessageDisplay message={focusedMessage} onClose={() => setFocusedMessage(undefined)} />
                         ) : (
@@ -296,21 +304,9 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                         <SvgHistoryClock size="1.2rem" />
                         <Typography>Last updated: {lastUpdated.toISOString()}</Typography>
 
-                        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ ml: "auto !important" }}>
-                            <Switch
-                                size="small"
-                                checked={hideRead}
-                                onChange={(e, c) => setHideRead(c)}
-                                sx={{
-                                    transform: "scale(.7)",
-                                    ".Mui-checked": { color: theme.factionTheme.primary },
-                                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${theme.factionTheme.primary}50` },
-                                }}
-                            />
-                            <Typography variant="body2" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
-                                Hide Read
-                            </Typography>
-                        </Stack>
+                        <Box sx={{ ml: "auto !important" }}>
+                            <PreferenceToggle title="Hide read" checked={hideRead} onChangeFunction={(e) => setHideRead(e.currentTarget.checked)} />
+                        </Box>
                     </Stack>
 
                     {error && (

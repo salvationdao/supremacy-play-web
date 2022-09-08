@@ -83,20 +83,18 @@ const Content = ({ getFaction, user, activePlayers }: { getFaction: (factionID: 
                     direction: "ltr",
 
                     "::-webkit-scrollbar": {
-                        width: ".4rem",
+                        width: "1rem",
                     },
                     "::-webkit-scrollbar-track": {
                         background: "#FFFFFF15",
-                        borderRadius: 3,
                     },
                     "::-webkit-scrollbar-thumb": {
                         background: (theme) => theme.factionTheme.primary,
-                        borderRadius: 3,
                     },
                 }}
             >
                 <Box sx={{ height: 0 }}>
-                    <PlayerListContent user={user} activePlayers={activePlayers} />
+                    <PlayerListContent activePlayers={activePlayers} />
                 </Box>
             </Box>
         </Stack>

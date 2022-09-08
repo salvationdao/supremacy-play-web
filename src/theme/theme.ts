@@ -38,13 +38,13 @@ export const colors = {
     bronze: "#CB7431",
     blue: "#0074D9",
     blue2: "#309FFF",
-    purple: "#A985FF",
+    purple: "#9A73F5",
     black2: "#13161B",
     black3: "#080303",
 
     neonPink: "#F72485",
     lightNeonBlue: "#8DE9FF",
-    neonBlue: "#00FAFA",
+    neonBlue: "#3DE0E0",
     darkNeonBlue: "#176969",
     darkerNeonBlue: "#073339",
     darkNavyBlue: "#0C0C1A",
@@ -117,29 +117,23 @@ export const fonts = {
 
 export enum siteZIndex {
     // Shows on top of everything
-    Modal = 299,
-    Drawer = 298,
-    Popover = 297,
-    Tooltip = 296,
-    LoadMessage = 250,
+    TopBar = 700,
+    Modal = 600,
+    Drawer = 500,
+    Popover = 400,
+    Tooltip = 300,
 
     // Stream site top elements
-    Bar = 199,
-    LeftDrawer = 198,
-    RightDrawer = 197,
     RoutePage = 101,
 
     // Battle areana
     Controls = 70,
-    Trailer = 69,
     BattleHistory = 70,
-    BattleEnd = 60,
-    MiniMap = 50,
+    Trailer = 69,
     MoveableResizableHover = 51,
     MoveableResizable = 42,
     Notifications = 40,
     MechStats = 30,
-    VotingSystem = 30,
     Stream = 5,
 }
 
@@ -209,11 +203,10 @@ export const theme = createTheme({
         subtitle1: {
             fontFamily: fonts.shareTech,
             fontSize: "1.3rem",
-            textAlign: "center",
         },
         subtitle2: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.3rem",
+            fontSize: "1.15rem",
         },
         caption: {
             fontFamily: fonts.shareTech,
@@ -223,7 +216,7 @@ export const theme = createTheme({
     components: {
         MuiButtonBase: {
             defaultProps: {
-                disableRipple: false,
+                disableRipple: true,
             },
             styleOverrides: {
                 root: {

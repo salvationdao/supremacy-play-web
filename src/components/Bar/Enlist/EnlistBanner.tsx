@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { ReactNode, useMemo } from "react"
+import { useMemo } from "react"
 import { TooltipHelper } from "../.."
 import { SvgAbility, SvgBostonKillIcon, SvgDeath, SvgRedMoutainKillIcon, SvgView, SvgWrapperProps, SvgZaibatsuKillIcon } from "../../../assets"
 import { FactionIDs } from "../../../constants"
@@ -54,25 +54,6 @@ const EnlistBannerInner = ({ userID, user, battleIdentifier, getFaction, userSta
     }
 
     return (
-        // <BarExpandable
-        //     noDivider
-        //     barName={"enlist"}
-        //     iconComponent={
-        //         <Box
-        //             sx={{
-        //                 width: "2.8rem",
-        //                 height: "2.8rem",
-        //                 backgroundImage: `url(${getFaction(user.faction_id).logo_url})`,
-        //                 backgroundRepeat: "no-repeat",
-        //                 backgroundPosition: "center",
-        //                 backgroundSize: "contain",
-        //                 backgroundColor: theme.factionTheme.primary,
-        //                 borderRadius: 1,
-        //                 border: `${theme.factionTheme.primary} 2px solid`,
-        //             }}
-        //         />
-        //     }
-        // >
         <Box
             sx={{
                 mx: "1.2rem",
@@ -91,15 +72,13 @@ const EnlistBannerInner = ({ userID, user, battleIdentifier, getFaction, userSta
                     overflowY: "hidden",
 
                     "::-webkit-scrollbar": {
-                        height: ".3rem",
+                        height: ".6rem",
                     },
                     "::-webkit-scrollbar-track": {
                         background: "#FFFFFF15",
-                        borderRadius: 3,
                     },
                     "::-webkit-scrollbar-thumb": {
                         background: "#FFFFFF50",
-                        borderRadius: 3,
                     },
                 }}
             >
@@ -144,16 +123,15 @@ const EnlistBannerInner = ({ userID, user, battleIdentifier, getFaction, userSta
                 {rankDeets && <BannerInfo title={`RANK`} tooltip={rankDeets.desc} content={rankDeets.title} PrefixSvg={rankDeets.icon} />}
             </Stack>
         </Box>
-        // </BarExpandable>
     )
 }
 
-const BannerInfo = ({ title, tooltip, content, PrefixSvg }: { title: string; tooltip: ReactNode; content: string; PrefixSvg?: SvgWrapperProps }) => {
+const BannerInfo = ({ title, tooltip, content, PrefixSvg }: { title: string; tooltip: string; content: string; PrefixSvg?: SvgWrapperProps }) => {
     return (
-        <TooltipHelper text={tooltip}>
+        <TooltipHelper color={colors.grey} text={tooltip}>
             <Box>
                 <Typography
-                    variant="subtitle2"
+                    variant="subtitle1"
                     sx={{
                         mb: ".56rem",
                         fontFamily: fonts.nostromoBold,
@@ -167,7 +145,7 @@ const BannerInfo = ({ title, tooltip, content, PrefixSvg }: { title: string; too
 
                 <Stack direction="row" alignItems="center" spacing=".64rem">
                     {PrefixSvg}
-                    <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBold, lineHeight: 1, whiteSpace: "nowrap" }}>
+                    <Typography variant="subtitle1" sx={{ fontFamily: fonts.nostromoBold, lineHeight: 1, whiteSpace: "nowrap" }}>
                         {content}
                     </Typography>
                 </Stack>

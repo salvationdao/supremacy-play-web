@@ -1,9 +1,8 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useCallback, useState } from "react"
-import { useLocation } from "react-router-dom"
+import React, { useCallback, useState } from "react"
 import { SafePNG } from "../../../assets"
-import { STAGING_OR_DEV_ONLY } from "../../../constants"
-import { useSnackbar } from "../../../containers"
+import { IS_TESTING_MODE } from "../../../constants"
+import { useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useTimer } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
@@ -24,10 +23,18 @@ interface MysteryCrateStoreItemProps {
     getCrates: () => Promise<void>
 }
 
-export const MysteryCrateHangarItem = ({ crate, setOpeningCrate, setOpenedRewards, getCrates }: MysteryCrateStoreItemProps) => {
-    const location = useLocation()
+const propsAreEqual = (prevProps: MysteryCrateStoreItemProps, nextProps: MysteryCrateStoreItemProps) => {
+    return prevProps.crate.id === nextProps.crate.id && prevProps.getCrates === nextProps.getCrates
+}
+
+export const MysteryCrateHangarItem = React.memo(function MysteryCrateHangarItem({
+    crate,
+    setOpeningCrate,
+    setOpenedRewards,
+    getCrates,
+}: MysteryCrateStoreItemProps) {
     const theme = useTheme()
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [loading, setLoading] = useState(false)
 
@@ -75,8 +82,8 @@ export const MysteryCrateHangarItem = ({ crate, setOpeningCrate, setOpenedReward
                 <ClipThing
                     clipSize="12px"
                     border={{
-                        borderColor: primaryColor,
-                        borderThickness: ".2rem",
+                        borderColor: `${primaryColor}50`,
+                        borderThickness: ".25rem",
                     }}
                     opacity={0.9}
                     backgroundColor={backgroundColor}
@@ -141,14 +148,14 @@ export const MysteryCrateHangarItem = ({ crate, setOpeningCrate, setOpenedReward
                                     </Typography>
                                 </FancyButton>
 
-                                {!STAGING_OR_DEV_ONLY && (
+                                {!IS_TESTING_MODE && (
                                     <FancyButton
                                         to={
                                             crate.locked_to_marketplace
                                                 ? !crate.item_sale_id
                                                     ? undefined
-                                                    : `/marketplace/${MARKETPLACE_TABS.MysteryCrates}/${crate.item_sale_id}${location.hash}`
-                                                : `/marketplace/sell?itemType=${ItemType.MysteryCrate}&assetID=${crate.id}${location.hash}`
+                                                    : `/marketplace/${MARKETPLACE_TABS.MysteryCrates}/${crate.item_sale_id}`
+                                                : `/marketplace/sell?itemType=${ItemType.MysteryCrate}&assetID=${crate.id}`
                                         }
                                         clipThingsProps={{
                                             clipSize: "5px",
@@ -174,7 +181,8 @@ export const MysteryCrateHangarItem = ({ crate, setOpeningCrate, setOpenedReward
             </Box>
         </>
     )
-}
+},
+propsAreEqual)
 
 export const Countdown = ({ dateTo }: { dateTo: Date | undefined }) => {
     const { days, hours, minutes, seconds, totalSecRemain } = useTimer(dateTo)

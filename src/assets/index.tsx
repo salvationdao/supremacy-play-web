@@ -8,6 +8,7 @@ import Close from "!@svgr/webpack!./svg/Close.svg"
 import Close2 from "!@svgr/webpack!./svg/Close2.svg"
 import Copy from "!@svgr/webpack!./svg/Copy.svg"
 import Crown from "!@svgr/webpack!./svg/Crown.svg"
+import Cubes from "!@svgr/webpack!./svg/Cubes.svg"
 import Damage1 from "!@svgr/webpack!./svg/Damage1.svg"
 import DamageFalloff from "!@svgr/webpack!./svg/DamageFalloff.svg"
 import DamageFalloffRate from "!@svgr/webpack!./svg/DamageFalloffRate.svg"
@@ -18,10 +19,10 @@ import EmojiSelector from "!@svgr/webpack!./svg/EmojiSelector.svg"
 import Energy from "!@svgr/webpack!./svg/Energy.svg"
 import ExternalLink from "!@svgr/webpack!./svg/ExternalLink.svg"
 import FastRepair from "!@svgr/webpack!./svg/FastRepair.svg"
-import Cubes from "!@svgr/webpack!./svg/Cubes.svg"
 import FontCase from "!@svgr/webpack!./svg/FontCase.svg"
 import Global from "!@svgr/webpack!./svg/Global.svg"
 import Graph from "!@svgr/webpack!./svg/Graph.svg"
+import Hamburger from "!@svgr/webpack!./svg/Hamburger.svg"
 import Hammer from "!@svgr/webpack!./svg/Hammer.svg"
 import Health from "!@svgr/webpack!./svg/Health.svg"
 import IntroAnimation from "!@svgr/webpack!./svg/IntroAnimation.svg"
@@ -29,9 +30,9 @@ import Logout from "!@svgr/webpack!./svg/Logout.svg"
 import Mail from "!@svgr/webpack!./svg/Mail.svg"
 import Meteor from "!@svgr/webpack!./svg/Meteor.svg"
 import Mobility from "!@svgr/webpack!./svg/Mobility.svg"
+import MoreOptions from "!@svgr/webpack!./svg/MoreOptions.svg"
 import NinjaSyndicateLogo from "!@svgr/webpack!./svg/NinjaSyndicateLogo.svg"
 import OutroAnimation from "!@svgr/webpack!./svg/OutroAnimation.svg"
-import Hamburger from "!@svgr/webpack!./svg/Hamburger.svg"
 import Plus from "!@svgr/webpack!./svg/Plus.svg"
 import PowerCore from "!@svgr/webpack!./svg/PowerCore.svg"
 import PowerCoreCapacity from "!@svgr/webpack!./svg/PowerCoreCapacity.svg"
@@ -55,6 +56,7 @@ import Skin from "!@svgr/webpack!./svg/Skin.svg"
 import Speed from "!@svgr/webpack!./svg/Speed.svg"
 import Spread from "!@svgr/webpack!./svg/Spread.svg"
 import SupremacyLogo from "!@svgr/webpack!./svg/SupremacyLogo.svg"
+import Swap from "!@svgr/webpack!./svg/Swap.svg"
 import Unhide from "!@svgr/webpack!./svg/Unhide.svg"
 import Utilities from "!@svgr/webpack!./svg/Utilities.svg"
 import View from "!@svgr/webpack!./svg/View.svg"
@@ -71,11 +73,14 @@ import Chat from "!react-svg-loader!./svg/Chat.svg"
 import ChatSplit from "!react-svg-loader!./svg/ChatSplit.svg"
 import ChatTabbed from "!react-svg-loader!./svg/ChatTabbed.svg"
 import Damage from "!react-svg-loader!./svg/Damage.svg"
+import Delete from "!react-svg-loader!./svg/Delete.svg"
 import Disconnected from "!react-svg-loader!./svg/Disconnected.svg"
 import Discord from "!react-svg-loader!./svg/Discord.svg"
+import DownArrow from "!react-svg-loader!./svg/DownArrow.svg"
 import Drag from "!react-svg-loader!./svg/Drag.svg"
 import Edit from "!react-svg-loader!./svg/Edit.svg"
 import Emergency from "!react-svg-loader!./svg/Emergency.svg"
+import Facebook from "!react-svg-loader!./svg/Facebook.svg"
 import Filter from "!react-svg-loader!./svg/Filter.svg"
 import Fullscreen from "!react-svg-loader!./svg/Fullscreen.svg"
 import GoldBars from "!react-svg-loader!./svg/GoldBars.svg"
@@ -93,17 +98,20 @@ import MapEnlarge from "!react-svg-loader!./svg/MapEnlarge.svg"
 import MapSkull from "!react-svg-loader!./svg/MapSkull.svg"
 import MapWarMachine from "!react-svg-loader!./svg/MapWarMachine.svg"
 import Microchip from "!react-svg-loader!./svg/Microchip.svg"
+import Minimize from "!react-svg-loader!./svg/Minimize.svg"
 import Music from "!react-svg-loader!./svg/Music.svg"
 import MusicMute from "!react-svg-loader!./svg/MusicMute.svg"
 import Next from "!react-svg-loader!./svg/Next.svg"
 import Notification from "!react-svg-loader!./svg/Notification.svg"
 import Play from "!react-svg-loader!./svg/Play.svg"
+import Quest from "!react-svg-loader!./svg/Quest.svg"
 import QuestionMark from "!react-svg-loader!./svg/QuestionMark.svg"
 import Radar from "!react-svg-loader!./svg/Radar.svg"
 import Corporal from "!react-svg-loader!./svg/Ranks/Corporal.svg"
 import General from "!react-svg-loader!./svg/Ranks/General.svg"
 import NewRecruit from "!react-svg-loader!./svg/Ranks/NewRecruit.svg"
 import Private from "!react-svg-loader!./svg/Ranks/Private.svg"
+import Repair from "!react-svg-loader!./svg/Repair.svg"
 import ResizeX from "!react-svg-loader!./svg/ResizeX.svg"
 import ResizeXY from "!react-svg-loader!./svg/ResizeXY.svg"
 import ResizeY from "!react-svg-loader!./svg/ResizeY.svg"
@@ -118,13 +126,17 @@ import Support from "!react-svg-loader!./svg/Support.svg"
 import SupToken from "!react-svg-loader!./svg/SupToken.svg"
 import Target from "!react-svg-loader!./svg/Target.svg"
 import Telegram from "!react-svg-loader!./svg/Telegram.svg"
+import Trailer from "!react-svg-loader!./svg/Trailer.svg"
 import Twitter from "!react-svg-loader!./svg/Twitter.svg"
 import Unknown from "!react-svg-loader!./svg/Unknown.svg"
+import UpArrow from "!react-svg-loader!./svg/UpArrow.svg"
+import UpcomingBattle from "!react-svg-loader!./svg/UpcomingBattle.svg"
 import User from "!react-svg-loader!./svg/User.svg"
 import Volume from "!react-svg-loader!./svg/Volume.svg"
 import VolumeMute from "!react-svg-loader!./svg/VolumeMute.svg"
 import WarnTriangle from "!react-svg-loader!./svg/WarnTriangle.svg"
 import YouTube from "!react-svg-loader!./svg/YouTube.svg"
+import { Cake } from "@mui/icons-material"
 import AccessTimeSharpIcon from "@mui/icons-material/AccessTimeSharp"
 import AppsIcon from "@mui/icons-material/Apps"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
@@ -137,12 +149,22 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import FlagSharpIcon from "@mui/icons-material/FlagSharp"
 import HorizontalRuleSharpIcon from "@mui/icons-material/HorizontalRuleSharp"
 import MapSharpIcon from "@mui/icons-material/MapSharp"
-import WarningIcon from "@mui/icons-material/Warning"
-import WorkspacesSharpIcon from "@mui/icons-material/WorkspacesSharp"
+import OutlinedFlagIcon from "@mui/icons-material/OutlinedFlag"
 import ThumbDownOffAltIcon from "@mui/icons-material/ThumbDownOffAlt"
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt"
+import WarningIcon from "@mui/icons-material/Warning"
+import WorkspacesSharpIcon from "@mui/icons-material/WorkspacesSharp"
 import { Box, BoxProps } from "@mui/system"
+import React from "react"
 import { colors } from "../theme/theme"
+import BattleRewardsBannerPNG from "./BattleRewardsBanners/BattleRewardsBanner.png"
+import CoinsLeftPNG from "./BattleRewardsBanners/CoinsLeft.png"
+import CoinsRightPNG from "./BattleRewardsBanners/CoinsRight.png"
+import LightningBackgroundPNG from "./BattleRewardsBanners/LightningBackground.png"
+import LightningBackgroundBluePNG from "./BattleRewardsBanners/LightningBackgroundBlue.png"
+import SkyHighGroupedTextPNG from "./BattleRewardsBanners/SkyHighGroupedText.png"
+import BattleArenaOpeningWebP from "./images/BattleArenaOpening.webp"
+import BattleBgWebP from "./images/BattleBg.webp"
 import BostonCyberneticsLogo from "./images/BostonCyberneticsLogo.png"
 import BottomMechWEBP from "./images/BottomMech.webp"
 import ClaimsBg from "./images/ClaimsBg.jpg"
@@ -155,41 +177,22 @@ import HangarBg from "./images/HangarBg.jpg"
 import KeycardPNG from "./images/Keycard.png"
 import LogoWEBP from "./images/Logo.webp"
 import MaintenancePNG from "./images/Maintenance.png"
-// Multiplier images (no spaces in file names, won't work!)
-import { Cake } from "@mui/icons-material"
-import MultiplierAdmiral from "./images/Multipliers/Admiral.png"
-import MultiplierAFoolAndHisMoney from "./images/Multipliers/AFoolAndHisMoney.png"
-import MultiplierAirMarshal from "./images/Multipliers/AirMarshal.png"
-import MultiplierAirSupport from "./images/Multipliers/AirSupport.png"
-import MultiplierContributor from "./images/Multipliers/Contributor.png"
-import MultiplierDestroyerOfWorlds from "./images/Multipliers/DestroyerOfWorlds.png"
-import MultiplierFieldMechanic from "./images/Multipliers/FieldMechanic.png"
-import MultiplierGeneric from "./images/Multipliers/Generic.png"
-import MultiplierGreaseMonkey from "./images/Multipliers/GreaseMonkey.png"
-import MultiplierJunkE from "./images/Multipliers/JunkE.png"
-import MultiplierMechCommander from "./images/Multipliers/MechCommander.png"
-import MultiplierMechHead from "./images/Multipliers/MechHead.png"
-import MultiplierNowIAmBecomeDeath from "./images/Multipliers/NowIAmBecomeDeath.png"
-import MultiplierSniper from "./images/Multipliers/Sniper.png"
-import MultiplierWonBattle from "./images/Multipliers/WonBattle.png"
-import MultiplierWonLastThreeBattles from "./images/Multipliers/WonLastThreeBattles.png"
 import PlayerAbilityPNG from "./images/PlayerAbility.png"
-import RedMountainLogo from "./images/RedMountainLogo.png"
-import SafePNG from "./images/Safe.png"
-import SupBackground from "./images/SupBackground.webp"
-import SupremacyPNG from "./images/Supremacy.png"
-import RainingSupsPNG from "./images/supsRain.png"
-import TrailerThumbPNG from "./images/TrailerThumb.png"
-import WarMachineIconPNG from "./images/WarMachineIcon.png"
-import ZaibatsuLogo from "./images/ZaibatsuLogo.png"
 import AboutMeSVG from "./images/profileIcons/AboutMe.svg"
 import BattleHistorySVG from "./images/profileIcons/BattleHistory.svg"
 import StatsSVG from "./images/profileIcons/Stats.svg"
 import WarMachineBCPNG from "./images/profileIcons/warMachines/WMBC.png"
 import WarMachineRMPNG from "./images/profileIcons/warMachines/WMRM.png"
 import WarMachineZAIPNG from "./images/profileIcons/warMachines/WMZAI.png"
-
-import StackTowerBackgroundJPG from "./images/TowerStackSkins/StackTowerBackground.jpg"
+import RedMountainLogo from "./images/RedMountainLogo.png"
+import SafePNG from "./images/Safe.png"
+import SupBackground from "./images/SupBackground.webp"
+import SupremacyPNG from "./images/Supremacy.png"
+import RainingSupsPNG from "./images/supsRain.png"
+import ThreeMechsJPG from "./images/ThreeMechs.jpeg"
+import Stack10aJPG from "./images/TowerStackSkins/Stack10a.jpg"
+import Stack10bJPG from "./images/TowerStackSkins/Stack10b.jpg"
+import Stack10cJPG from "./images/TowerStackSkins/Stack10c.jpg"
 import Stack1aJPG from "./images/TowerStackSkins/Stack1a.jpg"
 import Stack1bJPG from "./images/TowerStackSkins/Stack1b.jpg"
 import Stack1cJPG from "./images/TowerStackSkins/Stack1c.jpg"
@@ -217,9 +220,20 @@ import Stack8cJPG from "./images/TowerStackSkins/Stack8c.jpg"
 import Stack9aJPG from "./images/TowerStackSkins/Stack9a.jpg"
 import Stack9bJPG from "./images/TowerStackSkins/Stack9b.jpg"
 import Stack9cJPG from "./images/TowerStackSkins/Stack9c.jpg"
-import Stack10aJPG from "./images/TowerStackSkins/Stack10a.jpg"
-import Stack10bJPG from "./images/TowerStackSkins/Stack10b.jpg"
-import Stack10cJPG from "./images/TowerStackSkins/Stack10c.jpg"
+import StackTowerBackgroundJPG from "./images/TowerStackSkins/StackTowerBackground.jpg"
+import TrailerThumbPNG from "./images/TrailerThumb.png"
+import BattleTrainingBG from "./images/TrainingBg.png"
+import WarMachineIconPNG from "./images/WarMachineIcon.png"
+import ZaibatsuLogo from "./images/ZaibatsuLogo.png"
+import BCBorder from "./svg/Landing/bc/BCBorder.svg"
+import BCDeploy from "./svg/Landing/bc/BCDeploy.png"
+import BCWaiting from "./svg/Landing/bc/BCWaiting.png"
+import RMBorder from "./svg/Landing/rm/RmBorder.svg"
+import RMDeploy from "./svg/Landing/rm/RMDeploy.png"
+import RMWaiting from "./svg/Landing/rm/RMWaiting.png"
+import ZHIBorder from "./svg/Landing/zhi/ZHIBorder.svg"
+import ZHIDeploy from "./svg/Landing/zhi/ZHIDeploy.png"
+import ZHIWaiting from "./svg/Landing/zhi/ZHIWaiting.png"
 
 // Tower stack mini game skins
 export {
@@ -255,28 +269,14 @@ export {
     Stack10bJPG,
     Stack10cJPG,
 }
-
-// multiplier images
 export {
-    MultiplierAdmiral,
-    MultiplierAFoolAndHisMoney,
-    MultiplierAirSupport,
-    MultiplierContributor,
-    MultiplierDestroyerOfWorlds,
-    MultiplierFieldMechanic,
-    MultiplierGreaseMonkey,
-    MultiplierMechCommander,
-    MultiplierNowIAmBecomeDeath,
-    MultiplierAirMarshal,
-    MultiplierJunkE,
-    MultiplierMechHead,
-    MultiplierSniper,
-    MultiplierWonBattle,
-    MultiplierGeneric,
-    MultiplierWonLastThreeBattles,
-}
-
-export {
+    BattleTrainingBG,
+    SkyHighGroupedTextPNG,
+    BattleRewardsBannerPNG,
+    LightningBackgroundPNG,
+    LightningBackgroundBluePNG,
+    CoinsLeftPNG,
+    CoinsRightPNG,
     KeycardPNG,
     HangarBg,
     ClaimsBg,
@@ -304,7 +304,11 @@ export {
     WarMachineBCPNG,
     WarMachineRMPNG,
     WarMachineZAIPNG,
+    BattleBgWebP,
+    BattleArenaOpeningWebP,
+    ThreeMechsJPG,
 }
+export { BCBorder, RMBorder, ZHIBorder, BCWaiting, RMWaiting, ZHIWaiting, BCDeploy, RMDeploy, ZHIDeploy }
 
 export interface SvgWrapperProps extends BoxProps {
     size?: string
@@ -315,7 +319,7 @@ export interface SvgWrapperProps extends BoxProps {
     strokeWidth?: string
 }
 
-export const SvgWrapper: React.FC<SvgWrapperProps> = ({ fill, stroke, strokeWidth, sx, size, width, height, ...props }: SvgWrapperProps) => {
+export const SvgWrapper = React.memo(function SvgWrapper({ fill, stroke, strokeWidth, sx, size, width, height, ...props }: SvgWrapperProps) {
     return (
         <Box
             sx={{
@@ -335,7 +339,7 @@ export const SvgWrapper: React.FC<SvgWrapperProps> = ({ fill, stroke, strokeWidt
             {...props}
         />
     )
-}
+})
 
 export const SvgSupToken: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
@@ -346,6 +350,11 @@ export const SvgSupToken: React.VoidFunctionComponent<SvgWrapperProps> = (props)
 export const SvgSyndicateFlag: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <FlagSharpIcon />
+    </SvgWrapper>
+)
+export const SvgReportFlag: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <OutlinedFlagIcon />
     </SvgWrapper>
 )
 
@@ -1204,5 +1213,71 @@ export const SvgThumbUpOffAltIcon: React.VoidFunctionComponent<SvgWrapperProps> 
 export const SvgThumbDownOffAltIcon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <ThumbDownOffAltIcon />
+    </SvgWrapper>
+)
+
+export const SvgRepair: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Repair />
+    </SvgWrapper>
+)
+
+export const SvgMinimize: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Minimize />
+    </SvgWrapper>
+)
+
+export const SvgQuest: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Quest />
+    </SvgWrapper>
+)
+
+export const SvgSwap: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Swap />
+    </SvgWrapper>
+)
+
+export const SvgUpArrow: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <UpArrow />
+    </SvgWrapper>
+)
+
+export const SvgDownArrow: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <DownArrow />
+    </SvgWrapper>
+)
+
+export const SvgDelete: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Delete />
+    </SvgWrapper>
+)
+
+export const SvgFacebook: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Facebook />
+    </SvgWrapper>
+)
+
+export const SvgMoreOptions: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <MoreOptions />
+    </SvgWrapper>
+)
+
+export const SvgTrailer: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Trailer />
+    </SvgWrapper>
+)
+
+export const SvgUpcomingBattle: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <UpcomingBattle />
     </SvgWrapper>
 )

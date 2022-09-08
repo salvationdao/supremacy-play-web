@@ -1,4 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
+import React from "react"
 import { FancyButton, UserBanForm } from "../.."
 import { useTheme } from "../../../containers/theme"
 import { useToggle } from "../../../hooks"
@@ -6,7 +7,16 @@ import { colors, fonts } from "../../../theme/theme"
 import { User } from "../../../types"
 import { Player } from "../../Common/Player"
 
-export const PlayerItem = ({ player, user, isActive }: { player: User; user: User; isActive?: boolean }) => {
+interface PlayerItemProps {
+    player: User
+    isActive?: boolean
+}
+
+const propsAreEqual = (prevProps: PlayerItemProps, nextProps: PlayerItemProps) => {
+    return prevProps.isActive === nextProps.isActive && prevProps.player.id === nextProps.player.id
+}
+
+export const PlayerItem = React.memo(function PlayerItem({ player, isActive }: PlayerItemProps) {
     const theme = useTheme()
     const [banModalOpen, toggleBanModalOpen] = useToggle()
 
@@ -51,7 +61,6 @@ export const PlayerItem = ({ player, user, isActive }: { player: User; user: Use
 
             {banModalOpen && (
                 <UserBanForm
-                    user={user}
                     open={banModalOpen}
                     onClose={() => toggleBanModalOpen(false)}
                     prefillUser={{
@@ -63,4 +72,4 @@ export const PlayerItem = ({ player, user, isActive }: { player: User; user: Use
             )}
         </>
     )
-}
+}, propsAreEqual)

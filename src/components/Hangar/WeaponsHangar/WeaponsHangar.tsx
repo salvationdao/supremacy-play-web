@@ -13,7 +13,7 @@ import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { Weapon, WeaponType } from "../../../types"
-import { SortTypeLabel } from "../../../types/marketplace"
+import { SortDir, SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { SliderRangeFilter } from "../../Common/SortAndFilters/SliderRangeFilterSection"
@@ -318,9 +318,9 @@ export const WeaponsHangar = () => {
         try {
             setIsLoading(true)
 
-            let sortDir = "asc"
+            let sortDir = SortDir.Asc
             let sortBy = ""
-            if (sort === SortTypeLabel.AlphabeticalReverse || sort === SortTypeLabel.RarestDesc) sortDir = "desc"
+            if (sort === SortTypeLabel.AlphabeticalReverse || sort === SortTypeLabel.RarestDesc) sortDir = SortDir.Desc
 
             switch (sort) {
                 case SortTypeLabel.Alphabetical:
@@ -514,7 +514,7 @@ export const WeaponsHangar = () => {
                             py: "1rem",
                             display: "grid",
                             gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(30rem, 1fr))" : "100%",
-                            gap: "1.3rem",
+                            gap: "1.5rem",
                             alignItems: "center",
                             justifyContent: "center",
                             overflow: "visible",
@@ -552,12 +552,34 @@ export const WeaponsHangar = () => {
                             textAlign: "center",
                         }}
                     >
-                        {"There are no weapons found, please try again."}
+                        {"There are no weapons found, please check your filters and try again."}
                     </Typography>
+
+                    <FancyButton
+                        to={`/marketplace/weapons`}
+                        clipThingsProps={{
+                            clipSize: "9px",
+                            backgroundColor: theme.factionTheme.primary,
+                            border: { isFancy: true, borderColor: theme.factionTheme.primary },
+                            sx: { position: "relative", mt: "2rem" },
+                        }}
+                        sx={{ px: "1.8rem", py: ".8rem", color: theme.factionTheme.secondary }}
+                    >
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                textAlign: "center",
+                                color: theme.factionTheme.secondary,
+                                fontFamily: fonts.nostromoBold,
+                            }}
+                        >
+                            GO TO MARKETPLACE
+                        </Typography>
+                    </FancyButton>
                 </Stack>
             </Stack>
         )
-    }, [loadError, weapons, isLoading, isGridView, theme.factionTheme.primary])
+    }, [loadError, weapons, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary, isGridView])
 
     return (
         <Stack direction="row" sx={{ height: "100%" }}>
@@ -642,8 +664,7 @@ export const WeaponsHangar = () => {
                             <Box
                                 sx={{
                                     ml: "1.9rem",
-                                    mr: ".5rem",
-                                    pr: "1.4rem",
+                                    pr: "1.9rem",
                                     my: "1rem",
                                     flex: 1,
                                     overflowY: "auto",
@@ -651,15 +672,13 @@ export const WeaponsHangar = () => {
                                     direction: "ltr",
 
                                     "::-webkit-scrollbar": {
-                                        width: ".4rem",
+                                        width: "1rem",
                                     },
                                     "::-webkit-scrollbar-track": {
                                         background: "#FFFFFF15",
-                                        borderRadius: 3,
                                     },
                                     "::-webkit-scrollbar-thumb": {
                                         background: theme.factionTheme.primary,
-                                        borderRadius: 3,
                                     },
                                 }}
                             >

@@ -20,6 +20,12 @@ export interface BanProposalStruct {
     instant_pass_user_ids: string[]
 }
 
+export enum PunishVoteStatus {
+    Passed = "PASSED",
+    Failed = "FAILED",
+    Pending = "PENDING",
+}
+
 export interface PunishListItem {
     id: string
     related_punish_vote_id: string
@@ -54,7 +60,7 @@ export interface PunishListItem {
         reported_player_id: string
         reported_player_username: string
         reported_player_gid: number
-        status: "PASSED" | "FAILED" | "PENDING"
+        status: PunishVoteStatus
         started_at: Date
         ended_at: Date
         created_at: Date
@@ -76,12 +82,19 @@ export interface BanOption {
     punish_duration_hours: number
 }
 
-export interface ChatMessageType {
+export enum ChatMessageType {
+    Text = "TEXT",
+    PunishVote = "PUNISH_VOTE",
+    SystemBan = "SYSTEM_BAN",
+    NewBattle = "NEW_BATTLE",
+}
+
+export interface ChatMessage {
     id: string
-    type: "TEXT" | "PUNISH_VOTE" | "SYSTEM_BAN" | "NEW_BATTLE"
+    type: ChatMessageType
     data: TextMessageData | PunishMessageData | SystemBanMessageData | NewBattleMessageData
     sent_at: Date
-    locallySent?: boolean
+    received_at?: Date
 }
 
 export interface Likes {
@@ -92,6 +105,7 @@ export interface Likes {
 export interface TextMessageMetadata {
     likes: Likes
     tagged_users_read: TaggedUsersRead
+    reports: string[]
 }
 
 export type TaggedUsersRead = { [gid: number]: boolean }
@@ -134,3 +148,16 @@ export interface SystemBanMessageData {
 export interface NewBattleMessageData {
     battle_number: number
 }
+
+export interface IncomingMessage {
+    faction: string | null
+    messages: ChatMessage[]
+}
+
+export enum SplitOptionType {
+    Tabbed = "TABBED",
+    Split = "SPLIT",
+    None = "NONE",
+}
+
+export type FontSizeType = 0.8 | 1.2 | 1.35

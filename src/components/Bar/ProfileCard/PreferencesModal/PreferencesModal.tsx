@@ -6,7 +6,7 @@ import { ClipThing } from "../../../Common/ClipThing"
 import { NotificationPreferences } from "./NotificationPreferences"
 import { DevicePreferences } from "./DevicePreferences"
 import { useAuth } from "../../../../containers"
-import { STAGING_OR_DEV_ONLY } from "../../../../constants"
+import { DEV_ONLY } from "../../../../constants"
 
 interface PreferencesModalProps {
     onClose: () => void
@@ -35,7 +35,7 @@ export const PreferencesModal = ({ onClose, setTelegramShortcode, toggleAddDevic
                     clipSize="8px"
                     border={{
                         borderColor: theme.factionTheme.primary,
-                        borderThickness: ".3rem",
+                        borderThickness: ".2rem",
                     }}
                     sx={{ position: "relative" }}
                     backgroundColor={theme.factionTheme.background}
@@ -56,7 +56,7 @@ export const PreferencesModal = ({ onClose, setTelegramShortcode, toggleAddDevic
                         <NotificationPreferences setTelegramShortcode={setTelegramShortcode} />
 
                         {/* Only display the device preferences if the user has selected a faction */}
-                        {STAGING_OR_DEV_ONLY && factionID && <DevicePreferences toggleAddDeviceModal={toggleAddDeviceModal} />}
+                        {DEV_ONLY && factionID && <DevicePreferences toggleAddDeviceModal={toggleAddDeviceModal} />}
                     </Stack>
 
                     <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>

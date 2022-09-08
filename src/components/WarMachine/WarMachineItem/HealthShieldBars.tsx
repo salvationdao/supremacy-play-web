@@ -1,47 +1,77 @@
 import { Stack } from "@mui/material"
-import { useMemo, useState } from "react"
+import React, { useMemo } from "react"
 import { WIDTH_STAT_BAR } from "../.."
+import { useArena } from "../../../containers/arena"
 import { useGameServerSubscription } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { WarMachineLiveState, WarMachineState } from "../../../types"
 import { ProgressBar } from "../../Common/ProgressBar"
 
-export const HealthShieldBars = ({ warMachine, toggleIsAlive }: { warMachine: WarMachineState; toggleIsAlive: (value: boolean) => void }) => {
-    const { participantID, maxHealth, maxShield } = warMachine
-    const [health, setHealth] = useState<number>(warMachine.health)
-    const [shield, setShield] = useState<number>(warMachine.shield)
+interface HealthShieldBarsProps {
+    warMachine: WarMachineState
+    setIsAlive: React.Dispatch<React.SetStateAction<boolean>>
+}
 
-    const healthPercent = useMemo(() => (health / maxHealth) * 100, [health, maxHealth])
-    const shieldPercent = useMemo(() => (shield / maxShield) * 100, [shield, maxShield])
+const propsAreEqual = (prevProps: HealthShieldBarsProps, nextProps: HealthShieldBarsProps) => {
+    return prevProps.warMachine.hash === nextProps.warMachine.hash
+}
+
+export const HealthShieldBars = React.memo(function HealthShieldBars({ warMachine, setIsAlive }: HealthShieldBarsProps) {
+    const { currentArenaID } = useArena()
+    const { hash, participantID, maxHealth, maxShield } = warMachine
 
     // Listen on current war machine changes
     useGameServerSubscription<WarMachineLiveState | undefined>(
         {
-            URI: `/public/mech/${participantID}`,
+            URI: `/public/arena/${currentArenaID}/mech/${participantID}`,
             key: GameServerKeys.SubMechLiveStats,
-            ready: !!participantID,
-            batchURI: "/public/mech",
+            ready: !!participantID && !!currentArenaID,
+            batchURI: `/public/arena/${currentArenaID}/mech`,
         },
         (payload) => {
+            // Direct DOM manipulation is a lot more optimized than re-rendering
             if (payload?.health !== undefined) {
-                setHealth(payload.health)
-                if (payload.health <= 0) toggleIsAlive(false)
+                setIsAlive(payload.health > 0)
+
+                const healthBarEl = document.getElementById(`war-machine-item-health-bar-${hash}`)
+                if (healthBarEl) {
+                    const percent = Math.min((payload.health / maxHealth) * 100, 100)
+                    healthBarEl.style.height = `${percent}%`
+                    healthBarEl.style.backgroundColor = percent <= 45 ? colors.red : colors.health
+                }
             }
-            if (payload?.shield !== undefined) setShield(payload.shield)
+
+            if (payload?.shield !== undefined) {
+                const shieldBarEl = document.getElementById(`war-machine-item-shield-bar-${hash}`)
+                if (shieldBarEl) {
+                    const percent = Math.min((payload.shield / maxShield) * 100, 100)
+                    shieldBarEl.style.height = `${percent}%`
+                }
+            }
         },
     )
 
-    return (
-        <Stack direction="row" style={{ height: "100%" }}>
-            <ProgressBar percent={shieldPercent} color={colors.shield} backgroundColor="#FFFFFF06" thickness={`${WIDTH_STAT_BAR}rem`} />
+    return useMemo(
+        () => (
+            <Stack direction="row" style={{ height: "100%" }}>
+                <ProgressBar
+                    id={`war-machine-item-shield-bar-${hash}`}
+                    percent={(warMachine.shield / maxHealth) * 100}
+                    color={colors.shield}
+                    backgroundColor="#FFFFFF06"
+                    thickness={`${WIDTH_STAT_BAR}rem`}
+                />
 
-            <ProgressBar
-                percent={healthPercent}
-                color={health / maxHealth <= 0.45 ? colors.red : colors.health}
-                backgroundColor="#FFFFFF06"
-                thickness={`${WIDTH_STAT_BAR}rem`}
-            />
-        </Stack>
+                <ProgressBar
+                    id={`war-machine-item-health-bar-${hash}`}
+                    percent={(warMachine.health / maxShield) * 100}
+                    color={colors.health}
+                    backgroundColor="#FFFFFF06"
+                    thickness={`${WIDTH_STAT_BAR}rem`}
+                />
+            </Stack>
+        ),
+        [hash, maxHealth, maxShield, warMachine.health, warMachine.shield],
     )
-}
+}, propsAreEqual)

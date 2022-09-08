@@ -1,33 +1,42 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { FancyButton, TooltipHelper } from "../../../.."
 import { SvgInfoCircular, SvgSupToken } from "../../../../../assets"
-import { useSnackbar } from "../../../../../containers"
-import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
+import { useGlobalNotifications } from "../../../../../containers"
+import { supFormatter } from "../../../../../helpers"
+import { useGameServerCommandsFaction, useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
-import { MechModal } from "../../Common/MechModal"
 import { MechDetails } from "../../../../../types"
-import { supFormatter } from "../../../../../helpers"
+import { PlayerQueueStatus } from "../../../../LeftDrawer/QuickDeploy/QuickDeploy"
+import { MechModal } from "../../Common/MechModal"
 
 export interface QueueFeed {
-    queue_length: number
+    queue_position: number
     queue_cost: string
 }
 
-export const DeployModal = ({
-    selectedMechDetails: deployMechDetails,
-    deployMechModalOpen,
-    setDeployMechModalOpen,
-}: {
+interface DeployModalProps {
     selectedMechDetails: MechDetails
     deployMechModalOpen: boolean
     setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-}) => {
-    const { newSnackbarMessage } = useSnackbar()
+}
+
+export const DeployModal = ({ selectedMechDetails: deployMechDetails, deployMechModalOpen, setDeployMechModalOpen }: DeployModalProps) => {
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
+    const { send: userSend } = useGameServerCommandsUser("/user_commander")
+
+    const [playerQueueStatus, setPlayerQueueStatus] = useState<PlayerQueueStatus>()
     const [isLoading, setIsLoading] = useState(false)
     const [deployQueueError, setDeployQueueError] = useState<string>()
+
+    useEffect(() => {
+        ;(async () => {
+            const resp = await userSend<PlayerQueueStatus>(GameServerKeys.PlayerQueueStatus)
+            setPlayerQueueStatus(resp)
+        })()
+    }, [userSend])
 
     // Queuing cost, queue length win reward etc.
     const queueFeed = useGameServerSubscriptionFaction<QueueFeed>({
@@ -41,20 +50,20 @@ export const DeployModal = ({
     }, [setDeployQueueError, setDeployMechModalOpen])
 
     const onDeployQueue = useCallback(
-        async ({ hash }: { hash: string }) => {
+        async ({ mechIDs }: { mechIDs: string[] }) => {
             try {
                 setIsLoading(true)
                 const resp = await send<{ success: boolean; code: string }>(GameServerKeys.JoinQueue, {
-                    asset_hash: hash,
+                    mech_ids: mechIDs,
                 })
 
                 if (resp && resp.success) {
                     newSnackbarMessage("Successfully deployed war machine.", "success")
                     onClose()
                 }
-            } catch (e) {
-                setDeployQueueError(typeof e === "string" ? e : "Failed to deploy war machine.")
-                console.error(e)
+            } catch (err) {
+                setDeployQueueError(typeof err === "string" ? err : "Failed to deploy war machine.")
+                console.error(err)
                 return
             } finally {
                 setIsLoading(false)
@@ -62,26 +71,22 @@ export const DeployModal = ({
         },
         [newSnackbarMessage, send, onClose],
     )
+    const queueCost = queueFeed?.queue_cost || "0"
 
     if (!deployMechDetails) return null
-
-    const queueLength = queueFeed?.queue_length || 0
-    const queueCost = queueFeed?.queue_cost || "0"
-    const { hash } = deployMechDetails
+    const { id } = deployMechDetails
 
     return (
         <MechModal open={deployMechModalOpen} mechDetails={deployMechDetails} onClose={onClose}>
             <Stack spacing="1.5rem">
                 <Stack spacing=".2rem">
-                    {queueLength >= 0 && (
-                        <AmountItem
-                            key={`${queueLength}-queue_length`}
-                            title={"Next Position: "}
-                            value={`${queueLength + 1}`}
-                            tooltip="The queue position of your war machine if you deploy now."
-                            disableIcon
-                        />
-                    )}
+                    <AmountItem
+                        key={`${queueFeed?.queue_position}-queue_time`}
+                        title={"Position: "}
+                        value={queueFeed?.queue_position || "UNKNOWN"}
+                        tooltip="The current queue position of your faction."
+                        disableIcon
+                    />
 
                     <AmountItem
                         title={"Fee: "}
@@ -89,6 +94,16 @@ export const DeployModal = ({
                         value={supFormatter(queueCost, 2)}
                         tooltip="The cost to place your war machine into the battle queue."
                     />
+
+                    {playerQueueStatus && (
+                        <AmountItem
+                            title="LIMIT: "
+                            color={playerQueueStatus.total_queued / playerQueueStatus.queue_limit === 1 ? colors.red : "white"}
+                            value={`${playerQueueStatus.total_queued} / ${playerQueueStatus.queue_limit}`}
+                            tooltip="The total amount of mechs you have queued."
+                            disableIcon
+                        />
+                    )}
                 </Stack>
 
                 <Box sx={{ mt: "auto" }}>
@@ -97,11 +112,11 @@ export const DeployModal = ({
                         clipThingsProps={{
                             clipSize: "5px",
                             backgroundColor: colors.green,
-                            border: { isFancy: true, borderColor: colors.green },
+                            border: { borderColor: colors.green },
                             sx: { position: "relative", width: "100%" },
                         }}
                         sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
-                        onClick={() => onDeployQueue({ hash })}
+                        onClick={() => onDeployQueue({ mechIDs: [id] })}
                     >
                         <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
                             DEPLOY

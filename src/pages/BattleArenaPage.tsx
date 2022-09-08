@@ -1,18 +1,20 @@
 import { Box, Stack } from "@mui/material"
-import { useEffect, useState } from "react"
-import { Redirect } from "react-router-dom"
-import { SvgAbility, SvgHistory, SvgHistoryClock, SvgRobot } from "../assets"
-import { BattleEndScreen, BattleHistory, Controls, EarlyAccessWarning, MiniMap, Notifications, Stream, VotingSystem, WarMachineStats } from "../components"
-import { QuickDeploy } from "../components/QuickDeploy/QuickDeploy"
-import { QuickPlayerAbilities } from "../components/QuickPlayerAbilities/QuickPlayerAbilities"
+import React, { useEffect, useState } from "react"
+import { SvgAbility, SvgHistoryClock, SvgRobot } from "../assets"
+import { BattleAbility, BattleEndScreen, BigDisplay, Controls, EarlyAccessWarning, Notifications, WarMachineStats } from "../components"
+import { BattleRewardsSkyHighBanner } from "../components/Common/BannersPromotions/BattleRewardsSkyHighBanner"
+import { PlayerAbilities } from "../components/LeftDrawer/BattleArena/PlayerAbilities/PlayerAbilities"
+import { QuickPlayerAbilities } from "../components/LeftDrawer/BattleArena/QuickPlayerAbilities/QuickPlayerAbilities"
+import { QuickDeploy } from "../components/LeftDrawer/QuickDeploy/QuickDeploy"
+import { BattleArenaCountDown } from "../components/Maintenance/BattleArenaCountDown"
+import { UpcomingBattle } from "../components/UpcomingBattle/UpcomingBattle"
 import { BATTLE_ARENA_OPEN } from "../constants"
-import { useAuth, useDimension, useMobile, useSupremacy } from "../containers"
+import { useArena, useAuth, useDimension, useMobile } from "../containers"
 import { siteZIndex } from "../theme/theme"
-import { FeatureName } from "../types"
-import { EnlistPage } from "./EnlistPage"
 
 export const BattleArenaPage = () => {
     const { userID } = useAuth()
+    const { currentArena } = useArena()
     const [understand, setUnderstand] = useState(true)
 
     useEffect(() => {
@@ -32,16 +34,18 @@ export const BattleArenaPage = () => {
     }
 
     if (!BATTLE_ARENA_OPEN) {
-        return <Redirect to="/fleet#live_chat" />
+        return <BattleArenaCountDown />
+    }
+
+    if (currentArena?.status?.is_idle) {
+        return <UpcomingBattle />
     }
 
     return <BattleArenaPageInner />
 }
 
-const BattleArenaPageInner = () => {
-    const { userID, factionID, userHasFeature } = useAuth()
+const BattleArenaPageInner = React.memo(function BattleArenaPageInner() {
     const { isMobile, setAdditionalTabs, setIsNavOpen, allowCloseNav } = useMobile()
-    const { isQuickDeployOpen, toggleIsQuickDeployOpen, isQuickPlayerAbilitiesOpen, toggleIsQuickPlayerAbilitiesOpen } = useSupremacy()
     const { triggerReset } = useDimension()
 
     // When its mobile, we have tabs
@@ -54,10 +58,11 @@ const BattleArenaPageInner = () => {
         const tabs = [
             {
                 id: "battle-arena",
-                hash: "#battle-arena",
                 icon: <SvgAbility size="1.2rem" sx={{ pt: ".1rem" }} />,
                 label: "BATTLE ARENA",
                 requireAuth: false,
+                onlyShowOnRoute: "",
+                mountAllTime: true,
                 Component: () => (
                     <Stack sx={{ height: "100%" }}>
                         {/* <Notifications /> */}
@@ -74,23 +79,28 @@ const BattleArenaPageInner = () => {
                                 direction: "ltr",
                                 scrollbarWidth: "none",
                                 "::-webkit-scrollbar": {
-                                    width: ".4rem",
+                                    width: "1rem",
                                 },
                                 "::-webkit-scrollbar-track": {
                                     background: "#FFFFFF15",
-                                    borderRadius: 3,
                                 },
                                 "::-webkit-scrollbar-thumb": {
                                     background: (theme) => theme.factionTheme.primary,
-                                    borderRadius: 3,
                                 },
                             }}
                         >
                             <Box sx={{ direction: "ltr", height: 0 }}>
-                                <Stack spacing="1.5rem" sx={{ position: "relative", p: ".8rem 1rem" }}>
-                                    <VotingSystem />
-                                    <MiniMap />
-                                    <WarMachineStats />
+                                <Stack direction="row">
+                                    <Stack spacing="1.5rem" sx={{ width: "50%", position: "relative", p: ".8rem 1rem" }}>
+                                        {/* <MiniMap /> */}
+                                        <WarMachineStats />
+                                    </Stack>
+
+                                    <Stack spacing="1.5rem" sx={{ width: "50%", position: "relative", p: ".8rem 1rem" }}>
+                                        <BattleAbility />
+                                        <PlayerAbilities />
+                                        <QuickPlayerAbilities />
+                                    </Stack>
                                 </Stack>
                             </Box>
                         </Box>
@@ -99,49 +109,26 @@ const BattleArenaPageInner = () => {
             },
             {
                 id: "quick-deploy",
-                hash: "#quick-deploy",
                 icon: <SvgRobot size="1.2rem" sx={{ pt: ".1rem" }} />,
                 label: "QUICK DEPLOY",
                 requireAuth: true,
+                onlyShowOnRoute: "",
+                mountAllTime: true,
                 Component: () => (
                     <Stack sx={{ position: "relative", height: "100%" }}>
-                        <QuickDeploy
-                            open
-                            onClose={() => {
-                                return
-                            }}
-                        />
+                        <QuickDeploy />
                     </Stack>
                 ),
             },
         ]
 
-        if (userHasFeature(FeatureName.playerAbility)) {
-            tabs.push({
-                id: "buy-abilities",
-                hash: "#buy-abilities",
-                icon: <SvgAbility size="1.2rem" sx={{ pt: ".1rem" }} />,
-                label: "BUY ABILITIES",
-                requireAuth: true,
-                Component: () => (
-                    <Stack sx={{ position: "relative", height: "100%" }}>
-                        <QuickPlayerAbilities
-                            open
-                            onClose={() => {
-                                return
-                            }}
-                        />
-                    </Stack>
-                ),
-            })
-        }
-
         tabs.push({
             id: "prev-battle",
-            hash: "#prev-battle",
             icon: <SvgHistoryClock size="1.2rem" sx={{ pt: ".1rem" }} />,
             label: "PREVIOUS BATTLE",
             requireAuth: false,
+            onlyShowOnRoute: "",
+            mountAllTime: true,
             Component: () => (
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <BattleEndScreen />
@@ -149,18 +136,19 @@ const BattleArenaPageInner = () => {
             ),
         })
 
-        tabs.push({
-            id: "history",
-            hash: "#history",
-            icon: <SvgHistory size="1.2rem" sx={{ pt: ".1rem" }} />,
-            label: "HISTORY",
-            requireAuth: false,
-            Component: () => (
-                <Stack sx={{ position: "relative", height: "100%" }}>
-                    <BattleHistory />
-                </Stack>
-            ),
-        })
+        // tabs.push({
+        //     id: "history",
+        //     icon: <SvgHistory size="1.2rem" sx={{ pt: ".1rem" }} />,
+        //     label: "HISTORY",
+        //     requireAuth: false,
+        //     onlyShowOnRoute: "",
+        //     mountAllTime: false,
+        //     Component: () => (
+        //         <Stack sx={{ position: "relative", height: "100%" }}>
+        //             <BattleHistory />
+        //         </Stack>
+        //     ),
+        // })
 
         setAdditionalTabs(tabs)
         setIsNavOpen(true)
@@ -174,32 +162,17 @@ const BattleArenaPageInner = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [allowCloseNav, isMobile, triggerReset, setAdditionalTabs, setIsNavOpen])
 
-    if (userID && !factionID) {
-        return <EnlistPage />
-    }
-
     return (
-        <Stack sx={{ height: "100%", zIndex: siteZIndex.RoutePage }}>
-            <Box id={isMobile ? "" : "game-ui-container"} sx={{ position: "relative", flex: 1 }}>
-                <Stream />
+        <Stack id="battle-arena-all" sx={{ width: "100%", height: "100%", zIndex: siteZIndex.RoutePage }}>
+            <BattleRewardsSkyHighBanner />
+
+            <Box id="game-ui-container" sx={{ position: "relative", flex: 1, height: 0 }}>
+                <BigDisplay />
 
                 {!isMobile && (
                     <>
                         <WarMachineStats />
-
-                        <BattleEndScreen />
-
-                        <BattleHistory />
-
-                        {isQuickDeployOpen && <QuickDeploy open={isQuickDeployOpen} onClose={() => toggleIsQuickDeployOpen(false)} />}
-
-                        {isQuickPlayerAbilitiesOpen && (
-                            <QuickPlayerAbilities open={isQuickPlayerAbilitiesOpen} onClose={() => toggleIsQuickPlayerAbilitiesOpen(false)} />
-                        )}
-
-                        <VotingSystem />
-
-                        <MiniMap />
+                        {/*<BattleHistory />*/}
                     </>
                 )}
 
@@ -209,4 +182,4 @@ const BattleArenaPageInner = () => {
             <Controls />
         </Stack>
     )
-}
+})

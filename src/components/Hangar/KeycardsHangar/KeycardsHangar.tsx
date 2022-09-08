@@ -1,6 +1,5 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton } from "../.."
 import { KeycardPNG } from "../../../assets"
 import { PASSPORT_WEB } from "../../../constants"
@@ -28,7 +27,6 @@ interface GetAssetsResponse {
 }
 
 export const KeycardsHangar = () => {
-    const location = useLocation()
     const [query, updateQuery] = useUrlQuery()
     const { user } = useAuth()
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -159,7 +157,7 @@ export const KeycardsHangar = () => {
                     </Typography>
 
                     <FancyButton
-                        to={`/marketplace/keycards${location.hash}`}
+                        to={`/marketplace/keycards`}
                         clipThingsProps={{
                             clipSize: "9px",
                             backgroundColor: theme.factionTheme.primary,
@@ -182,7 +180,7 @@ export const KeycardsHangar = () => {
                 </Stack>
             </Stack>
         )
-    }, [loadError, keycards, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary, location.hash])
+    }, [loadError, keycards, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary])
 
     return (
         <ClipThing
@@ -230,8 +228,7 @@ export const KeycardsHangar = () => {
                         <Box
                             sx={{
                                 ml: "1.9rem",
-                                mr: ".5rem",
-                                pr: "1.4rem",
+                                pr: "1.9rem",
                                 my: "1rem",
                                 flex: 1,
                                 overflowY: "auto",
@@ -239,15 +236,13 @@ export const KeycardsHangar = () => {
                                 direction: "ltr",
 
                                 "::-webkit-scrollbar": {
-                                    width: ".4rem",
+                                    width: "1rem",
                                 },
                                 "::-webkit-scrollbar-track": {
                                     background: "#FFFFFF15",
-                                    borderRadius: 3,
                                 },
                                 "::-webkit-scrollbar-thumb": {
                                     background: theme.factionTheme.primary,
-                                    borderRadius: 3,
                                 },
                             }}
                         >

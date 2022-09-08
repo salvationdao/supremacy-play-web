@@ -8,7 +8,7 @@ import { useDimension, useMobile } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { shadeColor } from "../../../helpers"
 import { colors, siteZIndex } from "../../../theme/theme"
-import { WindowPortal } from "../WindowPortal"
+import { WindowPortal } from "../WindowPortal/WindowPortal"
 import { MoveableResizableConfig, MoveableResizableProvider, useMoveableResizable } from "./MoveableResizableContainer"
 
 interface MoveableResizableProps {
@@ -32,7 +32,7 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
     const {
         setPopoutRef,
         isPoppedout,
-        toggleIsPoppedout,
+        setIsPoppedout,
         curWidth,
         curHeight,
 
@@ -63,12 +63,12 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                 ref={(ref: HTMLDivElement) => setPopoutRef(ref)}
                 title="Supremacy - Battle Arena"
                 onClose={() => {
-                    toggleIsPoppedout(false)
+                    setIsPoppedout(false)
                     setPopoutRef(null)
                 }}
                 features={{
                     width: curWidth / (remToPxRatio / 11),
-                    height: curHeight / (remToPxRatio / 11) + 30, // this is the top bar height
+                    height: Math.max(curHeight / (remToPxRatio / 11) + 30, 300), // this is the top bar height
                 }}
             >
                 <Box
@@ -185,7 +185,7 @@ const MoveableResizableInner = ({ children }: MoveableResizableProps) => {
                             </Box>
 
                             <Box
-                                onClick={() => toggleIsPoppedout()}
+                                onClick={() => setIsPoppedout(true)}
                                 sx={{
                                     mr: onHideCallback ? ".9rem" : 0,
                                     cursor: "pointer",

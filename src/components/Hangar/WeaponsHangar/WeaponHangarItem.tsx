@@ -1,6 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useMemo, useState } from "react"
-import { useLocation } from "react-router-dom"
+import React, { useMemo, useState } from "react"
 import { FancyButton } from "../.."
 import { SvgDropdownArrow, SvgSkin } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
@@ -13,8 +12,16 @@ import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { General } from "../../Marketplace/Common/MarketItem/General"
 import { WeaponBarStats } from "./Common/WeaponBarStats"
 
-export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGridView?: boolean }) => {
-    const location = useLocation()
+interface WeaponHangarItemProps {
+    weapon: Weapon
+    isGridView?: boolean
+}
+
+const propsAreEqual = (prevProps: WeaponHangarItemProps, nextProps: WeaponHangarItemProps) => {
+    return prevProps.isGridView === nextProps.isGridView && prevProps.weapon.id === nextProps.weapon.id
+}
+
+export const WeaponHangarItem = React.memo(function WeaponHangarItem({ weapon, isGridView }: WeaponHangarItemProps) {
     const theme = useTheme()
     const [weaponDetails, setWeaponDetails] = useState<Weapon>()
 
@@ -48,11 +55,11 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
                     },
                     backgroundColor: backgroundColor,
                     opacity: 0.9,
-                    border: { isFancy: !isGridView, borderColor: primaryColor, borderThickness: ".25rem" },
+                    border: { isFancy: !isGridView, borderColor: `${primaryColor}50`, borderThickness: ".25rem" },
                     sx: { position: "relative", height: "100%", ":hover": { opacity: 1 } },
                 }}
                 sx={{ color: primaryColor, textAlign: "start", height: "100%" }}
-                to={`/weapon/${weapon.id}${location.hash}`}
+                to={`/weapon/${weapon.id}`}
             >
                 <Box
                     sx={{
@@ -103,7 +110,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
             </FancyButton>
         </Box>
     )
-}
+}, propsAreEqual)
 
 export const WeaponCommonArea = ({
     primaryColor,
@@ -139,7 +146,7 @@ export const WeaponCommonArea = ({
                     flexShrink: 0,
                 }}
             >
-                <MediaPreview imageUrl={imageUrl || avatarUrl} objectFit={isGridView ? "cover" : "contain"} imageTransform="rotate(-30deg) scale(.95)" />
+                <MediaPreview imageUrl={imageUrl || avatarUrl} objectFit={isGridView ? "cover" : "contain"} />
             </Box>
             <Stack
                 spacing=".2rem"

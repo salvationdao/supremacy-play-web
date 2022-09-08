@@ -1,8 +1,8 @@
-import { Avatar, Box, CircularProgress, Stack, Typography } from "@mui/material"
+import { Avatar, Box, CircularProgress, IconButton, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useHistory, useParams } from "react-router-dom"
-import { AboutMeSVG, BattleHistorySVG, StatsSVG, SvgAbility, SvgCake, SvgDeath, SvgSkull2, SvgView } from "../../assets"
-import { useAuth, useSnackbar } from "../../containers"
+import { AboutMeSVG, BattleHistorySVG, StatsSVG, SvgAbility, SvgCake, SvgClose, SvgDeath, SvgSkull2, SvgView } from "../../assets"
+import { useAuth, useGlobalNotifications, useUI } from "../../containers"
 import { getUserRankDeets, snakeToTitle, timeSince } from "../../helpers"
 import { useGameServerCommands, useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
@@ -10,11 +10,11 @@ import { colors, fonts, theme } from "../../theme/theme"
 import { Faction, FeatureName, UserRank } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
 import { PageHeader } from "../Common/PageHeader"
-import { ProfileAvatar } from "./AvatarSelect"
+import { ProfileAvatar } from "./Avatar/AvatarSelect"
 import { AboutMe } from "./ProfileAboutMe"
 import { ProfileMechHistory } from "./ProfileBattleHistory"
 import { Username } from "./ProfileUsername"
-import { ProfileWarmachines } from "./ProfileWarmachines"
+import { ProfileWarmachines } from "./Warmachines/ProfileWarmachines"
 
 interface Player {
     id: string
@@ -36,8 +36,10 @@ interface Stats {
 }
 
 interface AvatarType {
+    id: string
     avatar_url: string
     tier: string
+    is_custom: boolean
 }
 
 interface PlayerProfile {
@@ -101,7 +103,8 @@ export const PlayerProfilePage = () => {
 
     const { send } = useGameServerCommands("/public/commander")
     const { send: userSend } = useGameServerCommandsUser("/user_commander")
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
+    const { rightDrawerActiveTabID } = useUI()
     const isMe = `${user?.gid}` === playerGID
 
     const rankDeets = useMemo(() => (profile?.player.rank ? getUserRankDeets(profile?.player.rank, "1.6rem", "1.6rem") : undefined), [profile?.player.rank])
@@ -112,6 +115,14 @@ export const PlayerProfilePage = () => {
         () => (profile?.active_log?.active_at ? getOnlineStatus(profile?.active_log?.active_at) : undefined),
         [profile?.active_log?.active_at],
     )
+
+    const handleClose = () => {
+        if (history.length === 0) {
+            history.push("/")
+            return
+        }
+        history.goBack()
+    }
 
     // username
     const updateUsername = useCallback(
@@ -124,7 +135,7 @@ export const PlayerProfilePage = () => {
                 setUsername(resp)
                 newSnackbarMessage("username updated successfully.", "success")
             } catch (e) {
-                let errorMessage = ""
+                let errorMessage = "Failed to update username, try again or contact support."
                 if (typeof e === "string") {
                     errorMessage = e
                 } else if (e instanceof Error) {
@@ -138,16 +149,17 @@ export const PlayerProfilePage = () => {
 
     // avatar
     const updateAvatar = useCallback(
-        async (avatar_id: string) => {
+        async (avatarID: string, isCustom: boolean) => {
             try {
                 const resp = await userSend<AvatarType>(GameServerKeys.PlayerProfileAvatarUpdate, {
                     player_id: profile?.player.id,
-                    profile_avatar_id: avatar_id,
+                    profile_avatar_id: avatarID,
+                    is_custom: isCustom,
                 })
                 setAvatar(resp)
                 newSnackbarMessage("avatar updated successfully.", "success")
             } catch (e) {
-                let errorMessage = ""
+                let errorMessage = "Failed to update avatar, try again or contact support."
                 if (typeof e === "string") {
                     errorMessage = e
                 } else if (e instanceof Error) {
@@ -157,6 +169,29 @@ export const PlayerProfilePage = () => {
             }
         },
         [userSend, profile?.player.id, newSnackbarMessage],
+    )
+
+    // delete a custom avatar
+    const deleteCustomAvatar = useCallback(
+        async (avatarID: string) => {
+            try {
+                const resp = await userSend<AvatarType>(GameServerKeys.PlayerProfileCustomAvatarDelete, {
+                    avatar_id: avatarID,
+                })
+                if (resp) {
+                    newSnackbarMessage("avatar deleted successfully.", "success")
+                }
+            } catch (e) {
+                let errorMessage = "Failed to update avatar, try again or contact support."
+                if (typeof e === "string") {
+                    errorMessage = e
+                } else if (e instanceof Error) {
+                    errorMessage = e.message
+                }
+                newSnackbarMessage(errorMessage, "error")
+            }
+        },
+        [userSend, newSnackbarMessage],
     )
 
     // about me
@@ -170,7 +205,7 @@ export const PlayerProfilePage = () => {
                 setAboutMe(resp.about_me)
                 newSnackbarMessage("about me updated successfully.", "success")
             } catch (e) {
-                let errorMessage = ""
+                let errorMessage = "Failed to update about me, try again or contact support."
                 if (typeof e === "string") {
                     errorMessage = e
                 } else if (e instanceof Error) {
@@ -196,7 +231,7 @@ export const PlayerProfilePage = () => {
                 setAvatar(resp.avatar)
                 setLoading(false)
             } catch (e) {
-                let errorMessage = ""
+                let errorMessage = "Failed to fetch profile, please try again or contact support"
                 if (typeof e === "string") {
                     errorMessage = e
                 } else if (e instanceof Error) {
@@ -246,8 +281,17 @@ export const PlayerProfilePage = () => {
             direction="column"
             sx={{
                 height: "100%",
-                "@media (max-width:1300px)": {
-                    overflowY: "auto",
+                scrollbarWidth: "none",
+                overflowY: "auto",
+
+                "::-webkit-scrollbar": {
+                    width: "1rem",
+                },
+                "::-webkit-scrollbar-track": {
+                    background: "#FFFFFF15",
+                },
+                "::-webkit-scrollbar-thumb": {
+                    background: primaryColor,
                 },
             }}
         >
@@ -261,9 +305,12 @@ export const PlayerProfilePage = () => {
                     backgroundSize: "cover",
                     height: "55.5rem",
                     position: "relative",
+                    "@media (max-width:900px)": {
+                        height: "72rem",
+                    },
                 }}
             >
-                <Stack spacing="1.6rem" sx={{ p: "1rem 1rem" }}>
+                <Stack spacing="1.6rem" sx={{ p: "1rem 1rem" }} position="relative">
                     <Stack spacing=".5rem"></Stack>
                     <Stack spacing="1.8rem">
                         <Stack>
@@ -277,14 +324,20 @@ export const PlayerProfilePage = () => {
                             >
                                 {viewAvatar ? (
                                     <ProfileAvatar
+                                        playerID={profile.player.id}
+                                        avatarID={avatar?.id || ""}
                                         isOwner={isMe}
-                                        updateAvatar={async (avatar_id: string) => {
-                                            updateAvatar(avatar_id)
+                                        updateAvatar={async (avatarID: string, isCustom: boolean) => {
+                                            updateAvatar(avatarID, isCustom)
                                         }}
+                                        deleteCustomAvatar={async (avatarID: string) => {
+                                            deleteCustomAvatar(avatarID)
+                                        }}
+                                        isCustom={!!avatar?.is_custom}
                                         avatarURL={avatar?.avatar_url || ""}
                                         primaryColor={primaryColor}
-                                        secondaryColor={secondaryColor}
                                         backgroundColor={backgroundColor}
+                                        secondaryColor={secondaryColor}
                                         factionName={profile.faction?.label}
                                     />
                                 ) : (
@@ -368,6 +421,12 @@ export const PlayerProfilePage = () => {
                             <Typography sx={{ fontFamily: fonts.nostromoBlack }}>Joined {profile.player.created_at.toLocaleDateString()}</Typography>
                         </Stack>
                     </Stack>
+
+                    <Box sx={{ position: "absolute", right: "1rem", top: 0, width: "4rem", height: "4rem" }}>
+                        <IconButton size="small" onClick={handleClose}>
+                            <SvgClose size="3.4rem" sx={{ opacity: 0.8, ":hover": { opacity: 1 } }} />
+                        </IconButton>
+                    </Box>
                 </Stack>
             </Stack>
 
@@ -376,6 +435,10 @@ export const PlayerProfilePage = () => {
                 sx={{
                     height: "100%",
                     background: primaryColor,
+                    // if drawers opened and less than 1700 => column
+                    "@media (max-width:1700px)": {
+                        flexDirection: rightDrawerActiveTabID ? "column" : "row",
+                    },
 
                     "@media (max-width:1300px)": {
                         flexDirection: "column",
@@ -390,9 +453,15 @@ export const PlayerProfilePage = () => {
 
                         flexShrink: 0,
                         height: "100%",
-                        width: "62rem",
+                        minWidth: "30rem",
+                        maxWidth: "62rem",
+                        "@media (max-width:1700px)": {
+                            maxWidth: rightDrawerActiveTabID ? "100%" : "62rem",
+                            height: rightDrawerActiveTabID ? "50%" : "100%",
+                        },
                         "@media (max-width:1300px)": {
                             width: "100%",
+                            maxWidth: "100%",
                             height: "50%",
                         },
                     }}
@@ -408,15 +477,13 @@ export const PlayerProfilePage = () => {
                             direction: "ltr",
                             scrollbarWidth: "none",
                             "::-webkit-scrollbar": {
-                                width: ".4rem",
+                                width: "1rem",
                             },
                             "::-webkit-scrollbar-track": {
                                 background: "#FFFFFF15",
-                                borderRadius: 3,
                             },
                             "::-webkit-scrollbar-thumb": {
                                 background: primaryColor,
-                                borderRadius: 3,
                             },
                         }}
                     >
@@ -500,15 +567,13 @@ export const PlayerProfilePage = () => {
                                                 direction: "ltr",
 
                                                 "::-webkit-scrollbar": {
-                                                    width: ".4rem",
+                                                    width: "1rem",
                                                 },
                                                 "::-webkit-scrollbar-track": {
                                                     background: "#FFFFFF15",
-                                                    borderRadius: 3,
                                                 },
                                                 "::-webkit-scrollbar-thumb": {
                                                     background: primaryColor,
-                                                    borderRadius: 3,
                                                 },
                                             }}
                                         >
@@ -571,15 +636,13 @@ export const PlayerProfilePage = () => {
                                                 direction: "ltr",
 
                                                 "::-webkit-scrollbar": {
-                                                    width: ".4rem",
+                                                    width: "1rem",
                                                 },
                                                 "::-webkit-scrollbar-track": {
                                                     background: "#FFFFFF15",
-                                                    borderRadius: 3,
                                                 },
                                                 "::-webkit-scrollbar-thumb": {
                                                     background: primaryColor,
-                                                    borderRadius: 3,
                                                 },
                                             }}
                                         >

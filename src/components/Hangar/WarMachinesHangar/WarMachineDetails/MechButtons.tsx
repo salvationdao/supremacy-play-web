@@ -1,8 +1,7 @@
 import { Box, Typography } from "@mui/material"
 import { useState } from "react"
-import { useLocation } from "react-router-dom"
 import { ClipThing, FancyButton, TooltipHelper } from "../../.."
-import { BATTLE_ARENA_OPEN, STAGING_OR_DEV_ONLY } from "../../../../constants"
+import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -26,7 +25,6 @@ export const MechButtons = ({
     setRepairMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     marketLocked: boolean
 }) => {
-    const location = useLocation()
     const theme = useTheme()
     const [mechStatus, setMechStatus] = useState<MechStatus>()
 
@@ -107,7 +105,7 @@ export const MechButtons = ({
                             backgroundColor={mechState === MechStatusEnum.Market ? theme.factionTheme.background : colors.red}
                             label={mechState === MechStatusEnum.Market ? "VIEW LISTING" : "SELL"}
                             disabled={
-                                STAGING_OR_DEV_ONLY ||
+                                IS_TESTING_MODE ||
                                 !mechState ||
                                 (mechState !== MechStatusEnum.Idle && mechState !== MechStatusEnum.Damaged && mechState !== MechStatusEnum.Market) ||
                                 marketLocked
@@ -116,8 +114,8 @@ export const MechButtons = ({
                                 mechDetails.locked_to_marketplace
                                     ? !mechDetails.item_sale_id
                                         ? undefined
-                                        : `/marketplace/${MARKETPLACE_TABS.WarMachines}/${mechDetails.item_sale_id}${location.hash}`
-                                    : `/marketplace/sell?itemType=${ItemType.WarMachine}&assetID=${mechDetails.id}${location.hash}`
+                                        : `/marketplace/${MARKETPLACE_TABS.WarMachines}/${mechDetails.item_sale_id}`
+                                    : `/marketplace/sell?itemType=${ItemType.WarMachine}&assetID=${mechDetails.id}`
                             }
                         />
                     </Box>

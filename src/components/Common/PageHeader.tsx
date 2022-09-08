@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { ReactNode } from "react"
+import React, { ReactNode } from "react"
 import { fonts } from "../../theme/theme"
 
 interface PageHeaderProps {
@@ -14,14 +14,23 @@ interface PageHeaderProps {
     imageWidth?: string
 }
 
-export const PageHeader = ({ title, description, imageUrl, children, smallSize, primaryColor, imageHeight, imageWidth }: PageHeaderProps) => {
+export const PageHeader = React.memo(function PageHeader({
+    title,
+    description,
+    imageUrl,
+    children,
+    smallSize,
+    primaryColor,
+    imageHeight,
+    imageWidth,
+}: PageHeaderProps) {
     return (
         <Stack
             direction="row"
             alignItems="center"
             spacing="2rem"
             sx={{
-                backgroundColor: "#00000070",
+                backgroundColor: "#00000080",
                 borderBottom: (theme) => `${primaryColor || theme.factionTheme.primary}70 1.5px solid`,
             }}
         >
@@ -66,4 +75,4 @@ export const PageHeader = ({ title, description, imageUrl, children, smallSize, 
             {children}
         </Stack>
     )
-}
+})

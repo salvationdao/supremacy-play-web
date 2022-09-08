@@ -1,8 +1,8 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useCallback, useMemo, useState } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 import { FancyButton, TooltipHelper } from "../.."
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../assets"
-import { useSnackbar } from "../../../containers"
+import { useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { numberCommaFormatter, supFormatter } from "../../../helpers"
 import { useToggle } from "../../../hooks"
@@ -23,20 +23,31 @@ export interface PlayerAbilityStoreItemProps {
     availability: SaleAbilityAvailability
 }
 
-export const PlayerAbilityStoreItem = ({
+const propsAreEqual = (prevProps: PlayerAbilityStoreItemProps, nextProps: PlayerAbilityStoreItemProps) => {
+    return (
+        prevProps.amount === nextProps.amount &&
+        prevProps.availability === nextProps.availability &&
+        prevProps.saleAbility.id === nextProps.saleAbility.id &&
+        prevProps.amount === nextProps.amount &&
+        prevProps.onClaim === nextProps.onClaim &&
+        prevProps.onPurchase === nextProps.onPurchase
+    )
+}
+
+export const PlayerAbilityStoreItem = React.memo(function PlayerAbilityStoreItem({
     saleAbility,
     price = saleAbility.current_price,
     amount = 0,
     onClaim: onClaimCallback,
     onPurchase: onPurchaseCallback,
     availability,
-}: PlayerAbilityStoreItemProps) => {
+}: PlayerAbilityStoreItemProps) {
     const theme = useTheme()
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
 
     // Purchasing
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [showPurchaseModal, toggleShowPurchaseModal] = useToggle(false)
     const [loading, setLoading] = useState(false)
@@ -57,14 +68,18 @@ export const PlayerAbilityStoreItem = ({
 
     const [abilityTypeIcon, abilityTypeDescription] = useMemo(() => {
         switch (saleAbility.ability.location_select_type) {
-            case LocationSelectType.GLOBAL:
-                return [<SvgGlobal key={LocationSelectType.GLOBAL} />, "This ability will affect all units on the map."]
-            case LocationSelectType.LOCATION_SELECT:
-                return [<SvgTarget key={LocationSelectType.LOCATION_SELECT} />, "This ability will target a specific location on the map."]
-            case LocationSelectType.MECH_SELECT:
-                return [<SvgMicrochip key={LocationSelectType.MECH_SELECT} />, "This ability will target a specific mech on the map."]
-            case LocationSelectType.LINE_SELECT:
-                return [<SvgLine key={LocationSelectType.LINE_SELECT} />, "This ability will target a straight line on the map."]
+            case LocationSelectType.Global:
+                return [<SvgGlobal key={LocationSelectType.Global} />, "This ability will affect all units on the map."]
+            case LocationSelectType.LocationSelect:
+                return [<SvgTarget key={LocationSelectType.LocationSelect} />, "This ability will target a specific location on the map."]
+            case LocationSelectType.MechSelect:
+                return [<SvgMicrochip key={LocationSelectType.MechSelect} />, "This ability will target a specific mech on the map."]
+            case LocationSelectType.MechSelectAllied:
+                return [<SvgMicrochip key={LocationSelectType.MechSelectAllied} />, "This ability will target a specific allied mech on the map."]
+            case LocationSelectType.MechSelectOpponent:
+                return [<SvgMicrochip key={LocationSelectType.MechSelectOpponent} />, "This ability will target a specific opponent mech on the map."]
+            case LocationSelectType.LineSelect:
+                return [<SvgLine key={LocationSelectType.LineSelect} />, "This ability will target a straight line on the map."]
         }
 
         return [<SvgQuestionMark key="MISCELLANEOUS" />, "Miscellaneous ability type."]
@@ -127,7 +142,7 @@ export const PlayerAbilityStoreItem = ({
             <ClipThing
                 clipSize="12px"
                 border={{
-                    borderColor: primaryColor,
+                    borderColor: `${primaryColor}50`,
                     borderThickness: ".2rem",
                 }}
                 opacity={0.9}
@@ -141,19 +156,8 @@ export const PlayerAbilityStoreItem = ({
                 }}
             >
                 <Fade in={true} timeout={1000}>
-                    <Stack
-                        spacing=".8rem"
-                        sx={{
-                            height: "100%",
-                            p: "4rem",
-                        }}
-                    >
-                        <Box
-                            sx={{
-                                position: "relative",
-                                width: "100%",
-                            }}
-                        >
+                    <Stack spacing=".8rem" sx={{ height: "100%", p: "4rem" }}>
+                        <Box sx={{ position: "relative", width: "100%" }}>
                             <Box
                                 component="img"
                                 src={saleAbility.ability.image_url}
@@ -299,4 +303,5 @@ export const PlayerAbilityStoreItem = ({
             )}
         </>
     )
-}
+},
+propsAreEqual)

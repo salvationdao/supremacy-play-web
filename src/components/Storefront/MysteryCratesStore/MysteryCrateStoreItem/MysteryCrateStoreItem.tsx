@@ -1,8 +1,8 @@
 import { Box, Modal, Stack, TextField, Typography } from "@mui/material"
-import { useCallback, useMemo, useState } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SafePNG, SvgArrow, SvgSupToken } from "../../../../assets"
-import { useSnackbar } from "../../../../containers"
+import { useGlobalNotifications } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { numberCommaFormatter, supFormatterNoFixed } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
@@ -23,9 +23,19 @@ interface MysteryCrateStoreItemProps {
     setFutureCratesToOpen: React.Dispatch<React.SetStateAction<(StorefrontMysteryCrate | MysteryCrate)[]>>
 }
 
-export const MysteryCrateStoreItem = ({ enlargedView, crate, setOpeningCrate, setOpenedRewards, setFutureCratesToOpen }: MysteryCrateStoreItemProps) => {
+const propsAreEqual = (prevProps: MysteryCrateStoreItemProps, nextProps: MysteryCrateStoreItemProps) => {
+    return prevProps.enlargedView === nextProps.enlargedView && prevProps.crate.id === nextProps.crate.id
+}
+
+export const MysteryCrateStoreItem = React.memo(function MysteryCrateStoreItem({
+    enlargedView,
+    crate,
+    setOpeningCrate,
+    setOpenedRewards,
+    setFutureCratesToOpen,
+}: MysteryCrateStoreItemProps) {
     const theme = useTheme()
-    const { newSnackbarMessage } = useSnackbar()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mysteryCrate, setMysteryCrate] = useState<StorefrontMysteryCrate>(crate)
     const [rewards, setRewards] = useState<RewardResponse[]>()
@@ -97,7 +107,7 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, setOpeningCrate, se
                 <ClipThing
                     clipSize="12px"
                     border={{
-                        borderColor: primaryColor,
+                        borderColor: `${primaryColor}50`,
                         borderThickness: enlargedView ? ".3rem" : ".2rem",
                     }}
                     opacity={0.9}
@@ -316,7 +326,8 @@ export const MysteryCrateStoreItem = ({ enlargedView, crate, setOpeningCrate, se
             )}
         </>
     )
-}
+},
+propsAreEqual)
 
 const PurchaseSuccessModal = ({
     rewards,

@@ -1,12 +1,14 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
+import { useArena } from "../../../containers/arena"
+import { MECH_ABILITY_KEY, RecordType, useHotkey } from "../../../containers/hotkeys"
 import { shadeColor } from "../../../helpers"
+import { useInterval } from "../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { GameAbility, WarMachineState } from "../../../types"
-import { TopText } from "../../VotingSystem/FactionAbility/TopText"
-import { useInterval } from "../../../hooks"
+import { TopText } from "../../LeftDrawer/BattleArena/BattleAbility/Common/TopText"
 
 export interface ContributeFactionUniqueAbilityRequest {
     ability_identity: string
@@ -18,9 +20,10 @@ interface MechAbilityItemProps {
     warMachine: WarMachineState
     gameAbility: GameAbility
     clipSlantSize?: string
+    index: number
 }
 
-export const WarMachineAbilityItem = ({ warMachine, gameAbility, clipSlantSize }: MechAbilityItemProps) => {
+export const WarMachineAbilityItem = ({ warMachine, gameAbility, clipSlantSize, index }: MechAbilityItemProps) => {
     const { label, colour, image_url, description } = gameAbility
 
     const backgroundColor = useMemo(() => shadeColor(colour, -75), [colour])
@@ -34,7 +37,7 @@ export const WarMachineAbilityItem = ({ warMachine, gameAbility, clipSlantSize }
                         clipSlantSize={clipSlantSize}
                         border={{
                             borderColor: colour,
-                            borderThickness: ".15rem",
+                            borderThickness: "1px",
                         }}
                         backgroundColor={backgroundColor}
                         opacity={0.7}
@@ -50,7 +53,7 @@ export const WarMachineAbilityItem = ({ warMachine, gameAbility, clipSlantSize }
                         >
                             <Stack direction="row" alignItems="center" justifyContent="space-between" alignSelf="stretch">
                                 <TopText description={description} image_url={image_url} colour={colour} label={label} />
-                                <MechAbilityButton warMachine={warMachine} gameAbility={gameAbility} />
+                                <MechAbilityButton warMachine={warMachine} gameAbility={gameAbility} index={index} />
                             </Stack>
                         </Stack>
                     </ClipThing>
@@ -60,18 +63,20 @@ export const WarMachineAbilityItem = ({ warMachine, gameAbility, clipSlantSize }
     )
 }
 
-export const MechAbilityButton = ({ warMachine, gameAbility }: { warMachine: WarMachineState; gameAbility: GameAbility }) => {
+export const MechAbilityButton = ({ warMachine, gameAbility, index }: { warMachine: WarMachineState; gameAbility: GameAbility; index: number }) => {
     const { participantID, hash } = warMachine
-    const { id, colour, text_colour } = gameAbility
-
+    const { currentArenaID } = useArena()
     const { send } = useGameServerCommandsFaction("/faction_commander")
+    const { id, colour, text_colour } = gameAbility
     const [remainSeconds, setRemainSeconds] = useState(30)
+    const { addToHotkeyRecord } = useHotkey()
 
     // Listen on the progress of the votes
     useGameServerSubscriptionFaction<number | undefined>(
         {
-            URI: `/mech/${participantID}/abilities/${id}/cool_down_seconds`,
+            URI: `/arena/${currentArenaID}/mech/${participantID}/abilities/${id}/cool_down_seconds`,
             key: GameServerKeys.SubMechAbilityCoolDown,
+            ready: !!participantID && !!currentArenaID,
         },
         (payload) => {
             if (payload === undefined) return
@@ -89,15 +94,21 @@ export const MechAbilityButton = ({ warMachine, gameAbility }: { warMachine: War
     }, 1000)
 
     const onTrigger = useCallback(async () => {
+        if (!currentArenaID) return
         try {
-            await send<boolean, { mech_hash: string; game_ability_id: string }>(GameServerKeys.TriggerWarMachineAbility, {
+            await send<boolean, { arena_id: string; mech_hash: string; game_ability_id: string }>(GameServerKeys.TriggerWarMachineAbility, {
+                arena_id: currentArenaID,
                 mech_hash: hash,
                 game_ability_id: id,
             })
         } catch (e) {
             console.error(e)
         }
-    }, [hash, id, send])
+    }, [hash, id, send, currentArenaID])
+
+    useEffect(() => {
+        addToHotkeyRecord(RecordType.MiniMap, MECH_ABILITY_KEY[index], onTrigger)
+    }, [onTrigger, addToHotkeyRecord, index])
 
     return (
         <FancyButton

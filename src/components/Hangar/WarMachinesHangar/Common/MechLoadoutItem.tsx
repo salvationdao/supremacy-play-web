@@ -13,6 +13,7 @@ export const MechLoadoutItem = ({
     imageUrl,
     videoUrls,
     label,
+    subLabel,
     primaryColor,
     onClick,
     isEmpty,
@@ -25,6 +26,7 @@ export const MechLoadoutItem = ({
     imageUrl?: string
     videoUrls?: (string | undefined)[] | undefined
     label: string
+    subLabel?: string
     primaryColor: string
     onClick?: () => void
     isEmpty?: boolean
@@ -86,21 +88,41 @@ export const MechLoadoutItem = ({
                             )}
                         </Stack>
 
-                        <Typography
-                            variant="body2"
-                            sx={{
-                                color: primaryColor,
-                                fontFamily: fonts.nostromoBold,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 2,
-                                WebkitBoxOrient: "vertical",
-                            }}
-                        >
-                            {label}
-                        </Typography>
+                        <Box>
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    color: primaryColor,
+                                    fontFamily: fonts.nostromoBold,
+                                    display: "-webkit-box",
+                                    overflow: "hidden",
+                                    overflowWrap: "anywhere",
+                                    textOverflow: "ellipsis",
+                                    WebkitLineClamp: 2,
+                                    WebkitBoxOrient: "vertical",
+                                }}
+                            >
+                                {label}
+                            </Typography>
+
+                            {subLabel && (
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        color: primaryColor,
+                                        fontFamily: fonts.nostromoBold,
+                                        display: "-webkit-box",
+                                        overflow: "hidden",
+                                        overflowWrap: "anywhere",
+                                        textOverflow: "ellipsis",
+                                        WebkitLineClamp: 1,
+                                        WebkitBoxOrient: "vertical",
+                                    }}
+                                >
+                                    {subLabel}
+                                </Typography>
+                            )}
+                        </Box>
                     </Stack>
                 </FancyButton>
             </Box>
