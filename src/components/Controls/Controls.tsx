@@ -1,8 +1,7 @@
 import { Stack } from "@mui/material"
 import { useMemo } from "react"
-import { LiveCounts, OverlayToggles, VideoPlayerControls } from ".."
+import { LiveCounts, VideoPlayerControls } from ".."
 import { DEV_ONLY } from "../../constants"
-import { useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { shadeColor } from "../../helpers"
 import { siteZIndex } from "../../theme/theme"
@@ -15,7 +14,7 @@ import { OvenStreamSelect } from "./StreamSelect"
 export const CONTROLS_HEIGHT = 3.0 // rem
 
 export const Controls = () => {
-    const { isMobile } = useMobile()
+    // const { isMobile } = useMobile()
     const theme = useTheme()
 
     const darkerBackgroundColor = useMemo(() => shadeColor(theme.factionTheme.primary, -91), [theme.factionTheme.primary])
@@ -54,7 +53,7 @@ export const Controls = () => {
         >
             <Stack direction="row" spacing="1.6rem" sx={{ flexShrink: 0, height: "100%" }}>
                 <LiveCounts />
-                {!isMobile && <OverlayToggles />}
+                {/*{!isMobile && <OverlayToggles />}*/}
             </Stack>
 
             <Stack direction="row" spacing="1.2rem" sx={{ flexShrink: 0, height: "100%" }}>
