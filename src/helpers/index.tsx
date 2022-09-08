@@ -379,11 +379,7 @@ export const camelToTitle = (str: string) => {
     return result.charAt(0).toUpperCase() + result.slice(1)
 }
 
-const regex = emojiRegex()
-
-export const replaceAllEmojis = (message: string, replaceWith: string) => {
-    return message.replace(regex, replaceWith).replace(/[\uD83C][\uDDE6-\uDDFF]/, replaceWith)
-}
+export const EMOJI_REGEX = emojiRegex()
 
 // Checks if the message contains all emojis and is less than the specified amount on characters
 export const checkIfIsEmoji = (message: string) => {
@@ -404,7 +400,7 @@ export const checkIfIsEmoji = (message: string) => {
             return
         }
         // Checks to see if each character matches the emoji regex from the library or a "regional indicator symbol letter" (apart of a flag emoji)
-        isCharEmojiArray.push(!!c.match(regex) || !!c.match(/[\uD83C][\uDDE6-\uDDFF]/))
+        isCharEmojiArray.push(!!c.match(EMOJI_REGEX) || !!c.match(/[\uD83C][\uDDE6-\uDDFF]/))
     })
 
     // Checks if the whole message is less than 8 character-some emojis can be 2+ characters and if all of them are emojis
