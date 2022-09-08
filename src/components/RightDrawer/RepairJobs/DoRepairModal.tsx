@@ -31,6 +31,9 @@ const propsAreEqual = (prevProps: DoRepairModalProps, nextProps: DoRepairModalPr
     return (
         prevProps.open === nextProps.open &&
         prevProps.repairJob?.id === nextProps.repairJob?.id &&
+        prevProps.repairJob?.closed_at === nextProps.repairJob?.closed_at &&
+        prevProps.repairJob?.blocks_repaired === nextProps.repairJob?.blocks_repaired &&
+        prevProps.repairJob?.working_agent_count === nextProps.repairJob?.working_agent_count &&
         prevProps.repairStatus?.id === nextProps.repairStatus?.id &&
         prevProps.repairStatus?.blocks_repaired === nextProps.repairStatus?.blocks_repaired
     )
