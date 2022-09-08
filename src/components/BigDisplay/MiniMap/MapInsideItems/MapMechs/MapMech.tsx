@@ -56,7 +56,7 @@ const MapMechInner = ({ warMachine, map, label, isAI, poppedOutContainerRef }: M
     // For rendering: size, colors etc.
     const prevRotation = useRef(warMachine.rotation)
     const mapScale = useMemo(() => map.Width / (map.Cells_X * 2000), [map])
-    const iconSize = useMemo(() => Math.max(gridWidth, gridHeight, 50) * (isAI ? 1.2 : 1.8), [gridWidth, gridHeight, isAI])
+    const iconSize = useMemo(() => Math.max(gridWidth, gridHeight, 40) * (isAI ? 1.2 : 1.8), [gridWidth, gridHeight, isAI])
     const dirArrowLength = useMemo(() => iconSize / 2 + 0.6 * iconSize, [iconSize])
     const primaryColor = useMemo(
         () => (ownedByID === userID ? colors.gold : getFaction(warMachineFactionID).primary_color || colors.neonBlue),

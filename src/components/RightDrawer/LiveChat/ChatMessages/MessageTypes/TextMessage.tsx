@@ -41,7 +41,7 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
     const { getFaction } = useSupremacy()
     const { send } = useGameServerCommandsUser("/user_commander")
     const { user, userID, isHidden, isActive } = useAuth()
-    const { userGidRecord, addToUserGidRecord, tabValue, fontSize } = useChat()
+    const { userGidRecord, addToUserGidRecord, tabValue, fontSize, setClickedOnUser } = useChat()
 
     // States
     const [refreshMessage, toggleRefreshMessage] = useToggle()
@@ -228,7 +228,7 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
 
                 newMessageArray.push(
                     <span>
-                        <UsernameJSX data={data} fontSize={fontSizes.normal} user={taggedUser} />{" "}
+                        <UsernameJSX data={data} fontSize={fontSizes.normal} user={taggedUser} setClickedOnUser={setClickedOnUser} />{" "}
                     </span>,
                 )
             }
@@ -314,7 +314,13 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
                                 </Stack>
 
                                 <Box>
-                                    <UsernameJSX data={data} fontSize={fontSizes.normal} user={from_user} toggleIsPopoverOpen={toggleIsPopoverOpen} />
+                                    <UsernameJSX
+                                        data={data}
+                                        fontSize={fontSizes.normal}
+                                        user={from_user}
+                                        toggleIsPopoverOpen={toggleIsPopoverOpen}
+                                        setClickedOnUser={setClickedOnUser}
+                                    />
 
                                     {from_user_stat && (
                                         <Box sx={{ flexShrink: 0, display: "inline-block", ml: ".4rem", cursor: "default" }}>
@@ -477,6 +483,7 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
             user,
             userID,
             user_rank,
+            setClickedOnUser,
         ],
     )
 }, propsAreEqual)
@@ -486,9 +493,16 @@ interface UsernameJSXProps {
     fontSize: string
     toggleIsPopoverOpen?: (value?: boolean) => void
     user: User | undefined
+    setClickedOnUser?: React.Dispatch<React.SetStateAction<User | undefined>>
 }
 
-export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user }: UsernameJSXProps) => {
+const propsAreEqualUsernameJSX = (prevProps: UsernameJSXProps, nextProps: UsernameJSXProps) => {
+    return (
+        prevProps.data.message_color === nextProps.data.message_color && prevProps.fontSize === nextProps.fontSize && prevProps.user?.id === nextProps.user?.id
+    )
+}
+
+export const UsernameJSX = React.memo(function UsernameJSX({ data, fontSize, toggleIsPopoverOpen, user, setClickedOnUser }: UsernameJSXProps) {
     const { getFaction } = useSupremacy()
     const { message_color } = data
 
@@ -496,7 +510,16 @@ export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user }: Usern
 
     return (
         <Typography
-            onClick={() => (toggleIsPopoverOpen ? toggleIsPopoverOpen() : null)}
+            onContextMenu={
+                toggleIsPopoverOpen
+                    ? (e) => {
+                          toggleIsPopoverOpen()
+                          e.preventDefault()
+                          e.stopPropagation()
+                      }
+                    : undefined
+            }
+            onClick={setClickedOnUser ? () => setClickedOnUser(user) : undefined}
             sx={{
                 display: "inline",
                 cursor: toggleIsPopoverOpen ? "pointer" : "unset",
@@ -527,4 +550,4 @@ export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user }: Usern
             >{`#${user?.gid}`}</span>
         </Typography>
     )
-}
+}, propsAreEqualUsernameJSX)

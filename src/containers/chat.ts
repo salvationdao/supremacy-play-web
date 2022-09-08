@@ -32,9 +32,12 @@ export const ChatContainer = createContainer(() => {
     const [failedMessages, setFailedMessages] = useState<string[]>([])
     const userGidRecord = useRef<{ [gid: number]: User }>({})
 
-    //active users
+    // Active users
     const [activePlayers, setActivePlayers] = useState<User[]>([])
     const [globalActivePlayers, setGlobalActivePlayers] = useState<User[]>([])
+
+    // Click to tag a user
+    const [clickedOnUser, setClickedOnUser] = useState<User>()
 
     // Save chat settings to local storage
     useEffect(() => {
@@ -228,6 +231,8 @@ export const ChatContainer = createContainer(() => {
         addToUserGidRecord,
         activePlayers,
         globalActivePlayers,
+        clickedOnUser,
+        setClickedOnUser,
     }
 })
 
