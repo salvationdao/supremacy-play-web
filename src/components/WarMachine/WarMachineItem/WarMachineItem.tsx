@@ -42,7 +42,7 @@ export const WarMachineItem = ({
     const { userID, factionID } = useAuth()
     const { getFaction } = useSupremacy()
     const { currentArenaID } = useArena()
-    const { setPlayerAbility, highlightedMechParticipantID, setHighlightedMechParticipantID, resetPlayerAbilitySelection } = useMiniMap()
+    const { setPlayerAbility, highlightedMechParticipantID, setHighlightedMechParticipantID, resetPlayerAbilitySelection, playerAbility } = useMiniMap()
     const { addToHotkeyRecord } = useHotkey()
 
     const { hash, participantID, factionID: wmFactionID, name, imageAvatar, tier, ownedByID, ownerUsername, aiType } = warMachine
@@ -79,6 +79,13 @@ export const WarMachineItem = ({
             mechHash: hash,
         })
     }, [isAlive, hash, setPlayerAbility, currentArenaID])
+
+    // If the mech dies and its mech move command it active, cancel it
+    useEffect(() => {
+        if (!isAlive && playerAbility?.mechHash === hash) {
+            setPlayerAbility(undefined)
+        }
+    }, [hash, isAlive, playerAbility?.mechHash, setPlayerAbility])
 
     // Highlighting on the map
     const handleClick = useCallback(() => {
