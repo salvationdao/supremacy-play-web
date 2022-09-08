@@ -122,7 +122,7 @@ const QuickPlayerAbilitiesInner = React.memo(function QuickPlayerAbilitiesInner(
 
     return (
         <SectionCollapsible
-            label="PURCHASE ABILITIES"
+            label={availability === SaleAbilityAvailability.CanClaim ? "CLAIM AN ABILITY" : "PURCHASE ABILITIES"}
             tooltip="Purchase abilities that are currently on sale."
             initialExpanded={true}
             localStoragePrefix="quickPlayerAbility"

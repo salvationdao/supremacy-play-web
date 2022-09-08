@@ -41,7 +41,7 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
     const { getFaction } = useSupremacy()
     const { send } = useGameServerCommandsUser("/user_commander")
     const { user, userID, isHidden, isActive } = useAuth()
-    const { userGidRecord, addToUserGidRecord, tabValue, fontSize } = useChat()
+    const { userGidRecord, addToUserGidRecord, addToUserGidRecordCallback, tabValue, fontSize, setClickedOnUser } = useChat()
 
     // States
     const [refreshMessage, toggleRefreshMessage] = useToggle()
@@ -177,6 +177,16 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
                         if (!taggedUser) {
                             ;(async () => {
                                 try {
+                                    // Put it in first so other TextMessage components wouldn't repeat the fetch
+                                    addToUserGidRecord({
+                                        id: "",
+                                        username: "loading",
+                                        faction_id: "",
+                                        gid: gidSubstring,
+                                        rank: "NEW_RECRUIT",
+                                        features: [],
+                                    })
+
                                     const resp = await send<User>(GameServerKeys.GetPlayerByGid, {
                                         gid: gidSubstring,
                                     })
@@ -187,6 +197,9 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
                                     resolve(true)
                                 }
                             })()
+                        } else if (!taggedUser.id) {
+                            addToUserGidRecordCallback(gidSubstring, () => toggleRefreshMessage())
+                            resolve(true)
                         } else {
                             resolve(true)
                         }
@@ -197,7 +210,7 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
                 toggleRefreshMessage()
             }
         })()
-    }, [addToUserGidRecord, content, send, toggleRefreshMessage, userGidRecord])
+    }, [addToUserGidRecord, addToUserGidRecordCallback, content, send, toggleRefreshMessage, userGidRecord])
 
     const chatMessage = useMemo(() => {
         // If no tagged users, directly return the message
@@ -228,7 +241,7 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
 
                 newMessageArray.push(
                     <span>
-                        <UsernameJSX data={data} fontSize={fontSizes.normal} user={taggedUser} />{" "}
+                        <UsernameJSX data={data} fontSize={fontSizes.normal} user={taggedUser} setClickedOnUser={setClickedOnUser} />{" "}
                     </span>,
                 )
             }
@@ -314,7 +327,13 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
                                 </Stack>
 
                                 <Box>
-                                    <UsernameJSX data={data} fontSize={fontSizes.normal} user={from_user} toggleIsPopoverOpen={toggleIsPopoverOpen} />
+                                    <UsernameJSX
+                                        data={data}
+                                        fontSize={fontSizes.normal}
+                                        user={from_user}
+                                        toggleIsPopoverOpen={toggleIsPopoverOpen}
+                                        setClickedOnUser={setClickedOnUser}
+                                    />
 
                                     {from_user_stat && (
                                         <Box sx={{ flexShrink: 0, display: "inline-block", ml: ".4rem", cursor: "default" }}>
@@ -477,6 +496,7 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
             user,
             userID,
             user_rank,
+            setClickedOnUser,
         ],
     )
 }, propsAreEqual)
@@ -486,9 +506,16 @@ interface UsernameJSXProps {
     fontSize: string
     toggleIsPopoverOpen?: (value?: boolean) => void
     user: User | undefined
+    setClickedOnUser?: React.Dispatch<React.SetStateAction<User | undefined>>
 }
 
-export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user }: UsernameJSXProps) => {
+const propsAreEqualUsernameJSX = (prevProps: UsernameJSXProps, nextProps: UsernameJSXProps) => {
+    return (
+        prevProps.data.message_color === nextProps.data.message_color && prevProps.fontSize === nextProps.fontSize && prevProps.user?.id === nextProps.user?.id
+    )
+}
+
+export const UsernameJSX = React.memo(function UsernameJSX({ data, fontSize, toggleIsPopoverOpen, user, setClickedOnUser }: UsernameJSXProps) {
     const { getFaction } = useSupremacy()
     const { message_color } = data
 
@@ -496,7 +523,16 @@ export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user }: Usern
 
     return (
         <Typography
-            onClick={() => (toggleIsPopoverOpen ? toggleIsPopoverOpen() : null)}
+            onContextMenu={
+                toggleIsPopoverOpen
+                    ? (e) => {
+                          toggleIsPopoverOpen()
+                          e.preventDefault()
+                          e.stopPropagation()
+                      }
+                    : undefined
+            }
+            onClick={setClickedOnUser ? () => setClickedOnUser(user) : undefined}
             sx={{
                 display: "inline",
                 cursor: toggleIsPopoverOpen ? "pointer" : "unset",
@@ -505,7 +541,7 @@ export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user }: Usern
                 backgroundColor: toggleIsPopoverOpen ? "unset" : faction.primary_color,
                 borderRadius: toggleIsPopoverOpen ? "unset" : 0.5,
                 fontWeight: toggleIsPopoverOpen ? 700 : "unset",
-                fontSize: `${fontSize}rem`,
+                fontSize,
                 verticalAlign: "middle",
                 ":hover": toggleIsPopoverOpen
                     ? {
@@ -527,4 +563,4 @@ export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user }: Usern
             >{`#${user?.gid}`}</span>
         </Typography>
     )
-}
+}, propsAreEqualUsernameJSX)

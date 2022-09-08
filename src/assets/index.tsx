@@ -127,9 +127,11 @@ import Support from "!react-svg-loader!./svg/Support.svg"
 import SupToken from "!react-svg-loader!./svg/SupToken.svg"
 import Target from "!react-svg-loader!./svg/Target.svg"
 import Telegram from "!react-svg-loader!./svg/Telegram.svg"
+import Trailer from "!react-svg-loader!./svg/Trailer.svg"
 import Twitter from "!react-svg-loader!./svg/Twitter.svg"
 import Unknown from "!react-svg-loader!./svg/Unknown.svg"
 import UpArrow from "!react-svg-loader!./svg/UpArrow.svg"
+import UpcomingBattle from "!react-svg-loader!./svg/UpcomingBattle.svg"
 import User from "!react-svg-loader!./svg/User.svg"
 import Volume from "!react-svg-loader!./svg/Volume.svg"
 import VolumeMute from "!react-svg-loader!./svg/VolumeMute.svg"
@@ -155,7 +157,7 @@ import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt"
 import WarningIcon from "@mui/icons-material/Warning"
 import WorkspacesSharpIcon from "@mui/icons-material/WorkspacesSharp"
 import { Box, BoxProps } from "@mui/system"
-import { useMemo } from "react"
+import React from "react"
 import { colors } from "../theme/theme"
 import BattleRewardsBannerPNG from "./BattleRewardsBanners/BattleRewardsBanner.png"
 import CoinsLeftPNG from "./BattleRewardsBanners/CoinsLeft.png"
@@ -319,30 +321,27 @@ export interface SvgWrapperProps extends BoxProps {
     strokeWidth?: string
 }
 
-export const SvgWrapper: React.FC<SvgWrapperProps> = ({ fill, stroke, strokeWidth, sx, size, width, height, ...props }: SvgWrapperProps) => {
-    return useMemo(
-        () => (
-            <Box
-                sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    pb: 0.3,
-                    "& > svg": {
-                        width: width || size || "2rem",
-                        height: height || size || "2rem",
-                        fill: fill || colors.text,
-                        stroke: stroke || "unset",
-                        strokeWidth: strokeWidth || "1",
-                    },
-                    ...sx,
-                }}
-                {...props}
-            />
-        ),
-        [fill, height, props, size, stroke, strokeWidth, sx, width],
+export const SvgWrapper = React.memo(function SvgWrapper({ fill, stroke, strokeWidth, sx, size, width, height, ...props }: SvgWrapperProps) {
+    return (
+        <Box
+            sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                pb: 0.3,
+                "& > svg": {
+                    width: width || size || "2rem",
+                    height: height || size || "2rem",
+                    fill: fill || colors.text,
+                    stroke: stroke || "unset",
+                    strokeWidth: strokeWidth || "1",
+                },
+                ...sx,
+            }}
+            {...props}
+        />
     )
-}
+})
 
 export const SvgSupToken: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
@@ -1282,5 +1281,17 @@ export const SvgFacebook: React.VoidFunctionComponent<SvgWrapperProps> = (props)
 export const SvgMoreOptions: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <MoreOptions />
+    </SvgWrapper>
+)
+
+export const SvgTrailer: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Trailer />
+    </SvgWrapper>
+)
+
+export const SvgUpcomingBattle: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <UpcomingBattle />
     </SvgWrapper>
 )

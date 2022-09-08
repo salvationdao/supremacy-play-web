@@ -3,7 +3,8 @@ import { MutableRefObject, useEffect, useMemo } from "react"
 import { ClipThing } from "../.."
 import { SvgClose, SvgExpandMoreIcon } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { useToggle } from "../../../hooks"
+import { timeSinceInWords } from "../../../helpers"
+import { useTimer, useToggle } from "../../../hooks"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { QuestProgress, QuestStat } from "../../../types"
 import { QuestItem } from "./QuestItem"
@@ -125,9 +126,15 @@ export const QuestsPopover = ({
                                         sx={{ m: "0 !important", ".MuiAccordionSummary-root.Mui-expanded": { backgroundColor: "#FFFFFF20", minHeight: 0 } }}
                                     >
                                         <AccordionSummary expandIcon={<SvgExpandMoreIcon />} sx={{ minHeight: 0, ":hover": { opacity: 0.95 } }}>
-                                            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                                {eventName} ({countObtained}/{questStatsFiltered.length})
-                                            </Typography>
+                                            <Stack>
+                                                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                                    {eventName} ({countObtained}/{questStatsFiltered.length})
+                                                </Typography>
+
+                                                <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBold, span: { color: colors.neonBlue } }}>
+                                                    <Countdown endTime={questStatsFiltered[0]?.end_at} />
+                                                </Typography>
+                                            </Stack>
                                         </AccordionSummary>
                                         <AccordionDetails sx={{ p: "1rem 1rem 2rem" }}>
                                             <Stack spacing="1rem">
@@ -156,5 +163,12 @@ export const QuestsPopover = ({
                 </Stack>
             </ClipThing>
         </Popover>
+    )
+}
+
+const Countdown = ({ endTime }: { endTime?: Date }) => {
+    const { totalSecRemain } = useTimer(endTime)
+    return (
+        <span>Resets {totalSecRemain > 0 ? "in " + timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000), true) : "soon"}</span>
     )
 }

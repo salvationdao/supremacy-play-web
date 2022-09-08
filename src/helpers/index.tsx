@@ -381,6 +381,10 @@ export const camelToTitle = (str: string) => {
 
 const regex = emojiRegex()
 
+export const replaceAllEmojis = (message: string, replaceWith: string) => {
+    return message.replace(regex, replaceWith).replace(/[\uD83C][\uDDE6-\uDDFF]/, replaceWith)
+}
+
 // Checks if the message contains all emojis and is less than the specified amount on characters
 export const checkIfIsEmoji = (message: string) => {
     if (!message) return false

@@ -35,7 +35,7 @@ export const Bar = () => {
                             p: ".6rem",
                             width: "100vw",
                             backgroundColor: colors.lightRed,
-                            zIndex: siteZIndex.Popover,
+                            zIndex: siteZIndex.TopBar,
                         }}
                     >
                         <Marquee direction="left" gradientColor={[rgb.r, rgb.g, rgb.b]} gradientWidth={50} style={{ overflow: "hidden" }}>
@@ -70,10 +70,10 @@ export const Bar = () => {
                     height: `${GAME_BAR_HEIGHT}rem`,
                     width: "100vw",
                     color: "#FFFFFF",
-                    background: (theme) => `linear-gradient(#FFFFFF10 26%, ${theme.factionTheme.background})`,
+                    backgroundColor: (theme) => theme.factionTheme.background,
                     transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
 
-                    zIndex: siteZIndex.Bar,
+                    zIndex: siteZIndex.TopBar,
                     "::-webkit-scrollbar": {
                         height: ".6rem",
                     },
@@ -86,6 +86,20 @@ export const Bar = () => {
                 }}
             >
                 <BarContent userID={userID} user={user} />
+
+                {/* Background gradient */}
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: 0,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        background: (theme) => `linear-gradient(#FFFFFF10 26%, ${theme.factionTheme.background})`,
+                        pointerEvents: "none",
+                        zIndex: -1,
+                    }}
+                />
             </Stack>
         </>
     )
