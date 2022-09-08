@@ -492,5 +492,6 @@ const MiniMapAbilityDisplay = React.memo(function MiniMapAbilityDisplay({ displa
 
 const Countdown = ({ launchDate }: { launchDate: Date }) => {
     const { totalSecRemain } = useTimer(launchDate)
+    if (totalSecRemain < 0) return null
     return <>{totalSecRemain}</>
 }

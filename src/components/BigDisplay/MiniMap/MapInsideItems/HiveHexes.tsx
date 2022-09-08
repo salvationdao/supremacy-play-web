@@ -1,7 +1,6 @@
+import React, { useEffect, useMemo, useRef } from "react"
 import { Map as GameMap } from "../../../../types"
-import { useEffect, useMemo, useRef } from "react"
 import { HiveHexLocations } from "../../../../types/hive"
-import { Box } from "@mui/material"
 
 interface HiveHexesProps {
     map: GameMap
@@ -9,10 +8,15 @@ interface HiveHexesProps {
     poppedOutContainerRef?: React.MutableRefObject<HTMLElement | null>
 }
 
+const propsAreEqual = (prevProps: HiveHexesProps, nextProps: HiveHexesProps) => {
+    return prevProps.map.Name === nextProps.map.Name && prevProps.state === nextProps.state
+}
+
 const hexSize = 80
 
-export const HiveHexes = ({ map, state, poppedOutContainerRef }: HiveHexesProps) => {
+export const HiveHexes = React.memo(function HiveHexes({ map, state, poppedOutContainerRef }: HiveHexesProps) {
     const cachedHexState = useRef<boolean[]>(new Array(589).fill(false))
+
     useEffect(() => {
         const mapScale = map ? map.Width / (map.Cells_X * 2000) : 0
 
@@ -43,13 +47,13 @@ export const HiveHexes = ({ map, state, poppedOutContainerRef }: HiveHexesProps)
 
     return useMemo(() => {
         return (
-            <Box>
+            <div>
                 {[...Array(589)].map((_, i) => {
                     return (
-                        <Box
+                        <div
                             id={`map-hex-${i}`}
                             key={`map-hex-${i}`}
-                            sx={{
+                            style={{
                                 position: "absolute",
                                 height: `${hexSize}px`,
                                 width: `${hexSize}px`,
@@ -62,7 +66,7 @@ export const HiveHexes = ({ map, state, poppedOutContainerRef }: HiveHexesProps)
                         />
                     )
                 })}
-            </Box>
+            </div>
         )
     }, [])
-}
+}, propsAreEqual)
