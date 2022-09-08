@@ -1,5 +1,6 @@
 import { Box, Typography } from "@mui/material"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { decode } from "base64-arraybuffer"
+import React, { useEffect, useMemo, useRef, useState } from "react"
 import { useArena, useGame, useMiniMap } from "../../../../containers"
 import { useTimer } from "../../../../hooks"
 import { useGameServerSubscription } from "../../../../hooks/useGameServer"
@@ -8,7 +9,6 @@ import { dropEffect, explosionEffect, fadeEffect, landmineEffect, rippleEffect }
 import { fonts } from "../../../../theme/theme"
 import { DisplayedAbility, LocationSelectType, Map as GameMap, MechDisplayEffectType, MiniMapDisplayEffectType } from "../../../../types"
 import { MapIcon } from "./Common/MapIcon"
-import { decode } from "base64-arraybuffer"
 import { HiveHexes } from "./HiveHexes"
 
 export enum MapEventType {
@@ -375,7 +375,15 @@ export const MiniMapAbilitiesDisplay = ({ map, poppedOutContainerRef }: MiniMapA
     )
 }
 
-const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAbility }) => {
+interface MiniMapAbilityDisplayProps {
+    displayAbility: DisplayedAbility
+}
+
+const propsAreEqual = (prevProps: MiniMapAbilityDisplayProps, nextProps: MiniMapAbilityDisplayProps) => {
+    return prevProps.displayAbility.offering_id === nextProps.displayAbility.offering_id
+}
+
+const MiniMapAbilityDisplay = React.memo(function MiniMapAbilityDisplay({ displayAbility }: MiniMapAbilityDisplayProps) {
     const {
         image_url,
         colour,
@@ -400,8 +408,34 @@ const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAb
     )
     const diameter = useMemo(() => (radius ? radius * mapScale * 2 : 0), [mapScale, radius])
 
-    return useMemo(
-        () => (
+    return useMemo(() => {
+        let iconAnimation = "none"
+        switch (mini_map_display_effect_type) {
+            case MiniMapDisplayEffectType.Drop:
+                iconAnimation = `${dropEffect(3)} 2s ease-out`
+                break
+            case MiniMapDisplayEffectType.Landmine:
+                iconAnimation = `${dropEffect(2)} 1.5s ease-out, ${landmineEffect("https://i.imgur.com/hL62NOp.png", image_url)} 3s ease-out forwards` // 3s landmine arm delay
+                break
+        }
+
+        let diameterAnimation = "none"
+        switch (mini_map_display_effect_type) {
+            case MiniMapDisplayEffectType.Range:
+                diameterAnimation = `${rippleEffect(colour)} 10s ease-out`
+                break
+            case MiniMapDisplayEffectType.Pulse:
+                diameterAnimation = `${explosionEffect(colour)} 1.2s infinite`
+                break
+            case MiniMapDisplayEffectType.Explosion:
+                diameterAnimation = `${explosionEffect(colour)} 3s forwards`
+                break
+            case MiniMapDisplayEffectType.Fade:
+                diameterAnimation = `${fadeEffect()} 1s forwards`
+                break
+        }
+
+        return (
             <MapIcon
                 position={position}
                 locationInPixels={location_in_pixels || false}
@@ -409,18 +443,7 @@ const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAb
                 primaryColor={colour}
                 backgroundImageUrl={image_url}
                 noBackgroundColour={!!no_background_colour}
-                iconSx={{
-                    animation: (() => {
-                        switch (mini_map_display_effect_type) {
-                            case MiniMapDisplayEffectType.Drop:
-                                return `${dropEffect(3)} 2s ease-out`
-                            case MiniMapDisplayEffectType.Landmine:
-                                return `${dropEffect(2)} 1.5s ease-out, ${landmineEffect("https://i.imgur.com/hL62NOp.png", image_url)} 3s ease-out forwards` // 3s landmine arm delay
-                            default:
-                                return "none"
-                        }
-                    })(),
-                }}
+                iconSx={{ animation: iconAnimation }}
                 zIndex={show_below_mechs ? 1 : 100}
                 insideRender={
                     <>
@@ -455,20 +478,7 @@ const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAb
                                     borderColor: colour,
                                     borderStyle: "dashed solid",
                                     backgroundColor: "#00000010",
-                                    animation: (() => {
-                                        switch (mini_map_display_effect_type) {
-                                            case MiniMapDisplayEffectType.Range:
-                                                return `${rippleEffect(colour)} 10s ease-out`
-                                            case MiniMapDisplayEffectType.Pulse:
-                                                return `${explosionEffect(colour)} 1.2s infinite`
-                                            case MiniMapDisplayEffectType.Explosion:
-                                                return `${explosionEffect(colour)} 3s forwards`
-                                            case MiniMapDisplayEffectType.Fade:
-                                                return `${fadeEffect()} 1s forwards`
-                                            default:
-                                                return "none"
-                                        }
-                                    })(),
+                                    animation: diameterAnimation,
                                     zIndex: 90,
                                 }}
                             />
@@ -476,23 +486,9 @@ const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAb
                     </>
                 }
             />
-        ),
-        [
-            colour,
-            diameter,
-            mini_map_display_effect_type,
-            gridHeight,
-            image_url,
-            launching_at,
-            border_width,
-            location_in_pixels,
-            position,
-            show_below_mechs,
-            no_background_colour,
-            size_grid_override,
-        ],
-    )
-}
+        )
+    }, [colour, diameter, mini_map_display_effect_type, gridHeight, image_url, launching_at, border_width, location_in_pixels, position, show_below_mechs, no_background_colour, size_grid_override])
+}, propsAreEqual)
 
 const Countdown = ({ launchDate }: { launchDate: Date }) => {
     const { totalSecRemain } = useTimer(launchDate)
