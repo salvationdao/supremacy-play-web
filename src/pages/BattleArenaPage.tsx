@@ -1,7 +1,7 @@
 import { Box, Stack } from "@mui/material"
 import React, { useEffect, useState } from "react"
-import { SvgAbility, SvgHistory, SvgHistoryClock, SvgRobot } from "../assets"
-import { BattleAbility, BattleEndScreen, BattleHistory, BigDisplay, Controls, EarlyAccessWarning, Notifications, WarMachineStats } from "../components"
+import { SvgAbility, SvgHistoryClock, SvgRobot } from "../assets"
+import { BattleAbility, BattleEndScreen, BigDisplay, Controls, EarlyAccessWarning, Notifications, WarMachineStats } from "../components"
 import { BattleRewardsSkyHighBanner } from "../components/Common/BannersPromotions/BattleRewardsSkyHighBanner"
 import { PlayerAbilities } from "../components/LeftDrawer/BattleArena/PlayerAbilities/PlayerAbilities"
 import { QuickPlayerAbilities } from "../components/LeftDrawer/BattleArena/QuickPlayerAbilities/QuickPlayerAbilities"
@@ -136,19 +136,19 @@ const BattleArenaPageInner = React.memo(function BattleArenaPageInner() {
             ),
         })
 
-        tabs.push({
-            id: "history",
-            icon: <SvgHistory size="1.2rem" sx={{ pt: ".1rem" }} />,
-            label: "HISTORY",
-            requireAuth: false,
-            onlyShowOnRoute: "",
-            mountAllTime: false,
-            Component: () => (
-                <Stack sx={{ position: "relative", height: "100%" }}>
-                    <BattleHistory />
-                </Stack>
-            ),
-        })
+        // tabs.push({
+        //     id: "history",
+        //     icon: <SvgHistory size="1.2rem" sx={{ pt: ".1rem" }} />,
+        //     label: "HISTORY",
+        //     requireAuth: false,
+        //     onlyShowOnRoute: "",
+        //     mountAllTime: false,
+        //     Component: () => (
+        //         <Stack sx={{ position: "relative", height: "100%" }}>
+        //             <BattleHistory />
+        //         </Stack>
+        //     ),
+        // })
 
         setAdditionalTabs(tabs)
         setIsNavOpen(true)
@@ -172,7 +172,7 @@ const BattleArenaPageInner = React.memo(function BattleArenaPageInner() {
                 {!isMobile && (
                     <>
                         <WarMachineStats />
-                        <BattleHistory />
+                        {/*<BattleHistory />*/}
                     </>
                 )}
 
