@@ -29,7 +29,13 @@ export const BattleEndScreen = () => {
 
         if (battleEndDetail) {
             if (skippedFirstIteration.current) {
-                setLeftDrawerActiveTabID(LEFT_DRAWER_MAP.previous_battle?.id)
+                setLeftDrawerActiveTabID((prev) => {
+                    // Only change tabs if we are on the battle arena tab
+                    if (prev === LEFT_DRAWER_MAP.battle_arena?.id) {
+                        return LEFT_DRAWER_MAP.previous_battle?.id
+                    }
+                    return prev
+                })
             } else {
                 skippedFirstIteration.current = true
             }
