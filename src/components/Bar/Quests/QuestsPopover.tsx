@@ -131,7 +131,7 @@ export const QuestsPopover = ({
                                                     {eventName} ({countObtained}/{questStatsFiltered.length})
                                                 </Typography>
 
-                                                <Typography variant="subtitle2" sx={{ color: colors.offWhite, fontFamily: fonts.nostromoBold }}>
+                                                <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBold, span: { color: colors.neonBlue } }}>
                                                     <Countdown endTime={questStatsFiltered[0]?.end_at} />
                                                 </Typography>
                                             </Stack>
@@ -168,5 +168,7 @@ export const QuestsPopover = ({
 
 const Countdown = ({ endTime }: { endTime?: Date }) => {
     const { totalSecRemain } = useTimer(endTime)
-    return <>Resets {totalSecRemain > 0 ? "in " + timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000), true) : "soon"}</>
+    return (
+        <span>Resets {totalSecRemain > 0 ? "in " + timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000), true) : "soon"}</span>
+    )
 }
