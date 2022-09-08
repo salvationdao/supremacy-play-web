@@ -41,7 +41,7 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
     const { getFaction } = useSupremacy()
     const { send } = useGameServerCommandsUser("/user_commander")
     const { user, userID, isHidden, isActive } = useAuth()
-    const { userGidRecord, addToUserGidRecord, tabValue, fontSize, setClickedOnUser } = useChat()
+    const { userGidRecord, addToUserGidRecord, addToUserGidRecordCallback, tabValue, fontSize, setClickedOnUser } = useChat()
 
     // States
     const [refreshMessage, toggleRefreshMessage] = useToggle()
@@ -177,6 +177,16 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
                         if (!taggedUser) {
                             ;(async () => {
                                 try {
+                                    // Put it in first so other TextMessage components wouldn't repeat the fetch
+                                    addToUserGidRecord({
+                                        id: "",
+                                        username: "loading",
+                                        faction_id: "",
+                                        gid: gidSubstring,
+                                        rank: "NEW_RECRUIT",
+                                        features: [],
+                                    })
+
                                     const resp = await send<User>(GameServerKeys.GetPlayerByGid, {
                                         gid: gidSubstring,
                                     })
@@ -187,6 +197,9 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
                                     resolve(true)
                                 }
                             })()
+                        } else if (!taggedUser.id) {
+                            addToUserGidRecordCallback(gidSubstring, () => toggleRefreshMessage())
+                            resolve(true)
                         } else {
                             resolve(true)
                         }
@@ -197,7 +210,7 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
                 toggleRefreshMessage()
             }
         })()
-    }, [addToUserGidRecord, content, send, toggleRefreshMessage, userGidRecord])
+    }, [addToUserGidRecord, addToUserGidRecordCallback, content, send, toggleRefreshMessage, userGidRecord])
 
     const chatMessage = useMemo(() => {
         // If no tagged users, directly return the message

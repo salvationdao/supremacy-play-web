@@ -9,6 +9,10 @@ import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../
 import { GameServerKeys } from "../keys"
 import { BanProposalStruct, ChatMessage, ChatMessageType, FontSizeType, IncomingMessage, SplitOptionType, User } from "../types"
 
+interface UserGidRecordStruct extends User {
+    callbacks?: (() => void)[]
+}
+
 export const ChatContainer = createContainer(() => {
     const { sendBrowserNotification } = useGlobalNotifications()
     const [isPoppedout, setIsPoppedout] = useState(false)
@@ -30,7 +34,7 @@ export const ChatContainer = createContainer(() => {
     const [factionChatUnread, setFactionChatUnread] = useState<number>(0)
     // Store list of messages that were successfully sent or failed
     const [failedMessages, setFailedMessages] = useState<string[]>([])
-    const userGidRecord = useRef<{ [gid: number]: User }>({})
+    const userGidRecord = useRef<{ [gid: number]: UserGidRecordStruct }>({})
 
     // Active users
     const [activePlayers, setActivePlayers] = useState<User[]>([])
@@ -47,7 +51,19 @@ export const ChatContainer = createContainer(() => {
     }, [splitOption, onlyShowSystemMessages, fontSize])
 
     const addToUserGidRecord = useCallback((user: User) => {
+        const existing = { ...userGidRecord.current[user.gid] }
         userGidRecord.current = { ...userGidRecord.current, [user.gid]: user }
+        if (existing && existing.callbacks?.length) {
+            existing.callbacks.forEach((cb) => cb())
+        }
+    }, [])
+
+    const addToUserGidRecordCallback = useCallback((gid: number, callback: () => void) => {
+        const existing = userGidRecord.current[gid]
+        if (existing) {
+            const newCallbacks = existing.callbacks ? [...existing.callbacks, callback] : [callback]
+            userGidRecord.current[gid] = { ...existing, callbacks: newCallbacks }
+        }
     }, [])
 
     const onFailedMessage = useCallback(
@@ -229,6 +245,7 @@ export const ChatContainer = createContainer(() => {
         banProposal,
         userGidRecord,
         addToUserGidRecord,
+        addToUserGidRecordCallback,
         activePlayers,
         globalActivePlayers,
         clickedOnUser,
