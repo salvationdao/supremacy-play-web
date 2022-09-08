@@ -142,7 +142,7 @@ export const PlayerAbilityStoreItem = React.memo(function PlayerAbilityStoreItem
             <ClipThing
                 clipSize="12px"
                 border={{
-                    borderColor: primaryColor,
+                    borderColor: `${primaryColor}50`,
                     borderThickness: ".2rem",
                 }}
                 opacity={0.9}

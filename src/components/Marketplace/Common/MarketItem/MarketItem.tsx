@@ -78,7 +78,7 @@ export const MarketItem = React.memo(function MarketItem({ item, isGridView, chi
                     },
                     backgroundColor: sold_at ? soldBackgroundColor : backgroundColor,
                     opacity: 0.9,
-                    border: { isFancy: !isGridView, borderColor: sold_at ? colors.marketSold : primaryColor, borderThickness: ".25rem" },
+                    border: { isFancy: !isGridView, borderColor: sold_at ? `${colors.marketSold}50` : `${primaryColor}50`, borderThickness: ".25rem" },
                     sx: { position: "relative", height: "100%" },
                 }}
                 sx={{ color: primaryColor, textAlign: "start", height: "100%", ":hover": { opacity: 1 } }}
