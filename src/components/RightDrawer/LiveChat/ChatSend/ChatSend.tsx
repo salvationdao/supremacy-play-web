@@ -1,5 +1,5 @@
 import { IconButton, InputAdornment, Stack, TextField, Typography } from "@mui/material"
-import { useCallback, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { v4 as uuidv4 } from "uuid"
 import { ChatSettings, ClipThing, EmojiPopover } from "../../.."
 import { SvgEmoji, SvgExternalLink, SvgSend } from "../../../../assets"
@@ -25,7 +25,7 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
     const { user, userRank } = useAuth()
     const { isMobile } = useMobile()
-    const { userGidRecord, onFailedMessage, handleIncomingMessage, isPoppedout, setIsPoppedout } = useChat()
+    const { userGidRecord, onFailedMessage, handleIncomingMessage, isPoppedout, setIsPoppedout, clickedOnUser, setClickedOnUser } = useChat()
 
     // Message field
     const textfieldRef = useRef<HTMLInputElement>()
@@ -73,11 +73,19 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
             setMessage((prev) => {
                 const m = append ? prev + newMessage : newMessage
                 if (m.length > MAX_CHAT_MESSAGE_LENGTH) return prev
-                return m
+                return m.trimStart()
             })
         },
         [setMessage],
     )
+
+    useEffect(() => {
+        if (clickedOnUser) {
+            setMessageWithCheck(` @${clickedOnUser.username}#${clickedOnUser.gid} `, true)
+            setClickedOnUser(undefined)
+            document.getElementById(`message-textfield-${faction_id}`)?.focus()
+        }
+    }, [clickedOnUser, faction_id, focusCaretTextField, setClickedOnUser, setMessageWithCheck])
 
     const sendMessage = useCallback(async () => {
         if (!message.trim()) return
