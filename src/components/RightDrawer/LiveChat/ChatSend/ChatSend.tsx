@@ -5,7 +5,7 @@ import { ChatSettings, ClipThing, EmojiPopover } from "../../.."
 import { SvgEmoji, SvgExternalLink, SvgSend } from "../../../../assets"
 import { MAX_CHAT_MESSAGE_LENGTH } from "../../../../constants"
 import { useAuth, useChat, useGlobalNotifications, useMobile } from "../../../../containers"
-import { getRandomColor } from "../../../../helpers"
+import { getRandomColor, replaceAllEmojis } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -37,7 +37,6 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
     const [isEmojiOpen, toggleIsEmojiOpen] = useToggle()
 
     const messageColor = useMemo(() => getRandomColor(), [])
-    const renderedMsg = message.replace(/@[\w ]+#/g, "#")
 
     // Go through input message and return tagged gid's
     const taggedGIDs = useCallback(
@@ -89,10 +88,11 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
 
     const sendMessage = useCallback(async () => {
         if (!message.trim()) return
+        const messageCleanedUpTags = replaceAllEmojis(message, "").replace(/@[\w ]+#/g, "#")
 
         const id = uuidv4()
         const sentAt = new Date()
-        const taggedUserGids = taggedGIDs(renderedMsg)
+        const taggedUserGids = taggedGIDs(messageCleanedUpTags)
 
         const msg: ChatMessage = {
             id,
@@ -101,7 +101,7 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
                 from_user: user,
                 user_rank: userRank,
                 message_color: messageColor,
-                message: renderedMsg,
+                message: messageCleanedUpTags,
                 tagged_users_gids: taggedUserGids,
             },
             type: ChatMessageType.Text,
@@ -118,7 +118,7 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
             const resp = await send<ChatMessage>(GameServerKeys.SendChatMessage, {
                 id,
                 faction_id,
-                message: renderedMsg,
+                message: messageCleanedUpTags,
                 message_color: messageColor,
                 tagged_users_gids: taggedUserGids,
             })
@@ -128,7 +128,7 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
             newSnackbarMessage(typeof e === "string" ? e : "Failed to send chat message.", "error")
             console.error(e)
         }
-    }, [message, user, send, handleIncomingMessage, userRank, messageColor, faction_id, newSnackbarMessage, onFailedMessage, renderedMsg, taggedGIDs])
+    }, [message, user, send, handleIncomingMessage, userRank, messageColor, faction_id, newSnackbarMessage, onFailedMessage, taggedGIDs])
 
     const showCharCount = message.length >= MAX_CHAT_MESSAGE_LENGTH
 
