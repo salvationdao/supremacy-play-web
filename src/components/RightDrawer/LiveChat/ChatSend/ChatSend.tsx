@@ -79,8 +79,8 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
     )
 
     useEffect(() => {
-        if (clickedOnUser) {
-            setMessageWithCheck(` @${clickedOnUser.username}#${clickedOnUser.gid} `, true)
+        if (clickedOnUser?.tabFactionID === faction_id && clickedOnUser.user) {
+            setMessageWithCheck(` @${clickedOnUser.user.username}#${clickedOnUser.user.gid} `, true)
             setClickedOnUser(undefined)
             document.getElementById(`message-textfield-${faction_id}`)?.focus()
         }

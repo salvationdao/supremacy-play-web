@@ -13,6 +13,11 @@ interface UserGidRecordStruct extends User {
     callbacks?: (() => void)[]
 }
 
+export interface ClickedOnUser {
+    user: User
+    tabFactionID: string | null
+}
+
 export const ChatContainer = createContainer(() => {
     const { sendBrowserNotification } = useGlobalNotifications()
     const [isPoppedout, setIsPoppedout] = useState(false)
@@ -41,7 +46,7 @@ export const ChatContainer = createContainer(() => {
     const [globalActivePlayers, setGlobalActivePlayers] = useState<User[]>([])
 
     // Click to tag a user
-    const [clickedOnUser, setClickedOnUser] = useState<User>()
+    const [clickedOnUser, setClickedOnUser] = useState<ClickedOnUser>()
 
     // Save chat settings to local storage
     useEffect(() => {
