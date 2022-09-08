@@ -1,5 +1,5 @@
 import { Box, Stack, SxProps } from "@mui/material"
-import { ReactNode, useMemo } from "react"
+import React, { ReactNode, useMemo } from "react"
 import { useMiniMap } from "../../../../../containers"
 
 interface MapIconProps {
@@ -17,7 +17,7 @@ interface MapIconProps {
 }
 
 // Renders an item on the minimap with correct position etc. just pass in the props you need.
-export const MapIcon = ({
+export const MapIcon = React.memo(function MapIcon({
     primaryColor,
     backgroundImageUrl,
     insideRender,
@@ -29,15 +29,15 @@ export const MapIcon = ({
     locationInPixels,
     zIndex,
     noBackgroundColour,
-}: MapIconProps) => {
+}: MapIconProps) {
     const { gridWidth, gridHeight } = useMiniMap()
 
     const sizeX = useMemo(() => gridWidth * sizeGrid, [sizeGrid, gridWidth])
     const sizeY = useMemo(() => gridHeight * sizeGrid, [sizeGrid, gridHeight])
 
-    const imageBackgroundColour = !!backgroundImageUrl && noBackgroundColour !== true
-
     return useMemo(() => {
+        const imageBackgroundColour = !!backgroundImageUrl && noBackgroundColour !== true
+
         return (
             <Stack
                 alignItems="center"
@@ -82,6 +82,8 @@ export const MapIcon = ({
             </Stack>
         )
     }, [
+        backgroundImageUrl,
+        noBackgroundColour,
         onClick,
         sizeX,
         sizeY,
@@ -94,8 +96,6 @@ export const MapIcon = ({
         primaryColor,
         zIndex,
         sx,
-        backgroundImageUrl,
-        imageBackgroundColour,
         iconSx,
     ])
-}
+})
