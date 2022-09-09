@@ -196,8 +196,6 @@ const MapMechInner = ({ warMachine, map, label, isAI, poppedOutContainerRef }: M
             }
             mechMoveCommand.current = undefined
             tempMechMoveCommand.current = mCommand
-        } else {
-            tempMechMoveCommand.current = undefined
         }
     }, [id, hash, playerAbility?.ability, playerAbility?.ability.location_select_type, selectionInstant, playerAbility?.mechHash])
 
