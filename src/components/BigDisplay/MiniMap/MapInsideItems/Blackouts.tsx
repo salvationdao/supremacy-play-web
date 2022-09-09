@@ -4,7 +4,7 @@ import { useArena, useGame, useMiniMap } from "../../../../containers"
 import { useGameServerSubscription } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
-import { Position } from "../../../../types"
+import { GAME_CLIENT_TILE_SIZE, Position } from "../../../../types"
 
 const BLACKOUT_TRANSITION_DURATION = 500
 
@@ -106,7 +106,7 @@ const Blackout = React.forwardRef(function Blackout({ radius, coords, isVisible 
     const { gridHeight, gridWidth } = useMiniMap()
     const { map } = useGame()
 
-    const mapScale = useMemo(() => (map ? map.Width / (map.Cells_X * 2000) : 0), [map])
+    const mapScale = useMemo(() => (map ? map.Width / (map.Cells_X * GAME_CLIENT_TILE_SIZE) : 0), [map])
     const diameter = useMemo(() => radius * mapScale * 2, [mapScale, radius])
 
     return useMemo(

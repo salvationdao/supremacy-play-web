@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef } from "react"
-import { Map as GameMap } from "../../../../types"
+import { Map as GameMap, GAME_CLIENT_TILE_SIZE } from "../../../../types"
 import { HiveHexLocations } from "../../../../types/hive"
 
 interface HiveHexesProps {
@@ -18,7 +18,7 @@ export const HiveHexes = React.memo(function HiveHexes({ map, state, poppedOutCo
     const cachedHexState = useRef<boolean[]>(new Array(589).fill(false))
 
     useEffect(() => {
-        const mapScale = map ? map.Width / (map.Cells_X * 2000) : 0
+        const mapScale = map ? map.Width / (map.Cells_X * GAME_CLIENT_TILE_SIZE) : 0
 
         for (let i = 0; i < HiveHexLocations.length; i++) {
             const hexEl = (poppedOutContainerRef?.current || document).querySelector(`#map-hex-${i}`) as HTMLElement

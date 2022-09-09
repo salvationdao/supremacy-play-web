@@ -7,7 +7,7 @@ import { useGameServerSubscription } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { dropEffect, explosionEffect, fadeEffect, landmineEffect, rippleEffect } from "../../../../theme/keyframes"
 import { fonts } from "../../../../theme/theme"
-import { DisplayedAbility, LocationSelectType, Map as GameMap, MechDisplayEffectType, MiniMapDisplayEffectType } from "../../../../types"
+import { DisplayedAbility, LocationSelectType, Map as GameMap, MechDisplayEffectType, MiniMapDisplayEffectType, GAME_CLIENT_TILE_SIZE } from "../../../../types"
 import { MapIcon } from "./Common/MapIcon"
 import { HiveHexes } from "./HiveHexes"
 
@@ -400,7 +400,7 @@ const MiniMapAbilityDisplay = React.memo(function MiniMapAbilityDisplay({ displa
     const { gridHeight } = useMiniMap()
     const { map } = useGame()
 
-    const mapScale = useMemo(() => (map ? map.Width / (map.Cells_X * 2000) : 0), [map])
+    const mapScale = useMemo(() => (map ? map.Width / (map.Cells_X * GAME_CLIENT_TILE_SIZE) : 0), [map])
     const position = useMemo(
         () =>
             location_in_pixels ? { x: (location.x - (map ? map.Pixel_Left : 0)) * mapScale, y: (location.y - (map ? map.Pixel_Top : 0)) * mapScale } : location,
