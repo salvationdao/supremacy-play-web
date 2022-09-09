@@ -40,12 +40,16 @@ interface PendingHiveStateChange {
     delay: number
 }
 
+const propsAreEqual = (prevProps: MiniMapAbilitiesDisplayProps, nextProps: MiniMapAbilitiesDisplayProps) => {
+    return prevProps.map.Name === nextProps.map.Name
+}
+
 interface MiniMapAbilitiesDisplayProps {
     map: GameMap
     poppedOutContainerRef?: React.MutableRefObject<HTMLElement | null>
 }
 
-export const MiniMapAbilitiesDisplay = ({ map, poppedOutContainerRef }: MiniMapAbilitiesDisplayProps) => {
+export const MiniMapAbilitiesDisplay = React.memo(function MiniMapAbilitiesDisplay({ map, poppedOutContainerRef }: MiniMapAbilitiesDisplayProps) {
     const { currentArenaID } = useArena()
     const [abilityList, setAbilityList] = useState<DisplayedAbility[]>([])
     const [mapEvents, setMapEvents] = useState<DisplayedAbility[]>([])
@@ -362,25 +366,31 @@ export const MiniMapAbilitiesDisplay = ({ map, poppedOutContainerRef }: MiniMapA
         }
     }, [])
 
-    return (
-        <>
-            {abilityList.length > 0 &&
-                abilityList.map((displayAbility) => <MiniMapAbilityDisplay key={displayAbility.offering_id} displayAbility={displayAbility} />)}
+    return useMemo(
+        () => (
+            <>
+                {abilityList.length > 0 &&
+                    abilityList.map((displayAbility) => <MiniMapAbilityDisplay key={displayAbility.offering_id} displayAbility={displayAbility} />)}
 
-            {mapEvents.length > 0 &&
-                mapEvents.map((displayAbility) => <MiniMapAbilityDisplay key={displayAbility.offering_id} displayAbility={displayAbility} />)}
+                {mapEvents.length > 0 &&
+                    mapEvents.map((displayAbility) => <MiniMapAbilityDisplay key={displayAbility.offering_id} displayAbility={displayAbility} />)}
 
-            {map.Name === TheHiveMapName && <HiveHexes map={map} state={hiveState} poppedOutContainerRef={poppedOutContainerRef} />}
-        </>
+                {map.Name === TheHiveMapName && <HiveHexes map={map} state={hiveState} poppedOutContainerRef={poppedOutContainerRef} />}
+            </>
+        ),
+        [abilityList, hiveState, map, mapEvents, poppedOutContainerRef],
     )
-}
+}, propsAreEqual)
 
 interface MiniMapAbilityDisplayProps {
     displayAbility: DisplayedAbility
 }
 
-const propsAreEqual = (prevProps: MiniMapAbilityDisplayProps, nextProps: MiniMapAbilityDisplayProps) => {
-    return prevProps.displayAbility.offering_id === nextProps.displayAbility.offering_id
+const propsAreEqualMiniMapAbilityDisplay = (prevProps: MiniMapAbilityDisplayProps, nextProps: MiniMapAbilityDisplayProps) => {
+    return (
+        prevProps.displayAbility.offering_id === nextProps.displayAbility.offering_id &&
+        prevProps.displayAbility.launching_at === nextProps.displayAbility.launching_at
+    )
 }
 
 const MiniMapAbilityDisplay = React.memo(function MiniMapAbilityDisplay({ displayAbility }: MiniMapAbilityDisplayProps) {
@@ -408,38 +418,38 @@ const MiniMapAbilityDisplay = React.memo(function MiniMapAbilityDisplay({ displa
     )
     const diameter = useMemo(() => (radius ? radius * mapScale * 2 : 0), [mapScale, radius])
 
-    return useMemo(() => {
-        let iconAnimation = "none"
+    const iconAnimation = useMemo(() => {
         switch (mini_map_display_effect_type) {
             case MiniMapDisplayEffectType.Drop:
-                iconAnimation = `${dropEffect(3)} 2s ease-out`
-                break
+                return `${dropEffect(3)} 2s ease-out`
             case MiniMapDisplayEffectType.Landmine:
-                iconAnimation = `${dropEffect(2)} 1.5s ease-out, ${landmineEffect("https://i.imgur.com/hL62NOp.png", image_url)} 3s ease-out forwards` // 3s landmine arm delay
-                break
+                return `${dropEffect(2)} 1.5s ease-out, ${landmineEffect("https://i.imgur.com/hL62NOp.png", image_url)} 3s ease-out forwards` // 3s landmine arm delay
+            default:
+                return "none"
         }
+    }, [image_url, mini_map_display_effect_type])
 
-        let diameterAnimation = "none"
+    const diameterAnimation = useMemo(() => {
         switch (mini_map_display_effect_type) {
             case MiniMapDisplayEffectType.Range:
-                diameterAnimation = `${rippleEffect(colour)} 10s ease-out`
-                break
+                return `${rippleEffect(colour)} 10s ease-out`
             case MiniMapDisplayEffectType.Pulse:
-                diameterAnimation = `${explosionEffect(colour)} 1.2s infinite`
-                break
+                return `${explosionEffect(colour)} 1.2s infinite`
             case MiniMapDisplayEffectType.Explosion:
-                diameterAnimation = `${explosionEffect(colour)} 3s forwards`
-                break
+                return `${explosionEffect(colour)} 3s forwards`
             case MiniMapDisplayEffectType.Fade:
-                diameterAnimation = `${fadeEffect()} 1s forwards`
-                break
+                return `${fadeEffect()} 1s forwards`
+            default:
+                return "none"
         }
+    }, [colour, mini_map_display_effect_type])
 
+    return useMemo(() => {
         return (
             <MapIcon
                 position={position}
                 locationInPixels={location_in_pixels || false}
-                sizeGrid={size_grid_override || 1.5}
+                sizeGrid={size_grid_override || (diameter ? 0.5 : 1.5)}
                 primaryColor={colour}
                 backgroundImageUrl={image_url}
                 noBackgroundColour={!!no_background_colour}
@@ -487,8 +497,8 @@ const MiniMapAbilityDisplay = React.memo(function MiniMapAbilityDisplay({ displa
                 }
             />
         )
-    }, [colour, diameter, mini_map_display_effect_type, gridHeight, image_url, launching_at, border_width, location_in_pixels, position, show_below_mechs, no_background_colour, size_grid_override])
-}, propsAreEqual)
+    }, [position, location_in_pixels, size_grid_override, diameter, colour, image_url, no_background_colour, iconAnimation, show_below_mechs, launching_at, gridHeight, border_width, diameterAnimation])
+}, propsAreEqualMiniMapAbilityDisplay)
 
 const Countdown = ({ launchDate }: { launchDate: Date }) => {
     const { totalSecRemain } = useTimer(launchDate)
