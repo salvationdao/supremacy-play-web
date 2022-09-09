@@ -194,6 +194,7 @@ const MapMechInner = ({ warMachine, map, label, isAI, poppedOutContainerRef }: M
                 remain_cooldown_seconds: 0,
                 is_mini_mech: false,
             }
+            mechMoveCommand.current = undefined
             tempMechMoveCommand.current = mCommand
         } else {
             tempMechMoveCommand.current = undefined
