@@ -9,7 +9,7 @@ import { GameServerKeys } from "../../../../../keys"
 import { pulseEffect, rippleEffect, shake, spinEffect } from "../../../../../theme/keyframes"
 import { colors, fonts } from "../../../../../theme/theme"
 import { LocationSelectType, Map, WarMachineState } from "../../../../../types"
-import { DisplayedAbility, MechDisplayEffectType, WarMachineLiveState } from "../../../../../types/game"
+import { DisplayedAbility, MechDisplayEffectType, GAME_CLIENT_TILE_SIZE, WarMachineLiveState } from "../../../../../types/game"
 import { MechMoveCommand, MechMoveCommandAbility } from "../../../../WarMachine/WarMachineItem/MoveCommand"
 
 const TRANSITION_DURATION = 0.275 // seconds
@@ -55,7 +55,7 @@ const MapMechInner = ({ warMachine, map, label, isAI, poppedOutContainerRef }: M
 
     // For rendering: size, colors etc.
     const prevRotation = useRef(warMachine.rotation)
-    const mapScale = useMemo(() => map.Width / (map.Cells_X * 2000), [map])
+    const mapScale = useMemo(() => map.Width / (map.Cells_X * GAME_CLIENT_TILE_SIZE), [map])
     const iconSize = useMemo(() => Math.max(gridWidth, gridHeight, 40) * (isAI ? 1.2 : 1.8), [gridWidth, gridHeight, isAI])
     const dirArrowLength = useMemo(() => iconSize / 2 + 0.6 * iconSize, [iconSize])
     const primaryColor = useMemo(
@@ -124,7 +124,7 @@ const MapMechInner = ({ warMachine, map, label, isAI, poppedOutContainerRef }: M
                     // Update the mech move dash line length and rotation
                     const moveCommandEl = (poppedOutContainerRef?.current || document).querySelector(`#map-mech-move-command-${hash}`) as HTMLElement
                     if (moveCommandEl) {
-                        const mCommand = mechMoveCommand.current?.mech_id ? mechMoveCommand.current : tempMechMoveCommand.current
+                        const mCommand = tempMechMoveCommand.current || mechMoveCommand.current
                         if (mCommand?.cell_x && mCommand?.cell_y && !mCommand?.reached_at) {
                             const commandMapX = mCommand.cell_x * gridWidth
                             const commandMapY = mCommand.cell_y * gridHeight

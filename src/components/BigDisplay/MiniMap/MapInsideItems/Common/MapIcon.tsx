@@ -45,8 +45,8 @@ export const MapIcon = React.memo(function MapIcon({
                 onClick={onClick}
                 sx={{
                     position: "absolute",
-                    height: `${sizeX}px`,
-                    width: `${sizeY}px`,
+                    width: `${sizeX}px`,
+                    height: `${sizeY}px`,
                     cursor: "pointer",
                     transform: locationInPixels
                         ? `translate(${position.x - sizeX / 2}px, ${position.y - sizeY / 2}px)`

@@ -11,6 +11,7 @@ import { MapGrid } from "./MapInsideItems/MapGrid"
 import { MapImage } from "./MapInsideItems/MapImage"
 import { MechCommandIcons } from "./MapInsideItems/MechCommandIcons"
 import { RangeIndicator } from "./MapInsideItems/RangeIndicator"
+import { MapScale } from "./MapOutsideItems/MapScale"
 import { useMiniMapGestures } from "./useMiniMapGestures"
 
 interface MiniMapInsideProps {
@@ -141,6 +142,9 @@ export const MiniMapInside = ({ containerDimensions, poppedOutContainerRef }: Mi
 
                 {/* Displays countdown before target selection submits */}
                 <CountdownSubmit />
+
+                {/* Show the map distance scaling like google maps */}
+                <MapScale mapScale={mapScale} />
             </>
         )
     }, [

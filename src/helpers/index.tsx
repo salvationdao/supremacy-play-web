@@ -16,7 +16,7 @@ import {
     SvgWrapperProps,
 } from "../assets"
 import { colors } from "../theme/theme"
-import { AssetItemType, MysteryCrateType, Rarity, UserRank } from "../types"
+import { AssetItemType, GAME_CLIENT_TILE_SIZE, MysteryCrateType, Rarity, UserRank } from "../types"
 
 // Capitalize convert a string "example" to "Example"
 export const Capitalize = (str: string): string => str[0].toUpperCase() + str.substring(1).toLowerCase()
@@ -572,7 +572,7 @@ export const autoTextColor = (hex: string) => {
 }
 
 export const convertCellsToGameLocation = (x: number, y: number, mapLeft: number, mapTop: number) => {
-    const gameClientTileSize = 2000
+    const gameClientTileSize = GAME_CLIENT_TILE_SIZE
     return {
         x: x * gameClientTileSize + gameClientTileSize / 2 + mapLeft,
         y: y * gameClientTileSize + gameClientTileSize / 2 + mapTop,
