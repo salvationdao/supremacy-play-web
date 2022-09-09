@@ -412,7 +412,10 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
                         <InfoCard primaryColor={primaryColor} label="ACTIVE WORKERS">
                             <Typography
                                 variant="h4"
-                                sx={{ fontWeight: "fontWeightBold", color: repairJob.working_agent_count <= 3 ? colors.green : colors.orange }}
+                                sx={{
+                                    fontWeight: "fontWeightBold",
+                                    color: repairJob.working_agent_count <= remainDamagedBlocks ? colors.green : colors.orange,
+                                }}
                             >
                                 {repairJob.working_agent_count.toString()}
                             </Typography>
