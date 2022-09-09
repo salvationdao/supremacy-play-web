@@ -154,7 +154,7 @@ const BattleNotStarted = () => {
 const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 100, height = 100, poppedOutContainerRef }: MiniMapInnerProps) => {
     const { handleMiniMapHotKey } = useHotkey()
     const { remToPxRatio } = useDimension()
-    const { isStreamBigDisplay, setIsStreamBigDisplay, toggleIsStreamBigDisplayMemorized, restoreIsStreamBigDisplayMemorized } = useUI()
+    const { isStreamBigDisplay, setIsStreamBigDisplay, toggleIsStreamBigDisplayMemorized, restoreIsStreamBigDisplayMemorized, stopMapRender } = useUI()
     const [isEnlarged, toggleIsEnlarged] = useToggle(localStorage.getItem("isMiniMapEnlarged") === "true")
 
     const mapHeightWidthRatio = useRef(1)
@@ -236,6 +236,10 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
     }, [focusMap])
 
     return useMemo(() => {
+        if (stopMapRender) {
+            return null
+        }
+
         return (
             <Stack
                 alignItems="center"
@@ -360,5 +364,6 @@ const MiniMapInner = ({ map, isTargeting, isPoppedout, setIsPoppedout, width = 1
         setIsPoppedout,
         toggleIsEnlarged,
         poppedOutContainerRef,
+        stopMapRender,
     ])
 }

@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useState } from "react"
+import React, { useState } from "react"
 import { BCBorder, BCDeploy, BCWaiting, RMBorder, RMDeploy, RMWaiting, ZHIBorder, ZHIDeploy, ZHIWaiting } from "../../assets"
 import { FactionIDs } from "../../constants"
 import { useAuth, useUI } from "../../containers"
@@ -44,7 +44,16 @@ const getCardStyles = (factionID: string) => {
     }
 }
 
-export const MechCard = ({ mechID, faction }: { mechID: string; faction: Faction }) => {
+interface MechCardProps {
+    mechID: string
+    faction: Faction
+}
+
+const propsAreEqual = (prevProps: MechCardProps, nextProps: MechCardProps) => {
+    return prevProps.mechID === nextProps.mechID && prevProps.faction.id === nextProps.faction.id
+}
+
+export const MechCard = React.memo(function MechCard({ mechID, faction }: MechCardProps) {
     const { factionID } = useAuth()
     const { setLeftDrawerActiveTabID } = useUI()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
@@ -146,4 +155,4 @@ export const MechCard = ({ mechID, faction }: { mechID: string; faction: Faction
             </ClipThing>
         </Stack>
     )
-}
+}, propsAreEqual)

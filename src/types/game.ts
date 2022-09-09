@@ -36,6 +36,8 @@ export interface Map {
     Disabled_Cells: number[]
 }
 
+export const GAME_CLIENT_TILE_SIZE = 2000
+
 export interface GameMap {
     id: string
     name: string
