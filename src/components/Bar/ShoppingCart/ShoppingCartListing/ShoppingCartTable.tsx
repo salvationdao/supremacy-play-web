@@ -2,13 +2,14 @@ import { useState, useEffect, useCallback, useMemo } from "react"
 import { Box, Stack, Typography, TextField, CircularProgress, Button } from "@mui/material"
 import { SvgArrow, SvgSupToken, SvgBin } from "../../../../assets"
 import { IS_TESTING_MODE } from "../../../../constants"
-import { snakeToTitle, generatePriceText } from "../../../../helpers"
+import { snakeToTitle, generatePriceText, supFormatterNoFixed } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { ShoppingCart, ShoppingCartItem } from "../../../../types/fiat"
 import { ClipThing } from "../../../Common/ClipThing"
 import { GameServerKeys } from "../../../../keys"
 import { FancyButton } from "../../../Common/FancyButton"
+import BigNumber from "bignumber.js"
 
 interface Props {
     loading: boolean
@@ -308,30 +309,31 @@ const ShoppingCartRow = ({ item, primaryColor, backgroundColor }: ShoppingCartRo
             </Stack>
 
             <Stack>
-                <Stack
-                    direction="row"
-                    alignItems="center"
-                    justifyContent="flex-end"
-                    sx={{
-                        mr: ".3rem",
-                        py: ".6rem",
-                        cursor: "pointer",
-                        borderRadius: 1,
-                        backgroundColor: "unset",
-                        ":hover": {
-                            backgroundColor: "#FFFFFF12",
-                        },
-                        ":active": {
-                            opacity: 0.8,
-                        },
-                    }}
-                >
-                    <SvgSupToken size="1.9rem" fill={IS_TESTING_MODE ? colors.red : colors.yellow} sx={{ mr: ".2rem", pb: 0 }} />
-                    <Typography sx={{ fontFamily: fonts.nostromoBold, lineHeight: 1, whiteSpace: "nowrap" }}>
-                        {/* {supFormatterNoFixed(onWorldSupsRaw, 2) : "0.00"} */}
-                        0.00
-                    </Typography>
-                </Stack>
+                {item.product.price_sups && item.product.price_sups !== "0" && (
+                    <Stack
+                        direction="row"
+                        alignItems="center"
+                        justifyContent="flex-end"
+                        sx={{
+                            mr: ".3rem",
+                            py: ".6rem",
+                            cursor: "pointer",
+                            borderRadius: 1,
+                            backgroundColor: "unset",
+                            ":hover": {
+                                backgroundColor: "#FFFFFF12",
+                            },
+                            ":active": {
+                                opacity: 0.8,
+                            },
+                        }}
+                    >
+                        <SvgSupToken size="1.9rem" fill={IS_TESTING_MODE ? colors.red : colors.yellow} sx={{ mr: ".2rem", pb: 0 }} />
+                        <Typography sx={{ fontFamily: fonts.nostromoBold, lineHeight: 1, whiteSpace: "nowrap" }}>
+                            {supFormatterNoFixed(item.product.price_sups, 2) || "0.00"}
+                        </Typography>
+                    </Stack>
+                )}
 
                 <Typography
                     sx={{
