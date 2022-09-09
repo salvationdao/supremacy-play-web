@@ -17,8 +17,8 @@ export const MapScale = React.memo(function MapScale({ mapScale }: { mapScale: n
             alignItems="baseline"
             sx={{
                 position: "absolute",
-                bottom: "1.4rem",
-                left: "1.6rem",
+                bottom: `${3 * height}px`,
+                left: `${4 * height}px`,
                 pointerEvents: "none",
                 filter: "drop-shadow(0 3px 3px #00000050)",
                 opacity: 0.8,
