@@ -9,7 +9,7 @@ import { GameServerKeys } from "../../../../../keys"
 import { pulseEffect, rippleEffect, shake, spinEffect } from "../../../../../theme/keyframes"
 import { colors, fonts } from "../../../../../theme/theme"
 import { LocationSelectType, Map, WarMachineState } from "../../../../../types"
-import { DisplayedAbility, MechDisplayEffectType, GAME_CLIENT_TILE_SIZE, WarMachineLiveState } from "../../../../../types/game"
+import { DisplayedAbility, GAME_CLIENT_TILE_SIZE, MechDisplayEffectType, WarMachineLiveState } from "../../../../../types/game"
 import { MechMoveCommand, MechMoveCommandAbility } from "../../../../WarMachine/WarMachineItem/MoveCommand"
 
 const TRANSITION_DURATION = 0.275 // seconds
@@ -179,23 +179,23 @@ const MapMechInner = ({ warMachine, map, label, isAI, poppedOutContainerRef }: M
 
     // Immediately render the mech move dashed line when player selects it for fast UX
     useEffect(() => {
-        if (
-            playerAbility?.ability.location_select_type === LocationSelectType.MechCommand &&
-            playerAbility.mechHash === hash &&
-            selectionInstant?.startCoords
-        ) {
-            const mCommand: MechMoveCommand = {
-                id: "move_command",
-                mech_id: id,
-                triggered_by_id: "x",
-                cell_x: selectionInstant.startCoords.x,
-                cell_y: selectionInstant.startCoords.y,
-                is_moving: true,
-                remain_cooldown_seconds: 0,
-                is_mini_mech: false,
+        if (playerAbility?.ability.location_select_type === LocationSelectType.MechCommand && playerAbility.mechHash === hash) {
+            if (selectionInstant?.startCoords) {
+                const mCommand: MechMoveCommand = {
+                    id: "move_command",
+                    mech_id: id,
+                    triggered_by_id: "x",
+                    cell_x: selectionInstant.startCoords.x,
+                    cell_y: selectionInstant.startCoords.y,
+                    is_moving: true,
+                    remain_cooldown_seconds: 0,
+                    is_mini_mech: false,
+                }
+                mechMoveCommand.current = undefined
+                tempMechMoveCommand.current = mCommand
             }
-            mechMoveCommand.current = undefined
-            tempMechMoveCommand.current = mCommand
+        } else {
+            tempMechMoveCommand.current = undefined
         }
     }, [id, hash, playerAbility?.ability, playerAbility?.ability.location_select_type, selectionInstant, playerAbility?.mechHash])
 
