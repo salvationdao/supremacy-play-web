@@ -124,7 +124,7 @@ const MapMechInner = ({ warMachine, map, label, isAI, poppedOutContainerRef }: M
                     // Update the mech move dash line length and rotation
                     const moveCommandEl = (poppedOutContainerRef?.current || document).querySelector(`#map-mech-move-command-${hash}`) as HTMLElement
                     if (moveCommandEl) {
-                        const mCommand = mechMoveCommand.current?.mech_id ? mechMoveCommand.current : tempMechMoveCommand.current
+                        const mCommand = tempMechMoveCommand.current || mechMoveCommand.current
                         if (mCommand?.cell_x && mCommand?.cell_y && !mCommand?.reached_at) {
                             const commandMapX = mCommand.cell_x * gridWidth
                             const commandMapY = mCommand.cell_y * gridHeight
