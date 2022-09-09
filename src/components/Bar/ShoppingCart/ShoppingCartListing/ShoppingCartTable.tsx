@@ -48,9 +48,13 @@ export const ShoppingCartTable = ({ shoppingCart, loading, primaryColor, backgro
         // Render cart items
         let totalDollars = 0
         let totalCents = 0
+        let totalSups = new BigNumber(0)
         shoppingCart?.items.forEach((item) => {
             totalDollars += item.product.price_dollars * item.quantity
             totalCents += item.product.price_cents * item.quantity
+            if (item.product.price_sups) {
+                totalSups = totalSups.plus(new BigNumber(item.product.price_sups))
+            }
         })
 
         return (
@@ -77,30 +81,31 @@ export const ShoppingCartTable = ({ shoppingCart, loading, primaryColor, backgro
                             Sub-Total:
                         </Typography>
 
-                        <Stack
-                            direction="row"
-                            alignItems="center"
-                            justifyContent="flex-end"
-                            sx={{
-                                mr: ".3rem",
-                                py: ".6rem",
-                                cursor: "pointer",
-                                borderRadius: 1,
-                                backgroundColor: "unset",
-                                ":hover": {
-                                    backgroundColor: "#FFFFFF12",
-                                },
-                                ":active": {
-                                    opacity: 0.8,
-                                },
-                            }}
-                        >
-                            <SvgSupToken size="1.9rem" fill={IS_TESTING_MODE ? colors.red : colors.yellow} sx={{ mr: ".2rem", pb: 0 }} />
-                            <Typography sx={{ fontFamily: fonts.nostromoBold, lineHeight: 1, whiteSpace: "nowrap" }}>
-                                {/* {supFormatterNoFixed(onWorldSupsRaw, 2) : "0.00"} */}
-                                0.00
-                            </Typography>
-                        </Stack>
+                        {totalSups.isGreaterThan(new BigNumber(0)) && (
+                            <Stack
+                                direction="row"
+                                alignItems="center"
+                                justifyContent="flex-end"
+                                sx={{
+                                    mr: ".3rem",
+                                    py: ".6rem",
+                                    cursor: "pointer",
+                                    borderRadius: 1,
+                                    backgroundColor: "unset",
+                                    ":hover": {
+                                        backgroundColor: "#FFFFFF12",
+                                    },
+                                    ":active": {
+                                        opacity: 0.8,
+                                    },
+                                }}
+                            >
+                                <SvgSupToken size="1.9rem" fill={IS_TESTING_MODE ? colors.red : colors.yellow} sx={{ mr: ".2rem", pb: 0 }} />
+                                <Typography sx={{ fontFamily: fonts.nostromoBold, lineHeight: 1, whiteSpace: "nowrap" }}>
+                                    {supFormatterNoFixed(totalSups.toString(), 2) || "0.00"}
+                                </Typography>
+                            </Stack>
+                        )}
 
                         <Typography
                             sx={{
