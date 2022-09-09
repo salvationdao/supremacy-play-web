@@ -7,7 +7,7 @@ import { useGameServerSubscription } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { dropEffect, explosionEffect, fadeEffect, landmineEffect, rippleEffect } from "../../../../theme/keyframes"
 import { fonts } from "../../../../theme/theme"
-import { DisplayedAbility, LocationSelectType, Map as GameMap, MechDisplayEffectType, MiniMapDisplayEffectType, GAME_CLIENT_TILE_SIZE } from "../../../../types"
+import { DisplayedAbility, GAME_CLIENT_TILE_SIZE, LocationSelectType, Map as GameMap, MechDisplayEffectType, MiniMapDisplayEffectType } from "../../../../types"
 import { MapIcon } from "./Common/MapIcon"
 import { HiveHexes } from "./HiveHexes"
 
@@ -492,6 +492,6 @@ const MiniMapAbilityDisplay = React.memo(function MiniMapAbilityDisplay({ displa
 
 const Countdown = ({ launchDate }: { launchDate: Date }) => {
     const { totalSecRemain } = useTimer(launchDate)
-    if (totalSecRemain < 0) return null
-    return <>{totalSecRemain}</>
+    if (totalSecRemain <= 0) return null
+    return <>{totalSecRemain + 1}</>
 }
