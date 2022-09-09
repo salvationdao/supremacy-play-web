@@ -110,15 +110,13 @@ export const EmojiShortcut = ({
                 overflowX: "scroll",
                 scrollBehavior: "smooth",
                 "::-webkit-scrollbar": {
-                    height: ".4rem",
+                    height: ".6rem",
                 },
                 "::-webkit-scrollbar-track": {
                     background: "#FFFFFF15",
-                    borderRadius: 3,
                 },
                 "::-webkit-scrollbar-thumb": {
                     background: primaryColor,
-                    borderRadius: 3,
                 },
             }}
         >

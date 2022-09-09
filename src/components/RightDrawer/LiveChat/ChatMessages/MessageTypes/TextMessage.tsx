@@ -292,13 +292,20 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
                                     {user_rank && rankDeets && (
                                         <TooltipHelper
                                             placement="top"
-                                            text={
-                                                <>
+                                            renderNode={
+                                                <Typography
+                                                    variant="body1"
+                                                    sx={{
+                                                        color: "#FFFFFF",
+                                                        fontFamily: fonts.shareTech,
+                                                        textAlign: "start",
+                                                    }}
+                                                >
                                                     <strong>RANK: </strong>
                                                     {rankDeets.title}
                                                     <br />
                                                     {rankDeets.desc}
-                                                </>
+                                                </Typography>
                                             }
                                         >
                                             <Box>{rankDeets.icon}</Box>

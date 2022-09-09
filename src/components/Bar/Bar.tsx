@@ -1,16 +1,17 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { FancyButton, Logo, ProfileCard, WalletDetails } from ".."
-import { DRAWER_TRANSITION_DURATION, FEEDBACK_FORM_URL, GAME_BAR_HEIGHT, NEXT_RESET_TIME, IS_TESTING_MODE } from "../../constants"
+import Marquee from "react-fast-marquee"
+import { BuySupsButton, FancyButton, Logo, ProfileCard, WalletDetails } from ".."
+import { SvgDisconnected } from "../../assets"
+import { DRAWER_TRANSITION_DURATION, FEEDBACK_FORM_URL, GAME_BAR_HEIGHT, IS_TESTING_MODE, NEXT_RESET_TIME } from "../../constants"
 import { useAuth, useSupremacy } from "../../containers"
+import { hexToRGB, timeSinceInWords } from "../../helpers"
+import { useTimer } from "../../hooks"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { User } from "../../types"
 import { Messages } from "./Messages/Messages"
 import { NavLinks } from "./NavLinks/NavLinks"
-import Marquee from "react-fast-marquee"
-import { hexToRGB, timeSinceInWords } from "../../helpers"
-import { useTimer } from "../../hooks"
-import { SvgDisconnected } from "../../assets"
 import { Quests } from "./Quests/Quests"
+import { Tutorial } from "./Tutorial"
 
 const Countdown = ({ endTime }: { endTime: Date }) => {
     const { totalSecRemain } = useTimer(endTime)
@@ -20,7 +21,6 @@ const Countdown = ({ endTime }: { endTime: Date }) => {
 
 export const Bar = () => {
     const { userID, user } = useAuth()
-
     const rgb = hexToRGB(colors.lightRed)
 
     return (
@@ -74,15 +74,13 @@ export const Bar = () => {
 
                     zIndex: siteZIndex.Bar,
                     "::-webkit-scrollbar": {
-                        height: ".3rem",
+                        height: ".6rem",
                     },
                     "::-webkit-scrollbar-track": {
                         background: "#FFFFFF15",
-                        borderRadius: 3,
                     },
                     "::-webkit-scrollbar-thumb": {
                         background: "#FFFFFF50",
-                        borderRadius: 3,
                     },
                 }}
             >
@@ -100,7 +98,9 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
             <>
                 <Logo />
                 <Box sx={{ flexGrow: 1 }} />
-                <Stack direction="row" alignItems="center" spacing="1.3rem" sx={{ mr: "1.6rem" }}>
+                <Tutorial />
+                <BuySupsButton />
+                <Stack direction="row" alignItems="center" spacing="1.3rem" sx={{ mx: "1.6rem" }}>
                     <SvgDisconnected size="1.7rem" sx={{ pb: ".6rem" }} />
                     <Typography sx={{ fontFamily: fonts.nostromoBold }} variant="caption">
                         DISCONNECTED
@@ -115,7 +115,9 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
             <>
                 <Logo />
                 <Box sx={{ flexGrow: 1 }} />
-                <Stack direction="row" alignItems="center" spacing="1.3rem" sx={{ mr: "1.6rem" }}>
+                <Tutorial />
+                <BuySupsButton />
+                <Stack direction="row" alignItems="center" spacing="1.3rem" sx={{ mx: "1.6rem" }}>
                     <CircularProgress size="1.9rem" sx={{ color: colors.neonBlue, mb: ".5rem !important" }} />
                     <Typography sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoBold }} variant="caption">
                         RECONNECTING...
@@ -130,7 +132,7 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
             <Logo />
             <NavLinks />
             <Box sx={{ flexGrow: 1 }} />
-
+            <Tutorial />
             {userID && (
                 <FancyButton
                     clipThingsProps={{
@@ -149,10 +151,8 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
                     </Typography>
                 </FancyButton>
             )}
-
-            {/* <HowToPlay /> */}
-            {/* {userID && <Enlist />} */}
             {userID && <WalletDetails />}
+            <BuySupsButton />
             {userID && <Quests />}
             {userID && <Messages />}
             <ProfileCard userID={userID} user={user} />

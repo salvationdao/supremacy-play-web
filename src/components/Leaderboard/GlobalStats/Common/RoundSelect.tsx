@@ -53,7 +53,7 @@ export const RoundSelect = ({
                     },
                 }}
                 displayEmpty
-                value={selectedRound}
+                value={selectedRound || ""}
                 MenuProps={{
                     variant: "menu",
                     sx: {

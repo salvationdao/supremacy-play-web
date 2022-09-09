@@ -1,5 +1,5 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useCallback, useMemo, useState } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 import { FancyButton, TooltipHelper } from "../.."
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../assets"
 import { useGlobalNotifications } from "../../../containers"
@@ -23,14 +23,25 @@ export interface PlayerAbilityStoreItemProps {
     availability: SaleAbilityAvailability
 }
 
-export const PlayerAbilityStoreItem = ({
+const propsAreEqual = (prevProps: PlayerAbilityStoreItemProps, nextProps: PlayerAbilityStoreItemProps) => {
+    return (
+        prevProps.amount === nextProps.amount &&
+        prevProps.availability === nextProps.availability &&
+        prevProps.saleAbility.id === nextProps.saleAbility.id &&
+        prevProps.amount === nextProps.amount &&
+        prevProps.onClaim === nextProps.onClaim &&
+        prevProps.onPurchase === nextProps.onPurchase
+    )
+}
+
+export const PlayerAbilityStoreItem = React.memo(function PlayerAbilityStoreItem({
     saleAbility,
     price = saleAbility.current_price,
     amount = 0,
     onClaim: onClaimCallback,
     onPurchase: onPurchaseCallback,
     availability,
-}: PlayerAbilityStoreItemProps) => {
+}: PlayerAbilityStoreItemProps) {
     const theme = useTheme()
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
@@ -292,4 +303,5 @@ export const PlayerAbilityStoreItem = ({
             )}
         </>
     )
-}
+},
+propsAreEqual)

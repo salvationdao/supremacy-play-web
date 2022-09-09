@@ -1,12 +1,12 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useCallback, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { ClipThing } from "../../.."
 import { SvgCubes, SvgSkin, SvgStats } from "../../../../assets"
 import { BATTLE_ARENA_OPEN } from "../../../../constants"
-import { useGlobalNotifications } from "../../../../containers"
+import { useAuth } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { getRarityDeets } from "../../../../helpers"
-import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
+import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { fonts } from "../../../../theme/theme"
 import { MechDetails } from "../../../../types"
@@ -23,7 +23,11 @@ import { DeployModal } from "./Modals/DeployModal"
 import { RentalModal } from "./Modals/RentalModal"
 import { RepairModal } from "./Modals/RepairModal/RepairModal"
 
-export const WarMachineHangarDetails = ({ mechID }: { mechID: string }) => {
+interface WarMachineHangarDetailsProps {
+    mechID: string
+}
+
+export const WarMachineHangarDetails = ({ mechID }: WarMachineHangarDetailsProps) => {
     const [selectedMechDetails, setSelectedMechDetails] = useState<MechDetails>()
     const [deployMechModalOpen, setDeployMechModalOpen] = useState<boolean>(false)
     const [rentalMechModalOpen, setRentalMechModalOpen] = useState<boolean>(false)
@@ -81,9 +85,8 @@ export const WarMachineHangarDetailsInner = ({
     setRentalMechModalOpen,
     setRepairMechModalOpen,
 }: WarMachineHangarDetailsInnerProps) => {
-    const { newSnackbarMessage } = useGlobalNotifications()
     const theme = useTheme()
-    const { send: userSend } = useGameServerCommandsUser("/user_commander")
+    const { userID } = useAuth()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 
     const rarityDeets = useMemo(() => getRarityDeets(mechDetails?.chassis_skin?.tier || mechDetails?.tier || ""), [mechDetails])
@@ -97,26 +100,6 @@ export const WarMachineHangarDetailsInner = ({
             if (!payload) return
             setMechDetails(payload)
         },
-    )
-
-    const renameMech = useCallback(
-        async (newName: string) => {
-            try {
-                const resp = await userSend<string>(GameServerKeys.MechRename, {
-                    mech_id: mechID,
-                    new_name: newName,
-                })
-
-                if (!resp || !mechDetails) return
-                setMechDetails({ ...mechDetails, name: newName })
-                newSnackbarMessage("Successfully updated war machine name.", "success")
-            } catch (err) {
-                const message = typeof err === "string" ? err : "Failed to update war machine name."
-                newSnackbarMessage(message, "error")
-                console.error(err)
-            }
-        },
-        [setMechDetails, mechDetails, mechID, userSend, newSnackbarMessage],
     )
 
     const primaryColor = theme.factionTheme.primary
@@ -180,21 +163,21 @@ export const WarMachineHangarDetailsInner = ({
                             overflowY: "auto",
                             overflowX: "hidden",
                             ml: "1.9rem",
-                            pr: "1.4rem",
-                            mt: ".6rem",
-                            mb: ".8rem",
+                            pr: "1.3rem",
+                            mr: ".6rem",
+                            mt: ".5rem",
+                            mb: "1.5rem",
+                            py: ".5rem",
                             direction: "ltr",
                             scrollbarWidth: "none",
                             "::-webkit-scrollbar": {
-                                width: ".4rem",
+                                width: "1rem",
                             },
                             "::-webkit-scrollbar-track": {
                                 background: "#FFFFFF15",
-                                borderRadius: 3,
                             },
                             "::-webkit-scrollbar-thumb": {
                                 background: (theme) => theme.factionTheme.primary,
-                                borderRadius: 3,
                             },
                         }}
                     >
@@ -212,7 +195,11 @@ export const WarMachineHangarDetailsInner = ({
 
                                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{mechDetails.label}</Typography>
 
-                                        <MechName renameMech={renameMech} mechDetails={mechDetails} />
+                                        <MechName
+                                            onRename={(newName) => setMechDetails({ ...mechDetails, name: newName })}
+                                            mech={mechDetails}
+                                            allowEdit={userID === mechDetails.owner_id}
+                                        />
                                     </Stack>
 
                                     {/* Repair status */}
@@ -222,7 +209,7 @@ export const WarMachineHangarDetailsInner = ({
                                             <Typography sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>SYSTEM STATUS</Typography>
                                         </Stack>
 
-                                        <MechRepairBlocks mechID={mechID} defaultBlocks={mechDetails?.model.repair_blocks} />
+                                        <MechRepairBlocks mechID={mechID} defaultBlocks={mechDetails?.repair_blocks} />
                                     </Stack>
 
                                     {/* Bar stats */}

@@ -5,10 +5,10 @@ import { LocationSelectType } from "../../../../types"
 import { MapIcon } from "./Common/MapIcon"
 
 export const SelectionIcon = () => {
-    const { selection, setSelection, isTargeting, playerAbility, winner } = useMiniMap()
+    const { selectionInstant, setSelection, isTargeting, playerAbility, winner } = useMiniMap()
 
     const ability = winner?.game_ability || playerAbility?.ability
-    const coords = selection?.startCoords
+    const coords = selectionInstant?.startCoords
 
     return useMemo(() => {
         if (!coords || !ability || !isTargeting) return null

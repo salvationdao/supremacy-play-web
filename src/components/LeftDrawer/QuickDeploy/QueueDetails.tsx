@@ -8,28 +8,31 @@ import { colors } from "../../../theme/theme"
 import { PreferencesModal } from "../../Bar/ProfileCard/PreferencesModal/PreferencesModal"
 import { TelegramRegisterModal } from "../../Bar/ProfileCard/PreferencesModal/TelegramRegisterModal"
 import { QueueFeed } from "../../Hangar/WarMachinesHangar/WarMachineDetails/Modals/DeployModal"
+import { PlayerQueueStatus } from "./QuickDeploy"
 
-export const QueueDetails = ({ queueFeed }: { queueFeed?: QueueFeed }) => {
+interface QueueDetailsProps {
+    queueFeed?: QueueFeed
+    playerQueueStatus?: PlayerQueueStatus
+}
+
+export const QueueDetails = ({ queueFeed, playerQueueStatus }: QueueDetailsProps) => {
     const [preferencesModalOpen, togglePreferencesModalOpen] = useToggle()
     const [addDeviceModalOpen, toggleAddDeviceModalOpen] = useToggle()
     const [telegramShortcode, setTelegramShortcode] = useState<string>("")
 
-    const queueLength = queueFeed?.queue_length || 0
     const queueCost = queueFeed?.queue_cost || "0"
 
     return (
         <>
-            <Stack spacing="1.5rem" direction="row">
-                {queueLength >= 0 && (
-                    <AmountItem
-                        key={`${queueLength}-queue_length`}
-                        title={"NEXT POSITION: "}
-                        color="#FFFFFF"
-                        value={`${queueLength + 1}`}
-                        tooltip="The queue position of your war machine if you deploy now."
-                        disableIcon
-                    />
-                )}
+            <Stack spacing="1.5rem" direction="row" width="100%">
+                <AmountItem
+                    key={`${queueFeed?.queue_position}-queue_time`}
+                    title={"QUEUE POSITION: "}
+                    color={colors.offWhite}
+                    value={queueFeed?.queue_position}
+                    tooltip="The current queue position of your faction."
+                    disableIcon
+                />
 
                 {queueCost && (
                     <AmountItem
@@ -37,6 +40,16 @@ export const QueueDetails = ({ queueFeed }: { queueFeed?: QueueFeed }) => {
                         color={colors.yellow}
                         value={supFormatter(queueCost, 2)}
                         tooltip="The cost to place your war machine into the battle queue."
+                    />
+                )}
+
+                {playerQueueStatus && (
+                    <AmountItem
+                        title="LIMIT: "
+                        color={playerQueueStatus.total_queued / playerQueueStatus.queue_limit === 1 ? colors.red : "white"}
+                        value={`${playerQueueStatus.total_queued} / ${playerQueueStatus.queue_limit}`}
+                        tooltip="The total amount of mechs you have queued."
+                        disableIcon
                     />
                 )}
 
@@ -59,6 +72,7 @@ export const QueueDetails = ({ queueFeed }: { queueFeed?: QueueFeed }) => {
         </>
     )
 }
+
 const AmountItem = ({
     title,
     color,
@@ -68,13 +82,13 @@ const AmountItem = ({
 }: {
     title: string
     color: string
-    value: string | number
+    value?: React.ReactNode
     tooltip: string
     disableIcon?: boolean
 }) => {
     return (
         <TooltipHelper placement="bottom-start" text={tooltip}>
-            <Stack direction="row" alignItems="center">
+            <Stack direction="row" alignItems="center" sx={{ flexShrink: 0 }}>
                 <Typography sx={{ mr: ".4rem", fontWeight: "fontWeightBold" }}>{title}</Typography>
 
                 {!disableIcon && <SvgSupToken size="1.7rem" fill={color} sx={{ mr: ".1rem", pb: ".2rem" }} />}

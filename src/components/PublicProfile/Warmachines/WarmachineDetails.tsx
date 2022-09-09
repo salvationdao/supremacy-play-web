@@ -80,15 +80,13 @@ export const WarmachineDetails = ({ mechID, primaryColor, backgroundColor }: { m
                             direction: "ltr",
                             scrollbarWidth: "none",
                             "::-webkit-scrollbar": {
-                                width: ".4rem",
+                                width: "1rem",
                             },
                             "::-webkit-scrollbar-track": {
                                 background: "#FFFFFF15",
-                                borderRadius: 3,
                             },
                             "::-webkit-scrollbar-thumb": {
                                 background: backgroundColor,
-                                borderRadius: 3,
                             },
                         }}
                     >
@@ -115,7 +113,7 @@ export const WarmachineDetails = ({ mechID, primaryColor, backgroundColor }: { m
                                             <Typography sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>SYSTEM STATUS</Typography>
                                         </Stack>
 
-                                        <MechRepairBlocks mechID={mechID} defaultBlocks={mechDetails?.model.repair_blocks} />
+                                        <MechRepairBlocks mechID={mechID} defaultBlocks={mechDetails?.repair_blocks} />
                                     </Stack>
 
                                     {/* Bar stats */}

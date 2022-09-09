@@ -8,6 +8,7 @@ import { FactionsAll } from "../types"
 import { useWS } from "./ws/useWS"
 
 export const SupremacyContainer = createContainer(() => {
+    const isTraining = location.pathname.includes("/training")
     const { newSnackbarMessage } = useGlobalNotifications()
     const { state, isReconnecting, isServerDown } = useWS({
         URI: "/public/online",
@@ -16,6 +17,7 @@ export const SupremacyContainer = createContainer(() => {
     const [serverConnectedBefore, setServerConnectedBefore] = useState(false)
     const [firstConnectTimedOut, setFirstConnectTimedOut] = useState(false)
     const windowReloadTimeout = useRef<NodeJS.Timeout | null>(null)
+    const [hasInteracted, setHasInteracted] = useState(false)
 
     const [haveSups, toggleHaveSups] = useState<boolean>() // Needs 3 states: true, false, undefined. Undefined means it's not loaded yet.
     const [factionsAll, setFactionsAll] = useState<FactionsAll>({})
@@ -35,6 +37,14 @@ export const SupremacyContainer = createContainer(() => {
         windowReloadTimeout.current = null
     }, [])
 
+    useEffect(() => {
+        const callback = () => {
+            setHasInteracted(true)
+        }
+
+        document.addEventListener("mousedown", callback, { once: true })
+    }, [])
+
     // If server is down and we're not trying to reconnect, reload window after 30 minutes
     useEffect(() => {
         if (isServerDown && !isReconnecting) {
@@ -49,12 +59,16 @@ export const SupremacyContainer = createContainer(() => {
 
     // If it's been X amount of time and we never connected, then server is probs down
     useEffect(() => {
+        if (isTraining) {
+            setFirstConnectTimedOut(true)
+            return
+        }
         const timeout = setTimeout(() => {
             if (!serverConnectedBefore) setFirstConnectTimedOut(true)
         }, 20000)
 
         return () => clearTimeout(timeout)
-    }, [serverConnectedBefore])
+    }, [serverConnectedBefore, isTraining])
 
     // Get main color of each factions
     useEffect(() => {
@@ -89,6 +103,7 @@ export const SupremacyContainer = createContainer(() => {
         isReconnecting,
         isServerDown,
         firstConnectTimedOut,
+        hasInteracted,
 
         factionsAll,
         getFaction,

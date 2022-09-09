@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useMemo, useState } from "react"
+import React, { useMemo, useState } from "react"
 import { FancyButton } from "../.."
 import { SvgDropdownArrow, SvgSkin } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
@@ -12,7 +12,16 @@ import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { General } from "../../Marketplace/Common/MarketItem/General"
 import { WeaponBarStats } from "./Common/WeaponBarStats"
 
-export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGridView?: boolean }) => {
+interface WeaponHangarItemProps {
+    weapon: Weapon
+    isGridView?: boolean
+}
+
+const propsAreEqual = (prevProps: WeaponHangarItemProps, nextProps: WeaponHangarItemProps) => {
+    return prevProps.isGridView === nextProps.isGridView && prevProps.weapon.id === nextProps.weapon.id
+}
+
+export const WeaponHangarItem = React.memo(function WeaponHangarItem({ weapon, isGridView }: WeaponHangarItemProps) {
     const theme = useTheme()
     const [weaponDetails, setWeaponDetails] = useState<Weapon>()
 
@@ -101,7 +110,7 @@ export const WeaponHangarItem = ({ weapon, isGridView }: { weapon: Weapon; isGri
             </FancyButton>
         </Box>
     )
-}
+}, propsAreEqual)
 
 export const WeaponCommonArea = ({
     primaryColor,

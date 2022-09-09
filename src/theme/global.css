@@ -50,36 +50,36 @@ body {
 
 /* Update `src/containers/dimensions.ts` */
 html {
-    font-size: 59%; /* 62.5% of 16px is 10px */
+    font-size: 57%; /* 62.5% of 16px is 10px */
 }
 
 @media only screen and (max-width: 1922px) {
-    html {
-        font-size: 52%;
-    }
-}
-
-@media only screen and (max-width: 1500px) {
     html {
         font-size: 50%;
     }
 }
 
-@media only screen and (max-width: 1300px) {
+@media only screen and (max-width: 1500px) {
     html {
-        font-size: 46%;
+        font-size: 48%;
     }
 }
 
-@media only screen and (max-width: 900px) {
+@media only screen and (max-width: 1300px) {
     html {
         font-size: 44%;
     }
 }
 
+@media only screen and (max-width: 900px) {
+    html {
+        font-size: 42%;
+    }
+}
+
 @media only screen and (max-width: 600px) {
     html {
-        font-size: 39%;
+        font-size: 37%;
     }
 }
 

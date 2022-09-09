@@ -117,15 +117,15 @@ export const UtilityPreview = ({ onConfirm, utility, equipped }: UtilityPreviewP
                 }),
 
             // Accelerator
-            typeof utility.accelerator?.boost_amount !== "undefined" &&
+            typeof utility.accelerator?.boosted_amount !== "undefined" &&
                 renderStatChange("BOOST AMOUNT", {
-                    oldStat: equipped.accelerator?.boost_amount,
-                    newStat: utility.accelerator?.boost_amount,
+                    oldStat: equipped.accelerator?.boosted_amount,
+                    newStat: utility.accelerator?.boosted_amount,
                 }),
-            typeof utility.accelerator?.boost_seconds !== "undefined" &&
+            typeof utility.accelerator?.boosted_seconds !== "undefined" &&
                 renderStatChange("DURATION (SECONDS)", {
-                    oldStat: equipped.accelerator?.boost_seconds,
-                    newStat: utility.accelerator?.boost_seconds,
+                    oldStat: equipped.accelerator?.boosted_seconds,
+                    newStat: utility.accelerator?.boosted_seconds,
                 }),
             typeof utility.accelerator?.energy_cost !== "undefined" &&
                 renderStatChange("ENERGY COST", {
@@ -149,8 +149,8 @@ export const UtilityPreview = ({ onConfirm, utility, equipped }: UtilityPreviewP
 
         return stats.filter((s) => !!s)
     }, [
-        equipped.accelerator?.boost_amount,
-        equipped.accelerator?.boost_seconds,
+        equipped.accelerator?.boosted_amount,
+        equipped.accelerator?.boosted_seconds,
         equipped.accelerator?.energy_cost,
         equipped.anti_missile?.fire_energy_cost,
         equipped.anti_missile?.rate_of_fire,

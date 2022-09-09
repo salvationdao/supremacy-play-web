@@ -1,7 +1,8 @@
-import { Battle, Faction, User, Vector2i } from "."
+import { Battle, Faction, Map, User, Vector2i } from "."
 
 export enum MechStatusEnum {
     Idle = "IDLE",
+    PendingQueue = "PENDING_QUEUE",
     Queue = "QUEUE",
     Battle = "BATTLE",
     Market = "MARKET",
@@ -75,10 +76,20 @@ export interface MechRepairStatus {
     remain_seconds?: number
 }
 
+export interface RepairSlot {
+    id: string
+    player_id: string
+    mech_id: string
+    repair_case_id: string
+    status: string
+    next_repair_time: Date
+    slot_number: number
+}
+
 export interface MechStatus {
     status: MechStatusEnum
-    queue_position?: number
-    can_deploy?: boolean
+    can_deploy: boolean
+    queue_position: number | null
 }
 
 export interface Images {
@@ -110,10 +121,13 @@ export interface MechBasic extends Collection, Images {
     weapon_hardpoints: number
     utility_slots: number
     speed: number
+    boosted_speed: number
     max_hitpoints: number
+    boosted_max_hitpoints: number
     is_default: boolean
     is_insured: boolean
     name: string
+    repair_blocks: number
     genesis_token_id?: number
     limited_release_token_id?: number
     power_core_size: string
@@ -127,8 +141,13 @@ export interface MechBasic extends Collection, Images {
     intro_animation_id: string
     outro_animation_id: string
     power_core_id: string
+    queue_position: number | null
     updated_at: Date
     created_at: Date
+}
+
+export interface MechBasicWithQueueStatus extends MechBasic {
+    in_queue: boolean
 }
 
 export interface MechDetails extends MechBasic {
@@ -136,7 +155,6 @@ export interface MechDetails extends MechBasic {
     brand: Brand
     user: User
     faction?: Faction
-    model: MechModel
     default_chassis_skin: BlueprintMechSkin
     chassis_skin?: MechSkin
     intro_animation?: MechAnimation
@@ -152,19 +170,19 @@ export interface BlueprintMech {
     id: string
     brand_id: string
     label: string
-    slug: string
-    skin: string
     weapon_hardpoints: number
     utility_slots: number
     speed: number
     max_hitpoints: number
-    updated_at: Date
     created_at: Date
-    model_id: string
     power_core_size?: string
     tier?: string
     default_chassis_skin_id: string
     collection: string
+    repair_blocks: number
+    boost_stat: string
+    mech_type: string
+    availability_id?: string
 }
 
 export interface Brand {
@@ -174,19 +192,6 @@ export interface Brand {
     deleted_at?: Date
     updated_at: Date
     created_at: Date
-}
-
-export interface MechModel extends Collection, Images {
-    id: string
-    blueprint_id: string
-    genesis_token_id?: number
-    label: string
-    description: string
-    background_color: string
-    mech_model: string
-    equipped_on?: string
-    created_at: Date
-    repair_blocks: number
 }
 
 export interface BlueprintMechSkin extends Collection, Images {
@@ -202,6 +207,7 @@ export interface MechSkin extends Collection, Images {
     label: string
     created_at: Date
     equipped_on?: string
+    level: number
 }
 
 export interface MechAnimation extends Collection, Images {
@@ -314,6 +320,7 @@ export interface UtilityShield {
     utility_id: string
     hitpoints: number
     recharge_rate: number
+    boosted_recharge_rate: number
     recharge_energy_cost: number
 }
 
@@ -337,8 +344,8 @@ export interface UtilityRepairDrone {
 export interface UtilityAccelerator {
     utility_id: string
     energy_cost: number
-    boost_seconds: number
-    boost_amount: number
+    boosted_seconds: number
+    boosted_amount: number
 }
 
 export interface UtilityAntiMissile {
@@ -360,7 +367,10 @@ export interface BattleMechHistory {
     created_at: Date
     faction_won?: boolean
     mech_survived?: boolean
-    battle?: Battle
+    battle?: {
+        battle: Battle
+        game_map?: Map
+    }
     mech?: MechDetails
 }
 
@@ -545,6 +555,7 @@ export interface Submodel {
     xsyn_locked: boolean
     updated_at: Date
     created_at: Date
+    level?: number
 }
 
 export enum SubmodelStatus {
@@ -552,13 +563,29 @@ export enum SubmodelStatus {
     Unequipped = "UNEQUIPPED",
 }
 
-export interface WeaponModel {
+export interface BlueprintWeapon {
     id: string
-    brand_id: string
     label: string
+    damage: number
     weapon_type: string
+    default_damage_type: string
+    damage_falloff?: number
+    damage_falloff_rate?: number
+    spread?: string
+    rate_of_fire?: string
+    radius?: number
+    radius_damage_falloff?: number
+    projectile_speed?: string
+    max_ammo?: number
+    power_cost?: string
+    collection: string
+    brand_id?: string
     default_skin_id: string
-    repair_blocks: number
-    updated_at: Date
-    created_at: Date
+    is_melee: boolean
+    projectile_amount?: number
+    dot_tick_damage?: string
+    dot_max_ticks?: number
+    is_arced?: boolean
+    charge_time_seconds?: string
+    burst_rate_of_fire?: string
 }

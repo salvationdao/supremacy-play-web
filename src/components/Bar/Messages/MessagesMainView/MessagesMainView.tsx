@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { SvgAbility, SvgAnnouncement, SvgDamage1, SvgHealth, SvgHistoryClock, SvgNotification, SvgSyndicateFlag } from "../../../../assets"
+import { SvgAbility, SvgAnnouncement, SvgDamage1, SvgHistoryClock, SvgNotification, SvgSyndicateFlag } from "../../../../assets"
 import { useAuth } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { usePagination } from "../../../../hooks"
@@ -27,11 +27,15 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
     const [messages, setMessages] = useState<SystemMessageDisplayable[]>([])
     const [focusedMessage, setFocusedMessage] = useState<SystemMessageDisplayable>()
     const [error, setError] = useState<string>()
-    const [hideRead, setHideRead] = useState(false)
+    const [hideRead, setHideRead] = useState(localStorage.getItem("hideReadMessages") === "true")
     const { page, changePage, setTotalItems, totalItems, changePageSize, pageSize } = usePagination({
         pageSize: 15,
         page: 0,
     })
+
+    useEffect(() => {
+        localStorage.setItem("hideReadMessages", hideRead.toString())
+    }, [hideRead])
 
     const fetchMessages = useCallback(async () => {
         try {
@@ -62,11 +66,11 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                     case SystemMessageDataType.MechBattleComplete:
                         icon = <SvgDamage1 fill={colors.green} size="1.6rem" />
                         break
+                    case SystemMessageDataType.MechBattleBegin:
+                        icon = <SvgNotification size="1.6rem" />
+                        break
                     case SystemMessageDataType.Faction:
                         icon = <SvgSyndicateFlag fill={theme.factionTheme.primary} size="1.6rem" />
-                        break
-                    case SystemMessageDataType.MechOwnerBattleReward:
-                        icon = <SvgHealth fill={colors.yellow} size="1.6rem" />
                         break
                     case SystemMessageDataType.PlayerAbilityRefunded:
                         icon = <SvgAbility fill={colors.orange} size="1.6rem" />
@@ -111,7 +115,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
     )
 
     const content = useMemo(() => {
-        if (messages.length === 0) {
+        if (messages.length === 0 && !focusedMessage) {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ flex: 1, p: "1rem" }}>
                     <Typography
@@ -229,7 +233,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                         />
                     </Stack>
 
-                    <Box sx={{ height: "50%", borderTop: `${theme.factionTheme.primary} 1px solid` }}>
+                    <Box sx={{ height: "60%", borderTop: `${theme.factionTheme.primary} 1px solid` }}>
                         {focusedMessage ? (
                             <MessageDisplay message={focusedMessage} onClose={() => setFocusedMessage(undefined)} />
                         ) : (

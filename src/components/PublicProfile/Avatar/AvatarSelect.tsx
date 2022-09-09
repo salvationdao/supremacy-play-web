@@ -7,6 +7,7 @@ import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { FactionName } from "../../../types"
+import { SortDir } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { ConfirmModal } from "../../Common/ConfirmModal"
 import { FancyButton } from "../../Common/FancyButton"
@@ -126,7 +127,7 @@ export const ProfileAvatar = ({
         if (showCustom) return
         try {
             setIsLoading(true)
-            const sortDir = "asc"
+            const sortDir = SortDir.Asc
             const resp = await send<GetAvatarsResponse, GetAvatarsRequest>(GameServerKeys.PlayerProfileAvatarList, {
                 queue_sort: sortDir,
                 page,
@@ -158,7 +159,7 @@ export const ProfileAvatar = ({
         if (!showCustom) return
         try {
             setIsLoading(true)
-            const sortDir = "asc"
+            const sortDir = SortDir.Asc
             const resp = await send<GetCustomAvatarsResponse, GetAvatarsRequest>(GameServerKeys.PlayerProfileCustomAvatarList, {
                 queue_sort: sortDir,
                 page,
@@ -229,7 +230,7 @@ export const ProfileAvatar = ({
                             py: "1rem",
                             display: "grid",
                             gridTemplateColumns: "repeat(auto-fill, minmax(21rem, 1fr))",
-                            gap: "1.3rem",
+                            gap: "1.5rem",
                             alignItems: "center",
                             justifyContent: "center",
                             overflow: "visible",
@@ -318,7 +319,7 @@ export const ProfileAvatar = ({
                             textAlign: "center",
                         }}
                     >
-                        {"There are no avatars found, please try again."}
+                        {"There are no avatars found, please check your filters and try again."}
                     </Typography>
                 </Stack>
             </Stack>
@@ -369,7 +370,7 @@ export const ProfileAvatar = ({
                             py: "1rem",
                             display: "grid",
                             gridTemplateColumns: "repeat(auto-fill, minmax(21rem, 1fr))",
-                            gap: "1.3rem",
+                            gap: "1.5rem",
                             alignItems: "center",
                             justifyContent: "center",
                             overflow: "visible",
@@ -456,7 +457,7 @@ export const ProfileAvatar = ({
                             textAlign: "center",
                         }}
                     >
-                        {"There are no avatars found, please try again."}
+                        {"There are no avatars found, please check your filters and try again."}
                     </Typography>
                 </Stack>
             </Stack>
@@ -603,15 +604,13 @@ export const ProfileAvatar = ({
                                             direction: "ltr",
 
                                             "::-webkit-scrollbar": {
-                                                width: ".4rem",
+                                                width: "1rem",
                                             },
                                             "::-webkit-scrollbar-track": {
                                                 background: "#FFFFFF15",
-                                                borderRadius: 3,
                                             },
                                             "::-webkit-scrollbar-thumb": {
                                                 background: primaryColor,
-                                                borderRadius: 3,
                                             },
                                         }}
                                     >

@@ -127,7 +127,6 @@ export const supFormatterNoFixed = (num: string, maxDecimals?: number): string =
 
 export const parseString = (val: string | null, defaultVal: number): number => {
     if (!val) return defaultVal
-
     return parseFloat(val)
 }
 
@@ -371,6 +370,10 @@ export const timeSinceInWords = (fromDate: Date, toDate: Date, abbreviated = fal
     return result
 }
 
+export const secondsToWords = (secondsLeft: number) => {
+    return timeSinceInWords(new Date(), new Date(new Date().getTime() + secondsLeft * 1000))
+}
+
 export const camelToTitle = (str: string) => {
     const result = str.replace(/([A-Z])/g, " $1")
     return result.charAt(0).toUpperCase() + result.slice(1)
@@ -601,3 +604,13 @@ export const autoTextColor = (hex: string) => {
         return "#FFFFFF"
     }
 }
+
+export const convertCellsToGameLocation = (x: number, y: number, mapLeft: number, mapTop: number) => {
+    const gameClientTileSize = 2000
+    return {
+        x: x * gameClientTileSize + gameClientTileSize / 2 + mapLeft,
+        y: y * gameClientTileSize + gameClientTileSize / 2 + mapTop,
+    }
+}
+
+export const diff = (a: number, b: number) => (a > b ? a - b : b - a)

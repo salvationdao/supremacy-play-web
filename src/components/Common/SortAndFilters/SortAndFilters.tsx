@@ -1,5 +1,5 @@
 import { Box, Collapse, Drawer, Stack, TextField } from "@mui/material"
-import { ReactNode, useMemo, useState } from "react"
+import React, { ReactNode, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { SvgSearch } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
@@ -12,10 +12,6 @@ import { SliderRangeFilter, SliderRangeFilterSection } from "./SliderRangeFilter
 interface SortAndFiltersProps {
     initialSearch?: string
     onSetSearch?: React.Dispatch<React.SetStateAction<string>>
-    dropdownOptions?: DropdownOptions[]
-    chipFilters?: ChipFilter[]
-    rangeFilters?: RangeFilter[]
-    sliderRangeFilters?: SliderRangeFilter[]
     changePage?: (page: number) => void
     primaryColor?: string
     children?: ReactNode
@@ -25,9 +21,23 @@ interface SortAndFiltersProps {
         container?: Element | (() => Element | null) | null
         onClose: () => void
     }
+    // Sections
+    dropdownOptions?: DropdownOptions[]
+    chipFilters?: ChipFilter[]
+    rangeFilters?: RangeFilter[]
+    sliderRangeFilters?: SliderRangeFilter[]
 }
 
-export const SortAndFilters = ({
+const propsAreEqual = (prevProps: SortAndFiltersProps, nextProps: SortAndFiltersProps) => {
+    return (
+        prevProps.initialSearch === nextProps.initialSearch &&
+        prevProps.isExpanded === nextProps.isExpanded &&
+        prevProps.primaryColor === nextProps.primaryColor &&
+        prevProps.children === nextProps.children
+    )
+}
+
+export const SortAndFilters = React.memo(function SortAndFilters({
     initialSearch,
     onSetSearch,
     dropdownOptions,
@@ -40,7 +50,7 @@ export const SortAndFilters = ({
     isExpanded = true,
     width = "38rem",
     drawer,
-}: SortAndFiltersProps) => {
+}: SortAndFiltersProps) {
     const theme = useTheme()
     const [searchValue, setSearchValue] = useState(initialSearch || "")
 
@@ -74,15 +84,13 @@ export const SortAndFilters = ({
                             direction: "ltr",
                             scrollbarWidth: "none",
                             "::-webkit-scrollbar": {
-                                width: ".4rem",
+                                width: "1rem",
                             },
                             "::-webkit-scrollbar-track": {
                                 background: "#FFFFFF15",
-                                borderRadius: 3,
                             },
                             "::-webkit-scrollbar-thumb": {
                                 background: primaryColor,
-                                borderRadius: 3,
                             },
                         }}
                     >
@@ -118,7 +126,10 @@ export const SortAndFilters = ({
                                                             },
                                                             borderRadius: 0.5,
                                                             border: `${primaryColor}50 2px solid`,
-                                                            ":hover, :focus, :active": { backgroundColor: "#00000080", border: `${primaryColor}99 2px solid` },
+                                                            ":hover, :focus, :active": {
+                                                                backgroundColor: "#00000080",
+                                                                border: `${primaryColor}99 2px solid`,
+                                                            },
                                                         },
                                                         ".MuiOutlinedInput-notchedOutline": { border: "unset" },
                                                     }}
@@ -237,4 +248,5 @@ export const SortAndFilters = ({
             )}
         </>
     )
-}
+},
+propsAreEqual)

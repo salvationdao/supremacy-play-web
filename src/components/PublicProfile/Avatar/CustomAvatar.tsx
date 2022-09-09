@@ -8,6 +8,7 @@ import { usePagination, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser, useGameServerSubscription } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
+import { SortDir } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { ConfirmModal } from "../../Common/ConfirmModal"
 import { FancyButton } from "../../Common/FancyButton"
@@ -172,15 +173,13 @@ export const CustomAvatar = ({ updateAvatar, playerID, open, setOpen, primaryCol
                                             direction: "ltr",
 
                                             "::-webkit-scrollbar": {
-                                                width: ".4rem",
+                                                width: "1rem",
                                             },
                                             "::-webkit-scrollbar-track": {
                                                 background: "#FFFFFF15",
-                                                borderRadius: 3,
                                             },
                                             "::-webkit-scrollbar-thumb": {
                                                 background: primaryColor,
-                                                borderRadius: 3,
                                             },
                                         }}
                                     >
@@ -366,7 +365,7 @@ export const LayerList = ({ setLayer, layerType, primaryColor }: LayerListProps)
     const getItems = useCallback(async () => {
         try {
             setIsLoading(true)
-            const sortDir = "asc"
+            const sortDir = SortDir.Asc
             const resp = await send<GetLayersResponse, ListRequest>(GameServerKeys.PlayerProfileLayerList, {
                 queue_sort: sortDir,
                 page,
@@ -440,7 +439,7 @@ export const LayerList = ({ setLayer, layerType, primaryColor }: LayerListProps)
                             py: "1rem",
                             display: "grid",
                             gridTemplateColumns: "repeat(auto-fill, minmax(21rem, 1fr))",
-                            gap: "1.3rem",
+                            gap: "1.5rem",
                             alignItems: "center",
                             justifyContent: "center",
                             overflow: "visible",
@@ -513,7 +512,7 @@ export const LayerList = ({ setLayer, layerType, primaryColor }: LayerListProps)
                             textAlign: "center",
                         }}
                     >
-                        {"There are no avatars found, please try again."}
+                        {"There are no avatars found, please check your filters and try again."}
                     </Typography>
                 </Stack>
             </Stack>
@@ -546,15 +545,13 @@ export const LayerList = ({ setLayer, layerType, primaryColor }: LayerListProps)
                                     direction: "ltr",
 
                                     "::-webkit-scrollbar": {
-                                        width: ".4rem",
+                                        width: "1rem",
                                     },
                                     "::-webkit-scrollbar-track": {
                                         background: "#FFFFFF15",
-                                        borderRadius: 3,
                                     },
                                     "::-webkit-scrollbar-thumb": {
                                         background: primaryColor,
-                                        borderRadius: 3,
                                     },
                                 }}
                             >

@@ -1,4 +1,4 @@
-import { Grow, Stack, Typography } from "@mui/material"
+import { Box, Grow, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useRef } from "react"
 import { FancyButton } from "../../.."
 import { SvgLock, SvgPlus, SvgSkin, SvgSwap, SvgWrapperProps } from "../../../../assets"
@@ -14,6 +14,7 @@ interface LoadoutItem {
     imageUrl?: string
     videoUrls?: (string | undefined)[] | undefined
     label: string
+    subLabel?: string
     onClick?: () => void
     rarity?: Rarity
     hasSkin?: boolean
@@ -82,6 +83,7 @@ const MechLoadoutItemButton = ({
     imageUrl,
     videoUrls,
     label,
+    subLabel,
     primaryColor,
     onClick,
     isEmpty,
@@ -181,6 +183,41 @@ const MechLoadoutItemButton = ({
                             SLOT {slotNumber}
                         </Typography>
                     )}
+                    <Box>
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                color: primaryColor,
+                                fontFamily: fonts.nostromoBold,
+                                display: "-webkit-box",
+                                overflow: "hidden",
+                                overflowWrap: "anywhere",
+                                textOverflow: "ellipsis",
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: "vertical",
+                            }}
+                        >
+                            {label}
+                        </Typography>
+
+                        {subLabel && (
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    color: primaryColor,
+                                    fontFamily: fonts.nostromoBold,
+                                    display: "-webkit-box",
+                                    overflow: "hidden",
+                                    overflowWrap: "anywhere",
+                                    textOverflow: "ellipsis",
+                                    WebkitLineClamp: 1,
+                                    WebkitBoxOrient: "vertical",
+                                }}
+                            >
+                                {subLabel}
+                            </Typography>
+                        )}
+                    </Box>
 
                     {rarity && (
                         <Typography

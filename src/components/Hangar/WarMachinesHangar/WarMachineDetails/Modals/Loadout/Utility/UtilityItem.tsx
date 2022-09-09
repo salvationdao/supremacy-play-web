@@ -179,15 +179,15 @@ export const UtilityItem = ({ id, equipped, selected, onSelect }: UtilityItemPro
                 if (!utility) return
                 return (
                     <Stack>
-                        {typeof utility.boost_amount !== "undefined" &&
+                        {typeof utility.boosted_seconds !== "undefined" &&
                             renderStat("BOOST AMOUNT", {
-                                oldStat: oldUtility?.boost_amount,
-                                newStat: utility.boost_amount,
+                                oldStat: oldUtility?.boosted_seconds,
+                                newStat: utility.boosted_seconds,
                             })}
-                        {typeof utility.boost_seconds !== "undefined" &&
+                        {typeof utility.boosted_amount !== "undefined" &&
                             renderStat("DURATION (SECONDS)", {
-                                oldStat: oldUtility?.boost_seconds,
-                                newStat: utility.boost_seconds,
+                                oldStat: oldUtility?.boosted_amount,
+                                newStat: utility.boosted_amount,
                             })}
                         {typeof utility.energy_cost !== "undefined" &&
                             renderStat("ENERGY COST", {

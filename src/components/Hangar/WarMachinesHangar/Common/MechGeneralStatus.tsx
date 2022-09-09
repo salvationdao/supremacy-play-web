@@ -1,11 +1,18 @@
-import { Box, Stack, Typography } from "@mui/material"
-import { useCallback, useState } from "react"
+import { Stack, Typography } from "@mui/material"
+import { useCallback, useRef, useState } from "react"
 import { SvgRepair } from "../../../../assets"
+import { useGlobalNotifications } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
-import { useGameServerCommandsFaction, useGameServerSubscriptionFaction, useGameServerSubscriptionSecured } from "../../../../hooks/useGameServer"
+import {
+    useGameServerCommandsFaction,
+    useGameServerCommandsUser,
+    useGameServerSubscriptionFaction,
+    useGameServerSubscriptionSecured,
+    useGameServerSubscriptionSecuredUser,
+} from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
-import { MechDetails, MechStatus, MechStatusEnum } from "../../../../types"
+import { MechDetails, MechStatus, MechStatusEnum, RepairSlot } from "../../../../types"
 import { RepairOffer } from "../../../../types/jobs"
 import { RepairModal } from "../WarMachineDetails/Modals/RepairModal/RepairModal"
 
@@ -17,6 +24,7 @@ export const MechGeneralStatus = ({
     onStatusLoaded,
     onRepairOfferLoaded,
     setPrimaryColor,
+    showButtons,
 }: {
     mechID: string
     hideBox?: boolean
@@ -25,16 +33,21 @@ export const MechGeneralStatus = ({
     onStatusLoaded?: (mechStatus: MechStatus) => void
     onRepairOfferLoaded?: (repairOffer: RepairOffer) => void
     setPrimaryColor?: React.Dispatch<React.SetStateAction<string>>
+    showButtons?: boolean
 }) => {
     const theme = useTheme()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
+    const { send: sendUser } = useGameServerCommandsUser("/user_commander")
     const [mechStatus, setMechStatus] = useState<MechStatus>()
-    const [text, setText] = useState("LOADING...")
+    const textValue = useRef("LOADING...")
     const [color, setColour] = useState(theme.factionTheme.primary)
     const [repairMechModalOpen, setRepairMechModalOpen] = useState<boolean>(false)
     const [repairOffer, setRepairOffer] = useState<RepairOffer>()
     const [defaultOpenSelfRepair, setDefaultOpenSelfRepair] = useState(false)
+    const [isInRepairBay, setIsInRepairBay] = useState(false)
 
+    // Subscribe on the mech's repair job listed
     useGameServerSubscriptionSecured<RepairOffer>(
         {
             URI: `/mech/${mechID}/active_repair_offer`,
@@ -42,12 +55,31 @@ export const MechGeneralStatus = ({
             ready: mechStatus?.status === MechStatusEnum.Damaged,
         },
         (payload) => {
-            if (!payload) return
+            if (!payload || payload.closed_at) {
+                setRepairOffer(undefined)
+                return
+            }
             setRepairOffer(payload)
             onRepairOfferLoaded && onRepairOfferLoaded(payload)
         },
     )
 
+    // Subscribe on the repair bay
+    useGameServerSubscriptionSecuredUser<RepairSlot[]>(
+        {
+            URI: "/repair_bay",
+            key: GameServerKeys.GetRepairBaySlots,
+        },
+        (payload) => {
+            if (!payload || payload.length <= 0) {
+                setIsInRepairBay(false)
+                return
+            }
+            setIsInRepairBay(!!payload.find((repairSlot) => repairSlot.mech_id === mechID))
+        },
+    )
+
+    // Subscribe on the mech's status
     useGameServerSubscriptionFaction<MechStatus>(
         {
             URI: `/queue/${mechID}`,
@@ -55,6 +87,7 @@ export const MechGeneralStatus = ({
         },
         (payload) => {
             if (!payload) return
+
             setMechStatus(payload)
             onStatusLoaded && onStatusLoaded(payload)
             let text = ""
@@ -64,8 +97,15 @@ export const MechGeneralStatus = ({
                     text = "IDLE"
                     color = colors.green
                     break
+                case MechStatusEnum.PendingQueue:
+                    text = "PENDING DEPLOY"
+                    color = colors.yellow
+                    break
                 case MechStatusEnum.Queue:
-                    text = `IN QUEUE${payload.queue_position ? `: ${payload.queue_position}` : ""}`
+                    text = "IN QUEUE"
+                    if (payload.queue_position != null) {
+                        text = "POSITION: " + payload.queue_position
+                    }
                     color = colors.yellow
                     break
                 case MechStatusEnum.Battle:
@@ -89,7 +129,7 @@ export const MechGeneralStatus = ({
                     color = colors.lightGrey
             }
 
-            setText(text)
+            textValue.current = text
             setColour(color)
             setPrimaryColor && setPrimaryColor(color)
         },
@@ -99,7 +139,7 @@ export const MechGeneralStatus = ({
     const triggerStatusUpdate = useCallback(
         async (currentStatus: string) => {
             try {
-                if (currentStatus.includes("QUEUE")) return
+                if (!currentStatus.includes("QUEUE") && !currentStatus.includes("BATTLING")) return
                 await send(GameServerKeys.TriggerMechStatusUpdate, {
                     mech_id: mechID,
                 })
@@ -113,33 +153,33 @@ export const MechGeneralStatus = ({
     // When the battle queue is updated, tell the server to send the mech status to us again
     useGameServerSubscriptionFaction<boolean>(
         {
-            URI: `/mech/${mechID}/repair-update`,
-            key: GameServerKeys.MechQueueUpdated,
-        },
-        (payload) => {
-            if (!payload) return
-            // Force update status
-            triggerStatusUpdate("")
-        },
-    )
-
-    // When the battle queue is updated, tell the server to send the mech status to us again
-    useGameServerSubscriptionFaction<boolean>(
-        {
             URI: "/queue-update",
             key: GameServerKeys.MechQueueUpdated,
         },
         (payload) => {
             if (!payload) return
-
-            triggerStatusUpdate(text)
+            triggerStatusUpdate(textValue.current)
         },
     )
 
+    // Adds mech to repair bay
+    const insertRepairBay = useCallback(async () => {
+        try {
+            await sendUser<boolean>(GameServerKeys.InsertRepairBay, {
+                mech_ids: [mechID],
+            })
+        } catch (err) {
+            const message = typeof err === "string" ? err : "Failed to insert into repair bay."
+            newSnackbarMessage(message, "error")
+            console.error(err)
+        }
+    }, [mechID, newSnackbarMessage, sendUser])
+
     return (
         <>
-            <Stack direction="row" alignItems="center" spacing=".5rem" sx={{}}>
-                <Box
+            <Stack direction="row" alignItems="center" spacing=".5rem" sx={{ flexShrink: 0 }}>
+                <Stack
+                    spacing=".8rem"
                     sx={
                         hideBox
                             ? { position: "relative" }
@@ -155,69 +195,110 @@ export const MechGeneralStatus = ({
                         variant={smallVersion ? "caption" : "body1"}
                         sx={{ lineHeight: 1, color, textAlign: hideBox ? "start" : "center", fontFamily: fonts.nostromoBlack }}
                     >
-                        {text}
+                        {textValue.current}
                     </Typography>
 
-                    <Stack
-                        direction="row"
-                        alignItems="center"
-                        spacing=".5rem"
-                        sx={{ position: "absolute", left: "100%", top: "50%", transform: "translateY(-50%)", px: ".4rem", pb: ".3rem" }}
-                    >
-                        {mechDetails && mechStatus?.status === MechStatusEnum.Damaged && (
-                            <Stack
-                                direction="row"
-                                spacing=".3rem"
-                                alignItems="center"
-                                onClick={(e) => {
-                                    e.preventDefault()
-                                    e.stopPropagation()
-                                    setDefaultOpenSelfRepair(true)
-                                    setRepairMechModalOpen(true)
-                                }}
-                                sx={{
-                                    p: ".1rem .6rem",
-                                    pt: ".2rem",
-                                    borderRadius: 0.5,
-                                    backgroundColor: colors.orange,
-                                    ":hover": { transform: "scale(1.05)" },
-                                }}
-                            >
-                                <SvgRepair size="1.1rem" />
-                                <Typography variant="subtitle1" sx={{ whiteSpace: "nowrap", lineHeight: 1, fontWeight: "fontWeightBold" }}>
-                                    REPAIR
-                                </Typography>
-                            </Stack>
-                        )}
+                    {showButtons && (
+                        <Stack direction="row" alignItems="center" spacing=".5rem" sx={{ pb: ".4rem" }}>
+                            {mechDetails && mechStatus?.status === MechStatusEnum.Damaged && (
+                                <Stack
+                                    direction="row"
+                                    spacing=".3rem"
+                                    alignItems="center"
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        e.stopPropagation()
+                                        setDefaultOpenSelfRepair(true)
+                                        setRepairMechModalOpen(true)
+                                    }}
+                                    sx={{
+                                        p: ".1rem .6rem",
+                                        pt: ".2rem",
+                                        borderRadius: 0.5,
+                                        backgroundColor: colors.orange,
+                                        ":hover": { transform: "scale(1.05)" },
+                                    }}
+                                >
+                                    <SvgRepair size="1.1rem" />
+                                    <Typography variant="subtitle1" sx={{ whiteSpace: "nowrap", lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                        REPAIR
+                                    </Typography>
+                                </Stack>
+                            )}
 
-                        {mechDetails && mechStatus?.status === MechStatusEnum.Damaged && (
-                            <Stack
-                                direction="row"
-                                spacing=".3rem"
-                                alignItems="center"
-                                onClick={(e) => {
-                                    e.preventDefault()
-                                    e.stopPropagation()
-                                    setDefaultOpenSelfRepair(false)
-                                    setRepairMechModalOpen(true)
-                                }}
-                                sx={{
-                                    p: ".1rem .6rem",
-                                    pt: ".2rem",
-                                    opacity: repairOffer ? 0.6 : 1,
-                                    backgroundColor: repairOffer ? colors.grey : colors.blue2,
-                                    borderRadius: 0.5,
-                                    ":hover": { transform: "scale(1.05)" },
-                                }}
-                            >
-                                <SvgRepair size="1.1rem" />
-                                <Typography variant="subtitle1" sx={{ whiteSpace: "nowrap", lineHeight: 1, fontWeight: "fontWeightBold" }}>
-                                    {repairOffer ? "JOB POSTED" : "POST JOB"}
-                                </Typography>
-                            </Stack>
-                        )}
-                    </Stack>
-                </Box>
+                            {mechDetails && mechStatus?.status === MechStatusEnum.Damaged && (
+                                <Stack
+                                    direction="row"
+                                    spacing=".3rem"
+                                    alignItems="center"
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        e.stopPropagation()
+                                        setDefaultOpenSelfRepair(false)
+                                        setRepairMechModalOpen(true)
+                                    }}
+                                    sx={{
+                                        p: ".1rem .6rem",
+                                        pt: ".2rem",
+                                        opacity: repairOffer ? 0.6 : 1,
+                                        backgroundColor: repairOffer ? "unset" : colors.blue2,
+                                        border: repairOffer ? `${colors.blue2} 1px solid` : "unset",
+                                        borderRadius: 0.5,
+                                        ":hover": { transform: "scale(1.05)" },
+                                    }}
+                                >
+                                    <SvgRepair size="1.1rem" fill={repairOffer ? colors.blue2 : "#FFFFFF"} />
+                                    <Typography
+                                        variant="subtitle1"
+                                        sx={{
+                                            color: repairOffer ? colors.blue2 : "#FFFFFF",
+                                            whiteSpace: "nowrap",
+                                            lineHeight: 1,
+                                            fontWeight: "fontWeightBold",
+                                        }}
+                                    >
+                                        {repairOffer ? "JOB POSTED" : "POST JOB"}
+                                    </Typography>
+                                </Stack>
+                            )}
+
+                            {mechDetails && mechStatus?.status === MechStatusEnum.Damaged && (
+                                <Stack
+                                    direction="row"
+                                    spacing=".3rem"
+                                    alignItems="center"
+                                    sx={{
+                                        p: ".1rem .6rem",
+                                        pt: ".2rem",
+                                        opacity: isInRepairBay ? 0.6 : 1,
+                                        backgroundColor: isInRepairBay ? "unset" : colors.bronze,
+                                        border: isInRepairBay ? `${colors.bronze} 1px solid` : "unset",
+                                        borderRadius: 0.5,
+                                        ":hover": { transform: "scale(1.05)" },
+                                    }}
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        e.stopPropagation()
+                                        insertRepairBay()
+                                    }}
+                                >
+                                    <SvgRepair size="1.1rem" fill={isInRepairBay ? colors.bronze : "#FFFFFF"} />
+                                    <Typography
+                                        variant="subtitle1"
+                                        sx={{
+                                            color: isInRepairBay ? colors.bronze : "#FFFFFF",
+                                            whiteSpace: "nowrap",
+                                            lineHeight: 1,
+                                            fontWeight: "fontWeightBold",
+                                        }}
+                                    >
+                                        REPAIR BAY
+                                    </Typography>
+                                </Stack>
+                            )}
+                        </Stack>
+                    )}
+                </Stack>
             </Stack>
 
             {repairMechModalOpen && mechDetails && (

@@ -1,13 +1,12 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
 import { ClipThing, FancyButton } from "../.."
 import { PlayerAbilityPNG } from "../../../assets"
 import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { GetSaleAbilityAvailability } from "../../../fetching"
-import { timeSinceInWords } from "../../../helpers"
-import { useTimer } from "../../../hooks"
+import { secondsToWords } from "../../../helpers"
 import { useGameServerSubscriptionSecured, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { HANGAR_TABS } from "../../../pages"
@@ -97,7 +96,7 @@ export const PlayerAbilitiesStore = () => {
 
             const t = new Date()
             t.setSeconds(t.getSeconds() + Math.max(payload.time_left_seconds, 1))
-            setNextRefreshTime(payload.next_refresh_time || t)
+            setNextRefreshTime(t)
             setSaleAbilities(payload.sale_abilities)
 
             // Fetch sale availability
@@ -129,7 +128,7 @@ export const PlayerAbilitiesStore = () => {
         if (nextRefreshTime) {
             return (
                 <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBold, textTransform: "uppercase" }}>
-                    <TimeLeft key={nextRefreshTime.getMilliseconds()} dateTo={nextRefreshTime} />
+                    <TimeLeft key={nextRefreshTime.getTime()} dateTo={nextRefreshTime} />
                 </Typography>
             )
         }
@@ -309,15 +308,13 @@ export const PlayerAbilitiesStore = () => {
                             direction: "ltr",
 
                             "::-webkit-scrollbar": {
-                                width: ".4rem",
+                                width: "1rem",
                             },
                             "::-webkit-scrollbar-track": {
                                 background: "#FFFFFF15",
-                                borderRadius: 3,
                             },
                             "::-webkit-scrollbar-thumb": {
                                 background: theme.factionTheme.primary,
-                                borderRadius: 3,
                             },
                         }}
                     >
@@ -330,18 +327,28 @@ export const PlayerAbilitiesStore = () => {
 }
 
 interface TimeLeftProps {
-    dateTo: Date | undefined
-    onComplete?: () => void
+    dateTo: Date
 }
 
-export const TimeLeft = ({ dateTo, onComplete }: TimeLeftProps) => {
-    const { totalSecRemain } = useTimer(dateTo)
+export const TimeLeft = ({ dateTo }: TimeLeftProps) => {
+    const secondsLeftRef = useRef(Math.round((dateTo.getTime() - new Date().getTime()) / 1000))
+    const containerRef = useRef<HTMLDivElement>()
 
     useEffect(() => {
-        if (totalSecRemain < 1 && onComplete) {
-            onComplete()
-        }
-    }, [onComplete, totalSecRemain])
+        const t = setInterval(() => {
+            if (secondsLeftRef.current < 1) return
+            secondsLeftRef.current -= 1
 
-    return <>{totalSecRemain > 0 ? timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000)) : "REFRESHING..."}</>
+            if (!containerRef.current) return
+            containerRef.current.innerText = secondsLeftRef.current > 0 ? secondsToWords(secondsLeftRef.current) : "REFRESHING"
+        }, 1000)
+
+        return () => clearInterval(t)
+    }, [dateTo])
+
+    return (
+        <Box ref={containerRef} component="span">
+            {secondsLeftRef.current > 0 ? secondsToWords(secondsLeftRef.current) : "REFRESHING"}
+        </Box>
+    )
 }

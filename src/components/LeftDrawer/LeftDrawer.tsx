@@ -14,16 +14,19 @@ export const LeftDrawer = () => {
     const { userID } = useAuth()
 
     const match = useRouteMatch(ROUTES_ARRAY.filter((r) => r.path !== "/").map((r) => r.path))
-    let activeRouteID = ""
+    let activeRouteID = "home"
     if (match) {
         const r = ROUTES_ARRAY.find((r) => r.path === match.path)
         activeRouteID = r?.id || ""
     }
 
     // Hide the drawer if on mobile OR none of the tabs are visible on the page
-    if (isMobile || (activeRouteID && LEFT_DRAWER_ARRAY.filter((r) => !r.matchNavLinkID || r.matchNavLinkID === activeRouteID).length <= 0)) return null
+    if (isMobile || LEFT_DRAWER_ARRAY.filter((r) => !r.matchNavLinkIDs || r.matchNavLinkIDs.includes(activeRouteID)).length <= 0) return null
 
-    const isOpen = !!LEFT_DRAWER_MAP[leftDrawerActiveTabID]
+    const isOpen =
+        LEFT_DRAWER_MAP[leftDrawerActiveTabID] &&
+        (LEFT_DRAWER_MAP[leftDrawerActiveTabID].matchNavLinkIDs === undefined ||
+            LEFT_DRAWER_MAP[leftDrawerActiveTabID].matchNavLinkIDs?.includes(activeRouteID))
 
     return (
         <>
@@ -47,20 +50,12 @@ export const LeftDrawer = () => {
                 }}
             >
                 {LEFT_DRAWER_ARRAY.map((r) => {
-                    if ((r.requireAuth && !userID) || (r.matchNavLinkID && activeRouteID && activeRouteID !== r.matchNavLinkID)) return null
+                    if ((r.requireAuth && !userID) || (r.matchNavLinkIDs && !r.matchNavLinkIDs.includes(activeRouteID))) return null
                     const isActive = r.id === leftDrawerActiveTabID
                     if (isActive || r.mountAllTime) {
                         return (
                             <Fade key={r.id} in>
-                                <Box
-                                    sx={{
-                                        height: isActive ? "100%" : 0,
-                                        visibility: isActive ? "visible" : "hidden",
-                                        pointerEvents: isActive ? "all" : "none",
-                                    }}
-                                >
-                                    {r.Component && <r.Component />}
-                                </Box>
+                                <Box sx={{ display: isActive ? "block" : "none", height: "100%" }}>{r.Component && <r.Component />}</Box>
                             </Fade>
                         )
                     }

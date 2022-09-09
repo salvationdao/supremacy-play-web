@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo } from "react"
+import React, { useEffect, useMemo } from "react"
 import { SvgCubes, SvgSupToken } from "../../../assets"
 import { useAuth, useSupremacy } from "../../../containers"
 import { supFormatterNoFixed, timeSinceInWords } from "../../../helpers"
@@ -11,17 +11,18 @@ import { Player } from "../../Common/Player"
 import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
 import { General } from "../../Marketplace/Common/MarketItem/General"
 
-export const RepairJobItem = ({
-    repairJob,
-    removeByID,
-    repairJobModal,
-    setRepairJobModal,
-}: {
+interface RepairJobItemProps {
     repairJob: RepairJob
     removeByID: (id: string) => void
     repairJobModal?: RepairJob
     setRepairJobModal: React.Dispatch<React.SetStateAction<RepairJob | undefined>>
-}) => {
+}
+
+const propsAreEqual = (prevProps: RepairJobItemProps, nextProps: RepairJobItemProps) => {
+    return prevProps.repairJobModal?.id === nextProps.repairJobModal?.id && prevProps.repairJob.id === nextProps.repairJob.id
+}
+
+export const RepairJobItem = React.memo(function RepairJobItem({ repairJob, removeByID, repairJobModal, setRepairJobModal }: RepairJobItemProps) {
     const { userID } = useAuth()
     const { getFaction } = useSupremacy()
 
@@ -55,15 +56,15 @@ export const RepairJobItem = ({
                             bottomRight: true,
                         },
                         backgroundColor: backgroundColor,
-                        opacity: 0.9,
-                        border: { borderColor: primaryColor, borderThickness: ".15rem" },
+                        opacity: isFinished ? 0.6 : 0.9,
+                        border: { borderColor: primaryColor, borderThickness: isFinished ? "0" : ".15rem" },
                         sx: { position: "relative", height: "100%" },
                     }}
                     sx={{ p: 0, color: primaryColor, textAlign: "start", height: "100%", ":hover": { opacity: 1 } }}
                     onClick={() => !isFinished && setRepairJobModal(repairJob)}
                 >
-                    <Stack spacing=".8rem" sx={{ position: "relative", height: "100%", p: "1rem 1.5rem" }}>
-                        <Stack spacing="1.5rem" direction="row" alignItems="center" sx={{ pl: ".5rem" }}>
+                    <Stack spacing=".4rem" sx={{ position: "relative", height: "100%", p: "1rem 1.5rem" }}>
+                        <Stack spacing="1.5rem" direction="row" alignItems="center" sx={{ pl: ".5rem", pb: ".6rem" }}>
                             <SvgCubes size="2.8rem" />
                             <Stack>
                                 <Typography
@@ -86,13 +87,13 @@ export const RepairJobItem = ({
                         </Stack>
 
                         <General
-                            isGridView={true}
+                            isGridViewCompact={true}
                             title="ACTIVE WORKERS"
                             text={repairJob.working_agent_count.toString()}
                             textColor={repairJob.working_agent_count <= 3 ? colors.green : colors.orange}
                         />
 
-                        <General isGridView={true} title="REWARD">
+                        <General isGridViewCompact={true} title="REWARD">
                             <Stack direction="row" alignItems="center">
                                 <SvgSupToken size="1.8rem" fill={colors.yellow} />
                                 <Typography
@@ -111,7 +112,7 @@ export const RepairJobItem = ({
                             </Stack>
                         </General>
 
-                        <General isGridView={true} title="JOB OWNER">
+                        <General isGridViewCompact={true} title="JOB OWNER">
                             <Box>
                                 <Player player={repairJob.job_owner} />
                                 {repairJob.offered_by_id === userID && <Typography sx={{ display: "inline", color: colors.neonBlue }}>&nbsp;(YOU)</Typography>}
@@ -120,13 +121,13 @@ export const RepairJobItem = ({
 
                         {isFinished ? (
                             <General
-                                isGridView={true}
+                                isGridViewCompact={true}
                                 title="TIME LEFT"
                                 text={repairJob ? `JOB ${repairJob.finished_reason}` : "EXPIRED"}
                                 textColor={colors.lightGrey}
                             />
                         ) : (
-                            <CountdownGeneral isGridView={true} endTime={repairJob.expires_at} />
+                            <CountdownGeneral isGridViewCompact={true} endTime={repairJob.expires_at} />
                         )}
                     </Stack>
 
@@ -146,14 +147,14 @@ export const RepairJobItem = ({
         ),
         [backgroundColor, isFinished, primaryColor, remainDamagedBlocks, repairJob, setRepairJobModal, userID],
     )
-}
+}, propsAreEqual)
 
-const CountdownGeneral = ({ isGridView, endTime }: { isGridView?: boolean; endTime: Date }) => {
+const CountdownGeneral = ({ isGridViewCompact, endTime }: { isGridViewCompact?: boolean; endTime: Date }) => {
     const { totalSecRemain } = useTimer(endTime)
 
     return (
         <General
-            isGridView={isGridView}
+            isGridViewCompact={isGridViewCompact}
             title="TIME LEFT"
             text={timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000))}
             textColor={totalSecRemain < 300 ? colors.orange : "#FFFFFF"}

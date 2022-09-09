@@ -15,6 +15,7 @@ export enum GameServerKeys {
     SubGameNotification = "GAME:NOTIFICATION",
 
     // Battle Arena
+    SubArenaStatus = "ARENA:STATUS:UPDATED",
     SubBattleArenaList = "BATTLE:ARENA:LIST",
     SubBattleArenaClosed = "BATTLE:ARENA:CLOSED",
     SubMiniMapAbilityDisplayList = "MINI:MAP:ABILITY:DISPLAY:LIST",
@@ -49,6 +50,7 @@ export enum GameServerKeys {
     SubMechQueuePosition = "PLAYER:ASSET:MECH:QUEUE:SUBSCRIBE",
     MechQueueUpdated = "PLAYER:ASSET:MECH:QUEUE:UPDATE",
     GetMechs = "PLAYER:ASSET:MECH:LIST",
+    PlayerQueueStatus = "PLAYER:QUEUE:STATUS",
     EquipMech = "PLAYER:ASSET:MECH:EQUIP",
     GetMechDetails = "PLAYER:ASSET:MECH:DETAIL",
     GetWeapons = "PLAYER:ASSET:WEAPON:LIST",
@@ -71,6 +73,7 @@ export enum GameServerKeys {
 
     // Minimap ability updates
     MinimapUpdatesSubscribe = "MINIMAP:UPDATES:SUBSCRIBE",
+    MinimapEventsSubscribe = "MINIMAP:EVENTS:SUBSCRIBE",
 
     // Chat
     SubscribeFactionChat = "FACTION:CHAT:SUBSCRIBE",
@@ -154,8 +157,8 @@ export enum GameServerKeys {
     //submodels
     GetMechSubmodels = "PLAYER:ASSET:MECH:SUBMODEL:LIST",
     GetWeaponSubmodels = "PLAYER:ASSET:WEAPON:SUBMODEL:LIST",
-    GetMechModels = "PLAYER:MECH:MODEL:LIST",
-    GetWeaponModels = "PLAYER:WEAPON:MODEL:LIST",
+    GetMechBlueprints = "PLAYER:MECH:BLUEPRINT:LIST",
+    GetWeaponBlueprints = "PLAYER:WEAPON:BLUEPRINT:LIST",
 
     // Keycards
     GetPlayerKeycards = "PLAYER:ASSET:KEYCARD:LIST",
@@ -201,6 +204,12 @@ export enum GameServerKeys {
     CompleteRepairAgent = "REPAIR:AGENT:COMPLETE",
     AbandonRepairAgent = "REPAIR:AGENT:ABANDON",
 
+    // Repair bay
+    GetRepairBaySlots = "MECH:REPAIR:SLOTS",
+    InsertRepairBay = "MECH:REPAIR:SLOT:INSERT",
+    RemoveRepairBay = "MECH:REPAIR:SLOT:REMOVE",
+    SwapRepairBay = "MECH:REPAIR:SLOT:SWAP",
+
     // Companion App
     AuthGenOneTimeToken = "GEN:ONE:TIME:TOKEN",
     GetPlayerDeviceList = "PLAYER:DEVICE:LIST",
@@ -208,6 +217,13 @@ export enum GameServerKeys {
     // Quests
     SubPlayerQuestStats = "PLAYER:QUEST:STAT",
     SubPlayerQuestStatsProgression = "PLAYER:QUEST:PROGRESSIONS",
+
+    NextBattleDetails = "BATTLE:NEXT:DETAILS",
+    SubChallengeFunds = "CHALLENGE:FUND",
+
+    // Replays
+    GetReplays = "GET:BATTLE:REPLAYS",
+    GetReplayDetails = "GET:REPLAY:DETAILS",
 }
 
 export enum PassportServerKeys {

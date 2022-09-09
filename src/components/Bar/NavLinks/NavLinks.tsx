@@ -6,14 +6,14 @@ import { ROUTES_ARRAY } from "../../../routes"
 import { fonts } from "../../../theme/theme"
 import { FancyButton } from "../../Common/FancyButton"
 
-export const HIDE_NAV_LINKS_WIDTH = 1550
+export const HIDE_NAV_LINKS_WIDTH = 1720
 
 export const NavLinks = () => {
     const hideNavLinks = useMediaQuery(`(max-width:${HIDE_NAV_LINKS_WIDTH}px)`)
     const { userID } = useAuth()
 
     const match = useRouteMatch(ROUTES_ARRAY.filter((r) => r.path !== "/").map((r) => r.path))
-    let activeRouteID = ""
+    let activeRouteID = "home"
     if (match) {
         const r = ROUTES_ARRAY.find((r) => r.path === match.path)
         activeRouteID = r?.id || ""
@@ -35,7 +35,7 @@ export const NavLinks = () => {
     )
 }
 
-const NavLink = ({ isActive, label, to }: { isActive: boolean; label: string; to: string }) => {
+export const NavLink = ({ isActive, label, to }: { isActive: boolean; label: string; to: string }) => {
     const theme = useTheme()
 
     const primaryColor = theme.factionTheme.primary

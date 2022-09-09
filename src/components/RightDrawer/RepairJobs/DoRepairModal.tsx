@@ -36,6 +36,10 @@ const propsAreEqual = (prevProps: DoRepairModalProps, nextProps: DoRepairModalPr
     )
 }
 
+/**
+ * Make sure this component is quite generic and doesnt know about what the
+ * mini-game is because in the future we want to support different mini-games.
+ */
 export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, repairJob: _repairJob, open, onClose }: DoRepairModalProps) {
     const theme = useTheme()
     const { getFaction } = useSupremacy()

@@ -1,12 +1,8 @@
 import { Divider, Stack } from "@mui/material"
-import { BuySupsButton } from "../.."
 import { SvgWallet } from "../../../assets"
-import { useAuth } from "../../../containers"
 import { WalletInfo } from "./WalletInfo/WalletInfo"
 
 export const WalletDetails = () => {
-    const { userID } = useAuth()
-
     return (
         <Stack
             direction="row"
@@ -27,15 +23,13 @@ export const WalletDetails = () => {
                     overflowY: "hidden",
 
                     "::-webkit-scrollbar": {
-                        height: ".3rem",
+                        height: ".6rem",
                     },
                     "::-webkit-scrollbar-track": {
                         background: "#FFFFFF15",
-                        borderRadius: 3,
                     },
                     "::-webkit-scrollbar-thumb": {
                         background: "#FFFFFF50",
-                        borderRadius: 3,
                     },
                 }}
             >
@@ -43,8 +37,6 @@ export const WalletDetails = () => {
                     <SvgWallet size="2.3rem" sx={{ mr: ".8rem" }} />
                     <WalletInfo />
                 </Stack>
-
-                {userID && <BuySupsButton />}
             </Stack>
 
             <Divider

@@ -1,91 +1,95 @@
-import { Checkbox, Stack, Typography } from "@mui/material"
-import { colors } from "../../../theme/theme"
+import { Box, Stack, Typography } from "@mui/material"
+import React, { useState } from "react"
+import Confetti from "react-confetti"
+import { SvgChest, SvgInfoCircular } from "../../../assets"
+import { colors, fonts } from "../../../theme/theme"
 import { QuestProgress, QuestStat } from "../../../types"
 import { ProgressBar } from "../../Common/ProgressBar"
 import { TooltipHelper } from "../../Common/TooltipHelper"
-import Confetti from "react-confetti"
-import { useEffect, useState } from "react"
 
-export const QuestItem = ({ questStat, progress, showConfetti }: { questStat: QuestStat; progress?: QuestProgress; showConfetti: boolean }) => {
+interface QuestItemProps {
+    questStat: QuestStat
+    progress?: QuestProgress
+    showConfetti: boolean
+}
+
+const propsAreEqual = (prevProps: QuestItemProps, nextProps: QuestItemProps) => {
+    return (
+        prevProps.questStat.id === nextProps.questStat.id &&
+        prevProps.progress?.current === nextProps.progress?.current &&
+        prevProps.showConfetti === nextProps.showConfetti
+    )
+}
+
+export const QuestItem = React.memo(function QuestItem({ questStat, progress, showConfetti }: QuestItemProps) {
     const cappedCurrent = progress ? Math.min(progress.current, progress.goal) : 0
     const progressPercent = progress ? (100 * cappedCurrent) / progress.goal : 0
-    const [showShowConfetti, setShowShowConfetti] = useState(false)
-
-    // This timeout allows the popover to fully animate before we do other animations, else it will lage
-    useEffect(() => {
-        if (!showConfetti) return
-        setTimeout(() => {
-            setShowShowConfetti(true)
-        }, 400)
-    }, [showConfetti])
+    const [showShowConfetti, setShowShowConfetti] = useState(showConfetti)
+    const [completed, setCompleted] = useState(questStat.obtained)
 
     return (
-        <TooltipHelper color={colors.purple} placement="left" text={questStat.description}>
-            <Stack
-                direction="row"
-                alignItems="center"
-                spacing=".3rem"
-                sx={{
-                    position: "relative",
-                    overflow: "hidden",
-                    p: ".8rem .5rem",
-                    pr: "1.6rem",
-                    borderRadius: 1,
-                    backgroundColor: `${colors.purple}12`,
-                    userSelect: "none",
-                }}
-            >
+        <Stack
+            direction="row"
+            alignItems="center"
+            spacing="1rem"
+            sx={{
+                position: "relative",
+                py: "1.2rem",
+                pl: ".5rem",
+                pr: "1.4rem",
+                borderRadius: 1,
+                backgroundColor: `${colors.purple}16`,
+                userSelect: "none",
+                opacity: completed && !showShowConfetti ? 0.4 : 1,
+                border: completed && !showShowConfetti ? "none" : `${colors.purple}50 1px solid`,
+                overflow: "hidden",
+            }}
+        >
+            {showShowConfetti && (
                 <Confetti
-                    width={1000}
-                    height={40}
+                    width={400}
+                    height={80}
                     gravity={0.04}
                     initialVelocityX={1}
-                    tweenDuration={10000}
+                    tweenDuration={8000}
                     run={showShowConfetti}
-                    numberOfPieces={600}
+                    numberOfPieces={100}
                     recycle={false}
-                />
-
-                <Checkbox
-                    size="small"
-                    checked={questStat.obtained}
-                    disabled
-                    sx={{
-                        color: colors.purple,
-                        "& > .MuiSvgIcon-root": { width: "2.8rem", height: "2.8rem" },
-                        ".Mui-checked, .MuiSvgIcon-root": { color: `${colors.purple} !important` },
-                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.purple}50 !important` },
+                    onConfettiComplete={() => {
+                        setTimeout(() => {
+                            setCompleted(true)
+                            setShowShowConfetti(false)
+                        }, 3000)
                     }}
                 />
+            )}
 
-                <Stack spacing=".6rem" sx={{ flex: 1 }}>
-                    <Stack direction="row" alignItems="center" justifyContent="space-between">
-                        <Typography
-                            sx={{
-                                lineHeight: 1,
-                                fontWeight: "fontWeightBold",
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 1, // change to max number of lines
-                                WebkitBoxOrient: "vertical",
-                            }}
-                        >
-                            {questStat.name}
-                        </Typography>
+            <TooltipHelper color={colors.purple} placement="top-end" text={questStat.description}>
+                <Box sx={{ position: "absolute", top: ".4rem", right: ".4rem", opacity: 0.4, ":hover": { opacity: 1 } }}>
+                    <SvgInfoCircular size="1.3rem" />
+                </Box>
+            </TooltipHelper>
 
-                        {progress && (
-                            <Typography
-                                variant="body2"
-                                sx={{ color: progressPercent < 100 ? colors.red : colors.green, lineHeight: 1, fontWeight: "fontWeightBold" }}
-                            >
-                                {cappedCurrent}/{progress.goal}
-                            </Typography>
-                        )}
-                    </Stack>
+            <Stack spacing=".8rem" sx={{ flex: 1 }}>
+                <Stack spacing=".8rem" direction="row" alignItems="center" justifyContent="space-between">
+                    <Typography
+                        sx={{
+                            lineHeight: 1,
+                            fontWeight: "fontWeightBold",
+                            display: "-webkit-box",
+                            overflow: "hidden",
+                            overflowWrap: "anywhere",
+                            textOverflow: "ellipsis",
+                            WebkitLineClamp: 1, // change to max number of lines
+                            WebkitBoxOrient: "vertical",
+                        }}
+                    >
+                        {questStat.name}
+                    </Typography>
+                </Stack>
 
-                    {progress && (
+                {progress && (
+                    <Stack spacing=".8rem" direction="row" alignItems="center">
                         <ProgressBar
                             color={colors.green}
                             backgroundColor={`${colors.red}BB`}
@@ -93,9 +97,32 @@ export const QuestItem = ({ questStat, progress, showConfetti }: { questStat: Qu
                             thickness="7px"
                             percent={progressPercent}
                         />
-                    )}
+
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                color: progressPercent < 100 ? colors.red : colors.green,
+                                lineHeight: 1,
+                                fontWeight: "fontWeightBold",
+                            }}
+                        >
+                            {cappedCurrent}/{progress.goal}
+                        </Typography>
+                    </Stack>
+                )}
+
+                <Stack direction="row" alignItems="center">
+                    <SvgChest size="1.6rem" />
+
+                    <Typography variant="subtitle2" sx={{ mx: ".7rem", color: colors.gold, fontFamily: fonts.nostromoBlack }}>
+                        REWARD:
+                    </Typography>
+
+                    <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBold }}>
+                        SUPPORT MACHINE ABILITY
+                    </Typography>
                 </Stack>
             </Stack>
-        </TooltipHelper>
+        </Stack>
     )
-}
+}, propsAreEqual)

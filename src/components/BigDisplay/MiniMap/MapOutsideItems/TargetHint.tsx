@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo } from "react"
+import { useEffect, useMemo } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../../assets"
 import { useGlobalNotifications, useMiniMap } from "../../../../containers"
@@ -21,7 +21,7 @@ export const TargetHint = () => {
 // Winner hint
 const WinnerTargetHint = () => {
     const { newSnackbarMessage } = useGlobalNotifications()
-    const { winner, resetSelection } = useMiniMap()
+    const { winner, resetWinnerSelection } = useMiniMap()
 
     if (!winner) return null
 
@@ -38,7 +38,7 @@ const WinnerTargetHint = () => {
                     right: 0,
                     bottom: 0,
                     background: `radial-gradient(rgba(0, 0, 0, 0), ${colour}20)`,
-                    border: `${colour} 5px dashed`,
+                    border: `${colour} 4px dashed`,
                     pointerEvents: "none",
                 }}
             />
@@ -117,7 +117,7 @@ const WinnerTargetHint = () => {
                                 endTime={winner.end_time}
                                 onCountdownExpired={() => {
                                     newSnackbarMessage("Failed to submit target location on time.", "error")
-                                    resetSelection()
+                                    resetWinnerSelection()
                                 }}
                             />
                             s to choose a location for&nbsp;
@@ -142,23 +142,8 @@ const WinnerTargetHintInner = ({ endTime, onCountdownExpired }: { endTime: Date;
 
 // Player ability hint
 const PlayerAbilityTargetHint = () => {
-    const { playerAbility, resetSelection } = useMiniMap()
+    const { playerAbility, resetPlayerAbilitySelection } = useMiniMap()
     const theme = useTheme()
-
-    const handleKeyDown = useCallback(
-        (e: KeyboardEvent) => {
-            if (e.key === "Escape") {
-                resetSelection()
-            }
-        },
-        [resetSelection],
-    )
-
-    useEffect(() => {
-        document.addEventListener("keydown", handleKeyDown)
-
-        return () => document.removeEventListener("keydown", handleKeyDown)
-    }, [handleKeyDown])
 
     const data = useMemo(() => {
         const ability = playerAbility?.ability
@@ -211,7 +196,7 @@ const PlayerAbilityTargetHint = () => {
                     right: 0,
                     bottom: 0,
                     background: `radial-gradient(rgba(0, 0, 0, 0), ${playerAbility.ability.colour}20)`,
-                    border: `${playerAbility.ability.colour} 5px dashed`,
+                    border: `${playerAbility.ability.colour} 4px dashed`,
                     pointerEvents: "none",
                 }}
             />
@@ -261,7 +246,7 @@ const PlayerAbilityTargetHint = () => {
                             sx: { ml: "auto !important", pointerEvents: "all" },
                         }}
                         sx={{ py: ".2rem", px: "1.5rem" }}
-                        onClick={() => resetSelection()}
+                        onClick={() => resetPlayerAbilitySelection()}
                     >
                         <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>Cancel</Typography>
                     </FancyButton>

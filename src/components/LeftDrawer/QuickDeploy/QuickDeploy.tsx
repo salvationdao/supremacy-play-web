@@ -8,11 +8,12 @@ import { usePagination } from "../../../hooks"
 import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MechBasic, MechStatus } from "../../../types"
-import { SortTypeLabel } from "../../../types/marketplace"
+import { MechBasic, MechBasicWithQueueStatus, MechStatus } from "../../../types"
+import { SortDir, SortTypeLabel } from "../../../types/marketplace"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { BulkDeployConfirmModal } from "../../Hangar/WarMachinesHangar/Common/BulkDeployConfirmModal"
 import { QueueFeed } from "../../Hangar/WarMachinesHangar/WarMachineDetails/Modals/DeployModal"
+import { ChallengeFundsRemain } from "./ChallengeFundsRemain"
 import { QueueDetails } from "./QueueDetails"
 import { QuickDeployItem } from "./QuickDeployItem"
 
@@ -35,8 +36,13 @@ interface GetMechsRequest {
 }
 
 interface GetAssetsResponse {
-    mechs: MechBasic[]
+    mechs: MechBasicWithQueueStatus[]
     total: number
+}
+
+export interface PlayerQueueStatus {
+    total_queued: number
+    queue_limit: number
 }
 
 export const QuickDeploy = () => {
@@ -49,8 +55,11 @@ const QuickDeployInner = () => {
     const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
 
+    // Player Queue Status
+    const [playerQueueStatus, setPlayerQueueStatus] = useState<PlayerQueueStatus>()
+
     // Mechs
-    const [mechs, setMechs] = useState<MechBasic[]>([])
+    const [mechs, setMechs] = useState<MechBasicWithQueueStatus[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
 
@@ -78,6 +87,17 @@ const QuickDeployInner = () => {
         localStorage.setItem("quickDeployPageSize2", pageSize.toString())
     }, [pageSize])
 
+    const updateTotalDeployed = (amount: number) => {
+        setPlayerQueueStatus((prev) => {
+            if (!prev) return
+
+            return {
+                ...prev,
+                total_queued: prev.total_queued + amount,
+            }
+        })
+    }
+
     const toggleSelected = useCallback((mech: MechBasic) => {
         setSelectedMechs((prev) => {
             const newArray = [...prev]
@@ -104,8 +124,8 @@ const QuickDeployInner = () => {
         try {
             setIsLoading(true)
 
-            let sortDir = "asc"
-            if (sort === SortTypeLabel.MechQueueDesc) sortDir = "desc"
+            let sortDir = SortDir.Asc
+            if (sort === SortTypeLabel.MechQueueDesc) sortDir = SortDir.Desc
 
             const resp = await send<GetAssetsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
                 queue_sort: sortDir,
@@ -115,6 +135,9 @@ const QuickDeployInner = () => {
                 include_market_listed: false,
                 exclude_damaged_mech: true,
             })
+
+            const resp2 = await send<PlayerQueueStatus>(GameServerKeys.PlayerQueueStatus)
+            setPlayerQueueStatus(resp2)
 
             if (!resp) return
             setLoadError(undefined)
@@ -152,6 +175,8 @@ const QuickDeployInner = () => {
                 </Stack>
 
                 <Stack sx={{ flex: 1 }}>
+                    <ChallengeFundsRemain />
+
                     <TotalAndPageSizeOptions
                         countItems={mechs?.length}
                         totalItems={totalItems}
@@ -190,7 +215,7 @@ const QuickDeployInner = () => {
                     </TotalAndPageSizeOptions>
 
                     <Box sx={{ px: "1rem", mt: "1.5rem", backgroundColor: "#00000099" }}>
-                        <QueueDetails queueFeed={queueFeed} />
+                        <QueueDetails queueFeed={queueFeed} playerQueueStatus={playerQueueStatus} />
                     </Box>
 
                     {loadError && (
@@ -222,15 +247,13 @@ const QuickDeployInner = () => {
                                 direction: "ltr",
                                 scrollbarWidth: "none",
                                 "::-webkit-scrollbar": {
-                                    width: ".4rem",
+                                    width: "1rem",
                                 },
                                 "::-webkit-scrollbar-track": {
                                     background: "#FFFFFF15",
-                                    borderRadius: 3,
                                 },
                                 "::-webkit-scrollbar-thumb": {
                                     background: (theme) => theme.factionTheme.primary,
-                                    borderRadius: 3,
                                 },
                             }}
                         >
@@ -245,9 +268,9 @@ const QuickDeployInner = () => {
                                                 toggleIsSelected={() => {
                                                     toggleSelected(mech)
                                                 }}
+                                                onDeploy={() => updateTotalDeployed(1)}
                                                 childrenMechStatus={childrenMechStatus}
                                                 mech={mech}
-                                                queueFeed={queueFeed}
                                             />
                                         )
                                     })}
@@ -310,6 +333,7 @@ const QuickDeployInner = () => {
                     setSelectedMechs={setSelectedMechs}
                     childrenMechStatus={childrenMechStatus}
                     queueFeed={queueFeed}
+                    onBulkDeploy={(amount) => updateTotalDeployed(amount)}
                 />
             )}
         </>

@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { ReactNode, useMemo } from "react"
+import { useMemo } from "react"
 import { TooltipHelper } from "../.."
 import { SvgAbility, SvgBostonKillIcon, SvgDeath, SvgRedMoutainKillIcon, SvgView, SvgWrapperProps, SvgZaibatsuKillIcon } from "../../../assets"
 import { FactionIDs } from "../../../constants"
@@ -72,15 +72,13 @@ const EnlistBannerInner = ({ userID, user, battleIdentifier, getFaction, userSta
                     overflowY: "hidden",
 
                     "::-webkit-scrollbar": {
-                        height: ".3rem",
+                        height: ".6rem",
                     },
                     "::-webkit-scrollbar-track": {
                         background: "#FFFFFF15",
-                        borderRadius: 3,
                     },
                     "::-webkit-scrollbar-thumb": {
                         background: "#FFFFFF50",
-                        borderRadius: 3,
                     },
                 }}
             >
@@ -128,7 +126,7 @@ const EnlistBannerInner = ({ userID, user, battleIdentifier, getFaction, userSta
     )
 }
 
-const BannerInfo = ({ title, tooltip, content, PrefixSvg }: { title: string; tooltip: ReactNode; content: string; PrefixSvg?: SvgWrapperProps }) => {
+const BannerInfo = ({ title, tooltip, content, PrefixSvg }: { title: string; tooltip: string; content: string; PrefixSvg?: SvgWrapperProps }) => {
     return (
         <TooltipHelper color={colors.grey} text={tooltip}>
             <Box>

@@ -18,7 +18,7 @@ export const Stream = () => {
 
     useEffect(() => {
         const thisElement = ref.current
-        const newContainerElement = !isStreamBigDisplay ? smallDisplayRef : bigDisplayRef //document.getElementById(!isStreamBigDisplay ? "left-drawer-space" : "big-display-space")
+        const newContainerElement = !isStreamBigDisplay ? smallDisplayRef : bigDisplayRef
 
         if (thisElement && newContainerElement) {
             let child = newContainerElement.lastElementChild
@@ -38,7 +38,6 @@ export const Stream = () => {
                 width: "100%",
                 height: isStreamBigDisplay ? "100%" : (LEFT_DRAWER_WIDTH * remToPxRatio) / (16 / 9) + TOP_BAR_HEIGHT * remToPxRatio,
                 boxShadow: 2,
-                border: (theme) => `${theme.factionTheme.primary}60 1px solid`,
             }}
         >
             {/* Top bar */}

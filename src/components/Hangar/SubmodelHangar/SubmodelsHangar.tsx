@@ -9,8 +9,8 @@ import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MechModel, Submodel, SubmodelStatus, WeaponModel } from "../../../types"
-import { SortTypeLabel } from "../../../types/marketplace"
+import { BlueprintMech, BlueprintWeapon, Submodel, SubmodelStatus } from "../../../types"
+import { SortDir, SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
@@ -50,6 +50,10 @@ interface GetSubmodelsResponse {
 }
 
 export const SubmodelsHangar = () => {
+    return <SubmodelsHangarInner />
+}
+
+const SubmodelsHangarInner = () => {
     const [query, updateQuery] = useUrlQuery()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
@@ -57,7 +61,7 @@ export const SubmodelsHangar = () => {
     // Items
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const [submodels, setSubmodels] = useState<Submodel[]>([])
+    const [submodels, setSubmodels] = useState<Submodel[]>()
 
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
@@ -65,23 +69,21 @@ export const SubmodelsHangar = () => {
     })
 
     // Filters and sorts
-    const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isWarMachinesHangarFiltersExpanded") === "true")
+    const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isSubmodelHangarFiltersExpanded") === "true")
     const [search, setSearch] = useState("")
     const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.Alphabetical)
     const [equippedStatus, setEquippedStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
     const [rarities, setRarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
     const [modelFilter, setModelFilter] = useState<string[]>((query.get("models") || undefined)?.split("||") || [])
-    const [submodelType, setSubmodelType] = useState<SubmodelType>(SubmodelType.warMachine)
 
     const [sortFilterReRender, toggleSortFilterReRender] = useToggle()
-    const [isGridView, toggleIsGridView] = useToggle((localStorage.getItem("fleetMechGrid") || "true") === "true")
+
+    // The tabs
+    const [submodelType, setSubmodelType] = useState<SubmodelType>(SubmodelType.warMachine)
+    const previousSubmodelType = useRef<SubmodelType>(SubmodelType.warMachine)
 
     useEffect(() => {
-        localStorage.setItem("fleetMechGrid", isGridView.toString())
-    }, [isGridView])
-
-    useEffect(() => {
-        localStorage.setItem("isWarMachinesHangarFiltersExpanded", isFiltersExpanded.toString())
+        localStorage.setItem("isSubmodelHangarFiltersExpanded", isFiltersExpanded.toString())
     }, [isFiltersExpanded])
 
     // Filters
@@ -137,9 +139,9 @@ export const SubmodelsHangar = () => {
         try {
             setIsLoading(true)
 
-            let sortDir = "asc"
+            let sortDir = SortDir.Asc
             let sortBy = ""
-            if (sort === SortTypeLabel.MechQueueDesc || sort === SortTypeLabel.AlphabeticalReverse || sort === SortTypeLabel.RarestDesc) sortDir = "desc"
+            if (sort === SortTypeLabel.MechQueueDesc || sort === SortTypeLabel.AlphabeticalReverse || sort === SortTypeLabel.RarestDesc) sortDir = SortDir.Desc
 
             switch (sort) {
                 case SortTypeLabel.Alphabetical:
@@ -151,36 +153,21 @@ export const SubmodelsHangar = () => {
                     sortBy = "rarity"
             }
 
-            const resp =
-                submodelType === SubmodelType.warMachine
-                    ? await send<GetSubmodelsResponse, GetSubmodelsRequest>(GameServerKeys.GetMechSubmodels, {
-                          search: search,
-                          sort_by: sortBy,
-                          sort_dir: sortDir,
-                          page_size: pageSize,
-                          page: page,
-                          display_xsyn: false,
-                          exclude_market_locked: false,
-                          include_market_listed: false,
-                          display_genesis_and_limited: false,
-                          rarities: rarities,
-                          skin_compatibility: modelFilter,
-                          equipped_statuses: equippedStatus,
-                      })
-                    : await send<GetSubmodelsResponse, GetSubmodelsRequest>(GameServerKeys.GetWeaponSubmodels, {
-                          search: search,
-                          sort_by: sortBy,
-                          sort_dir: sortDir,
-                          page_size: pageSize,
-                          page: page,
-                          display_xsyn: false,
-                          exclude_market_locked: false,
-                          include_market_listed: false,
-                          display_genesis_and_limited: false,
-                          rarities: rarities,
-                          skin_compatibility: modelFilter,
-                          equipped_statuses: equippedStatus,
-                      })
+            const key = submodelType === SubmodelType.warMachine ? GameServerKeys.GetMechSubmodels : GameServerKeys.GetWeaponSubmodels
+            const resp = await send<GetSubmodelsResponse, GetSubmodelsRequest>(key, {
+                search: search,
+                sort_by: sortBy,
+                sort_dir: sortDir,
+                page_size: pageSize,
+                page: page,
+                display_xsyn: false,
+                exclude_market_locked: false,
+                include_market_listed: false,
+                display_genesis_and_limited: false,
+                rarities: rarities,
+                skin_compatibility: modelFilter,
+                equipped_statuses: equippedStatus,
+            })
 
             updateQuery({
                 sort,
@@ -189,13 +176,13 @@ export const SubmodelsHangar = () => {
                 statuses: equippedStatus.join("||"),
                 page: page.toString(),
                 pageSize: pageSize.toString(),
+                models: modelFilter.join("||"),
             })
 
             if (!resp) return
             setLoadError(undefined)
             setSubmodels(resp.submodels)
             setTotalItems(resp.total)
-            console.log(resp)
         } catch (e) {
             setLoadError(typeof e === "string" ? e : `Failed to get ${submodelType} submodel.`)
             console.error(e)
@@ -209,46 +196,35 @@ export const SubmodelsHangar = () => {
     }, [getItems])
 
     useEffect(() => {
-        submodelType === SubmodelType.warMachine
-            ? (async () => {
-                  try {
-                      setIsLoading(true)
-                      const resp = await send<MechModel[]>(GameServerKeys.GetMechModels)
+        ;(async () => {
+            try {
+                setIsLoading(true)
+                const resp =
+                    submodelType === SubmodelType.warMachine
+                        ? await send<BlueprintMech[]>(GameServerKeys.GetMechBlueprints)
+                        : await send<BlueprintWeapon[]>(GameServerKeys.GetWeaponBlueprints)
 
-                      if (!resp) return
+                if (!resp) return
 
-                      modelFilterSection.current.options = resp.map((r) => {
-                          return { value: r.id, label: r.label, color: colors.blue2 }
-                      })
+                modelFilterSection.current.options = resp.map((r) => {
+                    return { value: r.id, label: r.label, color: colors.blue2 }
+                })
 
-                      toggleSortFilterReRender()
-                  } catch (e) {
-                      setLoadError(typeof e === "string" ? e : `Failed to get war machines models.`)
-                      console.error(e)
-                  } finally {
-                      setIsLoading(false)
-                  }
-              })()
-            : (async () => {
-                  try {
-                      setIsLoading(true)
-                      const resp = await send<WeaponModel[]>(GameServerKeys.GetWeaponModels)
+                //on submodel change, set the initial selected to reflect current selections
+                modelFilterSection.current.initialSelected = []
+                statusFilterSection.current.initialSelected = equippedStatus
+                rarityChipFilter.current.initialSelected = rarities
 
-                      if (!resp) return
-
-                      modelFilterSection.current.options = resp.map((r) => {
-                          return { value: r.id, label: r.label, color: colors.blue2 }
-                      })
-
-                      toggleSortFilterReRender()
-                  } catch (e) {
-                      setLoadError(typeof e === "string" ? e : "Failed to get weapon models.")
-                      console.error(e)
-                  } finally {
-                      setIsLoading(false)
-                  }
-              })()
-    }, [send, submodelType, toggleSortFilterReRender])
+                setModelFilter([])
+                toggleSortFilterReRender()
+            } catch (e) {
+                setLoadError(typeof e === "string" ? e : `Failed to get ${submodelType} submodels.`)
+                console.error(e)
+            } finally {
+                setIsLoading(false)
+            }
+        })()
+    }, [send, submodelType, equippedStatus, rarities, toggleSortFilterReRender])
 
     const content = useMemo(() => {
         if (loadError) {
@@ -292,15 +268,15 @@ export const SubmodelsHangar = () => {
                             width: "100%",
                             py: "1rem",
                             display: "grid",
-                            gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(30rem, 1fr))" : "100%",
-                            gap: "1.3rem",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(25rem, 1fr))",
+                            gap: "1.5rem",
                             alignItems: "center",
                             justifyContent: "center",
                             overflow: "visible",
                         }}
                     >
-                        {submodels.map((mech) => (
-                            <SubmodelItem key={`marketplace-${mech.id}`} submodel={mech} isGridView={isGridView} />
+                        {submodels.map((submodel) => (
+                            <SubmodelItem key={`submodels-${submodel.id}`} submodel={submodel} />
                         ))}
                     </Box>
                 </Box>
@@ -331,7 +307,7 @@ export const SubmodelsHangar = () => {
                             textAlign: "center",
                         }}
                     >
-                        {`There are no ${submodelType} Submodels found, please try again.`}
+                        {`There are no ${submodelType} submodels found, please check your filters and try again.`}
                     </Typography>
 
                     <FancyButton
@@ -358,7 +334,7 @@ export const SubmodelsHangar = () => {
                 </Stack>
             </Stack>
         )
-    }, [loadError, submodels, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary, isGridView, submodelType])
+    }, [loadError, submodels, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary, submodelType])
 
     return (
         <Stack direction="row" sx={{ height: "100%" }}>
@@ -421,22 +397,24 @@ export const SubmodelsHangar = () => {
                             sortOptions={sortOptions}
                             selectedSort={sort}
                             onSetSort={setSort}
-                            isGridView={isGridView}
-                            toggleIsGridView={toggleIsGridView}
                             isFiltersExpanded={isFiltersExpanded}
                             toggleIsFiltersExpanded={toggleIsFiltersExpanded}
                         />
+
                         <Stack direction={"row"} sx={{ borderBottom: `${theme.factionTheme.primary}70 1.5px solid` }}>
                             <Tabs
                                 value={submodelType}
-                                onChange={(e, v) => setSubmodelType(v)}
+                                onChange={(e, v) => {
+                                    previousSubmodelType.current = submodelType
+                                    setSubmodelType(v)
+                                }}
                                 variant="scrollable"
                                 scrollButtons="auto"
                                 sx={{
                                     flexShrink: 0,
                                     color: theme.factionTheme.primary,
                                     minHeight: 0,
-                                    ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "6rem", width: "20rem" },
+                                    ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "5rem", width: "20rem" },
                                     ".Mui-selected": {
                                         color: `${theme.factionTheme.secondary} !important`,
                                         background: `linear-gradient(${theme.factionTheme.primary} 26%, ${theme.factionTheme.primary}BB)`,
@@ -454,8 +432,7 @@ export const SubmodelsHangar = () => {
                             <Box
                                 sx={{
                                     ml: "1.9rem",
-                                    mr: ".5rem",
-                                    pr: "1.4rem",
+                                    pr: "1.9rem",
                                     my: "1rem",
                                     flex: 1,
                                     overflowY: "auto",
@@ -463,15 +440,13 @@ export const SubmodelsHangar = () => {
                                     direction: "ltr",
 
                                     "::-webkit-scrollbar": {
-                                        width: ".4rem",
+                                        width: "1rem",
                                     },
                                     "::-webkit-scrollbar-track": {
                                         background: "#FFFFFF15",
-                                        borderRadius: 3,
                                     },
                                     "::-webkit-scrollbar-thumb": {
                                         background: theme.factionTheme.primary,
-                                        borderRadius: 3,
                                     },
                                 }}
                             >

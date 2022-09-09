@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useCallback, useMemo, useRef, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { SvgMapSkull, SvgMapWarMachine } from "../../../../../assets"
 import { useAuth, useGame, useMiniMap, useSupremacy } from "../../../../../containers"
 import { useArena } from "../../../../../containers/arena"
@@ -10,7 +10,7 @@ import { pulseEffect, rippleEffect, shake, spinEffect } from "../../../../../the
 import { colors, fonts } from "../../../../../theme/theme"
 import { LocationSelectType, Map, WarMachineState } from "../../../../../types"
 import { DisplayedAbility, MechDisplayEffectType, WarMachineLiveState } from "../../../../../types/game"
-import { MechMoveCommand } from "../../../../WarMachine/WarMachineItem/MoveCommand"
+import { MechMoveCommand, MechMoveCommandAbility } from "../../../../WarMachine/WarMachineItem/MoveCommand"
 
 const TRANSITION_DURATION = 0.275 // seconds
 
@@ -18,24 +18,39 @@ interface MapMechProps {
     warMachine: WarMachineState
     label: number
     isAI?: boolean
+    poppedOutContainerRef?: React.MutableRefObject<HTMLElement | null>
 }
 
-export const MapMech = (props: MapMechProps) => {
+const propsAreEqual = (prevProps: MapMechProps, nextProps: MapMechProps) => {
+    return prevProps.warMachine.id === nextProps.warMachine.id && prevProps.label === nextProps.label && prevProps.isAI === nextProps.isAI
+}
+
+export const MapMech = React.memo(function MapMech(props: MapMechProps) {
     const { map } = useGame()
     if (!map) return null
     return <MapMechInner map={map} {...props} />
-}
+}, propsAreEqual)
 
 interface MapMechInnerProps extends MapMechProps {
     map: Map
 }
 
-const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
+const MapMechInner = ({ warMachine, map, label, isAI, poppedOutContainerRef }: MapMechInnerProps) => {
     const { userID, factionID } = useAuth()
     const { currentArenaID } = useArena()
     const { getFaction } = useSupremacy()
-    const { isTargeting, gridWidth, gridHeight, playerAbility, highlightedMechParticipantID, setHighlightedMechParticipantID, selection, setSelection } =
-        useMiniMap()
+    const {
+        setPlayerAbility,
+        isTargeting,
+        gridWidth,
+        gridHeight,
+        playerAbility,
+        highlightedMechParticipantID,
+        setHighlightedMechParticipantID,
+        selection,
+        selectionInstant,
+        setSelection,
+    } = useMiniMap()
     const { id, hash, participantID, factionID: warMachineFactionID, maxHealth, maxShield, ownedByID } = warMachine
 
     // For rendering: size, colors etc.
@@ -62,6 +77,8 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
 
     // Mech move command related
     const mechMoveCommand = useRef<MechMoveCommand>()
+    const tempMechMoveCommand = useRef<MechMoveCommand>()
+    const prevMechMoveCommandRotation = useRef(0)
     // Mech ability display
     const [abilityEffects, setAbilityEffects] = useState<DisplayedAbility[]>([])
     const abilityBorderEffect = useMemo(() => abilityEffects.find((da) => da.mech_display_effect_type === MechDisplayEffectType.Border), [abilityEffects])
@@ -79,9 +96,9 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
         (payload) => {
             // Direct DOM manipulation is a lot more optimized than re-rendering
             if (payload?.health !== undefined) {
-                if (payload.health <= 0) setIsAlive(false)
+                setIsAlive(payload.health > 0)
 
-                const healthBarEl = document.getElementById(`map-mech-health-bar-${hash}`)
+                const healthBarEl = (poppedOutContainerRef?.current || document).querySelector(`#map-mech-health-bar-${hash}`) as HTMLElement
                 if (healthBarEl) {
                     const percent = Math.min((payload.health / maxHealth) * 100, 100)
                     healthBarEl.style.width = `${percent}%`
@@ -90,7 +107,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
             }
 
             if (payload?.shield !== undefined) {
-                const shieldBarEl = document.getElementById(`map-mech-shield-bar-${hash}`)
+                const shieldBarEl = (poppedOutContainerRef?.current || document).querySelector(`#map-mech-shield-bar-${hash}`) as HTMLElement
                 if (shieldBarEl) {
                     const percent = Math.min((payload.shield / maxShield) * 100, 100)
                     shieldBarEl.style.width = `${percent}%`
@@ -98,25 +115,28 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
             }
 
             if (payload?.position !== undefined) {
-                const positionEl = document.getElementById(`map-mech-position-${hash}`)
+                const positionEl = (poppedOutContainerRef?.current || document).querySelector(`#map-mech-position-${hash}`) as HTMLElement
                 if (positionEl) {
                     const mechMapX = ((payload.position?.x || 0) - map.Pixel_Left) * mapScale
                     const mechMapY = ((payload.position?.y || 0) - map.Pixel_Top) * mapScale
                     positionEl.style.transform = `translate(-50%, -50%) translate3d(${mechMapX}px, ${mechMapY}px, 0)`
-                    positionEl.style.transition = `transform ${TRANSITION_DURATION}s linear`
 
                     // Update the mech move dash line length and rotation
-                    const moveCommandEl = document.getElementById(`map-mech-move-command-${hash}`)
+                    const moveCommandEl = (poppedOutContainerRef?.current || document).querySelector(`#map-mech-move-command-${hash}`) as HTMLElement
                     if (moveCommandEl) {
-                        if (mechMoveCommand.current?.cell_x && mechMoveCommand.current?.cell_y) {
-                            const commandMapX = mechMoveCommand.current.cell_x * gridWidth
-                            const commandMapY = mechMoveCommand.current.cell_y * gridHeight
+                        const mCommand = mechMoveCommand.current?.mech_id ? mechMoveCommand.current : tempMechMoveCommand.current
+                        if (mCommand?.cell_x && mCommand?.cell_y && !mCommand?.reached_at) {
+                            const commandMapX = mCommand.cell_x * gridWidth
+                            const commandMapY = mCommand.cell_y * gridHeight
                             const x = Math.abs(mechMapX - commandMapX)
                             const y = Math.abs(mechMapY - commandMapY)
-                            const rotation = (Math.atan2(commandMapY - mechMapY, commandMapX - mechMapX) * 180) / Math.PI
                             moveCommandEl.style.display = "block"
                             moveCommandEl.style.height = `${2 * Math.sqrt(x * x + y * y)}px`
-                            moveCommandEl.style.transform = `translate(-50%, -50%) rotate(${rotation + 90}deg)`
+
+                            const rotation = (Math.atan2(commandMapY - mechMapY, commandMapX - mechMapX) * 180) / Math.PI
+                            const newRotation = closestAngle(prevMechMoveCommandRotation.current, rotation || 0)
+                            moveCommandEl.style.transform = `translate(-50%, -50%) rotate(${newRotation + 90}deg)`
+                            prevMechMoveCommandRotation.current = newRotation
                         } else {
                             moveCommandEl.style.display = "none"
                         }
@@ -125,7 +145,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
             }
 
             if (payload?.rotation !== undefined) {
-                const rotationEl = document.getElementById(`map-mech-rotation-${hash}`)
+                const rotationEl = (poppedOutContainerRef?.current || document).querySelector(`#map-mech-rotation-${hash}`) as HTMLElement
                 if (rotationEl) {
                     // 0 is east, and goes CW, can be negative and above 360
                     const newRotation = closestAngle(prevRotation.current, payload.rotation || 0)
@@ -135,10 +155,6 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
             }
 
             if (payload?.is_hidden !== undefined) {
-                if (payload?.is_hidden) {
-                    const positionEl = document.getElementById(`map-mech-position-${hash}`)
-                    if (positionEl) positionEl.style.transition = "unset"
-                }
                 setIsHidden(payload.is_hidden)
             }
         },
@@ -152,10 +168,37 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
             ready: factionID === warMachineFactionID && !!participantID && !!currentArenaID,
         },
         (payload) => {
-            if (!payload) return
+            if (!payload) {
+                mechMoveCommand.current = undefined
+                return
+            }
+            tempMechMoveCommand.current = undefined
             mechMoveCommand.current = payload
         },
     )
+
+    // Immediately render the mech move dashed line when player selects it for fast UX
+    useEffect(() => {
+        if (
+            playerAbility?.ability.location_select_type === LocationSelectType.MechCommand &&
+            playerAbility.mechHash === hash &&
+            selectionInstant?.startCoords
+        ) {
+            const mCommand: MechMoveCommand = {
+                id: "move_command",
+                mech_id: id,
+                triggered_by_id: "x",
+                cell_x: selectionInstant.startCoords.x,
+                cell_y: selectionInstant.startCoords.y,
+                is_moving: true,
+                remain_cooldown_seconds: 0,
+                is_mini_mech: false,
+            }
+            tempMechMoveCommand.current = mCommand
+        } else {
+            tempMechMoveCommand.current = undefined
+        }
+    }, [id, hash, playerAbility?.ability, playerAbility?.ability.location_select_type, selectionInstant, playerAbility?.mechHash])
 
     // Listen on abilities that apply on this mech to display
     useGameServerSubscription<DisplayedAbility[]>(
@@ -221,16 +264,27 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
         } else {
             setHighlightedMechParticipantID(participantID)
         }
+
+        // Activate mech move command if user owns the mech, un-activate on click again
+        if (isAlive && ownedByID === userID) {
+            setPlayerAbility({
+                ...MechMoveCommandAbility,
+                mechHash: hash,
+            })
+        }
     }, [
         playerAbility,
         participantID,
         highlightedMechParticipantID,
         isAlive,
+        ownedByID,
+        userID,
         setSelection,
         factionID,
         warMachineFactionID,
         hash,
         setHighlightedMechParticipantID,
+        setPlayerAbility,
     ])
 
     return useMemo(() => {
@@ -250,6 +304,7 @@ const MapMechInner = ({ warMachine, map, label, isAI }: MapMechInnerProps) => {
                     padding: "1rem 1.3rem",
                     border: isTargeting && canSelect ? `${primaryColor} ${0.1 * iconSize}px dashed` : "none",
                     transform: "translate(-100px, -100px)",
+                    transition: `transform ${TRANSITION_DURATION}s linear`,
                     opacity: 1,
                     zIndex,
                 }}

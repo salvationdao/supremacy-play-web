@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useAuth, useGlobalNotifications } from "."
+import { useDebounce } from "../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 import { BribeStage, GameAbility, LocationSelectType, PlayerAbility, Position } from "../types"
 import { useArena } from "./arena"
 import { useGame } from "./game"
+import { RecordType, useHotkey } from "./hotkeys"
 
 interface WinnerAnnouncementResponse {
     game_ability: GameAbility
@@ -25,6 +27,7 @@ export const MiniMapContainer = createContainer(() => {
     const { bribeStage, map, isBattleStarted } = useGame()
     const { factionID } = useAuth()
     const { currentArenaID } = useArena()
+    const { addToHotkeyRecord } = useHotkey()
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
@@ -40,7 +43,7 @@ export const MiniMapContainer = createContainer(() => {
 
     // Other stuff
     const [highlightedMechParticipantID, setHighlightedMechParticipantID] = useState<number>()
-    const [selection, setSelection] = useState<MapSelection>()
+    const [selection, setSelectionDebounced, selectionInstant, setSelection] = useDebounce<MapSelection | undefined>(undefined, 320)
 
     // Subscribe on winner announcements
     useGameServerSubscriptionSecuredUser<WinnerAnnouncementResponse | undefined>(
@@ -80,17 +83,41 @@ export const MiniMapContainer = createContainer(() => {
         } else if (playerAbility) {
             setIsTargeting(true)
         }
-    }, [winner, bribeStage, playerAbility])
+    }, [winner, bribeStage, playerAbility, setSelection])
 
-    const resetSelection = useCallback(() => {
-        setWinner(undefined)
+    const resetPlayerAbilitySelection = useCallback(() => {
         setPlayerAbility(undefined)
+        setSelectionDebounced(undefined)
         setSelection(undefined)
-        setIsTargeting(false)
-    }, [])
+        setIsTargeting(!!winner?.game_ability)
+    }, [winner?.game_ability, setSelection, setSelectionDebounced])
 
-    const onTargetConfirm = useCallback(() => {
+    const resetWinnerSelection = useCallback(() => {
+        setSelection(undefined)
+        setWinner(undefined)
+        setIsTargeting(!!playerAbility)
+    }, [playerAbility, setSelection])
+
+    useEffect(() => {
+        addToHotkeyRecord(RecordType.MiniMap, "Escape", () => {
+            resetPlayerAbilitySelection()
+            setHighlightedMechParticipantID(undefined)
+        })
+    }, [addToHotkeyRecord, resetPlayerAbilitySelection])
+
+    const onTargetConfirm = useCallback(async () => {
         if (!selection || !currentArenaID) return
+
+        let payload: {
+            arena_id: string
+            blueprint_ability_id: string
+            location_select_type: string
+            start_coords?: Position
+            end_coords?: Position
+            mech_hash?: string
+        } | null = null
+
+        let hubKey = GameServerKeys.PlayerAbilityUse
 
         try {
             if (winner?.game_ability) {
@@ -98,8 +125,10 @@ export const MiniMapContainer = createContainer(() => {
                     throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
                 }
 
-                send<boolean>(GameServerKeys.SubmitAbilityLocationSelect, {
+                payload = {
                     arena_id: currentArenaID,
+                    blueprint_ability_id: "",
+                    location_select_type: "",
                     start_coords: {
                         x: selection.startCoords.x,
                         y: selection.startCoords.y,
@@ -111,17 +140,11 @@ export const MiniMapContainer = createContainer(() => {
                                   y: selection.endCoords.y,
                               }
                             : undefined,
-                })
-                setPlayerAbility(undefined)
+                }
+
+                hubKey = GameServerKeys.SubmitAbilityLocationSelect
+                resetWinnerSelection()
             } else if (playerAbility) {
-                let payload: {
-                    arena_id: string
-                    blueprint_ability_id: string
-                    location_select_type: string
-                    start_coords?: Position
-                    end_coords?: Position
-                    mech_hash?: string
-                } | null = null
                 switch (playerAbility.ability.location_select_type) {
                     case LocationSelectType.LineSelect:
                         if (!selection.startCoords || !selection.endCoords) {
@@ -171,39 +194,64 @@ export const MiniMapContainer = createContainer(() => {
                         break
                 }
 
+                // If it's mech move command, dont reset so player can keep moving the mech
+                if (playerAbility?.ability.location_select_type === LocationSelectType.MechCommand) {
+                    setSelection(undefined)
+                } else {
+                    resetPlayerAbilitySelection()
+                }
+
+                if (playerAbility?.ability.location_select_type === LocationSelectType.MechSelect) {
+                    setHighlightedMechParticipantID(undefined)
+                }
+
                 if (!payload) {
                     throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
                 }
-                send<boolean, typeof payload>(GameServerKeys.PlayerAbilityUse, payload)
             }
-            resetSelection()
-            if (playerAbility?.ability.location_select_type === LocationSelectType.MechSelect) {
-                setHighlightedMechParticipantID(undefined)
-            }
+
+            await send<boolean, typeof payload>(hubKey, payload)
             newSnackbarMessage("Successfully submitted target location.", "success")
         } catch (err) {
             newSnackbarMessage(typeof err === "string" ? err : "Failed to submit target location.", "error")
             console.error(err)
             setSelection(undefined)
         }
-    }, [send, selection, resetSelection, winner?.game_ability, playerAbility, newSnackbarMessage, setHighlightedMechParticipantID, currentArenaID])
+    }, [
+        send,
+        selection,
+        winner?.game_ability,
+        playerAbility,
+        currentArenaID,
+        newSnackbarMessage,
+        resetPlayerAbilitySelection,
+        resetWinnerSelection,
+        setSelection,
+        setHighlightedMechParticipantID,
+    ])
 
     useEffect(() => {
-        if (!isBattleStarted) resetSelection()
-    }, [isBattleStarted, resetSelection])
+        if (!isBattleStarted) {
+            setWinner(undefined)
+            resetWinnerSelection()
+            resetPlayerAbilitySelection()
+        }
+    }, [isBattleStarted, resetWinnerSelection, resetPlayerAbilitySelection])
 
     return {
         mapElement,
         setMapElement,
 
         winner,
-        setWinner,
         highlightedMechParticipantID,
         setHighlightedMechParticipantID,
         isTargeting,
         selection,
+        selectionInstant,
         setSelection,
-        resetSelection,
+        setSelectionDebounced,
+        resetWinnerSelection,
+        resetPlayerAbilitySelection,
         playerAbility,
         setPlayerAbility,
         onTargetConfirm,

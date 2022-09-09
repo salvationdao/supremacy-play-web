@@ -2,20 +2,20 @@ import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing } from "../../.."
 import { useAuth, useGame, useMiniMap } from "../../../../containers"
+import { useArena } from "../../../../containers/arena"
+import { MECH_ABILITY_KEY, RecordType, useHotkey } from "../../../../containers/hotkeys"
 import { useTheme } from "../../../../containers/theme"
 import { useInterval, useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
-import { AIType, BribeStage, GameAbility, WarMachineLiveState, WarMachineState } from "../../../../types"
-import { MoveCommand } from "../../../WarMachine/WarMachineItem/MoveCommand"
-import { useArena } from "../../../../containers/arena"
-import { RecordType, useHotkey } from "../../../../containers/hotkeys"
+import { AIType, BribeStage, GameAbility, PlayerAbility, WarMachineLiveState, WarMachineState } from "../../../../types"
+import { MechMoveCommandAbility, MoveCommand } from "../../../WarMachine/WarMachineItem/MoveCommand"
 
 export const HighlightedMechAbilities = () => {
     const { userID } = useAuth()
     const { bribeStage, warMachines, spawnedAI } = useGame()
-    const { highlightedMechParticipantID, isTargeting } = useMiniMap()
+    const { setPlayerAbility, highlightedMechParticipantID } = useMiniMap()
 
     const isVoting = useMemo(() => bribeStage && bribeStage?.phase !== BribeStage.Hold, [bribeStage])
 
@@ -23,17 +23,23 @@ export const HighlightedMechAbilities = () => {
         return [...(warMachines || []), ...(spawnedAI || [])].find((m) => m.participantID === highlightedMechParticipantID)
     }, [highlightedMechParticipantID, spawnedAI, warMachines])
 
-    if (isTargeting || !highlightedMechParticipantID || !highlightedMech || highlightedMech?.ownedByID !== userID || !isVoting) {
+    if (!highlightedMechParticipantID || !highlightedMech || highlightedMech?.ownedByID !== userID || !isVoting) {
         return null
     }
 
-    return <HighlightedMechAbilitiesInner key={highlightedMechParticipantID} warMachine={highlightedMech} />
+    return <HighlightedMechAbilitiesInner key={highlightedMechParticipantID} warMachine={highlightedMech} setPlayerAbility={setPlayerAbility} />
 }
 
-const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineState }) => {
+const HighlightedMechAbilitiesInner = ({
+    warMachine,
+    setPlayerAbility,
+}: {
+    warMachine: WarMachineState
+    setPlayerAbility: React.Dispatch<React.SetStateAction<PlayerAbility | undefined>>
+}) => {
+    const theme = useTheme()
     const { userID } = useAuth()
     const { currentArenaID } = useArena()
-    const theme = useTheme()
     const { participantID, ownedByID } = warMachine
     const [isAlive, toggleIsAlive] = useToggle(warMachine.health > 0)
 
@@ -61,6 +67,16 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
         },
     )
 
+    // On activate mech move command
+    const activateMechMoveCommand = useCallback(() => {
+        if (!isAlive || !currentArenaID) return
+
+        setPlayerAbility({
+            ...MechMoveCommandAbility,
+            mechHash: warMachine.hash,
+        })
+    }, [isAlive, warMachine.hash, setPlayerAbility, currentArenaID])
+
     if (!isAlive) {
         return null
     }
@@ -73,19 +89,12 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
                     borderColor: userID === ownedByID ? colors.gold : theme.factionTheme.primary,
                     borderThickness: "2px",
                 }}
-                corners={{ bottomLeft: true }}
+                corners={{ bottomRight: true }}
                 opacity={0.3}
                 backgroundColor={theme.factionTheme.background}
-                sx={{ position: "absolute", top: "3.5rem", left: ".4rem" }}
+                sx={{ position: "absolute", top: "4.5rem", left: "1.2rem", pointerEvents: "none" }}
             >
-                <Stack
-                    spacing=".8rem"
-                    onClick={(e) => {
-                        e.preventDefault()
-                        e.stopPropagation()
-                    }}
-                    sx={{ p: ".8rem .9rem", width: "17rem" }}
-                >
+                <Stack spacing=".8rem" sx={{ p: ".8rem .9rem", width: "17rem" }}>
                     {!isMiniMech &&
                         gameAbilities &&
                         gameAbilities.length > 0 &&
@@ -93,7 +102,7 @@ const HighlightedMechAbilitiesInner = ({ warMachine }: { warMachine: WarMachineS
                             return <AbilityItem key={ga.id} hash={warMachine.hash} participantID={participantID} ability={ga} index={i} />
                         })}
 
-                    {userID === ownedByID && <MoveCommand isAlive={isAlive} warMachine={warMachine} smallVersion />}
+                    {userID === ownedByID && <MoveCommand isAlive={isAlive} warMachine={warMachine} activateMechMoveCommand={activateMechMoveCommand} />}
                 </Stack>
             </ClipThing>
         </Fade>
@@ -106,7 +115,7 @@ const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; pa
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [remainSeconds, setRemainSeconds] = useState(30)
     const ready = useMemo(() => remainSeconds === 0, [remainSeconds])
-    const { mechAbilityKey, addToHotkeyRecord } = useHotkey()
+    const { addToHotkeyRecord } = useHotkey()
 
     useGameServerSubscriptionFaction<number | undefined>(
         {
@@ -143,8 +152,8 @@ const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; pa
     }, [hash, id, send, currentArenaID])
 
     useEffect(() => {
-        addToHotkeyRecord(RecordType.Map, mechAbilityKey[index], onTrigger)
-    }, [onTrigger, mechAbilityKey, addToHotkeyRecord, index])
+        addToHotkeyRecord(RecordType.MiniMap, MECH_ABILITY_KEY[index], onTrigger)
+    }, [onTrigger, addToHotkeyRecord, index])
 
     return (
         <Stack
@@ -156,7 +165,6 @@ const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; pa
                 height: "3rem",
                 width: "100%",
                 opacity: ready ? 1 : 0.6,
-                pointerEvents: ready ? "all" : "none",
             }}
         >
             {/* Image */}
@@ -171,6 +179,7 @@ const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; pa
                     backgroundPosition: "center",
                     backgroundSize: "cover",
                     border: `${colour} 1.5px solid`,
+                    pointerEvents: "all",
                     ":hover": ready ? { borderWidth: "3px", transform: "scale(1.04)" } : undefined,
                 }}
                 onClick={ready ? onTrigger : undefined}
@@ -197,7 +206,7 @@ const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; pa
                 {ready && (
                     <Typography variant="body2" sx={{ color: colors.neonBlue }}>
                         <i>
-                            <strong>[{mechAbilityKey[index]}]</strong>
+                            <strong>[{MECH_ABILITY_KEY[index]}]</strong>
                         </i>
                     </Typography>
                 )}

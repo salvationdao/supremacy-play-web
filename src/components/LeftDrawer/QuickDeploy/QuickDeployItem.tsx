@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useCallback, useMemo, useState } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 import { FancyButton } from "../.."
 import { useGlobalNotifications } from "../../../containers"
 import { getRarityDeets } from "../../../helpers"
@@ -10,23 +10,27 @@ import { MechBasic, MechDetails, MechStatus, MechStatusEnum } from "../../../typ
 import { MechGeneralStatus } from "../../Hangar/WarMachinesHangar/Common/MechGeneralStatus"
 import { MechRepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
 import { MechThumbnail } from "../../Hangar/WarMachinesHangar/Common/MechThumbnail"
-import { QueueFeed } from "../../Hangar/WarMachinesHangar/WarMachineDetails/Modals/DeployModal"
+import { MechName } from "../../Hangar/WarMachinesHangar/WarMachineDetails/MechName"
 
 interface QuickDeployItemProps {
     mech: MechBasic
-    queueFeed?: QueueFeed
     isSelected?: boolean
     toggleIsSelected?: () => void
+    onDeploy: () => void
     childrenMechStatus: React.MutableRefObject<{
         [mechID: string]: MechStatus
     }>
 }
 
-export const QuickDeployItem = ({ isSelected, toggleIsSelected, mech, childrenMechStatus }: QuickDeployItemProps) => {
+const propsAreEqual = (prevProps: QuickDeployItemProps, nextProps: QuickDeployItemProps) => {
+    return prevProps.isSelected === nextProps.isSelected && prevProps.mech.id === nextProps.mech.id
+}
+
+export const QuickDeployItem = React.memo(function QuickDeployItem({ isSelected, toggleIsSelected, onDeploy, mech, childrenMechStatus }: QuickDeployItemProps) {
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
-    const rarityDeets = useMemo(() => getRarityDeets(mech.tier || mechDetails?.tier || ""), [mech, mechDetails])
+    const rarityDeets = useMemo(() => getRarityDeets(mechDetails?.tier || mech.tier || ""), [mech, mechDetails])
     const [mechStatus, setMechStatus] = useState<MechStatus>()
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string>()
@@ -55,31 +59,39 @@ export const QuickDeployItem = ({ isSelected, toggleIsSelected, mech, childrenMe
         },
     )
 
-    const onDeployQueue = useCallback(async () => {
-        try {
-            setIsLoading(true)
-            const resp = await send<{ success: boolean; code: string }>(GameServerKeys.JoinQueue, {
-                mech_ids: [mech.id],
-            })
+    const onDeployQueue = useCallback(
+        async (e) => {
+            e.stopPropagation()
+            e.preventDefault()
 
-            if (resp && resp.success) {
-                newSnackbarMessage("Successfully deployed war machine.", "success")
-                setError(undefined)
+            try {
+                setIsLoading(true)
+                const resp = await send<{ success: boolean; code: string }>(GameServerKeys.JoinQueue, {
+                    mech_ids: [mech.id],
+                })
+
+                if (resp && resp.success) {
+                    newSnackbarMessage("Successfully deployed war machine.", "success")
+                    setError(undefined)
+                    onDeploy()
+                }
+            } catch (e) {
+                setError(typeof e === "string" ? e : "Failed to deploy war machine.")
+                console.error(e)
+                return
+            } finally {
+                setIsLoading(false)
             }
-        } catch (e) {
-            setError(typeof e === "string" ? e : "Failed to deploy war machine.")
-            console.error(e)
-            return
-        } finally {
-            setIsLoading(false)
-        }
-    }, [send, mech.id, newSnackbarMessage])
+        },
+        [send, mech.id, newSnackbarMessage, onDeploy],
+    )
 
     return (
         <Stack
             direction="row"
             spacing="1.2rem"
-            alignItems="flex-start"
+            alignItems="center"
+            onClick={() => mechDetails && toggleIsSelected && toggleIsSelected()}
             sx={{
                 position: "relative",
                 py: ".8rem",
@@ -126,13 +138,7 @@ export const QuickDeployItem = ({ isSelected, toggleIsSelected, mech, childrenMe
             </Stack>
 
             {/* Right side */}
-            <Stack
-                spacing="1.2rem"
-                direction="row"
-                alignItems="flex-start"
-                sx={{ py: ".2rem", flex: 1 }}
-                onClick={() => mechDetails && toggleIsSelected && toggleIsSelected()}
-            >
+            <Stack spacing="1.2rem" direction="row" alignItems="flex-start" sx={{ py: ".2rem", flex: 1 }}>
                 <Stack sx={{ flex: 1 }}>
                     <Stack spacing="1.2rem" direction="row" alignItems="flex-start" justifyContent="space-between" sx={{ py: ".2rem", flex: 1 }}>
                         <Box>
@@ -146,21 +152,13 @@ export const QuickDeployItem = ({ isSelected, toggleIsSelected, mech, childrenMe
                                 {rarityDeets.label}
                             </Typography>
 
-                            <Typography
-                                sx={{
-                                    color: mech.name ? "#FFFFFF" : colors.grey,
-                                    lineHeight: 1,
-                                    fontWeight: "fontWeightBold",
-                                    display: "-webkit-box",
-                                    overflow: "hidden",
-                                    overflowWrap: "anywhere",
-                                    textOverflow: "ellipsis",
-                                    WebkitLineClamp: 1,
-                                    WebkitBoxOrient: "vertical",
-                                }}
-                            >
-                                {mech.name || "Unnamed"}
-                            </Typography>
+                            {mechDetails && (
+                                <MechName
+                                    allowEdit
+                                    mech={mechDetails.name ? mechDetails : mech}
+                                    onRename={(newName) => setMechDetails((prev) => (prev ? { ...prev, name: newName } : prev))}
+                                />
+                            )}
                         </Box>
 
                         <MechGeneralStatus mechID={mech.id} smallVersion />
@@ -182,7 +180,7 @@ export const QuickDeployItem = ({ isSelected, toggleIsSelected, mech, childrenMe
                         {mech.label}
                     </Typography>
 
-                    <MechRepairBlocks mechID={mech?.id || mechDetails?.id} defaultBlocks={mechDetails?.model?.repair_blocks} />
+                    <MechRepairBlocks mechID={mech?.id || mechDetails?.id} defaultBlocks={mechDetails?.repair_blocks} />
 
                     {error && (
                         <Typography variant="body2" sx={{ color: colors.red }}>
@@ -193,4 +191,4 @@ export const QuickDeployItem = ({ isSelected, toggleIsSelected, mech, childrenMe
             </Stack>
         </Stack>
     )
-}
+}, propsAreEqual)
