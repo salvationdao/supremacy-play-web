@@ -121,6 +121,7 @@ export const ChatMessages = React.memo(function ChatMessages({ faction_id, prima
                                                 isFailed={(message.data as TextMessageData).from_user.id === userID && failedMessages.includes(message.id)}
                                                 previousMessage={chatMessages[i - 1]}
                                                 latestMessage={latestMessage}
+                                                tabFactionID={faction_id}
                                             />
                                         )
                                     } else if (message.type === ChatMessageType.PunishVote) {

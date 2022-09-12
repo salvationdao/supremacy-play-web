@@ -99,7 +99,7 @@ export const RepairJobItem = React.memo(function RepairJobItem({ repairJob, remo
                             isGridViewCompact={true}
                             title="ACTIVE WORKERS"
                             text={repairJob.working_agent_count.toString()}
-                            textColor={repairJob.working_agent_count <= 3 ? colors.green : colors.orange}
+                            textColor={repairJob.working_agent_count <= remainDamagedBlocks ? colors.green : colors.orange}
                         />
 
                         <General isGridViewCompact={true} title="REWARD">

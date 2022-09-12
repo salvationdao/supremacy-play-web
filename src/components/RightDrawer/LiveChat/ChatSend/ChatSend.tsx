@@ -5,7 +5,7 @@ import { ChatSettings, ClipThing, EmojiPopover } from "../../.."
 import { SvgEmoji, SvgExternalLink, SvgSend } from "../../../../assets"
 import { MAX_CHAT_MESSAGE_LENGTH } from "../../../../constants"
 import { useAuth, useChat, useGlobalNotifications, useMobile } from "../../../../containers"
-import { getRandomColor, replaceAllEmojis } from "../../../../helpers"
+import { getRandomColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -79,8 +79,8 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
     )
 
     useEffect(() => {
-        if (clickedOnUser) {
-            setMessageWithCheck(` @${clickedOnUser.username}#${clickedOnUser.gid} `, true)
+        if (clickedOnUser?.tabFactionID === faction_id && clickedOnUser.user) {
+            setMessageWithCheck(` @${clickedOnUser.user.username}#${clickedOnUser.user.gid} `, true)
             setClickedOnUser(undefined)
             document.getElementById(`message-textfield-${faction_id}`)?.focus()
         }
@@ -88,7 +88,7 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
 
     const sendMessage = useCallback(async () => {
         if (!message.trim()) return
-        const messageCleanedUpTags = replaceAllEmojis(message, "").replace(/@[\w ]+#/g, "#")
+        const messageCleanedUpTags = message.replace(/@[^@#]+#/g, "#")
 
         const id = uuidv4()
         const sentAt = new Date()

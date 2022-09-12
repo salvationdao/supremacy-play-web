@@ -2,14 +2,14 @@ import { Box } from "@mui/material"
 import { useMemo } from "react"
 import { useGame } from "../../../../containers"
 import { colors } from "../../../../theme/theme"
-import { BattleZoneStruct, Map } from "../../../../types"
+import { BattleZoneStruct, Map, GAME_CLIENT_TILE_SIZE } from "../../../../types"
 
 const borderThickness = 3000
 
 export const BattleZone = ({ map }: { map: Map }) => {
     const { battleZone } = useGame()
 
-    const mapScale = useMemo(() => map.Width / (map.Cells_X * 2000), [map])
+    const mapScale = useMemo(() => map.Width / (map.Cells_X * GAME_CLIENT_TILE_SIZE), [map])
 
     const locationX = useMemo(
         () => ((battleZone?.location.x || map.Pixel_Left + map.Width / 2) - map.Pixel_Left) * mapScale,
