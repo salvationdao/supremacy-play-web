@@ -97,8 +97,6 @@ const MechLoadoutItemButton = ({
 }: MechLoadoutItemButtonProps) => {
     const backgroundColor = useMemo(() => shadeColor(primaryColor, -90), [primaryColor])
 
-    console.log({ label, subLabel })
-
     return (
         <FancyButton
             disabled={disabled || locked}

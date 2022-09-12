@@ -308,12 +308,12 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
 
                                 return {
                                     slotNumber,
-                                    imageUrl: previouslyEquipped.image_url,
+                                    imageUrl: previouslyEquipped.image_url || previouslyEquipped.avatar_url,
                                     videoUrls: [previouslyEquipped.card_animation_url],
                                     label: previouslyEquipped.label,
                                     primaryColor: colors.weapons,
                                     Icon: SvgWeapons,
-                                    rarity: previouslyEquipped.weapon_skin ? getRarityDeets(previouslyEquipped.weapon_skin?.tier || "") : undefined,
+                                    rarity: previouslyEquipped.weapon_skin ? getRarityDeets(previouslyEquipped.weapon_skin.tier) : undefined,
                                     hasSkin: !!previouslyEquipped.weapon_skin,
                                     onClick: () => undoWeaponSelection(slotNumber),
                                 }
@@ -370,7 +370,7 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
 
                                 return {
                                     slotNumber,
-                                    imageUrl: previouslyEquipped.image_url,
+                                    imageUrl: previouslyEquipped.image_url || previouslyEquipped.avatar_url,
                                     videoUrls: [previouslyEquipped.card_animation_url],
                                     label: previouslyEquipped.label,
                                     primaryColor: colors.utilities,
@@ -385,7 +385,7 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
                 })}
 
                 {utility_slots &&
-                    utility_slots - utility_map.size &&
+                    utility_slots - utility_map.size > 0 &&
                     new Array(utility_slots - utility_map.size)
                         .fill(0)
                         .map((_, index) => (
