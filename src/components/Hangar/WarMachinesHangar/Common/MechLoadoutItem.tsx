@@ -97,6 +97,8 @@ const MechLoadoutItemButton = ({
 }: MechLoadoutItemButtonProps) => {
     const backgroundColor = useMemo(() => shadeColor(primaryColor, -90), [primaryColor])
 
+    console.log({ label, subLabel })
+
     return (
         <FancyButton
             disabled={disabled || locked}
@@ -183,41 +185,6 @@ const MechLoadoutItemButton = ({
                             SLOT {slotNumber}
                         </Typography>
                     )}
-                    <Box>
-                        <Typography
-                            variant="body2"
-                            sx={{
-                                color: primaryColor,
-                                fontFamily: fonts.nostromoBold,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 2,
-                                WebkitBoxOrient: "vertical",
-                            }}
-                        >
-                            {label}
-                        </Typography>
-
-                        {subLabel && (
-                            <Typography
-                                variant="body2"
-                                sx={{
-                                    color: primaryColor,
-                                    fontFamily: fonts.nostromoBold,
-                                    display: "-webkit-box",
-                                    overflow: "hidden",
-                                    overflowWrap: "anywhere",
-                                    textOverflow: "ellipsis",
-                                    WebkitLineClamp: 1,
-                                    WebkitBoxOrient: "vertical",
-                                }}
-                            >
-                                {subLabel}
-                            </Typography>
-                        )}
-                    </Box>
 
                     {rarity && (
                         <Typography
@@ -229,21 +196,41 @@ const MechLoadoutItemButton = ({
                     )}
                 </Stack>
 
-                <Typography
-                    variant="body2"
-                    sx={{
-                        color: primaryColor,
-                        fontFamily: fonts.nostromoBold,
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                    }}
-                >
-                    {label}
-                </Typography>
+                <Box>
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            color: primaryColor,
+                            fontFamily: fonts.nostromoBold,
+                            display: "-webkit-box",
+                            overflow: "hidden",
+                            overflowWrap: "anywhere",
+                            textOverflow: "ellipsis",
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: "vertical",
+                        }}
+                    >
+                        {label}
+                    </Typography>
+
+                    {subLabel && (
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                color: primaryColor,
+                                fontFamily: fonts.nostromoBold,
+                                display: "-webkit-box",
+                                overflow: "hidden",
+                                overflowWrap: "anywhere",
+                                textOverflow: "ellipsis",
+                                WebkitLineClamp: 1,
+                                WebkitBoxOrient: "vertical",
+                            }}
+                        >
+                            {subLabel}
+                        </Typography>
+                    )}
+                </Box>
             </Stack>
         </FancyButton>
     )
