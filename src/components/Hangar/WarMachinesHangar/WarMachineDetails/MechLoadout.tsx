@@ -100,7 +100,7 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
             const newMechDetails = await send<MechDetails, PlayerAssetMechEquipRequest>(GameServerKeys.EquipMech, {
                 mech_id: mechDetails.id,
                 equip_mech_skin: undefined,
-                equip_power_core: undefined,
+                equip_power_core: currLoadout.changed_power_core?.id,
                 equip_utility: Array.from(currLoadout.changed_utility_map, ([slotNumber, u]) => ({
                     utility_id: u.utility_id,
                     slot_number: slotNumber,
@@ -124,7 +124,7 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
         } finally {
             setLoading(false)
         }
-    }, [currLoadout.changed_utility_map, currLoadout.changed_weapons_map, mechDetails, newSnackbarMessage, send])
+    }, [currLoadout.changed_power_core, currLoadout.changed_utility_map, currLoadout.changed_weapons_map, mechDetails.id, newSnackbarMessage, send])
 
     const addPowerCoreSelection = useCallback((ep: LoadoutPowerCore) => {
         setCurrLoadout((prev) => {
@@ -159,6 +159,10 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
         })
     }, [])
 
+    const undoPowerCoreSelection = useCallback(() => {
+        setCurrLoadout((prev) => ({ ...prev, changed_power_core: undefined }))
+    }, [])
+
     const undoWeaponSelection = useCallback((slotNumber: number) => {
         setCurrLoadout((prev) => {
             const updated = prev.changed_weapons_map
@@ -167,6 +171,18 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
             return {
                 ...prev,
                 changed_weapons_map: updated,
+            }
+        })
+    }, [])
+
+    const undoUtilitySelection = useCallback((slotNumber: number) => {
+        setCurrLoadout((prev) => {
+            const updated = prev.changed_utility_map
+            updated.delete(slotNumber)
+
+            return {
+                ...prev,
+                changed_utility_map: updated,
             }
         })
     }, [])
@@ -180,6 +196,7 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
         utility_map,
         changed_utility_map,
         power_core,
+        changed_power_core,
         chassis_skin,
         intro_animation,
         outro_animation,
@@ -242,29 +259,54 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
                     left: "6rem",
                 }}
             >
-                {power_core ? (
-                    <MechLoadoutItem
-                        imageUrl={power_core.image_url || power_core.avatar_url}
-                        videoUrls={[power_core.card_animation_url]}
-                        label={power_core.label}
-                        primaryColor={colors.powerCore}
-                        Icon={SvgPowerCore}
-                        renderModal={(toggleShowLoadoutModal) => (
-                            <MechLoadoutPowerCoreModal
-                                onClose={() => toggleShowLoadoutModal(false)}
-                                onConfirm={(selectedPowerCore) =>
-                                    addPowerCoreSelection({
-                                        power_core: selectedPowerCore,
-                                        power_core_id: selectedPowerCore.id,
-                                    })
-                                }
-                                equipped={power_core}
+                {(() => {
+                    const powerCore = changed_power_core || power_core
+
+                    if (powerCore) {
+                        return (
+                            <MechLoadoutItem
+                                imageUrl={powerCore.image_url || powerCore.avatar_url}
+                                videoUrls={[powerCore.card_animation_url]}
+                                label={powerCore.label}
+                                primaryColor={colors.powerCore}
+                                Icon={SvgPowerCore}
+                                rarity={getRarityDeets(powerCore.tier)}
+                                renderModal={(toggleShowLoadoutModal) => (
+                                    <MechLoadoutPowerCoreModal
+                                        onClose={() => toggleShowLoadoutModal(false)}
+                                        onConfirm={(selectedPowerCore) => {
+                                            addPowerCoreSelection({
+                                                power_core: selectedPowerCore,
+                                                power_core_id: selectedPowerCore.id,
+                                            })
+                                            toggleShowLoadoutModal(false)
+                                        }}
+                                        equipped={powerCore}
+                                        powerCoresAlreadyEquippedInOtherSlots={changed_power_core ? [changed_power_core.id] : []}
+                                    />
+                                )}
+                                prevEquipped={(() => {
+                                    if (!changed_power_core) return
+
+                                    const previouslyEquipped = power_core
+                                    if (!previouslyEquipped) return
+
+                                    return {
+                                        imageUrl: previouslyEquipped.image_url || previouslyEquipped.avatar_url,
+                                        videoUrls: [previouslyEquipped.card_animation_url],
+                                        label: previouslyEquipped.label,
+                                        primaryColor: colors.powerCore,
+                                        Icon: SvgPowerCore,
+                                        rarity: getRarityDeets(previouslyEquipped.tier),
+                                        onClick: () => undoPowerCoreSelection(),
+                                    }
+                                })()}
                             />
-                        )}
-                    />
-                ) : (
-                    <MechLoadoutItem label="POWER CORE" primaryColor={colors.powerCore} onClick={() => console.log("AAAAA")} isEmpty disabled />
-                )}
+                        )
+                    }
+
+                    return <MechLoadoutItem label="POWER CORE" primaryColor={colors.powerCore} onClick={() => console.log("AAAAA")} isEmpty disabled />
+                })()}
 
                 {Array.from(weapons_map, ([slotNumber, w]) => {
                     let weapon = w
@@ -376,7 +418,7 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
                                     primaryColor: colors.utilities,
                                     Icon: SvgUtilities,
                                     rarity: getRarityDeets(previouslyEquipped.tier),
-                                    onClick: () => undoWeaponSelection(slotNumber),
+                                    onClick: () => undoUtilitySelection(slotNumber),
                                 }
                             })()}
                             locked={utility.locked_to_mech}

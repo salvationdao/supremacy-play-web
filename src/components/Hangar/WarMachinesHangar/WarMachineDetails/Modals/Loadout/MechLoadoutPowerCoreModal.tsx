@@ -32,6 +32,7 @@ interface GetPowerCoresRequest {
     search: string
     sort_by: string
     sort_dir: string
+    exclude_ids: string[]
     page_size: number
     page: number
     display_xsyn_locked?: boolean
@@ -63,9 +64,10 @@ interface MechLoadoutPowerCoreModalProps {
     onClose: () => void
     onConfirm: OnConfirmPowerCoreSelection
     equipped: PowerCore
+    powerCoresAlreadyEquippedInOtherSlots: string[]
 }
 
-export const MechLoadoutPowerCoreModal = ({ onClose, onConfirm, equipped }: MechLoadoutPowerCoreModalProps) => {
+export const MechLoadoutPowerCoreModal = ({ onClose, onConfirm, equipped, powerCoresAlreadyEquippedInOtherSlots }: MechLoadoutPowerCoreModalProps) => {
     const { userID } = useAuth()
     const { send } = useGameServerCommandsUser("/user_commander")
 
@@ -223,6 +225,8 @@ export const MechLoadoutPowerCoreModal = ({ onClose, onConfirm, equipped }: Mech
                 search,
                 sort_by: sortBy,
                 sort_dir: sortDir,
+                include_market_listed: false,
+                exclude_ids: powerCoresAlreadyEquippedInOtherSlots,
                 page,
                 page_size: pageSize,
                 equipped_statuses: equippedStatuses,
@@ -282,6 +286,7 @@ export const MechLoadoutPowerCoreModal = ({ onClose, onConfirm, equipped }: Mech
         page,
         pageSize,
         powerCoreSizes,
+        powerCoresAlreadyEquippedInOtherSlots,
         rarities,
         rechargeRate,
         search,
