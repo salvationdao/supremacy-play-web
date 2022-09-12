@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js"
 import { useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
+import { pixiPanZoom } from "../helpers/pixiPanZoom"
 import { useGame } from "./game"
 
 export const MiniMapPixiContainer = createContainer(() => {
@@ -19,43 +20,23 @@ export const MiniMapPixiContainer = createContainer(() => {
         })
 
         pixiApp.stage.sortableChildren = true
+        pixiPanZoom(pixiApp.view, pixiApp.stage)
         miniMapPixiRef.appendChild(pixiApp.view)
         setMiniMapPixiApp(pixiApp)
     }, [miniMapPixiRef])
 
     useEffect(() => {
         if (map?.Image_Url && miniMapPixiApp) {
-            // miniMapPixiApp.loader
-            //     .add([
-            //         {
-            //             name: "mapImage",
-            //             url: "https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/maps/desert_city.jpg",
-            //         },
-            //     ])
-            //     .load(function () {
-            //         const sprite = new PIXI.Sprite(miniMapPixiApp.loader.resources.mapImage.texture)
-
-            //         sprite.scale.x = 0.4
-            //         sprite.scale.y = 0.4
-            //         sprite.anchor.x = 0.5
-            //         sprite.anchor.y = 0.5
-            //         sprite.x = 200
-            //         sprite.y = 200
-
-            //         miniMapPixiApp.stage.addChild(sprite)
-            //     })
-
             const mapImageSprite = PIXI.Sprite.from(map.Image_Url)
-
             mapImageSprite.x = 0
             mapImageSprite.y = 0
             mapImageSprite.zIndex = -10
-            mapImageSprite.width = miniMapPixiApp.renderer.width
-            mapImageSprite.height = miniMapPixiApp.renderer.height
+            mapImageSprite.width = map.Width
+            mapImageSprite.height = map.Height
 
             miniMapPixiApp.stage.addChild(mapImageSprite)
         }
-    }, [map?.Image_Url, miniMapPixiApp])
+    }, [map, miniMapPixiApp])
 
     return { miniMapPixiApp, miniMapPixiRef, setMiniMapPixiRef }
 })

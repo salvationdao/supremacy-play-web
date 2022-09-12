@@ -1,8 +1,8 @@
 import * as PIXI from "pixi.js"
 import { addWheelListener } from "./addWheelListener"
 
-export const pixiPanZoom = (graphics) => {
-    addWheelListener(graphics.domContainer, function (e) {
+export const pixiPanZoom = (domContainer, graphics) => {
+    addWheelListener(domContainer, function (e) {
         zoom(e.clientX, e.clientY, e.deltaY < 0)
     })
 
@@ -21,7 +21,7 @@ export const pixiPanZoom = (graphics) => {
     })()
 
     function zoom(x, y, isZoomIn) {
-        var direction = isZoomIn ? 1 : -1
+        const direction = isZoomIn ? 1 : -1
         var factor = 1 + direction * 0.1
         graphics.scale.x *= factor
         graphics.scale.y *= factor
@@ -38,8 +38,8 @@ export const pixiPanZoom = (graphics) => {
     }
 
     function addDragNDrop() {
-        var stage = graphics.stage
-        stage.setInteractive(true)
+        var stage = graphics
+        stage.interactive = true
 
         var isDragging = false,
             prevX,
