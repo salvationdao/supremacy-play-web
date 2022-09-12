@@ -23,10 +23,12 @@ export const MiniMap = () => {
     const { map, isBattleStarted } = useGame()
     const { isTargeting } = useMiniMap()
     const [isPoppedout, setIsPoppedout] = useState(false)
-    const ref = useRef<HTMLElement | null>(null)
+    const [ref, setRef] = useState<HTMLDivElement | null>(null)
 
     useEffect(() => {
-        const thisElement = ref.current
+        if (!ref) return
+
+        const thisElement = ref
         const newContainerElement = isStreamBigDisplay ? smallDisplayRef : bigDisplayRef
 
         if (!isPoppedout && thisElement && newContainerElement) {
@@ -38,7 +40,7 @@ export const MiniMap = () => {
 
             newContainerElement.appendChild(thisElement)
         }
-    }, [isStreamBigDisplay, isPoppedout, smallDisplayRef, bigDisplayRef])
+    }, [ref, isStreamBigDisplay, isPoppedout, smallDisplayRef, bigDisplayRef])
 
     const content = useMemo(() => {
         if (isBattleStarted && map) {
@@ -57,7 +59,7 @@ export const MiniMap = () => {
     }, [isBattleStarted, isPoppedout, isTargeting, map])
 
     return (
-        <Box ref={ref} sx={{ width: "100%", height: "100%" }}>
+        <Box ref={setRef} sx={{ width: "100%", height: "100%" }}>
             {content}
         </Box>
     )
