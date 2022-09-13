@@ -18,9 +18,12 @@ const propsAreEqual = (prevProps: MiniMapPixiProps, nextProps: MiniMapPixiProps)
 }
 
 export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions, poppedOutContainerRef }: MiniMapPixiProps) {
-    const { miniMapPixiApp, setMiniMapPixiRef } = useMiniMapPixi()
+    const { miniMapPixiApp, setMiniMapPixiRef, setContainerDimensions } = useMiniMapPixi()
 
-    // Setup the pixi app
+    useEffect(() => {
+        setContainerDimensions(containerDimensions)
+    }, [containerDimensions, setContainerDimensions])
+
     useEffect(() => {
         if (!miniMapPixiApp) return
 
@@ -40,13 +43,6 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
             bunny.rotation += 0.01
         })
     }, [miniMapPixiApp])
-
-    // Resize the pixi container based if parent container changed
-    useEffect(() => {
-        if (miniMapPixiApp) {
-            miniMapPixiApp.renderer.resize(containerDimensions.width, containerDimensions.height)
-        }
-    }, [miniMapPixiApp, containerDimensions.width, containerDimensions.height])
 
     return (
         <Box

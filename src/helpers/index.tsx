@@ -16,7 +16,7 @@ import {
     SvgWrapperProps,
 } from "../assets"
 import { colors } from "../theme/theme"
-import { AssetItemType, GAME_CLIENT_TILE_SIZE, MysteryCrateType, Rarity, UserRank } from "../types"
+import { AssetItemType, Dimension, GAME_CLIENT_TILE_SIZE, MysteryCrateType, Rarity, UserRank } from "../types"
 
 // Capitalize convert a string "example" to "Example"
 export const Capitalize = (str: string): string => str[0].toUpperCase() + str.substring(1).toLowerCase()
@@ -580,3 +580,21 @@ export const convertCellsToGameLocation = (x: number, y: number, mapLeft: number
 }
 
 export const diff = (a: number, b: number) => (a > b ? a - b : b - a)
+
+// Adjusts dimensions so that the smallest side fits in a parent dimension, and keeping aspect ratio
+// E.g 1. dimension: = (100, 40), parent dimension = (80, 80), returns (200, 80).
+// E.g 2. dimension: = (80, 100), parent dimension = (40, 40), returns (40, 50).
+export const calculateCoverDimensions = (dimensions: Dimension, containerDimensions: Dimension): Dimension => {
+    const ratio = dimensions.height / dimensions.width
+    const result = { ...dimensions }
+
+    result.width = containerDimensions.width
+    result.height = containerDimensions.height * ratio
+
+    if (result.height < containerDimensions.height) {
+        result.height = containerDimensions.height
+        result.width = containerDimensions.height / ratio
+    }
+
+    return result
+}
