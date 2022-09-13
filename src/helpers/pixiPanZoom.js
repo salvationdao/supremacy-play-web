@@ -1,67 +1,53 @@
-import * as PIXI from "pixi.js"
 import { addWheelListener } from "./addWheelListener"
 
-export const pixiPanZoom = (domContainer, graphics) => {
+export const pixiPanZoom = (domContainer, stage) => {
     addWheelListener(domContainer, function (e) {
-        zoom(e.clientX, e.clientY, e.deltaY < 0)
+        zoom(e.offsetX, e.offsetY, e.deltaY < 0)
     })
 
     addDragNDrop()
 
-    var getGraphCoordinates = (function () {
-        var ctx = {
-            global: { x: 0, y: 0 }, // store it inside closure to avoid GC pressure
-        }
-
-        return function (x, y) {
-            ctx.global.x = x
-            ctx.global.y = y
-            return PIXI.InteractionData.prototype.getLocalPosition.call(ctx, graphics)
-        }
-    })()
-
+    // Scroll and zoom around
     function zoom(x, y, isZoomIn) {
         const direction = isZoomIn ? 1 : -1
-        var factor = 1 + direction * 0.1
-        graphics.scale.x *= factor
-        graphics.scale.y *= factor
+        const factor = 1 + direction * 0.05
 
-        // Technically code below is not required, but helps to zoom on mouse
-        // cursor, instead center of graphics coordinates
-        var beforeTransform = getGraphCoordinates(x, y)
-        graphics.updateTransform()
-        var afterTransform = getGraphCoordinates(x, y)
+        const worldPos = { x: (x - stage.x) / stage.scale.x, y: (y - stage.y) / stage.scale.y }
+        const newScale = { x: stage.scale.x * factor, y: stage.scale.y * factor }
+        const newScreenPos = { x: worldPos.x * newScale.x + stage.x, y: worldPos.y * newScale.y + stage.y }
 
-        graphics.position.x += (afterTransform.x - beforeTransform.x) * graphics.scale.x
-        graphics.position.y += (afterTransform.y - beforeTransform.y) * graphics.scale.y
-        graphics.updateTransform()
+        stage.x -= newScreenPos.x - x
+        stage.y -= newScreenPos.y - y
+        stage.scale.x = newScale.x
+        stage.scale.y = newScale.y
     }
 
+    // Drag and pan around
     function addDragNDrop() {
-        var stage = graphics
         stage.interactive = true
 
-        var isDragging = false,
-            prevX,
-            prevY
+        let isDragging = false
+        let prevX = stage.x
+        let prevY = stage.y
 
         stage.mousedown = function (moveData) {
-            var pos = moveData.global
+            const pos = moveData.data.global
+            isDragging = true
             prevX = pos.x
             prevY = pos.y
-            isDragging = true
         }
 
         stage.mousemove = function (moveData) {
             if (!isDragging) {
                 return
             }
-            var pos = moveData.global
-            var dx = pos.x - prevX
-            var dy = pos.y - prevY
 
-            graphics.position.x += dx
-            graphics.position.y += dy
+            const pos = moveData.data.global
+            const dx = pos.x - prevX
+            const dy = pos.y - prevY
+
+            stage.x += dx
+            stage.y += dy
             prevX = pos.x
             prevY = pos.y
         }

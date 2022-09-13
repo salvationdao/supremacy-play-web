@@ -28,12 +28,10 @@ export const MiniMapPixiContainer = createContainer(() => {
     useEffect(() => {
         if (map?.Image_Url && miniMapPixiApp) {
             const mapImageSprite = PIXI.Sprite.from(map.Image_Url)
-            mapImageSprite.x = 0
-            mapImageSprite.y = 0
+            mapImageSprite.position.set(0, 0)
             mapImageSprite.zIndex = -10
             mapImageSprite.width = map.Width
             mapImageSprite.height = map.Height
-
             miniMapPixiApp.stage.addChild(mapImageSprite)
         }
     }, [map, miniMapPixiApp])
