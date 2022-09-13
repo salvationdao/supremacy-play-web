@@ -1,14 +1,15 @@
+import * as PIXI from "pixi.js"
 import { addWheelListener } from "./addWheelListener"
 
-export const pixiPanZoom = (domContainer, stage) => {
-    addWheelListener(domContainer, function (e) {
+export const pixiPanZoom = (domContainer: HTMLCanvasElement, stage: PIXI.Container<PIXI.DisplayObject>) => {
+    addWheelListener(domContainer, function (e: WheelEvent) {
         zoom(e.offsetX, e.offsetY, e.deltaY < 0)
     })
 
     addDragNDrop()
 
     // Scroll and zoom around
-    function zoom(x, y, isZoomIn) {
+    function zoom(x: number, y: number, isZoomIn: boolean) {
         const direction = isZoomIn ? 1 : -1
         const factor = 1 + direction * 0.05
 
@@ -30,14 +31,16 @@ export const pixiPanZoom = (domContainer, stage) => {
         let prevX = stage.x
         let prevY = stage.y
 
-        stage.mousedown = function (moveData) {
+        stage.on("pointerdown", mousedown).on("pointerup", mouseup).on("pointerupoutside", mouseup).on("pointermove", mousemove)
+
+        function mousedown(moveData: PIXI.InteractionEvent) {
             const pos = moveData.data.global
             isDragging = true
             prevX = pos.x
             prevY = pos.y
         }
 
-        stage.mousemove = function (moveData) {
+        function mousemove(moveData: PIXI.InteractionEvent) {
             if (!isDragging) {
                 return
             }
@@ -52,7 +55,7 @@ export const pixiPanZoom = (domContainer, stage) => {
             prevY = pos.y
         }
 
-        stage.mouseup = function () {
+        function mouseup() {
             isDragging = false
         }
     }
