@@ -54,7 +54,7 @@ export const VideoPlayerControls = () => {
                             elem.style.position = "fixed"
                             elem.style.top = "0"
                             elem.style.left = "0"
-                            elem.style.zIndex = `${siteZIndex.Bar + 10}`
+                            elem.style.zIndex = `${siteZIndex.TopBar + 10}`
                             screenfull.request(elem, { navigationUI: "hide" }).then(() => setFullscreen(screenfull.isFullscreen))
                         }
                     } else {

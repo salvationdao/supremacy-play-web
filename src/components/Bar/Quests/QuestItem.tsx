@@ -59,7 +59,7 @@ export const QuestItem = React.memo(function QuestItem({ questStat, progress, sh
                         setTimeout(() => {
                             setCompleted(true)
                             setShowShowConfetti(false)
-                        }, 3000)
+                        }, 1500)
                     }}
                 />
             )}

@@ -9,7 +9,7 @@ import { GameServerKeys } from "../../../../../keys"
 import { pulseEffect, rippleEffect, shake, spinEffect } from "../../../../../theme/keyframes"
 import { colors, fonts } from "../../../../../theme/theme"
 import { LocationSelectType, Map, WarMachineState } from "../../../../../types"
-import { DisplayedAbility, MechDisplayEffectType, WarMachineLiveState } from "../../../../../types/game"
+import { DisplayedAbility, GAME_CLIENT_TILE_SIZE, MechDisplayEffectType, WarMachineLiveState } from "../../../../../types/game"
 import { MechMoveCommand, MechMoveCommandAbility } from "../../../../WarMachine/WarMachineItem/MoveCommand"
 
 const TRANSITION_DURATION = 0.275 // seconds
@@ -55,8 +55,8 @@ const MapMechInner = ({ warMachine, map, label, isAI, poppedOutContainerRef }: M
 
     // For rendering: size, colors etc.
     const prevRotation = useRef(warMachine.rotation)
-    const mapScale = useMemo(() => map.Width / (map.Cells_X * 2000), [map])
-    const iconSize = useMemo(() => Math.max(gridWidth, gridHeight, 50) * (isAI ? 1.2 : 1.8), [gridWidth, gridHeight, isAI])
+    const mapScale = useMemo(() => map.Width / (map.Cells_X * GAME_CLIENT_TILE_SIZE), [map])
+    const iconSize = useMemo(() => Math.max(gridWidth, gridHeight, 40) * (isAI ? 1.2 : 1.8), [gridWidth, gridHeight, isAI])
     const dirArrowLength = useMemo(() => iconSize / 2 + 0.6 * iconSize, [iconSize])
     const primaryColor = useMemo(
         () => (ownedByID === userID ? colors.gold : getFaction(warMachineFactionID).primary_color || colors.neonBlue),
@@ -124,7 +124,7 @@ const MapMechInner = ({ warMachine, map, label, isAI, poppedOutContainerRef }: M
                     // Update the mech move dash line length and rotation
                     const moveCommandEl = (poppedOutContainerRef?.current || document).querySelector(`#map-mech-move-command-${hash}`) as HTMLElement
                     if (moveCommandEl) {
-                        const mCommand = mechMoveCommand.current?.mech_id ? mechMoveCommand.current : tempMechMoveCommand.current
+                        const mCommand = tempMechMoveCommand.current || mechMoveCommand.current
                         if (mCommand?.cell_x && mCommand?.cell_y && !mCommand?.reached_at) {
                             const commandMapX = mCommand.cell_x * gridWidth
                             const commandMapY = mCommand.cell_y * gridHeight
@@ -179,22 +179,21 @@ const MapMechInner = ({ warMachine, map, label, isAI, poppedOutContainerRef }: M
 
     // Immediately render the mech move dashed line when player selects it for fast UX
     useEffect(() => {
-        if (
-            playerAbility?.ability.location_select_type === LocationSelectType.MechCommand &&
-            playerAbility.mechHash === hash &&
-            selectionInstant?.startCoords
-        ) {
-            const mCommand: MechMoveCommand = {
-                id: "move_command",
-                mech_id: id,
-                triggered_by_id: "x",
-                cell_x: selectionInstant.startCoords.x,
-                cell_y: selectionInstant.startCoords.y,
-                is_moving: true,
-                remain_cooldown_seconds: 0,
-                is_mini_mech: false,
+        if (playerAbility?.ability.location_select_type === LocationSelectType.MechCommand && playerAbility.mechHash === hash) {
+            if (selectionInstant?.startCoords) {
+                const mCommand: MechMoveCommand = {
+                    id: "move_command",
+                    mech_id: id,
+                    triggered_by_id: "x",
+                    cell_x: selectionInstant.startCoords.x,
+                    cell_y: selectionInstant.startCoords.y,
+                    is_moving: true,
+                    remain_cooldown_seconds: 0,
+                    is_mini_mech: false,
+                }
+                mechMoveCommand.current = undefined
+                tempMechMoveCommand.current = mCommand
             }
-            tempMechMoveCommand.current = mCommand
         } else {
             tempMechMoveCommand.current = undefined
         }

@@ -8,8 +8,6 @@ import { shadeColor } from "../../helpers"
 import { siteZIndex } from "../../theme/theme"
 import { ArenaSelect } from "./ArenaSelect"
 import { OvenResolutionSelect } from "./ResolutionSelect"
-import { ShowTrailerButton } from "./ShowTrailerButton"
-import { ShowUpcomingBattleButton } from "./ShowUpcomingBattleButton"
 import { OvenStreamSelect } from "./StreamSelect"
 
 export const CONTROLS_HEIGHT = 3.0 // rem
@@ -58,8 +56,6 @@ export const Controls = () => {
             </Stack>
 
             <Stack direction="row" spacing="1.2rem" sx={{ flexShrink: 0, height: "100%" }}>
-                <ShowUpcomingBattleButton />
-                <ShowTrailerButton />
                 {DEV_ONLY && <ArenaSelect />}
                 <OvenStreamSelect />
                 <OvenResolutionSelect />

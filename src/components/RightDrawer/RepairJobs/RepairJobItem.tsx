@@ -19,7 +19,16 @@ interface RepairJobItemProps {
 }
 
 const propsAreEqual = (prevProps: RepairJobItemProps, nextProps: RepairJobItemProps) => {
-    return prevProps.repairJobModal?.id === nextProps.repairJobModal?.id && prevProps.repairJob.id === nextProps.repairJob.id
+    return (
+        prevProps.repairJobModal?.id === nextProps.repairJobModal?.id &&
+        prevProps.repairJobModal?.working_agent_count === nextProps.repairJobModal?.working_agent_count &&
+        prevProps.repairJobModal?.blocks_repaired === nextProps.repairJobModal?.blocks_repaired &&
+        prevProps.repairJobModal?.closed_at === nextProps.repairJobModal?.closed_at &&
+        prevProps.repairJob.id === nextProps.repairJob.id &&
+        prevProps.repairJob.working_agent_count === nextProps.repairJob.working_agent_count &&
+        prevProps.repairJob.blocks_repaired === nextProps.repairJob.blocks_repaired &&
+        prevProps.repairJob.closed_at === nextProps.repairJob.closed_at
+    )
 }
 
 export const RepairJobItem = React.memo(function RepairJobItem({ repairJob, removeByID, repairJobModal, setRepairJobModal }: RepairJobItemProps) {
@@ -90,7 +99,7 @@ export const RepairJobItem = React.memo(function RepairJobItem({ repairJob, remo
                             isGridViewCompact={true}
                             title="ACTIVE WORKERS"
                             text={repairJob.working_agent_count.toString()}
-                            textColor={repairJob.working_agent_count <= 3 ? colors.green : colors.orange}
+                            textColor={repairJob.working_agent_count <= remainDamagedBlocks ? colors.green : colors.orange}
                         />
 
                         <General isGridViewCompact={true} title="REWARD">

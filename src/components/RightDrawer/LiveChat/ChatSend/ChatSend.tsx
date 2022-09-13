@@ -1,5 +1,5 @@
 import { IconButton, InputAdornment, Stack, TextField, Typography } from "@mui/material"
-import { useCallback, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { v4 as uuidv4 } from "uuid"
 import { ChatSettings, ClipThing, EmojiPopover } from "../../.."
 import { SvgEmoji, SvgExternalLink, SvgSend } from "../../../../assets"
@@ -25,7 +25,7 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
     const { user, userRank } = useAuth()
     const { isMobile } = useMobile()
-    const { userGidRecord, onFailedMessage, handleIncomingMessage, isPoppedout, setIsPoppedout } = useChat()
+    const { userGidRecord, onFailedMessage, handleIncomingMessage, isPoppedout, setIsPoppedout, clickedOnUser, setClickedOnUser } = useChat()
 
     // Message field
     const textfieldRef = useRef<HTMLInputElement>()
@@ -37,7 +37,6 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
     const [isEmojiOpen, toggleIsEmojiOpen] = useToggle()
 
     const messageColor = useMemo(() => getRandomColor(), [])
-    const renderedMsg = message.replace(/@[\w ]+#/g, "#")
 
     // Go through input message and return tagged gid's
     const taggedGIDs = useCallback(
@@ -73,18 +72,27 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
             setMessage((prev) => {
                 const m = append ? prev + newMessage : newMessage
                 if (m.length > MAX_CHAT_MESSAGE_LENGTH) return prev
-                return m
+                return m.trimStart()
             })
         },
         [setMessage],
     )
 
+    useEffect(() => {
+        if (clickedOnUser?.tabFactionID === faction_id && clickedOnUser.user) {
+            setMessageWithCheck(` @${clickedOnUser.user.username}#${clickedOnUser.user.gid} `, true)
+            setClickedOnUser(undefined)
+            document.getElementById(`message-textfield-${faction_id}`)?.focus()
+        }
+    }, [clickedOnUser, faction_id, focusCaretTextField, setClickedOnUser, setMessageWithCheck])
+
     const sendMessage = useCallback(async () => {
         if (!message.trim()) return
+        const messageCleanedUpTags = message.replace(/@[^@#]+#/g, "#")
 
         const id = uuidv4()
         const sentAt = new Date()
-        const taggedUserGids = taggedGIDs(renderedMsg)
+        const taggedUserGids = taggedGIDs(messageCleanedUpTags)
 
         const msg: ChatMessage = {
             id,
@@ -93,7 +101,7 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
                 from_user: user,
                 user_rank: userRank,
                 message_color: messageColor,
-                message: renderedMsg,
+                message: messageCleanedUpTags,
                 tagged_users_gids: taggedUserGids,
             },
             type: ChatMessageType.Text,
@@ -110,7 +118,7 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
             const resp = await send<ChatMessage>(GameServerKeys.SendChatMessage, {
                 id,
                 faction_id,
-                message: renderedMsg,
+                message: messageCleanedUpTags,
                 message_color: messageColor,
                 tagged_users_gids: taggedUserGids,
             })
@@ -120,7 +128,7 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
             newSnackbarMessage(typeof e === "string" ? e : "Failed to send chat message.", "error")
             console.error(e)
         }
-    }, [message, user, send, handleIncomingMessage, userRank, messageColor, faction_id, newSnackbarMessage, onFailedMessage, renderedMsg, taggedGIDs])
+    }, [message, user, send, handleIncomingMessage, userRank, messageColor, faction_id, newSnackbarMessage, onFailedMessage, taggedGIDs])
 
     const showCharCount = message.length >= MAX_CHAT_MESSAGE_LENGTH
 

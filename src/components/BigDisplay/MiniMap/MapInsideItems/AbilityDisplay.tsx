@@ -1,14 +1,14 @@
 import { Box, Typography } from "@mui/material"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { decode } from "base64-arraybuffer"
+import React, { useEffect, useMemo, useRef, useState } from "react"
 import { useArena, useGame, useMiniMap } from "../../../../containers"
 import { useTimer } from "../../../../hooks"
 import { useGameServerSubscription } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { dropEffect, explosionEffect, fadeEffect, landmineEffect, rippleEffect } from "../../../../theme/keyframes"
 import { fonts } from "../../../../theme/theme"
-import { DisplayedAbility, LocationSelectType, Map as GameMap, MechDisplayEffectType, MiniMapDisplayEffectType } from "../../../../types"
+import { DisplayedAbility, GAME_CLIENT_TILE_SIZE, LocationSelectType, Map as GameMap, MechDisplayEffectType, MiniMapDisplayEffectType } from "../../../../types"
 import { MapIcon } from "./Common/MapIcon"
-import { decode } from "base64-arraybuffer"
 import { HiveHexes } from "./HiveHexes"
 
 export enum MapEventType {
@@ -40,12 +40,16 @@ interface PendingHiveStateChange {
     delay: number
 }
 
+const propsAreEqual = (prevProps: MiniMapAbilitiesDisplayProps, nextProps: MiniMapAbilitiesDisplayProps) => {
+    return prevProps.map.Name === nextProps.map.Name
+}
+
 interface MiniMapAbilitiesDisplayProps {
     map: GameMap
     poppedOutContainerRef?: React.MutableRefObject<HTMLElement | null>
 }
 
-export const MiniMapAbilitiesDisplay = ({ map, poppedOutContainerRef }: MiniMapAbilitiesDisplayProps) => {
+export const MiniMapAbilitiesDisplay = React.memo(function MiniMapAbilitiesDisplay({ map, poppedOutContainerRef }: MiniMapAbilitiesDisplayProps) {
     const { currentArenaID } = useArena()
     const [abilityList, setAbilityList] = useState<DisplayedAbility[]>([])
     const [mapEvents, setMapEvents] = useState<DisplayedAbility[]>([])
@@ -362,20 +366,34 @@ export const MiniMapAbilitiesDisplay = ({ map, poppedOutContainerRef }: MiniMapA
         }
     }, [])
 
+    return useMemo(
+        () => (
+            <>
+                {abilityList.length > 0 &&
+                    abilityList.map((displayAbility) => <MiniMapAbilityDisplay key={displayAbility.offering_id} displayAbility={displayAbility} />)}
+
+                {mapEvents.length > 0 &&
+                    mapEvents.map((displayAbility) => <MiniMapAbilityDisplay key={displayAbility.offering_id} displayAbility={displayAbility} />)}
+
+                {map.Name === TheHiveMapName && <HiveHexes map={map} state={hiveState} poppedOutContainerRef={poppedOutContainerRef} />}
+            </>
+        ),
+        [abilityList, hiveState, map, mapEvents, poppedOutContainerRef],
+    )
+}, propsAreEqual)
+
+interface MiniMapAbilityDisplayProps {
+    displayAbility: DisplayedAbility
+}
+
+const propsAreEqualMiniMapAbilityDisplay = (prevProps: MiniMapAbilityDisplayProps, nextProps: MiniMapAbilityDisplayProps) => {
     return (
-        <>
-            {abilityList.length > 0 &&
-                abilityList.map((displayAbility) => <MiniMapAbilityDisplay key={displayAbility.offering_id} displayAbility={displayAbility} />)}
-
-            {mapEvents.length > 0 &&
-                mapEvents.map((displayAbility) => <MiniMapAbilityDisplay key={displayAbility.offering_id} displayAbility={displayAbility} />)}
-
-            {map.Name === TheHiveMapName && <HiveHexes map={map} state={hiveState} poppedOutContainerRef={poppedOutContainerRef} />}
-        </>
+        prevProps.displayAbility.offering_id === nextProps.displayAbility.offering_id &&
+        prevProps.displayAbility.launching_at === nextProps.displayAbility.launching_at
     )
 }
 
-const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAbility }) => {
+const MiniMapAbilityDisplay = React.memo(function MiniMapAbilityDisplay({ displayAbility }: MiniMapAbilityDisplayProps) {
     const {
         image_url,
         colour,
@@ -392,7 +410,7 @@ const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAb
     const { gridHeight } = useMiniMap()
     const { map } = useGame()
 
-    const mapScale = useMemo(() => (map ? map.Width / (map.Cells_X * 2000) : 0), [map])
+    const mapScale = useMemo(() => (map ? map.Width / (map.Cells_X * GAME_CLIENT_TILE_SIZE) : 0), [map])
     const position = useMemo(
         () =>
             location_in_pixels ? { x: (location.x - (map ? map.Pixel_Left : 0)) * mapScale, y: (location.y - (map ? map.Pixel_Top : 0)) * mapScale } : location,
@@ -400,27 +418,42 @@ const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAb
     )
     const diameter = useMemo(() => (radius ? radius * mapScale * 2 : 0), [mapScale, radius])
 
-    return useMemo(
-        () => (
+    const iconAnimation = useMemo(() => {
+        switch (mini_map_display_effect_type) {
+            case MiniMapDisplayEffectType.Drop:
+                return `${dropEffect(3)} 2s ease-out`
+            case MiniMapDisplayEffectType.Landmine:
+                return `${dropEffect(2)} 1.5s ease-out, ${landmineEffect("https://i.imgur.com/hL62NOp.png", image_url)} 3s ease-out forwards` // 3s landmine arm delay
+            default:
+                return "none"
+        }
+    }, [image_url, mini_map_display_effect_type])
+
+    const diameterAnimation = useMemo(() => {
+        switch (mini_map_display_effect_type) {
+            case MiniMapDisplayEffectType.Range:
+                return `${rippleEffect(colour)} 10s ease-out`
+            case MiniMapDisplayEffectType.Pulse:
+                return `${explosionEffect(colour)} 1.2s infinite`
+            case MiniMapDisplayEffectType.Explosion:
+                return `${explosionEffect(colour)} 3s forwards`
+            case MiniMapDisplayEffectType.Fade:
+                return `${fadeEffect()} 1s forwards`
+            default:
+                return "none"
+        }
+    }, [colour, mini_map_display_effect_type])
+
+    return useMemo(() => {
+        return (
             <MapIcon
                 position={position}
                 locationInPixels={location_in_pixels || false}
-                sizeGrid={size_grid_override || 1.5}
+                sizeGrid={size_grid_override || (diameter ? 0.5 : 1.5)}
                 primaryColor={colour}
                 backgroundImageUrl={image_url}
                 noBackgroundColour={!!no_background_colour}
-                iconSx={{
-                    animation: (() => {
-                        switch (mini_map_display_effect_type) {
-                            case MiniMapDisplayEffectType.Drop:
-                                return `${dropEffect(3)} 2s ease-out`
-                            case MiniMapDisplayEffectType.Landmine:
-                                return `${dropEffect(2)} 1.5s ease-out, ${landmineEffect("https://i.imgur.com/hL62NOp.png", image_url)} 3s ease-out forwards` // 3s landmine arm delay
-                            default:
-                                return "none"
-                        }
-                    })(),
-                }}
+                iconSx={{ animation: iconAnimation }}
                 zIndex={show_below_mechs ? 1 : 100}
                 insideRender={
                     <>
@@ -455,20 +488,7 @@ const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAb
                                     borderColor: colour,
                                     borderStyle: "dashed solid",
                                     backgroundColor: "#00000010",
-                                    animation: (() => {
-                                        switch (mini_map_display_effect_type) {
-                                            case MiniMapDisplayEffectType.Range:
-                                                return `${rippleEffect(colour)} 10s ease-out`
-                                            case MiniMapDisplayEffectType.Pulse:
-                                                return `${explosionEffect(colour)} 1.2s infinite`
-                                            case MiniMapDisplayEffectType.Explosion:
-                                                return `${explosionEffect(colour)} 3s forwards`
-                                            case MiniMapDisplayEffectType.Fade:
-                                                return `${fadeEffect()} 1s forwards`
-                                            default:
-                                                return "none"
-                                        }
-                                    })(),
+                                    animation: diameterAnimation,
                                     zIndex: 90,
                                 }}
                             />
@@ -476,25 +496,12 @@ const MiniMapAbilityDisplay = ({ displayAbility }: { displayAbility: DisplayedAb
                     </>
                 }
             />
-        ),
-        [
-            colour,
-            diameter,
-            mini_map_display_effect_type,
-            gridHeight,
-            image_url,
-            launching_at,
-            border_width,
-            location_in_pixels,
-            position,
-            show_below_mechs,
-            no_background_colour,
-            size_grid_override,
-        ],
-    )
-}
+        )
+    }, [position, location_in_pixels, size_grid_override, diameter, colour, image_url, no_background_colour, iconAnimation, show_below_mechs, launching_at, gridHeight, border_width, diameterAnimation])
+}, propsAreEqualMiniMapAbilityDisplay)
 
 const Countdown = ({ launchDate }: { launchDate: Date }) => {
     const { totalSecRemain } = useTimer(launchDate)
-    return <>{totalSecRemain}</>
+    if (totalSecRemain <= 0) return null
+    return <>{totalSecRemain + 1}</>
 }

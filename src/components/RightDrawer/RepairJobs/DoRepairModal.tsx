@@ -4,7 +4,7 @@ import BigNumber from "bignumber.js"
 import React, { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 import { SvgClose, SvgCubes, SvgSupToken } from "../../../assets"
 import { CAPTCHA_KEY } from "../../../constants"
-import { useSupremacy } from "../../../containers"
+import { useSupremacy, useUI } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { supFormatterNoFixed, timeSinceInWords } from "../../../helpers"
 import { useTimer } from "../../../hooks"
@@ -31,6 +31,9 @@ const propsAreEqual = (prevProps: DoRepairModalProps, nextProps: DoRepairModalPr
     return (
         prevProps.open === nextProps.open &&
         prevProps.repairJob?.id === nextProps.repairJob?.id &&
+        prevProps.repairJob?.closed_at === nextProps.repairJob?.closed_at &&
+        prevProps.repairJob?.blocks_repaired === nextProps.repairJob?.blocks_repaired &&
+        prevProps.repairJob?.working_agent_count === nextProps.repairJob?.working_agent_count &&
         prevProps.repairStatus?.id === nextProps.repairStatus?.id &&
         prevProps.repairStatus?.blocks_repaired === nextProps.repairStatus?.blocks_repaired
     )
@@ -42,6 +45,7 @@ const propsAreEqual = (prevProps: DoRepairModalProps, nextProps: DoRepairModalPr
  */
 export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, repairJob: _repairJob, open, onClose }: DoRepairModalProps) {
     const theme = useTheme()
+    const { setStopMapRender, setIsStreamBigDisplay } = useUI()
     const { getFaction } = useSupremacy()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [isRegistering, setIsRegistering] = useState(false)
@@ -60,6 +64,13 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
             setRepairJob(payload)
         },
     )
+
+    // When doing repair, pause minimap rendering, and show stream on top left corner
+    useEffect(() => {
+        setIsStreamBigDisplay(false)
+        setStopMapRender(true)
+        return () => setStopMapRender(false)
+    }, [setIsStreamBigDisplay, setStopMapRender])
 
     // captcha
     const [captchaToken, setCaptchaToken] = useState<string>()
@@ -401,7 +412,10 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
                         <InfoCard primaryColor={primaryColor} label="ACTIVE WORKERS">
                             <Typography
                                 variant="h4"
-                                sx={{ fontWeight: "fontWeightBold", color: repairJob.working_agent_count <= 3 ? colors.green : colors.orange }}
+                                sx={{
+                                    fontWeight: "fontWeightBold",
+                                    color: repairJob.working_agent_count <= remainDamagedBlocks ? colors.green : colors.orange,
+                                }}
                             >
                                 {repairJob.working_agent_count.toString()}
                             </Typography>

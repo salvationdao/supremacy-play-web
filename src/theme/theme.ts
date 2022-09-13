@@ -44,7 +44,7 @@ export const colors = {
 
     neonPink: "#F72485",
     lightNeonBlue: "#8DE9FF",
-    neonBlue: "#00FAFA",
+    neonBlue: "#3DE0E0",
     darkNeonBlue: "#176969",
     darkerNeonBlue: "#073339",
     darkNavyBlue: "#0C0C1A",
@@ -117,13 +117,13 @@ export const fonts = {
 
 export enum siteZIndex {
     // Shows on top of everything
-    Modal = 299,
-    Drawer = 298,
-    Popover = 297,
-    Tooltip = 296,
+    TopBar = 700,
+    Modal = 600,
+    Drawer = 500,
+    Popover = 400,
+    Tooltip = 300,
 
     // Stream site top elements
-    Bar = 199,
     RoutePage = 101,
 
     // Battle areana

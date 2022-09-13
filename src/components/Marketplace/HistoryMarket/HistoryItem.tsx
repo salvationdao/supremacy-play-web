@@ -82,7 +82,7 @@ export const HistoryItem = ({ eventItem, isGridView }: { eventItem: MarketplaceE
                     },
                     backgroundColor: theme.factionTheme.background,
                     opacity: 0.9,
-                    border: { isFancy: !isGridView, borderColor: itemRelatedData.primaryColor, borderThickness: ".25rem" },
+                    border: { isFancy: !isGridView, borderColor: `${itemRelatedData.primaryColor}50`, borderThickness: ".25rem" },
                     sx: { position: "relative", height: "100%" },
                 }}
                 sx={{ color: itemRelatedData.primaryColor, textAlign: "start", height: "100%", ":hover": { opacity: 1 } }}

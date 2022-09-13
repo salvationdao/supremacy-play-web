@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react"
 import { UserBanForm } from "../../../.."
 import { SvgInfoCircular, SvgReportFlag, SvgSkull2 } from "../../../../../assets"
 import { PASSPORT_SERVER_HOST_IMAGES } from "../../../../../constants"
-import { useAuth, useChat, useGlobalNotifications, useSupremacy } from "../../../../../containers"
+import { ClickedOnUser, useAuth, useChat, useGlobalNotifications, useSupremacy } from "../../../../../containers"
 import { checkIfIsEmoji, dateFormatter, getUserRankDeets, shadeColor, truncate } from "../../../../../helpers"
 import { useToggle } from "../../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
@@ -23,6 +23,7 @@ interface TextMessageProps {
     previousMessage?: ChatMessage
     latestMessage?: ChatMessage
     isFailed: boolean
+    tabFactionID: string | null
 }
 
 const propsAreEqual = (prevProps: TextMessageProps, nextProps: TextMessageProps) => {
@@ -32,16 +33,25 @@ const propsAreEqual = (prevProps: TextMessageProps, nextProps: TextMessageProps)
         prevProps.isScrolling === nextProps.isScrolling &&
         prevProps.previousMessage?.id === nextProps.previousMessage?.id &&
         prevProps.latestMessage?.id === nextProps.latestMessage?.id &&
-        prevProps.isFailed === nextProps.isFailed
+        prevProps.isFailed === nextProps.isFailed &&
+        prevProps.tabFactionID === nextProps.tabFactionID
     )
 }
 
-export const TextMessage = React.memo(function TextMessage({ message, containerRef, isScrolling, previousMessage, latestMessage, isFailed }: TextMessageProps) {
+export const TextMessage = React.memo(function TextMessage({
+    message,
+    containerRef,
+    isScrolling,
+    previousMessage,
+    latestMessage,
+    isFailed,
+    tabFactionID,
+}: TextMessageProps) {
     const { newSnackbarMessage, sendBrowserNotification } = useGlobalNotifications()
     const { getFaction } = useSupremacy()
     const { send } = useGameServerCommandsUser("/user_commander")
     const { user, userID, isHidden, isActive } = useAuth()
-    const { userGidRecord, addToUserGidRecord, tabValue, fontSize } = useChat()
+    const { userGidRecord, addToUserGidRecord, addToUserGidRecordCallback, tabValue, fontSize, setClickedOnUser } = useChat()
 
     // States
     const [refreshMessage, toggleRefreshMessage] = useToggle()
@@ -105,7 +115,6 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
     }, [data, getFaction, user.gid])
 
     const isAlreadyReported = useMemo(() => metadata?.reports.includes(userID), [metadata?.reports, userID])
-    // const isFailed = useMemo(() => from_user.id === userID && failedMessages.includes(data.id), [data.id, failedMessages, from_user.id, userID])
     const rankDeets = useMemo(() => (user_rank ? getUserRankDeets(user_rank, ".8rem", "1.8rem") : undefined), [user_rank])
     const fontSizes = useMemo(
         () => ({
@@ -162,7 +171,19 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
                 chat_history_id: message.id,
             })
         }
-    }, [from_user.username, isActive, isHidden, isMessageVisibleInChat, isTagged, latestMessage?.id, message.id, metadata, send, sendBrowserNotification, user.gid])
+    }, [
+        from_user.username,
+        isActive,
+        isHidden,
+        isMessageVisibleInChat,
+        isTagged,
+        latestMessage?.id,
+        message.id,
+        metadata,
+        send,
+        sendBrowserNotification,
+        user.gid,
+    ])
 
     // Get tagged user details from cache, if not exist, fetch from server
     useEffect(() => {
@@ -177,6 +198,16 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
                         if (!taggedUser) {
                             ;(async () => {
                                 try {
+                                    // Put it in first so other TextMessage components wouldn't repeat the fetch
+                                    addToUserGidRecord({
+                                        id: "",
+                                        username: "loading",
+                                        faction_id: "",
+                                        gid: gidSubstring,
+                                        rank: "NEW_RECRUIT",
+                                        features: [],
+                                    })
+
                                     const resp = await send<User>(GameServerKeys.GetPlayerByGid, {
                                         gid: gidSubstring,
                                     })
@@ -187,6 +218,9 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
                                     resolve(true)
                                 }
                             })()
+                        } else if (!taggedUser.id) {
+                            addToUserGidRecordCallback(gidSubstring, () => toggleRefreshMessage())
+                            resolve(true)
                         } else {
                             resolve(true)
                         }
@@ -197,7 +231,7 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
                 toggleRefreshMessage()
             }
         })()
-    }, [addToUserGidRecord, content, send, toggleRefreshMessage, userGidRecord])
+    }, [addToUserGidRecord, addToUserGidRecordCallback, content, send, toggleRefreshMessage, userGidRecord])
 
     const chatMessage = useMemo(() => {
         // If no tagged users, directly return the message
@@ -228,7 +262,13 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
 
                 newMessageArray.push(
                     <span>
-                        <UsernameJSX data={data} fontSize={fontSizes.normal} user={taggedUser} />{" "}
+                        <UsernameJSX
+                            data={data}
+                            fontSize={fontSizes.normal}
+                            user={taggedUser}
+                            setClickedOnUser={setClickedOnUser}
+                            tabFactionID={tabFactionID}
+                        />{" "}
                     </span>,
                 )
             }
@@ -314,7 +354,14 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
                                 </Stack>
 
                                 <Box>
-                                    <UsernameJSX data={data} fontSize={fontSizes.normal} user={from_user} toggleIsPopoverOpen={toggleIsPopoverOpen} />
+                                    <UsernameJSX
+                                        data={data}
+                                        fontSize={fontSizes.normal}
+                                        user={from_user}
+                                        toggleIsPopoverOpen={toggleIsPopoverOpen}
+                                        setClickedOnUser={setClickedOnUser}
+                                        tabFactionID={tabFactionID}
+                                    />
 
                                     {from_user_stat && (
                                         <Box sx={{ flexShrink: 0, display: "inline-block", ml: ".4rem", cursor: "default" }}>
@@ -477,18 +524,32 @@ export const TextMessage = React.memo(function TextMessage({ message, containerR
             user,
             userID,
             user_rank,
+            setClickedOnUser,
+            tabFactionID,
         ],
     )
-}, propsAreEqual)
+},
+propsAreEqual)
 
 interface UsernameJSXProps {
+    tabFactionID: string | null
     data: TextMessageData
     fontSize: string
     toggleIsPopoverOpen?: (value?: boolean) => void
     user: User | undefined
+    setClickedOnUser?: React.Dispatch<React.SetStateAction<ClickedOnUser | undefined>>
 }
 
-export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user }: UsernameJSXProps) => {
+const propsAreEqualUsernameJSX = (prevProps: UsernameJSXProps, nextProps: UsernameJSXProps) => {
+    return (
+        prevProps.data.message_color === nextProps.data.message_color &&
+        prevProps.fontSize === nextProps.fontSize &&
+        prevProps.user?.id === nextProps.user?.id &&
+        prevProps.tabFactionID === nextProps.tabFactionID
+    )
+}
+
+export const UsernameJSX = React.memo(function UsernameJSX({ data, fontSize, toggleIsPopoverOpen, user, setClickedOnUser, tabFactionID }: UsernameJSXProps) {
     const { getFaction } = useSupremacy()
     const { message_color } = data
 
@@ -496,7 +557,16 @@ export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user }: Usern
 
     return (
         <Typography
-            onClick={() => (toggleIsPopoverOpen ? toggleIsPopoverOpen() : null)}
+            onContextMenu={
+                toggleIsPopoverOpen
+                    ? (e) => {
+                          toggleIsPopoverOpen()
+                          e.preventDefault()
+                          e.stopPropagation()
+                      }
+                    : undefined
+            }
+            onClick={setClickedOnUser && user ? () => setClickedOnUser({ user, tabFactionID }) : undefined}
             sx={{
                 display: "inline",
                 cursor: toggleIsPopoverOpen ? "pointer" : "unset",
@@ -505,7 +575,7 @@ export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user }: Usern
                 backgroundColor: toggleIsPopoverOpen ? "unset" : faction.primary_color,
                 borderRadius: toggleIsPopoverOpen ? "unset" : 0.5,
                 fontWeight: toggleIsPopoverOpen ? 700 : "unset",
-                fontSize: `${fontSize}rem`,
+                fontSize,
                 verticalAlign: "middle",
                 ":hover": toggleIsPopoverOpen
                     ? {
@@ -527,4 +597,4 @@ export const UsernameJSX = ({ data, fontSize, toggleIsPopoverOpen, user }: Usern
             >{`#${user?.gid}`}</span>
         </Typography>
     )
-}
+}, propsAreEqualUsernameJSX)

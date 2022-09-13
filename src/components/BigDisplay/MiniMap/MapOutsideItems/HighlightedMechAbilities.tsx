@@ -1,5 +1,5 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing } from "../../.."
 import { useAuth, useGame, useMiniMap } from "../../../../containers"
 import { useArena } from "../../../../containers/arena"
@@ -30,13 +30,16 @@ export const HighlightedMechAbilities = () => {
     return <HighlightedMechAbilitiesInner key={highlightedMechParticipantID} warMachine={highlightedMech} setPlayerAbility={setPlayerAbility} />
 }
 
-const HighlightedMechAbilitiesInner = ({
-    warMachine,
-    setPlayerAbility,
-}: {
+interface HighlightedMechAbilitiesInnerProps {
     warMachine: WarMachineState
     setPlayerAbility: React.Dispatch<React.SetStateAction<PlayerAbility | undefined>>
-}) => {
+}
+
+const propsAreEqual = (prevProps: HighlightedMechAbilitiesInnerProps, nextProps: HighlightedMechAbilitiesInnerProps) => {
+    return prevProps.warMachine.id === nextProps.warMachine.id
+}
+
+const HighlightedMechAbilitiesInner = React.memo(function HighlightedMechAbilitiesInner({ warMachine, setPlayerAbility }: HighlightedMechAbilitiesInnerProps) {
     const theme = useTheme()
     const { userID } = useAuth()
     const { currentArenaID } = useArena()
@@ -107,7 +110,7 @@ const HighlightedMechAbilitiesInner = ({
             </ClipThing>
         </Fade>
     )
-}
+}, propsAreEqual)
 
 const AbilityItem = ({ hash, participantID, ability, index }: { hash: string; participantID: number; ability: GameAbility; index: number }) => {
     const { id, colour, image_url, label } = ability
