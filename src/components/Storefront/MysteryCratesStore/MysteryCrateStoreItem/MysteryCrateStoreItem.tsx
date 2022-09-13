@@ -52,6 +52,16 @@ export const MysteryCrateStoreItem = React.memo(function MysteryCrateStoreItem({
     const priceStr = useMemo(() => (quantity * parseFloat(mysteryCrate.price)).toString(), [quantity, mysteryCrate.price])
     const formattedPrice = useMemo(() => supFormatterNoFixed(priceStr, 2), [priceStr])
     const singleCratePrice = useMemo(() => supFormatterNoFixed(mysteryCrate.price, 2), [mysteryCrate.price])
+    const fiatPrice = useMemo(() => {
+        let pricing: string | null = null
+        for (const p of mysteryCrate.fiat_product.pricing) {
+            if (p.currency_code === "USD") {
+                pricing = generatePriceText("USD", p.amount)
+                break
+            }
+        }
+        return pricing
+    }, [mysteryCrate.fiat_product.pricing])
 
     useGameServerSubscriptionFaction<StorefrontMysteryCrate>(
         {
@@ -165,9 +175,7 @@ export const MysteryCrateStoreItem = React.memo(function MysteryCrateStoreItem({
                                         {singleCratePrice}
                                     </Typography>
                                 </Stack>
-                                <Typography sx={{ fontFamily: fonts.nostromoMedium }}>
-                                    {generatePriceText(mysteryCrate.fiat_product.price_dollars, mysteryCrate.fiat_product.price_cents)}
-                                </Typography>
+                                <Typography sx={{ fontFamily: fonts.nostromoMedium }}>{fiatPrice || "N/A"}</Typography>
                             </Stack>
 
                             <Box

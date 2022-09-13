@@ -12,10 +12,13 @@ export interface FiatProduct {
     name: string
     description: string
     currency: string
-    price_dollars: number
-    price_cents: number
-    price_sups: string
     avatar_url: string
+    pricing: FiatProductPricing[]
+}
+
+export interface FiatProductPricing {
+    currency_code: string
+    amount: string
 }
 
 export interface FiatBillingHistory {

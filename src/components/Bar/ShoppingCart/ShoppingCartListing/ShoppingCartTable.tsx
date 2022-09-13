@@ -46,14 +46,16 @@ export const ShoppingCartTable = ({ shoppingCart, loading, primaryColor, backgro
         }
 
         // Render cart items
-        let totalDollars = 0
-        let totalCents = 0
-        let totalSups = new BigNumber(0)
+        let totalUSD = new BigNumber(0)
+        let totalSUPS = new BigNumber(0)
         shoppingCart?.items.forEach((item) => {
-            totalDollars += item.product.price_dollars * item.quantity
-            totalCents += item.product.price_cents * item.quantity
-            if (item.product.price_sups) {
-                totalSups = totalSups.plus(new BigNumber(item.product.price_sups))
+            const priceUSD = item.product.pricing.find((p) => p.currency_code === "USD")
+            const priceSUPS = item.product.pricing.find((p) => p.currency_code === "SUPS")
+            if (priceUSD) {
+                totalUSD = totalUSD.plus(new BigNumber(priceUSD.amount).multipliedBy(item.quantity))
+            }
+            if (priceSUPS) {
+                totalSUPS = totalSUPS.plus(new BigNumber(priceSUPS.amount).multipliedBy(item.quantity))
             }
         })
 
@@ -81,7 +83,7 @@ export const ShoppingCartTable = ({ shoppingCart, loading, primaryColor, backgro
                             Sub-Total:
                         </Typography>
 
-                        {totalSups.isGreaterThan(new BigNumber(0)) && (
+                        {totalSUPS.isGreaterThan(new BigNumber(0)) && (
                             <Stack
                                 direction="row"
                                 alignItems="center"
@@ -102,7 +104,7 @@ export const ShoppingCartTable = ({ shoppingCart, loading, primaryColor, backgro
                             >
                                 <SvgSupToken size="1.9rem" fill={IS_TESTING_MODE ? colors.red : colors.yellow} sx={{ mr: ".2rem", pb: 0 }} />
                                 <Typography sx={{ fontFamily: fonts.nostromoBold, lineHeight: 1, whiteSpace: "nowrap" }}>
-                                    {supFormatterNoFixed(totalSups.toString(), 2) || "0.00"}
+                                    {supFormatterNoFixed(totalSUPS.toString(), 2) || "0.00"}
                                 </Typography>
                             </Stack>
                         )}
@@ -113,7 +115,7 @@ export const ShoppingCartTable = ({ shoppingCart, loading, primaryColor, backgro
                                 textAlign: "right",
                             }}
                         >
-                            {generatePriceText(totalDollars, totalCents)}
+                            {generatePriceText("USD", totalUSD)}
                         </Typography>
 
                         {!fullPage && (
@@ -194,6 +196,30 @@ const ShoppingCartRow = ({ item, primaryColor, backgroundColor }: ShoppingCartRo
         const t = setTimeout(updateItem, 1000)
         return () => clearTimeout(t)
     }, [unsaved, updating, updateItem])
+
+    const fiatPrice = useMemo(() => {
+        let pricing: string | null = null
+        for (const p of item.product.pricing) {
+            if (p.currency_code === "USD") {
+                const amount = new BigNumber(p.amount).multipliedBy(item.quantity)
+                pricing = generatePriceText("USD", amount)
+                break
+            }
+        }
+        return pricing
+    }, [item.product, item.quantity])
+
+    const supPrice = useMemo(() => {
+        let pricing: string | null = null
+        for (const p of item.product.pricing) {
+            if (p.currency_code === "SUPS") {
+                const amount = new BigNumber(p.amount).multipliedBy(item.quantity)
+                pricing = supFormatterNoFixed(amount.toString(), 2) || "0.00"
+                break
+            }
+        }
+        return pricing
+    }, [item.product, item.quantity])
 
     return (
         <Stack direction="row" spacing={1} sx={{ borderBottom: `1px solid ${primaryColor}`, pb: "2rem", mb: "2rem" }}>
@@ -314,7 +340,7 @@ const ShoppingCartRow = ({ item, primaryColor, backgroundColor }: ShoppingCartRo
             </Stack>
 
             <Stack>
-                {item.product.price_sups && item.product.price_sups !== "0" && (
+                {supPrice !== "0" && (
                     <Stack
                         direction="row"
                         alignItems="center"
@@ -334,9 +360,7 @@ const ShoppingCartRow = ({ item, primaryColor, backgroundColor }: ShoppingCartRo
                         }}
                     >
                         <SvgSupToken size="1.9rem" fill={IS_TESTING_MODE ? colors.red : colors.yellow} sx={{ mr: ".2rem", pb: 0 }} />
-                        <Typography sx={{ fontFamily: fonts.nostromoBold, lineHeight: 1, whiteSpace: "nowrap" }}>
-                            {supFormatterNoFixed(item.product.price_sups, 2) || "0.00"}
-                        </Typography>
+                        <Typography sx={{ fontFamily: fonts.nostromoBold, lineHeight: 1, whiteSpace: "nowrap" }}>{supPrice}</Typography>
                     </Stack>
                 )}
 
@@ -346,7 +370,7 @@ const ShoppingCartRow = ({ item, primaryColor, backgroundColor }: ShoppingCartRo
                         textAlign: "right",
                     }}
                 >
-                    {generatePriceText(item.product.price_dollars * quantity, item.product.price_cents * quantity)}
+                    {fiatPrice}
                 </Typography>
             </Stack>
         </Stack>

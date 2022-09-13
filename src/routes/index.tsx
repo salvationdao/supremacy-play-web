@@ -17,7 +17,6 @@ import { ReplayItemPage } from "../pages/ReplayItemPage"
 import { ReplayPage } from "../pages/ReplayPage"
 import { StorefrontPage } from "../pages/StorefrontPage"
 import { WeaponPage } from "../pages/WeaponPage"
-import { StorefrontCheckoutPage } from "../pages/StorefrontCheckoutPage"
 import { colors } from "../theme/theme"
 import { StorefrontShoppingCartPage } from "../pages/StorefrontShoppingCartPage"
 
@@ -145,17 +144,6 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         matchNavLinkID: "storefront",
         enable: true,
         pageTitle: "Supremacy - Storefront",
-    },
-    storefront_checkout: {
-        id: "storefront",
-        path: "/storefront/:type/:id",
-        exact: true,
-        Component: StorefrontCheckoutPage,
-        requireAuth: true,
-        requireFaction: true,
-        matchNavLinkID: "storefront",
-        enable: !IS_TESTING_MODE,
-        pageTitle: "Supremacy - Checkout",
     },
 
     // Marketplace

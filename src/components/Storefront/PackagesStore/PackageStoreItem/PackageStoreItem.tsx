@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react"
+import { useState, useCallback, useMemo } from "react"
 import { Box, Stack, Skeleton, Typography, TextField } from "@mui/material"
 import { SafePNG, SvgArrow } from "../../../../assets"
 import { useGlobalNotifications } from "../../../../containers"
@@ -57,6 +57,17 @@ export const PackageStoreItem = React.memo(function PackageStoreItem({ enlargedV
         }
     }, [send, newSnackbarMessage, item.id])
 
+    const fiatPrice = useMemo(() => {
+        let pricing: string | null = null
+        for (const p of item.pricing) {
+            if (p.currency_code === "USD") {
+                pricing = generatePriceText("USD", p.amount)
+                break
+            }
+        }
+        return pricing
+    }, [item])
+
     return (
         <>
             <Box
@@ -98,9 +109,7 @@ export const PackageStoreItem = React.memo(function PackageStoreItem({ enlargedV
                                 }}
                             >
                                 <Stack direction="row" alignItems="center" spacing=".1rem">
-                                    <Typography sx={{ fontSize: enlargedView ? "2.2rem" : "1.9rem", fontFamily: fonts.nostromoBlack }}>
-                                        {generatePriceText(item.price_dollars, item.price_cents)}
-                                    </Typography>
+                                    <Typography sx={{ fontSize: enlargedView ? "2.2rem" : "1.9rem", fontFamily: fonts.nostromoBlack }}>{fiatPrice}</Typography>
                                 </Stack>
                             </Stack>
                         </Box>
