@@ -212,6 +212,7 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
         chassis_skin,
         intro_animation,
         outro_animation,
+        locked_to_marketplace,
     } = currLoadout
 
     return (
@@ -292,6 +293,7 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
                     if (powerCore) {
                         return (
                             <MechLoadoutItem
+                                disabled={locked_to_marketplace}
                                 imageUrl={powerCore.image_url || powerCore.avatar_url}
                                 videoUrls={[powerCore.card_animation_url]}
                                 label={powerCore.label}
@@ -319,7 +321,15 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
                         )
                     }
 
-                    return <MechLoadoutItem label="POWER CORE" primaryColor={colors.powerCore} renderModal={renderModal} isEmpty />
+                    return (
+                        <MechLoadoutItem
+                            disabled={locked_to_marketplace}
+                            label="POWER CORE"
+                            primaryColor={colors.powerCore}
+                            renderModal={renderModal}
+                            isEmpty
+                        />
+                    )
                 })()}
 
                 {Array.from(weapons_map, ([slotNumber, w]) => {
@@ -350,6 +360,7 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
                     if (weapon) {
                         return (
                             <MechLoadoutItem
+                                disabled={locked_to_marketplace}
                                 key={weapon.id}
                                 slotNumber={slotNumber}
                                 imageUrl={weapon.image_url || weapon.avatar_url}
@@ -385,6 +396,7 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
 
                     return (
                         <MechLoadoutItem
+                            disabled={locked_to_marketplace}
                             key={slotNumber}
                             slotNumber={slotNumber}
                             label="WEAPON"
@@ -421,6 +433,7 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
                     if (utility) {
                         return (
                             <MechLoadoutItem
+                                disabled={locked_to_marketplace}
                                 key={utility.id}
                                 slotNumber={slotNumber}
                                 imageUrl={utility.image_url || utility.avatar_url}
@@ -454,6 +467,7 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
 
                     return (
                         <MechLoadoutItem
+                            disabled={locked_to_marketplace}
                             key={slotNumber}
                             slotNumber={slotNumber}
                             label="UTILITY"
@@ -477,6 +491,7 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
             >
                 {chassis_skin ? (
                     <MechLoadoutItem
+                        disabled={locked_to_marketplace}
                         imageUrl={chassis_skin.image_url || chassis_skin.avatar_url}
                         videoUrls={[chassis_skin.card_animation_url]}
                         label={chassis_skin.label}
