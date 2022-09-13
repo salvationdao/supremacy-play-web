@@ -330,14 +330,15 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
                     const renderModal = (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => (
                         <MechLoadoutWeaponModal
                             onClose={() => toggleShowLoadoutModal(false)}
-                            onConfirm={(selectedWeapon, inheritSkin) =>
+                            onConfirm={(selectedWeapon, inheritSkin) => {
                                 addWeaponSelection({
                                     weapon: selectedWeapon,
                                     weapon_id: selectedWeapon.id,
                                     slot_number: slotNumber,
                                     inherit_skin: inheritSkin,
                                 })
-                            }
+                                toggleShowLoadoutModal(false)
+                            }}
                             equipped={weapon || undefined}
                             weaponsWithSkinInheritance={blueprint_weapon_ids_with_skin_inheritance}
                             weaponsAlreadyEquippedInOtherSlots={Array.from(changed_weapons_map.values(), (w) => w.weapon_id)}
@@ -402,13 +403,14 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
                     const renderModal = (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => (
                         <MechLoadoutUtilityModal
                             onClose={() => toggleShowLoadoutModal(false)}
-                            onConfirm={(selectedUtility) =>
+                            onConfirm={(selectedUtility) => {
                                 addUtilitySelection({
                                     utility: selectedUtility,
                                     utility_id: selectedUtility.id,
                                     slot_number: slotNumber,
                                 })
-                            }
+                                toggleShowLoadoutModal(false)
+                            }}
                             equipped={utility || undefined}
                             utilitiesAlreadyEquippedInOtherSlots={Array.from(changed_utility_map.values(), (u) => u.utility_id)}
                         />
