@@ -24,11 +24,10 @@ export const PowerCorePreview = ({ onConfirm, powerCore, equipped }: PowerCorePr
         const color = difference > 0 ? positiveColor : difference === 0 ? "white" : negativeColor
         const symbol = difference > 0 ? "+" : ""
 
-        if (difference === 0 || !stats.oldStat) return null
+        if (difference === 0) return null
 
-        const percentageDifference = Math.round((difference * 100 * 100) / stats.oldStat) / 100
         return (
-            <Stack key={label} direction="row" spacing="1rem" alignItems="center">
+            <Stack key={label} direction="row" spacing=".8rem" alignItems="center">
                 <Typography
                     variant="body2"
                     sx={{
@@ -36,7 +35,7 @@ export const PowerCorePreview = ({ onConfirm, powerCore, equipped }: PowerCorePr
                     }}
                 >
                     {symbol}
-                    {percentageDifference}%
+                    {stats.oldStat ? `${Math.round((difference * 100 * 100) / stats.oldStat) / 100}%` : difference}
                 </Typography>
                 <Typography
                     variant="caption"
