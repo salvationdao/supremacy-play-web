@@ -18,6 +18,7 @@ import { ReplayPage } from "../pages/ReplayPage"
 import { StorefrontPage } from "../pages/StorefrontPage"
 import { WeaponPage } from "../pages/WeaponPage"
 import { colors } from "../theme/theme"
+import { BattleLobbiesPage } from "../pages/BattleLobbiesPage"
 
 // ************
 // ** ROUTES **
@@ -171,6 +172,22 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         matchNavLinkID: "marketplace",
         enable: !IS_TESTING_MODE,
         pageTitle: "Supremacy - Marketplace",
+    },
+
+    battle_lobbies: {
+        id: "battle_lobbies",
+        path: "/battle_lobbies",
+        exact: true,
+        Component: BattleLobbiesPage,
+        requireAuth: true,
+        requireFaction: true,
+        navLink: {
+            enable: true,
+            label: "Battle Lobbies",
+        },
+        matchNavLinkID: "battle_lobby",
+        enable: true,
+        pageTitle: "Supremacy - Battle Lobbies",
     },
 
     // Player profile

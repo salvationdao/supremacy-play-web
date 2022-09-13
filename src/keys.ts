@@ -45,6 +45,7 @@ export enum GameServerKeys {
     SystemMessageSend = "SYSTEM:MESSAGE:SEND",
 
     // Asset / queue
+    SubBattleLobbyUpdate = "BATTLE:LOBBY:LIST:UPDATE",
     SubQueueFeed = "BATTLE:QUEUE:STATUS:SUBSCRIBE",
     GetMechs = "PLAYER:ASSET:MECH:LIST",
     PlayerQueueStatus = "PLAYER:QUEUE:STATUS",
