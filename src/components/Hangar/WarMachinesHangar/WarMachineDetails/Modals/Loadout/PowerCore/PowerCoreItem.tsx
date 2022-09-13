@@ -12,7 +12,7 @@ import { FancyButton } from "../../../../../../Common/FancyButton"
 
 interface PowerCoreItemProps {
     id: string
-    equipped: PowerCore
+    equipped?: PowerCore
     selected: boolean
     onSelect: (w: PowerCore) => void
 }
@@ -183,27 +183,27 @@ export const PowerCoreItem = ({ id, equipped, selected, onSelect }: PowerCoreIte
                 <Stack>
                     {typeof powerCoreDetails.capacity !== "undefined" &&
                         renderStat("CAPACITY", {
-                            oldStat: equipped.capacity,
+                            oldStat: equipped?.capacity,
                             newStat: powerCoreDetails.capacity,
                         })}
                     {typeof powerCoreDetails.max_draw_rate !== "undefined" &&
                         renderStat("MAX DRAW RATE", {
-                            oldStat: equipped.max_draw_rate,
+                            oldStat: equipped?.max_draw_rate,
                             newStat: powerCoreDetails.max_draw_rate,
                         })}
                     {typeof powerCoreDetails.recharge_rate !== "undefined" &&
                         renderStat("RECHARGE RATE", {
-                            oldStat: equipped.recharge_rate,
+                            oldStat: equipped?.recharge_rate,
                             newStat: powerCoreDetails.recharge_rate,
                         })}
                     {typeof powerCoreDetails.armour !== "undefined" &&
                         renderStat("ARMOUR", {
-                            oldStat: equipped.armour,
+                            oldStat: equipped?.armour,
                             newStat: powerCoreDetails.armour,
                         })}
                     {typeof powerCoreDetails.max_hitpoints !== "undefined" &&
                         renderStat("MAX HITPOINTS", {
-                            oldStat: equipped.max_hitpoints,
+                            oldStat: equipped?.max_hitpoints,
                             newStat: powerCoreDetails.max_hitpoints,
                         })}
                 </Stack>

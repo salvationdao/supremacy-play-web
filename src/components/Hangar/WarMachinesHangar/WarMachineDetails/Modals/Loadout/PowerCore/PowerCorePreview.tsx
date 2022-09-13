@@ -11,7 +11,7 @@ import { OnConfirmPowerCoreSelection } from "../MechLoadoutPowerCoreModal"
 interface PowerCorePreviewProps {
     onConfirm: OnConfirmPowerCoreSelection
     powerCore?: PowerCore
-    equipped: PowerCore
+    equipped?: PowerCore
 }
 
 export const PowerCorePreview = ({ onConfirm, powerCore, equipped }: PowerCorePreviewProps) => {
@@ -56,34 +56,34 @@ export const PowerCorePreview = ({ onConfirm, powerCore, equipped }: PowerCorePr
         const stats = [
             typeof powerCore.capacity !== "undefined" &&
                 renderStatChange("DAMAGE", {
-                    oldStat: equipped.capacity,
+                    oldStat: equipped?.capacity,
                     newStat: powerCore.capacity,
                 }),
             typeof powerCore.max_draw_rate !== "undefined" &&
                 renderStatChange("DAMAGE FALLOFF", {
-                    oldStat: equipped.max_draw_rate,
+                    oldStat: equipped?.max_draw_rate,
                     newStat: powerCore.max_draw_rate,
                 }),
             typeof powerCore.recharge_rate !== "undefined" &&
                 renderStatChange("RADIUS", {
-                    oldStat: equipped.recharge_rate,
+                    oldStat: equipped?.recharge_rate,
                     newStat: powerCore.recharge_rate,
                 }),
             typeof powerCore.armour !== "undefined" &&
                 renderStatChange("RADIAL DAMAGE FALLOFF", {
-                    oldStat: equipped.armour,
+                    oldStat: equipped?.armour,
                     newStat: powerCore.armour,
                 }),
             typeof powerCore.max_hitpoints !== "undefined" &&
                 renderStatChange("SPREAD", {
-                    oldStat: equipped.max_hitpoints,
+                    oldStat: equipped?.max_hitpoints,
                     newStat: powerCore.max_hitpoints,
                     negated: true,
                 }),
         ]
 
         return stats.filter((s) => !!s)
-    }, [powerCore, renderStatChange, equipped.capacity, equipped.max_draw_rate, equipped.recharge_rate, equipped.armour, equipped.max_hitpoints])
+    }, [powerCore, renderStatChange, equipped?.capacity, equipped?.max_draw_rate, equipped?.recharge_rate, equipped?.armour, equipped?.max_hitpoints])
 
     if (powerCore) {
         const videoUrls = [powerCore?.animation_url, powerCore?.card_animation_url]

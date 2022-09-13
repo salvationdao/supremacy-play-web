@@ -63,7 +63,7 @@ export type OnConfirmPowerCoreSelection = (selectedPowerCore: PowerCore) => void
 interface MechLoadoutPowerCoreModalProps {
     onClose: () => void
     onConfirm: OnConfirmPowerCoreSelection
-    equipped: PowerCore
+    equipped?: PowerCore
     powerCoresAlreadyEquippedInOtherSlots: string[]
 }
 

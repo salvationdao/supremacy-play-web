@@ -274,6 +274,21 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
                 {(() => {
                     const powerCore = changed_power_core || power_core
 
+                    const renderModal = (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => (
+                        <MechLoadoutPowerCoreModal
+                            onClose={() => toggleShowLoadoutModal(false)}
+                            onConfirm={(selectedPowerCore) => {
+                                addPowerCoreSelection({
+                                    power_core: selectedPowerCore,
+                                    power_core_id: selectedPowerCore.id,
+                                })
+                                toggleShowLoadoutModal(false)
+                            }}
+                            equipped={powerCore}
+                            powerCoresAlreadyEquippedInOtherSlots={changed_power_core ? [changed_power_core.id] : []}
+                        />
+                    )
+
                     if (powerCore) {
                         return (
                             <MechLoadoutItem
@@ -283,20 +298,7 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
                                 primaryColor={colors.powerCore}
                                 Icon={SvgPowerCore}
                                 rarity={getRarityDeets(powerCore.tier)}
-                                renderModal={(toggleShowLoadoutModal) => (
-                                    <MechLoadoutPowerCoreModal
-                                        onClose={() => toggleShowLoadoutModal(false)}
-                                        onConfirm={(selectedPowerCore) => {
-                                            addPowerCoreSelection({
-                                                power_core: selectedPowerCore,
-                                                power_core_id: selectedPowerCore.id,
-                                            })
-                                            toggleShowLoadoutModal(false)
-                                        }}
-                                        equipped={powerCore}
-                                        powerCoresAlreadyEquippedInOtherSlots={changed_power_core ? [changed_power_core.id] : []}
-                                    />
-                                )}
+                                renderModal={renderModal}
                                 prevEquipped={(() => {
                                     if (!changed_power_core) return
 
@@ -317,7 +319,7 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
                         )
                     }
 
-                    return <MechLoadoutItem label="POWER CORE" primaryColor={colors.powerCore} onClick={() => console.log("AAAAA")} isEmpty disabled />
+                    return <MechLoadoutItem label="POWER CORE" primaryColor={colors.powerCore} renderModal={renderModal} isEmpty />
                 })()}
 
                 {Array.from(weapons_map, ([slotNumber, w]) => {
