@@ -44,8 +44,6 @@ export const BattleLobbies = () => {
         setList(sorted)
     }, [sort, setList, battleLobbies, searchValue])
 
-    console.log(list)
-
     const content = useMemo(() => {
         return (
             <Box sx={{ direction: "ltr", height: 0 }}>
