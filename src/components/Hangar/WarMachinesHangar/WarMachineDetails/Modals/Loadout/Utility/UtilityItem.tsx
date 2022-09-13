@@ -12,7 +12,7 @@ import { FancyButton } from "../../../../../../Common/FancyButton"
 
 interface UtilityItemProps {
     id: string
-    equipped: Utility
+    equipped?: Utility
     selected: boolean
     onSelect: (w: Utility) => void
 }
@@ -68,7 +68,7 @@ export const UtilityItem = ({ id, equipped, selected, onSelect }: UtilityItemPro
 
         switch (utilityDetails.type) {
             case UtilityType.Shield: {
-                const oldUtility = equipped.shield
+                const oldUtility = equipped?.shield
                 const utility = utilityDetails.shield
 
                 if (!utility) return
@@ -93,7 +93,7 @@ export const UtilityItem = ({ id, equipped, selected, onSelect }: UtilityItemPro
                 )
             }
             case UtilityType.AttackDrone: {
-                const oldUtility = equipped.attack_drone
+                const oldUtility = equipped?.attack_drone
                 const utility = utilityDetails.attack_drone
 
                 if (!utility) return
@@ -128,7 +128,7 @@ export const UtilityItem = ({ id, equipped, selected, onSelect }: UtilityItemPro
                 )
             }
             case UtilityType.RepairDrone: {
-                const oldUtility = equipped.repair_drone
+                const oldUtility = equipped?.repair_drone
                 const utility = utilityDetails.repair_drone
 
                 if (!utility) return
@@ -173,7 +173,7 @@ export const UtilityItem = ({ id, equipped, selected, onSelect }: UtilityItemPro
                 )
             }
             case UtilityType.Accelerator: {
-                const oldUtility = equipped.accelerator
+                const oldUtility = equipped?.accelerator
                 const utility = utilityDetails.accelerator
 
                 if (!utility) return
@@ -198,7 +198,7 @@ export const UtilityItem = ({ id, equipped, selected, onSelect }: UtilityItemPro
                 )
             }
             case UtilityType.AntiMissile: {
-                const oldUtility = equipped.anti_missile
+                const oldUtility = equipped?.anti_missile
                 const utility = utilityDetails.anti_missile
 
                 if (!utility) return
@@ -218,7 +218,7 @@ export const UtilityItem = ({ id, equipped, selected, onSelect }: UtilityItemPro
                 )
             }
         }
-    }, [equipped.accelerator, equipped.anti_missile, equipped.attack_drone, equipped.repair_drone, equipped.shield, renderStat, utilityDetails])
+    }, [equipped?.accelerator, equipped?.anti_missile, equipped?.attack_drone, equipped?.repair_drone, equipped?.shield, renderStat, utilityDetails])
 
     if (!utilityDetails) {
         return (

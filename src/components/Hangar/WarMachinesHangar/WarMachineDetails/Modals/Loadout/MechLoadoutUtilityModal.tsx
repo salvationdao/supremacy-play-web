@@ -49,7 +49,7 @@ export type OnConfirmUtilitySelection = (selectedUtility: Utility) => void
 interface MechLoadoutUtilityModalProps {
     onClose: () => void
     onConfirm: OnConfirmUtilitySelection
-    equipped: Utility
+    equipped?: Utility
     utilitiesAlreadyEquippedInOtherSlots: string[]
 }
 

@@ -12,7 +12,7 @@ import { FancyButton } from "../../../../../../Common/FancyButton"
 
 interface WeaponItemProps {
     id: string
-    equipped: Weapon
+    equipped?: Weapon
     selected: boolean
     onSelect: (w: Weapon) => void
 }
@@ -183,49 +183,49 @@ export const WeaponItem = ({ id, equipped, selected, onSelect }: WeaponItemProps
                 <Stack>
                     {typeof weaponDetails.damage !== "undefined" &&
                         renderStat("DAMAGE", {
-                            oldStat: equipped.damage,
+                            oldStat: equipped?.damage,
                             newStat: weaponDetails.damage,
                         })}
                     {typeof weaponDetails.damage_falloff !== "undefined" &&
                         renderStat("DAMAGE FALLOFF", {
-                            oldStat: equipped.damage_falloff,
+                            oldStat: equipped?.damage_falloff,
                             newStat: weaponDetails.damage_falloff,
                         })}
                     {typeof weaponDetails.radius !== "undefined" &&
                         renderStat("RADIUS", {
-                            oldStat: equipped.radius,
+                            oldStat: equipped?.radius,
                             newStat: weaponDetails.radius,
                         })}
                     {typeof weaponDetails.radius_damage_falloff !== "undefined" &&
                         renderStat("RADIAL DAMAGE FALLOFF", {
-                            oldStat: equipped.radius_damage_falloff,
+                            oldStat: equipped?.radius_damage_falloff,
                             newStat: weaponDetails.radius_damage_falloff,
                         })}
                     {typeof weaponDetails.spread !== "undefined" &&
                         renderStat("SPREAD", {
-                            oldStat: equipped.spread,
+                            oldStat: equipped?.spread,
                             newStat: weaponDetails.spread,
                             negated: true,
                         })}
                     {typeof weaponDetails.rate_of_fire !== "undefined" &&
                         renderStat("RATE OF FIRE", {
-                            oldStat: equipped.rate_of_fire,
+                            oldStat: equipped?.rate_of_fire,
                             newStat: weaponDetails.rate_of_fire,
                         })}
                     {typeof weaponDetails.projectile_speed !== "undefined" &&
                         renderStat("PROJECTILE SPEED", {
-                            oldStat: equipped.projectile_speed,
+                            oldStat: equipped?.projectile_speed,
                             newStat: weaponDetails.projectile_speed,
                         })}
                     {typeof weaponDetails.energy_cost !== "undefined" &&
                         renderStat("ENERGY COST", {
-                            oldStat: equipped.energy_cost,
+                            oldStat: equipped?.energy_cost,
                             newStat: weaponDetails.energy_cost,
                             negated: true,
                         })}
                     {typeof weaponDetails.max_ammo !== "undefined" &&
                         renderStat("MAX AMMO", {
-                            oldStat: equipped.max_ammo,
+                            oldStat: equipped?.max_ammo,
                             newStat: weaponDetails.max_ammo,
                         })}
                 </Stack>

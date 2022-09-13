@@ -35,7 +35,7 @@ export type OnConfirmWeaponSelection = (selectedWeapon: Weapon, inheritSkin: boo
 interface MechLoadoutWeaponModalProps {
     onClose: () => void
     onConfirm: OnConfirmWeaponSelection
-    equipped: Weapon
+    equipped?: Weapon
     weaponsWithSkinInheritance: string[]
     weaponsAlreadyEquippedInOtherSlots: string[]
 }
@@ -72,7 +72,7 @@ export const MechLoadoutWeaponModal = ({
     const [search, setSearch] = useState("")
     const [weaponTypes, setWeaponTypes] = useState<string[]>([])
     const [rarities, setRarities] = useState<string[]>([])
-    const [equippedStatuses, setEquippedStatuses] = useState<string[]>(["unequipped"])
+    const [equippedStatuses, setEquippedStatuses] = useState<string[]>([])
     const [ammoRange, setAmmoRange] = useState<number[] | undefined>()
     const [damageRange, setDamageRange] = useState<number[] | undefined>()
     const [damageFalloffRange, setDamageFalloffRange] = useState<number[] | undefined>()

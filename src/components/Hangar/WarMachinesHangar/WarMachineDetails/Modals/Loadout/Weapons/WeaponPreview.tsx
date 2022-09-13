@@ -11,7 +11,7 @@ import { OnConfirmWeaponSelection } from "../MechLoadoutWeaponModal"
 interface WeaponPreviewProps {
     onConfirm: OnConfirmWeaponSelection
     weapon?: Weapon
-    equipped: Weapon
+    equipped?: Weapon
     skinInheritable: boolean
 }
 
@@ -59,64 +59,64 @@ export const WeaponPreview = ({ onConfirm, weapon, equipped, skinInheritable }: 
         const stats = [
             typeof weapon.damage !== "undefined" &&
                 renderStatChange("DAMAGE", {
-                    oldStat: equipped.damage,
+                    oldStat: equipped?.damage,
                     newStat: weapon.damage,
                 }),
             typeof weapon.damage_falloff !== "undefined" &&
                 renderStatChange("DAMAGE FALLOFF", {
-                    oldStat: equipped.damage_falloff,
+                    oldStat: equipped?.damage_falloff,
                     newStat: weapon.damage_falloff,
                 }),
             typeof weapon.radius !== "undefined" &&
                 renderStatChange("RADIUS", {
-                    oldStat: equipped.radius,
+                    oldStat: equipped?.radius,
                     newStat: weapon.radius,
                 }),
             typeof weapon.radius_damage_falloff !== "undefined" &&
                 renderStatChange("RADIAL DAMAGE FALLOFF", {
-                    oldStat: equipped.radius_damage_falloff,
+                    oldStat: equipped?.radius_damage_falloff,
                     newStat: weapon.radius_damage_falloff,
                 }),
             typeof weapon.spread !== "undefined" &&
                 renderStatChange("SPREAD", {
-                    oldStat: equipped.spread,
+                    oldStat: equipped?.spread,
                     newStat: weapon.spread,
                     negated: true,
                 }),
             typeof weapon.rate_of_fire !== "undefined" &&
                 renderStatChange("RATE OF FIRE", {
-                    oldStat: equipped.rate_of_fire,
+                    oldStat: equipped?.rate_of_fire,
                     newStat: weapon.rate_of_fire,
                 }),
             typeof weapon.projectile_speed !== "undefined" &&
                 renderStatChange("PROJECTILE SPEED", {
-                    oldStat: equipped.projectile_speed,
+                    oldStat: equipped?.projectile_speed,
                     newStat: weapon.projectile_speed,
                 }),
             typeof weapon.energy_cost !== "undefined" &&
                 renderStatChange("ENERGY COST", {
-                    oldStat: equipped.energy_cost,
+                    oldStat: equipped?.energy_cost,
                     newStat: weapon.energy_cost,
                     negated: true,
                 }),
             typeof weapon.max_ammo !== "undefined" &&
                 renderStatChange("MAX AMMO", {
-                    oldStat: equipped.max_ammo,
+                    oldStat: equipped?.max_ammo,
                     newStat: weapon.max_ammo,
                 }),
         ]
 
         return stats.filter((s) => !!s)
     }, [
-        equipped.damage,
-        equipped.damage_falloff,
-        equipped.energy_cost,
-        equipped.max_ammo,
-        equipped.projectile_speed,
-        equipped.radius,
-        equipped.radius_damage_falloff,
-        equipped.rate_of_fire,
-        equipped.spread,
+        equipped?.damage,
+        equipped?.damage_falloff,
+        equipped?.energy_cost,
+        equipped?.max_ammo,
+        equipped?.projectile_speed,
+        equipped?.radius,
+        equipped?.radius_damage_falloff,
+        equipped?.rate_of_fire,
+        equipped?.spread,
         renderStatChange,
         weapon,
     ])

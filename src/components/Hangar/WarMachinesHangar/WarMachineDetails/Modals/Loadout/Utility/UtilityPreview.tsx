@@ -11,7 +11,7 @@ import { OnConfirmUtilitySelection } from "../MechLoadoutUtilityModal"
 interface UtilityPreviewProps {
     onConfirm: OnConfirmUtilitySelection
     utility?: Utility
-    equipped: Utility
+    equipped?: Utility
 }
 
 export const UtilityPreview = ({ onConfirm, utility, equipped }: UtilityPreviewProps) => {
@@ -58,78 +58,78 @@ export const UtilityPreview = ({ onConfirm, utility, equipped }: UtilityPreviewP
             // Shield
             typeof utility.shield?.hitpoints !== "undefined" &&
                 renderStatChange("HITPOINTS", {
-                    oldStat: equipped.shield?.hitpoints,
+                    oldStat: equipped?.shield?.hitpoints,
                     newStat: utility.shield?.hitpoints,
                 }),
             typeof utility.shield?.recharge_rate !== "undefined" &&
                 renderStatChange("RECHARGE RATE", {
-                    oldStat: equipped.shield?.recharge_rate,
+                    oldStat: equipped?.shield?.recharge_rate,
                     newStat: utility.shield?.recharge_rate,
                 }),
             typeof utility.shield?.recharge_energy_cost !== "undefined" &&
                 renderStatChange("ENERGY COST", {
-                    oldStat: equipped.shield?.recharge_energy_cost,
+                    oldStat: equipped?.shield?.recharge_energy_cost,
                     newStat: utility.shield?.recharge_energy_cost,
                 }),
 
             // AttackDrone
             typeof utility.attack_drone?.hitpoints !== "undefined" &&
                 renderStatChange("HITPOINTS", {
-                    oldStat: equipped.attack_drone?.hitpoints,
+                    oldStat: equipped?.attack_drone?.hitpoints,
                     newStat: utility.attack_drone?.hitpoints,
                 }),
             typeof utility.attack_drone?.damage !== "undefined" &&
                 renderStatChange("DAMAGE", {
-                    oldStat: equipped.attack_drone?.damage,
+                    oldStat: equipped?.attack_drone?.damage,
                     newStat: utility.attack_drone?.damage,
                 }),
             typeof utility.attack_drone?.rate_of_fire !== "undefined" &&
                 renderStatChange("RATE OF FIRE", {
-                    oldStat: equipped.attack_drone?.rate_of_fire,
+                    oldStat: equipped?.attack_drone?.rate_of_fire,
                     newStat: utility.attack_drone?.rate_of_fire,
                 }),
             typeof utility.attack_drone?.lifespan_seconds !== "undefined" &&
                 renderStatChange("LIFESPAN (SECONDS)", {
-                    oldStat: equipped.attack_drone?.lifespan_seconds,
+                    oldStat: equipped?.attack_drone?.lifespan_seconds,
                     newStat: utility.attack_drone?.lifespan_seconds,
                 }),
             typeof utility.attack_drone?.deploy_energy_cost !== "undefined" &&
                 renderStatChange("ENERGY COST", {
-                    oldStat: equipped.attack_drone?.deploy_energy_cost,
+                    oldStat: equipped?.attack_drone?.deploy_energy_cost,
                     newStat: utility.attack_drone?.deploy_energy_cost,
                 }),
 
             // RepairDrone
             typeof utility.repair_drone?.repair_amount !== "undefined" &&
                 renderStatChange("REPAIR AMOUNT", {
-                    oldStat: equipped.repair_drone?.repair_amount,
+                    oldStat: equipped?.repair_drone?.repair_amount,
                     newStat: utility.repair_drone?.repair_amount,
                 }),
             typeof utility.repair_drone?.lifespan_seconds !== "undefined" &&
                 renderStatChange("LIFESPAN (SECONDS)", {
-                    oldStat: equipped.repair_drone?.lifespan_seconds,
+                    oldStat: equipped?.repair_drone?.lifespan_seconds,
                     newStat: utility.repair_drone?.lifespan_seconds,
                 }),
             typeof utility.repair_drone?.deploy_energy_cost !== "undefined" &&
                 renderStatChange("ENERGY COST", {
-                    oldStat: equipped.repair_drone?.deploy_energy_cost,
+                    oldStat: equipped?.repair_drone?.deploy_energy_cost,
                     newStat: utility.repair_drone?.deploy_energy_cost,
                 }),
 
             // Accelerator
             typeof utility.accelerator?.boosted_amount !== "undefined" &&
                 renderStatChange("BOOST AMOUNT", {
-                    oldStat: equipped.accelerator?.boosted_amount,
+                    oldStat: equipped?.accelerator?.boosted_amount,
                     newStat: utility.accelerator?.boosted_amount,
                 }),
             typeof utility.accelerator?.boosted_seconds !== "undefined" &&
                 renderStatChange("DURATION (SECONDS)", {
-                    oldStat: equipped.accelerator?.boosted_seconds,
+                    oldStat: equipped?.accelerator?.boosted_seconds,
                     newStat: utility.accelerator?.boosted_seconds,
                 }),
             typeof utility.accelerator?.energy_cost !== "undefined" &&
                 renderStatChange("ENERGY COST", {
-                    oldStat: equipped.accelerator?.energy_cost,
+                    oldStat: equipped?.accelerator?.energy_cost,
                     newStat: utility.accelerator?.energy_cost,
                 }),
 
@@ -137,34 +137,34 @@ export const UtilityPreview = ({ onConfirm, utility, equipped }: UtilityPreviewP
 
             typeof utility.anti_missile?.rate_of_fire !== "undefined" &&
                 renderStatChange("RATE OF FIRE", {
-                    oldStat: equipped.anti_missile?.rate_of_fire,
+                    oldStat: equipped?.anti_missile?.rate_of_fire,
                     newStat: utility.anti_missile?.rate_of_fire,
                 }),
             typeof utility.anti_missile?.fire_energy_cost !== "undefined" &&
                 renderStatChange("ENERGY COST", {
-                    oldStat: equipped.anti_missile?.fire_energy_cost,
+                    oldStat: equipped?.anti_missile?.fire_energy_cost,
                     newStat: utility.anti_missile?.fire_energy_cost,
                 }),
         ]
 
         return stats.filter((s) => !!s)
     }, [
-        equipped.accelerator?.boosted_amount,
-        equipped.accelerator?.boosted_seconds,
-        equipped.accelerator?.energy_cost,
-        equipped.anti_missile?.fire_energy_cost,
-        equipped.anti_missile?.rate_of_fire,
-        equipped.attack_drone?.damage,
-        equipped.attack_drone?.deploy_energy_cost,
-        equipped.attack_drone?.hitpoints,
-        equipped.attack_drone?.lifespan_seconds,
-        equipped.attack_drone?.rate_of_fire,
-        equipped.repair_drone?.deploy_energy_cost,
-        equipped.repair_drone?.lifespan_seconds,
-        equipped.repair_drone?.repair_amount,
-        equipped.shield?.hitpoints,
-        equipped.shield?.recharge_energy_cost,
-        equipped.shield?.recharge_rate,
+        equipped?.accelerator?.boosted_amount,
+        equipped?.accelerator?.boosted_seconds,
+        equipped?.accelerator?.energy_cost,
+        equipped?.anti_missile?.fire_energy_cost,
+        equipped?.anti_missile?.rate_of_fire,
+        equipped?.attack_drone?.damage,
+        equipped?.attack_drone?.deploy_energy_cost,
+        equipped?.attack_drone?.hitpoints,
+        equipped?.attack_drone?.lifespan_seconds,
+        equipped?.attack_drone?.rate_of_fire,
+        equipped?.repair_drone?.deploy_energy_cost,
+        equipped?.repair_drone?.lifespan_seconds,
+        equipped?.repair_drone?.repair_amount,
+        equipped?.shield?.hitpoints,
+        equipped?.shield?.recharge_energy_cost,
+        equipped?.shield?.recharge_rate,
         renderStatChange,
         utility,
     ])
@@ -269,7 +269,7 @@ export const UtilityPreview = ({ onConfirm, utility, equipped }: UtilityPreviewP
                                 color: colors.red,
                             }}
                         >
-                            Currently equipped on another mech.
+                            Currently {utility.locked_to_mech ? "locked to" : "equipped on"} another mech.
                         </Typography>
                     )}
                     {statChanges.length > 0 ? (
