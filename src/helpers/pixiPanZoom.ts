@@ -1,10 +1,11 @@
 import * as PIXI from "pixi.js"
+import { clamp } from "."
 import { addWheelListener } from "./addWheelListener"
 
 const MIN_ZOOM_SCALE = 1
 const MAX_ZOOM_SCALE = 5
 
-export const pixiPanZoom = (domContainer: HTMLCanvasElement, stage: PIXI.Container<PIXI.DisplayObject>) => {
+export const pixiPanZoom = (renderer: PIXI.Renderer | PIXI.AbstractRenderer, domContainer: HTMLCanvasElement, stage: PIXI.Container<PIXI.DisplayObject>) => {
     addWheelListener(domContainer, function (e: WheelEvent) {
         zoom(e.offsetX, e.offsetY, e.deltaY < 0)
     })
@@ -17,20 +18,19 @@ export const pixiPanZoom = (domContainer: HTMLCanvasElement, stage: PIXI.Contain
 
         // Scaling
         const factor = 1 + direction * 0.05
-        const newScale = { x: stage.scale.x * factor, y: stage.scale.y * factor }
+        const newScale = { x: clamp(MIN_ZOOM_SCALE, stage.scale.x * factor, MAX_ZOOM_SCALE), y: clamp(MIN_ZOOM_SCALE, stage.scale.y * factor, MAX_ZOOM_SCALE) }
 
         // Positioning
         const worldPos = { x: (x - stage.x) / stage.scale.x, y: (y - stage.y) / stage.scale.y }
         const newScreenPos = { x: worldPos.x * newScale.x + stage.x, y: worldPos.y * newScale.y + stage.y }
         const newPos = { x: stage.x - (newScreenPos.x - x), y: stage.y - (newScreenPos.y - y) }
 
-        // Return is at zoom limit bounds
-        if (Math.min(newScale.x, newScale.y) < MIN_ZOOM_SCALE || Math.max(newScale.x, newScale.y) > MAX_ZOOM_SCALE) return
-
         stage.x = newPos.x
         stage.y = newPos.y
         stage.scale.x = newScale.x
         stage.scale.y = newScale.y
+
+        applyBounds(renderer, stage)
     }
 
     // Drag and pan around
@@ -63,17 +63,28 @@ export const pixiPanZoom = (domContainer: HTMLCanvasElement, stage: PIXI.Contain
             stage.y += dy
             prevX = pos.x
             prevY = pos.y
+
+            applyBounds(renderer, stage)
         }
 
         function mouseup() {
             isDragging = false
         }
     }
+}
 
-    // Make sure pan and zoom are within a boundary
-    function ApplyBounds() {
-        stage.on("zcxzc", () => {
-            console.log("A")
-        })
-    }
+// Make sure pan and zoom are within a boundary
+export const applyBounds = (renderer: PIXI.Renderer | PIXI.AbstractRenderer, stage: PIXI.Container<PIXI.DisplayObject>) => {
+    console.log({
+        stageWidth: stage.width,
+        stageHeight: stage.height,
+        x: stage.x,
+        y: stage.y,
+        rWidth: renderer.width,
+        rHeight: renderer.height,
+        scale: stage.scale.x,
+    })
+
+    stage.x = clamp(-(stage.width - renderer.width), stage.x, 0)
+    stage.y = clamp(-(stage.height - renderer.height), stage.y, 0)
 }

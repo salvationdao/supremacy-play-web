@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js"
 import { useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { calculateCoverDimensions } from "../helpers"
-import { pixiPanZoom } from "../helpers/pixiPanZoom"
+import { applyBounds, pixiPanZoom } from "../helpers/pixiPanZoom"
 import { Dimension } from "../types"
 import { useGame } from "./game"
 
@@ -25,7 +25,7 @@ export const MiniMapPixiContainer = createContainer(() => {
 
         PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.LINEAR
         pixiApp.stage.sortableChildren = true
-        pixiPanZoom(pixiApp.view, pixiApp.stage)
+        pixiPanZoom(pixiApp.renderer, pixiApp.view, pixiApp.stage)
         miniMapPixiRef.appendChild(pixiApp.view)
         setMiniMapPixiApp(pixiApp)
     }, [miniMapPixiRef])
@@ -34,6 +34,7 @@ export const MiniMapPixiContainer = createContainer(() => {
     useEffect(() => {
         if (miniMapPixiApp) {
             miniMapPixiApp.renderer.resize(containerDimensions.width, containerDimensions.height)
+            applyBounds(miniMapPixiApp.renderer, miniMapPixiApp.stage)
         }
     }, [miniMapPixiApp, containerDimensions])
 
