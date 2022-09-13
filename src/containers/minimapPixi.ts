@@ -40,7 +40,6 @@ export const MiniMapPixiContainer = createContainer(() => {
     // Update the map sprite
     useEffect(() => {
         if (map?.Image_Url && miniMapPixiApp) {
-            console.log(containerDimensions)
             const dimension = calculateCoverDimensions({ width: map.Width, height: map.Height }, containerDimensions)
             const mapTexture = PIXI.Texture.from(map.Image_Url)
 
@@ -50,7 +49,8 @@ export const MiniMapPixiContainer = createContainer(() => {
             }
 
             mapSprite.current.texture = mapTexture
-            mapSprite.current.position.set(0, 0)
+            mapSprite.current.x = 0
+            mapSprite.current.y = 0
             mapSprite.current.zIndex = -10
             mapSprite.current.width = dimension.width
             mapSprite.current.height = dimension.height

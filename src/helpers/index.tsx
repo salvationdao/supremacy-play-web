@@ -589,7 +589,7 @@ export const calculateCoverDimensions = (dimensions: Dimension, containerDimensi
     const result = { ...dimensions }
 
     result.width = containerDimensions.width
-    result.height = containerDimensions.height * ratio
+    result.height = containerDimensions.width * ratio
 
     if (result.height < containerDimensions.height) {
         result.height = containerDimensions.height
