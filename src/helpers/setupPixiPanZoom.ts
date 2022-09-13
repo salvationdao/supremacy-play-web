@@ -2,10 +2,13 @@ import * as PIXI from "pixi.js"
 import { clamp } from "."
 import { addWheelListener } from "./addWheelListener"
 
-const MIN_ZOOM_SCALE = 1
 const MAX_ZOOM_SCALE = 5
 
-export const pixiPanZoom = (renderer: PIXI.Renderer | PIXI.AbstractRenderer, domContainer: HTMLCanvasElement, stage: PIXI.Container<PIXI.DisplayObject>) => {
+export const setupPixiPanZoom = (
+    renderer: PIXI.Renderer | PIXI.AbstractRenderer,
+    domContainer: HTMLCanvasElement,
+    stage: PIXI.Container<PIXI.DisplayObject>,
+) => {
     addWheelListener(domContainer, function (e: WheelEvent) {
         zoom(e.offsetX, e.offsetY, e.deltaY < 0)
     })
@@ -18,7 +21,10 @@ export const pixiPanZoom = (renderer: PIXI.Renderer | PIXI.AbstractRenderer, dom
 
         // Scaling
         const factor = 1 + direction * 0.05
-        const newScale = { x: clamp(MIN_ZOOM_SCALE, stage.scale.x * factor, MAX_ZOOM_SCALE), y: clamp(MIN_ZOOM_SCALE, stage.scale.y * factor, MAX_ZOOM_SCALE) }
+        const newScale = {
+            x: clamp(renderer.width / stage.width, stage.scale.x * factor, MAX_ZOOM_SCALE),
+            y: clamp(renderer.height / stage.height, stage.scale.y * factor, MAX_ZOOM_SCALE),
+        }
 
         // Positioning
         const worldPos = { x: (x - stage.x) / stage.scale.x, y: (y - stage.y) / stage.scale.y }
@@ -75,16 +81,21 @@ export const pixiPanZoom = (renderer: PIXI.Renderer | PIXI.AbstractRenderer, dom
 
 // Make sure pan and zoom are within a boundary
 export const applyBounds = (renderer: PIXI.Renderer | PIXI.AbstractRenderer, stage: PIXI.Container<PIXI.DisplayObject>) => {
-    console.log({
-        stageWidth: stage.width,
-        stageHeight: stage.height,
-        x: stage.x,
-        y: stage.y,
-        rWidth: renderer.width,
-        rHeight: renderer.height,
-        scale: stage.scale.x,
-    })
+    const newScales = { x: stage.scale.x, y: stage.scale.y }
+
+    // if (stage.width < renderer.width) {
+    //     newScales.x = 1 //renderer.width / stage.width
+    //     newScales.y = 1 //renderer.width / stage.width
+    //     console.log(newScales, stage.width, renderer.width)
+    // }
+
+    // if (stage.height < renderer.height) {
+    //     newScales.x = 1 //renderer.height / stage.height
+    //     newScales.y = 1 //renderer.height / stage.height
+    // }
 
     stage.x = clamp(-(stage.width - renderer.width), stage.x, 0)
     stage.y = clamp(-(stage.height - renderer.height), stage.y, 0)
+    stage.scale.x = newScales.x
+    stage.scale.y = newScales.y
 }

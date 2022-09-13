@@ -29,11 +29,11 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
 
         const bunny = PIXI.Sprite.from(PlayerAbilityPNG)
 
-        bunny.x = miniMapPixiApp.renderer.width / 2
-        bunny.y = miniMapPixiApp.renderer.height / 2
+        bunny.x = 200
+        bunny.y = 200
         bunny.zIndex = 1
-        bunny.width = 100
-        bunny.height = 100
+        bunny.width = 12
+        bunny.height = 12
         bunny.anchor.x = 0.5
         bunny.anchor.y = 0.5
 

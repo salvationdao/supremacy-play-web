@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js"
 import { useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { calculateCoverDimensions } from "../helpers"
-import { applyBounds, pixiPanZoom } from "../helpers/pixiPanZoom"
+import { applyBounds, setupPixiPanZoom } from "../helpers/setupPixiPanZoom"
 import { Dimension } from "../types"
 import { useGame } from "./game"
 
@@ -25,9 +25,11 @@ export const MiniMapPixiContainer = createContainer(() => {
 
         PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.LINEAR
         pixiApp.stage.sortableChildren = true
-        pixiPanZoom(pixiApp.renderer, pixiApp.view, pixiApp.stage)
         miniMapPixiRef.appendChild(pixiApp.view)
         setMiniMapPixiApp(pixiApp)
+        setupPixiPanZoom(pixiApp.renderer, pixiApp.view, pixiApp.stage)
+
+        return () => pixiApp.destroy()
     }, [miniMapPixiRef])
 
     // Resize the pixi container based if parent container changed
@@ -41,20 +43,31 @@ export const MiniMapPixiContainer = createContainer(() => {
     // Update the map sprite
     useEffect(() => {
         if (map?.Image_Url && miniMapPixiApp) {
-            const dimension = calculateCoverDimensions({ width: map.Width, height: map.Height }, containerDimensions)
             const mapTexture = PIXI.Texture.from(map.Image_Url)
+            const dimension = calculateCoverDimensions(
+                { width: map.Width, height: map.Height },
+                {
+                    width: miniMapPixiApp.renderer.width,
+                    height: miniMapPixiApp.renderer.height,
+                },
+            )
 
+            // Setup map image background sprite
             if (!mapSprite.current) {
-                mapSprite.current = PIXI.Sprite.from(map.Image_Url)
+                mapSprite.current = PIXI.Sprite.from(mapTexture)
+                mapSprite.current.x = 0
+                mapSprite.current.y = 0
+                mapSprite.current.zIndex = -10
                 miniMapPixiApp.stage.addChild(mapSprite.current)
             }
 
             mapSprite.current.texture = mapTexture
-            mapSprite.current.x = 0
-            mapSprite.current.y = 0
-            mapSprite.current.zIndex = -10
+            miniMapPixiApp.stage.scale.x = 1
+            miniMapPixiApp.stage.scale.y = 1
             mapSprite.current.width = dimension.width
             mapSprite.current.height = dimension.height
+
+            applyBounds(miniMapPixiApp.renderer, miniMapPixiApp.stage)
         }
     }, [map, miniMapPixiApp, containerDimensions])
 
