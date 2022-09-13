@@ -380,7 +380,16 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
                         )
                     }
 
-                    return <MechLoadoutItem key={slotNumber} label="WEAPON" primaryColor={colors.weapons} renderModal={renderModal} isEmpty />
+                    return (
+                        <MechLoadoutItem
+                            key={slotNumber}
+                            slotNumber={slotNumber}
+                            label="WEAPON"
+                            primaryColor={colors.weapons}
+                            renderModal={renderModal}
+                            isEmpty
+                        />
+                    )
                 })}
 
                 {Array.from(utility_map, ([slotNumber, u]) => {
@@ -439,7 +448,16 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
                         )
                     }
 
-                    return <MechLoadoutItem key={slotNumber} label="UTILITY" primaryColor={colors.utilities} renderModal={renderModal} isEmpty />
+                    return (
+                        <MechLoadoutItem
+                            key={slotNumber}
+                            slotNumber={slotNumber}
+                            label="UTILITY"
+                            primaryColor={colors.utilities}
+                            renderModal={renderModal}
+                            isEmpty
+                        />
+                    )
                 })}
             </Stack>
 
