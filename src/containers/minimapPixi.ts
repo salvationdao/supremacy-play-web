@@ -19,6 +19,7 @@ export const MiniMapPixiContainer = createContainer(() => {
 
     const setupPixi = useCallback((mapRef: HTMLDivElement, dimension: Dimension) => {
         if (!pixiApp.current) {
+            // Create pixi app
             pixiApp.current = new PIXI.Application({
                 backgroundColor: 0x0c0c1a,
                 width: dimension.width,
@@ -27,10 +28,12 @@ export const MiniMapPixiContainer = createContainer(() => {
             })
 
             pixiApp.current.stage.sortableChildren = true
+            // Append pixi canvas to the DOM
             mapRef.appendChild(pixiApp.current.view)
         }
 
         if (!pixiViewport.current) {
+            // Create pixi viewport
             pixiViewport.current = new Viewport({
                 screenWidth: dimension.width,
                 screenHeight: dimension.height,
@@ -39,6 +42,7 @@ export const MiniMapPixiContainer = createContainer(() => {
                 interaction: pixiApp.current.renderer.plugins.interaction,
             })
 
+            // Configure pixi viewport
             pixiViewport.current
                 .drag()
                 .pinch()
@@ -56,6 +60,7 @@ export const MiniMapPixiContainer = createContainer(() => {
                 })
 
             pixiViewport.current.sortableChildren = true
+            // Add pixi viewport to stage
             pixiApp.current.stage.addChild(pixiViewport.current)
         }
 
@@ -66,14 +71,17 @@ export const MiniMapPixiContainer = createContainer(() => {
     useEffect(() => {
         if (!miniMapPixiRef) return
 
+        // Setup pixi app if not already setup
         if (!pixiApp.current || !pixiViewport.current) {
             setupPixi(miniMapPixiRef, containerDimensions)
         }
 
         if (pixiApp.current && pixiViewport.current) {
+            // When parent container size changes, resize the renderer and viewport dimension
             pixiApp.current.renderer.resize(containerDimensions.width, containerDimensions.height)
             pixiViewport.current.resize(pixiApp.current.renderer.width, pixiApp.current.renderer.height)
 
+            // Fit to cover
             if (pixiApp.current.renderer.width > pixiApp.current.renderer.height) {
                 pixiViewport.current.fitWidth()
             } else {
@@ -90,7 +98,7 @@ export const MiniMapPixiContainer = createContainer(() => {
         if (map?.Image_Url && isPixiSetup && pixiApp.current && pixiViewport.current) {
             const mapTexture = PIXI.Texture.from(map.Image_Url)
 
-            // Setup map image background sprite
+            // If map sprite isn't setup, then set it up
             if (!mapSprite.current) {
                 mapSprite.current = PIXI.Sprite.from(mapTexture)
                 mapSprite.current.x = 0
@@ -99,6 +107,7 @@ export const MiniMapPixiContainer = createContainer(() => {
                 pixiViewport.current.addChild(mapSprite.current)
             }
 
+            // Calculate the fit to cover dimension
             const dimension = calculateCoverDimensions(
                 { width: map.Width, height: map.Height },
                 {
@@ -107,19 +116,21 @@ export const MiniMapPixiContainer = createContainer(() => {
                 },
             )
 
+            // Update pixi viewport world dimension
             pixiViewport.current.resize(pixiApp.current.renderer.width, pixiApp.current.renderer.height, dimension.width, dimension.height)
 
-            if (!line.current) {
-                line.current = pixiViewport.current.addChild(new PIXI.Graphics())
-                line.current.lineStyle(2, 0xffffff, 0.1).drawRect(0, 0, pixiViewport.current.worldWidth, pixiViewport.current.worldHeight)
-            }
-
-            line.current.width = pixiViewport.current.worldWidth
-            line.current.height = pixiViewport.current.worldHeight
-
+            // Update the map's dimension and texture
             mapSprite.current.width = dimension.width
             mapSprite.current.height = dimension.height
             mapSprite.current.texture = mapTexture
+
+            // Draw a line around the pixi viewport for easy debug
+            if (!line.current) {
+                line.current = pixiViewport.current.addChild(new PIXI.Graphics())
+                line.current.lineStyle(2, 0x000000, 0.1).drawRect(0, 0, pixiViewport.current.worldWidth, pixiViewport.current.worldHeight)
+            }
+            line.current.width = pixiViewport.current.worldWidth
+            line.current.height = pixiViewport.current.worldHeight
         }
     }, [map, isPixiSetup])
 
