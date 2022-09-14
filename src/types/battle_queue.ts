@@ -20,4 +20,14 @@ export interface BattleLobby {
     host_by: User
     game_map: GameMap
     is_private: boolean
+    battle_lobbies_mechs: BattleLobbiesMech[]
+}
+
+export interface BattleLobbiesMech {
+    mech_id: string
+    battle_lobby_id: string
+    name: string
+    label: string
+    tier: string
+    owner: User
 }
