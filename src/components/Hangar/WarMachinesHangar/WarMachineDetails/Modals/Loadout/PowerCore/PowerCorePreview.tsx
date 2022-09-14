@@ -35,7 +35,7 @@ export const PowerCorePreview = ({ onConfirm, powerCore, equipped }: PowerCorePr
                     }}
                 >
                     {symbol}
-                    {stats.oldStat ? `${Math.round((difference * 100 * 100) / stats.oldStat) / 100}%` : difference}
+                    {stats.oldStat && stats.oldStat > 0 ? `${Math.round((difference * 100 * 100) / stats.oldStat) / 100}%` : difference}
                 </Typography>
                 <Typography
                     variant="caption"

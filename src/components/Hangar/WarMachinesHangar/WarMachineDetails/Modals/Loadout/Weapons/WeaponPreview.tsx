@@ -28,6 +28,8 @@ export const WeaponPreview = ({ onConfirm, weapon, equipped, skinInheritable }: 
 
         if (difference === 0) return null
 
+        console.log(typeof stats.oldStat)
+
         return (
             <Stack key={label} direction="row" spacing=".8rem" alignItems="center">
                 <Typography
@@ -37,7 +39,7 @@ export const WeaponPreview = ({ onConfirm, weapon, equipped, skinInheritable }: 
                     }}
                 >
                     {symbol}
-                    {stats.oldStat ? `${Math.round((difference * 100 * 100) / stats.oldStat) / 100}%` : difference}
+                    {stats.oldStat && stats.oldStat > 0 ? `${Math.round((difference * 100 * 100) / stats.oldStat) / 100}%` : difference}
                 </Typography>
                 <Typography
                     variant="caption"
