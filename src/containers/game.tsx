@@ -31,7 +31,6 @@ export const GameContainer = createContainer(() => {
 
     // States
     const [map, setMap] = useState<Map>()
-    console.log({ map })
     const [battleZone, setBattleZone] = useState<BattleZoneStruct>()
     const [abilityDetails, setAbilityDetails] = useState<AbilityDetail[]>([])
     const [warMachines, setWarMachines] = useState<WarMachineState[] | undefined>([])
