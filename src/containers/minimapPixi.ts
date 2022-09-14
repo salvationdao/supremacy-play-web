@@ -111,7 +111,7 @@ export const MiniMapPixiContainer = createContainer(() => {
 
             if (!line.current) {
                 line.current = pixiViewport.current.addChild(new PIXI.Graphics())
-                line.current.lineStyle(5, 0xff00ff, 0.5).drawRect(0, 0, pixiViewport.current.worldWidth, pixiViewport.current.worldHeight)
+                line.current.lineStyle(2, 0xffffff, 0.1).drawRect(0, 0, pixiViewport.current.worldWidth, pixiViewport.current.worldHeight)
             }
 
             line.current.width = pixiViewport.current.worldWidth
