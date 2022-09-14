@@ -1,8 +1,8 @@
 import { ease } from "pixi-ease"
 import * as PIXI from "pixi.js"
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useEffect, useMemo, useRef, useState } from "react"
 import { useArena, useAuth, useGame, useMiniMapPixi, useSupremacy } from "../../../../../containers"
-import { HEXToVBColor } from "../../../../../helpers"
+import { closestAngle, deg2rad, HEXToVBColor } from "../../../../../helpers"
 import { useGameServerSubscription } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors } from "../../../../../theme/theme"
@@ -10,7 +10,8 @@ import { WarMachineLiveState, WarMachineState } from "../../../../../types"
 
 interface PixiItems {
     container: PIXI.Container<PIXI.DisplayObject>
-    graphics: PIXI.Graphics
+    rectGraphics: PIXI.Graphics
+    arrowGraphics: PIXI.Graphics
 }
 
 interface MapMechProps {
@@ -33,6 +34,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
     const [pixiItems, setPixiItems] = useState<PixiItems>()
 
+    const prevRotation = useRef(warMachine.rotation)
     const [isAlive, setIsAlive] = useState(warMachine.health > 0)
     const [isHidden, setIsHidden] = useState<boolean>(warMachine.isHidden)
     const isMechHighlighted = useMemo(
@@ -50,7 +52,8 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
         // Create container for everything
         const container = new PIXI.Container()
-        const graphics = new PIXI.Graphics()
+        const rectGraphics = new PIXI.Graphics()
+        const arrowGraphics = new PIXI.Graphics()
 
         container.x = -100
         container.y = -100
@@ -58,9 +61,10 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         container.interactive = true
         container.buttonMode = true
 
-        container.addChild(graphics)
+        container.addChild(rectGraphics)
+        container.addChild(arrowGraphics)
         pixiMainItems.viewport.addChild(container)
-        setPixiItems({ container, graphics })
+        setPixiItems({ container, rectGraphics, arrowGraphics })
     }, [pixiMainItems])
 
     // Cleanup
@@ -74,28 +78,31 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         if (!pixiItems) return
 
         // Draw the box
-        pixiItems.graphics.clear()
-        pixiItems.graphics.beginFill(HEXToVBColor("#000000"), 0.8)
-        pixiItems.graphics.lineStyle(2, HEXToVBColor(primaryColor))
-        pixiItems.graphics.drawRoundedRect(0, 0, gridSizeRef.current.width, gridSizeRef.current.height, 2)
-        pixiItems.graphics.endFill()
+        pixiItems.rectGraphics.clear()
+        pixiItems.rectGraphics.beginFill(HEXToVBColor("#000000"), 0.8)
+        pixiItems.rectGraphics.lineStyle(2, HEXToVBColor(primaryColor))
+        pixiItems.rectGraphics.drawRoundedRect(0, 0, gridSizeRef.current.width, gridSizeRef.current.height, 6)
+        pixiItems.rectGraphics.endFill()
 
         // Draw the rotation arrow
-        const triangleWidth = gridSizeRef.current.width / 5
-        const triangleHeight = triangleWidth
+        const triangleWidth = gridSizeRef.current.width / 4.2
+        const triangleHeight = triangleWidth * 0.9
         const triangleHalfway = triangleWidth / 2
-        const point1 = [gridSizeRef.current.width / 2 - triangleHalfway, -gridSizeRef.current.width / 3.5]
-        const point2 = [point1[0] + triangleWidth, point1[1]]
-        const point3 = [point1[0] + triangleHalfway, point1[1] - triangleHeight]
 
-        pixiItems.graphics.beginFill(HEXToVBColor(primaryColor))
-        pixiItems.graphics.lineStyle(2, HEXToVBColor(primaryColor))
-        pixiItems.graphics.moveTo(point1[0], point1[1])
-        pixiItems.graphics.lineTo(point2[0], point2[1])
-        pixiItems.graphics.lineTo(point3[0], point3[1])
-        pixiItems.graphics.lineTo(point1[0], point1[1])
-        pixiItems.graphics.closePath()
-        pixiItems.graphics.endFill()
+        const triPoint1 = [0, 0]
+        const triPoint2 = [triangleWidth, 0]
+        const triPoint3 = [triangleHalfway, -triangleHeight]
+        // Draw the triangle
+        pixiItems.arrowGraphics.beginFill(HEXToVBColor(primaryColor))
+        pixiItems.arrowGraphics.lineStyle(1, HEXToVBColor(primaryColor))
+        pixiItems.arrowGraphics.moveTo(triPoint1[0], triPoint1[1])
+        pixiItems.arrowGraphics.lineTo(triPoint2[0], triPoint2[1])
+        pixiItems.arrowGraphics.lineTo(triPoint3[0], triPoint3[1])
+        pixiItems.arrowGraphics.lineTo(triPoint1[0], triPoint1[1])
+        pixiItems.arrowGraphics.closePath()
+        pixiItems.arrowGraphics.endFill()
+        pixiItems.arrowGraphics.position.set(gridSizeRef.current.width / 2, gridSizeRef.current.height / 2)
+        pixiItems.arrowGraphics.pivot.set(triangleHalfway, gridSizeRef.current.height / 2 + gridSizeRef.current.height / 3.4)
     }, [gridSizeRef, pixiItems, primaryColor, map])
 
     // Update zIndex
@@ -141,15 +148,9 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
             if (payload?.position !== undefined) {
                 if (pixiItems?.container) {
-                    const pos = getViewportPosition.current(payload.position.x, payload.position.y)
-                    ease.add(pixiItems.container, { x: pos.x, y: pos.y }, { duration: 275, ease: "linear" })
+                    const newPos = getViewportPosition.current(payload.position.x, payload.position.y)
+                    ease.add(pixiItems.container, { x: newPos.x, y: newPos.y }, { duration: 275, ease: "linear" })
                 }
-
-                // const positionEl = (poppedOutContainerRef?.current || document).querySelector(`#map-mech-position-${hash}`) as HTMLElement
-                // if (positionEl) {
-                //     const mechMapX = ((payload.position?.x || 0) - map.Pixel_Left) * mapScale
-                //     const mechMapY = ((payload.position?.y || 0) - map.Pixel_Top) * mapScale
-                //     positionEl.style.transform = `translate(-50%, -50%) translate3d(${mechMapX}px, ${mechMapY}px, 0)`
 
                 //     // Update the mech move dash line length and rotation
                 //     const moveCommandEl = (poppedOutContainerRef?.current || document).querySelector(`#map-mech-move-command-${hash}`) as HTMLElement
@@ -174,15 +175,18 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
                 // }
             }
 
-            // if (payload?.rotation !== undefined) {
-            //     const rotationEl = (poppedOutContainerRef?.current || document).querySelector(`#map-mech-rotation-${hash}`) as HTMLElement
-            //     if (rotationEl) {
-            //         // 0 is east, and goes CW, can be negative and above 360
-            //         const newRotation = closestAngle(prevRotation.current, payload.rotation || 0)
-            //         rotationEl.style.transform = `translate(-50%, -50%) rotate(${newRotation + 90}deg)`
-            //         prevRotation.current = newRotation
-            //     }
-            // }
+            if (payload?.rotation !== undefined) {
+                if (pixiItems?.container) {
+                    const newRot = closestAngle(prevRotation.current, payload.rotation || 0)
+                    const newRotRad = deg2rad(newRot)
+                    ease.add(pixiItems.arrowGraphics, { rotation: newRotRad }, { duration: 275, ease: "linear" })
+                    prevRotation.current = newRot
+                }
+                //     // 0 is east, and goes CW, can be negative and above 360
+                //     const newRotation = closestAngle(prevRotation.current, payload.rotation || 0)
+                //     rotationEl.style.transform = `translate(-50%, -50%) rotate(${newRotation + 90}deg)`
+                //     prevRotation.current = newRotation
+            }
 
             // if (payload?.is_hidden !== undefined) {
             //     setIsHidden(payload.is_hidden)
