@@ -9,7 +9,7 @@ import { getRarityDeets } from "../../../../helpers"
 import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { fonts } from "../../../../theme/theme"
-import { MechDetails } from "../../../../types"
+import { MechDetails, MechStatus, MechStatusEnum } from "../../../../types"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { MechBattleHistoryDetails } from "../../../Marketplace/WarMachinesMarket/WarMachineMarketDetails/MechBattleHistoryDetails"
 import { MechBarStats } from "../Common/MechBarStats"
@@ -88,6 +88,7 @@ export const WarMachineHangarDetailsInner = ({
     const theme = useTheme()
     const { userID } = useAuth()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
+    const [mechStatus, setMechStatus] = useState<MechStatus>()
 
     const rarityDeets = useMemo(() => getRarityDeets(mechDetails?.chassis_skin?.tier || mechDetails?.tier || ""), [mechDetails])
 
@@ -99,6 +100,17 @@ export const WarMachineHangarDetailsInner = ({
         (payload) => {
             if (!payload) return
             setMechDetails(payload)
+        },
+    )
+
+    useGameServerSubscriptionFaction<MechStatus>(
+        {
+            URI: `/queue/${mechID}`,
+            key: GameServerKeys.SubMechQueuePosition,
+        },
+        (payload) => {
+            if (!payload || payload.status === MechStatusEnum.Sold) return
+            setMechStatus(payload)
         },
     )
 
@@ -247,6 +259,7 @@ export const WarMachineHangarDetailsInner = ({
                     {mechDetails && (
                         <MechButtons
                             mechDetails={mechDetails}
+                            mechStatus={mechStatus}
                             setSelectedMechDetails={setSelectedMechDetails}
                             setDeployMechModalOpen={setDeployMechModalOpen}
                             setRentalMechModalOpen={setRentalMechModalOpen}
@@ -269,7 +282,7 @@ export const WarMachineHangarDetailsInner = ({
             >
                 {mechDetails ? (
                     <>
-                        <MechLoadout mechDetails={mechDetails} />
+                        <MechLoadout mechDetails={mechDetails} mechStatus={mechStatus} />
                         <MechViewer mechDetails={mechDetails} />
                     </>
                 ) : (

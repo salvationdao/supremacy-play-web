@@ -112,6 +112,8 @@ export interface Collection {
     owner_id: string
     on_chain_status: string
     locked_to_marketplace: boolean
+    xsyn_locked: boolean
+    market_locked: boolean
     item_sale_id?: string
 }
 
@@ -136,7 +138,6 @@ export interface MechBasic extends Collection, Images {
     faction_id: string
     model_id: string
     default_chassis_skin_id: string
-    market_locked: boolean
     chassis_skin_id: string
     intro_animation_id: string
     outro_animation_id: string

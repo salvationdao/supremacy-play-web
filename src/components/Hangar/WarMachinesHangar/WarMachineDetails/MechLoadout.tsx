@@ -1,12 +1,12 @@
 import { Box, Fade, Slide, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgUtilities, SvgWeapons } from "../../../../assets"
 import { useGlobalNotifications } from "../../../../containers"
 import { getRarityDeets } from "../../../../helpers"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
-import { MechDetails, PowerCore, Utility, Weapon } from "../../../../types"
+import { MechDetails, MechStatus, MechStatusEnum, PowerCore, Utility, Weapon } from "../../../../types"
 import { FancyButton } from "../../../Common/FancyButton"
 import { MechLoadoutItem } from "../Common/MechLoadoutItem"
 import { MechLoadoutPowerCoreModal } from "./Modals/Loadout/MechLoadoutPowerCoreModal"
@@ -90,9 +90,10 @@ const generateLoadout = (newMechDetails: MechDetails): MechDetailsWithMaps => {
 
 interface MechLoadoutProps {
     mechDetails: MechDetails
+    mechStatus?: MechStatus
 }
 
-export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
+export const MechLoadout = ({ mechDetails, mechStatus }: MechLoadoutProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
     const { newSnackbarMessage } = useGlobalNotifications()
 
@@ -213,7 +214,18 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
         intro_animation,
         outro_animation,
         locked_to_marketplace,
+        xsyn_locked,
     } = currLoadout
+
+    const loadoutDisabled = useMemo(
+        () =>
+            xsyn_locked ||
+            locked_to_marketplace ||
+            mechStatus?.status === MechStatusEnum.Queue ||
+            mechStatus?.status === MechStatusEnum.Battle ||
+            mechStatus?.status === MechStatusEnum.Sold,
+        [locked_to_marketplace, mechStatus?.status, xsyn_locked],
+    )
 
     return (
         <Box
@@ -293,7 +305,7 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
                     if (powerCore) {
                         return (
                             <MechLoadoutItem
-                                disabled={locked_to_marketplace}
+                                disabled={loadoutDisabled}
                                 imageUrl={powerCore.image_url || powerCore.avatar_url}
                                 videoUrls={[powerCore.card_animation_url]}
                                 label={powerCore.label}
@@ -321,15 +333,7 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
                         )
                     }
 
-                    return (
-                        <MechLoadoutItem
-                            disabled={locked_to_marketplace}
-                            label="POWER CORE"
-                            primaryColor={colors.powerCore}
-                            renderModal={renderModal}
-                            isEmpty
-                        />
-                    )
+                    return <MechLoadoutItem disabled={loadoutDisabled} label="POWER CORE" primaryColor={colors.powerCore} renderModal={renderModal} isEmpty />
                 })()}
 
                 {Array.from(weapons_map, ([slotNumber, w]) => {
@@ -360,7 +364,7 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
                     if (weapon) {
                         return (
                             <MechLoadoutItem
-                                disabled={locked_to_marketplace}
+                                disabled={loadoutDisabled}
                                 key={weapon.id}
                                 slotNumber={slotNumber}
                                 imageUrl={weapon.image_url || weapon.avatar_url}
@@ -396,7 +400,7 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
 
                     return (
                         <MechLoadoutItem
-                            disabled={locked_to_marketplace}
+                            disabled={loadoutDisabled}
                             key={slotNumber}
                             slotNumber={slotNumber}
                             label="WEAPON"
@@ -433,7 +437,7 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
                     if (utility) {
                         return (
                             <MechLoadoutItem
-                                disabled={locked_to_marketplace}
+                                disabled={loadoutDisabled}
                                 key={utility.id}
                                 slotNumber={slotNumber}
                                 imageUrl={utility.image_url || utility.avatar_url}
@@ -467,7 +471,7 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
 
                     return (
                         <MechLoadoutItem
-                            disabled={locked_to_marketplace}
+                            disabled={loadoutDisabled}
                             key={slotNumber}
                             slotNumber={slotNumber}
                             label="UTILITY"
@@ -491,7 +495,7 @@ export const MechLoadout = ({ mechDetails }: MechLoadoutProps) => {
             >
                 {chassis_skin ? (
                     <MechLoadoutItem
-                        disabled={locked_to_marketplace}
+                        disabled={loadoutDisabled}
                         imageUrl={chassis_skin.image_url || chassis_skin.avatar_url}
                         videoUrls={[chassis_skin.card_animation_url]}
                         label={chassis_skin.label}
