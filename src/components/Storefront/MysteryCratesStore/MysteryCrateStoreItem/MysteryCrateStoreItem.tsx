@@ -1,5 +1,6 @@
 import { Box, Modal, Stack, TextField, Typography } from "@mui/material"
 import React, { useCallback, useMemo, useState } from "react"
+import BigNumber from "bignumber.js"
 import { ClipThing, FancyButton } from "../../.."
 import { SafePNG, SvgArrow, SvgSupToken } from "../../../../assets"
 import { useGlobalNotifications } from "../../../../containers"
@@ -54,14 +55,14 @@ export const MysteryCrateStoreItem = React.memo(function MysteryCrateStoreItem({
     const singleCratePrice = useMemo(() => supFormatterNoFixed(mysteryCrate.price, 2), [mysteryCrate.price])
     const fiatPrice = useMemo(() => {
         let pricing: string | null = null
-        for (const p of mysteryCrate.fiat_product.pricing) {
+        for (const p of crate.fiat_product.pricing) {
             if (p.currency_code === "USD") {
-                pricing = generatePriceText("USD", p.amount)
+                pricing = generatePriceText("USD", new BigNumber(p.amount).multipliedBy(quantity))
                 break
             }
         }
         return pricing
-    }, [mysteryCrate.fiat_product.pricing])
+    }, [quantity, crate])
 
     useGameServerSubscriptionFaction<StorefrontMysteryCrate>(
         {
