@@ -149,6 +149,9 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             if (payload?.position !== undefined) {
                 if (pixiItems?.container) {
                     const newPos = getViewportPosition.current(payload.position.x, payload.position.y)
+                    // Default its the top left corner, so center it
+                    newPos.x -= pixiItems.rectGraphics.width / 2
+                    newPos.y -= pixiItems.rectGraphics.height / 2
                     ease.add(pixiItems.container, { x: newPos.x, y: newPos.y }, { duration: 275, ease: "linear" })
                 }
 
