@@ -305,6 +305,7 @@ export const MechLoadout = ({ mechDetails, mechStatus }: MechLoadoutProps) => {
                     if (powerCore) {
                         return (
                             <MechLoadoutItem
+                                locked
                                 disabled={loadoutDisabled}
                                 imageUrl={powerCore.image_url || powerCore.avatar_url}
                                 videoUrls={[powerCore.card_animation_url]}
@@ -333,7 +334,16 @@ export const MechLoadout = ({ mechDetails, mechStatus }: MechLoadoutProps) => {
                         )
                     }
 
-                    return <MechLoadoutItem disabled={loadoutDisabled} label="POWER CORE" primaryColor={colors.powerCore} renderModal={renderModal} isEmpty />
+                    return (
+                        <MechLoadoutItem
+                            disabled={loadoutDisabled}
+                            label="POWER CORE"
+                            primaryColor={colors.powerCore}
+                            renderModal={renderModal}
+                            isEmpty
+                            locked
+                        />
+                    )
                 })()}
 
                 {Array.from(weapons_map, ([slotNumber, w]) => {
