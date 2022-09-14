@@ -18,37 +18,31 @@ const propsAreEqual = (prevProps: MiniMapPixiProps, nextProps: MiniMapPixiProps)
 }
 
 export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions, poppedOutContainerRef }: MiniMapPixiProps) {
-    const { pixiViewport, pixiApp, setMiniMapPixiRef, setContainerDimensions } = useMiniMapPixi()
+    const { isPixiSetup, pixiViewport, pixiApp, setMiniMapPixiRef, setContainerDimensions } = useMiniMapPixi()
 
     useEffect(() => {
         setContainerDimensions(containerDimensions)
     }, [containerDimensions, setContainerDimensions])
 
-    // useEffect(() => {
-    //     if (!pixiApp.current || !pixiViewport.current) return
+    useEffect(() => {
+        if (!isPixiSetup || !pixiApp.current || !pixiViewport.current) return
 
-    //     const bunny = PIXI.Sprite.from(PlayerAbilityPNG)
+        const bunny = PIXI.Sprite.from(PlayerAbilityPNG)
 
-    //     bunny.x = 200
-    //     bunny.y = 200
-    //     bunny.zIndex = 1
-    //     bunny.width = 12
-    //     bunny.height = 12
-    //     bunny.anchor.x = 0.5
-    //     bunny.anchor.y = 0.5
+        bunny.x = 200
+        bunny.y = 200
+        bunny.zIndex = 1
+        bunny.width = 12
+        bunny.height = 12
+        bunny.anchor.x = 0.5
+        bunny.anchor.y = 0.5
 
-    //     // viewport.addChild(bunny)
+        pixiViewport.current.addChild(bunny)
 
-    //     miniMapPixiApp.ticker.add(() => {
-    //         bunny.rotation += 0.01
-    //     })
-
-    //     // const sprite = viewport.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
-    //     // sprite.tint = 0xff0000
-    //     // sprite.width = 80
-    //     // sprite.height = 80
-    //     // sprite.position.set(0, 0)
-    // }, [miniMapPixiApp, viewport])
+        pixiApp.current.ticker.add(() => {
+            bunny.rotation += 0.01
+        })
+    }, [isPixiSetup, pixiApp, pixiViewport])
 
     return (
         <Box

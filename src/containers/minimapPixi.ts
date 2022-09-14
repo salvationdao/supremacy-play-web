@@ -55,6 +55,7 @@ export const MiniMapPixiContainer = createContainer(() => {
                     minHeight: 50,
                 })
 
+            pixiViewport.current.sortableChildren = true
             pixiApp.current.stage.addChild(pixiViewport.current)
         }
 
@@ -82,7 +83,7 @@ export const MiniMapPixiContainer = createContainer(() => {
         }
     }, [miniMapPixiRef, containerDimensions, setupPixi])
 
-    // useEffect(() => () => pixiApp.current?.destroy())
+    // TODO: useEffect(() => () => pixiApp.current?.destroy())
 
     // Update the map sprite when map is changed
     useEffect(() => {
@@ -119,12 +120,10 @@ export const MiniMapPixiContainer = createContainer(() => {
             mapSprite.current.width = dimension.width
             mapSprite.current.height = dimension.height
             mapSprite.current.texture = mapTexture
-
-            // pixiViewport.current.fit()
         }
     }, [map, isPixiSetup])
 
-    return { pixiViewport, pixiApp, miniMapPixiRef, setMiniMapPixiRef, setContainerDimensions }
+    return { isPixiSetup, pixiViewport, pixiApp, miniMapPixiRef, setMiniMapPixiRef, setContainerDimensions }
 })
 
 export const MiniMapPixiProvider = MiniMapPixiContainer.Provider
