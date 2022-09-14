@@ -153,10 +153,21 @@ export interface SystemMessageDataMechBattleBegin {
 }
 
 export interface SystemMessageDataMechBattleComplete {
+    player_id: string
+    battle_reward?: BattleReward
+    obtained_bounties?: ObtainedBounty[]
+    mech_battle_briefs?: SystemMessageMechStruct[]
+}
+
+interface BattleReward {
     rewarded_sups: string
     rewarded_sups_bonus: string
     rewarded_player_ability?: BlueprintPlayerAbility
-    mech_battle_briefs: SystemMessageMechStruct[]
+}
+
+interface ObtainedBounty {
+    destroyed_mech: SystemMessageMechStruct
+    Amount: string
 }
 
 export interface KillInfo {

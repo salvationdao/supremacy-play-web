@@ -16,6 +16,7 @@ export enum GameServerKeys {
 
     // Battle Arena
     SubArenaStatus = "ARENA:STATUS:UPDATED",
+    SunBattleETA = "BATTLE:ETA:UPDATE",
     SubBattleArenaList = "BATTLE:ARENA:LIST",
     SubBattleArenaClosed = "BATTLE:ARENA:CLOSED",
     SubMiniMapAbilityDisplayList = "MINI:MAP:ABILITY:DISPLAY:LIST",
@@ -45,11 +46,13 @@ export enum GameServerKeys {
     SystemMessageSend = "SYSTEM:MESSAGE:SEND",
 
     // Asset / queue
-    SubBattleLobbyUpdate = "BATTLE:LOBBY:LIST:UPDATE",
+    SubBattleLobbyListUpdate = "BATTLE:LOBBY:LIST:UPDATE",
+    SubBattleBountyListUpdate = "BATTLE:BOUNTY:LIST:UPDATE",
     CreateBattleLobby = "BATTLE:LOBBY:CREATE",
     JoinBattleLobby = "BATTLE:LOBBY:JOIN",
     LeaveBattleLobby = "BATTLE:LOBBY:LEAVE",
-    SubQueueFeed = "BATTLE:QUEUE:STATUS:SUBSCRIBE",
+    CreateBattleBounty = "BATTLE:BOUNTY:CREATE",
+    SubQueueFeed = "BATTLE:QUEUE:STATUS:SUBSCRIBE", // removed in backend
     GetMechs = "PLAYER:ASSET:MECH:LIST",
     PlayerQueueStatus = "PLAYER:QUEUE:STATUS",
     // Weapons
@@ -57,9 +60,7 @@ export enum GameServerKeys {
     GetWeaponDetails = "PLAYER:ASSET:WEAPON:DETAIL",
     GetMechDetails = "PLAYER:ASSET:MECH:DETAIL",
     SubMechQueuePosition = "PLAYER:ASSET:MECH:QUEUE:SUBSCRIBE",
-    JoinQueue = "BATTLE:QUEUE:JOIN",
-    MechQueueUpdated = "PLAYER:ASSET:MECH:QUEUE:UPDATE",
-    TriggerMechStatusUpdate = "PLAYER:ASSET:MECH:STATUS:UPDATE",
+    JoinQueue = "BATTLE:QUEUE:JOIN", // removed from backend
     MechRename = "PLAYER:MECH:RENAME",
 
     // Player Abilities

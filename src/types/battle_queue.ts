@@ -16,6 +16,7 @@ export interface BattleLobby {
     assigned_to_battle_id?: string
     ended_at?: Date
     created_at: Date
+    deleted_at?: Date
 
     host_by: User
     game_map: GameMap
@@ -30,4 +31,16 @@ export interface BattleLobbiesMech {
     label: string
     tier: string
     owner: User
+    is_destroyed: boolean
+}
+
+export interface BattleBounty {
+    id: string
+    battle_lobby_id: string
+    targeted_mech_id: string
+    amount: string // sups
+    offered_by_id: string
+    is_closed: boolean
+
+    offered_by_player: User
 }
