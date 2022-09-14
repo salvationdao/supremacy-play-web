@@ -39,15 +39,21 @@ export const MiniMapPixiContainer = createContainer(() => {
                 interaction: pixiApp.current.renderer.plugins.interaction,
             })
 
-            pixiViewport.current.drag().pinch().wheel({ percent: 0.1, smooth: 1 }).decelerate({ friction: 0.9 })
-            // .clamp({
-            //     direction: "all",
-            //     underflow: "center",
-            // })
-            // .clampZoom({
-            //     maxWidth: dimension.width,
-            //     maxHeight: dimension.height,
-            // })
+            pixiViewport.current
+                .drag()
+                .pinch()
+                .wheel({ percent: 0.1, smooth: 1 })
+                .decelerate({ friction: 0.9 })
+                .clamp({
+                    direction: "all",
+                    underflow: "center",
+                })
+                .clampZoom({
+                    maxWidth: pixiViewport.current.screenWidth,
+                    maxHeight: pixiViewport.current.screenHeight,
+                    minWidth: 50,
+                    minHeight: 50,
+                })
 
             pixiApp.current.stage.addChild(pixiViewport.current)
         }
