@@ -1,3 +1,4 @@
+import { ease } from "pixi-ease"
 import * as PIXI from "pixi.js"
 import React, { useEffect, useMemo, useState } from "react"
 import { useArena, useAuth, useGame, useMiniMapPixi, useSupremacy } from "../../../../../containers"
@@ -60,7 +61,6 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    // Update initial styles of the mech
     useEffect(() => {
         if (!pixiItems) return
 
@@ -103,7 +103,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             if (payload?.position !== undefined) {
                 if (pixiItems?.container) {
                     const pos = getViewportPosition.current(payload.position.x, payload.position.y)
-                    pixiItems.container.position.set(pos.x, pos.y)
+                    ease.add(pixiItems.container, { x: pos.x, y: pos.y }, { duration: 275, ease: "linear" })
                 }
 
                 // const positionEl = (poppedOutContainerRef?.current || document).querySelector(`#map-mech-position-${hash}`) as HTMLElement
