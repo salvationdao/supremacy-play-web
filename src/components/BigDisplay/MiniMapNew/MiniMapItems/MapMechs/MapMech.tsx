@@ -28,11 +28,17 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     const { userID, factionID } = useAuth()
     const { currentArenaID } = useArena()
     const { getFaction } = useSupremacy()
-    const { pixiMainItems, gridSizeRef, getViewportPosition } = useMiniMapPixi()
+    const { pixiMainItems, gridSizeRef, getViewportPosition, highlightedMechParticipantID, isTargeting, selection, playerAbility } = useMiniMapPixi()
     const { id, hash, participantID, factionID: warMachineFactionID, maxHealth, maxShield, ownedByID } = warMachine
 
     const [pixiItems, setPixiItems] = useState<PixiItems>()
 
+    const [isAlive, setIsAlive] = useState(warMachine.health > 0)
+    const [isHidden, setIsHidden] = useState<boolean>(warMachine.isHidden)
+    const isMechHighlighted = useMemo(
+        () => highlightedMechParticipantID === warMachine.participantID || selection?.mechHash === hash || playerAbility?.mechHash === hash,
+        [hash, highlightedMechParticipantID, playerAbility?.mechHash, selection?.mechHash, warMachine.participantID],
+    )
     const primaryColor = useMemo(
         () => (ownedByID === userID ? colors.gold : getFaction(warMachineFactionID).primary_color || colors.neonBlue),
         [ownedByID, userID, getFaction, warMachineFactionID],
@@ -49,6 +55,8 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         container.x = -100
         container.y = -100
         container.zIndex = 10
+        container.interactive = true
+        container.buttonMode = true
 
         container.addChild(graphics)
         pixiMainItems.viewport.addChild(container)
@@ -61,15 +69,46 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    // Update graphics
     useEffect(() => {
         if (!pixiItems) return
 
+        // Draw the box
         pixiItems.graphics.clear()
-        pixiItems.graphics.lineStyle(2, HEXToVBColor(primaryColor))
         pixiItems.graphics.beginFill(HEXToVBColor("#000000"), 0.8)
+        pixiItems.graphics.lineStyle(2, HEXToVBColor(primaryColor))
         pixiItems.graphics.drawRoundedRect(0, 0, gridSizeRef.current.width, gridSizeRef.current.height, 2)
         pixiItems.graphics.endFill()
+
+        // Draw the rotation arrow
+        const triangleWidth = gridSizeRef.current.width / 5
+        const triangleHeight = triangleWidth
+        const triangleHalfway = triangleWidth / 2
+        const point1 = [gridSizeRef.current.width / 2 - triangleHalfway, -gridSizeRef.current.width / 3.5]
+        const point2 = [point1[0] + triangleWidth, point1[1]]
+        const point3 = [point1[0] + triangleHalfway, point1[1] - triangleHeight]
+
+        pixiItems.graphics.beginFill(HEXToVBColor(primaryColor))
+        pixiItems.graphics.lineStyle(2, HEXToVBColor(primaryColor))
+        pixiItems.graphics.moveTo(point1[0], point1[1])
+        pixiItems.graphics.lineTo(point2[0], point2[1])
+        pixiItems.graphics.lineTo(point3[0], point3[1])
+        pixiItems.graphics.lineTo(point1[0], point1[1])
+        pixiItems.graphics.closePath()
+        pixiItems.graphics.endFill()
     }, [gridSizeRef, pixiItems, primaryColor, map])
+
+    // Update zIndex
+    useEffect(() => {
+        if (!pixiItems) return
+
+        let zIndex = 4
+        if (isMechHighlighted) zIndex = 7
+        if (isAlive && factionID === warMachineFactionID) zIndex = 6
+        if (isAlive) zIndex = 5
+
+        pixiItems.container.zIndex = zIndex
+    }, [factionID, isAlive, isMechHighlighted, pixiItems, warMachineFactionID])
 
     // Listen on mech stats
     useGameServerSubscription<WarMachineLiveState | undefined>(

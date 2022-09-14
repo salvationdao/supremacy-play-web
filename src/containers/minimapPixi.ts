@@ -2,12 +2,19 @@ import { Viewport } from "pixi-viewport"
 import * as PIXI from "pixi.js"
 import { useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
+import { useDebounce } from "../hooks"
 import { useGameServerCommandsFaction } from "../hooks/useGameServer"
-import { Dimension, GAME_CLIENT_TILE_SIZE, Map, Vector2i } from "../types"
+import { Dimension, GameAbility, GAME_CLIENT_TILE_SIZE, Map, PlayerAbility, Vector2i } from "../types"
 import { useArena } from "./arena"
 import { useAuth } from "./auth"
 import { useGame } from "./game"
 import { useGlobalNotifications } from "./globalNotifications"
+import { MapSelection } from "./minimap"
+
+interface WinnerStruct {
+    game_ability: GameAbility
+    end_time: Date
+}
 
 interface PixiMainItems {
     app: PIXI.Application
@@ -20,6 +27,13 @@ export const MiniMapPixiContainer = createContainer(() => {
     const { currentArenaID } = useArena()
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
+
+    // Gameplay related
+    const [winner, setWinner] = useState<WinnerStruct>()
+    const [playerAbility, setPlayerAbility] = useState<PlayerAbility>()
+    const [isTargeting, setIsTargeting] = useState(false)
+    const [highlightedMechParticipantID, setHighlightedMechParticipantID] = useState<number>()
+    const [selection, setSelectionDebounced, selectionInstant, setSelection] = useDebounce<MapSelection | undefined>(undefined, 320)
 
     // Pixi stuff
     const [pixiMainItems, setPixiMainItems] = useState<PixiMainItems>()
@@ -44,7 +58,19 @@ export const MiniMapPixiContainer = createContainer(() => {
         }
     })
 
-    return { pixiMainItems, setPixiMainItems, mapScalingRef, gridSizeRef, getViewportPosition }
+    return {
+        pixiMainItems,
+        setPixiMainItems,
+        mapScalingRef,
+        gridSizeRef,
+        getViewportPosition,
+
+        highlightedMechParticipantID,
+        isTargeting,
+        selection,
+        winner,
+        playerAbility,
+    }
 })
 
 export const MiniMapPixiProvider = MiniMapPixiContainer.Provider
