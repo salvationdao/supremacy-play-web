@@ -598,3 +598,7 @@ export const calculateCoverDimensions = (dimensions: Dimension, containerDimensi
 
     return result
 }
+
+export const HEXToVBColor = (hex: string): number => {
+    return parseInt(hex.substring(hex.length - 6), 16)
+}

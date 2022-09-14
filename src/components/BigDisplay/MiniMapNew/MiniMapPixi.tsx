@@ -4,7 +4,8 @@ import * as PIXI from "pixi.js"
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import { useGame } from "../../../containers"
 import { useMiniMapPixi } from "../../../containers/minimapPixi"
-import { calculateCoverDimensions } from "../../../helpers"
+import { calculateCoverDimensions, HEXToVBColor } from "../../../helpers"
+import { colors } from "../../../theme/theme"
 import { Dimension } from "../../../types"
 import { MapMechs } from "./MiniMapItems/MapMechs/MapMechs"
 
@@ -37,7 +38,7 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
 
             // Create pixi app
             const app = new PIXI.Application({
-                backgroundColor: 0x0c0c1a,
+                backgroundColor: HEXToVBColor(colors.darkNavyBlue),
                 width: dimension.width,
                 height: dimension.height,
                 resolution: window.devicePixelRatio || 1,
@@ -149,7 +150,9 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
             // Draw a line around the pixi viewport for easy debug
             if (!pixiItems.current.border) {
                 pixiItems.current.border = pixiMainItems.viewport.addChild(new PIXI.Graphics())
-                pixiItems.current.border.lineStyle(2, 0x000000, 0.1).drawRect(0, 0, pixiMainItems.viewport.worldWidth, pixiMainItems.viewport.worldHeight)
+                pixiItems.current.border
+                    .lineStyle(2, HEXToVBColor("#000000"), 0.1)
+                    .drawRect(0, 0, pixiMainItems.viewport.worldWidth, pixiMainItems.viewport.worldHeight)
             }
             pixiItems.current.border.width = pixiMainItems.viewport.worldWidth
             pixiItems.current.border.height = pixiMainItems.viewport.worldHeight
