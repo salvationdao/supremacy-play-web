@@ -1,9 +1,13 @@
-import React, { useEffect, useRef } from "react"
-import { useArena, useAuth, useGame, useMiniMapPixi, useSupremacy } from "../../../../../containers"
 import * as PIXI from "pixi.js"
-import { useGameServerSubscription } from "../../../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../../../keys"
-import { WarMachineLiveState, WarMachineState } from "../../../../../types"
+import React, { useEffect, useMemo, useState } from "react"
+import { useArena, useAuth, useGame, useMiniMapPixi, useSupremacy } from "../../../../../containers"
+import { colors } from "../../../../../theme/theme"
+import { WarMachineState } from "../../../../../types"
+
+interface PixiItems {
+    container: PIXI.Container<PIXI.DisplayObject>
+    rect: PIXI.Graphics
+}
 
 interface MapMechProps {
     warMachine: WarMachineState
@@ -20,23 +24,40 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     const { userID, factionID } = useAuth()
     const { currentArenaID } = useArena()
     const { getFaction } = useSupremacy()
-    const { isPixiSetup, pixiViewport, pixiApp } = useMiniMapPixi()
+    const { pixiMainItems } = useMiniMapPixi()
     const { id, hash, participantID, factionID: warMachineFactionID, maxHealth, maxShield, ownedByID } = warMachine
 
-    // Pixi refs
-    const containerRef = useRef<PIXI.Container<PIXI.DisplayObject>>()
+    const [pixiItems, setPixiItems] = useState<PixiItems>()
+
+    const primaryColor = useMemo(
+        () => (ownedByID === userID ? colors.gold : getFaction(warMachineFactionID).primary_color || colors.neonBlue),
+        [ownedByID, userID, getFaction, warMachineFactionID],
+    )
 
     // Initial setup for the mech and show on the map
     useEffect(() => {
-        if (!isPixiSetup || !pixiApp.current || !pixiViewport.current) return
+        if (!pixiMainItems) return
 
-        containerRef.current = new PIXI.Container()
-        pixiViewport.current.addChild(containerRef.current)
+        // Create container for everything
+        const container = new PIXI.Container()
+        const rect = new PIXI.Graphics()
 
-        return () => {
-            console.log("ASDSADASD")
-        }
-    }, [isPixiSetup, pixiApp, pixiViewport])
+        pixiMainItems.viewport.addChild(rect)
+
+        setPixiItems({ container, rect })
+    }, [pixiMainItems])
+
+    // Cleanup
+    useEffect(() => {
+        return () => pixiItems?.container.destroy(true)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    // Update some basic styles of the mech
+    // useEffect(() => {
+
+    //     rectRef.current.beginFill
+    // }, [])
 
     // Listen on mech stats
     // useGameServerSubscription<WarMachineLiveState | undefined>(

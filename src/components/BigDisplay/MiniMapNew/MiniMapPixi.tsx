@@ -8,6 +8,11 @@ import { calculateCoverDimensions } from "../../../helpers"
 import { Dimension } from "../../../types"
 import { MapMechs } from "./MiniMapItems/MapMechs/MapMechs"
 
+interface PixiItems {
+    mapSprite?: PIXI.Sprite
+    border?: PIXI.Graphics
+}
+
 interface MiniMapPixiProps {
     containerDimensions: Dimension
     poppedOutContainerRef?: React.MutableRefObject<HTMLElement | null>
@@ -22,62 +27,59 @@ const propsAreEqual = (prevProps: MiniMapPixiProps, nextProps: MiniMapPixiProps)
 
 export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions }: MiniMapPixiProps) {
     const { map } = useGame()
-    const { pixiApp, pixiViewport, isPixiSetup, setIsPixiSetup } = useMiniMapPixi()
+    const { pixiMainItems, setPixiMainItems } = useMiniMapPixi()
     const [miniMapPixiRef, setMiniMapPixiRef] = useState<HTMLDivElement | null>(null)
-    const mapSprite = useRef<PIXI.Sprite>()
-    const line = useRef<PIXI.Graphics>()
+    const pixiItems = useRef<PixiItems>({})
 
     const setupPixi = useCallback(
         (mapRef: HTMLDivElement, dimension: Dimension) => {
-            if (!pixiApp.current) {
-                // Create pixi app
-                pixiApp.current = new PIXI.Application({
-                    backgroundColor: 0x0c0c1a,
-                    width: dimension.width,
-                    height: dimension.height,
-                    resolution: window.devicePixelRatio || 1,
+            if (pixiMainItems) return
+
+            // Create pixi app
+            const app = new PIXI.Application({
+                backgroundColor: 0x0c0c1a,
+                width: dimension.width,
+                height: dimension.height,
+                resolution: window.devicePixelRatio || 1,
+            })
+
+            // Append pixi canvas to the DOM
+            app.stage.sortableChildren = true
+            mapRef.appendChild(app.view)
+
+            // Create pixi viewport
+            const viewport = new Viewport({
+                screenWidth: dimension.width,
+                screenHeight: dimension.height,
+                worldWidth: dimension.width,
+                worldHeight: dimension.height,
+                interaction: app.renderer.plugins.interaction,
+            })
+
+            // Configure pixi viewport
+            viewport
+                .drag()
+                .pinch()
+                .wheel({ percent: 0.1, smooth: 1 })
+                .decelerate({ friction: 0.9 })
+                .clamp({
+                    direction: "all",
+                    underflow: "center",
+                })
+                .clampZoom({
+                    maxWidth: viewport.screenWidth,
+                    maxHeight: viewport.screenHeight,
+                    minWidth: 50,
+                    minHeight: 50,
                 })
 
-                // Append pixi canvas to the DOM
-                pixiApp.current.stage.sortableChildren = true
-                mapRef.appendChild(pixiApp.current.view)
-            }
+            viewport.sortableChildren = true
+            // Add pixi viewport to stage
+            app.stage.addChild(viewport)
 
-            if (!pixiViewport.current) {
-                // Create pixi viewport
-                pixiViewport.current = new Viewport({
-                    screenWidth: dimension.width,
-                    screenHeight: dimension.height,
-                    worldWidth: dimension.width,
-                    worldHeight: dimension.height,
-                    interaction: pixiApp.current.renderer.plugins.interaction,
-                })
-
-                // Configure pixi viewport
-                pixiViewport.current
-                    .drag()
-                    .pinch()
-                    .wheel({ percent: 0.1, smooth: 1 })
-                    .decelerate({ friction: 0.9 })
-                    .clamp({
-                        direction: "all",
-                        underflow: "center",
-                    })
-                    .clampZoom({
-                        maxWidth: pixiViewport.current.screenWidth,
-                        maxHeight: pixiViewport.current.screenHeight,
-                        minWidth: 50,
-                        minHeight: 50,
-                    })
-
-                pixiViewport.current.sortableChildren = true
-                // Add pixi viewport to stage
-                pixiApp.current.stage.addChild(pixiViewport.current)
-            }
-
-            setIsPixiSetup(true)
+            setPixiMainItems({ app, viewport })
         },
-        [pixiApp, pixiViewport, setIsPixiSetup],
+        [pixiMainItems, setPixiMainItems],
     )
 
     // Setup the pixi app
@@ -85,77 +87,76 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
         if (!miniMapPixiRef) return
 
         // Setup pixi app if not already setup
-        if (!pixiApp.current || !pixiViewport.current) {
+        if (!pixiMainItems) {
             setupPixi(miniMapPixiRef, containerDimensions)
+            return
         }
 
-        if (pixiApp.current && pixiViewport.current) {
-            // When parent container size changes, resize the renderer and viewport dimension
-            pixiApp.current.renderer.resize(containerDimensions.width, containerDimensions.height)
-            pixiViewport.current.resize(pixiApp.current.renderer.width, pixiApp.current.renderer.height)
+        // When parent container size changes, resize the renderer and viewport dimension
+        pixiMainItems.app.renderer.resize(containerDimensions.width, containerDimensions.height)
+        pixiMainItems.viewport.resize(pixiMainItems.app.renderer.width, pixiMainItems.app.renderer.height)
 
-            // Fit to cover
-            if (pixiApp.current.renderer.width > pixiApp.current.renderer.height) {
-                pixiViewport.current.fitWidth()
-            } else {
-                pixiViewport.current.fitHeight()
-            }
-            pixiViewport.current.moveCorner(0, 0)
+        // Fit to cover
+        if (pixiMainItems.app.renderer.width > pixiMainItems.app.renderer.height) {
+            pixiMainItems.viewport.fitWidth()
+        } else {
+            pixiMainItems.viewport.fitHeight()
         }
-    }, [miniMapPixiRef, containerDimensions, setupPixi, pixiApp, pixiViewport])
+        pixiMainItems.viewport.moveCorner(0, 0)
+    }, [pixiMainItems, containerDimensions, setupPixi, miniMapPixiRef])
 
+    // Cleanup
     useEffect(() => {
         return () => {
-            setIsPixiSetup(false)
-            pixiViewport.current?.destroy({ children: true, texture: true, baseTexture: true })
-            pixiApp.current?.destroy(true, { children: true, texture: true, baseTexture: true })
-            pixiViewport.current = undefined
-            pixiApp.current = undefined
+            pixiMainItems?.viewport.destroy({ children: true, texture: true, baseTexture: true })
+            pixiMainItems?.app?.destroy(true, true)
+            setPixiMainItems(undefined)
         }
-    }, [pixiApp, pixiViewport, setIsPixiSetup])
-
-    // TODO: If we are popped out, we need to move the pixi canvas to the poppedout window
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     // Update the map sprite when map is changed
     useEffect(() => {
-        if (map?.Image_Url && isPixiSetup && pixiApp.current && pixiViewport.current) {
+        if (map?.Image_Url && pixiMainItems) {
             const mapTexture = PIXI.Texture.from(map.Image_Url)
 
             // If map sprite isn't setup, then set it up
-            if (!mapSprite.current) {
-                mapSprite.current = PIXI.Sprite.from(mapTexture)
-                mapSprite.current.x = 0
-                mapSprite.current.y = 0
-                mapSprite.current.zIndex = -10
-                pixiViewport.current.addChild(mapSprite.current)
+            if (!pixiItems.current.mapSprite) {
+                pixiItems.current.mapSprite = PIXI.Sprite.from(mapTexture)
+                pixiItems.current.mapSprite.x = 0
+                pixiItems.current.mapSprite.y = 0
+                pixiItems.current.mapSprite.zIndex = -10
+                pixiMainItems.viewport.addChild(pixiItems.current.mapSprite)
             }
 
             // Calculate the fit to cover dimension
             const dimension = calculateCoverDimensions(
                 { width: map.Width, height: map.Height },
                 {
-                    width: pixiApp.current.renderer.width,
-                    height: pixiApp.current.renderer.height,
+                    width: pixiMainItems.app.renderer.width,
+                    height: pixiMainItems.app.renderer.height,
                 },
             )
 
             // Update pixi viewport world dimension
-            pixiViewport.current.resize(pixiApp.current.renderer.width, pixiApp.current.renderer.height, dimension.width, dimension.height)
+            pixiMainItems.viewport.resize(pixiMainItems.app.renderer.width, pixiMainItems.app.renderer.height, dimension.width, dimension.height)
 
             // Update the map's dimension and texture
-            mapSprite.current.width = dimension.width
-            mapSprite.current.height = dimension.height
-            mapSprite.current.texture = mapTexture
+            pixiItems.current.mapSprite.width = dimension.width
+            pixiItems.current.mapSprite.height = dimension.height
+            pixiItems.current.mapSprite.texture = mapTexture
 
             // Draw a line around the pixi viewport for easy debug
-            if (!line.current) {
-                line.current = pixiViewport.current.addChild(new PIXI.Graphics())
-                line.current.lineStyle(2, 0x000000, 0.1).drawRect(0, 0, pixiViewport.current.worldWidth, pixiViewport.current.worldHeight)
+            if (!pixiItems.current.border) {
+                pixiItems.current.border = pixiMainItems.viewport.addChild(new PIXI.Graphics())
+                pixiItems.current.border.lineStyle(2, 0x000000, 0.1).drawRect(0, 0, pixiMainItems.viewport.worldWidth, pixiMainItems.viewport.worldHeight)
             }
-            line.current.width = pixiViewport.current.worldWidth
-            line.current.height = pixiViewport.current.worldHeight
+            pixiItems.current.border.width = pixiMainItems.viewport.worldWidth
+            pixiItems.current.border.height = pixiMainItems.viewport.worldHeight
         }
-    }, [isPixiSetup, map, pixiApp, pixiViewport])
+    }, [map, pixiMainItems])
+
+    // TODO: If we are popped out, we need to move the pixi canvas to the poppedout window
 
     return (
         <Box
