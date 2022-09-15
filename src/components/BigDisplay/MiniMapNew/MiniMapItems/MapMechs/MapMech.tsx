@@ -37,7 +37,6 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
     const prevRotation = useRef(warMachine.rotation)
     const [isAlive, setIsAlive] = useState(warMachine.health > 0)
-    const [isHidden, setIsHidden] = useState<boolean>(warMachine.isHidden)
     const isMechHighlighted = useMemo(
         () => highlightedMechParticipantID === warMachine.participantID || selection?.mechHash === hash || playerAbility?.mechHash === hash,
         [hash, highlightedMechParticipantID, playerAbility?.mechHash, selection?.mechHash, warMachine.participantID],
@@ -168,6 +167,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             //     }
             // }
 
+            // Update position
             if (payload?.position !== undefined) {
                 if (pixiItems?.container) {
                     const newPos = getViewportPosition.current(payload.position.x, payload.position.y)
@@ -200,22 +200,20 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
                 // }
             }
 
+            // Update rotation
             if (payload?.rotation !== undefined) {
                 if (pixiItems?.container) {
                     const newRot = closestAngle(prevRotation.current, payload.rotation || 0)
-                    const newRotRad = deg2rad(newRot)
+                    const newRotRad = deg2rad(newRot + 90)
                     ease.add(pixiItems.arrowGraphics, { rotation: newRotRad }, { duration: 275, ease: "linear" })
                     prevRotation.current = newRot
                 }
-                //     // 0 is east, and goes CW, can be negative and above 360
-                //     const newRotation = closestAngle(prevRotation.current, payload.rotation || 0)
-                //     rotationEl.style.transform = `translate(-50%, -50%) rotate(${newRotation + 90}deg)`
-                //     prevRotation.current = newRotation
             }
 
-            // if (payload?.is_hidden !== undefined) {
-            //     setIsHidden(payload.is_hidden)
-            // }
+            // Update visibility
+            if (pixiItems?.container) {
+                pixiItems.container.visible = !payload?.is_hidden
+            }
         },
     )
 
