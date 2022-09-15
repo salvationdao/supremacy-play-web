@@ -5,13 +5,14 @@ import { useArena, useAuth, useGame, useMiniMapPixi, useSupremacy } from "../../
 import { closestAngle, deg2rad, HEXToVBColor } from "../../../../../helpers"
 import { useGameServerSubscription } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
-import { colors } from "../../../../../theme/theme"
+import { colors, fonts } from "../../../../../theme/theme"
 import { WarMachineLiveState, WarMachineState } from "../../../../../types"
 
 interface PixiItems {
     container: PIXI.Container<PIXI.DisplayObject>
     rectGraphics: PIXI.Graphics
     arrowGraphics: PIXI.Graphics
+    numberText: PIXI.Text
 }
 
 interface MapMechProps {
@@ -52,20 +53,35 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
         // Create container for everything
         const container = new PIXI.Container()
-        const rectGraphics = new PIXI.Graphics()
-        const arrowGraphics = new PIXI.Graphics()
-
         container.x = -100
         container.y = -100
         container.zIndex = 10
         container.interactive = true
         container.buttonMode = true
 
+        // Rect
+        const rectGraphics = new PIXI.Graphics()
+
+        // Rotation arrow
+        const arrowGraphics = new PIXI.Graphics()
+
+        // Number text
+        const numberTextStyle = new PIXI.TextStyle({
+            fontFamily: fonts.nostromoBlack,
+            fontSize: 15,
+            fill: "#FFFFFF",
+        })
+        const numberText = new PIXI.Text(label, numberTextStyle)
+        numberText.anchor.set(0.5, 0.5)
+        numberText.resolution = 4
+
+        // Add everything to container
         container.addChild(rectGraphics)
         container.addChild(arrowGraphics)
+        container.addChild(numberText)
         pixiMainItems.viewport.addChild(container)
-        setPixiItems({ container, rectGraphics, arrowGraphics })
-    }, [pixiMainItems])
+        setPixiItems({ container, rectGraphics, arrowGraphics, numberText })
+    }, [label, pixiMainItems])
 
     // Cleanup
     useEffect(() => {
@@ -76,6 +92,10 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     // Update graphics
     useEffect(() => {
         if (!pixiItems) return
+
+        // Update number text
+        pixiItems.numberText.style.fill = primaryColor
+        pixiItems.numberText.position.set(gridSizeRef.current.width / 2, gridSizeRef.current.height / 2)
 
         // Draw the box
         pixiItems.rectGraphics.clear()
@@ -104,6 +124,8 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         pixiItems.arrowGraphics.position.set(gridSizeRef.current.width / 2, gridSizeRef.current.height / 2)
         pixiItems.arrowGraphics.pivot.set(triangleHalfway, gridSizeRef.current.height / 2 + gridSizeRef.current.height / 3.4)
     }, [gridSizeRef, pixiItems, primaryColor, map])
+
+    // Update the
 
     // Update zIndex
     useEffect(() => {
