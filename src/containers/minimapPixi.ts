@@ -1,6 +1,6 @@
 import { Viewport } from "pixi-viewport"
 import * as PIXI from "pixi.js"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useDebounce } from "../hooks"
 import { useGameServerCommandsFaction } from "../hooks/useGameServer"
@@ -58,6 +58,19 @@ export const MiniMapPixiContainer = createContainer(() => {
         }
     })
 
+    const resetPlayerAbilitySelection = useCallback(() => {
+        setPlayerAbility(undefined)
+        setSelectionDebounced(undefined)
+        setSelection(undefined)
+        setIsTargeting(!!winner?.game_ability)
+    }, [winner?.game_ability, setSelection, setSelectionDebounced])
+
+    const resetWinnerSelection = useCallback(() => {
+        setSelection(undefined)
+        setWinner(undefined)
+        setIsTargeting(!!playerAbility)
+    }, [playerAbility, setSelection])
+
     return {
         pixiMainItems,
         setPixiMainItems,
@@ -66,11 +79,16 @@ export const MiniMapPixiContainer = createContainer(() => {
         getPositionInViewport,
 
         highlightedMechParticipantID,
+        setHighlightedMechParticipantID,
+
         isTargeting,
         selection,
         selectionInstant,
         winner,
         playerAbility,
+        setPlayerAbility,
+        resetPlayerAbilitySelection,
+        resetWinnerSelection,
     }
 })
 

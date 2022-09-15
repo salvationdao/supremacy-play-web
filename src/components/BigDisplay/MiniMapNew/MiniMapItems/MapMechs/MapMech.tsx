@@ -21,6 +21,7 @@ interface PixiItems {
     shieldBar: PixiProgressBar
     mechMoveSprite: PIXI.Sprite
     mechMoveDashedLine: PIXI.Graphics
+    highlightedCircle: PIXI.Graphics
 }
 
 interface MapMechProps {
@@ -70,6 +71,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         container.zIndex = 10
         container.interactive = true
         container.buttonMode = true
+        container.sortableChildren = true
 
         // Rect
         const rectGraphics = new PIXI.Graphics()
@@ -98,6 +100,12 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         const mechMoveSprite = PIXI.Sprite.from(CrossPNG)
         mechMoveSprite.visible = false
 
+        // Highlighted mech circle
+        const highlightedCircle = new PIXI.Graphics()
+        highlightedCircle.zIndex = 20
+        ease.add(highlightedCircle, { rotation: deg2rad(360) }, { duration: 3000, ease: "linear", repeat: true })
+        ease.add(highlightedCircle, { scale: 1.3 }, { duration: 1000, ease: "linear", repeat: true, reverse: true })
+
         // Add everything to container
         container.addChild(rectGraphics)
         container.addChild(arrowGraphics)
@@ -105,8 +113,9 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         container.addChild(hpBar.container)
         container.addChild(shieldBar.container)
         container.addChild(mechMoveSprite)
+        container.addChild(highlightedCircle)
         pixiMainItems.viewport.addChild(container)
-        setPixiItems({ container, rectGraphics, arrowGraphics, numberText, hpBar, shieldBar, mechMoveSprite, mechMoveDashedLine })
+        setPixiItems({ container, rectGraphics, arrowGraphics, numberText, hpBar, shieldBar, mechMoveSprite, mechMoveDashedLine, highlightedCircle })
     }, [label, pixiMainItems])
 
     // Cleanup
@@ -176,6 +185,25 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
         pixiItems.container.zIndex = zIndex
     }, [factionID, isAlive, isMechHighlighted, pixiItems, warMachineFactionID])
+
+    // Highlight the mech circle
+    useEffect(() => {
+        if (!pixiItems) return
+        pixiItems.highlightedCircle.clear()
+        if (isMechHighlighted) {
+            const dash = new DashLine(pixiItems.highlightedCircle, {
+                dash: [4, 2],
+                width: gridSizeRef.current.height * 0.07,
+                color: HEXToVBColor(primaryColor),
+                alpha: 1,
+            })
+
+            const center = [gridSizeRef.current.width / 2, gridSizeRef.current.height / 2]
+            const radius = gridSizeRef.current.width / 1.7
+            dash.drawCircle(0, 0, radius)
+            pixiItems.highlightedCircle.position.set(center[0], center[1])
+        }
+    }, [gridSizeRef, isMechHighlighted, pixiItems, primaryColor])
 
     // Listen on mech stats
     useGameServerSubscription<WarMachineLiveState | undefined>(

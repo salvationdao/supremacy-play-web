@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ClipThing, HealthShieldBars, WarMachineAbilitiesPopover, WarMachineDestroyedInfo } from "../.."
 import { GenericWarMachinePNG, SvgInfoCircular, SvgSkull } from "../../../assets"
 import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../../constants"
-import { useAuth, useMiniMap, useMobile, useSupremacy } from "../../../containers"
+import { useAuth, useMiniMap, useMiniMapPixi, useMobile, useSupremacy } from "../../../containers"
 import { useArena } from "../../../containers/arena"
 import { RecordType, useHotkey } from "../../../containers/hotkeys"
 import { getRarityDeets } from "../../../helpers"
@@ -42,7 +42,7 @@ export const WarMachineItem = ({
     const { userID, factionID } = useAuth()
     const { getFaction } = useSupremacy()
     const { currentArenaID } = useArena()
-    const { setPlayerAbility, highlightedMechParticipantID, setHighlightedMechParticipantID, resetPlayerAbilitySelection, playerAbility } = useMiniMap()
+    const { setPlayerAbility, highlightedMechParticipantID, setHighlightedMechParticipantID, resetPlayerAbilitySelection, playerAbility } = useMiniMapPixi()
     const { addToHotkeyRecord } = useHotkey()
 
     const { hash, participantID, factionID: wmFactionID, name, imageAvatar, tier, ownedByID, ownerUsername, aiType } = warMachine

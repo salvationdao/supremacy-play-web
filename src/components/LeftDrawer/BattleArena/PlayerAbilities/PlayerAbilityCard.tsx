@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../../assets"
-import { useMiniMap } from "../../../../containers"
+import { useMiniMap, useMiniMapPixi } from "../../../../containers"
 import { colors } from "../../../../theme/theme"
 import { LocationSelectType, PlayerAbility } from "../../../../types"
 import { FancyButton } from "../../../Common/FancyButton"
@@ -25,7 +25,7 @@ const propsAreEqual = (prevProps: PlayerAbilityCardProps, nextProps: PlayerAbili
 }
 
 export const PlayerAbilityCard = React.memo(function PlayerAbilityCard({ playerAbility, viewOnly }: PlayerAbilityCardProps) {
-    const { setPlayerAbility } = useMiniMap()
+    const { setPlayerAbility } = useMiniMapPixi()
     const [disabled, setDisabled] = useState(false)
 
     const checkIfDisabled = useCallback(() => {
