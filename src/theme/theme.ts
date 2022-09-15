@@ -117,11 +117,11 @@ export const fonts = {
 
 export enum siteZIndex {
     // Shows on top of everything
+    Tooltip = 800,
     TopBar = 700,
     Modal = 600,
     Drawer = 500,
     Popover = 400,
-    Tooltip = 300,
 
     // Stream site top elements
     RoutePage = 101,
