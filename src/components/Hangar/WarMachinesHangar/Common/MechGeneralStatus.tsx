@@ -100,9 +100,12 @@ export const MechGeneralStatus = ({
                     color = colors.yellow
                     break
                 case MechStatusEnum.Queue:
-                    text = "IN QUEUE"
-                    if (payload.queue_position != null) {
-                        text = "POSITION: " + payload.queue_position
+                    if (payload.battle_lobby_number) {
+                        text = `In Lobby ${payload.battle_lobby_number}`
+                    } else if (payload.battle_lobby_queue_position) {
+                        text = `POSITION ${payload.battle_lobby_queue_position}`
+                    } else {
+                        text = "IN QUEUE"
                     }
                     color = colors.yellow
                     break
