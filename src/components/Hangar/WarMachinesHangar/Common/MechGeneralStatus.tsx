@@ -135,7 +135,7 @@ export const MechGeneralStatus = ({
     const triggerStatusUpdate = useCallback(
         async (currentStatus: string) => {
             try {
-                if (!currentStatus.includes("QUEUE") && !currentStatus.includes("BATTLING")) return
+                if (!currentStatus.includes("QUEUE") && !currentStatus.includes("POSITION") && !currentStatus.includes("BATTLING")) return
                 await send(GameServerKeys.TriggerMechStatusUpdate, {
                     mech_id: mechID,
                 })
@@ -154,6 +154,7 @@ export const MechGeneralStatus = ({
         },
         (payload) => {
             if (!payload) return
+            console.log(textValue.current)
             triggerStatusUpdate(textValue.current)
         },
     )
