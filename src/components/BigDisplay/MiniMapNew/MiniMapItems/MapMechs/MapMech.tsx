@@ -3,6 +3,7 @@ import * as PIXI from "pixi.js"
 import React, { useEffect, useMemo, useRef, useState } from "react"
 import { useArena, useAuth, useGame, useMiniMapPixi, useSupremacy } from "../../../../../containers"
 import { closestAngle, deg2rad, HEXToVBColor } from "../../../../../helpers"
+import { PixiProgressBar } from "../../../../../helpers/pixiHelpers"
 import { useGameServerSubscription } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
@@ -13,6 +14,8 @@ interface PixiItems {
     rectGraphics: PIXI.Graphics
     arrowGraphics: PIXI.Graphics
     numberText: PIXI.Text
+    hpBar: PixiProgressBar
+    shieldBar: PixiProgressBar
 }
 
 interface MapMechProps {
@@ -74,12 +77,18 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         numberText.anchor.set(0.5, 0.5)
         numberText.resolution = 4
 
+        // Progress bars
+        const hpBar = new PixiProgressBar(0, 0, colors.health, 0)
+        const shieldBar = new PixiProgressBar(0, 0, colors.shield, 0)
+
         // Add everything to container
         container.addChild(rectGraphics)
         container.addChild(arrowGraphics)
         container.addChild(numberText)
+        container.addChild(hpBar.container)
+        container.addChild(shieldBar.container)
         pixiMainItems.viewport.addChild(container)
-        setPixiItems({ container, rectGraphics, arrowGraphics, numberText })
+        setPixiItems({ container, rectGraphics, arrowGraphics, numberText, hpBar, shieldBar })
     }, [label, pixiMainItems])
 
     // Cleanup
@@ -94,6 +103,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
         // Update number text
         pixiItems.numberText.style.fill = primaryColor
+        pixiItems.numberText.style.fontSize = gridSizeRef.current.height / 1.8
         pixiItems.numberText.position.set(gridSizeRef.current.width / 2, gridSizeRef.current.height / 2)
 
         // Draw the box
@@ -122,9 +132,15 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         pixiItems.arrowGraphics.endFill()
         pixiItems.arrowGraphics.position.set(gridSizeRef.current.width / 2, gridSizeRef.current.height / 2)
         pixiItems.arrowGraphics.pivot.set(triangleHalfway, gridSizeRef.current.height / 2 + gridSizeRef.current.height / 3.4)
-    }, [gridSizeRef, pixiItems, primaryColor, map])
 
-    // Update the
+        // Update bars dimension and position
+        const barHeight = gridSizeRef.current.height / 4.8
+        const barGap = gridSizeRef.current.height * 0.1
+        pixiItems.hpBar.updateDimension(gridSizeRef.current.width, barHeight)
+        pixiItems.shieldBar.updateDimension(gridSizeRef.current.width, barHeight)
+        pixiItems.hpBar.updatePosition(0, gridSizeRef.current.height + barGap)
+        pixiItems.shieldBar.updatePosition(0, gridSizeRef.current.height + barHeight + 2 * barGap)
+    }, [gridSizeRef, pixiItems, primaryColor, map])
 
     // Update zIndex
     useEffect(() => {
@@ -147,35 +163,25 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             batchURI: `/public/arena/${currentArenaID}/mech`,
         },
         (payload) => {
-            // Direct DOM manipulation is a lot more optimized than re-rendering
-            // if (payload?.health !== undefined) {
-            //     setIsAlive(payload.health > 0)
+            if (payload?.health !== undefined && pixiItems?.container) {
+                setIsAlive(payload.health > 0)
+                const percent = (payload.health / maxHealth) * 100
+                if (percent < 45) pixiItems.hpBar.updateColor(colors.red)
+                pixiItems.hpBar.updatePercent(percent)
+            }
 
-            //     const healthBarEl = (poppedOutContainerRef?.current || document).querySelector(`#map-mech-health-bar-${hash}`) as HTMLElement
-            //     if (healthBarEl) {
-            //         const percent = Math.min((payload.health / maxHealth) * 100, 100)
-            //         healthBarEl.style.width = `${percent}%`
-            //         healthBarEl.style.backgroundColor = percent <= 45 ? colors.red : colors.health
-            //     }
-            // }
-
-            // if (payload?.shield !== undefined) {
-            //     const shieldBarEl = (poppedOutContainerRef?.current || document).querySelector(`#map-mech-shield-bar-${hash}`) as HTMLElement
-            //     if (shieldBarEl) {
-            //         const percent = Math.min((payload.shield / maxShield) * 100, 100)
-            //         shieldBarEl.style.width = `${percent}%`
-            //     }
-            // }
+            if (payload?.shield !== undefined && pixiItems?.container) {
+                const percent = (payload.shield / maxShield) * 100
+                pixiItems.shieldBar.updatePercent(percent)
+            }
 
             // Update position
-            if (payload?.position !== undefined) {
-                if (pixiItems?.container) {
-                    const newPos = getViewportPosition.current(payload.position.x, payload.position.y)
-                    // Default its the top left corner, so center it
-                    newPos.x -= pixiItems.rectGraphics.width / 2
-                    newPos.y -= pixiItems.rectGraphics.height / 2
-                    ease.add(pixiItems.container, { x: newPos.x, y: newPos.y }, { duration: 275, ease: "linear" })
-                }
+            if (payload?.position !== undefined && pixiItems?.container) {
+                const newPos = getViewportPosition.current(payload.position.x, payload.position.y)
+                // Default its the top left corner, so center it
+                newPos.x -= pixiItems.rectGraphics.width / 2
+                newPos.y -= pixiItems.rectGraphics.height / 2
+                ease.add(pixiItems.container, { x: newPos.x, y: newPos.y }, { duration: 275, ease: "linear" })
 
                 //     // Update the mech move dash line length and rotation
                 //     const moveCommandEl = (poppedOutContainerRef?.current || document).querySelector(`#map-mech-move-command-${hash}`) as HTMLElement
@@ -201,13 +207,11 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             }
 
             // Update rotation
-            if (payload?.rotation !== undefined) {
-                if (pixiItems?.container) {
-                    const newRot = closestAngle(prevRotation.current, payload.rotation || 0)
-                    const newRotRad = deg2rad(newRot + 90)
-                    ease.add(pixiItems.arrowGraphics, { rotation: newRotRad }, { duration: 275, ease: "linear" })
-                    prevRotation.current = newRot
-                }
+            if (payload?.rotation !== undefined && pixiItems?.container) {
+                const newRot = closestAngle(prevRotation.current, payload.rotation || 0)
+                const newRotRad = deg2rad(newRot + 90)
+                ease.add(pixiItems.arrowGraphics, { rotation: newRotRad }, { duration: 275, ease: "linear" })
+                prevRotation.current = newRot
             }
 
             // Update visibility
