@@ -98,6 +98,13 @@ export interface MechBasic extends Collection, Images {
     boosted_speed: number
     max_hitpoints: number
     boosted_max_hitpoints: number
+    shield: number
+    shield_recharge_rate: number
+    boosted_shield_recharge_rate: number
+    shield_recharge_power_cost: number
+    shield_type: string
+    shield_type_label: string
+    shield_type_description: string
     is_default: boolean
     is_insured: boolean
     name: string
@@ -270,19 +277,10 @@ export interface Utility extends Collection, Images {
     equipped_on?: string
     type: string
 
-    shield?: UtilityShield
     attack_drone?: UtilityAttackDrone
     repair_drone?: UtilityRepairDrone
     accelerator?: UtilityAccelerator
     anti_missile?: UtilityAntiMissile
-}
-
-export interface UtilityShield {
-    utility_id: string
-    hitpoints: number
-    recharge_rate: number
-    boosted_recharge_rate: number
-    recharge_energy_cost: number
 }
 
 export interface UtilityAttackDrone {
