@@ -220,15 +220,14 @@ export interface BlueprintMechSkin extends Collection, Images {
 export interface MechSkin extends Collection, Images {
     id: string
     blueprint_id: string
-    label: string
-    equipped_on?: string
-    locked_to_mech: boolean
-    level: number
-    default_level: number
     genesis_token_id: number
     limited_release_token_id: number
+    label: string
+    level: number
+    default_level: number
+    equipped_on?: string
+    locked_to_mech: boolean
     tier: RarityEnum
-    collection: string
     created_at: Date
 }
 
