@@ -1,5 +1,5 @@
 import { Box, CircularProgress, IconButton, Modal, Pagination, Stack, Typography } from "@mui/material"
-import { useCallback, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { EmptyWarMachinesPNG, SvgClose } from "../../../../../../assets"
 import { useTheme } from "../../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../../helpers"
@@ -155,6 +155,10 @@ export const MechLoadoutMechSkinModal = ({ onClose, onConfirm, equipped, mechSki
             setIsLoading(false)
         }
     }, [sort, send, search, pageSize, page, mechSkinsAlreadyEquippedInOtherSlots, rarities, models, equippedStatuses, setTotalItems])
+
+    useEffect(() => {
+        getSubmodels()
+    }, [getSubmodels])
 
     const mechSkinsList = useMemo(() => {
         if (loadError) {
