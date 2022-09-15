@@ -180,7 +180,6 @@ const SubmodelsHangarInner = () => {
             })
 
             if (!resp) return
-            console.log(resp)
             setLoadError(undefined)
             setSubmodels(resp.submodels)
             setTotalItems(resp.total)
