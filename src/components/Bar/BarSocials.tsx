@@ -15,6 +15,7 @@ export const BarSocials = () => {
                 <IconButton size="small" target="_blank" href="https://discord.com/invite/supremacygame">
                     <SvgDiscord size="2rem" />
                 </IconButton>
+
                 <IconButton size="small" target="_blank" href="https://twitter.com/SupremacyMeta">
                     <SvgTwitter size="2rem" />
                 </IconButton>
