@@ -40,6 +40,7 @@ export interface GetSubmodelsRequest {
     include_market_listed: boolean
     display_genesis_and_limited?: boolean
     exclude_ids: string[]
+    include_ids: string[]
     rarities: string[]
     skin_compatibility: string[]
     equipped_statuses: string[]
@@ -166,6 +167,7 @@ const SubmodelsHangarInner = () => {
                 include_market_listed: false,
                 display_genesis_and_limited: false,
                 exclude_ids: [],
+                include_ids: [],
                 rarities: rarities,
                 skin_compatibility: modelFilter,
                 equipped_statuses: equippedStatus,

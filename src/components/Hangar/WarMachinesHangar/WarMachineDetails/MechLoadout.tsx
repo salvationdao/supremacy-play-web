@@ -114,7 +114,12 @@ export const MechLoadout = ({ mechDetails, mechStatus }: MechLoadoutProps) => {
 
     // Track if changes have been made
     useEffect(() => {
-        setHasUnsavedChanges(currLoadout.changed_weapons_map.size > 0 || currLoadout.changed_utility_map.size > 0 || !!currLoadout.changed_power_core || !!currLoadout.changed_mech_skin)
+        setHasUnsavedChanges(
+            currLoadout.changed_weapons_map.size > 0 ||
+                currLoadout.changed_utility_map.size > 0 ||
+                !!currLoadout.changed_power_core ||
+                !!currLoadout.changed_mech_skin,
+        )
     }, [currLoadout.changed_weapons_map.size, currLoadout.changed_utility_map.size, currLoadout.changed_power_core, currLoadout.changed_mech_skin])
 
     // Confirm selection and submit payload to server
@@ -235,11 +240,13 @@ export const MechLoadout = ({ mechDetails, mechStatus }: MechLoadoutProps) => {
         changed_power_core,
         chassis_skin,
         changed_mech_skin,
+        compatible_blueprint_mech_skin_ids,
         intro_animation,
         outro_animation,
         locked_to_marketplace,
         xsyn_locked,
     } = currLoadout
+    console.log(compatible_blueprint_mech_skin_ids)
 
     const loadoutDisabled = useMemo(
         () =>
@@ -542,6 +549,7 @@ export const MechLoadout = ({ mechDetails, mechStatus }: MechLoadoutProps) => {
                             }}
                             equipped={mechSkin}
                             mechSkinsAlreadyEquippedInOtherSlots={changed_mech_skin ? [changed_mech_skin.id] : []}
+                            compatibleMechSkins={compatible_blueprint_mech_skin_ids}
                         />
                     )
 

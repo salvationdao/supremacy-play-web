@@ -12,6 +12,7 @@ interface MechSkinPreviewProps {
     onConfirm: OnConfirmMechSkinSelection
     submodel?: MechSkin
     equipped?: MechSkin
+    isCompatible: boolean
 }
 
 export const MechSkinPreview = ({ onConfirm, submodel, equipped }: MechSkinPreviewProps) => {
@@ -55,7 +56,7 @@ export const MechSkinPreview = ({ onConfirm, submodel, equipped }: MechSkinPrevi
 
         const stats = [
             typeof submodel.level !== "undefined" &&
-                renderStatChange("DAMAGE", {
+                renderStatChange("LEVEL", {
                     oldStat: equipped?.level,
                     newStat: submodel.level,
                 }),
@@ -169,7 +170,7 @@ export const MechSkinPreview = ({ onConfirm, submodel, equipped }: MechSkinPrevi
                         },
                     }}
                 >
-                    {/* {submodel.equipped_on && (
+                    {submodel.equipped_on && (
                         <Typography
                             sx={{
                                 color: colors.red,
@@ -177,7 +178,7 @@ export const MechSkinPreview = ({ onConfirm, submodel, equipped }: MechSkinPrevi
                         >
                             Currently equipped on another mech.
                         </Typography>
-                    )} */}
+                    )}
                     {statChanges.length > 0 ? (
                         <Stack>
                             <Typography

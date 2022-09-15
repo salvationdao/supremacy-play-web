@@ -33,9 +33,16 @@ export interface MechLoadoutMechSkinModalProps {
     onConfirm: OnConfirmMechSkinSelection
     equipped?: MechSkin
     mechSkinsAlreadyEquippedInOtherSlots: string[]
+    compatibleMechSkins: string[]
 }
 
-export const MechLoadoutMechSkinModal = ({ onClose, onConfirm, equipped, mechSkinsAlreadyEquippedInOtherSlots }: MechLoadoutMechSkinModalProps) => {
+export const MechLoadoutMechSkinModal = ({
+    onClose,
+    onConfirm,
+    equipped,
+    mechSkinsAlreadyEquippedInOtherSlots,
+    compatibleMechSkins,
+}: MechLoadoutMechSkinModalProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
 
     const theme = useTheme()
@@ -139,6 +146,7 @@ export const MechLoadoutMechSkinModal = ({ onClose, onConfirm, equipped, mechSki
                 include_market_listed: false,
                 display_genesis_and_limited: false,
                 exclude_ids: mechSkinsAlreadyEquippedInOtherSlots,
+                include_ids: compatibleMechSkins,
                 rarities: rarities,
                 skin_compatibility: models,
                 equipped_statuses: equippedStatuses,
@@ -154,7 +162,7 @@ export const MechLoadoutMechSkinModal = ({ onClose, onConfirm, equipped, mechSki
         } finally {
             setIsLoading(false)
         }
-    }, [sort, send, search, pageSize, page, mechSkinsAlreadyEquippedInOtherSlots, rarities, models, equippedStatuses, setTotalItems])
+    }, [sort, send, search, pageSize, page, mechSkinsAlreadyEquippedInOtherSlots, compatibleMechSkins, rarities, models, equippedStatuses, setTotalItems])
 
     useEffect(() => {
         getSubmodels()
@@ -209,6 +217,7 @@ export const MechLoadoutMechSkinModal = ({ onClose, onConfirm, equipped, mechSki
                             onSelect={(p) => setSelectedSubmodel(p)}
                             equipped={equipped}
                             selected={selectedSubmodel?.id === p.id}
+                            isCompatible={true}
                         />
                     ))}
                 </Box>
@@ -327,7 +336,7 @@ export const MechLoadoutMechSkinModal = ({ onClose, onConfirm, equipped, mechSki
                             }}
                         />
                         <Stack flex={1}>
-                            <PageHeader title="Equip a weapon" description="Select a weapon to equip on your mech." />
+                            <PageHeader title="Equip a mech submodel" description="Select a submodel to equip on your mech." />
                             <TotalAndPageSizeOptions
                                 countItems={submodels?.length}
                                 totalItems={totalItems}
@@ -403,7 +412,7 @@ export const MechLoadoutMechSkinModal = ({ onClose, onConfirm, equipped, mechSki
                                 backgroundColor: "#00000070",
                             }}
                         >
-                            <MechSkinPreview submodel={selectedSubmodel} equipped={equipped} onConfirm={onConfirm} />
+                            <MechSkinPreview submodel={selectedSubmodel} equipped={equipped} onConfirm={onConfirm} isCompatible={true} />
                         </Stack>
                     </Stack>
                 </ClipThing>

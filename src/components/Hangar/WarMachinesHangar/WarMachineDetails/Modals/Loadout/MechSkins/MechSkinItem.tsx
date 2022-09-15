@@ -13,9 +13,10 @@ interface MechSkinItemProps {
     equipped?: MechSkin
     selected: boolean
     onSelect: (w: MechSkin) => void
+    isCompatible: boolean
 }
 
-export const MechSkinItem = ({ submodelDetails, equipped, selected, onSelect }: MechSkinItemProps) => {
+export const MechSkinItem = ({ submodelDetails, equipped, selected, onSelect, isCompatible }: MechSkinItemProps) => {
     const theme = useTheme()
 
     const renderStat = useCallback((label: string, stats: { oldStat?: number; newStat: number; negated?: boolean }) => {
@@ -79,7 +80,7 @@ export const MechSkinItem = ({ submodelDetails, equipped, selected, onSelect }: 
             }}
             onClick={() => onSelect(submodelDetails)}
         >
-            {/* {submodelDetails.equipped_on && (
+            {submodelDetails.equipped_on && (
                 <Box
                     sx={{
                         position: "absolute",
@@ -103,7 +104,7 @@ export const MechSkinItem = ({ submodelDetails, equipped, selected, onSelect }: 
                         IN USE
                     </Typography>
                 </Box>
-            )} */}
+            )}
             {selected && (
                 <SvgView
                     size="3rem"
