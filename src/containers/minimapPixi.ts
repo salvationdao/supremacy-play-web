@@ -68,6 +68,7 @@ export const MiniMapPixiContainer = createContainer(() => {
         highlightedMechParticipantID,
         isTargeting,
         selection,
+        selectionInstant,
         winner,
         playerAbility,
     }

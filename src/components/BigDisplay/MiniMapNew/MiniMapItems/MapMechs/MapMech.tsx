@@ -4,10 +4,11 @@ import React, { useEffect, useMemo, useRef, useState } from "react"
 import { useArena, useAuth, useGame, useMiniMapPixi, useSupremacy } from "../../../../../containers"
 import { closestAngle, deg2rad, HEXToVBColor } from "../../../../../helpers"
 import { PixiProgressBar } from "../../../../../helpers/pixiHelpers"
-import { useGameServerSubscription } from "../../../../../hooks/useGameServer"
+import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
-import { WarMachineLiveState, WarMachineState } from "../../../../../types"
+import { LocationSelectType, WarMachineLiveState, WarMachineState } from "../../../../../types"
+import { MechMoveCommand } from "../../../../WarMachine/WarMachineItem/MoveCommand"
 
 interface PixiItems {
     container: PIXI.Container<PIXI.DisplayObject>
@@ -33,7 +34,8 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     const { userID, factionID } = useAuth()
     const { currentArenaID } = useArena()
     const { getFaction } = useSupremacy()
-    const { pixiMainItems, gridSizeRef, getViewportPosition, highlightedMechParticipantID, isTargeting, selection, playerAbility } = useMiniMapPixi()
+    const { pixiMainItems, gridSizeRef, getViewportPosition, highlightedMechParticipantID, isTargeting, selection, selectionInstant, playerAbility } =
+        useMiniMapPixi()
     const { id, hash, participantID, factionID: warMachineFactionID, maxHealth, maxShield, ownedByID } = warMachine
 
     const [pixiItems, setPixiItems] = useState<PixiItems>()
@@ -48,6 +50,11 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         () => (ownedByID === userID ? colors.gold : getFaction(warMachineFactionID).primary_color || colors.neonBlue),
         [ownedByID, userID, getFaction, warMachineFactionID],
     )
+
+    // Mech move command related
+    const mechMoveCommand = useRef<MechMoveCommand>()
+    const tempMechMoveCommand = useRef<MechMoveCommand>()
+    const prevMechMoveCommandRotation = useRef(0)
 
     // Initial setup for the mech and show on the map
     useEffect(() => {
@@ -66,12 +73,14 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
         // Rotation arrow
         const arrowGraphics = new PIXI.Graphics()
+        arrowGraphics.zIndex = 9
 
         // Number text
         const numberTextStyle = new PIXI.TextStyle({
             fontFamily: fonts.nostromoBlack,
             fontSize: 15,
             fill: "#FFFFFF",
+            lineHeight: 1,
         })
         const numberText = new PIXI.Text(label, numberTextStyle)
         numberText.anchor.set(0.5, 0.5)
@@ -104,12 +113,12 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         // Update number text
         pixiItems.numberText.style.fill = primaryColor
         pixiItems.numberText.style.fontSize = gridSizeRef.current.height / 1.8
-        pixiItems.numberText.position.set(gridSizeRef.current.width / 2, gridSizeRef.current.height / 2)
+        pixiItems.numberText.position.set(gridSizeRef.current.width / 2, gridSizeRef.current.height / 2.3)
 
         // Draw the box
         pixiItems.rectGraphics.clear()
         pixiItems.rectGraphics.beginFill(HEXToVBColor("#000000"), 0.8)
-        pixiItems.rectGraphics.lineStyle(2, HEXToVBColor(primaryColor))
+        pixiItems.rectGraphics.lineStyle(gridSizeRef.current.height * 0.08, HEXToVBColor(primaryColor))
         pixiItems.rectGraphics.drawRoundedRect(0, 0, gridSizeRef.current.width, gridSizeRef.current.height, 6)
         pixiItems.rectGraphics.endFill()
 
@@ -134,7 +143,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         pixiItems.arrowGraphics.pivot.set(triangleHalfway, gridSizeRef.current.height / 2 + gridSizeRef.current.height / 3.4)
 
         // Update bars dimension and position
-        const barHeight = gridSizeRef.current.height / 4.8
+        const barHeight = gridSizeRef.current.height / 5
         const barGap = gridSizeRef.current.height * 0.1
         pixiItems.hpBar.updateDimension(gridSizeRef.current.width, barHeight)
         pixiItems.shieldBar.updateDimension(gridSizeRef.current.width, barHeight)
@@ -183,26 +192,22 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
                 newPos.y -= pixiItems.rectGraphics.height / 2
                 ease.add(pixiItems.container, { x: newPos.x, y: newPos.y }, { duration: 275, ease: "linear" })
 
-                //     // Update the mech move dash line length and rotation
-                //     const moveCommandEl = (poppedOutContainerRef?.current || document).querySelector(`#map-mech-move-command-${hash}`) as HTMLElement
-                //     if (moveCommandEl) {
-                //         const mCommand = tempMechMoveCommand.current || mechMoveCommand.current
-                //         if (mCommand?.cell_x && mCommand?.cell_y && !mCommand?.reached_at) {
-                //             const commandMapX = mCommand.cell_x * gridWidth
-                //             const commandMapY = mCommand.cell_y * gridHeight
-                //             const x = Math.abs(mechMapX - commandMapX)
-                //             const y = Math.abs(mechMapY - commandMapY)
-                //             moveCommandEl.style.display = "block"
-                //             moveCommandEl.style.height = `${2 * Math.sqrt(x * x + y * y)}px`
+                // Update the mech move dash line length and rotation
+                // const mCommand = tempMechMoveCommand.current || mechMoveCommand.current
+                // if (mCommand?.cell_x && mCommand?.cell_y && !mCommand?.reached_at) {
+                //     const commandMapX = mCommand.cell_x * gridWidth
+                //     const commandMapY = mCommand.cell_y * gridHeight
+                //     const x = Math.abs(mechMapX - commandMapX)
+                //     const y = Math.abs(mechMapY - commandMapY)
+                //     moveCommandEl.style.display = "block"
+                //     moveCommandEl.style.height = `${2 * Math.sqrt(x * x + y * y)}px`
 
-                //             const rotation = (Math.atan2(commandMapY - mechMapY, commandMapX - mechMapX) * 180) / Math.PI
-                //             const newRotation = closestAngle(prevMechMoveCommandRotation.current, rotation || 0)
-                //             moveCommandEl.style.transform = `translate(-50%, -50%) rotate(${newRotation + 90}deg)`
-                //             prevMechMoveCommandRotation.current = newRotation
-                //         } else {
-                //             moveCommandEl.style.display = "none"
-                //         }
-                //     }
+                //     const rotation = (Math.atan2(commandMapY - mechMapY, commandMapX - mechMapX) * 180) / Math.PI
+                //     const newRotation = closestAngle(prevMechMoveCommandRotation.current, rotation || 0)
+                //     moveCommandEl.style.transform = `translate(-50%, -50%) rotate(${newRotation + 90}deg)`
+                //     prevMechMoveCommandRotation.current = newRotation
+                // } else {
+                //     moveCommandEl.style.display = "none"
                 // }
             }
 
@@ -220,6 +225,45 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             }
         },
     )
+
+    // Listen on mech move command positions for this mech
+    useGameServerSubscriptionFaction<MechMoveCommand>(
+        {
+            URI: `/arena/${currentArenaID}/mech_command/${hash}`,
+            key: GameServerKeys.SubMechMoveCommand,
+            ready: factionID === warMachineFactionID && !!participantID && !!currentArenaID,
+        },
+        (payload) => {
+            if (!payload) {
+                mechMoveCommand.current = undefined
+                return
+            }
+            tempMechMoveCommand.current = undefined
+            mechMoveCommand.current = payload
+        },
+    )
+
+    // Immediately render the mech move dashed line when player selects it for fast UX
+    useEffect(() => {
+        if (playerAbility?.ability.location_select_type === LocationSelectType.MechCommand && playerAbility.mechHash === hash) {
+            if (selectionInstant?.startCoords) {
+                const mCommand: MechMoveCommand = {
+                    id: "move_command",
+                    mech_id: id,
+                    triggered_by_id: "x",
+                    cell_x: selectionInstant.startCoords.x,
+                    cell_y: selectionInstant.startCoords.y,
+                    is_moving: true,
+                    remain_cooldown_seconds: 0,
+                    is_mini_mech: false,
+                }
+                mechMoveCommand.current = undefined
+                tempMechMoveCommand.current = mCommand
+            }
+        } else {
+            tempMechMoveCommand.current = undefined
+        }
+    }, [id, hash, playerAbility?.ability, playerAbility?.ability.location_select_type, selectionInstant, playerAbility?.mechHash])
 
     return null
 }, propsAreEqual)
