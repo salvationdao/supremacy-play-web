@@ -2,12 +2,10 @@ import { Battle, Faction, Map, User, Vector2i } from "."
 
 export enum MechStatusEnum {
     Idle = "IDLE",
-    PendingQueue = "PENDING_QUEUE",
     Queue = "QUEUE",
     Battle = "BATTLE",
     Market = "MARKET",
     Sold = "SOLD",
-    BattleReady = "BATTLE_READY",
     Damaged = "DAMAGED",
 }
 

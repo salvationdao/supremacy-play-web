@@ -97,10 +97,6 @@ export const MechGeneralStatus = ({
                     text = "IDLE"
                     color = colors.green
                     break
-                case MechStatusEnum.PendingQueue:
-                    text = "PENDING DEPLOY"
-                    color = colors.yellow
-                    break
                 case MechStatusEnum.Queue:
                     text = "IN QUEUE"
                     if (payload.queue_position != null) {
