@@ -1,7 +1,7 @@
 import { Box } from "@mui/material"
 import { Viewport } from "pixi-viewport"
 import * as PIXI from "pixi.js"
-import React, { useCallback, useEffect, useRef, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useGame } from "../../../containers"
 import { useMiniMapPixi } from "../../../containers/minimapPixi"
 import { calculateCoverDimensions, HEXToVBColor } from "../../../helpers"
@@ -28,7 +28,7 @@ const propsAreEqual = (prevProps: MiniMapPixiProps, nextProps: MiniMapPixiProps)
 
 export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions }: MiniMapPixiProps) {
     const { map } = useGame()
-    const { pixiMainItems, setPixiMainItems } = useMiniMapPixi()
+    const { pixiMainItems, setPixiMainItems, setHighlightedMechParticipantID } = useMiniMapPixi()
     const [miniMapPixiRef, setMiniMapPixiRef] = useState<HTMLDivElement | null>(null)
     const pixiItems = useRef<PixiItems>({})
 
@@ -127,6 +127,7 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
                 pixiItems.current.mapSprite.x = 0
                 pixiItems.current.mapSprite.y = 0
                 pixiItems.current.mapSprite.zIndex = -10
+                pixiItems.current.mapSprite.interactive = true
                 pixiMainItems.viewport.addChild(pixiItems.current.mapSprite)
             }
 
@@ -159,19 +160,31 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
         }
     }, [map, pixiMainItems])
 
+    // On map click handler to unselect a mech when click anywhere on the map
+    useEffect(() => {
+        if (!pixiItems.current.mapSprite) return
+        pixiItems.current.mapSprite.removeListener("pointerup")
+        pixiItems.current.mapSprite.on("pointerup", () => {
+            setHighlightedMechParticipantID(undefined)
+        })
+    }, [setHighlightedMechParticipantID, map, pixiMainItems])
+
     // TODO: If we are popped out, we need to move the pixi canvas to the poppedout window
 
-    return (
-        <Box
-            ref={setMiniMapPixiRef}
-            sx={{
-                position: "relative",
-                width: containerDimensions.width,
-                height: containerDimensions.height,
-                overflow: "hidden",
-            }}
-        >
-            <MapMechs />
-        </Box>
+    return useMemo(
+        () => (
+            <Box
+                ref={setMiniMapPixiRef}
+                sx={{
+                    position: "relative",
+                    width: containerDimensions.width,
+                    height: containerDimensions.height,
+                    overflow: "hidden",
+                }}
+            >
+                <MapMechs />
+            </Box>
+        ),
+        [containerDimensions],
     )
 }, propsAreEqual)

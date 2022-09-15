@@ -10,7 +10,7 @@ import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../
 import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
 import { LocationSelectType, WarMachineLiveState, WarMachineState } from "../../../../../types"
-import { MechMoveCommand } from "../../../../WarMachine/WarMachineItem/MoveCommand"
+import { MechMoveCommand, MechMoveCommandAbility } from "../../../../WarMachine/WarMachineItem/MoveCommand"
 
 interface PixiItems {
     container: PIXI.Container<PIXI.DisplayObject>
@@ -39,8 +39,19 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     const { userID, factionID } = useAuth()
     const { currentArenaID } = useArena()
     const { getFaction } = useSupremacy()
-    const { pixiMainItems, gridSizeRef, getPositionInViewport, highlightedMechParticipantID, isTargeting, selection, selectionInstant, playerAbility } =
-        useMiniMapPixi()
+    const {
+        pixiMainItems,
+        gridSizeRef,
+        getPositionInViewport,
+        highlightedMechParticipantID,
+        isTargeting,
+        selection,
+        setSelection,
+        selectionInstant,
+        playerAbility,
+        setHighlightedMechParticipantID,
+        setPlayerAbility,
+    } = useMiniMapPixi()
     const { id, hash, participantID, factionID: warMachineFactionID, maxHealth, maxShield, ownedByID } = warMachine
 
     const [pixiItems, setPixiItems] = useState<PixiItems>()
@@ -103,8 +114,8 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         // Highlighted mech circle
         const highlightedCircle = new PIXI.Graphics()
         highlightedCircle.zIndex = 20
-        ease.add(highlightedCircle, { rotation: deg2rad(360) }, { duration: 3000, ease: "linear", repeat: true })
-        ease.add(highlightedCircle, { scale: 1.3 }, { duration: 1000, ease: "linear", repeat: true, reverse: true })
+        ease.add(highlightedCircle, { rotation: deg2rad(360) }, { duration: 3000, ease: "linear", repeat: true, removeExisting: true })
+        ease.add(highlightedCircle, { scale: 1.2 }, { duration: 1000, ease: "linear", repeat: true, reverse: true, removeExisting: true })
 
         // Add everything to container
         container.addChild(rectGraphics)
@@ -204,11 +215,59 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             pixiItems.highlightedCircle.position.set(center[0], center[1])
 
             // Enlarge the map mech
-            pixiItems.container.scale.set(1.5, 1.5)
+            ease.add(pixiItems.container, { scale: 1.5 }, { duration: 100, ease: "linear", removeExisting: true })
         } else {
-            pixiItems.container.scale.set(1, 1)
+            ease.add(pixiItems.container, { scale: 1 }, { duration: 100, ease: "linear", removeExisting: true })
         }
     }, [gridSizeRef, isMechHighlighted, pixiItems, primaryColor])
+
+    // Setup onclick handler
+    useEffect(() => {
+        if (!pixiItems) return
+
+        pixiItems.container.removeListener("pointerup")
+        pixiItems.container.on("pointerup", () => {
+            if (playerAbility) {
+                if (!isAlive) return
+
+                const locationSelectType = playerAbility.ability.location_select_type
+
+                switch (locationSelectType) {
+                    case LocationSelectType.MechSelectAllied:
+                        if (factionID !== warMachineFactionID) return
+                        break
+                    case LocationSelectType.MechSelectOpponent:
+                        if (factionID === warMachineFactionID) return
+                        break
+                    case LocationSelectType.MechSelect:
+                        break
+                    default:
+                        // throw error
+                        return
+                }
+                setSelection((prev) => {
+                    if (prev?.mechHash === hash) return undefined
+                    return { mechHash: hash }
+                })
+
+                return
+            }
+
+            if (participantID === highlightedMechParticipantID) {
+                setHighlightedMechParticipantID(undefined)
+            } else {
+                setHighlightedMechParticipantID(participantID)
+            }
+
+            // Activate mech move command if user owns the mech, un-activate on click again
+            if (isAlive && ownedByID === userID) {
+                setPlayerAbility({
+                    ...MechMoveCommandAbility,
+                    mechHash: hash,
+                })
+            }
+        })
+    }, [factionID, hash, highlightedMechParticipantID, isAlive, ownedByID, participantID, pixiItems, playerAbility, setHighlightedMechParticipantID, setPlayerAbility, setSelection, userID, warMachineFactionID])
 
     // Listen on mech stats
     useGameServerSubscription<WarMachineLiveState | undefined>(
@@ -237,7 +296,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
                 // Default its the top left corner, so center it
                 newPos.x -= pixiItems.rectGraphics.width / 2
                 newPos.y -= pixiItems.rectGraphics.height / 2
-                ease.add(pixiItems.container, { x: newPos.x, y: newPos.y }, { duration: 275, ease: "linear" })
+                ease.add(pixiItems.container, { x: newPos.x, y: newPos.y }, { duration: 275, ease: "linear", removeExisting: true })
 
                 // Update the mech move dash line length and rotation
                 const mCommand = tempMechMoveCommand.current || mechMoveCommand.current
