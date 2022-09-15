@@ -32,12 +32,24 @@ const initialState: BattleLobbyState = {
         thirdFactionCut: number,
         gameMapID: string,
         password?: string,
-    ) => {},
-    joinBattleLobby: (battleLobbyID: string, mechIDs: string[], password?: string) => {},
-    leaveBattleLobby: (mechIDs: string[]) => {},
+    ) => {
+        // HACK: get around lint
+        if (mechIDs && entryFee && firstFactionCut && secondFactionCut && thirdFactionCut && gameMapID && password) return
+    },
+    joinBattleLobby: (battleLobbyID: string, mechIDs: string[], password?: string) => {
+        // HACK: get around lint
+        if (battleLobbyID && mechIDs && password) return
+    },
+    leaveBattleLobby: (mechIDs: string[]) => {
+        // HACK: get around lint
+        if (mechIDs) return
+    },
     battleETASeconds: 300,
     battleBounties: [],
-    createBattleBounty: (mechID: string, amount: number) => {},
+    createBattleBounty: (mechID: string, amount: number) => {
+        // HACK: get around lint
+        if (mechID && amount) return
+    },
 }
 
 export const BattleLobbyContext = createContext<BattleLobbyState>(initialState)
