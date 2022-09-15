@@ -563,23 +563,6 @@ export interface StorefrontPackage {
     price_cents: number
 }
 
-export interface Submodel {
-    images: Images
-    collection_slug: string
-    hash: string
-    id: string
-    label: string
-    owner_id: string
-    tier: string
-    token_id: number
-    locked_to_marketplace: boolean
-    market_locked: boolean
-    xsyn_locked: boolean
-    updated_at: Date
-    created_at: Date
-    level?: number
-}
-
 export enum SubmodelStatus {
     Equipped = "EQUIPPED",
     Unequipped = "UNEQUIPPED",
