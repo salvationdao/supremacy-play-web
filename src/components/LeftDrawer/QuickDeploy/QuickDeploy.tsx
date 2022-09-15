@@ -87,7 +87,7 @@ const QuickDeployInner = () => {
         localStorage.setItem("quickDeployPageSize2", pageSize.toString())
     }, [pageSize])
 
-    const updateTotalDeployed = (amount: number) => {
+    const updateTotalDeployed = useCallback((amount: number) => {
         setPlayerQueueStatus((prev) => {
             if (!prev) return
 
@@ -96,7 +96,7 @@ const QuickDeployInner = () => {
                 total_queued: prev.total_queued + amount,
             }
         })
-    }
+    }, [])
 
     const toggleSelected = useCallback((mech: MechBasic) => {
         setSelectedMechs((prev) => {
@@ -269,6 +269,7 @@ const QuickDeployInner = () => {
                                                     toggleSelected(mech)
                                                 }}
                                                 onDeploy={() => updateTotalDeployed(1)}
+                                                onLeave={() => updateTotalDeployed(-1)}
                                                 childrenMechStatus={childrenMechStatus}
                                                 mech={mech}
                                             />
