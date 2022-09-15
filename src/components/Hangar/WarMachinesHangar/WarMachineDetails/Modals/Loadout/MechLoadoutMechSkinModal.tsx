@@ -138,6 +138,7 @@ export const MechLoadoutMechSkinModal = ({ onClose, onConfirm, equipped, mechSki
                 exclude_market_locked: false,
                 include_market_listed: false,
                 display_genesis_and_limited: false,
+                exclude_ids: mechSkinsAlreadyEquippedInOtherSlots,
                 rarities: rarities,
                 skin_compatibility: models,
                 equipped_statuses: equippedStatuses,
@@ -153,7 +154,7 @@ export const MechLoadoutMechSkinModal = ({ onClose, onConfirm, equipped, mechSki
         } finally {
             setIsLoading(false)
         }
-    }, [sort, send, search, pageSize, page, rarities, models, equippedStatuses, setTotalItems])
+    }, [sort, send, search, pageSize, page, mechSkinsAlreadyEquippedInOtherSlots, rarities, models, equippedStatuses, setTotalItems])
 
     const mechSkinsList = useMemo(() => {
         if (loadError) {
