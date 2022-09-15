@@ -16,7 +16,6 @@ interface BulkDeployConfirmModalProps {
     childrenMechStatus: React.MutableRefObject<{
         [mechID: string]: MechStatus
     }>
-    queueFeed: QueueFeed | undefined
     onBulkDeploy: (amount: number) => void
 }
 
@@ -25,7 +24,6 @@ export const BulkDeployConfirmModal = ({
     selectedMechs,
     setSelectedMechs,
     childrenMechStatus,
-    queueFeed,
     onBulkDeploy,
 }: BulkDeployConfirmModalProps) => {
     const { newSnackbarMessage } = useGlobalNotifications()
@@ -72,8 +70,7 @@ export const BulkDeployConfirmModal = ({
         >
             <Typography variant="h6">
                 In your selection, <span>{validMechs.length}</span>/{selectedMechs.length} mechs are battle-ready. <br />
-                The fee to deploy is{" "}
-                <span>{supFormatter(new BigNumber(queueFeed?.queue_cost || 250 * Math.pow(10, 18)).multipliedBy(validMechs.length).toString(), 0)}</span> SUPS.
+                The fee to deploy is <span>{supFormatter(new BigNumber(0 || 250 * Math.pow(10, 18)).multipliedBy(validMechs.length).toString(), 0)}</span> SUPS.
             </Typography>
         </ConfirmModal>
     )

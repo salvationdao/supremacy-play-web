@@ -77,12 +77,6 @@ const QuickDeployInner = () => {
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
 
-    // Queuing cost, queue length win reward etc.
-    const queueFeed = useGameServerSubscriptionFaction<QueueFeed>({
-        URI: "/queue",
-        key: GameServerKeys.SubQueueFeed,
-    })
-
     useEffect(() => {
         localStorage.setItem("quickDeployPageSize2", pageSize.toString())
     }, [pageSize])
@@ -215,7 +209,7 @@ const QuickDeployInner = () => {
                     </TotalAndPageSizeOptions>
 
                     <Box sx={{ px: "1rem", mt: "1.5rem", backgroundColor: "#00000099" }}>
-                        <QueueDetails queueFeed={queueFeed} playerQueueStatus={playerQueueStatus} />
+                        <QueueDetails playerQueueStatus={playerQueueStatus} />
                     </Box>
 
                     {loadError && (
@@ -332,7 +326,6 @@ const QuickDeployInner = () => {
                     selectedMechs={selectedMechs}
                     setSelectedMechs={setSelectedMechs}
                     childrenMechStatus={childrenMechStatus}
-                    queueFeed={queueFeed}
                     onBulkDeploy={(amount) => updateTotalDeployed(amount)}
                 />
             )}

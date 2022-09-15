@@ -9,39 +9,29 @@ import { PreferencesModal } from "../../Bar/ProfileCard/PreferencesModal/Prefere
 import { TelegramRegisterModal } from "../../Bar/ProfileCard/PreferencesModal/TelegramRegisterModal"
 import { QueueFeed } from "../../Hangar/WarMachinesHangar/WarMachineDetails/Modals/DeployModal"
 import { PlayerQueueStatus } from "./QuickDeploy"
+import { useBattleLobby } from "../../../containers/battleLobby"
 
 interface QueueDetailsProps {
-    queueFeed?: QueueFeed
     playerQueueStatus?: PlayerQueueStatus
 }
 
-export const QueueDetails = ({ queueFeed, playerQueueStatus }: QueueDetailsProps) => {
+export const QueueDetails = ({ playerQueueStatus }: QueueDetailsProps) => {
+    const { battleETASeconds } = useBattleLobby()
     const [preferencesModalOpen, togglePreferencesModalOpen] = useToggle()
     const [addDeviceModalOpen, toggleAddDeviceModalOpen] = useToggle()
     const [telegramShortcode, setTelegramShortcode] = useState<string>("")
-
-    const queueCost = queueFeed?.queue_cost || "0"
 
     return (
         <>
             <Stack spacing="1.5rem" direction="row" width="100%">
                 <AmountItem
-                    key={`${queueFeed?.queue_position}-queue_time`}
-                    title={"QUEUE POSITION: "}
+                    key={`${battleETASeconds}-queue_time`}
+                    title={"BATTLE ETA: "}
                     color={colors.offWhite}
-                    value={queueFeed?.queue_position}
+                    value={battleETASeconds} // TODO: use time formatter
                     tooltip="The current queue position of your faction."
                     disableIcon
                 />
-
-                {queueCost && (
-                    <AmountItem
-                        title={"FEE: "}
-                        color={colors.yellow}
-                        value={supFormatter(queueCost, 2)}
-                        tooltip="The cost to place your war machine into the battle queue."
-                    />
-                )}
 
                 {playerQueueStatus && (
                     <AmountItem

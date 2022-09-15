@@ -6,7 +6,7 @@ import { BATTLE_ARENA_OPEN, HANGAR_PAGE } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, parseString } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
-import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
+import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MechBasic, MechBasicWithQueueStatus, MechStatus, MechStatusEnum } from "../../../types"
@@ -21,7 +21,6 @@ import { PlayerQueueStatus } from "../../LeftDrawer/QuickDeploy/QuickDeploy"
 import { BulkDeployConfirmModal } from "./Common/BulkDeployConfirmModal"
 import { BulkRepairConfirmModal } from "./Common/BulkRepairConfirmModal"
 import { RepairBay } from "./RepairBay/RepairBay"
-import { QueueFeed } from "./WarMachineDetails/Modals/DeployModal"
 import { WarMachineHangarItem } from "./WarMachineHangarItem"
 
 const sortOptions = [
@@ -124,12 +123,6 @@ export const WarMachinesHangar = () => {
     const onUnSelectAll = useCallback(() => {
         setSelectedMechs([])
     }, [])
-
-    // Queuing cost, queue length win reward etc.
-    const queueFeed = useGameServerSubscriptionFaction<QueueFeed>({
-        URI: "/queue",
-        key: GameServerKeys.SubQueueFeed,
-    })
 
     // Filters
     const statusFilterSection = useRef<ChipFilter>({
@@ -461,7 +454,7 @@ export const WarMachinesHangar = () => {
                                     onSelectAll={onSelectAll}
                                     onUnselectedAll={onUnSelectAll}
                                 >
-                                    <QueueDetails queueFeed={queueFeed} playerQueueStatus={playerQueueStatus} />
+                                    <QueueDetails playerQueueStatus={playerQueueStatus} />
                                 </TotalAndPageSizeOptions>
 
                                 <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
@@ -529,7 +522,6 @@ export const WarMachinesHangar = () => {
                         selectedMechs={selectedMechs}
                         setSelectedMechs={setSelectedMechs}
                         childrenMechStatus={childrenMechStatus}
-                        queueFeed={queueFeed}
                         onBulkDeploy={(amount) => updateTotalDeployed(amount)}
                     />
                 )}
@@ -561,7 +553,6 @@ export const WarMachinesHangar = () => {
             page,
             pageSize,
             playerQueueStatus,
-            queueFeed,
             search,
             selectedMechs,
             sort,

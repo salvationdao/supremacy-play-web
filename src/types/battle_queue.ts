@@ -30,6 +30,7 @@ export interface BattleLobbiesMech {
     name: string
     label: string
     tier: string
+    avatar_url: string
     owner: User
     is_destroyed: boolean
 }
