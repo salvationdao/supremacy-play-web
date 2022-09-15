@@ -1,5 +1,19 @@
 import { Battle, Faction, Map, User, Vector2i } from "."
 
+export enum RarityEnum {
+    Mega = "MEGA",
+    Colossal = "COLOSSAL",
+    Rare = "RARE",
+    Legendary = "LEGENDARY",
+    EliteLegendary = "ELITE_LEGENDARY",
+    UltraRare = "ULTRA_RARE",
+    Exotic = "EXOTIC",
+    Guardian = "GUARDIAN",
+    Mythic = "MYTHIC",
+    DeusEx = "DEUS_EX",
+    Titan = "TITAN",
+}
+
 export enum MechStatusEnum {
     Idle = "IDLE",
     PendingQueue = "PENDING_QUEUE",
@@ -205,10 +219,17 @@ export interface BlueprintMechSkin extends Collection, Images {
 
 export interface MechSkin extends Collection, Images {
     id: string
+    blueprint_id: string
     label: string
-    created_at: Date
     equipped_on?: string
+    locked_to_mech: boolean
     level: number
+    default_level: number
+    genesis_token_id: number
+    limited_release_token_id: number
+    tier: RarityEnum
+    collection: string
+    created_at: Date
 }
 
 export interface MechAnimation extends Collection, Images {

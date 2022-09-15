@@ -16,7 +16,7 @@ import {
     SvgWrapperProps,
 } from "../assets"
 import { colors } from "../theme/theme"
-import { AssetItemType, GAME_CLIENT_TILE_SIZE, MysteryCrateType, Rarity, UserRank } from "../types"
+import { AssetItemType, GAME_CLIENT_TILE_SIZE, MysteryCrateType, Rarity, RarityEnum, UserRank } from "../types"
 
 // Capitalize convert a string "example" to "Example"
 export const Capitalize = (str: string): string => str[0].toUpperCase() + str.substring(1).toLowerCase()
@@ -184,28 +184,28 @@ export const hexToRGB = (hexx: string) => {
 
 export const getRarityDeets = (rarityKey: string): Rarity => {
     switch (rarityKey) {
-        case "COLOSSAL":
-            return { label: "Colossal", color: colors.rarity.COLOSSAL, textColor: "#FFFFFF" }
-        case "RARE":
-            return { label: "Rare", color: colors.rarity.RARE, textColor: "#FFFFFF" }
-        case "LEGENDARY":
-            return { label: "Legendary", color: colors.rarity.LEGENDARY, textColor: "#FFFFFF" }
-        case "ELITE_LEGENDARY":
-            return { label: "Elite Legendary", color: colors.rarity.ELITE_LEGENDARY, textColor: "#FFFFFF" }
-        case "ULTRA_RARE":
-            return { label: "Ultra Rare", color: colors.rarity.ULTRA_RARE, textColor: "#FFFFFF" }
-        case "EXOTIC":
-            return { label: "Exotic", color: colors.rarity.EXOTIC, textColor: "#FFFFFF" }
-        case "GUARDIAN":
-            return { label: "Guardian", color: colors.rarity.GUARDIAN, textColor: "#FFFFFF" }
-        case "MYTHIC":
-            return { label: "Mythic", color: colors.rarity.MYTHIC, textColor: "#000000" }
-        case "DEUS_EX":
-            return { label: "Deus Ex", color: colors.rarity.DEUS_EX, textColor: "#000000" }
-        case "TITAN":
-            return { label: "Titan", color: colors.rarity.TITAN, textColor: "#000000" }
-        case "MEGA":
+        case RarityEnum.Mega:
             return { label: "Mega", color: colors.rarity.MEGA, textColor: "#FFFFFF" }
+        case RarityEnum.Colossal:
+            return { label: "Colossal", color: colors.rarity.COLOSSAL, textColor: "#FFFFFF" }
+        case RarityEnum.Rare:
+            return { label: "Rare", color: colors.rarity.RARE, textColor: "#FFFFFF" }
+        case RarityEnum.Legendary:
+            return { label: "Legendary", color: colors.rarity.LEGENDARY, textColor: "#FFFFFF" }
+        case RarityEnum.EliteLegendary:
+            return { label: "Elite Legendary", color: colors.rarity.ELITE_LEGENDARY, textColor: "#FFFFFF" }
+        case RarityEnum.UltraRare:
+            return { label: "Ultra Rare", color: colors.rarity.ULTRA_RARE, textColor: "#FFFFFF" }
+        case RarityEnum.Exotic:
+            return { label: "Exotic", color: colors.rarity.EXOTIC, textColor: "#FFFFFF" }
+        case RarityEnum.Guardian:
+            return { label: "Guardian", color: colors.rarity.GUARDIAN, textColor: "#FFFFFF" }
+        case RarityEnum.Mythic:
+            return { label: "Mythic", color: colors.rarity.MYTHIC, textColor: "#000000" }
+        case RarityEnum.DeusEx:
+            return { label: "Deus Ex", color: colors.rarity.DEUS_EX, textColor: "#000000" }
+        case RarityEnum.Titan:
+            return { label: "Titan", color: colors.rarity.TITAN, textColor: "#000000" }
         default:
             return { label: "", color: colors.rarity.MEGA, textColor: "#FFFFFF" }
     }
