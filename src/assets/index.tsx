@@ -168,6 +168,7 @@ import BattleBgWebP from "./images/BattleBg.webp"
 import BostonCyberneticsLogo from "./images/BostonCyberneticsLogo.png"
 import BottomMechWEBP from "./images/BottomMech.webp"
 import ClaimsBg from "./images/ClaimsBg.jpg"
+import CrossPNG from "./images/Cross.png"
 import Crosshair from "./images/Crosshair.png"
 import EmptyWarMachinesPNG from "./images/EmptyWarMachines.png"
 import FlamesPNG from "./images/Flames.png"
@@ -307,6 +308,7 @@ export {
     BattleBgWebP,
     BattleArenaOpeningWebP,
     ThreeMechsJPG,
+    CrossPNG,
 }
 export { BCBorder, RMBorder, ZHIBorder, BCWaiting, RMWaiting, ZHIWaiting, BCDeploy, RMDeploy, ZHIDeploy }
 

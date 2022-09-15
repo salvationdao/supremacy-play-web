@@ -1,6 +1,8 @@
+import { DashLine } from "pixi-dashed-line"
 import { ease } from "pixi-ease"
 import * as PIXI from "pixi.js"
 import React, { useEffect, useMemo, useRef, useState } from "react"
+import { CrossPNG } from "../../../../../assets"
 import { useArena, useAuth, useGame, useMiniMapPixi, useSupremacy } from "../../../../../containers"
 import { closestAngle, deg2rad, HEXToVBColor } from "../../../../../helpers"
 import { PixiProgressBar } from "../../../../../helpers/pixiHelpers"
@@ -17,6 +19,8 @@ interface PixiItems {
     numberText: PIXI.Text
     hpBar: PixiProgressBar
     shieldBar: PixiProgressBar
+    mechMoveSprite: PIXI.Sprite
+    mechMoveDashedLine: PIXI.Graphics
 }
 
 interface MapMechProps {
@@ -34,7 +38,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     const { userID, factionID } = useAuth()
     const { currentArenaID } = useArena()
     const { getFaction } = useSupremacy()
-    const { pixiMainItems, gridSizeRef, getViewportPosition, highlightedMechParticipantID, isTargeting, selection, selectionInstant, playerAbility } =
+    const { pixiMainItems, gridSizeRef, getPositionInViewport, highlightedMechParticipantID, isTargeting, selection, selectionInstant, playerAbility } =
         useMiniMapPixi()
     const { id, hash, participantID, factionID: warMachineFactionID, maxHealth, maxShield, ownedByID } = warMachine
 
@@ -54,7 +58,6 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     // Mech move command related
     const mechMoveCommand = useRef<MechMoveCommand>()
     const tempMechMoveCommand = useRef<MechMoveCommand>()
-    const prevMechMoveCommandRotation = useRef(0)
 
     // Initial setup for the mech and show on the map
     useEffect(() => {
@@ -90,14 +93,20 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         const hpBar = new PixiProgressBar(0, 0, colors.health, 0)
         const shieldBar = new PixiProgressBar(0, 0, colors.shield, 0)
 
+        // Mech move sprite
+        const mechMoveDashedLine = new PIXI.Graphics()
+        const mechMoveSprite = PIXI.Sprite.from(CrossPNG)
+        mechMoveSprite.visible = false
+
         // Add everything to container
         container.addChild(rectGraphics)
         container.addChild(arrowGraphics)
         container.addChild(numberText)
         container.addChild(hpBar.container)
         container.addChild(shieldBar.container)
+        container.addChild(mechMoveSprite)
         pixiMainItems.viewport.addChild(container)
-        setPixiItems({ container, rectGraphics, arrowGraphics, numberText, hpBar, shieldBar })
+        setPixiItems({ container, rectGraphics, arrowGraphics, numberText, hpBar, shieldBar, mechMoveSprite, mechMoveDashedLine })
     }, [label, pixiMainItems])
 
     // Cleanup
@@ -149,6 +158,11 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         pixiItems.shieldBar.updateDimension(gridSizeRef.current.width, barHeight)
         pixiItems.hpBar.updatePosition(0, gridSizeRef.current.height + barGap)
         pixiItems.shieldBar.updatePosition(0, gridSizeRef.current.height + barHeight + 2 * barGap)
+
+        // Update the mech move sprite dimension
+        pixiItems.mechMoveSprite.width = gridSizeRef.current.width / 2
+        pixiItems.mechMoveSprite.height = gridSizeRef.current.height / 2
+        pixiItems.mechMoveSprite.tint = HEXToVBColor(primaryColor)
     }, [gridSizeRef, pixiItems, primaryColor, map])
 
     // Update zIndex
@@ -186,29 +200,33 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
             // Update position
             if (payload?.position !== undefined && pixiItems?.container) {
-                const newPos = getViewportPosition.current(payload.position.x, payload.position.y)
+                const newPos = getPositionInViewport.current(payload.position.x, payload.position.y)
                 // Default its the top left corner, so center it
                 newPos.x -= pixiItems.rectGraphics.width / 2
                 newPos.y -= pixiItems.rectGraphics.height / 2
                 ease.add(pixiItems.container, { x: newPos.x, y: newPos.y }, { duration: 275, ease: "linear" })
 
                 // Update the mech move dash line length and rotation
-                // const mCommand = tempMechMoveCommand.current || mechMoveCommand.current
-                // if (mCommand?.cell_x && mCommand?.cell_y && !mCommand?.reached_at) {
-                //     const commandMapX = mCommand.cell_x * gridWidth
-                //     const commandMapY = mCommand.cell_y * gridHeight
-                //     const x = Math.abs(mechMapX - commandMapX)
-                //     const y = Math.abs(mechMapY - commandMapY)
-                //     moveCommandEl.style.display = "block"
-                //     moveCommandEl.style.height = `${2 * Math.sqrt(x * x + y * y)}px`
-
-                //     const rotation = (Math.atan2(commandMapY - mechMapY, commandMapX - mechMapX) * 180) / Math.PI
-                //     const newRotation = closestAngle(prevMechMoveCommandRotation.current, rotation || 0)
-                //     moveCommandEl.style.transform = `translate(-50%, -50%) rotate(${newRotation + 90}deg)`
-                //     prevMechMoveCommandRotation.current = newRotation
-                // } else {
-                //     moveCommandEl.style.display = "none"
-                // }
+                const mCommand = tempMechMoveCommand.current || mechMoveCommand.current
+                pixiItems.mechMoveDashedLine.clear()
+                if (mCommand?.cell_x && mCommand?.cell_y && !mCommand?.reached_at) {
+                    const mapPos = getPositionInViewport.current(mCommand.cell_x, mCommand.cell_y)
+                    // Default its the top left corner, so center it
+                    mapPos.x -= pixiItems.mechMoveSprite.width / 2
+                    mapPos.y -= pixiItems.mechMoveSprite.height / 2
+                    pixiItems.mechMoveSprite.position.set(mapPos.x, mapPos.y)
+                    pixiItems.mechMoveSprite.visible = true
+                    // Draw dashed line
+                    const dash = new DashLine(pixiItems.mechMoveDashedLine, {
+                        dash: [2, 1],
+                        width: gridSizeRef.current.height * 0.08,
+                        color: HEXToVBColor(primaryColor),
+                        alpha: 0.8,
+                    })
+                    dash.moveTo(newPos.x, newPos.y).lineTo(mapPos.x, mapPos.y)
+                } else {
+                    pixiItems.mechMoveSprite.visible = false
+                }
             }
 
             // Update rotation
