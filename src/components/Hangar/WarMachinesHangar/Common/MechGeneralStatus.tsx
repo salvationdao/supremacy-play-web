@@ -154,7 +154,6 @@ export const MechGeneralStatus = ({
         },
         (payload) => {
             if (!payload) return
-            console.log(textValue.current)
             triggerStatusUpdate(textValue.current)
         },
     )
