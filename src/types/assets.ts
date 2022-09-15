@@ -229,6 +229,7 @@ export interface MechSkin extends Collection, Images {
     locked_to_mech: boolean
     tier: RarityEnum
     created_at: Date
+    swatch_images?: Images
 }
 
 export interface MechAnimation extends Collection, Images {

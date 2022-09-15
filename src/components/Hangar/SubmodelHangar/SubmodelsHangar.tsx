@@ -9,7 +9,7 @@ import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { BlueprintMech, BlueprintWeapon, Submodel, SubmodelStatus } from "../../../types"
+import { BlueprintMech, BlueprintWeapon, MechSkin, SubmodelStatus } from "../../../types"
 import { SortDir, SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
@@ -29,7 +29,7 @@ enum SubmodelType {
     warMachine = "WAR MACHINE",
 }
 
-interface GetSubmodelsRequest {
+export interface GetSubmodelsRequest {
     search?: string
     sort_by?: string
     sort_dir: string
@@ -44,8 +44,8 @@ interface GetSubmodelsRequest {
     equipped_statuses: string[]
 }
 
-interface GetSubmodelsResponse {
-    submodels: Submodel[]
+export interface GetSubmodelsResponse {
+    submodels: MechSkin[]
     total: number
 }
 
@@ -61,7 +61,7 @@ const SubmodelsHangarInner = () => {
     // Items
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const [submodels, setSubmodels] = useState<Submodel[]>()
+    const [submodels, setSubmodels] = useState<MechSkin[]>()
 
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
@@ -180,6 +180,7 @@ const SubmodelsHangarInner = () => {
             })
 
             if (!resp) return
+            console.log(resp)
             setLoadError(undefined)
             setSubmodels(resp.submodels)
             setTotalItems(resp.total)
@@ -189,7 +190,7 @@ const SubmodelsHangarInner = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, search, rarities, equippedStatus, updateQuery, sort, setSubmodels, setTotalItems, modelFilter, submodelType])
+    }, [send, page, pageSize, search, rarities, equippedStatus, updateQuery, sort, setTotalItems, modelFilter, submodelType])
 
     useEffect(() => {
         getItems()

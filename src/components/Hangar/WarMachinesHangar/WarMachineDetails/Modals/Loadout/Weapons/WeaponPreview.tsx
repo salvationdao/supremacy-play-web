@@ -28,8 +28,6 @@ export const WeaponPreview = ({ onConfirm, weapon, equipped, skinInheritable }: 
 
         if (difference === 0) return null
 
-        console.log(typeof stats.oldStat)
-
         return (
             <Stack key={label} direction="row" spacing=".8rem" alignItems="center">
                 <Typography
