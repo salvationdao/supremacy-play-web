@@ -193,15 +193,20 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         if (isMechHighlighted) {
             const dash = new DashLine(pixiItems.highlightedCircle, {
                 dash: [4, 2],
-                width: gridSizeRef.current.height * 0.07,
-                color: HEXToVBColor(primaryColor),
+                width: gridSizeRef.current.height * 0.09,
+                color: HEXToVBColor(colors.orange),
                 alpha: 1,
             })
 
             const center = [gridSizeRef.current.width / 2, gridSizeRef.current.height / 2]
-            const radius = gridSizeRef.current.width / 1.7
+            const radius = gridSizeRef.current.width / 1.4
             dash.drawCircle(0, 0, radius)
             pixiItems.highlightedCircle.position.set(center[0], center[1])
+
+            // Enlarge the map mech
+            pixiItems.container.scale.set(1.5, 1.5)
+        } else {
+            pixiItems.container.scale.set(1, 1)
         }
     }, [gridSizeRef, isMechHighlighted, pixiItems, primaryColor])
 
