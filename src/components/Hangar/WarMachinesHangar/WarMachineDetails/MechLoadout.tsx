@@ -1,14 +1,15 @@
 import { Box, Fade, Slide, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgUtilities, SvgWeapons } from "../../../../assets"
+import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
 import { useGlobalNotifications } from "../../../../containers"
 import { getRarityDeets } from "../../../../helpers"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
-import { MechDetails, MechStatus, MechStatusEnum, PowerCore, Utility, Weapon } from "../../../../types"
+import { MechDetails, MechSkin, MechStatus, MechStatusEnum, PowerCore, Utility, Weapon } from "../../../../types"
 import { FancyButton } from "../../../Common/FancyButton"
 import { MechLoadoutItem } from "../Common/MechLoadoutItem"
+import { MechLoadoutMechSkinModal } from "./Modals/Loadout/MechLoadoutMechSkinModal"
 import { MechLoadoutPowerCoreModal } from "./Modals/Loadout/MechLoadoutPowerCoreModal"
 import { MechLoadoutUtilityModal } from "./Modals/Loadout/MechLoadoutUtilityModal"
 import { MechLoadoutWeaponModal } from "./Modals/Loadout/MechLoadoutWeaponModal"
@@ -27,6 +28,15 @@ interface MechDetailsWithMaps extends MechDetails {
     utility_map: Map<number, Utility | null> // Map<slot_number, Utility>
     changed_utility_map: Map<number, LoadoutUtility>
     changed_power_core?: PowerCore
+    changed_mech_skin?: MechSkin
+}
+
+interface EquipMechSkin {
+    mech_skin_id: string
+}
+
+type LoadoutMechSkin = EquipMechSkin & {
+    mech_skin: MechSkin
 }
 
 interface EquipPowerCore {
@@ -104,8 +114,8 @@ export const MechLoadout = ({ mechDetails, mechStatus }: MechLoadoutProps) => {
 
     // Track if changes have been made
     useEffect(() => {
-        setHasUnsavedChanges(currLoadout.changed_weapons_map.size > 0 || currLoadout.changed_utility_map.size > 0 || !!currLoadout.changed_power_core)
-    }, [currLoadout.changed_weapons_map.size, currLoadout.changed_utility_map.size, currLoadout.changed_power_core])
+        setHasUnsavedChanges(currLoadout.changed_weapons_map.size > 0 || currLoadout.changed_utility_map.size > 0 || !!currLoadout.changed_power_core || !!currLoadout.changed_mech_skin)
+    }, [currLoadout.changed_weapons_map.size, currLoadout.changed_utility_map.size, currLoadout.changed_power_core, currLoadout.changed_mech_skin])
 
     // Confirm selection and submit payload to server
     const saveSelection = useCallback(async () => {
@@ -141,6 +151,15 @@ export const MechLoadout = ({ mechDetails, mechStatus }: MechLoadoutProps) => {
         }
     }, [currLoadout.changed_power_core, currLoadout.changed_utility_map, currLoadout.changed_weapons_map, mechDetails.id, newSnackbarMessage, send])
 
+    const addMechSkinSelection = useCallback((ep: LoadoutMechSkin) => {
+        setCurrLoadout((prev) => {
+            return {
+                ...prev,
+                changed_mech_skin: ep.mech_skin,
+            }
+        })
+    }, [])
+
     const addPowerCoreSelection = useCallback((ep: LoadoutPowerCore) => {
         setCurrLoadout((prev) => {
             return {
@@ -172,6 +191,10 @@ export const MechLoadout = ({ mechDetails, mechStatus }: MechLoadoutProps) => {
                 changed_utility_map: updated,
             }
         })
+    }, [])
+
+    const undoMechSkinSelection = useCallback(() => {
+        setCurrLoadout((prev) => ({ ...prev, changed_mech_skin: undefined }))
     }, [])
 
     const undoPowerCoreSelection = useCallback(() => {
@@ -211,6 +234,7 @@ export const MechLoadout = ({ mechDetails, mechStatus }: MechLoadoutProps) => {
         power_core,
         changed_power_core,
         chassis_skin,
+        changed_mech_skin,
         intro_animation,
         outro_animation,
         locked_to_marketplace,
@@ -503,20 +527,68 @@ export const MechLoadout = ({ mechDetails, mechStatus }: MechLoadoutProps) => {
                     right: "6rem",
                 }}
             >
-                {chassis_skin ? (
-                    <MechLoadoutItem
-                        disabled={loadoutDisabled}
-                        imageUrl={chassis_skin.image_url || chassis_skin.avatar_url}
-                        videoUrls={[chassis_skin.card_animation_url]}
-                        label={chassis_skin.label}
-                        subLabel={`Level: ${chassis_skin.level}`}
-                        primaryColor={colors.chassisSkin}
-                        rarity={getRarityDeets(chassis_skin.tier)}
-                        hasSkin
-                    />
-                ) : (
-                    <MechLoadoutItem label="SUBMODEL" primaryColor={colors.chassisSkin} onClick={() => console.log("AAAAA")} isEmpty disabled />
-                )}
+                {(() => {
+                    const mechSkin = changed_mech_skin || chassis_skin
+
+                    const renderModal = (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => (
+                        <MechLoadoutMechSkinModal
+                            onClose={() => toggleShowLoadoutModal(false)}
+                            onConfirm={(selectedMechSkin) => {
+                                addMechSkinSelection({
+                                    mech_skin: selectedMechSkin,
+                                    mech_skin_id: selectedMechSkin.id,
+                                })
+                                toggleShowLoadoutModal(false)
+                            }}
+                            equipped={mechSkin}
+                            mechSkinsAlreadyEquippedInOtherSlots={changed_mech_skin ? [changed_mech_skin.id] : []}
+                        />
+                    )
+
+                    if (mechSkin) {
+                        return (
+                            <MechLoadoutItem
+                                side="right"
+                                locked={chassis_skin?.locked_to_mech}
+                                disabled={loadoutDisabled}
+                                imageUrl={mechSkin.image_url || mechSkin.avatar_url}
+                                videoUrls={[mechSkin.card_animation_url]}
+                                label={mechSkin.label}
+                                primaryColor={colors.chassisSkin}
+                                Icon={SvgSkin}
+                                rarity={getRarityDeets(mechSkin.tier)}
+                                renderModal={renderModal}
+                                prevEquipped={(() => {
+                                    if (!changed_mech_skin) return
+
+                                    const previouslyEquipped = chassis_skin
+                                    if (!previouslyEquipped) return
+
+                                    return {
+                                        imageUrl: previouslyEquipped.image_url || previouslyEquipped.avatar_url,
+                                        videoUrls: [previouslyEquipped.card_animation_url],
+                                        label: previouslyEquipped.label,
+                                        primaryColor: colors.powerCore,
+                                        Icon: SvgPowerCore,
+                                        rarity: getRarityDeets(previouslyEquipped.tier),
+                                        onClick: () => undoMechSkinSelection(),
+                                    }
+                                })()}
+                            />
+                        )
+                    }
+
+                    return (
+                        <MechLoadoutItem
+                            disabled={loadoutDisabled}
+                            label="SUBMODEL"
+                            primaryColor={colors.chassisSkin}
+                            renderModal={renderModal}
+                            isEmpty
+                            locked
+                        />
+                    )
+                })()}
 
                 {intro_animation ? (
                     <MechLoadoutItem
@@ -525,6 +597,7 @@ export const MechLoadout = ({ mechDetails, mechStatus }: MechLoadoutProps) => {
                         label={intro_animation.label}
                         primaryColor={colors.introAnimation}
                         Icon={SvgIntroAnimation}
+                        side="right"
                     />
                 ) : (
                     <MechLoadoutItem label="INTRO ANIMATION" primaryColor={colors.introAnimation} onClick={() => console.log("AAAAA")} isEmpty disabled />
@@ -537,6 +610,7 @@ export const MechLoadout = ({ mechDetails, mechStatus }: MechLoadoutProps) => {
                         label={outro_animation.label}
                         primaryColor={colors.outroAnimation}
                         Icon={SvgOutroAnimation}
+                        side="right"
                     />
                 ) : (
                     <MechLoadoutItem label="OUTRO ANIMATION" primaryColor={colors.outroAnimation} onClick={() => console.log("AAAAA")} isEmpty disabled />

@@ -27,13 +27,14 @@ interface LoadoutItem {
 }
 
 export interface MechLoadoutItemProps extends LoadoutItem {
+    side?: "left" | "right"
     prevEquipped?: LoadoutItem
     renderModal?: (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => React.ReactNode
 }
 
 export const MechLoadoutItem = (props: MechLoadoutItemProps) => {
     const { imageUrl, videoUrls } = props
-    const { prevEquipped, renderModal, onClick, ...loadoutItemButtonProps } = props
+    const { side = "left", prevEquipped, renderModal, onClick, ...loadoutItemButtonProps } = props
     const [showLoadoutModal, toggleShowLoadoutModal] = useToggle()
     const memoizedPrevEquipped = useRef<LoadoutItem>()
 
@@ -47,7 +48,7 @@ export const MechLoadoutItem = (props: MechLoadoutItemProps) => {
 
     return (
         <>
-            <Stack direction="row" spacing="1rem" alignItems="center" sx={{ p: ".8rem", width: "fit-content" }}>
+            <Stack direction={side === "left" ? "row" : "row-reverse"} spacing="1rem" alignItems="center" sx={{ p: ".8rem", width: "fit-content" }}>
                 <MechLoadoutItemButton
                     onClick={() => {
                         onClick && onClick()
@@ -56,7 +57,7 @@ export const MechLoadoutItem = (props: MechLoadoutItemProps) => {
                     {...loadoutItemButtonProps}
                 />
                 <Grow in={!!prevEquipped} mountOnEnter unmountOnExit>
-                    <Stack direction="row" alignItems="center">
+                    <Stack direction={side === "left" ? "row" : "row-reverse"} alignItems="center">
                         <SvgSwap sx={{ opacity: 0.6 }} />
                         {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
                         <MechLoadoutItemButton {...(prevEquipped! || memoizedPrevEquipped.current)} isPreviouslyEquipped />
