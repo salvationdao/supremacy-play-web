@@ -1,6 +1,6 @@
 import { Box, Fade, Slide, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
+import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgWeapons } from "../../../../assets"
 import { useGlobalNotifications } from "../../../../containers"
 import { getRarityDeets } from "../../../../helpers"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
@@ -11,7 +11,6 @@ import { FancyButton } from "../../../Common/FancyButton"
 import { MechLoadoutItem } from "../Common/MechLoadoutItem"
 import { MechLoadoutMechSkinModal } from "./Modals/Loadout/MechLoadoutMechSkinModal"
 import { MechLoadoutPowerCoreModal } from "./Modals/Loadout/MechLoadoutPowerCoreModal"
-import { MechLoadoutUtilityModal } from "./Modals/Loadout/MechLoadoutUtilityModal"
 import { MechLoadoutWeaponModal } from "./Modals/Loadout/MechLoadoutWeaponModal"
 
 interface PlayerAssetMechEquipRequest {
@@ -234,8 +233,8 @@ export const MechLoadout = ({ mechDetails, mechStatus }: MechLoadoutProps) => {
         weapons_map,
         changed_weapons_map,
         blueprint_weapon_ids_with_skin_inheritance,
-        utility_map,
-        changed_utility_map,
+        // utility_map,
+        // changed_utility_map,
         power_core,
         changed_power_core,
         chassis_skin,
@@ -246,7 +245,7 @@ export const MechLoadout = ({ mechDetails, mechStatus }: MechLoadoutProps) => {
         locked_to_marketplace,
         xsyn_locked,
     } = currLoadout
-    console.log(compatible_blueprint_mech_skin_ids)
+    console.log(chassis_skin)
 
     const loadoutDisabled = useMemo(
         () =>
@@ -452,7 +451,8 @@ export const MechLoadout = ({ mechDetails, mechStatus }: MechLoadoutProps) => {
                     )
                 })}
 
-                {Array.from(utility_map, ([slotNumber, u]) => {
+                {/* IN FUTURE: COMMENT THIS BACK IN WHEN UTILITIES ARE ADDED */}
+                {/* {Array.from(utility_map, ([slotNumber, u]) => {
                     let utility = u
                     if (changed_utility_map.has(slotNumber)) {
                         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -521,7 +521,7 @@ export const MechLoadout = ({ mechDetails, mechStatus }: MechLoadoutProps) => {
                             isEmpty
                         />
                     )
-                })}
+                })} */}
             </Stack>
 
             {/* Right side */}
@@ -533,6 +533,7 @@ export const MechLoadout = ({ mechDetails, mechStatus }: MechLoadoutProps) => {
                     bottom: "5rem",
                     right: "6rem",
                 }}
+                alignItems="end"
             >
                 {(() => {
                     const mechSkin = changed_mech_skin || chassis_skin
@@ -559,8 +560,7 @@ export const MechLoadout = ({ mechDetails, mechStatus }: MechLoadoutProps) => {
                                 side="right"
                                 locked={chassis_skin?.locked_to_mech}
                                 disabled={loadoutDisabled}
-                                imageUrl={mechSkin.image_url || mechSkin.avatar_url}
-                                videoUrls={[mechSkin.card_animation_url]}
+                                imageUrl={mechSkin.swatch_images?.image_url || mechSkin.swatch_images?.avatar_url || mechSkin.image_url || mechSkin.avatar_url}
                                 label={mechSkin.label}
                                 primaryColor={colors.chassisSkin}
                                 Icon={SvgSkin}
@@ -573,8 +573,11 @@ export const MechLoadout = ({ mechDetails, mechStatus }: MechLoadoutProps) => {
                                     if (!previouslyEquipped) return
 
                                     return {
-                                        imageUrl: previouslyEquipped.image_url || previouslyEquipped.avatar_url,
-                                        videoUrls: [previouslyEquipped.card_animation_url],
+                                        imageUrl:
+                                            previouslyEquipped.swatch_images?.image_url ||
+                                            previouslyEquipped.swatch_images?.avatar_url ||
+                                            previouslyEquipped.image_url ||
+                                            previouslyEquipped.avatar_url,
                                         label: previouslyEquipped.label,
                                         primaryColor: colors.powerCore,
                                         Icon: SvgPowerCore,
