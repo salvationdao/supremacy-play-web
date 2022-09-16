@@ -13,11 +13,17 @@ import { useDebounce } from "../../../hooks"
 import { SortTypeLabel } from "../../../types/marketplace"
 import FlipMove from "react-flip-move"
 import { BattleLobby } from "../../../types/battle_queue"
+import { FancyButton } from "../../Common/FancyButton"
 
 const sortOptions = [
     { label: SortTypeLabel.CreateTimeNewestFirst, value: SortTypeLabel.CreateTimeNewestFirst },
     { label: SortTypeLabel.CreateTimeOldestFirst, value: SortTypeLabel.CreateTimeOldestFirst },
 ]
+
+enum filterLobbyStatus {
+    Ready = "READY",
+    Pending = "PENDING",
+}
 
 export const BattleLobbies = () => {
     const theme = useTheme()
@@ -27,6 +33,7 @@ export const BattleLobbies = () => {
     // Search, sort, filters
     const [searchValue, setSearchValue, searchValueInstant] = useDebounce("", 300)
     const [sort, setSort] = useState<string>(SortTypeLabel.CreateTimeNewestFirst)
+    const [lobbyStatus, setLobbyStatus] = useState<filterLobbyStatus>(filterLobbyStatus.Pending)
 
     // Apply sorting
     useEffect(() => {
@@ -41,23 +48,32 @@ export const BattleLobbies = () => {
                 `${s.game_map.name} ${s.number} ${s.host_by.username} ${s.host_by.gid}`.toLowerCase().includes(searchValue.toLowerCase()),
             )
         }
+
+        // filter
+        switch (lobbyStatus) {
+            case filterLobbyStatus.Ready:
+                sorted = sorted.filter((s) => !!s.ready_at)
+                break
+            case filterLobbyStatus.Pending:
+                sorted = sorted.filter((s) => !s.ready_at)
+                break
+        }
+
         setList(sorted)
-    }, [sort, setList, battleLobbies, searchValue])
+    }, [sort, setList, battleLobbies, searchValue, lobbyStatus])
 
     const content = useMemo(() => {
         return (
             <Box sx={{ direction: "ltr", height: 0 }}>
-                <Stack>
-                    <FlipMove>
-                        {list.map((battleLobby) => {
-                            return (
-                                <div key={`repair-job-${battleLobby.id}`} style={{ marginBottom: "1.3rem" }}>
-                                    <BattleLobbyItem battleLobby={battleLobby} />
-                                </div>
-                            )
-                        })}
-                    </FlipMove>
-                </Stack>
+                <FlipMove>
+                    {list.map((battleLobby) => {
+                        return (
+                            <div key={`repair-job-${battleLobby.id}`} style={{ marginBottom: "1.3rem" }}>
+                                <BattleLobbyItem battleLobby={battleLobby} />
+                            </div>
+                        )
+                    })}
+                </FlipMove>
             </Box>
         )
     }, [list])
@@ -98,11 +114,53 @@ export const BattleLobbies = () => {
                         alignItems="center"
                         sx={{ p: ".8rem 1.8rem", borderBottom: (theme) => `${theme.factionTheme.primary}70 1.5px solid` }}
                     >
+                        {/* Search */}
                         <Stack spacing="1rem" direction="row" alignItems="center">
                             <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
                                 SEARCH:
                             </Typography>
                             <SearchBattle searchValueInstant={searchValueInstant} setSearchValue={setSearchValue} />
+                        </Stack>
+
+                        {/* Filter */}
+                        <Stack spacing="1rem" direction="row" alignItems="center">
+                            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                FILTER:
+                            </Typography>
+                            <FancyButton
+                                clipThingsProps={{
+                                    clipSize: "6px",
+                                    backgroundColor: lobbyStatus === filterLobbyStatus.Ready ? theme.factionTheme.primary : theme.factionTheme.background,
+                                    opacity: 1,
+                                    border: { borderColor: theme.factionTheme.primary, borderThickness: "1.5px" },
+                                    sx: { position: "relative" },
+                                }}
+                                sx={{ px: "3rem", py: ".4rem", color: theme.factionTheme.secondary, flexWrap: 0, whiteSpace: "nowrap" }}
+                                onClick={() => setLobbyStatus(filterLobbyStatus.Ready)}
+                            >
+                                <Stack justifyContent="center" sx={{ height: "100%" }}>
+                                    <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}>
+                                        READY
+                                    </Typography>
+                                </Stack>
+                            </FancyButton>
+                            <FancyButton
+                                clipThingsProps={{
+                                    clipSize: "6px",
+                                    backgroundColor: lobbyStatus === filterLobbyStatus.Pending ? theme.factionTheme.primary : theme.factionTheme.background,
+                                    opacity: 1,
+                                    border: { borderColor: theme.factionTheme.primary, borderThickness: "1.5px" },
+                                    sx: { position: "relative" },
+                                }}
+                                sx={{ px: "3rem", py: ".4rem", color: theme.factionTheme.secondary, flexWrap: 0, whiteSpace: "nowrap" }}
+                                onClick={() => setLobbyStatus(filterLobbyStatus.Pending)}
+                            >
+                                <Stack justifyContent="center" sx={{ height: "100%" }}>
+                                    <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}>
+                                        PENDING
+                                    </Typography>
+                                </Stack>
+                            </FancyButton>
                         </Stack>
 
                         <Box sx={{ flex: 1 }} />
