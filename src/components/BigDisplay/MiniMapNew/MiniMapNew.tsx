@@ -1,9 +1,8 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import React, { useEffect, useMemo, useRef, useState } from "react"
 import { BattleBgWebP, SvgExternalLink, SvgFullscreen, SvgMinimize, SvgSwap } from "../../../assets"
-import { useDimension, useGame, useUI } from "../../../containers"
+import { useDimension, useGame, useMiniMapPixi, useUI } from "../../../containers"
 import { useHotkey } from "../../../containers/hotkeys"
-import { useMiniMap } from "../../../containers/minimap"
 import { useToggle } from "../../../hooks"
 import { fonts } from "../../../theme/theme"
 import { Map } from "../../../types"
@@ -148,7 +147,7 @@ const MiniMapInnerNormal = ({ map, isPoppedout, setIsPoppedout }: MiniMapInnerPr
 const MiniMapInner = ({ map, isPoppedout, setIsPoppedout, width = 100, height = 100, poppedOutContainerRef }: MiniMapInnerProps) => {
     const { handleMiniMapHotKey } = useHotkey()
     const { remToPxRatio } = useDimension()
-    const { isTargeting } = useMiniMap()
+    const { isTargeting } = useMiniMapPixi()
     const { isStreamBigDisplay, setIsStreamBigDisplay, toggleIsStreamBigDisplayMemorized, restoreIsStreamBigDisplayMemorized, stopMapRender } = useUI()
     const [isEnlarged, toggleIsEnlarged] = useToggle(localStorage.getItem("isMiniMapEnlarged") === "true")
 

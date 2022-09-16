@@ -21,7 +21,6 @@ import {
     GameProvider,
     GlobalNotificationsProvider,
     MiniMapPixiProvider,
-    MiniMapProvider,
     MobileProvider,
     SupremacyProvider,
     UiProvider,
@@ -251,14 +250,12 @@ const App = () => {
                                                                         <GameProvider>
                                                                             <HotkeyProvider>
                                                                                 <MiniMapPixiProvider>
-                                                                                    <MiniMapProvider>
-                                                                                        <UserUpdater />
-                                                                                        <Switch>
-                                                                                            <Route path="/404" exact component={NotFoundPage} />
-                                                                                            <Route path="/login-redirect" exact component={LoginRedirect} />
-                                                                                            <Route path="" component={AppInner} />
-                                                                                        </Switch>
-                                                                                    </MiniMapProvider>
+                                                                                    <UserUpdater />
+                                                                                    <Switch>
+                                                                                        <Route path="/404" exact component={NotFoundPage} />
+                                                                                        <Route path="/login-redirect" exact component={LoginRedirect} />
+                                                                                        <Route path="" component={AppInner} />
+                                                                                    </Switch>
                                                                                 </MiniMapPixiProvider>
                                                                             </HotkeyProvider>
                                                                         </GameProvider>

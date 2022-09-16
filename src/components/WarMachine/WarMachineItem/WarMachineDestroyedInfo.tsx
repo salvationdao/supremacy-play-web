@@ -1,13 +1,13 @@
 import { Box, CircularProgress, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
-import { ClipThing } from ".."
-import { FlamesPNG, GenericWarMachinePNG, SvgClose, SvgDamageCross, SvgDamageIcon, SvgSkull } from "../../assets"
-import { colors, fonts, siteZIndex } from "../../theme/theme"
-import { DamageRecord, Faction, WarMachineDestroyedRecord, WarMachineState } from "../../types"
-import { useTheme } from "../../containers/theme"
-import { useGlobalNotifications } from "../../containers"
+import { ClipThing } from "../.."
+import { FlamesPNG, GenericWarMachinePNG, SvgClose, SvgDamageCross, SvgDamageIcon, SvgSkull } from "../../../assets"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
+import { DamageRecord, Faction, WarMachineDestroyedRecord, WarMachineState } from "../../../types"
+import { useTheme } from "../../../containers/theme"
+import { useGlobalNotifications } from "../../../containers"
 import { useParameterizedQuery } from "react-fetching-library"
-import { GetMechDestroyedInfo } from "../../fetching"
+import { GetMechDestroyedInfo } from "../../../fetching"
 
 export const WarMachineDestroyedInfo = ({
     warMachine,

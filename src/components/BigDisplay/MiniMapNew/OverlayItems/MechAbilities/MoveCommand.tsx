@@ -1,9 +1,9 @@
 import { Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { SvgDrag } from "../../../assets"
-import { shadeColor } from "../../../helpers"
-import { colors } from "../../../theme/theme"
-import { LocationSelectType, PlayerAbility, WarMachineState } from "../../../types"
+import { SvgDrag } from "../../../../../assets"
+import { shadeColor } from "../../../../../helpers"
+import { colors } from "../../../../../theme/theme"
+import { LocationSelectType, PlayerAbility, WarMachineState } from "../../../../../types"
 
 export const MechMoveCommandAbility: PlayerAbility = {
     id: "mech_move_command",

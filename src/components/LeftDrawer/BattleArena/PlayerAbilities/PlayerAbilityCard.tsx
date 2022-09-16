@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../../assets"
-import { useMiniMap, useMiniMapPixi } from "../../../../containers"
+import { useMiniMapPixi } from "../../../../containers"
 import { colors } from "../../../../theme/theme"
 import { LocationSelectType, PlayerAbility } from "../../../../types"
 import { FancyButton } from "../../../Common/FancyButton"

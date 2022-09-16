@@ -1,11 +1,13 @@
-import React, { useEffect, useMemo, useRef, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../../../../constants"
 import { useArena, useAuth, useGame, useMiniMapPixi, useSupremacy } from "../../../../../containers"
+import { RecordType, useHotkey } from "../../../../../containers/hotkeys"
 import { closestAngle, deg2rad } from "../../../../../helpers"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors } from "../../../../../theme/theme"
-import { Dimension, LocationSelectType, WarMachineLiveState, WarMachineState } from "../../../../../types"
-import { MechMoveCommand, MechMoveCommandAbility } from "../../../../WarMachine/WarMachineItem/MoveCommand"
+import { Dimension, DisplayedAbility, LocationSelectType, MechDisplayEffectType, WarMachineLiveState, WarMachineState } from "../../../../../types"
+import { MechMoveCommand, MechMoveCommandAbility } from "../../OverlayItems/MechAbilities/MoveCommand"
 import { PixiMapMech } from "./pixiMapMech"
 
 interface MapMechProps {
@@ -23,6 +25,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     const { userID, factionID } = useAuth()
     const { currentArenaID } = useArena()
     const { getFaction } = useSupremacy()
+    const { addToHotkeyRecord } = useHotkey()
     const {
         pixiMainItems,
         gridSizeRef,
@@ -35,6 +38,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         playerAbility,
         setHighlightedMechParticipantID,
         setPlayerAbility,
+        resetPlayerAbilitySelection,
     } = useMiniMapPixi()
     const { id, hash, participantID, factionID: warMachineFactionID, maxHealth, maxShield, ownedByID } = warMachine
 
@@ -55,6 +59,12 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     // Mech move command related
     const mechMoveCommand = useRef<MechMoveCommand>()
     const tempMechMoveCommand = useRef<MechMoveCommand>()
+
+    // Mech ability display
+    const [abilityEffects, setAbilityEffects] = useState<DisplayedAbility[]>([])
+    const abilityBorderEffect = useMemo(() => abilityEffects.find((da) => da.mech_display_effect_type === MechDisplayEffectType.Border), [abilityEffects])
+    const abilityPulseEffect = useMemo(() => abilityEffects.find((da) => da.mech_display_effect_type === MechDisplayEffectType.Pulse), [abilityEffects])
+    const abilityShakeEffect = useMemo(() => abilityEffects.find((da) => da.mech_display_effect_type === MechDisplayEffectType.Shake), [abilityEffects])
 
     // Initial setup for the mech and show on the map
     useEffect(() => {
@@ -111,45 +121,71 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         }
     }, [iconDimension, isMechHighlighted, pixiMapMech, primaryColor])
 
+    const onMechClick = useCallback(() => {
+        if (playerAbility && isAlive) {
+            const locationSelectType = playerAbility.ability.location_select_type
+
+            if (
+                (locationSelectType === LocationSelectType.MechSelectAllied && factionID !== warMachineFactionID) ||
+                (locationSelectType === LocationSelectType.MechSelectOpponent && factionID === warMachineFactionID)
+            ) {
+                setSelection((prev) => {
+                    if (prev?.mechHash === hash) return undefined
+                    return { mechHash: hash }
+                })
+
+                return
+            }
+        }
+
+        if (participantID === highlightedMechParticipantID) {
+            setHighlightedMechParticipantID(undefined)
+        } else {
+            setHighlightedMechParticipantID(participantID)
+        }
+
+        // Activate mech move command if user owns the mech, un-activate on click again
+        if (isAlive && ownedByID === userID) {
+            setPlayerAbility({
+                ...MechMoveCommandAbility,
+                mechHash: hash,
+            })
+        } else {
+            resetPlayerAbilitySelection()
+        }
+    }, [
+        factionID,
+        hash,
+        highlightedMechParticipantID,
+        isAlive,
+        ownedByID,
+        participantID,
+        playerAbility,
+        setHighlightedMechParticipantID,
+        setPlayerAbility,
+        setSelection,
+        userID,
+        warMachineFactionID,
+        resetPlayerAbilitySelection,
+    ])
+
     // Setup onclick handler
     useEffect(() => {
         if (!pixiMapMech) return
 
         pixiMapMech.root.removeListener("pointerup")
-        pixiMapMech.root.on("pointerup", () => {
-            if (playerAbility && isAlive) {
-                const locationSelectType = playerAbility.ability.location_select_type
+        pixiMapMech.root.on("pointerup", onMechClick)
+    }, [onMechClick, pixiMapMech])
 
-                if (
-                    (locationSelectType === LocationSelectType.MechSelectAllied && factionID !== warMachineFactionID) ||
-                    (locationSelectType === LocationSelectType.MechSelectOpponent && factionID === warMachineFactionID)
-                ) {
-                    setSelection((prev) => {
-                        if (prev?.mechHash === hash) return undefined
-                        return { mechHash: hash }
-                    })
-
-                    return
-                }
-            }
-
-            if (participantID === highlightedMechParticipantID) {
-                setHighlightedMechParticipantID(undefined)
-            } else {
-                setHighlightedMechParticipantID(participantID)
-            }
-
-            // Activate mech move command if user owns the mech, un-activate on click again
-            if (isAlive && ownedByID === userID) {
-                setPlayerAbility({
-                    ...MechMoveCommandAbility,
-                    mechHash: hash,
-                })
-            } else {
-                setPlayerAbility(undefined)
-            }
-        })
-    }, [factionID, hash, highlightedMechParticipantID, isAlive, ownedByID, participantID, pixiMapMech, playerAbility, setHighlightedMechParticipantID, setPlayerAbility, setSelection, userID, warMachineFactionID])
+    // Add hotkey to select this mech
+    useEffect(() => {
+        if (!label || warMachineFactionID !== factionID) return
+        if (participantID > ADD_MINI_MECH_PARTICIPANT_ID) {
+            addToHotkeyRecord(RecordType.MiniMapCtrl, label.toString(), onMechClick)
+            return
+        }
+        addToHotkeyRecord(RecordType.MiniMap, label.toString(), onMechClick)
+    }, [onMechClick, label, participantID, addToHotkeyRecord, factionID, warMachineFactionID])
 
     // Listen on mech stats
     useGameServerSubscription<WarMachineLiveState | undefined>(
@@ -239,6 +275,22 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             tempMechMoveCommand.current = undefined
         }
     }, [id, hash, playerAbility?.ability, playerAbility?.ability.location_select_type, selectionInstant, playerAbility?.mechHash])
+
+    // Listen on abilities that apply on this mech to display
+    useGameServerSubscription<DisplayedAbility[]>(
+        {
+            URI: `/public/arena/${currentArenaID}/mini_map_ability_display_list`,
+            key: GameServerKeys.SubMiniMapAbilityDisplayList,
+            ready: !!currentArenaID,
+        },
+        (payload) => {
+            if (!payload) {
+                setAbilityEffects([])
+                return
+            }
+            setAbilityEffects(payload.filter((da) => da.mech_id === id) || [])
+        },
+    )
 
     return null
 }, propsAreEqual)

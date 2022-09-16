@@ -4,16 +4,24 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useDebounce } from "../hooks"
 import { useGameServerCommandsFaction } from "../hooks/useGameServer"
-import { Dimension, GameAbility, GAME_CLIENT_TILE_SIZE, Map, PlayerAbility, Vector2i } from "../types"
+import { Dimension, GameAbility, GAME_CLIENT_TILE_SIZE, Map, PlayerAbility, Position, Vector2i } from "../types"
 import { useArena } from "./arena"
 import { useAuth } from "./auth"
 import { useGame } from "./game"
 import { useGlobalNotifications } from "./globalNotifications"
-import { MapSelection } from "./minimap"
 
 interface WinnerStruct {
     game_ability: GameAbility
     end_time: Date
+}
+
+export interface MapSelection {
+    // start coords (used for LINE_SELECT and LOCATION_SELECT abilities)
+    startCoords?: Position
+    // end coords (only used for LINE_SELECT abilities)
+    endCoords?: Position
+    // mech hash (only used for MECH_SELECT abilities)
+    mechHash?: string
 }
 
 interface PixiMainItems {
