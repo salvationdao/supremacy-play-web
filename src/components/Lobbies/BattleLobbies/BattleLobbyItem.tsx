@@ -3,14 +3,24 @@ import { useTheme } from "../../../containers/theme"
 import { Avatar, Box, Stack, Typography } from "@mui/material"
 import { colors, fonts } from "../../../theme/theme"
 import { ClipThing } from "../../Common/ClipThing"
-import { useMemo } from "react"
+import React, { useMemo } from "react"
 import { useSupremacy } from "../../../containers"
-import { Faction, User } from "../../../types"
-import { acronym, camelToTitle, supFormatter } from "../../../helpers"
+import { Faction } from "../../../types"
+import { camelToTitle, supFormatter } from "../../../helpers"
 
-export const BattleLobbyItem = ({ battleLobby }: { battleLobby: BattleLobby }) => {
+interface BattleLobbyItemProps {
+    battleLobby: BattleLobby
+}
+
+const propsAreEqual = (prevProps: BattleLobbyItemProps, nextProps: BattleLobbyItemProps) => {
+    return (
+        prevProps.battleLobby.id === nextProps.battleLobby.id &&
+        prevProps.battleLobby.battle_lobbies_mechs.length === nextProps.battleLobby.battle_lobbies_mechs.length
+    )
+}
+
+export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby }: BattleLobbyItemProps) {
     const theme = useTheme()
-
     const { game_map, number, entry_fee, first_faction_cut, second_faction_cut, third_faction_cut } = battleLobby
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
@@ -61,7 +71,7 @@ export const BattleLobbyItem = ({ battleLobby }: { battleLobby: BattleLobby }) =
             </Box>
         </Stack>
     )
-}
+}, propsAreEqual)
 
 interface BattleLobbySlot {
     faction: Faction
@@ -201,5 +211,6 @@ const BattleLobbyMechSlots = ({ battleLobbyMechs }: { battleLobbyMechs: BattleLo
 
 const MechSlotContent = ({ battleLobbiesMech }: { battleLobbiesMech: BattleLobbiesMech }) => {
     if (battleLobbiesMech.mech_id == "") return null
+    // display queued mech
     return null
 }

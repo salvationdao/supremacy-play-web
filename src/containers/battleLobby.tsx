@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useCallback, useContext, useState } from "react"
-import { useGameServerCommandsFaction, useGameServerSubscriptionSecured } from "../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscriptionSecured, useGameServerSubscriptionSecuredUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 import { BattleBounty, BattleLobby } from "../types/battle_queue"
 import BigNumber from "bignumber.js"
