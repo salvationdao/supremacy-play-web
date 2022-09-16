@@ -32,6 +32,8 @@ export interface GetWeaponsRequest {
     search: string
     page: number
     page_size: number
+    display_xsyn_mechs?: boolean
+    display_genesis_and_limited?: boolean
     include_market_listed: boolean
     exclude_equipped?: boolean
     exclude_mech_locked?: boolean

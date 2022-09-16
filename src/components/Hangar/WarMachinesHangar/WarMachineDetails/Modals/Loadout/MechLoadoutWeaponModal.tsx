@@ -271,6 +271,7 @@ export const MechLoadoutWeaponModal = ({
                 sort_by: sortBy,
                 sort_dir: sortDir,
                 include_market_listed: false,
+                display_genesis_and_limited: true,
                 exclude_ids: weaponsAlreadyEquippedInOtherSlots,
                 weapon_types: weaponTypes,
                 rarities,
