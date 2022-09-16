@@ -156,7 +156,7 @@ const MechLoadoutItemButton = ({
                         opacity: 0.6,
                     }}
                 >
-                    <Typography>Undo Selection</Typography>
+                    <Typography>Previous Selection</Typography>
                 </Stack>
             )}
             <Stack spacing="1rem" alignItems="center" sx={{ height: "16rem", width: "16rem", p: "1rem", textAlign: "center" }}>
