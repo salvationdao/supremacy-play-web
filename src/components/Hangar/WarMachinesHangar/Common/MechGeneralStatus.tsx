@@ -97,10 +97,6 @@ export const MechGeneralStatus = ({
                     text = "IDLE"
                     color = colors.green
                     break
-                case MechStatusEnum.PendingQueue:
-                    text = "PENDING DEPLOY"
-                    color = colors.yellow
-                    break
                 case MechStatusEnum.Queue:
                     text = "IN QUEUE"
                     if (payload.queue_position != null) {
@@ -139,7 +135,7 @@ export const MechGeneralStatus = ({
     const triggerStatusUpdate = useCallback(
         async (currentStatus: string) => {
             try {
-                if (!currentStatus.includes("QUEUE") && !currentStatus.includes("BATTLING")) return
+                if (!currentStatus.includes("QUEUE") && !currentStatus.includes("POSITION") && !currentStatus.includes("BATTLING")) return
                 await send(GameServerKeys.TriggerMechStatusUpdate, {
                     mech_id: mechID,
                 })

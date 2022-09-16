@@ -14,6 +14,7 @@ export const MechButtons = ({
     mechDetails,
     setSelectedMechDetails,
     setDeployMechModalOpen,
+    setLeaveMechModalOpen,
     setRentalMechModalOpen,
     setRepairMechModalOpen,
     marketLocked,
@@ -21,6 +22,7 @@ export const MechButtons = ({
     mechDetails: MechDetails
     setSelectedMechDetails: React.Dispatch<React.SetStateAction<MechDetails | undefined>>
     setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setLeaveMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setRepairMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     marketLocked: boolean
@@ -54,17 +56,31 @@ export const MechButtons = ({
         >
             <Box sx={{ p: "1rem", gap: ".8rem", display: "grid", gridTemplateColumns: "repeat(2, 1fr)" }}>
                 {/* Button 1 */}
-                <ReusableButton
-                    isFancy
-                    primaryColor={colors.green}
-                    backgroundColor={colors.green}
-                    label="DEPLOY"
-                    disabled={!BATTLE_ARENA_OPEN || !mechStatus?.can_deploy || !mechDetails.battle_ready}
-                    onClick={() => {
-                        setSelectedMechDetails(mechDetails)
-                        setDeployMechModalOpen(true)
-                    }}
-                />
+                {mechState === MechStatusEnum.Battle || mechState === MechStatusEnum.Queue ? (
+                    <ReusableButton
+                        primaryColor="#E0B61B"
+                        secondaryColor="#111111"
+                        backgroundColor="#E0B61B"
+                        label="UNDEPLOY"
+                        disabled={!BATTLE_ARENA_OPEN || !mechState || mechState === MechStatusEnum.Battle}
+                        onClick={() => {
+                            setSelectedMechDetails(mechDetails)
+                            setLeaveMechModalOpen(true)
+                        }}
+                    />
+                ) : (
+                    <ReusableButton
+                        isFancy
+                        primaryColor={colors.green}
+                        backgroundColor={colors.green}
+                        label="DEPLOY"
+                        disabled={!BATTLE_ARENA_OPEN || !mechStatus?.can_deploy || !mechDetails.battle_ready}
+                        onClick={() => {
+                            setSelectedMechDetails(mechDetails)
+                            setDeployMechModalOpen(true)
+                        }}
+                    />
+                )}
 
                 {/* Button 2 */}
                 <ReusableButton
