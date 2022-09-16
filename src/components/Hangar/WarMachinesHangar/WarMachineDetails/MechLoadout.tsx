@@ -128,7 +128,7 @@ export const MechLoadout = ({ mechDetails, mechStatus }: MechLoadoutProps) => {
 
             const newMechDetails = await send<MechDetails, PlayerAssetMechEquipRequest>(GameServerKeys.EquipMech, {
                 mech_id: mechDetails.id,
-                equip_mech_skin: undefined,
+                equip_mech_skin: currLoadout.changed_mech_skin?.id,
                 equip_power_core: currLoadout.changed_power_core?.id,
                 equip_utility: Array.from(currLoadout.changed_utility_map, ([slotNumber, u]) => ({
                     utility_id: u.utility_id,
@@ -153,7 +153,7 @@ export const MechLoadout = ({ mechDetails, mechStatus }: MechLoadoutProps) => {
         } finally {
             setLoading(false)
         }
-    }, [currLoadout.changed_power_core, currLoadout.changed_utility_map, currLoadout.changed_weapons_map, mechDetails.id, newSnackbarMessage, send])
+    }, [currLoadout.changed_mech_skin?.id, currLoadout.changed_power_core?.id, currLoadout.changed_utility_map, currLoadout.changed_weapons_map, mechDetails.id, newSnackbarMessage, send])
 
     const addMechSkinSelection = useCallback((ep: LoadoutMechSkin) => {
         setCurrLoadout((prev) => {
