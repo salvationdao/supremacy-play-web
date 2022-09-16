@@ -1,5 +1,5 @@
 import moment from "moment"
-import { Box, Pagination, Stack, Typography, Link } from "@mui/material"
+import { Box, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { HangarBg, SafePNG } from "../assets"
 import { ClipThing } from "../components"
@@ -11,7 +11,8 @@ import { usePagination, useUrlQuery } from "../hooks"
 import { useGameServerCommandsUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 import { fonts, siteZIndex } from "../theme/theme"
-import { FiatBillingHistory } from "../types/fiat"
+import { FiatOrder } from "../types/fiat"
+import BigNumber from "bignumber.js"
 
 export const BillingHistoryPage = () => {
     const theme = useTheme()
@@ -26,12 +27,12 @@ export const BillingHistoryPage = () => {
     // Items
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const [billingHistoryItems, setBillingHistoryItems] = useState<FiatBillingHistory[]>()
+    const [billingHistoryItems, setBillingHistoryItems] = useState<FiatOrder[]>()
 
     const getItems = useCallback(async () => {
         try {
             setIsLoading(true)
-            const resp = await send<{ total: number; records: FiatBillingHistory[] }>(GameServerKeys.FiatBillingHistoryList, {
+            const resp = await send<{ total: number; records: FiatOrder[] }>(GameServerKeys.FiatBillingHistoryList, {
                 page: page - 1,
                 page_size: pageSize,
             })
@@ -105,24 +106,17 @@ export const BillingHistoryPage = () => {
                                         changePageSize,
                                     }}
                                     renderItem={(item) => {
-                                        let status = "PAID"
-                                        if (item.refunded) {
-                                            status = "REFUNDED"
-                                        }
-
+                                        let total = new BigNumber(0)
+                                        item.items.forEach((oi) => {
+                                            total = total.plus(new BigNumber(oi.amount).multipliedBy(oi.quantity))
+                                        })
                                         return {
                                             cells: [
-                                                <Typography key={1}>{item.receipt_number || "N/A"}</Typography>,
+                                                <Typography key={1}>TBA</Typography>,
                                                 <Typography key={2}>{moment(item.created_at).format("DD/MM/YYYY h:mm A")}</Typography>,
-                                                <Typography key={3}>{status}</Typography>,
-                                                <Typography key={4}>
-                                                    {generatePriceText("USD", (item.total_dollars * 100 + item.total_cents).toString())}
-                                                </Typography>,
-                                                <Typography key={5}>
-                                                    <Link href={item.receipt_url} target={"_blank"}>
-                                                        View Receipt
-                                                    </Link>
-                                                </Typography>,
+                                                <Typography key={3}>{item.order_status.toUpperCase()}</Typography>,
+                                                <Typography key={4}>{generatePriceText("USD", total)}</Typography>,
+                                                <Typography key={5}>TBA Link</Typography>,
                                             ],
                                         }
                                     }}

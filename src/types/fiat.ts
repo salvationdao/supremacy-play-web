@@ -21,30 +21,25 @@ export interface FiatProductPricing {
     amount: string
 }
 
-export interface FiatBillingHistory {
+export interface FiatOrder {
     id: string
-    paid: boolean
-    refunded: boolean
-    items: FiatBillingHistoryItem[]
+    user_id: string
+    order_status: string
+    payment_method: string
+    txn_reference: string
     currency: string
-    total_dollars: number
-    total_cents: number
-    receipt_number: string
-    receipt_url: string
     created_at: string
+    items: FiatOrderItem[]
 }
 
-export interface FiatBillingHistoryItem {
+export interface FiatOrderItem {
     id: string
+    order_id: string
+    fiat_product_id: string
+    name: string
     description: string
-    currency: string
     quantity: number
-    total_dollars: number
-    total_cents: number
-    subtotal_dollars: number
-    subtotal_cents: number
-    tax_dollars: number
-    tax_cents: number
+    amount: string
 }
 
 export interface ShoppingCart {
