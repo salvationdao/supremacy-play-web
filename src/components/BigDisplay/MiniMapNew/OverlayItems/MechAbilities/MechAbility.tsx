@@ -48,7 +48,7 @@ export const MechAbility = ({
             ready: !!currentArenaID && !!participantID && !!pixiMechAbility,
         },
         (payload) => {
-            if (payload === undefined) return
+            if (payload === undefined || payload <= 0) return
             pixiMechAbility?.setCountdown(payload)
         },
     )

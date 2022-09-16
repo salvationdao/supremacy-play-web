@@ -29,7 +29,7 @@ const propsAreEqual = (prevProps: MiniMapPixiProps, nextProps: MiniMapPixiProps)
 
 export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions }: MiniMapPixiProps) {
     const { map } = useGame()
-    const { pixiMainItems, setPixiMainItems, setHighlightedMechParticipantID } = useMiniMapPixi()
+    const { pixiMainItems, setPixiMainItems, setHighlightedMechParticipantID, playerAbility } = useMiniMapPixi()
     const [miniMapPixiRef, setMiniMapPixiRef] = useState<HTMLDivElement | null>(null)
     const pixiItems = useRef<PixiItems>({})
     const isDragging = useRef(false)
@@ -173,9 +173,9 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
         if (!pixiItems.current.mapSprite) return
         pixiItems.current.mapSprite.removeListener("pointerup")
         pixiItems.current.mapSprite.on("pointerup", () => {
-            if (!isDragging.current) setHighlightedMechParticipantID(undefined)
+            if (!isDragging.current && !playerAbility) setHighlightedMechParticipantID(undefined)
         })
-    }, [setHighlightedMechParticipantID, map, pixiMainItems])
+    }, [setHighlightedMechParticipantID, map, pixiMainItems, playerAbility])
 
     // TODO: If we are popped out, we need to move the pixi canvas to the poppedout window
 

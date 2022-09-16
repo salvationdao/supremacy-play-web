@@ -21,7 +21,7 @@ export class PixiMechAbility {
         this.bgRect = new PIXI.Graphics()
 
         this.bgRect.beginFill(HEXToVBColor("#FF0000"))
-        this.bgRect.drawRect(0, 0, 25, 25)
+        this.bgRect.drawRect(0, 0, 60, 30)
         this.bgRect.endFill()
 
         // Add everything to container
@@ -52,7 +52,7 @@ export class PixiMechAbility {
             const totalElapsed = timestamp - start
 
             if (elapsed >= 1000) {
-                console.log(new Date())
+                // TODO: update countdown text
                 lastTimestamp = timestamp
             }
 
