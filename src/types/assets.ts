@@ -130,6 +130,15 @@ export interface MechBasic extends Collection, Images {
 
 export interface MechBasicWithQueueStatus extends MechBasic {
     in_queue: boolean
+
+    status: MechStatusEnum
+    can_deploy: boolean
+    lobby_locked_at?: Date
+    assigned_to_battle_id?: string
+    lobby_number?: number
+    damaged_blocks: number
+    is_battle_ready: boolean
+    in_market_place: boolean
 }
 
 export interface MechDetails extends MechBasic {

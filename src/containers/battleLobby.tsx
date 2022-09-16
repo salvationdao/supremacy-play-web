@@ -3,6 +3,7 @@ import { useGameServerCommandsFaction, useGameServerSubscriptionSecured, useGame
 import { GameServerKeys } from "../keys"
 import { BattleBounty, BattleLobby } from "../types/battle_queue"
 import BigNumber from "bignumber.js"
+import { MechBasic, MechBasicWithQueueStatus } from "../types"
 
 export interface BattleLobbyState {
     battleLobbies: BattleLobby[]
@@ -20,6 +21,7 @@ export interface BattleLobbyState {
     battleETASeconds: number
     battleBounties: BattleBounty[]
     createBattleBounty: (mechID: string, amount: number) => void
+    mechsWithQueueStatus: MechBasicWithQueueStatus[]
 }
 
 const initialState: BattleLobbyState = {
@@ -50,6 +52,7 @@ const initialState: BattleLobbyState = {
         // HACK: get around lint
         if (mechID && amount) return
     },
+    mechsWithQueueStatus: [],
 }
 
 export const BattleLobbyContext = createContext<BattleLobbyState>(initialState)
@@ -226,6 +229,44 @@ export const BattleLobbyProvider = ({ children }: { children: ReactNode }) => {
         [send],
     )
 
+    const [mechsWithQueueStatus, setMechsWithQueueStatus] = useState<MechBasicWithQueueStatus[]>(initialState.mechsWithQueueStatus)
+    useGameServerSubscriptionSecuredUser<MechBasicWithQueueStatus[]>(
+        {
+            URI: "/owned_mechs",
+            key: GameServerKeys.SubPlayerMechsBrief,
+        },
+        (payload) => {
+            if (!payload) return
+
+            setMechsWithQueueStatus((mqs) => {
+                if (mqs.length === 0) {
+                    return payload
+                }
+
+                // replace current list
+                let list = mqs.map((mq) => {
+                    const target = payload.find((p) => p.id === mq.id)
+                    if (target) {
+                        return target
+                    }
+                    return mq
+                })
+
+                // append new list
+                payload.forEach((p) => {
+                    // if already exists
+                    if (list.some((mq) => mq.id === p.id)) {
+                        return
+                    }
+                    // otherwise, push to the list
+                    list.push(p)
+                })
+
+                return list
+            })
+        },
+    )
+
     return (
         <BattleLobbyContext.Provider
             value={{
@@ -236,6 +277,7 @@ export const BattleLobbyProvider = ({ children }: { children: ReactNode }) => {
                 battleETASeconds,
                 battleBounties,
                 createBattleBounty,
+                mechsWithQueueStatus,
             }}
         >
             {children}

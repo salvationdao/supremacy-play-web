@@ -39,17 +39,6 @@ export const BattleLobbies = () => {
     const [lobbyStatus, setLobbyStatus] = useState<filterLobbyStatus>(filterLobbyStatus.Pending)
     const [selectedLobby, setSelectedLobby] = useState<BattleLobby>()
 
-    useGameServerSubscriptionSecuredUser<number>(
-        {
-            URI: "/owned_mechs",
-            key: GameServerKeys.SubPlayerMechsBrief,
-        },
-        (payload) => {
-            if (!payload) return
-            console.log(payload)
-        },
-    )
-
     // Apply sorting
     useEffect(() => {
         let sorted = [...battleLobbies]

@@ -7,6 +7,7 @@ import React, { useMemo } from "react"
 import { useSupremacy } from "../../../containers"
 import { Faction } from "../../../types"
 import { camelToTitle, supFormatter } from "../../../helpers"
+import { MechThumbnail } from "../../Hangar/WarMachinesHangar/Common/MechThumbnail"
 
 interface BattleLobbyItemProps {
     battleLobby: BattleLobby
@@ -54,12 +55,16 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                             <Typography sx={{ fontFamily: fonts.nostromoBlack }}>Lobby #{number}</Typography>
                             <Typography sx={{ fontFamily: fonts.nostromoBlack }}>MAP: {game_map ? camelToTitle(game_map.name) : "Random"}</Typography>
                             <Typography sx={{ fontFamily: fonts.nostromoBlack }}>JOIN FEE: {entry_fee ? supFormatter(entry_fee) : "0"}</Typography>
-                            <Typography sx={{ fontFamily: fonts.nostromoBlack }}>DISTRIBUTION (1 - 2 - 3)</Typography>
-                            <Typography sx={{ fontFamily: fonts.nostromoBlack }}>
-                                {`${Math.round(parseFloat(first_faction_cut) * 100)}% - ${Math.round(parseFloat(second_faction_cut) * 100)}% - ${Math.round(
-                                    parseFloat(third_faction_cut) * 100,
-                                )}%`}
-                            </Typography>
+                            {entry_fee !== "0" && (
+                                <>
+                                    <Typography sx={{ fontFamily: fonts.nostromoBlack }}>DISTRIBUTION (1 - 2 - 3)</Typography>
+                                    <Typography sx={{ fontFamily: fonts.nostromoBlack }}>
+                                        {`${Math.round(parseFloat(first_faction_cut) * 100)}% - ${Math.round(
+                                            parseFloat(second_faction_cut) * 100,
+                                        )}% - ${Math.round(parseFloat(third_faction_cut) * 100)}%`}
+                                    </Typography>
+                                </>
+                            )}
                         </Stack>
 
                         {/* Mech slots */}
@@ -192,13 +197,13 @@ const BattleLobbyMechSlots = ({ battleLobbyMechs }: { battleLobbyMechs: BattleLo
                                     direction="row"
                                     sx={{
                                         p: ".15rem",
-                                        height: "100%",
                                         width: "100%",
+                                        height: "100%",
                                         backgroundColor: colors.offWhite + "20",
                                         borderRadius: "4px",
                                     }}
                                 >
-                                    <MechSlotContent battleLobbiesMech={ms} />
+                                    <MechSlotContent battleLobbiesMech={ms} faction={faction} />
                                 </Stack>
                             ))}
                         </Box>
@@ -209,8 +214,31 @@ const BattleLobbyMechSlots = ({ battleLobbyMechs }: { battleLobbyMechs: BattleLo
     )
 }
 
-const MechSlotContent = ({ battleLobbiesMech }: { battleLobbiesMech: BattleLobbiesMech }) => {
+const MechSlotContent = ({ battleLobbiesMech, faction }: { battleLobbiesMech: BattleLobbiesMech; faction: Faction }) => {
     if (battleLobbiesMech.mech_id == "") return null
     // display queued mech
-    return null
+    console.log(battleLobbiesMech)
+    return (
+        <>
+            <Stack>
+                <MechThumbnail avatarUrl={battleLobbiesMech.avatar_url} tier={battleLobbiesMech.tier} tiny />
+            </Stack>
+            <Typography
+                sx={{
+                    flex: 1,
+                    fontFamily: fonts.nostromoBlack,
+                    color: faction.primary_color,
+                    ml: ".45rem",
+                    display: "-webkit-box",
+                    overflow: "hidden",
+                    overflowWrap: "anywhere",
+                    textOverflow: "ellipsis",
+                    WebkitLineClamp: 1, // change to max number of lines
+                    WebkitBoxOrient: "vertical",
+                }}
+            >
+                {battleLobbiesMech.name || battleLobbiesMech.label}
+            </Typography>
+        </>
+    )
 }
