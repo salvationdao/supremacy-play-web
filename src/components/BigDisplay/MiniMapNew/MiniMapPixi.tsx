@@ -7,7 +7,8 @@ import { useMiniMapPixi } from "../../../containers/minimapPixi"
 import { calculateCoverDimensions, HEXToVBColor } from "../../../helpers"
 import { colors } from "../../../theme/theme"
 import { Dimension } from "../../../types"
-import { MapMechs } from "./MiniMapItems/MapMechs/MapMechs"
+import { MechAbilities } from "./OverlayItems/MechAbilities"
+import { MapMechs } from "./ViewportItems/MapMechs/MapMechs"
 
 interface PixiItems {
     mapSprite?: PIXI.Sprite
@@ -31,6 +32,7 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
     const { pixiMainItems, setPixiMainItems, setHighlightedMechParticipantID } = useMiniMapPixi()
     const [miniMapPixiRef, setMiniMapPixiRef] = useState<HTMLDivElement | null>(null)
     const pixiItems = useRef<PixiItems>({})
+    const isDragging = useRef(false)
 
     const setupPixi = useCallback(
         (mapRef: HTMLDivElement, dimension: Dimension) => {
@@ -72,6 +74,12 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
                     maxHeight: viewport.screenHeight,
                     minWidth: 50,
                     minHeight: 50,
+                })
+                .on("drag-start", () => {
+                    isDragging.current = true
+                })
+                .on("drag-end", () => {
+                    isDragging.current = false
                 })
 
             viewport.sortableChildren = true
@@ -165,7 +173,7 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
         if (!pixiItems.current.mapSprite) return
         pixiItems.current.mapSprite.removeListener("pointerup")
         pixiItems.current.mapSprite.on("pointerup", () => {
-            setHighlightedMechParticipantID(undefined)
+            if (!isDragging.current) setHighlightedMechParticipantID(undefined)
         })
     }, [setHighlightedMechParticipantID, map, pixiMainItems])
 
@@ -182,6 +190,10 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
                     overflow: "hidden",
                 }}
             >
+                {/* Overlay items: items that are overlay'ed on top */}
+                <MechAbilities />
+
+                {/* Viewport items: items within the viewport, affected by zoom and panning etc. */}
                 <MapMechs />
             </Box>
         ),

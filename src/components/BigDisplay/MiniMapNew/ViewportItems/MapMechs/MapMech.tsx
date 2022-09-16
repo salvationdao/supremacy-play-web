@@ -9,7 +9,7 @@ import { PixiProgressBar } from "../../../../../helpers/pixiHelpers"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
-import { LocationSelectType, WarMachineLiveState, WarMachineState } from "../../../../../types"
+import { Dimension, LocationSelectType, WarMachineLiveState, WarMachineState } from "../../../../../types"
 import { MechMoveCommand, MechMoveCommandAbility } from "../../../../WarMachine/WarMachineItem/MoveCommand"
 
 interface PixiItems {
@@ -56,6 +56,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
     const [pixiItems, setPixiItems] = useState<PixiItems>()
 
+    const iconDimension = useRef<Dimension>({ width: 5, height: 5 })
     const prevRotation = useRef(warMachine.rotation)
     const [isAlive, setIsAlive] = useState(warMachine.health > 0)
     const isMechHighlighted = useMemo(
@@ -139,20 +140,28 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     useEffect(() => {
         if (!pixiItems) return
 
+        // Set the icon dimensions
+        iconDimension.current = { width: gridSizeRef.current.width, height: gridSizeRef.current.height }
+        // If it's a mini mech, make it look smaller
+        if (isAI) {
+            iconDimension.current.width *= 0.7
+            iconDimension.current.height *= 0.7
+        }
+
         // Update number text
         pixiItems.numberText.style.fill = primaryColor
-        pixiItems.numberText.style.fontSize = gridSizeRef.current.height / 1.8
-        pixiItems.numberText.position.set(gridSizeRef.current.width / 2, gridSizeRef.current.height / 2.3)
+        pixiItems.numberText.style.fontSize = iconDimension.current.height / 1.8
+        pixiItems.numberText.position.set(iconDimension.current.width / 2, iconDimension.current.height / 2.3)
 
         // Draw the box
         pixiItems.rectGraphics.clear()
         pixiItems.rectGraphics.beginFill(HEXToVBColor("#000000"), 0.8)
-        pixiItems.rectGraphics.lineStyle(gridSizeRef.current.height * 0.08, HEXToVBColor(primaryColor))
-        pixiItems.rectGraphics.drawRoundedRect(0, 0, gridSizeRef.current.width, gridSizeRef.current.height, 6)
+        pixiItems.rectGraphics.lineStyle(iconDimension.current.height * 0.08, HEXToVBColor(primaryColor))
+        pixiItems.rectGraphics.drawRoundedRect(0, 0, iconDimension.current.width, iconDimension.current.height, 6)
         pixiItems.rectGraphics.endFill()
 
         // Draw the rotation arrow
-        const triangleWidth = gridSizeRef.current.width / 4.2
+        const triangleWidth = iconDimension.current.width / 4.2
         const triangleHeight = triangleWidth * 0.9
         const triangleHalfway = triangleWidth / 2
 
@@ -168,22 +177,22 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         pixiItems.arrowGraphics.lineTo(triPoint1[0], triPoint1[1])
         pixiItems.arrowGraphics.closePath()
         pixiItems.arrowGraphics.endFill()
-        pixiItems.arrowGraphics.position.set(gridSizeRef.current.width / 2, gridSizeRef.current.height / 2)
-        pixiItems.arrowGraphics.pivot.set(triangleHalfway, gridSizeRef.current.height / 2 + gridSizeRef.current.height / 3.4)
+        pixiItems.arrowGraphics.position.set(iconDimension.current.width / 2, iconDimension.current.height / 2)
+        pixiItems.arrowGraphics.pivot.set(triangleHalfway, iconDimension.current.height / 2 + iconDimension.current.height / 3.4)
 
         // Update bars dimension and position
-        const barHeight = gridSizeRef.current.height / 5
-        const barGap = gridSizeRef.current.height * 0.1
-        pixiItems.hpBar.updateDimension(gridSizeRef.current.width, barHeight)
-        pixiItems.shieldBar.updateDimension(gridSizeRef.current.width, barHeight)
-        pixiItems.hpBar.updatePosition(0, gridSizeRef.current.height + barGap)
-        pixiItems.shieldBar.updatePosition(0, gridSizeRef.current.height + barHeight + 2 * barGap)
+        const barHeight = iconDimension.current.height / 5
+        const barGap = iconDimension.current.height * 0.1
+        pixiItems.hpBar.updateDimension(iconDimension.current.width, barHeight)
+        pixiItems.shieldBar.updateDimension(iconDimension.current.width, barHeight)
+        pixiItems.hpBar.updatePosition(0, iconDimension.current.height + barGap)
+        pixiItems.shieldBar.updatePosition(0, iconDimension.current.height + barHeight + 2 * barGap)
 
         // Update the mech move sprite dimension
-        pixiItems.mechMoveSprite.width = gridSizeRef.current.width / 2
-        pixiItems.mechMoveSprite.height = gridSizeRef.current.height / 2
+        pixiItems.mechMoveSprite.width = iconDimension.current.width / 2
+        pixiItems.mechMoveSprite.height = iconDimension.current.height / 2
         pixiItems.mechMoveSprite.tint = HEXToVBColor(primaryColor)
-    }, [gridSizeRef, pixiItems, primaryColor, map])
+    }, [pixiItems, primaryColor, map, gridSizeRef, isAI])
 
     // Update zIndex
     useEffect(() => {
@@ -204,13 +213,13 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         if (isMechHighlighted) {
             const dash = new DashLine(pixiItems.highlightedCircle, {
                 dash: [4, 2],
-                width: gridSizeRef.current.height * 0.09,
+                width: iconDimension.current.height * 0.09,
                 color: HEXToVBColor(colors.orange),
                 alpha: 1,
             })
 
-            const center = [gridSizeRef.current.width / 2, gridSizeRef.current.height / 2]
-            const radius = gridSizeRef.current.width / 1.4
+            const center = [iconDimension.current.width / 2, iconDimension.current.height / 2]
+            const radius = iconDimension.current.width / 1.4
             dash.drawCircle(0, 0, radius)
             pixiItems.highlightedCircle.position.set(center[0], center[1])
 
@@ -219,7 +228,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         } else {
             ease.add(pixiItems.container, { scale: 1 }, { duration: 100, ease: "linear", removeExisting: true })
         }
-    }, [gridSizeRef, isMechHighlighted, pixiItems, primaryColor])
+    }, [iconDimension, isMechHighlighted, pixiItems, primaryColor])
 
     // Setup onclick handler
     useEffect(() => {
@@ -311,7 +320,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
                     // Draw dashed line
                     const dash = new DashLine(pixiItems.mechMoveDashedLine, {
                         dash: [2, 1],
-                        width: gridSizeRef.current.height * 0.08,
+                        width: iconDimension.current.height * 0.08,
                         color: HEXToVBColor(primaryColor),
                         alpha: 0.8,
                     })
