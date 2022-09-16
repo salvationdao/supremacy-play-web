@@ -68,7 +68,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     useEffect(() => {
         return () => pixiMapMech?.destroy()
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [pixiMapMech])
 
     // Update graphics
     useEffect(() => {
