@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js"
 import { clamp, HEXToVBColor } from "."
 
 export class PixiProgressBar {
-    container: PIXI.Container
+    root: PIXI.Container
     private trackRect: PIXI.Graphics
     private barRect: PIXI.Graphics
     private color: string
@@ -11,7 +11,7 @@ export class PixiProgressBar {
     private height: number
 
     constructor(width: number, height: number, color: string, initialPercent = 80) {
-        this.container = new PIXI.Container()
+        this.root = new PIXI.Container()
         this.trackRect = new PIXI.Graphics()
         this.barRect = new PIXI.Graphics()
         this.color = color
@@ -22,9 +22,9 @@ export class PixiProgressBar {
         this.trackRect.zIndex = 0
         this.barRect.zIndex = 1
 
-        this.container.sortableChildren = true
-        this.container.addChild(this.trackRect)
-        this.container.addChild(this.barRect)
+        this.root.sortableChildren = true
+        this.root.addChild(this.trackRect)
+        this.root.addChild(this.barRect)
 
         this.render()
     }
@@ -39,7 +39,7 @@ export class PixiProgressBar {
     }
 
     updatePosition(x: number, y: number) {
-        this.container.position.set(x, y)
+        this.root.position.set(x, y)
     }
 
     updateDimension(width: number, height: number) {

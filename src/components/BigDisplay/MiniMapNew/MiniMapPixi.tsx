@@ -7,7 +7,7 @@ import { useMiniMapPixi } from "../../../containers/minimapPixi"
 import { calculateCoverDimensions, HEXToVBColor } from "../../../helpers"
 import { colors } from "../../../theme/theme"
 import { Dimension } from "../../../types"
-import { MechAbilities } from "./OverlayItems/MechAbilities"
+import { MechAbilities } from "./OverlayItems/MechAbilities/MechAbilities"
 import { MapMechs } from "./ViewportItems/MapMechs/MapMechs"
 
 interface PixiItems {
