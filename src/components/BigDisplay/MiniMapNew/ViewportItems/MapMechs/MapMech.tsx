@@ -117,30 +117,20 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
         pixiMapMech.root.removeListener("pointerup")
         pixiMapMech.root.on("pointerup", () => {
-            if (playerAbility) {
-                if (!isAlive) return
-
+            if (playerAbility && isAlive) {
                 const locationSelectType = playerAbility.ability.location_select_type
 
-                switch (locationSelectType) {
-                    case LocationSelectType.MechSelectAllied:
-                        if (factionID !== warMachineFactionID) return
-                        break
-                    case LocationSelectType.MechSelectOpponent:
-                        if (factionID === warMachineFactionID) return
-                        break
-                    case LocationSelectType.MechSelect:
-                        break
-                    default:
-                        // throw error
-                        return
-                }
-                setSelection((prev) => {
-                    if (prev?.mechHash === hash) return undefined
-                    return { mechHash: hash }
-                })
+                if (
+                    (locationSelectType === LocationSelectType.MechSelectAllied && factionID !== warMachineFactionID) ||
+                    (locationSelectType === LocationSelectType.MechSelectOpponent && factionID === warMachineFactionID)
+                ) {
+                    setSelection((prev) => {
+                        if (prev?.mechHash === hash) return undefined
+                        return { mechHash: hash }
+                    })
 
-                return
+                    return
+                }
             }
 
             if (participantID === highlightedMechParticipantID) {
@@ -155,6 +145,8 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
                     ...MechMoveCommandAbility,
                     mechHash: hash,
                 })
+            } else {
+                setPlayerAbility(undefined)
             }
         })
     }, [factionID, hash, highlightedMechParticipantID, isAlive, ownedByID, participantID, pixiMapMech, playerAbility, setHighlightedMechParticipantID, setPlayerAbility, setSelection, userID, warMachineFactionID])
