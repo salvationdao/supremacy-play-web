@@ -1,9 +1,10 @@
 import * as PIXI from "pixi.js"
+import { MECH_ABILITY_KEY } from "../../../../../containers/hotkeys"
 import { HEXToVBColor } from "../../../../../helpers"
 import { colors, fonts } from "../../../../../theme/theme"
 import { BlueprintPlayerAbility, GameAbility, PlayerAbility } from "../../../../../types"
 
-const SIZE = 26
+const SIZE = 22
 
 export class PixiMechAbility {
     root: PIXI.Container<PIXI.DisplayObject>
@@ -13,8 +14,9 @@ export class PixiMechAbility {
     private label: PIXI.Text
     private isCountingDown = false
     private onClickHandler: undefined | (() => void)
+    private labelText = ""
 
-    constructor(gameAbility: GameAbility | undefined, playerAbility: PlayerAbility | undefined) {
+    constructor(index: number, gameAbility: GameAbility | undefined, playerAbility: PlayerAbility | undefined) {
         const ab = playerAbility?.ability || gameAbility
         this.ability = ab
 
@@ -38,11 +40,12 @@ export class PixiMechAbility {
         // Label
         const labelStyle = new PIXI.TextStyle({
             fontFamily: fonts.shareTech,
-            fontSize: 15,
+            fontSize: 12,
             fill: "#FFFFFF",
             lineHeight: 1,
         })
-        this.label = new PIXI.Text(ab?.label || "N/A", labelStyle)
+        this.labelText = `${ab?.label} [${MECH_ABILITY_KEY[index]}]` || "N/A"
+        this.label = new PIXI.Text(this.labelText, labelStyle)
         this.label.anchor.set(0, 0.5)
         this.label.resolution = 4
         this.label.zIndex = 5
@@ -111,7 +114,7 @@ export class PixiMechAbility {
                 start = undefined
                 lastTimestamp = 0
                 this.isCountingDown = false
-                this.label.text = this.ability?.label || "N/A"
+                this.label.text = this.labelText
                 this.label.style.fill = HEXToVBColor("#FFFFFF")
                 this.addOnClick()
             }

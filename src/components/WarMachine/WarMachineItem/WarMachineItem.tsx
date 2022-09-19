@@ -85,18 +85,13 @@ export const WarMachineItem = ({
                     width: `${WIDTH_AVATAR + (isExpanded ? WIDTH_BODY : 2 * WIDTH_STAT_BAR)}rem`,
                     pointerEvents: "all",
                     transition: "width .1s",
-                    transform: highlightedMechParticipantID === participantID ? `scale(${scale * 1.08})` : `scale(${scale})`,
+                    transform: `scale(${scale})`,
                     transformOrigin: transformOrigin || "center",
-                    ":hover": {
-                        [`#hotkey-${hash}`]: {
-                            display: "block",
-                        },
-                    },
                 }}
             >
-                <Box id={`hotkey-${hash}`} sx={{ display: "none", position: "absolute", top: "-3rem", right: "0" }}>
+                <Box sx={{ position: "absolute", top: "-3rem", right: 0 }}>
                     {label && wmFactionID === factionID && (
-                        <Typography sx={{ color: colors.neonBlue }}>
+                        <Typography sx={{ color: primaryColor }}>
                             <i>
                                 <strong>[{participantID > 100 ? `CTRL + ${label}` : label}]</strong>
                             </i>
