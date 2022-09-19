@@ -141,9 +141,6 @@ export const BattleLobbyProvider = ({ children }: { children: ReactNode }) => {
                     return bl
                 })
 
-                // remove any finished lobby
-                list = list.filter((bl) => !bl.ended_at && !bl.deleted_at)
-
                 // append new list
                 payload.forEach((p) => {
                     // if already exists
@@ -153,6 +150,9 @@ export const BattleLobbyProvider = ({ children }: { children: ReactNode }) => {
                     // otherwise, push to the list
                     list.push(p)
                 })
+
+                // remove any finished lobby
+                list = list.filter((bl) => !bl.ended_at && !bl.deleted_at)
 
                 return list
             })
@@ -196,9 +196,6 @@ export const BattleLobbyProvider = ({ children }: { children: ReactNode }) => {
                     return bb
                 })
 
-                // remove any closed bounties
-                list = list.filter((bb) => !bb.is_closed)
-
                 // append new list
                 payload.forEach((p) => {
                     // if already exists
@@ -208,6 +205,9 @@ export const BattleLobbyProvider = ({ children }: { children: ReactNode }) => {
                     // otherwise, push to the list
                     list.push(p)
                 })
+
+                // remove any closed bounties
+                list = list.filter((bb) => !bb.is_closed)
 
                 return list
             })
@@ -244,7 +244,7 @@ export const BattleLobbyProvider = ({ children }: { children: ReactNode }) => {
                 }
 
                 // replace current list
-                let list = mqs.map((mq) => {
+                const list = mqs.map((mq) => {
                     const target = payload.find((p) => p.id === mq.id)
                     if (target) {
                         return target
