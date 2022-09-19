@@ -27,6 +27,7 @@ export class PixiMapMech {
     constructor(label: number) {
         // Create container for everything
         this.root = new PIXI.Container()
+        this.root.sortableChildren = true
         this.root.zIndex = 10
 
         // Root inner
@@ -36,6 +37,7 @@ export class PixiMapMech {
         this.rootInner.sortableChildren = true
         this.rootInner.interactive = true
         this.rootInner.buttonMode = true
+        this.rootInner.zIndex = 3
 
         // Rect
         this.rectGraphics = new PIXI.Graphics()
@@ -59,11 +61,6 @@ export class PixiMapMech {
         this.hpBar = new PixiProgressBar(0, 0, colors.health, 0)
         this.shieldBar = new PixiProgressBar(0, 0, colors.shield, 0)
 
-        // Mech move sprite
-        this.mechMoveDashedLine = new PIXI.Graphics()
-        this.mechMoveSprite = PIXI.Sprite.from(CrossPNG)
-        this.mechMoveSprite.visible = false
-
         // Highlighted mech circle
         this.highlightedCircle = new PIXI.Graphics()
         this.highlightedCircle.zIndex = 20
@@ -76,6 +73,13 @@ export class PixiMapMech {
         this.skull.width = 3
         this.skull.height = 3
 
+        // Mech move sprite
+        this.mechMoveDashedLine = new PIXI.Graphics()
+        this.mechMoveSprite = PIXI.Sprite.from(CrossPNG)
+        this.mechMoveSprite.visible = false
+        this.mechMoveSprite.zIndex = 2
+        this.mechMoveDashedLine.zIndex = 1
+
         // Add everything to container
         this.rootInner.addChild(this.rectGraphics)
         this.rootInner.addChild(this.arrowGraphics)
@@ -86,6 +90,7 @@ export class PixiMapMech {
         this.rootInner.addChild(this.skull)
         this.root.addChild(this.rootInner)
         this.root.addChild(this.mechMoveSprite)
+        this.root.addChild(this.mechMoveDashedLine)
 
         this.render()
     }
@@ -243,17 +248,18 @@ export class PixiMapMech {
                 // Default its the top left corner, so center it
                 const newX = this.mechMovePosition.x - this.mechMoveSprite.width / 2
                 const newY = this.mechMovePosition.y - this.mechMoveSprite.height / 2
+                this.mechMoveSprite.anchor.set(0.5, 0.5)
                 this.mechMoveSprite.position.set(newX, newY)
                 this.mechMoveSprite.visible = true
 
                 // Draw dashed line
                 const dash = new DashLine(this.mechMoveDashedLine, {
-                    dash: [2, 1],
+                    dash: [5, 4],
                     width: this.iconDimension.height * 0.08,
                     color: HEXToVBColor(this.primaryColor),
                     alpha: 0.8,
                 })
-                dash.moveTo(this.rootInner.x, this.rootInner.y).lineTo(newX, newY)
+                dash.moveTo(this.rootInner.x + this.rectGraphics.width / 2, this.rootInner.y + this.rectGraphics.height / 2).lineTo(newX, newY)
             }
 
             this.animationFrame = requestAnimationFrame(step)
