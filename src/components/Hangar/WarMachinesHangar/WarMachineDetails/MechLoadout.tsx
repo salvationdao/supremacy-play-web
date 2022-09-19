@@ -1,5 +1,5 @@
 import { Box, Fade, Slide, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgWeapons } from "../../../../assets"
 import { useGlobalNotifications } from "../../../../containers"
 import { getRarityDeets } from "../../../../helpers"
@@ -27,15 +27,15 @@ interface MechDetailsWithMaps extends MechDetails {
     changed_weapons_map: Map<number, LoadoutWeapon>
     utility_map: Map<number, Utility | null> // Map<slot_number, Utility>
     changed_utility_map: Map<number, LoadoutUtility>
-    changed_power_core?: PowerCore
-    changed_mech_skin?: MechSkin
+    changed_power_core?: LoadoutPowerCore
+    changed_mech_skin?: LoadoutMechSkin
 }
 
 interface EquipMechSkin {
     mech_skin_id: string
 }
 
-type LoadoutMechSkin = EquipMechSkin & {
+export type LoadoutMechSkin = EquipMechSkin & {
     mech_skin: MechSkin
 }
 
@@ -43,7 +43,7 @@ interface EquipPowerCore {
     power_core_id: string
 }
 
-type LoadoutPowerCore = EquipPowerCore & {
+export type LoadoutPowerCore = EquipPowerCore & {
     power_core: PowerCore
 }
 
@@ -53,7 +53,7 @@ interface EquipWeapon {
     inherit_skin: boolean
 }
 
-type LoadoutWeapon = EquipWeapon & {
+export type LoadoutWeapon = EquipWeapon & {
     weapon: Weapon
 }
 
@@ -62,7 +62,7 @@ interface EquipUtility {
     slot_number: number
 }
 
-type LoadoutUtility = EquipUtility & {
+export type LoadoutUtility = EquipUtility & {
     utility: Utility
 }
 
@@ -107,6 +107,7 @@ interface MechLoadoutProps {
 export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
     const { newSnackbarMessage } = useGlobalNotifications()
+    const unityViewRef = useRef<HTMLDivElement>()
 
     const [error, setError] = useState<string>()
     const [loading, setLoading] = useState(false)
@@ -134,8 +135,8 @@ export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutPr
 
             const newMechDetails = await send<MechDetails, PlayerAssetMechEquipRequest>(GameServerKeys.EquipMech, {
                 mech_id: mechDetails.id,
-                equip_mech_skin: currLoadout.changed_mech_skin?.id,
-                equip_power_core: currLoadout.changed_power_core?.id,
+                equip_mech_skin: currLoadout.changed_mech_skin?.mech_skin.id,
+                equip_power_core: currLoadout.changed_power_core?.power_core.id,
                 equip_utility: Array.from(currLoadout.changed_utility_map, ([slotNumber, u]) => ({
                     utility_id: u.utility_id,
                     slot_number: slotNumber,
@@ -160,8 +161,8 @@ export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutPr
             setLoading(false)
         }
     }, [
-        currLoadout.changed_mech_skin?.id,
-        currLoadout.changed_power_core?.id,
+        currLoadout.changed_mech_skin?.mech_skin.id,
+        currLoadout.changed_power_core?.power_core.id,
         currLoadout.changed_utility_map,
         currLoadout.changed_weapons_map,
         mechDetails.id,
@@ -170,11 +171,11 @@ export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutPr
         send,
     ])
 
-    const addMechSkinSelection = useCallback((ep: LoadoutMechSkin) => {
+    const addMechSkinSelection = useCallback((ems: LoadoutMechSkin) => {
         setCurrLoadout((prev) => {
             return {
                 ...prev,
-                changed_mech_skin: ep.mech_skin,
+                changed_mech_skin: ems,
             }
         })
     }, [])
@@ -183,7 +184,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutPr
         setCurrLoadout((prev) => {
             return {
                 ...prev,
-                changed_power_core: ep.power_core,
+                changed_power_core: ep,
             }
         })
     }, [])
@@ -330,7 +331,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutPr
                     }}
                 >
                     {(() => {
-                        const powerCore = changed_power_core || power_core
+                        const powerCore = changed_power_core?.power_core || power_core
 
                         const renderModal = (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => (
                             <MechLoadoutPowerCoreModal
@@ -343,7 +344,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutPr
                                     toggleShowLoadoutModal(false)
                                 }}
                                 equipped={powerCore}
-                                powerCoresAlreadyEquippedInOtherSlots={changed_power_core ? [changed_power_core.id] : []}
+                                powerCoresAlreadyEquippedInOtherSlots={changed_power_core?.power_core ? [changed_power_core.power_core.id] : []}
                             />
                         )
 
@@ -551,7 +552,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutPr
                     alignItems="end"
                 >
                     {(() => {
-                        const mechSkin = changed_mech_skin || chassis_skin
+                        const mechSkin = changed_mech_skin?.mech_skin || chassis_skin
 
                         const renderModal = (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => (
                             <MechLoadoutMechSkinModal
@@ -564,7 +565,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutPr
                                     toggleShowLoadoutModal(false)
                                 }}
                                 equipped={mechSkin}
-                                mechSkinsAlreadyEquippedInOtherSlots={changed_mech_skin ? [changed_mech_skin.id] : []}
+                                mechSkinsAlreadyEquippedInOtherSlots={changed_mech_skin?.mech_skin ? [changed_mech_skin.mech_skin.id] : []}
                                 compatibleMechSkins={compatible_blueprint_mech_skin_ids}
                             />
                         )
@@ -645,7 +646,15 @@ export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutPr
                     )}
                 </Stack>
             </Box>
-            <MechViewer mechDetails={mechDetails} unity />
+            <MechViewer
+                ref={unityViewRef}
+                mechDetails={mechDetails}
+                unity={{
+                    onUnlock: () => {
+                        console.log("unlocked")
+                    },
+                }}
+            />
         </>
     )
 }

@@ -1,10 +1,11 @@
 import { Box } from "@mui/material"
-import { useEffect, useRef, useState } from "react"
+import React, { useEffect, useImperativeHandle, useRef, useState } from "react"
 import { Unity, useUnityContext } from "react-unity-webgl"
 import { DEV_ONLY, WEBGL_BASE_URL } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
 import { MechDetails } from "../../../../types"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
+import { LoadoutMechSkin, LoadoutPowerCore, LoadoutWeapon } from "./MechLoadout"
 import { HangarSilo, SiloObject } from "./MechViewer/UnityViewer"
 
 let baseUrl = WEBGL_BASE_URL
@@ -16,10 +17,12 @@ if (DEV_ONLY) {
 
 interface MechViewerProps {
     mechDetails: MechDetails
-    unity?: boolean
+    unity?: {
+        onUnlock: () => void
+    }
 }
 
-export const MechViewer = ({ mechDetails, unity }: MechViewerProps) => {
+export const MechViewer = React.forwardRef(function MechViewer({ mechDetails, unity }: MechViewerProps, ref) {
     const theme = useTheme()
     const { unityProvider, sendMessage, addEventListener, removeEventListener, isLoaded } = useUnityContext({
         loaderUrl: `${baseUrl}WebGL.loader.js`,
@@ -33,12 +36,42 @@ export const MechViewer = ({ mechDetails, unity }: MechViewerProps) => {
 
     const backgroundColor = theme.factionTheme.background
 
-    const skin = mechDetails.chassis_skin || mechDetails.default_chassis_skin
+    const skin = mechDetails.chassis_skin && mechDetails.default_chassis_skin
     const avatarUrl = skin?.avatar_url || mechDetails.avatar_url
     const imageUrl = skin?.image_url || mechDetails.image_url
     const largeImageUrl = skin?.large_image_url || mechDetails.large_image_url
     const animationUrl = skin?.animation_url || mechDetails.animation_url
     const cardAnimationUrl = skin?.card_animation_url || mechDetails.card_animation_url
+
+    useImperativeHandle(ref, () => ({
+        handleWeaponUpdate: (wu: LoadoutWeapon) => {
+            if (wu.slot_number == null) return
+
+            const weapon = wu.weapon
+            sendMessage("SceneContext", "SetSlotIndexToChange", wu.slot_number)
+            sendMessage(
+                "SceneContext",
+                "ChangeSlotValue",
+                JSON.stringify({
+                    type: "weapon",
+                    ownership_id: weapon.owner_id,
+                    static_id: weapon.blueprint_id,
+                    skin: weapon.weapon_skin
+                        ? {
+                              type: "skin",
+                              static_id: weapon.weapon_skin.blueprint_id,
+                          }
+                        : undefined,
+                } as SiloObject),
+            )
+        },
+        handlePowerCoreUpdate: (pcu: LoadoutPowerCore) => {
+            if (pcu.power_core) return
+        },
+        handleMechSkinUpdate: (msu: LoadoutMechSkin) => {
+            if (msu.mech_skin) return
+        },
+    }))
 
     useEffect(() => {
         const onSiloReady = () => setSiloReady(true)
@@ -47,12 +80,34 @@ export const MechViewer = ({ mechDetails, unity }: MechViewerProps) => {
     }, [addEventListener, removeEventListener])
 
     useEffect(() => {
+        const onSlotLoaded = () => {
+            console.log("slot unlocked")
+            unity?.onUnlock()
+        }
+        addEventListener("SlotLoaded", onSlotLoaded)
+        return () => removeEventListener("SlotLoaded", onSlotLoaded)
+    }, [addEventListener, removeEventListener, unity])
+
+    useEffect(() => {
         if (!isLoaded || !siloReady || sent.current) return
 
         const accessories: SiloObject[] = []
+        for (let i = 0; i < mechDetails.weapon_hardpoints; i++) {
+            accessories.push({
+                type: "weapon",
+                ownership_id: "",
+                static_id: "",
+                skin: {
+                    type: "skin",
+                    static_id: "",
+                },
+            })
+        }
         if (mechDetails.weapons) {
-            accessories.push(
-                ...mechDetails.weapons.map((w) => ({
+            mechDetails.weapons.forEach((w) => {
+                if (w.slot_number == null) return
+
+                accessories[w.slot_number] = {
                     type: "weapon",
                     ownership_id: w.owner_id,
                     static_id: w.blueprint_id,
@@ -62,15 +117,38 @@ export const MechViewer = ({ mechDetails, unity }: MechViewerProps) => {
                               static_id: w.weapon_skin.blueprint_id,
                           }
                         : undefined,
-                })),
-            )
+                }
+            })
         }
+        // for (let i = 0; i < mechDetails.utility_slots; i++) {
+        //     accessories.push({
+        //         type: "utility",
+        //         ownership_id: "",
+        //         static_id: "",
+        //     })
+        // }
+        // if (mechDetails.utility) {
+        //     mechDetails.utility.forEach((u) => {
+        //         if (u.slot_number == null) return
+
+        //         accessories[mechDetails.weapon_hardpoints + u.slot_number] = {
+        //             type: "utility",
+        //             ownership_id: u.owner_id,
+        //             static_id: u.blueprint_id,
+        //         }
+        //     })
+        // }
+        accessories.push({
+            type: "power_core",
+            ownership_id: "",
+            static_id: "",
+        })
         if (mechDetails.power_core) {
-            accessories.push({
+            accessories[accessories.length - 1] = {
                 type: "power_core",
                 ownership_id: mechDetails.power_core.owner_id,
                 static_id: mechDetails.power_core.blueprint_id,
-            })
+            }
         }
 
         const siloItems: HangarSilo = {
@@ -91,20 +169,11 @@ export const MechViewer = ({ mechDetails, unity }: MechViewerProps) => {
                 },
             ],
         }
+        console.log(siloItems)
         sendMessage("ProjectContext(Clone)", "GetPlayerInventoryFromPage", JSON.stringify(siloItems))
         sendMessage("ProjectContext(Clone)", "FittingRoom", "")
         sent.current = true
-    }, [
-        sendMessage,
-        isLoaded,
-        siloReady,
-        mechDetails.weapons,
-        mechDetails.power_core,
-        mechDetails.faction_id,
-        mechDetails.owner_id,
-        mechDetails.blueprint_id,
-        mechDetails.chassis_skin,
-    ])
+    }, [sendMessage, isLoaded, siloReady, mechDetails.weapons, mechDetails.power_core, mechDetails.faction_id, mechDetails.owner_id, mechDetails.blueprint_id, mechDetails.chassis_skin, mechDetails.weapon_hardpoints, mechDetails.utility, mechDetails.utility_slots])
 
     return (
         <Box
@@ -163,7 +232,7 @@ export const MechViewer = ({ mechDetails, unity }: MechViewerProps) => {
             </Box>
         </Box>
     )
-}
+})
 
 export const FeatherFade = ({ color }: { color: string }) => {
     return (
