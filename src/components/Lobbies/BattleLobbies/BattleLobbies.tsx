@@ -16,10 +16,15 @@ import { BattleLobby } from "../../../types/battle_queue"
 import { FancyButton } from "../../Common/FancyButton"
 import { BattleLobbyJoinModal } from "../BattleLobbyJoinModal"
 
-const sortOptions = [
+const sortOptionsPending: { label: string; value: string }[] = [
     { label: SortTypeLabel.QueuedAmountHighest, value: SortTypeLabel.QueuedAmountHighest },
     { label: SortTypeLabel.CreateTimeNewestFirst, value: SortTypeLabel.CreateTimeNewestFirst },
     { label: SortTypeLabel.CreateTimeOldestFirst, value: SortTypeLabel.CreateTimeOldestFirst },
+]
+
+const sortOptionsReady: { label: string; value: string }[] = [
+    { label: SortTypeLabel.ReadyTimeOldestFirst, value: SortTypeLabel.ReadyTimeOldestFirst },
+    { label: SortTypeLabel.ReadyTimeNewestFirst, value: SortTypeLabel.ReadyTimeNewestFirst },
 ]
 
 enum filterLobbyStatus {
@@ -42,13 +47,11 @@ export const BattleLobbies = () => {
     // Search, sort, filters
     const [searchValue, setSearchValue, searchValueInstant] = useDebounce("", 300)
     const [sort, setSort] = useState<string>(SortTypeLabel.QueuedAmountHighest)
+    const [sortOptions, setSortOptions] = useState(sortOptionsPending)
     const [lobbyStatus, setLobbyStatus] = useState<filterLobbyStatus>(filterLobbyStatus.Pending)
     const [selectedLobby, setSelectedLobby] = useState<BattleLobby>()
-    useEffect(() => {
-        setTotalItems(battleLobbies.length)
-    }, [battleLobbies, setTotalItems])
 
-    // Apply sorting
+    // Apply filter, sorting and pagination
     useEffect(() => {
         let sorted = [...battleLobbies]
 
@@ -66,6 +69,9 @@ export const BattleLobbies = () => {
                 break
         }
 
+        // set total after filtered
+        setTotalItems(sorted.length)
+
         // sorting
         switch (sort) {
             case SortTypeLabel.CreateTimeNewestFirst:
@@ -77,13 +83,19 @@ export const BattleLobbies = () => {
             case SortTypeLabel.QueuedAmountHighest:
                 sorted = sorted.sort((a, b) => (a.battle_lobbies_mechs.length > b.battle_lobbies_mechs.length ? -1 : 1))
                 break
+            case SortTypeLabel.ReadyTimeNewestFirst:
+                sorted = sorted.sort((a, b) => (!!a.ready_at && !!b.ready_at && a.ready_at > b.ready_at ? -1 : 1))
+                break
+            case SortTypeLabel.ReadyTimeOldestFirst:
+                sorted = sorted.sort((a, b) => (!!a.ready_at && !!b.ready_at && a.ready_at < b.ready_at ? -1 : 1))
+                break
         }
 
         // pagination
         sorted = sorted.slice((page - 1) * pageSize, page * pageSize)
 
         setList(sorted)
-    }, [sort, setList, battleLobbies, searchValue, lobbyStatus, page, pageSize])
+    }, [sort, setList, battleLobbies, searchValue, lobbyStatus, page, pageSize, setTotalItems])
 
     const content = useMemo(() => {
         return (
@@ -135,7 +147,7 @@ export const BattleLobbies = () => {
                             }
                             description={<Typography sx={{ fontSize: "1.85rem" }}>Join lobby to enter battles.</Typography>}
                             imageUrl={ThreeMechsJPG}
-                        ></PageHeader>
+                        />
 
                         <TotalAndPageSizeOptions
                             countItems={list.length}
@@ -177,7 +189,11 @@ export const BattleLobbies = () => {
                                         sx: { position: "relative" },
                                     }}
                                     sx={{ px: "3rem", py: ".4rem", color: theme.factionTheme.secondary, flexWrap: 0, whiteSpace: "nowrap" }}
-                                    onClick={() => setLobbyStatus(filterLobbyStatus.Ready)}
+                                    onClick={() => {
+                                        setLobbyStatus(filterLobbyStatus.Ready)
+                                        setSortOptions(sortOptionsReady)
+                                        setSort(SortTypeLabel.ReadyTimeOldestFirst)
+                                    }}
                                 >
                                     <Stack justifyContent="center" sx={{ height: "100%" }}>
                                         <Typography
@@ -200,7 +216,11 @@ export const BattleLobbies = () => {
                                         sx: { position: "relative" },
                                     }}
                                     sx={{ px: "3rem", py: ".4rem", color: theme.factionTheme.secondary, flexWrap: 0, whiteSpace: "nowrap" }}
-                                    onClick={() => setLobbyStatus(filterLobbyStatus.Pending)}
+                                    onClick={() => {
+                                        setLobbyStatus(filterLobbyStatus.Pending)
+                                        setSortOptions(sortOptionsPending)
+                                        setSort(SortTypeLabel.QueuedAmountHighest)
+                                    }}
                                 >
                                     <Stack justifyContent="center" sx={{ height: "100%" }}>
                                         <Typography
