@@ -221,7 +221,7 @@ export const WeaponPreview = ({ onConfirm, weapon, equipped, skinInheritable }: 
                                 color: colors.red,
                             }}
                         >
-                            Currently equipped on another mech.
+                            Currently {weapon.locked_to_mech ? "locked to" : "equipped on"} another mech.
                         </Typography>
                     )}
                     {statChanges.length > 0 ? (
@@ -247,7 +247,7 @@ export const WeaponPreview = ({ onConfirm, weapon, equipped, skinInheritable }: 
                         </Typography>
                     )}
                 </Stack>
-                <Stack
+                {!weapon.locked_to_mech && <Stack
                     direction="row"
                     spacing="1rem"
                     sx={{
@@ -281,7 +281,7 @@ export const WeaponPreview = ({ onConfirm, weapon, equipped, skinInheritable }: 
                     >
                         Equip To Mech
                     </FancyButton>
-                </Stack>
+                </Stack>}
             </Stack>
         )
     }
