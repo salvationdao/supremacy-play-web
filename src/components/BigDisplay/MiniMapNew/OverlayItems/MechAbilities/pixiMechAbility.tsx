@@ -15,6 +15,7 @@ export class PixiMechAbility {
     private isCountingDown = false
     private onClickHandler: undefined | (() => void)
     private labelText = ""
+    private animationFrame: number | undefined
 
     constructor(index: number, gameAbility: GameAbility | undefined, playerAbility: PlayerAbility | undefined) {
         const ab = playerAbility?.ability || gameAbility
@@ -58,6 +59,7 @@ export class PixiMechAbility {
     }
 
     destroy() {
+        if (this.animationFrame) cancelAnimationFrame(this.animationFrame)
         this.root.destroy()
     }
 
@@ -119,10 +121,10 @@ export class PixiMechAbility {
                 this.addOnClick()
             }
 
-            if (!isDone) requestAnimationFrame(step)
+            if (!isDone) this.animationFrame = requestAnimationFrame(step)
         }
 
         this.isCountingDown = true
-        requestAnimationFrame(step)
+        this.animationFrame = requestAnimationFrame(step)
     }
 }

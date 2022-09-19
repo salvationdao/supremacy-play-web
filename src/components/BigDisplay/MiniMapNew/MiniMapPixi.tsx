@@ -7,6 +7,7 @@ import { useMiniMapPixi } from "../../../containers/minimapPixi"
 import { calculateCoverDimensions, HEXToVBColor } from "../../../helpers"
 import { colors } from "../../../theme/theme"
 import { Dimension } from "../../../types"
+import { MapScale } from "./OverlayItems/MapScale/MapScale"
 import { MechAbilities } from "./OverlayItems/MechAbilities/MechAbilities"
 import { MapMechs } from "./ViewportItems/MapMechs/MapMechs"
 
@@ -192,6 +193,7 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
             >
                 {/* Overlay items: items that are overlay'ed on top */}
                 <MechAbilities />
+                <MapScale />
 
                 {/* Viewport items: items within the viewport, affected by zoom and panning etc. */}
                 <MapMechs />
