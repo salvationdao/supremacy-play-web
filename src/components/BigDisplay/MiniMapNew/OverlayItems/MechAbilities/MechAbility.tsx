@@ -66,9 +66,16 @@ export const MechAbility = ({
         }
     }, [hash, ability.id, send, currentArenaID])
 
+    // Add trigger to hotkeys
     useEffect(() => {
         addToHotkeyRecord(RecordType.MiniMap, MECH_ABILITY_KEY[index], onTrigger)
     }, [onTrigger, addToHotkeyRecord, index])
+
+    // Add trigger when clicking on the image
+    useEffect(() => {
+        if (!pixiMechAbility) return
+        pixiMechAbility.updateOnClick(onTrigger)
+    }, [onTrigger, pixiMechAbility])
 
     return null
 }

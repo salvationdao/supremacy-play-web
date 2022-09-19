@@ -3,7 +3,7 @@ import { HEXToVBColor } from "../../../../../helpers"
 import { colors } from "../../../../../theme/theme"
 import { PixiMechAbility } from "./pixiMechAbility"
 
-const GAP = 6
+const GAP = 7
 
 export class PixiMechAbilities {
     root: PIXI.Container<PIXI.DisplayObject>
