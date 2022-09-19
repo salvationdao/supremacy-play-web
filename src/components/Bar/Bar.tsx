@@ -2,7 +2,7 @@ import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import Marquee from "react-fast-marquee"
 import { BuySupsButton, FancyButton, Logo, ProfileCard, WalletDetails } from ".."
 import { SvgDisconnected } from "../../assets"
-import { DRAWER_TRANSITION_DURATION, FEEDBACK_FORM_URL, GAME_BAR_HEIGHT, IS_TESTING_MODE, NEXT_RESET_TIME } from "../../constants"
+import { DRAWER_TRANSITION_DURATION, FEEDBACK_FORM_URL, GAME_BAR_HEIGHT, IS_TESTING_MODE, STAGING_OR_DEV_ONLY, NEXT_RESET_TIME } from "../../constants"
 import { useAuth, useSupremacy } from "../../containers"
 import { hexToRGB, timeSinceInWords } from "../../helpers"
 import { useTimer } from "../../hooks"
@@ -169,7 +169,7 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
             {userID && <WalletDetails />}
             <BuySupsButton />
             {userID && <Quests />}
-            {userID && IS_TESTING_MODE && <ShoppingCart />}
+            {userID && STAGING_OR_DEV_ONLY && <ShoppingCart />}
             {userID && <Messages />}
             <ProfileCard userID={userID} user={user} />
         </>

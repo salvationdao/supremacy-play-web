@@ -2,7 +2,7 @@ import { Popover, Stack } from "@mui/material"
 import { MutableRefObject, useEffect, useState } from "react"
 import { ClipThing } from "../../.."
 import { SvgAssets, SvgProfile, SvgSettings, SvgSupport } from "../../../../assets"
-import { PASSPORT_WEB, DEV_ONLY } from "../../../../constants"
+import { PASSPORT_WEB, DEV_ONLY, STAGING_OR_DEV_ONLY } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
 import { siteZIndex } from "../../../../theme/theme"
@@ -75,7 +75,9 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
                             text="XSYN Profile"
                         />
 
-                        <NavButton to="/billing-history" startIcon={<SvgAssets sx={{ pb: ".5rem" }} size="1.6rem" />} text="Billing History" />
+                        {STAGING_OR_DEV_ONLY && (
+                            <NavButton to="/billing-history" startIcon={<SvgAssets sx={{ pb: ".5rem" }} size="1.6rem" />} text="Billing History" />
+                        )}
 
                         <NavButton href="https://supremacyhelp.zendesk.com/" startIcon={<SvgSupport sx={{ pb: ".5rem" }} size="1.6rem" />} text="SUPPORT" />
 

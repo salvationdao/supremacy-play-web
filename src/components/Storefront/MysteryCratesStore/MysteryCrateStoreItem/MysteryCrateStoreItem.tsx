@@ -15,7 +15,7 @@ import { ClaimedRewards } from "../../../Claims/ClaimedRewards"
 import { ConfirmModal } from "../../../Common/ConfirmModal"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { OpeningCrate } from "../../../Hangar/MysteryCratesHangar/MysteryCratesHangar"
-import { IS_TESTING_MODE } from "../../../../constants"
+import { STAGING_OR_DEV_ONLY } from "../../../../constants"
 
 interface MysteryCrateStoreItemProps {
     enlargedView?: boolean
@@ -177,7 +177,7 @@ export const MysteryCrateStoreItem = React.memo(function MysteryCrateStoreItem({
                                         {singleCratePrice}
                                     </Typography>
                                 </Stack>
-                                {IS_TESTING_MODE && <Typography sx={{ fontFamily: fonts.nostromoMedium }}>{fiatPrice || "N/A"}</Typography>}
+                                {STAGING_OR_DEV_ONLY && <Typography sx={{ fontFamily: fonts.nostromoMedium }}>{fiatPrice || "N/A"}</Typography>}
                             </Stack>
 
                             <Box
@@ -317,7 +317,7 @@ export const MysteryCrateStoreItem = React.memo(function MysteryCrateStoreItem({
                                         Buy Now
                                     </Typography>
                                 </FancyButton>
-                                {IS_TESTING_MODE && (
+                                {STAGING_OR_DEV_ONLY && (
                                     <FancyButton
                                         onClick={() => addToCart()}
                                         clipThingsProps={{
