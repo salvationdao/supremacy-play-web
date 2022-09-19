@@ -91,6 +91,7 @@ export const MiniMapPixiContainer = createContainer(() => {
 
         isTargeting,
         selection,
+        setSelectionDebounced,
         setSelection,
         selectionInstant,
         winner,

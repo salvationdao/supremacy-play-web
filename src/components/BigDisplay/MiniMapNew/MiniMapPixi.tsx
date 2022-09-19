@@ -6,7 +6,7 @@ import { useGame } from "../../../containers"
 import { useMiniMapPixi } from "../../../containers/minimapPixi"
 import { calculateCoverDimensions, HEXToVBColor } from "../../../helpers"
 import { colors } from "../../../theme/theme"
-import { Dimension } from "../../../types"
+import { Dimension, LocationSelectType } from "../../../types"
 import { MapScale } from "./OverlayItems/MapScale/MapScale"
 import { MechAbilities } from "./OverlayItems/MechAbilities/MechAbilities"
 import { MapMechs } from "./ViewportItems/MapMechs/MapMechs"
@@ -30,7 +30,8 @@ const propsAreEqual = (prevProps: MiniMapPixiProps, nextProps: MiniMapPixiProps)
 
 export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions }: MiniMapPixiProps) {
     const { map } = useGame()
-    const { pixiMainItems, setPixiMainItems, setHighlightedMechParticipantID, playerAbility } = useMiniMapPixi()
+    const { pixiMainItems, setPixiMainItems, setHighlightedMechParticipantID, winner, playerAbility, setSelectionDebounced, setSelection, gridSizeRef } =
+        useMiniMapPixi()
     const [miniMapPixiRef, setMiniMapPixiRef] = useState<HTMLDivElement | null>(null)
     const pixiItems = useRef<PixiItems>({})
     const isDragging = useRef(false)
@@ -173,10 +174,33 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
     useEffect(() => {
         if (!pixiItems.current.mapSprite) return
         pixiItems.current.mapSprite.removeListener("pointerup")
-        pixiItems.current.mapSprite.on("pointerup", () => {
-            if (!isDragging.current && !playerAbility) setHighlightedMechParticipantID(undefined)
+        pixiItems.current.mapSprite.on("pointerup", (event) => {
+            // If dragging, dont do map click
+            if (isDragging.current) return
+
+            // Unhighlight mech
+            if (!playerAbility) setHighlightedMechParticipantID(undefined)
+
+            const clickedPos = pixiMainItems?.viewport.toLocal(event.data.global)
+            if (!clickedPos) return
+
+            if (!winner?.game_ability && playerAbility?.ability.location_select_type === LocationSelectType.MechCommand) {
+                setSelectionDebounced({
+                    startCoords: {
+                        x: clickedPos.x / gridSizeRef.current.width,
+                        y: clickedPos.y / gridSizeRef.current.height,
+                    },
+                })
+            } else if (winner || playerAbility) {
+                setSelection({
+                    startCoords: {
+                        x: clickedPos.x / gridSizeRef.current.width,
+                        y: clickedPos.y / gridSizeRef.current.height,
+                    },
+                })
+            }
         })
-    }, [setHighlightedMechParticipantID, map, pixiMainItems, playerAbility])
+    }, [setHighlightedMechParticipantID, map, pixiMainItems, winner, playerAbility, setSelectionDebounced, setSelection, gridSizeRef])
 
     // TODO: If we are popped out, we need to move the pixi canvas to the poppedout window
 
