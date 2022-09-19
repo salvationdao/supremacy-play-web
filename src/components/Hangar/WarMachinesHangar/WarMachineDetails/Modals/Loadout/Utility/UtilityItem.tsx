@@ -67,31 +67,6 @@ export const UtilityItem = ({ id, equipped, selected, onSelect }: UtilityItemPro
         if (!utilityDetails) return
 
         switch (utilityDetails.type) {
-            case UtilityType.Shield: {
-                const oldUtility = equipped?.shield
-                const utility = utilityDetails.shield
-
-                if (!utility) return
-                return (
-                    <Stack>
-                        {typeof utility.hitpoints !== "undefined" &&
-                            renderStat("HITPOINTS", {
-                                oldStat: oldUtility?.hitpoints,
-                                newStat: utility.hitpoints,
-                            })}
-                        {typeof utility.recharge_rate !== "undefined" &&
-                            renderStat("RECHARGE RATE", {
-                                oldStat: oldUtility?.recharge_rate,
-                                newStat: utility.recharge_rate,
-                            })}
-                        {typeof utility.recharge_energy_cost !== "undefined" &&
-                            renderStat("ENERGY COST", {
-                                oldStat: oldUtility?.recharge_energy_cost,
-                                newStat: utility.recharge_energy_cost,
-                            })}
-                    </Stack>
-                )
-            }
             case UtilityType.AttackDrone: {
                 const oldUtility = equipped?.attack_drone
                 const utility = utilityDetails.attack_drone
@@ -218,7 +193,7 @@ export const UtilityItem = ({ id, equipped, selected, onSelect }: UtilityItemPro
                 )
             }
         }
-    }, [equipped?.accelerator, equipped?.anti_missile, equipped?.attack_drone, equipped?.repair_drone, equipped?.shield, renderStat, utilityDetails])
+    }, [equipped?.accelerator, equipped?.anti_missile, equipped?.attack_drone, equipped?.repair_drone, renderStat, utilityDetails])
 
     if (!utilityDetails) {
         return (
