@@ -95,10 +95,6 @@ export const MechGeneralStatus = ({
                     text = "IDLE"
                     color = colors.green
                     break
-                case MechStatusEnum.PendingQueue:
-                    text = "PENDING DEPLOY"
-                    color = colors.yellow
-                    break
                 case MechStatusEnum.Queue:
                     if (payload.battle_lobby_number) {
                         text = `In Lobby ${payload.battle_lobby_number}`
