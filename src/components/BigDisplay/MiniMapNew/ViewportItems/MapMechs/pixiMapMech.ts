@@ -1,7 +1,7 @@
 import { DashLine } from "pixi-dashed-line"
 import { ease } from "pixi-ease"
 import * as PIXI from "pixi.js"
-import { CrossPNG } from "../../../../../assets"
+import { CrossPNG, DeadSkullPNG } from "../../../../../assets"
 import { deg2rad, HEXToVBColor } from "../../../../../helpers"
 import { PixiProgressBar } from "../../../../../helpers/pixiHelpers"
 import { colors, fonts } from "../../../../../theme/theme"
@@ -17,6 +17,7 @@ export class PixiMapMech {
     private mechMoveSprite: PIXI.Sprite
     private mechMoveDashedLine: PIXI.Graphics
     private highlightedCircle: PIXI.Graphics
+    private skull: PIXI.Sprite
 
     constructor(label: number) {
         // Create container for everything
@@ -61,6 +62,12 @@ export class PixiMapMech {
         ease.add(this.highlightedCircle, { rotation: deg2rad(360) }, { duration: 3000, ease: "linear", repeat: true, removeExisting: true })
         ease.add(this.highlightedCircle, { scale: 1.2 }, { duration: 1000, ease: "linear", repeat: true, reverse: true, removeExisting: true })
 
+        // Skull
+        this.skull = PIXI.Sprite.from(DeadSkullPNG)
+        this.skull.anchor.set(0.5, 0.42)
+        this.skull.width = 3
+        this.skull.height = 3
+
         // Add everything to container
         this.root.addChild(this.rectGraphics)
         this.root.addChild(this.arrowGraphics)
@@ -69,6 +76,7 @@ export class PixiMapMech {
         this.root.addChild(this.shieldBar.root)
         this.root.addChild(this.mechMoveSprite)
         this.root.addChild(this.highlightedCircle)
+        this.root.addChild(this.skull)
     }
 
     destroy() {
@@ -87,6 +95,10 @@ export class PixiMapMech {
         this.rectGraphics.lineStyle(iconDimension.height * 0.08, HEXToVBColor(primaryColor))
         this.rectGraphics.drawRoundedRect(0, 0, iconDimension.width, iconDimension.height, 6)
         this.rectGraphics.endFill()
+        this.skull.position.set(iconDimension.width / 2, iconDimension.height / 2.3)
+        this.skull.width = iconDimension.width / 1.5
+        this.skull.height = iconDimension.height / 1.5
+        this.skull.tint = HEXToVBColor(primaryColor)
     }
 
     updateRotationArrow(primaryColor: string, iconDimension: Dimension) {
@@ -158,6 +170,27 @@ export class PixiMapMech {
     updateHpBar(percent: number) {
         if (percent < 45) this.hpBar.updateColor(colors.red)
         this.hpBar.updatePercent(percent)
+
+        // If it's dead, show dead stuff
+        if (percent <= 0) {
+            this.numberText.visible = false
+            this.hpBar.root.visible = false
+            this.shieldBar.root.visible = false
+            this.arrowGraphics.visible = false
+            this.mechMoveSprite.visible = false
+            this.mechMoveDashedLine.visible = false
+            this.root.alpha = 0.6
+            this.skull.visible = true
+        } else {
+            this.numberText.visible = true
+            this.hpBar.root.visible = true
+            this.shieldBar.root.visible = true
+            this.arrowGraphics.visible = true
+            this.mechMoveSprite.visible = true
+            this.mechMoveDashedLine.visible = true
+            this.root.alpha = 1
+            this.skull.visible = false
+        }
     }
 
     updateShieldBar(percent: number) {

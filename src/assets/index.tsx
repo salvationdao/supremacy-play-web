@@ -190,6 +190,7 @@ import SafePNG from "./images/Safe.png"
 import SupBackground from "./images/SupBackground.webp"
 import SupremacyPNG from "./images/Supremacy.png"
 import RainingSupsPNG from "./images/supsRain.png"
+import DeadSkullPNG from "./images/DeadSkull.png"
 import ThreeMechsJPG from "./images/ThreeMechs.jpeg"
 import Stack10aJPG from "./images/TowerStackSkins/Stack10a.jpg"
 import Stack10bJPG from "./images/TowerStackSkins/Stack10b.jpg"
@@ -309,6 +310,7 @@ export {
     BattleArenaOpeningWebP,
     ThreeMechsJPG,
     CrossPNG,
+    DeadSkullPNG,
 }
 export { BCBorder, RMBorder, ZHIBorder, BCWaiting, RMWaiting, ZHIWaiting, BCDeploy, RMDeploy, ZHIDeploy }
 
