@@ -92,6 +92,8 @@ export const WarMachineHangarDetailsInner = ({
 
     const rarityDeets = useMemo(() => getRarityDeets(mechDetails?.chassis_skin?.tier || mechDetails?.tier || ""), [mechDetails])
 
+    const updateMechDetails = (newMechDetails: MechDetails) => setMechDetails(newMechDetails)
+
     useGameServerSubscriptionFaction<MechDetails>(
         {
             URI: `/mech/${mechID}/details`,
@@ -282,7 +284,7 @@ export const WarMachineHangarDetailsInner = ({
             >
                 {mechDetails ? (
                     <>
-                        <MechLoadout mechDetails={mechDetails} mechStatus={mechStatus} />
+                        <MechLoadout mechDetails={mechDetails} mechStatus={mechStatus} onUpdate={updateMechDetails} />
                         <MechViewer mechDetails={mechDetails} />
                     </>
                 ) : (

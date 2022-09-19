@@ -100,9 +100,10 @@ const generateLoadout = (newMechDetails: MechDetails): MechDetailsWithMaps => {
 interface MechLoadoutProps {
     mechDetails: MechDetails
     mechStatus?: MechStatus
+    onUpdate: (newMechDetails: MechDetails) => void
 }
 
-export const MechLoadout = ({ mechDetails, mechStatus }: MechLoadoutProps) => {
+export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
     const { newSnackbarMessage } = useGlobalNotifications()
 
@@ -110,6 +111,10 @@ export const MechLoadout = ({ mechDetails, mechStatus }: MechLoadoutProps) => {
     const [loading, setLoading] = useState(false)
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
     const [currLoadout, setCurrLoadout] = useState<MechDetailsWithMaps>(generateLoadout(mechDetails))
+
+    useEffect(() => {
+        setCurrLoadout(generateLoadout(mechDetails))
+    }, [mechDetails])
 
     // Track if changes have been made
     useEffect(() => {
@@ -143,7 +148,7 @@ export const MechLoadout = ({ mechDetails, mechStatus }: MechLoadoutProps) => {
 
             newSnackbarMessage(`Successfully saved loadout.`, "success")
             setError(undefined)
-            setCurrLoadout(generateLoadout(newMechDetails))
+            onUpdate(newMechDetails)
         } catch (e) {
             if (e instanceof Error) {
                 setError(e.message)
@@ -153,7 +158,16 @@ export const MechLoadout = ({ mechDetails, mechStatus }: MechLoadoutProps) => {
         } finally {
             setLoading(false)
         }
-    }, [currLoadout.changed_mech_skin?.id, currLoadout.changed_power_core?.id, currLoadout.changed_utility_map, currLoadout.changed_weapons_map, mechDetails.id, newSnackbarMessage, send])
+    }, [
+        currLoadout.changed_mech_skin?.id,
+        currLoadout.changed_power_core?.id,
+        currLoadout.changed_utility_map,
+        currLoadout.changed_weapons_map,
+        mechDetails.id,
+        newSnackbarMessage,
+        onUpdate,
+        send,
+    ])
 
     const addMechSkinSelection = useCallback((ep: LoadoutMechSkin) => {
         setCurrLoadout((prev) => {
@@ -185,17 +199,17 @@ export const MechLoadout = ({ mechDetails, mechStatus }: MechLoadoutProps) => {
         })
     }, [])
 
-    const addUtilitySelection = useCallback((eu: LoadoutUtility) => {
-        setCurrLoadout((prev) => {
-            const updated = new Map(prev.changed_utility_map)
-            updated.set(eu.slot_number, eu)
+    // const addUtilitySelection = useCallback((eu: LoadoutUtility) => {
+    //     setCurrLoadout((prev) => {
+    //         const updated = new Map(prev.changed_utility_map)
+    //         updated.set(eu.slot_number, eu)
 
-            return {
-                ...prev,
-                changed_utility_map: updated,
-            }
-        })
-    }, [])
+    //         return {
+    //             ...prev,
+    //             changed_utility_map: updated,
+    //         }
+    //     })
+    // }, [])
 
     const undoMechSkinSelection = useCallback(() => {
         setCurrLoadout((prev) => ({ ...prev, changed_mech_skin: undefined }))
@@ -217,17 +231,17 @@ export const MechLoadout = ({ mechDetails, mechStatus }: MechLoadoutProps) => {
         })
     }, [])
 
-    const undoUtilitySelection = useCallback((slotNumber: number) => {
-        setCurrLoadout((prev) => {
-            const updated = prev.changed_utility_map
-            updated.delete(slotNumber)
+    // const undoUtilitySelection = useCallback((slotNumber: number) => {
+    //     setCurrLoadout((prev) => {
+    //         const updated = prev.changed_utility_map
+    //         updated.delete(slotNumber)
 
-            return {
-                ...prev,
-                changed_utility_map: updated,
-            }
-        })
-    }, [])
+    //         return {
+    //             ...prev,
+    //             changed_utility_map: updated,
+    //         }
+    //     })
+    // }, [])
 
     const {
         weapons_map,
@@ -245,7 +259,6 @@ export const MechLoadout = ({ mechDetails, mechStatus }: MechLoadoutProps) => {
         locked_to_marketplace,
         xsyn_locked,
     } = currLoadout
-    console.log(chassis_skin)
 
     const loadoutDisabled = useMemo(
         () =>
