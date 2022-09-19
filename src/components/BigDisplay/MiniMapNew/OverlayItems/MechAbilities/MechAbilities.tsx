@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react"
 import { useArena, useAuth, useGame, useMiniMapPixi } from "../../../../../containers"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
-import { BribeStage, GameAbility, PlayerAbility, WarMachineLiveState, WarMachineState } from "../../../../../types"
+import { BribeStage, GameAbility, MechMoveCommandAbility, WarMachineLiveState, WarMachineState } from "../../../../../types"
 import { MechAbility } from "./MechAbility"
 import { PixiMechAbilities } from "./pixiMechAbilities"
 
@@ -10,7 +10,7 @@ import { PixiMechAbilities } from "./pixiMechAbilities"
 export const MechAbilities = React.memo(function MechAbilities() {
     const { userID } = useAuth()
     const { bribeStage, warMachines, spawnedAI } = useGame()
-    const { pixiMainItems, setPlayerAbility, highlightedMechParticipantID } = useMiniMapPixi()
+    const { pixiMainItems, highlightedMechParticipantID } = useMiniMapPixi()
 
     const isVoting = useMemo(() => bribeStage && bribeStage?.phase !== BribeStage.Hold, [bribeStage])
 
@@ -22,20 +22,19 @@ export const MechAbilities = React.memo(function MechAbilities() {
         return null
     }
 
-    return <MechAbilitiesInner key={highlightedMechParticipantID} warMachine={highlightedMech} setPlayerAbility={setPlayerAbility} />
+    return <MechAbilitiesInner key={highlightedMechParticipantID} warMachine={highlightedMech} />
 })
 
 // Inner component starts here
 interface MechAbilitiesInnerProps {
     warMachine: WarMachineState
-    setPlayerAbility: React.Dispatch<React.SetStateAction<PlayerAbility | undefined>>
 }
 
 const propsAreEqual = (prevProps: MechAbilitiesInnerProps, nextProps: MechAbilitiesInnerProps) => {
     return prevProps.warMachine.id === nextProps.warMachine.id
 }
 
-const MechAbilitiesInner = React.memo(function MechAbilitiesInner({ warMachine, setPlayerAbility }: MechAbilitiesInnerProps) {
+const MechAbilitiesInner = React.memo(function MechAbilitiesInner({ warMachine }: MechAbilitiesInnerProps) {
     const { currentArenaID } = useArena()
     const { pixiMainItems } = useMiniMapPixi()
     const { hash, participantID } = warMachine
@@ -88,28 +87,36 @@ const MechAbilitiesInner = React.memo(function MechAbilitiesInner({ warMachine, 
         },
     )
 
-    // On activate mech move command
-    // const activateMechMoveCommand = useCallback(() => {
-    //     if (!isAlive || !currentArenaID) return
+    return useMemo(() => {
+        if (!pixiMechAbilities) {
+            return null
+        }
 
-    //     setPlayerAbility({
-    //         ...MechMoveCommandAbility,
-    //         mechHash: warMachine.hash,
-    //     })
-    // }, [isAlive, warMachine.hash, setPlayerAbility, currentArenaID])
+        return (
+            <>
+                {gameAbilities &&
+                    gameAbilities.map((ga, index) => {
+                        return (
+                            <MechAbility
+                                key={ga.id}
+                                pixiMechAbilities={pixiMechAbilities}
+                                index={index}
+                                gameAbility={ga}
+                                hash={hash}
+                                participantID={participantID}
+                            />
+                        )
+                    })}
 
-    if (!pixiMechAbilities) {
-        return null
-    }
-
-    return (
-        <>
-            {gameAbilities &&
-                gameAbilities.map((ga, index) => {
-                    return (
-                        <MechAbility key={ga.id} pixiMechAbilities={pixiMechAbilities} index={index} ability={ga} hash={hash} participantID={participantID} />
-                    )
-                })}
-        </>
-    )
+                {/* Mech move command */}
+                <MechAbility
+                    pixiMechAbilities={pixiMechAbilities}
+                    index={gameAbilities.length}
+                    hash={hash}
+                    participantID={participantID}
+                    playerAbility={MechMoveCommandAbility}
+                />
+            </>
+        )
+    }, [gameAbilities, hash, participantID, pixiMechAbilities])
 }, propsAreEqual)

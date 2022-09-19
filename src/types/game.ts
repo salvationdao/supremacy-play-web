@@ -1,4 +1,5 @@
 import { Faction, WarMachineState } from "."
+import { colors } from "../theme/theme"
 import { FactionIDs } from "./../constants"
 import { User } from "./user"
 
@@ -347,4 +348,38 @@ export interface BattleFactionAbilityAlertProps {
 export interface NotificationStruct {
     type: NotificationType
     data: BattleFactionAbilityAlertProps | KillAlertProps | LocationSelectAlertProps | WarMachineAbilityAlertProps | BattleZoneStruct | string
+}
+
+export const MechMoveCommandAbility: PlayerAbility = {
+    id: "mech_move_command",
+    blueprint_id: "mech_move_command",
+    count: 1,
+    last_purchased_at: new Date(),
+    cooldown_expires_on: new Date(),
+    ability: {
+        id: "",
+        game_client_ability_id: 8,
+        label: "MOVE COMMAND",
+        image_url: "https://afiles.ninja-cdn.com/supremacy-stream-site/assets/img/ability-mech-move-command.png",
+        description: "Command the war machine to move to a specific location.",
+        text_colour: "#000000",
+        colour: colors.gold,
+        location_select_type: LocationSelectType.MechCommand,
+        created_at: new Date(),
+        inventory_limit: 10,
+        cooldown_seconds: 5,
+    },
+}
+
+export interface MechMoveCommand {
+    id: string
+    mech_id: string
+    triggered_by_id: string
+    cell_x: number
+    cell_y: number
+    cancelled_at?: string
+    reached_at?: string
+    is_moving: boolean
+    remain_cooldown_seconds: number
+    is_mini_mech: boolean
 }

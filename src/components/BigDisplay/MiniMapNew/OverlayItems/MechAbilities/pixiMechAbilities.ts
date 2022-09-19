@@ -31,7 +31,7 @@ export class PixiMechAbilities {
         this.root.destroy(true)
     }
 
-    addGameAbility(ability: PixiMechAbility, index: number) {
+    addMechAbility(ability: PixiMechAbility, index: number) {
         this.abilities.push(ability)
         ability.root.x = GAP
         ability.root.y = (ability.getDefaultHeight() + GAP) * index + GAP

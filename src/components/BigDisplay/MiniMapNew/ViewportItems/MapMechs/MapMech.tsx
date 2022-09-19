@@ -6,8 +6,16 @@ import { closestAngle, deg2rad } from "../../../../../helpers"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors } from "../../../../../theme/theme"
-import { Dimension, DisplayedAbility, LocationSelectType, MechDisplayEffectType, WarMachineLiveState, WarMachineState } from "../../../../../types"
-import { MechMoveCommand, MechMoveCommandAbility } from "../../OverlayItems/MechAbilities/MoveCommand"
+import {
+    Dimension,
+    DisplayedAbility,
+    LocationSelectType,
+    MechDisplayEffectType,
+    MechMoveCommand,
+    MechMoveCommandAbility,
+    WarMachineLiveState,
+    WarMachineState,
+} from "../../../../../types"
 import { PixiMapMech } from "./pixiMapMech"
 
 interface MapMechProps {
