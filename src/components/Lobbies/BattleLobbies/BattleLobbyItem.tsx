@@ -47,9 +47,22 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                             p: ".35rem",
                             position: "relative",
                             minHeight: "12rem",
-                            background: game_map ? `url(${game_map.background_url})` : undefined,
                         }}
                     >
+                        {/*Background image*/}
+                        <Box
+                            sx={{
+                                position: "absolute",
+                                zIndex: -1,
+                                top: 0,
+                                bottom: 0,
+                                left: 0,
+                                right: 0,
+                                background: game_map ? `url(${game_map.background_url})` : undefined,
+                                opacity: 0.4,
+                            }}
+                        />
+
                         {/* Lobby Info */}
                         <Stack direction="column" height="100%" width="22%">
                             <Typography sx={{ fontFamily: fonts.nostromoBlack }}>Lobby #{number}</Typography>
@@ -183,28 +196,28 @@ const BattleLobbyMechSlots = ({ battleLobbyMechs }: { battleLobbyMechs: BattleLo
                             flex={1}
                             sx={{
                                 width: "100%",
-                                pt: ".15rem",
-                                display: "grid",
-                                gridTemplateColumns: "repeat(auto-fill, minmax(32rem, 1fr))",
-                                gap: ".15rem",
+                                display: "flex",
+                                flexDirection: "column",
                                 alignItems: "center",
                                 justifyContent: "center",
                             }}
                         >
                             {mechSlots.map((ms, i) => (
-                                <Stack
+                                <Box
                                     key={i}
-                                    direction="row"
                                     sx={{
+                                        display: "flex",
+                                        flex: 1,
+                                        flexDirection: "row",
                                         p: ".15rem",
+                                        my: ".1rem",
                                         width: "100%",
-                                        height: "100%",
                                         backgroundColor: colors.offWhite + "20",
                                         borderRadius: "4px",
                                     }}
                                 >
                                     <MechSlotContent battleLobbiesMech={ms} faction={faction} />
-                                </Stack>
+                                </Box>
                             ))}
                         </Box>
                     </Stack>

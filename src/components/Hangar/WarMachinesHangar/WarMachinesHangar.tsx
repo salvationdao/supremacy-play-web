@@ -522,7 +522,6 @@ export const WarMachinesHangar = () => {
                         selectedMechs={selectedMechs}
                         setSelectedMechs={setSelectedMechs}
                         childrenMechStatus={childrenMechStatus}
-                        onBulkDeploy={(amount) => updateTotalDeployed(amount)}
                     />
                 )}
 

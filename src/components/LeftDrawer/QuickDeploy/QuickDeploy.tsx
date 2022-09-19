@@ -1,44 +1,22 @@
-import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { Box, Pagination, Stack, Typography } from "@mui/material"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { FancyButton } from "../.."
 import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
 import { usePagination } from "../../../hooks"
-import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MechBasic, MechBasicWithQueueStatus, MechStatus } from "../../../types"
-import { SortDir, SortTypeLabel } from "../../../types/marketplace"
+import { SortTypeLabel } from "../../../types/marketplace"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
-import { BulkDeployConfirmModal } from "../../Hangar/WarMachinesHangar/Common/BulkDeployConfirmModal"
-import { QueueFeed } from "../../Hangar/WarMachinesHangar/WarMachineDetails/Modals/DeployModal"
 import { ChallengeFundsRemain } from "./ChallengeFundsRemain"
 import { QueueDetails } from "./QueueDetails"
-import { QuickDeployItem } from "./QuickDeployItem"
+import { useBattleLobby } from "../../../containers/battleLobby"
+import { NewQuickDeployItem } from "./NewQuickDeployItem"
 
 const sortOptions = [
     { label: SortTypeLabel.MechQueueAsc, value: SortTypeLabel.MechQueueAsc },
     { label: SortTypeLabel.MechQueueDesc, value: SortTypeLabel.MechQueueDesc },
 ]
-
-interface GetMechsRequest {
-    queue_sort?: string
-    sort_by?: string
-    sort_dir?: string
-    search?: string
-    page: number
-    page_size: number
-    rarities?: string[]
-    statuses: string[]
-    include_market_listed: boolean
-    exclude_damaged_mech: boolean
-}
-
-interface GetAssetsResponse {
-    mechs: MechBasicWithQueueStatus[]
-    total: number
-}
 
 export interface PlayerQueueStatus {
     total_queued: number
@@ -53,26 +31,25 @@ export const QuickDeploy = () => {
 
 const QuickDeployInner = () => {
     const theme = useTheme()
-    const { send } = useGameServerCommandsUser("/user_commander")
-
-    // Player Queue Status
-    const [playerQueueStatus, setPlayerQueueStatus] = useState<PlayerQueueStatus>()
-
-    // Mechs
-    const [mechs, setMechs] = useState<MechBasicWithQueueStatus[]>([])
-    const [isLoading, setIsLoading] = useState(true)
-    const [loadError, setLoadError] = useState<string>()
+    const { mechsWithQueueStatus } = useBattleLobby()
 
     // Bulk action
-    const [selectedMechs, setSelectedMechs] = useState<MechBasic[]>([])
-    const [bulkDeployConfirmModalOpen, setBulkDeployConfirmModalOpen] = useState(false)
-    const childrenMechStatus = useRef<{ [mechID: string]: MechStatus }>({})
+    // const [bulkDeployConfirmModalOpen, setBulkDeployConfirmModalOpen] = useState(false)
+    // const childrenMechStatus = useRef<{ [mechID: string]: MechStatus }>({})
 
     const [sort, setSort] = useState<string>(SortTypeLabel.MechQueueAsc)
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: parseString(localStorage.getItem("quickDeployPageSize2"), 10),
         page: 1,
     })
+
+    const canDeployMechs = useMemo(() => {
+        const list = mechsWithQueueStatus.filter((mq) => mq.can_deploy)
+        setTotalItems(list.length)
+        return list
+    }, [mechsWithQueueStatus, setTotalItems])
+
+    const [selectedMechIDs, setSelectedMechIDs] = useState<string[]>([])
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
@@ -81,73 +58,13 @@ const QuickDeployInner = () => {
         localStorage.setItem("quickDeployPageSize2", pageSize.toString())
     }, [pageSize])
 
-    const updateTotalDeployed = (amount: number) => {
-        setPlayerQueueStatus((prev) => {
-            if (!prev) return
-
-            return {
-                ...prev,
-                total_queued: prev.total_queued + amount,
-            }
-        })
-    }
-
-    const toggleSelected = useCallback((mech: MechBasic) => {
-        setSelectedMechs((prev) => {
-            const newArray = [...prev]
-            const isAlreadySelected = prev.findIndex((s) => s.id === mech.id)
-            if (isAlreadySelected >= 0) {
-                newArray.splice(isAlreadySelected, 1)
-            } else {
-                newArray.push(mech)
-            }
-
-            return newArray
-        })
-    }, [])
-
     const onSelectAll = useCallback(() => {
-        setSelectedMechs(mechs)
-    }, [mechs])
+        setSelectedMechIDs(canDeployMechs.map((m) => m.id))
+    }, [canDeployMechs])
 
     const onUnSelectAll = useCallback(() => {
-        setSelectedMechs([])
+        setSelectedMechIDs([])
     }, [])
-
-    const getItems = useCallback(async () => {
-        try {
-            setIsLoading(true)
-
-            let sortDir = SortDir.Asc
-            if (sort === SortTypeLabel.MechQueueDesc) sortDir = SortDir.Desc
-
-            const resp = await send<GetAssetsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
-                queue_sort: sortDir,
-                page,
-                page_size: pageSize,
-                statuses: ["BATTLE_READY"],
-                include_market_listed: false,
-                exclude_damaged_mech: true,
-            })
-
-            const resp2 = await send<PlayerQueueStatus>(GameServerKeys.PlayerQueueStatus)
-            setPlayerQueueStatus(resp2)
-
-            if (!resp) return
-            setLoadError(undefined)
-            setMechs(resp.mechs)
-            setTotalItems(resp.total)
-        } catch (e) {
-            setLoadError(typeof e === "string" ? e : "Failed to get war machines.")
-            console.error(e)
-        } finally {
-            setIsLoading(false)
-        }
-    }, [send, sort, page, pageSize, setTotalItems])
-
-    useEffect(() => {
-        getItems()
-    }, [getItems])
 
     return (
         <>
@@ -172,7 +89,7 @@ const QuickDeployInner = () => {
                     <ChallengeFundsRemain />
 
                     <TotalAndPageSizeOptions
-                        countItems={mechs?.length}
+                        countItems={canDeployMechs.length}
                         totalItems={totalItems}
                         sortOptions={sortOptions}
                         selectedSort={sort}
@@ -180,18 +97,17 @@ const QuickDeployInner = () => {
                     />
 
                     <TotalAndPageSizeOptions
-                        countItems={mechs?.length}
+                        countItems={canDeployMechs.length}
                         pageSize={pageSize}
                         changePageSize={changePageSize}
                         changePage={changePage}
                         pageSizeOptions={[10, 20, 40]}
-                        selectedCount={selectedMechs.length}
+                        selectedCount={selectedMechIDs.length}
                         onSelectAll={onSelectAll}
                         onUnselectedAll={onUnSelectAll}
-                        manualRefresh={getItems}
                     >
                         <FancyButton
-                            disabled={selectedMechs.length <= 0}
+                            disabled={selectedMechIDs.length <= 0}
                             clipThingsProps={{
                                 clipSize: "6px",
                                 backgroundColor: colors.green,
@@ -200,7 +116,7 @@ const QuickDeployInner = () => {
                                 sx: { position: "relative" },
                             }}
                             sx={{ px: "1rem", py: 0, color: "#FFFFFF" }}
-                            onClick={() => setBulkDeployConfirmModalOpen(true)}
+                            // onClick={() => setBulkDeployConfirmModalOpen(true)}
                         >
                             <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
                                 DEPLOY SELECTED
@@ -209,26 +125,10 @@ const QuickDeployInner = () => {
                     </TotalAndPageSizeOptions>
 
                     <Box sx={{ px: "1rem", mt: "1.5rem", backgroundColor: "#00000099" }}>
-                        <QueueDetails playerQueueStatus={playerQueueStatus} />
+                        <QueueDetails />
                     </Box>
 
-                    {loadError && (
-                        <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem" }}>
-                                <Typography sx={{ color: colors.red, fontFamily: fonts.nostromoBold, textAlign: "center" }}>{loadError}</Typography>
-                            </Stack>
-                        </Stack>
-                    )}
-
-                    {isLoading && !loadError && (
-                        <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem" }}>
-                                <CircularProgress size="3rem" sx={{ color: primaryColor }} />
-                            </Stack>
-                        </Stack>
-                    )}
-
-                    {!isLoading && !loadError && mechs && mechs.length > 0 && (
+                    {canDeployMechs && canDeployMechs.length > 0 && (
                         <Box
                             sx={{
                                 flex: 1,
@@ -253,17 +153,22 @@ const QuickDeployInner = () => {
                         >
                             <Box sx={{ direction: "ltr", height: 0 }}>
                                 <Stack spacing=".3rem" sx={{ height: "100%" }}>
-                                    {mechs.map((mech) => {
-                                        const isSelected = selectedMechs.findIndex((s) => s.id === mech.id) >= 0
+                                    {canDeployMechs.map((mech) => {
                                         return (
-                                            <QuickDeployItem
+                                            <NewQuickDeployItem
                                                 key={mech.id}
-                                                isSelected={isSelected}
+                                                isSelected={selectedMechIDs.includes(mech.id)}
                                                 toggleIsSelected={() => {
-                                                    toggleSelected(mech)
+                                                    setSelectedMechIDs((prev) => {
+                                                        // remove, if exists
+                                                        if (prev.includes(mech.id)) {
+                                                            return prev.filter((id) => id !== mech.id)
+                                                        }
+
+                                                        // otherwise, append
+                                                        return prev.concat(mech.id)
+                                                    })
                                                 }}
-                                                onDeploy={() => updateTotalDeployed(1)}
-                                                childrenMechStatus={childrenMechStatus}
                                                 mech={mech}
                                             />
                                         )
@@ -273,7 +178,7 @@ const QuickDeployInner = () => {
                         </Box>
                     )}
 
-                    {!isLoading && !loadError && mechs && mechs.length <= 0 && (
+                    {canDeployMechs && canDeployMechs.length <= 0 && (
                         <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                                 <Typography
@@ -320,15 +225,15 @@ const QuickDeployInner = () => {
                 </Stack>
             </Stack>
 
-            {bulkDeployConfirmModalOpen && (
-                <BulkDeployConfirmModal
-                    setBulkDeployConfirmModalOpen={setBulkDeployConfirmModalOpen}
-                    selectedMechs={selectedMechs}
-                    setSelectedMechs={setSelectedMechs}
-                    childrenMechStatus={childrenMechStatus}
-                    onBulkDeploy={(amount) => updateTotalDeployed(amount)}
-                />
-            )}
+            {/* all the mech queue from the lobby, bulk deploy may no longer needed */}
+            {/*{bulkDeployConfirmModalOpen && (*/}
+            {/*    <BulkDeployConfirmModal*/}
+            {/*        setBulkDeployConfirmModalOpen={setBulkDeployConfirmModalOpen}*/}
+            {/*        selectedMechs={selectedMechs}*/}
+            {/*        setSelectedMechs={setSelectedMechs}*/}
+            {/*        childrenMechStatus={childrenMechStatus}*/}
+            {/*    />*/}
+            {/*)}*/}
         </>
     )
 }

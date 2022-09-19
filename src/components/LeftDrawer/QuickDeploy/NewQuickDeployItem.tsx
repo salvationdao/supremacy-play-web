@@ -1,17 +1,13 @@
 // new quick deploy item
 import { MechBasicWithQueueStatus } from "../../../types"
-import React, { useCallback, useMemo, useState } from "react"
-import { useGlobalNotifications } from "../../../containers"
-import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
+import React, { useMemo } from "react"
 import { getRarityDeets } from "../../../helpers"
-import { GameServerKeys } from "../../../keys"
 import { Box, Stack, Typography } from "@mui/material"
 import { MechThumbnail } from "../../Hangar/WarMachinesHangar/Common/MechThumbnail"
-import { FancyButton } from "../../Common/FancyButton"
-import { colors, fonts } from "../../../theme/theme"
+import { fonts } from "../../../theme/theme"
 import { MechName } from "../../Hangar/WarMachinesHangar/WarMachineDetails/MechName"
-import { MechGeneralStatus } from "../../Hangar/WarMachinesHangar/Common/MechGeneralStatus"
 import { MechRepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
+import { QuickDeployMechStatus } from "./QuickDeployMechStatus"
 
 interface QuickDeployItemProps {
     mech: MechBasicWithQueueStatus
@@ -20,7 +16,13 @@ interface QuickDeployItemProps {
 }
 
 const propsAreMechEqual = (prevProps: QuickDeployItemProps, nextProps: QuickDeployItemProps) => {
-    return prevProps.isSelected === nextProps.isSelected && prevProps.mech.id === nextProps.mech.id && prevProps.mech.status === prevProps.mech.status
+    return (
+        prevProps.isSelected === nextProps.isSelected &&
+        prevProps.mech.id === nextProps.mech.id &&
+        prevProps.mech.status === prevProps.mech.status &&
+        prevProps.mech.name === prevProps.mech.name &&
+        prevProps.mech.label === prevProps.mech.label
+    )
 }
 
 export const NewQuickDeployItem = React.memo(function QuickDeployItem({ isSelected, toggleIsSelected, mech }: QuickDeployItemProps) {
@@ -65,7 +67,7 @@ export const NewQuickDeployItem = React.memo(function QuickDeployItem({ isSelect
                             <MechName allowEdit mech={mech} />
                         </Box>
 
-                        <MechGeneralStatus mechID={mech.id} smallVersion />
+                        <QuickDeployMechStatus mech={mech} />
                     </Stack>
 
                     <Typography
