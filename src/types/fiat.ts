@@ -23,6 +23,7 @@ export interface FiatProductPricing {
 
 export interface FiatOrder {
     id: string
+    order_number: number
     user_id: string
     order_status: string
     payment_method: string

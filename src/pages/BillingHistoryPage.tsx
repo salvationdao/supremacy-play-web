@@ -112,7 +112,7 @@ export const BillingHistoryPage = () => {
                                         })
                                         return {
                                             cells: [
-                                                <Typography key={1}>TBA</Typography>,
+                                                <Typography key={1}>{item.order_number}</Typography>,
                                                 <Typography key={2}>{moment(item.created_at).format("DD/MM/YYYY h:mm A")}</Typography>,
                                                 <Typography key={3}>{item.order_status.toUpperCase()}</Typography>,
                                                 <Typography key={4}>{generatePriceText("USD", total)}</Typography>,
