@@ -54,23 +54,6 @@ export const UtilityPreview = ({ onConfirm, utility, equipped }: UtilityPreviewP
         if (!utility) return []
 
         const stats = [
-            // Shield
-            typeof utility.shield?.hitpoints !== "undefined" &&
-                renderStatChange("HITPOINTS", {
-                    oldStat: equipped?.shield?.hitpoints,
-                    newStat: utility.shield?.hitpoints,
-                }),
-            typeof utility.shield?.recharge_rate !== "undefined" &&
-                renderStatChange("RECHARGE RATE", {
-                    oldStat: equipped?.shield?.recharge_rate,
-                    newStat: utility.shield?.recharge_rate,
-                }),
-            typeof utility.shield?.recharge_energy_cost !== "undefined" &&
-                renderStatChange("ENERGY COST", {
-                    oldStat: equipped?.shield?.recharge_energy_cost,
-                    newStat: utility.shield?.recharge_energy_cost,
-                }),
-
             // AttackDrone
             typeof utility.attack_drone?.hitpoints !== "undefined" &&
                 renderStatChange("HITPOINTS", {
@@ -161,9 +144,6 @@ export const UtilityPreview = ({ onConfirm, utility, equipped }: UtilityPreviewP
         equipped?.repair_drone?.deploy_energy_cost,
         equipped?.repair_drone?.lifespan_seconds,
         equipped?.repair_drone?.repair_amount,
-        equipped?.shield?.hitpoints,
-        equipped?.shield?.recharge_energy_cost,
-        equipped?.shield?.recharge_rate,
         renderStatChange,
         utility,
     ])

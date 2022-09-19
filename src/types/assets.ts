@@ -29,18 +29,6 @@ export enum PowerCoreSize {
     Large = "LARGE",
 }
 
-export type UtilityObjectType<T> = T extends UtilityType.Shield
-    ? UtilityShield
-    : T extends UtilityType.AttackDrone
-    ? UtilityAttackDrone
-    : T extends UtilityType.RepairDrone
-    ? UtilityRepairDrone
-    : T extends UtilityType.AntiMissile
-    ? UtilityAntiMissile
-    : T extends UtilityType.Accelerator
-    ? UtilityAccelerator
-    : never
-
 export enum UtilityType {
     Shield = "SHIELD",
     AttackDrone = "ATTACK DRONE",
