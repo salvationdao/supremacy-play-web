@@ -115,7 +115,7 @@ export const ShoppingCartTable = ({ shoppingCart, loading, primaryColor, backgro
                                 textAlign: "right",
                             }}
                         >
-                            {generatePriceText("USD", totalUSD)}
+                            {generatePriceText("$USD", totalUSD)}
                         </Typography>
 
                         {!fullPage && (

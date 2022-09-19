@@ -58,7 +58,7 @@ export const MysteryCrateStoreItem = React.memo(function MysteryCrateStoreItem({
         let pricing: string | null = null
         for (const p of crate.fiat_product.pricing) {
             if (p.currency_code === "USD") {
-                pricing = generatePriceText("USD", new BigNumber(p.amount).multipliedBy(quantity))
+                pricing = generatePriceText("$USD", new BigNumber(p.amount).multipliedBy(quantity))
                 break
             }
         }

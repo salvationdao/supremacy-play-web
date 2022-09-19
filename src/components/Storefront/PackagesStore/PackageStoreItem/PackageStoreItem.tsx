@@ -61,7 +61,7 @@ export const PackageStoreItem = React.memo(function PackageStoreItem({ enlargedV
         let pricing: string | null = null
         for (const p of item.pricing) {
             if (p.currency_code === "USD") {
-                pricing = generatePriceText("USD", p.amount)
+                pricing = generatePriceText("$USD", p.amount)
                 break
             }
         }
