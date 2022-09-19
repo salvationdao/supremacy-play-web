@@ -144,7 +144,14 @@ export const MechViewer = ({ mechDetails, unity }: MechViewerProps) => {
             >
                 <FeatherFade color={backgroundColor} />
                 {unity ? (
-                    <Unity matchWebGLToCanvasSize unityProvider={unityProvider} style={{ width: "100%", height: "100%" }} />
+                    <Unity
+                        unityProvider={unityProvider}
+                        style={{
+                            width: "100%",
+                            height: "100%",
+                            visibility: isLoaded ? "visible" : "hidden",
+                        }}
+                    />
                 ) : (
                     <MediaPreview
                         imageUrl={largeImageUrl || imageUrl || avatarUrl}
