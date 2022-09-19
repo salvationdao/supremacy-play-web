@@ -48,9 +48,7 @@ export const BattleLobbies = () => {
         else if (sort === SortTypeLabel.CreateTimeOldestFirst) sorted = sorted.sort((a, b) => (a.created_at > b.created_at ? 1 : -1))
 
         if (searchValue !== "") {
-            sorted = sorted.filter((s) =>
-                `${s.game_map.name} ${s.number} ${s.host_by.username} ${s.host_by.gid}`.toLowerCase().includes(searchValue.toLowerCase()),
-            )
+            sorted = sorted.filter((s) => `${s.number}` === searchValue)
         }
 
         // filter
@@ -128,7 +126,7 @@ export const BattleLobbies = () => {
                                 <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
                                     SEARCH:
                                 </Typography>
-                                <SearchBattle searchValueInstant={searchValueInstant} setSearchValue={setSearchValue} />
+                                <SearchBattle placeholder="Lobby Number" searchValueInstant={searchValueInstant} setSearchValue={setSearchValue} />
                             </Stack>
 
                             {/* Filter */}

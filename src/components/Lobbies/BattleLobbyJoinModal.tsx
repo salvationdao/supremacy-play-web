@@ -3,7 +3,7 @@ import React, { useCallback, useMemo, useState } from "react"
 import { ConfirmModal } from "../Common/ConfirmModal"
 import { useBattleLobby } from "../../containers/battleLobby"
 import { Box, Stack } from "@mui/material"
-import { NewQuickDeployItem } from "../LeftDrawer/QuickDeploy/NewQuickDeployItem"
+import { QuickDeployItem } from "../LeftDrawer/QuickDeploy/QuickDeployItem"
 import { GameServerKeys } from "../../keys"
 import { useGameServerCommandsFaction } from "../../hooks/useGameServer"
 
@@ -75,7 +75,7 @@ export const BattleLobbyJoinModal = ({ selectedBattleLobby, setSelectedBattleLob
                         <Stack spacing=".3rem" sx={{ height: "100%" }}>
                             {CanDeployedMechs.map((mech) => {
                                 return (
-                                    <NewQuickDeployItem
+                                    <QuickDeployItem
                                         key={mech.id}
                                         isSelected={selectedMechIDs.includes(mech.id)}
                                         toggleIsSelected={() => {
