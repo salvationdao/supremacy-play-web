@@ -17,6 +17,7 @@ interface QuickDeployItemProps {
     isSelected?: boolean
     toggleIsSelected?: () => void
     onDeploy: () => void
+    onLeave: () => void
     childrenMechStatus: React.MutableRefObject<{
         [mechID: string]: MechStatus
     }>
@@ -26,7 +27,14 @@ const propsAreEqual = (prevProps: QuickDeployItemProps, nextProps: QuickDeployIt
     return prevProps.isSelected === nextProps.isSelected && prevProps.mech.id === nextProps.mech.id
 }
 
-export const QuickDeployItem = React.memo(function QuickDeployItem({ isSelected, toggleIsSelected, onDeploy, mech, childrenMechStatus }: QuickDeployItemProps) {
+export const QuickDeployItem = React.memo(function QuickDeployItem({
+    isSelected,
+    toggleIsSelected,
+    onDeploy,
+    onLeave,
+    mech,
+    childrenMechStatus,
+}: QuickDeployItemProps) {
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
@@ -86,6 +94,23 @@ export const QuickDeployItem = React.memo(function QuickDeployItem({ isSelected,
         [send, mech.id, newSnackbarMessage, onDeploy],
     )
 
+    const onLeaveQueue = useCallback(async () => {
+        try {
+            setIsLoading(true)
+            const resp = await send(GameServerKeys.LeaveQueue, { mech_ids: [mech.id] })
+            if (resp) {
+                newSnackbarMessage("Successfully removed war machine from queue.", "success")
+                setError(undefined)
+                onLeave()
+            }
+        } catch (e) {
+            setError(typeof e === "string" ? e : "Failed to leave queue.")
+            console.error(e)
+        } finally {
+            setIsLoading(false)
+        }
+    }, [send, mech.id, newSnackbarMessage, onLeave])
+
     return (
         <Stack
             direction="row"
@@ -107,7 +132,8 @@ export const QuickDeployItem = React.memo(function QuickDeployItem({ isSelected,
                     <MechThumbnail mech={mech} mechDetails={mechDetails} smallSize />
                 </Stack>
 
-                {!error && mechDetails && mechStatus?.can_deploy && (
+                {/* Deploy button */}
+                {!error && mechDetails && mechStatus?.can_deploy && mechStatus?.status !== MechStatusEnum.Queue && (
                     <FancyButton
                         loading={isLoading}
                         clipThingsProps={{
@@ -132,6 +158,36 @@ export const QuickDeployItem = React.memo(function QuickDeployItem({ isSelected,
                     >
                         <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBlack }}>
                             DEPLOY
+                        </Typography>
+                    </FancyButton>
+                )}
+
+                {/* Leave button */}
+                {mechStatus?.status === MechStatusEnum.Queue && (
+                    <FancyButton
+                        loading={isLoading}
+                        clipThingsProps={{
+                            clipSize: "2px",
+                            clipSlantSize: "0px",
+                            corners: {
+                                topLeft: true,
+                                topRight: true,
+                                bottomLeft: true,
+                                bottomRight: true,
+                            },
+                            backgroundColor: colors.yellow,
+                            opacity: 1,
+                            border: {
+                                borderColor: colors.yellow,
+                                borderThickness: "1px",
+                            },
+                            sx: { mt: "-9px" },
+                        }}
+                        sx={{ px: 0, pt: 0, pb: ".2rem", color: "#111111" }}
+                        onClick={onLeaveQueue}
+                    >
+                        <Typography variant="subtitle2" sx={{ color: "#111111", fontFamily: fonts.nostromoBlack }}>
+                            UNDEPLOY
                         </Typography>
                     </FancyButton>
                 )}
@@ -191,4 +247,5 @@ export const QuickDeployItem = React.memo(function QuickDeployItem({ isSelected,
             </Stack>
         </Stack>
     )
-}, propsAreEqual)
+},
+propsAreEqual)

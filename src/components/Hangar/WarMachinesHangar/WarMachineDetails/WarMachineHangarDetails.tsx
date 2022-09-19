@@ -20,6 +20,7 @@ import { MechLoadout } from "./MechLoadout"
 import { MechName } from "./MechName"
 import { MechViewer } from "./MechViewer"
 import { DeployModal } from "./Modals/DeployModal"
+import { LeaveModal } from "./Modals/LeaveModal"
 import { RentalModal } from "./Modals/RentalModal"
 import { RepairModal } from "./Modals/RepairModal/RepairModal"
 
@@ -30,6 +31,7 @@ interface WarMachineHangarDetailsProps {
 export const WarMachineHangarDetails = ({ mechID }: WarMachineHangarDetailsProps) => {
     const [selectedMechDetails, setSelectedMechDetails] = useState<MechDetails>()
     const [deployMechModalOpen, setDeployMechModalOpen] = useState<boolean>(false)
+    const [leaveMechModalOpen, setLeaveMechModalOpen] = useState<boolean>(false)
     const [rentalMechModalOpen, setRentalMechModalOpen] = useState<boolean>(false)
     const [repairMechModalOpen, setRepairMechModalOpen] = useState<boolean>(false)
 
@@ -39,6 +41,7 @@ export const WarMachineHangarDetails = ({ mechID }: WarMachineHangarDetailsProps
                 mechID={mechID}
                 setSelectedMechDetails={setSelectedMechDetails}
                 setDeployMechModalOpen={setDeployMechModalOpen}
+                setLeaveMechModalOpen={setLeaveMechModalOpen}
                 setRentalMechModalOpen={setRentalMechModalOpen}
                 setRepairMechModalOpen={setRepairMechModalOpen}
             />
@@ -49,6 +52,10 @@ export const WarMachineHangarDetails = ({ mechID }: WarMachineHangarDetailsProps
                     deployMechModalOpen={deployMechModalOpen}
                     setDeployMechModalOpen={setDeployMechModalOpen}
                 />
+            )}
+
+            {BATTLE_ARENA_OPEN && selectedMechDetails && leaveMechModalOpen && (
+                <LeaveModal selectedMechDetails={selectedMechDetails} leaveMechModalOpen={leaveMechModalOpen} setLeaveMechModalOpen={setLeaveMechModalOpen} />
             )}
 
             {selectedMechDetails && rentalMechModalOpen && (
@@ -74,6 +81,7 @@ interface WarMachineHangarDetailsInnerProps {
     mechID: string
     setSelectedMechDetails: React.Dispatch<React.SetStateAction<MechDetails | undefined>>
     setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setLeaveMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setRepairMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -82,6 +90,7 @@ export const WarMachineHangarDetailsInner = ({
     mechID,
     setSelectedMechDetails,
     setDeployMechModalOpen,
+    setLeaveMechModalOpen,
     setRentalMechModalOpen,
     setRepairMechModalOpen,
 }: WarMachineHangarDetailsInnerProps) => {
@@ -264,6 +273,7 @@ export const WarMachineHangarDetailsInner = ({
                             mechStatus={mechStatus}
                             setSelectedMechDetails={setSelectedMechDetails}
                             setDeployMechModalOpen={setDeployMechModalOpen}
+                            setLeaveMechModalOpen={setLeaveMechModalOpen}
                             setRentalMechModalOpen={setRentalMechModalOpen}
                             setRepairMechModalOpen={setRepairMechModalOpen}
                             marketLocked={mechDetails.market_locked}
