@@ -124,6 +124,11 @@ export interface MechBasic extends Collection, Images {
     queue_position: number | null
     updated_at: Date
     created_at: Date
+
+    equipped_weapon_count: number | null
+    equipped_utility_count: number | null
+    power_core_recharge_rate: number | null
+    power_core_capacity: number | null
 }
 
 export interface MechBasicWithQueueStatus extends MechBasic {

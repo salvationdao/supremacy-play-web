@@ -2,7 +2,7 @@ import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/mater
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
-import { BATTLE_ARENA_OPEN, HANGAR_PAGE } from "../../../constants"
+import { HANGAR_PAGE } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, parseString } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
@@ -18,10 +18,10 @@ import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { QueueDetails } from "../../LeftDrawer/QuickDeploy/QueueDetails"
 import { PlayerQueueStatus } from "../../LeftDrawer/QuickDeploy/QuickDeploy"
-import { BulkDeployConfirmModal } from "./Common/BulkDeployConfirmModal"
 import { BulkRepairConfirmModal } from "./Common/BulkRepairConfirmModal"
 import { RepairBay } from "./RepairBay/RepairBay"
 import { WarMachineHangarItem } from "./WarMachineHangarItem"
+import { useBattleLobby } from "../../../containers/battleLobby"
 
 const sortOptions = [
     { label: SortTypeLabel.MechQueueAsc, value: SortTypeLabel.MechQueueAsc },
@@ -60,11 +60,11 @@ export const WarMachinesHangar = () => {
     // Items
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const [mechs, setMechs] = useState<MechBasicWithQueueStatus[]>([])
+    const { mechsWithQueueStatus } = useBattleLobby()
 
     // Bulk action
     const [selectedMechs, setSelectedMechs] = useState<MechBasic[]>([])
-    const [bulkDeployConfirmModalOpen, setBulkDeployConfirmModalOpen] = useState(false)
+    // const [bulkDeployConfirmModalOpen, setBulkDeployConfirmModalOpen] = useState(false)
     const [bulkRepairConfirmModalOpen, setBulkRepairConfirmModalOpen] = useState(false)
     const childrenMechStatus = useRef<{ [mechID: string]: MechStatus }>({})
     const childrenRepairStatus = useRef<{ [mechID: string]: RepairStatus }>({})
@@ -91,17 +91,6 @@ export const WarMachinesHangar = () => {
         localStorage.setItem("isWarMachinesHangarFiltersExpanded", isFiltersExpanded.toString())
     }, [isFiltersExpanded])
 
-    const updateTotalDeployed = (amount: number) => {
-        setPlayerQueueStatus((prev) => {
-            if (!prev) return
-
-            return {
-                ...prev,
-                total_queued: prev.total_queued + amount,
-            }
-        })
-    }
-
     const toggleSelected = useCallback((mech: MechBasic) => {
         setSelectedMechs((prev) => {
             const newArray = [...prev]
@@ -117,8 +106,8 @@ export const WarMachinesHangar = () => {
     }, [])
 
     const onSelectAll = useCallback(() => {
-        setSelectedMechs(mechs)
-    }, [mechs])
+        setSelectedMechs(mechsWithQueueStatus)
+    }, [mechsWithQueueStatus])
 
     const onUnSelectAll = useCallback(() => {
         setSelectedMechs([])
@@ -210,7 +199,6 @@ export const WarMachinesHangar = () => {
 
             if (!resp) return
             setLoadError(undefined)
-            setMechs(resp.mechs)
             setTotalItems(resp.total)
             setSelectedMechs([])
         } catch (e) {
@@ -249,7 +237,7 @@ export const WarMachinesHangar = () => {
             )
         }
 
-        if (!mechs || isLoading) {
+        if (!mechsWithQueueStatus || isLoading) {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
@@ -259,7 +247,7 @@ export const WarMachinesHangar = () => {
             )
         }
 
-        if (mechs && mechs.length > 0) {
+        if (mechsWithQueueStatus && mechsWithQueueStatus.length > 0) {
             return (
                 <Box sx={{ direction: "ltr", height: 0 }}>
                     <Box
@@ -274,7 +262,7 @@ export const WarMachinesHangar = () => {
                             overflow: "visible",
                         }}
                     >
-                        {mechs.map((mech) => {
+                        {mechsWithQueueStatus.map((mech) => {
                             const isSelected = selectedMechs.findIndex((s) => s.id === mech.id) >= 0
                             return (
                                 <WarMachineHangarItem
@@ -347,7 +335,7 @@ export const WarMachinesHangar = () => {
                 </Stack>
             </Stack>
         )
-    }, [loadError, mechs, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary, isGridView, selectedMechs, toggleSelected])
+    }, [loadError, mechsWithQueueStatus, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary, isGridView, selectedMechs, toggleSelected])
 
     return useMemo(
         () => (
@@ -375,23 +363,6 @@ export const WarMachinesHangar = () => {
                             <Stack sx={{ flex: 1 }}>
                                 <PageHeader title="WAR MACHINES" description="Your war machines." imageUrl={WarMachineIconPNG}>
                                     <Stack spacing="1rem" direction="row" alignItems="center" sx={{ ml: "auto !important", pr: "2rem" }}>
-                                        <FancyButton
-                                            disabled={!BATTLE_ARENA_OPEN || selectedMechs.length <= 0}
-                                            clipThingsProps={{
-                                                clipSize: "9px",
-                                                backgroundColor: colors.green,
-                                                opacity: 1,
-                                                border: { borderColor: colors.green, borderThickness: "2px" },
-                                                sx: { position: "relative" },
-                                            }}
-                                            sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
-                                            onClick={() => setBulkDeployConfirmModalOpen(true)}
-                                        >
-                                            <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                                DEPLOY SELECTED
-                                            </Typography>
-                                        </FancyButton>
-
                                         <FancyButton
                                             disabled={selectedMechs.length <= 0}
                                             clipThingsProps={{
@@ -435,7 +406,7 @@ export const WarMachinesHangar = () => {
                                 </PageHeader>
 
                                 <TotalAndPageSizeOptions
-                                    countItems={mechs?.length}
+                                    countItems={mechsWithQueueStatus?.length}
                                     totalItems={totalItems}
                                     pageSize={pageSize}
                                     changePageSize={changePageSize}
@@ -515,15 +486,6 @@ export const WarMachinesHangar = () => {
                     <RepairBay selectedMechs={selectedMechs} setSelectedMechs={setSelectedMechs} />
                 </Stack>
 
-                {bulkDeployConfirmModalOpen && (
-                    <BulkDeployConfirmModal
-                        setBulkDeployConfirmModalOpen={setBulkDeployConfirmModalOpen}
-                        selectedMechs={selectedMechs}
-                        setSelectedMechs={setSelectedMechs}
-                        childrenMechStatus={childrenMechStatus}
-                    />
-                )}
-
                 {bulkRepairConfirmModalOpen && (
                     <BulkRepairConfirmModal
                         setBulkRepairConfirmModalOpen={setBulkRepairConfirmModalOpen}
@@ -537,7 +499,7 @@ export const WarMachinesHangar = () => {
             </>
         ),
         [
-            bulkDeployConfirmModalOpen,
+            // bulkDeployConfirmModalOpen,
             bulkRepairConfirmModalOpen,
             changePage,
             changePageSize,
@@ -545,7 +507,7 @@ export const WarMachinesHangar = () => {
             getItems,
             isFiltersExpanded,
             isGridView,
-            mechs?.length,
+            mechsWithQueueStatus?.length,
             onSelectAll,
             onUnSelectAll,
             page,

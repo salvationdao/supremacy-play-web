@@ -4,20 +4,20 @@ import { TooltipHelper } from "../../.."
 import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
 import { getRarityDeets } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
-import { MechDetails } from "../../../../types"
+import { MechBasic, MechDetails } from "../../../../types"
 
-export const MechLoadoutIcons = ({ mechDetails }: { mechDetails?: MechDetails }) => {
-    const rarityDeets = useMemo(() => getRarityDeets(mechDetails?.chassis_skin?.tier || mechDetails?.tier || ""), [mechDetails])
+export const MechLoadoutIcons = ({ mech, mechDetails }: { mech?: MechBasic; mechDetails?: MechDetails }) => {
+    const rarityDeets = useMemo(() => getRarityDeets(mech?.tier || mechDetails?.chassis_skin?.tier || mechDetails?.tier || ""), [mech, mechDetails])
 
-    let hasSkin = false
-    let hasIntroAnimation = false
-    let hasOutroAnimation = false
-    let hasPowerCore = false
-    let weaponCount = 0
-    let utilityCount = 0
+    let hasSkin = !!mech?.chassis_skin_id
+    let hasIntroAnimation = !!mech?.intro_animation_id
+    let hasOutroAnimation = !!mech?.outro_animation_id
+    let hasPowerCore = !!mech?.power_core_id
+    let weaponCount = mech?.equipped_weapon_count || 0
+    let utilityCount = mech?.equipped_utility_count || 0
 
-    let weaponSlots = 0
-    let utilitySlots = 0
+    let weaponSlots = mech?.weapon_hardpoints || 0
+    let utilitySlots = mech?.utility_slots || 0
 
     if (mechDetails) {
         const { chassis_skin_id, intro_animation_id, outro_animation_id, power_core_id } = mechDetails
