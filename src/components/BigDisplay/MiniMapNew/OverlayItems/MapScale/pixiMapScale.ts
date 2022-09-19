@@ -2,7 +2,7 @@ import { Viewport } from "pixi-viewport"
 import * as PIXI from "pixi.js"
 import { HEXToVBColor } from "../../../../../helpers"
 import { fonts } from "../../../../../theme/theme"
-import { Dimension, GAME_CLIENT_TILE_SIZE, Vector2i } from "../../../../../types"
+import { Dimension, GAME_CLIENT_TILE_SIZE } from "../../../../../types"
 
 export class PixiMapScale {
     root: PIXI.Container<PIXI.DisplayObject>
@@ -10,13 +10,11 @@ export class PixiMapScale {
     private line: PIXI.Graphics
     private viewport: Viewport
     private gridSizeRef: React.MutableRefObject<Dimension>
-    private mapScalingRef: React.MutableRefObject<Vector2i>
     private animationFrame: number | undefined
 
-    constructor(viewport: Viewport, gridSizeRef: React.MutableRefObject<Dimension>, mapScalingRef: React.MutableRefObject<Vector2i>) {
+    constructor(viewport: Viewport, gridSizeRef: React.MutableRefObject<Dimension>) {
         this.viewport = viewport
         this.gridSizeRef = gridSizeRef
-        this.mapScalingRef = mapScalingRef
 
         // Create container for everything
         this.root = new PIXI.Container()
