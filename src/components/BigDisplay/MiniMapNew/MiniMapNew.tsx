@@ -152,7 +152,6 @@ const MiniMapInner = ({ map, isPoppedout, setIsPoppedout, width = 100, height = 
     const [isEnlarged, toggleIsEnlarged] = useToggle(localStorage.getItem("isMiniMapEnlarged") === "true")
 
     const mapHeightWidthRatio = useRef(1)
-    const mapRef = useRef<HTMLDivElement>()
 
     // If small version, not allow enlarge
     useEffect(() => {
@@ -232,6 +231,8 @@ const MiniMapInner = ({ map, isPoppedout, setIsPoppedout, width = 100, height = 
             <Stack
                 alignItems="center"
                 justifyContent="center"
+                tabIndex={0}
+                onKeyDown={handleMiniMapHotKey}
                 sx={{
                     position: "relative",
                     width: "100%",
@@ -241,9 +242,6 @@ const MiniMapInner = ({ map, isPoppedout, setIsPoppedout, width = 100, height = 
                 }}
             >
                 <Box
-                    ref={mapRef}
-                    tabIndex={0}
-                    onKeyDown={handleMiniMapHotKey}
                     sx={{
                         position: "relative",
                         width: sizes.outsideWidth,

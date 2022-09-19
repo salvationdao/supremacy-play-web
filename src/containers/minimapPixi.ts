@@ -9,6 +9,7 @@ import { useArena } from "./arena"
 import { useAuth } from "./auth"
 import { useGame } from "./game"
 import { useGlobalNotifications } from "./globalNotifications"
+import { RecordType, useHotkey } from "./hotkeys"
 
 interface WinnerStruct {
     game_ability: GameAbility
@@ -33,6 +34,7 @@ export const MiniMapPixiContainer = createContainer(() => {
     const { bribeStage, map, isBattleStarted } = useGame()
     const { factionID } = useAuth()
     const { currentArenaID } = useArena()
+    const { addToHotkeyRecord } = useHotkey()
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
@@ -78,6 +80,13 @@ export const MiniMapPixiContainer = createContainer(() => {
         setWinner(undefined)
         setIsTargeting(!!playerAbility)
     }, [playerAbility, setSelection])
+
+    useEffect(() => {
+        addToHotkeyRecord(RecordType.MiniMap, "Escape", () => {
+            resetPlayerAbilitySelection()
+            setHighlightedMechParticipantID(undefined)
+        })
+    }, [addToHotkeyRecord, resetPlayerAbilitySelection])
 
     return {
         pixiMainItems,

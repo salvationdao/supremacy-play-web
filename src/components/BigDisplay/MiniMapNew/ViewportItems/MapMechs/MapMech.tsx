@@ -153,13 +153,13 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         }
 
         // Activate mech move command if user owns the mech, un-activate on click again
-        if (isAlive && ownedByID === userID) {
+        if (playerAbility?.ability.location_select_type === LocationSelectType.MechCommand) {
+            resetPlayerAbilitySelection()
+        } else if (isAlive && ownedByID === userID && !playerAbility) {
             setPlayerAbility({
                 ...MechMoveCommandAbility,
                 mechHash: hash,
             })
-        } else {
-            resetPlayerAbilitySelection()
         }
     }, [
         factionID,
