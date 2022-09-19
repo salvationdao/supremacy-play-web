@@ -8,6 +8,7 @@ import { hexToRGB, timeSinceInWords } from "../../helpers"
 import { useTimer } from "../../hooks"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { User } from "../../types"
+import { BarSocials } from "./BarSocials"
 import { Messages } from "./Messages/Messages"
 import { NavLinks } from "./NavLinks/NavLinks"
 import { Quests } from "./Quests/Quests"
@@ -115,6 +116,7 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
                 <Box sx={{ flexGrow: 1 }} />
                 <Tutorial />
                 <BuySupsButton />
+                <BarSocials />
                 <Stack direction="row" alignItems="center" spacing="1.3rem" sx={{ mx: "1.6rem" }}>
                     <SvgDisconnected size="1.7rem" sx={{ pb: ".6rem" }} />
                     <Typography sx={{ fontFamily: fonts.nostromoBold }} variant="caption">
@@ -132,6 +134,7 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
                 <Box sx={{ flexGrow: 1 }} />
                 <Tutorial />
                 <BuySupsButton />
+                <BarSocials />
                 <Stack direction="row" alignItems="center" spacing="1.3rem" sx={{ mx: "1.6rem" }}>
                     <CircularProgress size="1.9rem" sx={{ color: colors.neonBlue, mb: ".5rem !important" }} />
                     <Typography sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoBold }} variant="caption">
@@ -170,6 +173,7 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
             <BuySupsButton />
             {userID && <Quests />}
             {userID && STAGING_OR_DEV_ONLY && <ShoppingCart />}
+            <BarSocials />
             {userID && <Messages />}
             <ProfileCard userID={userID} user={user} />
         </>

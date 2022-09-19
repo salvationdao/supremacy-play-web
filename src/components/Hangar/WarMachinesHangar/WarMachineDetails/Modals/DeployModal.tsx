@@ -74,6 +74,7 @@ export const DeployModal = ({ selectedMechDetails: deployMechDetails, deployMech
     const queueCost = queueFeed?.queue_cost || "0"
 
     if (!deployMechDetails) return null
+
     const { id } = deployMechDetails
 
     return (
