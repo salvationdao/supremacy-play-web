@@ -16,6 +16,7 @@ export const BattleLobbyJoinModal = ({ selectedBattleLobby, setSelectedBattleLob
     const { mechsWithQueueStatus } = useBattleLobby()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [selectedMechIDs, setSelectedMechIDs] = useState<string[]>([])
+    const [error, setError] = useState("")
 
     const CanDeployedMechs = useMemo(() => {
         return mechsWithQueueStatus.filter((mq) => mq.can_deploy)
@@ -31,11 +32,10 @@ export const BattleLobbyJoinModal = ({ selectedBattleLobby, setSelectedBattleLob
                 })
                 setSelectedBattleLobby(undefined)
             } catch (err) {
-                const message = typeof err === "string" ? err : "Failed to opt in battle ability."
-                console.error(message)
+                setError(typeof err === "string" ? err : "Failed to the join battle lobby.")
             }
         },
-        [send],
+        [send, setSelectedBattleLobby],
     )
 
     // filter
@@ -46,7 +46,7 @@ export const BattleLobbyJoinModal = ({ selectedBattleLobby, setSelectedBattleLob
             onConfirm={() => joinBattleLobby(selectedBattleLobby.id, selectedMechIDs)}
             onClose={() => setSelectedBattleLobby(undefined)}
             isLoading={false}
-            error={""}
+            error={error}
         >
             {mechsWithQueueStatus.length > 0 && (
                 <Box

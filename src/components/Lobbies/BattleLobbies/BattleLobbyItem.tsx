@@ -1,13 +1,16 @@
 import { BattleLobbiesMech, BattleLobby } from "../../../types/battle_queue"
 import { useTheme } from "../../../containers/theme"
-import { Avatar, Box, Stack, Typography } from "@mui/material"
+import { Avatar, Box, IconButton, Stack, Typography } from "@mui/material"
 import { colors, fonts } from "../../../theme/theme"
 import { ClipThing } from "../../Common/ClipThing"
-import React, { useMemo } from "react"
-import { useSupremacy } from "../../../containers"
+import React, { useCallback, useMemo, useState } from "react"
+import { useAuth, useGlobalNotifications, useSupremacy } from "../../../containers"
 import { Faction } from "../../../types"
 import { camelToTitle, supFormatter } from "../../../helpers"
 import { MechThumbnail } from "../../Hangar/WarMachinesHangar/Common/MechThumbnail"
+import { SvgClose } from "../../../assets"
+import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
 
 interface BattleLobbyItemProps {
     battleLobby: BattleLobby
@@ -16,7 +19,10 @@ interface BattleLobbyItemProps {
 const propsAreEqual = (prevProps: BattleLobbyItemProps, nextProps: BattleLobbyItemProps) => {
     return (
         prevProps.battleLobby.id === nextProps.battleLobby.id &&
-        prevProps.battleLobby.battle_lobbies_mechs.length === nextProps.battleLobby.battle_lobbies_mechs.length
+        prevProps.battleLobby.ready_at === nextProps.battleLobby.ready_at &&
+        prevProps.battleLobby.ended_at === nextProps.battleLobby.ended_at &&
+        prevProps.battleLobby.deleted_at === nextProps.battleLobby.deleted_at &&
+        prevProps.battleLobby.battle_lobbies_mechs === nextProps.battleLobby.battle_lobbies_mechs
     )
 }
 
@@ -25,8 +31,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
     const { game_map, number, entry_fee, first_faction_cut, second_faction_cut, third_faction_cut } = battleLobby
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
-
-    const { battle_lobbies_mechs } = battleLobby
+    const { battle_lobbies_mechs, ready_at } = battleLobby
 
     return (
         <Stack sx={{ color: primaryColor, textAlign: "start", height: "100%" }}>
@@ -82,7 +87,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
 
                         {/* Mech slots */}
                         <Stack direction="row" height="100%" flex={1}>
-                            <BattleLobbyMechSlots battleLobbyMechs={battle_lobbies_mechs} />
+                            <BattleLobbyMechSlots battleLobbyMechs={battle_lobbies_mechs} isLocked={!!ready_at} />
                         </Stack>
                     </Stack>
                 </ClipThing>
@@ -96,7 +101,7 @@ interface BattleLobbySlot {
     mechSlots: BattleLobbiesMech[]
 }
 
-const BattleLobbyMechSlots = ({ battleLobbyMechs }: { battleLobbyMechs: BattleLobbiesMech[] }) => {
+const BattleLobbyMechSlots = ({ battleLobbyMechs, isLocked }: { battleLobbyMechs: BattleLobbiesMech[]; isLocked: boolean }) => {
     const { factionsAll } = useSupremacy()
     // fill up slot
     const battleLobbySlots = useMemo(() => {
@@ -157,7 +162,7 @@ const BattleLobbyMechSlots = ({ battleLobbyMechs }: { battleLobbyMechs: BattleLo
                         sx={{
                             p: ".35rem",
                             position: "relative",
-                            minHeight: "12rem",
+                            minHeight: "21rem",
                             backgroundColor: colors.darkestNeonBlue + "a0",
                             borderRadius: "4px",
                         }}
@@ -216,7 +221,7 @@ const BattleLobbyMechSlots = ({ battleLobbyMechs }: { battleLobbyMechs: BattleLo
                                         borderRadius: "4px",
                                     }}
                                 >
-                                    <MechSlotContent battleLobbiesMech={ms} faction={faction} />
+                                    <MechSlotContent battleLobbiesMech={ms} faction={faction} isLocked={isLocked} />
                                 </Box>
                             ))}
                         </Box>
@@ -227,7 +232,37 @@ const BattleLobbyMechSlots = ({ battleLobbyMechs }: { battleLobbyMechs: BattleLo
     )
 }
 
-const MechSlotContent = ({ battleLobbiesMech, faction }: { battleLobbiesMech: BattleLobbiesMech; faction: Faction }) => {
+const MechSlotContent = ({ battleLobbiesMech, faction, isLocked }: { battleLobbiesMech: BattleLobbiesMech; faction: Faction; isLocked: boolean }) => {
+    const { userID } = useAuth()
+    const { newSnackbarMessage } = useGlobalNotifications()
+    const { factionTheme } = useTheme()
+    const { send } = useGameServerCommandsFaction("/faction_commander")
+    const [isLoading, setIsLoading] = useState(false)
+    const canLeave = useMemo(() => !isLocked && userID === battleLobbiesMech.owner.id, [battleLobbiesMech.owner.id, isLocked, userID])
+
+    const leaveLobby = useCallback(
+        async (mechID: string) => {
+            if (!canLeave) return
+            try {
+                setIsLoading(true)
+
+                const resp = await send<{ success: boolean; code: string }>(GameServerKeys.LeaveBattleLobby, {
+                    mech_ids: [mechID],
+                })
+
+                if (resp && resp.success) {
+                    newSnackbarMessage("Successfully deployed war machines.", "success")
+                }
+            } catch (e) {
+                newSnackbarMessage(typeof e === "string" ? e : "Failed to leave battle lobby.", "error")
+                return
+            } finally {
+                setIsLoading(false)
+            }
+        },
+        [canLeave, newSnackbarMessage, send],
+    )
+
     if (battleLobbiesMech.mech_id == "") return null
     // display queued mech
     return (
@@ -235,22 +270,55 @@ const MechSlotContent = ({ battleLobbiesMech, faction }: { battleLobbiesMech: Ba
             <Stack>
                 <MechThumbnail avatarUrl={battleLobbiesMech.avatar_url} tier={battleLobbiesMech.tier} factionID={battleLobbiesMech.owner.faction_id} tiny />
             </Stack>
-            <Typography
-                sx={{
-                    flex: 1,
-                    fontFamily: fonts.nostromoBlack,
-                    color: faction.primary_color,
-                    ml: ".45rem",
-                    display: "-webkit-box",
-                    overflow: "hidden",
-                    overflowWrap: "anywhere",
-                    textOverflow: "ellipsis",
-                    WebkitLineClamp: 1, // change to max number of lines
-                    WebkitBoxOrient: "vertical",
-                }}
-            >
-                {battleLobbiesMech.name || battleLobbiesMech.label}
-            </Typography>
+            <Stack direction={"column"} flex={1}>
+                <Typography
+                    variant="h6"
+                    sx={{
+                        flex: 1,
+                        color: faction.primary_color,
+                        ml: ".45rem",
+                        fontWeight: "fontWeightBold",
+                        display: "-webkit-box",
+                        overflow: "hidden",
+                        overflowWrap: "anywhere",
+                        textOverflow: "ellipsis",
+                        WebkitLineClamp: 1, // change to max number of lines
+                        WebkitBoxOrient: "vertical",
+                    }}
+                >
+                    {battleLobbiesMech.name || battleLobbiesMech.label}
+                </Typography>
+                <Typography
+                    sx={{
+                        flex: 1,
+                        color: faction.primary_color,
+                        ml: ".45rem",
+                        display: "-webkit-box",
+                        overflow: "hidden",
+                        overflowWrap: "anywhere",
+                        textOverflow: "ellipsis",
+                        WebkitLineClamp: 1, // change to max number of lines
+                        WebkitBoxOrient: "vertical",
+                    }}
+                >
+                    <i>{`@${battleLobbiesMech.owner.username}#${battleLobbiesMech.owner.gid}`}</i>
+                </Typography>
+            </Stack>
+
+            {canLeave && (
+                <IconButton
+                    disableRipple
+                    disabled={!canLeave || isLoading}
+                    onClick={async (e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+
+                        await leaveLobby(battleLobbiesMech.mech_id)
+                    }}
+                >
+                    <SvgClose fill={factionTheme.primary} />
+                </IconButton>
+            )}
         </>
     )
 }

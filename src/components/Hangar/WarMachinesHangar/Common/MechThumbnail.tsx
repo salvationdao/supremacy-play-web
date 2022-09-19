@@ -36,7 +36,7 @@ export const MechThumbnail = ({
         return theme.factionTheme.primary
     }, [theme, getFaction, factionID])
 
-    const rarityDeets = useMemo(() => getRarityDeets(tier || mech?.tier || mechDetails?.tier || ""), [mech, mechDetails])
+    const rarityDeets = useMemo(() => getRarityDeets(tier || mech?.tier || mechDetails?.tier || ""), [mech?.tier, mechDetails?.tier, tier])
     const skin = mechDetails ? mechDetails.chassis_skin || mechDetails.default_chassis_skin : undefined
     const imageUrl =
         avatarUrl || skin?.avatar_url || skin?.image_url || mechDetails?.avatar_url || mechDetails?.image_url || mech?.avatar_url || mech?.image_url
@@ -78,7 +78,7 @@ export const MechThumbnail = ({
             <Box
                 sx={{
                     height: "100%",
-                    width: tiny ? "2rem" : smallSize ? "8rem" : "16.8rem",
+                    width: tiny ? "4.5rem" : smallSize ? "8rem" : "16.8rem",
                     overflow: "hidden",
                     background: `url(${imageUrl})`,
                     backgroundRepeat: "no-repeat",
