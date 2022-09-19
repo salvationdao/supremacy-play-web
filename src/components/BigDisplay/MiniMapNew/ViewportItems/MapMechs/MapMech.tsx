@@ -37,7 +37,8 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     const {
         pixiMainItems,
         gridSizeRef,
-        getPositionInViewport,
+        clientPositionToViewportPosition,
+        gridCellToViewportPosition,
         highlightedMechParticipantID,
         isTargeting,
         selection,
@@ -100,11 +101,8 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             iconDimension.current.height *= 0.7
         }
 
-        pixiMapMech.updateNumberText(primaryColor, iconDimension.current)
-        pixiMapMech.updateRectBox(primaryColor, iconDimension.current)
-        pixiMapMech.updateRotationArrow(primaryColor, iconDimension.current)
+        pixiMapMech.updateStyles(primaryColor, iconDimension.current)
         pixiMapMech.updateHpShieldBars(iconDimension.current)
-        pixiMapMech.updateMechMoveSprite(primaryColor, iconDimension.current)
     }, [pixiMapMech, primaryColor, map, gridSizeRef, isAI])
 
     // Update zIndex
@@ -148,6 +146,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
         if (participantID === highlightedMechParticipantID) {
             setHighlightedMechParticipantID(undefined)
+            tempMechMoveCommand.current = undefined
         } else {
             setHighlightedMechParticipantID(participantID)
         }
@@ -181,8 +180,8 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     useEffect(() => {
         if (!pixiMapMech) return
 
-        pixiMapMech.root.removeListener("pointerup")
-        pixiMapMech.root.on("pointerup", onMechClick)
+        pixiMapMech.rootInner.removeListener("pointerup")
+        pixiMapMech.rootInner.on("pointerup", onMechClick)
     }, [onMechClick, pixiMapMech])
 
     // Add hotkey to select this mech
@@ -217,14 +216,14 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
             // Update position
             if (payload?.position !== undefined && pixiMapMech) {
-                const newPos = getPositionInViewport.current(payload.position.x, payload.position.y)
+                const newPos = clientPositionToViewportPosition.current(payload.position.x, payload.position.y)
                 pixiMapMech.updatePosition(newPos.x, newPos.y)
 
                 // Update the mech move dash line length and rotation
                 const mCommand = tempMechMoveCommand.current || mechMoveCommand.current
                 if (mCommand?.cell_x && mCommand?.cell_y && !mCommand?.reached_at) {
-                    const mapPos = getPositionInViewport.current(mCommand.cell_x, mCommand.cell_y)
-                    pixiMapMech.updateMechMovePosition(iconDimension.current, primaryColor, mapPos.x, mapPos.y)
+                    const mapPos = gridCellToViewportPosition.current(mCommand.cell_x, mCommand.cell_y)
+                    pixiMapMech.updateMechMovePosition(mapPos.x, mapPos.y)
                 } else {
                     pixiMapMech.hideMechMovePosition()
                 }

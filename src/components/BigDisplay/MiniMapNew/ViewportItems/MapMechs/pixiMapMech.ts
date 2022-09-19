@@ -5,10 +5,11 @@ import { CrossPNG, DeadSkullPNG } from "../../../../../assets"
 import { deg2rad, HEXToVBColor } from "../../../../../helpers"
 import { PixiProgressBar } from "../../../../../helpers/pixiHelpers"
 import { colors, fonts } from "../../../../../theme/theme"
-import { Dimension } from "../../../../../types"
+import { Dimension, Position } from "../../../../../types"
 
 export class PixiMapMech {
     root: PIXI.Container<PIXI.DisplayObject>
+    rootInner: PIXI.Container<PIXI.DisplayObject>
     private rectGraphics: PIXI.Graphics
     private arrowGraphics: PIXI.Graphics
     private numberText: PIXI.Text
@@ -18,16 +19,23 @@ export class PixiMapMech {
     private mechMoveDashedLine: PIXI.Graphics
     private highlightedCircle: PIXI.Graphics
     private skull: PIXI.Sprite
+    private mechMovePosition: Position | undefined
+    private animationFrame: number | undefined
+    private iconDimension: Dimension | undefined
+    private primaryColor: string | undefined
 
     constructor(label: number) {
         // Create container for everything
         this.root = new PIXI.Container()
-        this.root.x = -100
-        this.root.y = -100
         this.root.zIndex = 10
-        this.root.interactive = true
-        this.root.buttonMode = true
-        this.root.sortableChildren = true
+
+        // Root inner
+        this.rootInner = new PIXI.Container()
+        this.rootInner.x = -100
+        this.rootInner.y = -100
+        this.rootInner.sortableChildren = true
+        this.rootInner.interactive = true
+        this.rootInner.buttonMode = true
 
         // Rect
         this.rectGraphics = new PIXI.Graphics()
@@ -69,27 +77,34 @@ export class PixiMapMech {
         this.skull.height = 3
 
         // Add everything to container
-        this.root.addChild(this.rectGraphics)
-        this.root.addChild(this.arrowGraphics)
-        this.root.addChild(this.numberText)
-        this.root.addChild(this.hpBar.root)
-        this.root.addChild(this.shieldBar.root)
+        this.rootInner.addChild(this.rectGraphics)
+        this.rootInner.addChild(this.arrowGraphics)
+        this.rootInner.addChild(this.numberText)
+        this.rootInner.addChild(this.hpBar.root)
+        this.rootInner.addChild(this.shieldBar.root)
+        this.rootInner.addChild(this.highlightedCircle)
+        this.rootInner.addChild(this.skull)
+        this.root.addChild(this.rootInner)
         this.root.addChild(this.mechMoveSprite)
-        this.root.addChild(this.highlightedCircle)
-        this.root.addChild(this.skull)
+
+        this.render()
     }
 
     destroy() {
+        if (this.animationFrame) cancelAnimationFrame(this.animationFrame)
         this.root.destroy(true)
     }
 
-    updateNumberText(primaryColor: string, iconDimension: Dimension) {
+    updateStyles(primaryColor: string, iconDimension: Dimension) {
+        this.iconDimension = iconDimension
+        this.primaryColor = primaryColor
+
+        // Update number text
         this.numberText.style.fill = primaryColor
         this.numberText.style.fontSize = iconDimension.height / 1.8
         this.numberText.position.set(iconDimension.width / 2, iconDimension.height / 2.3)
-    }
 
-    updateRectBox(primaryColor: string, iconDimension: Dimension) {
+        // Update rect box
         this.rectGraphics.clear()
         this.rectGraphics.beginFill(HEXToVBColor("#000000"), 0.8)
         this.rectGraphics.lineStyle(iconDimension.height * 0.08, HEXToVBColor(primaryColor))
@@ -99,9 +114,8 @@ export class PixiMapMech {
         this.skull.width = iconDimension.width / 1.5
         this.skull.height = iconDimension.height / 1.5
         this.skull.tint = HEXToVBColor(primaryColor)
-    }
 
-    updateRotationArrow(primaryColor: string, iconDimension: Dimension) {
+        // Update rotation arrow
         // Draw the rotation arrow
         const triangleWidth = iconDimension.width / 4.2
         const triangleHeight = triangleWidth * 0.9
@@ -121,6 +135,12 @@ export class PixiMapMech {
         this.arrowGraphics.endFill()
         this.arrowGraphics.position.set(iconDimension.width / 2, iconDimension.height / 2)
         this.arrowGraphics.pivot.set(triangleHalfway, iconDimension.height / 2 + iconDimension.height / 3.4)
+
+        // Update mech move sprite
+        // Update the mech move sprite dimension
+        this.mechMoveSprite.width = iconDimension.width / 2
+        this.mechMoveSprite.height = iconDimension.height / 2
+        this.mechMoveSprite.tint = HEXToVBColor(primaryColor)
     }
 
     updateHpShieldBars(iconDimension: Dimension) {
@@ -133,15 +153,8 @@ export class PixiMapMech {
         this.shieldBar.updatePosition(0, iconDimension.height + barHeight + 2 * barGap)
     }
 
-    updateMechMoveSprite(primaryColor: string, iconDimension: Dimension) {
-        // Update the mech move sprite dimension
-        this.mechMoveSprite.width = iconDimension.width / 2
-        this.mechMoveSprite.height = iconDimension.height / 2
-        this.mechMoveSprite.tint = HEXToVBColor(primaryColor)
-    }
-
     updateZIndex(zIndex: number) {
-        this.root.zIndex = zIndex
+        this.rootInner.zIndex = zIndex
     }
 
     highlightMech(iconDimension: Dimension) {
@@ -159,12 +172,12 @@ export class PixiMapMech {
         this.highlightedCircle.position.set(center[0], center[1])
 
         // Enlarge the map mech
-        ease.add(this.root, { scale: 1.5 }, { duration: 100, ease: "linear", removeExisting: true })
+        ease.add(this.rootInner, { scale: 1.5 }, { duration: 100, ease: "linear", removeExisting: true })
     }
 
     unhighlightMech() {
         this.highlightedCircle.clear()
-        ease.add(this.root, { scale: 1 }, { duration: 100, ease: "linear", removeExisting: true })
+        ease.add(this.rootInner, { scale: 1 }, { duration: 100, ease: "linear", removeExisting: true })
     }
 
     updateHpBar(percent: number) {
@@ -201,38 +214,51 @@ export class PixiMapMech {
         // Default its the top left corner, so center it
         const newX = x - this.rectGraphics.width / 2
         const newY = y - this.rectGraphics.height / 2
-        ease.add(this.root, { x: newX, y: newY }, { duration: 275, ease: "linear", removeExisting: true })
+        ease.add(this.rootInner, { x: newX, y: newY }, { duration: 275, ease: "linear", removeExisting: true })
     }
 
     updateRotation(newRotRad: number) {
         ease.add(this.arrowGraphics, { rotation: newRotRad }, { duration: 275, ease: "linear" })
     }
 
-    updateMechMovePosition(iconDimension: Dimension, primaryColor: string, x: number, y: number) {
-        this.mechMoveDashedLine.clear()
-
-        // Default its the top left corner, so center it
-        const newX = x - this.mechMoveSprite.width / 2
-        const newY = y - this.mechMoveSprite.height / 2
-        this.mechMoveSprite.position.set(newX, newY)
-        this.mechMoveSprite.visible = true
-
-        // Draw dashed line
-        const dash = new DashLine(this.mechMoveDashedLine, {
-            dash: [2, 1],
-            width: iconDimension.height * 0.08,
-            color: HEXToVBColor(primaryColor),
-            alpha: 0.8,
-        })
-        dash.moveTo(this.root.x, this.root.y).lineTo(newX, newY)
+    updateMechMovePosition(x: number, y: number) {
+        this.mechMovePosition = { x, y }
     }
 
     hideMechMovePosition() {
         this.mechMoveDashedLine.clear()
         this.mechMoveSprite.visible = false
+        this.mechMovePosition = undefined
     }
 
     updateVisibility(isVisible: boolean) {
-        this.root.visible = isVisible
+        this.rootInner.visible = isVisible
+    }
+
+    render() {
+        const step = () => {
+            if (this.iconDimension && this.primaryColor && this.mechMovePosition) {
+                this.mechMoveDashedLine.clear()
+
+                // Default its the top left corner, so center it
+                const newX = this.mechMovePosition.x - this.mechMoveSprite.width / 2
+                const newY = this.mechMovePosition.y - this.mechMoveSprite.height / 2
+                this.mechMoveSprite.position.set(newX, newY)
+                this.mechMoveSprite.visible = true
+
+                // Draw dashed line
+                const dash = new DashLine(this.mechMoveDashedLine, {
+                    dash: [2, 1],
+                    width: this.iconDimension.height * 0.08,
+                    color: HEXToVBColor(this.primaryColor),
+                    alpha: 0.8,
+                })
+                dash.moveTo(this.rootInner.x, this.rootInner.y).lineTo(newX, newY)
+            }
+
+            this.animationFrame = requestAnimationFrame(step)
+        }
+
+        this.animationFrame = requestAnimationFrame(step)
     }
 }

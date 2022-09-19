@@ -62,10 +62,19 @@ export const MiniMapPixiContainer = createContainer(() => {
         gridSizeRef.current = { width: (mapScalingRef.current.x * map.Width) / map.Cells_X, height: (mapScalingRef.current.y * map.Height) / map.Cells_Y }
     }, [map, pixiMainItems])
 
-    const getPositionInViewport = useRef((x: number, y: number) => {
+    // Converts game client position (x, y) to (x, y) that fits into the viewport (viewport position)
+    const clientPositionToViewportPosition = useRef((x: number, y: number) => {
         return {
             x: (x - (map?.Pixel_Left || 0)) * (gridSizeRef.current.width / GAME_CLIENT_TILE_SIZE),
             y: (y - (map?.Pixel_Top || 0)) * (gridSizeRef.current.height / GAME_CLIENT_TILE_SIZE),
+        }
+    })
+
+    // Converts x and y cell to viewport position. E.g. grid cell (3, 5) may convert to x: 200, y: 516
+    const gridCellToViewportPosition = useRef((xCell: number, yCell: number) => {
+        return {
+            x: xCell * gridSizeRef.current.width,
+            y: yCell * gridSizeRef.current.height,
         }
     })
 
@@ -275,7 +284,8 @@ export const MiniMapPixiContainer = createContainer(() => {
         setPixiMainItems,
         mapScalingRef,
         gridSizeRef,
-        getPositionInViewport,
+        clientPositionToViewportPosition,
+        gridCellToViewportPosition,
 
         highlightedMechParticipantID,
         setHighlightedMechParticipantID,
