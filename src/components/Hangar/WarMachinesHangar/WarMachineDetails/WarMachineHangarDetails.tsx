@@ -18,7 +18,6 @@ import { MechRepairBlocks } from "../Common/MechRepairBlocks"
 import { MechButtons } from "./MechButtons"
 import { MechLoadout } from "./MechLoadout"
 import { MechName } from "./MechName"
-import { MechViewer } from "./MechViewer"
 import { DeployModal } from "./Modals/DeployModal"
 import { LeaveModal } from "./Modals/LeaveModal"
 import { RentalModal } from "./Modals/RentalModal"
@@ -293,10 +292,7 @@ export const WarMachineHangarDetailsInner = ({
                 sx={{ height: "100%", flex: 1 }}
             >
                 {mechDetails ? (
-                    <>
-                        <MechLoadout mechDetails={mechDetails} mechStatus={mechStatus} onUpdate={updateMechDetails} />
-                        <MechViewer mechDetails={mechDetails} />
-                    </>
+                    <MechLoadout mechDetails={mechDetails} mechStatus={mechStatus} onUpdate={updateMechDetails} />
                 ) : (
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                         <CircularProgress size="3rem" sx={{ color: primaryColor }} />

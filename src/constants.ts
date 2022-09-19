@@ -27,6 +27,10 @@ export const PASSPORT_SIGNUP = DEV_ONLY
     ? "https://passport.xsyn.io/external/login?signup=true&tenant=supremacy&redirectURL=https%3A%2F%2Fplay.supremacy.game/?training=false"
     : "https://staging.xsyn.dev/external/login?signup=true&tenant=supremacy&redirectURL=https%3A%2F%2Fsupremacygame.dev/?training=false"
 
+// Mech loadout
+export const WEBGL_BASE_URL = "https://afiles.ninja-cdn.com/supremacy-hangar/build/"
+export const DEVELOPMENT_BUILD_NUM = 18
+
 // Battle arena related
 export const BATTLE_ARENA_OPEN_DATE: Date | undefined = new Date("Sep 08 2022 08:00:00 GMT+0800 (AWST)")
 export const BATTLE_ARENA_OPEN = !!(

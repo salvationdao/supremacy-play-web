@@ -239,6 +239,7 @@ export interface MechAnimation extends Collection, Images {
 
 export interface PowerCore extends Collection, Images {
     id: string
+    blueprint_id: string
     label: string
     size: string
     capacity: number

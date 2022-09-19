@@ -1,10 +1,35 @@
 import { Box } from "@mui/material"
+import { useEffect, useRef, useState } from "react"
+import { Unity, useUnityContext } from "react-unity-webgl"
+import { DEV_ONLY, WEBGL_BASE_URL } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
 import { MechDetails } from "../../../../types"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
+import { HangarSilo, SiloObject } from "./MechViewer/UnityViewer"
 
-export const MechViewer = ({ mechDetails }: { mechDetails: MechDetails }) => {
+let baseUrl = WEBGL_BASE_URL
+if (DEV_ONLY) {
+    baseUrl += `staging/`
+} else {
+    baseUrl += process.env.REACT_APP_ENVIRONMENT + "/"
+}
+
+interface MechViewerProps {
+    mechDetails: MechDetails
+    unity?: boolean
+}
+
+export const MechViewer = ({ mechDetails, unity }: MechViewerProps) => {
     const theme = useTheme()
+    const { unityProvider, sendMessage, addEventListener, removeEventListener, isLoaded } = useUnityContext({
+        loaderUrl: `${baseUrl}WebGL.loader.js`,
+        dataUrl: `${baseUrl}/WebGL.data.br`,
+        frameworkUrl: `${baseUrl}/WebGL.framework.js.br`,
+        codeUrl: `${baseUrl}/WebGL.wasm.br`,
+        streamingAssetsUrl: `${baseUrl}/StreamingAssets`,
+    })
+    const sent = useRef(false)
+    const [siloReady, setSiloReady] = useState(false)
 
     const backgroundColor = theme.factionTheme.background
 
@@ -14,6 +39,72 @@ export const MechViewer = ({ mechDetails }: { mechDetails: MechDetails }) => {
     const largeImageUrl = skin?.large_image_url || mechDetails.large_image_url
     const animationUrl = skin?.animation_url || mechDetails.animation_url
     const cardAnimationUrl = skin?.card_animation_url || mechDetails.card_animation_url
+
+    useEffect(() => {
+        const onSiloReady = () => setSiloReady(true)
+        addEventListener("SiloReady", onSiloReady)
+        return () => removeEventListener("SiloReady", onSiloReady)
+    }, [addEventListener, removeEventListener])
+
+    useEffect(() => {
+        if (!isLoaded || !siloReady || sent.current) return
+
+        const accessories: SiloObject[] = []
+        if (mechDetails.weapons) {
+            accessories.push(
+                ...mechDetails.weapons.map((w) => ({
+                    type: "weapon",
+                    ownership_id: w.owner_id,
+                    static_id: w.blueprint_id,
+                    skin: w.weapon_skin
+                        ? {
+                              type: "skin",
+                              static_id: w.weapon_skin.blueprint_id,
+                          }
+                        : undefined,
+                })),
+            )
+        }
+        if (mechDetails.power_core) {
+            accessories.push({
+                type: "power_core",
+                ownership_id: mechDetails.power_core.owner_id,
+                static_id: mechDetails.power_core.blueprint_id,
+            })
+        }
+
+        const siloItems: HangarSilo = {
+            faction: mechDetails.faction_id,
+            silos: [
+                {
+                    type: "mech",
+                    ownership_id: mechDetails.owner_id,
+                    static_id: mechDetails.blueprint_id,
+                    skin: mechDetails.chassis_skin
+                        ? {
+                              type: "skin",
+                              ownership_id: mechDetails.chassis_skin.owner_id,
+                              static_id: mechDetails.chassis_skin.blueprint_id,
+                          }
+                        : undefined,
+                    accessories,
+                },
+            ],
+        }
+        sendMessage("ProjectContext(Clone)", "GetPlayerInventoryFromPage", JSON.stringify(siloItems))
+        sendMessage("ProjectContext(Clone)", "FittingRoom", "")
+        sent.current = true
+    }, [
+        sendMessage,
+        isLoaded,
+        siloReady,
+        mechDetails.weapons,
+        mechDetails.power_core,
+        mechDetails.faction_id,
+        mechDetails.owner_id,
+        mechDetails.blueprint_id,
+        mechDetails.chassis_skin,
+    ])
 
     return (
         <Box
@@ -52,7 +143,16 @@ export const MechViewer = ({ mechDetails }: { mechDetails: MechDetails }) => {
                 }}
             >
                 <FeatherFade color={backgroundColor} />
-                <MediaPreview imageUrl={largeImageUrl || imageUrl || avatarUrl} videoUrls={[animationUrl, cardAnimationUrl]} objectFit="cover" blurBackground />
+                {unity ? (
+                    <Unity matchWebGLToCanvasSize unityProvider={unityProvider} style={{ width: "100%", height: "100%" }} />
+                ) : (
+                    <MediaPreview
+                        imageUrl={largeImageUrl || imageUrl || avatarUrl}
+                        videoUrls={[animationUrl, cardAnimationUrl]}
+                        objectFit="cover"
+                        blurBackground
+                    />
+                )}
             </Box>
         </Box>
     )
