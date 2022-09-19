@@ -4,7 +4,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { BattleLobbyItem } from "./BattleLobbyItem"
 import { useEffect, useMemo, useState } from "react"
 import { PageHeader } from "../../Common/PageHeader"
-import { fonts } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { ThreeMechsJPG } from "../../../assets"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { SearchBattle } from "../../Replays/BattlesReplays/SearchBattle"
@@ -148,7 +148,13 @@ export const BattleLobbies = () => {
                                     onClick={() => setLobbyStatus(filterLobbyStatus.Ready)}
                                 >
                                     <Stack justifyContent="center" sx={{ height: "100%" }}>
-                                        <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}>
+                                        <Typography
+                                            variant="caption"
+                                            sx={{
+                                                fontFamily: fonts.nostromoBlack,
+                                                color: lobbyStatus === filterLobbyStatus.Ready ? theme.factionTheme.secondary : colors.offWhite,
+                                            }}
+                                        >
                                             READY
                                         </Typography>
                                     </Stack>
@@ -165,7 +171,13 @@ export const BattleLobbies = () => {
                                     onClick={() => setLobbyStatus(filterLobbyStatus.Pending)}
                                 >
                                     <Stack justifyContent="center" sx={{ height: "100%" }}>
-                                        <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}>
+                                        <Typography
+                                            variant="caption"
+                                            sx={{
+                                                fontFamily: fonts.nostromoBlack,
+                                                color: lobbyStatus === filterLobbyStatus.Pending ? theme.factionTheme.secondary : colors.offWhite,
+                                            }}
+                                        >
                                             PENDING
                                         </Typography>
                                     </Stack>

@@ -230,11 +230,10 @@ const BattleLobbyMechSlots = ({ battleLobbyMechs }: { battleLobbyMechs: BattleLo
 const MechSlotContent = ({ battleLobbiesMech, faction }: { battleLobbiesMech: BattleLobbiesMech; faction: Faction }) => {
     if (battleLobbiesMech.mech_id == "") return null
     // display queued mech
-    console.log(battleLobbiesMech)
     return (
         <>
             <Stack>
-                <MechThumbnail avatarUrl={battleLobbiesMech.avatar_url} tier={battleLobbiesMech.tier} tiny />
+                <MechThumbnail avatarUrl={battleLobbiesMech.avatar_url} tier={battleLobbiesMech.tier} factionID={battleLobbiesMech.owner.faction_id} tiny />
             </Stack>
             <Typography
                 sx={{

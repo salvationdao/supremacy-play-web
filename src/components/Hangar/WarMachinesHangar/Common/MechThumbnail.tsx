@@ -5,10 +5,12 @@ import { useTheme } from "../../../../containers/theme"
 import { getRarityDeets } from "../../../../helpers"
 import { fonts } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
+import { useSupremacy } from "../../../../containers"
 
 export const MechThumbnail = ({
     avatarUrl,
     tier,
+    factionID,
     mech,
     mechDetails,
     smallSize,
@@ -16,13 +18,24 @@ export const MechThumbnail = ({
 }: {
     avatarUrl?: string
     tier?: string
+    factionID?: string
     mech?: MechBasic
     mechDetails?: MechDetails
     smallSize?: boolean
     tiny?: boolean
 }) => {
     const theme = useTheme()
-    const primaryColor = theme.factionTheme.primary
+    const { getFaction } = useSupremacy()
+    const primaryColor = useMemo(() => {
+        if (factionID) {
+            const faction = getFaction(factionID)
+            if (faction) {
+                return faction.primary_color
+            }
+        }
+        return theme.factionTheme.primary
+    }, [theme, getFaction, factionID])
+
     const rarityDeets = useMemo(() => getRarityDeets(tier || mech?.tier || mechDetails?.tier || ""), [mech, mechDetails])
     const skin = mechDetails ? mechDetails.chassis_skin || mechDetails.default_chassis_skin : undefined
     const imageUrl =
