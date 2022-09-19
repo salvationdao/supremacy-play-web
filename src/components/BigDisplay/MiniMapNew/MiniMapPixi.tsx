@@ -9,6 +9,7 @@ import { colors } from "../../../theme/theme"
 import { Dimension, LocationSelectType } from "../../../types"
 import { MapScale } from "./OverlayItems/MapScale/MapScale"
 import { MechAbilities } from "./OverlayItems/MechAbilities/MechAbilities"
+import { TargetHint } from "./OverlayItems/TargetHint/TargetHint"
 import { MapMechs } from "./ViewportItems/MapMechs/MapMechs"
 
 interface PixiItems {
@@ -218,6 +219,7 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
                 {/* Overlay items: items that are overlay'ed on top */}
                 <MechAbilities />
                 <MapScale />
+                <TargetHint />
 
                 {/* Viewport items: items within the viewport, affected by zoom and panning etc. */}
                 <MapMechs />

@@ -2,13 +2,12 @@ import * as PIXI from "pixi.js"
 import { MECH_ABILITY_KEY } from "../../../../../containers/hotkeys"
 import { HEXToVBColor } from "../../../../../helpers"
 import { colors, fonts } from "../../../../../theme/theme"
-import { BlueprintPlayerAbility, GameAbility, PlayerAbility } from "../../../../../types"
+import { BlueprintPlayerAbility, GameAbility } from "../../../../../types"
 
 const SIZE = 22
 
 export class PixiMechAbility {
     root: PIXI.Container<PIXI.DisplayObject>
-    private ability: GameAbility | BlueprintPlayerAbility | undefined
     private image: PIXI.Sprite
     private imageBorder: PIXI.Graphics
     private label: PIXI.Text
@@ -17,10 +16,7 @@ export class PixiMechAbility {
     private labelText = ""
     private animationFrame: number | undefined
 
-    constructor(index: number, gameAbility: GameAbility | undefined, playerAbility: PlayerAbility | undefined) {
-        const ab = playerAbility?.ability || gameAbility
-        this.ability = ab
-
+    constructor(index: number, ability: GameAbility | BlueprintPlayerAbility) {
         // Create container for everything
         this.root = new PIXI.Container()
         this.root.zIndex = 20
@@ -28,12 +24,12 @@ export class PixiMechAbility {
 
         // Image border
         this.imageBorder = new PIXI.Graphics()
-        this.imageBorder.lineStyle(1, HEXToVBColor(ab?.colour || colors.lightGrey))
+        this.imageBorder.lineStyle(1, HEXToVBColor(ability.colour))
         this.imageBorder.drawRoundedRect(0, 0, SIZE, SIZE, 2)
         this.imageBorder.zIndex = 4
 
         // Image
-        this.image = PIXI.Sprite.from(ab?.image_url || PIXI.Texture.WHITE)
+        this.image = PIXI.Sprite.from(ability.image_url)
         this.image.width = SIZE
         this.image.height = SIZE
         this.image.zIndex = 3
@@ -45,7 +41,7 @@ export class PixiMechAbility {
             fill: "#FFFFFF",
             lineHeight: 1,
         })
-        this.labelText = `${ab?.label} [${MECH_ABILITY_KEY[index]}]` || "N/A"
+        this.labelText = `${ability.label} [${MECH_ABILITY_KEY[index]}]`
         this.label = new PIXI.Text(this.labelText, labelStyle)
         this.label.anchor.set(0, 0.5)
         this.label.resolution = 4

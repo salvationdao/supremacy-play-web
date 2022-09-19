@@ -30,7 +30,9 @@ export const MechAbility = ({
 
     // Initial setup for the mech and show on the map
     useEffect(() => {
-        const pixiMechAbility = new PixiMechAbility(index, gameAbility, playerAbility)
+        const ab = playerAbility?.ability || gameAbility
+        if (!ab) return
+        const pixiMechAbility = new PixiMechAbility(index, ab)
         pixiMechAbilities.addMechAbility(pixiMechAbility, index)
         setPixiMechAbility((prev) => {
             prev?.destroy()
