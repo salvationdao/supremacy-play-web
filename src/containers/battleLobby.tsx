@@ -3,7 +3,7 @@ import { useGameServerCommandsFaction, useGameServerSubscriptionSecured, useGame
 import { GameServerKeys } from "../keys"
 import { BattleBounty, BattleLobby } from "../types/battle_queue"
 import BigNumber from "bignumber.js"
-import { MechBasic, MechBasicWithQueueStatus } from "../types"
+import { MechBasicWithQueueStatus } from "../types"
 
 export interface BattleLobbyState {
     battleLobbies: BattleLobby[]
