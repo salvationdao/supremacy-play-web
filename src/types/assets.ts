@@ -1,3 +1,4 @@
+import { FiatProduct } from "./fiat"
 import { Battle, Faction, Map, User, Vector2i } from "."
 
 export enum RarityEnum {
@@ -466,6 +467,8 @@ export enum MysteryCrateType {
 
 export interface StorefrontMysteryCrate extends Images {
     id: string
+    fiat_product_id: string
+    fiat_product: FiatProduct
     mystery_crate_type: MysteryCrateType
     price: string
     amount: number

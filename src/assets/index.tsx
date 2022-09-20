@@ -54,6 +54,7 @@ import Send from "!@svgr/webpack!./svg/Send.svg"
 import Shield from "!@svgr/webpack!./svg/Shield.svg"
 import ShieldRegen from "!@svgr/webpack!./svg/ShieldRegen.svg"
 import Shop from "!@svgr/webpack!./svg/Shop.svg"
+import ShoppingCart from "!@svgr/webpack!./svg/ShoppingCart.svg"
 import Skin from "!@svgr/webpack!./svg/Skin.svg"
 import Speed from "!@svgr/webpack!./svg/Speed.svg"
 import Spread from "!@svgr/webpack!./svg/Spread.svg"
@@ -138,6 +139,7 @@ import Volume from "!react-svg-loader!./svg/Volume.svg"
 import VolumeMute from "!react-svg-loader!./svg/VolumeMute.svg"
 import WarnTriangle from "!react-svg-loader!./svg/WarnTriangle.svg"
 import YouTube from "!react-svg-loader!./svg/YouTube.svg"
+import Bin from "!react-svg-loader!./svg/Bin.svg"
 import { Cake } from "@mui/icons-material"
 import AccessTimeSharpIcon from "@mui/icons-material/AccessTimeSharp"
 import AppsIcon from "@mui/icons-material/Apps"
@@ -564,6 +566,12 @@ export const SvgYouTube: React.VoidFunctionComponent<SvgWrapperProps> = (props) 
     </SvgWrapper>
 )
 
+export const SvgBin: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Bin />
+    </SvgWrapper>
+)
+
 export const SvgTelegram: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Telegram />
@@ -699,6 +707,12 @@ export const SvgAssets: React.VoidFunctionComponent<SvgWrapperProps> = (props) =
 export const SvgShop: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Shop />
+    </SvgWrapper>
+)
+
+export const SvgShoppingCart: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ShoppingCart />
     </SvgWrapper>
 )
 

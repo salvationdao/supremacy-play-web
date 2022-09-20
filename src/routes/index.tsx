@@ -18,6 +18,7 @@ import { ReplayPage } from "../pages/ReplayPage"
 import { StorefrontPage } from "../pages/StorefrontPage"
 import { WeaponPage } from "../pages/WeaponPage"
 import { colors } from "../theme/theme"
+import { StorefrontShoppingCartPage } from "../pages/StorefrontShoppingCartPage"
 
 // ************
 // ** ROUTES **
@@ -118,6 +119,17 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
     },
 
     // Storefront
+    storefront_shopping_cart: {
+        id: "storefront_shopping_cart",
+        path: "/storefront/shopping-cart",
+        exact: true,
+        Component: StorefrontShoppingCartPage,
+        requireAuth: true,
+        requireFaction: true,
+        matchNavLinkID: "storefront",
+        enable: !IS_TESTING_MODE,
+        pageTitle: "Supremacy - Shopping Cart",
+    },
     storefront: {
         id: "storefront",
         path: "/storefront/:type?",
