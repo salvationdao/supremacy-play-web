@@ -24,10 +24,11 @@ import { RentalModal } from "./Modals/RentalModal"
 import { RepairModal } from "./Modals/RepairModal/RepairModal"
 
 interface WarMachineHangarDetailsProps {
+    drawerContainerRef: React.MutableRefObject<HTMLElement | undefined>
     mechID: string
 }
 
-export const WarMachineHangarDetails = ({ mechID }: WarMachineHangarDetailsProps) => {
+export const WarMachineHangarDetails = ({ drawerContainerRef, mechID }: WarMachineHangarDetailsProps) => {
     const [selectedMechDetails, setSelectedMechDetails] = useState<MechDetails>()
     const [deployMechModalOpen, setDeployMechModalOpen] = useState<boolean>(false)
     const [leaveMechModalOpen, setLeaveMechModalOpen] = useState<boolean>(false)
@@ -37,6 +38,7 @@ export const WarMachineHangarDetails = ({ mechID }: WarMachineHangarDetailsProps
     return (
         <>
             <WarMachineHangarDetailsInner
+                drawerContainerRef={drawerContainerRef}
                 mechID={mechID}
                 setSelectedMechDetails={setSelectedMechDetails}
                 setDeployMechModalOpen={setDeployMechModalOpen}
@@ -77,6 +79,7 @@ export const WarMachineHangarDetails = ({ mechID }: WarMachineHangarDetailsProps
 }
 
 interface WarMachineHangarDetailsInnerProps {
+    drawerContainerRef: React.MutableRefObject<HTMLElement | undefined>
     mechID: string
     setSelectedMechDetails: React.Dispatch<React.SetStateAction<MechDetails | undefined>>
     setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -86,6 +89,7 @@ interface WarMachineHangarDetailsInnerProps {
 }
 
 export const WarMachineHangarDetailsInner = ({
+    drawerContainerRef,
     mechID,
     setSelectedMechDetails,
     setDeployMechModalOpen,
@@ -130,7 +134,7 @@ export const WarMachineHangarDetailsInner = ({
     const imageUrl = mechDetails?.chassis_skin?.image_url || mechDetails?.image_url
 
     return (
-        <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
+        <Stack position="relative" direction="row" spacing="1rem" sx={{ height: "100%" }}>
             {/* Left side */}
             <ClipThing
                 clipSize="10px"
@@ -292,7 +296,7 @@ export const WarMachineHangarDetailsInner = ({
                 sx={{ height: "100%", flex: 1 }}
             >
                 {mechDetails ? (
-                    <MechLoadout mechDetails={mechDetails} mechStatus={mechStatus} onUpdate={updateMechDetails} />
+                    <MechLoadout drawerContainerRef={drawerContainerRef} mechDetails={mechDetails} mechStatus={mechStatus} onUpdate={updateMechDetails} />
                 ) : (
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                         <CircularProgress size="3rem" sx={{ color: primaryColor }} />

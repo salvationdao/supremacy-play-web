@@ -102,12 +102,13 @@ const generateLoadout = (newMechDetails: MechDetails): MechDetailsWithMaps => {
 }
 
 interface MechLoadoutProps {
+    drawerContainerRef: React.MutableRefObject<HTMLElement | undefined>
     mechDetails: MechDetails
     mechStatus?: MechStatus
     onUpdate: (newMechDetails: MechDetails) => void
 }
 
-export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutProps) => {
+export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpdate }: MechLoadoutProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
     const { newSnackbarMessage } = useGlobalNotifications()
     const unityViewRef = useRef<UnityHandle>(null)
@@ -447,6 +448,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutPr
 
                         const renderModal = (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => (
                             <MechLoadoutWeaponModal
+                                containerRef={drawerContainerRef}
                                 onClose={() => toggleShowLoadoutModal(false)}
                                 onConfirm={(selectedWeapon, inheritSkin) => {
                                     modifyWeaponSlot({

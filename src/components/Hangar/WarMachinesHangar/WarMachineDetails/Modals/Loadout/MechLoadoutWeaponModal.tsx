@@ -1,4 +1,4 @@
-import { Box, CircularProgress, IconButton, Modal, Pagination, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Drawer, IconButton, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
 import { FancyButton } from "../../../../.."
@@ -10,7 +10,7 @@ import { getRarityDeets, getWeaponTypeColor } from "../../../../../../helpers"
 import { usePagination, useToggle } from "../../../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../../keys"
-import { colors, fonts, siteZIndex } from "../../../../../../theme/theme"
+import { colors, fonts } from "../../../../../../theme/theme"
 import { Weapon, WeaponType } from "../../../../../../types"
 import { SortTypeLabel } from "../../../../../../types/marketplace"
 import { ClipThing } from "../../../../../Common/ClipThing"
@@ -33,6 +33,7 @@ const sortOptions = [
 export type OnConfirmWeaponSelection = (selectedWeapon: Weapon, inheritSkin: boolean) => void
 
 interface MechLoadoutWeaponModalProps {
+    containerRef: React.MutableRefObject<HTMLElement | undefined>
     onClose: () => void
     onConfirm: OnConfirmWeaponSelection
     equipped?: Weapon
@@ -41,6 +42,7 @@ interface MechLoadoutWeaponModalProps {
 }
 
 export const MechLoadoutWeaponModal = ({
+    containerRef,
     onClose,
     onConfirm,
     equipped,
@@ -514,163 +516,163 @@ export const MechLoadoutWeaponModal = ({
     }, [equipped, isLoading, loadError, selectedWeapon?.id, theme.factionTheme.primary, theme.factionTheme.secondary, weapons])
 
     return (
-        <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
-            <Box
-                sx={{
+        <Drawer
+            container={containerRef.current}
+            open
+            onClose={onClose}
+            ModalProps={{
+                sx: {
                     position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    width: "100rem",
-                    maxWidth: "90vw",
-                    boxShadow: 6,
-                    outline: "none",
+                    m: 0,
+                    "& > *": {
+                        position: "absolute !important",
+                    },
+                },
+            }}
+        >
+            <ClipThing
+                ref={filtersContainerEl}
+                clipSize="10px"
+                border={{
+                    borderColor: theme.factionTheme.primary,
+                    borderThickness: ".3rem",
+                }}
+                backgroundColor={theme.factionTheme.background}
+                sx={{
+                    position: "relative",
+                    height: "55rem",
+                    maxHeight: "90vh",
                 }}
             >
-                <ClipThing
-                    ref={filtersContainerEl}
-                    clipSize="10px"
-                    border={{
-                        borderColor: theme.factionTheme.primary,
-                        borderThickness: ".3rem",
-                    }}
-                    backgroundColor={theme.factionTheme.background}
+                <IconButton
+                    size="small"
+                    onClick={onClose}
                     sx={{
-                        position: "relative",
-                        height: "55rem",
-                        maxHeight: "90vh",
+                        zIndex: 100,
+                        position: "absolute",
+                        top: ".5rem",
+                        right: ".5rem",
                     }}
                 >
-                    <IconButton
-                        size="small"
-                        onClick={onClose}
-                        sx={{
-                            zIndex: 100,
-                            position: "absolute",
-                            top: ".5rem",
-                            right: ".5rem",
+                    <SvgClose size="3rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                </IconButton>
+                <Stack
+                    direction="row"
+                    sx={{
+                        height: "100%",
+                    }}
+                >
+                    <SortAndFilters
+                        key={sortFilterReRender.toString()}
+                        initialSearch={search}
+                        onSetSearch={setSearch}
+                        chipFilters={[weaponTypeFilterSection.current, rarityChipFilter.current, weaponEquippedFilterSection.current]}
+                        sliderRangeFilters={[
+                            // ammoRangeFilter.current,
+                            damageRangeFilter.current,
+                            // damageFalloffRangeFilter.current,
+                            // damageFalloffRateRangeFilter.current,
+                            radiusRangeFilter.current,
+                            // radiusDamageFalloffRangeFilter.current,
+                            rateOfFireRangeFilter.current,
+                            energyCostRangeFilter.current,
+                            // projectileSpeedRangeFilter.current,
+                            spreadRangeFilter.current,
+                        ]}
+                        changePage={changePage}
+                        isExpanded={isFiltersExpanded}
+                        width="25rem"
+                        drawer={{
+                            container: filtersContainerEl.current,
+                            onClose: () => toggleIsFiltersExpanded(false),
                         }}
-                    >
-                        <SvgClose size="3rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
-                    </IconButton>
-                    <Stack
-                        direction="row"
-                        sx={{
-                            height: "100%",
-                        }}
-                    >
-                        <SortAndFilters
-                            key={sortFilterReRender.toString()}
-                            initialSearch={search}
-                            onSetSearch={setSearch}
-                            chipFilters={[weaponTypeFilterSection.current, rarityChipFilter.current, weaponEquippedFilterSection.current]}
-                            sliderRangeFilters={[
-                                // ammoRangeFilter.current,
-                                damageRangeFilter.current,
-                                // damageFalloffRangeFilter.current,
-                                // damageFalloffRateRangeFilter.current,
-                                radiusRangeFilter.current,
-                                // radiusDamageFalloffRangeFilter.current,
-                                rateOfFireRangeFilter.current,
-                                energyCostRangeFilter.current,
-                                // projectileSpeedRangeFilter.current,
-                                spreadRangeFilter.current,
-                            ]}
+                    />
+                    <Stack flex={1}>
+                        <PageHeader title="Equip a weapon" description="Select a weapon to equip on your mech." />
+                        <TotalAndPageSizeOptions
+                            countItems={weapons?.length}
+                            totalItems={totalItems}
+                            pageSize={pageSize}
+                            changePageSize={changePageSize}
+                            pageSizeOptions={[4, 8]}
                             changePage={changePage}
-                            isExpanded={isFiltersExpanded}
-                            width="25rem"
-                            drawer={{
-                                container: filtersContainerEl.current,
-                                onClose: () => toggleIsFiltersExpanded(false),
-                            }}
+                            manualRefresh={getWeapons}
+                            sortOptions={sortOptions}
+                            selectedSort={sort}
+                            onSetSort={setSort}
+                            isFiltersExpanded={isFiltersExpanded}
+                            toggleIsFiltersExpanded={toggleIsFiltersExpanded}
                         />
-                        <Stack flex={1}>
-                            <PageHeader title="Equip a weapon" description="Select a weapon to equip on your mech." />
-                            <TotalAndPageSizeOptions
-                                countItems={weapons?.length}
-                                totalItems={totalItems}
-                                pageSize={pageSize}
-                                changePageSize={changePageSize}
-                                pageSizeOptions={[4, 8]}
-                                changePage={changePage}
-                                manualRefresh={getWeapons}
-                                sortOptions={sortOptions}
-                                selectedSort={sort}
-                                onSetSort={setSort}
-                                isFiltersExpanded={isFiltersExpanded}
-                                toggleIsFiltersExpanded={toggleIsFiltersExpanded}
-                            />
-                            <Box
-                                sx={{
-                                    ml: "1.9rem",
-                                    mr: ".5rem",
-                                    pr: "1.4rem",
-                                    my: "1rem",
-                                    flex: 1,
-                                    overflowY: "auto",
-                                    overflowX: "hidden",
-                                    direction: "ltr",
-
-                                    "::-webkit-scrollbar": {
-                                        width: ".4rem",
-                                    },
-                                    "::-webkit-scrollbar-track": {
-                                        background: "#FFFFFF15",
-                                        borderRadius: 3,
-                                    },
-                                    "::-webkit-scrollbar-thumb": {
-                                        background: theme.factionTheme.primary,
-                                        borderRadius: 3,
-                                    },
-                                }}
-                            >
-                                {weaponList}
-                            </Box>
-                            {totalPages > 1 && (
-                                <Box
-                                    sx={{
-                                        mt: "auto",
-                                        px: "1rem",
-                                        py: ".7rem",
-                                        borderTop: `${primaryColor}70 1.5px solid`,
-                                        borderBottom: `${primaryColor}70 1.5px solid`,
-                                        backgroundColor: "#00000070",
-                                    }}
-                                >
-                                    <Pagination
-                                        size="small"
-                                        count={totalPages}
-                                        page={page}
-                                        sx={{
-                                            ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold, fontSize: "1.2rem" },
-                                            ".Mui-selected": {
-                                                color: secondaryColor,
-                                                backgroundColor: `${primaryColor} !important`,
-                                            },
-                                        }}
-                                        onChange={(e, p) => changePage(p)}
-                                    />
-                                </Box>
-                            )}
-                        </Stack>
-                        <Stack
+                        <Box
                             sx={{
-                                overflow: "hidden",
-                                flexBasis: "300px",
-                                borderLeft: `${primaryColor}70 1.5px solid`,
-                                backgroundColor: "#00000070",
+                                ml: "1.9rem",
+                                mr: ".5rem",
+                                pr: "1.4rem",
+                                my: "1rem",
+                                flex: 1,
+                                overflowY: "auto",
+                                overflowX: "hidden",
+                                direction: "ltr",
+
+                                "::-webkit-scrollbar": {
+                                    width: ".4rem",
+                                },
+                                "::-webkit-scrollbar-track": {
+                                    background: "#FFFFFF15",
+                                    borderRadius: 3,
+                                },
+                                "::-webkit-scrollbar-thumb": {
+                                    background: theme.factionTheme.primary,
+                                    borderRadius: 3,
+                                },
                             }}
                         >
-                            <WeaponPreview
-                                weapon={selectedWeapon}
-                                equipped={equipped}
-                                skinInheritable={selectedWeapon ? !!weaponsWithSkinInheritance.find((s) => s === selectedWeapon?.blueprint_id) : false}
-                                onConfirm={onConfirm}
-                            />
-                        </Stack>
+                            {weaponList}
+                        </Box>
+                        {totalPages > 1 && (
+                            <Box
+                                sx={{
+                                    mt: "auto",
+                                    px: "1rem",
+                                    py: ".7rem",
+                                    borderTop: `${primaryColor}70 1.5px solid`,
+                                    borderBottom: `${primaryColor}70 1.5px solid`,
+                                    backgroundColor: "#00000070",
+                                }}
+                            >
+                                <Pagination
+                                    size="small"
+                                    count={totalPages}
+                                    page={page}
+                                    sx={{
+                                        ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold, fontSize: "1.2rem" },
+                                        ".Mui-selected": {
+                                            color: secondaryColor,
+                                            backgroundColor: `${primaryColor} !important`,
+                                        },
+                                    }}
+                                    onChange={(e, p) => changePage(p)}
+                                />
+                            </Box>
+                        )}
                     </Stack>
-                </ClipThing>
-            </Box>
-        </Modal>
+                    <Stack
+                        sx={{
+                            overflow: "hidden",
+                            flexBasis: "300px",
+                            borderLeft: `${primaryColor}70 1.5px solid`,
+                            backgroundColor: "#00000070",
+                        }}
+                    >
+                        <WeaponPreview
+                            weapon={selectedWeapon}
+                            equipped={equipped}
+                            skinInheritable={selectedWeapon ? !!weaponsWithSkinInheritance.find((s) => s === selectedWeapon?.blueprint_id) : false}
+                            onConfirm={onConfirm}
+                        />
+                    </Stack>
+                </Stack>
+            </ClipThing>
+        </Drawer>
     )
 }
