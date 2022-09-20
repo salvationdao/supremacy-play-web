@@ -63,7 +63,7 @@ export const MechViewer = React.forwardRef<UnityHandle, MechViewerProps>(functio
             if (!wu.unequip && weapon) {
                 obj = {
                     type: "weapon",
-                    ownership_id: weapon.owner_id,
+                    ownership_id: weapon.id,
                     static_id: weapon.blueprint_id,
                     skin: weapon.weapon_skin
                         ? {
@@ -128,7 +128,7 @@ export const MechViewer = React.forwardRef<UnityHandle, MechViewerProps>(functio
 
                 accessories[w.slot_number] = {
                     type: "weapon",
-                    ownership_id: w.owner_id,
+                    ownership_id: w.id,
                     static_id: w.blueprint_id,
                     skin: w.weapon_skin
                         ? {
@@ -152,7 +152,7 @@ export const MechViewer = React.forwardRef<UnityHandle, MechViewerProps>(functio
 
         //         accessories[mechDetails.weapon_hardpoints + u.slot_number] = {
         //             type: "utility",
-        //             ownership_id: u.owner_id,
+        //             ownership_id: u.id,
         //             static_id: u.blueprint_id,
         //         }
         //     })
@@ -165,7 +165,7 @@ export const MechViewer = React.forwardRef<UnityHandle, MechViewerProps>(functio
         if (mechDetails.power_core) {
             accessories[accessories.length - 1] = {
                 type: "power_core",
-                ownership_id: mechDetails.power_core.owner_id,
+                ownership_id: mechDetails.power_core.id,
                 static_id: mechDetails.power_core.blueprint_id,
             }
         }
@@ -175,7 +175,7 @@ export const MechViewer = React.forwardRef<UnityHandle, MechViewerProps>(functio
             silos: [
                 {
                     type: "mech",
-                    ownership_id: mechDetails.owner_id,
+                    ownership_id: mechDetails.id,
                     static_id: mechDetails.blueprint_id,
                     skin: mechDetails.chassis_skin
                         ? {
@@ -192,7 +192,7 @@ export const MechViewer = React.forwardRef<UnityHandle, MechViewerProps>(functio
         sendMessage("ProjectContext(Clone)", "GetPlayerInventoryFromPage", JSON.stringify(siloItems))
         sendMessage("ProjectContext(Clone)", "FittingRoom", "")
         sent.current = true
-    }, [sendMessage, isLoaded, siloReady, mechDetails.weapons, mechDetails.power_core, mechDetails.faction_id, mechDetails.owner_id, mechDetails.blueprint_id, mechDetails.chassis_skin, mechDetails.weapon_hardpoints, mechDetails.utility, mechDetails.utility_slots])
+    }, [sendMessage, isLoaded, siloReady, mechDetails.weapons, mechDetails.power_core, mechDetails.faction_id, mechDetails.owner_id, mechDetails.blueprint_id, mechDetails.chassis_skin, mechDetails.weapon_hardpoints, mechDetails.utility, mechDetails.utility_slots, mechDetails.id])
 
     return (
         <Box
