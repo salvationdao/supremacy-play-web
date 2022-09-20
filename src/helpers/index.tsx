@@ -551,11 +551,15 @@ export const getAssetItemDeets = (
     return { icon, color, label, subRoute }
 }
 
-export const generatePriceText = (dollars: number, cents: number) => {
-    const totalDollars = dollars + Math.floor(cents / 100)
-    const remainingCents = cents % 100
+export const generatePriceText = (currency: string, cents: string | BigNumber) => {
+    if (typeof cents === "string") {
+        cents = new BigNumber(cents)
+    }
 
-    return `$${totalDollars}.${remainingCents < 10 ? `0${remainingCents}` : remainingCents}`
+    const totalDollars = cents.div(100).toNumber()
+    const remainingCents = cents.mod(100).toNumber()
+
+    return `${currency} ${totalDollars}.${remainingCents < 10 ? `0${remainingCents}` : remainingCents}`
 }
 
 // Converts number to alphabet letter. E.g. 0 -> "a"

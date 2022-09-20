@@ -1,3 +1,4 @@
+import moment from "moment"
 import { Box, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { HangarBg, SafePNG } from "../assets"
@@ -5,12 +6,13 @@ import { ClipThing } from "../components"
 import { CoolTable } from "../components/Common/CoolTable"
 import { PageHeader } from "../components/Common/PageHeader"
 import { useTheme } from "../containers/theme"
-import { parseString } from "../helpers"
+import { generatePriceText, parseString } from "../helpers"
 import { usePagination, useUrlQuery } from "../hooks"
 import { useGameServerCommandsUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 import { fonts, siteZIndex } from "../theme/theme"
-import { BillingHistory } from "../types/fiat"
+import { FiatOrder } from "../types/fiat"
+import BigNumber from "bignumber.js"
 
 export const BillingHistoryPage = () => {
     const theme = useTheme()
@@ -25,12 +27,12 @@ export const BillingHistoryPage = () => {
     // Items
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const [billingHistoryItems, setBillingHistoryItems] = useState<BillingHistory[]>()
+    const [billingHistoryItems, setBillingHistoryItems] = useState<FiatOrder[]>()
 
     const getItems = useCallback(async () => {
         try {
             setIsLoading(true)
-            const resp = await send<{ total: number; records: BillingHistory[] }>(GameServerKeys.BillingHistoryList, {
+            const resp = await send<{ total: number; records: FiatOrder[] }>(GameServerKeys.FiatBillingHistoryList, {
                 page: page - 1,
                 page_size: pageSize,
             })
@@ -88,9 +90,9 @@ export const BillingHistoryPage = () => {
 
                             <Box sx={{ flex: 1 }}>
                                 <CoolTable
-                                    tableHeadings={["RECEIPT NUMBER", "DATE", "PAID", "REFUNDED"]}
-                                    alignments={["left", "center", "center", "center"]}
-                                    widths={["25%", "25%", "25%", "25%"]}
+                                    tableHeadings={["RECEIPT NUMBER", "DATE", "STATUS", "TOTAL", "VIEW"]}
+                                    alignments={["left", "center", "center", "center", "center"]}
+                                    widths={["20%", "20%", "20%", "20%", "20%"]}
                                     titleRowHeight="3.5rem"
                                     cellPadding=".4rem 1rem"
                                     items={billingHistoryItems}
@@ -103,8 +105,20 @@ export const BillingHistoryPage = () => {
                                         changePage,
                                         changePageSize,
                                     }}
-                                    renderItem={(item, index) => {
-                                        return { cells: [<Typography key={1}>{index + 1}</Typography>] }
+                                    renderItem={(item) => {
+                                        let total = new BigNumber(0)
+                                        item.items.forEach((oi) => {
+                                            total = total.plus(new BigNumber(oi.amount).multipliedBy(oi.quantity))
+                                        })
+                                        return {
+                                            cells: [
+                                                <Typography key={1}>{item.order_number}</Typography>,
+                                                <Typography key={2}>{moment(item.created_at).format("DD/MM/YYYY h:mm A")}</Typography>,
+                                                <Typography key={3}>{item.order_status.toUpperCase()}</Typography>,
+                                                <Typography key={4}>{generatePriceText("$USD", total)}</Typography>,
+                                                <Typography key={5}>TBA Link</Typography>,
+                                            ],
+                                        }
                                     }}
                                 />
                             </Box>
