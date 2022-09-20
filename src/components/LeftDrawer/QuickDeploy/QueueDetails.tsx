@@ -2,12 +2,10 @@ import { IconButton, Stack, Typography } from "@mui/material"
 import { useState } from "react"
 import { TooltipHelper } from "../.."
 import { SvgNotification, SvgSupToken } from "../../../assets"
-import { supFormatter } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { colors } from "../../../theme/theme"
 import { PreferencesModal } from "../../Bar/ProfileCard/PreferencesModal/PreferencesModal"
 import { TelegramRegisterModal } from "../../Bar/ProfileCard/PreferencesModal/TelegramRegisterModal"
-import { QueueFeed } from "../../Hangar/WarMachinesHangar/WarMachineDetails/Modals/DeployModal"
 import { PlayerQueueStatus } from "./QuickDeploy"
 import { useBattleLobby } from "../../../containers/battleLobby"
 
@@ -20,7 +18,6 @@ export const QueueDetails = ({ playerQueueStatus }: QueueDetailsProps) => {
     const [preferencesModalOpen, togglePreferencesModalOpen] = useToggle()
     const [addDeviceModalOpen, toggleAddDeviceModalOpen] = useToggle()
     const [telegramShortcode, setTelegramShortcode] = useState<string>("")
-
     return (
         <>
             <Stack spacing="1.5rem" direction="row" width="100%">
