@@ -1,5 +1,5 @@
 import { Stack, Typography } from "@mui/material"
-import React from "react"
+import React, { useMemo } from "react"
 import { useGameServerSubscriptionSecured } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { pulseEffect } from "../../../../theme/keyframes"
@@ -91,21 +91,31 @@ export const RepairBlocks = ({
 export const MechRepairBlocks = React.memo(function MechRepairBlocks({
     mechID,
     defaultBlocks,
+    damagedBlocks,
     hideNumber,
     pulsateEffectPercent,
 }: {
     mechID?: string
     defaultBlocks?: number
+    damagedBlocks?: number
     hideNumber?: boolean
     pulsateEffectPercent?: number
 }) {
     const repairStatus = useGameServerSubscriptionSecured<RepairStatus>({
         URI: `/mech/${mechID}/repair_case`,
         key: GameServerKeys.SubMechRepairStatus,
-        ready: !!mechID,
+        ready: damagedBlocks !== undefined && !!mechID,
     })
 
-    const remainDamagedBlocks = repairStatus ? repairStatus.blocks_required_repair - repairStatus.blocks_repaired : 0
+    const remainDamagedBlocks = useMemo(() => {
+        if (damagedBlocks) {
+            return damagedBlocks
+        } else if (repairStatus) {
+            return repairStatus.blocks_required_repair - repairStatus.blocks_repaired
+        }
+
+        return 0
+    }, [damagedBlocks, repairStatus])
 
     return (
         <RepairBlocks

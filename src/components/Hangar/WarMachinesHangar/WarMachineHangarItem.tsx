@@ -206,7 +206,13 @@ export const MechCommonArea = ({
                         {mech1?.name || mech1?.label || label}
                     </Typography>
 
-                    {!hideRepairBlocks && <MechRepairBlocks mechID={mech?.id || mechDetails?.id} defaultBlocks={mechDetails?.repair_blocks} />}
+                    {!hideRepairBlocks && (
+                        <MechRepairBlocks
+                            mechID={mech?.id || mechDetails?.id || ""}
+                            defaultBlocks={mech?.repair_blocks || mechDetails?.repair_blocks || 0}
+                            damagedBlocks={mech?.damaged_blocks}
+                        />
+                    )}
 
                     {toggleIsExpanded && !isGridView && (
                         <Stack
@@ -266,11 +272,11 @@ export const MechCommonArea = ({
             imageUrl,
             largeImageUrl,
             toggleIsExpanded,
-            mechDetails,
             mech1,
             label,
             hideRepairBlocks,
-            mech?.id,
+            mech,
+            mechDetails,
             isExpanded,
             primaryColor,
             secondaryColor,

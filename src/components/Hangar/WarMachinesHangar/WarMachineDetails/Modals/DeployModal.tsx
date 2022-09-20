@@ -1,15 +1,15 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import { FancyButton, TooltipHelper } from "../../../.."
 import { SvgInfoCircular, SvgSupToken } from "../../../../../assets"
 import { useGlobalNotifications } from "../../../../../containers"
 import { supFormatter } from "../../../../../helpers"
-import { useGameServerCommandsFaction, useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
 import { MechDetails } from "../../../../../types"
-import { PlayerQueueStatus } from "../../../../LeftDrawer/QuickDeploy/QuickDeploy"
 import { MechModal } from "../../Common/MechModal"
+import { useBattleLobby } from "../../../../../containers/battleLobby"
 
 export interface QueueFeed {
     queue_position: number
@@ -24,19 +24,11 @@ interface DeployModalProps {
 
 export const DeployModal = ({ selectedMechDetails: deployMechDetails, deployMechModalOpen, setDeployMechModalOpen }: DeployModalProps) => {
     const { newSnackbarMessage } = useGlobalNotifications()
+    const { playerQueueStatus } = useBattleLobby()
     const { send } = useGameServerCommandsFaction("/faction_commander")
-    const { send: userSend } = useGameServerCommandsUser("/user_commander")
 
-    const [playerQueueStatus, setPlayerQueueStatus] = useState<PlayerQueueStatus>()
     const [isLoading, setIsLoading] = useState(false)
     const [deployQueueError, setDeployQueueError] = useState<string>()
-
-    useEffect(() => {
-        ;(async () => {
-            const resp = await userSend<PlayerQueueStatus>(GameServerKeys.PlayerQueueStatus)
-            setPlayerQueueStatus(resp)
-        })()
-    }, [userSend])
 
     // Queuing cost, queue length win reward etc.
     const queueFeed = useGameServerSubscriptionFaction<QueueFeed>({

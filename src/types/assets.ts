@@ -125,6 +125,7 @@ export interface MechBasic extends Collection, Images {
     updated_at: Date
     created_at: Date
 
+    damaged_blocks: number
     equipped_weapon_count: number | null
     equipped_utility_count: number | null
     power_core_recharge_rate: number | null
@@ -139,7 +140,6 @@ export interface MechBasicWithQueueStatus extends MechBasic {
     lobby_locked_at?: Date
     assigned_to_battle_id?: string
     lobby_number?: number
-    damaged_blocks: number
     is_battle_ready: boolean
     in_market_place: boolean
 }
@@ -502,6 +502,7 @@ export interface Rarity {
     label: string
     color: string
     textColor: string
+    rank: number
 }
 
 export interface StorefrontPackage {

@@ -4,6 +4,7 @@ import { GameServerKeys } from "../keys"
 import { BattleBounty, BattleLobby } from "../types/battle_queue"
 import BigNumber from "bignumber.js"
 import { MechBasicWithQueueStatus } from "../types"
+import { PlayerQueueStatus } from "../components/LeftDrawer/QuickDeploy/QuickDeploy"
 
 export interface BattleLobbyState {
     battleLobbies: BattleLobby[]
@@ -22,6 +23,8 @@ export interface BattleLobbyState {
     battleBounties: BattleBounty[]
     createBattleBounty: (mechID: string, amount: number) => void
     mechsWithQueueStatus: MechBasicWithQueueStatus[]
+    playerQueueStatus: PlayerQueueStatus
+    reachQueueLimit: boolean
 }
 
 const initialState: BattleLobbyState = {
@@ -53,6 +56,11 @@ const initialState: BattleLobbyState = {
         if (mechID && amount) return
     },
     mechsWithQueueStatus: [],
+    playerQueueStatus: {
+        queue_limit: 10,
+        total_queued: 0,
+    },
+    reachQueueLimit: false,
 }
 
 export const BattleLobbyContext = createContext<BattleLobbyState>(initialState)
@@ -267,6 +275,19 @@ export const BattleLobbyProvider = ({ children }: { children: ReactNode }) => {
         },
     )
 
+    const [playerQueueStatus, setPlayerQueueStatus] = useState<PlayerQueueStatus>(initialState.playerQueueStatus)
+    useGameServerSubscriptionSecuredUser<PlayerQueueStatus>(
+        {
+            URI: "/queue_status",
+            key: GameServerKeys.PlayerQueueStatus,
+        },
+        (payload) => {
+            setPlayerQueueStatus(payload)
+
+            console.log(payload)
+        },
+    )
+
     return (
         <BattleLobbyContext.Provider
             value={{
@@ -278,6 +299,8 @@ export const BattleLobbyProvider = ({ children }: { children: ReactNode }) => {
                 battleBounties,
                 createBattleBounty,
                 mechsWithQueueStatus,
+                playerQueueStatus,
+                reachQueueLimit: playerQueueStatus.queue_limit === playerQueueStatus.total_queued,
             }}
         >
             {children}

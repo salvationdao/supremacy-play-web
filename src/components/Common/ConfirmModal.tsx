@@ -11,6 +11,7 @@ interface ConfirmModalProps {
     onConfirm: () => void
     onClose: () => void
     isLoading?: boolean
+    width?: string
     error?: string
     confirmPrefix?: ReactNode
     confirmSuffix?: ReactNode
@@ -28,6 +29,7 @@ export const ConfirmModal = ({
     children,
     onConfirm,
     onClose,
+    width,
     isLoading,
     error,
     confirmPrefix,
@@ -50,7 +52,7 @@ export const ConfirmModal = ({
                     top: "50%",
                     left: "50%",
                     transform: "translate(-50%, -50%)",
-                    width: "50rem",
+                    width: width || "50rem",
                     boxShadow: 6,
                     outline: "none",
                 }}

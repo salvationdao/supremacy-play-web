@@ -184,30 +184,30 @@ export const hexToRGB = (hexx: string) => {
 
 export const getRarityDeets = (rarityKey: string): Rarity => {
     switch (rarityKey) {
-        case "COLOSSAL":
-            return { label: "Colossal", color: colors.rarity.COLOSSAL, textColor: "#FFFFFF" }
-        case "RARE":
-            return { label: "Rare", color: colors.rarity.RARE, textColor: "#FFFFFF" }
-        case "LEGENDARY":
-            return { label: "Legendary", color: colors.rarity.LEGENDARY, textColor: "#FFFFFF" }
-        case "ELITE_LEGENDARY":
-            return { label: "Elite Legendary", color: colors.rarity.ELITE_LEGENDARY, textColor: "#FFFFFF" }
-        case "ULTRA_RARE":
-            return { label: "Ultra Rare", color: colors.rarity.ULTRA_RARE, textColor: "#FFFFFF" }
-        case "EXOTIC":
-            return { label: "Exotic", color: colors.rarity.EXOTIC, textColor: "#FFFFFF" }
-        case "GUARDIAN":
-            return { label: "Guardian", color: colors.rarity.GUARDIAN, textColor: "#FFFFFF" }
-        case "MYTHIC":
-            return { label: "Mythic", color: colors.rarity.MYTHIC, textColor: "#000000" }
-        case "DEUS_EX":
-            return { label: "Deus Ex", color: colors.rarity.DEUS_EX, textColor: "#000000" }
-        case "TITAN":
-            return { label: "Titan", color: colors.rarity.TITAN, textColor: "#000000" }
         case "MEGA":
-            return { label: "Mega", color: colors.rarity.MEGA, textColor: "#FFFFFF" }
+            return { label: "Mega", color: colors.rarity.MEGA, textColor: "#FFFFFF", rank: 12 }
+        case "COLOSSAL":
+            return { label: "Colossal", color: colors.rarity.COLOSSAL, textColor: "#FFFFFF", rank: 11 }
+        case "RARE":
+            return { label: "Rare", color: colors.rarity.RARE, textColor: "#FFFFFF", rank: 10 }
+        case "LEGENDARY":
+            return { label: "Legendary", color: colors.rarity.LEGENDARY, textColor: "#FFFFFF", rank: 9 }
+        case "ELITE_LEGENDARY":
+            return { label: "Elite Legendary", color: colors.rarity.ELITE_LEGENDARY, textColor: "#FFFFFF", rank: 8 }
+        case "ULTRA_RARE":
+            return { label: "Ultra Rare", color: colors.rarity.ULTRA_RARE, textColor: "#FFFFFF", rank: 7 }
+        case "EXOTIC":
+            return { label: "Exotic", color: colors.rarity.EXOTIC, textColor: "#FFFFFF", rank: 6 }
+        case "GUARDIAN":
+            return { label: "Guardian", color: colors.rarity.GUARDIAN, textColor: "#FFFFFF", rank: 5 }
+        case "MYTHIC":
+            return { label: "Mythic", color: colors.rarity.MYTHIC, textColor: "#000000", rank: 4 }
+        case "DEUS_EX":
+            return { label: "Deus Ex", color: colors.rarity.DEUS_EX, textColor: "#000000", rank: 3 }
+        case "TITAN":
+            return { label: "Titan", color: colors.rarity.TITAN, textColor: "#000000", rank: 2 }
         default:
-            return { label: "", color: colors.rarity.MEGA, textColor: "#FFFFFF" }
+            return { label: "", color: colors.rarity.MEGA, textColor: "#FFFFFF", rank: 1 }
     }
 }
 
