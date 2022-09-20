@@ -221,6 +221,9 @@ export enum GameServerKeys {
     // Replays
     GetReplays = "GET:BATTLE:REPLAYS",
     GetReplayDetails = "GET:REPLAY:DETAILS",
+
+    // Voice chat
+    SubPlayerVoiceStream = "PLAYER:VOICE:STREAM",
 }
 
 export enum PassportServerKeys {
