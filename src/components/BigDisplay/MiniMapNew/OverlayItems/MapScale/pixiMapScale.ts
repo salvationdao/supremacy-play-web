@@ -25,13 +25,12 @@ export class PixiMapScale {
         this.line.position.set(0, 5)
 
         // Label
-        const labelStyle = new PIXI.TextStyle({
+        this.label = new PIXI.Text(`${Math.round(GAME_CLIENT_TILE_SIZE / 100)}m`, {
             fontFamily: fonts.shareTech,
             fontSize: 12,
             fill: "#FFFFFF",
             lineHeight: 1,
         })
-        this.label = new PIXI.Text(`${Math.round(GAME_CLIENT_TILE_SIZE / 100)}m`, labelStyle)
         this.label.anchor.set(0, 0)
         this.label.resolution = 4
         this.label.zIndex = 5
@@ -62,7 +61,7 @@ export class PixiMapScale {
             this.label.position.set(this.line.width + 8, 0)
 
             this.root.pivot.set(this.root.width, this.root.height)
-            this.root.x = this.viewport.screenWidth - 9
+            this.root.x = this.viewport.screenWidth - 11
             this.root.y = this.viewport.screenHeight - 8
 
             this.animationFrame = requestAnimationFrame(step)

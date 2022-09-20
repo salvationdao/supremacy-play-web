@@ -1,6 +1,7 @@
 import { ease } from "pixi-ease"
 import { Viewport } from "pixi-viewport"
 import * as PIXI from "pixi.js"
+import { AbilityCancelPNG } from "../../../../../assets"
 import { HEXToVBColor } from "../../../../../helpers"
 import { fonts } from "../../../../../theme/theme"
 import { BlueprintPlayerAbility, Dimension, GameAbility, LocationSelectType, Position } from "../../../../../types"
@@ -38,6 +39,7 @@ export class PixiTargetHint {
     private colorOverlay: PIXI.Sprite
     private outerBorder: PIXI.Graphics
     private bottomContainer: PIXI.Graphics
+    private cancelButton: PIXI.Sprite | undefined
 
     private viewport: Viewport
     private ability: GameAbility | BlueprintPlayerAbility
@@ -95,7 +97,7 @@ export class PixiTargetHint {
         this.icon.alpha = 0.8
 
         // Countdown label
-        const countdownLabel = new PIXI.TextStyle({
+        this.countdownLabel = new PIXI.Text(secondsLeft, {
             fontFamily: fonts.nostromoBlack,
             fontSize: 13,
             fill: "#FFFFFF",
@@ -103,7 +105,6 @@ export class PixiTargetHint {
             strokeThickness: 0.2,
             lineHeight: 1,
         })
-        this.countdownLabel = new PIXI.Text(secondsLeft, countdownLabel)
         this.countdownLabel.anchor.set(0.5, 0)
         this.countdownLabel.resolution = 4
         this.countdownLabel.zIndex = 5
@@ -115,18 +116,25 @@ export class PixiTargetHint {
 
         // Label and cancel button at bottom
         this.bottomContainer = new PIXI.Graphics()
-        const labelStyle = new PIXI.TextStyle({
+        const label = new PIXI.Text(getAbilityLabel(ability), {
             fontFamily: fonts.nostromoBlack,
             fontSize: 11,
             fill: ability.colour,
             lineHeight: 1,
         })
-        const label = new PIXI.Text(getAbilityLabel(ability), labelStyle)
         label.resolution = 4
         label.pivot.set(0, label.height / 2)
         label.position.set(16, 13)
         this.bottomContainer.addChild(label)
         this.bottomContainer.zIndex = 7
+
+        // Cancel button
+        if (onCancel) {
+            this.cancelButton = PIXI.Sprite.from(AbilityCancelPNG)
+            this.cancelButton.scale.set(0.9)
+            this.cancelButton.pivot.set(this.cancelButton.width, this.cancelButton.height / 2)
+            this.bottomContainer.addChild(this.cancelButton)
+        }
 
         // Add everything to container
         this.viewportRoot.addChild(this.icon)
@@ -176,6 +184,7 @@ export class PixiTargetHint {
             this.bottomContainer.endFill()
             this.bottomContainer.pivot.set(0, this.bottomContainer.height)
             this.bottomContainer.position.set(0, this.viewport.screenHeight)
+            this.cancelButton?.position.set(this.viewport.screenWidth - 16, 13)
 
             // Repeat
             this.animationFrame = requestAnimationFrame(step)

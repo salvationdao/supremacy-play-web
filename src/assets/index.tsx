@@ -171,6 +171,7 @@ import ClaimsBg from "./images/ClaimsBg.jpg"
 import CrossPNG from "./images/Cross.png"
 import Crosshair from "./images/Crosshair.png"
 import EmptyWarMachinesPNG from "./images/EmptyWarMachines.png"
+import AbilityCancelPNG from "./images/AbilityCancel.png"
 import FlamesPNG from "./images/Flames.png"
 import Gabs from "./images/Gabs.png"
 import GenericWarMachinePNG from "./images/GenericWarMachine.png"
@@ -311,6 +312,7 @@ export {
     ThreeMechsJPG,
     CrossPNG,
     DeadSkullPNG,
+    AbilityCancelPNG,
 }
 export { BCBorder, RMBorder, ZHIBorder, BCWaiting, RMWaiting, ZHIWaiting, BCDeploy, RMDeploy, ZHIDeploy }
 

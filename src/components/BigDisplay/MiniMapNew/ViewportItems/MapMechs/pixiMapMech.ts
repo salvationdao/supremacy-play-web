@@ -47,13 +47,12 @@ export class PixiMapMech {
         this.arrowGraphics.zIndex = 9
 
         // Number text
-        const numberTextStyle = new PIXI.TextStyle({
+        this.numberText = new PIXI.Text(label, {
             fontFamily: fonts.nostromoBlack,
             fontSize: 15,
             fill: "#FFFFFF",
             lineHeight: 1,
         })
-        this.numberText = new PIXI.Text(label, numberTextStyle)
         this.numberText.anchor.set(0.5, 0.5)
         this.numberText.resolution = 4
 

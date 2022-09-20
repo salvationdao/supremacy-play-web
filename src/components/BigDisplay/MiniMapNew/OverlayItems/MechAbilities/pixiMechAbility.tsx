@@ -35,14 +35,13 @@ export class PixiMechAbility {
         this.image.zIndex = 3
 
         // Label
-        const labelStyle = new PIXI.TextStyle({
+        this.labelText = `${ability.label} [${MECH_ABILITY_KEY[index]}]`
+        this.label = new PIXI.Text(this.labelText, {
             fontFamily: fonts.shareTech,
             fontSize: 12,
             fill: "#FFFFFF",
             lineHeight: 1,
         })
-        this.labelText = `${ability.label} [${MECH_ABILITY_KEY[index]}]`
-        this.label = new PIXI.Text(this.labelText, labelStyle)
         this.label.anchor.set(0, 0.5)
         this.label.resolution = 4
         this.label.zIndex = 5
