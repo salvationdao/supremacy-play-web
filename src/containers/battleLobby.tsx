@@ -1,13 +1,15 @@
-import { createContext, ReactNode, useCallback, useContext, useState } from "react"
+import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from "react"
 import { useGameServerCommandsFaction, useGameServerSubscriptionSecured, useGameServerSubscriptionSecuredUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 import { BattleBounty, BattleLobby } from "../types/battle_queue"
 import BigNumber from "bignumber.js"
 import { MechBasicWithQueueStatus } from "../types"
 import { PlayerQueueStatus } from "../components/LeftDrawer/QuickDeploy/QuickDeploy"
+import { FallbackUser } from "./auth"
 
 export interface BattleLobbyState {
     battleLobbies: BattleLobby[]
+    nextBattleLobby: BattleLobby
     createBattleLobby: (
         mechIDs: string[],
         entryFee: BigNumber,
@@ -29,6 +31,21 @@ export interface BattleLobbyState {
 
 const initialState: BattleLobbyState = {
     battleLobbies: [],
+    nextBattleLobby: {
+        id: "",
+        host_by_id: "",
+        number: 0,
+        entry_fee: "",
+        first_faction_cut: "",
+        second_faction_cut: "",
+        third_faction_cut: "",
+        each_faction_mech_amount: 3,
+        generated_by_system: true,
+        host_by: FallbackUser,
+        is_private: true,
+        battle_lobbies_mechs: [],
+        created_at: new Date(),
+    },
     createBattleLobby: (
         mechIDs: string[],
         entryFee: BigNumber,
@@ -167,6 +184,17 @@ export const BattleLobbyProvider = ({ children }: { children: ReactNode }) => {
         },
     )
 
+    const nextBattleLobby = useMemo(() => {
+        const readyLobbies = battleLobbies
+            .filter((bl) => !!bl.ready_at && !bl.assigned_to_battle_id)
+            .sort((a, b) => (a.ready_at && b.ready_at && a.ready_at > b.ready_at ? 1 : -1))
+        if (readyLobbies.length > 0) {
+            return readyLobbies[0]
+        }
+
+        return initialState.nextBattleLobby
+    }, [battleLobbies])
+
     const [battleETASeconds, setBattleETASeconds] = useState<number>(initialState.battleETASeconds)
     useGameServerSubscriptionSecured<number>(
         {
@@ -292,6 +320,7 @@ export const BattleLobbyProvider = ({ children }: { children: ReactNode }) => {
         <BattleLobbyContext.Provider
             value={{
                 battleLobbies,
+                nextBattleLobby,
                 createBattleLobby,
                 joinBattleLobby,
                 leaveBattleLobby,

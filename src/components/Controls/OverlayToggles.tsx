@@ -1,10 +1,10 @@
 import { IconButton, Stack, Typography } from "@mui/material"
 import { TooltipHelper } from ".."
-import { SvgTrailer, SvgUpcomingBattle } from "../../assets"
+import { SvgTrailer } from "../../assets"
 import { useUI } from "../../containers"
 
 export const OverlayToggles = () => {
-    const { showUpcomingBattle, toggleShowUpcomingBattle, showTrailer, toggleShowTrailer } = useUI()
+    const { showTrailer, toggleShowTrailer } = useUI()
 
     return (
         <Stack direction="row" alignItems="center" sx={{ height: "100%" }}>
@@ -13,21 +13,21 @@ export const OverlayToggles = () => {
             </Typography>
 
             {/* Upcoming battle */}
-            <TooltipHelper text="Toggle the upcoming battle screen.">
-                <IconButton
-                    size="small"
-                    onClick={() => toggleShowUpcomingBattle()}
-                    sx={{
-                        filter: showUpcomingBattle ? "grayscale(0)" : "grayscale(1)",
-                        opacity: showUpcomingBattle ? 1 : 0.4,
-                        transition: "all .2s",
-                        ":hover": { filter: "grayscale(0.2)" },
-                        ":active": { filter: "grayscale(.6)" },
-                    }}
-                >
-                    <SvgUpcomingBattle size="1.7rem" fill="#E8BB3F" />
-                </IconButton>
-            </TooltipHelper>
+            {/*<TooltipHelper text="Toggle the upcoming battle screen.">*/}
+            {/*    <IconButton*/}
+            {/*        size="small"*/}
+            {/*        onClick={() => toggleShowUpcomingBattle()}*/}
+            {/*        sx={{*/}
+            {/*            filter: showUpcomingBattle ? "grayscale(0)" : "grayscale(1)",*/}
+            {/*            opacity: showUpcomingBattle ? 1 : 0.4,*/}
+            {/*            transition: "all .2s",*/}
+            {/*            ":hover": { filter: "grayscale(0.2)" },*/}
+            {/*            ":active": { filter: "grayscale(.6)" },*/}
+            {/*        }}*/}
+            {/*    >*/}
+            {/*        <SvgUpcomingBattle size="1.7rem" fill="#E8BB3F" />*/}
+            {/*    </IconButton>*/}
+            {/*</TooltipHelper>*/}
 
             {/* Battle history */}
             {/* <TooltipHelper text="Toggle the battle history page.">

@@ -10,7 +10,7 @@ export interface BattleLobby {
     second_faction_cut: string
     third_faction_cut: string
     each_faction_mech_amount: number
-    game_map_id: string
+    game_map_id?: string
     generated_by_system: boolean
     ready_at?: Date
     assigned_to_battle_id?: string
@@ -19,7 +19,7 @@ export interface BattleLobby {
     deleted_at?: Date
 
     host_by: User
-    game_map: GameMap
+    game_map?: GameMap
     is_private: boolean
     battle_lobbies_mechs: BattleLobbiesMech[]
 }

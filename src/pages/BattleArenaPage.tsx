@@ -7,14 +7,12 @@ import { PlayerAbilities } from "../components/LeftDrawer/BattleArena/PlayerAbil
 import { QuickPlayerAbilities } from "../components/LeftDrawer/BattleArena/QuickPlayerAbilities/QuickPlayerAbilities"
 import { QuickDeploy } from "../components/LeftDrawer/QuickDeploy/QuickDeploy"
 import { BattleArenaCountDown } from "../components/Maintenance/BattleArenaCountDown"
-import { UpcomingBattle } from "../components/UpcomingBattle/UpcomingBattle"
 import { BATTLE_ARENA_OPEN } from "../constants"
-import { useArena, useAuth, useDimension, useMobile } from "../containers"
+import { useAuth, useDimension, useMobile } from "../containers"
 import { siteZIndex } from "../theme/theme"
 
 export const BattleArenaPage = () => {
     const { userID } = useAuth()
-    const { currentArena } = useArena()
     const [understand, setUnderstand] = useState(true)
 
     useEffect(() => {
@@ -35,10 +33,6 @@ export const BattleArenaPage = () => {
 
     if (!BATTLE_ARENA_OPEN) {
         return <BattleArenaCountDown />
-    }
-
-    if (currentArena?.status?.is_idle) {
-        return <UpcomingBattle />
     }
 
     return <BattleArenaPageInner />

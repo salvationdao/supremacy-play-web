@@ -1,25 +1,12 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useMemo, useState } from "react"
-import { useDimension, useSupremacy } from "../../containers"
-import { useGameServerSubscription } from "../../hooks/useGameServer"
-import { GameServerKeys } from "../../keys"
+import { useMemo } from "react"
+import { useDimension } from "../../containers"
 import { opacityEffect } from "../../theme/keyframes"
 import { colors, fonts } from "../../theme/theme"
-import { GameMap } from "../../types"
-import { MechCard } from "./MechCard"
-
-interface NextBattle {
-    map: GameMap
-    bc_id: string
-    zhi_id: string
-    rm_id: string
-    bc_mech_ids: string[]
-    zhi_mech_ids: string[]
-    rm_mech_ids: string[]
-}
+import { useBattleLobby } from "../../containers/battleLobby"
 
 export const UpcomingBattle = () => {
-    const [nextBattle, setNextBattle] = useState<NextBattle | undefined>()
+    const { nextBattleLobby } = useBattleLobby()
     const { gameUIDimensions } = useDimension()
 
     const { size, spacing } = useMemo(() => {
@@ -34,20 +21,8 @@ export const UpcomingBattle = () => {
         return { size, spacing }
     }, [gameUIDimensions.height, gameUIDimensions.width])
 
-    // Subscribe on battle end information
-    useGameServerSubscription<NextBattle>(
-        {
-            URI: `/public/arena/upcomming_battle`,
-            key: GameServerKeys.NextBattleDetails,
-        },
-        (payload) => {
-            if (!payload) return
-            setNextBattle(payload)
-        },
-    )
-
     const content = useMemo(() => {
-        if (!nextBattle) {
+        if (!nextBattleLobby) {
             return (
                 <Stack justifyContent="center" alignItems="center" sx={{ height: "6rem" }}>
                     <CircularProgress size="3rem" sx={{ color: "#FFFFFF" }} />
@@ -68,14 +43,12 @@ export const UpcomingBattle = () => {
                         justifyContent: "center",
                     }}
                 >
-                    <CardGroup mechIDs={nextBattle?.bc_mech_ids || []} factionID={nextBattle?.bc_id || ""} />
-                    <CardGroup mechIDs={nextBattle?.zhi_mech_ids || []} factionID={nextBattle?.zhi_id || ""} />
-                    <CardGroup mechIDs={nextBattle?.rm_mech_ids || []} factionID={nextBattle?.rm_id || ""} />
+                    {/* TODO: Display next lobby*/}
                 </Box>
-                <img style={{ height: "9rem" }} src={nextBattle?.map?.logo_url} alt={`Upcoming battle on map: ${nextBattle?.map?.name}`} />
+                <img style={{ height: "9rem" }} src={nextBattleLobby.game_map?.logo_url} alt={`Upcoming battle on map: ${nextBattleLobby?.game_map?.name}`} />
             </>
         )
-    }, [size, nextBattle])
+    }, [size, nextBattleLobby])
 
     return (
         <Stack
@@ -86,7 +59,7 @@ export const UpcomingBattle = () => {
                 height: "100%",
                 width: "100%",
                 backgroundColor: colors.darkNavy,
-                backgroundImage: `url(${nextBattle?.map?.background_url})`,
+                backgroundImage: `url(${nextBattleLobby?.game_map?.background_url})`,
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
                 backgroundSize: "cover",
@@ -99,18 +72,5 @@ export const UpcomingBattle = () => {
 
             {content}
         </Stack>
-    )
-}
-
-const CardGroup = ({ factionID, mechIDs }: { factionID: string; mechIDs: string[] }) => {
-    const { getFaction } = useSupremacy()
-    const faction = getFaction(factionID)
-
-    return (
-        <>
-            <MechCard mechID={mechIDs[0] || ""} faction={faction} />
-            <MechCard mechID={mechIDs[1] || ""} faction={faction} />
-            <MechCard mechID={mechIDs[2] || ""} faction={faction} />
-        </>
     )
 }
