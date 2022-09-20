@@ -4,6 +4,7 @@ import { useTheme } from "../../../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../../../helpers"
 import { colors, fonts } from "../../../../../../../theme/theme"
 import { Weapon } from "../../../../../../../types"
+import { ClipThing } from "../../../../../../Common/ClipThing"
 import { FancyButton } from "../../../../../../Common/FancyButton"
 import { FeatherFade } from "../../../MechViewer"
 import { OnConfirmWeaponSelection } from "../MechLoadoutWeaponModal"
@@ -127,13 +128,30 @@ export const WeaponPreview = ({ onConfirm, weapon, equipped, skinInheritable }: 
         const imageUrl = skin?.avatar_url || weapon?.avatar_url || skin?.image_url || weapon?.image_url || skin?.large_image_url || weapon?.large_image_url
 
         return (
-            <Stack p="1rem 2rem" height="100%">
-                <Box
+            <Stack
+                sx={{
+                    height: "100%",
+                    width: "100%",
+                    minWidth: "300px",
+                }}
+            >
+                <ClipThing
                     sx={{
                         position: "relative",
+                        height: "100px",
+                        width: "100px",
+                    }}
+                    backgroundColor={theme.factionTheme.background}
+                    border={{
+                        borderColor: theme.factionTheme.primary,
+                        borderThickness: ".2rem",
+                    }}
+                    corners={{
+                        topLeft: true,
+                        bottomRight: true,
                     }}
                 >
-                    <FeatherFade color={theme.factionTheme.background} />
+                    <FeatherFade color={`${theme.factionTheme.background}aa`} featherBlur="10px" featherSize="10px" />
                     {(!videoUrlsFilters || videoUrlsFilters.length <= 0) && imageUrl ? (
                         <Box
                             component="img"
@@ -166,33 +184,7 @@ export const WeaponPreview = ({ onConfirm, weapon, equipped, skinInheritable }: 
                             {videoUrlsFilters.map((videoUrl, i) => videoUrl && <source key={videoUrl + i} src={videoUrl} type="video/mp4" />)}
                         </Box>
                     )}
-                    <Box
-                        sx={{
-                            zIndex: 100,
-                            position: "absolute",
-                            left: 0,
-                            bottom: 0,
-                        }}
-                    >
-                        <Typography
-                            variant="h6"
-                            sx={{
-                                color: getRarityDeets(weapon.tier).color,
-                                fontFamily: fonts.nostromoBlack,
-                            }}
-                        >
-                            {weapon.tier}
-                        </Typography>
-                        <Typography
-                            variant="h4"
-                            sx={{
-                                fontFamily: fonts.nostromoBlack,
-                            }}
-                        >
-                            {weapon.label}
-                        </Typography>
-                    </Box>
-                </Box>
+                </ClipThing>
                 <Stack
                     sx={{
                         zIndex: 100,
@@ -201,6 +193,8 @@ export const WeaponPreview = ({ onConfirm, weapon, equipped, skinInheritable }: 
                         overflowX: "hidden",
                         direction: "ltr",
                         mt: "1rem",
+                        scrollbarColor: `${theme.factionTheme.primary}55 ${"#FFFFFF15"}`,
+                        scrollbarWidth: "thin",
 
                         "::-webkit-scrollbar": {
                             width: ".4rem",
@@ -215,6 +209,24 @@ export const WeaponPreview = ({ onConfirm, weapon, equipped, skinInheritable }: 
                         },
                     }}
                 >
+                    <Typography
+                        variant="h6"
+                        sx={{
+                            color: getRarityDeets(weapon.tier).color,
+                            fontFamily: fonts.nostromoBlack,
+                        }}
+                    >
+                        {weapon.tier}
+                    </Typography>
+                    <Typography
+                        variant="h4"
+                        sx={{
+                            fontFamily: fonts.nostromoBlack,
+                        }}
+                    >
+                        {weapon.label}
+                    </Typography>
+
                     {weapon.equipped_on && (
                         <Typography
                             sx={{
@@ -247,41 +259,43 @@ export const WeaponPreview = ({ onConfirm, weapon, equipped, skinInheritable }: 
                         </Typography>
                     )}
                 </Stack>
-                {!weapon.locked_to_mech && <Stack
-                    direction="row"
-                    spacing="1rem"
-                    sx={{
-                        zIndex: 100,
-                        pt: "1rem",
-                    }}
-                >
-                    <Box ml="auto" />
-                    {skinInheritable && (
-                        <Stack direction="row" alignItems="center" justifyContent="space-between">
-                            <Switch
-                                size="small"
-                                checked={inheritSkin}
-                                onChange={(e, c) => setInheritSkin(c)}
-                                sx={{
-                                    transform: "scale(.7)",
-                                    ".Mui-checked": { color: theme.factionTheme.primary },
-                                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${theme.factionTheme.primary}50` },
-                                }}
-                            />
-                            <Typography variant="body2" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
-                                Inherit Skin
-                            </Typography>
-                        </Stack>
-                    )}
-                    <FancyButton
-                        clipThingsProps={{
-                            backgroundColor: colors.green,
+                {!weapon.locked_to_mech && (
+                    <Stack
+                        direction="row"
+                        spacing="1rem"
+                        sx={{
+                            zIndex: 100,
+                            pt: "1rem",
                         }}
-                        onClick={() => onConfirm(weapon, inheritSkin)}
                     >
-                        Equip To Mech
-                    </FancyButton>
-                </Stack>}
+                        <Box ml="auto" />
+                        {skinInheritable && (
+                            <Stack direction="row" alignItems="center" justifyContent="space-between">
+                                <Switch
+                                    size="small"
+                                    checked={inheritSkin}
+                                    onChange={(e, c) => setInheritSkin(c)}
+                                    sx={{
+                                        transform: "scale(.7)",
+                                        ".Mui-checked": { color: theme.factionTheme.primary },
+                                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${theme.factionTheme.primary}50` },
+                                    }}
+                                />
+                                <Typography variant="body2" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                    Inherit Skin
+                                </Typography>
+                            </Stack>
+                        )}
+                        <FancyButton
+                            clipThingsProps={{
+                                backgroundColor: colors.green,
+                            }}
+                            onClick={() => onConfirm(weapon, inheritSkin)}
+                        >
+                            Equip To Mech
+                        </FancyButton>
+                    </Stack>
+                )}
             </Stack>
         )
     }

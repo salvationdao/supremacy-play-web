@@ -253,7 +253,12 @@ export const MechViewer = React.forwardRef<UnityHandle, MechViewerProps>(functio
     )
 })
 
-export const FeatherFade = ({ color }: { color: string }) => {
+interface FeatherFadeProps {
+    color: string
+    featherSize?: string
+    featherBlur?: string
+}
+export const FeatherFade = ({ color, featherBlur = "60px", featherSize = "50px" }: FeatherFadeProps) => {
     return (
         <Box
             sx={{
@@ -262,7 +267,7 @@ export const FeatherFade = ({ color }: { color: string }) => {
                 bottom: -1,
                 left: -1,
                 right: -1,
-                boxShadow: `0 0 60px 50px ${color}`,
+                boxShadow: `0 0 ${featherBlur} ${featherSize} ${color}`,
                 zIndex: 9,
             }}
         >
