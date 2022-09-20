@@ -45,7 +45,7 @@ export class PixiMapScale {
 
     destroy() {
         if (this.animationFrame) cancelAnimationFrame(this.animationFrame)
-        this.root.destroy(true)
+        this.root.destroy()
     }
 
     render() {

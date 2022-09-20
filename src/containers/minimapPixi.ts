@@ -280,6 +280,10 @@ export const MiniMapPixiContainer = createContainer(() => {
         setHighlightedMechParticipantID,
     ])
 
+    useEffect(() => {
+        console.log({ winner, playerAbility, selection, selectionInstant })
+    }, [playerAbility, selection, selectionInstant, winner])
+
     return {
         pixiMainItems,
         setPixiMainItems,

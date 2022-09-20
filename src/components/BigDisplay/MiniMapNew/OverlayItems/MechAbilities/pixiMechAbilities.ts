@@ -28,7 +28,7 @@ export class PixiMechAbilities {
     }
 
     destroy() {
-        this.root.destroy(true)
+        this.root.destroy()
     }
 
     addMechAbility(ability: PixiMechAbility, index: number) {

@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js"
 import { HEXToVBColor } from "../../../../../helpers"
-import { fonts } from "../../../../../theme/theme"
+import { colors, fonts } from "../../../../../theme/theme"
 import { BlueprintPlayerAbility, Dimension, GameAbility, GAME_CLIENT_TILE_SIZE, Position } from "../../../../../types"
 
 const SIZE = 30
@@ -32,6 +32,7 @@ export class PixiTargetHint {
 
         this.viewportRoot = new PIXI.Container()
         this.viewportRoot.zIndex = 60
+        this.viewportRoot.sortableChildren = true
 
         // Icon
         // Image border
@@ -52,23 +53,27 @@ export class PixiTargetHint {
         this.icon.addChild(iconImage)
         this.icon.alpha = 0.8
 
-        // Label
+        // Countdown label
         const labelStyle = new PIXI.TextStyle({
-            fontFamily: fonts.shareTech,
-            fontSize: 12,
-            fill: "#FFFFFF",
+            fontFamily: fonts.nostromoBlack,
+            fontSize: 13,
+            fill: "#FF0000",
+            stroke: "#00000050",
+            strokeThickness: 0.2,
             lineHeight: 1,
         })
-        this.countdownLabel = new PIXI.Text(`${Math.round(GAME_CLIENT_TILE_SIZE / 100)}m`, labelStyle)
+        this.countdownLabel = new PIXI.Text(`15`, labelStyle)
         this.countdownLabel.anchor.set(0.5, 0)
         this.countdownLabel.resolution = 4
         this.countdownLabel.zIndex = 5
+        this.countdownLabel.position.set(gridSizeRef.current.width / 2, -18)
 
         // Angle lines
         this.lines = new PIXI.Graphics()
 
         // Add everything to container
         this.viewportRoot.addChild(this.icon)
+        this.viewportRoot.addChild(this.countdownLabel)
         this.stageRoot.addChild(this.viewportRoot)
 
         this.render()
@@ -76,8 +81,8 @@ export class PixiTargetHint {
 
     destroy() {
         if (this.animationFrame) cancelAnimationFrame(this.animationFrame)
-        this.viewportRoot.destroy(true)
-        this.stageRoot.destroy(true)
+        this.viewportRoot.destroy()
+        this.stageRoot.destroy()
     }
 
     render() {
@@ -96,7 +101,6 @@ export class PixiTargetHint {
             // this.line.lineTo(0, 4)
             // this.line.lineTo(width, 4)
             // this.line.lineTo(width, 0)
-
             this.animationFrame = requestAnimationFrame(step)
         }
 

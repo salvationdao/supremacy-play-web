@@ -13,7 +13,7 @@ export const TargetHint = React.memo(function TargetHint() {
         return null
     }
 
-    return <TargetHintInner ability={ability} endTime={endTime} />
+    return <TargetHintInner key={ability.id} ability={ability} endTime={endTime} />
 })
 
 const TargetHintInner = ({ ability, endTime }: { ability: GameAbility | BlueprintPlayerAbility; endTime?: Date }) => {

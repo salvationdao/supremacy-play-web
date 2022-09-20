@@ -97,7 +97,7 @@ export class PixiMapMech {
 
     destroy() {
         if (this.animationFrame) cancelAnimationFrame(this.animationFrame)
-        this.root.destroy(true)
+        this.root.destroy()
     }
 
     updateStyles(primaryColor: string, iconDimension: Dimension) {
