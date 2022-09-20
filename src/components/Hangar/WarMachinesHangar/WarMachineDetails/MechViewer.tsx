@@ -15,6 +15,11 @@ if (DEV_ONLY) {
     baseUrl += process.env.REACT_APP_ENVIRONMENT + "/"
 }
 
+export type UnityHandle = {
+    handleWeaponUpdate: (wu: LoadoutWeapon) => void
+    handlePowerCoreUpdate: (pcu: LoadoutPowerCore) => void
+    handleMechSkinUpdate: (msu: LoadoutMechSkin) => void
+}
 interface MechViewerProps {
     mechDetails: MechDetails
     unity?: {
@@ -22,7 +27,7 @@ interface MechViewerProps {
     }
 }
 
-export const MechViewer = React.forwardRef(function MechViewer({ mechDetails, unity }: MechViewerProps, ref) {
+export const MechViewer = React.forwardRef<UnityHandle, MechViewerProps>(function MechViewer({ mechDetails, unity }, ref) {
     const theme = useTheme()
     const { unityProvider, sendMessage, addEventListener, removeEventListener, isLoaded } = useUnityContext({
         loaderUrl: `${baseUrl}WebGL.loader.js`,
@@ -46,30 +51,34 @@ export const MechViewer = React.forwardRef(function MechViewer({ mechDetails, un
     useImperativeHandle(ref, () => ({
         handleWeaponUpdate: (wu: LoadoutWeapon) => {
             if (wu.slot_number == null) return
-
             const weapon = wu.weapon
+            const obj = {
+                type: "weapon",
+                ownership_id: weapon.owner_id,
+                static_id: weapon.blueprint_id,
+                skin: weapon.weapon_skin
+                    ? {
+                          type: "skin",
+                          static_id: weapon.weapon_skin.blueprint_id,
+                      }
+                    : undefined,
+            } as SiloObject
+            console.log(obj)
             sendMessage("SceneContext", "SetSlotIndexToChange", wu.slot_number)
-            sendMessage(
-                "SceneContext",
-                "ChangeSlotValue",
-                JSON.stringify({
-                    type: "weapon",
-                    ownership_id: weapon.owner_id,
-                    static_id: weapon.blueprint_id,
-                    skin: weapon.weapon_skin
-                        ? {
-                              type: "skin",
-                              static_id: weapon.weapon_skin.blueprint_id,
-                          }
-                        : undefined,
-                } as SiloObject),
-            )
+            sendMessage("SceneContext", "ChangeSlotValue", JSON.stringify(obj))
         },
         handlePowerCoreUpdate: (pcu: LoadoutPowerCore) => {
-            if (pcu.power_core) return
+            if (!pcu.power_core) return
+            const powerCore = pcu.power_core
+            const obj = {
+                type: "power_core",
+                ownership_id: powerCore.owner_id,
+                static_id: powerCore.blueprint_id,
+            } as SiloObject
+            console.log(obj)
         },
         handleMechSkinUpdate: (msu: LoadoutMechSkin) => {
-            if (msu.mech_skin) return
+            if (!msu.mech_skin) return
         },
     }))
 

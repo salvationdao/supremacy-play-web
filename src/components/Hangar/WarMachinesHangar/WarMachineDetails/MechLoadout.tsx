@@ -9,7 +9,7 @@ import { colors } from "../../../../theme/theme"
 import { MechDetails, MechSkin, MechStatus, MechStatusEnum, PowerCore, Utility, Weapon } from "../../../../types"
 import { FancyButton } from "../../../Common/FancyButton"
 import { MechLoadoutItem } from "../Common/MechLoadoutItem"
-import { MechViewer } from "./MechViewer"
+import { MechViewer, UnityHandle } from "./MechViewer"
 import { MechLoadoutMechSkinModal } from "./Modals/Loadout/MechLoadoutMechSkinModal"
 import { MechLoadoutPowerCoreModal } from "./Modals/Loadout/MechLoadoutPowerCoreModal"
 import { MechLoadoutWeaponModal } from "./Modals/Loadout/MechLoadoutWeaponModal"
@@ -107,7 +107,7 @@ interface MechLoadoutProps {
 export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
     const { newSnackbarMessage } = useGlobalNotifications()
-    const unityViewRef = useRef<HTMLDivElement>()
+    const unityViewRef = useRef<UnityHandle>(null)
 
     const [error, setError] = useState<string>()
     const [loading, setLoading] = useState(false)
@@ -190,6 +190,10 @@ export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutPr
     }, [])
 
     const addWeaponSelection = useCallback((ew: LoadoutWeapon) => {
+        if (unityViewRef.current) {
+            unityViewRef.current.handleWeaponUpdate(ew)
+        }
+
         setCurrLoadout((prev) => {
             const updated = new Map(prev.changed_weapons_map)
             updated.set(ew.slot_number, ew)
