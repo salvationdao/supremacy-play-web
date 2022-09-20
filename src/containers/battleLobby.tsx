@@ -158,13 +158,7 @@ export const BattleLobbyProvider = ({ children }: { children: ReactNode }) => {
                 }
 
                 // replace current list
-                let list = bls.map((bl) => {
-                    const target = payload.find((p) => p.id === bl.id)
-                    if (target) {
-                        return target
-                    }
-                    return bl
-                })
+                let list = bls.map((bl) => payload.find((p) => p.id === bl.id) || bl)
 
                 // append new list
                 payload.forEach((p) => {
@@ -224,13 +218,7 @@ export const BattleLobbyProvider = ({ children }: { children: ReactNode }) => {
                 }
 
                 // replace current list
-                let list = bbs.map((bb) => {
-                    const target = payload.find((p) => p.id === bb.id)
-                    if (target) {
-                        return target
-                    }
-                    return bb
-                })
+                let list = bbs.map((bb) => payload.find((p) => p.id === bb.id) || bb)
 
                 // append new list
                 payload.forEach((p) => {
@@ -280,13 +268,7 @@ export const BattleLobbyProvider = ({ children }: { children: ReactNode }) => {
                 }
 
                 // replace current list
-                const list = mqs.map((mq) => {
-                    const target = payload.find((p) => p.id === mq.id)
-                    if (target) {
-                        return target
-                    }
-                    return mq
-                })
+                const list = mqs.map((mq) => payload.find((p) => p.id === mq.id) || mq)
 
                 // append new list
                 payload.forEach((p) => {

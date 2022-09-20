@@ -31,7 +31,12 @@ interface WarMachineHangarItemProps {
 }
 
 const propsAreEqual = (prevProps: WarMachineHangarItemProps, nextProps: WarMachineHangarItemProps) => {
-    return prevProps.isGridView === nextProps.isGridView && prevProps.mech.id === nextProps.mech.id && prevProps.isSelected === nextProps.isSelected
+    return (
+        prevProps.isGridView === nextProps.isGridView &&
+        prevProps.mech.id === nextProps.mech.id &&
+        prevProps.isSelected === nextProps.isSelected &&
+        prevProps.mech.damaged_blocks === nextProps.mech.damaged_blocks
+    )
 }
 
 export const WarMachineHangarItem = React.memo(function WarMachineHangarItem({ isSelected, toggleIsSelected, mech, isGridView }: WarMachineHangarItemProps) {

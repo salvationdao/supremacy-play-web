@@ -179,7 +179,6 @@ export const WarMachinesHangar = () => {
         result = result.slice((page - 1) * pageSize, page * pageSize)
 
         setList(result)
-        console.log(result)
     }, [mechsWithQueueStatus, search, rarities, status, updateQuery, sort, page, pageSize, setTotalItems])
 
     const content = useMemo(() => {
