@@ -42,7 +42,6 @@ export class PixiTargetHint {
     private viewport: Viewport
     private ability: GameAbility | BlueprintPlayerAbility
     private mapMousePosition: React.MutableRefObject<Position | undefined>
-    private gridSizeRef: React.MutableRefObject<Dimension>
     private animationFrame: number | undefined
     private onCountdownExpired: () => void | undefined
 
@@ -58,7 +57,6 @@ export class PixiTargetHint {
         this.viewport = viewport
         this.ability = ability
         this.mapMousePosition = mapMousePosition
-        this.gridSizeRef = gridSizeRef
         this.onCountdownExpired = onCountdownExpired
         const secondsLeft = endTime ? Math.max(Math.round((endTime.getTime() - new Date().getTime()) / 1000), 0) : undefined
 

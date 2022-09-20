@@ -110,6 +110,7 @@ const MechAbilitiesInner = React.memo(function MechAbilitiesInner({ warMachine }
 
                 {/* Mech move command */}
                 <MechAbility
+                    key={`mech-move-ability-${hash}`}
                     pixiMechAbilities={pixiMechAbilities}
                     index={gameAbilities.length}
                     hash={hash}

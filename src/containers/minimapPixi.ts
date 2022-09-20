@@ -139,7 +139,7 @@ export const MiniMapPixiContainer = createContainer(() => {
             const t = setTimeout(() => {
                 // Then open the map again
                 setIsTargeting(true)
-            }, 1000)
+            }, 2000)
             return () => clearTimeout(t)
         } else if (playerAbility) {
             setIsTargeting(true)

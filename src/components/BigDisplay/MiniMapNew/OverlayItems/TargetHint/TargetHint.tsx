@@ -6,24 +6,34 @@ import { PixiTargetHint } from "./pixiTargetHint"
 export const TargetHint = React.memo(function TargetHint() {
     const { isTargeting, winner, playerAbility } = useMiniMapPixi()
 
-    const ability = winner?.game_ability || playerAbility?.ability
-    const endTime = winner?.end_time
-
-    if (!isTargeting || !ability) {
-        return null
+    if (isTargeting && winner?.game_ability) {
+        return (
+            <TargetHintInner
+                key={`target-hint-${winner.game_ability.id}-${winner.end_time.toDateString()}`}
+                ability={winner.game_ability}
+                endTime={winner.end_time}
+            />
+        )
     }
 
-    return (
-        <TargetHintInner
-            key={`target-hint-${ability.id}-${endTime?.toISOString()}`}
-            ability={ability}
-            endTime={endTime}
-            cancelable={!winner?.game_ability && !!ability}
-        />
-    )
+    if (isTargeting && playerAbility?.ability) {
+        return <TargetHintInner key={`target-hint-${playerAbility.id}`} ability={playerAbility.ability} cancelable />
+    }
+
+    return null
 })
 
-const TargetHintInner = ({ ability, endTime, cancelable }: { ability: GameAbility | BlueprintPlayerAbility; endTime?: Date; cancelable: boolean }) => {
+interface TargetHintInnerProps {
+    ability: GameAbility | BlueprintPlayerAbility
+    endTime?: Date
+    cancelable?: boolean
+}
+
+const propsAreEqual = (prevProps: TargetHintInnerProps, nextProps: TargetHintInnerProps) => {
+    return prevProps.endTime === nextProps.endTime && prevProps.cancelable === nextProps.cancelable && prevProps.ability.id === nextProps.ability.id
+}
+
+const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, cancelable }: TargetHintInnerProps) {
     const { newSnackbarMessage } = useGlobalNotifications()
     const { pixiMainItems, resetWinnerSelection, resetPlayerAbilitySelection, mapMousePosition, gridSizeRef, selection } = useMiniMapPixi()
     const [pixiTargetHint, setPixiTargetHint] = useState<PixiTargetHint>()
@@ -31,8 +41,7 @@ const TargetHintInner = ({ ability, endTime, cancelable }: { ability: GameAbilit
     const onCountdownExpired = useCallback(() => {
         newSnackbarMessage("Failed to submit target location on time.", "error")
         resetWinnerSelection()
-        resetPlayerAbilitySelection()
-    }, [newSnackbarMessage, resetWinnerSelection, resetPlayerAbilitySelection])
+    }, [newSnackbarMessage, resetWinnerSelection])
 
     const onCancel = useCallback(() => {
         resetPlayerAbilitySelection()
@@ -60,7 +69,9 @@ const TargetHintInner = ({ ability, endTime, cancelable }: { ability: GameAbilit
 
     // Cleanup
     useEffect(() => {
-        return () => pixiTargetHint?.destroy()
+        return () => {
+            pixiTargetHint?.destroy()
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pixiTargetHint])
 
@@ -71,4 +82,4 @@ const TargetHintInner = ({ ability, endTime, cancelable }: { ability: GameAbilit
     }, [selection, endTime, pixiTargetHint])
 
     return null
-}
+}, propsAreEqual)
