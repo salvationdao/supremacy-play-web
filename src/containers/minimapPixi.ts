@@ -98,6 +98,8 @@ export const MiniMapPixiContainer = createContainer(() => {
             if (endTime < dateNow || diff < 8000 || diff > 20000) {
                 endTime = new Date(dateNow.getTime() + 15000)
             }
+            // Need to set is targeting to false, it sets to true later in a use effect
+            setIsTargeting(false)
             setWinner({ ...payload, end_time: endTime })
         },
     )
@@ -141,7 +143,7 @@ export const MiniMapPixiContainer = createContainer(() => {
                 setIsTargeting(true)
             }, 2000)
             return () => clearTimeout(t)
-        } else if (playerAbility) {
+        } else if (!winner && playerAbility) {
             setIsTargeting(true)
         }
     }, [winner, bribeStage, playerAbility, setSelection])
@@ -281,8 +283,8 @@ export const MiniMapPixiContainer = createContainer(() => {
     ])
 
     useEffect(() => {
-        console.log({ winner, playerAbility, selection, selectionInstant })
-    }, [playerAbility, selection, selectionInstant, winner])
+        console.log({ isTargeting, winner, playerAbility, selection, selectionInstant })
+    }, [isTargeting, playerAbility, selection, selectionInstant, winner])
 
     return {
         pixiMainItems,
