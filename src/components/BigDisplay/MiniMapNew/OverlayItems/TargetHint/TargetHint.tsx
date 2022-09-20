@@ -9,8 +9,6 @@ export const TargetHint = React.memo(function TargetHint() {
     const ability = winner?.game_ability || playerAbility?.ability
     const endTime = winner?.end_time
 
-    console.log({ winner, playerAbility })
-
     if (!isTargeting || !ability) {
         return null
     }
@@ -20,7 +18,7 @@ export const TargetHint = React.memo(function TargetHint() {
 
 const TargetHintInner = ({ ability, endTime }: { ability: GameAbility | BlueprintPlayerAbility; endTime?: Date }) => {
     const { newSnackbarMessage } = useGlobalNotifications()
-    const { pixiMainItems, gridSizeRef, resetWinnerSelection } = useMiniMapPixi()
+    const { pixiMainItems, resetWinnerSelection, mapMousePosition, gridSizeRef } = useMiniMapPixi()
     const [pixiTargetHint, setPixiTargetHint] = useState<PixiTargetHint>()
 
     const onCountdownExpired = useCallback(() => {
@@ -31,13 +29,14 @@ const TargetHintInner = ({ ability, endTime }: { ability: GameAbility | Blueprin
     // Initial setup for the mech and show on the map
     useEffect(() => {
         if (!pixiMainItems) return
-        const pixiTargetHint = new PixiTargetHint(pixiMainItems.viewport, ability, endTime, onCountdownExpired)
-        pixiMainItems.app.stage.addChild(pixiTargetHint.root)
+        const pixiTargetHint = new PixiTargetHint(mapMousePosition, gridSizeRef, ability, endTime, onCountdownExpired)
+        pixiMainItems.viewport.addChild(pixiTargetHint.viewportRoot)
+        pixiMainItems.app.stage.addChild(pixiTargetHint.stageRoot)
         setPixiTargetHint((prev) => {
             prev?.destroy()
             return pixiTargetHint
         })
-    }, [ability, endTime, gridSizeRef, onCountdownExpired, pixiMainItems])
+    }, [ability, endTime, onCountdownExpired, pixiMainItems, mapMousePosition, gridSizeRef])
 
     // Cleanup
     useEffect(() => {

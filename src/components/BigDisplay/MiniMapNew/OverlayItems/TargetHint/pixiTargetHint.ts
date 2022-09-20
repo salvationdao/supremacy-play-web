@@ -1,48 +1,56 @@
-import { Viewport } from "pixi-viewport"
 import * as PIXI from "pixi.js"
 import { HEXToVBColor } from "../../../../../helpers"
 import { fonts } from "../../../../../theme/theme"
-import { BlueprintPlayerAbility, GameAbility, GAME_CLIENT_TILE_SIZE } from "../../../../../types"
+import { BlueprintPlayerAbility, Dimension, GameAbility, GAME_CLIENT_TILE_SIZE, Position } from "../../../../../types"
 
 const SIZE = 30
 
 export class PixiTargetHint {
-    root: PIXI.Container<PIXI.DisplayObject>
-    mouseRoot: PIXI.Container<PIXI.DisplayObject>
+    stageRoot: PIXI.Container<PIXI.DisplayObject>
+    viewportRoot: PIXI.Container<PIXI.DisplayObject>
     private icon: PIXI.Container
     private countdownLabel: PIXI.Text
     private lines: PIXI.Graphics
 
-    private viewport: Viewport
+    private mapMousePosition: React.MutableRefObject<Position | undefined>
+    private gridSizeRef: React.MutableRefObject<Dimension>
     private animationFrame: number | undefined
 
-    constructor(viewport: Viewport, ability: GameAbility | BlueprintPlayerAbility, endTime: Date | undefined, onCountdownExpired: () => void | undefined) {
-        this.viewport = viewport
+    constructor(
+        mapMousePosition: React.MutableRefObject<Position | undefined>,
+        gridSizeRef: React.MutableRefObject<Dimension>,
+        ability: GameAbility | BlueprintPlayerAbility,
+        endTime: Date | undefined,
+        onCountdownExpired: () => void | undefined,
+    ) {
+        this.mapMousePosition = mapMousePosition
+        this.gridSizeRef = gridSizeRef
 
         // Create container for everything
-        this.root = new PIXI.Container()
-        this.root.zIndex = 50
+        this.stageRoot = new PIXI.Container()
+        this.stageRoot.zIndex = 50
 
-        this.mouseRoot = new PIXI.Container()
-        this.mouseRoot.interactive = true
+        this.viewportRoot = new PIXI.Container()
+        this.viewportRoot.zIndex = 60
 
         // Icon
         // Image border
         const imageBorder = new PIXI.Graphics()
         imageBorder.lineStyle(1.2, HEXToVBColor(ability.colour))
-        imageBorder.drawRoundedRect(0, 0, SIZE, SIZE, 2)
+        imageBorder.drawRoundedRect(0, 0, gridSizeRef.current.width, gridSizeRef.current.height, 2)
         imageBorder.zIndex = 4
 
         // Image
         const iconImage = PIXI.Sprite.from(ability.image_url)
-        iconImage.width = SIZE
-        iconImage.height = SIZE
+        iconImage.width = gridSizeRef.current.width
+        iconImage.height = gridSizeRef.current.height
         iconImage.zIndex = 3
 
         this.icon = new PIXI.Container()
         this.icon.sortableChildren = true
         this.icon.addChild(imageBorder)
         this.icon.addChild(iconImage)
+        this.icon.alpha = 0.8
 
         // Label
         const labelStyle = new PIXI.TextStyle({
@@ -60,26 +68,27 @@ export class PixiTargetHint {
         this.lines = new PIXI.Graphics()
 
         // Add everything to container
-        this.mouseRoot.addChild(this.icon)
-        this.root.addChild(this.mouseRoot)
-
-        this.mouseRoot.on("mousemove", (event) => {
-            const mousePos = viewport.toWorld(event.data.global)
-            this.mouseRoot.x = mousePos.x
-            this.mouseRoot.y = mousePos.y
-            console.log(event.data.global)
-        })
+        this.viewportRoot.addChild(this.icon)
+        this.stageRoot.addChild(this.viewportRoot)
 
         this.render()
     }
 
     destroy() {
         if (this.animationFrame) cancelAnimationFrame(this.animationFrame)
-        this.root.destroy(true)
+        this.viewportRoot.destroy(true)
+        this.stageRoot.destroy(true)
     }
 
     render() {
         const step = () => {
+            if (this.mapMousePosition.current) {
+                this.viewportRoot.position.set(
+                    this.mapMousePosition.current.x - this.viewportRoot.width / 2,
+                    this.mapMousePosition.current.y - this.viewportRoot.height / 2,
+                )
+            }
+
             // Rect
             // this.line.clear()
             // this.line.lineStyle(1, HEXToVBColor("#FFFFFF"))

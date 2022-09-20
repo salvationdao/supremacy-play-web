@@ -53,6 +53,7 @@ export const MiniMapPixiContainer = createContainer(() => {
     const mapRef = useRef<Map>()
     const mapScalingRef = useRef<Vector2i>({ x: 0, y: 0 }) // Map co-ordinate from server * mapScaling.x = position in viewport
     const gridSizeRef = useRef<Dimension>({ width: 50, height: 50 })
+    const mapMousePosition = useRef<Position>()
 
     // Update cached map values
     useEffect(() => {
@@ -284,6 +285,7 @@ export const MiniMapPixiContainer = createContainer(() => {
         setPixiMainItems,
         mapScalingRef,
         gridSizeRef,
+        mapMousePosition,
         clientPositionToViewportPosition,
         gridCellToViewportPosition,
 

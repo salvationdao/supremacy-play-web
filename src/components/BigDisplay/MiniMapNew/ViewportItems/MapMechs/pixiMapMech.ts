@@ -159,7 +159,7 @@ export class PixiMapMech {
     }
 
     updateZIndex(zIndex: number) {
-        this.rootInner.zIndex = zIndex
+        this.root.zIndex = zIndex
     }
 
     highlightMech(iconDimension: Dimension) {
@@ -246,8 +246,8 @@ export class PixiMapMech {
                 this.mechMoveDashedLine.clear()
 
                 // Default its the top left corner, so center it
-                const newX = this.mechMovePosition.x - this.mechMoveSprite.width / 2
-                const newY = this.mechMovePosition.y - this.mechMoveSprite.height / 2
+                const newX = this.mechMovePosition.x
+                const newY = this.mechMovePosition.y
                 this.mechMoveSprite.anchor.set(0.5, 0.5)
                 this.mechMoveSprite.position.set(newX, newY)
                 this.mechMoveSprite.visible = true

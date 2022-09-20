@@ -31,8 +31,17 @@ const propsAreEqual = (prevProps: MiniMapPixiProps, nextProps: MiniMapPixiProps)
 
 export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions }: MiniMapPixiProps) {
     const { map } = useGame()
-    const { pixiMainItems, setPixiMainItems, setHighlightedMechParticipantID, winner, playerAbility, setSelectionDebounced, setSelection, gridSizeRef } =
-        useMiniMapPixi()
+    const {
+        pixiMainItems,
+        setPixiMainItems,
+        setHighlightedMechParticipantID,
+        winner,
+        playerAbility,
+        setSelectionDebounced,
+        setSelection,
+        gridSizeRef,
+        mapMousePosition,
+    } = useMiniMapPixi()
     const [miniMapPixiRef, setMiniMapPixiRef] = useState<HTMLDivElement | null>(null)
     const pixiItems = useRef<PixiItems>({})
     const isDragging = useRef(false)
@@ -168,8 +177,14 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
             }
             pixiItems.current.border.width = pixiMainItems.viewport.worldWidth
             pixiItems.current.border.height = pixiMainItems.viewport.worldHeight
+
+            // Save the mouse position into ref
+            pixiItems.current.mapSprite.removeListener("pointermove")
+            pixiItems.current.mapSprite.on("pointermove", (event) => {
+                mapMousePosition.current = pixiMainItems?.viewport.toLocal(event.data.global)
+            })
         }
-    }, [map, pixiMainItems])
+    }, [map, pixiMainItems, mapMousePosition])
 
     // On map click handler to unselect a mech when click anywhere on the map
     useEffect(() => {
@@ -184,6 +199,8 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
 
             const clickedPos = pixiMainItems?.viewport.toLocal(event.data.global)
             if (!clickedPos) return
+
+            console.log(clickedPos)
 
             if (!winner?.game_ability && playerAbility?.ability.location_select_type === LocationSelectType.MechCommand) {
                 setSelectionDebounced({
