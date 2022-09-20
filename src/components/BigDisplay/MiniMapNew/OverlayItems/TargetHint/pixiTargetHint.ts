@@ -20,6 +20,7 @@ export class PixiTargetHint {
     private mapMousePosition: React.MutableRefObject<Position | undefined>
     private gridSizeRef: React.MutableRefObject<Dimension>
     private animationFrame: number | undefined
+    private onCountdownExpired: () => void | undefined
 
     constructor(
         viewport: Viewport,
@@ -33,6 +34,8 @@ export class PixiTargetHint {
         this.ability = ability
         this.mapMousePosition = mapMousePosition
         this.gridSizeRef = gridSizeRef
+        this.onCountdownExpired = onCountdownExpired
+        const secondsLeft = endTime ? Math.max(Math.round((endTime.getTime() - new Date().getTime()) / 1000), 0) : undefined
 
         // Create container for everything
         this.stageRoot = new PIXI.Container()
@@ -72,12 +75,12 @@ export class PixiTargetHint {
         const labelStyle = new PIXI.TextStyle({
             fontFamily: fonts.nostromoBlack,
             fontSize: 13,
-            fill: "#FF0000",
+            fill: "#FFFFFF",
             stroke: "#00000050",
             strokeThickness: 0.2,
             lineHeight: 1,
         })
-        this.countdownLabel = new PIXI.Text(`15`, labelStyle)
+        this.countdownLabel = new PIXI.Text(secondsLeft, labelStyle)
         this.countdownLabel.anchor.set(0.5, 0)
         this.countdownLabel.resolution = 4
         this.countdownLabel.zIndex = 5
@@ -93,9 +96,17 @@ export class PixiTargetHint {
         this.stageRoot.addChild(this.colorOverlay)
         this.stageRoot.addChild(this.outerBorder)
 
-        ease.add(this.viewportRoot, { scale: 1.2 }, { duration: 1000, ease: "linear", repeat: true, reverse: true, removeExisting: true })
+        ease.add(this.viewportRoot, { scale: 1.2 }, { duration: 500, ease: "linear", repeat: true, reverse: true, removeExisting: true })
 
         this.render()
+
+        if (secondsLeft) {
+            if (secondsLeft > 0) {
+                this.setCountdown(secondsLeft)
+            } else {
+                this.onCountdownExpired()
+            }
+        }
     }
 
     destroy() {
@@ -107,10 +118,7 @@ export class PixiTargetHint {
     render() {
         const step = () => {
             if (this.mapMousePosition.current) {
-                this.viewportRoot.position.set(
-                    this.mapMousePosition.current.x - this.viewportRoot.width / 2,
-                    this.mapMousePosition.current.y - this.viewportRoot.height / 2,
-                )
+                this.viewportRoot.position.set(this.mapMousePosition.current.x - this.icon.width / 2, this.mapMousePosition.current.y - this.icon.height / 2)
             }
 
             // Color overlay
@@ -123,6 +131,43 @@ export class PixiTargetHint {
             this.outerBorder.drawRect(0, 0, this.viewport.screenWidth, this.viewport.screenHeight)
 
             this.animationFrame = requestAnimationFrame(step)
+        }
+
+        this.animationFrame = requestAnimationFrame(step)
+    }
+
+    setCountdown(secondsLeft: number) {
+        let start: number | undefined
+        let isDone = false
+        let lastTimestamp = 0
+
+        const step = (timestamp: DOMHighResTimeStamp) => {
+            if (start === undefined) {
+                start = timestamp
+            }
+
+            const elapsed = timestamp - lastTimestamp
+            const totalElapsed = timestamp - start
+
+            // Count per second
+            if (elapsed >= 1000) {
+                const timeLeft = Math.round(secondsLeft - totalElapsed / 1000)
+                lastTimestamp = timestamp
+
+                this.countdownLabel.text = Math.round(Math.max(timeLeft, 0))
+                if (timeLeft <= 5) {
+                    this.countdownLabel.style.fill = HEXToVBColor("#FF0000")
+                }
+            }
+
+            if (totalElapsed > secondsLeft * 1000) {
+                isDone = true
+                start = undefined
+                lastTimestamp = 0
+                this.onCountdownExpired()
+            }
+
+            if (!isDone) this.animationFrame = requestAnimationFrame(step)
         }
 
         this.animationFrame = requestAnimationFrame(step)

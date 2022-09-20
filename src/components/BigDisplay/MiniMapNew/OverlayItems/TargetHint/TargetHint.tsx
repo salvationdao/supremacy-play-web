@@ -13,7 +13,7 @@ export const TargetHint = React.memo(function TargetHint() {
         return null
     }
 
-    return <TargetHintInner key={ability.id} ability={ability} endTime={endTime} />
+    return <TargetHintInner key={`target-hint-${ability.id}-${endTime?.toISOString()}`} ability={ability} endTime={endTime} />
 })
 
 const TargetHintInner = ({ ability, endTime }: { ability: GameAbility | BlueprintPlayerAbility; endTime?: Date }) => {
@@ -36,7 +36,7 @@ const TargetHintInner = ({ ability, endTime }: { ability: GameAbility | Blueprin
             prev?.destroy()
             return pixiTargetHint
         })
-    }, [ability, endTime, onCountdownExpired, pixiMainItems, mapMousePosition, gridSizeRef])
+    }, [ability, endTime, pixiMainItems, mapMousePosition, gridSizeRef, onCountdownExpired])
 
     // Cleanup
     useEffect(() => {
