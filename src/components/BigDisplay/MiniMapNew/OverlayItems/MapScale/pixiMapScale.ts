@@ -20,6 +20,10 @@ export class PixiMapScale {
         this.root = new PIXI.Container()
         this.root.zIndex = 20
 
+        // Line
+        this.line = new PIXI.Graphics()
+        this.line.position.set(0, 5)
+
         // Label
         const labelStyle = new PIXI.TextStyle({
             fontFamily: fonts.shareTech,
@@ -31,10 +35,6 @@ export class PixiMapScale {
         this.label.anchor.set(0, 0)
         this.label.resolution = 4
         this.label.zIndex = 5
-
-        // Line
-        this.line = new PIXI.Graphics()
-        this.line.position.set(this.label.width + 8, 5)
 
         // Add everything to container
         this.root.addChild(this.label)
@@ -59,9 +59,11 @@ export class PixiMapScale {
             this.line.lineTo(0, 4)
             this.line.lineTo(width, 4)
             this.line.lineTo(width, 0)
+            this.label.position.set(this.line.width + 8, 0)
 
-            this.root.x = 9
-            this.root.y = this.viewport.screenHeight - this.root.height - 8
+            this.root.pivot.set(this.root.width, this.root.height)
+            this.root.x = this.viewport.screenWidth - 9
+            this.root.y = this.viewport.screenHeight - 8
 
             this.animationFrame = requestAnimationFrame(step)
         }

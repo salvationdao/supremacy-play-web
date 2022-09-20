@@ -3,9 +3,32 @@ import { Viewport } from "pixi-viewport"
 import * as PIXI from "pixi.js"
 import { HEXToVBColor } from "../../../../../helpers"
 import { fonts } from "../../../../../theme/theme"
-import { BlueprintPlayerAbility, Dimension, GameAbility, Position } from "../../../../../types"
+import { BlueprintPlayerAbility, Dimension, GameAbility, LocationSelectType, Position } from "../../../../../types"
 
-const SIZE = 30
+const getAbilityLabel = (ability: GameAbility | BlueprintPlayerAbility): string => {
+    let label = "Select a location to use"
+
+    switch (ability.location_select_type) {
+        case LocationSelectType.LocationSelect:
+        case LocationSelectType.MechCommand:
+            label = "Select a location to deploy"
+            break
+        case LocationSelectType.MechSelect:
+            label = "Select a mech to activate"
+            break
+        case LocationSelectType.MechSelectAllied:
+            label = "Select an allied mech to activate"
+            break
+        case LocationSelectType.MechSelectOpponent:
+            label = "Select an opponent mech to activate"
+            break
+        case LocationSelectType.LineSelect:
+            label = "Draw a line by selecting two locations to deploy"
+            break
+    }
+
+    return `${label} ${ability.label}.`
+}
 
 export class PixiTargetHint {
     stageRoot: PIXI.Container<PIXI.DisplayObject>
@@ -14,6 +37,7 @@ export class PixiTargetHint {
     private countdownLabel: PIXI.Text
     private colorOverlay: PIXI.Sprite
     private outerBorder: PIXI.Graphics
+    private bottomContainer: PIXI.Graphics
 
     private viewport: Viewport
     private ability: GameAbility | BlueprintPlayerAbility
@@ -29,6 +53,7 @@ export class PixiTargetHint {
         ability: GameAbility | BlueprintPlayerAbility,
         endTime: Date | undefined,
         onCountdownExpired: () => void | undefined,
+        onCancel: (() => void) | undefined,
     ) {
         this.viewport = viewport
         this.ability = ability
@@ -72,7 +97,7 @@ export class PixiTargetHint {
         this.icon.alpha = 0.8
 
         // Countdown label
-        const labelStyle = new PIXI.TextStyle({
+        const countdownLabel = new PIXI.TextStyle({
             fontFamily: fonts.nostromoBlack,
             fontSize: 13,
             fill: "#FFFFFF",
@@ -80,21 +105,37 @@ export class PixiTargetHint {
             strokeThickness: 0.2,
             lineHeight: 1,
         })
-        this.countdownLabel = new PIXI.Text(secondsLeft, labelStyle)
+        this.countdownLabel = new PIXI.Text(secondsLeft, countdownLabel)
         this.countdownLabel.anchor.set(0.5, 0)
         this.countdownLabel.resolution = 4
         this.countdownLabel.zIndex = 5
         this.countdownLabel.position.set(gridSizeRef.current.width / 2, -18)
 
-        // Angle lines
+        // Border line
         this.outerBorder = new PIXI.Graphics()
         this.outerBorder.zIndex = 8
+
+        // Label and cancel button at bottom
+        this.bottomContainer = new PIXI.Graphics()
+        const labelStyle = new PIXI.TextStyle({
+            fontFamily: fonts.nostromoBlack,
+            fontSize: 11,
+            fill: ability.colour,
+            lineHeight: 1,
+        })
+        const label = new PIXI.Text(getAbilityLabel(ability), labelStyle)
+        label.resolution = 4
+        label.pivot.set(0, label.height / 2)
+        label.position.set(16, 13)
+        this.bottomContainer.addChild(label)
+        this.bottomContainer.zIndex = 7
 
         // Add everything to container
         this.viewportRoot.addChild(this.icon)
         this.viewportRoot.addChild(this.countdownLabel)
         this.stageRoot.addChild(this.colorOverlay)
         this.stageRoot.addChild(this.outerBorder)
+        this.stageRoot.addChild(this.bottomContainer)
 
         ease.add(this.viewportRoot, { scale: 1.2 }, { duration: 500, ease: "linear", repeat: true, reverse: true, removeExisting: true })
 
@@ -130,6 +171,15 @@ export class PixiTargetHint {
             this.outerBorder.lineStyle(4, HEXToVBColor(this.ability.colour))
             this.outerBorder.drawRect(0, 0, this.viewport.screenWidth, this.viewport.screenHeight)
 
+            // Position the bottom labe stuff
+            this.bottomContainer.clear()
+            this.bottomContainer.beginFill(HEXToVBColor("#000000"), 0.5)
+            this.bottomContainer.drawRect(0, 0, this.viewport.screenWidth, 30)
+            this.bottomContainer.endFill()
+            this.bottomContainer.pivot.set(0, this.bottomContainer.height)
+            this.bottomContainer.position.set(0, this.viewport.screenHeight)
+
+            // Repeat
             this.animationFrame = requestAnimationFrame(step)
         }
 

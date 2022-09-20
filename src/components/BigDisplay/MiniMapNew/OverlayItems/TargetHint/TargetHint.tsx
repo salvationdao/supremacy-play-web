@@ -13,30 +13,50 @@ export const TargetHint = React.memo(function TargetHint() {
         return null
     }
 
-    return <TargetHintInner key={`target-hint-${ability.id}-${endTime?.toISOString()}`} ability={ability} endTime={endTime} />
+    return (
+        <TargetHintInner
+            key={`target-hint-${ability.id}-${endTime?.toISOString()}`}
+            ability={ability}
+            endTime={endTime}
+            cancelable={!winner?.game_ability && !!ability}
+        />
+    )
 })
 
-const TargetHintInner = ({ ability, endTime }: { ability: GameAbility | BlueprintPlayerAbility; endTime?: Date }) => {
+const TargetHintInner = ({ ability, endTime, cancelable }: { ability: GameAbility | BlueprintPlayerAbility; endTime?: Date; cancelable: boolean }) => {
     const { newSnackbarMessage } = useGlobalNotifications()
-    const { pixiMainItems, resetWinnerSelection, mapMousePosition, gridSizeRef, selection } = useMiniMapPixi()
+    const { pixiMainItems, resetWinnerSelection, resetPlayerAbilitySelection, mapMousePosition, gridSizeRef, selection } = useMiniMapPixi()
     const [pixiTargetHint, setPixiTargetHint] = useState<PixiTargetHint>()
 
     const onCountdownExpired = useCallback(() => {
         newSnackbarMessage("Failed to submit target location on time.", "error")
         resetWinnerSelection()
-    }, [newSnackbarMessage, resetWinnerSelection])
+        resetPlayerAbilitySelection()
+    }, [newSnackbarMessage, resetWinnerSelection, resetPlayerAbilitySelection])
+
+    const onCancel = useCallback(() => {
+        resetPlayerAbilitySelection()
+    }, [resetPlayerAbilitySelection])
 
     // Initial setup for the mech and show on the map
     useEffect(() => {
         if (!pixiMainItems) return
-        const pixiTargetHint = new PixiTargetHint(pixiMainItems.viewport, mapMousePosition, gridSizeRef, ability, endTime, onCountdownExpired)
+        const pixiTargetHint = new PixiTargetHint(
+            pixiMainItems.viewport,
+            mapMousePosition,
+            gridSizeRef,
+            ability,
+            endTime,
+            onCountdownExpired,
+            cancelable ? onCancel : undefined,
+        )
         pixiMainItems.viewport.addChild(pixiTargetHint.viewportRoot)
         pixiMainItems.app.stage.addChild(pixiTargetHint.stageRoot)
         setPixiTargetHint((prev) => {
             prev?.destroy()
             return pixiTargetHint
         })
-    }, [ability, endTime, pixiMainItems, mapMousePosition, gridSizeRef, onCountdownExpired])
+    }, [ability, endTime, pixiMainItems, mapMousePosition, gridSizeRef, onCountdownExpired, onCancel, cancelable])
 
     // Cleanup
     useEffect(() => {
