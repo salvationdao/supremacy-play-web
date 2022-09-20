@@ -133,6 +133,12 @@ export class PixiTargetHint {
             this.cancelButton = PIXI.Sprite.from(AbilityCancelPNG)
             this.cancelButton.scale.set(0.9)
             this.cancelButton.pivot.set(this.cancelButton.width, this.cancelButton.height / 2)
+            this.cancelButton.buttonMode = true
+            this.cancelButton.interactive = true
+            this.cancelButton
+                .on("pointerup", onCancel)
+                .on("pointerover", () => this.cancelButton?.scale.set(0.95))
+                .on("pointerout", () => this.cancelButton?.scale.set(0.9))
             this.bottomContainer.addChild(this.cancelButton)
         }
 
@@ -143,6 +149,7 @@ export class PixiTargetHint {
         this.stageRoot.addChild(this.outerBorder)
         this.stageRoot.addChild(this.bottomContainer)
 
+        this.viewportRoot.pivot.set(this.viewportRoot.width / 2, this.viewportRoot.height / 2)
         ease.add(this.viewportRoot, { scale: 1.2 }, { duration: 500, ease: "linear", repeat: true, reverse: true, removeExisting: true })
 
         this.render()
@@ -165,7 +172,7 @@ export class PixiTargetHint {
     render() {
         const step = () => {
             if (this.mapMousePosition.current) {
-                this.viewportRoot.position.set(this.mapMousePosition.current.x - this.icon.width / 2, this.mapMousePosition.current.y - this.icon.height / 2)
+                this.viewportRoot.position.set(this.mapMousePosition.current.x, this.mapMousePosition.current.y)
             }
 
             // Color overlay
