@@ -1,7 +1,9 @@
+import { ease } from "pixi-ease"
+import { Viewport } from "pixi-viewport"
 import * as PIXI from "pixi.js"
 import { HEXToVBColor } from "../../../../../helpers"
-import { colors, fonts } from "../../../../../theme/theme"
-import { BlueprintPlayerAbility, Dimension, GameAbility, GAME_CLIENT_TILE_SIZE, Position } from "../../../../../types"
+import { fonts } from "../../../../../theme/theme"
+import { BlueprintPlayerAbility, Dimension, GameAbility, Position } from "../../../../../types"
 
 const SIZE = 30
 
@@ -10,29 +12,42 @@ export class PixiTargetHint {
     viewportRoot: PIXI.Container<PIXI.DisplayObject>
     private icon: PIXI.Container
     private countdownLabel: PIXI.Text
-    private lines: PIXI.Graphics
+    private colorOverlay: PIXI.Sprite
+    private outerBorder: PIXI.Graphics
 
+    private viewport: Viewport
+    private ability: GameAbility | BlueprintPlayerAbility
     private mapMousePosition: React.MutableRefObject<Position | undefined>
     private gridSizeRef: React.MutableRefObject<Dimension>
     private animationFrame: number | undefined
 
     constructor(
+        viewport: Viewport,
         mapMousePosition: React.MutableRefObject<Position | undefined>,
         gridSizeRef: React.MutableRefObject<Dimension>,
         ability: GameAbility | BlueprintPlayerAbility,
         endTime: Date | undefined,
         onCountdownExpired: () => void | undefined,
     ) {
+        this.viewport = viewport
+        this.ability = ability
         this.mapMousePosition = mapMousePosition
         this.gridSizeRef = gridSizeRef
 
         // Create container for everything
         this.stageRoot = new PIXI.Container()
         this.stageRoot.zIndex = 50
+        this.stageRoot.sortableChildren = true
 
         this.viewportRoot = new PIXI.Container()
         this.viewportRoot.zIndex = 60
         this.viewportRoot.sortableChildren = true
+
+        // Big color overlay
+        this.colorOverlay = PIXI.Sprite.from(PIXI.Texture.WHITE)
+        this.colorOverlay.alpha = 0.05
+        this.colorOverlay.tint = HEXToVBColor(this.ability.colour)
+        this.colorOverlay.zIndex = 6
 
         // Icon
         // Image border
@@ -69,12 +84,16 @@ export class PixiTargetHint {
         this.countdownLabel.position.set(gridSizeRef.current.width / 2, -18)
 
         // Angle lines
-        this.lines = new PIXI.Graphics()
+        this.outerBorder = new PIXI.Graphics()
+        this.outerBorder.zIndex = 8
 
         // Add everything to container
         this.viewportRoot.addChild(this.icon)
         this.viewportRoot.addChild(this.countdownLabel)
-        this.stageRoot.addChild(this.viewportRoot)
+        this.stageRoot.addChild(this.colorOverlay)
+        this.stageRoot.addChild(this.outerBorder)
+
+        ease.add(this.viewportRoot, { scale: 1.2 }, { duration: 1000, ease: "linear", repeat: true, reverse: true, removeExisting: true })
 
         this.render()
     }
@@ -94,16 +113,22 @@ export class PixiTargetHint {
                 )
             }
 
-            // Rect
-            // this.line.clear()
-            // this.line.lineStyle(1, HEXToVBColor("#FFFFFF"))
-            // this.line.moveTo(0, 0)
-            // this.line.lineTo(0, 4)
-            // this.line.lineTo(width, 4)
-            // this.line.lineTo(width, 0)
+            // Color overlay
+            this.colorOverlay.width = this.viewport.screenWidth
+            this.colorOverlay.height = this.viewport.screenHeight
+
+            // Line graphics
+            this.outerBorder.clear()
+            this.outerBorder.lineStyle(4, HEXToVBColor(this.ability.colour))
+            this.outerBorder.drawRect(0, 0, this.viewport.screenWidth, this.viewport.screenHeight)
+
             this.animationFrame = requestAnimationFrame(step)
         }
 
         this.animationFrame = requestAnimationFrame(step)
+    }
+
+    showIcon(toShow: boolean) {
+        this.viewportRoot.visible = toShow
     }
 }

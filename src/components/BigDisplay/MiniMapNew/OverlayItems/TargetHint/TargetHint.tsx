@@ -18,7 +18,7 @@ export const TargetHint = React.memo(function TargetHint() {
 
 const TargetHintInner = ({ ability, endTime }: { ability: GameAbility | BlueprintPlayerAbility; endTime?: Date }) => {
     const { newSnackbarMessage } = useGlobalNotifications()
-    const { pixiMainItems, resetWinnerSelection, mapMousePosition, gridSizeRef } = useMiniMapPixi()
+    const { pixiMainItems, resetWinnerSelection, mapMousePosition, gridSizeRef, selection } = useMiniMapPixi()
     const [pixiTargetHint, setPixiTargetHint] = useState<PixiTargetHint>()
 
     const onCountdownExpired = useCallback(() => {
@@ -29,7 +29,7 @@ const TargetHintInner = ({ ability, endTime }: { ability: GameAbility | Blueprin
     // Initial setup for the mech and show on the map
     useEffect(() => {
         if (!pixiMainItems) return
-        const pixiTargetHint = new PixiTargetHint(mapMousePosition, gridSizeRef, ability, endTime, onCountdownExpired)
+        const pixiTargetHint = new PixiTargetHint(pixiMainItems.viewport, mapMousePosition, gridSizeRef, ability, endTime, onCountdownExpired)
         pixiMainItems.viewport.addChild(pixiTargetHint.viewportRoot)
         pixiMainItems.app.stage.addChild(pixiTargetHint.stageRoot)
         setPixiTargetHint((prev) => {
@@ -43,6 +43,12 @@ const TargetHintInner = ({ ability, endTime }: { ability: GameAbility | Blueprin
         return () => pixiTargetHint?.destroy()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pixiTargetHint])
+
+    // If ability has an end time and selection is placed, hide the icon
+    useEffect(() => {
+        if (!pixiTargetHint || !endTime) return
+        pixiTargetHint.showIcon(!selection)
+    }, [selection, endTime, pixiTargetHint])
 
     return null
 }
