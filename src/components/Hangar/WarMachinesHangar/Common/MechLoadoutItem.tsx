@@ -1,7 +1,7 @@
-import { Box, Grow, Stack, Typography } from "@mui/material"
+import { Box, Grow, IconButton, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useRef } from "react"
 import { FancyButton } from "../../.."
-import { SvgLock, SvgPlus, SvgSkin, SvgSwap, SvgWrapperProps } from "../../../../assets"
+import { SvgLock, SvgPlus, SvgRemove, SvgSkin, SvgSwap, SvgWrapperProps } from "../../../../assets"
 import { shadeColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { colors, fonts } from "../../../../theme/theme"
@@ -29,12 +29,13 @@ interface LoadoutItem {
 export interface MechLoadoutItemProps extends LoadoutItem {
     side?: "left" | "right"
     prevEquipped?: LoadoutItem
+    onUnequip?: () => void
     renderModal?: (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => React.ReactNode
 }
 
 export const MechLoadoutItem = (props: MechLoadoutItemProps) => {
     const { imageUrl, videoUrls } = props
-    const { side = "left", prevEquipped, renderModal, onClick, ...loadoutItemButtonProps } = props
+    const { side = "left", prevEquipped, onUnequip, renderModal, onClick, ...loadoutItemButtonProps } = props
     const [showLoadoutModal, toggleShowLoadoutModal] = useToggle()
     const memoizedPrevEquipped = useRef<LoadoutItem>()
 
@@ -48,7 +49,13 @@ export const MechLoadoutItem = (props: MechLoadoutItemProps) => {
 
     return (
         <>
-            <Stack direction={side === "left" ? "row" : "row-reverse"} spacing="1rem" alignItems="center" sx={{ p: ".8rem", width: "fit-content" }}>
+            <Stack
+                position="relative"
+                direction={side === "left" ? "row" : "row-reverse"}
+                spacing="1rem"
+                alignItems="center"
+                sx={{ p: ".8rem", width: "fit-content" }}
+            >
                 <MechLoadoutItemButton
                     onClick={() => {
                         onClick && onClick()
@@ -63,6 +70,21 @@ export const MechLoadoutItem = (props: MechLoadoutItemProps) => {
                         <MechLoadoutItemButton {...(prevEquipped! || memoizedPrevEquipped.current)} isPreviouslyEquipped />
                     </Stack>
                 </Grow>
+                {!props.disabled && !props.locked && onUnequip && (
+                    <IconButton
+                        onClick={() => {
+                            onUnequip()
+                        }}
+                        sx={{
+                            zIndex: 10,
+                            position: "absolute",
+                            top: "1rem",
+                            right: "1rem",
+                        }}
+                    >
+                        <SvgRemove fill={colors.red} />
+                    </IconButton>
+                )}
             </Stack>
 
             {showLoadoutModal &&

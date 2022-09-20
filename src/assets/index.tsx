@@ -47,6 +47,7 @@ import RankingStar from "!@svgr/webpack!./svg/RankingStar.svg"
 import RateOfFire from "!@svgr/webpack!./svg/RateOfFire.svg"
 import RedMoutainMechKillIcon from "!@svgr/webpack!./svg/RedMountainKillIcon.svg"
 import Refresh from "!@svgr/webpack!./svg/Refresh.svg"
+import Remove from "!@svgr/webpack!./svg/Remove.svg"
 import Save from "!@svgr/webpack!./svg/Save.svg"
 import Scrolldown from "!@svgr/webpack!./svg/Scrolldown.svg"
 import Send from "!@svgr/webpack!./svg/Send.svg"
@@ -1286,5 +1287,11 @@ export const SvgTrailer: React.VoidFunctionComponent<SvgWrapperProps> = (props) 
 export const SvgUpcomingBattle: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <UpcomingBattle />
+    </SvgWrapper>
+)
+
+export const SvgRemove: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Remove />
     </SvgWrapper>
 )

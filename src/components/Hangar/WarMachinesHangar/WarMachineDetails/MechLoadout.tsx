@@ -16,8 +16,8 @@ import { MechLoadoutWeaponModal } from "./Modals/Loadout/MechLoadoutWeaponModal"
 
 interface PlayerAssetMechEquipRequest {
     mech_id: string
-    equip_mech_skin?: string
-    equip_power_core?: string
+    equip_mech_skin?: EquipMechSkin
+    equip_power_core?: EquipPowerCore
     equip_utility: EquipUtility[]
     equip_weapons: EquipWeapon[]
 }
@@ -41,29 +41,32 @@ export type LoadoutMechSkin = EquipMechSkin & {
 
 interface EquipPowerCore {
     power_core_id: string
+    unequip?: boolean
 }
 
 export type LoadoutPowerCore = EquipPowerCore & {
-    power_core: PowerCore
+    power_core?: PowerCore
 }
 
 interface EquipWeapon {
     weapon_id: string
     slot_number: number
-    inherit_skin: boolean
+    inherit_skin?: boolean
+    unequip?: boolean
 }
 
 export type LoadoutWeapon = EquipWeapon & {
-    weapon: Weapon
+    weapon?: Weapon
 }
 
 interface EquipUtility {
     utility_id: string
     slot_number: number
+    unequip?: boolean
 }
 
 export type LoadoutUtility = EquipUtility & {
-    utility: Utility
+    utility?: Utility
 }
 
 const generateLoadout = (newMechDetails: MechDetails): MechDetailsWithMaps => {
@@ -135,16 +138,27 @@ export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutPr
 
             const newMechDetails = await send<MechDetails, PlayerAssetMechEquipRequest>(GameServerKeys.EquipMech, {
                 mech_id: mechDetails.id,
-                equip_mech_skin: currLoadout.changed_mech_skin?.mech_skin.id,
-                equip_power_core: currLoadout.changed_power_core?.power_core.id,
+                equip_mech_skin: currLoadout.changed_mech_skin
+                    ? {
+                          mech_skin_id: currLoadout.changed_mech_skin.mech_skin.id,
+                      }
+                    : undefined,
+                equip_power_core: currLoadout.changed_power_core
+                    ? {
+                          power_core_id: currLoadout.changed_power_core.power_core_id,
+                          unequip: currLoadout.changed_power_core.unequip,
+                      }
+                    : undefined,
                 equip_utility: Array.from(currLoadout.changed_utility_map, ([slotNumber, u]) => ({
                     utility_id: u.utility_id,
                     slot_number: slotNumber,
+                    unequip: u.unequip,
                 })),
                 equip_weapons: Array.from(currLoadout.changed_weapons_map, ([slotNumber, w]) => ({
                     weapon_id: w.weapon_id,
                     slot_number: slotNumber,
                     inherit_skin: w.inherit_skin,
+                    unequip: w.unequip,
                 })),
             })
 
@@ -161,8 +175,8 @@ export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutPr
             setLoading(false)
         }
     }, [
-        currLoadout.changed_mech_skin?.mech_skin.id,
-        currLoadout.changed_power_core?.power_core.id,
+        currLoadout.changed_mech_skin,
+        currLoadout.changed_power_core,
         currLoadout.changed_utility_map,
         currLoadout.changed_weapons_map,
         mechDetails.id,
@@ -171,7 +185,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutPr
         send,
     ])
 
-    const addMechSkinSelection = useCallback((ems: LoadoutMechSkin) => {
+    const modifyMechSkin = useCallback((ems: LoadoutMechSkin) => {
         setCurrLoadout((prev) => {
             return {
                 ...prev,
@@ -180,7 +194,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutPr
         })
     }, [])
 
-    const addPowerCoreSelection = useCallback((ep: LoadoutPowerCore) => {
+    const modifyPowerCore = useCallback((ep: LoadoutPowerCore) => {
         setCurrLoadout((prev) => {
             return {
                 ...prev,
@@ -189,7 +203,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutPr
         })
     }, [])
 
-    const addWeaponSelection = useCallback((ew: LoadoutWeapon) => {
+    const modifyWeaponSlot = useCallback((ew: LoadoutWeapon) => {
         if (unityViewRef.current) {
             unityViewRef.current.handleWeaponUpdate(ew)
         }
@@ -217,15 +231,15 @@ export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutPr
     //     })
     // }, [])
 
-    const undoMechSkinSelection = useCallback(() => {
+    const undoMechSkinChanges = useCallback(() => {
         setCurrLoadout((prev) => ({ ...prev, changed_mech_skin: undefined }))
     }, [])
 
-    const undoPowerCoreSelection = useCallback(() => {
+    const undoPowerCoreChanges = useCallback(() => {
         setCurrLoadout((prev) => ({ ...prev, changed_power_core: undefined }))
     }, [])
 
-    const undoWeaponSelection = useCallback((slotNumber: number) => {
+    const undoWeaponChanges = useCallback((slotNumber: number) => {
         setCurrLoadout((prev) => {
             const updated = prev.changed_weapons_map
             updated.delete(slotNumber)
@@ -335,13 +349,23 @@ export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutPr
                     }}
                 >
                     {(() => {
-                        const powerCore = changed_power_core?.power_core || power_core
+                        let powerCore = power_core
+                        let isOriginal = true
+                        const changed = changed_power_core
+                        if (changed) {
+                            if (changed.unequip) {
+                                powerCore = undefined
+                            } else if (changed.power_core) {
+                                isOriginal = false
+                                powerCore = changed.power_core
+                            }
+                        }
 
                         const renderModal = (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => (
                             <MechLoadoutPowerCoreModal
                                 onClose={() => toggleShowLoadoutModal(false)}
                                 onConfirm={(selectedPowerCore) => {
-                                    addPowerCoreSelection({
+                                    modifyPowerCore({
                                         power_core: selectedPowerCore,
                                         power_core_id: selectedPowerCore.id,
                                     })
@@ -351,6 +375,23 @@ export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutPr
                                 powerCoresAlreadyEquippedInOtherSlots={changed_power_core?.power_core ? [changed_power_core.power_core.id] : []}
                             />
                         )
+
+                        const prevEquipped = () => {
+                            if (!changed_power_core) return
+
+                            const previouslyEquipped = power_core
+                            if (!previouslyEquipped) return
+
+                            return {
+                                imageUrl: previouslyEquipped.image_url || previouslyEquipped.avatar_url,
+                                videoUrls: [previouslyEquipped.card_animation_url],
+                                label: previouslyEquipped.label,
+                                primaryColor: colors.powerCore,
+                                Icon: SvgPowerCore,
+                                rarity: getRarityDeets(previouslyEquipped.tier),
+                                onClick: () => undoPowerCoreChanges(),
+                            }
+                        }
 
                         if (powerCore) {
                             return (
@@ -364,22 +405,16 @@ export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutPr
                                     Icon={SvgPowerCore}
                                     rarity={getRarityDeets(powerCore.tier)}
                                     renderModal={renderModal}
-                                    prevEquipped={(() => {
-                                        if (!changed_power_core) return
-
-                                        const previouslyEquipped = power_core
-                                        if (!previouslyEquipped) return
-
-                                        return {
-                                            imageUrl: previouslyEquipped.image_url || previouslyEquipped.avatar_url,
-                                            videoUrls: [previouslyEquipped.card_animation_url],
-                                            label: previouslyEquipped.label,
-                                            primaryColor: colors.powerCore,
-                                            Icon: SvgPowerCore,
-                                            rarity: getRarityDeets(previouslyEquipped.tier),
-                                            onClick: () => undoPowerCoreSelection(),
-                                        }
-                                    })()}
+                                    prevEquipped={prevEquipped()}
+                                    onUnequip={
+                                        isOriginal
+                                            ? () =>
+                                                  modifyPowerCore({
+                                                      power_core_id: "",
+                                                      unequip: true,
+                                                  })
+                                            : undefined
+                                    }
                                 />
                             )
                         }
@@ -390,6 +425,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutPr
                                 label="POWER CORE"
                                 primaryColor={colors.powerCore}
                                 renderModal={renderModal}
+                                prevEquipped={prevEquipped()}
                                 isEmpty
                                 locked
                             />
@@ -398,16 +434,22 @@ export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutPr
 
                     {Array.from(weapons_map, ([slotNumber, w]) => {
                         let weapon = w
-                        if (changed_weapons_map.has(slotNumber)) {
-                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                            weapon = changed_weapons_map.get(slotNumber)!.weapon
+                        let isOriginal = true
+                        const changed = changed_weapons_map.get(slotNumber)
+                        if (changed) {
+                            if (changed.unequip) {
+                                weapon = null
+                            } else if (changed.weapon) {
+                                isOriginal = false
+                                weapon = changed.weapon
+                            }
                         }
 
                         const renderModal = (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => (
                             <MechLoadoutWeaponModal
                                 onClose={() => toggleShowLoadoutModal(false)}
                                 onConfirm={(selectedWeapon, inheritSkin) => {
-                                    addWeaponSelection({
+                                    modifyWeaponSlot({
                                         weapon: selectedWeapon,
                                         weapon_id: selectedWeapon.id,
                                         slot_number: slotNumber,
@@ -417,9 +459,28 @@ export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutPr
                                 }}
                                 equipped={weapon || undefined}
                                 weaponsWithSkinInheritance={blueprint_weapon_ids_with_skin_inheritance}
-                                weaponsAlreadyEquippedInOtherSlots={Array.from(changed_weapons_map.values(), (w) => w.weapon_id)}
+                                weaponsAlreadyEquippedInOtherSlots={Array.from(changed_weapons_map.values(), (w) => w.weapon_id).filter((w) => !!w)}
                             />
                         )
+
+                        const prevEquipped = () => {
+                            if (!changed_weapons_map.has(slotNumber)) return
+
+                            const previouslyEquipped = weapons_map.get(slotNumber)
+                            if (!previouslyEquipped) return
+
+                            return {
+                                slotNumber,
+                                imageUrl: previouslyEquipped.image_url || previouslyEquipped.avatar_url,
+                                videoUrls: [previouslyEquipped.card_animation_url],
+                                label: previouslyEquipped.label,
+                                primaryColor: colors.weapons,
+                                Icon: SvgWeapons,
+                                rarity: previouslyEquipped.weapon_skin ? getRarityDeets(previouslyEquipped.weapon_skin.tier) : undefined,
+                                hasSkin: !!previouslyEquipped.weapon_skin,
+                                onClick: () => undoWeaponChanges(slotNumber),
+                            }
+                        }
 
                         if (weapon) {
                             return (
@@ -435,25 +496,18 @@ export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutPr
                                     rarity={weapon.weapon_skin ? getRarityDeets(weapon.weapon_skin.tier) : undefined}
                                     hasSkin={!!weapon.weapon_skin}
                                     renderModal={renderModal}
-                                    prevEquipped={(() => {
-                                        if (!changed_weapons_map.has(slotNumber)) return
-
-                                        const previouslyEquipped = weapons_map.get(slotNumber)
-                                        if (!previouslyEquipped) return
-
-                                        return {
-                                            slotNumber,
-                                            imageUrl: previouslyEquipped.image_url || previouslyEquipped.avatar_url,
-                                            videoUrls: [previouslyEquipped.card_animation_url],
-                                            label: previouslyEquipped.label,
-                                            primaryColor: colors.weapons,
-                                            Icon: SvgWeapons,
-                                            rarity: previouslyEquipped.weapon_skin ? getRarityDeets(previouslyEquipped.weapon_skin.tier) : undefined,
-                                            hasSkin: !!previouslyEquipped.weapon_skin,
-                                            onClick: () => undoWeaponSelection(slotNumber),
-                                        }
-                                    })()}
+                                    prevEquipped={prevEquipped()}
                                     locked={weapon.locked_to_mech}
+                                    onUnequip={
+                                        isOriginal
+                                            ? () =>
+                                                  modifyWeaponSlot({
+                                                      weapon_id: "",
+                                                      slot_number: slotNumber,
+                                                      unequip: true,
+                                                  })
+                                            : undefined
+                                    }
                                 />
                             )
                         }
@@ -466,6 +520,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutPr
                                 label="WEAPON"
                                 primaryColor={colors.weapons}
                                 renderModal={renderModal}
+                                prevEquipped={prevEquipped()}
                                 isEmpty
                             />
                         )
@@ -491,7 +546,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutPr
                                 toggleShowLoadoutModal(false)
                             }}
                             equipped={utility || undefined}
-                            utilitiesAlreadyEquippedInOtherSlots={Array.from(changed_utility_map.values(), (u) => u.utility_id)}
+                            utilitiesAlreadyEquippedInOtherSlots={Array.from(changed_utility_map.values(), (u) => u.utility_id).filter(u => !!u)}
                         />
                     )
 
@@ -562,7 +617,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutPr
                             <MechLoadoutMechSkinModal
                                 onClose={() => toggleShowLoadoutModal(false)}
                                 onConfirm={(selectedMechSkin) => {
-                                    addMechSkinSelection({
+                                    modifyMechSkin({
                                         mech_skin: selectedMechSkin,
                                         mech_skin_id: selectedMechSkin.id,
                                     })
@@ -604,7 +659,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutPr
                                             primaryColor: colors.powerCore,
                                             Icon: SvgPowerCore,
                                             rarity: getRarityDeets(previouslyEquipped.tier),
-                                            onClick: () => undoMechSkinSelection(),
+                                            onClick: () => undoMechSkinChanges(),
                                         }
                                     })()}
                                 />
@@ -651,13 +706,13 @@ export const MechLoadout = ({ mechDetails, mechStatus, onUpdate }: MechLoadoutPr
                 </Stack>
             </Box>
             <MechViewer
-                ref={unityViewRef}
+                // ref={unityViewRef}
                 mechDetails={mechDetails}
-                unity={{
-                    onUnlock: () => {
-                        console.log("unlocked")
-                    },
-                }}
+                // unity={{
+                //     onUnlock: () => {
+                //         console.log("unlocked")
+                //     },
+                // }}
             />
         </>
     )

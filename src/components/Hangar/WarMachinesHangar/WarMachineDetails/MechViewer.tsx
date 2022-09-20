@@ -50,19 +50,29 @@ export const MechViewer = React.forwardRef<UnityHandle, MechViewerProps>(functio
 
     useImperativeHandle(ref, () => ({
         handleWeaponUpdate: (wu: LoadoutWeapon) => {
-            if (wu.slot_number == null) return
             const weapon = wu.weapon
-            const obj = {
+            let obj = {
                 type: "weapon",
-                ownership_id: weapon.owner_id,
-                static_id: weapon.blueprint_id,
-                skin: weapon.weapon_skin
-                    ? {
-                          type: "skin",
-                          static_id: weapon.weapon_skin.blueprint_id,
-                      }
-                    : undefined,
+                ownership_id: "",
+                static_id: "",
+                skin: {
+                    type: "skin",
+                    static_id: "",
+                },
             } as SiloObject
+            if (!wu.unequip && weapon) {
+                obj = {
+                    type: "weapon",
+                    ownership_id: weapon.owner_id,
+                    static_id: weapon.blueprint_id,
+                    skin: weapon.weapon_skin
+                        ? {
+                              type: "skin",
+                              static_id: weapon.weapon_skin.blueprint_id,
+                          }
+                        : undefined,
+                }
+            }
             console.log(obj)
             sendMessage("SceneContext", "SetSlotIndexToChange", wu.slot_number)
             sendMessage("SceneContext", "ChangeSlotValue", JSON.stringify(obj))
