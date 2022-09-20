@@ -38,3 +38,5 @@ declare module "*.json" {
 
 // ant media
 declare module "@antmedia/webrtc_adaptor"
+
+declare module "ovenlivekit"

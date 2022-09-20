@@ -37,7 +37,7 @@ type OvenPlayerPlayList = OvenPlayerSource[][]
 
 type OvenPlayerCallbackFunction = (...args: unknown[]) => void
 
-interface OvenPlayerInstance {
+export interface OvenPlayerInstance {
     getVersion(): string
     getContainerElement(): HTMLDivElement
     getContainerId(): string

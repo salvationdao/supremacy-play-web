@@ -6,6 +6,8 @@ import { QuickDeploy } from "../components/LeftDrawer/QuickDeploy/QuickDeploy"
 import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
 import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
 import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
+import { PlayerList as VoiceChatPlayerList } from "../components/RightDrawer/VoiceChat/VoiceChat"
+
 import { RepairJobs } from "../components/RightDrawer/RepairJobs/RepairJobs"
 import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../constants"
 import { BattleArenaPage, BillingHistoryPage, ClaimPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
@@ -268,6 +270,7 @@ export interface SideTabsStruct {
     matchNavLinkIDs?: string[] // Leave undefined to have the tab available on all pages, else specify the routes
     mountAllTime: boolean // Whether to keep component mounted even not on the tab
     requireAuth: boolean
+    requireFaction?: boolean
 }
 
 export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
@@ -315,6 +318,16 @@ export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         label: "Live Chat",
         Component: LiveChat,
         requireAuth: false,
+        matchNavLinkIDs: undefined,
+        mountAllTime: true,
+    },
+    voice_chat: {
+        id: "voice_chat",
+        icon: <SvgChat size="1.1rem" sx={{ pt: ".3rem" }} />,
+        label: "Voice Chat",
+        Component: VoiceChatPlayerList,
+        requireAuth: true,
+        requireFaction: true,
         matchNavLinkIDs: undefined,
         mountAllTime: true,
     },

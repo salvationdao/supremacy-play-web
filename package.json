@@ -32,6 +32,7 @@
         "jsonwebtoken": "^8.5.1",
         "jwt-decode": "^3.1.2",
         "moment": "^2.29.4",
+        "ovenlivekit": "^1.0.2",
         "ovenplayer": "^0.10.21",
         "react": "^17.0.2",
         "react-confetti": "^6.1.0",

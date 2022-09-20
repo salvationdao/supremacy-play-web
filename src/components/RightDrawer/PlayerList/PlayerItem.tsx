@@ -56,6 +56,16 @@ export const PlayerItem = React.memo(function PlayerItem({ player, isActive }: P
                     >
                         REPORT
                     </Typography>
+
+                    <Typography
+                        variant="caption"
+                        sx={{
+                            color: "#FFFFFF80",
+                            fontFamily: fonts.nostromoBold,
+                        }}
+                    >
+                        mic
+                    </Typography>
                 </FancyButton>
             </Stack>
 
