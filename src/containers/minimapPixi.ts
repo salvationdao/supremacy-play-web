@@ -44,7 +44,7 @@ export const MiniMapPixiContainer = createContainer(() => {
     const [playerAbility, setPlayerAbility] = useState<PlayerAbility>()
     const [isTargeting, setIsTargeting] = useState(false)
     const [highlightedMechParticipantID, setHighlightedMechParticipantID] = useState<number>()
-    const [selection, setSelectionDebounced, selectionInstant, setSelection] = useDebounce<MapSelection | undefined>(undefined, 320)
+    const [selection, setSelectionDebounced, selectionInstant, setSelection] = useDebounce<MapSelection | undefined>(undefined, 450)
 
     // Pixi stuff
     const [pixiMainItems, setPixiMainItems] = useState<PixiMainItems>()
