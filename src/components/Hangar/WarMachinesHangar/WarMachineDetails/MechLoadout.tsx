@@ -124,12 +124,15 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
 
     // Track if changes have been made
     useEffect(() => {
-        setHasUnsavedChanges(
+        const hasUnsaved =
             currLoadout.changed_weapons_map.size > 0 ||
-                currLoadout.changed_utility_map.size > 0 ||
-                !!currLoadout.changed_power_core ||
-                !!currLoadout.changed_mech_skin,
-        )
+            currLoadout.changed_utility_map.size > 0 ||
+            !!currLoadout.changed_power_core ||
+            !!currLoadout.changed_mech_skin
+        setHasUnsavedChanges(hasUnsaved)
+        if (!hasUnsaved) {
+            setError(undefined)
+        }
     }, [currLoadout.changed_weapons_map.size, currLoadout.changed_utility_map.size, currLoadout.changed_power_core, currLoadout.changed_mech_skin])
 
     // Confirm selection and submit payload to server
@@ -625,8 +628,11 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                     })
                                     toggleShowLoadoutModal(false)
                                 }}
+                                mech={mechDetails}
                                 equipped={mechSkin}
-                                mechSkinsAlreadyEquippedInOtherSlots={changed_mech_skin?.mech_skin ? [changed_mech_skin.mech_skin.id] : []}
+                                mechSkinsAlreadyEquippedInOtherSlots={
+                                    changed_mech_skin?.mech_skin ? [changed_mech_skin.mech_skin.id] : chassis_skin ? [chassis_skin.id] : []
+                                }
                                 compatibleMechSkins={compatible_blueprint_mech_skin_ids}
                             />
                         )
