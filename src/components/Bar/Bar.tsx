@@ -172,9 +172,9 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
             {userID && <WalletDetails />}
             <BuySupsButton />
             {userID && <Quests />}
-            {userID && STAGING_OR_DEV_ONLY && <ShoppingCart />}
             <BarSocials />
             {userID && <Messages />}
+            {userID && STAGING_OR_DEV_ONLY && <ShoppingCart />}
             <ProfileCard userID={userID} user={user} />
         </>
     )

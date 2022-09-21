@@ -60,7 +60,7 @@ export const Messages = () => {
                 direction="row"
                 alignItems="center"
                 sx={{
-                    mx: "1.2rem",
+                    mx: "1rem",
                     height: "100%",
                 }}
             >
@@ -80,7 +80,7 @@ export const Messages = () => {
                         }}
                     >
                         <IconButton onClick={() => toggleModalOpen(true)}>
-                            <SvgMail size="2.2rem" />
+                            <SvgMail size="2rem" />
                         </IconButton>
                     </Badge>
                 </Box>
