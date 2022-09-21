@@ -83,8 +83,19 @@ export const ArenaContainer = createContainer(() => {
                 if (l.ovenPlayer) {
                     l.ovenPlayer?.remove()
                 }
+                console.log("live kit obj", l.liveKit)
+
                 if (l.liveKit) {
                     l.liveKit?.remove()
+                    l.liveKit = undefined
+
+                    // const constraints = { video: false, audio: true }
+
+                    // l.liveKit.getUserMedia(constraints).then(function (d: any) {
+                    //     console.log("live kit obj2", l.liveKit)
+
+                    //     l.liveKit.stopStreaming()
+                    // })
                 }
                 setConnected(false)
             })
