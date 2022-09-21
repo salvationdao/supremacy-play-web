@@ -2,7 +2,7 @@ import { Box } from "@mui/material"
 import { useTheme } from "../../../../containers/theme"
 import { Weapon } from "../../../../types"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
-import { FeatherFade } from "../../WarMachinesHangar/WarMachineDetails/MechViewer"
+import { FeatherFade } from "../../WarMachinesHangar/WarMachineDetails/MechViewer/MechViewer"
 
 export const WeaponViewer = ({ weaponDetails }: { weaponDetails: Weapon }) => {
     const theme = useTheme()
