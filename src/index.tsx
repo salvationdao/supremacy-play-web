@@ -241,37 +241,37 @@ const App = () => {
                                 <SupremacyProvider>
                                     <AuthProvider>
                                         <BattleLobbyProvider>
-                                        <ChatProvider>
-                                            <WalletProvider>
-                                                <TourProvider {...tourProviderProps}>
-                                                    <OvenStreamProvider>
-                                                        <ArenaProvider>
-                                                            <ArenaListener />
-                                                            <MobileProvider>
-                                                                <DimensionProvider>
-                                                                    <UiProvider>
-                                                                        <GameProvider>
-                                                                            <HotkeyProvider>
-                                                                                <MiniMapProvider>
-                                                                                    <FiatProvider>
-                                                                                        <UserUpdater />
-                                                                                        <Switch>
-                                                                                            <Route path="/404" exact component={NotFoundPage} />
-                                                                                            <Route path="/login-redirect" exact component={LoginRedirect} />
-                                                                                            <Route path="" component={AppInner} />
-                                                                                        </Switch>
-                                                                                    </FiatProvider>
-                                                                                </MiniMapProvider>
-                                                                            </HotkeyProvider>
-                                                                        </GameProvider>
-                                                                    </UiProvider>
-                                                                </DimensionProvider>
-                                                            </MobileProvider>
-                                                        </ArenaProvider>
-                                                    </OvenStreamProvider>
-                                                </TourProvider>
-                                            </WalletProvider>
-                                        </ChatProvider>
+                                            <ChatProvider>
+                                                <WalletProvider>
+                                                    <TourProvider {...tourProviderProps}>
+                                                        <OvenStreamProvider>
+                                                            <ArenaProvider>
+                                                                <ArenaListener />
+                                                                <MobileProvider>
+                                                                    <DimensionProvider>
+                                                                        <UiProvider>
+                                                                            <GameProvider>
+                                                                                <HotkeyProvider>
+                                                                                    <MiniMapProvider>
+                                                                                        <FiatProvider>
+                                                                                            <UserUpdater />
+                                                                                            <Switch>
+                                                                                                <Route path="/404" exact component={NotFoundPage} />
+                                                                                                <Route path="/login-redirect" exact component={LoginRedirect} />
+                                                                                                <Route path="" component={AppInner} />
+                                                                                            </Switch>
+                                                                                        </FiatProvider>
+                                                                                    </MiniMapProvider>
+                                                                                </HotkeyProvider>
+                                                                            </GameProvider>
+                                                                        </UiProvider>
+                                                                    </DimensionProvider>
+                                                                </MobileProvider>
+                                                            </ArenaProvider>
+                                                        </OvenStreamProvider>
+                                                    </TourProvider>
+                                                </WalletProvider>
+                                            </ChatProvider>
                                         </BattleLobbyProvider>
                                     </AuthProvider>
                                 </SupremacyProvider>
