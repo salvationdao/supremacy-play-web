@@ -5,7 +5,7 @@ import { getRarityDeets } from "../../../../../../../helpers"
 import { colors, fonts } from "../../../../../../../theme/theme"
 import { Weapon } from "../../../../../../../types"
 import { ClipThing } from "../../../../../../Common/ClipThing"
-import { FeatherFade } from "../../../MechViewer"
+import { FeatherFade } from "../../../MechViewer/MechViewer"
 
 interface WeaponPreviewProps {
     weapon?: Weapon

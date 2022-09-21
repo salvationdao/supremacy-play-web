@@ -5,7 +5,7 @@ import { getRarityDeets } from "../../../../../../../helpers"
 import { colors, fonts } from "../../../../../../../theme/theme"
 import { MechSkin } from "../../../../../../../types"
 import { FancyButton } from "../../../../../../Common/FancyButton"
-import { FeatherFade } from "../../../MechViewer"
+import { FeatherFade } from "../../../MechViewer/MechViewer"
 import { OnConfirmMechSkinSelection } from "../MechLoadoutMechSkinModal"
 
 interface MechSkinPreviewProps {
