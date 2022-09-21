@@ -255,9 +255,13 @@ const PlayerItem = ({ voiceStream, faction }: { voiceStream: VoiceStream; factio
 
     useEffect(() => {
         if (!voiceStream.ovenPlayer) return
+        if (isMute) {
+            voiceStream.ovenPlayer.setVolume(0)
+            return
+        }
 
         voiceStream.ovenPlayer.setVolume(volume * 100)
-    }, [volume])
+    }, [volume, isMute])
 
     return (
         <Box mt="1rem" sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
