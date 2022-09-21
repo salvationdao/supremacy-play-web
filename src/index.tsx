@@ -43,6 +43,7 @@ import { ErrorFallbackPage } from "./pages/ErrorFallbackPage"
 import { LoginRedirect } from "./pages/LoginRedirect"
 import { ROUTES_ARRAY, ROUTES_MAP } from "./routes"
 import { colors, fonts } from "./theme/theme"
+import { FiatProvider } from "./containers/fiat"
 
 const AppInner = () => {
     const isTraining = location.pathname.includes("/training")
@@ -250,12 +251,14 @@ const App = () => {
                                                                         <GameProvider>
                                                                             <HotkeyProvider>
                                                                                 <MiniMapPixiProvider>
-                                                                                    <UserUpdater />
-                                                                                    <Switch>
-                                                                                        <Route path="/404" exact component={NotFoundPage} />
-                                                                                        <Route path="/login-redirect" exact component={LoginRedirect} />
-                                                                                        <Route path="" component={AppInner} />
-                                                                                    </Switch>
+                                                                                    <FiatProvider>
+                                                                                        <UserUpdater />
+                                                                                        <Switch>
+                                                                                            <Route path="/404" exact component={NotFoundPage} />
+                                                                                            <Route path="/login-redirect" exact component={LoginRedirect} />
+                                                                                            <Route path="" component={AppInner} />
+                                                                                        </Switch>
+                                                                                    </FiatProvider>
                                                                                 </MiniMapPixiProvider>
                                                                             </HotkeyProvider>
                                                                         </GameProvider>

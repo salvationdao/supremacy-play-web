@@ -1,5 +1,5 @@
 import { Box, Checkbox, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import { useHistory } from "react-router-dom"
 import { FancyButton } from "../.."
 import { SvgSupToken, WarMachineIconPNG } from "../../../assets"
@@ -73,21 +73,23 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
     const [dropRate, setDropRate] = useState<number>()
 
     // Others
-    const [listingFee, setListingFee] = useState<number>(10)
+    // const [listingFee, setListingFee] = useState<number>(0)
+    // DEPRECATED: Listing fees removed
+    const listingFee = 0
     const primaryColor = theme.factionTheme.primary
 
     // Calculate fees
-    useEffect(() => {
-        let fee = 10
-        if (reservePrice) fee += 5
-        if (buyoutPrice && itemType !== ItemType.Keycards) fee += 5
-        if (listingDurationHours !== ListingDurationHoursEnum.HalfDay && listingDurationHours !== ListingDurationHoursEnum.OneDay) {
-            //listing duration from hours to days minus 1 day (to only account for additional days listed) * 5 sups
-            const listingDurationFee = (listingDurationHours / 24 - 1) * 5
-            fee += listingDurationFee
-        }
-        setListingFee(fee)
-    }, [buyoutPrice, reservePrice, dropRate, itemType, listingDurationHours])
+    // useEffect(() => {
+    //     let fee = 10
+    //     if (reservePrice) fee += 5
+    //     if (buyoutPrice && itemType !== ItemType.Keycards) fee += 5
+    //     if (listingDurationHours !== ListingDurationHoursEnum.HalfDay && listingDurationHours !== ListingDurationHoursEnum.OneDay) {
+    //         //listing duration from hours to days minus 1 day (to only account for additional days listed) * 5 sups
+    //         const listingDurationFee = (listingDurationHours / 24 - 1) * 5
+    //         fee += listingDurationFee
+    //     }
+    //     setListingFee(fee)
+    // }, [buyoutPrice, reservePrice, dropRate, itemType, listingDurationHours])
 
     // Form validators
     const checkBuyoutPriceError = useCallback((): string | undefined => {
@@ -318,11 +320,13 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                         }}
                     >
                         <Stack>
-                            <Stack direction="row" alignItems="center">
-                                <Typography sx={{ fontFamily: fonts.nostromoBlack, mr: ".8rem" }}>LISTING FEE:</Typography>
-                                <SvgSupToken size="2.2rem" fill={colors.yellow} />
-                                <Typography sx={{ fontFamily: fonts.nostromoBold }}>{listingFee}</Typography>
-                            </Stack>
+                            {listingFee > 0 && (
+                                <Stack direction="row" alignItems="center">
+                                    <Typography sx={{ fontFamily: fonts.nostromoBlack, mr: ".8rem" }}>LISTING FEE:</Typography>
+                                    <SvgSupToken size="2.2rem" fill={colors.yellow} />
+                                    <Typography sx={{ fontFamily: fonts.nostromoBold }}>{listingFee}</Typography>
+                                </Stack>
+                            )}
 
                             <Typography sx={{ color: colors.lightNeonBlue }}>There will be a 10% fee on the final sale value of your item.</Typography>
                         </Stack>
@@ -365,22 +369,34 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                     isLoading={submitting}
                     error={submitError}
                     confirmSuffix={
-                        <Stack direction="row" sx={{ ml: ".4rem" }}>
-                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                (
-                            </Typography>
-                            <SvgSupToken size="1.8rem" />
-                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                {numFormatter(listingFee)})
-                            </Typography>
-                        </Stack>
+                        listingFee > 0 ? (
+                            <Stack direction="row" sx={{ ml: ".4rem" }}>
+                                <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                                    (
+                                </Typography>
+                                <SvgSupToken size="1.8rem" />
+                                <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                                    {numFormatter(listingFee)})
+                                </Typography>
+                            </Stack>
+                        ) : undefined
                     }
                 >
                     <Typography variant="h6">
                         Do you wish to list the item for sale?
                         <br />
-                        The listing fee is <span>{numFormatter(listingFee)}</span> SUPS and there will be a <span>10%</span> fee on the final sale value of your
-                        item.
+                        {listingFee > 0 && (
+                            <>
+                                The listing fee is <span>{numFormatter(listingFee)}</span> SUPS and there will be a <span>10%</span> fee on the final sale value
+                                of your
+                            </>
+                        )}
+                        {listingFee <= 0 && (
+                            <>
+                                There will be a <span>10%</span> fee on the final sale value of your
+                            </>
+                        )}
+                        {" item."}
                     </Typography>
 
                     {dropRate && buyoutPrice && (
