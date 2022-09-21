@@ -10,9 +10,10 @@ import { FeatherFade } from "../../../MechViewer"
 interface WeaponPreviewProps {
     weapon?: Weapon
     compareTo?: Weapon
+    disableCompare?: boolean
 }
 
-export const WeaponPreview = ({ weapon, compareTo }: WeaponPreviewProps) => {
+export const WeaponPreview = ({ weapon, compareTo, disableCompare }: WeaponPreviewProps) => {
     const theme = useTheme()
 
     const renderStatChange = useCallback((label: string, stats: { oldStat?: number; newStat: number; negated?: boolean }) => {
@@ -220,37 +221,48 @@ export const WeaponPreview = ({ weapon, compareTo }: WeaponPreviewProps) => {
                         {weapon.label}
                     </Typography>
 
-                    {weapon.equipped_on && (
+                    {disableCompare ? (
                         <Typography
                             sx={{
-                                color: colors.red,
+                                color: colors.lightGrey,
                             }}
                         >
-                            Currently {weapon.locked_to_mech ? "locked to" : "equipped on"} another mech.
+                            Currently equipped to this mech.
                         </Typography>
+                    ) : (
+                        weapon.equipped_on && (
+                            <Typography
+                                sx={{
+                                    color: weapon.locked_to_mech ? colors.red : colors.yellow,
+                                }}
+                            >
+                                Currently {weapon.locked_to_mech ? "locked to" : "equipped on"} another mech.
+                            </Typography>
+                        )
                     )}
-                    {statChanges.length > 0 ? (
-                        <Stack>
+                    {!disableCompare &&
+                        (statChanges.length > 0 ? (
+                            <Stack>
+                                <Typography
+                                    sx={{
+                                        color: colors.lightGrey,
+                                        textTransform: "uppercase",
+                                    }}
+                                >
+                                    Stat Changes If Equipped:
+                                </Typography>
+                                {statChanges}
+                            </Stack>
+                        ) : (
                             <Typography
                                 sx={{
                                     color: colors.lightGrey,
                                     textTransform: "uppercase",
                                 }}
                             >
-                                Stat Changes If Equipped:
+                                No Stat Changes If Equipped
                             </Typography>
-                            {statChanges}
-                        </Stack>
-                    ) : (
-                        <Typography
-                            sx={{
-                                color: colors.lightGrey,
-                                textTransform: "uppercase",
-                            }}
-                        >
-                            No Stat Changes If Equipped
-                        </Typography>
-                    )}
+                        ))}
                 </Stack>
             </Stack>
         )
@@ -262,8 +274,7 @@ export const WeaponPreview = ({ weapon, compareTo }: WeaponPreviewProps) => {
             justifyContent="center"
             sx={{
                 height: "100%",
-                width: "100%",
-                maxWidth: "300px",
+                width: "300px",
             }}
         >
             <Typography
@@ -275,7 +286,7 @@ export const WeaponPreview = ({ weapon, compareTo }: WeaponPreviewProps) => {
                     textAlign: "center",
                 }}
             >
-                Select a weapon to compare its details.
+                {disableCompare ? "No weapon equipped." : "Select a weapon to compare its details."}
             </Typography>
         </Stack>
     )
