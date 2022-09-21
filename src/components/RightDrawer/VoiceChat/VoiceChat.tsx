@@ -256,7 +256,7 @@ const PlayerItem = ({ voiceStream, faction }: { voiceStream: VoiceStream; factio
     useEffect(() => {
         if (!voiceStream.ovenPlayer) return
 
-        voiceStream.ovenPlayer.setVolume(volume)
+        voiceStream.ovenPlayer.setVolume(volume * 100)
     }, [volume])
 
     return (
