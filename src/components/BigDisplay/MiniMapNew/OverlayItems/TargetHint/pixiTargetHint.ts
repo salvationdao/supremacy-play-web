@@ -179,11 +179,6 @@ export class PixiTargetHint {
             this.colorOverlay.width = this.viewport.screenWidth
             this.colorOverlay.height = this.viewport.screenHeight
 
-            // Line graphics
-            this.outerBorder.clear()
-            this.outerBorder.lineStyle(4, HEXToVBColor(this.ability.colour))
-            this.outerBorder.drawRect(0, 0, this.viewport.screenWidth, this.viewport.screenHeight)
-
             // Position the bottom labe stuff
             this.bottomContainer.clear()
             this.bottomContainer.beginFill(HEXToVBColor("#000000"), 0.5)
@@ -192,6 +187,11 @@ export class PixiTargetHint {
             this.bottomContainer.pivot.set(0, this.bottomContainer.height)
             this.bottomContainer.position.set(0, this.viewport.screenHeight)
             this.cancelButton?.position.set(this.viewport.screenWidth - 16, 13)
+
+            // Line graphics
+            this.outerBorder.clear()
+            this.outerBorder.lineStyle(4, HEXToVBColor(this.ability.colour))
+            this.outerBorder.drawRect(0, 0, this.viewport.screenWidth, this.viewport.screenHeight)
 
             // Repeat
             this.animationFrame = requestAnimationFrame(step)

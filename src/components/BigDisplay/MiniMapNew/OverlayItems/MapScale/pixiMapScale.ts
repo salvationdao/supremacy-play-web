@@ -69,4 +69,8 @@ export class PixiMapScale {
 
         this.animationFrame = requestAnimationFrame(step)
     }
+
+    updateVisibility(isVisible: boolean) {
+        this.root.visible = isVisible
+    }
 }

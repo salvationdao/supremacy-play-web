@@ -113,7 +113,7 @@ export class PixiMapMech {
         this.rectGraphics.clear()
         this.rectGraphics.beginFill(HEXToVBColor("#000000"), 0.8)
         this.rectGraphics.lineStyle(iconDimension.height * 0.08, HEXToVBColor(primaryColor))
-        this.rectGraphics.drawRoundedRect(0, 0, iconDimension.width, iconDimension.height, 6)
+        this.rectGraphics.drawRoundedRect(0, 0, iconDimension.width, iconDimension.height, iconDimension.width / 5)
         this.rectGraphics.endFill()
         this.skull.position.set(iconDimension.width / 2, iconDimension.height / 2.3)
         this.skull.width = iconDimension.width / 1.5
