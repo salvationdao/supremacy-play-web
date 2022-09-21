@@ -1,11 +1,15 @@
-import { Box, Button, Stack, Typography } from "@mui/material"
-import { useMemo, useState } from "react"
-import { VoiceStream } from "../../../containers"
+import { Box, Button, Slider, Stack, Typography } from "@mui/material"
+import OvenLiveKit from "ovenlivekit"
+import OvenPlayer from "ovenplayer"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useArena, useAuth, useChat, useSupremacy, VoiceStream } from "../../../containers"
+import { OvenPlayerInstance } from "../../../containers/oven"
 import { useTheme } from "../../../containers/theme"
 import { acronym, shadeColor } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { Faction, User } from "../../../types"
 import { StyledImageText } from "../../Notifications/Common/StyledImageText"
+import { useToggle } from "../../../hooks"
 
 export const VoiceChat = ({
     onListen,
@@ -142,6 +146,22 @@ const Content = ({
 }
 
 const PlayerItem = ({ voiceStream, faction }: { voiceStream: VoiceStream; faction: Faction }) => {
+    const [isMute, toggleIsMute] = useToggle(true)
+    const [volume, setVolume] = useState(100)
+
+    const handleVolumeChange = useCallback(
+        (_: Event, newValue: number | number[]) => {
+            setVolume(newValue as number)
+        },
+        [setVolume],
+    )
+
+    useEffect(() => {
+        if (!voiceStream.ovenPlayer) return
+
+        voiceStream.ovenPlayer.setVolume(volume)
+    }, [volume])
+
     return (
         <Box mt="1rem" sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <Box>
@@ -159,8 +179,22 @@ const PlayerItem = ({ voiceStream, faction }: { voiceStream: VoiceStream; factio
                 />
             </Box>
 
+            <Slider
+                size="small"
+                min={0}
+                max={1}
+                step={0.01}
+                aria-label="Volume"
+                value={isMute ? 0 : volume}
+                onChange={handleVolumeChange}
+                sx={{
+                    ml: "1.2rem",
+                    color: (theme) => theme.factionTheme.primary,
+                }}
+            />
+
             <Box>
-                <Button>Mute</Button>
+                <Button onClick={() => toggleIsMute(!isMute)}>Mute</Button>
             </Box>
         </Box>
     )
