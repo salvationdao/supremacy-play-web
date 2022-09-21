@@ -72,7 +72,15 @@ export const ArenaContainer = createContainer(() => {
     }, [])
 
     const onDisconnect = () => {
+        console.log("discoonnecting")
+
         setListenStreams(undefined)
+        if (ovenPlayer && ovenPlayer.current) {
+            ovenPlayer?.current.off("ready")
+            ovenPlayer?.current.off("error")
+            ovenPlayer?.current.remove()
+            ovenPlayer.current = undefined
+        }
     }
 
     const startStream = useCallback((url: string) => {

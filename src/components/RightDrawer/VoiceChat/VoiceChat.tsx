@@ -13,11 +13,11 @@ import { useToggle } from "../../../hooks"
 import { SvgVolume, SvgVolumeMute } from "../../../assets"
 
 export const VoiceChat = ({
-                              onListen,
-                              listenStreams,
-                              user,
-                              faction,
-                          }: {
+    onListen,
+    listenStreams,
+    user,
+    faction,
+}: {
     onListen: (s: VoiceStream[]) => void
     listenStreams: VoiceStream[]
     user: User
@@ -25,19 +25,18 @@ export const VoiceChat = ({
 }) => {
     return (
         <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
-            <Content listenStreams={listenStreams} onListen={onListen} faction={faction} user={user}
-                     activePlayers={[]} />
+            <Content listenStreams={listenStreams} onListen={onListen} faction={faction} user={user} activePlayers={[]} />
         </Stack>
     )
 }
 
 const Content = ({
-                     faction,
-                     user,
-                     activePlayers,
-                     listenStreams,
-                     onListen,
-                 }: {
+    faction,
+    user,
+    activePlayers,
+    listenStreams,
+    onListen,
+}: {
     faction: Faction
     user: User
     activePlayers: User[]
@@ -46,6 +45,7 @@ const Content = ({
 }) => {
     const [connected, setConnected] = useState(false)
     // console.log("this is streams", listenStreams)
+    const { onDisconnect } = useArena()
 
     const theme = useTheme()
     const bannerColor = useMemo(() => shadeColor(theme.factionTheme.primary, -60), [theme.factionTheme.primary])
@@ -88,12 +88,14 @@ const Content = ({
                     </Typography>
                     <Stack direction="row" alignItems="center" spacing="1.3rem">
                         <Stack direction="row" alignItems="center" spacing=".4rem">
-                            <Box sx={{
-                                width: ".8rem",
-                                height: ".8rem",
-                                borderRadius: "50%",
-                                backgroundColor: colors.green,
-                            }} />
+                            <Box
+                                sx={{
+                                    width: ".8rem",
+                                    height: ".8rem",
+                                    borderRadius: "50%",
+                                    backgroundColor: colors.green,
+                                }}
+                            />
                             <Typography variant="body2" sx={{ lineHeight: 1 }}>
                                 <strong>Active: </strong>
                                 {activePlayers.length}
@@ -143,7 +145,7 @@ const Content = ({
 
             <Button
                 onClick={() => {
-                    onListen([])
+                    onDisconnect()
                 }}
             >
                 Disconnect
@@ -190,7 +192,6 @@ const PlayerItem = ({ voiceStream, faction }: { voiceStream: VoiceStream; factio
                 />
             </Box>
 
-
             <Box>
                 <Slider
                     disabled={voiceStream.send_url != undefined}
@@ -208,11 +209,13 @@ const PlayerItem = ({ voiceStream, faction }: { voiceStream: VoiceStream; factio
                 />
             </Box>
 
-
-            <IconButton size="small" onClick={() => toggleIsMute()} disabled={voiceStream.send_url != undefined}
-                        sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}>
-                {isMute || volume <= 0 ? <SvgVolumeMute size="1.4rem" sx={{ pb: 0 }} /> :
-                    <SvgVolume size="1.4rem" sx={{ pb: 0 }} />}
+            <IconButton
+                size="small"
+                onClick={() => toggleIsMute()}
+                disabled={voiceStream.send_url != undefined}
+                sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}
+            >
+                {isMute || volume <= 0 ? <SvgVolumeMute size="1.4rem" sx={{ pb: 0 }} /> : <SvgVolume size="1.4rem" sx={{ pb: 0 }} />}
             </IconButton>
         </Box>
     )
