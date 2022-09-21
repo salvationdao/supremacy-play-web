@@ -58,6 +58,7 @@ export const ArenaContainer = createContainer(() => {
             })
 
             newOvenPlayer.play()
+            stream.ovenPlayer = newOvenPlayer
             ovenPlayer.current = newOvenPlayer
 
             return () => {
@@ -115,6 +116,7 @@ export interface VoiceStream {
     is_faction_fommander: boolean
     username: string
     user_gid: string
+    ovenPlayer: OvenPlayerInstance | undefined
 }
 
 export const ArenaListener = () => {
