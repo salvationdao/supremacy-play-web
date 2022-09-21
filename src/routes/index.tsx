@@ -8,7 +8,7 @@ import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
 import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
 import { RepairJobs } from "../components/RightDrawer/RepairJobs/RepairJobs"
 import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../constants"
-import { BattleArenaPage, BillingHistoryPage, ClaimPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
+import { BattleArenaPage, BillingHistoryPage, BillingHistoryItemPage, ClaimPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
 import { LeaderboardPage } from "../pages/LeaderboardPage"
 import { MarketplaceItemPage } from "../pages/MarketplaceItemPage"
 import { MarketplaceSellPage } from "../pages/MarketplaceSellPage"
@@ -203,6 +203,16 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         path: "/billing-history",
         exact: true,
         Component: BillingHistoryPage,
+        requireAuth: true,
+        requireFaction: true,
+        enable: true,
+        pageTitle: "Supremacy - Billing",
+    },
+    billing_history_item: {
+        id: "billing_history_item",
+        path: "/billing-history/:id",
+        exact: true,
+        Component: BillingHistoryItemPage,
         requireAuth: true,
         requireFaction: true,
         enable: true,
