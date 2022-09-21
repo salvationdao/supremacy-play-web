@@ -1,13 +1,8 @@
 import { Box, Button, Stack, Typography } from "@mui/material"
-import OvenLiveKit from "ovenlivekit"
-import OvenPlayer from "ovenplayer"
-import { useCallback, useMemo, useRef } from "react"
-import { useArena, useAuth, useChat, useSupremacy, VoiceStream } from "../../../containers"
-import { OvenPlayerInstance } from "../../../containers/oven"
+import { useMemo, useState } from "react"
+import { VoiceStream } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { acronym, shadeColor } from "../../../helpers"
-import { useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { Faction, User } from "../../../types"
 import { StyledImageText } from "../../Notifications/Common/StyledImageText"
@@ -23,102 +18,6 @@ export const VoiceChat = ({
     user: User
     faction: Faction
 }) => {
-    // const { getFaction } = useSupremacy()
-    // const { user, factionID } = useAuth()
-    // const { activePlayers } = useChat()
-    // const { currentArenaID, setListenStreams, listenStreams, onListen } = useArena()
-
-    // // player voice chat data
-    // useGameServerSubscriptionSecuredUser<VoiceStream[]>(
-    //     {
-    //         URI: `/arena/${currentArenaID}`,
-    //         key: GameServerKeys.SubPlayerVoiceStream,
-    //         ready: !!(currentArenaID && factionID),
-    //     },
-    //     (payload: VoiceStream[]) => {
-    //         setListenStreams(undefined)
-    //         setListenStreams(payload)
-    //     },
-    // )
-
-    // const onListen = useCallback((listenStreams: VoiceStream[]) => {
-    //     listenStreams?.map((l) => {
-    //         if (l.send_url) {
-    //             startStream(l.send_url)
-    //         }
-    //         listen(l)
-    //     })
-    // }, [])
-
-    // // listen stream
-    // const ovenPlayer = useRef<OvenPlayerInstance>()
-    // const listen = useCallback((stream: VoiceStream) => {
-    //     if (document.getElementById(stream.listen_url)) {
-    //         const newOvenPlayer = OvenPlayer.create(stream.listen_url, {
-    //             autoStart: true,
-    //             controls: true,
-    //             volume: 100,
-    //             sources: [
-    //                 {
-    //                     type: "webrtc",
-    //                     file: stream.listen_url,
-    //                 },
-    //             ],
-    //             autoFallback: true,
-    //             disableSeekUI: true,
-    //         })
-
-    //         newOvenPlayer.on("ready", () => {
-    //             console.log("voice chat ready Ready.")
-    //         })
-
-    //         newOvenPlayer.on("error", (err: any) => {
-    //             if (err.code === 501) {
-    //                 console.log("501: failed to connnect attempting to recconnect", err)
-    //             } else {
-    //                 console.error("voice chat error: ", err)
-    //             }
-
-    //             setTimeout(() => {
-    //                 listen(stream)
-    //             }, 1000)
-    //         })
-
-    //         newOvenPlayer.play()
-    //         ovenPlayer.current = newOvenPlayer
-
-    //         return () => {
-    //             newOvenPlayer.off("ready")
-    //             newOvenPlayer.off("error")
-    //             newOvenPlayer.remove()
-    //             ovenPlayer.current = undefined
-    //         }
-    //     }
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [])
-
-    // const startStream = useCallback((url: string) => {
-    //     if (!url) {
-    //         return
-    //     }
-    //     const config = {
-    //         callbacks: {
-    //             error: function (error: any) {
-    //                 console.log("voice chat error", error)
-    //             },
-    //             connected: function (event: any) {
-    //                 console.log("voice chat event", event)
-    //             },
-    //         },
-    //     }
-
-    //     const liveKit = OvenLiveKit.create(config)
-    //     const constraints = { video: false, audio: true }
-    //     liveKit.getUserMedia(constraints).then(function (d: any) {
-    //         liveKit.startStreaming(url)
-    //     })
-    // }, [])
-
     return (
         <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
             <Content listenStreams={listenStreams} onListen={onListen} faction={faction} user={user} activePlayers={[]} />
@@ -139,7 +38,8 @@ const Content = ({
     listenStreams: VoiceStream[] | undefined
     onListen: (stream: VoiceStream[]) => void
 }) => {
-    console.log("this is streams", listenStreams)
+    const [connected, setConnected] = useState(false)
+    // console.log("this is streams", listenStreams)
 
     const theme = useTheme()
     const bannerColor = useMemo(() => shadeColor(theme.factionTheme.primary, -60), [theme.factionTheme.primary])
@@ -232,7 +132,7 @@ const Content = ({
 
             <Button
                 onClick={() => {
-                    // onListen(listenStreams || [])
+                    onListen([])
                 }}
             >
                 Disconnect

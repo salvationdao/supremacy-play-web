@@ -71,6 +71,10 @@ export const ArenaContainer = createContainer(() => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    const onDisconnect = () => {
+        setListenStreams(undefined)
+    }
+
     const startStream = useCallback((url: string) => {
         if (!url) {
             return
@@ -104,6 +108,8 @@ export const ArenaContainer = createContainer(() => {
         listenStreams,
         setListenStreams,
         onListen,
+
+        onDisconnect,
     }
 })
 

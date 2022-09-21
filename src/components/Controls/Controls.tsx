@@ -76,7 +76,7 @@ const VoiceChat2 = () => {
     const { getFaction } = useSupremacy()
     const { user, factionID } = useAuth()
     const { activePlayers } = useChat()
-    const { currentArenaID, setListenStreams, listenStreams, onListen } = useArena()
+    const { currentArenaID, setListenStreams, listenStreams, onListen, onDisconnect } = useArena()
 
     // player voice chat data
     useGameServerSubscriptionSecuredUser<VoiceStream[]>(
