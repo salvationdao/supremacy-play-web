@@ -146,7 +146,7 @@ const Content = ({
 }
 
 const PlayerItem = ({ voiceStream, faction }: { voiceStream: VoiceStream; faction: Faction }) => {
-    const [isMute, toggleIsMute] = useToggle(true)
+    const [isMute, toggleIsMute] = useToggle(false)
     const [volume, setVolume] = useState(100)
 
     const handleVolumeChange = useCallback(
@@ -159,7 +159,7 @@ const PlayerItem = ({ voiceStream, faction }: { voiceStream: VoiceStream; factio
     useEffect(() => {
         if (!voiceStream.ovenPlayer) return
 
-        voiceStream.ovenPlayer.setVolume(volume)
+        voiceStream.ovenPlayer.setVolume(volume * 100)
     }, [volume])
 
     return (
