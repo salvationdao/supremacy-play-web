@@ -3,6 +3,7 @@ import { Viewport } from "pixi-viewport"
 import * as PIXI from "pixi.js"
 import { AbilityCancelPNG } from "../../../../../assets"
 import { HEXToVBColor } from "../../../../../helpers"
+import { PixiImageIcon } from "../../../../../helpers/pixiHelpers"
 import { fonts } from "../../../../../theme/theme"
 import { BlueprintPlayerAbility, Dimension, GameAbility, LocationSelectType, Position } from "../../../../../types"
 
@@ -34,18 +35,16 @@ const getAbilityLabel = (ability: GameAbility | BlueprintPlayerAbility): string 
 export class PixiTargetHint {
     stageRoot: PIXI.Container<PIXI.DisplayObject>
     viewportRoot: PIXI.Container<PIXI.DisplayObject>
-    private icon: PIXI.Container
-    private countdownLabel: PIXI.Text
     private colorOverlay: PIXI.Sprite
     private outerBorder: PIXI.Graphics
     private bottomContainer: PIXI.Graphics
     private cancelButton: PIXI.Sprite | undefined
+    private mouseIcon: PixiImageIcon
 
     private viewport: Viewport
     private ability: GameAbility | BlueprintPlayerAbility
     private mapMousePosition: React.MutableRefObject<Position | undefined>
     private animationFrame: number | undefined
-    private onCountdownExpired: () => void | undefined
 
     constructor(
         viewport: Viewport,
@@ -53,13 +52,12 @@ export class PixiTargetHint {
         gridSizeRef: React.MutableRefObject<Dimension>,
         ability: GameAbility | BlueprintPlayerAbility,
         endTime: Date | undefined,
-        onCountdownExpired: () => void | undefined,
+        onExpired: () => void | undefined,
         onCancel: (() => void) | undefined,
     ) {
         this.viewport = viewport
         this.ability = ability
         this.mapMousePosition = mapMousePosition
-        this.onCountdownExpired = onCountdownExpired
         const secondsLeft = endTime ? Math.max(Math.round((endTime.getTime() - new Date().getTime()) / 1000), 0) : undefined
 
         // Create container for everything
@@ -76,39 +74,6 @@ export class PixiTargetHint {
         this.colorOverlay.alpha = 0.05
         this.colorOverlay.tint = HEXToVBColor(this.ability.colour)
         this.colorOverlay.zIndex = 6
-
-        // Icon
-        // Image border
-        const imageBorder = new PIXI.Graphics()
-        imageBorder.lineStyle(1.2, HEXToVBColor(ability.colour))
-        imageBorder.drawRoundedRect(0, 0, gridSizeRef.current.width, gridSizeRef.current.height, 2)
-        imageBorder.zIndex = 4
-
-        // Image
-        const iconImage = PIXI.Sprite.from(ability.image_url)
-        iconImage.width = gridSizeRef.current.width
-        iconImage.height = gridSizeRef.current.height
-        iconImage.zIndex = 3
-
-        this.icon = new PIXI.Container()
-        this.icon.sortableChildren = true
-        this.icon.addChild(imageBorder)
-        this.icon.addChild(iconImage)
-        this.icon.alpha = 0.8
-
-        // Countdown label
-        this.countdownLabel = new PIXI.Text(secondsLeft, {
-            fontFamily: fonts.nostromoBlack,
-            fontSize: 13,
-            fill: "#FFFFFF",
-            stroke: "#00000050",
-            strokeThickness: 0.2,
-            lineHeight: 1,
-        })
-        this.countdownLabel.anchor.set(0.5, 0)
-        this.countdownLabel.resolution = 4
-        this.countdownLabel.zIndex = 5
-        this.countdownLabel.position.set(gridSizeRef.current.width / 2, -18)
 
         // Border line
         this.outerBorder = new PIXI.Graphics()
@@ -142,25 +107,26 @@ export class PixiTargetHint {
             this.bottomContainer.addChild(this.cancelButton)
         }
 
+        // Mouse icon
+        this.mouseIcon = new PixiImageIcon(
+            ability.image_url,
+            gridSizeRef.current.width,
+            gridSizeRef.current.height,
+            ability.colour,
+            true,
+            onExpired,
+            secondsLeft,
+        )
+
         // Add everything to container
-        this.viewportRoot.addChild(this.icon)
-        this.viewportRoot.addChild(this.countdownLabel)
+        this.viewportRoot.addChild(this.mouseIcon.root)
         this.stageRoot.addChild(this.colorOverlay)
         this.stageRoot.addChild(this.outerBorder)
         this.stageRoot.addChild(this.bottomContainer)
 
-        this.viewportRoot.pivot.set(this.viewportRoot.width / 2, this.countdownLabel.height / 2)
-        ease.add(this.viewportRoot, { scale: 1.2 }, { duration: 500, ease: "linear", repeat: true, reverse: true, removeExisting: true })
+        ease.add(this.mouseIcon.root, { scale: 1.2 }, { duration: 500, ease: "linear", repeat: true, reverse: true, removeExisting: true })
 
         this.render()
-
-        if (secondsLeft) {
-            if (secondsLeft > 0) {
-                this.setCountdown(secondsLeft)
-            } else {
-                this.onCountdownExpired()
-            }
-        }
     }
 
     destroy() {
@@ -172,7 +138,7 @@ export class PixiTargetHint {
     render() {
         const step = () => {
             if (this.mapMousePosition.current) {
-                this.viewportRoot.position.set(this.mapMousePosition.current.x, this.mapMousePosition.current.y)
+                this.mouseIcon.root.position.set(this.mapMousePosition.current.x, this.mapMousePosition.current.y)
             }
 
             // Color overlay
@@ -198,46 +164,5 @@ export class PixiTargetHint {
         }
 
         this.animationFrame = requestAnimationFrame(step)
-    }
-
-    setCountdown(secondsLeft: number) {
-        let start: number | undefined
-        let isDone = false
-        let lastTimestamp = 0
-
-        const step = (timestamp: DOMHighResTimeStamp) => {
-            if (start === undefined) {
-                start = timestamp
-            }
-
-            const elapsed = timestamp - lastTimestamp
-            const totalElapsed = timestamp - start
-
-            // Count per second
-            if (elapsed >= 1000) {
-                const timeLeft = Math.round(secondsLeft - totalElapsed / 1000)
-                lastTimestamp = timestamp
-
-                this.countdownLabel.text = Math.round(Math.max(timeLeft, 0))
-                if (timeLeft <= 5) {
-                    this.countdownLabel.style.fill = HEXToVBColor("#FF0000")
-                }
-            }
-
-            if (totalElapsed > secondsLeft * 1000) {
-                isDone = true
-                start = undefined
-                lastTimestamp = 0
-                this.onCountdownExpired()
-            }
-
-            if (!isDone) this.animationFrame = requestAnimationFrame(step)
-        }
-
-        this.animationFrame = requestAnimationFrame(step)
-    }
-
-    showIcon(toShow: boolean) {
-        this.viewportRoot.visible = toShow
     }
 }

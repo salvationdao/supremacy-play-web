@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js"
 import { MECH_ABILITY_KEY } from "../../../../../containers/hotkeys"
 import { HEXToVBColor } from "../../../../../helpers"
+import { PixiImageIcon } from "../../../../../helpers/pixiHelpers"
 import { colors, fonts } from "../../../../../theme/theme"
 import { BlueprintPlayerAbility, GameAbility } from "../../../../../types"
 
@@ -8,8 +9,7 @@ const SIZE = 22
 
 export class PixiMechAbility {
     root: PIXI.Container<PIXI.DisplayObject>
-    private image: PIXI.Sprite
-    private imageBorder: PIXI.Graphics
+    private icon: PixiImageIcon
     private label: PIXI.Text
     private isCountingDown = false
     private onClickHandler: undefined | (() => void)
@@ -22,17 +22,7 @@ export class PixiMechAbility {
         this.root.zIndex = 20
         this.root.sortableChildren = true
 
-        // Image border
-        this.imageBorder = new PIXI.Graphics()
-        this.imageBorder.lineStyle(1, HEXToVBColor(ability.colour))
-        this.imageBorder.drawRoundedRect(0, 0, SIZE, SIZE, 2)
-        this.imageBorder.zIndex = 4
-
-        // Image
-        this.image = PIXI.Sprite.from(ability.image_url)
-        this.image.width = SIZE
-        this.image.height = SIZE
-        this.image.zIndex = 3
+        this.icon = new PixiImageIcon(ability.image_url, SIZE, SIZE, ability.colour)
 
         // Label
         this.labelText = `${ability.label} [${MECH_ABILITY_KEY[index]}]`
@@ -48,8 +38,7 @@ export class PixiMechAbility {
         this.label.position.set(SIZE + 5, SIZE / 2)
 
         // Add everything to container
-        this.root.addChild(this.image)
-        this.root.addChild(this.imageBorder)
+        this.root.addChild(this.icon.root)
         this.root.addChild(this.label)
     }
 
@@ -70,17 +59,17 @@ export class PixiMechAbility {
     addOnClick() {
         this.removeOnClick()
         if (!this.onClickHandler) return
-        this.image.interactive = true
-        this.image.buttonMode = true
+        this.icon.root.interactive = true
+        this.icon.root.buttonMode = true
         this.root.alpha = 1
-        this.image.on("pointerup", this.onClickHandler)
+        this.icon.root.on("pointerup", this.onClickHandler)
     }
 
     removeOnClick() {
-        this.image.interactive = false
-        this.image.buttonMode = false
+        this.icon.root.interactive = false
+        this.icon.root.buttonMode = false
         this.root.alpha = 0.4
-        this.image.removeAllListeners("pointerup")
+        this.icon.root.removeAllListeners("pointerup")
     }
 
     setCountdown(secondsLeft: number) {

@@ -106,9 +106,9 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
     useEffect(() => {
         if (!pixiTargetHint || !endTime) return
 
-        onSelectMapPositionCallbacks.current["target-hint"] = (mapPos: MapSelection | undefined) => {
-            pixiTargetHint.showIcon(!mapPos?.startCoords)
-        }
+        // onSelectMapPositionCallbacks.current["target-hint-inner"] = (mapPos: MapSelection | undefined) => {
+        //     pixiTargetHint.showIcon(!mapPos?.startCoords)
+        // }
     }, [endTime, onSelectMapPositionCallbacks, pixiTargetHint])
 
     return null

@@ -144,7 +144,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             updateIsMechHighlighted()
 
             // Immediately render the mech move dashed line when player selects it for fast UX
-            if (pa?.ability.location_select_type === LocationSelectType.MechCommand && pa.mechHash === hash) {
+            if (!wn && pa?.ability.location_select_type === LocationSelectType.MechCommand && pa.mechHash === hash) {
                 if (mapPos?.startCoords) {
                     const mCommand: MechMoveCommand = {
                         id: "move_command",
