@@ -1,147 +1,146 @@
 import { Box, Button, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { PlayerListContent } from "../.."
-import { useArena, useAuth, useChat, useSupremacy } from "../../../containers"
+import OvenLiveKit from "ovenlivekit"
+import OvenPlayer from "ovenplayer"
+import { useCallback, useMemo, useRef } from "react"
+import { useArena, useAuth, useChat, useSupremacy, VoiceStream } from "../../../containers"
+import { OvenPlayerInstance } from "../../../containers/oven"
 import { useTheme } from "../../../containers/theme"
 import { acronym, shadeColor } from "../../../helpers"
+import { useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { Faction, User } from "../../../types"
-import OvenLiveKit from "ovenlivekit"
-import { useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
-import { OvenPlayerInstance, OvenPlayerSource, OvenStream } from "../../../containers/oven"
-import OvenPlayer from "ovenplayer"
-import { GameServerKeys } from "../../../keys"
+import { StyledImageText } from "../../Notifications/Common/StyledImageText"
 
-interface VoiceStreamResp {
-    listen_url: string
-    send_url: string
-    isFactionCommander: boolean
-}
+export const VoiceChat = ({
+    onListen,
+    listenStreams,
+    user,
+    faction,
+}: {
+    onListen: (s: VoiceStream[]) => void
+    listenStreams: VoiceStream[]
+    user: User
+    faction: Faction
+}) => {
+    // const { getFaction } = useSupremacy()
+    // const { user, factionID } = useAuth()
+    // const { activePlayers } = useChat()
+    // const { currentArenaID, setListenStreams, listenStreams, onListen } = useArena()
 
-export const PlayerList = () => {
-    const { getFaction } = useSupremacy()
-    const { user, factionID } = useAuth()
-    const { activePlayers } = useChat()
-    const { currentArenaID } = useArena()
+    // // player voice chat data
+    // useGameServerSubscriptionSecuredUser<VoiceStream[]>(
+    //     {
+    //         URI: `/arena/${currentArenaID}`,
+    //         key: GameServerKeys.SubPlayerVoiceStream,
+    //         ready: !!(currentArenaID && factionID),
+    //     },
+    //     (payload: VoiceStream[]) => {
+    //         setListenStreams(undefined)
+    //         setListenStreams(payload)
+    //     },
+    // )
 
-    const [ready, setReady] = useState(false)
-    const [listenStreams, setListenStreams] = useState<string[]>()
-    const [voiceChats, setVoiceChats] = useState<VoiceStreamResp[]>()
+    // const onListen = useCallback((listenStreams: VoiceStream[]) => {
+    //     listenStreams?.map((l) => {
+    //         if (l.send_url) {
+    //             startStream(l.send_url)
+    //         }
+    //         listen(l)
+    //     })
+    // }, [])
 
-    // player voice chat data
-    useGameServerSubscriptionSecuredUser<VoiceStreamResp[]>(
-        {
-            URI: `/arena/${currentArenaID}`,
-            key: GameServerKeys.SubPlayerVoiceStream,
-            ready: !!(currentArenaID && factionID),
-        },
-        (payload: VoiceStreamResp[]) => {
-            setListenStreams(undefined)
-            setReady(false)
-            setVoiceChats(payload)
-        },
-    )
+    // // listen stream
+    // const ovenPlayer = useRef<OvenPlayerInstance>()
+    // const listen = useCallback((stream: VoiceStream) => {
+    //     if (document.getElementById(stream.listen_url)) {
+    //         const newOvenPlayer = OvenPlayer.create(stream.listen_url, {
+    //             autoStart: true,
+    //             controls: true,
+    //             volume: 100,
+    //             sources: [
+    //                 {
+    //                     type: "webrtc",
+    //                     file: stream.listen_url,
+    //                 },
+    //             ],
+    //             autoFallback: true,
+    //             disableSeekUI: true,
+    //         })
 
-    useEffect(() => {
-        voiceChats?.map((v) => {
-            if (v.send_url) {
-                startStream(v.send_url)
-            }
+    //         newOvenPlayer.on("ready", () => {
+    //             console.log("voice chat ready Ready.")
+    //         })
 
-            if (!v.send_url && v.listen_url) {
-                setListenStreams((ls) => [...(ls || ""), v.listen_url])
-            }
-        })
+    //         newOvenPlayer.on("error", (err: any) => {
+    //             if (err.code === 501) {
+    //                 console.log("501: failed to connnect attempting to recconnect", err)
+    //             } else {
+    //                 console.error("voice chat error: ", err)
+    //             }
 
-        setReady(true)
-    }, [voiceChats])
+    //             setTimeout(() => {
+    //                 listen(stream)
+    //             }, 1000)
+    //         })
 
-    useEffect(() => {
-        if (!ready) return
-        listenStreams?.map((l) => {
-            listen(l)
-        })
-    }, [ready])
+    //         newOvenPlayer.play()
+    //         ovenPlayer.current = newOvenPlayer
 
-    // Load the stream when its changed
-    const ovenPlayer = useRef<OvenPlayerInstance>()
-    const listen = useCallback((stream: string) => {
-        if (document.getElementById(stream)) {
-            const newOvenPlayer = OvenPlayer.create(stream, {
-                autoStart: true,
-                controls: true,
-                volume: 100,
-                sources: [
-                    {
-                        type: "webrtc",
-                        file: stream,
-                    },
-                ],
-                autoFallback: true,
-                disableSeekUI: true,
-            })
+    //         return () => {
+    //             newOvenPlayer.off("ready")
+    //             newOvenPlayer.off("error")
+    //             newOvenPlayer.remove()
+    //             ovenPlayer.current = undefined
+    //         }
+    //     }
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [])
 
-            newOvenPlayer.on("ready", () => {
-                console.log("voice chat ready Ready.")
-            })
+    // const startStream = useCallback((url: string) => {
+    //     if (!url) {
+    //         return
+    //     }
+    //     const config = {
+    //         callbacks: {
+    //             error: function (error: any) {
+    //                 console.log("voice chat error", error)
+    //             },
+    //             connected: function (event: any) {
+    //                 console.log("voice chat event", event)
+    //             },
+    //         },
+    //     }
 
-            newOvenPlayer.on("error", (err: Error) => {
-                console.error("voice chat error: ", err)
-            })
-
-            newOvenPlayer.play()
-            ovenPlayer.current = newOvenPlayer
-
-            return () => {
-                newOvenPlayer.off("ready")
-                newOvenPlayer.off("error")
-                newOvenPlayer.remove()
-                ovenPlayer.current = undefined
-            }
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
-    const startStream = useCallback((url: string) => {
-        if (!url) {
-            return
-        }
-        const config = {
-            callbacks: {
-                error: function (error: any) {
-                    console.log("voice chat error", error)
-                },
-                connected: function (event: any) {
-                    console.log("voice chat event", event)
-                },
-            },
-        }
-
-        const liveKit = OvenLiveKit.create(config)
-        const constraints = { video: false, audio: true }
-        liveKit.getUserMedia(constraints).then(function (d: any) {
-            liveKit.startStreaming(url)
-        })
-    }, [])
+    //     const liveKit = OvenLiveKit.create(config)
+    //     const constraints = { video: false, audio: true }
+    //     liveKit.getUserMedia(constraints).then(function (d: any) {
+    //         liveKit.startStreaming(url)
+    //     })
+    // }, [])
 
     return (
         <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
-            <Content streams={listenStreams} getFaction={getFaction} user={user} activePlayers={activePlayers} />
+            <Content listenStreams={listenStreams} onListen={onListen} faction={faction} user={user} activePlayers={[]} />
         </Stack>
     )
 }
 
 const Content = ({
-    getFaction,
+    faction,
     user,
     activePlayers,
-    streams,
+    listenStreams,
+    onListen,
 }: {
-    getFaction: (factionID: string) => Faction
+    faction: Faction
     user: User
     activePlayers: User[]
-    streams: string[] | undefined
+    listenStreams: VoiceStream[] | undefined
+    onListen: (stream: VoiceStream[]) => void
 }) => {
+    console.log("this is streams", listenStreams)
+
     const theme = useTheme()
     const bannerColor = useMemo(() => shadeColor(theme.factionTheme.primary, -60), [theme.factionTheme.primary])
 
@@ -167,7 +166,7 @@ const Content = ({
                             height: "3rem",
                             flexShrink: 0,
                             mb: ".16rem",
-                            backgroundImage: `url(${getFaction(user.faction_id).logo_url})`,
+                            backgroundImage: `url(${faction.logo_url})`,
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "center",
                             backgroundSize: "contain",
@@ -179,7 +178,7 @@ const Content = ({
                 )}
                 <Stack spacing=".1rem">
                     <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
-                        {user.faction_id ? `${acronym(getFaction(user.faction_id).label)} ACTIVE PLAYERS` : "ACTIVE PLAYERS"}
+                        {user.faction_id ? `${acronym(faction.label)} ACTIVE PLAYERS` : "ACTIVE PLAYERS"}
                     </Typography>
                     <Stack direction="row" alignItems="center" spacing="1.3rem">
                         <Stack direction="row" alignItems="center" spacing=".4rem">
@@ -216,15 +215,53 @@ const Content = ({
                 }}
             >
                 <Box sx={{ height: 0 }}>
-                    <PlayerListContent activePlayers={activePlayers} />
+                    {listenStreams &&
+                        listenStreams.map((s, idx) => {
+                            return <PlayerItem voiceStream={s} faction={faction} key={idx} />
+                        })}
                 </Box>
             </Box>
 
-            <Button>Listen</Button>
-            {streams &&
-                streams.map((s) => {
-                    return <video id={s} key={s} />
-                })}
+            <Button
+                onClick={() => {
+                    onListen(listenStreams || [])
+                }}
+            >
+                Listen
+            </Button>
+
+            <Button
+                onClick={() => {
+                    // onListen(listenStreams || [])
+                }}
+            >
+                Disconnect
+            </Button>
         </Stack>
+    )
+}
+
+const PlayerItem = ({ voiceStream, faction }: { voiceStream: VoiceStream; faction: Faction }) => {
+    return (
+        <Box mt="1rem" sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <Box>
+                <StyledImageText
+                    key={voiceStream.listen_url}
+                    text={
+                        <>
+                            {`${voiceStream.username}`}
+                            <span style={{ marginLeft: ".2rem", opacity: 0.8 }}>{`#${voiceStream.user_gid}`}</span>
+                        </>
+                    }
+                    color={faction.primary_color}
+                    imageUrl={faction.logo_url}
+                    {...StyledImageText}
+                />
+            </Box>
+
+            <Box>
+                <Button>Mute</Button>
+            </Box>
+        </Box>
     )
 }

@@ -1,12 +1,12 @@
 import { Box } from "@mui/system"
-import { SvgChat, SvgDamage1, SvgHistoryClock, SvgRepair, SvgRobot } from "../assets"
+import { SvgChat, SvgDamage1, SvgHistoryClock, SvgRepair, SvgRobot, SvgVoice } from "../assets"
 import { BattleArena } from "../components/LeftDrawer/BattleArena/BattleArena"
 import { BattleEndScreen } from "../components/LeftDrawer/BattleEndScreen/BattleEndScreen"
 import { QuickDeploy } from "../components/LeftDrawer/QuickDeploy/QuickDeploy"
 import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
 import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
 import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
-import { PlayerList as VoiceChatPlayerList } from "../components/RightDrawer/VoiceChat/VoiceChat"
+import { VoiceChat } from "../components/RightDrawer/VoiceChat/VoiceChat"
 
 import { RepairJobs } from "../components/RightDrawer/RepairJobs/RepairJobs"
 import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../constants"
@@ -321,16 +321,16 @@ export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         matchNavLinkIDs: undefined,
         mountAllTime: true,
     },
-    voice_chat: {
-        id: "voice_chat",
-        icon: <SvgChat size="1.1rem" sx={{ pt: ".3rem" }} />,
-        label: "Voice Chat",
-        Component: VoiceChatPlayerList,
-        requireAuth: true,
-        requireFaction: true,
-        matchNavLinkIDs: undefined,
-        mountAllTime: true,
-    },
+    // voice_chat: {
+    //     id: "voice_chat",
+    //     icon: <SvgVoice size="1.5rem" />,
+    //     label: "Voice Chat",
+    //     Component: VoiceChat,
+    //     requireAuth: true,
+    //     requireFaction: true,
+    //     matchNavLinkIDs: undefined,
+    //     mountAllTime: true,
+    // },
     active_players: {
         id: "active_players",
         icon: (

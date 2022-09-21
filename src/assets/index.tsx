@@ -49,6 +49,7 @@ import Refresh from "!@svgr/webpack!./svg/Refresh.svg"
 import Save from "!@svgr/webpack!./svg/Save.svg"
 import Scrolldown from "!@svgr/webpack!./svg/Scrolldown.svg"
 import Send from "!@svgr/webpack!./svg/Send.svg"
+import VoiceChat from "!@svgr/webpack!./svg/VoiceChat.svg"
 import Shield from "!@svgr/webpack!./svg/Shield.svg"
 import ShieldRegen from "!@svgr/webpack!./svg/ShieldRegen.svg"
 import Shop from "!@svgr/webpack!./svg/Shop.svg"
@@ -340,6 +341,12 @@ export const SvgWrapper = React.memo(function SvgWrapper({ fill, stroke, strokeW
         />
     )
 })
+
+export const SvgVoice: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <VoiceChat />
+    </SvgWrapper>
+)
 
 export const SvgSupToken: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
