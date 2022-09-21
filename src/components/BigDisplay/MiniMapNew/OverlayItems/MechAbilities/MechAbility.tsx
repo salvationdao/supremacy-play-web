@@ -23,7 +23,7 @@ export const MechAbility = ({
     index: number
 }) => {
     const { currentArenaID } = useArena()
-    const { setPlayerAbility } = useMiniMapPixi()
+    const { usePlayerAbility } = useMiniMapPixi()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const { addToHotkeyRecord } = useHotkey()
     const [pixiMechAbility, setPixiMechAbility] = useState<PixiMechAbility>()
@@ -62,7 +62,7 @@ export const MechAbility = ({
         if (!currentArenaID) return
 
         if (playerAbility) {
-            setPlayerAbility({
+            usePlayerAbility.current({
                 ...playerAbility,
                 mechHash: hash,
             })
@@ -79,7 +79,7 @@ export const MechAbility = ({
                 console.error(e)
             }
         }
-    }, [currentArenaID, playerAbility, gameAbility, setPlayerAbility, hash, send])
+    }, [currentArenaID, playerAbility, gameAbility, usePlayerAbility, hash, send])
 
     // Add trigger to hotkeys
     useEffect(() => {

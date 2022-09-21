@@ -25,7 +25,7 @@ const propsAreEqual = (prevProps: PlayerAbilityCardProps, nextProps: PlayerAbili
 }
 
 export const PlayerAbilityCard = React.memo(function PlayerAbilityCard({ playerAbility, viewOnly }: PlayerAbilityCardProps) {
-    const { setPlayerAbility } = useMiniMapPixi()
+    const { usePlayerAbility } = useMiniMapPixi()
     const [disabled, setDisabled] = useState(false)
 
     const checkIfDisabled = useCallback(() => {
@@ -67,8 +67,8 @@ export const PlayerAbilityCard = React.memo(function PlayerAbilityCard({ playerA
 
     const onActivate = useCallback(() => {
         if (!playerAbility) return
-        setPlayerAbility(playerAbility)
-    }, [playerAbility, setPlayerAbility])
+        usePlayerAbility.current(playerAbility)
+    }, [playerAbility, usePlayerAbility])
 
     const disable = viewOnly || disabled
 

@@ -23,12 +23,13 @@ export class PixiMapMech {
     private animationFrame: number | undefined
     private iconDimension: Dimension | undefined
     private primaryColor: string | undefined
+    private cachedZIndex = 10
 
     constructor(label: number) {
         // Create container for everything
         this.root = new PIXI.Container()
         this.root.sortableChildren = true
-        this.root.zIndex = 10
+        this.root.zIndex = this.cachedZIndex
 
         // Root inner
         this.rootInner = new PIXI.Container()
@@ -157,7 +158,8 @@ export class PixiMapMech {
         this.shieldBar.updatePosition(0, iconDimension.height + barHeight + 2 * barGap)
     }
 
-    updateZIndex(zIndex: number) {
+    updateZIndex(zIndex: number, cache?: boolean) {
+        if (cache) this.cachedZIndex = this.root.zIndex
         this.root.zIndex = zIndex
     }
 
@@ -175,6 +177,8 @@ export class PixiMapMech {
         dash.drawCircle(0, 0, radius)
         this.highlightedCircle.position.set(center[0], center[1])
 
+        this.updateZIndex(10, true)
+
         // Enlarge the map mech
         ease.add(this.rootInner, { scale: 1.5 }, { duration: 100, ease: "linear", removeExisting: true })
     }
@@ -182,10 +186,11 @@ export class PixiMapMech {
     unhighlightMech() {
         this.highlightedCircle.clear()
         ease.add(this.rootInner, { scale: 1 }, { duration: 100, ease: "linear", removeExisting: true })
+        this.updateZIndex(this.cachedZIndex)
     }
 
     updateHpBar(percent: number) {
-        if (percent < 45) this.hpBar.updateColor(colors.red)
+        this.hpBar.updateColor(percent < 45 ? colors.red : colors.health)
         this.hpBar.updatePercent(percent)
 
         // If it's dead, show dead stuff

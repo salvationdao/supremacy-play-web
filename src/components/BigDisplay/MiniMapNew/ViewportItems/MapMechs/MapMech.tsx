@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../../../../constants"
-import { useArena, useAuth, useGame, useMiniMapPixi, useSupremacy } from "../../../../../containers"
+import { MapSelection, useArena, useAuth, useGame, useMiniMapPixi, useSupremacy, WinnerStruct } from "../../../../../containers"
 import { RecordType, useHotkey } from "../../../../../containers/hotkeys"
 import { closestAngle, deg2rad } from "../../../../../helpers"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
@@ -13,6 +13,7 @@ import {
     MechDisplayEffectType,
     MechMoveCommand,
     MechMoveCommandAbility,
+    PlayerAbility,
     WarMachineLiveState,
     WarMachineState,
 } from "../../../../../types"
@@ -40,14 +41,13 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         clientPositionToViewportPosition,
         gridCellToViewportPosition,
         highlightedMechParticipantID,
-        isTargeting,
-        selection,
-        setSelection,
-        selectionInstant,
-        playerAbility,
         setHighlightedMechParticipantID,
-        setPlayerAbility,
-        resetPlayerAbilitySelection,
+        playerAbility,
+        selection,
+        selectMapPosition,
+        usePlayerAbility,
+        onAbilityUseCallbacks,
+        onSelectMapPositionCallbacks,
     } = useMiniMapPixi()
     const { id, hash, participantID, factionID: warMachineFactionID, maxHealth, maxShield, ownedByID } = warMachine
 
@@ -56,10 +56,6 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     const iconDimension = useRef<Dimension>({ width: 5, height: 5 })
     const prevRotation = useRef(warMachine.rotation)
     const [isAlive, setIsAlive] = useState(warMachine.health > 0)
-    const isMechHighlighted = useMemo(
-        () => highlightedMechParticipantID === warMachine.participantID || selection?.mechHash === hash || playerAbility?.mechHash === hash,
-        [hash, highlightedMechParticipantID, playerAbility?.mechHash, selection?.mechHash, warMachine.participantID],
-    )
     const primaryColor = useMemo(
         () => (ownedByID === userID ? colors.gold : getFaction(warMachineFactionID).primary_color || colors.neonBlue),
         [ownedByID, userID, getFaction, warMachineFactionID],
@@ -110,68 +106,119 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         if (!pixiMapMech) return
 
         let zIndex = 4
-        if (isMechHighlighted) zIndex = 7
         if (isAlive && factionID === warMachineFactionID) zIndex = 6
         if (isAlive) zIndex = 5
 
         pixiMapMech.updateZIndex(zIndex)
-    }, [factionID, isAlive, isMechHighlighted, pixiMapMech, warMachineFactionID])
+    }, [factionID, isAlive, pixiMapMech, warMachineFactionID])
 
-    // Highlight the mech circle
-    useEffect(() => {
+    const updateIsMechHighlighted = useCallback(() => {
+        const isHighlighted = highlightedMechParticipantID === participantID || selection.current?.mechHash === hash || playerAbility.current?.mechHash === hash
+
+        // Highlight the mech circle
         if (!pixiMapMech) return
-        if (isMechHighlighted) {
+        if (isHighlighted) {
             pixiMapMech.highlightMech(iconDimension.current)
         } else {
             pixiMapMech.unhighlightMech()
         }
-    }, [iconDimension, isMechHighlighted, pixiMapMech, primaryColor])
+    }, [hash, highlightedMechParticipantID, pixiMapMech, playerAbility, selection, participantID])
+
+    // If the mech dies and its mech move command is active, cancel it
+    useEffect(() => {
+        if (!isAlive && playerAbility.current?.mechHash === hash) {
+            usePlayerAbility.current(undefined)
+        }
+    }, [hash, isAlive, playerAbility, usePlayerAbility])
+
+    useEffect(() => {
+        onAbilityUseCallbacks.current[`map-mech-${hash}`] = () => {
+            updateIsMechHighlighted()
+        }
+
+        onSelectMapPositionCallbacks.current[`map-mech-${hash}`] = (
+            mapPos: MapSelection | undefined,
+            wn: WinnerStruct | undefined,
+            pa: PlayerAbility | undefined,
+        ) => {
+            updateIsMechHighlighted()
+
+            // Immediately render the mech move dashed line when player selects it for fast UX
+            if (pa?.ability.location_select_type === LocationSelectType.MechCommand && pa.mechHash === hash) {
+                if (mapPos?.startCoords) {
+                    const mCommand: MechMoveCommand = {
+                        id: "move_command",
+                        mech_id: id,
+                        triggered_by_id: "x",
+                        cell_x: mapPos.startCoords.x,
+                        cell_y: mapPos.startCoords.y,
+                        is_moving: true,
+                        remain_cooldown_seconds: 0,
+                        is_mini_mech: false,
+                    }
+                    mechMoveCommand.current = undefined
+                    tempMechMoveCommand.current = mCommand
+                }
+            } else {
+                tempMechMoveCommand.current = undefined
+            }
+        }
+    }, [hash, id, onAbilityUseCallbacks, onSelectMapPositionCallbacks, selection, updateIsMechHighlighted])
+
+    useEffect(() => {
+        setTimeout(() => {
+            updateIsMechHighlighted()
+        }, 50)
+    }, [updateIsMechHighlighted])
 
     const onMechClick = useCallback(() => {
-        if (playerAbility && isAlive) {
-            const locationSelectType = playerAbility.ability.location_select_type
+        if (playerAbility.current && isAlive) {
+            const locationSelectType = playerAbility.current?.ability.location_select_type
 
             if (
                 (locationSelectType === LocationSelectType.MechSelectAllied && factionID !== warMachineFactionID) ||
                 (locationSelectType === LocationSelectType.MechSelectOpponent && factionID === warMachineFactionID)
             ) {
-                setSelection((prev) => {
-                    if (prev?.mechHash === hash) return undefined
-                    return { mechHash: hash }
-                })
+                if (selection.current?.mechHash === hash) {
+                    selectMapPosition.current(undefined)
+                } else {
+                    selectMapPosition.current({ mechHash: hash })
+                }
 
                 return
             }
         }
 
-        resetPlayerAbilitySelection()
         if (participantID === highlightedMechParticipantID) {
+            usePlayerAbility.current(undefined)
             setHighlightedMechParticipantID(undefined)
             tempMechMoveCommand.current = undefined
         } else {
             setHighlightedMechParticipantID(participantID)
 
             if (isAlive && ownedByID === userID) {
-                setPlayerAbility({
+                usePlayerAbility.current({
                     ...MechMoveCommandAbility,
                     mechHash: hash,
                 })
+            } else {
+                usePlayerAbility.current(undefined)
             }
         }
     }, [
-        factionID,
-        hash,
-        highlightedMechParticipantID,
-        isAlive,
-        ownedByID,
-        participantID,
         playerAbility,
-        setHighlightedMechParticipantID,
-        setPlayerAbility,
-        setSelection,
-        userID,
+        isAlive,
+        usePlayerAbility,
+        participantID,
+        highlightedMechParticipantID,
+        factionID,
         warMachineFactionID,
-        resetPlayerAbilitySelection,
+        selection,
+        hash,
+        selectMapPosition,
+        setHighlightedMechParticipantID,
+        ownedByID,
+        userID,
     ])
 
     // Setup onclick handler
@@ -258,28 +305,6 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             mechMoveCommand.current = payload
         },
     )
-
-    // Immediately render the mech move dashed line when player selects it for fast UX
-    useEffect(() => {
-        if (playerAbility?.ability.location_select_type === LocationSelectType.MechCommand && playerAbility.mechHash === hash) {
-            if (selectionInstant?.startCoords) {
-                const mCommand: MechMoveCommand = {
-                    id: "move_command",
-                    mech_id: id,
-                    triggered_by_id: "x",
-                    cell_x: selectionInstant.startCoords.x,
-                    cell_y: selectionInstant.startCoords.y,
-                    is_moving: true,
-                    remain_cooldown_seconds: 0,
-                    is_mini_mech: false,
-                }
-                mechMoveCommand.current = undefined
-                tempMechMoveCommand.current = mCommand
-            }
-        } else {
-            tempMechMoveCommand.current = undefined
-        }
-    }, [id, hash, playerAbility?.ability, playerAbility?.ability.location_select_type, selectionInstant, playerAbility?.mechHash])
 
     // Listen on abilities that apply on this mech to display
     useGameServerSubscription<DisplayedAbility[]>(

@@ -31,7 +31,7 @@ export const WarMachineItem = ({
     const { isMobile } = useMobile()
     const { userID, factionID } = useAuth()
     const { getFaction } = useSupremacy()
-    const { setPlayerAbility, highlightedMechParticipantID, setHighlightedMechParticipantID, playerAbility } = useMiniMapPixi()
+    const { highlightedMechParticipantID, setHighlightedMechParticipantID } = useMiniMapPixi()
 
     const { hash, participantID, factionID: wmFactionID, name, imageAvatar, tier, ownedByID, ownerUsername, aiType } = warMachine
     const isMiniMech = aiType === AIType.MiniMech
@@ -47,13 +47,6 @@ export const WarMachineItem = ({
     const selfOwned = useMemo(() => ownedByID === userID, [ownedByID, userID])
     const primaryColor = useMemo(() => (selfOwned ? colors.gold : faction.primary_color), [faction.primary_color, selfOwned])
     const backgroundColor = useMemo(() => faction.background_color, [faction.background_color])
-
-    // If the mech dies and its mech move command it active, cancel it
-    useEffect(() => {
-        if (!isAlive && playerAbility?.mechHash === hash) {
-            setPlayerAbility(undefined)
-        }
-    }, [hash, isAlive, playerAbility?.mechHash, setPlayerAbility])
 
     // Highlighting on the map
     const handleClick = useCallback(() => {

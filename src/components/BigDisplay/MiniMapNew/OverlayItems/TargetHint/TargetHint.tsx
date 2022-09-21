@@ -1,51 +1,78 @@
-import React, { useCallback, useEffect, useState } from "react"
-import { useGlobalNotifications, useMiniMapPixi } from "../../../../../containers"
-import { BlueprintPlayerAbility, GameAbility } from "../../../../../types"
+import React, { useCallback, useEffect, useRef, useState } from "react"
+import { useGlobalNotifications, useMiniMapPixi, WinnerStruct } from "../../../../../containers"
+import { BlueprintPlayerAbility, GameAbility, PlayerAbility } from "../../../../../types"
 import { PixiTargetHint } from "./pixiTargetHint"
 
-export const TargetHint = React.memo(function TargetHint() {
-    const { isTargeting, winner, playerAbility } = useMiniMapPixi()
-
-    if (isTargeting && winner?.game_ability) {
-        return (
-            <TargetHintInner
-                key={`target-hint-${winner.game_ability.id}-${winner.end_time.toDateString()}`}
-                ability={winner.game_ability}
-                endTime={winner.end_time}
-            />
-        )
-    }
-
-    if (isTargeting && playerAbility?.ability) {
-        return <TargetHintInner key={`target-hint-${playerAbility.id}`} ability={playerAbility.ability} cancelable />
-    }
-
-    return null
-})
-
-interface TargetHintInnerProps {
+interface TargetHintAbility {
     ability: GameAbility | BlueprintPlayerAbility
     endTime?: Date
     cancelable?: boolean
 }
 
-const propsAreEqual = (prevProps: TargetHintInnerProps, nextProps: TargetHintInnerProps) => {
+export const TargetHint = React.memo(function TargetHint() {
+    const { onAbilityUseCallbacks } = useMiniMapPixi()
+    const [targetHintAbility, setTargetHintAbility] = useState<TargetHintAbility>()
+    const isTargetingWinner = useRef(false)
+
+    useEffect(() => {
+        onAbilityUseCallbacks.current["target-hint"] = (wn: WinnerStruct | undefined, pa: PlayerAbility | undefined) => {
+            if (wn) {
+                const newTha = {
+                    ability: wn.game_ability,
+                    endTime: wn.end_time,
+                    cancelable: false,
+                }
+
+                // If we are transitioning from player ability to winner, then do a 2 second gap
+                if (pa && !isTargetingWinner.current) {
+                    setTargetHintAbility(undefined)
+
+                    setTimeout(() => {
+                        setTargetHintAbility(newTha)
+                        isTargetingWinner.current = true
+                    }, 2000)
+                } else {
+                    setTargetHintAbility(newTha)
+                    isTargetingWinner.current = true
+                }
+            } else if (pa) {
+                setTargetHintAbility({
+                    ability: pa.ability,
+                    cancelable: true,
+                })
+                isTargetingWinner.current = false
+            } else {
+                setTargetHintAbility(undefined)
+                isTargetingWinner.current = false
+            }
+        }
+    }, [onAbilityUseCallbacks])
+
+    if (targetHintAbility) {
+        const { ability, endTime, cancelable } = targetHintAbility
+        return <TargetHintInner key={`target-hint-${ability.id}-${endTime?.toDateString()}`} ability={ability} endTime={endTime} cancelable={cancelable} />
+    }
+
+    return null
+})
+
+const propsAreEqual = (prevProps: TargetHintAbility, nextProps: TargetHintAbility) => {
     return prevProps.endTime === nextProps.endTime && prevProps.cancelable === nextProps.cancelable && prevProps.ability.id === nextProps.ability.id
 }
 
-const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, cancelable }: TargetHintInnerProps) {
+const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, cancelable }: TargetHintAbility) {
     const { newSnackbarMessage } = useGlobalNotifications()
-    const { pixiMainItems, resetWinnerSelection, resetPlayerAbilitySelection, mapMousePosition, gridSizeRef, selection } = useMiniMapPixi()
+    const { pixiMainItems, mapMousePosition, gridSizeRef, selection, usePlayerAbility, useWinner } = useMiniMapPixi()
     const [pixiTargetHint, setPixiTargetHint] = useState<PixiTargetHint>()
 
     const onCountdownExpired = useCallback(() => {
         newSnackbarMessage("Failed to submit target location on time.", "error")
-        resetWinnerSelection()
-    }, [newSnackbarMessage, resetWinnerSelection])
+        useWinner.current(undefined)
+    }, [newSnackbarMessage, useWinner])
 
     const onCancel = useCallback(() => {
-        resetPlayerAbilitySelection()
-    }, [resetPlayerAbilitySelection])
+        usePlayerAbility.current(undefined)
+    }, [usePlayerAbility])
 
     // Initial setup for the mech and show on the map
     useEffect(() => {
