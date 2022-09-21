@@ -31,8 +31,17 @@ const propsAreEqual = (prevProps: MiniMapPixiProps, nextProps: MiniMapPixiProps)
 
 export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions }: MiniMapPixiProps) {
     const { map } = useGame()
-    const { pixiMainItems, setPixiMainItems, gridSizeRef, mapMousePosition, setHighlightedMechParticipantID, selectMapPosition, winner, playerAbility } =
-        useMiniMapPixi()
+    const {
+        pixiMainItems,
+        setPixiMainItems,
+        gridSizeRef,
+        mapMousePosition,
+        setHighlightedMechParticipantID,
+        selectMapPosition,
+        winner,
+        playerAbility,
+        selection,
+    } = useMiniMapPixi()
     const [miniMapPixiRef, setMiniMapPixiRef] = useState<HTMLDivElement | null>(null)
     const pixiItems = useRef<PixiItems>({})
     const isDragging = useRef(false)
@@ -194,15 +203,25 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
             if (!clickedPos) return
 
             if (winner.current || playerAbility.current) {
-                selectMapPosition.current({
-                    startCoords: {
-                        x: clickedPos.x / gridSizeRef.current.width,
-                        y: clickedPos.y / gridSizeRef.current.height,
-                    },
-                })
+                const coord = {
+                    x: clickedPos.x / gridSizeRef.current.width,
+                    y: clickedPos.y / gridSizeRef.current.height,
+                }
+
+                if (!selection.current?.startCoords) {
+                    selectMapPosition.current({
+                        ...selection.current,
+                        startCoords: coord,
+                    })
+                } else {
+                    selectMapPosition.current({
+                        ...selection.current,
+                        endCoords: coord,
+                    })
+                }
             }
         })
-    }, [setHighlightedMechParticipantID, map, pixiMainItems, winner, playerAbility, gridSizeRef, selectMapPosition])
+    }, [setHighlightedMechParticipantID, map, pixiMainItems, winner, playerAbility, gridSizeRef, selectMapPosition, selection])
 
     // TODO: If we are popped out, we need to move the pixi canvas to the poppedout window
 

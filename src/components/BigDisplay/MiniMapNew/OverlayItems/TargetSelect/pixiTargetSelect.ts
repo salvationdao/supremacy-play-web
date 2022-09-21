@@ -2,6 +2,7 @@ import { ease } from "pixi-ease"
 import { Viewport } from "pixi-viewport"
 import * as PIXI from "pixi.js"
 import { AbilityCancelPNG } from "../../../../../assets"
+import { MapSelection } from "../../../../../containers"
 import { HEXToVBColor } from "../../../../../helpers"
 import { PixiImageIcon } from "../../../../../helpers/pixiHelpers"
 import { fonts } from "../../../../../theme/theme"
@@ -47,8 +48,8 @@ export class PixiTargetSelect {
     private animationFrame: number | undefined
 
     // Actual selecting
-    private startCoord: PixiImageIcon | undefined
-    private endCoord: PixiImageIcon | undefined
+    private startCoord: PixiImageIcon
+    private endCoord: PixiImageIcon
 
     constructor(
         viewport: Viewport,
@@ -114,6 +115,17 @@ export class PixiTargetSelect {
         // Mouse icon
         this.mouseIcon = new PixiImageIcon(
             ability.image_url,
+            gridSizeRef.current.width / 1.6,
+            gridSizeRef.current.height / 1.6,
+            ability.colour,
+            true,
+            onExpired,
+            secondsLeft,
+        )
+
+        // Start and end coord icons, made invisible
+        this.startCoord = new PixiImageIcon(
+            ability.image_url,
             gridSizeRef.current.width,
             gridSizeRef.current.height,
             ability.colour,
@@ -121,9 +133,22 @@ export class PixiTargetSelect {
             onExpired,
             secondsLeft,
         )
+        this.endCoord = new PixiImageIcon(
+            ability.image_url,
+            gridSizeRef.current.width,
+            gridSizeRef.current.height,
+            ability.colour,
+            true,
+            onExpired,
+            secondsLeft,
+        )
+        this.startCoord.showIcon(false)
+        this.endCoord.showIcon(false)
 
         // Add everything to container
         this.viewportRoot.addChild(this.mouseIcon.root)
+        this.viewportRoot.addChild(this.startCoord.root)
+        this.viewportRoot.addChild(this.endCoord.root)
         this.stageRoot.addChild(this.colorOverlay)
         this.stageRoot.addChild(this.outerBorder)
         this.stageRoot.addChild(this.bottomContainer)
@@ -168,5 +193,15 @@ export class PixiTargetSelect {
         }
 
         this.animationFrame = requestAnimationFrame(step)
+    }
+
+    setStartCoord(pos: Position | undefined, onClick?: () => void) {
+        this.startCoord.showIcon(!!pos)
+        if (pos) this.startCoord.root.position.set(pos.x, pos.y)
+    }
+
+    setEndCoord(pos: Position | undefined, onClick?: () => void) {
+        this.endCoord.showIcon(!!pos)
+        if (pos) this.endCoord.root.position.set(pos.x, pos.y)
     }
 }

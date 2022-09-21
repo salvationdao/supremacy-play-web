@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
-import { useGlobalNotifications, useMiniMapPixi, WinnerStruct } from "../../../../../containers"
-import { BlueprintPlayerAbility, GameAbility, PlayerAbility } from "../../../../../types"
+import { MapSelection, useGlobalNotifications, useMiniMapPixi, WinnerStruct } from "../../../../../containers"
+import { BlueprintPlayerAbility, GameAbility, LocationSelectType, PlayerAbility } from "../../../../../types"
 import { PixiTargetSelect } from "./pixiTargetSelect"
 
 interface TargetHintAbility {
@@ -62,7 +62,16 @@ const propsAreEqual = (prevProps: TargetHintAbility, nextProps: TargetHintAbilit
 
 const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, cancelable }: TargetHintAbility) {
     const { newSnackbarMessage } = useGlobalNotifications()
-    const { pixiMainItems, mapMousePosition, gridSizeRef, onSelectMapPositionCallbacks, usePlayerAbility, useWinner } = useMiniMapPixi()
+    const {
+        pixiMainItems,
+        mapMousePosition,
+        gridSizeRef,
+        onSelectMapPositionCallbacks,
+        gridCellToViewportPosition,
+        usePlayerAbility,
+        useWinner,
+        selectMapPosition,
+    } = useMiniMapPixi()
     const [pixiTargetHint, setPixiTargetHint] = useState<PixiTargetSelect>()
 
     const onCountdownExpired = useCallback(() => {
@@ -104,12 +113,37 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
 
     // If ability has an end time and selection is placed, hide the icon
     useEffect(() => {
-        if (!pixiTargetHint || !endTime) return
+        if (!pixiTargetHint) return
 
-        // onSelectMapPositionCallbacks.current["target-hint-inner"] = (mapPos: MapSelection | undefined) => {
-        //     pixiTargetHint.showIcon(!mapPos?.startCoords)
-        // }
-    }, [endTime, onSelectMapPositionCallbacks, pixiTargetHint])
+        onSelectMapPositionCallbacks.current["target-hint-inner"] = (mapPos: MapSelection | undefined) => {
+            const abilityType = ability.location_select_type
+            const isLocationSelection = abilityType === LocationSelectType.LocationSelect || abilityType === LocationSelectType.MechCommand
+            const isLineSelection = abilityType === LocationSelectType.LineSelect
+
+            // If ability is not a map select type, ignore
+            if (!isLocationSelection && !isLineSelection) {
+                pixiTargetHint.setStartCoord(undefined)
+                pixiTargetHint.setEndCoord(undefined)
+                return
+            }
+
+            if ((isLocationSelection || isLineSelection) && mapPos?.startCoords) {
+                const pos = gridCellToViewportPosition.current(mapPos.startCoords.x, mapPos.startCoords.y)
+                pixiTargetHint.setStartCoord(pos, () => selectMapPosition.current({ ...mapPos, startCoords: undefined }))
+            } else {
+                pixiTargetHint.setStartCoord(undefined)
+            }
+
+            if (isLineSelection && mapPos?.endCoords) {
+                const pos = gridCellToViewportPosition.current(mapPos.endCoords.x, mapPos.endCoords.y)
+                pixiTargetHint.setEndCoord(pos, () => selectMapPosition.current({ ...mapPos, endCoords: undefined }))
+            } else {
+                pixiTargetHint.setEndCoord(undefined)
+            }
+
+            // pixiTargetHint.showIcon(!mapPos?.startCoords)
+        }
+    }, [ability.location_select_type, endTime, gridCellToViewportPosition, onSelectMapPositionCallbacks, pixiTargetHint, selectMapPosition])
 
     return null
 }, propsAreEqual)
