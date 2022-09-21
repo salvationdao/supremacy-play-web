@@ -189,7 +189,7 @@ const MiniMapInner = ({ map, isPoppedout, setIsPoppedout, width = 100, height = 
             defaultHeight = defaultWidth * mapHeightWidthRatio.current
         }
 
-        if (isEnlarged) defaultHeight = height
+        if (isEnlarged) defaultHeight = height - TOP_BAR_HEIGHT * remToPxRatio
 
         // Step 2: minus any padding and stuff, and calculate inside dimensions to keep a good ratio
         const padding = (isPoppedout || !isStreamBigDisplay) && !isEnlarged ? PADDING * remToPxRatio : 0
