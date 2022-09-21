@@ -1,8 +1,8 @@
-import { Box, CircularProgress, Drawer, IconButton, Pagination, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Divider, Drawer, IconButton, Pagination, Stack, Switch, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
 import { FancyButton } from "../../../../.."
-import { EmptyWarMachinesPNG, SvgClose } from "../../../../../../assets"
+import { EmptyWarMachinesPNG, SvgArrowRightAltSharpIcon, SvgClose } from "../../../../../../assets"
 import { useAuth } from "../../../../../../containers"
 import { useTheme } from "../../../../../../containers/theme"
 import { GetWeaponMaxStats } from "../../../../../../fetching"
@@ -55,11 +55,18 @@ export const MechLoadoutWeaponModal = ({
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
 
+    // Weapon selection
     const [weapons, setWeapons] = useState<Weapon[]>([])
     const [selectedWeapon, setSelectedWeapon] = useState<Weapon>()
+    const [inheritSkin, setInheritSkin] = useState(false)
+    const skinInheritable = useMemo(
+        () => (selectedWeapon ? !!weaponsWithSkinInheritance.find((s) => s === selectedWeapon?.blueprint_id) : false),
+        [selectedWeapon, weaponsWithSkinInheritance],
+    )
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
 
+    // Weapon list
     const { page, changePage, totalPages, changePageSize, pageSize, setTotalItems, totalItems } = usePagination({
         pageSize: 4,
         page: 1,
@@ -551,30 +558,83 @@ export const MechLoadoutWeaponModal = ({
                 }}
             >
                 <PageHeader title="Equip a weapon" description="Select a weapon to equip on your mech." />
-                <Stack
-                    direction="row"
+                <Box
                     sx={{
-                        height: "100%",
-                        maxHeight: "300px",
                         borderBottom: `${primaryColor}70 1.5px solid`,
                         backgroundColor: "#00000070",
                         padding: "1rem 2rem",
                     }}
-                    spacing="1rem"
                 >
-                    <WeaponPreview
-                        weapon={selectedWeapon}
-                        equipped={equipped}
-                        skinInheritable={selectedWeapon ? !!weaponsWithSkinInheritance.find((s) => s === selectedWeapon?.blueprint_id) : false}
-                        onConfirm={onConfirm}
-                    />
-                    <WeaponPreview
-                        weapon={selectedWeapon}
-                        equipped={equipped}
-                        skinInheritable={selectedWeapon ? !!weaponsWithSkinInheritance.find((s) => s === selectedWeapon?.blueprint_id) : false}
-                        onConfirm={onConfirm}
-                    />
-                </Stack>
+                    <Stack
+                        direction="row"
+                        spacing="1rem"
+                        sx={{
+                            minHeight: "300px",
+                        }}
+                    >
+                        <Box flex={1}>
+                            <WeaponPreview weapon={equipped} compareTo={equipped} />
+                        </Box>
+                        <Stack
+                            sx={{
+                                position: "relative",
+                                alignSelf: "stretch",
+                                alignItems: "center",
+                            }}
+                        >
+                            <Divider
+                                orientation="vertical"
+                                color="#00000070"
+                                sx={{
+                                    flex: 1,
+                                    height: "auto",
+                                }}
+                            />
+                            <SvgArrowRightAltSharpIcon size="3rem" />
+                            <Divider
+                                orientation="vertical"
+                                color="#00000070"
+                                sx={{
+                                    flex: 1,
+                                    height: "auto",
+                                }}
+                            />
+                        </Stack>
+                        <Stack flex={1}>
+                            <WeaponPreview weapon={selectedWeapon} compareTo={equipped} />
+                            {selectedWeapon && !selectedWeapon.locked_to_mech && (
+                                <Stack mt="auto" direction="row" spacing="1rem">
+                                    <Box ml="auto" />
+                                    {skinInheritable && (
+                                        <Stack direction="row" alignItems="center" justifyContent="space-between">
+                                            <Switch
+                                                size="small"
+                                                checked={inheritSkin}
+                                                onChange={(e, c) => setInheritSkin(c)}
+                                                sx={{
+                                                    transform: "scale(.7)",
+                                                    ".Mui-checked": { color: theme.factionTheme.primary },
+                                                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${theme.factionTheme.primary}50` },
+                                                }}
+                                            />
+                                            <Typography variant="body2" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                                Inherit Skin
+                                            </Typography>
+                                        </Stack>
+                                    )}
+                                    <FancyButton
+                                        clipThingsProps={{
+                                            backgroundColor: colors.green,
+                                        }}
+                                        onClick={() => onConfirm(selectedWeapon, inheritSkin)}
+                                    >
+                                        Equip To Mech
+                                    </FancyButton>
+                                </Stack>
+                            )}
+                        </Stack>
+                    </Stack>
+                </Box>
                 <SortAndFilters
                     key={sortFilterReRender.toString()}
                     initialSearch={search}

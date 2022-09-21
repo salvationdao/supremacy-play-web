@@ -1,24 +1,19 @@
-import { Box, Stack, Switch, Typography } from "@mui/material"
-import { useCallback, useMemo, useState } from "react"
+import { Box, Stack, Typography } from "@mui/material"
+import { useCallback, useMemo } from "react"
 import { useTheme } from "../../../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../../../helpers"
 import { colors, fonts } from "../../../../../../../theme/theme"
 import { Weapon } from "../../../../../../../types"
 import { ClipThing } from "../../../../../../Common/ClipThing"
-import { FancyButton } from "../../../../../../Common/FancyButton"
 import { FeatherFade } from "../../../MechViewer"
-import { OnConfirmWeaponSelection } from "../MechLoadoutWeaponModal"
 
 interface WeaponPreviewProps {
-    onConfirm: OnConfirmWeaponSelection
     weapon?: Weapon
-    equipped?: Weapon
-    skinInheritable: boolean
+    compareTo?: Weapon
 }
 
-export const WeaponPreview = ({ onConfirm, weapon, equipped, skinInheritable }: WeaponPreviewProps) => {
+export const WeaponPreview = ({ weapon, compareTo }: WeaponPreviewProps) => {
     const theme = useTheme()
-    const [inheritSkin, setInheritSkin] = useState(false)
 
     const renderStatChange = useCallback((label: string, stats: { oldStat?: number; newStat: number; negated?: boolean }) => {
         const positiveColor = stats.negated ? colors.red : colors.green
@@ -59,64 +54,64 @@ export const WeaponPreview = ({ onConfirm, weapon, equipped, skinInheritable }: 
         const stats = [
             typeof weapon.damage !== "undefined" &&
                 renderStatChange("DAMAGE", {
-                    oldStat: equipped?.damage,
+                    oldStat: compareTo?.damage,
                     newStat: weapon.damage,
                 }),
             typeof weapon.damage_falloff !== "undefined" &&
                 renderStatChange("DAMAGE FALLOFF", {
-                    oldStat: equipped?.damage_falloff,
+                    oldStat: compareTo?.damage_falloff,
                     newStat: weapon.damage_falloff,
                 }),
             typeof weapon.radius !== "undefined" &&
                 renderStatChange("RADIUS", {
-                    oldStat: equipped?.radius,
+                    oldStat: compareTo?.radius,
                     newStat: weapon.radius,
                 }),
             typeof weapon.radius_damage_falloff !== "undefined" &&
                 renderStatChange("RADIAL DAMAGE FALLOFF", {
-                    oldStat: equipped?.radius_damage_falloff,
+                    oldStat: compareTo?.radius_damage_falloff,
                     newStat: weapon.radius_damage_falloff,
                 }),
             typeof weapon.spread !== "undefined" &&
                 renderStatChange("SPREAD", {
-                    oldStat: equipped?.spread,
+                    oldStat: compareTo?.spread,
                     newStat: weapon.spread,
                     negated: true,
                 }),
             typeof weapon.rate_of_fire !== "undefined" &&
                 renderStatChange("RATE OF FIRE", {
-                    oldStat: equipped?.rate_of_fire,
+                    oldStat: compareTo?.rate_of_fire,
                     newStat: weapon.rate_of_fire,
                 }),
             typeof weapon.projectile_speed !== "undefined" &&
                 renderStatChange("PROJECTILE SPEED", {
-                    oldStat: equipped?.projectile_speed,
+                    oldStat: compareTo?.projectile_speed,
                     newStat: weapon.projectile_speed,
                 }),
             typeof weapon.energy_cost !== "undefined" &&
                 renderStatChange("ENERGY COST", {
-                    oldStat: equipped?.energy_cost,
+                    oldStat: compareTo?.energy_cost,
                     newStat: weapon.energy_cost,
                     negated: true,
                 }),
             typeof weapon.max_ammo !== "undefined" &&
                 renderStatChange("MAX AMMO", {
-                    oldStat: equipped?.max_ammo,
+                    oldStat: compareTo?.max_ammo,
                     newStat: weapon.max_ammo,
                 }),
         ]
 
         return stats.filter((s) => !!s)
     }, [
-        equipped?.damage,
-        equipped?.damage_falloff,
-        equipped?.energy_cost,
-        equipped?.max_ammo,
-        equipped?.projectile_speed,
-        equipped?.radius,
-        equipped?.radius_damage_falloff,
-        equipped?.rate_of_fire,
-        equipped?.spread,
+        compareTo?.damage,
+        compareTo?.damage_falloff,
+        compareTo?.energy_cost,
+        compareTo?.max_ammo,
+        compareTo?.projectile_speed,
+        compareTo?.radius,
+        compareTo?.radius_damage_falloff,
+        compareTo?.rate_of_fire,
+        compareTo?.spread,
         renderStatChange,
         weapon,
     ])
@@ -130,9 +125,7 @@ export const WeaponPreview = ({ onConfirm, weapon, equipped, skinInheritable }: 
         return (
             <Stack
                 sx={{
-                    height: "100%",
-                    width: "100%",
-                    minWidth: "300px",
+                    width: "300px",
                 }}
             >
                 <ClipThing
@@ -259,43 +252,6 @@ export const WeaponPreview = ({ onConfirm, weapon, equipped, skinInheritable }: 
                         </Typography>
                     )}
                 </Stack>
-                {!weapon.locked_to_mech && (
-                    <Stack
-                        direction="row"
-                        spacing="1rem"
-                        sx={{
-                            zIndex: 100,
-                            pt: "1rem",
-                        }}
-                    >
-                        <Box ml="auto" />
-                        {skinInheritable && (
-                            <Stack direction="row" alignItems="center" justifyContent="space-between">
-                                <Switch
-                                    size="small"
-                                    checked={inheritSkin}
-                                    onChange={(e, c) => setInheritSkin(c)}
-                                    sx={{
-                                        transform: "scale(.7)",
-                                        ".Mui-checked": { color: theme.factionTheme.primary },
-                                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${theme.factionTheme.primary}50` },
-                                    }}
-                                />
-                                <Typography variant="body2" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
-                                    Inherit Skin
-                                </Typography>
-                            </Stack>
-                        )}
-                        <FancyButton
-                            clipThingsProps={{
-                                backgroundColor: colors.green,
-                            }}
-                            onClick={() => onConfirm(weapon, inheritSkin)}
-                        >
-                            Equip To Mech
-                        </FancyButton>
-                    </Stack>
-                )}
             </Stack>
         )
     }
@@ -306,6 +262,8 @@ export const WeaponPreview = ({ onConfirm, weapon, equipped, skinInheritable }: 
             justifyContent="center"
             sx={{
                 height: "100%",
+                width: "100%",
+                maxWidth: "300px",
             }}
         >
             <Typography
@@ -317,7 +275,7 @@ export const WeaponPreview = ({ onConfirm, weapon, equipped, skinInheritable }: 
                     textAlign: "center",
                 }}
             >
-                Select a weapon to view its details.
+                Select a weapon to compare its details.
             </Typography>
         </Stack>
     )
