@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
-import { MapSelection, useGlobalNotifications, useMiniMapPixi, WinnerStruct } from "../../../../../containers"
+import { useGlobalNotifications, useMiniMapPixi, WinnerStruct } from "../../../../../containers"
 import { BlueprintPlayerAbility, GameAbility, PlayerAbility } from "../../../../../types"
 import { PixiTargetHint } from "./pixiTargetHint"
 

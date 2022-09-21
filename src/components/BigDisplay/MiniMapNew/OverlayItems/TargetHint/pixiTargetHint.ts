@@ -46,6 +46,10 @@ export class PixiTargetHint {
     private mapMousePosition: React.MutableRefObject<Position | undefined>
     private animationFrame: number | undefined
 
+    // Actual selecting
+    private startCoord: PixiImageIcon | undefined
+    private endCoord: PixiImageIcon | undefined
+
     constructor(
         viewport: Viewport,
         mapMousePosition: React.MutableRefObject<Position | undefined>,
