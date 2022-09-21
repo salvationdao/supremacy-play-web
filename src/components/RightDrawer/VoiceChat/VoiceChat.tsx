@@ -1,4 +1,4 @@
-import { Box, Button, Slider, Stack, Typography } from "@mui/material"
+import { Box, Button, IconButton, Slider, Stack, Typography } from "@mui/material"
 import OvenLiveKit from "ovenlivekit"
 import OvenPlayer from "ovenplayer"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
@@ -12,13 +12,14 @@ import { colors, fonts } from "../../../theme/theme"
 import { Faction, User } from "../../../types"
 import { StyledImageText } from "../../Notifications/Common/StyledImageText"
 import { useToggle } from "../../../hooks"
+import { SvgVolume, SvgVolumeMute } from "../../../assets"
 
 export const VoiceChat = ({
-    onListen,
-    listenStreams,
-    user,
-    faction,
-}: {
+                              onListen,
+                              listenStreams,
+                              user,
+                              faction,
+                          }: {
     onListen: (s: VoiceStream[]) => void
     listenStreams: VoiceStream[]
     user: User
@@ -122,18 +123,19 @@ export const VoiceChat = ({
 
     return (
         <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
-            <Content listenStreams={listenStreams} onListen={onListen} faction={faction} user={user} activePlayers={[]} />
+            <Content listenStreams={listenStreams} onListen={onListen} faction={faction} user={user}
+                     activePlayers={[]} />
         </Stack>
     )
 }
 
 const Content = ({
-    faction,
-    user,
-    activePlayers,
-    listenStreams,
-    onListen,
-}: {
+                     faction,
+                     user,
+                     activePlayers,
+                     listenStreams,
+                     onListen,
+                 }: {
     faction: Faction
     user: User
     activePlayers: User[]
@@ -183,7 +185,12 @@ const Content = ({
                     </Typography>
                     <Stack direction="row" alignItems="center" spacing="1.3rem">
                         <Stack direction="row" alignItems="center" spacing=".4rem">
-                            <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: colors.green }} />
+                            <Box sx={{
+                                width: ".8rem",
+                                height: ".8rem",
+                                borderRadius: "50%",
+                                backgroundColor: colors.green,
+                            }} />
                             <Typography variant="body2" sx={{ lineHeight: 1 }}>
                                 <strong>Active: </strong>
                                 {activePlayers.length}
@@ -280,23 +287,30 @@ const PlayerItem = ({ voiceStream, faction }: { voiceStream: VoiceStream; factio
                 />
             </Box>
 
-            <Slider
-                size="small"
-                min={0}
-                max={1}
-                step={0.01}
-                aria-label="Volume"
-                value={isMute ? 0 : volume}
-                onChange={handleVolumeChange}
-                sx={{
-                    ml: "1.2rem",
-                    color: (theme) => theme.factionTheme.primary,
-                }}
-            />
 
             <Box>
-                <Button onClick={() => toggleIsMute(!isMute)}>Mute</Button>
+                <Slider
+                    disabled={voiceStream.send_url != undefined}
+                    size="small"
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    aria-label="Volume"
+                    value={isMute ? 0 : volume}
+                    onChange={handleVolumeChange}
+                    sx={{
+                        ml: "1.2rem",
+                        color: (theme) => theme.factionTheme.primary,
+                    }}
+                />
             </Box>
+
+
+            <IconButton size="small" onClick={() => toggleIsMute()} disabled={voiceStream.send_url != undefined}
+                        sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}>
+                {isMute || volume <= 0 ? <SvgVolumeMute size="1.4rem" sx={{ pb: 0 }} /> :
+                    <SvgVolume size="1.4rem" sx={{ pb: 0 }} />}
+            </IconButton>
         </Box>
     )
 }
