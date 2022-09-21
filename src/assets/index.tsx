@@ -71,14 +71,19 @@ import Announcement from "!react-svg-loader!./svg/Announcement.svg"
 import Applause from "!react-svg-loader!./svg/Applause.svg"
 import Arrow from "!react-svg-loader!./svg/Arrow.svg"
 import Back from "!react-svg-loader!./svg/Back.svg"
+import Bin from "!react-svg-loader!./svg/Bin.svg"
 import Cancelled from "!react-svg-loader!./svg/Cancelled.svg"
 import Chat from "!react-svg-loader!./svg/Chat.svg"
 import ChatSplit from "!react-svg-loader!./svg/ChatSplit.svg"
 import ChatTabbed from "!react-svg-loader!./svg/ChatTabbed.svg"
+import ChevronDown from "!react-svg-loader!./svg/ChevronDown.svg"
+import ChevronUp from "!react-svg-loader!./svg/ChevronUp.svg"
 import Damage from "!react-svg-loader!./svg/Damage.svg"
 import Delete from "!react-svg-loader!./svg/Delete.svg"
 import Disconnected from "!react-svg-loader!./svg/Disconnected.svg"
 import Discord from "!react-svg-loader!./svg/Discord.svg"
+import DoubleChevronDown from "!react-svg-loader!./svg/DoubleChevronDown.svg"
+import DoubleChevronUp from "!react-svg-loader!./svg/DoubleChevronUp.svg"
 import DownArrow from "!react-svg-loader!./svg/DownArrow.svg"
 import Drag from "!react-svg-loader!./svg/Drag.svg"
 import Edit from "!react-svg-loader!./svg/Edit.svg"
@@ -139,7 +144,6 @@ import Volume from "!react-svg-loader!./svg/Volume.svg"
 import VolumeMute from "!react-svg-loader!./svg/VolumeMute.svg"
 import WarnTriangle from "!react-svg-loader!./svg/WarnTriangle.svg"
 import YouTube from "!react-svg-loader!./svg/YouTube.svg"
-import Bin from "!react-svg-loader!./svg/Bin.svg"
 import { Cake } from "@mui/icons-material"
 import AccessTimeSharpIcon from "@mui/icons-material/AccessTimeSharp"
 import AppsIcon from "@mui/icons-material/Apps"
@@ -1307,5 +1311,29 @@ export const SvgUpcomingBattle: React.VoidFunctionComponent<SvgWrapperProps> = (
 export const SvgRemove: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Remove />
+    </SvgWrapper>
+)
+
+export const SvgChevronUp: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ChevronUp />
+    </SvgWrapper>
+)
+
+export const SvgDoubleChevronUp: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <DoubleChevronUp />
+    </SvgWrapper>
+)
+
+export const SvgChevronDown: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ChevronDown />
+    </SvgWrapper>
+)
+
+export const SvgDoubleChevronDown: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <DoubleChevronDown />
     </SvgWrapper>
 )

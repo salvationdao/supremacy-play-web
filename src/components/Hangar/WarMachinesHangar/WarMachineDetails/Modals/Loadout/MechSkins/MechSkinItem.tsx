@@ -1,21 +1,45 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { SvgView } from "../../../../../../../assets"
+import { useMemo } from "react"
+import { SvgChevronDown, SvgChevronUp, SvgDoubleChevronDown, SvgDoubleChevronUp, SvgView } from "../../../../../../../assets"
 import { useTheme } from "../../../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../../../helpers"
-import { fonts } from "../../../../../../../theme/theme"
+import { colors, fonts } from "../../../../../../../theme/theme"
 import { MechSkin } from "../../../../../../../types"
 import { ClipThing } from "../../../../../../Common/ClipThing"
 import { FancyButton } from "../../../../../../Common/FancyButton"
 
 interface MechSkinItemProps {
+    levelDifference: number
     submodelDetails: MechSkin
-    equipped?: MechSkin
     selected: boolean
     onSelect: (w: MechSkin) => void
 }
 
-export const MechSkinItem = ({ submodelDetails, equipped, selected, onSelect }: MechSkinItemProps) => {
+export const MechSkinItem = ({ levelDifference, submodelDetails, selected, onSelect }: MechSkinItemProps) => {
     const theme = useTheme()
+
+    const levelIcon = useMemo(() => {
+        const commonProps = {
+            size: "1.6rem",
+            sx: {
+                zIndex: 1,
+                position: "absolute",
+                top: "1rem",
+                left: "1rem",
+            },
+        }
+        if (levelDifference > 1) {
+            return <SvgDoubleChevronUp {...commonProps} fill={colors.green} />
+        } else if (levelDifference > 0) {
+            return <SvgChevronUp {...commonProps} fill={colors.green} />
+        } else if (levelDifference === 0) {
+            return
+        } else if (levelDifference < -1) {
+            return <SvgDoubleChevronDown {...commonProps} fill={colors.red} />
+        } else {
+            return <SvgChevronDown {...commonProps} fill={colors.red} />
+        }
+    }, [levelDifference])
 
     if (!submodelDetails) {
         return (
@@ -47,7 +71,7 @@ export const MechSkinItem = ({ submodelDetails, equipped, selected, onSelect }: 
             innerSx={{
                 display: "flex",
                 flexDirection: "column",
-                alignItems: "center",
+                alignItems: "stretch",
             }}
             onClick={() => onSelect(submodelDetails)}
         >
@@ -89,6 +113,7 @@ export const MechSkinItem = ({ submodelDetails, equipped, selected, onSelect }: 
                     </Typography>
                 </Box>
             )}
+            {levelIcon}
             {selected && (
                 <SvgView
                     size="3rem"
@@ -135,9 +160,11 @@ export const MechSkinItem = ({ submodelDetails, equipped, selected, onSelect }: 
                     sx={{
                         color: getRarityDeets(submodelDetails.tier).color,
                         fontFamily: fonts.nostromoBlack,
+                        fontSize: "1.6rem",
+                        textAlign: "center",
                     }}
                 >
-                    {submodelDetails.tier}
+                    {getRarityDeets(submodelDetails.tier).label}
                 </Typography>
                 <Typography
                     variant="body2"

@@ -7,7 +7,7 @@ import { usePagination, useToggle } from "../../../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../../../theme/theme"
-import { MechSkin, SubmodelStatus } from "../../../../../../types"
+import { MechDetails, MechSkin, SubmodelStatus } from "../../../../../../types"
 import { SortDir, SortTypeLabel } from "../../../../../../types/marketplace"
 import { ClipThing } from "../../../../../Common/ClipThing"
 import { FancyButton } from "../../../../../Common/FancyButton"
@@ -31,6 +31,7 @@ export type OnConfirmMechSkinSelection = (selectedMechSkin: MechSkin) => void
 export interface MechLoadoutMechSkinModalProps {
     onClose: () => void
     onConfirm: OnConfirmMechSkinSelection
+    mech: MechDetails
     equipped?: MechSkin
     mechSkinsAlreadyEquippedInOtherSlots: string[]
     compatibleMechSkins: string[]
@@ -39,6 +40,7 @@ export interface MechLoadoutMechSkinModalProps {
 export const MechLoadoutMechSkinModal = ({
     onClose,
     onConfirm,
+    mech,
     equipped,
     mechSkinsAlreadyEquippedInOtherSlots,
     compatibleMechSkins,
@@ -214,9 +216,9 @@ export const MechLoadoutMechSkinModal = ({
                     {submodels.map((p) => (
                         <MechSkinItem
                             key={p.id}
+                            levelDifference={p.level - (mech.chassis_skin?.level || 0)}
                             submodelDetails={p}
                             onSelect={(p) => setSelectedSubmodel(p)}
-                            equipped={equipped}
                             selected={selectedSubmodel?.id === p.id}
                         />
                     ))}
@@ -275,7 +277,7 @@ export const MechLoadoutMechSkinModal = ({
                 </Stack>
             </Stack>
         )
-    }, [equipped, isLoading, loadError, submodels, selectedSubmodel?.id, theme.factionTheme.primary, theme.factionTheme.secondary])
+    }, [loadError, submodels, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary, mech.chassis_skin?.level, selectedSubmodel?.id])
 
     return (
         <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>

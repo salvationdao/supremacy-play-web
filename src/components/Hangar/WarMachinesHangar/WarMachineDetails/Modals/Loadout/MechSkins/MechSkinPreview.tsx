@@ -136,7 +136,7 @@ export const MechSkinPreview = ({ onConfirm, submodel, equipped }: MechSkinPrevi
                                 fontFamily: fonts.nostromoBlack,
                             }}
                         >
-                            {submodel.tier}
+                            {getRarityDeets(submodel.tier).label}
                         </Typography>
                         <Typography
                             variant="h4"
