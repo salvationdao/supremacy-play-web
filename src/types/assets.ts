@@ -1,5 +1,5 @@
-import { FiatProduct } from "./fiat"
 import { Battle, Faction, Map, User, Vector2i } from "."
+import { FiatProduct } from "./fiat"
 
 export enum RarityEnum {
     Mega = "MEGA",
@@ -123,6 +123,7 @@ export interface MechBasic extends Collection, Images {
     label: string
     weapon_hardpoints: number
     utility_slots: number
+    boosted_stat: BoostStatEnum
     speed: number
     boosted_speed: number
     max_hitpoints: number
@@ -176,6 +177,12 @@ export interface MechDetails extends MechBasic {
     compatible_blueprint_mech_skin_ids: string[]
 }
 
+export enum BoostStatEnum {
+    MechHealth = "MECH_HEALTH",
+    MechSpeed = "MECH_SPEED",
+    ShieldRegen = "SHIELD_REGEN",
+}
+
 export interface BlueprintMech {
     id: string
     brand_id: string
@@ -190,7 +197,7 @@ export interface BlueprintMech {
     default_chassis_skin_id: string
     collection: string
     repair_blocks: number
-    boost_stat: string
+    boost_stat: BoostStatEnum
     mech_type: string
     availability_id?: string
 }

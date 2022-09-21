@@ -52,17 +52,10 @@ export const UnityViewer = ({ unityRef, mechDetails, unity }: UnityViewerProps) 
     useImperativeHandle(unityRef, () => ({
         handleWeaponUpdate: (wu: LoadoutWeapon) => {
             const weapon = wu.weapon
-            let obj = {
-                type: "weapon",
-                ownership_id: "",
-                static_id: "",
-                skin: {
-                    type: "skin",
-                    static_id: "",
-                },
-            } as SiloObject
-            if (!wu.unequip && weapon) {
-                obj = {
+            if (wu.unequip) {
+                sendMessage("SceneContext", "ClearSelectedSlots", `[${wu.slot_number}]`)
+            } else if (weapon) {
+                const obj = {
                     type: "weapon",
                     ownership_id: weapon.id,
                     static_id: weapon.blueprint_id,
@@ -73,10 +66,9 @@ export const UnityViewer = ({ unityRef, mechDetails, unity }: UnityViewerProps) 
                           }
                         : undefined,
                 }
+                sendMessage("SceneContext", "SetSlotIndexToChange", wu.slot_number)
+                sendMessage("SceneContext", "ChangeSlotValue", JSON.stringify(obj))
             }
-            console.log(obj)
-            sendMessage("SceneContext", "SetSlotIndexToChange", wu.slot_number)
-            sendMessage("SceneContext", "ChangeSlotValue", JSON.stringify(obj))
         },
         handlePowerCoreUpdate: (pcu: LoadoutPowerCore) => {
             if (!pcu.power_core) return

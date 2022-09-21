@@ -3,19 +3,20 @@ import { useCallback, useMemo } from "react"
 import { useTheme } from "../../../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../../../helpers"
 import { colors, fonts } from "../../../../../../../theme/theme"
-import { MechSkin } from "../../../../../../../types"
+import { BoostStatEnum, MechDetails, MechSkin } from "../../../../../../../types"
 import { FancyButton } from "../../../../../../Common/FancyButton"
 import { FeatherFade } from "../../../MechViewer/MechViewer"
 import { OnConfirmMechSkinSelection } from "../MechLoadoutMechSkinModal"
 
 interface MechSkinPreviewProps {
     onConfirm: OnConfirmMechSkinSelection
+    mech: MechDetails
     submodel?: MechSkin
     equipped?: MechSkin
     isCompatible: boolean
 }
 
-export const MechSkinPreview = ({ onConfirm, submodel, equipped }: MechSkinPreviewProps) => {
+export const MechSkinPreview = ({ onConfirm, mech, submodel, equipped }: MechSkinPreviewProps) => {
     const theme = useTheme()
 
     const renderStatChange = useCallback((label: string, stats: { oldStat?: number; newStat: number; negated?: boolean }) => {
@@ -53,17 +54,26 @@ export const MechSkinPreview = ({ onConfirm, submodel, equipped }: MechSkinPrevi
 
     const statChanges = useMemo(() => {
         if (!submodel) return []
+        const newStats = calculateBoostedStats(mech, submodel)
+        const oldStats = calculateBoostedStats(mech, equipped)
 
         const stats = [
-            typeof submodel.level !== "undefined" &&
-                renderStatChange("LEVEL", {
-                    oldStat: equipped?.level,
-                    newStat: submodel.level,
-                }),
+            renderStatChange("MAX HITPOINTS", {
+                oldStat: oldStats.boostedMaxHitpoints,
+                newStat: newStats.boostedMaxHitpoints,
+            }),
+            renderStatChange("SHIELD RECHARGE RATE", {
+                oldStat: oldStats.boostedShieldRechargeRate,
+                newStat: newStats.boostedShieldRechargeRate,
+            }),
+            renderStatChange("SPEED", {
+                oldStat: oldStats.boostedSpeed,
+                newStat: newStats.boostedSpeed,
+            }),
         ]
 
         return stats.filter((s) => !!s)
-    }, [submodel, renderStatChange, equipped?.level])
+    }, [submodel, mech, equipped, renderStatChange])
 
     if (submodel) {
         const videoUrls = [
@@ -245,4 +255,55 @@ export const MechSkinPreview = ({ onConfirm, submodel, equipped }: MechSkinPrevi
             </Typography>
         </Stack>
     )
+}
+
+// func (m *Mech) SetBoostedStats() error {
+// 	if m.ChassisSkin == nil {
+// 		return fmt.Errorf("missing mech skin object")
+// 	}
+// 	// get the % increase
+// 	boostPercent := (float32(m.ChassisSkin.Level) / 100) + 1
+
+// 	if m.BoostedStat == boiler.BoostStatMECH_SPEED {
+// 		m.BoostedSpeed = int(boostPercent * float32(m.Speed)) // set the boosted stat
+// 	} else {
+// 		m.BoostedSpeed = m.Speed // set boosted speed to the speed, means we can always just use boosted stat instead of figuring out which one is better down the line
+// 	}
+// 	if m.BoostedStat == boiler.BoostStatMECH_HEALTH {
+// 		m.BoostedMaxHitpoints = int(boostPercent * float32(m.MaxHitpoints))
+// 	} else {
+// 		m.BoostedMaxHitpoints = m.MaxHitpoints
+// 	}
+// 	if m.BoostedStat == boiler.BoostStatSHIELD_REGEN {
+// 		m.BoostedShieldRechargeRate = int(boostPercent * float32(m.ShieldRechargeRate))
+// 	} else {
+// 		m.BoostedShieldRechargeRate = m.ShieldRechargeRate
+// 	}
+
+// 	return nil
+// }
+
+export const calculateBoostedStats = (mech: MechDetails, nextSkin?: MechSkin) => {
+    const boostedStats = {
+        boostedSpeed: mech.speed,
+        boostedMaxHitpoints: mech.max_hitpoints,
+        boostedShieldRechargeRate: mech.shield_recharge_rate,
+    }
+
+    if (!nextSkin) return boostedStats
+
+    const boostPercent = nextSkin.level / 100 + 1
+    switch (mech.boosted_stat) {
+        case BoostStatEnum.MechSpeed:
+            boostedStats.boostedSpeed = boostPercent * mech.speed
+            break
+        case BoostStatEnum.MechHealth:
+            boostedStats.boostedMaxHitpoints = boostPercent * mech.max_hitpoints
+            break
+        case BoostStatEnum.ShieldRegen:
+            boostedStats.boostedShieldRechargeRate = boostPercent * mech.shield_recharge_rate
+            break
+    }
+
+    return boostedStats
 }

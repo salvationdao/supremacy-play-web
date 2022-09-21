@@ -414,7 +414,7 @@ export const MechLoadoutMechSkinModal = ({
                                 backgroundColor: "#00000070",
                             }}
                         >
-                            <MechSkinPreview submodel={selectedSubmodel} equipped={equipped} onConfirm={onConfirm} isCompatible={true} />
+                            <MechSkinPreview mech={mech} submodel={selectedSubmodel} equipped={equipped} onConfirm={onConfirm} isCompatible={true} />
                         </Stack>
                     </Stack>
                 </ClipThing>
