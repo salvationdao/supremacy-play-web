@@ -92,6 +92,8 @@ export class PixiMapMech {
         this.root.addChild(this.mechMoveSprite)
         this.root.addChild(this.mechMoveDashedLine)
 
+        this.rootInner.pivot.set(this.rectGraphics.width / 2, this.rectGraphics.height / 2)
+
         this.render()
     }
 
@@ -220,10 +222,7 @@ export class PixiMapMech {
     }
 
     updatePosition(x: number, y: number) {
-        // Default its the top left corner, so center it
-        const newX = x - this.rectGraphics.width / 2
-        const newY = y - this.rectGraphics.height / 2
-        ease.add(this.rootInner, { x: newX, y: newY }, { duration: 275, ease: "linear", removeExisting: true })
+        ease.add(this.rootInner, { x, y }, { duration: 275, ease: "linear", removeExisting: true })
     }
 
     updateRotation(newRotRad: number) {
