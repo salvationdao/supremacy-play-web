@@ -1,14 +1,13 @@
 import moment from "moment"
-import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useState, useMemo } from "react"
-import { useParams } from "react-router-dom"
-import { HangarBg, SafePNG } from "../assets"
-import { ClipThing } from "../components"
+import { Box, CircularProgress, Stack, Typography } from "@mui/material"
+import { useState, useEffect, useMemo } from "react"
+import { useHistory, useParams } from "react-router-dom"
+import { HangarBg, SafePNG, SvgBack } from "../assets"
+import { ClipThing, FancyButton } from "../components"
 import { CoolTable } from "../components/Common/CoolTable"
 import { PageHeader } from "../components/Common/PageHeader"
 import { useTheme } from "../containers/theme"
 import { generatePriceText, parseString } from "../helpers"
-import { usePagination, useUrlQuery } from "../hooks"
 import { useGameServerCommandsUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 import { colors, fonts, siteZIndex } from "../theme/theme"
@@ -17,6 +16,7 @@ import BigNumber from "bignumber.js"
 
 export const BillingHistoryItemPage = () => {
     const theme = useTheme()
+    const history = useHistory()
     const { id } = useParams<{ id: string }>()
     const { send } = useGameServerCommandsUser("/user_commander")
 
@@ -81,11 +81,16 @@ export const BillingHistoryItemPage = () => {
             )
         }
 
+        let total = new BigNumber(0)
+        order.items.forEach((item) => {
+            total = total.plus(new BigNumber(item.amount).multipliedBy(item.quantity))
+        })
+
         return (
             <>
                 <PageHeader title={`ORDER #${order.order_number}`} imageUrl={SafePNG} />
 
-                <Box sx={{ flex: 1 }}>
+                <div>
                     <CoolTable
                         tableHeadings={["PRODUCT NAME", "PRICE", "QTY", "SUBTOTAL"]}
                         alignments={["left", "center", "center", "center"]}
@@ -93,6 +98,7 @@ export const BillingHistoryItemPage = () => {
                         titleRowHeight="3.5rem"
                         cellPadding=".4rem 1rem"
                         items={order.items}
+                        autoHeight
                         renderItem={(item) => {
                             const subtotal = new BigNumber(item.amount).multipliedBy(item.quantity)
                             return {
@@ -105,7 +111,22 @@ export const BillingHistoryItemPage = () => {
                             }
                         }}
                     />
-                </Box>
+                </div>
+
+                <Stack direction="row" justifyContent="flex-end" sx={{ mt: "4rem", p: "1rem" }}>
+                    <Typography variant={"h5"} sx={{ color: "white", fontFamily: fonts.nostromoHeavy }}>
+                        Total:
+                    </Typography>
+                    <Box
+                        sx={{
+                            ml: "4rem",
+                        }}
+                    >
+                        <Typography variant={"body1"} sx={{ fontFamily: fonts.nostromoLight, color: colors.offWhite }}>
+                            {generatePriceText("$USD", total)}
+                        </Typography>
+                    </Box>
+                </Stack>
             </>
         )
     }, [order, isLoading, loadError, primaryColor])
@@ -124,6 +145,30 @@ export const BillingHistoryItemPage = () => {
             }}
         >
             <Stack sx={{ mt: "1.5rem", mb: "2rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "160rem" }}>
+                <FancyButton
+                    clipThingsProps={{
+                        clipSize: "9px",
+                        corners: { topLeft: true },
+                        opacity: 1,
+                        sx: { position: "relative", alignSelf: "flex-start", opacity: 0.5, ":hover": { opacity: 1 } },
+                    }}
+                    sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
+                    onClick={() => history.push("/billing-history")}
+                >
+                    <Stack spacing=".6rem" direction="row" alignItems="center">
+                        <SvgBack size="1.4rem" fill={"#FFFFFF"} />
+                        <Typography
+                            variant="caption"
+                            sx={{
+                                color: "#FFFFFF",
+                                fontFamily: fonts.nostromoBlack,
+                            }}
+                        >
+                            GO BACK
+                        </Typography>
+                    </Stack>
+                </FancyButton>
+
                 <ClipThing
                     clipSize="10px"
                     border={{
