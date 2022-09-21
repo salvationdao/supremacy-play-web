@@ -243,7 +243,7 @@ const Content = ({
 }
 
 const PlayerItem = ({ voiceStream, faction }: { voiceStream: VoiceStream; faction: Faction }) => {
-    const [isMute, toggleIsMute] = useToggle(true)
+    const [isMute, toggleIsMute] = useToggle(false)
     const [volume, setVolume] = useState(100)
 
     const handleVolumeChange = useCallback(
