@@ -1,7 +1,7 @@
 import { Box, Button, Slider, Stack, Typography } from "@mui/material"
 import OvenLiveKit from "ovenlivekit"
 import OvenPlayer from "ovenplayer"
-import { useCallback, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useArena, useAuth, useChat, useSupremacy, VoiceStream } from "../../../containers"
 import { OvenPlayerInstance } from "../../../containers/oven"
 import { useTheme } from "../../../containers/theme"
@@ -252,6 +252,12 @@ const PlayerItem = ({ voiceStream, faction }: { voiceStream: VoiceStream; factio
         },
         [setVolume],
     )
+
+    useEffect(() => {
+        if (!voiceStream.ovenPlayer) return
+
+        voiceStream.ovenPlayer.setVolume(volume)
+    }, [volume])
 
     return (
         <Box mt="1rem" sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
