@@ -1,5 +1,5 @@
 import OvenPlayer from "ovenplayer"
-import { useCallback, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useGameServerSubscription } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
@@ -11,20 +11,23 @@ export const ArenaContainer = createContainer(() => {
     const [arenaList, setArenaList] = useState<Arena[]>([])
     const [currentArena, setCurrentArena] = useState<Arena>()
     const [listenStreams, setListenStreams] = useState<VoiceStream[]>()
+    const [connected, setConnected] = useState(false)
 
     const currentArenaID = currentArena?.id || ""
 
     const onListen = useCallback((listenStreams: VoiceStream[]) => {
         listenStreams?.map((l) => {
             if (l.send_url) {
-                startStream(l.send_url)
+                startStream(l, l.send_url)
             }
             listen(l)
         })
+        setConnected(true)
     }, [])
 
     // listen stream
-    const ovenPlayer = useRef<OvenPlayerInstance>()
+    // const ovenPlayer = useRef<OvenPlayerInstance>()
+
     const listen = useCallback((stream: VoiceStream) => {
         if (document.getElementById(stream.listen_url)) {
             const newOvenPlayer = OvenPlayer.create(stream.listen_url, {
@@ -46,6 +49,7 @@ export const ArenaContainer = createContainer(() => {
             })
 
             newOvenPlayer.on("error", (err: any) => {
+                if (!connected) return
                 if (err.code === 501) {
                     console.log("501: failed to connnect attempting to recconnect", err)
                 } else {
@@ -59,13 +63,13 @@ export const ArenaContainer = createContainer(() => {
 
             newOvenPlayer.play()
             stream.ovenPlayer = newOvenPlayer
-            ovenPlayer.current = newOvenPlayer
+            // ovenPlayer.current = newOvenPlayer
 
             return () => {
                 newOvenPlayer.off("ready")
                 newOvenPlayer.off("error")
                 newOvenPlayer.remove()
-                ovenPlayer.current = undefined
+                // ovenPlayer.current = undefined
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -74,16 +78,28 @@ export const ArenaContainer = createContainer(() => {
     const onDisconnect = () => {
         console.log("discoonnecting")
 
-        setListenStreams(undefined)
-        if (ovenPlayer && ovenPlayer.current) {
-            ovenPlayer?.current.off("ready")
-            ovenPlayer?.current.off("error")
-            ovenPlayer?.current.remove()
-            ovenPlayer.current = undefined
+        if (listenStreams) {
+            listenStreams.map((l) => {
+                if (l.ovenPlayer) {
+                    l.ovenPlayer?.remove()
+                }
+                if (l.liveKit) {
+                    l.liveKit?.remove()
+                }
+                setConnected(false)
+            })
         }
     }
 
-    const startStream = useCallback((url: string) => {
+    useEffect(() => {
+        if (connected && listenStreams) {
+            onListen(listenStreams)
+            return
+        }
+        onDisconnect()
+    }, [connected, listenStreams])
+
+    const startStream = useCallback((stream: VoiceStream, url: string) => {
         if (!url) {
             return
         }
@@ -103,6 +119,8 @@ export const ArenaContainer = createContainer(() => {
         liveKit.getUserMedia(constraints).then(function (d: any) {
             liveKit.startStreaming(url)
         })
+
+        stream.liveKit = liveKit
     }, [])
 
     return {
@@ -116,6 +134,7 @@ export const ArenaContainer = createContainer(() => {
         listenStreams,
         setListenStreams,
         onListen,
+        connected,
 
         onDisconnect,
     }
@@ -131,6 +150,7 @@ export interface VoiceStream {
     username: string
     user_gid: string
     ovenPlayer: OvenPlayerInstance | undefined
+    liveKit: any
 }
 
 export const ArenaListener = () => {

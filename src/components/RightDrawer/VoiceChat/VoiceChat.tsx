@@ -43,9 +43,7 @@ const Content = ({
     listenStreams: VoiceStream[] | undefined
     onListen: (stream: VoiceStream[]) => void
 }) => {
-    const [connected, setConnected] = useState(false)
-    // console.log("this is streams", listenStreams)
-    const { onDisconnect } = useArena()
+    const { onDisconnect, connected } = useArena()
 
     const theme = useTheme()
     const bannerColor = useMemo(() => shadeColor(theme.factionTheme.primary, -60), [theme.factionTheme.primary])
@@ -134,22 +132,23 @@ const Content = ({
                         })}
                 </Box>
             </Box>
-
-            <Button
-                onClick={() => {
-                    onListen(listenStreams || [])
-                }}
-            >
-                Listen
-            </Button>
-
-            <Button
-                onClick={() => {
-                    onDisconnect()
-                }}
-            >
-                Disconnect
-            </Button>
+            {connected ? (
+                <Button
+                    onClick={() => {
+                        onDisconnect()
+                    }}
+                >
+                    Disconnect
+                </Button>
+            ) : (
+                <Button
+                    onClick={() => {
+                        onListen(listenStreams || [])
+                    }}
+                >
+                    Listen
+                </Button>
+            )}
         </Stack>
     )
 }
@@ -190,9 +189,19 @@ const PlayerItem = ({ voiceStream, faction }: { voiceStream: VoiceStream; factio
                     imageUrl={faction.logo_url}
                     {...StyledImageText}
                 />
+                {voiceStream.listen_url && voiceStream.ovenPlayer && (
+                    <Box
+                        sx={{
+                            width: ".8rem",
+                            height: ".8rem",
+                            borderRadius: "50%",
+                            backgroundColor: voiceStream.ovenPlayer.getState() === "playing" ? colors.green : colors.red,
+                        }}
+                    />
+                )}
             </Box>
 
-            <Box>
+            {/* <Box>
                 <Slider
                     disabled={voiceStream.send_url != undefined}
                     size="small"
@@ -207,7 +216,30 @@ const PlayerItem = ({ voiceStream, faction }: { voiceStream: VoiceStream; factio
                         color: (theme) => theme.factionTheme.primary,
                     }}
                 />
-            </Box>
+            </Box> */}
+            {/* 
+            <IconButton
+                size="small"
+                onClick={() => toggleIsMute()}
+                disabled={voiceStream.send_url != undefined}
+                sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}
+            >
+                {isMute || volume <= 0 ? <SvgVolumeMute size="1.4rem" sx={{ pb: 0 }} /> : <SvgVolume size="1.4rem" sx={{ pb: 0 }} />} */}
+
+            <Slider
+                disabled={voiceStream.send_url != undefined}
+                size="small"
+                min={0}
+                max={1}
+                step={0.01}
+                aria-label="Volume"
+                value={isMute ? 0 : volume}
+                onChange={handleVolumeChange}
+                sx={{
+                    ml: "1.2rem",
+                    color: (theme) => theme.factionTheme.primary,
+                }}
+            />
 
             <IconButton
                 size="small"
@@ -215,7 +247,7 @@ const PlayerItem = ({ voiceStream, faction }: { voiceStream: VoiceStream; factio
                 disabled={voiceStream.send_url != undefined}
                 sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}
             >
-                {isMute || volume <= 0 ? <SvgVolumeMute size="1.4rem" sx={{ pb: 0 }} /> : <SvgVolume size="1.4rem" sx={{ pb: 0 }} />}
+                {isMute || volume <= 0 ? <SvgVolumeMute size="2rem" sx={{ pb: 0 }} /> : <SvgVolume size="2rem" sx={{ pb: 0 }} />}
             </IconButton>
         </Box>
     )
