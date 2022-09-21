@@ -55,7 +55,7 @@ export const MechLoadoutMechSkinModal = ({
     const [loadError, setLoadError] = useState<string>()
 
     const { page, changePage, totalPages, changePageSize, pageSize, setTotalItems, totalItems } = usePagination({
-        pageSize: 4,
+        pageSize: 8,
         page: 1,
     })
 
@@ -207,6 +207,7 @@ export const MechLoadoutMechSkinModal = ({
                 <Box
                     sx={{
                         display: "grid",
+                        gridTemplateColumns: "repeat(auto-fill, minmax(110px, 1fr))",
                         gap: "1rem",
                     }}
                 >
@@ -217,7 +218,6 @@ export const MechLoadoutMechSkinModal = ({
                             onSelect={(p) => setSelectedSubmodel(p)}
                             equipped={equipped}
                             selected={selectedSubmodel?.id === p.id}
-                            isCompatible={true}
                         />
                     ))}
                 </Box>
@@ -342,7 +342,7 @@ export const MechLoadoutMechSkinModal = ({
                                 totalItems={totalItems}
                                 pageSize={pageSize}
                                 changePageSize={changePageSize}
-                                pageSizeOptions={[4, 8]}
+                                pageSizeOptions={[]}
                                 changePage={changePage}
                                 manualRefresh={getSubmodels}
                                 sortOptions={sortOptions}

@@ -1,9 +1,8 @@
-import { Box, CircularProgress, Divider, Stack, Typography } from "@mui/material"
-import { useCallback } from "react"
+import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { SvgView } from "../../../../../../../assets"
 import { useTheme } from "../../../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../../../helpers"
-import { colors, fonts } from "../../../../../../../theme/theme"
+import { fonts } from "../../../../../../../theme/theme"
 import { MechSkin } from "../../../../../../../types"
 import { ClipThing } from "../../../../../../Common/ClipThing"
 import { FancyButton } from "../../../../../../Common/FancyButton"
@@ -13,42 +12,10 @@ interface MechSkinItemProps {
     equipped?: MechSkin
     selected: boolean
     onSelect: (w: MechSkin) => void
-    isCompatible: boolean
 }
 
-export const MechSkinItem = ({ submodelDetails, equipped, selected, onSelect, isCompatible }: MechSkinItemProps) => {
+export const MechSkinItem = ({ submodelDetails, equipped, selected, onSelect }: MechSkinItemProps) => {
     const theme = useTheme()
-
-    const renderStat = useCallback((label: string, stats: { oldStat?: number; newStat: number; negated?: boolean }) => {
-        const positiveColor = stats.negated ? colors.red : colors.green
-        const negativeColor = stats.negated ? colors.green : colors.red
-        const difference = stats.newStat - (stats.oldStat || 0)
-        const color = difference > 0 ? positiveColor : difference === 0 ? "white" : negativeColor
-        const symbol = difference > 0 ? "+" : ""
-
-        return (
-            <Stack direction="row" spacing="1rem" alignItems="center">
-                <Typography
-                    variant="caption"
-                    sx={{
-                        color: colors.lightGrey,
-                        fontSize: "1rem",
-                        fontFamily: fonts.nostromoBlack,
-                    }}
-                >
-                    {label}
-                </Typography>
-                <Typography
-                    variant="body2"
-                    sx={{
-                        color,
-                    }}
-                >
-                    {stats.newStat} {difference !== 0 && `(${symbol}${difference})`}
-                </Typography>
-            </Stack>
-        )
-    }, [])
 
     if (!submodelDetails) {
         return (
@@ -75,30 +42,47 @@ export const MechSkinItem = ({ submodelDetails, equipped, selected, onSelect, is
             }}
             sx={{
                 position: "relative",
-                padding: "1rem",
                 backgroundColor: selected ? "#ffffff22" : "transparent",
+            }}
+            innerSx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
             }}
             onClick={() => onSelect(submodelDetails)}
         >
             {submodelDetails.equipped_on && (
                 <Box
                     sx={{
+                        zIndex: 1,
                         position: "absolute",
                         top: 0,
                         left: 0,
                         right: 0,
                         bottom: 0,
-                        backgroundColor: "black",
-                        opacity: 0.4,
                     }}
                 >
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            backgroundColor: "black",
+                            opacity: 0.4,
+                        }}
+                    ></Box>
                     <Typography
                         variant="h2"
                         sx={{
                             position: "absolute",
                             top: "50%",
                             left: "50%",
-                            transform: "translate(-50%, -50%)",
+                            transform: "translate(-50%, -50%) rotate(-45deg)",
+                            transformOrigin: "center",
+                            fontSize: "2rem",
+                            whiteSpace: "nowrap",
                         }}
                     >
                         IN USE
@@ -109,78 +93,61 @@ export const MechSkinItem = ({ submodelDetails, equipped, selected, onSelect, is
                 <SvgView
                     size="3rem"
                     sx={{
+                        zIndex: 1,
                         position: "absolute",
-                        top: "2rem",
-                        right: "2rem",
+                        top: "1rem",
+                        right: "1rem",
                         opacity: 0.5,
                     }}
                 />
             )}
-            <Stack direction="row" alignItems="stretch" padding="1rem">
-                <Box sx={{ width: "10rem" }}>
-                    <Box
-                        sx={{
-                            position: "relative",
-                            height: "9rem",
-                            width: "100%",
-                        }}
-                    >
-                        <Box
-                            component="img"
-                            src={
-                                submodelDetails.swatch_images?.avatar_url ||
-                                submodelDetails.swatch_images?.image_url ||
-                                submodelDetails.swatch_images?.large_image_url ||
-                                submodelDetails.avatar_url ||
-                                submodelDetails.image_url ||
-                                submodelDetails.large_image_url
-                            }
-                            sx={{
-                                position: "absolute",
-                                top: 0,
-                                left: 0,
-                                width: "100%",
-                                height: "100%",
-                                objectFit: "contain",
-                            }}
-                        />
-                    </Box>
-
-                    <Typography
-                        variant="h6"
-                        sx={{
-                            color: getRarityDeets(submodelDetails.tier).color,
-                            fontFamily: fonts.nostromoBlack,
-                        }}
-                    >
-                        {submodelDetails.tier}
-                    </Typography>
-                    <Typography
-                        variant="body2"
-                        sx={{
-                            textAlign: "center",
-                        }}
-                    >
-                        {submodelDetails.label}
-                    </Typography>
-                </Box>
-                <Divider
-                    orientation="vertical"
+            <Box>
+                <Box
                     sx={{
-                        alignSelf: "stretch",
-                        height: "auto",
-                        mx: "1rem",
-                        borderColor: "#494949",
+                        position: "relative",
+                        height: "9rem",
+                        width: "100%",
                     }}
-                />
-                <Stack>
-                    {typeof submodelDetails.level !== "undefined" &&
-                        renderStat("LEVEL", {
-                            oldStat: equipped?.level,
-                            newStat: submodelDetails.level,
-                        })}
-                </Stack>
-            </Stack>
+                >
+                    <Box
+                        component="img"
+                        src={
+                            submodelDetails.swatch_images?.avatar_url ||
+                            submodelDetails.swatch_images?.image_url ||
+                            submodelDetails.swatch_images?.large_image_url ||
+                            submodelDetails.avatar_url ||
+                            submodelDetails.image_url ||
+                            submodelDetails.large_image_url
+                        }
+                        sx={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "contain",
+                        }}
+                    />
+                </Box>
+
+                <Typography
+                    variant="h6"
+                    sx={{
+                        color: getRarityDeets(submodelDetails.tier).color,
+                        fontFamily: fonts.nostromoBlack,
+                    }}
+                >
+                    {submodelDetails.tier}
+                </Typography>
+                <Typography
+                    variant="body2"
+                    sx={{
+                        textAlign: "center",
+                    }}
+                >
+                    {submodelDetails.label}
+                </Typography>
+            </Box>
         </FancyButton>
     )
 }
