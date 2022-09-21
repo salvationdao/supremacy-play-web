@@ -149,7 +149,7 @@ export class PixiTargetHint {
         this.stageRoot.addChild(this.outerBorder)
         this.stageRoot.addChild(this.bottomContainer)
 
-        this.viewportRoot.pivot.set(this.viewportRoot.width / 2, this.viewportRoot.height / 2)
+        this.viewportRoot.pivot.set(this.viewportRoot.width / 2, this.countdownLabel.height / 2)
         ease.add(this.viewportRoot, { scale: 1.2 }, { duration: 500, ease: "linear", repeat: true, reverse: true, removeExisting: true })
 
         this.render()

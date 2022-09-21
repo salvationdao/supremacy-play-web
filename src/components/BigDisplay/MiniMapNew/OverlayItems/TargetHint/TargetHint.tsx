@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
-import { useGlobalNotifications, useMiniMapPixi, WinnerStruct } from "../../../../../containers"
+import { MapSelection, useGlobalNotifications, useMiniMapPixi, WinnerStruct } from "../../../../../containers"
 import { BlueprintPlayerAbility, GameAbility, PlayerAbility } from "../../../../../types"
 import { PixiTargetHint } from "./pixiTargetHint"
 
@@ -23,14 +23,14 @@ export const TargetHint = React.memo(function TargetHint() {
                     cancelable: false,
                 }
 
-                // If we are transitioning from player ability to winner, then do a 2 second gap
+                // If we are transitioning from player ability to winner, then do a X second gap
                 if (pa && !isTargetingWinner.current) {
                     setTargetHintAbility(undefined)
 
                     setTimeout(() => {
                         setTargetHintAbility(newTha)
                         isTargetingWinner.current = true
-                    }, 2000)
+                    }, 1000)
                 } else {
                     setTargetHintAbility(newTha)
                     isTargetingWinner.current = true
@@ -62,7 +62,7 @@ const propsAreEqual = (prevProps: TargetHintAbility, nextProps: TargetHintAbilit
 
 const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, cancelable }: TargetHintAbility) {
     const { newSnackbarMessage } = useGlobalNotifications()
-    const { pixiMainItems, mapMousePosition, gridSizeRef, selection, usePlayerAbility, useWinner } = useMiniMapPixi()
+    const { pixiMainItems, mapMousePosition, gridSizeRef, onSelectMapPositionCallbacks, usePlayerAbility, useWinner } = useMiniMapPixi()
     const [pixiTargetHint, setPixiTargetHint] = useState<PixiTargetHint>()
 
     const onCountdownExpired = useCallback(() => {
@@ -105,8 +105,11 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
     // If ability has an end time and selection is placed, hide the icon
     useEffect(() => {
         if (!pixiTargetHint || !endTime) return
-        pixiTargetHint.showIcon(!selection)
-    }, [selection, endTime, pixiTargetHint])
+
+        onSelectMapPositionCallbacks.current["target-hint"] = (mapPos: MapSelection | undefined) => {
+            pixiTargetHint.showIcon(!mapPos?.startCoords)
+        }
+    }, [endTime, onSelectMapPositionCallbacks, pixiTargetHint])
 
     return null
 }, propsAreEqual)
