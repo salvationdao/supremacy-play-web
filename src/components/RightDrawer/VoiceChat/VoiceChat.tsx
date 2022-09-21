@@ -285,31 +285,38 @@ const PlayerItem = ({ voiceStream, faction }: { voiceStream: VoiceStream; factio
                     imageUrl={faction.logo_url}
                     {...StyledImageText}
                 />
+                {voiceStream.listen_url && voiceStream.ovenPlayer &&
+                    <Box sx={{
+                        width: ".8rem",
+                        height: ".8rem",
+                        borderRadius: "50%",
+                        backgroundColor: voiceStream.ovenPlayer.getState() === "playing" ? colors.green : colors.red,
+                    }} />
+                }
+
             </Box>
 
 
-            <Box>
-                <Slider
-                    disabled={voiceStream.send_url != undefined}
-                    size="small"
-                    min={0}
-                    max={1}
-                    step={0.01}
-                    aria-label="Volume"
-                    value={isMute ? 0 : volume}
-                    onChange={handleVolumeChange}
-                    sx={{
-                        ml: "1.2rem",
-                        color: (theme) => theme.factionTheme.primary,
-                    }}
-                />
-            </Box>
+            <Slider
+                disabled={voiceStream.send_url != undefined}
+                size="small"
+                min={0}
+                max={1}
+                step={0.01}
+                aria-label="Volume"
+                value={isMute ? 0 : volume}
+                onChange={handleVolumeChange}
+                sx={{
+                    ml: "1.2rem",
+                    color: (theme) => theme.factionTheme.primary,
+                }}
+            />
 
 
             <IconButton size="small" onClick={() => toggleIsMute()} disabled={voiceStream.send_url != undefined}
                         sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}>
-                {isMute || volume <= 0 ? <SvgVolumeMute size="1.4rem" sx={{ pb: 0 }} /> :
-                    <SvgVolume size="1.4rem" sx={{ pb: 0 }} />}
+                {isMute || volume <= 0 ? <SvgVolumeMute size="2rem" sx={{ pb: 0 }} /> :
+                    <SvgVolume size="2rem" sx={{ pb: 0 }} />}
             </IconButton>
         </Box>
     )
