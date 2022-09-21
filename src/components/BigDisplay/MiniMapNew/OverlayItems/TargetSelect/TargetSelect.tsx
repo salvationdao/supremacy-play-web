@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import { useGlobalNotifications, useMiniMapPixi, WinnerStruct } from "../../../../../containers"
 import { BlueprintPlayerAbility, GameAbility, PlayerAbility } from "../../../../../types"
-import { PixiTargetHint } from "./pixiTargetHint"
+import { PixiTargetSelect } from "./pixiTargetSelect"
 
 interface TargetHintAbility {
     ability: GameAbility | BlueprintPlayerAbility
@@ -63,7 +63,7 @@ const propsAreEqual = (prevProps: TargetHintAbility, nextProps: TargetHintAbilit
 const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, cancelable }: TargetHintAbility) {
     const { newSnackbarMessage } = useGlobalNotifications()
     const { pixiMainItems, mapMousePosition, gridSizeRef, onSelectMapPositionCallbacks, usePlayerAbility, useWinner } = useMiniMapPixi()
-    const [pixiTargetHint, setPixiTargetHint] = useState<PixiTargetHint>()
+    const [pixiTargetHint, setPixiTargetHint] = useState<PixiTargetSelect>()
 
     const onCountdownExpired = useCallback(() => {
         newSnackbarMessage("Failed to submit target location on time.", "error")
@@ -77,7 +77,7 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
     // Initial setup for the mech and show on the map
     useEffect(() => {
         if (!pixiMainItems) return
-        const pixiTargetHint = new PixiTargetHint(
+        const pixiTargetHint = new PixiTargetSelect(
             pixiMainItems.viewport,
             mapMousePosition,
             gridSizeRef,

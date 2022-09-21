@@ -32,7 +32,7 @@ const getAbilityLabel = (ability: GameAbility | BlueprintPlayerAbility): string 
     return `${label} ${ability.label}.`
 }
 
-export class PixiTargetHint {
+export class PixiTargetSelect {
     stageRoot: PIXI.Container<PIXI.DisplayObject>
     viewportRoot: PIXI.Container<PIXI.DisplayObject>
     private colorOverlay: PIXI.Sprite

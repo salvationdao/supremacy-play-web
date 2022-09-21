@@ -9,7 +9,7 @@ import { colors } from "../../../theme/theme"
 import { Dimension } from "../../../types"
 import { MapScale } from "./OverlayItems/MapScale/MapScale"
 import { MechAbilities } from "./OverlayItems/MechAbilities/MechAbilities"
-import { TargetHint } from "./OverlayItems/TargetHint/TargetHint"
+import { TargetHint } from "./OverlayItems/TargetSelect/TargetSelect"
 import { MapMechs } from "./ViewportItems/MapMechs/MapMechs"
 
 interface PixiItems {
