@@ -60,47 +60,6 @@ const AppInner = () => {
         return () => clearTimeout(timeout)
     }, [toggleShowLoading])
 
-    if ((!serverConnectedBefore && !firstConnectTimedOut) || showLoading) {
-        return (
-            <Stack
-                spacing="3rem"
-                alignItems="center"
-                justifyContent="center"
-                sx={{
-                    position: "fixed",
-                    width: "100vw",
-                    height: "100%",
-                    backgroundColor: (theme) => theme.factionTheme.background,
-                }}
-            >
-                <Box
-                    sx={{
-                        width: "9rem",
-                        height: "9rem",
-                        background: `url(${SupremacyPNG})`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "center",
-                        backgroundSize: "contain",
-                    }}
-                />
-
-                <Stack alignItems="center" spacing=".8rem">
-                    <Typography variant="body2" sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack }}>
-                        CONNECTING...
-                    </Typography>
-                    <LinearProgress
-                        sx={{
-                            width: "13rem",
-                            height: "9px",
-                            backgroundColor: `${colors.gold}15`,
-                            ".MuiLinearProgress-bar": { backgroundColor: colors.gold },
-                        }}
-                    />
-                </Stack>
-            </Stack>
-        )
-    }
-
     return (
         <>
             <Stack
@@ -138,43 +97,10 @@ const AppInner = () => {
                             overflow: "hidden",
                         }}
                     >
-                        <Box sx={{ flex: 1, position: "relative", overflow: "hidden" }}>
-                            {isTraining ? (
-                                <TutorialPage />
-                            ) : !isServerDown ? (
-                                <Switch>
-                                    {ROUTES_ARRAY.map((r) => {
-                                        const { id, path, exact, Component, requireAuth, requireFaction, authTitle, authDescription, enable, pageTitle } = r
-                                        if (!enable) return null
-                                        let PageComponent = Component
-                                        if (requireAuth && !userID) {
-                                            const Comp = () => <AuthPage authTitle={authTitle} authDescription={authDescription} />
-                                            PageComponent = Comp
-                                        } else if (userID && requireFaction && !factionID) {
-                                            PageComponent = EnlistPage
-                                        }
-                                        if (!PageComponent) return null
-                                        return (
-                                            <Route key={id} path={path} exact={exact}>
-                                                <Helmet>
-                                                    <title>{pageTitle}</title>
-                                                    <link rel="canonical" href={`${LINK}/${path}`} />
-                                                </Helmet>
-                                                <PageComponent />
-                                            </Route>
-                                        )
-                                    })}
-                                    <Redirect to={ROUTES_MAP.not_found_page.path} />
-                                </Switch>
-                            ) : (
-                                <Maintenance />
-                            )}
-                        </Box>
+                        <Box sx={{ flex: 1, position: "relative", overflow: "hidden" }}>{isTraining ? <TutorialPage /> : <Maintenance />}</Box>
 
                         {isMobile && <BottomNav />}
                     </Stack>
-
-                    {!isServerDown && <RightDrawer />}
                 </Stack>
             </Stack>
 

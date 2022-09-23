@@ -168,7 +168,5 @@ export const QuestsPopover = ({
 
 const Countdown = ({ endTime }: { endTime?: Date }) => {
     const { totalSecRemain } = useTimer(endTime)
-    return (
-        <span>Resets {totalSecRemain > 0 ? "in " + timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000), true) : "soon"}</span>
-    )
+    return <span>Welcome to the Proving Grounds.</span>
 }

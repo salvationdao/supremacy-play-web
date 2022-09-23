@@ -2,6 +2,7 @@ import { Box, IconButton, Stack, Typography } from "@mui/material"
 import { LogoWEBP, MaintenancePNG, SvgDiscord, SvgTwitter, SvgYouTube } from "../../assets"
 import { SUPREMACY_PAGE } from "../../constants"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
+import { Link } from "react-router-dom"
 
 export const Maintenance = () => {
     return (
@@ -60,21 +61,66 @@ export const Maintenance = () => {
                                 textAlign: "center",
                                 fontFamily: fonts.nostromoHeavy,
                                 fontSize: "3.26rem",
+                                maxWidth: "70%",
+                                marginBottom: "3rem",
                             }}
                         >
-                            {"WE'LL BE BACK SOON"}
+                            {"Proving Grounds is closed pending Nexus release"}
                         </Typography>
-
                         <Typography
-                            variant="h5"
                             sx={{
-                                mb: ".4rem",
-                                color: colors.neonBlue,
                                 textAlign: "center",
+                                fontFamily: fonts.nostromoHeavy,
+                                fontSize: "1.5rem",
+                                maxWidth: "70%",
+                                marginBottom: "3rem",
                             }}
                         >
-                            FOLLOW OUR SOCIALS FOR MORE UPDATES
+                            {"Thank you for your support"}
+                            <br />
+                            {"Please join Discord for Nexus release announcements"}
                         </Typography>
+                        <Stack direction={"row"} sx={{ width: "90%" }}>
+                            <Typography
+                                variant="h5"
+                                sx={{
+                                    mb: ".4rem",
+                                    flex: 1,
+                                    textTransform: "uppercase",
+                                    color: colors.neonBlue,
+                                    textAlign: "center",
+                                }}
+                            >
+                                <Link to="/training?muted=false">
+                                    <span style={{ color: colors.neonBlue, fontWeight: "bold" }}>Do some battle training</span>
+                                </Link>
+                            </Typography>
+                            <Typography
+                                variant="h5"
+                                sx={{
+                                    mb: ".4rem",
+                                    flex: 1,
+                                    textTransform: "uppercase",
+                                    color: colors.neonBlue,
+                                    textAlign: "center",
+                                }}
+                            >
+                                <a href={"https://play.supremacy.game"}>
+                                    <span style={{ color: colors.neonBlue, fontWeight: "bold" }}>Play in the real thing</span>
+                                </a>
+                            </Typography>
+                            <Typography
+                                variant="h5"
+                                sx={{
+                                    mb: ".4rem",
+                                    flex: 1,
+                                    color: colors.neonBlue,
+                                    textAlign: "center",
+                                }}
+                            >
+                                <a href={"https://discord.gg/supremacygame"}>JOIN DISCORD</a>
+                            </Typography>
+                        </Stack>
 
                         <Stack direction="row" spacing="1.28rem" alignItems="center">
                             <IconButton size="small" target="_blank" href="https://discord.com/invite/supremacygame">
