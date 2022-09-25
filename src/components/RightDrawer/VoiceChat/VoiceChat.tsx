@@ -80,26 +80,24 @@ const Content = ({
                         }}
                     />
                 )}
-                <Stack spacing=".1rem">
+                <Stack width="100%" spacing=".1rem" direction="row" alignItems="center" justifyContent="space-between">
                     <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
-                        {user.faction_id ? `${acronym(faction.label)} ACTIVE PLAYERS` : "ACTIVE PLAYERS"}
+                        {user.faction_id && `${acronym(faction.label)} VOICE CHAT`}
                     </Typography>
-                    <Stack direction="row" alignItems="center" spacing="1.3rem">
-                        <Stack direction="row" alignItems="center" spacing=".4rem">
-                            <Box
-                                sx={{
-                                    width: ".8rem",
-                                    height: ".8rem",
-                                    borderRadius: "50%",
-                                    backgroundColor: colors.green,
+
+                    <Box>
+                        {connected ? (
+                            <Button onClick={onDisconnect}>Disconnect</Button>
+                        ) : (
+                            <Button
+                                onClick={() => {
+                                    onListen(listenStreams || [])
                                 }}
-                            />
-                            <Typography variant="body2" sx={{ lineHeight: 1 }}>
-                                <strong>Active: </strong>
-                                {activePlayers.length}
-                            </Typography>
-                        </Stack>
-                    </Stack>
+                            >
+                                Listen
+                            </Button>
+                        )}
+                    </Box>
                 </Stack>
             </Stack>
 
@@ -132,23 +130,65 @@ const Content = ({
                         })}
                 </Box>
             </Box>
-            {connected ? (
-                <Button
-                    onClick={() => {
-                        onDisconnect()
+
+            <Stack
+                p="1.5rem"
+                sx={{
+                    background: `linear-gradient(${bannerColor} 26%, ${bannerColor}95)`,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                }}
+            >
+                <StyledImageText
+                    textSx={{
+                        color: "#FFF",
+                    }}
+                    text={
+                        <>
+                            {`${user.username}`}
+                            <span style={{ marginLeft: ".2rem", opacity: 0.8, color: "#FFF" }}>{`#${user.gid}`}</span>
+                        </>
+                    }
+                    color={faction.primary_color}
+                    imageUrl={faction.logo_url}
+                    {...StyledImageText}
+                />
+                <Stack
+                    sx={{
+                        flexDirection: "row",
+                        alignItems: "center",
                     }}
                 >
-                    Disconnect
-                </Button>
-            ) : (
-                <Button
-                    onClick={() => {
-                        onListen(listenStreams || [])
-                    }}
-                >
-                    Listen
-                </Button>
-            )}
+                    <IconButton
+                        size="small"
+                        onClick={() => {
+                            //
+                        }}
+                        sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}
+                    >
+                        <SvgVolume size="2rem" sx={{ pb: 0 }} />
+                    </IconButton>
+                    <IconButton
+                        size="small"
+                        onClick={() => {
+                            //
+                        }}
+                        sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}
+                    >
+                        <SvgVolume size="2rem" sx={{ pb: 0 }} />
+                    </IconButton>{" "}
+                    <IconButton
+                        size="small"
+                        onClick={() => {
+                            //
+                        }}
+                        sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}
+                    >
+                        <SvgVolume size="2rem" sx={{ pb: 0 }} />
+                    </IconButton>
+                </Stack>
+            </Stack>
         </Stack>
     )
 }
@@ -175,8 +215,8 @@ const PlayerItem = ({ voiceStream, faction }: { voiceStream: VoiceStream; factio
     }, [volume, isMute])
 
     return (
-        <Box mt="1rem" sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <Box>
+        <Box ml="1.5rem" mt="1rem" sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <Box width="15rem">
                 <StyledImageText
                     key={voiceStream.listen_url}
                     text={
@@ -201,54 +241,27 @@ const PlayerItem = ({ voiceStream, faction }: { voiceStream: VoiceStream; factio
                 )}
             </Box>
 
-            {/* <Box>
-                <Slider
-                    disabled={voiceStream.send_url != undefined}
-                    size="small"
-                    min={0}
-                    max={1}
-                    step={0.01}
-                    aria-label="Volume"
-                    value={isMute ? 0 : volume}
-                    onChange={handleVolumeChange}
-                    sx={{
-                        ml: "1.2rem",
-                        color: (theme) => theme.factionTheme.primary,
-                    }}
-                />
-            </Box> */}
-            {/* 
-            <IconButton
-                size="small"
-                onClick={() => toggleIsMute()}
-                disabled={voiceStream.send_url != undefined}
-                sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}
-            >
-                {isMute || volume <= 0 ? <SvgVolumeMute size="1.4rem" sx={{ pb: 0 }} /> : <SvgVolume size="1.4rem" sx={{ pb: 0 }} />} */}
-
-            <Slider
-                disabled={voiceStream.send_url != undefined}
-                size="small"
-                min={0}
-                max={1}
-                step={0.01}
-                aria-label="Volume"
-                value={isMute ? 0 : volume}
-                onChange={handleVolumeChange}
-                sx={{
-                    ml: "1.2rem",
-                    color: (theme) => theme.factionTheme.primary,
-                }}
-            />
-
-            <IconButton
-                size="small"
-                onClick={() => toggleIsMute()}
-                disabled={voiceStream.send_url != undefined}
-                sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}
-            >
-                {isMute || volume <= 0 ? <SvgVolumeMute size="2rem" sx={{ pb: 0 }} /> : <SvgVolume size="2rem" sx={{ pb: 0 }} />}
-            </IconButton>
+            {!voiceStream.send_url && (
+                <>
+                    <Slider
+                        // disabled={ }
+                        size="small"
+                        min={0}
+                        max={1}
+                        step={0.01}
+                        aria-label="Volume"
+                        value={isMute ? 0 : volume}
+                        onChange={handleVolumeChange}
+                        sx={{
+                            ml: "1.2rem",
+                            color: (theme) => theme.factionTheme.primary,
+                        }}
+                    />
+                    <IconButton size="small" onClick={() => toggleIsMute()} sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}>
+                        {isMute || volume <= 0 ? <SvgVolumeMute size="2rem" sx={{ pb: 0 }} /> : <SvgVolume size="2rem" sx={{ pb: 0 }} />}
+                    </IconButton>
+                </>
+            )}
         </Box>
     )
 }
