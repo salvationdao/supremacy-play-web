@@ -6,6 +6,7 @@ import { GameServerKeys } from "../keys"
 import { Arena, ArenaStatus, ArenaType } from "../types"
 import OvenLiveKit from "ovenlivekit"
 import { OvenPlayerInstance } from "./oven"
+import { LiveChat } from "../components"
 
 export const ArenaContainer = createContainer(() => {
     const [arenaList, setArenaList] = useState<Arena[]>([])
@@ -83,18 +84,29 @@ export const ArenaContainer = createContainer(() => {
                 if (l.ovenPlayer) {
                     l.ovenPlayer?.remove()
                 }
-                console.log("live kit obj", l.liveKit)
 
-                if (l.liveKit) {
-                    l.liveKit?.remove()
-                    l.liveKit = undefined
+                if (l.liveKit && l.liveKit.getUserMedia) {
+                    console.log("live kit obj", l.liveKit)
 
-                    // const constraints = { video: false, audio: true }
+                    // l.liveKit?.remove()
+                    // l.liveKit = undefined
 
-                    // l.liveKit.getUserMedia(constraints).then(function (d: any) {
-                    //     console.log("live kit obj2", l.liveKit)
+                    const constraints = { video: false, audio: true }
 
-                    //     l.liveKit.stopStreaming()
+                    l.liveKit.getUserMedia(constraints).then(function (d: any) {
+                        console.log("live kit obj2", l.liveKit)
+                        console.log("deez", d.getAudioTracks())
+
+                        d.getTracks().map((at: any) => {
+                            at.stop()
+                        })
+
+                        // l.liveKit.stopStreaming()
+                    })
+                    // navigator.mediaDevices.getUserMedia(constraints).then((s) => {
+                    //     s.getAudioTracks().map((at) => {
+                    //         at.stop()
+                    //     })
                     // })
                 }
                 setConnected(false)
@@ -144,9 +156,8 @@ export const ArenaContainer = createContainer(() => {
         // voice chat
         listenStreams,
         setListenStreams,
-        onListen,
         connected,
-
+        onListen,
         onDisconnect,
     }
 })
