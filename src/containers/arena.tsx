@@ -6,7 +6,6 @@ import { GameServerKeys } from "../keys"
 import { Arena, ArenaStatus, ArenaType } from "../types"
 import OvenLiveKit from "ovenlivekit"
 import { OvenPlayerInstance } from "./oven"
-import { LiveChat } from "../components"
 
 export const ArenaContainer = createContainer(() => {
     const [arenaList, setArenaList] = useState<Arena[]>([])
@@ -27,8 +26,6 @@ export const ArenaContainer = createContainer(() => {
     }, [])
 
     // listen stream
-    // const ovenPlayer = useRef<OvenPlayerInstance>()
-
     const listen = useCallback((stream: VoiceStream) => {
         if (document.getElementById(stream.listen_url)) {
             const newOvenPlayer = OvenPlayer.create(stream.listen_url, {
@@ -49,7 +46,7 @@ export const ArenaContainer = createContainer(() => {
                 console.log("voice chat ready Ready.")
             })
 
-            newOvenPlayer.on("error", (err: any) => {
+            newOvenPlayer.on("error", (err: { code: number }) => {
                 if (!connected) return
                 if (err.code === 501) {
                     console.log("501: failed to connnect attempting to recconnect", err)
@@ -57,6 +54,7 @@ export const ArenaContainer = createContainer(() => {
                     console.error("voice chat error: ", err)
                 }
 
+                // try reconnect on error
                 setTimeout(() => {
                     listen(stream)
                 }, 1000)
@@ -64,13 +62,11 @@ export const ArenaContainer = createContainer(() => {
 
             newOvenPlayer.play()
             stream.ovenPlayer = newOvenPlayer
-            // ovenPlayer.current = newOvenPlayer
 
             return () => {
                 newOvenPlayer.off("ready")
                 newOvenPlayer.off("error")
                 newOvenPlayer.remove()
-                // ovenPlayer.current = undefined
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -95,19 +91,14 @@ export const ArenaContainer = createContainer(() => {
 
                     l.liveKit.getUserMedia(constraints).then(function (d: any) {
                         console.log("live kit obj2", l.liveKit)
-                        console.log("deez", d.getAudioTracks())
+                        console.log("tracks", d.getTracks())
 
                         d.getTracks().map((at: any) => {
+                            at.enabled = false
                             at.stop()
                         })
-
-                        // l.liveKit.stopStreaming()
+                        console.log("tracks after", d.getTracks())
                     })
-                    // navigator.mediaDevices.getUserMedia(constraints).then((s) => {
-                    //     s.getAudioTracks().map((at) => {
-                    //         at.stop()
-                    //     })
-                    // })
                 }
                 setConnected(false)
             })
@@ -119,7 +110,7 @@ export const ArenaContainer = createContainer(() => {
             onListen(listenStreams)
             return
         }
-        onDisconnect()
+        // onDisconnect()
     }, [connected, listenStreams])
 
     const startStream = useCallback((stream: VoiceStream, url: string) => {

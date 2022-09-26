@@ -17,6 +17,8 @@ import DropdownArrow from "!@svgr/webpack!./svg/DropdownArrow.svg"
 import Emoji from "!@svgr/webpack!./svg/Emoji.svg"
 import EmojiSelector from "!@svgr/webpack!./svg/EmojiSelector.svg"
 import Energy from "!@svgr/webpack!./svg/Energy.svg"
+import Headphone from "!@svgr/webpack!./svg/Headphone.svg"
+import Microphone from "!@svgr/webpack!./svg/Microphone.svg"
 import ExternalLink from "!@svgr/webpack!./svg/ExternalLink.svg"
 import FastRepair from "!@svgr/webpack!./svg/FastRepair.svg"
 import FontCase from "!@svgr/webpack!./svg/FontCase.svg"
@@ -345,6 +347,18 @@ export const SvgWrapper = React.memo(function SvgWrapper({ fill, stroke, strokeW
 export const SvgVoice: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <VoiceChat />
+    </SvgWrapper>
+)
+
+export const SvgHeadphone: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Headphone />
+    </SvgWrapper>
+)
+
+export const SvgMicrophone: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Microphone />
     </SvgWrapper>
 )
 
