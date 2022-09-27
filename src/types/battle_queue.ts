@@ -14,6 +14,7 @@ export interface BattleLobby {
     generated_by_system: boolean
     ready_at?: Date
     assigned_to_battle_id?: string
+    assigned_to_arena_id?: string
     ended_at?: Date
     created_at: Date
     deleted_at?: Date

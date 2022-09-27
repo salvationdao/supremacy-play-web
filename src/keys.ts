@@ -48,11 +48,9 @@ export enum GameServerKeys {
 
     // Asset / queue
     SubBattleLobbyListUpdate = "BATTLE:LOBBY:LIST:UPDATE",
-    SubBattleBountyListUpdate = "BATTLE:BOUNTY:LIST:UPDATE",
     CreateBattleLobby = "BATTLE:LOBBY:CREATE",
     JoinBattleLobby = "BATTLE:LOBBY:JOIN",
     LeaveBattleLobby = "BATTLE:LOBBY:LEAVE",
-    CreateBattleBounty = "BATTLE:BOUNTY:CREATE",
     SubQueueFeed = "BATTLE:QUEUE:STATUS:SUBSCRIBE", // removed in backend
     GetMechs = "PLAYER:ASSET:MECH:LIST",
     PlayerQueueStatus = "PLAYER:QUEUE:STATUS",

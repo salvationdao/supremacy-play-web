@@ -1,5 +1,4 @@
 import { useTheme } from "../../../containers/theme"
-import { useBattleLobby } from "../../../containers/battleLobby"
 import { Box, Pagination, Stack, Typography } from "@mui/material"
 import { BattleLobbyItem } from "./BattleLobbyItem"
 import { useEffect, useMemo, useState } from "react"
@@ -15,6 +14,9 @@ import FlipMove from "react-flip-move"
 import { BattleLobby } from "../../../types/battle_queue"
 import { FancyButton } from "../../Common/FancyButton"
 import { BattleLobbyJoinModal } from "../BattleLobbyJoinModal"
+import { useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
+import { useArena } from "../../../containers"
 
 const sortOptionsPending: { label: string; value: string }[] = [
     { label: SortTypeLabel.QueuedAmountHighest, value: SortTypeLabel.QueuedAmountHighest },
@@ -34,7 +36,42 @@ enum filterLobbyStatus {
 
 export const BattleLobbies = () => {
     const theme = useTheme()
-    const { battleLobbies } = useBattleLobby()
+    const { arenaList } = useArena()
+
+    // load battle lobbies
+    const [battleLobbies, setBattleLobbies] = useState<BattleLobby[]>([])
+    useGameServerSubscriptionSecured<BattleLobby[]>(
+        {
+            URI: `/battle_lobbies`,
+            key: GameServerKeys.SubBattleLobbyListUpdate,
+        },
+        (payload) => {
+            if (!payload) return
+            setBattleLobbies((bls) => {
+                if (bls.length === 0) {
+                    return payload
+                }
+
+                // replace current list
+                let list = bls.map((bl) => payload.find((p) => p.id === bl.id) || bl)
+
+                // append new list
+                payload.forEach((p) => {
+                    // if already exists
+                    if (list.some((b) => b.id === p.id)) {
+                        return
+                    }
+                    // otherwise, push to the list
+                    list.push(p)
+                })
+
+                // remove any finished lobby
+                list = list.filter((bl) => !bl.ended_at && !bl.deleted_at)
+
+                return list
+            })
+        },
+    )
     const [list, setList] = useState<BattleLobby[]>([])
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
@@ -89,6 +126,10 @@ export const BattleLobbies = () => {
             case SortTypeLabel.ReadyTimeOldestFirst:
                 sorted = sorted.sort((a, b) => (!!a.ready_at && !!b.ready_at && a.ready_at < b.ready_at ? -1 : 1))
                 break
+        }
+
+        if (lobbyStatus === filterLobbyStatus.Ready) {
+            sorted = sorted.sort((a, b) => (a.assigned_to_arena_id && !b.assigned_to_arena_id ? -1 : 1))
         }
 
         // pagination

@@ -3,9 +3,10 @@ import { useTheme } from "../../../containers/theme"
 import { Box, Stack, Typography } from "@mui/material"
 import { fonts } from "../../../theme/theme"
 import { ClipThing } from "../../Common/ClipThing"
-import React from "react"
+import React, { useMemo } from "react"
 import { camelToTitle, supFormatter } from "../../../helpers"
 import { BattleLobbyMechSlots } from "./BattleLobbyMechSlots"
+import { useArena } from "../../../containers"
 
 interface BattleLobbyItemProps {
     battleLobby: BattleLobby
@@ -17,16 +18,20 @@ const propsAreEqual = (prevProps: BattleLobbyItemProps, nextProps: BattleLobbyIt
         prevProps.battleLobby.ready_at === nextProps.battleLobby.ready_at &&
         prevProps.battleLobby.ended_at === nextProps.battleLobby.ended_at &&
         prevProps.battleLobby.deleted_at === nextProps.battleLobby.deleted_at &&
+        prevProps.battleLobby.assigned_to_battle_id === nextProps.battleLobby.assigned_to_battle_id &&
+        prevProps.battleLobby.assigned_to_arena_id === nextProps.battleLobby.assigned_to_arena_id &&
         prevProps.battleLobby.battle_lobbies_mechs === nextProps.battleLobby.battle_lobbies_mechs
     )
 }
 
 export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby }: BattleLobbyItemProps) {
     const theme = useTheme()
-    const { game_map, number, entry_fee, first_faction_cut, second_faction_cut, third_faction_cut } = battleLobby
+    const { arenaList } = useArena()
+    const { game_map, number, entry_fee, first_faction_cut, second_faction_cut, third_faction_cut, assigned_to_arena_id } = battleLobby
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
     const { battle_lobbies_mechs, ready_at } = battleLobby
+    const assignedToArenaName = useMemo(() => arenaList.find((a) => a.id === assigned_to_arena_id)?.name, [arenaList, assigned_to_arena_id])
 
     return (
         <Stack sx={{ color: primaryColor, textAlign: "start", height: "100%" }}>
@@ -67,9 +72,10 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                         <Stack direction="column" height="100%" width="22%">
                             <Typography sx={{ fontFamily: fonts.nostromoBlack }}>Lobby #{number}</Typography>
                             <Typography sx={{ fontFamily: fonts.nostromoBlack }}>MAP: {game_map ? camelToTitle(game_map.name) : "Random"}</Typography>
-                            <Typography sx={{ fontFamily: fonts.nostromoBlack }}>JOIN FEE: {entry_fee ? supFormatter(entry_fee) : "0"}</Typography>
+                            {assignedToArenaName && <Typography sx={{ fontFamily: fonts.nostromoBlack }}>Arena: {assignedToArenaName}</Typography>}
                             {entry_fee !== "0" && (
                                 <>
+                                    <Typography sx={{ fontFamily: fonts.nostromoBlack }}>JOIN FEE: {entry_fee ? supFormatter(entry_fee) : "0"}</Typography>
                                     <Typography sx={{ fontFamily: fonts.nostromoBlack }}>DISTRIBUTION (1 - 2 - 3)</Typography>
                                     <Typography sx={{ fontFamily: fonts.nostromoBlack }}>
                                         {`${Math.round(parseFloat(first_faction_cut) * 100)}% - ${Math.round(

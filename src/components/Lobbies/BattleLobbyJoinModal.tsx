@@ -1,11 +1,10 @@
 import { BattleLobby } from "../../types/battle_queue"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { ConfirmModal } from "../Common/ConfirmModal"
-import { useBattleLobby } from "../../containers/battleLobby"
 import { Box, Pagination, Stack, Typography } from "@mui/material"
 import { QuickDeployItem } from "../LeftDrawer/QuickDeploy/QuickDeployItem"
 import { GameServerKeys } from "../../keys"
-import { useGameServerCommandsFaction } from "../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } from "../../hooks/useGameServer"
 import { QueueDetails } from "../LeftDrawer/QuickDeploy/QueueDetails"
 import { MechBasicWithQueueStatus } from "../../types"
 import { usePagination } from "../../hooks"
@@ -32,15 +31,57 @@ interface BattleLobbyJoinModalProps {
 
 export const BattleLobbyJoinModal = ({ selectedBattleLobby, setSelectedBattleLobby }: BattleLobbyJoinModalProps) => {
     const { factionTheme } = useTheme()
-    const { mechsWithQueueStatus, playerQueueStatus } = useBattleLobby()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [selectedMechIDs, setSelectedMechIDs] = useState<string[]>([])
     const [error, setError] = useState("")
 
-    const [currentPlayerQueue, setCurrentPlayerQueue] = useState<PlayerQueueStatus>(playerQueueStatus)
-    useEffect(() => {
-        setCurrentPlayerQueue(playerQueueStatus)
-    }, [playerQueueStatus])
+    const [currentPlayerQueue, setCurrentPlayerQueue] = useState<PlayerQueueStatus>({
+        queue_limit: 10,
+        total_queued: 0,
+    })
+    useGameServerSubscriptionSecuredUser<PlayerQueueStatus>(
+        {
+            URI: "/queue_status",
+            key: GameServerKeys.PlayerQueueStatus,
+        },
+        (payload) => {
+            setCurrentPlayerQueue(payload)
+
+            console.log(payload)
+        },
+    )
+
+    const [mechsWithQueueStatus, setMechsWithQueueStatus] = useState<MechBasicWithQueueStatus[]>([])
+    useGameServerSubscriptionSecuredUser<MechBasicWithQueueStatus[]>(
+        {
+            URI: "/owned_mechs",
+            key: GameServerKeys.SubPlayerMechsBrief,
+        },
+        (payload) => {
+            if (!payload) return
+
+            setMechsWithQueueStatus((mqs) => {
+                if (mqs.length === 0) {
+                    return payload
+                }
+
+                // replace current list
+                const list = mqs.map((mq) => payload.find((p) => p.id === mq.id) || mq)
+
+                // append new list
+                payload.forEach((p) => {
+                    // if already exists
+                    if (list.some((mq) => mq.id === p.id)) {
+                        return
+                    }
+                    // otherwise, push to the list
+                    list.push(p)
+                })
+
+                return list
+            })
+        },
+    )
 
     const [list, setList] = useState<MechBasicWithQueueStatus[]>([])
     const { page, changePage, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
@@ -50,14 +91,14 @@ export const BattleLobbyJoinModal = ({ selectedBattleLobby, setSelectedBattleLob
 
     const selectLimit = useMemo(() => {
         const queueLimit = selectedBattleLobby?.each_faction_mech_amount || 3
-        const playerQueueRemain = playerQueueStatus.queue_limit - playerQueueStatus.total_queued
+        const playerQueueRemain = currentPlayerQueue.queue_limit - currentPlayerQueue.total_queued
 
         if (queueLimit < playerQueueRemain) {
             return queueLimit
         }
 
         return playerQueueRemain
-    }, [playerQueueStatus, selectedBattleLobby])
+    }, [currentPlayerQueue, selectedBattleLobby])
 
     const [search, setSearch] = useState("")
     const [sort, setSort] = useState<string>(SortTypeLabel.RarestDesc)

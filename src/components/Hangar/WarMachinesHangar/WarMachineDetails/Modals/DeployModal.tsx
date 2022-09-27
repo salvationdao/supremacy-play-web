@@ -4,12 +4,13 @@ import { FancyButton, TooltipHelper } from "../../../.."
 import { SvgInfoCircular, SvgSupToken } from "../../../../../assets"
 import { useGlobalNotifications } from "../../../../../containers"
 import { supFormatter } from "../../../../../helpers"
-import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscriptionFaction, useGameServerSubscriptionSecuredUser } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
 import { MechDetails } from "../../../../../types"
 import { MechModal } from "../../Common/MechModal"
 import { useBattleLobby } from "../../../../../containers/battleLobby"
+import { PlayerQueueStatus } from "../../../../LeftDrawer/QuickDeploy/QuickDeploy"
 
 export interface QueueFeed {
     queue_position: number
@@ -24,8 +25,23 @@ interface DeployModalProps {
 
 export const DeployModal = ({ selectedMechDetails: deployMechDetails, deployMechModalOpen, setDeployMechModalOpen }: DeployModalProps) => {
     const { newSnackbarMessage } = useGlobalNotifications()
-    const { playerQueueStatus } = useBattleLobby()
     const { send } = useGameServerCommandsFaction("/faction_commander")
+
+    const [playerQueueStatus, setPlayerQueueStatus] = useState<PlayerQueueStatus>({
+        queue_limit: 10,
+        total_queued: 0,
+    })
+    useGameServerSubscriptionSecuredUser<PlayerQueueStatus>(
+        {
+            URI: "/queue_status",
+            key: GameServerKeys.PlayerQueueStatus,
+        },
+        (payload) => {
+            setPlayerQueueStatus(payload)
+
+            console.log(payload)
+        },
+    )
 
     const [isLoading, setIsLoading] = useState(false)
     const [deployQueueError, setDeployQueueError] = useState<string>()

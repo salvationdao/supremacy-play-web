@@ -18,7 +18,9 @@ import { QueueDetails } from "../../LeftDrawer/QuickDeploy/QueueDetails"
 import { BulkRepairConfirmModal } from "./Common/BulkRepairConfirmModal"
 import { RepairBay } from "./RepairBay/RepairBay"
 import { WarMachineHangarItem } from "./WarMachineHangarItem"
-import { useBattleLobby } from "../../../containers/battleLobby"
+import { useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
+import { PlayerQueueStatus } from "../../LeftDrawer/QuickDeploy/QuickDeploy"
 
 const sortOptions = [
     { label: SortTypeLabel.MechQueueAsc, value: SortTypeLabel.MechQueueAsc },
@@ -33,8 +35,55 @@ export const WarMachinesHangar = () => {
     const [query, updateQuery] = useUrlQuery()
     const theme = useTheme()
 
+    const [playerQueueStatus, setPlayerQueueStatus] = useState<PlayerQueueStatus>({
+        queue_limit: 10,
+        total_queued: 0,
+    })
+    useGameServerSubscriptionSecuredUser<PlayerQueueStatus>(
+        {
+            URI: "/queue_status",
+            key: GameServerKeys.PlayerQueueStatus,
+        },
+        (payload) => {
+            setPlayerQueueStatus(payload)
+
+            console.log(payload)
+        },
+    )
+
     // Items
-    const { mechsWithQueueStatus, playerQueueStatus } = useBattleLobby()
+    const [mechsWithQueueStatus, setMechsWithQueueStatus] = useState<MechBasicWithQueueStatus[]>([])
+    useGameServerSubscriptionSecuredUser<MechBasicWithQueueStatus[]>(
+        {
+            URI: "/owned_mechs",
+            key: GameServerKeys.SubPlayerMechsBrief,
+        },
+        (payload) => {
+            if (!payload) return
+
+            setMechsWithQueueStatus((mqs) => {
+                if (mqs.length === 0) {
+                    return payload
+                }
+
+                // replace current list
+                const list = mqs.map((mq) => payload.find((p) => p.id === mq.id) || mq)
+
+                // append new list
+                payload.forEach((p) => {
+                    // if already exists
+                    if (list.some((mq) => mq.id === p.id)) {
+                        return
+                    }
+                    // otherwise, push to the list
+                    list.push(p)
+                })
+
+                return list
+            })
+        },
+    )
+
     const [list, setList] = useState<MechBasicWithQueueStatus[]>([])
 
     // Bulk action
@@ -445,7 +494,6 @@ export const WarMachinesHangar = () => {
             onUnSelectAll,
             page,
             pageSize,
-            playerQueueStatus,
             search,
             selectedMechs,
             sort,

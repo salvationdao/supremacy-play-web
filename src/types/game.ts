@@ -247,6 +247,7 @@ export enum ArenaType {
 
 export interface Arena {
     id: string
+    name: string
     type: ArenaType
     gid: number
     status?: ArenaStatus
