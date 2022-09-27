@@ -2,7 +2,6 @@ import { ease } from "pixi-ease"
 import { Viewport } from "pixi-viewport"
 import * as PIXI from "pixi.js"
 import { AbilityCancelPNG } from "../../../../../assets"
-import { MapSelection } from "../../../../../containers"
 import { HEXToVBColor } from "../../../../../helpers"
 import { PixiImageIcon } from "../../../../../helpers/pixiHelpers"
 import { fonts } from "../../../../../theme/theme"
@@ -36,11 +35,11 @@ const getAbilityLabel = (ability: GameAbility | BlueprintPlayerAbility): string 
 export class PixiTargetSelect {
     stageRoot: PIXI.Container<PIXI.DisplayObject>
     viewportRoot: PIXI.Container<PIXI.DisplayObject>
+    mouseIcon: PixiImageIcon
     private colorOverlay: PIXI.Sprite
     private outerBorder: PIXI.Graphics
     private bottomContainer: PIXI.Graphics
     private cancelButton: PIXI.Sprite | undefined
-    private mouseIcon: PixiImageIcon
 
     private viewport: Viewport
     private ability: GameAbility | BlueprintPlayerAbility
@@ -124,26 +123,14 @@ export class PixiTargetSelect {
         )
 
         // Start and end coord icons, made invisible
-        this.startCoord = new PixiImageIcon(
-            ability.image_url,
-            gridSizeRef.current.width,
-            gridSizeRef.current.height,
-            ability.colour,
-            true,
-            onExpired,
-            secondsLeft,
-        )
-        this.endCoord = new PixiImageIcon(
-            ability.image_url,
-            gridSizeRef.current.width,
-            gridSizeRef.current.height,
-            ability.colour,
-            true,
-            onExpired,
-            secondsLeft,
-        )
+        this.startCoord = new PixiImageIcon(ability.image_url, gridSizeRef.current.width, gridSizeRef.current.height, ability.colour, true)
+        this.endCoord = new PixiImageIcon(ability.image_url, gridSizeRef.current.width, gridSizeRef.current.height, ability.colour, true)
         this.startCoord.showIcon(false)
         this.endCoord.showIcon(false)
+        this.startCoord.root.interactive = true
+        this.startCoord.root.buttonMode = true
+        this.endCoord.root.interactive = true
+        this.endCoord.root.buttonMode = true
 
         // Add everything to container
         this.viewportRoot.addChild(this.mouseIcon.root)
@@ -197,11 +184,21 @@ export class PixiTargetSelect {
 
     setStartCoord(pos: Position | undefined, onClick?: () => void) {
         this.startCoord.showIcon(!!pos)
-        if (pos) this.startCoord.root.position.set(pos.x, pos.y)
+        if (pos) {
+            this.startCoord.root.position.set(pos.x, pos.y)
+            if (onClick) this.startCoord.root.once("pointerup", onClick)
+        } else {
+            this.mouseIcon.showIcon(true)
+        }
     }
 
     setEndCoord(pos: Position | undefined, onClick?: () => void) {
         this.endCoord.showIcon(!!pos)
-        if (pos) this.endCoord.root.position.set(pos.x, pos.y)
+        if (pos) {
+            this.endCoord.root.position.set(pos.x, pos.y)
+            if (onClick) this.endCoord.root.once("pointerup", onClick)
+        } else {
+            this.mouseIcon.showIcon(true)
+        }
     }
 }

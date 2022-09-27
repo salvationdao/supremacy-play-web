@@ -145,13 +145,13 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
             // Immediately render the mech move dashed line when player selects it for fast UX
             if (!wn && pa?.ability.location_select_type === LocationSelectType.MechCommand && pa.mechHash === hash) {
-                if (mapPos?.startCoords) {
+                if (mapPos?.position) {
                     const mCommand: MechMoveCommand = {
                         id: "move_command",
                         mech_id: id,
                         triggered_by_id: "x",
-                        cell_x: mapPos.startCoords.x,
-                        cell_y: mapPos.startCoords.y,
+                        cell_x: mapPos.position.x,
+                        cell_y: mapPos.position.y,
                         is_moving: true,
                         remain_cooldown_seconds: 0,
                         is_mini_mech: false,

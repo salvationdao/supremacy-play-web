@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import { MapSelection, useGlobalNotifications, useMiniMapPixi, WinnerStruct } from "../../../../../containers"
-import { BlueprintPlayerAbility, GameAbility, LocationSelectType, PlayerAbility } from "../../../../../types"
+import { BlueprintPlayerAbility, GameAbility, LocationSelectType, PlayerAbility, Position } from "../../../../../types"
 import { PixiTargetSelect } from "./pixiTargetSelect"
 
 interface TargetHintAbility {
@@ -73,6 +73,8 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
         selectMapPosition,
     } = useMiniMapPixi()
     const [pixiTargetHint, setPixiTargetHint] = useState<PixiTargetSelect>()
+    const selectedStartCoord = useRef<Position>()
+    const selectedEndCoord = useRef<Position>()
 
     const onCountdownExpired = useCallback(() => {
         newSnackbarMessage("Failed to submit target location on time.", "error")
@@ -111,7 +113,6 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pixiTargetHint])
 
-    // If ability has an end time and selection is placed, hide the icon
     useEffect(() => {
         if (!pixiTargetHint) return
 
@@ -121,27 +122,48 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
             const isLineSelection = abilityType === LocationSelectType.LineSelect
 
             // If ability is not a map select type, ignore
-            if (!isLocationSelection && !isLineSelection) {
+            if ((!isLocationSelection && !isLineSelection) || !mapPos?.position) {
+                selectedStartCoord.current = undefined
+                selectedEndCoord.current = undefined
                 pixiTargetHint.setStartCoord(undefined)
                 pixiTargetHint.setEndCoord(undefined)
                 return
             }
 
-            if ((isLocationSelection || isLineSelection) && mapPos?.startCoords) {
-                const pos = gridCellToViewportPosition.current(mapPos.startCoords.x, mapPos.startCoords.y)
-                pixiTargetHint.setStartCoord(pos, () => selectMapPosition.current({ ...mapPos, startCoords: undefined }))
-            } else {
-                pixiTargetHint.setStartCoord(undefined)
+            // if its a location selection, then just play with the start coord, end coord not needed
+            if (isLocationSelection) {
+                selectedStartCoord.current = mapPos.position
+                selectedEndCoord.current = undefined
+                const pos = gridCellToViewportPosition.current(mapPos.position.x, mapPos.position.y)
+                pixiTargetHint.setStartCoord(pos, () => {
+                    selectedStartCoord.current = undefined
+                    pixiTargetHint.setStartCoord(undefined)
+                })
             }
 
-            if (isLineSelection && mapPos?.endCoords) {
-                const pos = gridCellToViewportPosition.current(mapPos.endCoords.x, mapPos.endCoords.y)
-                pixiTargetHint.setEndCoord(pos, () => selectMapPosition.current({ ...mapPos, endCoords: undefined }))
-            } else {
-                pixiTargetHint.setEndCoord(undefined)
+            // If its line select, then handle start and end coord accordingly
+            if (isLineSelection) {
+                const pos = gridCellToViewportPosition.current(mapPos.position.x, mapPos.position.y)
+
+                if (!selectedStartCoord.current) {
+                    selectedStartCoord.current = mapPos.position
+                    pixiTargetHint.setStartCoord(pos, () => {
+                        selectedStartCoord.current = undefined
+                        pixiTargetHint.setStartCoord(undefined)
+                    })
+                } else {
+                    selectedEndCoord.current = mapPos.position
+                    pixiTargetHint.setEndCoord(pos, () => {
+                        selectedEndCoord.current = undefined
+                        pixiTargetHint.setEndCoord(undefined)
+                    })
+                }
             }
 
-            // pixiTargetHint.showIcon(!mapPos?.startCoords)
+            // If ability has an end time and selection is placed, hide the icon
+            if (endTime) {
+                pixiTargetHint.mouseIcon.showIcon(!selectedStartCoord.current)
+            }
         }
     }, [ability.location_select_type, endTime, gridCellToViewportPosition, onSelectMapPositionCallbacks, pixiTargetHint, selectMapPosition])
 

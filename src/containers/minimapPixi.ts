@@ -18,11 +18,7 @@ export interface WinnerStruct {
 }
 
 export interface MapSelection {
-    // start coords (used for LINE_SELECT and LOCATION_SELECT abilities)
-    startCoords?: Position
-    // end coords (only used for LINE_SELECT abilities)
-    endCoords?: Position
-    // mech hash (only used for MECH_SELECT abilities)
+    position?: Position
     mechHash?: string
 }
 

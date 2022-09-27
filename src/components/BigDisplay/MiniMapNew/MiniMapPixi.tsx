@@ -203,22 +203,13 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
             if (!clickedPos) return
 
             if (winner.current || playerAbility.current) {
-                const coord = {
-                    x: clickedPos.x / gridSizeRef.current.width,
-                    y: clickedPos.y / gridSizeRef.current.height,
-                }
-
-                if (!selection.current?.startCoords) {
-                    selectMapPosition.current({
-                        ...selection.current,
-                        startCoords: coord,
-                    })
-                } else {
-                    selectMapPosition.current({
-                        ...selection.current,
-                        endCoords: coord,
-                    })
-                }
+                selectMapPosition.current({
+                    ...selection.current,
+                    position: {
+                        x: clickedPos.x / gridSizeRef.current.width,
+                        y: clickedPos.y / gridSizeRef.current.height,
+                    },
+                })
             }
         })
     }, [setHighlightedMechParticipantID, map, pixiMainItems, winner, playerAbility, gridSizeRef, selectMapPosition, selection])
