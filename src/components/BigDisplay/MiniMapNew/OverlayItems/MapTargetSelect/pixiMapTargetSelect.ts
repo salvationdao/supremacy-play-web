@@ -122,8 +122,6 @@ export class PixiMapTargetSelect {
         this.mouseIcon = new PixiImageIcon(ability.image_url, gridSizeRef.current.width / 1.6, gridSizeRef.current.height / 1.6, ability.colour, true)
         if (secondsLeft) {
             this.mouseIcon.startCountdown(secondsLeft, 1, onExpired)
-        } else {
-            onExpired()
         }
 
         // Start and end coord icons, made invisible
@@ -153,6 +151,7 @@ export class PixiMapTargetSelect {
 
     destroy() {
         if (this.animationFrame) cancelAnimationFrame(this.animationFrame)
+        this.mouseIcon.resetCountdown()
         this.viewportRoot.destroy()
         this.stageRoot.destroy()
     }
