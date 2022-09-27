@@ -134,7 +134,7 @@ export class PixiImageIcon {
             const text = Math.max(timeLeft, 0)
             this.countdownLabel.text = text <= 0 ? "" : text.toFixed(1)
             if (timeLeft <= 5) {
-                this.countdownLabel.style.fill = HEXToVBColor("#FF0000")
+                this.countdownLabel.style.fill = HEXToVBColor("#E62C2C")
             }
 
             if (totalElapsed * countdownSpeed > secondsLeft * 1000) {
