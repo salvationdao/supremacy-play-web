@@ -73,7 +73,7 @@ export const UnityViewer = ({ unityRef, mechDetails, unity }: UnityViewerProps) 
                               static_id: weapon.weapon_skin.blueprint_id,
                           }
                         : undefined,
-                }
+                } as SiloObject
                 sendMessage("SceneContext", "SetSlotIndexToChange", wu.slot_number)
                 sendMessage("SceneContext", "ChangeSlotValue", JSON.stringify(obj))
             }
@@ -92,6 +92,12 @@ export const UnityViewer = ({ unityRef, mechDetails, unity }: UnityViewerProps) 
         },
         handleMechSkinUpdate: (msu: LoadoutMechSkin) => {
             if (!msu.mech_skin) return
+            const obj = {
+                type: "skin",
+                ownership_id: msu.mech_skin_id,
+                static_id: msu.mech_skin.blueprint_id,
+            } as SiloObject
+            sendMessage("SceneContext", "ChangeMechSkin", JSON.stringify(obj))
             setIsPendingChange(true)
         },
     }))
