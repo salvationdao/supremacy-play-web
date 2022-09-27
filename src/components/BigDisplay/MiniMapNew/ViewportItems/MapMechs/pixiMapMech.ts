@@ -25,6 +25,7 @@ export class PixiMapMech {
     private primaryColor: string | undefined
     private cachedZIndex = 10
     private abilityToApply: PixiImageIcon | undefined
+    private dashedBox: PIXI.Graphics
 
     constructor(label: number) {
         // Create container for everything
@@ -81,6 +82,10 @@ export class PixiMapMech {
         this.mechMoveSprite.zIndex = 2
         this.mechMoveDashedLine.zIndex = 1
 
+        // Dashed border box for mech ability select
+        this.dashedBox = new PIXI.Graphics()
+        ease.add(this.dashedBox, { scale: 1.1 }, { duration: 1000, ease: "linear", repeat: true, reverse: true, removeExisting: true })
+
         // Add everything to container
         this.rootInner.addChild(this.rectGraphics)
         this.rootInner.addChild(this.arrowGraphics)
@@ -88,6 +93,7 @@ export class PixiMapMech {
         this.rootInner.addChild(this.hpBar.root)
         this.rootInner.addChild(this.shieldBar.root)
         this.rootInner.addChild(this.highlightedCircle)
+        this.rootInner.addChild(this.dashedBox)
         this.rootInner.addChild(this.skull)
         this.root.addChild(this.rootInner)
         this.root.addChild(this.mechMoveSprite)
@@ -286,5 +292,30 @@ export class PixiMapMech {
         if (!this.abilityToApply) return
         this.abilityToApply.root.destroy()
         this.abilityToApply = undefined
+    }
+
+    // If the mech is clickable for an ability, show the dashed line border box
+    showDashedBox(show: boolean) {
+        this.dashedBox.clear()
+        this.highlightedCircle.visible = true
+        if (show && this.iconDimension && this.primaryColor) {
+            // Prevent the dashed box and highlight from both showing at same time
+            this.highlightedCircle.visible = false
+
+            this.dashedBox.lineStyle()
+
+            const dash = new DashLine(this.dashedBox, {
+                dash: [5, 4],
+                width: this.iconDimension.height * 0.08,
+                color: HEXToVBColor(this.primaryColor),
+                alpha: 1,
+            })
+
+            const width = this.iconDimension.width * 1.8
+            const height = this.iconDimension.height * 1.8
+            dash.drawRect(0, 0, width, height)
+            this.dashedBox.pivot.set(width / 2, height / 2)
+            this.dashedBox.position.set(this.iconDimension.width / 2, this.iconDimension.height / 2)
+        }
     }
 }

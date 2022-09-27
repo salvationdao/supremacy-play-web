@@ -133,8 +133,30 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
     // Handle what happens when ability is used or map location is selected
     useEffect(() => {
-        onAbilityUseCallbacks.current[`map-mech-${hash}`] = () => {
+        onAbilityUseCallbacks.current[`map-mech-${hash}`] = (wn: WinnerStruct | undefined, pa: PlayerAbility | undefined) => {
             updateIsMechHighlighted()
+
+            // Show the dashed line border box around mech is it can be clicked on for the ability
+            let showDashedBox = false
+            const ability = wn?.game_ability || pa?.ability
+            if (isAlive && !abilityBorderEffect && ability) {
+                const locationSelectType = ability.location_select_type
+                switch (locationSelectType) {
+                    case LocationSelectType.MechSelectAllied:
+                        showDashedBox = factionID === warMachineFactionID
+                        break
+                    case LocationSelectType.MechSelectOpponent:
+                        showDashedBox = factionID !== warMachineFactionID
+                        break
+                    case LocationSelectType.MechSelect:
+                        showDashedBox = true
+                        break
+                    default:
+                        showDashedBox = false
+                }
+            }
+
+            pixiMapMech?.showDashedBox(showDashedBox)
         }
 
         onSelectMapPositionCallbacks.current[`map-mech-${hash}`] = (
@@ -172,7 +194,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
                 pixiMapMech?.unApplyAbility()
             }
         }
-    }, [hash, id, onAbilityUseCallbacks, onSelectMapPositionCallbacks, pixiMapMech, selection, updateIsMechHighlighted])
+    }, [abilityBorderEffect, factionID, hash, id, isAlive, onAbilityUseCallbacks, onSelectMapPositionCallbacks, pixiMapMech, selection, updateIsMechHighlighted, warMachineFactionID])
 
     // A set time out to counter the race condition which makes the mech unhighlighted at beginning
     useEffect(() => {
@@ -182,6 +204,8 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     }, [updateIsMechHighlighted])
 
     const onMechClick = useCallback(() => {
+        let alreadyApplyingAbility = false
+
         if (playerAbility.current && isAlive) {
             const locationSelectType = playerAbility.current?.ability.location_select_type
 
@@ -189,6 +213,8 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
                 (locationSelectType === LocationSelectType.MechSelectAllied && factionID === warMachineFactionID) ||
                 (locationSelectType === LocationSelectType.MechSelectOpponent && factionID !== warMachineFactionID)
             ) {
+                alreadyApplyingAbility = true
+
                 if (selection.current?.mechHash === hash) {
                     selectMapPosition.current(undefined)
                 } else {
@@ -196,23 +222,25 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
                 }
             }
 
-            return
+            if (ownedByID !== userID) return
         }
 
         if (participantID === highlightedMechParticipantID) {
-            usePlayerAbility.current(undefined)
             setHighlightedMechParticipantID(undefined)
             tempMechMoveCommand.current = undefined
+            if (!alreadyApplyingAbility) usePlayerAbility.current(undefined)
         } else {
             setHighlightedMechParticipantID(participantID)
 
-            if (isAlive && ownedByID === userID) {
-                usePlayerAbility.current({
-                    ...MechMoveCommandAbility,
-                    mechHash: hash,
-                })
-            } else {
-                usePlayerAbility.current(undefined)
+            if (!alreadyApplyingAbility) {
+                if (isAlive && ownedByID === userID) {
+                    usePlayerAbility.current({
+                        ...MechMoveCommandAbility,
+                        mechHash: hash,
+                    })
+                } else {
+                    usePlayerAbility.current(undefined)
+                }
             }
         }
     }, [
