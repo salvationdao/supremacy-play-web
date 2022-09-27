@@ -311,7 +311,7 @@ export class PixiMapMech {
     unApplyAbility() {
         if (!this.abilityToApply) return
         this.abilityToApply.root.visible = false
-        this.abilityToApply.root.destroy()
+        this.abilityToApply.destroy()
         this.abilityToApply = undefined
     }
 

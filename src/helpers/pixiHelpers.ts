@@ -136,6 +136,11 @@ export class PixiImageIcon {
         }
     }
 
+    destroy() {
+        if (this.animationFrame) cancelAnimationFrame(this.animationFrame)
+        this.root.destroy()
+    }
+
     setCountdown(secondsLeft: number) {
         let start: number | undefined
         let isDone = false
