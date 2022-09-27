@@ -151,6 +151,7 @@ export class PixiImageIcon {
 
     resetCountdown() {
         if (this.animationFrame) cancelAnimationFrame(this.animationFrame)
+        this.countdownLabel.visible = false
     }
 
     showIcon(toShow: boolean) {
