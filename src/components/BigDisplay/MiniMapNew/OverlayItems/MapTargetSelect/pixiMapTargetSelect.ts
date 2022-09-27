@@ -217,6 +217,7 @@ export class PixiMapTargetSelect {
     }
 
     startCountdown() {
+        this.resetCountdown()
         this.endCoord.startCountdown(5, 3)
         this.startCoord.startCountdown(5, 3, () => {
             this.onTargetConfirm && this.onTargetConfirm({ startCoord: this.startCoord.root.position, endCoord: this.endCoord.root.position })
