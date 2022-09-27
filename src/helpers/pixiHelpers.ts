@@ -66,24 +66,9 @@ export class PixiImageIcon {
     root: PIXI.Container<PIXI.DisplayObject>
     private icon: PIXI.Container
     private countdownLabel: PIXI.Text
-    private onExpired: (() => void) | undefined
     private animationFrame: number | undefined
-    private countdownSpeed: number
 
-    constructor(
-        imageUrl: string,
-        width: number,
-        height: number,
-        borderColor: string,
-        centerPivot?: boolean,
-        onExpired?: () => void,
-        secondsLeft?: number,
-        countdownSpeed = 1,
-        alpha = 0.8,
-    ) {
-        this.onExpired = onExpired
-        this.countdownSpeed = countdownSpeed
-
+    constructor(imageUrl: string, width: number, height: number, borderColor: string, centerPivot?: boolean, alpha = 0.8) {
         this.root = new PIXI.Container()
         this.root.zIndex = 60
         this.root.sortableChildren = true
@@ -107,7 +92,7 @@ export class PixiImageIcon {
         this.icon.alpha = alpha
 
         // Countdown label
-        this.countdownLabel = new PIXI.Text(secondsLeft, {
+        this.countdownLabel = new PIXI.Text(0, {
             fontFamily: fonts.shareTech,
             fontSize: 12,
             fontWeight: "bold",
@@ -126,14 +111,6 @@ export class PixiImageIcon {
         this.root.addChild(this.countdownLabel)
 
         if (centerPivot) this.root.pivot.set(this.root.width / 2, this.root.height / 2)
-
-        if (secondsLeft) {
-            if (secondsLeft > 0) {
-                this.setCountdown(secondsLeft)
-            } else {
-                this.onExpired && this.onExpired()
-            }
-        }
     }
 
     destroy() {
@@ -141,7 +118,7 @@ export class PixiImageIcon {
         this.root.destroy()
     }
 
-    setCountdown(secondsLeft: number) {
+    startCountdown(secondsLeft: number, countdownSpeed = 1, onExpired?: () => void) {
         let start: number | undefined
         let isDone = false
         this.countdownLabel.visible = true
@@ -152,24 +129,28 @@ export class PixiImageIcon {
             }
 
             const totalElapsed = timestamp - start
-            const timeLeft = secondsLeft - (totalElapsed * this.countdownSpeed) / 1000
+            const timeLeft = secondsLeft - (totalElapsed * countdownSpeed) / 1000
 
             this.countdownLabel.text = Math.max(timeLeft, 0).toFixed(1)
             if (timeLeft <= 5) {
                 this.countdownLabel.style.fill = HEXToVBColor("#FF0000")
             }
 
-            if (totalElapsed * this.countdownSpeed > secondsLeft * 1000) {
+            if (totalElapsed * countdownSpeed > secondsLeft * 1000) {
                 isDone = true
                 start = undefined
                 this.countdownLabel.visible = false
-                this.onExpired && this.onExpired()
+                onExpired && onExpired()
             }
 
             if (!isDone) this.animationFrame = requestAnimationFrame(step)
         }
 
         this.animationFrame = requestAnimationFrame(step)
+    }
+
+    resetCountdown() {
+        if (this.animationFrame) cancelAnimationFrame(this.animationFrame)
     }
 
     showIcon(toShow: boolean) {

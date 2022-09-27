@@ -71,6 +71,7 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
         usePlayerAbility,
         useWinner,
         selectMapPosition,
+        onTargetConfirm,
     } = useMiniMapPixi()
     const [pixiTargetHint, setPixiTargetHint] = useState<PixiMapTargetSelect>()
     const selectedStartCoord = useRef<Position>()
@@ -113,6 +114,12 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pixiTargetHint])
 
+    // Update the onTargetConfirm function within
+    useEffect(() => {
+        if (!pixiTargetHint) return
+        pixiTargetHint.onTargetConfirm = onTargetConfirm
+    }, [onTargetConfirm, pixiTargetHint])
+
     useEffect(() => {
         if (!pixiTargetHint) return
 
@@ -127,6 +134,7 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
                 selectedEndCoord.current = undefined
                 pixiTargetHint.setStartCoord(undefined)
                 pixiTargetHint.setEndCoord(undefined)
+                pixiTargetHint.resetCountdown()
                 return
             }
 
@@ -138,7 +146,15 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
                 pixiTargetHint.setStartCoord(pos, () => {
                     selectedStartCoord.current = undefined
                     pixiTargetHint.setStartCoord(undefined)
+                    pixiTargetHint.resetCountdown()
                 })
+
+                // Start / stop countdown
+                if (selectedStartCoord.current) {
+                    pixiTargetHint.startCountdown()
+                } else {
+                    pixiTargetHint.resetCountdown()
+                }
             }
 
             // If its line select, then handle start and end coord accordingly
@@ -150,13 +166,22 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
                     pixiTargetHint.setStartCoord(pos, () => {
                         selectedStartCoord.current = undefined
                         pixiTargetHint.setStartCoord(undefined)
+                        pixiTargetHint.resetCountdown()
                     })
                 } else {
                     selectedEndCoord.current = mapPos.position
                     pixiTargetHint.setEndCoord(pos, () => {
                         selectedEndCoord.current = undefined
                         pixiTargetHint.setEndCoord(undefined)
+                        pixiTargetHint.resetCountdown()
                     })
+                }
+
+                // Start / stop countdown
+                if (selectedStartCoord.current && selectedEndCoord.current) {
+                    pixiTargetHint.startCountdown()
+                } else {
+                    pixiTargetHint.resetCountdown()
                 }
             }
 

@@ -52,6 +52,10 @@ export class PixiMapTargetSelect {
     private endCoord: PixiImageIcon
     private startEndLine: PIXI.Graphics
 
+    onTargetConfirm:
+        | undefined
+        | (({ startCoord, endCoord, mechHash }: { startCoord?: Position | undefined; endCoord?: Position | undefined; mechHash?: string | undefined }) => void)
+
     constructor(
         viewport: Viewport,
         mapMousePosition: React.MutableRefObject<Position | undefined>,
@@ -115,15 +119,12 @@ export class PixiMapTargetSelect {
         }
 
         // Mouse icon
-        this.mouseIcon = new PixiImageIcon(
-            ability.image_url,
-            gridSizeRef.current.width / 1.6,
-            gridSizeRef.current.height / 1.6,
-            ability.colour,
-            true,
-            onExpired,
-            secondsLeft,
-        )
+        this.mouseIcon = new PixiImageIcon(ability.image_url, gridSizeRef.current.width / 1.6, gridSizeRef.current.height / 1.6, ability.colour, true)
+        if (secondsLeft) {
+            this.mouseIcon.startCountdown(secondsLeft, 1, onExpired)
+        } else {
+            onExpired()
+        }
 
         // Start and end coord icons, made invisible
         this.startCoord = new PixiImageIcon(ability.image_url, gridSizeRef.current.width, gridSizeRef.current.height, ability.colour, true)
@@ -213,5 +214,18 @@ export class PixiMapTargetSelect {
         } else {
             this.mouseIcon.showIcon(true)
         }
+    }
+
+    startCountdown() {
+        this.endCoord.startCountdown(5, 3)
+        this.startCoord.startCountdown(5, 3, () => {
+            this.onTargetConfirm && this.onTargetConfirm({ startCoord: this.startCoord.root.position, endCoord: this.endCoord.root.position })
+            this.destroy()
+        })
+    }
+
+    resetCountdown() {
+        this.endCoord.resetCountdown()
+        this.startCoord.resetCountdown()
     }
 }

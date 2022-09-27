@@ -189,7 +189,7 @@ export class PixiMapMech {
         })
 
         const center = [iconDimension.width / 2, iconDimension.height / 2]
-        const radius = iconDimension.width / 1.4
+        const radius = iconDimension.width / 1.6
         dash.drawCircle(0, 0, radius)
         this.highlightedCircle.position.set(center[0], center[1])
 
@@ -289,20 +289,11 @@ export class PixiMapMech {
     applyAbility(ability: GameAbility | BlueprintPlayerAbility) {
         if (!this.iconDimension) return
 
-        this.abilityToApply = new PixiImageIcon(
-            ability.image_url,
-            this.iconDimension.width / 1.6,
-            this.iconDimension.height / 1.6,
-            ability.colour,
-            true,
-            () => {
-                this.onTargetConfirm && this.onTargetConfirm({ mechHash: this.mechHash })
-                this.unApplyAbility()
-            },
-            8,
-            4,
-            1,
-        )
+        this.abilityToApply = new PixiImageIcon(ability.image_url, this.iconDimension.width / 1.6, this.iconDimension.height / 1.6, ability.colour, true, 1)
+        this.abilityToApply.startCountdown(5, 3, () => {
+            this.onTargetConfirm && this.onTargetConfirm({ mechHash: this.mechHash })
+            this.unApplyAbility()
+        })
         this.abilityToApply.showIcon(true)
         this.abilityToApply.root.position.set(this.iconDimension.width / 1.9, 0)
         this.rootInner.addChild(this.abilityToApply.root)
