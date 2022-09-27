@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, Typography } from "@mui/material"
 import React, { useState } from "react"
 import { BCBorder, BCDeploy, BCWaiting, RMBorder, RMDeploy, RMWaiting, ZHIBorder, ZHIDeploy, ZHIWaiting } from "../../assets"
 import { FactionIDs } from "../../constants"
@@ -7,7 +7,6 @@ import { useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { LEFT_DRAWER_MAP } from "../../routes"
 import { zoomEffect } from "../../theme/keyframes"
-import { colors } from "../../theme/theme"
 import { Faction } from "../../types"
 import { MechDetails } from "../../types/assets"
 import { ClipThing } from "../Common/ClipThing"
@@ -75,56 +74,65 @@ export const MechCard = React.memo(function MechCard({ mechID, faction }: MechCa
     const avatarUrl = mechDetails?.chassis_skin?.avatar_url || mechDetails?.avatar_url
 
     return (
-        <Stack alignItems="center" sx={{ position: "relative", height: "100%", width: "100%", zIndex: 9, mt: "-2.8rem" }}>
-            {/* The fancy box border */}
-            <img
-                style={{ position: "absolute", top: "-.85rem", left: 0, width: "100%", height: "100%", zIndex: 4, pointerEvents: "none" }}
-                src={border}
-                alt=""
-            />
-
-            {/* Mech image */}
+        <Box
+            sx={{
+                display: "flex",
+                flexDirection: "column",
+                position: "relative",
+                flex: 1,
+                width: "100%",
+                height: "100%",
+                maxWidth: "210px",
+                maxHeight: "300px",
+                minHeight: "100px",
+                gap: "0.5rem",
+                zIndex: 9,
+                overflow: "hidden",
+            }}
+        >
             <Box
+                component={"img"}
+                src={border}
+                onClick={clickToDeploy ? () => setLeftDrawerActiveTabID(LEFT_DRAWER_MAP["quick_deploy"]?.id) : undefined}
                 sx={{
                     position: "relative",
-                    width: "calc(100% - 2rem)",
-                    height: "calc(100% - 2rem)",
-                    backgroundColor: colors.darkNavy,
-                    clipPath: "polygon(10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%, 0% 10%)",
+                    height: "80%",
+                    width: "100%",
+                    maxHeight: "80%",
+                    maxWidth: "100%",
                     zIndex: 3,
                     overflow: "hidden",
+                    pointerEvents: "none",
                 }}
-            >
-                <Box
-                    onClick={clickToDeploy ? () => setLeftDrawerActiveTabID(LEFT_DRAWER_MAP["quick_deploy"]?.id) : undefined}
-                    sx={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        width: "100%",
-                        height: "100%",
-                        backgroundImage: `url(${avatarUrl || (clickToDeploy ? deploy : waiting)})`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "center",
-                        backgroundSize: "cover",
-                        opacity: clickToDeploy ? 0.8 : !mechID ? 0.3 : 1,
-                        cursor: clickToDeploy ? "pointer" : "unset",
-                        ...(clickToDeploy
-                            ? {
-                                  animation: `${zoomEffect(1.08)} 3s infinite`,
-                                  ":hover": {
-                                      opacity: 1,
-                                  },
-                                  ":active": {
-                                      opacity: 0.8,
-                                  },
-                              }
-                            : {}),
-                    }}
-                />
-            </Box>
-
-            {/* Mech name */}
+            />
+            <Box
+                onClick={clickToDeploy ? () => setLeftDrawerActiveTabID(LEFT_DRAWER_MAP["quick_deploy"]?.id) : undefined}
+                sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: "80%",
+                    clipPath: "polygon(11% 4%, 90% 4%, 97% 11%, 97% 93%, 2% 93%, 2% 11%)",
+                    backgroundImage: `url(${avatarUrl || (clickToDeploy ? deploy : waiting)})`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    backgroundSize: "cover",
+                    opacity: clickToDeploy ? 0.8 : !mechID ? 0.3 : 1,
+                    cursor: clickToDeploy ? "pointer" : "unset",
+                    ...(clickToDeploy
+                        ? {
+                              animation: `${zoomEffect(1.08)} 3s infinite`,
+                              ":hover": {
+                                  opacity: 1,
+                              },
+                              ":active": {
+                                  opacity: 0.8,
+                              },
+                          }
+                        : {}),
+                }}
+            />
             <ClipThing
                 clipSize="10px"
                 border={{
@@ -133,26 +141,26 @@ export const MechCard = React.memo(function MechCard({ mechID, faction }: MechCa
                 }}
                 corners={{ bottomLeft: true, bottomRight: true }}
                 backgroundColor={faction.background_color}
-                sx={{ position: "absolute", left: "1rem", right: "1rem", bottom: "-3.4rem", zIndex: -1 }}
+                sx={{
+                    display: "flex",
+                    margin: "auto",
+                    flex: 1,
+                    width: "100%",
+                }}
             >
-                <Box sx={{ p: ".6rem", pt: "2.5rem" }}>
-                    <Typography
-                        variant="h6"
-                        sx={{
-                            textAlign: "center",
-                            opacity: !mechID ? 0.4 : 1,
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            overflowWrap: "anywhere",
-                            textOverflow: "ellipsis",
-                            WebkitLineClamp: 1, // change to max number of lines
-                            WebkitBoxOrient: "vertical",
-                        }}
-                    >
-                        {mechID ? mechDetails?.name || mechDetails?.label || "Unnamed" : "Waiting..."}
-                    </Typography>
-                </Box>
+                <Typography
+                    variant="h5"
+                    sx={{
+                        textAlign: "center",
+                        opacity: !mechID ? 0.4 : 1,
+                        overflow: "hidden",
+                        overflowWrap: "anywhere",
+                        textOverflow: "ellipsis",
+                    }}
+                >
+                    {mechID ? mechDetails?.name || mechDetails?.label || "Unnamed" : "Waiting..."}
+                </Typography>
             </ClipThing>
-        </Stack>
+        </Box>
     )
 }, propsAreEqual)

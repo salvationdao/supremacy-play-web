@@ -1,12 +1,13 @@
-import { Box, CircularProgress, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Grid, Stack, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
 import { useDimension, useSupremacy } from "../../containers"
 import { useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
-import { opacityEffect } from "../../theme/keyframes"
+import { opacityEffect, shake } from "../../theme/keyframes"
 import { colors, fonts } from "../../theme/theme"
 import { GameMap } from "../../types"
 import { MechCard } from "./MechCard"
+import { FancyButton } from "../Common/FancyButton"
 
 interface NextBattle {
     map: GameMap
@@ -22,7 +23,7 @@ export const UpcomingBattle = () => {
     const [nextBattle, setNextBattle] = useState<NextBattle | undefined>()
     const { gameUIDimensions } = useDimension()
 
-    const { size, spacing } = useMemo(() => {
+    const { size } = useMemo(() => {
         let size = "18rem"
         let spacing = "6rem"
 
@@ -56,35 +57,39 @@ export const UpcomingBattle = () => {
         }
 
         return (
-            <>
-                <Box
-                    sx={{
-                        display: "grid",
-                        gridTemplateColumns: `repeat(3, ${size})`,
-                        gridTemplateRows: `repeat(3, ${size})`,
-                        columnGap: "1rem",
-                        rowGap: "5.8rem",
-                        alignItems: "center",
-                        justifyContent: "center",
-                    }}
-                >
-                    <CardGroup mechIDs={nextBattle?.bc_mech_ids || []} factionID={nextBattle?.bc_id || ""} />
-                    <CardGroup mechIDs={nextBattle?.zhi_mech_ids || []} factionID={nextBattle?.zhi_id || ""} />
-                    <CardGroup mechIDs={nextBattle?.rm_mech_ids || []} factionID={nextBattle?.rm_id || ""} />
-                </Box>
-                <img style={{ height: "9rem" }} src={nextBattle?.map?.logo_url} alt={`Upcoming battle on map: ${nextBattle?.map?.name}`} />
-            </>
+            <Box
+                sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    flexWrap: "nowrap",
+                    flex: 1,
+                    height: "100%",
+                    width: "100%",
+                    maxHeight: "95%",
+                    maxWidth: "95%",
+                    minWidth: "300px",
+                    overflow: "auto",
+                    gap: "1rem",
+                }}
+            >
+                <CardGroup mechIDs={nextBattle?.bc_mech_ids || []} factionID={nextBattle?.bc_id || ""} />
+                <CardGroup mechIDs={nextBattle?.zhi_mech_ids || []} factionID={nextBattle?.zhi_id || ""} />
+                <CardGroup mechIDs={nextBattle?.rm_mech_ids || []} factionID={nextBattle?.rm_id || ""} />
+            </Box>
         )
     }, [size, nextBattle])
 
     return (
-        <Stack
-            spacing={spacing}
-            alignItems="center"
-            justifyContent="center"
+        <Box
             sx={{
-                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                maxWidth: "100%",
+                maxHeight: "100%",
                 width: "100%",
+                height: "100%",
                 backgroundColor: colors.darkNavy,
                 backgroundImage: `url(${nextBattle?.map?.background_url})`,
                 backgroundRepeat: "no-repeat",
@@ -93,12 +98,11 @@ export const UpcomingBattle = () => {
                 animation: `${opacityEffect} .2s ease-in`,
             }}
         >
-            <Typography variant="h4" sx={{ lineHeight: 1, textAlign: "center", fontFamily: fonts.nostromoBlack }}>
+            <Typography variant="h4" gutterBottom={true} sx={{ lineHeight: 1, textAlign: "center", fontFamily: fonts.nostromoBlack }}>
                 <i>COMING UP...</i>
             </Typography>
-
             {content}
-        </Stack>
+        </Box>
     )
 }
 
@@ -107,10 +111,112 @@ const CardGroup = ({ factionID, mechIDs }: { factionID: string; mechIDs: string[
     const faction = getFaction(factionID)
 
     return (
-        <>
-            <MechCard mechID={mechIDs[0] || ""} faction={faction} />
-            <MechCard mechID={mechIDs[1] || ""} faction={faction} />
-            <MechCard mechID={mechIDs[2] || ""} faction={faction} />
-        </>
+        <Box
+            sx={{
+                display: "flex",
+                flex: 1,
+                width: "100%",
+                maxWidth: "900px",
+                margin: "auto",
+            }}
+        >
+            <Grid container spacing={3} direction="row" sx={{ flex: 1, width: "100%", height: "100%" }}>
+                <Grid
+                    item
+                    xs={4}
+                    sm={3}
+                    sx={{
+                        maxHeight: {
+                            xs: "80%",
+                            sm: "100%",
+                        },
+                    }}
+                >
+                    <MechCard mechID={mechIDs[0] || ""} faction={faction} />
+                </Grid>
+                <Grid
+                    item
+                    xs={4}
+                    sm={3}
+                    sx={{
+                        maxHeight: {
+                            xs: "80%",
+                            sm: "100%",
+                        },
+                    }}
+                >
+                    <MechCard mechID={mechIDs[1] || ""} faction={faction} />
+                </Grid>
+                <Grid
+                    item
+                    xs={4}
+                    sm={3}
+                    sx={{
+                        maxHeight: {
+                            xs: "80%",
+                            sm: "100%",
+                        },
+                    }}
+                >
+                    <MechCard mechID={mechIDs[2] || ""} faction={faction} />
+                </Grid>
+                <Grid
+                    item
+                    xs={12}
+                    sm={3}
+                    sx={{
+                        maxHeight: {
+                            sm: "100%",
+                        },
+                        display: "flex",
+                        justifyContent: "space-evenly",
+                        flexWrap: "wrap",
+                        flex: 1,
+                        gap: "0.5rem",
+                        overflow: "hidden",
+                    }}
+                >
+                    <Typography variant={"h3"} textAlign={"center"} sx={{ width: "100%" }}>
+                        Support Team
+                    </Typography>
+                    <OptInButton />
+                    <OptInButton />
+                    <OptInButton />
+                    <OptInButton />
+                    <OptInButton />
+                </Grid>
+            </Grid>
+        </Box>
+    )
+}
+
+const OptInButton = () => {
+    return (
+        <Box sx={{ flex: 1, minWidth: "45%", maxWidth: "200px", minHeight: "36px" }}>
+            <FancyButton
+                // disabled={disabled}
+                clipThingsProps={{
+                    clipSize: "5px",
+                    backgroundColor: colors.green,
+                    border: { borderColor: colors.green, borderThickness: "1px" },
+                    // sx: { position: "relative", animation: !disabled ? `${shake(0.38)} 1s infinite` : "unset" },
+                    sx: {
+                        position: "relative",
+                        animation: `${shake(0.38)} 1s infinite`,
+                        flex: 1,
+                        minWidth: "45%",
+                        maxWidth: "200px",
+                        minHeight: "36px",
+                    },
+                }}
+                sx={{ px: "1rem", pt: 0, pb: ".1rem", minWidth: "7rem", color: "#FFFFFF" }}
+                // onClick={onTrigger}
+            >
+                <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack, margin: "auto" }}>
+                    OPT IN
+                    {/*{isOptedIn ? "OPTED IN" : "OPT IN"}*/}
+                </Typography>
+            </FancyButton>
+        </Box>
     )
 }
