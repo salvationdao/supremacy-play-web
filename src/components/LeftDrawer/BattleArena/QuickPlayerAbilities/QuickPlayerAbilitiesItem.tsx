@@ -19,7 +19,6 @@ export interface QuickPlayerAbilitiesItemProps {
     price?: string
     amount?: number
     availability: SaleAbilityAvailability
-    onClaim: () => void
     onPurchase: () => void
     setClaimError: React.Dispatch<React.SetStateAction<string | undefined>>
 }
@@ -37,9 +36,7 @@ export const QuickPlayerAbilitiesItem = React.memo(function QuickPlayerAbilities
     saleAbility,
     price = saleAbility.current_price,
     amount = 0,
-    onClaim: onClaimCallback,
     onPurchase: onPurchaseCallback,
-    setClaimError,
     availability,
 }: QuickPlayerAbilitiesItemProps) {
     // Purchasing
@@ -63,8 +60,6 @@ export const QuickPlayerAbilitiesItem = React.memo(function QuickPlayerAbilities
                         </strong>
                     </Typography>
                 )
-            case SaleAbilityAvailability.CanClaim:
-                return <Typography>CLAIM ABILITY</Typography>
             default:
                 return <Typography>UNAVAILABLE</Typography>
         }
@@ -88,26 +83,6 @@ export const QuickPlayerAbilitiesItem = React.memo(function QuickPlayerAbilities
 
         return [<SvgQuestionMark key="MISCELLANEOUS" />, "Miscellaneous ability type."]
     }, [saleAbility])
-
-    const onClaim = useCallback(async () => {
-        try {
-            setLoading(true)
-            await send(GameServerKeys.SaleAbilityClaim, {
-                ability_id: saleAbility.id,
-            })
-            newSnackbarMessage(`Successfully claimed 1 x ${saleAbility.ability.label || "ability"}`, "success")
-            onClaimCallback()
-            setClaimError(undefined)
-        } catch (e) {
-            if (e instanceof Error) {
-                setClaimError(e.message)
-            } else if (typeof e === "string") {
-                setClaimError(e)
-            }
-        } finally {
-            setLoading(false)
-        }
-    }, [send, saleAbility.id, saleAbility.ability.label, newSnackbarMessage, onClaimCallback, setClaimError])
 
     const onPurchase = useCallback(async () => {
         try {
@@ -135,12 +110,10 @@ export const QuickPlayerAbilitiesItem = React.memo(function QuickPlayerAbilities
     }, [send, saleAbility.id, saleAbility.ability.label, price, newSnackbarMessage, onPurchaseCallback, showConfirmation])
 
     const onClick = useMemo(() => {
-        if (availability === SaleAbilityAvailability.CanClaim) {
-            return onClaim
-        } else if (availability === SaleAbilityAvailability.CanPurchase) {
+        if (availability === SaleAbilityAvailability.CanPurchase) {
             return localStorage.getItem("hideSaleAbilitiesPurchaseConfirmation") === "true" ? onPurchase : () => setShowPurchaseModal(true)
         }
-    }, [availability, onClaim, onPurchase])
+    }, [availability, onPurchase])
 
     return (
         <>
@@ -222,40 +195,23 @@ export const QuickPlayerAbilitiesItem = React.memo(function QuickPlayerAbilities
                                         {abilityTypeIcon}
                                     </Box>
 
-                                    {availability === SaleAbilityAvailability.CanClaim ? (
-                                        <Box
-                                            sx={{
-                                                zIndex: 2,
-                                                position: "absolute",
-                                                top: ".2rem",
-                                                right: ".2rem",
-                                                backgroundColor: "#000000DD",
-                                                p: ".2rem .4rem",
-                                            }}
-                                        >
-                                            <Typography variant="body2" sx={{ lineHeight: 1, color: colors.gold }}>
-                                                FREE
-                                            </Typography>
-                                        </Box>
-                                    ) : (
-                                        <Stack
-                                            direction="row"
-                                            alignItems="center"
-                                            sx={{
-                                                zIndex: 2,
-                                                position: "absolute",
-                                                top: ".2rem",
-                                                right: ".2rem",
-                                                backgroundColor: "#000000DD",
-                                                p: ".2rem .4rem",
-                                            }}
-                                        >
-                                            <SvgSupToken size="1.6rem" fill={colors.gold} />
-                                            <Typography variant="body2" sx={{ lineHeight: 1 }}>
-                                                {supFormatter(price, 2)}
-                                            </Typography>
-                                        </Stack>
-                                    )}
+                                    <Stack
+                                        direction="row"
+                                        alignItems="center"
+                                        sx={{
+                                            zIndex: 2,
+                                            position: "absolute",
+                                            top: ".2rem",
+                                            right: ".2rem",
+                                            backgroundColor: "#000000DD",
+                                            p: ".2rem .4rem",
+                                        }}
+                                    >
+                                        <SvgSupToken size="1.6rem" fill={colors.gold} />
+                                        <Typography variant="body2" sx={{ lineHeight: 1 }}>
+                                            {supFormatter(price, 2)}
+                                        </Typography>
+                                    </Stack>
 
                                     <Box
                                         sx={{

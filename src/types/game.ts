@@ -129,7 +129,6 @@ export interface SaleAbility {
 
 export enum SaleAbilityAvailability {
     Unavailable,
-    CanClaim,
     CanPurchase,
 }
 

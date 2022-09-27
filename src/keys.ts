@@ -63,7 +63,6 @@ export enum GameServerKeys {
     SubSaleAbilitiesPrice = "SALE:ABILITIES:PRICE:SUBSCRIBE",
     SubSaleAbilitiesList = "SALE:ABILITIES:LIST:SUBSCRIBE",
     SaleAbilitiesList = "SALE:ABILITIES:LIST",
-    SaleAbilityClaim = "SALE:ABILITY:CLAIM",
     SaleAbilityPurchase = "SALE:ABILITY:PURCHASE",
     PlayerAbilityUse = "PLAYER:ABILITY:USE",
 

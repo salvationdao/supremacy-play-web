@@ -20,7 +20,7 @@ export const PlayerAbilitiesStore = () => {
     const { userID } = useAuth()
 
     const { query: queryAvailability } = useParameterizedQuery(GetSaleAbilityAvailability)
-    const [availability, setAvailability] = useState<SaleAbilityAvailability>(SaleAbilityAvailability.CanClaim)
+    const [availability, setAvailability] = useState<SaleAbilityAvailability>(SaleAbilityAvailability.CanPurchase)
     const [availabilityError, setAvailabilityError] = useState<string>()
 
     const [isLoaded, setIsLoaded] = useState(false)
@@ -169,7 +169,6 @@ export const PlayerAbilitiesStore = () => {
                                 saleAbility={s}
                                 price={priceMap.get(s.id)}
                                 amount={ownedAbilities.get(s.blueprint_id)}
-                                onClaim={() => setAvailability(SaleAbilityAvailability.CanPurchase)}
                                 onPurchase={() => setAvailability(SaleAbilityAvailability.Unavailable)}
                                 availability={availability}
                             />
