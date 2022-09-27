@@ -173,7 +173,7 @@ const QuickPlayerAbilitiesInner = React.memo(function QuickPlayerAbilitiesInner(
                                 price={priceMap.get(s.id)}
                                 amount={ownedAbilities.get(s.blueprint_id)}
                                 setClaimError={setError}
-                                onPurchase={() => setAvailability(SaleAbilityAvailability.Unavailable)}
+                                onPurchase={() => refetchSaleAvailability()}
                                 availability={availability}
                             />
                         ))}

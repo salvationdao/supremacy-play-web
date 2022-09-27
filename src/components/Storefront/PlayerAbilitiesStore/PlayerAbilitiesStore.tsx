@@ -169,7 +169,7 @@ export const PlayerAbilitiesStore = () => {
                                 saleAbility={s}
                                 price={priceMap.get(s.id)}
                                 amount={ownedAbilities.get(s.blueprint_id)}
-                                onPurchase={() => setAvailability(SaleAbilityAvailability.Unavailable)}
+                                onPurchase={() => refetchSaleAvailability()}
                                 availability={availability}
                             />
                         ))}
@@ -209,7 +209,7 @@ export const PlayerAbilitiesStore = () => {
                 </Stack>
             </Stack>
         )
-    }, [isLoaded, saleAbilities, theme.factionTheme.primary, priceMap, ownedAbilities, availability])
+    }, [isLoaded, saleAbilities, theme.factionTheme.primary, priceMap, ownedAbilities, availability, refetchSaleAvailability])
 
     return (
         <ClipThing
