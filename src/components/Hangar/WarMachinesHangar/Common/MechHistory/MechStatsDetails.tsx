@@ -83,7 +83,7 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
                     </Typography>
                 </Stack>
 
-                {weapons.length > 0 ? (
+                {weapons && weapons.length > 0 ? (
                     <Stack direction="row" flexWrap="wrap">
                         {weapons.map((w) => {
                             return (

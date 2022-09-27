@@ -1,7 +1,7 @@
-import { Box, Stack, Typography } from "@mui/material"
-import { useMemo } from "react"
+import { Box, Grow, IconButton, Stack, Typography } from "@mui/material"
+import { useEffect, useMemo, useRef } from "react"
 import { FancyButton } from "../../.."
-import { SvgPlus, SvgSkin, SvgWrapperProps } from "../../../../assets"
+import { SvgLock, SvgPlus, SvgRemove, SvgSkin, SvgSwap, SvgWrapperProps } from "../../../../assets"
 import { shadeColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { colors, fonts } from "../../../../theme/theme"
@@ -9,7 +9,100 @@ import { Rarity } from "../../../../types"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { MediaPreviewModal } from "../../../Common/MediaPreview/MediaPreviewModal"
 
-export const MechLoadoutItem = ({
+interface LoadoutItem {
+    slotNumber?: number
+    imageUrl?: string
+    videoUrls?: (string | undefined)[] | undefined
+    label: string
+    subLabel?: string
+    onClick?: () => void
+    rarity?: Rarity
+    hasSkin?: boolean
+    primaryColor: string
+    imageTransform?: string
+    Icon?: React.VoidFunctionComponent<SvgWrapperProps>
+    locked?: boolean
+    disabled?: boolean
+    isEmpty?: boolean
+}
+
+export interface MechLoadoutItemProps extends LoadoutItem {
+    side?: "left" | "right"
+    prevEquipped?: LoadoutItem
+    onUnequip?: () => void
+    renderModal?: (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => React.ReactNode
+}
+
+export const MechLoadoutItem = (props: MechLoadoutItemProps) => {
+    const { imageUrl, videoUrls } = props
+    const { side = "left", prevEquipped, onUnequip, renderModal, onClick, ...loadoutItemButtonProps } = props
+    const [showLoadoutModal, toggleShowLoadoutModal] = useToggle()
+    const memoizedPrevEquipped = useRef<LoadoutItem>()
+
+    useEffect(() => {
+        if (!prevEquipped) return
+        // Prevents white-page bug. Bug is caused by the Grow component
+        // trying to render a MechLouadoutItemButton with a LoadoutItem that
+        // has been set to undefined
+        memoizedPrevEquipped.current = prevEquipped
+    }, [prevEquipped])
+
+    return (
+        <>
+            <Stack
+                position="relative"
+                direction={side === "left" ? "row" : "row-reverse"}
+                spacing="1rem"
+                alignItems="center"
+                sx={{ p: ".8rem", width: "fit-content" }}
+            >
+                <MechLoadoutItemButton
+                    onClick={() => {
+                        onClick && onClick()
+                        toggleShowLoadoutModal(true)
+                    }}
+                    {...loadoutItemButtonProps}
+                />
+                <Grow in={!!prevEquipped} mountOnEnter unmountOnExit>
+                    <Stack direction={side === "left" ? "row" : "row-reverse"} alignItems="center">
+                        <SvgSwap sx={{ opacity: 0.6 }} />
+                        {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
+                        <MechLoadoutItemButton {...(prevEquipped! || memoizedPrevEquipped.current)} isPreviouslyEquipped />
+                    </Stack>
+                </Grow>
+                {!props.disabled && !props.locked && onUnequip && (
+                    <IconButton
+                        onClick={() => {
+                            onUnequip()
+                        }}
+                        sx={{
+                            zIndex: 10,
+                            position: "absolute",
+                            top: "1rem",
+                            right: "1rem",
+                        }}
+                    >
+                        <SvgRemove fill={colors.red} />
+                    </IconButton>
+                )}
+            </Stack>
+
+            {showLoadoutModal &&
+                (renderModal ? (
+                    renderModal(toggleShowLoadoutModal)
+                ) : (
+                    <MediaPreviewModal imageUrl={imageUrl} videoUrls={videoUrls} onClose={() => toggleShowLoadoutModal(false)} />
+                ))}
+        </>
+    )
+}
+
+interface MechLoadoutItemButtonProps extends LoadoutItem {
+    isPreviouslyEquipped?: boolean
+}
+
+const MechLoadoutItemButton = ({
+    slotNumber,
     imageUrl,
     videoUrls,
     label,
@@ -21,113 +114,145 @@ export const MechLoadoutItem = ({
     rarity,
     hasSkin,
     imageTransform,
+    locked,
     disabled,
-}: {
-    imageUrl?: string
-    videoUrls?: (string | undefined)[] | undefined
-    label: string
-    subLabel?: string
-    primaryColor: string
-    onClick?: () => void
-    isEmpty?: boolean
-    Icon?: React.VoidFunctionComponent<SvgWrapperProps>
-    rarity?: Rarity
-    hasSkin?: boolean
-    imageTransform?: string
-    disabled?: boolean
-}) => {
-    const [showPreviewModal, toggleShowPreviewModal] = useToggle()
+    isPreviouslyEquipped,
+}: MechLoadoutItemButtonProps) => {
     const backgroundColor = useMemo(() => shadeColor(primaryColor, -90), [primaryColor])
 
     return (
-        <>
-            <Box sx={{ p: ".8rem", width: "fit-content" }}>
-                <FancyButton
-                    disabled={disabled}
-                    clipThingsProps={{
-                        clipSize: "10px",
-                        clipSlantSize: "0px",
-                        corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
-                        backgroundColor,
-                        opacity: 0.9,
-                        border: { isFancy: false, borderColor: primaryColor, borderThickness: ".3rem" },
-                        sx: { position: "relative" },
-                    }}
-                    sx={{ p: 0, color: primaryColor }}
-                    onClick={() => {
-                        onClick && onClick()
-                        toggleShowPreviewModal(true)
+        <FancyButton
+            disabled={disabled || locked}
+            clipThingsProps={{
+                clipSize: "10px",
+                clipSlantSize: "0px",
+                corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
+                backgroundColor,
+                opacity: 0.9,
+                border: { isFancy: false, borderColor: primaryColor, borderThickness: ".3rem" },
+                sx: {
+                    position: "relative",
+                    ...(isPreviouslyEquipped
+                        ? {
+                              transform: "scale(0.8)",
+                              ml: "-.5rem !important",
+                          }
+                        : {}),
+                },
+            }}
+            sx={{ p: 0, color: primaryColor }}
+            onClick={() => {
+                onClick && onClick()
+            }}
+        >
+            {locked && (
+                <Stack
+                    alignItems="center"
+                    justifyContent="center"
+                    sx={{
+                        zIndex: 1,
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: colors.black2,
+                        opacity: 0.6,
                     }}
                 >
-                    <Stack spacing="1rem" alignItems="center" sx={{ height: "16rem", width: "16rem", p: "1rem", textAlign: "center" }}>
-                        <Stack justifyContent="center" sx={{ position: "relative", height: "9rem", alignSelf: "stretch", backgroundColor: "#00000060" }}>
-                            {isEmpty ? (
-                                <SvgPlus fill={`${primaryColor}80`} size="2rem" />
-                            ) : (
-                                <MediaPreview
-                                    imageUrl={imageUrl}
-                                    videoUrls={videoUrls}
-                                    objectFit="contain"
-                                    sx={{ p: ".5rem" }}
-                                    imageTransform={imageTransform}
-                                />
-                            )}
+                    <SvgLock />
+                </Stack>
+            )}
+            {isPreviouslyEquipped && (
+                <Stack
+                    alignItems="center"
+                    justifyContent="center"
+                    sx={{
+                        zIndex: 1,
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: colors.black2,
+                        opacity: 0.6,
+                    }}
+                >
+                    <Typography>Previous Selection</Typography>
+                </Stack>
+            )}
+            <Stack spacing="1rem" alignItems="center" sx={{ height: "16rem", width: "16rem", p: "1rem", textAlign: "center" }}>
+                <Stack justifyContent="center" sx={{ position: "relative", height: "9rem", alignSelf: "stretch", backgroundColor: "#00000060" }}>
+                    {isEmpty ? (
+                        <SvgPlus fill={`${primaryColor}80`} size="2rem" />
+                    ) : (
+                        <MediaPreview imageUrl={imageUrl} videoUrls={videoUrls} objectFit="contain" sx={{ p: ".5rem" }} imageTransform={imageTransform} />
+                    )}
 
-                            <Stack spacing=".3rem" direction="row" alignItems="center" sx={{ position: "absolute", top: ".1rem", left: ".5rem" }}>
-                                {Icon && <Icon fill={primaryColor} size="1.8rem" />}
-                                {hasSkin && <SvgSkin fill={colors.chassisSkin} size="1.8rem" />}
-                            </Stack>
-
-                            {rarity && (
-                                <Typography
-                                    variant="caption"
-                                    sx={{ position: "absolute", bottom: ".3rem", left: 0, right: 0, color: rarity.color, fontFamily: fonts.nostromoBlack }}
-                                >
-                                    {rarity.label}
-                                </Typography>
-                            )}
-                        </Stack>
-
-                        <Box>
-                            <Typography
-                                variant="body2"
-                                sx={{
-                                    color: primaryColor,
-                                    fontFamily: fonts.nostromoBold,
-                                    display: "-webkit-box",
-                                    overflow: "hidden",
-                                    overflowWrap: "anywhere",
-                                    textOverflow: "ellipsis",
-                                    WebkitLineClamp: 2,
-                                    WebkitBoxOrient: "vertical",
-                                }}
-                            >
-                                {label}
-                            </Typography>
-
-                            {subLabel && (
-                                <Typography
-                                    variant="body2"
-                                    sx={{
-                                        color: primaryColor,
-                                        fontFamily: fonts.nostromoBold,
-                                        display: "-webkit-box",
-                                        overflow: "hidden",
-                                        overflowWrap: "anywhere",
-                                        textOverflow: "ellipsis",
-                                        WebkitLineClamp: 1,
-                                        WebkitBoxOrient: "vertical",
-                                    }}
-                                >
-                                    {subLabel}
-                                </Typography>
-                            )}
-                        </Box>
+                    <Stack spacing=".3rem" direction="row" alignItems="center" sx={{ position: "absolute", top: ".1rem", left: ".5rem" }}>
+                        {Icon && <Icon fill={primaryColor} size="1.8rem" />}
+                        {hasSkin && <SvgSkin fill={colors.chassisSkin} size="1.4rem" />}
                     </Stack>
-                </FancyButton>
-            </Box>
 
-            {showPreviewModal && <MediaPreviewModal imageUrl={imageUrl} videoUrls={videoUrls} onClose={() => toggleShowPreviewModal(false)} />}
-        </>
+                    {slotNumber != null && (
+                        <Typography
+                            sx={{
+                                position: "absolute",
+                                top: ".1rem",
+                                right: ".5rem",
+                                opacity: 0.6,
+                            }}
+                        >
+                            SLOT {slotNumber}
+                        </Typography>
+                    )}
+
+                    {rarity && (
+                        <Typography
+                            variant="caption"
+                            sx={{ position: "absolute", bottom: ".3rem", left: 0, right: 0, color: rarity.color, fontFamily: fonts.nostromoBlack }}
+                        >
+                            {rarity.label}
+                        </Typography>
+                    )}
+                </Stack>
+
+                <Box>
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            color: primaryColor,
+                            fontFamily: fonts.nostromoBold,
+                            display: "-webkit-box",
+                            overflow: "hidden",
+                            overflowWrap: "anywhere",
+                            textOverflow: "ellipsis",
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: "vertical",
+                        }}
+                    >
+                        {label}
+                    </Typography>
+
+                    {subLabel && (
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                color: primaryColor,
+                                fontFamily: fonts.nostromoBold,
+                                display: "-webkit-box",
+                                overflow: "hidden",
+                                overflowWrap: "anywhere",
+                                textOverflow: "ellipsis",
+                                WebkitLineClamp: 1,
+                                WebkitBoxOrient: "vertical",
+                            }}
+                        >
+                            {subLabel}
+                        </Typography>
+                    )}
+                </Box>
+            </Stack>
+        </FancyButton>
     )
 }

@@ -4,12 +4,12 @@ import { SvgSkin } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets } from "../../../helpers"
 import { fonts } from "../../../theme/theme"
-import { Submodel } from "../../../types"
+import { MechSkin } from "../../../types"
 import { ClipThing } from "../../Common/ClipThing"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 
 interface SubmodelItemProps {
-    submodel: Submodel
+    submodel: MechSkin
 }
 
 export const SubmodelItem = ({ submodel }: SubmodelItemProps) => {
@@ -47,7 +47,18 @@ const SubmodelItemInner = ({ submodel }: SubmodelItemProps) => {
                 <Stack spacing={"1.5rem"} justifyContent="center" sx={{ height: "100%", p: "1.5rem" }}>
                     {/* Image */}
                     <Box sx={{ position: "relative", height: "23rem" }}>
-                        <MediaPreview sx={{ p: "1.5rem" }} imageUrl={submodel.images.image_url ?? submodel.images.avatar_url ?? ""} />
+                        <MediaPreview
+                            sx={{ p: "1.5rem" }}
+                            imageUrl={
+                                submodel.swatch_images?.avatar_url ||
+                                submodel.swatch_images?.image_url ||
+                                submodel.swatch_images?.large_image_url ||
+                                submodel?.avatar_url ||
+                                submodel?.image_url ||
+                                submodel?.large_image_url ||
+                                ""
+                            }
+                        />
                     </Box>
 
                     <Stack direction="row" alignItems="flex-start">
