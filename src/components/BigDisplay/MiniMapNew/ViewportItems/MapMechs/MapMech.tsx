@@ -124,13 +124,14 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         }
     }, [hash, highlightedMechParticipantID, pixiMapMech, playerAbility, selection, participantID])
 
-    // If the mech dies and its mech move command is active, cancel it
+    // If the mech dies and its mech is about to use player ability is active, cancel it
     useEffect(() => {
         if (!isAlive && playerAbility.current?.mechHash === hash) {
             usePlayerAbility.current(undefined)
         }
     }, [hash, isAlive, playerAbility, usePlayerAbility])
 
+    // Handle what happens when ability is used or map location is selected
     useEffect(() => {
         onAbilityUseCallbacks.current[`map-mech-${hash}`] = () => {
             updateIsMechHighlighted()
@@ -162,9 +163,18 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             } else {
                 tempMechMoveCommand.current = undefined
             }
-        }
-    }, [hash, id, onAbilityUseCallbacks, onSelectMapPositionCallbacks, selection, updateIsMechHighlighted])
 
+            // If mech is selected for ability, show it
+            const ability = wn?.game_ability || pa?.ability
+            if (ability && mapPos?.mechHash === hash) {
+                pixiMapMech?.applyAbility(ability)
+            } else {
+                pixiMapMech?.unApplyAbility()
+            }
+        }
+    }, [hash, id, onAbilityUseCallbacks, onSelectMapPositionCallbacks, pixiMapMech, selection, updateIsMechHighlighted])
+
+    // A set time out to counter the race condition which makes the mech unhighlighted at beginning
     useEffect(() => {
         setTimeout(() => {
             updateIsMechHighlighted()
@@ -176,17 +186,17 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             const locationSelectType = playerAbility.current?.ability.location_select_type
 
             if (
-                (locationSelectType === LocationSelectType.MechSelectAllied && factionID !== warMachineFactionID) ||
-                (locationSelectType === LocationSelectType.MechSelectOpponent && factionID === warMachineFactionID)
+                (locationSelectType === LocationSelectType.MechSelectAllied && factionID === warMachineFactionID) ||
+                (locationSelectType === LocationSelectType.MechSelectOpponent && factionID !== warMachineFactionID)
             ) {
                 if (selection.current?.mechHash === hash) {
                     selectMapPosition.current(undefined)
                 } else {
                     selectMapPosition.current({ mechHash: hash })
                 }
-
-                return
             }
+
+            return
         }
 
         if (participantID === highlightedMechParticipantID) {

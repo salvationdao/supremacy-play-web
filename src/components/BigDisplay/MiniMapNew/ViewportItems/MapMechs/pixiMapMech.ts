@@ -3,9 +3,9 @@ import { ease } from "pixi-ease"
 import * as PIXI from "pixi.js"
 import { CrossPNG, DeadSkullPNG } from "../../../../../assets"
 import { deg2rad, HEXToVBColor } from "../../../../../helpers"
-import { PixiProgressBar } from "../../../../../helpers/pixiHelpers"
+import { PixiImageIcon, PixiProgressBar } from "../../../../../helpers/pixiHelpers"
 import { colors, fonts } from "../../../../../theme/theme"
-import { Dimension, Position } from "../../../../../types"
+import { BlueprintPlayerAbility, Dimension, GameAbility, Position } from "../../../../../types"
 
 export class PixiMapMech {
     root: PIXI.Container<PIXI.DisplayObject>
@@ -24,6 +24,7 @@ export class PixiMapMech {
     private iconDimension: Dimension | undefined
     private primaryColor: string | undefined
     private cachedZIndex = 10
+    private abilityToApply: PixiImageIcon | undefined
 
     constructor(label: number) {
         // Create container for everything
@@ -269,5 +270,21 @@ export class PixiMapMech {
         }
 
         this.animationFrame = requestAnimationFrame(step)
+    }
+
+    // Ability to by applied to the mech
+    applyAbility(ability: GameAbility | BlueprintPlayerAbility) {
+        if (!this.iconDimension) return
+
+        this.abilityToApply = new PixiImageIcon(ability.image_url, this.iconDimension.width / 1.8, this.iconDimension.height / 1.8, ability.colour, true)
+        this.abilityToApply.showIcon(true)
+        this.abilityToApply.root.position.set(this.iconDimension.width / 1.9, 0)
+        this.rootInner.addChild(this.abilityToApply.root)
+    }
+
+    unApplyAbility() {
+        if (!this.abilityToApply) return
+        this.abilityToApply.root.destroy()
+        this.abilityToApply = undefined
     }
 }
