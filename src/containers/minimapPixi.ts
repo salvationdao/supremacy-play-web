@@ -163,7 +163,7 @@ export const MiniMapPixiContainer = createContainer(() => {
     }, [isBattleStarted])
 
     const onTargetConfirm = useCallback(
-        async ({ startCoord, endCoord, mechHash }: { startCoord?: Position; endCoord?: Position; mechHash?: string }) => {
+        ({ startCoord, endCoord, mechHash }: { startCoord?: Position; endCoord?: Position; mechHash?: string }) => {
             if (!currentArenaID) return
 
             let payload: {
@@ -255,7 +255,8 @@ export const MiniMapPixiContainer = createContainer(() => {
                     }
                 }
 
-                await send<boolean, typeof payload>(hubKey, payload)
+                // await send<boolean, typeof payload>(hubKey, payload)
+                console.log("Sends:", payload)
                 newSnackbarMessage("Successfully submitted target location.", "success")
             } catch (err) {
                 newSnackbarMessage(typeof err === "string" ? err : "Failed to submit target location.", "error")

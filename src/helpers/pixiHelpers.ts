@@ -108,8 +108,9 @@ export class PixiImageIcon {
 
         // Countdown label
         this.countdownLabel = new PIXI.Text(secondsLeft, {
-            fontFamily: fonts.nostromoBlack,
-            fontSize: 13,
+            fontFamily: fonts.shareTech,
+            fontSize: 12,
+            fontWeight: "bold",
             fill: "#FFFFFF",
             stroke: "#00000050",
             strokeThickness: 0.2,
@@ -118,7 +119,7 @@ export class PixiImageIcon {
         this.countdownLabel.anchor.set(0.5, 0)
         this.countdownLabel.resolution = 4
         this.countdownLabel.zIndex = 5
-        this.countdownLabel.position.set(width / 2, -18)
+        this.countdownLabel.position.set(width / 2, -16)
         this.countdownLabel.visible = false
 
         this.root.addChild(this.icon)
@@ -138,7 +139,6 @@ export class PixiImageIcon {
     setCountdown(secondsLeft: number) {
         let start: number | undefined
         let isDone = false
-        let lastTimestamp = 0
         this.countdownLabel.visible = true
 
         const step = (timestamp: DOMHighResTimeStamp) => {
@@ -146,24 +146,17 @@ export class PixiImageIcon {
                 start = timestamp
             }
 
-            const elapsed = timestamp - lastTimestamp
             const totalElapsed = timestamp - start
+            const timeLeft = secondsLeft - (totalElapsed * this.countdownSpeed) / 1000
 
-            // Count per second
-            if (elapsed >= this.countdownSpeed * 1000) {
-                const timeLeft = Math.round(secondsLeft * this.countdownSpeed - totalElapsed / 1000)
-                lastTimestamp = timestamp
-
-                this.countdownLabel.text = Math.round(Math.max(timeLeft, 0))
-                if (timeLeft <= 5) {
-                    this.countdownLabel.style.fill = HEXToVBColor("#FF0000")
-                }
+            this.countdownLabel.text = Math.max(timeLeft, 0).toFixed(1)
+            if (timeLeft <= 5) {
+                this.countdownLabel.style.fill = HEXToVBColor("#FF0000")
             }
 
-            if (totalElapsed > secondsLeft * this.countdownSpeed * 1000) {
+            if (totalElapsed * this.countdownSpeed > secondsLeft * 1000) {
                 isDone = true
                 start = undefined
-                lastTimestamp = 0
                 this.countdownLabel.visible = false
                 this.onExpired && this.onExpired()
             }

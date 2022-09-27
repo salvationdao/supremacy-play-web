@@ -22,12 +22,19 @@ export class PixiMapMech {
     private mechMovePosition: Position | undefined
     private animationFrame: number | undefined
     private iconDimension: Dimension | undefined
+    private mechHash: string
     private primaryColor: string | undefined
     private cachedZIndex = 10
     private abilityToApply: PixiImageIcon | undefined
     private dashedBox: PIXI.Graphics
 
-    constructor(label: number) {
+    onTargetConfirm:
+        | undefined
+        | (({ startCoord, endCoord, mechHash }: { startCoord?: Position | undefined; endCoord?: Position | undefined; mechHash?: string | undefined }) => void)
+
+    constructor(label: number, mechHash: string) {
+        this.mechHash = mechHash
+
         // Create container for everything
         this.root = new PIXI.Container()
         this.root.sortableChildren = true
@@ -288,9 +295,12 @@ export class PixiMapMech {
             this.iconDimension.height / 1.6,
             ability.colour,
             true,
-            undefined,
-            undefined,
-            undefined,
+            () => {
+                this.onTargetConfirm && this.onTargetConfirm({ mechHash: this.mechHash })
+                this.unApplyAbility()
+            },
+            8,
+            4,
             1,
         )
         this.abilityToApply.showIcon(true)

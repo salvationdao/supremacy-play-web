@@ -43,6 +43,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         highlightedMechParticipantID,
         setHighlightedMechParticipantID,
         playerAbility,
+        onTargetConfirm,
         selection,
         selectMapPosition,
         usePlayerAbility,
@@ -74,7 +75,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     // Initial setup for the mech and show on the map
     useEffect(() => {
         if (!pixiMainItems) return
-        const pixiMapMech = new PixiMapMech(label)
+        const pixiMapMech = new PixiMapMech(label, hash)
         pixiMainItems.viewport.addChild(pixiMapMech.root)
         setPixiMapMech(pixiMapMech)
     }, [label, pixiMainItems])
@@ -111,6 +112,12 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
         pixiMapMech.updateZIndex(zIndex)
     }, [factionID, isAlive, pixiMapMech, warMachineFactionID])
+
+    // Update the onTargetConfirm function within
+    useEffect(() => {
+        if (!pixiMapMech) return
+        pixiMapMech.onTargetConfirm = onTargetConfirm
+    }, [onTargetConfirm, pixiMapMech])
 
     const updateIsMechHighlighted = useCallback(() => {
         const isHighlighted = highlightedMechParticipantID === participantID || playerAbility.current?.mechHash === hash
