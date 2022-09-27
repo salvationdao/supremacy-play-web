@@ -151,7 +151,12 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
 
                 // Start / stop countdown
                 if (selectedStartCoord.current) {
-                    pixiTargetHint.startCountdown()
+                    // For mech commands, dont countdown, and dont destroy pixi object when confirmed, keep going
+                    if (ability.location_select_type === LocationSelectType.MechCommand) {
+                        pixiTargetHint.startCountdown(0, 3, false)
+                    } else {
+                        pixiTargetHint.startCountdown()
+                    }
                 } else {
                     pixiTargetHint.resetCountdown()
                 }

@@ -92,7 +92,7 @@ export class PixiImageIcon {
         this.icon.alpha = alpha
 
         // Countdown label
-        this.countdownLabel = new PIXI.Text(0, {
+        this.countdownLabel = new PIXI.Text("", {
             fontFamily: fonts.shareTech,
             fontSize: 12,
             fontWeight: "bold",
@@ -131,7 +131,8 @@ export class PixiImageIcon {
             const totalElapsed = timestamp - start
             const timeLeft = secondsLeft - (totalElapsed * countdownSpeed) / 1000
 
-            this.countdownLabel.text = Math.max(timeLeft, 0).toFixed(1)
+            const text = Math.max(timeLeft, 0)
+            this.countdownLabel.text = text <= 0 ? "" : text.toFixed(1)
             if (timeLeft <= 5) {
                 this.countdownLabel.style.fill = HEXToVBColor("#FF0000")
             }

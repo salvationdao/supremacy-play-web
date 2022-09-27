@@ -216,12 +216,12 @@ export class PixiMapTargetSelect {
         }
     }
 
-    startCountdown() {
+    startCountdown(timeLeft = 3, speed = 3, destroyOnConfirm = true) {
         this.resetCountdown()
-        this.endCoord.startCountdown(5, 3)
-        this.startCoord.startCountdown(5, 3, () => {
+        this.endCoord.startCountdown(timeLeft, speed)
+        this.startCoord.startCountdown(timeLeft, speed, () => {
             this.onTargetConfirm && this.onTargetConfirm({ startCoord: this.startCoord.root.position, endCoord: this.endCoord.root.position })
-            this.destroy()
+            if (destroyOnConfirm) this.destroy()
         })
     }
 
