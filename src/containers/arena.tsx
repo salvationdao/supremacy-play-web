@@ -6,6 +6,13 @@ import { GameServerKeys } from "../keys"
 import { Arena, ArenaStatus, ArenaType } from "../types"
 import OvenLiveKit from "ovenlivekit"
 import { OvenPlayerInstance } from "./oven"
+import React from "react"
+import { useToggle } from "../hooks"
+
+interface OvenPalyerWithGID {
+    player: OvenPlayerInstance
+    gid: string
+}
 
 export const ArenaContainer = createContainer(() => {
     const [arenaList, setArenaList] = useState<Arena[]>([])
@@ -24,6 +31,7 @@ export const ArenaContainer = createContainer(() => {
         })
         setConnected(true)
     }, [])
+    console.log("listen", connected)
 
     // listen stream
     const listen = useCallback((stream: VoiceStream) => {
@@ -55,13 +63,12 @@ export const ArenaContainer = createContainer(() => {
                 }
 
                 // try reconnect on error
-                setTimeout(() => {
-                    listen(stream)
-                }, 1000)
+                // setTimeout(() => {
+                //     listen(stream)
+                // }, 1000)
             })
 
             newOvenPlayer.play()
-            stream.ovenPlayer = newOvenPlayer
 
             return () => {
                 newOvenPlayer.off("ready")
@@ -72,14 +79,35 @@ export const ArenaContainer = createContainer(() => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    // useEffect(() => {
+    //     if (!voiceStream.ovenPlayer) return
+    //     if (isMute) {
+    //         voiceStream.ovenPlayer.current.setVolume(0)
+    //         return
+    //     }
+    //     console.log("vol: ", volume * 100)
+    //     console.log("oven player volume ", voiceStream.ovenPlayer.current.getVolume())
+    //     console.log("this is voice stream", voiceStream)
+
+    //     voiceStream.ovenPlayer.current.setVolume(volume)
+    // }, [volume, isMute])
+
+    const onMute = (id: string) => {
+        const el = document.getElementById(id)
+        const vids = el?.getElementsByTagName("video")
+        if (vids) {
+            vids[0].volume = 0
+        }
+    }
+
     const onDisconnect = () => {
         console.log("discoonnecting")
 
         if (listenStreams) {
             listenStreams.map((l) => {
-                if (l.ovenPlayer) {
-                    l.ovenPlayer?.remove()
-                }
+                // if (l.ovenPlayer) {
+                //     l.ovenPlayer?.remove()
+                // }
 
                 if (l.liveKit && l.liveKit.getUserMedia) {
                     console.log("live kit obj", l.liveKit)
@@ -105,13 +133,13 @@ export const ArenaContainer = createContainer(() => {
         }
     }
 
-    useEffect(() => {
-        if (connected && listenStreams) {
-            onListen(listenStreams)
-            return
-        }
-        // onDisconnect()
-    }, [connected, listenStreams])
+    // useEffect(() => {
+    //     if (connected && listenStreams) {
+    //         onListen(listenStreams)
+    //         return
+    //     }
+    //     // onDisconnect()
+    // }, [connected, listenStreams])
 
     const startStream = useCallback((stream: VoiceStream, url: string) => {
         if (!url) {
@@ -150,6 +178,8 @@ export const ArenaContainer = createContainer(() => {
         connected,
         onListen,
         onDisconnect,
+        // ovenPlayers,
+        onMute,
     }
 })
 
@@ -162,7 +192,8 @@ export interface VoiceStream {
     is_faction_fommander: boolean
     username: string
     user_gid: string
-    ovenPlayer: OvenPlayerInstance | undefined
+
+    ovenPlayer: React.MutableRefObject<OvenPlayerInstance> | undefined
     liveKit: any
 }
 
