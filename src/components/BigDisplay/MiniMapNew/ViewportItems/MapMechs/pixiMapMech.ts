@@ -282,7 +282,17 @@ export class PixiMapMech {
     applyAbility(ability: GameAbility | BlueprintPlayerAbility) {
         if (!this.iconDimension) return
 
-        this.abilityToApply = new PixiImageIcon(ability.image_url, this.iconDimension.width / 1.8, this.iconDimension.height / 1.8, ability.colour, true)
+        this.abilityToApply = new PixiImageIcon(
+            ability.image_url,
+            this.iconDimension.width / 1.6,
+            this.iconDimension.height / 1.6,
+            ability.colour,
+            true,
+            undefined,
+            undefined,
+            undefined,
+            1,
+        )
         this.abilityToApply.showIcon(true)
         this.abilityToApply.root.position.set(this.iconDimension.width / 1.9, 0)
         this.rootInner.addChild(this.abilityToApply.root)
@@ -290,6 +300,7 @@ export class PixiMapMech {
 
     unApplyAbility() {
         if (!this.abilityToApply) return
+        this.abilityToApply.root.visible = false
         this.abilityToApply.root.destroy()
         this.abilityToApply = undefined
     }
@@ -311,8 +322,8 @@ export class PixiMapMech {
                 alpha: 1,
             })
 
-            const width = this.iconDimension.width * 1.8
-            const height = this.iconDimension.height * 1.8
+            const width = this.iconDimension.width * 1.5
+            const height = this.iconDimension.height * 1.5
             dash.drawRect(0, 0, width, height)
             this.dashedBox.pivot.set(width / 2, height / 2)
             this.dashedBox.position.set(this.iconDimension.width / 2, this.iconDimension.height / 2)

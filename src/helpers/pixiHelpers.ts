@@ -79,6 +79,7 @@ export class PixiImageIcon {
         onExpired?: () => void,
         secondsLeft?: number,
         countdownSpeed = 1,
+        alpha = 0.8,
     ) {
         this.onExpired = onExpired
         this.countdownSpeed = countdownSpeed
@@ -103,7 +104,7 @@ export class PixiImageIcon {
         this.icon.sortableChildren = true
         this.icon.addChild(imageBorder)
         this.icon.addChild(iconImage)
-        this.icon.alpha = 0.8
+        this.icon.alpha = alpha
 
         // Countdown label
         this.countdownLabel = new PIXI.Text(secondsLeft, {

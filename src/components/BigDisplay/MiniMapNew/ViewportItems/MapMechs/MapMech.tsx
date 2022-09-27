@@ -113,7 +113,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     }, [factionID, isAlive, pixiMapMech, warMachineFactionID])
 
     const updateIsMechHighlighted = useCallback(() => {
-        const isHighlighted = highlightedMechParticipantID === participantID || selection.current?.mechHash === hash || playerAbility.current?.mechHash === hash
+        const isHighlighted = highlightedMechParticipantID === participantID || playerAbility.current?.mechHash === hash
 
         // Highlight the mech circle
         if (!pixiMapMech) return
@@ -122,7 +122,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         } else {
             pixiMapMech.unhighlightMech()
         }
-    }, [hash, highlightedMechParticipantID, pixiMapMech, playerAbility, selection, participantID])
+    }, [hash, highlightedMechParticipantID, pixiMapMech, playerAbility, participantID])
 
     // If the mech dies and its mech is about to use player ability is active, cancel it
     useEffect(() => {
