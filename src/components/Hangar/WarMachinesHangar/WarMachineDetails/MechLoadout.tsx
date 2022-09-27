@@ -245,17 +245,38 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         setCurrLoadout((prev) => ({ ...prev, changed_power_core: undefined }))
     }, [])
 
-    const undoWeaponChanges = useCallback((slotNumber: number) => {
-        setCurrLoadout((prev) => {
-            const updated = prev.changed_weapons_map
-            updated.delete(slotNumber)
-
-            return {
-                ...prev,
-                changed_weapons_map: updated,
+    const undoWeaponChanges = useCallback(
+        (slotNumber: number) => {
+            if (unityViewRef.current) {
+                const prevWeapon = currLoadout.weapons_map.get(slotNumber)
+                unityViewRef.current.handleWeaponUpdate(
+                    prevWeapon
+                        ? {
+                              weapon_id: prevWeapon.id,
+                              slot_number: slotNumber,
+                              weapon: prevWeapon,
+                          }
+                        : {
+                              weapon_id: "",
+                              slot_number: slotNumber,
+                              unequip: true,
+                          },
+                )
+                setIsUnityPendingChange(true)
             }
-        })
-    }, [])
+
+            setCurrLoadout((prev) => {
+                const updated = prev.changed_weapons_map
+                updated.delete(slotNumber)
+
+                return {
+                    ...prev,
+                    changed_weapons_map: updated,
+                }
+            })
+        },
+        [currLoadout.weapons_map],
+    )
 
     // const undoUtilitySelection = useCallback((slotNumber: number) => {
     //     setCurrLoadout((prev) => {
