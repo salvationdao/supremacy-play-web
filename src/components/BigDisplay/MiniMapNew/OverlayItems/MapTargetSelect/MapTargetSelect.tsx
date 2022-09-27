@@ -1,17 +1,17 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import { MapSelection, useGlobalNotifications, useMiniMapPixi, WinnerStruct } from "../../../../../containers"
 import { BlueprintPlayerAbility, GameAbility, LocationSelectType, PlayerAbility, Position } from "../../../../../types"
-import { PixiTargetSelect } from "./pixiTargetSelect"
+import { PixiMapTargetSelect } from "./pixiMapTargetSelect"
 
-interface TargetHintAbility {
+interface MapTargetHintAbility {
     ability: GameAbility | BlueprintPlayerAbility
     endTime?: Date
     cancelable?: boolean
 }
 
-export const TargetHint = React.memo(function TargetHint() {
+export const MapTargetSelect = React.memo(function TargetHint() {
     const { onAbilityUseCallbacks } = useMiniMapPixi()
-    const [targetHintAbility, setTargetHintAbility] = useState<TargetHintAbility>()
+    const [targetHintAbility, setTargetHintAbility] = useState<MapTargetHintAbility>()
     const isTargetingWinner = useRef(false)
 
     useEffect(() => {
@@ -56,11 +56,11 @@ export const TargetHint = React.memo(function TargetHint() {
     return null
 })
 
-const propsAreEqual = (prevProps: TargetHintAbility, nextProps: TargetHintAbility) => {
+const propsAreEqual = (prevProps: MapTargetHintAbility, nextProps: MapTargetHintAbility) => {
     return prevProps.endTime === nextProps.endTime && prevProps.cancelable === nextProps.cancelable && prevProps.ability.id === nextProps.ability.id
 }
 
-const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, cancelable }: TargetHintAbility) {
+const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, cancelable }: MapTargetHintAbility) {
     const { newSnackbarMessage } = useGlobalNotifications()
     const {
         pixiMainItems,
@@ -72,7 +72,7 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
         useWinner,
         selectMapPosition,
     } = useMiniMapPixi()
-    const [pixiTargetHint, setPixiTargetHint] = useState<PixiTargetSelect>()
+    const [pixiTargetHint, setPixiTargetHint] = useState<PixiMapTargetSelect>()
     const selectedStartCoord = useRef<Position>()
     const selectedEndCoord = useRef<Position>()
 
@@ -88,7 +88,7 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
     // Initial setup for the mech and show on the map
     useEffect(() => {
         if (!pixiMainItems) return
-        const pixiTargetHint = new PixiTargetSelect(
+        const pixiTargetHint = new PixiMapTargetSelect(
             pixiMainItems.viewport,
             mapMousePosition,
             gridSizeRef,

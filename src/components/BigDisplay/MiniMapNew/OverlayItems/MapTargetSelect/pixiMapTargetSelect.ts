@@ -32,7 +32,7 @@ const getAbilityLabel = (ability: GameAbility | BlueprintPlayerAbility): string 
     return `${label} ${ability.label}.`
 }
 
-export class PixiTargetSelect {
+export class PixiMapTargetSelect {
     stageRoot: PIXI.Container<PIXI.DisplayObject>
     viewportRoot: PIXI.Container<PIXI.DisplayObject>
     mouseIcon: PixiImageIcon
@@ -43,6 +43,7 @@ export class PixiTargetSelect {
 
     private viewport: Viewport
     private ability: GameAbility | BlueprintPlayerAbility
+    private gridSizeRef: React.MutableRefObject<Dimension>
     private mapMousePosition: React.MutableRefObject<Position | undefined>
     private animationFrame: number | undefined
 
@@ -62,6 +63,7 @@ export class PixiTargetSelect {
     ) {
         this.viewport = viewport
         this.ability = ability
+        this.gridSizeRef = gridSizeRef
         this.mapMousePosition = mapMousePosition
         const secondsLeft = endTime ? Math.max(Math.round((endTime.getTime() - new Date().getTime()) / 1000), 0) : undefined
 
@@ -181,7 +183,7 @@ export class PixiTargetSelect {
             // Draw a line to connect start and end coord if both coord are populated
             this.startEndLine.clear()
             if (this.startCoord.root.visible && this.endCoord.root.visible) {
-                this.startEndLine.lineStyle(5, HEXToVBColor(this.ability.colour))
+                this.startEndLine.lineStyle(this.gridSizeRef.current.width / 4, HEXToVBColor(this.ability.colour))
                 this.startEndLine.moveTo(this.startCoord.root.position.x, this.startCoord.root.y)
                 this.startEndLine.lineTo(this.endCoord.root.position.x, this.endCoord.root.y)
             }
