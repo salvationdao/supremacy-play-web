@@ -49,6 +49,7 @@ export class PixiTargetSelect {
     // Actual selecting
     private startCoord: PixiImageIcon
     private endCoord: PixiImageIcon
+    private startEndLine: PIXI.Graphics
 
     constructor(
         viewport: Viewport,
@@ -125,6 +126,7 @@ export class PixiTargetSelect {
         // Start and end coord icons, made invisible
         this.startCoord = new PixiImageIcon(ability.image_url, gridSizeRef.current.width, gridSizeRef.current.height, ability.colour, true)
         this.endCoord = new PixiImageIcon(ability.image_url, gridSizeRef.current.width, gridSizeRef.current.height, ability.colour, true)
+        this.startEndLine = new PIXI.Graphics()
         this.startCoord.showIcon(false)
         this.endCoord.showIcon(false)
         this.startCoord.root.interactive = true
@@ -136,6 +138,7 @@ export class PixiTargetSelect {
         this.viewportRoot.addChild(this.mouseIcon.root)
         this.viewportRoot.addChild(this.startCoord.root)
         this.viewportRoot.addChild(this.endCoord.root)
+        this.viewportRoot.addChild(this.startEndLine)
         this.stageRoot.addChild(this.colorOverlay)
         this.stageRoot.addChild(this.outerBorder)
         this.stageRoot.addChild(this.bottomContainer)
@@ -174,6 +177,14 @@ export class PixiTargetSelect {
             this.outerBorder.clear()
             this.outerBorder.lineStyle(4, HEXToVBColor(this.ability.colour))
             this.outerBorder.drawRect(0, 0, this.viewport.screenWidth, this.viewport.screenHeight)
+
+            // Draw a line to connect start and end coord if both coord are populated
+            this.startEndLine.clear()
+            if (this.startCoord.root.visible && this.endCoord.root.visible) {
+                this.startEndLine.lineStyle(5, HEXToVBColor(this.ability.colour))
+                this.startEndLine.moveTo(this.startCoord.root.position.x, this.startCoord.root.y)
+                this.startEndLine.lineTo(this.endCoord.root.position.x, this.endCoord.root.y)
+            }
 
             // Repeat
             this.animationFrame = requestAnimationFrame(step)

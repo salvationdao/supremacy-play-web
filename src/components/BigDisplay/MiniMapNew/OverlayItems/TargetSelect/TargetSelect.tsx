@@ -165,7 +165,7 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
                 if (isLocationSelection) {
                     pixiTargetHint.mouseIcon.showIcon(!selectedStartCoord.current)
                 } else if (isLineSelection) {
-                    pixiTargetHint.mouseIcon.showIcon(!selectedStartCoord.current && !selectedEndCoord.current)
+                    pixiTargetHint.mouseIcon.showIcon(!selectedStartCoord.current || !selectedEndCoord.current)
                 }
             }
         }
