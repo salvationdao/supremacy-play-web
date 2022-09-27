@@ -162,7 +162,11 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
 
             // If ability has an end time and selection is placed, hide the icon
             if (endTime) {
-                pixiTargetHint.mouseIcon.showIcon(!selectedStartCoord.current)
+                if (isLocationSelection) {
+                    pixiTargetHint.mouseIcon.showIcon(!selectedStartCoord.current)
+                } else if (isLineSelection) {
+                    pixiTargetHint.mouseIcon.showIcon(!selectedStartCoord.current && !selectedEndCoord.current)
+                }
             }
         }
     }, [ability.location_select_type, endTime, gridCellToViewportPosition, onSelectMapPositionCallbacks, pixiTargetHint, selectMapPosition])
