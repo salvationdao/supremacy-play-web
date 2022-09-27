@@ -117,6 +117,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     const [loading, setLoading] = useState(false)
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
     const [currLoadout, setCurrLoadout] = useState<MechDetailsWithMaps>(generateLoadout(mechDetails))
+    const [isUnityPendingChange, setIsUnityPendingChange] = useState(false)
 
     useEffect(() => {
         setCurrLoadout(generateLoadout(mechDetails))
@@ -210,6 +211,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     const modifyWeaponSlot = useCallback((ew: LoadoutWeapon) => {
         if (unityViewRef.current) {
             unityViewRef.current.handleWeaponUpdate(ew)
+            setIsUnityPendingChange(true)
         }
 
         setCurrLoadout((prev) => {
@@ -286,12 +288,13 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
 
     const loadoutDisabled = useMemo(
         () =>
+            isUnityPendingChange ||
             xsyn_locked ||
             locked_to_marketplace ||
             mechStatus?.status === MechStatusEnum.Queue ||
             mechStatus?.status === MechStatusEnum.Battle ||
             mechStatus?.status === MechStatusEnum.Sold,
-        [locked_to_marketplace, mechStatus?.status, xsyn_locked],
+        [isUnityPendingChange, locked_to_marketplace, mechStatus?.status, xsyn_locked],
     )
 
     return (
@@ -336,6 +339,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                 }}
                                 onClick={() => saveSelection()}
                                 loading={loading}
+                                disabled={isUnityPendingChange}
                             >
                                 <Typography variant="h6">Save Changes</Typography>
                             </FancyButton>
@@ -394,6 +398,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                 Icon: SvgPowerCore,
                                 rarity: getRarityDeets(previouslyEquipped.tier),
                                 onClick: () => undoPowerCoreChanges(),
+                                disabled: loadoutDisabled,
                             }
                         }
 
@@ -484,6 +489,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                 rarity: previouslyEquipped.weapon_skin ? getRarityDeets(previouslyEquipped.weapon_skin.tier) : undefined,
                                 hasSkin: !!previouslyEquipped.weapon_skin,
                                 onClick: () => undoWeaponChanges(slotNumber),
+                                disabled: loadoutDisabled,
                             }
                         }
 
@@ -583,6 +589,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                         Icon: SvgUtilities,
                                         rarity: getRarityDeets(previouslyEquipped.tier),
                                         onClick: () => undoUtilitySelection(slotNumber),
+                                        disabled: loadoutDisabled,
                                     }
                                 })()}
                                 locked={utility.locked_to_mech}
@@ -668,6 +675,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                             Icon: SvgPowerCore,
                                             rarity: getRarityDeets(previouslyEquipped.tier),
                                             onClick: () => undoMechSkinChanges(),
+                                            disabled: loadoutDisabled,
                                         }
                                     })()}
                                 />
@@ -714,13 +722,13 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                 </Stack>
             </Box>
             <MechViewer
-                // ref={unityViewRef}
+                ref={unityViewRef}
                 mechDetails={mechDetails}
-                // unity={{
-                //     onUnlock: () => {
-                //         console.log("unlocked")
-                //     },
-                // }}
+                unity={{
+                    onUnlock: () => {
+                        setIsUnityPendingChange(false)
+                    },
+                }}
             />
         </>
     )
