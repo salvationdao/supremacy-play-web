@@ -1,4 +1,4 @@
-import { Stack, Box, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { TooltipHelper } from "../../.."
 import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
@@ -21,8 +21,8 @@ export const MechLoadoutIcons = ({ mechDetails }: { mechDetails?: MechDetails })
 
     if (mechDetails) {
         const { chassis_skin_id, intro_animation_id, outro_animation_id, power_core_id } = mechDetails
-        const weapons = mechDetails.weapons?.length
-        const utilities = mechDetails.utility?.length
+        const weapons = mechDetails.weapons?.length || 0
+        const utilities = mechDetails.utility?.length || 0
 
         if (chassis_skin_id) hasSkin = true
         if (intro_animation_id) hasIntroAnimation = true

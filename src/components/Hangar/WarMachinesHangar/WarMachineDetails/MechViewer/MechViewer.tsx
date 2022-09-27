@@ -1,14 +1,29 @@
 import { Box } from "@mui/material"
-import { useTheme } from "../../../../containers/theme"
-import { MechDetails } from "../../../../types"
-import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
+import React from "react"
+import { useTheme } from "../../../../../containers/theme"
+import { MechDetails } from "../../../../../types"
+import { MediaPreview } from "../../../../Common/MediaPreview/MediaPreview"
+import { LoadoutMechSkin, LoadoutPowerCore, LoadoutWeapon } from "../MechLoadout"
+import { UnityViewer } from "./UnityViewer"
 
-export const MechViewer = ({ mechDetails }: { mechDetails: MechDetails }) => {
+export type UnityHandle = {
+    handleWeaponUpdate: (wu: LoadoutWeapon) => void
+    handlePowerCoreUpdate: (pcu: LoadoutPowerCore) => void
+    handleMechSkinUpdate: (msu: LoadoutMechSkin) => void
+}
+export interface MechViewerProps {
+    mechDetails: MechDetails
+    unity?: {
+        onUnlock: () => void
+    }
+}
+
+export const MechViewer = React.forwardRef<UnityHandle, MechViewerProps>(function MechViewer(props, ref) {
+    const { mechDetails, unity } = props
     const theme = useTheme()
-
     const backgroundColor = theme.factionTheme.background
 
-    const skin = mechDetails.chassis_skin || mechDetails.default_chassis_skin
+    const skin = mechDetails.chassis_skin && mechDetails.default_chassis_skin
     const avatarUrl = skin?.avatar_url || mechDetails.avatar_url
     const imageUrl = skin?.image_url || mechDetails.image_url
     const largeImageUrl = skin?.large_image_url || mechDetails.large_image_url
@@ -52,13 +67,27 @@ export const MechViewer = ({ mechDetails }: { mechDetails: MechDetails }) => {
                 }}
             >
                 <FeatherFade color={backgroundColor} />
-                <MediaPreview imageUrl={largeImageUrl || imageUrl || avatarUrl} videoUrls={[animationUrl, cardAnimationUrl]} objectFit="cover" blurBackground />
+                {unity ? (
+                    <UnityViewer unityRef={ref} {...props} />
+                ) : (
+                    <MediaPreview
+                        imageUrl={largeImageUrl || imageUrl || avatarUrl}
+                        videoUrls={[animationUrl, cardAnimationUrl]}
+                        objectFit="cover"
+                        blurBackground
+                    />
+                )}
             </Box>
         </Box>
     )
-}
+})
 
-export const FeatherFade = ({ color }: { color: string }) => {
+interface FeatherFadeProps {
+    color: string
+    featherSize?: string
+    featherBlur?: string
+}
+export const FeatherFade = ({ color, featherBlur = "60px", featherSize = "50px" }: FeatherFadeProps) => {
     return (
         <Box
             sx={{
@@ -67,7 +96,7 @@ export const FeatherFade = ({ color }: { color: string }) => {
                 bottom: -1,
                 left: -1,
                 right: -1,
-                boxShadow: `0 0 60px 50px ${color}`,
+                boxShadow: `0 0 ${featherBlur} ${featherSize} ${color}`,
                 zIndex: 9,
             }}
         >
