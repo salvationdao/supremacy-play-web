@@ -232,6 +232,7 @@ export interface MechSkin extends Collection, Images {
     tier: RarityEnum
     created_at: Date
     swatch_images?: Images
+    blueprint_weapon_skin_id?: string
 }
 
 export interface MechAnimation extends Collection, Images {

@@ -74,6 +74,12 @@ export const UnityViewer = ({ unityRef, mechDetails, unity }: UnityViewerProps) 
                           }
                         : undefined,
                 } as SiloObject
+                if (wu.inherit_skin && mechDetails.chassis_skin?.blueprint_weapon_skin_id) {
+                    obj.skin = {
+                        type: "skin",
+                        static_id: mechDetails.chassis_skin.blueprint_weapon_skin_id,
+                    }
+                }
                 sendMessage("SceneContext", "SetSlotIndexToChange", wu.slot_number)
                 sendMessage("SceneContext", "ChangeSlotValue", JSON.stringify(obj))
             }
