@@ -185,27 +185,27 @@ export const hexToRGB = (hexx: string) => {
 export const getRarityDeets = (rarityKey: string): Rarity => {
     switch (rarityKey) {
         case RarityEnum.Mega:
-            return { label: "Mega", color: colors.rarity.MEGA, textColor: "#FFFFFF",rank:11 }
+            return { label: "Mega", color: colors.rarity.MEGA, textColor: "#FFFFFF", rank: 11 }
         case RarityEnum.Colossal:
-            return { label: "Colossal", color: colors.rarity.COLOSSAL, textColor: "#FFFFFF",rank:10 }
+            return { label: "Colossal", color: colors.rarity.COLOSSAL, textColor: "#FFFFFF", rank: 10 }
         case RarityEnum.Rare:
-            return { label: "Rare", color: colors.rarity.RARE, textColor: "#FFFFFF",rank:9 }
+            return { label: "Rare", color: colors.rarity.RARE, textColor: "#FFFFFF", rank: 9 }
         case RarityEnum.Legendary:
-            return { label: "Legendary", color: colors.rarity.LEGENDARY, textColor: "#FFFFFF",rank:8 }
+            return { label: "Legendary", color: colors.rarity.LEGENDARY, textColor: "#FFFFFF", rank: 8 }
         case RarityEnum.EliteLegendary:
-            return { label: "Elite Legendary", color: colors.rarity.ELITE_LEGENDARY, textColor: "#FFFFFF",rank:7 }
+            return { label: "Elite Legendary", color: colors.rarity.ELITE_LEGENDARY, textColor: "#FFFFFF", rank: 7 }
         case RarityEnum.UltraRare:
-            return { label: "Ultra Rare", color: colors.rarity.ULTRA_RARE, textColor: "#FFFFFF",rank:6 }
+            return { label: "Ultra Rare", color: colors.rarity.ULTRA_RARE, textColor: "#FFFFFF", rank: 6 }
         case RarityEnum.Exotic:
-            return { label: "Exotic", color: colors.rarity.EXOTIC, textColor: "#FFFFFF",rank:5 }
+            return { label: "Exotic", color: colors.rarity.EXOTIC, textColor: "#FFFFFF", rank: 5 }
         case RarityEnum.Guardian:
-            return { label: "Guardian", color: colors.rarity.GUARDIAN, textColor: "#FFFFFF",rank:4 }
+            return { label: "Guardian", color: colors.rarity.GUARDIAN, textColor: "#FFFFFF", rank: 4 }
         case RarityEnum.Mythic:
-            return { label: "Mythic", color: colors.rarity.MYTHIC, textColor: "#000000",rank:3 }
+            return { label: "Mythic", color: colors.rarity.MYTHIC, textColor: "#000000", rank: 3 }
         case RarityEnum.DeusEx:
-            return { label: "Deus Ex", color: colors.rarity.DEUS_EX, textColor: "#000000",rank:2 }
+            return { label: "Deus Ex", color: colors.rarity.DEUS_EX, textColor: "#000000", rank: 2 }
         case RarityEnum.Titan:
-            return { label: "Titan", color: colors.rarity.TITAN, textColor: "#000000",rank:1 }
+            return { label: "Titan", color: colors.rarity.TITAN, textColor: "#000000", rank: 1 }
         default:
             return { label: "", color: colors.rarity.MEGA, textColor: "#FFFFFF", rank: 100 }
     }
