@@ -85,8 +85,6 @@ export const BattleLobbyJoinModal = ({ selectedBattleLobby, setSelectedBattleLob
         },
     )
 
-    console.log(mechsWithQueueStatus)
-
     const [list, setList] = useState<MechBasicWithQueueStatus[]>([])
     const { page, changePage, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: 10,

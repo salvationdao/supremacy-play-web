@@ -26,8 +26,8 @@ export const ArenaSelect = () => {
                     },
                     "& .MuiSelect-outlined": { p: 0 },
                 }}
-                defaultValue={currentArena?.type}
-                value={currentArena?.type || ""}
+                defaultValue={currentArena?.id}
+                value={currentArena?.id || ""}
                 MenuProps={{
                     variant: "menu",
                     sx: {
@@ -50,14 +50,14 @@ export const ArenaSelect = () => {
                     return (
                         <MenuItem
                             key={x.id}
-                            value={x.type}
+                            value={x.id}
                             onClick={() => {
                                 setCurrentArena(x)
                             }}
                             sx={{ "&:hover": { backgroundColor: `#FFFFFF30` } }}
                         >
                             <Typography sx={{ lineHeight: 1 }} variant="body2">
-                                {x.type}
+                                {x.name}
                             </Typography>
                         </MenuItem>
                     )

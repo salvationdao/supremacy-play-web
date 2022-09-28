@@ -2,7 +2,7 @@ import { useState } from "react"
 import { createContainer } from "unstated-next"
 import { useGameServerSubscription } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { Arena, ArenaStatus, ArenaType } from "../types"
+import { Arena, ArenaStatus } from "../types"
 
 export const ArenaContainer = createContainer(() => {
     const [arenaList, setArenaList] = useState<Arena[]>([])
@@ -37,14 +37,8 @@ export const ArenaListener = () => {
                 return
             }
 
-            // NOTE: temporary default arena to the first one
-            const storyArena = payload.find((arena) => arena.type === ArenaType.Story)
-            if (storyArena) {
-                setCurrentArena(storyArena)
-            } else {
-                setCurrentArena(undefined)
-            }
-            // above code will be refactor when players are able to select arena
+            // default arena to the first one
+            setCurrentArena(payload[0])
 
             setArenaList(payload)
         },

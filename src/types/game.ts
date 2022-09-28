@@ -240,15 +240,9 @@ export interface DisplayedAbility {
     size_grid_override?: number
 }
 
-export enum ArenaType {
-    Story = "STORY",
-    Expedition = "EXPEDITION",
-}
-
 export interface Arena {
     id: string
     name: string
-    type: ArenaType
     gid: number
     status?: ArenaStatus
 }

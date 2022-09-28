@@ -18,7 +18,7 @@ export const ArenaTypeSelect = ({
     const label = useMemo(() => {
         const selected = arenaTypeOptions.find((i) => i.id === selectedArenaType?.id)
         if (!selected) return null
-        return `${selected.type}`
+        return `${selected.name}`
     }, [arenaTypeOptions, selectedArenaType?.id])
 
     const primaryColor = theme.factionTheme.primary
