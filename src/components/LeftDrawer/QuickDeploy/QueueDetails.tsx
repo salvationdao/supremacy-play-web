@@ -7,28 +7,20 @@ import { colors } from "../../../theme/theme"
 import { PreferencesModal } from "../../Bar/ProfileCard/PreferencesModal/PreferencesModal"
 import { TelegramRegisterModal } from "../../Bar/ProfileCard/PreferencesModal/TelegramRegisterModal"
 import { PlayerQueueStatus } from "./QuickDeploy"
-import { useBattleLobby } from "../../../containers/battleLobby"
+import { BattleETA } from "../../BattleHistory/BattleETA"
 
 interface QueueDetailsProps {
     playerQueueStatus?: PlayerQueueStatus
 }
 
 export const QueueDetails = ({ playerQueueStatus }: QueueDetailsProps) => {
-    const { battleETASeconds } = useBattleLobby()
     const [preferencesModalOpen, togglePreferencesModalOpen] = useToggle()
     const [addDeviceModalOpen, toggleAddDeviceModalOpen] = useToggle()
     const [telegramShortcode, setTelegramShortcode] = useState<string>("")
     return (
         <>
             <Stack spacing="1.5rem" direction="row" width="100%">
-                <AmountItem
-                    key={`${battleETASeconds}-queue_time`}
-                    title={"BATTLE ETA: "}
-                    color={colors.offWhite}
-                    value={battleETASeconds} // TODO: use time formatter
-                    tooltip="The current queue position of your faction."
-                    disableIcon
-                />
+                <BattleETA />
 
                 {playerQueueStatus && (
                     <AmountItem

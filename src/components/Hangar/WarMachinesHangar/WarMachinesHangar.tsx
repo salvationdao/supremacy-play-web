@@ -46,8 +46,6 @@ export const WarMachinesHangar = () => {
         },
         (payload) => {
             setPlayerQueueStatus(payload)
-
-            console.log(payload)
         },
     )
 
@@ -482,18 +480,18 @@ export const WarMachinesHangar = () => {
             </>
         ),
         [
-            // bulkDeployConfirmModalOpen,
             bulkRepairConfirmModalOpen,
             changePage,
             changePageSize,
             content,
             isFiltersExpanded,
             isGridView,
-            list,
+            list?.length,
             onSelectAll,
             onUnSelectAll,
             page,
             pageSize,
+            playerQueueStatus,
             search,
             selectedMechs,
             sort,

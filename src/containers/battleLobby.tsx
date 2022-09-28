@@ -1,7 +1,6 @@
-import { createContext, ReactNode, useCallback, useContext, useState } from "react"
-import { useGameServerCommandsFaction, useGameServerSubscriptionSecured } from "../hooks/useGameServer"
+import { createContext, ReactNode, useCallback, useContext } from "react"
+import { useGameServerCommandsFaction } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { BattleBounty } from "../types/battle_queue"
 import BigNumber from "bignumber.js"
 
 export interface BattleLobbyState {
@@ -16,7 +15,6 @@ export interface BattleLobbyState {
     ) => void
     joinBattleLobby: (battleLobbyID: string, mechIDs: string[], password?: string) => void
     leaveBattleLobby: (mechIDs: string[]) => void
-    battleETASeconds: number
 }
 
 const initialState: BattleLobbyState = {
@@ -40,7 +38,6 @@ const initialState: BattleLobbyState = {
         // HACK: get around lint
         if (mechIDs) return
     },
-    battleETASeconds: 300,
 }
 
 export const BattleLobbyContext = createContext<BattleLobbyState>(initialState)
@@ -106,25 +103,12 @@ export const BattleLobbyProvider = ({ children }: { children: ReactNode }) => {
         [send],
     )
 
-    const [battleETASeconds, setBattleETASeconds] = useState<number>(initialState.battleETASeconds)
-    useGameServerSubscriptionSecured<number>(
-        {
-            URI: "/battle_eta",
-            key: GameServerKeys.SunBattleETA,
-        },
-        (payload) => {
-            if (!payload) return
-            setBattleETASeconds(payload)
-        },
-    )
-
     return (
         <BattleLobbyContext.Provider
             value={{
                 createBattleLobby,
                 joinBattleLobby,
                 leaveBattleLobby,
-                battleETASeconds,
             }}
         >
             {children}

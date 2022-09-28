@@ -16,7 +16,6 @@ import { FancyButton } from "../../Common/FancyButton"
 import { BattleLobbyJoinModal } from "../BattleLobbyJoinModal"
 import { useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { useArena } from "../../../containers"
 
 const sortOptionsPending: { label: string; value: string }[] = [
     { label: SortTypeLabel.QueuedAmountHighest, value: SortTypeLabel.QueuedAmountHighest },
@@ -36,7 +35,6 @@ enum filterLobbyStatus {
 
 export const BattleLobbies = () => {
     const theme = useTheme()
-    const { arenaList } = useArena()
 
     // load battle lobbies
     const [battleLobbies, setBattleLobbies] = useState<BattleLobby[]>([])
@@ -339,7 +337,7 @@ export const BattleLobbies = () => {
                 </Stack>
             </ClipThing>
 
-            {selectedLobby && !selectedLobby.ready_at && <BattleLobbyJoinModal selectedBattleLobby={selectedLobby} setSelectedBattleLobby={setSelectedLobby} />}
+            <BattleLobbyJoinModal selectedBattleLobby={selectedLobby} setSelectedBattleLobby={setSelectedLobby} />
         </>
     )
 }
