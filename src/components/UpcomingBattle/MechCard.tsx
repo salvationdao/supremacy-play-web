@@ -82,8 +82,8 @@ export const MechCard = React.memo(function MechCard({ mechID, faction }: MechCa
                 flex: 1,
                 width: "100%",
                 height: "100%",
-                maxWidth: "210px",
-                maxHeight: "300px",
+                maxWidth: "150px",
+                maxHeight: "200px",
                 minHeight: "100px",
                 gap: "0.5rem",
                 zIndex: 9,
@@ -146,6 +146,9 @@ export const MechCard = React.memo(function MechCard({ mechID, faction }: MechCa
                     margin: "auto",
                     flex: 1,
                     width: "100%",
+                }}
+                innerSx={{
+                    margin: "auto",
                 }}
             >
                 <Typography

@@ -1,6 +1,6 @@
 import { Box, CircularProgress, Grid, Stack, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
-import { useDimension, useSupremacy } from "../../containers"
+import { useSupremacy } from "../../containers"
 import { useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { opacityEffect, shake } from "../../theme/keyframes"
@@ -21,19 +21,6 @@ interface NextBattle {
 
 export const UpcomingBattle = () => {
     const [nextBattle, setNextBattle] = useState<NextBattle | undefined>()
-    const { gameUIDimensions } = useDimension()
-
-    const { size } = useMemo(() => {
-        let size = "18rem"
-        let spacing = "6rem"
-
-        if (gameUIDimensions.width < 500 || gameUIDimensions.height < 720) {
-            size = "16rem"
-            spacing = "4rem"
-        }
-
-        return { size, spacing }
-    }, [gameUIDimensions.height, gameUIDimensions.width])
 
     // Subscribe on battle end information
     useGameServerSubscription<NextBattle>(
@@ -77,7 +64,7 @@ export const UpcomingBattle = () => {
                 <CardGroup mechIDs={nextBattle?.rm_mech_ids || []} factionID={nextBattle?.rm_id || ""} />
             </Box>
         )
-    }, [size, nextBattle])
+    }, [nextBattle])
 
     return (
         <Box
@@ -191,6 +178,10 @@ const CardGroup = ({ factionID, mechIDs }: { factionID: string; mechIDs: string[
 }
 
 const OptInButton = () => {
+    const optIn = () => {
+        //todo - add backend call to opt in for team support
+    }
+
     return (
         <Box sx={{ flex: 1, minWidth: "45%", maxWidth: "200px", minHeight: "36px" }}>
             <FancyButton
@@ -210,7 +201,7 @@ const OptInButton = () => {
                     },
                 }}
                 sx={{ px: "1rem", pt: 0, pb: ".1rem", minWidth: "7rem", color: "#FFFFFF" }}
-                // onClick={onTrigger}
+                onClick={optIn}
             >
                 <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack, margin: "auto" }}>
                     OPT IN
