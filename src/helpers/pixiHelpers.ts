@@ -67,8 +67,12 @@ export class PixiImageIcon {
     private icon: PIXI.Container
     private countdownLabel: PIXI.Text
     private animationFrame: number | undefined
+    private rangeRadius: PIXI.Graphics
+    private borderColor: string
 
     constructor(imageUrl: string, width: number, height: number, borderColor: string, centerPivot?: boolean, alpha = 0.8) {
+        this.borderColor = borderColor
+
         this.root = new PIXI.Container()
         this.root.zIndex = 60
         this.root.sortableChildren = true
@@ -107,8 +111,14 @@ export class PixiImageIcon {
         this.countdownLabel.position.set(width / 2, -16)
         this.countdownLabel.visible = false
 
+        // Range radius
+        this.rangeRadius = new PIXI.Graphics()
+        this.rangeRadius.pivot.set(-width / 2, -height / 2)
+        this.rangeRadius.zIndex = 2
+
         this.root.addChild(this.icon)
         this.root.addChild(this.countdownLabel)
+        this.root.addChild(this.rangeRadius)
 
         if (centerPivot) this.root.pivot.set(this.root.width / 2, this.root.height / 2)
     }
@@ -157,5 +167,16 @@ export class PixiImageIcon {
 
     showIcon(toShow: boolean) {
         this.root.visible = toShow
+    }
+
+    showRangeRadius(radius: number | undefined) {
+        // Draw the range
+        this.rangeRadius.clear()
+        if (radius) {
+            this.rangeRadius.lineStyle(2, HEXToVBColor(this.borderColor))
+            this.rangeRadius.beginFill(HEXToVBColor(this.borderColor), 0.4)
+            this.rangeRadius.drawCircle(0, 0, radius)
+            this.rangeRadius.endFill()
+        }
     }
 }

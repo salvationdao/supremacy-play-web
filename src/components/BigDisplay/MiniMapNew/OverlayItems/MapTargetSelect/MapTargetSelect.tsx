@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
-import { MapSelection, useGlobalNotifications, useMiniMapPixi, WinnerStruct } from "../../../../../containers"
-import { BlueprintPlayerAbility, GameAbility, LocationSelectType, PlayerAbility, Position } from "../../../../../types"
+import { MapSelection, useGame, useGlobalNotifications, useMiniMapPixi, WinnerStruct } from "../../../../../containers"
+import { BlueprintPlayerAbility, GameAbility, LocationSelectType, MechMoveCommandAbility, PlayerAbility, Position } from "../../../../../types"
 import { PixiMapTargetSelect } from "./pixiMapTargetSelect"
 
 interface MapTargetHintAbility {
@@ -73,6 +73,7 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
         selectMapPosition,
         onTargetConfirm,
     } = useMiniMapPixi()
+    const { abilityDetails } = useGame()
     const [pixiTargetHint, setPixiTargetHint] = useState<PixiMapTargetSelect>()
     const selectedStartCoord = useRef<Position>()
     const selectedEndCoord = useRef<Position>()
@@ -120,6 +121,13 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
         pixiTargetHint.onTargetConfirm = onTargetConfirm
     }, [onTargetConfirm, pixiTargetHint])
 
+    // Update pixi's abilityDetails array
+    useEffect(() => {
+        if (!pixiTargetHint) return
+        const abilityDetail = typeof ability?.game_client_ability_id !== "undefined" ? abilityDetails[ability.game_client_ability_id] : undefined
+        pixiTargetHint.updateAbilityDetail(abilityDetail)
+    }, [ability.game_client_ability_id, abilityDetails, pixiTargetHint])
+
     useEffect(() => {
         if (!pixiTargetHint) return
 
@@ -151,8 +159,11 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
 
                 // Start / stop countdown
                 if (selectedStartCoord.current) {
-                    // For mech commands, dont countdown, and dont destroy pixi object when confirmed, keep going
-                    if (ability.location_select_type === LocationSelectType.MechCommand) {
+                    // For mech commands/mini mech commands, dont countdown, and dont destroy pixi object when confirmed, keep going
+                    if (
+                        ability.location_select_type === LocationSelectType.MechCommand ||
+                        ability.game_client_ability_id === MechMoveCommandAbility.ability.game_client_ability_id
+                    ) {
                         pixiTargetHint.startCountdown(0, 3, false)
                     } else {
                         pixiTargetHint.startCountdown()
@@ -199,7 +210,7 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
                 }
             }
         }
-    }, [ability.location_select_type, endTime, gridCellToViewportPosition, onSelectMapPositionCallbacks, pixiTargetHint, selectMapPosition])
+    }, [ability.game_client_ability_id, ability.location_select_type, endTime, gridCellToViewportPosition, onSelectMapPositionCallbacks, pixiTargetHint, selectMapPosition])
 
     return null
 }, propsAreEqual)

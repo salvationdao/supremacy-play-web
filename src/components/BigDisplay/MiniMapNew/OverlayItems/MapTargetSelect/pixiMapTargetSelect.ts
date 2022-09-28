@@ -5,7 +5,7 @@ import { AbilityCancelPNG } from "../../../../../assets"
 import { HEXToVBColor } from "../../../../../helpers"
 import { PixiImageIcon } from "../../../../../helpers/pixiHelpers"
 import { fonts } from "../../../../../theme/theme"
-import { BlueprintPlayerAbility, Dimension, GameAbility, LocationSelectType, Position } from "../../../../../types"
+import { AbilityDetail, BlueprintPlayerAbility, Dimension, GameAbility, GAME_CLIENT_TILE_SIZE, LocationSelectType, Position } from "../../../../../types"
 
 const getAbilityLabel = (ability: GameAbility | BlueprintPlayerAbility): string => {
     let label = "Select a location to use"
@@ -144,7 +144,7 @@ export class PixiMapTargetSelect {
         this.stageRoot.addChild(this.outerBorder)
         this.stageRoot.addChild(this.bottomContainer)
 
-        ease.add(this.mouseIcon.root, { scale: 1.2 }, { duration: 500, ease: "linear", repeat: true, reverse: true, removeExisting: true })
+        ease.add(this.mouseIcon.root, { scale: 1.05 }, { duration: 500, ease: "linear", repeat: true, reverse: true, removeExisting: true })
 
         this.render()
     }
@@ -227,5 +227,12 @@ export class PixiMapTargetSelect {
     resetCountdown() {
         this.endCoord.resetCountdown()
         this.startCoord.resetCountdown()
+    }
+
+    updateAbilityDetail(abilityDetail: AbilityDetail | undefined) {
+        const radius = abilityDetail ? (this.gridSizeRef.current.width * abilityDetail.radius) / GAME_CLIENT_TILE_SIZE : undefined
+        this.mouseIcon.showRangeRadius(radius)
+        this.startCoord.showRangeRadius(radius)
+        this.endCoord.showRangeRadius(radius)
     }
 }
