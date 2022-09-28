@@ -17,6 +17,7 @@ import FlipMove from "react-flip-move"
 import { SearchBattle } from "../Replays/BattlesReplays/SearchBattle"
 import { PlayerQueueStatus } from "../LeftDrawer/QuickDeploy/QuickDeploy"
 import { EmptyWarMachinesPNG } from "../../assets"
+import { useAuth } from "../../containers"
 
 const sortOptions = [
     { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
@@ -31,6 +32,7 @@ interface BattleLobbyJoinModalProps {
 }
 
 export const BattleLobbyJoinModal = ({ selectedBattleLobby, setSelectedBattleLobby }: BattleLobbyJoinModalProps) => {
+    const { factionID } = useAuth()
     const { factionTheme } = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [error, setError] = useState("")
@@ -85,8 +87,6 @@ export const BattleLobbyJoinModal = ({ selectedBattleLobby, setSelectedBattleLob
         },
     )
 
-    console.log(mechsWithQueueStatus)
-
     const [list, setList] = useState<MechBasicWithQueueStatus[]>([])
     const { page, changePage, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: 10,
@@ -95,7 +95,9 @@ export const BattleLobbyJoinModal = ({ selectedBattleLobby, setSelectedBattleLob
 
     const selectLimit = useMemo(() => {
         let queueLimit = 0
-        if (selectedBattleLobby) queueLimit = selectedBattleLobby.each_faction_mech_amount - selectedBattleLobby.battle_lobbies_mechs.length
+        if (selectedBattleLobby)
+            queueLimit =
+                selectedBattleLobby.each_faction_mech_amount - selectedBattleLobby.battle_lobbies_mechs.filter((m) => m.owner.faction_id === factionID).length
         const playerQueueRemain = currentPlayerQueue.queue_limit - currentPlayerQueue.total_queued
 
         let limit = queueLimit
@@ -103,7 +105,7 @@ export const BattleLobbyJoinModal = ({ selectedBattleLobby, setSelectedBattleLob
             limit = playerQueueRemain
         }
         return limit
-    }, [currentPlayerQueue, selectedBattleLobby])
+    }, [currentPlayerQueue.queue_limit, currentPlayerQueue.total_queued, factionID, selectedBattleLobby])
 
     const [search, setSearch] = useState("")
     const [sort, setSort] = useState<string>(SortTypeLabel.RarestDesc)
