@@ -1,4 +1,4 @@
-import { Box, Pagination, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
@@ -6,21 +6,21 @@ import { HANGAR_PAGE } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, parseString } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
+import { useGameServerCommandsUser, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MechBasic, MechBasicWithQueueStatus, MechStatus, MechStatusEnum } from "../../../types"
 import { RepairOffer, RepairStatus } from "../../../types/jobs"
-import { SortTypeLabel } from "../../../types/marketplace"
+import { SortDir, SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { QueueDetails } from "../../LeftDrawer/QuickDeploy/QueueDetails"
+import { PlayerQueueStatus } from "../../LeftDrawer/QuickDeploy/QuickDeploy"
 import { BulkRepairConfirmModal } from "./Common/BulkRepairConfirmModal"
 import { RepairBay } from "./RepairBay/RepairBay"
 import { WarMachineHangarItem } from "./WarMachineHangarItem"
-import { useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../keys"
-import { PlayerQueueStatus } from "../../LeftDrawer/QuickDeploy/QuickDeploy"
 
 const sortOptions = [
     { label: SortTypeLabel.MechQueueAsc, value: SortTypeLabel.MechQueueAsc },
@@ -31,10 +31,29 @@ const sortOptions = [
     { label: SortTypeLabel.RarestDesc, value: SortTypeLabel.RarestDesc },
 ]
 
+interface GetMechsRequest {
+    queue_sort?: string
+    sort_by?: string
+    sort_dir?: string
+    search: string
+    page: number
+    page_size: number
+    rarities: string[]
+    statuses: string[]
+    include_market_listed: boolean
+}
+
+interface GetMechsResponse {
+    mechs: MechBasicWithQueueStatus[]
+    total: number
+}
+
 export const WarMachinesHangar = () => {
     const [query, updateQuery] = useUrlQuery()
+    const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
 
+    // Player Queue Status
     const [playerQueueStatus, setPlayerQueueStatus] = useState<PlayerQueueStatus>({
         queue_limit: 10,
         total_queued: 0,
@@ -49,62 +68,17 @@ export const WarMachinesHangar = () => {
         },
     )
 
-    const childrenMechStatus = useRef<{ [mechID: string]: MechStatus }>({})
-    const childrenRepairStatus = useRef<{ [mechID: string]: RepairStatus }>({})
-    const childrenRepairOffer = useRef<{ [mechID: string]: RepairOffer }>({})
-
     // Items
-    const [mechsWithQueueStatus, setMechsWithQueueStatus] = useState<MechBasicWithQueueStatus[]>([])
-    useGameServerSubscriptionSecuredUser<MechBasicWithQueueStatus[]>(
-        {
-            URI: "/owned_mechs",
-            key: GameServerKeys.SubPlayerMechsBrief,
-        },
-        (payload) => {
-            if (!payload) return
-
-            setMechsWithQueueStatus((mqs) => {
-                if (mqs.length === 0) {
-                    return payload
-                }
-
-                // replace current list
-                const list = mqs.map((mq) => payload.find((p) => p.id === mq.id) || mq)
-
-                // append new list
-                payload.forEach((p) => {
-                    childrenMechStatus.current[p.id] = {
-                        status: p.status,
-                        can_deploy: p.can_deploy,
-                        battle_lobby_number: p.lobby_number,
-                        battle_lobby_queue_position: undefined,
-                    }
-
-                    childrenRepairStatus.current[p.id] = {
-                        id: "",
-                        blocks_required_repair: p.damaged_blocks,
-                        blocks_repaired: p.repair_blocks - p.damaged_blocks,
-                    }
-
-                    // if already exists
-                    if (list.some((mq) => mq.id === p.id)) {
-                        return
-                    }
-                    // otherwise, push to the list
-                    list.push(p)
-                })
-
-                return list
-            })
-        },
-    )
-
-    const [list, setList] = useState<MechBasicWithQueueStatus[]>([])
+    const [isLoading, setIsLoading] = useState(true)
+    const [loadError, setLoadError] = useState<string>()
+    const [mechs, setMechs] = useState<MechBasicWithQueueStatus[]>([])
 
     // Bulk action
     const [selectedMechs, setSelectedMechs] = useState<MechBasic[]>([])
-    // const [bulkDeployConfirmModalOpen, setBulkDeployConfirmModalOpen] = useState(false)
     const [bulkRepairConfirmModalOpen, setBulkRepairConfirmModalOpen] = useState(false)
+    const childrenMechStatus = useRef<{ [mechID: string]: MechStatus }>({})
+    const childrenRepairStatus = useRef<{ [mechID: string]: RepairStatus }>({})
+    const childrenRepairOffer = useRef<{ [mechID: string]: RepairOffer }>({})
 
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
@@ -142,8 +116,8 @@ export const WarMachinesHangar = () => {
     }, [])
 
     const onSelectAll = useCallback(() => {
-        setSelectedMechs(list)
-    }, [list])
+        setSelectedMechs(mechs)
+    }, [mechs])
 
     const onUnSelectAll = useCallback(() => {
         setSelectedMechs([])
@@ -189,61 +163,94 @@ export const WarMachinesHangar = () => {
         },
     })
 
+    const getItems = useCallback(async () => {
+        try {
+            setIsLoading(true)
+
+            let sortDir = SortDir.Asc
+            let sortBy = ""
+            if (sort === SortTypeLabel.MechQueueDesc || sort === SortTypeLabel.AlphabeticalReverse || sort === SortTypeLabel.RarestDesc) sortDir = SortDir.Desc
+
+            switch (sort) {
+                case SortTypeLabel.Alphabetical:
+                case SortTypeLabel.AlphabeticalReverse:
+                    sortBy = "alphabetical"
+                    break
+                case SortTypeLabel.RarestAsc:
+                case SortTypeLabel.RarestDesc:
+                    sortBy = "rarity"
+            }
+
+            const isQueueSort = sort === SortTypeLabel.MechQueueAsc || sort === SortTypeLabel.MechQueueDesc
+
+            console.log("1111111111111111111111111111111111111111111111111111111111111111111111111")
+
+            const resp = await send<GetMechsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
+                queue_sort: isQueueSort ? sortDir : undefined,
+                sort_by: isQueueSort ? undefined : sortBy,
+                sort_dir: isQueueSort ? undefined : sortDir,
+                search,
+                rarities,
+                statuses: status,
+                page,
+                page_size: pageSize,
+                include_market_listed: true,
+            })
+
+            console.log(resp)
+
+            if (!resp) return
+            setLoadError(undefined)
+            setMechs(resp.mechs)
+            setTotalItems(resp.total)
+            setSelectedMechs([])
+        } catch (e) {
+            setLoadError(typeof e === "string" ? e : "Failed to get war machines.")
+            console.error(e)
+        } finally {
+            setIsLoading(false)
+        }
+    }, [send, page, pageSize, search, rarities, status, updateQuery, sort, setTotalItems])
+
     useEffect(() => {
-        let result = [...mechsWithQueueStatus]
-
-        updateQuery({
-            sort,
-            search,
-            rarities: rarities.join("||"),
-            statuses: status.join("||"),
-            page: page.toString(),
-            pageSize: pageSize.toString(),
-        })
-
-        setTotalItems(mechsWithQueueStatus.length)
-
-        // filter
-        if (rarities.length > 0) {
-            result = result.filter((r) => rarities.includes(r.tier))
-        }
-        if (status.length > 0) {
-            result = result.filter((r) => status.includes(r.status))
-        }
-        if (search) {
-            result = result.filter((r) => `${r.label.toLowerCase()} ${r.name.toLowerCase()}`.includes(search.toLowerCase()))
-        }
-
-        // sort
-        switch (sort) {
-            case SortTypeLabel.MechQueueAsc:
-                result = result.sort((a, b) => (a.lobby_locked_at && b.lobby_locked_at && a.lobby_locked_at > a.lobby_locked_at ? 1 : -1))
-                break
-            case SortTypeLabel.MechQueueDesc:
-                result = result.sort((a, b) => (a.lobby_locked_at && b.lobby_locked_at && a.lobby_locked_at < a.lobby_locked_at ? 1 : -1))
-                break
-            case SortTypeLabel.Alphabetical:
-                result = result.sort((a, b) => `${a.name}${a.label}`.localeCompare(`${b.name}${b.label}`))
-                break
-            case SortTypeLabel.AlphabeticalReverse:
-                result = result.sort((a, b) => `${b.name}${b.label}`.localeCompare(`${a.name}${a.label}`))
-                break
-            case SortTypeLabel.RarestAsc:
-                result = result.sort((a, b) => (getRarityDeets(a.tier.toUpperCase()).rank < getRarityDeets(b.tier.toUpperCase()).rank ? 1 : -1))
-                break
-            case SortTypeLabel.RarestDesc:
-                result = result.sort((a, b) => (getRarityDeets(a.tier.toUpperCase()).rank > getRarityDeets(b.tier.toUpperCase()).rank ? 1 : -1))
-                break
-        }
-
-        // pagination
-        result = result.slice((page - 1) * pageSize, page * pageSize)
-
-        setList(result)
-    }, [mechsWithQueueStatus, search, rarities, status, updateQuery, sort, page, pageSize, setTotalItems])
+        getItems()
+    }, [getItems])
 
     const content = useMemo(() => {
-        if (list.length > 0) {
+        if (loadError) {
+            return (
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        sx={{ height: "100%", maxWidth: "100%", width: "75rem", px: "3rem", pt: "1.28rem" }}
+                        spacing="1.5rem"
+                    >
+                        <Typography
+                            sx={{
+                                color: colors.red,
+                                fontFamily: fonts.nostromoBold,
+                                textAlign: "center",
+                            }}
+                        >
+                            {loadError}
+                        </Typography>
+                    </Stack>
+                </Stack>
+            )
+        }
+
+        if (!mechs || isLoading) {
+            return (
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
+                        <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
+                    </Stack>
+                </Stack>
+            )
+        }
+
+        if (mechs && mechs.length > 0) {
             return (
                 <Box sx={{ direction: "ltr", height: 0 }}>
                     <Box
@@ -258,7 +265,7 @@ export const WarMachinesHangar = () => {
                             overflow: "visible",
                         }}
                     >
-                        {list.map((mech) => {
+                        {mechs.map((mech) => {
                             const isSelected = selectedMechs.findIndex((s) => s.id === mech.id) >= 0
                             return (
                                 <WarMachineHangarItem
@@ -267,6 +274,9 @@ export const WarMachinesHangar = () => {
                                     toggleIsSelected={() => {
                                         toggleSelected(mech)
                                     }}
+                                    childrenMechStatus={childrenMechStatus}
+                                    childrenRepairStatus={childrenRepairStatus}
+                                    childrenRepairOffer={childrenRepairOffer}
                                     mech={mech}
                                     isGridView={isGridView}
                                 />
@@ -328,7 +338,7 @@ export const WarMachinesHangar = () => {
                 </Stack>
             </Stack>
         )
-    }, [list, theme.factionTheme.primary, theme.factionTheme.secondary, isGridView, selectedMechs, toggleSelected])
+    }, [loadError, mechs, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary, isGridView, selectedMechs, toggleSelected])
 
     return useMemo(
         () => (
@@ -399,12 +409,13 @@ export const WarMachinesHangar = () => {
                                 </PageHeader>
 
                                 <TotalAndPageSizeOptions
-                                    countItems={list?.length}
+                                    countItems={mechs?.length}
                                     totalItems={totalItems}
                                     pageSize={pageSize}
                                     changePageSize={changePageSize}
                                     pageSizeOptions={[10, 20, 30]}
                                     changePage={changePage}
+                                    manualRefresh={getItems}
                                     sortOptions={sortOptions}
                                     selectedSort={sort}
                                     onSetSort={setSort}
@@ -495,9 +506,10 @@ export const WarMachinesHangar = () => {
             changePage,
             changePageSize,
             content,
+            getItems,
             isFiltersExpanded,
             isGridView,
-            list?.length,
+            mechs?.length,
             onSelectAll,
             onUnSelectAll,
             page,

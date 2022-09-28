@@ -1,38 +1,91 @@
 import { Box, Checkbox, Stack, Typography } from "@mui/material"
-import React, { useMemo } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 import { FancyButton } from "../.."
 import { SvgDropdownArrow } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { shadeColor } from "../../../helpers"
+import { useGameServerSubscriptionFaction, useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MechBasic, MechBasicWithQueueStatus, MechDetails } from "../../../types"
+import { MechBasic, MechDetails, MechStatus } from "../../../types"
+import { RepairOffer, RepairStatus } from "../../../types/jobs"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { General } from "../../Marketplace/Common/MarketItem/General"
 import { MechBarStats } from "./Common/MechBarStats"
+import { MechGeneralStatus } from "./Common/MechGeneralStatus"
 import { MechLoadoutIcons } from "./Common/MechLoadoutIcons"
 import { MechRepairBlocks } from "./Common/MechRepairBlocks"
-import { MechGeneralStatus } from "./Common/MechGeneralStatus"
 
 interface WarMachineHangarItemProps {
     isSelected?: boolean
     toggleIsSelected?: () => void
-    mech: MechBasicWithQueueStatus
+    mech: MechBasic
     isGridView?: boolean
+    childrenMechStatus: React.MutableRefObject<{
+        [mechID: string]: MechStatus
+    }>
+    childrenRepairStatus: React.MutableRefObject<{
+        [mechID: string]: RepairStatus
+    }>
+    childrenRepairOffer: React.MutableRefObject<{
+        [mechID: string]: RepairOffer
+    }>
 }
 
 const propsAreEqual = (prevProps: WarMachineHangarItemProps, nextProps: WarMachineHangarItemProps) => {
-    return (
-        prevProps.isGridView === nextProps.isGridView &&
-        prevProps.mech.id === nextProps.mech.id &&
-        prevProps.isSelected === nextProps.isSelected &&
-        prevProps.mech.damaged_blocks === nextProps.mech.damaged_blocks
-    )
+    return prevProps.isGridView === nextProps.isGridView && prevProps.mech.id === nextProps.mech.id && prevProps.isSelected === nextProps.isSelected
 }
 
-export const WarMachineHangarItem = React.memo(function WarMachineHangarItem({ isSelected, toggleIsSelected, mech, isGridView }: WarMachineHangarItemProps) {
+export const WarMachineHangarItem = React.memo(function WarMachineHangarItem({
+    isSelected,
+    toggleIsSelected,
+    mech,
+    isGridView,
+    childrenMechStatus,
+    childrenRepairStatus,
+    childrenRepairOffer,
+}: WarMachineHangarItemProps) {
     const theme = useTheme()
+    const [mechDetails, setMechDetails] = useState<MechDetails>()
 
-    const primaryColor = theme.factionTheme.primary
+    useGameServerSubscriptionFaction<MechDetails>(
+        {
+            URI: `/mech/${mech.id}/details`,
+            key: GameServerKeys.GetMechDetails,
+        },
+        (payload) => {
+            if (!payload) return
+            setMechDetails(payload)
+        },
+    )
+
+    useGameServerSubscriptionSecured<RepairStatus>(
+        {
+            URI: `/mech/${mech.id}/repair_case`,
+            key: GameServerKeys.SubMechRepairStatus,
+            ready: !!mech.id,
+        },
+        (payload) => {
+            if (!payload) return
+            childrenRepairStatus.current[mech.id] = payload
+        },
+    )
+
+    const onStatusLoaded = useCallback(
+        (mechStatus: MechStatus) => {
+            childrenMechStatus.current[mech.id] = mechStatus
+        },
+        [childrenMechStatus, mech.id],
+    )
+
+    const onRepairOfferLoaded = useCallback(
+        (repairOffer: RepairOffer) => {
+            childrenRepairOffer.current[mech.id] = repairOffer
+        },
+        [childrenRepairOffer, mech.id],
+    )
+
+    const [primaryColor, setPrimaryColor] = useState(theme.factionTheme.primary)
     const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
     const selectedBackgroundColor = useMemo(() => shadeColor(primaryColor, -72), [primaryColor])
@@ -77,13 +130,28 @@ export const WarMachineHangarItem = React.memo(function WarMachineHangarItem({ i
                                 : {}),
                         }}
                     >
-                        <MechCommonArea isGridView={isGridView} mech={mech} primaryColor={primaryColor} secondaryColor={secondaryColor} />
+                        <MechCommonArea
+                            isGridView={isGridView}
+                            mech={mech}
+                            mechDetails={mechDetails}
+                            primaryColor={primaryColor}
+                            secondaryColor={secondaryColor}
+                        />
 
                         <General isGridView={isGridView} title="STATUS">
-                            <MechGeneralStatus mechID={mech.id} smallVersion />
+                            <MechGeneralStatus
+                                mechID={mech.id}
+                                hideBox
+                                smallVersion
+                                mechDetails={mechDetails}
+                                onStatusLoaded={onStatusLoaded}
+                                onRepairOfferLoaded={onRepairOfferLoaded}
+                                setPrimaryColor={setPrimaryColor}
+                                showButtons
+                            />
                         </General>
 
-                        <MechBarStats fontSize="1.5rem" mech={mech} color={primaryColor} iconVersion />
+                        <MechBarStats fontSize="1.5rem" mech={mech} mechDetails={mechDetails} color={primaryColor} iconVersion />
                     </Box>
 
                     <Box
@@ -99,7 +167,7 @@ export const WarMachineHangarItem = React.memo(function WarMachineHangarItem({ i
                     />
                 </FancyButton>
 
-                {toggleIsSelected && mech && (
+                {toggleIsSelected && mechDetails && (
                     <Checkbox
                         size="small"
                         checked={isSelected}
@@ -119,9 +187,22 @@ export const WarMachineHangarItem = React.memo(function WarMachineHangarItem({ i
                 )}
             </Box>
         ),
-        [backgroundColor, isGridView, isSelected, mech, primaryColor, secondaryColor, selectedBackgroundColor, toggleIsSelected],
+        [
+            backgroundColor,
+            isGridView,
+            isSelected,
+            mech,
+            mechDetails,
+            onRepairOfferLoaded,
+            onStatusLoaded,
+            primaryColor,
+            secondaryColor,
+            selectedBackgroundColor,
+            toggleIsSelected,
+        ],
     )
-}, propsAreEqual)
+},
+propsAreEqual)
 
 export const MechCommonArea = ({
     primaryColor,
@@ -184,7 +265,7 @@ export const MechCommonArea = ({
                         toggleIsExpanded()
                     }}
                 >
-                    <MechLoadoutIcons mech={mech1} />
+                    <MechLoadoutIcons mechDetails={mechDetails} />
 
                     <Typography
                         sx={{
@@ -201,13 +282,7 @@ export const MechCommonArea = ({
                         {mech1?.name || mech1?.label || label}
                     </Typography>
 
-                    {!hideRepairBlocks && (
-                        <MechRepairBlocks
-                            mechID={mech?.id || mechDetails?.id || ""}
-                            defaultBlocks={mech?.repair_blocks || mechDetails?.repair_blocks || 0}
-                            damagedBlocks={mech?.damaged_blocks}
-                        />
-                    )}
+                    {!hideRepairBlocks && <MechRepairBlocks mechID={mech?.id || mechDetails?.id} defaultBlocks={mechDetails?.repair_blocks} />}
 
                     {toggleIsExpanded && !isGridView && (
                         <Stack
@@ -267,11 +342,11 @@ export const MechCommonArea = ({
             imageUrl,
             largeImageUrl,
             toggleIsExpanded,
+            mechDetails,
             mech1,
             label,
             hideRepairBlocks,
-            mech,
-            mechDetails,
+            mech?.id,
             isExpanded,
             primaryColor,
             secondaryColor,

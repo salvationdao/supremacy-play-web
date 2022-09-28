@@ -37,8 +37,6 @@ export const DeployModal = ({ selectedMechDetails: deployMechDetails, deployMech
         },
         (payload) => {
             setPlayerQueueStatus(payload)
-
-            console.log(payload)
         },
     )
 
