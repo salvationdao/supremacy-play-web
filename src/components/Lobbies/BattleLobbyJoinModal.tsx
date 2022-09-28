@@ -17,6 +17,7 @@ import FlipMove from "react-flip-move"
 import { SearchBattle } from "../Replays/BattlesReplays/SearchBattle"
 import { PlayerQueueStatus } from "../LeftDrawer/QuickDeploy/QuickDeploy"
 import { EmptyWarMachinesPNG } from "../../assets"
+import { useAuth } from "../../containers"
 
 const sortOptions = [
     { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
