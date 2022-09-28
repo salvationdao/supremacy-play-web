@@ -49,6 +49,10 @@ export const WarMachinesHangar = () => {
         },
     )
 
+    const childrenMechStatus = useRef<{ [mechID: string]: MechStatus }>({})
+    const childrenRepairStatus = useRef<{ [mechID: string]: RepairStatus }>({})
+    const childrenRepairOffer = useRef<{ [mechID: string]: RepairOffer }>({})
+
     // Items
     const [mechsWithQueueStatus, setMechsWithQueueStatus] = useState<MechBasicWithQueueStatus[]>([])
     useGameServerSubscriptionSecuredUser<MechBasicWithQueueStatus[]>(
@@ -69,6 +73,19 @@ export const WarMachinesHangar = () => {
 
                 // append new list
                 payload.forEach((p) => {
+                    childrenMechStatus.current[p.id] = {
+                        status: p.status,
+                        can_deploy: p.can_deploy,
+                        battle_lobby_number: p.lobby_number,
+                        battle_lobby_queue_position: undefined,
+                    }
+
+                    childrenRepairStatus.current[p.id] = {
+                        id: "",
+                        blocks_required_repair: p.damaged_blocks,
+                        blocks_repaired: p.repair_blocks - p.damaged_blocks,
+                    }
+
                     // if already exists
                     if (list.some((mq) => mq.id === p.id)) {
                         return
@@ -88,9 +105,6 @@ export const WarMachinesHangar = () => {
     const [selectedMechs, setSelectedMechs] = useState<MechBasic[]>([])
     // const [bulkDeployConfirmModalOpen, setBulkDeployConfirmModalOpen] = useState(false)
     const [bulkRepairConfirmModalOpen, setBulkRepairConfirmModalOpen] = useState(false)
-    const childrenMechStatus = useRef<{ [mechID: string]: MechStatus }>({})
-    const childrenRepairStatus = useRef<{ [mechID: string]: RepairStatus }>({})
-    const childrenRepairOffer = useRef<{ [mechID: string]: RepairOffer }>({})
 
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
@@ -253,9 +267,6 @@ export const WarMachinesHangar = () => {
                                     toggleIsSelected={() => {
                                         toggleSelected(mech)
                                     }}
-                                    childrenMechStatus={childrenMechStatus}
-                                    childrenRepairStatus={childrenRepairStatus}
-                                    childrenRepairOffer={childrenRepairOffer}
                                     mech={mech}
                                     isGridView={isGridView}
                                 />

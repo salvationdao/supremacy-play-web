@@ -5,29 +5,19 @@ import { SvgDropdownArrow } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { shadeColor } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
-import { MechBasic, MechBasicWithQueueStatus, MechDetails, MechStatus } from "../../../types"
-import { RepairOffer, RepairStatus } from "../../../types/jobs"
+import { MechBasic, MechBasicWithQueueStatus, MechDetails } from "../../../types"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { General } from "../../Marketplace/Common/MarketItem/General"
 import { MechBarStats } from "./Common/MechBarStats"
 import { MechLoadoutIcons } from "./Common/MechLoadoutIcons"
 import { MechRepairBlocks } from "./Common/MechRepairBlocks"
-import { QuickDeployMechStatus } from "../../LeftDrawer/QuickDeploy/QuickDeployMechStatus"
+import { MechGeneralStatus } from "./Common/MechGeneralStatus"
 
 interface WarMachineHangarItemProps {
     isSelected?: boolean
     toggleIsSelected?: () => void
     mech: MechBasicWithQueueStatus
     isGridView?: boolean
-    childrenMechStatus: React.MutableRefObject<{
-        [mechID: string]: MechStatus
-    }>
-    childrenRepairStatus: React.MutableRefObject<{
-        [mechID: string]: RepairStatus
-    }>
-    childrenRepairOffer: React.MutableRefObject<{
-        [mechID: string]: RepairOffer
-    }>
 }
 
 const propsAreEqual = (prevProps: WarMachineHangarItemProps, nextProps: WarMachineHangarItemProps) => {
@@ -90,7 +80,7 @@ export const WarMachineHangarItem = React.memo(function WarMachineHangarItem({ i
                         <MechCommonArea isGridView={isGridView} mech={mech} primaryColor={primaryColor} secondaryColor={secondaryColor} />
 
                         <General isGridView={isGridView} title="STATUS">
-                            <QuickDeployMechStatus mech={mech} />
+                            <MechGeneralStatus mechID={mech.id} smallVersion />
                         </General>
 
                         <MechBarStats fontSize="1.5rem" mech={mech} color={primaryColor} iconVersion />

@@ -32,8 +32,11 @@ interface BattleLobbyJoinModalProps {
 export const BattleLobbyJoinModal = ({ selectedBattleLobby, setSelectedBattleLobby }: BattleLobbyJoinModalProps) => {
     const { factionTheme } = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
-    const [selectedMechIDs, setSelectedMechIDs] = useState<string[]>([])
     const [error, setError] = useState("")
+    const [selectedMechIDs, setSelectedMechIDs] = useState<string[]>([])
+    useEffect(() => {
+        if (!selectedBattleLobby) setSelectedMechIDs([])
+    }, [setSelectedMechIDs, selectedBattleLobby])
 
     const [currentPlayerQueue, setCurrentPlayerQueue] = useState<PlayerQueueStatus>({
         queue_limit: 10,
@@ -46,8 +49,6 @@ export const BattleLobbyJoinModal = ({ selectedBattleLobby, setSelectedBattleLob
         },
         (payload) => {
             setCurrentPlayerQueue(payload)
-
-            console.log(payload)
         },
     )
 
@@ -90,14 +91,15 @@ export const BattleLobbyJoinModal = ({ selectedBattleLobby, setSelectedBattleLob
     })
 
     const selectLimit = useMemo(() => {
-        const queueLimit = selectedBattleLobby?.each_faction_mech_amount || 3
+        let queueLimit = 0
+        if (selectedBattleLobby) queueLimit = selectedBattleLobby.each_faction_mech_amount - selectedBattleLobby.battle_lobbies_mechs.length
         const playerQueueRemain = currentPlayerQueue.queue_limit - currentPlayerQueue.total_queued
 
-        if (queueLimit < playerQueueRemain) {
-            return queueLimit
+        let limit = queueLimit
+        if (queueLimit > playerQueueRemain) {
+            limit = playerQueueRemain
         }
-
-        return playerQueueRemain
+        return limit
     }, [currentPlayerQueue, selectedBattleLobby])
 
     const [search, setSearch] = useState("")

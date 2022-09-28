@@ -70,6 +70,7 @@ export const BattleLobbies = () => {
             })
         },
     )
+
     const [list, setList] = useState<BattleLobby[]>([])
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
