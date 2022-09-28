@@ -51,8 +51,10 @@ export class PixiBattleZone {
         this.root.zIndex = pixiViewportZIndexes.battleZone
         this.root.sortableChildren = true
 
-        this.particleContainer = new PIXI.Container()
         this.darkBackgroundTrick = new PIXI.Graphics()
+        this.particleContainer = new PIXI.Container()
+        this.darkBackgroundTrick.zIndex = 2
+        this.particleContainer.zIndex = 6
 
         // Add everything to container
         this.root.addChild(this.particleContainer)
@@ -86,8 +88,6 @@ export class PixiBattleZone {
         const pos = this.clientPositionToViewportPosition.current(battleZone.location.x, battleZone.location.y)
         const radius = (this.gridSizeRef.current.width * battleZone.radius) / GAME_CLIENT_TILE_SIZE
         this.particleContainer.position.set(pos.x, pos.y)
-        this.particleContainer.alpha = 0
-        ease.add(this.particleContainer, { alpha: 1 }, { duration: 500, ease: "linear", removeExisting: true })
 
         // Particles
         const config = mergeDeep(battleZoneParticlesConfig, { spawnCircle: { r: radius, minR: radius }, color: { start: colors.niceRed, end: colors.niceRed } })
@@ -95,10 +95,20 @@ export class PixiBattleZone {
         this.emitter.emit = true
 
         // Dim the outside, this is a trick where the outside is darkened, trick is really thick border
-        this.darkBackgroundTrick.lineStyle(6000, HEXToVBColor("#000000"), 0.8)
-        this.darkBackgroundTrick.beginFill(HEXToVBColor("#FF0000"), 0)
-        this.darkBackgroundTrick.drawCircle(0, 0, radius)
+        const borderThickness = 8000
+        this.darkBackgroundTrick.lineStyle(borderThickness, HEXToVBColor(colors.niceRed), 0.3)
+        this.darkBackgroundTrick.beginFill(HEXToVBColor("#FFFFFF"), 0)
+        this.darkBackgroundTrick.drawCircle(0, 0, radius + borderThickness / 2)
         this.darkBackgroundTrick.endFill()
         this.darkBackgroundTrick.position.set(pos.x, pos.y)
+        this.darkBackgroundTrick.scale.set(10)
+        ease.add(this.darkBackgroundTrick, { alpha: 0.8 }, { duration: 500, ease: "linear", repeat: true, reverse: true, removeExisting: true })
+        setTimeout(() => {
+            console.log("Start shrink")
+            ease.add(this.darkBackgroundTrick, { scale: 1 }, { duration: battleZone.shrink_time, ease: "linear", removeExisting: true })
+        }, battleZone.warn_time)
+
+        this.root.alpha = 0
+        ease.add(this.root, { alpha: 1 }, { duration: 500, ease: "linear", removeExisting: true })
     }
 }

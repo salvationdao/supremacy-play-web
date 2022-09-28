@@ -86,7 +86,7 @@ export const GameContainer = createContainer(() => {
                     location: { x: 50000, y: 60000 },
                     radius: 20000,
                     shrink_time: 10,
-                    warn_time: 5,
+                    warn_time: 10,
                 })
             }, 6000)
 
