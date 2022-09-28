@@ -108,6 +108,6 @@ export class PixiBattleZone {
         }, battleZone.warn_time * 1000)
 
         this.root.alpha = 0
-        ease.add(this.root, { alpha: 1 }, { duration: 500, ease: "linear", removeExisting: true })
+        ease.add(this.root, { alpha: 1 }, { duration: 1000, ease: "linear", removeExisting: true })
     }
 }
