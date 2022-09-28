@@ -78,7 +78,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         const pixiMapMech = new PixiMapMech(label, hash)
         pixiMainItems.viewport.addChild(pixiMapMech.root)
         setPixiMapMech(pixiMapMech)
-    }, [label, pixiMainItems])
+    }, [hash, label, pixiMainItems])
 
     // Cleanup
     useEffect(() => {
