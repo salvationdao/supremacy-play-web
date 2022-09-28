@@ -12,6 +12,7 @@ import { MechAbilities } from "./OverlayItems/MechAbilities/MechAbilities"
 import { MapTargetSelect } from "./OverlayItems/MapTargetSelect/MapTargetSelect"
 import { MapMechs } from "./ViewportItems/MapMechs/MapMechs"
 import { MechMoveDests } from "./ViewportItems/MechMoveDests/MechMoveDests"
+import { Blackouts } from "./ViewportItems/Blackouts/Blackouts"
 
 interface PixiItems {
     mapSprite?: PIXI.Sprite
@@ -233,9 +234,10 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
                 <MapScale />
                 <MapTargetSelect />
 
-                {/* Viewport items: items within the viewport, affected by zoom and panning etc. */}
+                {/* Viewport items: items inside the viewport (map), affected by zoom and panning etc. */}
                 <MapMechs />
                 <MechMoveDests />
+                <Blackouts />
             </Box>
         ),
         [containerDimensions],

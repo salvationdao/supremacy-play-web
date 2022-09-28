@@ -23,7 +23,7 @@ export class PixiMechMoveDest {
     ) {
         // Create container for everything
         this.root = new PIXI.Container()
-        this.root.zIndex = pixiViewportZIndexes.mechMoveDest
+        this.root.zIndex = pixiViewportZIndexes.mechMoveDests
         this.root.sortableChildren = true
 
         const moveAbility = MechMoveCommandAbility.ability

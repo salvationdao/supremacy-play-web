@@ -15,7 +15,8 @@ import { RecordType, useHotkey } from "./hotkeys"
 export const pixiViewportZIndexes = {
     mapMech: 30,
     targetSelect: 100,
-    mechMoveDest: 50,
+    mechMoveDests: 50,
+    blackouts: 80,
 }
 
 export const pixiStageZIndexes = {
