@@ -6,9 +6,9 @@ import { BattleAbilityItem } from "./BattleAbilityItem"
 
 export const BattleAbility = () => {
     const { factionID } = useAuth()
-    const { bribeStage, isBattleStarted } = useGame()
+    const { bribeStage, isBattleStarted, isAIDrivenMatch } = useGame()
 
-    if (!bribeStage) return null
+    if (isAIDrivenMatch || !bribeStage) return null
 
     return (
         <Box sx={{ position: "relative" }}>

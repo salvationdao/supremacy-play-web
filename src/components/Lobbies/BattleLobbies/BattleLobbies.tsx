@@ -16,6 +16,7 @@ import { FancyButton } from "../../Common/FancyButton"
 import { BattleLobbyJoinModal } from "../BattleLobbyJoinModal"
 import { useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { BattleLobbyCreateModal } from "../BattleLobbyCreateModal"
 
 const sortOptionsPending: { label: string; value: string }[] = [
     { label: SortTypeLabel.QueuedAmountHighest, value: SortTypeLabel.QueuedAmountHighest },
@@ -35,6 +36,7 @@ enum filterLobbyStatus {
 
 export const BattleLobbies = () => {
     const theme = useTheme()
+    const [openLobbyCreateModal, setOpenLobbyCreateModal] = useState(false)
 
     // load battle lobbies
     const [battleLobbies, setBattleLobbies] = useState<BattleLobby[]>([])
@@ -187,7 +189,40 @@ export const BattleLobbies = () => {
                             }
                             description={<Typography sx={{ fontSize: "1.85rem" }}>Join lobby to enter battles.</Typography>}
                             imageUrl={ThreeMechsJPG}
-                        />
+                        >
+                            <Stack
+                                direction="row"
+                                flex={1}
+                                justifyContent="flex-end"
+                                sx={{
+                                    pr: "2rem",
+                                }}
+                            >
+                                <FancyButton
+                                    clipThingsProps={{
+                                        clipSize: "6px",
+                                        backgroundColor: theme.factionTheme.primary,
+                                        opacity: 1,
+                                        border: { borderColor: theme.factionTheme.primary, borderThickness: "1.5px" },
+                                        sx: { position: "relative" },
+                                    }}
+                                    sx={{ px: "3rem", py: ".4rem", color: theme.factionTheme.secondary, flexWrap: 0, whiteSpace: "nowrap" }}
+                                    onClick={() => setOpenLobbyCreateModal(true)}
+                                >
+                                    <Stack justifyContent="center" sx={{ height: "100%" }}>
+                                        <Typography
+                                            variant="caption"
+                                            sx={{
+                                                fontFamily: fonts.nostromoBlack,
+                                                color: colors.offWhite,
+                                            }}
+                                        >
+                                            New Lobby
+                                        </Typography>
+                                    </Stack>
+                                </FancyButton>
+                            </Stack>
+                        </PageHeader>
 
                         <TotalAndPageSizeOptions
                             countItems={list.length}
@@ -339,6 +374,7 @@ export const BattleLobbies = () => {
             </ClipThing>
 
             <BattleLobbyJoinModal selectedBattleLobby={selectedLobby} setSelectedBattleLobby={setSelectedLobby} />
+            {openLobbyCreateModal && <BattleLobbyCreateModal setOpen={setOpenLobbyCreateModal} />}
         </>
     )
 }

@@ -15,7 +15,7 @@ import { PlayerAbilityCard } from "./PlayerAbilityCard"
 
 export const PlayerAbilities = () => {
     const { userID } = useAuth()
-    const { bribeStage, isBattleStarted } = useGame()
+    const { bribeStage, isBattleStarted, isAIDrivenMatch } = useGame()
 
     if (!bribeStage || !userID) return null
 
@@ -26,7 +26,9 @@ export const PlayerAbilities = () => {
                     <PlayerAbilitiesInner />
                 </Box>
 
-                {!isBattleStarted && <Box sx={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "#000000AA" }} />}
+                {(isAIDrivenMatch || !isBattleStarted) && (
+                    <Box sx={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "#000000AA" }} />
+                )}
             </SectionCollapsible>
         </Box>
     )
