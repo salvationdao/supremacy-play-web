@@ -85,7 +85,7 @@ export const GameContainer = createContainer(() => {
                 setBattleZone({
                     location: { x: 50000, y: 60000 },
                     radius: 20000,
-                    shrink_time: 10,
+                    shrink_time: 25,
                     warn_time: 10,
                 })
             }, 6000)

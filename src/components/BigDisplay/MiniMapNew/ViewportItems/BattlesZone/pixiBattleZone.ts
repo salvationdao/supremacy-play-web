@@ -105,8 +105,8 @@ export class PixiBattleZone {
         ease.add(this.darkBackgroundTrick, { alpha: 0.8 }, { duration: 500, ease: "linear", repeat: true, reverse: true, removeExisting: true })
         setTimeout(() => {
             console.log("Start shrink")
-            ease.add(this.darkBackgroundTrick, { scale: 1 }, { duration: battleZone.shrink_time, ease: "linear", removeExisting: true })
-        }, battleZone.warn_time)
+            ease.add(this.darkBackgroundTrick, { scale: 1 }, { duration: battleZone.shrink_time * 1000, ease: "linear", removeExisting: true })
+        }, battleZone.warn_time * 1000)
 
         this.root.alpha = 0
         ease.add(this.root, { alpha: 1 }, { duration: 500, ease: "linear", removeExisting: true })
