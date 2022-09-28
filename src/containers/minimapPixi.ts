@@ -12,6 +12,18 @@ import { useGame } from "./game"
 import { useGlobalNotifications } from "./globalNotifications"
 import { RecordType, useHotkey } from "./hotkeys"
 
+export const pixiViewportZIndexes = {
+    mapMech: 30,
+    targetSelect: 100,
+    mechMoveDest: 50,
+}
+
+export const pixiStageZIndexes = {
+    mapScale: 20,
+    targetSelect: 50,
+    mechAbilities: 20,
+}
+
 export interface WinnerStruct {
     game_ability: GameAbility
     end_time: Date
@@ -71,6 +83,14 @@ export const MiniMapPixiContainer = createContainer(() => {
         return {
             x: xCell * gridSizeRef.current.width,
             y: yCell * gridSizeRef.current.height,
+        }
+    })
+
+    // Converts viewport position to grid cell x and y, opposite of gridCellToViewportPosition.
+    const viewportPositionToGridCell = useRef((x: number, y: number) => {
+        return {
+            x: x / gridSizeRef.current.width,
+            y: y / gridSizeRef.current.height,
         }
     })
 
@@ -188,8 +208,11 @@ export const MiniMapPixiContainer = createContainer(() => {
                         arena_id: currentArenaID,
                         blueprint_ability_id: "",
                         location_select_type: "",
-                        start_coords: startCoord,
-                        end_coords: winner.current.game_ability.location_select_type === LocationSelectType.LineSelect && endCoord ? endCoord : undefined,
+                        start_coords: viewportPositionToGridCell.current(startCoord.x, startCoord.y),
+                        end_coords:
+                            winner.current.game_ability.location_select_type === LocationSelectType.LineSelect && endCoord
+                                ? viewportPositionToGridCell.current(endCoord.x, endCoord.y)
+                                : undefined,
                     }
 
                     hubKey = GameServerKeys.SubmitAbilityLocationSelect
@@ -205,8 +228,8 @@ export const MiniMapPixiContainer = createContainer(() => {
                                 arena_id: currentArenaID,
                                 blueprint_ability_id: playerAbility.current.ability.id,
                                 location_select_type: playerAbility.current.ability.location_select_type,
-                                start_coords: startCoord,
-                                end_coords: endCoord,
+                                start_coords: viewportPositionToGridCell.current(startCoord.x, startCoord.y),
+                                end_coords: viewportPositionToGridCell.current(endCoord.x, endCoord.y),
                             }
                             break
                         case LocationSelectType.MechSelect:
@@ -232,7 +255,7 @@ export const MiniMapPixiContainer = createContainer(() => {
                                 arena_id: currentArenaID,
                                 blueprint_ability_id: playerAbility.current.ability.id,
                                 location_select_type: playerAbility.current.ability.location_select_type,
-                                start_coords: startCoord,
+                                start_coords: viewportPositionToGridCell.current(startCoord.x, startCoord.y),
                                 mech_hash: playerAbility.current.mechHash,
                             }
                             break
@@ -255,7 +278,7 @@ export const MiniMapPixiContainer = createContainer(() => {
                     }
                 }
 
-                // await send<boolean, typeof payload>(hubKey, payload)
+                send(hubKey, payload)
                 console.log("Sends:", payload)
                 newSnackbarMessage("Successfully submitted target location.", "success")
             } catch (err) {

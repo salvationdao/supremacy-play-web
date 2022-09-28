@@ -1,4 +1,5 @@
 import * as PIXI from "pixi.js"
+import { pixiStageZIndexes } from "../../../../../containers"
 import { HEXToVBColor } from "../../../../../helpers"
 import { colors } from "../../../../../theme/theme"
 import { PixiMechAbility } from "./pixiMechAbility"
@@ -15,7 +16,7 @@ export class PixiMechAbilities {
         this.root = new PIXI.Container()
         this.root.x = 9
         this.root.y = 8
-        this.root.zIndex = 20
+        this.root.zIndex = pixiStageZIndexes.mechAbilities
         this.root.sortableChildren = true
 
         this.abilities = []

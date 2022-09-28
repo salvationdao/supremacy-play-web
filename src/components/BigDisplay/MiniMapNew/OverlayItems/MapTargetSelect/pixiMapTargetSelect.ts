@@ -2,6 +2,7 @@ import { ease } from "pixi-ease"
 import { Viewport } from "pixi-viewport"
 import * as PIXI from "pixi.js"
 import { AbilityCancelPNG } from "../../../../../assets"
+import { pixiStageZIndexes, pixiViewportZIndexes } from "../../../../../containers"
 import { HEXToVBColor } from "../../../../../helpers"
 import { PixiImageIcon } from "../../../../../helpers/pixiHelpers"
 import { fonts } from "../../../../../theme/theme"
@@ -73,11 +74,11 @@ export class PixiMapTargetSelect {
 
         // Create container for everything
         this.stageRoot = new PIXI.Container()
-        this.stageRoot.zIndex = 50
+        this.stageRoot.zIndex = pixiStageZIndexes.targetSelect = 50
         this.stageRoot.sortableChildren = true
 
         this.viewportRoot = new PIXI.Container()
-        this.viewportRoot.zIndex = 60
+        this.viewportRoot.zIndex = pixiViewportZIndexes.targetSelect = 60
         this.viewportRoot.sortableChildren = true
 
         // Big color overlay

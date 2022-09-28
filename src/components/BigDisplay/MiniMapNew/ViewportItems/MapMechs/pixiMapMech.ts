@@ -1,7 +1,8 @@
 import { DashLine } from "pixi-dashed-line"
 import { ease } from "pixi-ease"
 import * as PIXI from "pixi.js"
-import { CrossPNG, DeadSkullPNG } from "../../../../../assets"
+import { DeadSkullPNG } from "../../../../../assets"
+import { pixiViewportZIndexes } from "../../../../../containers"
 import { deg2rad, HEXToVBColor } from "../../../../../helpers"
 import { PixiImageIcon, PixiProgressBar } from "../../../../../helpers/pixiHelpers"
 import { colors, fonts } from "../../../../../theme/theme"
@@ -15,7 +16,6 @@ export class PixiMapMech {
     private numberText: PIXI.Text
     private hpBar: PixiProgressBar
     private shieldBar: PixiProgressBar
-    private mechMoveSprite: PIXI.Sprite
     private mechMoveDashedLine: PIXI.Graphics
     private highlightedCircle: PIXI.Graphics
     private skull: PIXI.Sprite
@@ -38,7 +38,7 @@ export class PixiMapMech {
         // Create container for everything
         this.root = new PIXI.Container()
         this.root.sortableChildren = true
-        this.root.zIndex = this.cachedZIndex
+        this.root.zIndex = pixiViewportZIndexes.mapMech + this.cachedZIndex
 
         // Root inner
         this.rootInner = new PIXI.Container()
@@ -84,9 +84,6 @@ export class PixiMapMech {
 
         // Mech move sprite
         this.mechMoveDashedLine = new PIXI.Graphics()
-        this.mechMoveSprite = PIXI.Sprite.from(CrossPNG)
-        this.mechMoveSprite.visible = false
-        this.mechMoveSprite.zIndex = 2
         this.mechMoveDashedLine.zIndex = 1
 
         // Dashed border box for mech ability select
@@ -103,7 +100,6 @@ export class PixiMapMech {
         this.rootInner.addChild(this.dashedBox)
         this.rootInner.addChild(this.skull)
         this.root.addChild(this.rootInner)
-        this.root.addChild(this.mechMoveSprite)
         this.root.addChild(this.mechMoveDashedLine)
 
         this.rootInner.pivot.set(this.rectGraphics.width / 2, this.rectGraphics.height / 2)
@@ -156,12 +152,6 @@ export class PixiMapMech {
         this.arrowGraphics.endFill()
         this.arrowGraphics.position.set(iconDimension.width / 2, iconDimension.height / 2)
         this.arrowGraphics.pivot.set(triangleHalfway, iconDimension.height / 2 + iconDimension.height / 3.4)
-
-        // Update mech move sprite
-        // Update the mech move sprite dimension
-        this.mechMoveSprite.width = iconDimension.width / 2
-        this.mechMoveSprite.height = iconDimension.height / 2
-        this.mechMoveSprite.tint = HEXToVBColor(primaryColor)
     }
 
     updateHpShieldBars(iconDimension: Dimension) {
@@ -175,8 +165,8 @@ export class PixiMapMech {
     }
 
     updateZIndex(zIndex: number, cache?: boolean) {
-        if (cache) this.cachedZIndex = this.root.zIndex
-        this.root.zIndex = zIndex
+        if (cache) this.cachedZIndex = this.root.zIndex - pixiViewportZIndexes.mapMech
+        this.root.zIndex = pixiViewportZIndexes.mapMech + zIndex
     }
 
     highlightMech(iconDimension: Dimension) {
@@ -215,7 +205,6 @@ export class PixiMapMech {
             this.hpBar.root.visible = false
             this.shieldBar.root.visible = false
             this.arrowGraphics.visible = false
-            this.mechMoveSprite.visible = false
             this.mechMoveDashedLine.visible = false
             this.root.alpha = 0.6
             this.skull.visible = true
@@ -224,7 +213,6 @@ export class PixiMapMech {
             this.hpBar.root.visible = true
             this.shieldBar.root.visible = true
             this.arrowGraphics.visible = true
-            this.mechMoveSprite.visible = true
             this.mechMoveDashedLine.visible = true
             this.root.alpha = 1
             this.skull.visible = false
@@ -249,7 +237,6 @@ export class PixiMapMech {
 
     hideMechMovePosition() {
         this.mechMoveDashedLine.clear()
-        this.mechMoveSprite.visible = false
         this.mechMovePosition = undefined
     }
 
@@ -265,9 +252,6 @@ export class PixiMapMech {
                 // Default its the top left corner, so center it
                 const newX = this.mechMovePosition.x
                 const newY = this.mechMovePosition.y
-                this.mechMoveSprite.anchor.set(0.5, 0.5)
-                this.mechMoveSprite.position.set(newX, newY)
-                this.mechMoveSprite.visible = true
 
                 // Draw dashed line
                 const dash = new DashLine(this.mechMoveDashedLine, {

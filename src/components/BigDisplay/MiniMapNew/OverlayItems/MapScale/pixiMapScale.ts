@@ -1,5 +1,6 @@
 import { Viewport } from "pixi-viewport"
 import * as PIXI from "pixi.js"
+import { pixiStageZIndexes } from "../../../../../containers"
 import { HEXToVBColor } from "../../../../../helpers"
 import { fonts } from "../../../../../theme/theme"
 import { Dimension, GAME_CLIENT_TILE_SIZE } from "../../../../../types"
@@ -18,7 +19,7 @@ export class PixiMapScale {
 
         // Create container for everything
         this.root = new PIXI.Container()
-        this.root.zIndex = 20
+        this.root.zIndex = pixiStageZIndexes.mapScale
 
         // Line
         this.line = new PIXI.Graphics()
