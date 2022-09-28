@@ -34,17 +34,12 @@ export const MechBarStats = ({
     const boostedHealth = mechDetails?.boosted_max_hitpoints || mech.boosted_max_hitpoints
     const speed = mechDetails?.speed || mech.speed
     const boostedSpeed = mechDetails?.boosted_speed || mech.boosted_speed
-    let powerCoreCapacity = 0
-    let powerCoreRechargeRate = 0
     const totalShield = mechDetails?.shield || mech.shield
     const totalShieldRechargeRate = mechDetails?.shield_recharge_rate || mech.shield_recharge_rate
     const boostedTotalShieldRechargeRate = mechDetails?.shield_recharge_rate || mech.shield_recharge_rate
     const totalShieldRechargePowerCost = mechDetails?.shield_recharge_power_cost || mech.shield_recharge_power_cost
-
-    if (mechDetails) {
-        powerCoreCapacity = mechDetails.power_core?.capacity || 0
-        powerCoreRechargeRate = mechDetails.power_core?.recharge_rate || 0
-    }
+    const powerCoreCapacity = mechDetails?.power_core?.capacity || mech.power_core_capacity || 0
+    const powerCoreRechargeRate = mechDetails?.power_core?.recharge_rate || mech.power_core_recharge_rate || 0
 
     if (iconVersion) {
         return (
