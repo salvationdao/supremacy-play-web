@@ -16,7 +16,7 @@ export const blackoutParticlesConfig: particles.EmitterConfig | particles.OldEmi
     },
     speed: {
         start: 5,
-        end: 50,
+        end: 10,
         minimumSpeedMultiplier: 0.5,
     },
     acceleration: {
@@ -35,7 +35,7 @@ export const blackoutParticlesConfig: particles.EmitterConfig | particles.OldEmi
     },
     lifetime: {
         min: 0.001,
-        max: 1.2,
+        max: 3,
     },
     blendMode: "normal",
     frequency: 0.001,
