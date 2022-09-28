@@ -1,169 +1,15 @@
-import OvenPlayer from "ovenplayer"
-import { useCallback, useEffect, useRef, useState } from "react"
+import React, { useState } from "react"
 import { createContainer } from "unstated-next"
 import { useGameServerSubscription } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 import { Arena, ArenaStatus, ArenaType } from "../types"
-import OvenLiveKit from "ovenlivekit"
 import { OvenPlayerInstance } from "./oven"
-import React from "react"
-import { useToggle } from "../hooks"
-
-interface OvenPalyerWithGID {
-    player: OvenPlayerInstance
-    gid: string
-}
 
 export const ArenaContainer = createContainer(() => {
     const [arenaList, setArenaList] = useState<Arena[]>([])
     const [currentArena, setCurrentArena] = useState<Arena>()
-    const [listenStreams, setListenStreams] = useState<VoiceStream[]>()
-    const [connected, setConnected] = useState(false)
 
     const currentArenaID = currentArena?.id || ""
-
-    const onListen = useCallback((listenStreams: VoiceStream[]) => {
-        listenStreams?.map((l) => {
-            if (l.send_url) {
-                startStream(l, l.send_url)
-            }
-            listen(l)
-        })
-        setConnected(true)
-    }, [])
-    console.log("listen", connected)
-
-    // listen stream
-    const listen = useCallback((stream: VoiceStream) => {
-        if (document.getElementById(stream.listen_url)) {
-            const newOvenPlayer = OvenPlayer.create(stream.listen_url, {
-                autoStart: true,
-                controls: true,
-                volume: 100,
-                sources: [
-                    {
-                        type: "webrtc",
-                        file: stream.listen_url,
-                    },
-                ],
-                autoFallback: true,
-                disableSeekUI: true,
-            })
-
-            newOvenPlayer.on("ready", () => {
-                console.log("voice chat ready Ready.")
-            })
-
-            newOvenPlayer.on("error", (err: { code: number }) => {
-                if (!connected) return
-                if (err.code === 501) {
-                    console.log("501: failed to connnect attempting to recconnect", err)
-                } else {
-                    console.error("voice chat error: ", err)
-                }
-
-                // try reconnect on error
-                // setTimeout(() => {
-                //     listen(stream)
-                // }, 1000)
-            })
-
-            newOvenPlayer.play()
-
-            return () => {
-                newOvenPlayer.off("ready")
-                newOvenPlayer.off("error")
-                newOvenPlayer.remove()
-            }
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
-    // useEffect(() => {
-    //     if (!voiceStream.ovenPlayer) return
-    //     if (isMute) {
-    //         voiceStream.ovenPlayer.current.setVolume(0)
-    //         return
-    //     }
-    //     console.log("vol: ", volume * 100)
-    //     console.log("oven player volume ", voiceStream.ovenPlayer.current.getVolume())
-    //     console.log("this is voice stream", voiceStream)
-
-    //     voiceStream.ovenPlayer.current.setVolume(volume)
-    // }, [volume, isMute])
-
-    const onMute = (id: string) => {
-        const el = document.getElementById(id)
-        const vids = el?.getElementsByTagName("video")
-        if (vids) {
-            vids[0].volume = 0
-        }
-    }
-
-    const onDisconnect = () => {
-        console.log("discoonnecting")
-
-        if (listenStreams) {
-            listenStreams.map((l) => {
-                // if (l.ovenPlayer) {
-                //     l.ovenPlayer?.remove()
-                // }
-
-                if (l.liveKit && l.liveKit.getUserMedia) {
-                    console.log("live kit obj", l.liveKit)
-
-                    // l.liveKit?.remove()
-                    // l.liveKit = undefined
-
-                    const constraints = { video: false, audio: true }
-
-                    l.liveKit.getUserMedia(constraints).then(function (d: any) {
-                        console.log("live kit obj2", l.liveKit)
-                        console.log("tracks", d.getTracks())
-
-                        d.getTracks().map((at: any) => {
-                            at.enabled = false
-                            at.stop()
-                        })
-                        console.log("tracks after", d.getTracks())
-                    })
-                }
-                setConnected(false)
-            })
-        }
-    }
-
-    // useEffect(() => {
-    //     if (connected && listenStreams) {
-    //         onListen(listenStreams)
-    //         return
-    //     }
-    //     // onDisconnect()
-    // }, [connected, listenStreams])
-
-    const startStream = useCallback((stream: VoiceStream, url: string) => {
-        if (!url) {
-            return
-        }
-        const config = {
-            callbacks: {
-                error: function (error: any) {
-                    console.log("voice chat error", error)
-                },
-                connected: function (event: any) {
-                    console.log("voice chat event", event)
-                },
-            },
-        }
-
-        const liveKit = OvenLiveKit.create(config)
-        const constraints = { video: false, audio: true }
-        liveKit.getUserMedia(constraints).then(function (d: any) {
-            liveKit.startStreaming(url)
-        })
-
-        stream.liveKit = liveKit
-    }, [])
 
     return {
         arenaList,
@@ -171,15 +17,6 @@ export const ArenaContainer = createContainer(() => {
         currentArena,
         setCurrentArena,
         currentArenaID,
-
-        // voice chat
-        listenStreams,
-        setListenStreams,
-        connected,
-        onListen,
-        onDisconnect,
-        // ovenPlayers,
-        onMute,
     }
 })
 

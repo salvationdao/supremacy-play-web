@@ -3,7 +3,6 @@ import OvenPlayer from "ovenplayer"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { SvgHeadphone, SvgMicrophone, SvgVolume, SvgVolumeMute } from "../../../assets"
 import { useArena, useAuth, useSupremacy, VoiceStream } from "../../../containers"
-import { OvenPlayerInstance } from "../../../containers/oven"
 import { useTheme } from "../../../containers/theme"
 import { acronym, shadeColor } from "../../../helpers"
 import { useToggle } from "../../../hooks"
@@ -12,6 +11,7 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { Faction, User } from "../../../types"
 import { StyledImageText } from "../../Notifications/Common/StyledImageText"
+import OvenLiveKit from "ovenlivekit"
 
 export const VoiceChat = () => {
     const [open, setOpen] = useState(false)
@@ -19,7 +19,113 @@ export const VoiceChat = () => {
 
     const { getFaction } = useSupremacy()
     const { user, factionID } = useAuth()
-    const { currentArenaID, setListenStreams, listenStreams, onListen, onDisconnect, connected } = useArena()
+    const { currentArenaID } = useArena()
+
+    const [listenStreams, setListenStreams] = useState<VoiceStream[]>()
+    const [connected, setConnected] = useState(false)
+    const ovenLiveKitInstance = useRef<any>()
+
+    const onListen = useCallback((listenStreams: VoiceStream[]) => {
+        listenStreams?.map((l) => {
+            if (l.send_url) {
+                startStream(l.send_url)
+            }
+            listen(l)
+        })
+        setConnected(true)
+    }, [])
+
+    const startStream = useCallback((url: string) => {
+        if (!url) {
+            return
+        }
+
+        const liveKit = OvenLiveKit.create()
+        const constraints = { video: false, audio: true }
+        liveKit.getUserMedia(constraints).then(() => {
+            liveKit.startStreaming(url)
+        })
+
+        ovenLiveKitInstance.current = liveKit
+    }, [])
+
+    // listen stream
+    const listen = useCallback((stream: VoiceStream) => {
+        if (document.getElementById(stream.listen_url)) {
+            let newOvenPlayer = OvenPlayer.getPlayerByContainerId(stream.listen_url)
+
+            if (!newOvenPlayer) {
+                newOvenPlayer = OvenPlayer.create(stream.listen_url, {
+                    autoStart: true,
+                    controls: true,
+                    volume: 100,
+                    sources: [
+                        {
+                            type: "webrtc",
+                            file: stream.listen_url,
+                        },
+                    ],
+                    autoFallback: true,
+                    disableSeekUI: true,
+                })
+            }
+
+            if (newOvenPlayer) {
+                newOvenPlayer.on("ready", () => {
+                    console.log("voice chat ready Ready.")
+                })
+
+                newOvenPlayer.on("error", (err: { code: number }) => {
+                    if (!connected) return
+                    if (err.code === 501) {
+                        console.log("501: failed to connnect attempting to recconnect", err)
+                    } else {
+                        console.error("voice chat error: ", err)
+                    }
+
+                    // // try reconnect on error
+                    // setTimeout(() => {
+                    //     listen(stream)
+                    // }, 1000)
+                })
+
+                newOvenPlayer.play()
+            }
+
+            return () => {
+                if (newOvenPlayer) {
+                    newOvenPlayer.off("ready")
+                    newOvenPlayer.off("error")
+                    newOvenPlayer.remove()
+                }
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    const onDisconnect = () => {
+        console.log("disconnecting")
+
+        // remove sending stream instance
+        if (ovenLiveKitInstance && ovenLiveKitInstance.current) {
+            ovenLiveKitInstance.current.remove()
+            ovenLiveKitInstance.current = undefined
+        }
+
+        // remove listen streams
+        if (listenStreams) {
+            listenStreams.map((l) => {
+                const player = OvenPlayer.getPlayerByContainerId(l.listen_url)
+                if (player) {
+                    player.off("ready")
+                    player.off("error")
+                    player.remove()
+                }
+            })
+        }
+
+        setConnected(false)
+    }
 
     // player voice chat data
     useGameServerSubscriptionSecuredUser<VoiceStream[]>(
@@ -73,94 +179,13 @@ export const VoiceChat = () => {
                 {listenStreams &&
                     listenStreams.map((s) => {
                         return (
-                            <Box
-                                key={s.username + s.user_gid}
-                                height="20rem"
-                                width="20rem"
-                                sx={{
-                                    top: 0,
-                                    // backgroundColor: "red",
-                                    zIndex: 999,
-                                }}
-                            >
-                                <div
-                                    style={{
-                                        width: "30rem !important",
-                                        height: "30rem !important",
-                                    }}
-                                    id={s.listen_url}
-                                    key={s.username + s.user_gid}
-                                />
+                            <Box key={s.username + s.user_gid} sx={{ display: "none" }}>
+                                <div id={s.listen_url} key={s.username + s.user_gid} />
                             </Box>
                         )
                     })}
             </>
         </>
-    )
-}
-
-const OvenStream = ({ voiceStream }: { voiceStream: VoiceStream }) => {
-    // const {} = useArena()
-    const ovenPlayer = useRef<OvenPlayerInstance>()
-
-    const startStream = () => {
-        if (document.getElementById(voiceStream.listen_url)) {
-            const newOvenPlayer = OvenPlayer.create(voiceStream.listen_url, {
-                autoStart: true,
-                controls: true,
-                volume: 100,
-                sources: [
-                    {
-                        type: "webrtc",
-                        file: voiceStream.listen_url,
-                    },
-                ],
-                autoFallback: true,
-                disableSeekUI: true,
-            })
-
-            newOvenPlayer.on("ready", () => {
-                console.log("voice chat ready Ready.")
-            })
-
-            newOvenPlayer.on("error", (err: { code: number }) => {
-                // if (!connected) return
-                // if (err.code === 501) {
-                //     console.log("501: failed to connnect attempting to recconnect", err)
-                // } else {
-                //     console.error("voice chat error: ", err)
-                // }
-                // try reconnect on error
-                // setTimeout(() => {
-                //     listen(stream)
-                // }, 1000)
-            })
-
-            newOvenPlayer.play()
-            ovenPlayer.current = newOvenPlayer
-
-            return () => {
-                newOvenPlayer.off("ready")
-                newOvenPlayer.off("error")
-                newOvenPlayer.remove()
-            }
-        }
-    }
-
-    const onMute = () => {
-        console.log("muting", ovenPlayer)
-
-        ovenPlayer.current?.setVolume(0)
-    }
-    useEffect(() => {
-        startStream()
-    }, [])
-
-    return (
-        <Box>
-            <h1>{voiceStream.username}</h1>
-            <Button onClick={onMute}>Mute</Button>
-        </Box>
     )
 }
 
@@ -190,6 +215,7 @@ export const VoiceChatInner = ({
                     spacing=".96rem"
                     alignItems="center"
                     sx={{
+                        zIndex: 3,
                         px: "2.2rem",
                         pl: "2.2rem",
                         height: "7rem",
@@ -245,7 +271,7 @@ export const VoiceChatInner = ({
                                         onListen(listenStreams || [])
                                     }}
                                 >
-                                    Listen
+                                    Connect
                                 </Button>
                             )}
                         </Box>
@@ -262,6 +288,7 @@ export const VoiceChatInner = ({
                         overflowY: "auto",
                         overflowX: "hidden",
                         direction: "ltr",
+                        postion: "relative",
 
                         "::-webkit-scrollbar": {
                             width: "1rem",
@@ -274,7 +301,11 @@ export const VoiceChatInner = ({
                         },
                     }}
                 >
-                    <Box sx={{ height: 0 }}>
+                    {!connected && (
+                        <Box sx={{ left: 0, top: 0, height: "100%", width: "100%", background: "#000", opacity: 0.6, position: "absolute", zIndex: 2 }}></Box>
+                    )}
+
+                    <Box>
                         {listenStreams &&
                             listenStreams &&
                             listenStreams.map((s, idx) => {
@@ -290,6 +321,7 @@ export const VoiceChatInner = ({
                         flexDirection: "row",
                         alignItems: "center",
                         justifyContent: "space-between",
+                        zIndex: 3,
                     }}
                 >
                     <StyledImageText
@@ -341,32 +373,42 @@ export const VoiceChatInner = ({
 const PlayerItem = ({ voiceStream, user, faction }: { voiceStream: VoiceStream; user: User; faction: Faction }) => {
     const theme = useTheme()
     const bannerColor = useMemo(() => shadeColor(theme.factionTheme.primary, -70), [theme.factionTheme.primary])
+    const player = OvenPlayer.getPlayerByContainerId(voiceStream.listen_url)
 
-    const { onMute } = useArena()
+    const onMute = (id: string) => {
+        // get oven player via id
+        if (player) {
+            if (!isMute) {
+                setVolume(0)
+            } else {
+                setVolume(0.5)
+            }
+            toggleIsMute(!isMute)
+        }
+    }
 
     // console.log("ov players", ovenPlayers)
 
     const [isMute, toggleIsMute] = useToggle(false)
+    const [volume, setVolume] = useState(1)
 
-    // const handleVolumeChange = useCallback(
-    //     (_: Event, newValue: number | number[]) => {
-    //         setVolume(newValue as number)
-    //     },
-    //     [setVolume],
-    // )
+    const handleVolumeChange = useCallback(
+        (_: Event, newValue: number | number[]) => {
+            setVolume(newValue as number)
+        },
+        [setVolume],
+    )
 
-    // useEffect(() => {
-    //     if (!voiceStream.ovenPlayer) return
-    //     if (isMute) {
-    //         voiceStream.ovenPlayer.current.setVolume(0)
-    //         return
-    //     }
-    //     console.log("vol: ", volume * 100)
-    //     console.log("oven player volume ", voiceStream.ovenPlayer.current.getVolume())
-    //     console.log("this is voice stream", voiceStream)
+    useEffect(() => {
+        if (player) {
+            if (isMute) {
+                player.setVolume(0)
+                return
+            }
 
-    //     voiceStream.ovenPlayer.current.setVolume(volume)
-    // }, [volume, isMute])
+            player.setVolume(volume)
+        }
+    }, [volume, isMute])
 
     return (
         <>
@@ -381,7 +423,7 @@ const PlayerItem = ({ voiceStream, user, faction }: { voiceStream: VoiceStream; 
                     background: `linear-gradient(${bannerColor} 26%, ${bannerColor}95)`,
                 }}
             >
-                {/* <Box width="90%">
+                <Box width="90%">
                     <StyledImageText
                         key={voiceStream.listen_url}
                         text={
@@ -404,36 +446,36 @@ const PlayerItem = ({ voiceStream, user, faction }: { voiceStream: VoiceStream; 
                             }}
                         />
                     )}
-                </Box> */}
+                </Box>
 
-                {/* {!voiceStream.send_url && (
+                {!voiceStream.send_url && (
                     <>
                         <Slider
-                        size="small"
-                        min={0}
-                        max={1}
-                        step={0.01}
-                        aria-label="Volume"
-                        value={isMute ? 0 : volume}
-                        onChange={handleVolumeChange}
-                        sx={{
-                            ml: "1rem",
-                            mr: "1rem",
-                            width: "10rem",
-                            color: (theme) => theme.factionTheme.primary,
-                        }}
-                    />
-                    <IconButton
-                        size="small"
-                        onClick={() => onMute(voiceStream.listen_url)}
-                        sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}
-                    >
-                        {isMute || volume <= 0 ? <SvgVolumeMute size="2rem" sx={{ pb: 0 }} /> : <SvgVolume size="2rem" sx={{ pb: 0 }} />}
-                    </IconButton>
+                            size="small"
+                            min={0}
+                            max={1}
+                            step={0.01}
+                            aria-label="Volume"
+                            value={isMute ? 0 : volume}
+                            onChange={handleVolumeChange}
+                            sx={{
+                                ml: "1rem",
+                                mr: "1rem",
+                                width: "10rem",
+                                color: (theme) => theme.factionTheme.primary,
+                            }}
+                        />
+
+                        <IconButton
+                            size="small"
+                            onClick={() => onMute(voiceStream.listen_url)}
+                            sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}
+                        >
+                            {isMute || volume <= 0 ? <SvgVolumeMute size="2rem" sx={{ pb: 0 }} /> : <SvgVolume size="2rem" sx={{ pb: 0 }} />}
+                        </IconButton>
                     </>
-                )} */}
+                )}
             </Box>
-            <OvenStream voiceStream={voiceStream} />
         </>
     )
 }
