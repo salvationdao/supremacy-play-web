@@ -16,7 +16,7 @@ import {
     SvgWrapperProps,
 } from "../assets"
 import { colors } from "../theme/theme"
-import { AssetItemType, GAME_CLIENT_TILE_SIZE, MysteryCrateType, Rarity, UserRank } from "../types"
+import { AssetItemType, GAME_CLIENT_TILE_SIZE, MysteryCrateType, Rarity, RarityEnum, UserRank } from "../types"
 
 // Capitalize convert a string "example" to "Example"
 export const Capitalize = (str: string): string => str[0].toUpperCase() + str.substring(1).toLowerCase()
@@ -184,30 +184,30 @@ export const hexToRGB = (hexx: string) => {
 
 export const getRarityDeets = (rarityKey: string): Rarity => {
     switch (rarityKey) {
-        case "MEGA":
-            return { label: "Mega", color: colors.rarity.MEGA, textColor: "#FFFFFF", rank: 12 }
-        case "COLOSSAL":
-            return { label: "Colossal", color: colors.rarity.COLOSSAL, textColor: "#FFFFFF", rank: 11 }
-        case "RARE":
-            return { label: "Rare", color: colors.rarity.RARE, textColor: "#FFFFFF", rank: 10 }
-        case "LEGENDARY":
-            return { label: "Legendary", color: colors.rarity.LEGENDARY, textColor: "#FFFFFF", rank: 9 }
-        case "ELITE_LEGENDARY":
-            return { label: "Elite Legendary", color: colors.rarity.ELITE_LEGENDARY, textColor: "#FFFFFF", rank: 8 }
-        case "ULTRA_RARE":
-            return { label: "Ultra Rare", color: colors.rarity.ULTRA_RARE, textColor: "#FFFFFF", rank: 7 }
-        case "EXOTIC":
-            return { label: "Exotic", color: colors.rarity.EXOTIC, textColor: "#FFFFFF", rank: 6 }
-        case "GUARDIAN":
-            return { label: "Guardian", color: colors.rarity.GUARDIAN, textColor: "#FFFFFF", rank: 5 }
-        case "MYTHIC":
-            return { label: "Mythic", color: colors.rarity.MYTHIC, textColor: "#000000", rank: 4 }
-        case "DEUS_EX":
-            return { label: "Deus Ex", color: colors.rarity.DEUS_EX, textColor: "#000000", rank: 3 }
-        case "TITAN":
-            return { label: "Titan", color: colors.rarity.TITAN, textColor: "#000000", rank: 2 }
+        case RarityEnum.Mega:
+            return { label: "Mega", color: colors.rarity.MEGA, textColor: "#FFFFFF",rank:11 }
+        case RarityEnum.Colossal:
+            return { label: "Colossal", color: colors.rarity.COLOSSAL, textColor: "#FFFFFF",rank:10 }
+        case RarityEnum.Rare:
+            return { label: "Rare", color: colors.rarity.RARE, textColor: "#FFFFFF",rank:9 }
+        case RarityEnum.Legendary:
+            return { label: "Legendary", color: colors.rarity.LEGENDARY, textColor: "#FFFFFF",rank:8 }
+        case RarityEnum.EliteLegendary:
+            return { label: "Elite Legendary", color: colors.rarity.ELITE_LEGENDARY, textColor: "#FFFFFF",rank:7 }
+        case RarityEnum.UltraRare:
+            return { label: "Ultra Rare", color: colors.rarity.ULTRA_RARE, textColor: "#FFFFFF",rank:6 }
+        case RarityEnum.Exotic:
+            return { label: "Exotic", color: colors.rarity.EXOTIC, textColor: "#FFFFFF",rank:5 }
+        case RarityEnum.Guardian:
+            return { label: "Guardian", color: colors.rarity.GUARDIAN, textColor: "#FFFFFF",rank:4 }
+        case RarityEnum.Mythic:
+            return { label: "Mythic", color: colors.rarity.MYTHIC, textColor: "#000000",rank:3 }
+        case RarityEnum.DeusEx:
+            return { label: "Deus Ex", color: colors.rarity.DEUS_EX, textColor: "#000000",rank:2 }
+        case RarityEnum.Titan:
+            return { label: "Titan", color: colors.rarity.TITAN, textColor: "#000000",rank:1 }
         default:
-            return { label: "", color: colors.rarity.MEGA, textColor: "#FFFFFF", rank: 1 }
+            return { label: "", color: colors.rarity.MEGA, textColor: "#FFFFFF", rank: 100 }
     }
 }
 
@@ -440,6 +440,40 @@ export const calculateDutchAuctionCurrentPrice = ({ createdAt, dropRate, startPr
 export const calculateDutchAuctionEndPrice = ({ endAt, dropRate, startPrice }: { endAt: Date; dropRate?: number; startPrice: number }) => {
     if (!dropRate) return startPrice
     return Math.max(startPrice - dropRate * timeDiff(new Date(), endAt).minutes, 1)
+}
+
+export const getPowerCoreSizeColor = (powerCoreSize: string | undefined) => {
+    if (!powerCoreSize) return colors.neonBlue
+
+    switch (powerCoreSize.toUpperCase()) {
+        case "SMALL":
+            return colors.yellow
+        case "MEDIUM":
+            return colors.blue
+        case "LARGE":
+            return colors.purple
+        default:
+            return colors.neonBlue
+    }
+}
+
+export const getUtilityTypeColor = (utilityType: string | undefined) => {
+    if (!utilityType) return colors.neonBlue
+
+    switch (utilityType.toUpperCase()) {
+        case "SHIELD":
+            return colors.shield
+        case "ATTACK DRONE":
+            return colors.red
+        case "REPAIR DRONE":
+            return colors.green
+        case "ANTI MISSILE":
+            return colors.black2
+        case "ACCELERATOR":
+            return colors.silver
+        default:
+            return colors.neonBlue
+    }
 }
 
 export const getWeaponTypeColor = (weaponType: string | undefined) => {

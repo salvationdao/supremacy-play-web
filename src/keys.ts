@@ -47,19 +47,26 @@ export enum GameServerKeys {
     SystemMessageSend = "SYSTEM:MESSAGE:SEND",
 
     // Asset / queue
+    JoinQueue = "BATTLE:QUEUE:JOIN",
+    LeaveQueue = "BATTLE:QUEUE:LEAVE",
+    SubQueueFeed = "BATTLE:QUEUE:STATUS:SUBSCRIBE",
+    SubMechQueuePosition = "PLAYER:ASSET:MECH:QUEUE:SUBSCRIBE",
+    MechQueueUpdated = "PLAYER:ASSET:MECH:QUEUE:UPDATE",
     SubBattleLobbyListUpdate = "BATTLE:LOBBY:LIST:UPDATE",
     CreateBattleLobby = "BATTLE:LOBBY:CREATE",
     JoinBattleLobby = "BATTLE:LOBBY:JOIN",
     LeaveBattleLobby = "BATTLE:LOBBY:LEAVE",
-    SubQueueFeed = "BATTLE:QUEUE:STATUS:SUBSCRIBE", // removed in backend
     GetMechs = "PLAYER:ASSET:MECH:LIST",
     PlayerQueueStatus = "PLAYER:QUEUE:STATUS",
-    // Weapons
+    EquipMech = "PLAYER:ASSET:MECH:EQUIP",
+    GetMechDetails = "PLAYER:ASSET:MECH:DETAIL",
     GetWeapons = "PLAYER:ASSET:WEAPON:LIST",
     GetWeaponDetails = "PLAYER:ASSET:WEAPON:DETAIL",
-    GetMechDetails = "PLAYER:ASSET:MECH:DETAIL",
-    SubMechQueuePosition = "PLAYER:ASSET:MECH:QUEUE:SUBSCRIBE",
-    JoinQueue = "BATTLE:QUEUE:JOIN", // removed from backend
+    GetPowerCores = "PLAYER:ASSET:POWER_CORE:LIST",
+    GetPowerCoreDetails = "PLAYER:ASSET:POWER_CORE:DETAIL",
+    GetUtilities = "PLAYER:ASSET:UTILITY:LIST",
+    GetUtilityDetails = "PLAYER:ASSET:UTILITY:DETAIL",
+    TriggerMechStatusUpdate = "PLAYER:ASSET:MECH:STATUS:UPDATE",
     MechRename = "PLAYER:MECH:RENAME",
 
     // Player Abilities
