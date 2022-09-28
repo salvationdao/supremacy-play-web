@@ -31,7 +31,6 @@ export class PixiBlackout {
         // Create blackout circle
         const radius = (gridSizeRef.current.width * blackout.radius) / GAME_CLIENT_TILE_SIZE
         this.circle = new PIXI.Graphics()
-        this.circle.lineStyle(2, HEXToVBColor("#000000"), 0.8)
         this.circle.beginFill(HEXToVBColor("#000000"), 0.82)
         this.circle.drawCircle(0, 0, radius)
         this.circle.endFill()
