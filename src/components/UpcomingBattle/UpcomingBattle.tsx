@@ -52,7 +52,7 @@ export const UpcomingBattle = () => {
                     flex: 1,
                     height: "100%",
                     width: "100%",
-                    maxHeight: "95%",
+                    maxHeight: "600px",
                     maxWidth: "95%",
                     minWidth: "300px",
                     overflow: "auto",
@@ -71,7 +71,7 @@ export const UpcomingBattle = () => {
             sx={{
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "center",
+                justifyContent: "space-evenly",
                 alignItems: "center",
                 maxWidth: "100%",
                 maxHeight: "100%",
@@ -85,8 +85,16 @@ export const UpcomingBattle = () => {
                 animation: `${opacityEffect} .2s ease-in`,
             }}
         >
-            <Typography variant="h4" gutterBottom={true} sx={{ lineHeight: 1, textAlign: "center", fontFamily: fonts.nostromoBlack }}>
-                <i>COMING UP...</i>
+            <Typography
+                variant="h4"
+                gutterBottom={true}
+                sx={{
+                    lineHeight: 1,
+                    textAlign: "center",
+                    fontFamily: fonts.nostromoBlack,
+                }}
+            >
+                <i>COMING UP... {nextBattle?.map.name || ""}</i>
             </Typography>
             {content}
         </Box>
@@ -103,11 +111,11 @@ const CardGroup = ({ factionID, mechIDs }: { factionID: string; mechIDs: string[
                 display: "flex",
                 flex: 1,
                 width: "100%",
-                maxWidth: "900px",
+                maxWidth: "700px",
                 margin: "auto",
             }}
         >
-            <Grid container spacing={3} direction="row" sx={{ flex: 1, width: "100%", height: "100%" }}>
+            <Grid container spacing={0} direction="row" sx={{ width: "100%", height: "100%" }}>
                 <Grid
                     item
                     xs={4}
@@ -152,15 +160,14 @@ const CardGroup = ({ factionID, mechIDs }: { factionID: string; mechIDs: string[
                     xs={12}
                     sm={3}
                     sx={{
-                        maxHeight: {
-                            sm: "100%",
-                        },
+                        maxHeight: "100%",
                         display: "flex",
                         justifyContent: "space-evenly",
                         flexWrap: "wrap",
                         flex: 1,
                         gap: "0.5rem",
                         overflow: "hidden",
+                        minWidth: "100px",
                     }}
                 >
                     <Typography variant={"h3"} textAlign={"center"} sx={{ width: "100%" }}>
