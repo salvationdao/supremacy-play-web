@@ -294,6 +294,7 @@ export interface Weapon extends Collection, Images {
     market_locked: boolean
     item_sale_id?: string
     slot_number?: number
+    inherit_skin: boolean
     locked_to_mech: boolean
 }
 

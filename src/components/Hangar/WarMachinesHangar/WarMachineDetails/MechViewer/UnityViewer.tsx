@@ -151,6 +151,13 @@ export const UnityViewer = ({ unityRef, mechDetails, unity }: UnityViewerProps) 
                           }
                         : undefined,
                 }
+
+                if (w.inherit_skin && mechDetails.chassis_skin?.blueprint_weapon_skin_id) {
+                    accessories[w.slot_number].skin = {
+                        type: "skin",
+                        static_id: mechDetails.chassis_skin.blueprint_weapon_skin_id,
+                    }
+                }
             })
         }
         // for (let i = 0; i < mechDetails.utility_slots; i++) {
