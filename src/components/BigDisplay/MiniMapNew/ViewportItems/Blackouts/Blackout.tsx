@@ -3,7 +3,15 @@ import { useMiniMapPixi } from "../../../../../containers"
 import { BlackoutEvent } from "./Blackouts"
 import { PixiBlackout } from "./pixiBlackout"
 
-export const Blackout = React.memo(function Blackout({ blackout }: { blackout: BlackoutEvent }) {
+interface BlackoutProps {
+    blackout: BlackoutEvent
+}
+
+const propsAreEqual = (prevProps: BlackoutProps, nextProps: BlackoutProps) => {
+    return prevProps.blackout.id === nextProps.blackout.id
+}
+
+export const Blackout = React.memo(function Blackout({ blackout }: BlackoutProps) {
     const { pixiMainItems, gridSizeRef, gridCellToViewportPosition } = useMiniMapPixi()
     const [pixiBlackout, setPixiBlackout] = useState<PixiBlackout>()
 
@@ -25,4 +33,4 @@ export const Blackout = React.memo(function Blackout({ blackout }: { blackout: B
     }, [pixiBlackout])
 
     return null
-})
+}, propsAreEqual)

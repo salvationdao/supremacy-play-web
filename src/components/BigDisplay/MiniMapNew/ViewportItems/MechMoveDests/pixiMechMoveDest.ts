@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js"
 import { pixiViewportZIndexes } from "../../../../../containers"
-import { PixiImageIcon } from "../../../../../helpers/pixiHelpers"
+import { PixiImageIcon } from "../../../../../pixi/pixiImageIcon"
 import { Dimension, MechMoveCommandAbility } from "../../../../../types"
 import { FactionMechCommand } from "./MechMoveDests"
 

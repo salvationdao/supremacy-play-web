@@ -35,6 +35,7 @@
         "ovenplayer": "^0.10.21",
         "pixi-dashed-line": "^1.4.2",
         "pixi-ease": "^3.0.7",
+        "pixi-particles": "^4.3.1",
         "pixi-viewport": "^4.35.1",
         "pixi.js": "^6.5.3",
         "react": "^17.0.2",

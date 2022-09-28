@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js"
 import { MECH_ABILITY_KEY } from "../../../../../containers/hotkeys"
 import { HEXToVBColor } from "../../../../../helpers"
-import { PixiImageIcon } from "../../../../../helpers/pixiHelpers"
+import { PixiImageIcon } from "../../../../../pixi/pixiImageIcon"
 import { colors, fonts } from "../../../../../theme/theme"
 import { BlueprintPlayerAbility, GameAbility } from "../../../../../types"
 

@@ -4,7 +4,7 @@ import * as PIXI from "pixi.js"
 import { AbilityCancelPNG } from "../../../../../assets"
 import { pixiStageZIndexes, pixiViewportZIndexes } from "../../../../../containers"
 import { HEXToVBColor } from "../../../../../helpers"
-import { PixiImageIcon } from "../../../../../helpers/pixiHelpers"
+import { PixiImageIcon } from "../../../../../pixi/pixiImageIcon"
 import { fonts } from "../../../../../theme/theme"
 import { AbilityDetail, BlueprintPlayerAbility, Dimension, GameAbility, GAME_CLIENT_TILE_SIZE, LocationSelectType, Position } from "../../../../../types"
 
