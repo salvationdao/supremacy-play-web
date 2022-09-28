@@ -9,7 +9,6 @@ import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
 import { MechDetails } from "../../../../../types"
 import { MechModal } from "../../Common/MechModal"
-import { useBattleLobby } from "../../../../../containers/battleLobby"
 import { PlayerQueueStatus } from "../../../../LeftDrawer/QuickDeploy/QuickDeploy"
 
 export interface QueueFeed {
