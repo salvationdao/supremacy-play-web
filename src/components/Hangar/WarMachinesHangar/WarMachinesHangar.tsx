@@ -183,8 +183,6 @@ export const WarMachinesHangar = () => {
 
             const isQueueSort = sort === SortTypeLabel.MechQueueAsc || sort === SortTypeLabel.MechQueueDesc
 
-            console.log("1111111111111111111111111111111111111111111111111111111111111111111111111")
-
             const resp = await send<GetMechsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
                 queue_sort: isQueueSort ? sortDir : undefined,
                 sort_by: isQueueSort ? undefined : sortBy,
@@ -196,8 +194,6 @@ export const WarMachinesHangar = () => {
                 page_size: pageSize,
                 include_market_listed: true,
             })
-
-            console.log(resp)
 
             if (!resp) return
             setLoadError(undefined)
