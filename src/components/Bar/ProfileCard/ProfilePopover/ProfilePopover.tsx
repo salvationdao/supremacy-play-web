@@ -1,12 +1,12 @@
 import { Popover, Stack } from "@mui/material"
 import { MutableRefObject, useEffect, useState } from "react"
 import { ClipThing } from "../../.."
-import { SvgAssets, SvgProfile, SvgSettings, SvgSupport } from "../../../../assets"
-import { PASSPORT_WEB, DEV_ONLY, STAGING_OR_DEV_ONLY } from "../../../../constants"
+import { SvgAdmin, SvgAssets, SvgProfile, SvgSettings, SvgSupport } from "../../../../assets"
+import { DEV_ONLY, PASSPORT_WEB, STAGING_OR_DEV_ONLY } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
 import { siteZIndex } from "../../../../theme/theme"
-import { User } from "../../../../types"
+import { RoleType, User } from "../../../../types"
 import { PreferencesModal } from "../PreferencesModal/PreferencesModal"
 import { TelegramRegisterModal } from "../PreferencesModal/TelegramRegisterModal"
 import { LogoutButton } from "./LogoutButton"
@@ -31,6 +31,8 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
             return () => clearTimeout(timeout)
         }
     }, [localOpen, onClose, preferencesModalOpen])
+
+    console.log(user)
 
     return (
         <>
@@ -68,6 +70,8 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
                         <NavButton href={`${PASSPORT_WEB}profile`} startIcon={<SvgAssets sx={{ pb: ".5rem" }} size="1.6rem" />} text="My Inventory" />
 
                         <NavButton to={`/profile/${user.gid}`} startIcon={<SvgProfile sx={{ pb: ".5rem" }} size="1.6rem" />} text="Profile" />
+
+                        {(user.role_type === RoleType.admin || user.role_type === RoleType.moderator) && <NavButton to={`/admin/lookup`} startIcon={<SvgAdmin sx={{ pb: ".5rem" }} size="1.6rem" />} text="Admin" />}
 
                         <NavButton
                             href={`${PASSPORT_WEB}profile/${user.username}/edit`}

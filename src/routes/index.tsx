@@ -19,6 +19,7 @@ import { StorefrontPage } from "../pages/StorefrontPage"
 import { WeaponPage } from "../pages/WeaponPage"
 import { colors } from "../theme/theme"
 import { StorefrontShoppingCartPage } from "../pages/StorefrontShoppingCartPage"
+import { AdminPage } from "../pages/AdminPage"
 
 // ************
 // ** ROUTES **
@@ -235,6 +236,22 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         matchNavLinkID: "replays",
         enable: BATTLE_ARENA_OPEN,
         pageTitle: "Supremacy - Replays",
+    },
+
+    admin: {
+        id: "admin",
+        path: "/admin/:type",
+        exact: true,
+        Component: AdminPage,
+        requireAuth: true,
+        requireFaction: true,
+        navLink: {
+            enable: false,
+            label: "Admin",
+        },
+        matchNavLinkID: "admin",
+        enable: true,
+        pageTitle: "Supremacy - Admin",
     },
 
     // Claim
