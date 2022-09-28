@@ -11,11 +11,13 @@ import { usePagination } from "../../hooks"
 import { getRarityDeets } from "../../helpers"
 import { SortTypeLabel } from "../../types/marketplace"
 import { TotalAndPageSizeOptions } from "../Common/TotalAndPageSizeOptions"
-import { fonts } from "../../theme/theme"
+import { colors, fonts } from "../../theme/theme"
 import { useTheme } from "../../containers/theme"
 import FlipMove from "react-flip-move"
 import { SearchBattle } from "../Replays/BattlesReplays/SearchBattle"
 import { PlayerQueueStatus } from "../LeftDrawer/QuickDeploy/QuickDeploy"
+import { EmptyWarMachinesPNG } from "../../assets"
+import { FancyButton } from "../Common/FancyButton"
 
 const sortOptions = [
     { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
@@ -63,7 +65,7 @@ export const BattleLobbyJoinModal = ({ selectedBattleLobby, setSelectedBattleLob
 
             setMechsWithQueueStatus((mqs) => {
                 if (mqs.length === 0) {
-                    return payload
+                    return payload.filter((p) => p.can_deploy)
                 }
 
                 // replace current list
@@ -79,10 +81,12 @@ export const BattleLobbyJoinModal = ({ selectedBattleLobby, setSelectedBattleLob
                     list.push(p)
                 })
 
-                return list
+                return list.filter((p) => p.can_deploy)
             })
         },
     )
+
+    console.log(mechsWithQueueStatus)
 
     const [list, setList] = useState<MechBasicWithQueueStatus[]>([])
     const { page, changePage, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
@@ -106,7 +110,7 @@ export const BattleLobbyJoinModal = ({ selectedBattleLobby, setSelectedBattleLob
     const [sort, setSort] = useState<string>(SortTypeLabel.RarestDesc)
 
     useEffect(() => {
-        let result = [...mechsWithQueueStatus].filter((r) => r.can_deploy && r.is_battle_ready)
+        let result = [...mechsWithQueueStatus]
         let selectedMechs = result.filter((r) => selectedMechIDs.includes(r.id))
 
         // filter
@@ -161,41 +165,9 @@ export const BattleLobbyJoinModal = ({ selectedBattleLobby, setSelectedBattleLob
         [send, setSelectedBattleLobby],
     )
 
-    if (!selectedBattleLobby || !!selectedBattleLobby?.ready_at) {
-        return null
-    }
-
-    // filter
-    return (
-        <ConfirmModal
-            title={`JOIN BATTLE LOBBY #${selectedBattleLobby.number}`}
-            disableConfirm={!selectedMechIDs.length}
-            onConfirm={() => joinBattleLobby(selectedBattleLobby?.id || "", selectedMechIDs)}
-            onClose={() => setSelectedBattleLobby(undefined)}
-            isLoading={false}
-            error={error}
-            width="75rem"
-        >
-            <QueueDetails playerQueueStatus={currentPlayerQueue} />
-            <TotalAndPageSizeOptions
-                pageSize={pageSize}
-                changePageSize={changePageSize}
-                pageSizeOptions={[10, 20, 30]}
-                changePage={changePage}
-                sortOptions={sortOptions}
-                selectedSort={sort}
-                onSetSort={setSort}
-            >
-                {/* Search */}
-                <Stack direction="row" alignItems="center">
-                    <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
-                        SEARCH:
-                    </Typography>
-                    <SearchBattle searchValueInstant={search} setSearchValue={setSearch} />
-                </Stack>
-            </TotalAndPageSizeOptions>
-
-            {list.length > 0 && (
+    const content = useMemo(() => {
+        if (list.length > 0) {
+            return (
                 <>
                     <Box
                         sx={{
@@ -254,33 +226,100 @@ export const BattleLobbyJoinModal = ({ selectedBattleLobby, setSelectedBattleLob
                             </FlipMove>
                         </Box>
                     </Box>
-                    {totalPages > 1 && (
-                        <Box
-                            sx={{
-                                mt: "auto",
-                                px: "1rem",
-                                py: ".7rem",
-                                borderTop: `${factionTheme.primary}70 1.5px solid`,
-                                borderBottom: `${factionTheme.primary}70 1.5px solid`,
-                                backgroundColor: "#00000070",
-                            }}
-                        >
-                            <Pagination
-                                size="small"
-                                count={totalPages}
-                                page={page}
-                                sx={{
-                                    ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold, fontSize: "1.2rem" },
-                                    ".Mui-selected": {
-                                        color: factionTheme.secondary,
-                                        backgroundColor: `${factionTheme.primary} !important`,
-                                    },
-                                }}
-                                onChange={(e, p) => changePage(p)}
-                            />
-                        </Box>
-                    )}
                 </>
+            )
+        }
+
+        return (
+            <Stack alignItems="center" justifyContent="center" sx={{ height: "60vh", width: "100%" }}>
+                <Box
+                    sx={{
+                        width: "80%",
+                        height: "16rem",
+                        opacity: 0.7,
+                        filter: "grayscale(100%)",
+                        background: `url(${EmptyWarMachinesPNG})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "bottom center",
+                        backgroundSize: "contain",
+                    }}
+                />
+                <Typography
+                    sx={{
+                        px: "1.28rem",
+                        pt: "1.28rem",
+                        color: colors.grey,
+                        fontFamily: fonts.nostromoBold,
+                        textAlign: "center",
+                    }}
+                >
+                    {"There are no war machines available to deploy."}
+                </Typography>
+            </Stack>
+        )
+    }, [list, selectLimit, selectedMechIDs])
+
+    if (!selectedBattleLobby || !!selectedBattleLobby?.ready_at) {
+        return null
+    }
+
+    // filter
+    return (
+        <ConfirmModal
+            title={`JOIN BATTLE LOBBY #${selectedBattleLobby.number}`}
+            disableConfirm={!selectedMechIDs.length}
+            onConfirm={() => joinBattleLobby(selectedBattleLobby?.id || "", selectedMechIDs)}
+            onClose={() => setSelectedBattleLobby(undefined)}
+            isLoading={false}
+            error={error}
+            width="75rem"
+        >
+            <QueueDetails playerQueueStatus={currentPlayerQueue} />
+            <TotalAndPageSizeOptions
+                pageSize={pageSize}
+                changePageSize={changePageSize}
+                pageSizeOptions={[10, 20, 30]}
+                changePage={changePage}
+                sortOptions={sortOptions}
+                selectedSort={sort}
+                onSetSort={setSort}
+            >
+                {/* Search */}
+                <Stack direction="row" alignItems="center">
+                    <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                        SEARCH:
+                    </Typography>
+                    <SearchBattle searchValueInstant={search} setSearchValue={setSearch} />
+                </Stack>
+            </TotalAndPageSizeOptions>
+
+            {content}
+
+            {totalPages > 1 && (
+                <Box
+                    sx={{
+                        mt: "auto",
+                        px: "1rem",
+                        py: ".7rem",
+                        borderTop: `${factionTheme.primary}70 1.5px solid`,
+                        borderBottom: `${factionTheme.primary}70 1.5px solid`,
+                        backgroundColor: "#00000070",
+                    }}
+                >
+                    <Pagination
+                        size="small"
+                        count={totalPages}
+                        page={page}
+                        sx={{
+                            ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold, fontSize: "1.2rem" },
+                            ".Mui-selected": {
+                                color: factionTheme.secondary,
+                                backgroundColor: `${factionTheme.primary} !important`,
+                            },
+                        }}
+                        onChange={(e, p) => changePage(p)}
+                    />
+                </Box>
             )}
         </ConfirmModal>
     )
