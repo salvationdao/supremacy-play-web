@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Stack, Typography } from "@mui/material"
+import { CircularProgress, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { useDimension } from "../../containers"
 import { opacityEffect } from "../../theme/keyframes"
@@ -7,16 +7,16 @@ import { colors, fonts } from "../../theme/theme"
 export const UpcomingBattle = () => {
     const { gameUIDimensions } = useDimension()
 
-    const { size, spacing } = useMemo(() => {
-        let size = "18rem"
+    const { spacing } = useMemo(() => {
+        // let size = "18rem"
         let spacing = "6rem"
 
         if (gameUIDimensions.width < 500 || gameUIDimensions.height < 720) {
-            size = "16rem"
+            // size = "16rem"
             spacing = "4rem"
         }
 
-        return { size, spacing }
+        return { spacing }
     }, [gameUIDimensions.height, gameUIDimensions.width])
 
     const content = useMemo(() => {
@@ -26,27 +26,7 @@ export const UpcomingBattle = () => {
                 <CircularProgress size="3rem" sx={{ color: "#FFFFFF" }} />
             </Stack>
         )
-        // }
-
-        // return (
-        //     <>
-        //         <Box
-        //             sx={{
-        //                 display: "grid",
-        //                 gridTemplateColumns: `repeat(3, ${size})`,
-        //                 gridTemplateRows: `repeat(3, ${size})`,
-        //                 columnGap: "1rem",
-        //                 rowGap: "5.8rem",
-        //                 alignItems: "center",
-        //                 justifyContent: "center",
-        //             }}
-        //         >
-        //             {/* TODO: Display next lobby*/}
-        //         </Box>
-        //         <img style={{ height: "9rem" }} src={nextBattleLobby.game_map?.logo_url} alt={`Upcoming battle on map: ${nextBattleLobby?.game_map?.name}`} />
-        //     </>
-        // )
-    }, [size])
+    }, [])
 
     return (
         <Stack
