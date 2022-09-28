@@ -102,7 +102,7 @@ export class PixiBattleZone {
         this.darkBackgroundTrick.endFill()
         this.darkBackgroundTrick.position.set(pos.x, pos.y)
         this.darkBackgroundTrick.scale.set(10)
-        ease.add(this.darkBackgroundTrick, { alpha: 0.8 }, { duration: 2000, ease: "linear", repeat: true, reverse: true, removeExisting: true })
+        ease.add(this.darkBackgroundTrick, { alpha: 0.8 }, { duration: 800, ease: "linear", repeat: true, reverse: true, removeExisting: true })
         setTimeout(() => {
             ease.add(this.darkBackgroundTrick, { scale: 1 }, { duration: battleZone.shrink_time * 1000, ease: "linear", removeExisting: true })
         }, battleZone.warn_time * 1000)

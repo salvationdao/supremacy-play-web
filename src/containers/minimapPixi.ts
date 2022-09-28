@@ -17,7 +17,7 @@ export const pixiViewportZIndexes = {
     targetSelect: 100,
     mechMoveDests: 50,
     blackouts: 80,
-    battleZone: 20,
+    battleZone: 70,
 }
 
 export const pixiStageZIndexes = {
