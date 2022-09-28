@@ -95,7 +95,7 @@ export const ArenaTypeSelect = ({
                             sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                         >
                             <Typography textTransform="uppercase" sx={{ fontWeight: "fontWeightBold" }}>
-                                {x.type}
+                                {x.name}
                             </Typography>
                         </MenuItem>
                     )
