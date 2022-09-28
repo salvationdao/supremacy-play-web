@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js"
 import { HEXToVBColor } from "../helpers"
-import { fonts } from "../theme/theme"
+import { colors, fonts } from "../theme/theme"
 
 export class PixiImageIcon {
     root: PIXI.Container<PIXI.DisplayObject>
@@ -84,7 +84,7 @@ export class PixiImageIcon {
             const text = Math.max(timeLeft, 0)
             this.countdownLabel.text = text <= 0 ? "" : text.toFixed(1)
             if (timeLeft <= 5) {
-                this.countdownLabel.style.fill = HEXToVBColor("#FF2C14")
+                this.countdownLabel.style.fill = HEXToVBColor(colors.niceRed)
             }
 
             if (totalElapsed * countdownSpeed > secondsLeft * 1000) {

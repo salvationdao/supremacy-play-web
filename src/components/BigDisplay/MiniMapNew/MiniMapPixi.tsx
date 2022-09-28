@@ -13,6 +13,7 @@ import { MapTargetSelect } from "./OverlayItems/MapTargetSelect/MapTargetSelect"
 import { MapMechs } from "./ViewportItems/MapMechs/MapMechs"
 import { MechMoveDests } from "./ViewportItems/MechMoveDests/MechMoveDests"
 import { Blackouts } from "./ViewportItems/Blackouts/Blackouts"
+import { BattleZone } from "./ViewportItems/BattlesZone/BattleZone"
 
 interface PixiItems {
     mapSprite?: PIXI.Sprite
@@ -238,6 +239,7 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
                 <MapMechs />
                 <MechMoveDests />
                 <Blackouts />
+                <BattleZone />
             </Box>
         ),
         [containerDimensions],

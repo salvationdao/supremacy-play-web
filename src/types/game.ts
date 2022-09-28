@@ -47,7 +47,7 @@ export interface GameMap {
 }
 
 export interface BattleZoneStruct {
-    location: Position
+    location: Position // position from center of map
     radius: number
     shrink_time: number
     warn_time: number

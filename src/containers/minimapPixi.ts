@@ -17,6 +17,7 @@ export const pixiViewportZIndexes = {
     targetSelect: 100,
     mechMoveDests: 50,
     blackouts: 80,
+    battleZone: 20,
 }
 
 export const pixiStageZIndexes = {
@@ -74,8 +75,8 @@ export const MiniMapPixiContainer = createContainer(() => {
     // Converts game client position (x, y) to (x, y) that fits into the viewport (viewport position)
     const clientPositionToViewportPosition = useRef((x: number, y: number) => {
         return {
-            x: (x - (map?.Pixel_Left || 0)) * (gridSizeRef.current.width / GAME_CLIENT_TILE_SIZE),
-            y: (y - (map?.Pixel_Top || 0)) * (gridSizeRef.current.height / GAME_CLIENT_TILE_SIZE),
+            x: (x - (mapRef.current?.Pixel_Left || 0)) * (gridSizeRef.current.width / GAME_CLIENT_TILE_SIZE),
+            y: (y - (mapRef.current?.Pixel_Top || 0)) * (gridSizeRef.current.height / GAME_CLIENT_TILE_SIZE),
         }
     })
 

@@ -1,4 +1,3 @@
-import { mergeDeep } from "./../../../../../helpers/index"
 import { ease } from "pixi-ease"
 import * as particles from "pixi-particles"
 import * as PIXI from "pixi.js"
@@ -7,6 +6,7 @@ import { pixiViewportZIndexes } from "../../../../../containers"
 import { HEXToVBColor } from "../../../../../helpers"
 import { blackoutParticlesConfig } from "../../../../../pixi/particleConfigs"
 import { Dimension, GAME_CLIENT_TILE_SIZE } from "../../../../../types"
+import { mergeDeep } from "./../../../../../helpers/index"
 import { BlackoutEvent } from "./Blackouts"
 
 export class PixiBlackout {
@@ -28,25 +28,25 @@ export class PixiBlackout {
             }
         >,
     ) {
+        // Create container for everything
+        this.root = new PIXI.Container()
+        this.root.zIndex = pixiViewportZIndexes.blackouts
+        this.root.sortableChildren = true
+
         // Create blackout circle
+        const pos = gridCellToViewportPosition.current(blackout.coords.x, blackout.coords.y)
         const radius = (gridSizeRef.current.width * blackout.radius) / GAME_CLIENT_TILE_SIZE
         this.circle = new PIXI.Graphics()
         this.circle.beginFill(HEXToVBColor("#000000"), 0.82)
         this.circle.drawCircle(0, 0, radius)
         this.circle.endFill()
-
-        // Create container for everything
-        const pos = gridCellToViewportPosition.current(blackout.coords.x, blackout.coords.y)
-        this.root = new PIXI.Container()
-        this.root.zIndex = pixiViewportZIndexes.blackouts
-        this.root.sortableChildren = true
-        this.root.alpha = 0
-        this.root.position.set(pos.x, pos.y)
-        ease.add(this.root, { alpha: 1 }, { duration: 500, ease: "linear", removeExisting: true })
+        this.circle.position.set(pos.x, pos.y)
+        this.circle.alpha = 0
+        ease.add(this.circle, { alpha: 1 }, { duration: 500, ease: "linear", removeExisting: true })
 
         // Particles
         const config = mergeDeep(blackoutParticlesConfig, { spawnCircle: { r: radius, minR: radius } })
-        this.emitter = new particles.Emitter(this.root, CircleParticle, config)
+        this.emitter = new particles.Emitter(this.circle, CircleParticle, config)
         this.emitter.emit = true
         this.render()
 
@@ -55,6 +55,7 @@ export class PixiBlackout {
     }
 
     destroy() {
+        if (this.animationFrame) cancelAnimationFrame(this.animationFrame)
         ease.add(this.root, { alpha: 0 }, { duration: 500, ease: "linear", removeExisting: true })
         setTimeout(() => {
             this.root.destroy()
@@ -68,10 +69,8 @@ export class PixiBlackout {
             const now = Date.now()
             this.emitter.update((now - elapsed) * 0.001)
             elapsed = now
-
             this.animationFrame = requestAnimationFrame(step)
         }
-
         this.animationFrame = requestAnimationFrame(step)
     }
 }
