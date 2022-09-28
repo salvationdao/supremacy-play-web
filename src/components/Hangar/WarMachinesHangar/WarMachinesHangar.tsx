@@ -49,7 +49,7 @@ interface GetMechsResponse {
 }
 
 export const WarMachinesHangar = () => {
-    const [query, updateQuery] = useUrlQuery()
+    const [query] = useUrlQuery()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
 
@@ -206,7 +206,7 @@ export const WarMachinesHangar = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, search, rarities, status, updateQuery, sort, setTotalItems])
+    }, [send, page, pageSize, search, rarities, status, sort, setTotalItems])
 
     useEffect(() => {
         getItems()
