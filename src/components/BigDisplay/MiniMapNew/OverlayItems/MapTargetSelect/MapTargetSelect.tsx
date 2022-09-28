@@ -202,10 +202,12 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
             }
 
             // If ability selection is placed, hide the mouse icon
-            if (isLocationSelection) {
-                pixiTargetHint.mouseIcon.showIcon(!selectedStartCoord.current)
-            } else if (isLineSelection) {
-                pixiTargetHint.mouseIcon.showIcon(!selectedStartCoord.current || !selectedEndCoord.current)
+            if (ability.location_select_type !== LocationSelectType.MechCommand) {
+                if (isLocationSelection) {
+                    pixiTargetHint.mouseIcon.showIcon(!selectedStartCoord.current)
+                } else if (isLineSelection) {
+                    pixiTargetHint.mouseIcon.showIcon(!selectedStartCoord.current || !selectedEndCoord.current)
+                }
             }
         }
     }, [ability.game_client_ability_id, ability.location_select_type, endTime, gridCellToViewportPosition, onSelectMapPositionCallbacks, pixiTargetHint, selectMapPosition])
