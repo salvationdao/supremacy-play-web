@@ -6,7 +6,7 @@ export const blackoutParticlesConfig: particles.EmitterConfig | particles.OldEmi
         end: 0.3,
     },
     scale: {
-        start: 1,
+        start: 0.5,
         end: 0.1,
         minimumScaleMultiplier: 1,
     },
