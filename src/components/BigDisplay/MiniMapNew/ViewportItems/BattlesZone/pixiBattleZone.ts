@@ -14,7 +14,7 @@ export class PixiBattleZone {
     root: PIXI.Container<PIXI.DisplayObject>
     private emitter: particles.Emitter | undefined
     private particleContainer: PIXI.Container
-    private redCircleMask: PIXI.Graphics
+    private darkBackgroundTrick: PIXI.Graphics
 
     private animationFrame: number | undefined
     private viewport: Viewport
@@ -52,12 +52,11 @@ export class PixiBattleZone {
         this.root.sortableChildren = true
 
         this.particleContainer = new PIXI.Container()
-        this.redCircleMask = new PIXI.Graphics()
-        this.redCircleMask.zIndex = 9999
+        this.darkBackgroundTrick = new PIXI.Graphics()
 
         // Add everything to container
         this.root.addChild(this.particleContainer)
-        this.root.addChild(this.redCircleMask)
+        this.root.addChild(this.darkBackgroundTrick)
 
         this.render()
     }
@@ -81,7 +80,7 @@ export class PixiBattleZone {
 
     updateBattleZone(battleZone: BattleZoneStruct | undefined) {
         this.emitter?.destroy()
-        this.redCircleMask.clear()
+        this.darkBackgroundTrick.clear()
         if (!battleZone) return
 
         const pos = this.clientPositionToViewportPosition.current(battleZone.location.x, battleZone.location.y)
@@ -95,11 +94,11 @@ export class PixiBattleZone {
         this.emitter = new particles.Emitter(this.particleContainer, CircleParticle, config)
         this.emitter.emit = true
 
-        // Masking
-        this.redCircleMask.beginFill(HEXToVBColor("#FFFFFF"))
-        this.redCircleMask.drawCircle(0, 0, radius)
-        this.redCircleMask.endFill()
-        this.redCircleMask.position.set(pos.x, pos.y)
-        this.viewport.mask = this.redCircleMask
+        // Dim the outside, this is a trick where the outside is darkened, trick is really thick border
+        this.darkBackgroundTrick.lineStyle(6000, HEXToVBColor("#000000"), 0.8)
+        this.darkBackgroundTrick.beginFill(HEXToVBColor("#FF0000"), 0)
+        this.darkBackgroundTrick.drawCircle(0, 0, radius)
+        this.darkBackgroundTrick.endFill()
+        this.darkBackgroundTrick.position.set(pos.x, pos.y)
     }
 }
