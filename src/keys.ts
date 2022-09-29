@@ -124,7 +124,7 @@ export enum GameServerKeys {
     // Player Profile
     GetNotificationPreferences = "PLAYER:PREFERENCES_GET",
     UpdateNotificationPreferences = "PLAYER:PREFERENCES_UPDATE",
-
+    UpdateMarketingPreferences = "PLAYER:MARKETING:UPDATE",
     EnlistFaction = "FACTION:ENLIST",
 
     //Redeem Coupon Code
