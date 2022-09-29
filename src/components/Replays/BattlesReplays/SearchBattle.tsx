@@ -4,9 +4,11 @@ import { useTheme } from "../../../containers/theme"
 export const SearchBattle = ({
     searchValueInstant,
     setSearchValue,
+    placeholder,
 }: {
     searchValueInstant: string
     setSearchValue: React.Dispatch<React.SetStateAction<string>>
+    placeholder?: string
 }) => {
     const theme = useTheme()
 
@@ -17,7 +19,7 @@ export const SearchBattle = ({
             variant="outlined"
             hiddenLabel
             fullWidth
-            placeholder="Enter keywords..."
+            placeholder={placeholder || "Enter keywords..."}
             sx={{
                 backgroundColor: "unset",
                 ".MuiOutlinedInput-input": {
