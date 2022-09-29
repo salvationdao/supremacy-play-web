@@ -13,6 +13,9 @@ import { Faction, User } from "../../../types"
 import { StyledImageText } from "../../Notifications/Common/StyledImageText"
 import OvenLiveKit from "ovenlivekit"
 
+import ConnectSound from "../../../assets/voiceChat/Connect.wav"
+import DisconnectSound from "../../../assets/voiceChat/Disconnect.wav"
+
 export const VoiceChat = () => {
     const [open, setOpen] = useState(false)
     const popoverRef = useRef(null)
@@ -24,23 +27,56 @@ export const VoiceChat = () => {
     const [listenStreams, setListenStreams] = useState<VoiceStream[]>()
     const [connected, setConnected] = useState(false)
     const ovenLiveKitInstance = useRef<any>()
+    console.log("this is listen streams ", listenStreams)
 
-    const onListen = useCallback((listenStreams: VoiceStream[]) => {
-        listenStreams?.map((l) => {
-            if (l.send_url) {
-                startStream(l.send_url)
-            }
-            listen(l)
-        })
-        setConnected(true)
-    }, [])
+    const onListen = useCallback(
+        (s: VoiceStream[]) => {
+            s?.map((l) => {
+                if (l.send_url) {
+                    startStream(l.send_url)
+                }
+                listen(l)
+            })
+
+            // play sound: connect
+            playSound(ConnectSound)
+
+            setConnected(true)
+        },
+        [listenStreams],
+    )
+
+    const playSound = (url: string) => {
+        const audio = new Audio(url)
+        audio.play()
+    }
 
     const startStream = useCallback((url: string) => {
         if (!url) {
             return
         }
 
-        const liveKit = OvenLiveKit.create()
+        // Configuration
+        const config = {
+            callbacks: {
+                error: function (error: any) {
+                    // try reconnect on error
+                    // setTimeout(() => {
+                    //     console.log(" this is error: ", error)
+                    //     console.log("error trying to reconnect oven live kit")
+                    //     startStream(url)
+                    // }, 1000)
+                },
+                connected: function (event: any) {
+                    console.log("fucking connected")
+                },
+
+                // connectionClosed: function (type, event: any) {},
+                // iceStateChange: function (state: any) {},
+            },
+        }
+
+        const liveKit = OvenLiveKit.create(config)
         const constraints = { video: false, audio: true }
         liveKit.getUserMedia(constraints).then(() => {
             liveKit.startStreaming(url)
@@ -50,58 +86,82 @@ export const VoiceChat = () => {
     }, [])
 
     // listen stream
-    const listen = useCallback((stream: VoiceStream) => {
-        if (document.getElementById(stream.listen_url)) {
-            let newOvenPlayer = OvenPlayer.getPlayerByContainerId(stream.listen_url)
+    const listen: any = useCallback(
+        (stream: VoiceStream) => {
+            if (document.getElementById(stream.listen_url)) {
+                let newOvenPlayer = OvenPlayer.getPlayerByContainerId(stream.listen_url)
 
-            if (!newOvenPlayer) {
-                newOvenPlayer = OvenPlayer.create(stream.listen_url, {
-                    autoStart: true,
-                    controls: true,
-                    volume: 100,
-                    sources: [
-                        {
-                            type: "webrtc",
-                            file: stream.listen_url,
-                        },
-                    ],
-                    autoFallback: true,
-                    disableSeekUI: true,
-                })
-            }
-
-            if (newOvenPlayer) {
-                newOvenPlayer.on("ready", () => {
-                    console.log("voice chat ready Ready.")
-                })
-
-                newOvenPlayer.on("error", (err: { code: number }) => {
-                    if (!connected) return
-                    if (err.code === 501) {
-                        console.log("501: failed to connnect attempting to recconnect", err)
-                    } else {
-                        console.error("voice chat error: ", err)
-                    }
-
-                    // // try reconnect on error
-                    // setTimeout(() => {
-                    //     listen(stream)
-                    // }, 1000)
-                })
-
-                newOvenPlayer.play()
-            }
-
-            return () => {
                 if (newOvenPlayer) {
-                    newOvenPlayer.off("ready")
-                    newOvenPlayer.off("error")
                     newOvenPlayer.remove()
+                    newOvenPlayer = null
+
+                    listen(stream)
+                    return
+                }
+
+                if (!newOvenPlayer) {
+                    newOvenPlayer = OvenPlayer.create(stream.listen_url, {
+                        autoStart: true,
+                        controls: true,
+                        volume: 100,
+                        sources: [
+                            {
+                                type: "webrtc",
+                                file: stream.listen_url,
+                            },
+                        ],
+                        autoFallback: true,
+                        disableSeekUI: true,
+                    })
+                }
+
+                if (newOvenPlayer) {
+                    newOvenPlayer.on("ready", () => {
+                        console.log("voice chat ready Ready.")
+                    })
+
+                    newOvenPlayer.on("error", (err: { code: number }) => {
+                        // if (!connected) return
+                        if (err.code === 501) {
+                            console.log("501: failed to connnect attempting to recconnect", err)
+                        } else {
+                            console.error("voice chat error: ", err)
+                        }
+
+                        // try reconnect on error
+                        setTimeout(() => {
+                            console.log("error occured trying to reconnect")
+
+                            listen(stream)
+                        }, 1000)
+                    })
+
+                    newOvenPlayer.play()
+                }
+
+                return () => {
+                    if (newOvenPlayer) {
+                        newOvenPlayer.off("ready")
+                        newOvenPlayer.off("error")
+                        newOvenPlayer.remove()
+                    }
                 }
             }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        },
+        [startStream],
+    )
+
+    useEffect(() => {
+        if (connected) {
+            listenStreams?.map((l) => {
+                if (l.send_url) {
+                    startStream(l.send_url)
+                }
+                listen(l)
+            })
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [listenStreams])
 
     const onDisconnect = () => {
         console.log("disconnecting")
@@ -124,6 +184,8 @@ export const VoiceChat = () => {
             })
         }
 
+        // play sound here: disconnect
+        playSound(DisconnectSound)
         setConnected(false)
     }
 
@@ -179,8 +241,9 @@ export const VoiceChat = () => {
                 {listenStreams &&
                     listenStreams.map((s) => {
                         return (
-                            <Box key={s.username + s.user_gid} sx={{ display: "none" }}>
+                            <Box key={s.username + s.user_gid} sx={{ width: "30rem", height: "30rem" }}>
                                 <div id={s.listen_url} key={s.username + s.user_gid} />
+                                <div style={{ fontSize: "2rem", color: "white" }}>user: {s.username}</div>
                             </Box>
                         )
                     })}
@@ -306,6 +369,7 @@ export const VoiceChatInner = ({
                     )}
 
                     <Box>
+                        <FactionCommanderItem />
                         {listenStreams &&
                             listenStreams &&
                             listenStreams.map((s, idx) => {
@@ -375,19 +439,18 @@ const PlayerItem = ({ voiceStream, user, faction }: { voiceStream: VoiceStream; 
     const bannerColor = useMemo(() => shadeColor(theme.factionTheme.primary, -70), [theme.factionTheme.primary])
     const player = OvenPlayer.getPlayerByContainerId(voiceStream.listen_url)
 
-    const onMute = (id: string) => {
+    const onMute = () => {
         // get oven player via id
         if (player) {
             if (!isMute) {
                 setVolume(0)
+                toggleIsMute(true)
             } else {
                 setVolume(0.5)
+                toggleIsMute(false)
             }
-            toggleIsMute(!isMute)
         }
     }
-
-    // console.log("ov players", ovenPlayers)
 
     const [isMute, toggleIsMute] = useToggle(false)
     const [volume, setVolume] = useState(1)
@@ -406,7 +469,9 @@ const PlayerItem = ({ voiceStream, user, faction }: { voiceStream: VoiceStream; 
                 return
             }
 
-            player.setVolume(volume)
+            console.log("this is volume", volume)
+
+            player.setVolume(volume * 100)
         }
     }, [volume, isMute])
 
@@ -466,15 +531,49 @@ const PlayerItem = ({ voiceStream, user, faction }: { voiceStream: VoiceStream; 
                             }}
                         />
 
-                        <IconButton
-                            size="small"
-                            onClick={() => onMute(voiceStream.listen_url)}
-                            sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}
-                        >
+                        <IconButton size="small" onClick={onMute} sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}>
                             {isMute || volume <= 0 ? <SvgVolumeMute size="2rem" sx={{ pb: 0 }} /> : <SvgVolume size="2rem" sx={{ pb: 0 }} />}
                         </IconButton>
                     </>
                 )}
+            </Box>
+        </>
+    )
+}
+
+const FactionCommanderItem = () => {
+    const theme = useTheme()
+    const bannerColor = useMemo(() => shadeColor(theme.factionTheme.primary, -70), [theme.factionTheme.primary])
+
+    return (
+        <>
+            <Box
+                mt="1rem"
+                sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    p: "1.2rem",
+
+                    background: `linear-gradient(${bannerColor} 26%, ${bannerColor}95)`,
+                }}
+            >
+                <Stack width="100%" direction={"row"} justifyContent="space-between" alignItems="center">
+                    <Typography sx={{ textTransfrom: "uppercase" }}>NO FACTION COMMANDER</Typography>
+
+                    <Button
+                        sx={{
+                            color: colors.green,
+                            fontSize: "1.2rem",
+                            border: "1px solid " + colors.green,
+                        }}
+                        onClick={() => {
+                            // onListen(listenStreams || [])
+                        }}
+                    >
+                        ICON
+                    </Button>
+                </Stack>
             </Box>
         </>
     )
