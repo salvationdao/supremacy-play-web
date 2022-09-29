@@ -2,7 +2,7 @@ import moment from "moment"
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useState, useEffect, useMemo } from "react"
 import { useHistory, useParams } from "react-router-dom"
-import { HangarBg, SafePNG, SvgBack } from "../assets"
+import { HangarBg, SvgBack } from "../assets"
 import { ClipThing, FancyButton } from "../components"
 import { CoolTable } from "../components/Common/CoolTable"
 import { useTheme } from "../containers/theme"
@@ -49,6 +49,7 @@ export const BillingHistoryItemPage = () => {
 
     // Render
     const primaryColor = theme.factionTheme.primary
+    const background = theme.factionTheme.background
 
     const content = useMemo(() => {
         if (loadError) {
@@ -91,7 +92,7 @@ export const BillingHistoryItemPage = () => {
 
         return (
             <>
-                <Stack direction="row" justifyContent="space-between" alignItems="flex-start" sx={{ p: "2rem", height: "15rem" }}>
+                <Stack direction="row" justifyContent="space-between" alignItems="flex-start" sx={{ p: "2rem", mb: "2rem" }}>
                     <SvgSupremacyLogo width="35rem" height="7rem" />
                     <Box sx={{ width: "15rem" }}>
                         <ClipThing
@@ -100,11 +101,11 @@ export const BillingHistoryItemPage = () => {
                                 bottomLeft: true,
                             }}
                             border={{
-                                borderColor: theme.factionTheme.primary,
+                                borderColor: primaryColor,
                                 borderThickness: ".3rem",
                             }}
                             opacity={0.7}
-                            backgroundColor={theme.factionTheme.background}
+                            backgroundColor={background}
                             sx={{ p: "1rem" }}
                         >
                             <Typography sx={{ fontFamily: fonts.nostromoBlack, textAlign: "center" }}>INVOICE</Typography>
@@ -140,6 +141,26 @@ export const BillingHistoryItemPage = () => {
                     </Box>
                 </Box>
 
+                <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ m: "2rem" }}>
+                    <Typography sx={{ fontFamily: fonts.nostromoBlack, fontSize: "1.8rem" }}>ORDER SUMMARY</Typography>
+                    <FancyButton
+                        clipThingsProps={{
+                            clipSize: "6px",
+                            backgroundColor: colors.neonBlue,
+                            opacity: 1,
+                            border: { borderColor: colors.neonBlue, borderThickness: "1px" },
+                            sx: { position: "relative" },
+                        }}
+                        sx={{ px: "1.2rem", py: 0, color: colors.darkestNeonBlue }}
+                        href={"#"}
+                        target="_blank"
+                    >
+                        <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold, color: colors.darkestNeonBlue }}>
+                            Download PDF
+                        </Typography>
+                    </FancyButton>
+                </Stack>
+
                 <div>
                     <CoolTable
                         tableHeadings={["PRODUCT NAME", "PRICE", "QTY", "SUBTOTAL"]}
@@ -163,23 +184,35 @@ export const BillingHistoryItemPage = () => {
                     />
                 </div>
 
-                <Stack direction="row" justifyContent="flex-end" sx={{ mt: "4rem", p: "1rem" }}>
-                    <Typography variant={"h5"} sx={{ color: "white", fontFamily: fonts.nostromoHeavy }}>
-                        Total:
-                    </Typography>
-                    <Box
-                        sx={{
-                            ml: "4rem",
-                        }}
-                    >
-                        <Typography variant={"body1"} sx={{ fontFamily: fonts.nostromoLight, color: colors.offWhite }}>
-                            {generatePriceText("$USD", total)}
-                        </Typography>
+                <Stack direction="row" justifyContent="space-between" alignItems="flex-start" sx={{ mt: "4rem", p: "1rem" }}>
+                    <Box component={"table"} sx={{ display: "inline-table" }}>
+                        <tr>
+                            <Box component={"td"} sx={{ pr: "4rem" }}>
+                                <Typography>Payment Type:</Typography>
+                            </Box>
+                            <td>
+                                <Typography>Credit Card</Typography>
+                            </td>
+                        </tr>
                     </Box>
+                    <Stack direction="row" justifyContent="flex-end">
+                        <Typography variant={"h5"} sx={{ color: "white", fontFamily: fonts.nostromoHeavy }}>
+                            Total:
+                        </Typography>
+                        <Box
+                            sx={{
+                                ml: "4rem",
+                            }}
+                        >
+                            <Typography variant={"body1"} sx={{ fontFamily: fonts.nostromoLight, color: colors.offWhite }}>
+                                {generatePriceText("$USD", total)}
+                            </Typography>
+                        </Box>
+                    </Stack>
                 </Stack>
             </>
         )
-    }, [order, isLoading, loadError, primaryColor])
+    }, [order, isLoading, loadError, primaryColor, background, user])
 
     return (
         <Stack

@@ -76,6 +76,7 @@ export const BillingHistoryPage = () => {
             }}
         >
             <Stack sx={{ mt: "1.5rem", mb: "2rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "160rem" }}>
+                t{" "}
                 <Stack direction="row" alignItems="center" sx={{ mb: "1.1rem", gap: "1.2rem" }}>
                     <MysteryCrateBanner />
                 </Stack>
