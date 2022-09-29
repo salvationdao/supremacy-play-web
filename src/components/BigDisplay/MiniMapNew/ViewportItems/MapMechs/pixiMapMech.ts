@@ -326,15 +326,6 @@ export class PixiMapMech {
 
     // Border effect
     borderEffect(displayAbility: DisplayedAbility | undefined) {
-        if (displayAbility) {
-            return
-        } else {
-            return
-        }
-    }
-
-    // Pulse effect
-    pulseEffect(displayAbility: DisplayedAbility | undefined) {
         if (displayAbility && this.iconDimension) {
             this.blinkingBorder.clear()
             this.blinkingBorder.lineStyle(this.iconDimension.height * 0.08, HEXToVBColor(colors.darkRed), 0.9)
@@ -343,6 +334,15 @@ export class PixiMapMech {
             this.blinkingBorder.endFill()
         } else {
             this.blinkingBorder.clear()
+        }
+    }
+
+    // Pulse effect
+    pulseEffect(displayAbility: DisplayedAbility | undefined) {
+        if (displayAbility) {
+            return
+        } else {
+            return
         }
     }
 
