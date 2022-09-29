@@ -14,6 +14,7 @@ export class PixiMapMech {
     rootInner: PIXI.Container<PIXI.DisplayObject>
     rootInner2: PIXI.Container<PIXI.DisplayObject>
     private rectGraphics: PIXI.Graphics
+    private blinkingBorder: PIXI.Graphics
     private arrowGraphics: PIXI.Graphics
     private numberText: PIXI.Text
     private hpBar: PixiProgressBar
@@ -54,6 +55,9 @@ export class PixiMapMech {
 
         // Rect
         this.rectGraphics = new PIXI.Graphics()
+        this.blinkingBorder = new PIXI.Graphics()
+        this.blinkingBorder.zIndex = 12
+        ease.add(this.blinkingBorder, { alpha: 0 }, { duration: 700, repeat: true, reverse: true, ease: "linear", removeExisting: true })
 
         // Rotation arrow
         this.arrowGraphics = new PIXI.Graphics()
@@ -95,6 +99,7 @@ export class PixiMapMech {
 
         // Add everything to container
         this.rootInner2.addChild(this.rectGraphics)
+        this.rootInner2.addChild(this.blinkingBorder)
         this.rootInner2.addChild(this.arrowGraphics)
         this.rootInner2.addChild(this.numberText)
         this.rootInner2.addChild(this.hpBar.root)
@@ -321,12 +326,24 @@ export class PixiMapMech {
 
     // Border effect
     borderEffect(displayAbility: DisplayedAbility | undefined) {
-        return
+        if (displayAbility) {
+            return
+        } else {
+            return
+        }
     }
 
     // Pulse effect
     pulseEffect(displayAbility: DisplayedAbility | undefined) {
-        return
+        if (displayAbility && this.iconDimension) {
+            this.blinkingBorder.clear()
+            this.blinkingBorder.lineStyle(this.iconDimension.height * 0.08, HEXToVBColor(colors.darkRed), 0.9)
+            this.blinkingBorder.beginFill(HEXToVBColor(colors.darkRed), 0.4)
+            this.blinkingBorder.drawRoundedRect(0, 0, this.iconDimension.width, this.iconDimension.height, this.iconDimension.width / 5)
+            this.blinkingBorder.endFill()
+        } else {
+            this.blinkingBorder.clear()
+        }
     }
 
     // Shake effect
