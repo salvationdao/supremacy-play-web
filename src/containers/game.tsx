@@ -80,16 +80,6 @@ export const GameContainer = createContainer(() => {
             if (payload.battle_identifier > 0) setBattleIdentifier(payload.battle_identifier)
             setMap(payload.game_map)
             setBattleZone(payload.battle_zone)
-
-            setTimeout(() => {
-                setBattleZone({
-                    location: { x: 50000, y: 60000 },
-                    radius: 20000,
-                    shrink_time: 25,
-                    warn_time: 10,
-                })
-            }, 6000)
-
             setAbilityDetails(payload.ability_details)
             setWarMachines(payload.war_machines)
             setSpawnedAI(payload.spawned_ai)

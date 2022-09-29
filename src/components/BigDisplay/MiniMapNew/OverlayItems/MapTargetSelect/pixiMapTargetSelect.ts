@@ -181,12 +181,13 @@ export class PixiMapTargetSelect {
             this.outerBorder.lineStyle(4, HEXToVBColor(this.ability.colour))
             this.outerBorder.drawRect(0, 0, this.viewport.screenWidth, this.viewport.screenHeight)
 
-            // Draw a line to connect start and end coord if both coord are populated
+            // Draw a line to connect start and end coord if both coord are populated or its line select
             this.startEndLine.clear()
-            if (this.startCoord.root.visible && this.endCoord.root.visible) {
+            const endPoint = this.mouseIcon.root.visible ? this.mouseIcon.root : this.endCoord.root.visible ? this.endCoord.root : undefined
+            if (this.startCoord.root.visible && endPoint) {
                 this.startEndLine.lineStyle(this.gridSizeRef.current.width / 4, HEXToVBColor(this.ability.colour))
-                this.startEndLine.moveTo(this.startCoord.root.position.x, this.startCoord.root.y)
-                this.startEndLine.lineTo(this.endCoord.root.position.x, this.endCoord.root.y)
+                this.startEndLine.moveTo(this.startCoord.root.x, this.startCoord.root.y)
+                this.startEndLine.lineTo(endPoint.x, endPoint.y)
             }
 
             // Repeat
