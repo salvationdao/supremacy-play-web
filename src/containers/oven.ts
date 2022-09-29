@@ -113,7 +113,7 @@ export const OvenStreamContainer = createContainer(() => {
     // Unmute stream / trailers etc. after user has interacted with the site.
     // This is needed for autoplay to work
     useEffect(() => {
-        setVolume(parseString(localStorage.getItem("streamVolume"), 0.3))
+        setVolume(parseString(localStorage.getItem("streamVolume"), 0.28))
         toggleIsMute(localStorage.getItem("isMute") == "true")
     }, [toggleIsMute, hasInteracted])
 
