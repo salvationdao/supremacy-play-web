@@ -13,11 +13,13 @@ import { useGlobalNotifications } from "./globalNotifications"
 import { RecordType, useHotkey } from "./hotkeys"
 
 export const pixiViewportZIndexes = {
+    mapAbilitiesBelowMechs: 15,
     mapMech: 30,
-    targetSelect: 100,
-    mechMoveDests: 50,
-    blackouts: 80,
+    mechMoveDests: 60,
     battleZone: 70,
+    mapAbilitiesAboveMechs: 80,
+    blackouts: 150,
+    targetSelect: 200,
 }
 
 export const pixiStageZIndexes = {

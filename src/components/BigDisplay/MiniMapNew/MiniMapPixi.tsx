@@ -14,6 +14,7 @@ import { MapMechs } from "./ViewportItems/MapMechs/MapMechs"
 import { MechMoveDests } from "./ViewportItems/MechMoveDests/MechMoveDests"
 import { Blackouts } from "./ViewportItems/Blackouts/Blackouts"
 import { BattleZone } from "./ViewportItems/BattlesZone/BattleZone"
+import { MapAbilities } from "./ViewportItems/MapAbilities/MapAbilities"
 
 interface PixiItems {
     mapSprite?: PIXI.Sprite
@@ -240,6 +241,7 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
                 <MechMoveDests />
                 <Blackouts />
                 <BattleZone />
+                <MapAbilities />
             </Box>
         ),
         [containerDimensions],

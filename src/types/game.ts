@@ -225,19 +225,16 @@ export interface DisplayedAbility {
     location_select_type: LocationSelectType
     image_url: string
     colour: string
-    radius?: number
-    mech_id?: string
     location: {
         x: number
         y: number
     }
+    radius?: number
+    mech_id?: string
     launching_at?: Date
-    location_in_pixels?: boolean
     border_width?: number
     show_below_mechs?: boolean
-    no_background_colour?: boolean
-    // defaults to 1.5
-    size_grid_override?: number
+    grid_size_multiplier?: number // defaults to 1.5
 }
 
 export enum ArenaType {
