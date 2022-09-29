@@ -5,18 +5,21 @@ import { useHistory, useParams } from "react-router-dom"
 import { HangarBg, SafePNG, SvgBack } from "../assets"
 import { ClipThing, FancyButton } from "../components"
 import { CoolTable } from "../components/Common/CoolTable"
-import { PageHeader } from "../components/Common/PageHeader"
 import { useTheme } from "../containers/theme"
-import { generatePriceText, parseString } from "../helpers"
+import { generatePriceText } from "../helpers"
 import { useGameServerCommandsUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 import { colors, fonts, siteZIndex } from "../theme/theme"
 import { FiatOrder } from "../types/fiat"
+import { SvgSupremacyLogo } from "../assets"
 import BigNumber from "bignumber.js"
+import { useAuth } from "../containers"
+import { Player } from "../components/Common/Player"
 
 export const BillingHistoryItemPage = () => {
     const theme = useTheme()
     const history = useHistory()
+    const { user } = useAuth()
     const { id } = useParams<{ id: string }>()
     const { send } = useGameServerCommandsUser("/user_commander")
 
@@ -88,7 +91,54 @@ export const BillingHistoryItemPage = () => {
 
         return (
             <>
-                <PageHeader title={`ORDER #${order.order_number}`} imageUrl={SafePNG} />
+                <Stack direction="row" justifyContent="space-between" alignItems="flex-start" sx={{ p: "2rem", height: "15rem" }}>
+                    <SvgSupremacyLogo width="35rem" height="7rem" />
+                    <Box sx={{ width: "15rem" }}>
+                        <ClipThing
+                            corners={{
+                                topRight: true,
+                                bottomLeft: true,
+                            }}
+                            border={{
+                                borderColor: theme.factionTheme.primary,
+                                borderThickness: ".3rem",
+                            }}
+                            opacity={0.7}
+                            backgroundColor={theme.factionTheme.background}
+                            sx={{ p: "1rem" }}
+                        >
+                            <Typography sx={{ fontFamily: fonts.nostromoBlack, textAlign: "center" }}>INVOICE</Typography>
+                        </ClipThing>
+                    </Box>
+                </Stack>
+
+                <Box sx={{ p: "2rem" }}>
+                    <Typography sx={{ fontFamily: fonts.nostromoBlack, fontSize: "1.8rem", mb: "2rem" }}>INVOICE DETAILS</Typography>
+                    <Box component={"table"} sx={{ display: "inline-table" }}>
+                        <tr>
+                            <Box component={"td"} sx={{ pr: "4rem" }}>
+                                <Typography>Buyer:</Typography>
+                            </Box>
+                            <td>{user && <Player player={user} />}</td>
+                        </tr>
+                        <tr>
+                            <Box component={"td"} sx={{ pr: "4rem" }}>
+                                <Typography>Order Date:</Typography>
+                            </Box>
+                            <td>
+                                <Typography>{moment(order.created_at).format("DD/MM/YYYY h:mm A")}</Typography>
+                            </td>
+                        </tr>
+                        <tr>
+                            <Box component={"td"} sx={{ pr: "4rem" }}>
+                                <Typography>Order Number:</Typography>
+                            </Box>
+                            <td>
+                                <Typography>{order.order_number}</Typography>
+                            </td>
+                        </tr>
+                    </Box>
+                </Box>
 
                 <div>
                     <CoolTable
