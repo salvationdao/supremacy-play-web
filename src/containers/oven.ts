@@ -101,7 +101,7 @@ export const OvenStreamContainer = createContainer(() => {
     const [currentOvenStream, setCurrentOvenStream] = useState<OvenStream>()
 
     // Volume control
-    const [volume, setVolume] = useState(parseString(localStorage.getItem("streamVolume"), 0.3))
+    const [volume, setVolume] = useState(0)
     const [isMute, toggleIsMute] = useToggle(true)
 
     // oven resolution control
@@ -113,6 +113,7 @@ export const OvenStreamContainer = createContainer(() => {
     // Unmute stream / trailers etc. after user has interacted with the site.
     // This is needed for autoplay to work
     useEffect(() => {
+        setVolume(parseString(localStorage.getItem("streamVolume"), 0.3))
         toggleIsMute(localStorage.getItem("isMute") == "true")
     }, [toggleIsMute, hasInteracted])
 
@@ -142,7 +143,7 @@ export const OvenStreamContainer = createContainer(() => {
     }, [currentOvenStream?.name, selectedOvenResolution])
 
     useEffect(() => {
-        localStorage.setItem("streamVolume", volume.toString())
+        if (hasInteracted) localStorage.setItem("streamVolume", volume.toString())
 
         if (volume <= 0) {
             toggleIsMute(true)
