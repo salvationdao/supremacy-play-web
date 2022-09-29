@@ -14,6 +14,7 @@ import { GameServerKeys } from "../keys"
 import { fonts, siteZIndex } from "../theme/theme"
 import { FiatOrder } from "../types/fiat"
 import BigNumber from "bignumber.js"
+import { MysteryCrateBanner } from "../components/Common/BannersPromotions/MysteryCrateBanner"
 
 export const BillingHistoryPage = () => {
     const theme = useTheme()
@@ -75,6 +76,9 @@ export const BillingHistoryPage = () => {
             }}
         >
             <Stack sx={{ mt: "1.5rem", mb: "2rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "160rem" }}>
+                <Stack direction="row" alignItems="center" sx={{ mb: "1.1rem", gap: "1.2rem" }}>
+                    <MysteryCrateBanner />
+                </Stack>
                 <ClipThing
                     clipSize="10px"
                     border={{
@@ -91,9 +95,9 @@ export const BillingHistoryPage = () => {
 
                             <Box sx={{ flex: 1 }}>
                                 <CoolTable
-                                    tableHeadings={["RECEIPT NUMBER", "DATE", "STATUS", "TOTAL", "VIEW"]}
-                                    alignments={["left", "center", "center", "center", "center"]}
-                                    widths={["20%", "20%", "20%", "20%", "20%"]}
+                                    tableHeadings={["RECEIPT NUMBER", "DATE", "STATUS", "TOTAL"]}
+                                    alignments={["left", "center", "center", "center"]}
+                                    widths={["25%", "25%", "25%", "25%"]}
                                     titleRowHeight="3.5rem"
                                     cellPadding=".4rem 1rem"
                                     items={billingHistoryItems}
@@ -113,13 +117,12 @@ export const BillingHistoryPage = () => {
                                         })
                                         return {
                                             cells: [
-                                                <Typography key={1}>{item.order_number}</Typography>,
+                                                <Typography key={1}>
+                                                    <Link to={`/billing-history/${item.id}`}>{item.order_number}</Link>
+                                                </Typography>,
                                                 <Typography key={2}>{moment(item.created_at).format("DD/MM/YYYY h:mm A")}</Typography>,
                                                 <Typography key={3}>{item.order_status.toUpperCase()}</Typography>,
                                                 <Typography key={4}>{generatePriceText("$USD", total)}</Typography>,
-                                                <Typography key={5}>
-                                                    <Link to={`/billing-history/${item.id}`}>View Details</Link>
-                                                </Typography>,
                                             ],
                                         }
                                     }}
