@@ -95,7 +95,7 @@ export class PixiBattleZone {
         this.emitter.emit = true
 
         // Dim the outside, this is a trick where the outside is darkened, trick is really thick border
-        const borderThickness = 8000
+        const borderThickness = this.viewport.worldWidth * 2
         this.darkBackgroundTrick.lineStyle(borderThickness, HEXToVBColor(colors.niceRed), 0.3)
         this.darkBackgroundTrick.beginFill(HEXToVBColor("#FFFFFF"), 0)
         this.darkBackgroundTrick.drawCircle(0, 0, radius + borderThickness / 2)
