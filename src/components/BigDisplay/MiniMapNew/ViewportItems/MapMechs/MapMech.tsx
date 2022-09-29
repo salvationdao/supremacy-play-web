@@ -284,6 +284,14 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         addToHotkeyRecord(RecordType.MiniMap, label.toString(), onMechClick)
     }, [onMechClick, label, participantID, addToHotkeyRecord, factionID, warMachineFactionID])
 
+    // Display or stop displaying abilities applied to the mech
+    useEffect(() => {
+        if (!pixiMapMech) return
+        pixiMapMech.borderEffect(abilityBorderEffect)
+        pixiMapMech.pulseEffect(abilityPulseEffect)
+        pixiMapMech.shakeEffect(abilityShakeEffect)
+    }, [abilityBorderEffect, abilityPulseEffect, abilityShakeEffect, pixiMapMech])
+
     // Listen on mech stats
     useGameServerSubscription<WarMachineLiveState | undefined>(
         {

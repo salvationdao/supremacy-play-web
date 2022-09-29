@@ -7,11 +7,12 @@ import { deg2rad, HEXToVBColor } from "../../../../../helpers"
 import { PixiImageIcon } from "../../../../../pixi/pixiImageIcon"
 import { PixiProgressBar } from "../../../../../pixi/pixiProgressBar"
 import { colors, fonts } from "../../../../../theme/theme"
-import { BlueprintPlayerAbility, Dimension, GameAbility, Position } from "../../../../../types"
+import { BlueprintPlayerAbility, Dimension, DisplayedAbility, GameAbility, Position } from "../../../../../types"
 
 export class PixiMapMech {
     root: PIXI.Container<PIXI.DisplayObject>
     rootInner: PIXI.Container<PIXI.DisplayObject>
+    rootInner2: PIXI.Container<PIXI.DisplayObject>
     private rectGraphics: PIXI.Graphics
     private arrowGraphics: PIXI.Graphics
     private numberText: PIXI.Text
@@ -45,10 +46,11 @@ export class PixiMapMech {
         this.rootInner = new PIXI.Container()
         this.rootInner.x = -100
         this.rootInner.y = -100
-        this.rootInner.sortableChildren = true
         this.rootInner.interactive = true
         this.rootInner.buttonMode = true
         this.rootInner.zIndex = 3
+        this.rootInner2 = new PIXI.Container()
+        this.rootInner2.sortableChildren = true
 
         // Rect
         this.rectGraphics = new PIXI.Graphics()
@@ -92,14 +94,15 @@ export class PixiMapMech {
         ease.add(this.dashedBox, { scale: 1.1 }, { duration: 1000, ease: "linear", repeat: true, reverse: true, removeExisting: true })
 
         // Add everything to container
-        this.rootInner.addChild(this.rectGraphics)
-        this.rootInner.addChild(this.arrowGraphics)
-        this.rootInner.addChild(this.numberText)
-        this.rootInner.addChild(this.hpBar.root)
-        this.rootInner.addChild(this.shieldBar.root)
-        this.rootInner.addChild(this.highlightedCircle)
-        this.rootInner.addChild(this.dashedBox)
-        this.rootInner.addChild(this.skull)
+        this.rootInner2.addChild(this.rectGraphics)
+        this.rootInner2.addChild(this.arrowGraphics)
+        this.rootInner2.addChild(this.numberText)
+        this.rootInner2.addChild(this.hpBar.root)
+        this.rootInner2.addChild(this.shieldBar.root)
+        this.rootInner2.addChild(this.highlightedCircle)
+        this.rootInner2.addChild(this.dashedBox)
+        this.rootInner2.addChild(this.skull)
+        this.rootInner.addChild(this.rootInner2)
         this.root.addChild(this.rootInner)
         this.root.addChild(this.mechMoveDashedLine)
 
@@ -281,7 +284,7 @@ export class PixiMapMech {
         })
         this.abilityToApply.showIcon(true)
         this.abilityToApply.root.position.set(this.iconDimension.width / 1.9, 0)
-        this.rootInner.addChild(this.abilityToApply.root)
+        this.rootInner2.addChild(this.abilityToApply.root)
     }
 
     unApplyAbility() {
@@ -313,6 +316,27 @@ export class PixiMapMech {
             dash.drawRect(0, 0, width, height)
             this.dashedBox.pivot.set(width / 2, height / 2)
             this.dashedBox.position.set(this.iconDimension.width / 2, this.iconDimension.height / 2)
+        }
+    }
+
+    // Border effect
+    borderEffect(displayAbility: DisplayedAbility | undefined) {
+        return
+    }
+
+    // Pulse effect
+    pulseEffect(displayAbility: DisplayedAbility | undefined) {
+        return
+    }
+
+    // Shake effect
+    shakeEffect(displayAbility: DisplayedAbility | undefined) {
+        if (displayAbility) {
+            this.rootInner2.alpha = 0.6
+            ease.add(this.rootInner2, { shake: 2 }, { repeat: true, removeExisting: true })
+        } else {
+            this.rootInner2.alpha = 1
+            ease.add(this.rootInner2, { shake: 1 }, { repeat: true, removeExisting: true })
         }
     }
 }
