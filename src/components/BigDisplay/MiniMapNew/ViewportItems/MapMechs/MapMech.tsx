@@ -329,7 +329,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             if (payload?.rotation !== undefined && pixiMapMech) {
                 let newRot = closestAngle(prevRotation.current, payload.rotation || 0)
                 // If the rotation has spun around too many times, reset it, else pixijs will die after tab is on idle
-                if (newRot > 3600 || newRot < -3600) newRot %= 360
+                if (newRot > 1800 || newRot < -1800) newRot %= 360
                 const newRotRad = deg2rad(newRot + 90)
                 pixiMapMech.updateRotation(newRotRad)
                 prevRotation.current = newRot

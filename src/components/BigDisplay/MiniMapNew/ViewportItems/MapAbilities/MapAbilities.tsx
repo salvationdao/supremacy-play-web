@@ -35,7 +35,7 @@ interface PendingHiveStateChange {
 
 export const MapAbilities = React.memo(function MapAbilities() {
     const { currentArenaID } = useArena()
-    const { pixiMainItems } = useMiniMapPixi()
+    const { pixiMainItems, gridSizeRef, gridCellToViewportPosition } = useMiniMapPixi()
     const [pixiMapAbilities, setPixiMapAbilities] = useState<PixiMapAbilities>()
 
     // Refs, doesnt cause re-render
@@ -47,13 +47,13 @@ export const MapAbilities = React.memo(function MapAbilities() {
     // Initial setup
     useEffect(() => {
         if (!pixiMainItems) return
-        const pixiMapAbilities = new PixiMapAbilities("#FFFFFF")
+        const pixiMapAbilities = new PixiMapAbilities(gridSizeRef, gridCellToViewportPosition, basicAbilities, complexAbilities)
         pixiMainItems.viewport.addChild(pixiMapAbilities.root)
         setPixiMapAbilities((prev) => {
             prev?.destroy()
             return pixiMapAbilities
         })
-    }, [pixiMainItems])
+    }, [pixiMainItems, gridSizeRef, gridCellToViewportPosition])
 
     // Cleanup
     useEffect(() => {
@@ -84,6 +84,7 @@ export const MapAbilities = React.memo(function MapAbilities() {
 
             // Only show the ones that are not on a mech
             basicAbilities.current = payload.filter((da) => !da.mech_id)
+            console.log(payload)
         },
     )
 
@@ -148,8 +149,9 @@ export const MapAbilities = React.memo(function MapAbilities() {
                                     location: { x, y },
                                     radius: 2500,
                                     colour: "#FF6600",
-                                    border_width: 2,
+                                    border_width: 1,
                                     show_below_mechs: true,
+                                    location_in_pixels: true,
                                 }
                                 pendingMapEvents.push({ ability, delay: timeOffset, remove_after: 4000 })
                             }
@@ -216,9 +218,10 @@ export const MapAbilities = React.memo(function MapAbilities() {
                                     location_select_type: LocationSelectType.LocationSelect,
                                     location: { x, y },
                                     colour,
-                                    border_width: 2,
+                                    border_width: 1,
                                     show_below_mechs: true,
                                     grid_size_multiplier: 0.5,
+                                    location_in_pixels: true,
                                 }
                                 if (timeOffset === 0) {
                                     newMapEvents.push(ability)
@@ -258,8 +261,9 @@ export const MapAbilities = React.memo(function MapAbilities() {
                                     location: { x: -1, y: -1 }, // Location is taken from existing landmine on the mini-map (using id)
                                     radius: 1000,
                                     colour: "#FF6600",
-                                    border_width: 2,
+                                    border_width: 1,
                                     show_below_mechs: false, // Too hard to see landmine explosions as they are small and always under mechs
+                                    location_in_pixels: true,
                                 }
                                 pendingMapEvents.push({ ability, delay: timeOffset, replace: true, remove_after: 4000 })
                             }

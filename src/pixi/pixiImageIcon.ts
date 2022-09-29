@@ -23,17 +23,19 @@ export class PixiImageIcon {
         imageBorder.drawRoundedRect(0, 0, width, height, 2)
         imageBorder.zIndex = 4
 
-        // Image
-        const iconImage = PIXI.Sprite.from(imageUrl)
-        iconImage.width = width
-        iconImage.height = height
-        iconImage.zIndex = 3
-
         this.icon = new PIXI.Container()
         this.icon.sortableChildren = true
         this.icon.addChild(imageBorder)
-        this.icon.addChild(iconImage)
         this.icon.alpha = alpha
+
+        // Image
+        if (imageUrl) {
+            const iconImage = PIXI.Sprite.from(imageUrl)
+            iconImage.width = width
+            iconImage.height = height
+            iconImage.zIndex = 3
+            this.icon.addChild(iconImage)
+        }
 
         // Countdown label
         this.countdownLabel = new PIXI.Text("", {
@@ -69,6 +71,8 @@ export class PixiImageIcon {
     }
 
     startCountdown(secondsLeft: number, countdownSpeed = 1, onExpired?: () => void) {
+        if (secondsLeft < 0) return
+
         let start: number | undefined
         let isDone = false
         this.countdownLabel.visible = true
@@ -109,11 +113,11 @@ export class PixiImageIcon {
         this.root.visible = toShow
     }
 
-    showRangeRadius(radius: number | undefined) {
+    showRangeRadius(radius: number | undefined, borderWidth = 2) {
         // Draw the range
         this.rangeRadius.clear()
         if (radius) {
-            this.rangeRadius.lineStyle(2, HEXToVBColor(this.borderColor))
+            this.rangeRadius.lineStyle(borderWidth, HEXToVBColor(this.borderColor))
             this.rangeRadius.beginFill(HEXToVBColor(this.borderColor), 0.4)
             this.rangeRadius.drawCircle(0, 0, radius)
             this.rangeRadius.endFill()

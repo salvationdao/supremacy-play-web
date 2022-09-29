@@ -234,6 +234,7 @@ export interface DisplayedAbility {
     launching_at?: Date
     border_width?: number
     show_below_mechs?: boolean
+    location_in_pixels?: boolean
     grid_size_multiplier?: number // defaults to 1.5
 }
 
