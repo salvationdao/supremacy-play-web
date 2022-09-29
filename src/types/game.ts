@@ -215,7 +215,6 @@ export enum MiniMapDisplayEffectType {
 export enum MechDisplayEffectType {
     None = "NONE",
     Border = "BORDER",
-    Pulse = "PULSE",
     Shake = "SHAKE",
 }
 

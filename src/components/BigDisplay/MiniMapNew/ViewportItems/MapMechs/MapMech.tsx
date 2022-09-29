@@ -69,7 +69,6 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     // Mech ability display
     const [abilityEffects, setAbilityEffects] = useState<DisplayedAbility[]>([])
     const abilityBorderEffect = useMemo(() => abilityEffects.find((da) => da.mech_display_effect_type === MechDisplayEffectType.Border), [abilityEffects])
-    const abilityPulseEffect = useMemo(() => abilityEffects.find((da) => da.mech_display_effect_type === MechDisplayEffectType.Pulse), [abilityEffects])
     const abilityShakeEffect = useMemo(() => abilityEffects.find((da) => da.mech_display_effect_type === MechDisplayEffectType.Shake), [abilityEffects])
 
     // Initial setup for the mech and show on the map
@@ -288,9 +287,8 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     useEffect(() => {
         if (!pixiMapMech) return
         pixiMapMech.borderEffect(abilityBorderEffect)
-        pixiMapMech.pulseEffect(abilityPulseEffect)
         pixiMapMech.shakeEffect(abilityShakeEffect)
-    }, [abilityBorderEffect, abilityPulseEffect, abilityShakeEffect, pixiMapMech])
+    }, [abilityBorderEffect, abilityShakeEffect, pixiMapMech])
 
     // Listen on mech stats
     useGameServerSubscription<WarMachineLiveState | undefined>(

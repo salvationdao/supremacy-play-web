@@ -337,15 +337,6 @@ export class PixiMapMech {
         }
     }
 
-    // Pulse effect
-    pulseEffect(displayAbility: DisplayedAbility | undefined) {
-        if (displayAbility) {
-            return
-        } else {
-            return
-        }
-    }
-
     // Shake effect
     shakeEffect(displayAbility: DisplayedAbility | undefined) {
         if (displayAbility) {
