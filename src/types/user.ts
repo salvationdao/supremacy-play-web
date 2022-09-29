@@ -35,6 +35,7 @@ export interface UserFromPassport {
     username: string
     verified: boolean
     withdraw_lock: boolean
+    accepts_marketing?: boolean
 }
 
 export interface User {
@@ -45,6 +46,7 @@ export interface User {
     mobile_number?: string
     rank: UserRank
     features: Feature[]
+    accepts_marketing?: boolean
 }
 
 export interface FactionStat {
