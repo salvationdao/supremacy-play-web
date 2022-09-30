@@ -1,6 +1,6 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import React, { useEffect, useMemo, useRef, useState } from "react"
-import { BattleBgWebP, SvgExternalLink, SvgFullscreen, SvgMinimize, SvgSwap } from "../../../assets"
+import { BattleBgWebP, SvgFullscreen, SvgMinimize, SvgSwap } from "../../../assets"
 import { useDimension, useGame, useMiniMapPixi, useUI, WinnerStruct } from "../../../containers"
 import { useHotkey } from "../../../containers/hotkeys"
 import { useToggle } from "../../../hooks"
@@ -144,7 +144,7 @@ const MiniMapInnerNormal = ({ map, isPoppedout, setIsPoppedout }: MiniMapInnerPr
 }
 
 // This inner component takes care of the resizing etc.
-const MiniMapInner = ({ map, isPoppedout, setIsPoppedout, width = 100, height = 100, poppedOutContainerRef }: MiniMapInnerProps) => {
+const MiniMapInner = ({ map, isPoppedout, width = 100, height = 100, poppedOutContainerRef }: MiniMapInnerProps) => {
     const { handleMiniMapHotKey } = useHotkey()
     const { remToPxRatio } = useDimension()
     const { onAbilityUseCallbacks } = useMiniMapPixi()
@@ -273,7 +273,7 @@ const MiniMapInner = ({ map, isPoppedout, setIsPoppedout, width = 100, height = 
                                     <SvgSwap size="1.6rem" />
                                 </Box>
 
-                                <Box
+                                {/* <Box
                                     onClick={() => {
                                         setIsPoppedout(true)
                                         setIsStreamBigDisplay(true)
@@ -281,7 +281,7 @@ const MiniMapInner = ({ map, isPoppedout, setIsPoppedout, width = 100, height = 
                                     sx={{ cursor: "pointer", opacity: 0.4, ":hover": { opacity: 1 } }}
                                 >
                                     <SvgExternalLink size="1.6rem" />
-                                </Box>
+                                </Box> */}
                             </>
                         )}
 
@@ -332,7 +332,6 @@ const MiniMapInner = ({ map, isPoppedout, setIsPoppedout, width = 100, height = 
         isPoppedout,
         isStreamBigDisplay,
         setIsStreamBigDisplay,
-        setIsPoppedout,
         toggleIsEnlarged,
         poppedOutContainerRef,
         stopMapRender,

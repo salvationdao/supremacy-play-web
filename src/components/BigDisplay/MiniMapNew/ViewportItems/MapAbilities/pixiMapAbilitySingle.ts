@@ -136,18 +136,22 @@ export class PixiMapAbilitySingle {
 
         // Explosion / range effect
         if (
-            (ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Explosion && !ability.launching_at) ||
-            (ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Range && !ability.launching_at)
+            radius &&
+            ((ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Explosion && !ability.launching_at) ||
+                (ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Range && !ability.launching_at))
         ) {
-            console.log(radius, gridSizeRef.current.width)
             // Disabled the range radius
             this.imageIcon.showRangeRadius(undefined)
             const config = merge(explosionParticlesConfig, {
                 scale: {
-                    start: 0.7,
-                    end: 0.15,
+                    start: 0.6,
+                    end: 0.11,
                 },
-                spawnCircle: { r: gridSizeRef.current.width / 4 },
+                lifetime: {
+                    min: 0.18,
+                    max: 0.18,
+                },
+                spawnCircle: { r: radius / 4 },
                 emitterLifetime: ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Range ? 3.5 : 0.3,
             })
             this.emitter?.destroy()
