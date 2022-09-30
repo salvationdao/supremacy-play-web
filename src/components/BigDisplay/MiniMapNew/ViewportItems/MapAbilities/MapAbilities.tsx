@@ -47,8 +47,7 @@ export const MapAbilities = React.memo(function MapAbilities() {
     // Initial setup
     useEffect(() => {
         if (!pixiMainItems) return
-        const pixiMapAbilities = new PixiMapAbilities(gridSizeRef, gridCellToViewportPosition, basicAbilities, complexAbilities)
-        pixiMainItems.viewport.addChild(pixiMapAbilities.root)
+        const pixiMapAbilities = new PixiMapAbilities(pixiMainItems.viewport, gridSizeRef, gridCellToViewportPosition, basicAbilities, complexAbilities)
         setPixiMapAbilities((prev) => {
             prev?.destroy()
             return pixiMapAbilities

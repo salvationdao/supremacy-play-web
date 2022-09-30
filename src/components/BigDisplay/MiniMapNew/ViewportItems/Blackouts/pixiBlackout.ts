@@ -45,7 +45,7 @@ export class PixiBlackout {
         ease.add(this.circle, { alpha: 1 }, { duration: 500, ease: "linear", removeExisting: true })
 
         // Particles
-        const config = mergeDeep(ringCloudParticlesConfig, { spawnCircle: { r: radius, minR: radius } })
+        const config = mergeDeep(ringCloudParticlesConfig, { spawnCircle: { r: radius, minR: radius }, color: { start: "#000000", end: "#000000" } })
         this.emitter = new particles.Emitter(this.circle, CircleParticle, config)
         this.emitter.emit = true
         this.render()

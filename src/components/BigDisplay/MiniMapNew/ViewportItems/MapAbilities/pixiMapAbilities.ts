@@ -1,11 +1,10 @@
-import * as PIXI from "pixi.js"
+import { Viewport } from "pixi-viewport"
 import { Dimension, DisplayedAbility } from "../../../../../types"
 import { PixiMapAbilitySingle } from "./pixiMapAbilitySingle"
 
 export class PixiMapAbilities {
-    root: PIXI.Container<PIXI.DisplayObject>
+    private viewport: Viewport
     private pixiAbilities: { [id: string]: PixiMapAbilitySingle } = {}
-
     private gridSizeRef: React.MutableRefObject<Dimension>
     private gridCellToViewportPosition: React.MutableRefObject<
         (
@@ -21,6 +20,7 @@ export class PixiMapAbilities {
     private animationFrame: number | undefined
 
     constructor(
+        viewport: Viewport,
         gridSizeRef: React.MutableRefObject<Dimension>,
         gridCellToViewportPosition: React.MutableRefObject<
             (
@@ -34,21 +34,22 @@ export class PixiMapAbilities {
         basicAbilities: React.MutableRefObject<DisplayedAbility[]>,
         complexAbilities: React.MutableRefObject<DisplayedAbility[]>,
     ) {
+        // We use viewport to add children instead of using a root because zIndexing
+        this.viewport = viewport
         this.gridSizeRef = gridSizeRef
         this.gridCellToViewportPosition = gridCellToViewportPosition
         this.basicAbilities = basicAbilities
         this.complexAbilities = complexAbilities
-
-        // Create container for everything
-        this.root = new PIXI.Container()
-        this.root.sortableChildren = true
 
         this.render()
     }
 
     destroy() {
         if (this.animationFrame) cancelAnimationFrame(this.animationFrame)
-        this.root.destroy()
+        for (const [id, pixiAbility] of Object.entries(this.pixiAbilities)) {
+            pixiAbility.destroy()
+            delete this.pixiAbilities[id]
+        }
     }
 
     render() {
@@ -79,7 +80,7 @@ export class PixiMapAbilities {
                 }
 
                 const newPixiAbility = new PixiMapAbilitySingle(ab, this.gridSizeRef, this.gridCellToViewportPosition)
-                this.root.addChild(newPixiAbility.root)
+                this.viewport.addChild(newPixiAbility.root)
                 this.pixiAbilities[ab.offering_id] = newPixiAbility
             })
 
