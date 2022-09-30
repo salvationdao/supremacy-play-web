@@ -154,7 +154,7 @@ export class PixiMapAbilitySingle {
                     max: 0.16,
                 },
                 spawnCircle: { r: radius / 4 },
-                emitterLifetime: ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Range ? 6 : 0.3,
+                emitterLifetime: ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Range ? -1 : 0.3,
             })
             this.emitter?.destroy()
             this.emitter = new particles.Emitter(this.rootInner, CircleParticle, config)
