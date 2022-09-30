@@ -66,7 +66,15 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                 backgroundColor: `${colors.offWhite}10`,
                             }}
                         >
-                            <SvgPlus size="60px" fill={`${colors.offWhite}10`} />
+                            <SvgPlus size="60px" fill={`${colors.offWhite}20`} />
+                            <Typography
+                                display="block"
+                                sx={{
+                                    color: `${colors.offWhite}20`,
+                                }}
+                            >
+                                DEPLOY MECH
+                            </Typography>
                         </Button>
                     )
                 }
