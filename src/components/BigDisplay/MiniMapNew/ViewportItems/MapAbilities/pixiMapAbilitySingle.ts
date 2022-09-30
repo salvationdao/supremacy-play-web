@@ -86,7 +86,7 @@ export class PixiMapAbilitySingle {
             ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Landmine
         ) {
             this.rootInner.scale.set(2)
-            ease.add(this.rootInner, { scale: 1 }, { duration: 3000, ease: "easeOutQuad", removeExisting: true })
+            ease.add(this.rootInner, { scale: 1 }, { duration: 2000, ease: "easeOutQuad", removeExisting: true })
         }
 
         // Landmines has a 3s arm delay, change image after 3s
