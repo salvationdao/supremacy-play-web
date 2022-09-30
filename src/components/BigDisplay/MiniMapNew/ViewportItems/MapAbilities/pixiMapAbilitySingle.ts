@@ -69,9 +69,22 @@ export class PixiMapAbilitySingle {
         ease.add(this.rootInner, { alpha: 1 }, { duration: 500, ease: "linear", removeExisting: true })
 
         // Drop effect
-        if (ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Drop) {
+        if (
+            ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Drop ||
+            ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Landmine
+        ) {
             this.rootInner.scale.set(2)
             ease.add(this.rootInner, { scale: 1 }, { duration: 3000, ease: "easeOutQuad", removeExisting: true })
+        }
+
+        // Landmines has a 3s arm delay, change image after 3s
+        if (ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Landmine) {
+            setTimeout(() => {
+                if (this.imageIcon.imageSprite) {
+                    const newTexture = PIXI.Texture.from(ability.image_url)
+                    this.imageIcon.imageSprite.texture = newTexture
+                }
+            }, 3000)
         }
     }
 

@@ -193,19 +193,19 @@ export const MapAbilities = React.memo(function MapAbilities() {
                                 let colour = "#000000"
                                 switch (factionNo) {
                                     case 1:
+                                        colour = "#C24242"
                                         image_url =
                                             "https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/mini-map/landmines/landmine_redmountain.webp"
-                                        colour = "#C24242"
                                         break
                                     case 2:
+                                        colour = "#428EC1"
                                         image_url =
                                             "https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/mini-map/landmines/landmine_boston.webp"
-                                        colour = "#428EC1"
                                         break
                                     case 3:
+                                        colour = "#FFFFFF"
                                         image_url =
                                             "https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/mini-map/landmines/landmine_zai.webp"
-                                        colour = "#FFFFFF"
                                         break
                                 }
 

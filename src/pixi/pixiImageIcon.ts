@@ -4,6 +4,7 @@ import { colors, fonts } from "../theme/theme"
 
 export class PixiImageIcon {
     root: PIXI.Container<PIXI.DisplayObject>
+    imageSprite: PIXI.Sprite | undefined
     private icon: PIXI.Container
     private countdownLabel: PIXI.Text
     private animationFrame: number | undefined
@@ -30,11 +31,11 @@ export class PixiImageIcon {
 
         // Image
         if (imageUrl) {
-            const iconImage = PIXI.Sprite.from(imageUrl)
-            iconImage.width = width
-            iconImage.height = height
-            iconImage.zIndex = 3
-            this.icon.addChild(iconImage)
+            this.imageSprite = PIXI.Sprite.from(imageUrl)
+            this.imageSprite.width = width
+            this.imageSprite.height = height
+            this.imageSprite.zIndex = 3
+            this.icon.addChild(this.imageSprite)
         }
 
         // Countdown label
