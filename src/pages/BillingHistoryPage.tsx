@@ -7,11 +7,11 @@ import { ClipThing } from "../components"
 import { CoolTable } from "../components/Common/CoolTable"
 import { PageHeader } from "../components/Common/PageHeader"
 import { useTheme } from "../containers/theme"
-import { generatePriceText, parseString } from "../helpers"
+import { generatePriceText, getOrderStatusDeets, parseString } from "../helpers"
 import { usePagination, useUrlQuery } from "../hooks"
 import { useGameServerCommandsUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { fonts, siteZIndex } from "../theme/theme"
+import { fonts, colors, siteZIndex } from "../theme/theme"
 import { FiatOrder } from "../types/fiat"
 import BigNumber from "bignumber.js"
 import { MysteryCrateBanner } from "../components/Common/BannersPromotions/MysteryCrateBanner"
@@ -111,18 +111,38 @@ export const BillingHistoryPage = () => {
                                         changePage,
                                         changePageSize,
                                     }}
-                                    renderItem={(item) => {
+                                    renderItem={(order) => {
                                         let total = new BigNumber(0)
-                                        item.items.forEach((oi) => {
+                                        order.items.forEach((oi) => {
                                             total = total.plus(new BigNumber(oi.amount).multipliedBy(oi.quantity))
                                         })
+                                        const statusDeets = getOrderStatusDeets(order.order_status)
                                         return {
                                             cells: [
                                                 <Typography key={1}>
-                                                    <Link to={`/billing-history/${item.id}`}>{item.order_number}</Link>
+                                                    <Link to={`/billing-history/${order.id}`}>
+                                                        <Typography sx={{ textDecoration: "underline" }}>{order.order_number}</Typography>
+                                                    </Link>
                                                 </Typography>,
-                                                <Typography key={2}>{moment(item.created_at).format("DD/MM/YYYY h:mm A")}</Typography>,
-                                                <Typography key={3}>{item.order_status.toUpperCase()}</Typography>,
+                                                <Typography key={2}>{moment(order.created_at).format("DD/MM/YYYY")}</Typography>,
+                                                <ClipThing
+                                                    key={3}
+                                                    clipSize="6px"
+                                                    corners={{
+                                                        bottomLeft: true,
+                                                        topRight: true,
+                                                    }}
+                                                    border={{
+                                                        borderColor: colors.offWhite,
+                                                        borderThickness: "1px",
+                                                    }}
+                                                    backgroundColor={statusDeets.color}
+                                                    sx={{ position: "relative", px: "2rem", py: 0 }}
+                                                >
+                                                    <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold, color: statusDeets.textColor }}>
+                                                        {statusDeets.label.toUpperCase()}
+                                                    </Typography>
+                                                </ClipThing>,
                                                 <Typography key={4}>{generatePriceText("$USD", total)}</Typography>,
                                             ],
                                         }

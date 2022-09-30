@@ -17,6 +17,7 @@ import {
 } from "../assets"
 import { colors } from "../theme/theme"
 import { AssetItemType, GAME_CLIENT_TILE_SIZE, MysteryCrateType, Rarity, RarityEnum, UserRank } from "../types"
+import { FiatOrderStatus } from "../types/fiat"
 
 // Capitalize convert a string "example" to "Example"
 export const Capitalize = (str: string): string => str[0].toUpperCase() + str.substring(1).toLowerCase()
@@ -208,6 +209,17 @@ export const getRarityDeets = (rarityKey: string): Rarity => {
             return { label: "Titan", color: colors.rarity.TITAN, textColor: "#000000", rank: 1 }
         default:
             return { label: "", color: colors.rarity.MEGA, textColor: "#FFFFFF", rank: 100 }
+    }
+}
+
+export const getOrderStatusDeets = (key: string) => {
+    switch (key) {
+        case FiatOrderStatus.Pending:
+            return { label: "Pending", color: colors.lightNeonBlue, textColor: "#FFFFFF" }
+        case FiatOrderStatus.Refunded:
+            return { label: "Refunded", color: colors.red, textColor: "#FFFFFF" }
+        default:
+            return { label: "Paid", color: colors.green, textColor: "#FFFFFF" }
     }
 }
 
