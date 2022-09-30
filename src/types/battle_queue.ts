@@ -4,6 +4,7 @@ import { User } from "./user"
 
 export interface BattleLobby {
     id: string
+    name: string
     host_by_id: string
     number: number
     entry_fee: string
