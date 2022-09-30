@@ -1,9 +1,11 @@
 import { DashLine } from "pixi-dashed-line"
 import { ease } from "pixi-ease"
+import * as particles from "pixi-particles"
 import * as PIXI from "pixi.js"
-import { DeadSkullPNG } from "../../../../../assets"
+import { CircleParticle, DeadSkullPNG } from "../../../../../assets"
 import { pixiViewportZIndexes } from "../../../../../containers"
-import { deg2rad, HEXToVBColor } from "../../../../../helpers"
+import { deg2rad, HEXToVBColor, mergeDeep } from "../../../../../helpers"
+import { pulseParticlesConfig } from "../../../../../pixi/particleConfigs"
 import { PixiImageIcon } from "../../../../../pixi/pixiImageIcon"
 import { PixiProgressBar } from "../../../../../pixi/pixiProgressBar"
 import { colors, fonts } from "../../../../../theme/theme"
@@ -26,16 +28,20 @@ export class PixiMapMech {
     private animationFrame: number | undefined
     private iconDimension: Dimension | undefined
     private mechHash: string
+    private gridSizeRef: React.MutableRefObject<Dimension>
     private primaryColor: string | undefined
     private cachedZIndex = 10
     private abilityToApply: PixiImageIcon | undefined
     private dashedBox: PIXI.Graphics
+    private particlesContainer: PIXI.Container<PIXI.DisplayObject>
+    private emitter: particles.Emitter | undefined
 
     onTargetConfirm:
         | undefined
         | (({ startCoord, endCoord, mechHash }: { startCoord?: Position | undefined; endCoord?: Position | undefined; mechHash?: string | undefined }) => void)
 
-    constructor(label: number, mechHash: string) {
+    constructor(label: number, mechHash: string, gridSizeRef: React.MutableRefObject<Dimension>) {
+        this.gridSizeRef = gridSizeRef
         this.mechHash = mechHash
 
         // Create container for everything
@@ -88,6 +94,7 @@ export class PixiMapMech {
         this.skull.anchor.set(0.5, 0.42)
         this.skull.width = 3
         this.skull.height = 3
+        this.skull.zIndex = 15
 
         // Mech move sprite
         this.mechMoveDashedLine = new PIXI.Graphics()
@@ -97,7 +104,11 @@ export class PixiMapMech {
         this.dashedBox = new PIXI.Graphics()
         ease.add(this.dashedBox, { scale: 1.1 }, { duration: 1000, ease: "linear", repeat: true, reverse: true, removeExisting: true })
 
+        // Particles container
+        this.particlesContainer = new PIXI.Container()
+
         // Add everything to container
+        this.rootInner2.addChild(this.particlesContainer)
         this.rootInner2.addChild(this.rectGraphics)
         this.rootInner2.addChild(this.blinkingBorder)
         this.rootInner2.addChild(this.arrowGraphics)
@@ -118,6 +129,7 @@ export class PixiMapMech {
 
     destroy() {
         if (this.animationFrame) cancelAnimationFrame(this.animationFrame)
+        this.emitter?.destroy()
         this.root.destroy()
     }
 
@@ -140,6 +152,7 @@ export class PixiMapMech {
         this.skull.width = iconDimension.width / 1.5
         this.skull.height = iconDimension.height / 1.5
         this.skull.tint = HEXToVBColor(primaryColor)
+        this.particlesContainer.position.set(iconDimension.width / 2, iconDimension.height / 2.3)
 
         // Update rotation arrow
         // Draw the rotation arrow
@@ -254,6 +267,8 @@ export class PixiMapMech {
     }
 
     render() {
+        let elapsed = Date.now()
+
         const step = () => {
             if (this.iconDimension && this.primaryColor && this.mechMovePosition) {
                 this.mechMoveDashedLine.clear()
@@ -271,6 +286,11 @@ export class PixiMapMech {
                 })
                 dash.moveTo(this.rootInner.x + this.rectGraphics.width / 2, this.rootInner.y + this.rectGraphics.height / 2).lineTo(newX, newY)
             }
+
+            // Particles stuff
+            const now = Date.now()
+            this.emitter?.update((now - elapsed) * 0.001)
+            elapsed = now
 
             this.animationFrame = requestAnimationFrame(step)
         }
@@ -345,6 +365,33 @@ export class PixiMapMech {
         } else {
             this.rootInner2.alpha = 1
             ease.add(this.rootInner2, { shake: 1 }, { repeat: true, removeExisting: true })
+        }
+    }
+
+    // Pulse effect
+    pulseEffect(displayAbility: DisplayedAbility | undefined) {
+        if (displayAbility) {
+            const config = mergeDeep(pulseParticlesConfig, {
+                color: { start: "#FFFFFF", end: "#FFFFFF" },
+                scale: {
+                    start: 0.4,
+                    end: 0.1,
+                },
+                speed: {
+                    start: 60,
+                    end: 60,
+                },
+                lifetime: {
+                    min: (this.gridSizeRef.current.width * 2.3) / 60,
+                    max: (this.gridSizeRef.current.width * 2.3) / 60,
+                },
+                frequency: 0.4,
+            })
+            this.emitter?.destroy()
+            this.emitter = new particles.Emitter(this.particlesContainer, CircleParticle, config)
+            this.emitter.emit = true
+        } else {
+            this.emitter?.destroy()
         }
     }
 }

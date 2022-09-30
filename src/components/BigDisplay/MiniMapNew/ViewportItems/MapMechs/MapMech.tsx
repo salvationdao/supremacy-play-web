@@ -70,14 +70,15 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     const [abilityEffects, setAbilityEffects] = useState<DisplayedAbility[]>([])
     const abilityBorderEffect = useMemo(() => abilityEffects.find((da) => da.mech_display_effect_type === MechDisplayEffectType.Border), [abilityEffects])
     const abilityShakeEffect = useMemo(() => abilityEffects.find((da) => da.mech_display_effect_type === MechDisplayEffectType.Shake), [abilityEffects])
+    const abilityPulseEffect = useMemo(() => abilityEffects.find((da) => da.mech_display_effect_type === MechDisplayEffectType.Pulse), [abilityEffects])
 
     // Initial setup for the mech and show on the map
     useEffect(() => {
         if (!pixiMainItems) return
-        const pixiMapMech = new PixiMapMech(label, hash)
+        const pixiMapMech = new PixiMapMech(label, hash, gridSizeRef)
         pixiMainItems.viewport.addChild(pixiMapMech.root)
         setPixiMapMech(pixiMapMech)
-    }, [hash, label, pixiMainItems])
+    }, [hash, label, gridSizeRef, pixiMainItems])
 
     // Cleanup
     useEffect(() => {
@@ -288,7 +289,8 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         if (!pixiMapMech) return
         pixiMapMech.borderEffect(abilityBorderEffect)
         pixiMapMech.shakeEffect(abilityShakeEffect)
-    }, [abilityBorderEffect, abilityShakeEffect, pixiMapMech])
+        pixiMapMech.pulseEffect(abilityPulseEffect)
+    }, [abilityBorderEffect, abilityShakeEffect, abilityPulseEffect, pixiMapMech])
 
     // Listen on mech stats
     useGameServerSubscription<WarMachineLiveState | undefined>(

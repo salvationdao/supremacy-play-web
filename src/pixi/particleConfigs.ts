@@ -59,7 +59,7 @@ export const ringCloudParticlesConfig = {
 export const pulseParticlesConfig = {
     alpha: {
         start: 0.9,
-        end: 0.28,
+        end: 0.1,
     },
     scale: {
         start: 1,
@@ -103,7 +103,7 @@ export const pulseParticlesConfig = {
     },
     addAtBack: false,
     spawnType: "burst",
-    particlesPerWave: 16,
-    particleSpacing: 22,
+    particlesPerWave: 18,
+    particleSpacing: 20,
     angleStart: 0,
 }
