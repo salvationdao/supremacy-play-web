@@ -20,8 +20,6 @@ export class PixiImageIcon {
 
         // Image border
         const imageBorder = new PIXI.Graphics()
-        imageBorder.lineStyle(1.2, HEXToVBColor(borderColor))
-        imageBorder.drawRoundedRect(0, 0, width, height, 2)
         imageBorder.zIndex = 4
 
         this.icon = new PIXI.Container()
@@ -31,6 +29,8 @@ export class PixiImageIcon {
 
         // Image
         if (imageUrl) {
+            imageBorder.lineStyle(1.2, HEXToVBColor(borderColor))
+            imageBorder.drawRoundedRect(0, 0, width, height, 2)
             this.imageSprite = PIXI.Sprite.from(imageUrl)
             this.imageSprite.width = width
             this.imageSprite.height = height

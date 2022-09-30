@@ -311,9 +311,11 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             }
 
             // Update position, only when not hidden (else pos will set to like -100, -100 or something)
-            if (!payload?.is_hidden && payload?.position !== undefined && pixiMapMech) {
-                const newPos = clientPositionToViewportPosition.current(payload.position.x, payload.position.y)
-                pixiMapMech.updatePosition(newPos.x, newPos.y)
+            if (payload?.position !== undefined && pixiMapMech) {
+                if (!payload?.is_hidden) {
+                    const newPos = clientPositionToViewportPosition.current(payload.position.x, payload.position.y)
+                    pixiMapMech.updatePosition(newPos.x, newPos.y)
+                }
 
                 // Update the mech move dash line length and rotation
                 const mCommand = tempMechMoveCommand.current || mechMoveCommand.current
