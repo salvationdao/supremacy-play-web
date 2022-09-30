@@ -108,12 +108,14 @@ export class PixiBattleZone {
         this.darkBackgroundTrick.drawCircle(0, 0, radius + borderThickness / 2)
         this.darkBackgroundTrick.endFill()
         this.darkBackgroundTrick.position.set(pos.x, pos.y)
-        this.darkBackgroundTrick.scale.set(1 + this.viewport.worldWidth / radius)
         ease.add(this.darkBackgroundTrick, { alpha: 0.7 }, { duration: 800, ease: "linear", repeat: true, reverse: true, removeExisting: true })
 
-        setTimeout(() => {
-            ease.add(this.darkBackgroundTrick, { scale: 1 }, { duration: battleZone.shrink_time * 1000, ease: "linear", removeExisting: true })
-        }, battleZone.warn_time * 1000)
+        if (battleZone.warn_time) {
+            this.darkBackgroundTrick.scale.set(1 + this.viewport.worldWidth / radius)
+            setTimeout(() => {
+                ease.add(this.darkBackgroundTrick, { scale: 1 }, { duration: battleZone.shrink_time * 1000, ease: "linear", removeExisting: true })
+            }, battleZone.warn_time * 1000)
+        }
 
         this.root.alpha = 0
         ease.add(this.root, { alpha: 1 }, { duration: 1000, ease: "linear", removeExisting: true })
