@@ -70,10 +70,10 @@ export class PixiMapAbilities {
 
                 if (pixiAbility) {
                     // TODO:
-                    console.log("a")
                 } else {
                     const newPixiAbility = new PixiMapAbilitySingle(ab, this.gridSizeRef, this.gridCellToViewportPosition)
                     this.root.addChild(newPixiAbility.root)
+                    this.pixiAbilities[ab.offering_id] = newPixiAbility
                 }
             })
 

@@ -220,7 +220,7 @@ export const MapAbilities = React.memo(function MapAbilities() {
                                     colour,
                                     border_width: 1,
                                     show_below_mechs: true,
-                                    grid_size_multiplier: 0.5,
+                                    grid_size_multiplier: 0.3,
                                     location_in_pixels: true,
                                 }
                                 if (timeOffset === 0) {
