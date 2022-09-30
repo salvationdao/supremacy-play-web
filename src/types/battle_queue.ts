@@ -32,7 +32,8 @@ export interface BattleLobbiesMech {
     label: string
     tier: string
     avatar_url: string
-    owner: User
+    factionID: string
+    owner?: User
     is_destroyed: boolean
 }
 
