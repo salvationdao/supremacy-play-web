@@ -1,11 +1,11 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
-import { SvgClose } from "../../../assets"
+import { SvgClose, SvgQuestionMark2 } from "../../../assets"
 import { useAuth, useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { Faction } from "../../../types"
 import { BattleLobbiesMech } from "../../../types/battle_queue"
 import { MechThumbnail } from "../../Hangar/WarMachinesHangar/Common/MechThumbnail"
@@ -16,16 +16,16 @@ export interface BattleLobbyFaction {
 }
 
 interface MyFactionLobbySlotsProps {
-    factionSlots: BattleLobbyFaction
+    factionLobby: BattleLobbyFaction
     isLocked: boolean
 }
 
-export const MyFactionLobbySlots = ({ factionSlots, isLocked }: MyFactionLobbySlotsProps) => {
+export const MyFactionLobbySlots = ({ factionLobby, isLocked }: MyFactionLobbySlotsProps) => {
     const theme = useTheme()
 
     return (
         <>
-            {factionSlots.mechSlots.map((ms, index) => {
+            {factionLobby.mechSlots.map((ms, index) => {
                 return (
                     <Stack
                         key={index}
@@ -84,6 +84,62 @@ export const MyFactionLobbySlots = ({ factionSlots, isLocked }: MyFactionLobbySl
                     </Stack>
                 )
             })}
+        </>
+    )
+}
+
+interface OtherFactionLobbySlotsProps {
+    factionLobbies: BattleLobbyFaction[]
+    isLocked: boolean
+}
+
+export const OtherFactionLobbySlots = ({ factionLobbies, isLocked }: OtherFactionLobbySlotsProps) => {
+    return (
+        <>
+            {factionLobbies.map((fl) => (
+                <Box key={fl.faction.id}>
+                    <Stack
+                        direction="row"
+                        sx={{
+                            alignItems: "center",
+                            mb: ".3rem",
+                        }}
+                    >
+                        <Typography
+                            sx={{
+                                display: "-webkit-box",
+                                fontSize: "1.2rem",
+                                fontFamily: fonts.nostromoBlack,
+                                color: fl.faction.primary_color,
+                                overflow: "hidden",
+                                overflowWrap: "anywhere",
+                                textOverflow: "ellipsis",
+                                WebkitLineClamp: 1, // change to max number of lines
+                                WebkitBoxOrient: "vertical",
+                            }}
+                        >
+                            {fl.faction.label}
+                        </Typography>
+                    </Stack>
+                    <Stack direction="row" spacing=".5rem">
+                        {fl.mechSlots.map((ms, index) => (
+                            <Stack
+                                key={index}
+                                sx={{
+                                    height: "30px",
+                                    width: "30px",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    border: `1px solid ${fl.faction.primary_color}`,
+                                    backgroundColor: fl.faction.background_color,
+                                }}
+                            >
+                                <SvgQuestionMark2 fill={`${colors.offWhite}20`} />
+                            </Stack>
+                        ))}
+                    </Stack>
+                </Box>
+            ))}
         </>
     )
 }

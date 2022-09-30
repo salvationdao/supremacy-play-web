@@ -6,7 +6,7 @@ import { camelToTitle, supFormatter } from "../../../helpers"
 import { fonts } from "../../../theme/theme"
 import { BattleLobby } from "../../../types/battle_queue"
 import { ClipThing } from "../../Common/ClipThing"
-import { BattleLobbyFaction, MyFactionLobbySlots } from "./BattleLobbyMechSlots"
+import { BattleLobbyFaction, MyFactionLobbySlots, OtherFactionLobbySlots } from "./BattleLobbyMechSlots"
 
 interface BattleLobbyItemProps {
     battleLobby: BattleLobby
@@ -139,6 +139,9 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                 </>
                             )}
                             {/* Other faction mech slots */}
+                            <Stack spacing=".5rem" marginTop="auto">
+                                <OtherFactionLobbySlots factionLobbies={otherFactionLobbySlots} isLocked={!!ready_at} />
+                            </Stack>
                         </Stack>
 
                         {/* My faction mech slots */}
@@ -202,7 +205,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                             width: "100%",
                                         }}
                                     >
-                                        <MyFactionLobbySlots factionSlots={myFactionLobbySlots} isLocked={!!ready_at} />
+                                        <MyFactionLobbySlots factionLobby={myFactionLobbySlots} isLocked={!!ready_at} />
                                     </Stack>
                                 </Box>
                             </Stack>
