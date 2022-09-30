@@ -207,7 +207,6 @@ export enum MiniMapDisplayEffectType {
     Range = "RANGE",
     Pulse = "PULSE",
     Explosion = "EXPLOSION",
-    Fade = "FADE",
     Drop = "DROP",
     Landmine = "LANDMINE",
 }

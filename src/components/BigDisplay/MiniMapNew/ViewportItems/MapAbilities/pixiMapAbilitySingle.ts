@@ -1,6 +1,10 @@
 import { ease } from "pixi-ease"
+import * as particles from "pixi-particles"
 import * as PIXI from "pixi.js"
+import { CircleParticle } from "../../../../../assets"
 import { pixiViewportZIndexes } from "../../../../../containers"
+import { mergeDeep } from "../../../../../helpers"
+import { pulseParticlesConfig } from "../../../../../pixi/particleConfigs"
 import { PixiImageIcon } from "../../../../../pixi/pixiImageIcon"
 import { Dimension, DisplayedAbility, GAME_CLIENT_TILE_SIZE, MiniMapDisplayEffectType } from "../../../../../types"
 
@@ -8,6 +12,7 @@ export class PixiMapAbilitySingle {
     root: PIXI.Container<PIXI.DisplayObject>
     private rootInner: PIXI.Container<PIXI.DisplayObject>
     private imageIcon: PixiImageIcon
+    private emitter: particles.Emitter | undefined
 
     private ability: DisplayedAbility
     private animationFrame: number | undefined
@@ -44,13 +49,12 @@ export class PixiMapAbilitySingle {
         )
 
         // Position
+        const radius = ability.radius ? (gridSizeRef.current.width * ability.radius) / GAME_CLIENT_TILE_SIZE : undefined
         const pos = ability.location_in_pixels ? ability.location : gridCellToViewportPosition.current(ability.location.x, ability.location.y)
         this.root.position.set(pos.x, pos.y)
 
         // Radius
-        if (ability.radius) {
-            console.log(ability)
-            const radius = (gridSizeRef.current.width * ability.radius) / GAME_CLIENT_TILE_SIZE
+        if (radius) {
             this.imageIcon.showRangeRadius(radius, ability.border_width)
         }
 
@@ -86,14 +90,55 @@ export class PixiMapAbilitySingle {
                 }
             }, 3000)
         }
+
+        // Pulse effect
+        if (ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Pulse && radius) {
+            // Disabled the range radius
+            this.imageIcon.showRangeRadius(undefined)
+
+            const config = mergeDeep(pulseParticlesConfig, {
+                color: { start: ability.colour, end: ability.colour },
+                scale: {
+                    start: 0.6,
+                    end: 0.15,
+                },
+                speed: {
+                    start: 150,
+                    end: 150,
+                },
+                lifetime: {
+                    min: radius / 150,
+                    max: radius / 150,
+                },
+                frequency: 0.4,
+            })
+            this.emitter?.destroy()
+            this.emitter = new particles.Emitter(this.rootInner, CircleParticle, config)
+            this.emitter.emit = true
+        }
+
+        this.render()
     }
 
     destroy() {
         if (this.animationFrame) cancelAnimationFrame(this.animationFrame)
         ease.add(this.rootInner, { alpha: 0 }, { duration: 500, ease: "linear", removeExisting: true })
         setTimeout(() => {
+            this.emitter?.destroy()
             this.imageIcon.destroy()
             this.root.destroy()
         }, 1000)
+    }
+
+    render() {
+        let elapsed = Date.now()
+
+        const step = () => {
+            const now = Date.now()
+            this.emitter?.update((now - elapsed) * 0.001)
+            elapsed = now
+            this.animationFrame = requestAnimationFrame(step)
+        }
+        this.animationFrame = requestAnimationFrame(step)
     }
 }

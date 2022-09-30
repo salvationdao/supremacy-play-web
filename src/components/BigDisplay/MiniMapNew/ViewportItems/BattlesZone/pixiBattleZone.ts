@@ -5,7 +5,7 @@ import * as PIXI from "pixi.js"
 import { CircleParticle } from "../../../../../assets"
 import { pixiViewportZIndexes } from "../../../../../containers"
 import { mergeDeep } from "../../../../../helpers"
-import { battleZoneParticlesConfig } from "../../../../../pixi/particleConfigs"
+import { ringCloudParticlesConfig } from "../../../../../pixi/particleConfigs"
 import { colors } from "../../../../../theme/theme"
 import { BattleZoneStruct, Dimension, GAME_CLIENT_TILE_SIZE } from "../../../../../types"
 import { HEXToVBColor } from "./../../../../../helpers/index"
@@ -90,7 +90,14 @@ export class PixiBattleZone {
         this.particleContainer.position.set(pos.x, pos.y)
 
         // Particles
-        const config = mergeDeep(battleZoneParticlesConfig, { spawnCircle: { r: radius, minR: radius }, color: { start: colors.niceRed, end: colors.niceRed } })
+        const config = mergeDeep(ringCloudParticlesConfig, {
+            scale: {
+                start: 0.2,
+                end: 0.05,
+            },
+            spawnCircle: { r: radius, minR: radius },
+            color: { start: colors.niceRed, end: colors.niceRed },
+        })
         this.emitter = new particles.Emitter(this.particleContainer, CircleParticle, config)
         this.emitter.emit = true
 
@@ -103,6 +110,7 @@ export class PixiBattleZone {
         this.darkBackgroundTrick.position.set(pos.x, pos.y)
         this.darkBackgroundTrick.scale.set(1 + this.viewport.worldWidth / radius)
         ease.add(this.darkBackgroundTrick, { alpha: 0.7 }, { duration: 800, ease: "linear", repeat: true, reverse: true, removeExisting: true })
+
         setTimeout(() => {
             ease.add(this.darkBackgroundTrick, { scale: 1 }, { duration: battleZone.shrink_time * 1000, ease: "linear", removeExisting: true })
         }, battleZone.warn_time * 1000)

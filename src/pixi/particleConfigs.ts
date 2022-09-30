@@ -1,6 +1,7 @@
-import * as particles from "pixi-particles"
+// Use this so design the particle effects
+// https://pixijs.io/pixi-particles-editor/#
 
-export const blackoutParticlesConfig: particles.EmitterConfig | particles.OldEmitterConfig = {
+export const ringCloudParticlesConfig = {
     alpha: {
         start: 0.8,
         end: 0.3,
@@ -55,24 +56,24 @@ export const blackoutParticlesConfig: particles.EmitterConfig | particles.OldEmi
     },
 }
 
-export const battleZoneParticlesConfig: particles.EmitterConfig | particles.OldEmitterConfig = {
+export const pulseParticlesConfig = {
     alpha: {
-        start: 0.8,
-        end: 0.3,
+        start: 0.9,
+        end: 0.28,
     },
     scale: {
-        start: 0.2,
-        end: 0.05,
+        start: 1,
+        end: 0.3,
         minimumScaleMultiplier: 1,
     },
     color: {
-        start: "#000000",
-        end: "#000000",
+        start: "#1858a1",
+        end: "#5d9ce3",
     },
     speed: {
-        start: 5,
-        end: 10,
-        minimumSpeedMultiplier: 0.5,
+        start: 200,
+        end: 200,
+        minimumSpeedMultiplier: 1,
     },
     acceleration: {
         x: 0,
@@ -81,7 +82,7 @@ export const battleZoneParticlesConfig: particles.EmitterConfig | particles.OldE
     maxSpeed: 0,
     startRotation: {
         min: 0,
-        max: 360,
+        max: 0,
     },
     noRotation: false,
     rotationSpeed: {
@@ -89,23 +90,20 @@ export const battleZoneParticlesConfig: particles.EmitterConfig | particles.OldE
         max: 0,
     },
     lifetime: {
-        min: 0.001,
-        max: 3,
+        min: 0.8,
+        max: 0.8,
     },
     blendMode: "normal",
-    frequency: 0.001,
+    frequency: 0.3,
     emitterLifetime: -1,
-    maxParticles: 500,
+    maxParticles: 1000,
     pos: {
         x: 0,
         y: 0,
     },
     addAtBack: false,
-    spawnType: "ring",
-    spawnCircle: {
-        x: 0,
-        y: 0,
-        r: 120,
-        minR: 120,
-    },
+    spawnType: "burst",
+    particlesPerWave: 16,
+    particleSpacing: 22,
+    angleStart: 0,
 }

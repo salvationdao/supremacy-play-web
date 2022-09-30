@@ -4,7 +4,7 @@ import * as PIXI from "pixi.js"
 import { CircleParticle } from "../../../../../assets"
 import { pixiViewportZIndexes } from "../../../../../containers"
 import { HEXToVBColor } from "../../../../../helpers"
-import { blackoutParticlesConfig } from "../../../../../pixi/particleConfigs"
+import { ringCloudParticlesConfig } from "../../../../../pixi/particleConfigs"
 import { Dimension, GAME_CLIENT_TILE_SIZE } from "../../../../../types"
 import { mergeDeep } from "./../../../../../helpers/index"
 import { BlackoutEvent } from "./Blackouts"
@@ -45,7 +45,7 @@ export class PixiBlackout {
         ease.add(this.circle, { alpha: 1 }, { duration: 500, ease: "linear", removeExisting: true })
 
         // Particles
-        const config = mergeDeep(blackoutParticlesConfig, { spawnCircle: { r: radius, minR: radius } })
+        const config = mergeDeep(ringCloudParticlesConfig, { spawnCircle: { r: radius, minR: radius } })
         this.emitter = new particles.Emitter(this.circle, CircleParticle, config)
         this.emitter.emit = true
         this.render()
