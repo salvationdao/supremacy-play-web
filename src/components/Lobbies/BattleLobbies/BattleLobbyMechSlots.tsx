@@ -1,6 +1,7 @@
-import { Box, Button, IconButton, Stack, Typography } from "@mui/material"
-import { useCallback, useMemo, useState } from "react"
-import { SvgClose, SvgQuestionMark2 } from "../../../assets"
+import { LoadingButton } from "@mui/lab"
+import { Box, Button, Stack, Typography } from "@mui/material"
+import { useCallback, useState } from "react"
+import { SvgPlus, SvgQuestionMark2 } from "../../../assets"
 import { useAuth, useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
@@ -8,30 +9,73 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { Faction } from "../../../types"
 import { BattleLobbiesMech } from "../../../types/battle_queue"
-import { MechThumbnail } from "../../Hangar/WarMachinesHangar/Common/MechThumbnail"
 
 export interface BattleLobbyFaction {
     faction: Faction
-    mechSlots: BattleLobbiesMech[]
+    mechSlots: (BattleLobbiesMech | null)[] // null represents empty slot
 }
 
 interface MyFactionLobbySlotsProps {
     factionLobby: BattleLobbyFaction
     isLocked: boolean
-    onSlotClick: (ms: BattleLobbiesMech) => void
+    onSlotClick: () => void
 }
 
 export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyFactionLobbySlotsProps) => {
     const theme = useTheme()
+    const { userID } = useAuth()
+    const { newSnackbarMessage } = useGlobalNotifications()
+
+    // Leaving lobby
+    const { send } = useGameServerCommandsFaction("/faction_commander")
+    const [isLoading, setIsLoading] = useState(false)
+
+    const leaveLobby = useCallback(
+        async (mechID: string) => {
+            setIsLoading(true)
+            try {
+                await send(GameServerKeys.LeaveBattleLobby, {
+                    mech_ids: [mechID],
+                })
+                newSnackbarMessage("Successfully deployed war machines.", "success")
+            } catch (e) {
+                newSnackbarMessage(typeof e === "string" ? e : "Failed to leave battle lobby.", "error")
+            } finally {
+                setIsLoading(false)
+            }
+        },
+        [newSnackbarMessage, send],
+    )
 
     return (
         <>
             {factionLobby.mechSlots.map((ms, index) => {
+                if (!ms) {
+                    return (
+                        <Button
+                            key={index}
+                            onClick={() => onSlotClick()}
+                            disabled={isLocked}
+                            sx={{
+                                flex: 1,
+                                display: "flex",
+                                flexDirection: "column",
+                                padding: "1rem",
+                                borderRadius: 0,
+                                backgroundColor: `${colors.offWhite}10`,
+                            }}
+                        >
+                            <SvgPlus size="60px" fill={`${colors.offWhite}10`} />
+                        </Button>
+                    )
+                }
+
                 return (
-                    <Button
+                    <LoadingButton
                         key={index}
-                        onClick={() => onSlotClick(ms)}
-                        disabled={isLocked}
+                        onClick={() => leaveLobby(ms.mech_id)}
+                        disabled={isLocked || userID !== ms.owner.id}
+                        loading={isLoading}
                         sx={{
                             flex: 1,
                             display: "flex",
@@ -88,7 +132,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                         >
                             <i>{`@${ms.owner.username}#${ms.owner.gid}`}</i>
                         </Typography>
-                    </Button>
+                    </LoadingButton>
                 )
             })}
         </>
@@ -97,10 +141,9 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
 
 interface OtherFactionLobbySlotsProps {
     factionLobbies: BattleLobbyFaction[]
-    isLocked: boolean
 }
 
-export const OtherFactionLobbySlots = ({ factionLobbies, isLocked }: OtherFactionLobbySlotsProps) => {
+export const OtherFactionLobbySlots = ({ factionLobbies }: OtherFactionLobbySlotsProps) => {
     return (
         <>
             {factionLobbies.map((fl) => (
@@ -147,97 +190,6 @@ export const OtherFactionLobbySlots = ({ factionLobbies, isLocked }: OtherFactio
                     </Stack>
                 </Box>
             ))}
-        </>
-    )
-}
-
-const MechSlotContent = ({ battleLobbiesMech, faction, isLocked }: { battleLobbiesMech: BattleLobbiesMech; faction: Faction; isLocked: boolean }) => {
-    const { userID } = useAuth()
-    const { newSnackbarMessage } = useGlobalNotifications()
-    const { factionTheme } = useTheme()
-    const { send } = useGameServerCommandsFaction("/faction_commander")
-    const [isLoading, setIsLoading] = useState(false)
-    const canLeave = useMemo(() => !isLocked && userID === battleLobbiesMech.owner.id, [battleLobbiesMech.owner.id, isLocked, userID])
-
-    const leaveLobby = useCallback(
-        async (mechID: string) => {
-            if (!canLeave) return
-            try {
-                setIsLoading(true)
-
-                const resp = await send<{ success: boolean; code: string }>(GameServerKeys.LeaveBattleLobby, {
-                    mech_ids: [mechID],
-                })
-
-                if (resp && resp.success) {
-                    newSnackbarMessage("Successfully deployed war machines.", "success")
-                }
-            } catch (e) {
-                newSnackbarMessage(typeof e === "string" ? e : "Failed to leave battle lobby.", "error")
-                return
-            } finally {
-                setIsLoading(false)
-            }
-        },
-        [canLeave, newSnackbarMessage, send],
-    )
-
-    if (battleLobbiesMech.mech_id == "") return null
-    // display queued mech
-    return (
-        <>
-            <Stack>
-                <MechThumbnail avatarUrl={battleLobbiesMech.avatar_url} tier={battleLobbiesMech.tier} factionID={battleLobbiesMech.owner.faction_id} tiny />
-            </Stack>
-            <Stack direction={"column"} flex={1}>
-                <Typography
-                    variant="h6"
-                    sx={{
-                        flex: 1,
-                        color: faction.primary_color,
-                        ml: ".45rem",
-                        fontWeight: "fontWeightBold",
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1, // change to max number of lines
-                        WebkitBoxOrient: "vertical",
-                    }}
-                >
-                    {battleLobbiesMech.name || battleLobbiesMech.label}
-                </Typography>
-                <Typography
-                    sx={{
-                        flex: 1,
-                        color: faction.primary_color,
-                        ml: ".45rem",
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1, // change to max number of lines
-                        WebkitBoxOrient: "vertical",
-                    }}
-                >
-                    <i>{`@${battleLobbiesMech.owner.username}#${battleLobbiesMech.owner.gid}`}</i>
-                </Typography>
-            </Stack>
-
-            {canLeave && (
-                <IconButton
-                    disableRipple
-                    disabled={!canLeave || isLoading}
-                    onClick={async (e) => {
-                        e.preventDefault()
-                        e.stopPropagation()
-
-                        await leaveLobby(battleLobbiesMech.mech_id)
-                    }}
-                >
-                    <SvgClose fill={factionTheme.primary} />
-                </IconButton>
-            )}
         </>
     )
 }

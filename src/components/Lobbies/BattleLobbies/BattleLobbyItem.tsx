@@ -27,6 +27,24 @@ const propsAreEqual = (prevProps: BattleLobbyItemProps, nextProps: BattleLobbyIt
     )
 }
 
+// {
+//     mech_id: "",
+//     battle_lobby_id: "",
+//     name: "",
+//     label: "",
+//     tier: "",
+//     avatar_url: "",
+//     owner: {
+//         id: "",
+//         faction_id: "",
+//         username: "UNKNOWN",
+//         gid: 0,
+//         rank: "NEW_RECRUIT",
+//         features: [],
+//     },
+//     is_destroyed: false,
+// }
+
 export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby }: BattleLobbyItemProps) {
     const theme = useTheme()
     const { factionID } = useAuth()
@@ -61,23 +79,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
 
                 // fill up with empty struct
                 while (bls.mechSlots.length < FACTION_LOBBY_SIZE) {
-                    bls.mechSlots.push({
-                        mech_id: "",
-                        battle_lobby_id: "",
-                        name: "",
-                        label: "",
-                        tier: "",
-                        avatar_url: "",
-                        owner: {
-                            id: "",
-                            faction_id: "",
-                            username: "UNKNOWN",
-                            gid: 0,
-                            rank: "NEW_RECRUIT",
-                            features: [],
-                        },
-                        is_destroyed: false,
-                    })
+                    bls.mechSlots.push(null)
                 }
 
                 if (f.id === factionID) {
@@ -144,7 +146,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                 )}
                                 {/* Other faction mech slots */}
                                 <Stack spacing=".5rem" marginTop="auto">
-                                    <OtherFactionLobbySlots factionLobbies={otherFactionLobbySlots} isLocked={!!ready_at} />
+                                    <OtherFactionLobbySlots factionLobbies={otherFactionLobbySlots} />
                                 </Stack>
                             </Stack>
 
