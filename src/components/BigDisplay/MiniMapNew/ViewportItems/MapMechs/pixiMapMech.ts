@@ -4,7 +4,8 @@ import * as particles from "pixi-particles"
 import * as PIXI from "pixi.js"
 import { CircleParticle, DeadSkullPNG } from "../../../../../assets"
 import { pixiViewportZIndexes } from "../../../../../containers"
-import { deg2rad, HEXToVBColor, mergeDeep } from "../../../../../helpers"
+import { deg2rad, HEXToVBColor } from "../../../../../helpers"
+import merge from "deepmerge"
 import { pulseParticlesConfig } from "../../../../../pixi/particleConfigs"
 import { PixiImageIcon } from "../../../../../pixi/pixiImageIcon"
 import { PixiProgressBar } from "../../../../../pixi/pixiProgressBar"
@@ -72,7 +73,7 @@ export class PixiMapMech {
         // Number text
         this.numberText = new PIXI.Text(label, {
             fontFamily: fonts.nostromoBlack,
-            fontSize: 15,
+            fontSize: gridSizeRef.current.height * 1.05,
             fill: "#FFFFFF",
             lineHeight: 1,
         })
@@ -371,7 +372,7 @@ export class PixiMapMech {
     // Pulse effect
     pulseEffect(displayAbility: DisplayedAbility | undefined) {
         if (displayAbility) {
-            const config = mergeDeep(pulseParticlesConfig, {
+            const config = merge(pulseParticlesConfig, {
                 color: { start: "#FFFFFF", end: "#FFFFFF" },
                 scale: {
                     start: 0.4,

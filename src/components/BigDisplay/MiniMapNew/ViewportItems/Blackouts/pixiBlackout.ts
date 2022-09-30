@@ -1,3 +1,4 @@
+import merge from "deepmerge"
 import { ease } from "pixi-ease"
 import * as particles from "pixi-particles"
 import * as PIXI from "pixi.js"
@@ -6,7 +7,6 @@ import { pixiViewportZIndexes } from "../../../../../containers"
 import { HEXToVBColor } from "../../../../../helpers"
 import { ringCloudParticlesConfig } from "../../../../../pixi/particleConfigs"
 import { Dimension, GAME_CLIENT_TILE_SIZE } from "../../../../../types"
-import { mergeDeep } from "./../../../../../helpers/index"
 import { BlackoutEvent } from "./Blackouts"
 
 export class PixiBlackout {
@@ -45,7 +45,7 @@ export class PixiBlackout {
         ease.add(this.circle, { alpha: 1 }, { duration: 500, ease: "linear", removeExisting: true })
 
         // Particles
-        const config = mergeDeep(ringCloudParticlesConfig, { spawnCircle: { r: radius, minR: radius }, color: { start: "#000000", end: "#000000" } })
+        const config = merge(ringCloudParticlesConfig, { spawnCircle: { r: radius, minR: radius }, color: { start: "#000000", end: "#000000" } })
         this.emitter = new particles.Emitter(this.circle, CircleParticle, config)
         this.emitter.emit = true
         this.render()

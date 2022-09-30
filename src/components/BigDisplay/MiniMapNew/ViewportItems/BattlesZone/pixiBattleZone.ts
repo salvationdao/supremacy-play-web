@@ -1,10 +1,10 @@
+import merge from "deepmerge"
 import { ease } from "pixi-ease"
 import * as particles from "pixi-particles"
 import { Viewport } from "pixi-viewport"
 import * as PIXI from "pixi.js"
 import { CircleParticle } from "../../../../../assets"
 import { pixiViewportZIndexes } from "../../../../../containers"
-import { mergeDeep } from "../../../../../helpers"
 import { ringCloudParticlesConfig } from "../../../../../pixi/particleConfigs"
 import { colors } from "../../../../../theme/theme"
 import { BattleZoneStruct, Dimension, GAME_CLIENT_TILE_SIZE } from "../../../../../types"
@@ -90,7 +90,7 @@ export class PixiBattleZone {
         this.particleContainer.position.set(pos.x, pos.y)
 
         // Particles
-        const config = mergeDeep(ringCloudParticlesConfig, {
+        const config = merge(ringCloudParticlesConfig, {
             scale: {
                 start: 0.2,
                 end: 0.05,

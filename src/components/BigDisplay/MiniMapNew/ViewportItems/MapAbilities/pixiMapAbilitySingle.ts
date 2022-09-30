@@ -1,9 +1,9 @@
+import merge from "deepmerge"
 import { ease } from "pixi-ease"
 import * as particles from "pixi-particles"
 import * as PIXI from "pixi.js"
 import { CircleParticle } from "../../../../../assets"
 import { pixiViewportZIndexes } from "../../../../../containers"
-import { mergeDeep } from "../../../../../helpers"
 import { explosionParticlesConfig, pulseParticlesConfig } from "../../../../../pixi/particleConfigs"
 import { PixiImageIcon } from "../../../../../pixi/pixiImageIcon"
 import { Dimension, DisplayedAbility, GAME_CLIENT_TILE_SIZE, MiniMapDisplayEffectType } from "../../../../../types"
@@ -111,7 +111,7 @@ export class PixiMapAbilitySingle {
 
         // Pulse effect
         if (ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Pulse && radius) {
-            const config = mergeDeep(pulseParticlesConfig, {
+            const config = merge(pulseParticlesConfig, {
                 color: { start: ability.colour, end: ability.colour },
                 scale: {
                     start: 0.6,
@@ -136,16 +136,25 @@ export class PixiMapAbilitySingle {
 
         // Explosion / range effect
         if (
-            ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Explosion ||
-            ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Range
+            (ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Explosion && !ability.launching_at) ||
+            (ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Range && !ability.launching_at)
         ) {
             // Disabled the range radius
             this.imageIcon.showRangeRadius(undefined)
 
-            const config = mergeDeep(explosionParticlesConfig, {
-                spawnCircle: { r: 1 },
-                emitterLifetime: ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Range ? 2 : 0.45,
+            console.log(explosionParticlesConfig)
+            console.log(
+                merge(explosionParticlesConfig, {
+                    spawnCircle: { r: 2 },
+                    emitterLifetime: ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Range ? 2 : 0.3,
+                }),
+            )
+
+            const config = merge(explosionParticlesConfig, {
+                spawnCircle: { r: 2 },
+                emitterLifetime: ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Range ? 2 : 0.3,
             })
+            console.log(explosionParticlesConfig)
             this.emitter?.destroy()
             this.emitter = new particles.Emitter(this.rootInner, CircleParticle, config)
             this.emitter.emit = true

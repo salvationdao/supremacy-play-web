@@ -44,7 +44,7 @@ export class PixiImageIcon {
         // Countdown label
         this.countdownLabel = new PIXI.Text("", {
             fontFamily: fonts.shareTech,
-            fontSize: 12,
+            fontSize: height,
             fontWeight: "bold",
             fill: "#FFFFFF",
             stroke: "#00000050",
@@ -54,7 +54,7 @@ export class PixiImageIcon {
         this.countdownLabel.anchor.set(0.5, 0)
         this.countdownLabel.resolution = 4
         this.countdownLabel.zIndex = 5
-        this.countdownLabel.position.set(width / 2, -16)
+        this.countdownLabel.position.set(width / 2, -height - 2)
         this.countdownLabel.visible = false
 
         // Range radius
