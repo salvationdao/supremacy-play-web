@@ -96,7 +96,8 @@ const shouldReplaceAbility = (oldAbility: DisplayedAbility, newAbility: Displaye
         oldAbility.mech_display_effect_type !== newAbility.mech_display_effect_type ||
         oldAbility.location_select_type !== newAbility.location_select_type ||
         oldAbility.image_url !== newAbility.image_url ||
-        oldAbility.location !== newAbility.location ||
+        oldAbility.location.x !== newAbility.location.x ||
+        oldAbility.location.y !== newAbility.location.y ||
         oldAbility.radius !== newAbility.radius ||
         oldAbility.launching_at !== newAbility.launching_at ||
         oldAbility.show_below_mechs !== newAbility.show_below_mechs ||

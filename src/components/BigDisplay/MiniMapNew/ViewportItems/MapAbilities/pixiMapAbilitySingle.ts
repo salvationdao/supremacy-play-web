@@ -92,9 +92,6 @@ export class PixiMapAbilitySingle {
 
         // Pulse effect
         if (ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Pulse && radius) {
-            // Disabled the range radius
-            this.imageIcon.showRangeRadius(undefined)
-
             const config = mergeDeep(pulseParticlesConfig, {
                 color: { start: ability.colour, end: ability.colour },
                 scale: {
@@ -110,6 +107,8 @@ export class PixiMapAbilitySingle {
                     max: radius / 150,
                 },
                 frequency: 0.4,
+                particlesPerWave: 30,
+                particleSpacing: 12,
             })
             this.emitter?.destroy()
             this.emitter = new particles.Emitter(this.rootInner, CircleParticle, config)
