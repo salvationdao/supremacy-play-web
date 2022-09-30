@@ -1,11 +1,12 @@
 import { LoadingButton } from "@mui/lab"
 import { Box, Button, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
-import { SvgPlus, SvgQuestionMark2 } from "../../../assets"
+import { SvgCheckMark, SvgPlus, SvgQuestionMark2 } from "../../../assets"
 import { useAuth, useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { scaleUpKeyframes } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { Faction } from "../../../types"
 import { BattleLobbiesMech } from "../../../types/battle_queue"
@@ -186,7 +187,21 @@ export const OtherFactionLobbySlots = ({ factionLobbies }: OtherFactionLobbySlot
                                     backgroundColor: fl.faction.background_color,
                                 }}
                             >
-                                <SvgQuestionMark2 fill={`${colors.offWhite}20`} />
+                                {ms ? (
+                                    <SvgCheckMark
+                                        fill={`${colors.green}`}
+                                        sx={{
+                                            animation: `${scaleUpKeyframes} .5s ease-out`,
+                                        }}
+                                    />
+                                ) : (
+                                    <SvgQuestionMark2
+                                        fill={`${colors.offWhite}20`}
+                                        sx={{
+                                            animation: `${scaleUpKeyframes} .5s ease-out`,
+                                        }}
+                                    />
+                                )}
                             </Stack>
                         ))}
                     </Stack>
