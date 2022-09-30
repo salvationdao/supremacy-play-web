@@ -1,21 +1,20 @@
-import { useTheme } from "../../../containers/theme"
 import { Box, Pagination, Stack, Typography } from "@mui/material"
-import { BattleLobbyItem } from "./BattleLobbyItem"
 import { useEffect, useMemo, useState } from "react"
-import { PageHeader } from "../../Common/PageHeader"
-import { colors, fonts } from "../../../theme/theme"
-import { ThreeMechsJPG } from "../../../assets"
-import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
-import { SearchBattle } from "../../Replays/BattlesReplays/SearchBattle"
-import { ClipThing } from "../../Common/ClipThing"
-import { useDebounce, usePagination } from "../../../hooks"
-import { SortTypeLabel } from "../../../types/marketplace"
 import FlipMove from "react-flip-move"
-import { BattleLobby } from "../../../types/battle_queue"
-import { FancyButton } from "../../Common/FancyButton"
-import { BattleLobbyJoinModal } from "../BattleLobbyJoinModal"
+import { ThreeMechsJPG } from "../../../assets"
+import { useTheme } from "../../../containers/theme"
+import { useDebounce, usePagination } from "../../../hooks"
 import { useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { colors, fonts } from "../../../theme/theme"
+import { BattleLobby } from "../../../types/battle_queue"
+import { SortTypeLabel } from "../../../types/marketplace"
+import { ClipThing } from "../../Common/ClipThing"
+import { FancyButton } from "../../Common/FancyButton"
+import { PageHeader } from "../../Common/PageHeader"
+import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
+import { SearchBattle } from "../../Replays/BattlesReplays/SearchBattle"
+import { BattleLobbyItem } from "./BattleLobbyItem"
 
 const sortOptionsPending: { label: string; value: string }[] = [
     { label: SortTypeLabel.QueuedAmountHighest, value: SortTypeLabel.QueuedAmountHighest },
@@ -85,7 +84,6 @@ export const BattleLobbies = () => {
     const [sort, setSort] = useState<string>(SortTypeLabel.QueuedAmountHighest)
     const [sortOptions, setSortOptions] = useState(sortOptionsPending)
     const [lobbyStatus, setLobbyStatus] = useState<filterLobbyStatus>(filterLobbyStatus.Pending)
-    const [selectedLobby, setSelectedLobby] = useState<BattleLobby>()
 
     // Apply filter, sorting and pagination
     useEffect(() => {
@@ -143,16 +141,16 @@ export const BattleLobbies = () => {
                 <FlipMove>
                     {list.map((battleLobby) => {
                         return (
-                            <div
-                                key={`repair-job-${battleLobby.id}`}
-                                style={{ marginBottom: "1.3rem", cursor: battleLobby.ready_at ? "default" : "pointer" }}
-                                onClick={() => {
-                                    if (battleLobby.ready_at) return
-                                    setSelectedLobby(battleLobby)
+                            <Box
+                                key={`battle-lobby-${battleLobby.id}`}
+                                sx={{
+                                    "&:not(:last-child)": {
+                                        mb: "1.5rem",
+                                    },
                                 }}
                             >
                                 <BattleLobbyItem battleLobby={battleLobby} />
-                            </div>
+                            </Box>
                         )
                     })}
                 </FlipMove>
@@ -337,8 +335,6 @@ export const BattleLobbies = () => {
                     </Stack>
                 </Stack>
             </ClipThing>
-
-            <BattleLobbyJoinModal selectedBattleLobby={selectedLobby} setSelectedBattleLobby={setSelectedLobby} />
         </>
     )
 }

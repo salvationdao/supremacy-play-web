@@ -1,4 +1,4 @@
-import { Box, IconButton, Stack, Typography } from "@mui/material"
+import { Box, Button, IconButton, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
 import { SvgClose, SvgQuestionMark2 } from "../../../assets"
 import { useAuth, useGlobalNotifications } from "../../../containers"
@@ -18,21 +18,28 @@ export interface BattleLobbyFaction {
 interface MyFactionLobbySlotsProps {
     factionLobby: BattleLobbyFaction
     isLocked: boolean
+    onSlotClick: (ms: BattleLobbiesMech) => void
 }
 
-export const MyFactionLobbySlots = ({ factionLobby, isLocked }: MyFactionLobbySlotsProps) => {
+export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyFactionLobbySlotsProps) => {
     const theme = useTheme()
 
     return (
         <>
             {factionLobby.mechSlots.map((ms, index) => {
                 return (
-                    <Stack
+                    <Button
                         key={index}
+                        onClick={() => onSlotClick(ms)}
+                        disabled={isLocked}
                         sx={{
                             flex: 1,
+                            display: "flex",
+                            flexDirection: "column",
                             alignItems: "start",
+                            justifyContent: "initial",
                             padding: "1rem",
+                            borderRadius: 0,
                             backgroundColor: `${colors.offWhite}10`,
                         }}
                     >
@@ -81,7 +88,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked }: MyFactionLobbySl
                         >
                             <i>{`@${ms.owner.username}#${ms.owner.gid}`}</i>
                         </Typography>
-                    </Stack>
+                    </Button>
                 )
             })}
         </>
