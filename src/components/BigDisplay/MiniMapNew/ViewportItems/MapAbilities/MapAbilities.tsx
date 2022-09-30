@@ -90,7 +90,6 @@ export const MapAbilities = React.memo(function MapAbilities() {
 
             // Only show the ones that are not on a mech
             basicAbilities.current = payload.filter((da) => !da.mech_id)
-            console.log(payload)
         },
     )
 

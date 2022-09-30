@@ -210,65 +210,61 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         }, 50)
     }, [updateIsMechHighlighted])
 
-    const onMechClick = useCallback(
-        (e?) => {
-            console.log(e)
-            let alreadyApplyingAbility = false
+    const onMechClick = useCallback(() => {
+        let alreadyApplyingAbility = false
 
-            if (playerAbility.current && isAlive) {
-                const locationSelectType = playerAbility.current?.ability.location_select_type
+        if (playerAbility.current && isAlive) {
+            const locationSelectType = playerAbility.current?.ability.location_select_type
 
-                if (
-                    (locationSelectType === LocationSelectType.MechSelectAllied && factionID === warMachineFactionID) ||
-                    (locationSelectType === LocationSelectType.MechSelectOpponent && factionID !== warMachineFactionID)
-                ) {
-                    alreadyApplyingAbility = true
+            if (
+                (locationSelectType === LocationSelectType.MechSelectAllied && factionID === warMachineFactionID) ||
+                (locationSelectType === LocationSelectType.MechSelectOpponent && factionID !== warMachineFactionID)
+            ) {
+                alreadyApplyingAbility = true
 
-                    if (selection.current?.mechHash === hash) {
-                        selectMapPosition.current(undefined)
-                    } else {
-                        selectMapPosition.current({ mechHash: hash })
-                    }
-                }
-
-                if (ownedByID !== userID) return
-            }
-
-            if (participantID === highlightedMechParticipantID) {
-                setHighlightedMechParticipantID(undefined)
-                tempMechMoveCommand.current = undefined
-                if (!alreadyApplyingAbility) usePlayerAbility.current(undefined)
-            } else {
-                setHighlightedMechParticipantID(participantID)
-
-                if (!alreadyApplyingAbility) {
-                    if (isAlive && ownedByID === userID) {
-                        usePlayerAbility.current({
-                            ...MechMoveCommandAbility,
-                            mechHash: hash,
-                        })
-                    } else {
-                        usePlayerAbility.current(undefined)
-                    }
+                if (selection.current?.mechHash === hash) {
+                    selectMapPosition.current(undefined)
+                } else {
+                    selectMapPosition.current({ mechHash: hash })
                 }
             }
-        },
-        [
-            playerAbility,
-            isAlive,
-            usePlayerAbility,
-            participantID,
-            highlightedMechParticipantID,
-            factionID,
-            warMachineFactionID,
-            selection,
-            hash,
-            selectMapPosition,
-            setHighlightedMechParticipantID,
-            ownedByID,
-            userID,
-        ],
-    )
+
+            if (ownedByID !== userID) return
+        }
+
+        if (participantID === highlightedMechParticipantID) {
+            setHighlightedMechParticipantID(undefined)
+            tempMechMoveCommand.current = undefined
+            if (!alreadyApplyingAbility) usePlayerAbility.current(undefined)
+        } else {
+            setHighlightedMechParticipantID(participantID)
+
+            if (!alreadyApplyingAbility) {
+                if (isAlive && ownedByID === userID) {
+                    usePlayerAbility.current({
+                        ...MechMoveCommandAbility,
+                        mechHash: hash,
+                    })
+                } else {
+                    usePlayerAbility.current(undefined)
+                }
+            }
+        }
+    }, [
+        playerAbility,
+        isAlive,
+        usePlayerAbility,
+        participantID,
+        highlightedMechParticipantID,
+        factionID,
+        warMachineFactionID,
+        selection,
+        hash,
+        selectMapPosition,
+        setHighlightedMechParticipantID,
+        ownedByID,
+        userID,
+    ])
 
     // Setup onclick handler
     useEffect(() => {
