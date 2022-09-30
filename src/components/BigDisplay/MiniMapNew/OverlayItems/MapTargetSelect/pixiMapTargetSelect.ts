@@ -116,6 +116,7 @@ export class PixiMapTargetSelect {
                 .on("pointerover", () => this.cancelButton?.scale.set(0.95))
                 .on("pointerout", () => this.cancelButton?.scale.set(0.9))
             this.bottomContainer.addChild(this.cancelButton)
+
             setTimeout(() => {
                 this.cancelButton?.pivot.set(this.cancelButton.width, this.cancelButton.height / 2)
             }, 180)
