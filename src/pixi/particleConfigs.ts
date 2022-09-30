@@ -147,7 +147,7 @@ export const explosionParticlesConfig = {
     },
     blendMode: "normal",
     frequency: 0.008,
-    emitterLifetime: 0.31,
+    emitterLifetime: 0.45,
     maxParticles: 1000,
     pos: {
         x: 0,
