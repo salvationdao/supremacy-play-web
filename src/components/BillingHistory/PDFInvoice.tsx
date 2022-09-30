@@ -1,13 +1,26 @@
+import moment from "moment"
 import { Page, Text, View, Document, StyleSheet, Font, Svg, G, Path } from "@react-pdf/renderer"
 import { FiatOrder } from "../../types/fiat"
 import NostromoRegularBlack from "../../assets/fonts/nostromo-regular/NostromoRegular-Black.otf"
+import ShareTech from "../../assets/fonts/share-tech/share-tech.otf"
+import { User } from "../../types/user"
+import { generatePriceText } from "../../helpers"
+import BigNumber from "bignumber.js"
 
 Font.register({
     family: "Nostromo Regular Black",
     src: NostromoRegularBlack,
 })
+Font.register({
+    family: "Share Tech Regular",
+    src: ShareTech,
+})
 
 const styles = StyleSheet.create({
+    page: {
+        fontFamily: "Share Tech Regular",
+        fontSize: 14,
+    },
     header: {
         flexDirection: "row",
         justifyContent: "space-between",
@@ -29,32 +42,179 @@ const styles = StyleSheet.create({
     section: {
         marginLeft: 40,
         marginRight: 40,
+        marginBottom: 20,
     },
     heading: {
         textTransform: "uppercase",
         fontFamily: "Nostromo Regular Black",
         fontSize: 14,
+        marginBottom: 20,
         color: "#000",
     },
+    invoiceDetailsTable: {
+        flexDirection: "row",
+    },
     invoiceDetailsHeading: {
-        width: 200,
+        width: 100,
+    },
+    orderSummaryTable: {
+        flexDirection: "row",
+    },
+    orderSummaryTableHeader: {
+        width: "25%",
+        backgroundColor: "#cfcfcf",
+        paddingTop: 10,
+        paddingBottom: 10,
+        paddingLeft: 10,
+        paddingRight: 10,
+        textTransform: "uppercase",
+    },
+    orderSummaryTableRow: {
+        flexDirection: "row",
+        backgroundColor: "#f0f0f0",
+    },
+    orderSummaryTableRowAlt: {
+        flexDirection: "row",
+        backgroundColor: "#ffffff",
+    },
+    orderSummaryTableValue: {
+        width: "25%",
+        paddingTop: 10,
+        paddingBottom: 10,
+        paddingLeft: 10,
+        paddingRight: 10,
+    },
+    orderSummaryTableQtyColumn: {
+        width: "10%",
+    },
+    orderSummaryTableDescriptionColumn: {
+        width: "50%",
+    },
+    orderSummaryTableTotalColumn: {
+        width: "20%",
+    },
+    footer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+    },
+    footerHeading: {
+        backgroundColor: "#cfcfcf",
+        paddingTop: 10,
+        paddingBottom: 10,
+        paddingLeft: 10,
+        paddingRight: 10,
+        textTransform: "uppercase",
+    },
+    footerValue: {
+        marginTop: 10,
+        textAlign: "center",
     },
 })
 
 interface Props {
     order: FiatOrder
+    buyer: User // TODO: probably have this attached on order payload?
 }
 
-export const PDFInvoice = ({ order }: Props) => (
-    <Document>
-        <Page size="A4">
-            <InvoiceHeader />
-            <View style={styles.section}>
-                <Text style={styles.heading}>Invoice Details</Text>
-            </View>
-        </Page>
-    </Document>
-)
+export const PDFInvoice = ({ order, buyer }: Props) => {
+    let total = new BigNumber(0)
+    order.items.forEach((item) => {
+        total = total.plus(new BigNumber(item.amount).multipliedBy(item.quantity))
+    })
+
+    return (
+        <Document>
+            <Page size="A4" style={styles.page}>
+                <InvoiceHeader />
+                <View style={styles.section}>
+                    <Text style={styles.heading}>Invoice Details</Text>
+                    <View style={styles.invoiceDetailsTable}>
+                        <View style={styles.invoiceDetailsHeading}>
+                            <Text>Buyer:</Text>
+                        </View>
+                        <View>
+                            <Text>
+                                {buyer.username}#{buyer.gid}
+                            </Text>
+                        </View>
+                    </View>
+                    <View style={styles.invoiceDetailsTable}>
+                        <View style={styles.invoiceDetailsHeading}>
+                            <Text>Order Date:</Text>
+                        </View>
+                        <View>
+                            <Text>{moment(order.created_at).format("DD/MM/YYYY")}</Text>
+                        </View>
+                    </View>
+                    <View style={styles.invoiceDetailsTable}>
+                        <View style={styles.invoiceDetailsHeading}>
+                            <Text>Order Number:</Text>
+                        </View>
+                        <View>
+                            <Text>{order.order_number}</Text>
+                        </View>
+                    </View>
+                </View>
+
+                <View style={styles.section}>
+                    <Text style={styles.heading}>Order Summary</Text>
+                    <View style={styles.orderSummaryTable}>
+                        <View style={{ ...styles.orderSummaryTableHeader, ...styles.orderSummaryTableQtyColumn }}>
+                            <Text>Qty</Text>
+                        </View>
+                        <View style={{ ...styles.orderSummaryTableHeader, ...styles.orderSummaryTableDescriptionColumn }}>
+                            <Text>Description</Text>
+                        </View>
+                        <View style={{ ...styles.orderSummaryTableHeader, ...styles.orderSummaryTableTotalColumn }}>
+                            <Text>Price</Text>
+                        </View>
+                        <View style={{ ...styles.orderSummaryTableHeader, ...styles.orderSummaryTableTotalColumn }}>
+                            <Text>Subtotal</Text>
+                        </View>
+                    </View>
+                    {order.items.map((item, i) => {
+                        const subtotal = new BigNumber(item.amount).multipliedBy(item.quantity)
+                        return (
+                            <View key={`item-row-${i}`} style={i % 2 === 0 ? styles.orderSummaryTableRow : styles.orderSummaryTableRowAlt}>
+                                <View style={{ ...styles.orderSummaryTableValue, ...styles.orderSummaryTableQtyColumn }}>
+                                    <Text>{item.quantity}</Text>
+                                </View>
+                                <View style={{ ...styles.orderSummaryTableValue, ...styles.orderSummaryTableDescriptionColumn }}>
+                                    <Text>{item.name}</Text>
+                                </View>
+                                <View style={{ ...styles.orderSummaryTableValue, ...styles.orderSummaryTableTotalColumn }}>
+                                    <Text>{generatePriceText("$USD", item.amount)}</Text>
+                                </View>
+                                <View style={{ ...styles.orderSummaryTableValue, ...styles.orderSummaryTableTotalColumn }}>
+                                    <Text>{generatePriceText("$USD", subtotal)}</Text>
+                                </View>
+                            </View>
+                        )
+                    })}
+                </View>
+
+                <View style={{ ...styles.section, ...styles.footer }}>
+                    <View>
+                        <View style={styles.footerHeading}>
+                            <Text>Payment Method</Text>
+                        </View>
+                        <View style={styles.footerValue}>
+                            <Text>Credit Card</Text>
+                        </View>
+                    </View>
+                    <View>
+                        <View style={styles.footerHeading}>
+                            <Text>Total</Text>
+                        </View>
+                        <View style={styles.footerValue}>
+                            <Text>{generatePriceText("$USD", total)}</Text>
+                        </View>
+                    </View>
+                </View>
+            </Page>
+        </Document>
+    )
+}
 
 const InvoiceHeader = () => (
     <View style={styles.header}>

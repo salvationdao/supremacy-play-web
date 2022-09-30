@@ -130,7 +130,7 @@ export const BillingHistoryItemPage = () => {
                                     <Typography>Order Date:</Typography>
                                 </Box>
                                 <td>
-                                    <Typography>{moment(order.created_at).format("DD/MM/YYYY h:mm A")}</Typography>
+                                    <Typography>{moment(order.created_at).format("DD/MM/YYYY")}</Typography>
                                 </td>
                             </tr>
                             <tr>
@@ -147,7 +147,7 @@ export const BillingHistoryItemPage = () => {
 
                 <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ m: "2rem" }}>
                     <Typography sx={{ fontFamily: fonts.nostromoBlack, fontSize: "1.8rem" }}>ORDER SUMMARY</Typography>
-                    <BlobProvider document={<PDFInvoice order={order} />}>
+                    <BlobProvider document={<PDFInvoice order={order} buyer={user} />}>
                         {({ loading, url }) => (
                             <FancyButton
                                 clipThingsProps={{
@@ -171,7 +171,7 @@ export const BillingHistoryItemPage = () => {
 
                 <div>
                     <CoolTable
-                        tableHeadings={["PRODUCT NAME", "PRICE", "QTY", "SUBTOTAL"]}
+                        tableHeadings={["QTY", "DESCRIPTION", "PRICE", "SUBTOTAL"]}
                         alignments={["left", "center", "center", "center"]}
                         widths={["25%", "25%", "25%", "25%"]}
                         titleRowHeight="3.5rem"
@@ -182,9 +182,9 @@ export const BillingHistoryItemPage = () => {
                             const subtotal = new BigNumber(item.amount).multipliedBy(item.quantity)
                             return {
                                 cells: [
-                                    <Typography key={1}>{item.name}</Typography>,
-                                    <Typography key={2}>{generatePriceText("$USD", item.amount)}</Typography>,
-                                    <Typography key={3}>{item.quantity}</Typography>,
+                                    <Typography key={1}>{item.quantity}</Typography>,
+                                    <Typography key={2}>{item.name}</Typography>,
+                                    <Typography key={3}>{generatePriceText("$USD", item.amount)}</Typography>,
                                     <Typography key={4}>{generatePriceText("$USD", subtotal)}</Typography>,
                                 ],
                             }
