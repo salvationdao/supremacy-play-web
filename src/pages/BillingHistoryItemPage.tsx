@@ -6,7 +6,7 @@ import { HangarBg, SvgBack } from "../assets"
 import { ClipThing, FancyButton } from "../components"
 import { CoolTable } from "../components/Common/CoolTable"
 import { useTheme } from "../containers/theme"
-import { generatePriceText } from "../helpers"
+import { generatePriceText, getOrderStatusDeets } from "../helpers"
 import { useGameServerCommandsUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 import { colors, fonts, siteZIndex } from "../theme/theme"
@@ -91,6 +91,8 @@ export const BillingHistoryItemPage = () => {
         order.items.forEach((item) => {
             total = total.plus(new BigNumber(item.amount).multipliedBy(item.quantity))
         })
+
+        const statusDeets = getOrderStatusDeets(order.order_status)
 
         return (
             <>
@@ -193,31 +195,72 @@ export const BillingHistoryItemPage = () => {
                 </div>
 
                 <Stack direction="row" justifyContent="space-between" alignItems="flex-start" sx={{ mt: "4rem", p: "1rem" }}>
-                    <Box component={"table"} sx={{ display: "inline-table" }}>
-                        <tbody>
-                            <tr>
-                                <Box component={"td"} sx={{ pr: "4rem" }}>
-                                    <Typography>Payment Type:</Typography>
-                                </Box>
-                                <td>
-                                    <Typography>Credit Card</Typography>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </Box>
-                    <Stack direction="row" justifyContent="flex-end">
-                        <Typography variant={"h5"} sx={{ color: "white", fontFamily: fonts.nostromoHeavy }}>
-                            Total:
-                        </Typography>
-                        <Box
+                    <Stack sx={{ width: "25rem" }}>
+                        <ClipThing
+                            corners={{
+                                topRight: true,
+                                bottomLeft: true,
+                            }}
+                            border={{
+                                borderColor: primaryColor,
+                                borderThickness: ".3rem",
+                            }}
+                            opacity={0.7}
+                            backgroundColor={background}
+                            sx={{ p: "1rem" }}
+                        >
+                            <Typography sx={{ fontFamily: fonts.nostromoBlack, textAlign: "center" }}>PAYMENT TYPE</Typography>
+                        </ClipThing>
+                        <Typography sx={{ mt: "1rem", textAlign: "center", fontSize: "1.8rem" }}>Credit Card</Typography>
+                    </Stack>
+                    <Stack>
+                        <ClipThing
+                            corners={{
+                                topRight: true,
+                                bottomLeft: true,
+                            }}
+                            border={{
+                                borderColor: primaryColor,
+                                borderThickness: ".3rem",
+                            }}
+                            opacity={0.7}
+                            backgroundColor={background}
+                            sx={{ p: "1rem" }}
+                        >
+                            <Stack direction="row" justifyContent="space-between" spacing="4rem">
+                                <Typography sx={{ fontFamily: fonts.nostromoBlack, textAlign: "center" }}>TOTAL</Typography>
+                                <ClipThing
+                                    key={3}
+                                    clipSize="6px"
+                                    corners={{
+                                        bottomLeft: true,
+                                        topRight: true,
+                                    }}
+                                    border={{
+                                        borderColor: colors.offWhite,
+                                        borderThickness: "1px",
+                                    }}
+                                    backgroundColor={statusDeets.color}
+                                    sx={{ position: "relative", px: "2rem", py: 0 }}
+                                >
+                                    <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold, color: statusDeets.textColor }}>
+                                        {statusDeets.label.toUpperCase()}
+                                    </Typography>
+                                </ClipThing>
+                                ,
+                            </Stack>
+                        </ClipThing>
+                        <Typography
+                            variant={"body1"}
                             sx={{
-                                ml: "4rem",
+                                color: colors.offWhite,
+                                mt: "1rem",
+                                textAlign: "center",
+                                fontSize: "1.8rem",
                             }}
                         >
-                            <Typography variant={"body1"} sx={{ fontFamily: fonts.nostromoLight, color: colors.offWhite }}>
-                                {generatePriceText("$USD", total)}
-                            </Typography>
-                        </Box>
+                            {generatePriceText("$USD", total)}
+                        </Typography>
                     </Stack>
                 </Stack>
             </>
