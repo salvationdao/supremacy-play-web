@@ -114,8 +114,8 @@ export const explosionParticlesConfig = {
         end: 0.4,
     },
     scale: {
-        start: 1.2,
-        end: 0.3,
+        start: 0.3,
+        end: 0.09,
         minimumScaleMultiplier: 1,
     },
     color: {
@@ -142,8 +142,8 @@ export const explosionParticlesConfig = {
         max: 0,
     },
     lifetime: {
-        min: 0.5,
-        max: 0.5,
+        min: 0.2,
+        max: 0.2,
     },
     blendMode: "normal",
     frequency: 0.008,

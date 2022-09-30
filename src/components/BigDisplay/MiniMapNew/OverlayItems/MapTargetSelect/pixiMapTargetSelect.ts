@@ -217,7 +217,7 @@ export class PixiMapTargetSelect {
         }
     }
 
-    startCountdown(timeLeft = 3, speed = 3, destroyOnConfirm = true) {
+    startCountdown(timeLeft = 2, speed = 3, destroyOnConfirm = true) {
         this.resetCountdown()
         this.endCoord.startCountdown(timeLeft, speed)
         this.startCoord.startCountdown(timeLeft, speed, () => {

@@ -304,7 +304,7 @@ export class PixiMapMech {
         if (!this.iconDimension) return
 
         this.abilityToApply = new PixiImageIcon(ability.image_url, this.iconDimension.width / 1.6, this.iconDimension.height / 1.6, ability.colour, true, 1)
-        this.abilityToApply.startCountdown(5, 3, () => {
+        this.abilityToApply.startCountdown(2, 3, () => {
             this.onTargetConfirm && this.onTargetConfirm({ mechHash: this.mechHash })
             this.unApplyAbility()
         })
