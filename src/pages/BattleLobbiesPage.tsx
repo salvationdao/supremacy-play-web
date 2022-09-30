@@ -10,8 +10,8 @@ import { ROUTES_MAP } from "../routes"
 import { siteZIndex } from "../theme/theme"
 
 export enum BATTLE_LOBBY_TABS {
-    Ready = "ready",
-    Pending = "pending",
+    Ready = "central-queue",
+    Pending = "lobbies",
 }
 
 export const BattleLobbiesPage = () => {
@@ -84,9 +84,9 @@ export const BattleLobbiesPage = () => {
                                     ".MuiTabScrollButton-root": { display: "none" },
                                 }}
                             >
-                                <Tab label="PENDING" value={BATTLE_LOBBY_TABS.Pending} />
+                                <Tab label="LOBBIES" value={BATTLE_LOBBY_TABS.Pending} />
 
-                                <Tab label="READY" value={BATTLE_LOBBY_TABS.Ready} />
+                                <Tab label="CENTRAL QUEUE" value={BATTLE_LOBBY_TABS.Ready} />
                             </Tabs>
                         </Box>
                     </ClipThing>
