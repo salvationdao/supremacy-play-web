@@ -68,17 +68,38 @@ export class PixiMapAbilities {
             abilities.forEach((ab) => {
                 const pixiAbility = this.pixiAbilities[ab.offering_id]
 
-                if (pixiAbility) {
-                    // TODO:
-                } else {
-                    const newPixiAbility = new PixiMapAbilitySingle(ab, this.gridSizeRef, this.gridCellToViewportPosition)
-                    this.root.addChild(newPixiAbility.root)
-                    this.pixiAbilities[ab.offering_id] = newPixiAbility
+                // If pixi item already in there, and no need to replace, return
+                if (pixiAbility && !shouldReplaceAbility(pixiAbility.ability, ab)) {
+                    return
                 }
+
+                if (pixiAbility) {
+                    pixiAbility.destroy()
+                    delete this.pixiAbilities[ab.offering_id]
+                }
+
+                const newPixiAbility = new PixiMapAbilitySingle(ab, this.gridSizeRef, this.gridCellToViewportPosition)
+                this.root.addChild(newPixiAbility.root)
+                this.pixiAbilities[ab.offering_id] = newPixiAbility
             })
 
             this.animationFrame = requestAnimationFrame(step)
         }
         this.animationFrame = requestAnimationFrame(step)
     }
+}
+
+// This checks whether the new ability and old ability are different (only checks important fields)
+const shouldReplaceAbility = (oldAbility: DisplayedAbility, newAbility: DisplayedAbility) => {
+    return (
+        oldAbility.mini_map_display_effect_type !== newAbility.mini_map_display_effect_type ||
+        oldAbility.mech_display_effect_type !== newAbility.mech_display_effect_type ||
+        oldAbility.location_select_type !== newAbility.location_select_type ||
+        oldAbility.image_url !== newAbility.image_url ||
+        oldAbility.location !== newAbility.location ||
+        oldAbility.radius !== newAbility.radius ||
+        oldAbility.launching_at !== newAbility.launching_at ||
+        oldAbility.show_below_mechs !== newAbility.show_below_mechs ||
+        oldAbility.grid_size_multiplier !== newAbility.grid_size_multiplier
+    )
 }

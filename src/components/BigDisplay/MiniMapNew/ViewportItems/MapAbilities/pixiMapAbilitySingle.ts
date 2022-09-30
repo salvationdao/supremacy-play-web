@@ -10,11 +10,10 @@ import { Dimension, DisplayedAbility, GAME_CLIENT_TILE_SIZE, MiniMapDisplayEffec
 
 export class PixiMapAbilitySingle {
     root: PIXI.Container<PIXI.DisplayObject>
+    ability: DisplayedAbility
     private rootInner: PIXI.Container<PIXI.DisplayObject>
     private imageIcon: PixiImageIcon
     private emitter: particles.Emitter | undefined
-
-    private ability: DisplayedAbility
     private animationFrame: number | undefined
 
     constructor(
@@ -60,7 +59,7 @@ export class PixiMapAbilitySingle {
 
         // Countdown timer
         if (ability.launching_at) {
-            const secondsLeft = (new Date().getTime() - ability.launching_at.getTime()) / 1000
+            const secondsLeft = (ability.launching_at.getTime() - new Date().getTime()) / 1000
             this.imageIcon.startCountdown(secondsLeft)
         }
 
