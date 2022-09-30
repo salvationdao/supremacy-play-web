@@ -67,6 +67,7 @@ import Utilities from "!@svgr/webpack!./svg/Utilities.svg"
 import View from "!@svgr/webpack!./svg/View.svg"
 import Wallet from "!@svgr/webpack!./svg/Wallet.svg"
 import Weapons from "!@svgr/webpack!./svg/Weapons.svg"
+import Wrench from "!@svgr/webpack!./svg/Wrench.svg"
 import ZaibatsuMechKillIcon from "!@svgr/webpack!./svg/ZaibatsuKillIcon.svg"
 import Angle from "!react-svg-loader!./svg/Angle.svg"
 import Announcement from "!react-svg-loader!./svg/Announcement.svg"
@@ -1349,5 +1350,11 @@ export const SvgQuestionMark2: React.VoidFunctionComponent<SvgWrapperProps> = (p
 export const SvgCheckMark: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <CheckMark />
+    </SvgWrapper>
+)
+
+export const SvgWrench: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Wrench />
     </SvgWrapper>
 )

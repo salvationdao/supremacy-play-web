@@ -36,6 +36,7 @@ export interface BattleLobbiesMech {
     faction_id: string
     owner?: User
     is_destroyed: boolean
+    weapon_slots: MechWeaponSlot[]
 }
 
 export interface MechWeaponSlot {
