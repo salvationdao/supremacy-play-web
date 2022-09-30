@@ -1,148 +1,90 @@
-import { Faction } from "../../../types"
-import { BattleLobbiesMech } from "../../../types/battle_queue"
-import { useAuth, useGlobalNotifications, useSupremacy } from "../../../containers"
-import React, { useCallback, useMemo, useState } from "react"
-import { Avatar, Box, IconButton, Stack, Typography } from "@mui/material"
-import { colors, fonts } from "../../../theme/theme"
+import { Box, IconButton, Stack, Typography } from "@mui/material"
+import { useCallback, useMemo, useState } from "react"
+import { SvgClose } from "../../../assets"
+import { useAuth, useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { colors } from "../../../theme/theme"
+import { Faction } from "../../../types"
+import { BattleLobbiesMech } from "../../../types/battle_queue"
 import { MechThumbnail } from "../../Hangar/WarMachinesHangar/Common/MechThumbnail"
-import { SvgClose } from "../../../assets"
 
-interface BattleLobbySlot {
+export interface BattleLobbyFaction {
     faction: Faction
     mechSlots: BattleLobbiesMech[]
 }
 
-export const BattleLobbyMechSlots = ({ battleLobbyMechs, isLocked }: { battleLobbyMechs: BattleLobbiesMech[]; isLocked: boolean }) => {
-    const { factionsAll } = useSupremacy()
-    // fill up slot
-    const battleLobbySlots = useMemo(() => {
-        const blss: BattleLobbySlot[] = []
-        const mechAmountPerFaction = 3
-        Object.values(factionsAll)
-            .sort((a, b) => a.label.localeCompare(b.label))
-            .forEach((f) => {
-                const bls: BattleLobbySlot = {
-                    faction: f,
-                    mechSlots: [],
-                }
+interface MyFactionLobbySlotsProps {
+    factionSlots: BattleLobbyFaction
+    isLocked: boolean
+}
 
-                battleLobbyMechs.forEach((blm) => {
-                    // skip, if not in the same faction
-                    if (blm.owner.faction_id != f.id) return
-
-                    // parse data
-                    bls.mechSlots.push(blm)
-                })
-
-                // fill up with empty struct
-                while (bls.mechSlots.length < mechAmountPerFaction) {
-                    bls.mechSlots.push({
-                        mech_id: "",
-                        battle_lobby_id: "",
-                        name: "",
-                        label: "",
-                        tier: "",
-                        avatar_url: "",
-                        owner: {
-                            id: "",
-                            faction_id: "",
-                            username: "UNKNOWN",
-                            gid: 0,
-                            rank: "NEW_RECRUIT",
-                            features: [],
-                        },
-                        is_destroyed: false,
-                    })
-                }
-
-                blss.push(bls)
-            })
-
-        return blss
-    }, [factionsAll, battleLobbyMechs])
+export const MyFactionLobbySlots = ({ factionSlots, isLocked }: MyFactionLobbySlotsProps) => {
+    const theme = useTheme()
 
     return (
-        <Stack direction="row" flex={1} justifyContent="space-between">
-            {battleLobbySlots.map((bls) => {
-                const { faction, mechSlots } = bls
+        <>
+            {factionSlots.mechSlots.map((ms, index) => {
                 return (
                     <Stack
-                        key={faction.id}
-                        direction="column"
-                        width="33%"
+                        key={index}
                         sx={{
-                            p: ".35rem",
-                            position: "relative",
-                            minHeight: "21rem",
-                            backgroundColor: colors.darkestNeonBlue + "a0",
-                            borderRadius: "4px",
+                            flex: 1,
+                            alignItems: "start",
+                            padding: "1rem",
+                            backgroundColor: `${colors.offWhite}10`,
                         }}
                     >
-                        <Stack direction="row" sx={{ mb: ".25rem" }}>
-                            <Avatar
-                                src={faction.logo_url}
-                                alt={`${faction.label}'s Avatar`}
-                                sx={{
-                                    height: "2.6rem",
-                                    width: "2.6rem",
-                                    borderRadius: 0.8,
-                                    border: `${faction.primary_color} 2px solid`,
-                                    backgroundColor: faction.primary_color,
-                                }}
-                                variant="square"
-                            />
-                            <Typography
-                                sx={{
-                                    fontFamily: fonts.nostromoBlack,
-                                    color: faction.primary_color,
-                                    ml: ".45rem",
-                                    display: "-webkit-box",
-                                    overflow: "hidden",
-                                    overflowWrap: "anywhere",
-                                    textOverflow: "ellipsis",
-                                    WebkitLineClamp: 1, // change to max number of lines
-                                    WebkitBoxOrient: "vertical",
-                                }}
-                            >
-                                {faction.label}
-                            </Typography>
-                        </Stack>
-
                         <Box
-                            flex={1}
+                            component="img"
+                            src={ms.avatar_url}
                             sx={{
-                                width: "100%",
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "center",
-                                justifyContent: "center",
+                                maxHeight: "60px",
+                            }}
+                        />
+
+                        {/* <ClipThing
+                            border={{
+                                borderColor: factionSlots.faction.primary_color,
+                            }}
+                            corners={{
+                                bottomRight: true,
                             }}
                         >
-                            {mechSlots.map((ms, i) => (
-                                <Box
-                                    key={i}
-                                    sx={{
-                                        display: "flex",
-                                        flex: 1,
-                                        flexDirection: "row",
-                                        p: ".15rem",
-                                        my: ".1rem",
-                                        width: "100%",
-                                        backgroundColor: colors.offWhite + "20",
-                                        borderRadius: "4px",
-                                    }}
-                                >
-                                    <MechSlotContent battleLobbiesMech={ms} faction={faction} isLocked={isLocked} />
-                                </Box>
-                            ))}
-                        </Box>
+                        </ClipThing> */}
+                        <Typography
+                            variant="h6"
+                            sx={{
+                                color: theme.factionTheme.primary,
+                                fontWeight: "fontWeightBold",
+                                display: "-webkit-box",
+                                overflow: "hidden",
+                                overflowWrap: "anywhere",
+                                textOverflow: "ellipsis",
+                                WebkitLineClamp: 1, // change to max number of lines
+                                WebkitBoxOrient: "vertical",
+                            }}
+                        >
+                            {ms.name || ms.label}
+                        </Typography>
+                        <Typography
+                            sx={{
+                                color: theme.factionTheme.primary,
+                                display: "-webkit-box",
+                                overflow: "hidden",
+                                overflowWrap: "anywhere",
+                                textOverflow: "ellipsis",
+                                WebkitLineClamp: 1, // change to max number of lines
+                                WebkitBoxOrient: "vertical",
+                            }}
+                        >
+                            <i>{`@${ms.owner.username}#${ms.owner.gid}`}</i>
+                        </Typography>
                     </Stack>
                 )
             })}
-        </Stack>
+        </>
     )
 }
 

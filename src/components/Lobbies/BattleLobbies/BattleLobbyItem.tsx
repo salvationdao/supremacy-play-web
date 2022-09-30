@@ -1,16 +1,18 @@
-import { BattleLobby } from "../../../types/battle_queue"
-import { useTheme } from "../../../containers/theme"
-import { Box, Stack, Typography } from "@mui/material"
-import { fonts } from "../../../theme/theme"
-import { ClipThing } from "../../Common/ClipThing"
+import { Avatar, Box, Stack, Typography } from "@mui/material"
 import React, { useMemo } from "react"
+import { useArena, useAuth, useSupremacy } from "../../../containers"
+import { useTheme } from "../../../containers/theme"
 import { camelToTitle, supFormatter } from "../../../helpers"
-import { BattleLobbyMechSlots } from "./BattleLobbyMechSlots"
-import { useArena } from "../../../containers"
+import { fonts } from "../../../theme/theme"
+import { BattleLobby } from "../../../types/battle_queue"
+import { ClipThing } from "../../Common/ClipThing"
+import { BattleLobbyFaction, MyFactionLobbySlots } from "./BattleLobbyMechSlots"
 
 interface BattleLobbyItemProps {
     battleLobby: BattleLobby
 }
+
+const FACTION_LOBBY_SIZE = 3
 
 const propsAreEqual = (prevProps: BattleLobbyItemProps, nextProps: BattleLobbyItemProps) => {
     return (
@@ -26,12 +28,64 @@ const propsAreEqual = (prevProps: BattleLobbyItemProps, nextProps: BattleLobbyIt
 
 export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby }: BattleLobbyItemProps) {
     const theme = useTheme()
+    const { factionID } = useAuth()
     const { arenaList } = useArena()
+    const { factionsAll } = useSupremacy()
     const { game_map, number, entry_fee, first_faction_cut, second_faction_cut, third_faction_cut, assigned_to_arena_id } = battleLobby
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
     const { battle_lobbies_mechs, ready_at } = battleLobby
     const assignedToArenaName = useMemo(() => arenaList.find((a) => a.id === assigned_to_arena_id)?.name, [arenaList, assigned_to_arena_id])
+
+    const [myFactionLobbySlots, otherFactionLobbySlots] = useMemo(() => {
+        let myFactionLobbySlots = null as BattleLobbyFaction | null
+        const otherFactionLobbySlots: BattleLobbyFaction[] = []
+        Object.values(factionsAll)
+            .sort((a, b) => a.label.localeCompare(b.label))
+            .forEach((f) => {
+                const bls: BattleLobbyFaction = {
+                    faction: f,
+                    mechSlots: [],
+                }
+
+                battle_lobbies_mechs.forEach((blm) => {
+                    // skip, if not in the same faction
+                    if (blm.owner.faction_id != f.id) return
+
+                    // parse data
+                    bls.mechSlots.push(blm)
+                })
+
+                // fill up with empty struct
+                while (bls.mechSlots.length < FACTION_LOBBY_SIZE) {
+                    bls.mechSlots.push({
+                        mech_id: "",
+                        battle_lobby_id: "",
+                        name: "",
+                        label: "",
+                        tier: "",
+                        avatar_url: "",
+                        owner: {
+                            id: "",
+                            faction_id: "",
+                            username: "UNKNOWN",
+                            gid: 0,
+                            rank: "NEW_RECRUIT",
+                            features: [],
+                        },
+                        is_destroyed: false,
+                    })
+                }
+
+                if (f.id === factionID) {
+                    myFactionLobbySlots = bls
+                } else {
+                    otherFactionLobbySlots.push(bls)
+                }
+            })
+
+        return [myFactionLobbySlots, otherFactionLobbySlots]
+    }, [factionsAll, battle_lobbies_mechs, factionID])
 
     return (
         <Stack sx={{ color: primaryColor, textAlign: "start", height: "100%" }}>
@@ -49,9 +103,9 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                         direction="row"
                         justifyContent="space-between"
                         sx={{
-                            p: ".35rem",
                             position: "relative",
-                            minHeight: "12rem",
+                            height: "200px",
+                            p: "2rem",
                         }}
                     >
                         {/*Background image*/}
@@ -69,7 +123,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                         />
 
                         {/* Lobby Info */}
-                        <Stack direction="column" height="100%" width="22%">
+                        <Stack direction="column" flexBasis="250px" height="100%">
                             <Typography sx={{ fontFamily: fonts.nostromoBlack }}>Lobby #{number}</Typography>
                             <Typography sx={{ fontFamily: fonts.nostromoBlack }}>MAP: {game_map ? camelToTitle(game_map.name) : "Random"}</Typography>
                             {assignedToArenaName && <Typography sx={{ fontFamily: fonts.nostromoBlack }}>Arena: {assignedToArenaName}</Typography>}
@@ -84,12 +138,75 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                     </Typography>
                                 </>
                             )}
+                            {/* Other faction mech slots */}
                         </Stack>
 
-                        {/* Mech slots */}
-                        <Stack direction="row" height="100%" flex={1}>
-                            <BattleLobbyMechSlots battleLobbyMechs={battle_lobbies_mechs} isLocked={!!ready_at} />
-                        </Stack>
+                        {/* My faction mech slots */}
+                        {myFactionLobbySlots && (
+                            <Stack spacing="1rem" flex={1} height="100%">
+                                <Stack direction="row" alignItems="center">
+                                    <Avatar
+                                        src={myFactionLobbySlots.faction.logo_url}
+                                        alt={`${myFactionLobbySlots.faction.label}'s Avatar`}
+                                        sx={{
+                                            height: "2.6rem",
+                                            width: "2.6rem",
+                                            borderRadius: 0.8,
+                                            border: `${myFactionLobbySlots.faction.primary_color} 2px solid`,
+                                            backgroundColor: myFactionLobbySlots.faction.primary_color,
+                                        }}
+                                        variant="square"
+                                    />
+                                    <Typography
+                                        sx={{
+                                            fontFamily: fonts.nostromoBlack,
+                                            color: myFactionLobbySlots.faction.primary_color,
+                                            ml: ".45rem",
+                                            display: "-webkit-box",
+                                            overflow: "hidden",
+                                            overflowWrap: "anywhere",
+                                            textOverflow: "ellipsis",
+                                            WebkitLineClamp: 1, // change to max number of lines
+                                            WebkitBoxOrient: "vertical",
+                                        }}
+                                    >
+                                        {myFactionLobbySlots.faction.label}
+                                    </Typography>
+                                </Stack>
+                                <Box
+                                    sx={{
+                                        flex: 1,
+                                        minHeight: 0,
+                                        alignItems: "stretch",
+                                        overflowY: "auto",
+                                        overflowX: "hidden",
+                                        scrollbarColor: `${theme.factionTheme.primary}55 ${"#FFFFFF15"}`,
+                                        scrollbarWidth: "thin",
+                                        "::-webkit-scrollbar": {
+                                            width: "1rem",
+                                        },
+                                        "::-webkit-scrollbar-track": {
+                                            background: "#FFFFFF15",
+                                        },
+                                        "::-webkit-scrollbar-thumb": {
+                                            background: theme.factionTheme.primary,
+                                        },
+                                    }}
+                                >
+                                    <Stack
+                                        direction="row"
+                                        spacing="1rem"
+                                        sx={{
+                                            minHeight: "100%",
+                                            height: "min-content",
+                                            width: "100%",
+                                        }}
+                                    >
+                                        <MyFactionLobbySlots factionSlots={myFactionLobbySlots} isLocked={!!ready_at} />
+                                    </Stack>
+                                </Box>
+                            </Stack>
+                        )}
                     </Stack>
                 </ClipThing>
             </Box>
