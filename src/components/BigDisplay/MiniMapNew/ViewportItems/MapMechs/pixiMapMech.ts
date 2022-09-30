@@ -1,3 +1,4 @@
+import merge from "deepmerge"
 import { DashLine } from "pixi-dashed-line"
 import { ease } from "pixi-ease"
 import * as particles from "pixi-particles"
@@ -5,7 +6,6 @@ import * as PIXI from "pixi.js"
 import { CircleParticle, DeadSkullPNG } from "../../../../../assets"
 import { pixiViewportZIndexes } from "../../../../../containers"
 import { deg2rad, HEXToVBColor } from "../../../../../helpers"
-import merge from "deepmerge"
 import { pulseParticlesConfig } from "../../../../../pixi/particleConfigs"
 import { PixiImageIcon } from "../../../../../pixi/pixiImageIcon"
 import { PixiProgressBar } from "../../../../../pixi/pixiProgressBar"
@@ -123,8 +123,6 @@ export class PixiMapMech {
         this.root.addChild(this.rootInner)
         this.root.addChild(this.mechMoveDashedLine)
 
-        this.rootInner.pivot.set(this.rectGraphics.width / 2, this.rectGraphics.height / 2)
-
         this.render()
     }
 
@@ -137,6 +135,8 @@ export class PixiMapMech {
     updateStyles(primaryColor: string, iconDimension: Dimension) {
         this.iconDimension = iconDimension
         this.primaryColor = primaryColor
+
+        this.rootInner.pivot.set(this.iconDimension.width / 2, this.iconDimension.height / 2)
 
         // Update number text
         this.numberText.style.fill = primaryColor
