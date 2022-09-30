@@ -5,27 +5,18 @@ import { useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { opacityEffect, shake } from "../../theme/keyframes"
 import { colors, fonts } from "../../theme/theme"
-import { GameMap } from "../../types"
 import { MechCard } from "./MechCard"
 import { FancyButton } from "../Common/FancyButton"
-
-interface NextBattle {
-    map: GameMap
-    bc_id: string
-    zhi_id: string
-    rm_id: string
-    bc_mech_ids: string[]
-    zhi_mech_ids: string[]
-    rm_mech_ids: string[]
-}
+import { BattleLobbiesMech, BattleLobby } from "../../types/battle_queue"
+import { FactionIDs } from "../../constants"
 
 export const UpcomingBattle = () => {
-    const [nextBattle, setNextBattle] = useState<NextBattle | undefined>()
+    const [nextBattle, setNextBattle] = useState<BattleLobby | undefined>()
 
     // Subscribe on battle end information
-    useGameServerSubscription<NextBattle>(
+    useGameServerSubscription<BattleLobby>(
         {
-            URI: `/public/arena/upcomming_battle`,
+            URI: `/public/upcoming_battle`,
             key: GameServerKeys.NextBattleDetails,
         },
         (payload) => {
@@ -43,6 +34,22 @@ export const UpcomingBattle = () => {
             )
         }
 
+        const bcMechs: BattleLobbiesMech[] = []
+        const zaiMechs: BattleLobbiesMech[] = []
+        const rmMechs: BattleLobbiesMech[] = []
+        nextBattle.battle_lobbies_mechs.forEach((m) => {
+            switch (m.owner.faction_id) {
+                case FactionIDs.ZHI:
+                    zaiMechs.push(m)
+                    break
+                case FactionIDs.BC:
+                    bcMechs.push(m)
+                    break
+                case FactionIDs.RM:
+                    rmMechs.push(m)
+            }
+        })
+
         return (
             <Box
                 sx={{
@@ -59,9 +66,9 @@ export const UpcomingBattle = () => {
                     gap: "1rem",
                 }}
             >
-                <CardGroup mechIDs={nextBattle?.bc_mech_ids || []} factionID={nextBattle?.bc_id || ""} />
-                <CardGroup mechIDs={nextBattle?.zhi_mech_ids || []} factionID={nextBattle?.zhi_id || ""} />
-                <CardGroup mechIDs={nextBattle?.rm_mech_ids || []} factionID={nextBattle?.rm_id || ""} />
+                <CardGroup mechs={bcMechs} factionID={FactionIDs.BC} />
+                <CardGroup mechs={zaiMechs} factionID={FactionIDs.ZHI} />
+                <CardGroup mechs={rmMechs} factionID={FactionIDs.RM} />
             </Box>
         )
     }, [nextBattle])
@@ -78,7 +85,7 @@ export const UpcomingBattle = () => {
                 width: "100%",
                 height: "100%",
                 backgroundColor: colors.darkNavy,
-                backgroundImage: `url(${nextBattle?.map?.background_url})`,
+                backgroundImage: `url(${nextBattle?.game_map?.background_url})`,
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
                 backgroundSize: "cover",
@@ -94,14 +101,14 @@ export const UpcomingBattle = () => {
                     fontFamily: fonts.nostromoBlack,
                 }}
             >
-                <i>COMING UP... {nextBattle?.map.name || ""}</i>
+                <i>COMING UP... {nextBattle?.game_map?.name || ""}</i>
             </Typography>
             {content}
         </Box>
     )
 }
 
-const CardGroup = ({ factionID, mechIDs }: { factionID: string; mechIDs: string[] }) => {
+const CardGroup = ({ factionID, mechs }: { factionID: string; mechs: BattleLobbiesMech[] }) => {
     const { getFaction } = useSupremacy()
     const faction = getFaction(factionID)
 
@@ -116,45 +123,22 @@ const CardGroup = ({ factionID, mechIDs }: { factionID: string; mechIDs: string[
             }}
         >
             <Grid container spacing={0} direction="row" sx={{ width: "100%", height: "100%" }}>
-                <Grid
-                    item
-                    xs={4}
-                    sm={3}
-                    sx={{
-                        maxHeight: {
-                            xs: "80%",
-                            sm: "100%",
-                        },
-                    }}
-                >
-                    <MechCard mechID={mechIDs[0] || ""} faction={faction} />
-                </Grid>
-                <Grid
-                    item
-                    xs={4}
-                    sm={3}
-                    sx={{
-                        maxHeight: {
-                            xs: "80%",
-                            sm: "100%",
-                        },
-                    }}
-                >
-                    <MechCard mechID={mechIDs[1] || ""} faction={faction} />
-                </Grid>
-                <Grid
-                    item
-                    xs={4}
-                    sm={3}
-                    sx={{
-                        maxHeight: {
-                            xs: "80%",
-                            sm: "100%",
-                        },
-                    }}
-                >
-                    <MechCard mechID={mechIDs[2] || ""} faction={faction} />
-                </Grid>
+                {mechs.map((m) => (
+                    <Grid
+                        item
+                        xs={4}
+                        sm={3}
+                        sx={{
+                            maxHeight: {
+                                xs: "80%",
+                                sm: "100%",
+                            },
+                        }}
+                    >
+                        <MechCard mech={m} faction={faction} />
+                    </Grid>
+                ))}
+
                 <Grid
                     item
                     xs={12}

@@ -10,6 +10,7 @@ import { zoomEffect } from "../../theme/keyframes"
 import { Faction } from "../../types"
 import { MechDetails } from "../../types/assets"
 import { ClipThing } from "../Common/ClipThing"
+import { BattleLobbiesMech } from "../../types/battle_queue"
 
 const getCardStyles = (factionID: string) => {
     if (factionID === FactionIDs.BC) {
@@ -44,48 +45,31 @@ const getCardStyles = (factionID: string) => {
 }
 
 interface MechCardProps {
-    mechID: string
+    mech?: BattleLobbiesMech
     faction: Faction
-
-    mechName?: string
-    avatarURL?: string
 }
 
-const propsAreEqual = (prevProps: MechCardProps, nextProps: MechCardProps) => {
-    return prevProps.mechID === nextProps.mechID && prevProps.faction.id === nextProps.faction.id
-}
+// const propsAreEqual = (prevProps: MechCardProps, nextProps: MechCardProps) => {
+//     return prevProps.mechID === nextProps.mechID && prevProps.faction.id === nextProps.faction.id
+// }
 
-export const MechCard = React.memo(function MechCard({ mechID, faction, mechName, avatarURL }: MechCardProps) {
+export const MechCard = React.memo(function MechCard({ mech, faction }: MechCardProps) {
     const { factionID } = useAuth()
     const { setLeftDrawerActiveTabID } = useUI()
-    const [mechDetails, setMechDetails] = useState<MechDetails>()
     const { border, waiting, deploy } = getCardStyles(faction.id)
 
-    useGameServerSubscription<MechDetails>(
-        {
-            URI: `/public/mech/${mechID}/details`,
-            key: GameServerKeys.PlayerAssetMechDetailPublic,
-            ready: !!mechID && (!mechName || !avatarURL), // don't subscribe, if data is already provided
-        },
-        (payload) => {
-            if (!payload) return
-            setMechDetails(payload)
-        },
-    )
+    const clickToDeploy = faction.id === factionID && !mech
+    const avatarUrl = mech?.avatar_url
 
-    const clickToDeploy = faction.id === factionID && !mechID
-    const avatarUrl = avatarURL || mechDetails?.chassis_skin?.avatar_url || mechDetails?.avatar_url
     const showMechLabel = useMemo((): string => {
-        if (mechName) return mechName
+        if (!mech) return "Waiting..."
 
-        if (!mechDetails) return "Waiting..."
+        if (mech.name) return mech.name
 
-        if (mechDetails.name) return mechDetails.name
-
-        if (mechDetails.label) return mechDetails.label
+        if (mech.label) return mech.label
 
         return "Unnamed"
-    }, [mechName, mechDetails])
+    }, [mech])
 
     return (
         <Box
@@ -108,7 +92,7 @@ export const MechCard = React.memo(function MechCard({ mechID, faction, mechName
             <Box
                 component={"img"}
                 src={border}
-                onClick={clickToDeploy ? () => setLeftDrawerActiveTabID(LEFT_DRAWER_MAP["quick_deploy"]?.id) : undefined}
+                // onClick={clickToDeploy ? () => setLeftDrawerActiveTabID(LEFT_DRAWER_MAP["quick_deploy"]?.id) : undefined}
                 sx={{
                     position: "relative",
                     height: "80%",
@@ -121,7 +105,7 @@ export const MechCard = React.memo(function MechCard({ mechID, faction, mechName
                 }}
             />
             <Box
-                onClick={clickToDeploy ? () => setLeftDrawerActiveTabID(LEFT_DRAWER_MAP["quick_deploy"]?.id) : undefined}
+                // onClick={clickToDeploy ? () => setLeftDrawerActiveTabID(LEFT_DRAWER_MAP["quick_deploy"]?.id) : undefined}
                 sx={{
                     position: "absolute",
                     top: 0,
@@ -133,7 +117,7 @@ export const MechCard = React.memo(function MechCard({ mechID, faction, mechName
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",
                     backgroundSize: "cover",
-                    opacity: clickToDeploy ? 0.8 : !mechID ? 0.3 : 1,
+                    opacity: clickToDeploy ? 0.8 : !mech ? 0.3 : 1,
                     cursor: clickToDeploy ? "pointer" : "unset",
                     ...(clickToDeploy
                         ? {
@@ -170,7 +154,7 @@ export const MechCard = React.memo(function MechCard({ mechID, faction, mechName
                     variant="h5"
                     sx={{
                         textAlign: "center",
-                        opacity: !mechID ? 0.4 : 1,
+                        opacity: !mech ? 0.4 : 1,
                         overflow: "hidden",
                         overflowWrap: "anywhere",
                         textOverflow: "ellipsis",
@@ -181,4 +165,4 @@ export const MechCard = React.memo(function MechCard({ mechID, faction, mechName
             </ClipThing>
         </Box>
     )
-}, propsAreEqual)
+})
