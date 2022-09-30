@@ -152,73 +152,89 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
 
                             {/* My faction mech slots */}
                             {myFactionLobbySlots && (
-                                <Stack spacing="1rem" flex={1} height="100%">
-                                    <Stack direction="row" alignItems="center">
-                                        <Avatar
-                                            src={myFactionLobbySlots.faction.logo_url}
-                                            alt={`${myFactionLobbySlots.faction.label}'s Avatar`}
-                                            sx={{
-                                                height: "2.6rem",
-                                                width: "2.6rem",
-                                                borderRadius: 0.8,
-                                                border: `${myFactionLobbySlots.faction.primary_color} 2px solid`,
-                                                backgroundColor: myFactionLobbySlots.faction.primary_color,
-                                            }}
-                                            variant="square"
-                                        />
-                                        <Typography
-                                            sx={{
-                                                fontFamily: fonts.nostromoBlack,
-                                                color: myFactionLobbySlots.faction.primary_color,
-                                                ml: ".45rem",
-                                                display: "-webkit-box",
-                                                overflow: "hidden",
-                                                overflowWrap: "anywhere",
-                                                textOverflow: "ellipsis",
-                                                WebkitLineClamp: 1, // change to max number of lines
-                                                WebkitBoxOrient: "vertical",
-                                            }}
-                                        >
-                                            {myFactionLobbySlots.faction.label}
-                                        </Typography>
-                                    </Stack>
-                                    <Box
-                                        sx={{
-                                            flex: 1,
-                                            minHeight: 0,
-                                            alignItems: "stretch",
-                                            overflowY: "auto",
-                                            overflowX: "hidden",
-                                            scrollbarColor: `${theme.factionTheme.primary}55 ${"#FFFFFF15"}`,
-                                            scrollbarWidth: "thin",
-                                            "::-webkit-scrollbar": {
-                                                width: "1rem",
-                                            },
-                                            "::-webkit-scrollbar-track": {
-                                                background: "#FFFFFF15",
-                                            },
-                                            "::-webkit-scrollbar-thumb": {
-                                                background: theme.factionTheme.primary,
-                                            },
-                                        }}
-                                    >
+                                <ClipThing
+                                    corners={{
+                                        topRight: true,
+                                        bottomLeft: true,
+                                    }}
+                                    sx={{
+                                        flex: 1,
+                                        height: "100%",
+                                    }}
+                                >
+                                    <Stack spacing="1rem" height="100%">
                                         <Stack
                                             direction="row"
-                                            spacing="1rem"
                                             sx={{
-                                                minHeight: "100%",
-                                                height: "min-content",
-                                                width: "100%",
+                                                alignItems: "center",
+                                                p: ".5rem",
+                                                backgroundColor: `${myFactionLobbySlots.faction.primary_color}10`,
                                             }}
                                         >
-                                            <MyFactionLobbySlots
-                                                factionLobby={myFactionLobbySlots}
-                                                isLocked={!!ready_at}
-                                                onSlotClick={() => setShowJoinModal(true)}
+                                            <Avatar
+                                                src={myFactionLobbySlots.faction.logo_url}
+                                                alt={`${myFactionLobbySlots.faction.label}'s Avatar`}
+                                                sx={{
+                                                    height: "2.6rem",
+                                                    width: "2.6rem",
+                                                }}
+                                                variant="square"
                                             />
+                                            <Typography
+                                                sx={{
+                                                    fontFamily: fonts.nostromoBlack,
+                                                    color: myFactionLobbySlots.faction.secondary_color,
+                                                    ml: ".45rem",
+                                                    display: "-webkit-box",
+                                                    overflow: "hidden",
+                                                    overflowWrap: "anywhere",
+                                                    textOverflow: "ellipsis",
+                                                    WebkitLineClamp: 1, // change to max number of lines
+                                                    WebkitBoxOrient: "vertical",
+                                                }}
+                                            >
+                                                {myFactionLobbySlots.faction.label}
+                                            </Typography>
                                         </Stack>
-                                    </Box>
-                                </Stack>
+
+                                        <Box
+                                            sx={{
+                                                flex: 1,
+                                                minHeight: 0,
+                                                alignItems: "stretch",
+                                                overflowY: "auto",
+                                                overflowX: "hidden",
+                                                scrollbarColor: `${theme.factionTheme.primary}55 ${"#FFFFFF15"}`,
+                                                scrollbarWidth: "thin",
+                                                "::-webkit-scrollbar": {
+                                                    width: "1rem",
+                                                },
+                                                "::-webkit-scrollbar-track": {
+                                                    background: "#FFFFFF15",
+                                                },
+                                                "::-webkit-scrollbar-thumb": {
+                                                    background: theme.factionTheme.primary,
+                                                },
+                                            }}
+                                        >
+                                            <Stack
+                                                direction="row"
+                                                spacing="1rem"
+                                                sx={{
+                                                    minHeight: "100%",
+                                                    height: "min-content",
+                                                    width: "100%",
+                                                }}
+                                            >
+                                                <MyFactionLobbySlots
+                                                    factionLobby={myFactionLobbySlots}
+                                                    isLocked={!!ready_at}
+                                                    onSlotClick={() => setShowJoinModal(true)}
+                                                />
+                                            </Stack>
+                                        </Box>
+                                    </Stack>
+                                </ClipThing>
                             )}
                         </Stack>
                     </ClipThing>
