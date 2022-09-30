@@ -130,7 +130,6 @@ export interface SaleAbility {
 
 export enum SaleAbilityAvailability {
     Unavailable,
-    CanClaim,
     CanPurchase,
 }
 
@@ -187,6 +186,7 @@ export interface BattleMechReward {
     rewarded_sups: string
     rewarded_sups_bonus: string
     owner_id: string
+    is_afk: boolean
 }
 
 export interface WarMachineDestroyedRecord {
