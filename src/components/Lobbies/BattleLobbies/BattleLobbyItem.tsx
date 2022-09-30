@@ -1,5 +1,6 @@
 import { Avatar, Box, Stack, Typography } from "@mui/material"
 import React, { useMemo, useState } from "react"
+import { SvgLock } from "../../../assets"
 import { useArena, useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { camelToTitle, supFormatter } from "../../../helpers"
@@ -111,7 +112,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                             justifyContent="space-between"
                             sx={{
                                 position: "relative",
-                                height: "200px",
+                                minHeight: "200px",
                                 p: "2rem",
                             }}
                         >
@@ -131,9 +132,42 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
 
                             {/* Lobby Info */}
                             <Stack direction="column" flexBasis="250px" height="100%" mr="1rem">
-                                <Typography variant="h4" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                    {name ? name : `Lobby #${number}`}
-                                </Typography>
+                                <Box mb="1rem">
+                                    <Typography
+                                        variant="h4"
+                                        sx={{
+                                            lineHeight: 1,
+                                            fontFamily: fonts.nostromoBlack,
+                                        }}
+                                    >
+                                        {name ? name : `Lobby #${number}`}
+                                    </Typography>
+                                    {is_private ? (
+                                        <Typography
+                                            sx={{
+                                                display: "flex",
+                                                alignItems: "baseline",
+                                                color: colors.gold,
+                                            }}
+                                        >
+                                            <SvgLock
+                                                size="1.2rem"
+                                                sx={{
+                                                    mr: ".5rem",
+                                                }}
+                                            />
+                                            Private Lobby
+                                        </Typography>
+                                    ) : (
+                                        <Typography
+                                            sx={{
+                                                color: colors.neonBlue,
+                                            }}
+                                        >
+                                            Public Lobby
+                                        </Typography>
+                                    )}
+                                </Box>
                                 <Stack direction="row" spacing=".5rem">
                                     <Typography
                                         component="span"
@@ -211,7 +245,6 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                     }}
                                     sx={{
                                         flex: 1,
-                                        height: "100%",
                                     }}
                                 >
                                     <Stack spacing="1rem" height="100%">
