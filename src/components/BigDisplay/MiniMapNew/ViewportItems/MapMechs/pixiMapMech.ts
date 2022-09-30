@@ -390,8 +390,15 @@ export class PixiMapMech {
             this.emitter?.destroy()
             this.emitter = new particles.Emitter(this.particlesContainer, CircleParticle, config)
             this.emitter.emit = true
+
+            // Fades in
+            this.particlesContainer.alpha = 0
+            ease.add(this.particlesContainer, { alpha: 1 }, { duration: 500, ease: "linear", removeExisting: true })
         } else {
-            this.emitter?.destroy()
+            ease.add(this.particlesContainer, { alpha: 0 }, { duration: 500, ease: "linear", removeExisting: true })
+            setTimeout(() => {
+                this.emitter?.destroy()
+            }, 1000)
         }
     }
 }
