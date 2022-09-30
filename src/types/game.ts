@@ -236,6 +236,7 @@ export interface DisplayedAbility {
     show_below_mechs?: boolean
     location_in_pixels?: boolean
     grid_size_multiplier?: number // defaults to 1.5
+    noAnim?: boolean
 }
 
 export interface Arena {

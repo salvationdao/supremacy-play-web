@@ -219,7 +219,7 @@ export const MapAbilities = React.memo(function MapAbilities() {
                                 const ability: DisplayedAbility = {
                                     offering_id: id,
                                     image_url,
-                                    mini_map_display_effect_type: noAnim ? MiniMapDisplayEffectType.None : MiniMapDisplayEffectType.Landmine,
+                                    mini_map_display_effect_type: MiniMapDisplayEffectType.Landmine,
                                     mech_display_effect_type: MechDisplayEffectType.None,
                                     location_select_type: LocationSelectType.LocationSelect,
                                     location: { x, y },
@@ -228,6 +228,7 @@ export const MapAbilities = React.memo(function MapAbilities() {
                                     show_below_mechs: true,
                                     grid_size_multiplier: 0.5,
                                     location_in_pixels: true,
+                                    noAnim,
                                 }
                                 if (timeOffset === 0) {
                                     newMapEvents.push(ability)
@@ -382,8 +383,6 @@ export const MapAbilities = React.memo(function MapAbilities() {
                 )
                 timeouts.current.set(hiveTimeoutID, t)
             }
-
-            console.log(complexAbilities.current)
         },
     )
 

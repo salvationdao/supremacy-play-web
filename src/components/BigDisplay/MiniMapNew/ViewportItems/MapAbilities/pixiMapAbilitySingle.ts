@@ -93,6 +93,8 @@ export class PixiMapAbilitySingle {
         if (ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Landmine) {
             this.imageIcon.hideBorder()
 
+            if (ability.noAnim) return
+
             // Show an inactive landmine, then after 3s, show the active version
             if (this.imageIcon.imageSprite) {
                 const newTexture = PIXI.Texture.from(

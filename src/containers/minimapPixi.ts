@@ -130,7 +130,6 @@ export const MiniMapPixiContainer = createContainer(() => {
 
         // Only run if something was changed
         if (prevValue !== pa || (prevValue && pa && !deepEqual(prevValue, pa))) {
-            console.log("usePlayerAbility", pa)
             Object.values(onAbilityUseCallbacks.current).forEach((cb) => cb(winner.current, pa))
         }
     })
