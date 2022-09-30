@@ -71,7 +71,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
 
                 battle_lobbies_mechs.forEach((blm) => {
                     // skip, if not in the same faction
-                    if (blm.owner.faction_id != f.id) return
+                    if (blm.faction_id != f.id) return
 
                     // parse data
                     bls.mechSlots.push(blm)

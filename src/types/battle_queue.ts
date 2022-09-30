@@ -1,5 +1,5 @@
-import { User } from "./user"
 import { GameMap } from "./game"
+import { User } from "./user"
 
 export interface BattleLobby {
     id: string
@@ -32,7 +32,7 @@ export interface BattleLobbiesMech {
     label: string
     tier: string
     avatar_url: string
-    factionID: string
+    faction_id: string
     owner?: User
     is_destroyed: boolean
 }

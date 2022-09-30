@@ -94,8 +94,7 @@ export const BattleLobbyJoinModal = ({ show, battleLobby, onJoin, onClose }: Bat
 
     const selectLimit = useMemo(() => {
         let queueLimit = 0
-        if (battleLobby)
-            queueLimit = battleLobby.each_faction_mech_amount - battleLobby.battle_lobbies_mechs.filter((m) => m.owner.faction_id === factionID).length
+        if (battleLobby) queueLimit = battleLobby.each_faction_mech_amount - battleLobby.battle_lobbies_mechs.filter((m) => m.faction_id === factionID).length
         const playerQueueRemain = currentPlayerQueue.queue_limit - currentPlayerQueue.total_queued
 
         let limit = queueLimit

@@ -37,7 +37,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                 await send(GameServerKeys.LeaveBattleLobby, {
                     mech_ids: [mechID],
                 })
-                newSnackbarMessage("Successfully deployed war machines.", "success")
+                newSnackbarMessage("Successfully removed mech from lobby.", "success")
             } catch (e) {
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to leave battle lobby.", "error")
             } finally {
@@ -74,7 +74,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                     <LoadingButton
                         key={index}
                         onClick={() => leaveLobby(ms.mech_id)}
-                        disabled={isLocked || userID !== ms.owner.id}
+                        disabled={isLocked || userID !== ms.owner?.id}
                         loading={isLoading}
                         sx={{
                             flex: 1,
@@ -119,19 +119,21 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                         >
                             {ms.name || ms.label}
                         </Typography>
-                        <Typography
-                            sx={{
-                                color: theme.factionTheme.primary,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 1, // change to max number of lines
-                                WebkitBoxOrient: "vertical",
-                            }}
-                        >
-                            <i>{`@${ms.owner.username}#${ms.owner.gid}`}</i>
-                        </Typography>
+                        {ms.owner && (
+                            <Typography
+                                sx={{
+                                    color: theme.factionTheme.primary,
+                                    display: "-webkit-box",
+                                    overflow: "hidden",
+                                    overflowWrap: "anywhere",
+                                    textOverflow: "ellipsis",
+                                    WebkitLineClamp: 1, // change to max number of lines
+                                    WebkitBoxOrient: "vertical",
+                                }}
+                            >
+                                <i>{`@${ms.owner.username}#${ms.owner.gid}`}</i>
+                            </Typography>
+                        )}
                     </LoadingButton>
                 )
             })}
