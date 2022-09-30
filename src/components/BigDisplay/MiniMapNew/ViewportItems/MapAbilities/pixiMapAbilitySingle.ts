@@ -148,8 +148,8 @@ export class PixiMapAbilitySingle {
                     end: 0.11,
                 },
                 lifetime: {
-                    min: 0.18,
-                    max: 0.18,
+                    min: 0.16,
+                    max: 0.16,
                 },
                 spawnCircle: { r: radius / 4 },
                 emitterLifetime: ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Range ? 3.5 : 0.3,
