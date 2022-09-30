@@ -35,6 +35,7 @@ export interface UserFromPassport {
     username: string
     verified: boolean
     withdraw_lock: boolean
+    accepts_marketing?: boolean
 }
 
 export interface User {
@@ -45,6 +46,7 @@ export interface User {
     mobile_number?: string
     rank: UserRank
     features: Feature[]
+    accepts_marketing?: boolean
 }
 
 export interface FactionStat {
@@ -153,10 +155,21 @@ export interface SystemMessageDataMechBattleBegin {
 }
 
 export interface SystemMessageDataMechBattleComplete {
+    player_id: string
+    battle_reward?: BattleReward
+    obtained_bounties?: ObtainedBounty[]
+    mech_battle_briefs?: SystemMessageMechStruct[]
+}
+
+export interface BattleReward {
     rewarded_sups: string
     rewarded_sups_bonus: string
     rewarded_player_ability?: BlueprintPlayerAbility
-    mech_battle_briefs: SystemMessageMechStruct[]
+}
+
+export interface ObtainedBounty {
+    destroyed_mech: SystemMessageMechStruct
+    Amount: string
 }
 
 export interface KillInfo {

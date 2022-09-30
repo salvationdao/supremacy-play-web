@@ -12,7 +12,6 @@ export const MechButtons = ({
     mechStatus,
     setSelectedMechDetails,
     setDeployMechModalOpen,
-    setLeaveMechModalOpen,
     setRentalMechModalOpen,
     setRepairMechModalOpen,
     marketLocked,
@@ -21,7 +20,6 @@ export const MechButtons = ({
     mechStatus?: MechStatus
     setSelectedMechDetails: React.Dispatch<React.SetStateAction<MechDetails | undefined>>
     setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    setLeaveMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setRepairMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     marketLocked: boolean
@@ -51,7 +49,6 @@ export const MechButtons = ({
                         disabled={!BATTLE_ARENA_OPEN || !mechState || mechState === MechStatusEnum.Battle}
                         onClick={() => {
                             setSelectedMechDetails(mechDetails)
-                            setLeaveMechModalOpen(true)
                         }}
                     />
                 ) : (

@@ -238,14 +238,9 @@ export interface DisplayedAbility {
     grid_size_multiplier?: number // defaults to 1.5
 }
 
-export enum ArenaType {
-    Story = "STORY",
-    Expedition = "EXPEDITION",
-}
-
 export interface Arena {
     id: string
-    type: ArenaType
+    name: string
     gid: number
     status?: ArenaStatus
 }
