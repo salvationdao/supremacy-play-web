@@ -1,122 +1,33 @@
-import { Box, Stack, Typography } from "@mui/material"
-import React, { useCallback, useMemo, useState } from "react"
-import { FancyButton } from "../.."
-import { useGlobalNotifications } from "../../../containers"
+// new quick deploy item
+import { MechBasicWithQueueStatus } from "../../../types"
+import React, { useMemo } from "react"
 import { getRarityDeets } from "../../../helpers"
-import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../keys"
-import { colors, fonts } from "../../../theme/theme"
-import { MechBasic, MechDetails, MechStatus, MechStatusEnum } from "../../../types"
-import { MechGeneralStatus } from "../../Hangar/WarMachinesHangar/Common/MechGeneralStatus"
-import { MechRepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
+import { Box, Stack, Typography } from "@mui/material"
 import { MechThumbnail } from "../../Hangar/WarMachinesHangar/Common/MechThumbnail"
+import { fonts } from "../../../theme/theme"
 import { MechName } from "../../Hangar/WarMachinesHangar/WarMachineDetails/MechName"
+import { MechRepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
+import { QuickDeployMechStatus } from "./QuickDeployMechStatus"
 
 interface QuickDeployItemProps {
-    mech: MechBasic
+    mech: MechBasicWithQueueStatus
     isSelected?: boolean
     toggleIsSelected?: () => void
-    onDeploy: () => void
-    onLeave: () => void
-    childrenMechStatus: React.MutableRefObject<{
-        [mechID: string]: MechStatus
-    }>
 }
 
-const propsAreEqual = (prevProps: QuickDeployItemProps, nextProps: QuickDeployItemProps) => {
-    return prevProps.isSelected === nextProps.isSelected && prevProps.mech.id === nextProps.mech.id
+const propsAreMechEqual = (prevProps: QuickDeployItemProps, nextProps: QuickDeployItemProps) => {
+    return prevProps.isSelected === nextProps.isSelected && prevProps.mech === nextProps.mech
 }
 
-export const QuickDeployItem = React.memo(function QuickDeployItem({
-    isSelected,
-    toggleIsSelected,
-    onDeploy,
-    onLeave,
-    mech,
-    childrenMechStatus,
-}: QuickDeployItemProps) {
-    const { newSnackbarMessage } = useGlobalNotifications()
-    const { send } = useGameServerCommandsFaction("/faction_commander")
-    const [mechDetails, setMechDetails] = useState<MechDetails>()
-    const rarityDeets = useMemo(() => getRarityDeets(mechDetails?.tier || mech.tier || ""), [mech, mechDetails])
-    const [mechStatus, setMechStatus] = useState<MechStatus>()
-    const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState<string>()
-
-    // Get addition mech data
-    useGameServerSubscriptionFaction<MechDetails>(
-        {
-            URI: `/mech/${mech.id}/brief_info`,
-            key: GameServerKeys.GetMechDetails,
-        },
-        (payload) => {
-            if (!payload) return
-            setMechDetails(payload)
-        },
-    )
-
-    useGameServerSubscriptionFaction<MechStatus>(
-        {
-            URI: `/queue/${mech.id}`,
-            key: GameServerKeys.SubMechQueuePosition,
-        },
-        (payload) => {
-            if (!payload || mechStatus?.status === MechStatusEnum.Sold) return
-            setMechStatus(payload)
-            childrenMechStatus.current[mech.id] = payload
-        },
-    )
-
-    const onDeployQueue = useCallback(
-        async (e) => {
-            e.stopPropagation()
-            e.preventDefault()
-
-            try {
-                setIsLoading(true)
-                const resp = await send<{ success: boolean; code: string }>(GameServerKeys.JoinQueue, {
-                    mech_ids: [mech.id],
-                })
-
-                if (resp && resp.success) {
-                    newSnackbarMessage("Successfully deployed war machine.", "success")
-                    setError(undefined)
-                    onDeploy()
-                }
-            } catch (e) {
-                setError(typeof e === "string" ? e : "Failed to deploy war machine.")
-                console.error(e)
-                return
-            } finally {
-                setIsLoading(false)
-            }
-        },
-        [send, mech.id, newSnackbarMessage, onDeploy],
-    )
-
-    const onLeaveQueue = useCallback(async () => {
-        try {
-            setIsLoading(true)
-            const resp = await send(GameServerKeys.LeaveQueue, { mech_ids: [mech.id] })
-            if (resp) {
-                newSnackbarMessage("Successfully removed war machine from queue.", "success")
-                setError(undefined)
-                onLeave()
-            }
-        } catch (e) {
-            setError(typeof e === "string" ? e : "Failed to leave queue.")
-            console.error(e)
-        } finally {
-            setIsLoading(false)
-        }
-    }, [send, mech.id, newSnackbarMessage, onLeave])
+export const QuickDeployItem = React.memo(function QuickDeployItem({ isSelected, toggleIsSelected, mech }: QuickDeployItemProps) {
+    const rarityDeets = useMemo(() => getRarityDeets(mech.tier || ""), [mech])
 
     return (
         <Stack
             direction="row"
             spacing="1.2rem"
             alignItems="center"
-            onClick={() => mechDetails && toggleIsSelected && toggleIsSelected()}
+            onClick={() => toggleIsSelected && toggleIsSelected()}
             sx={{
                 position: "relative",
                 py: ".8rem",
@@ -124,73 +35,12 @@ export const QuickDeployItem = React.memo(function QuickDeployItem({
                 pr: ".7rem",
                 backgroundColor: isSelected ? "#FFFFFF20" : "unset",
                 borderRadius: 0.8,
+                cursor: "pointer",
             }}
         >
             {/* Mech image and deploy button */}
-            <Stack>
-                <Stack sx={{ height: "8rem" }}>
-                    <MechThumbnail mech={mech} mechDetails={mechDetails} smallSize />
-                </Stack>
-
-                {/* Deploy button */}
-                {!error && mechDetails && mechStatus?.can_deploy && mechStatus?.status !== MechStatusEnum.Queue && (
-                    <FancyButton
-                        loading={isLoading}
-                        clipThingsProps={{
-                            clipSize: "2px",
-                            clipSlantSize: "0px",
-                            corners: {
-                                topLeft: true,
-                                topRight: true,
-                                bottomLeft: true,
-                                bottomRight: true,
-                            },
-                            backgroundColor: colors.green,
-                            opacity: 1,
-                            border: {
-                                borderColor: colors.green,
-                                borderThickness: "1px",
-                            },
-                            sx: { mt: "-9px" },
-                        }}
-                        sx={{ px: 0, pt: 0, pb: ".2rem", color: "#FFFFFF" }}
-                        onClick={onDeployQueue}
-                    >
-                        <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBlack }}>
-                            DEPLOY
-                        </Typography>
-                    </FancyButton>
-                )}
-
-                {/* Leave button */}
-                {mechStatus?.status === MechStatusEnum.Queue && (
-                    <FancyButton
-                        loading={isLoading}
-                        clipThingsProps={{
-                            clipSize: "2px",
-                            clipSlantSize: "0px",
-                            corners: {
-                                topLeft: true,
-                                topRight: true,
-                                bottomLeft: true,
-                                bottomRight: true,
-                            },
-                            backgroundColor: colors.yellow,
-                            opacity: 1,
-                            border: {
-                                borderColor: colors.yellow,
-                                borderThickness: "1px",
-                            },
-                            sx: { mt: "-9px" },
-                        }}
-                        sx={{ px: 0, pt: 0, pb: ".2rem", color: "#111111" }}
-                        onClick={onLeaveQueue}
-                    >
-                        <Typography variant="subtitle2" sx={{ color: "#111111", fontFamily: fonts.nostromoBlack }}>
-                            UNDEPLOY
-                        </Typography>
-                    </FancyButton>
-                )}
+            <Stack sx={{ height: "8rem" }}>
+                <MechThumbnail mech={mech} smallSize />
             </Stack>
 
             {/* Right side */}
@@ -208,16 +58,10 @@ export const QuickDeployItem = React.memo(function QuickDeployItem({
                                 {rarityDeets.label}
                             </Typography>
 
-                            {mechDetails && (
-                                <MechName
-                                    allowEdit
-                                    mech={mechDetails.name ? mechDetails : mech}
-                                    onRename={(newName) => setMechDetails((prev) => (prev ? { ...prev, name: newName } : prev))}
-                                />
-                            )}
+                            <MechName allowEdit mech={mech} />
                         </Box>
 
-                        <MechGeneralStatus mechID={mech.id} smallVersion />
+                        <QuickDeployMechStatus mech={mech} />
                     </Stack>
 
                     <Typography
@@ -236,16 +80,9 @@ export const QuickDeployItem = React.memo(function QuickDeployItem({
                         {mech.label}
                     </Typography>
 
-                    <MechRepairBlocks mechID={mech?.id || mechDetails?.id} defaultBlocks={mechDetails?.repair_blocks} />
-
-                    {error && (
-                        <Typography variant="body2" sx={{ color: colors.red }}>
-                            {error}
-                        </Typography>
-                    )}
+                    <MechRepairBlocks mechID={mech.id} defaultBlocks={mech.repair_blocks} />
                 </Stack>
             </Stack>
         </Stack>
     )
-},
-propsAreEqual)
+}, propsAreMechEqual)

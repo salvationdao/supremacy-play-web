@@ -4,7 +4,6 @@ import { SvgRepair } from "../../../../assets"
 import { useGlobalNotifications } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import {
-    useGameServerCommandsFaction,
     useGameServerCommandsUser,
     useGameServerSubscriptionFaction,
     useGameServerSubscriptionSecured,
@@ -37,7 +36,6 @@ export const MechGeneralStatus = ({
 }) => {
     const theme = useTheme()
     const { newSnackbarMessage } = useGlobalNotifications()
-    const { send } = useGameServerCommandsFaction("/faction_commander")
     const { send: sendUser } = useGameServerCommandsUser("/user_commander")
     const [mechStatus, setMechStatus] = useState<MechStatus>()
     const textValue = useRef("LOADING...")
@@ -98,9 +96,12 @@ export const MechGeneralStatus = ({
                     color = colors.green
                     break
                 case MechStatusEnum.Queue:
-                    text = "IN QUEUE"
-                    if (payload.queue_position != null) {
-                        text = "POSITION: " + payload.queue_position
+                    if (payload.battle_lobby_number) {
+                        text = `In Lobby ${payload.battle_lobby_number}`
+                    } else if (payload.battle_lobby_queue_position) {
+                        text = `POSITION ${payload.battle_lobby_queue_position}`
+                    } else {
+                        text = "IN QUEUE"
                     }
                     color = colors.yellow
                     break
@@ -128,33 +129,6 @@ export const MechGeneralStatus = ({
             textValue.current = text
             setColour(color)
             setPrimaryColor && setPrimaryColor(color)
-        },
-    )
-
-    // Manually tell the server to update the mech status
-    const triggerStatusUpdate = useCallback(
-        async (currentStatus: string) => {
-            try {
-                if (!currentStatus.includes("QUEUE") && !currentStatus.includes("POSITION") && !currentStatus.includes("BATTLING")) return
-                await send(GameServerKeys.TriggerMechStatusUpdate, {
-                    mech_id: mechID,
-                })
-            } catch (e) {
-                console.error(e)
-            }
-        },
-        [mechID, send],
-    )
-
-    // When the battle queue is updated, tell the server to send the mech status to us again
-    useGameServerSubscriptionFaction<boolean>(
-        {
-            URI: "/queue-update",
-            key: GameServerKeys.MechQueueUpdated,
-        },
-        (payload) => {
-            if (!payload) return
-            triggerStatusUpdate(textValue.current)
         },
     )
 

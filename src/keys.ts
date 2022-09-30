@@ -15,7 +15,9 @@ export enum GameServerKeys {
     SubGameNotification = "GAME:NOTIFICATION",
 
     // Battle Arena
+    SubPlayerMechsBrief = "PLAYER:MECHS:BRIEF",
     SubArenaStatus = "ARENA:STATUS:UPDATED",
+    SunBattleETA = "BATTLE:ETA:UPDATE",
     SubBattleArenaList = "BATTLE:ARENA:LIST",
     SubBattleArenaClosed = "BATTLE:ARENA:CLOSED",
     SubMiniMapAbilityDisplayList = "MINI:MAP:ABILITY:DISPLAY:LIST",
@@ -50,6 +52,10 @@ export enum GameServerKeys {
     SubQueueFeed = "BATTLE:QUEUE:STATUS:SUBSCRIBE",
     SubMechQueuePosition = "PLAYER:ASSET:MECH:QUEUE:SUBSCRIBE",
     MechQueueUpdated = "PLAYER:ASSET:MECH:QUEUE:UPDATE",
+    SubBattleLobbyListUpdate = "BATTLE:LOBBY:LIST:UPDATE",
+    CreateBattleLobby = "BATTLE:LOBBY:CREATE",
+    JoinBattleLobby = "BATTLE:LOBBY:JOIN",
+    LeaveBattleLobby = "BATTLE:LOBBY:LEAVE",
     GetMechs = "PLAYER:ASSET:MECH:LIST",
     PlayerQueueStatus = "PLAYER:QUEUE:STATUS",
     EquipMech = "PLAYER:ASSET:MECH:EQUIP",
@@ -119,7 +125,7 @@ export enum GameServerKeys {
     // Player Profile
     GetNotificationPreferences = "PLAYER:PREFERENCES_GET",
     UpdateNotificationPreferences = "PLAYER:PREFERENCES_UPDATE",
-
+    UpdateMarketingPreferences = "PLAYER:MARKETING:UPDATE",
     EnlistFaction = "FACTION:ENLIST",
 
     //Redeem Coupon Code
@@ -228,7 +234,6 @@ export enum GameServerKeys {
     SubPlayerQuestStats = "PLAYER:QUEST:STAT",
     SubPlayerQuestStatsProgression = "PLAYER:QUEST:PROGRESSIONS",
 
-    NextBattleDetails = "BATTLE:NEXT:DETAILS",
     SubChallengeFunds = "CHALLENGE:FUND",
 
     // Replays
