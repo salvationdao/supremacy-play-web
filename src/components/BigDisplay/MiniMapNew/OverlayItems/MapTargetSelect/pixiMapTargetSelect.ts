@@ -109,7 +109,6 @@ export class PixiMapTargetSelect {
         if (onCancel) {
             this.cancelButton = PIXI.Sprite.from(AbilityCancelPNG)
             this.cancelButton.scale.set(0.9)
-            this.cancelButton.pivot.set(this.cancelButton.width, this.cancelButton.height / 2)
             this.cancelButton.buttonMode = true
             this.cancelButton.interactive = true
             this.cancelButton
@@ -117,6 +116,9 @@ export class PixiMapTargetSelect {
                 .on("pointerover", () => this.cancelButton?.scale.set(0.95))
                 .on("pointerout", () => this.cancelButton?.scale.set(0.9))
             this.bottomContainer.addChild(this.cancelButton)
+            setTimeout(() => {
+                this.cancelButton?.pivot.set(this.cancelButton.width, this.cancelButton.height / 2)
+            }, 180)
         }
 
         // Mouse icon
