@@ -4,7 +4,7 @@ import * as PIXI from "pixi.js"
 import { CircleParticle } from "../../../../../assets"
 import { pixiViewportZIndexes } from "../../../../../containers"
 import { mergeDeep } from "../../../../../helpers"
-import { pulseParticlesConfig } from "../../../../../pixi/particleConfigs"
+import { explosionParticlesConfig, pulseParticlesConfig } from "../../../../../pixi/particleConfigs"
 import { PixiImageIcon } from "../../../../../pixi/pixiImageIcon"
 import { Dimension, DisplayedAbility, GAME_CLIENT_TILE_SIZE, MiniMapDisplayEffectType } from "../../../../../types"
 
@@ -112,6 +112,21 @@ export class PixiMapAbilitySingle {
                 },
                 frequency: 0.4,
             })
+            this.emitter?.destroy()
+            this.emitter = new particles.Emitter(this.rootInner, CircleParticle, config)
+            this.emitter.emit = true
+        }
+
+        // Explosion / range effect
+        if (
+            (ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Explosion ||
+                ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Range) &&
+            radius
+        ) {
+            // Disabled the range radius
+            this.imageIcon.showRangeRadius(undefined)
+
+            const config = mergeDeep(explosionParticlesConfig, { spawnCircle: { r: radius, minR: radius } })
             this.emitter?.destroy()
             this.emitter = new particles.Emitter(this.rootInner, CircleParticle, config)
             this.emitter.emit = true
