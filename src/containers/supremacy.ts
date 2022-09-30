@@ -42,7 +42,7 @@ export const SupremacyContainer = createContainer(() => {
             setHasInteracted(true)
         }
 
-        document.addEventListener("mousedown", callback, { once: true })
+        document.addEventListener("pointerdown", callback, { once: true })
     }, [])
 
     // If server is down and we're not trying to reconnect, reload window after 30 minutes
