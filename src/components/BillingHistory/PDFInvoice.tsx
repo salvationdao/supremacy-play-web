@@ -1,11 +1,12 @@
 import moment from "moment"
 import { Page, Text, View, Document, StyleSheet, Font, Svg, G, Path } from "@react-pdf/renderer"
-import { FiatOrder } from "../../types/fiat"
+import { FiatOrder, FiatOrderStatus } from "../../types/fiat"
 import NostromoRegularBlack from "../../assets/fonts/nostromo-regular/NostromoRegular-Black.otf"
 import ShareTech from "../../assets/fonts/share-tech/share-tech.otf"
 import { User } from "../../types/user"
-import { generatePriceText } from "../../helpers"
+import { generatePriceText, getOrderStatusDeets } from "../../helpers"
 import BigNumber from "bignumber.js"
+import { colors } from "../../theme/theme"
 
 Font.register({
     family: "Nostromo Regular Black",
@@ -105,6 +106,25 @@ const styles = StyleSheet.create({
         paddingRight: 10,
         textTransform: "uppercase",
     },
+    footerHeadingTotal: {
+        flexDirection: "row",
+    },
+    orderStatus: {
+        borderWidth: 1,
+        borderStyle: "solid",
+        borderColor: "#ffffff",
+        paddingLeft: 10,
+        paddingRight: 10,
+        marginLeft: 40,
+        color: "#ffffff",
+        backgroundColor: colors.green,
+    },
+    orderStatusRefunded: {
+        backgroundColor: colors.red,
+    },
+    orderStatusPending: {
+        backgroundColor: colors.lightNeonBlue,
+    },
     footerValue: {
         marginTop: 10,
         textAlign: "center",
@@ -121,6 +141,15 @@ export const PDFInvoice = ({ order, buyer }: Props) => {
     order.items.forEach((item) => {
         total = total.plus(new BigNumber(item.amount).multipliedBy(item.quantity))
     })
+
+    const statusDeets = getOrderStatusDeets(order.order_status)
+
+    let statusStyles = styles.orderStatus
+    if (order.order_status === FiatOrderStatus.Pending) {
+        statusStyles = { ...statusStyles, ...styles.orderStatusPending }
+    } else if (order.order_status === FiatOrderStatus.Refunded) {
+        statusStyles = { ...statusStyles, ...styles.orderStatusRefunded }
+    }
 
     return (
         <Document>
@@ -203,8 +232,11 @@ export const PDFInvoice = ({ order, buyer }: Props) => {
                         </View>
                     </View>
                     <View>
-                        <View style={styles.footerHeading}>
+                        <View style={{ ...styles.footerHeading, ...styles.footerHeadingTotal }}>
                             <Text>Total</Text>
+                            <View style={statusStyles}>
+                                <Text>{statusDeets.label}</Text>
+                            </View>
                         </View>
                         <View style={styles.footerValue}>
                             <Text>{generatePriceText("$USD", total)}</Text>
