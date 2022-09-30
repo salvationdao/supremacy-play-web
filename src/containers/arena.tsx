@@ -26,7 +26,7 @@ export const useArena = ArenaContainer.useContainer
 export interface VoiceStream {
     listen_url: string
     send_url: string
-    is_faction_fommander: boolean
+    is_faction_commander: boolean
     username: string
     user_gid: string
 

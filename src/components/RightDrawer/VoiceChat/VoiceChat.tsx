@@ -2,11 +2,11 @@ import { Box, Button, IconButton, Popover, Slider, Stack, Typography } from "@mu
 import OvenPlayer from "ovenplayer"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { SvgHeadphone, SvgMicrophone, SvgVolume, SvgVolumeMute } from "../../../assets"
-import { useArena, useAuth, useSupremacy, VoiceStream } from "../../../containers"
+import { useArena, useAuth, useGlobalNotifications, useSupremacy, VoiceStream } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { acronym, shadeColor } from "../../../helpers"
 import { useToggle } from "../../../hooks"
-import { useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { Faction, User } from "../../../types"
@@ -19,32 +19,81 @@ import DisconnectSound from "../../../assets/voiceChat/Disconnect.wav"
 export const VoiceChat = () => {
     const [open, setOpen] = useState(false)
     const popoverRef = useRef(null)
+    const { newSnackbarMessage } = useGlobalNotifications()
 
     const { getFaction } = useSupremacy()
     const { user, factionID } = useAuth()
     const { currentArenaID } = useArena()
 
     const [listenStreams, setListenStreams] = useState<VoiceStream[]>()
+    const [hasFactionCommander, setHasFactionCommander] = useState<boolean>(false)
     const [connected, setConnected] = useState(false)
-    const ovenLiveKitInstance = useRef<any>()
-    console.log("this is listen streams ", listenStreams)
 
-    const onListen = useCallback(
-        (s: VoiceStream[]) => {
-            s?.map((l) => {
-                if (l.send_url) {
-                    startStream(l.send_url)
-                }
-                listen(l)
+    const ovenLiveKitInstance = useRef<any>()
+
+    // ws
+    const { send } = useGameServerCommandsFaction("/faction_commander")
+
+    useGameServerSubscriptionSecuredUser<VoiceStream[]>(
+        {
+            URI: `/arena/${currentArenaID}`,
+            key: GameServerKeys.SubPlayerVoiceStream,
+            ready: !!(currentArenaID && factionID),
+        },
+        (payload: VoiceStream[]) => {
+            console.log("voice streams payload", payload)
+            setListenStreams(payload)
+
+            if (payload) {
+                const factionCommander = payload.filter((v) => v.is_faction_commander)
+                setHasFactionCommander(!!(factionCommander && factionCommander.length > 0))
+            }
+        },
+    )
+
+    const leaveFactionCommander = useCallback(async () => {
+        try {
+            const resp = await send<{ success: boolean }>(GameServerKeys.LeaveFactionCommander, {
+                arena_id: currentArenaID,
             })
 
-            // play sound: connect
-            playSound(ConnectSound)
+            if (resp) {
+                // success message
+                newSnackbarMessage("Successfully left as faction commander", "success")
+            } else {
+                newSnackbarMessage("Failed to leave as faction commmander", "error")
+            }
+        } catch (e) {
+            const message = typeof e === "string" ? e : "Failed to leave as faction commmander"
 
-            setConnected(true)
-        },
-        [listenStreams],
-    )
+            console.log("error boi", e)
+
+            // error message
+            newSnackbarMessage(message, "error")
+        }
+    }, [currentArenaID])
+
+    const joinFactionCommander = useCallback(async () => {
+        try {
+            const resp = await send<{ success: boolean }>(GameServerKeys.JoinFactionCommander, {
+                arena_id: currentArenaID,
+            })
+
+            if (resp) {
+                // success message
+                newSnackbarMessage("You are now faction commander", "success")
+            } else {
+                newSnackbarMessage("Failed to update faction commmander", "error")
+            }
+        } catch (e) {
+            const message = typeof e === "string" ? e : "Failed to update faction commmander"
+
+            console.log("error boi", e)
+
+            // error message
+            newSnackbarMessage(message, "error")
+        }
+    }, [currentArenaID])
 
     const playSound = (url: string) => {
         const audio = new Audio(url)
@@ -57,26 +106,27 @@ export const VoiceChat = () => {
         }
 
         // Configuration
-        const config = {
-            callbacks: {
-                error: function (error: any) {
-                    // try reconnect on error
-                    // setTimeout(() => {
-                    //     console.log(" this is error: ", error)
-                    //     console.log("error trying to reconnect oven live kit")
-                    //     startStream(url)
-                    // }, 1000)
-                },
-                connected: function (event: any) {
-                    console.log("fucking connected")
-                },
+        // const config = {
+        //     callbacks: {
+        //         error: function (error: any) {
+        //             // if (!connected) return
 
-                // connectionClosed: function (type, event: any) {},
-                // iceStateChange: function (state: any) {},
-            },
-        }
+        //             console.log(" this is error: ", error)
+        //             //     console.log("error trying to reconnect oven live kit")
+        //             // // try reconnect on error
+        //             // setTimeout(() => {
+        //             //     console.log(" this is error: ", error)
+        //             //     console.log("error trying to reconnect oven live kit")
+        //             //     startStream(url)
+        //             // }, 1000)
+        //         },
+        //         connected: function (event: any) {
+        //             console.log("fucking connected")
+        //         },
+        //     },
+        // }
 
-        const liveKit = OvenLiveKit.create(config)
+        const liveKit = OvenLiveKit.create()
         const constraints = { video: false, audio: true }
         liveKit.getUserMedia(constraints).then(() => {
             liveKit.startStreaming(url)
@@ -115,13 +165,12 @@ export const VoiceChat = () => {
                     })
                 }
 
-                if (newOvenPlayer) {
-                    newOvenPlayer.on("ready", () => {
-                        console.log("voice chat ready Ready.")
-                    })
+                newOvenPlayer.on("ready", () => {
+                    console.log("voice chat ready Ready.")
+                })
 
-                    newOvenPlayer.on("error", (err: { code: number }) => {
-                        // if (!connected) return
+                newOvenPlayer.on("error", (err: { code: number }) => {
+                    if (connected) {
                         if (err.code === 501) {
                             console.log("501: failed to connnect attempting to recconnect", err)
                         } else {
@@ -133,11 +182,11 @@ export const VoiceChat = () => {
                             console.log("error occured trying to reconnect")
 
                             listen(stream)
-                        }, 1000)
-                    })
+                        }, 5000)
+                    }
+                })
 
-                    newOvenPlayer.play()
-                }
+                newOvenPlayer.play()
 
                 return () => {
                     if (newOvenPlayer) {
@@ -147,9 +196,24 @@ export const VoiceChat = () => {
                     }
                 }
             }
-            // eslint-disable-next-line react-hooks/exhaustive-deps
         },
-        [startStream],
+        [connected],
+    )
+    const onListen = useCallback(
+        (s: VoiceStream[]) => {
+            s?.map((l) => {
+                if (l.send_url) {
+                    startStream(l.send_url)
+                }
+                listen(l)
+            })
+
+            // play sound: connect
+            playSound(ConnectSound)
+
+            setConnected(true)
+        },
+        [listenStreams, listen, startStream],
     )
 
     useEffect(() => {
@@ -161,21 +225,25 @@ export const VoiceChat = () => {
                 listen(l)
             })
         }
-    }, [listenStreams])
+    }, [listenStreams, connected, listen, startStream])
 
     const onDisconnect = () => {
         console.log("disconnecting")
-
-        // remove sending stream instance
         if (ovenLiveKitInstance && ovenLiveKitInstance.current) {
             ovenLiveKitInstance.current.remove()
             ovenLiveKitInstance.current = undefined
+
+            console.log("removing ")
         }
 
         // remove listen streams
         if (listenStreams) {
+            console.log("removing listen streams")
+
             listenStreams.map((l) => {
                 const player = OvenPlayer.getPlayerByContainerId(l.listen_url)
+                console.log("listen player", player)
+
                 if (player) {
                     player.off("ready")
                     player.off("error")
@@ -188,19 +256,6 @@ export const VoiceChat = () => {
         playSound(DisconnectSound)
         setConnected(false)
     }
-
-    // player voice chat data
-    useGameServerSubscriptionSecuredUser<VoiceStream[]>(
-        {
-            URI: `/arena/${currentArenaID}`,
-            key: GameServerKeys.SubPlayerVoiceStream,
-            ready: !!(currentArenaID && factionID),
-        },
-        (payload: VoiceStream[]) => {
-            setListenStreams(undefined)
-            setListenStreams(payload)
-        },
-    )
 
     return (
         <>
@@ -226,11 +281,14 @@ export const VoiceChat = () => {
                 <Box sx={{ width: "40rem", height: "55rem" }}>
                     {
                         <VoiceChatInner
+                            hasFactionCommander={hasFactionCommander}
                             connected={connected}
                             onDisconnect={onDisconnect}
                             faction={getFaction(user.faction_id)}
                             listenStreams={listenStreams || []}
                             onListen={onListen}
+                            onJoinFactionCommander={joinFactionCommander}
+                            onLeaveFactionCommander={leaveFactionCommander}
                             user={user}
                         />
                     }
@@ -257,13 +315,22 @@ export const VoiceChatInner = ({
     faction,
     onListen,
     onDisconnect,
+    onJoinFactionCommander,
+    onLeaveFactionCommander,
     connected,
     listenStreams,
+
+    hasFactionCommander,
 }: {
     onListen: (s: VoiceStream[]) => void
     onDisconnect: () => void
+    onJoinFactionCommander: () => void
+    onLeaveFactionCommander: () => void
+
     connected: boolean
     listenStreams: VoiceStream[]
+    hasFactionCommander: boolean
+
     user: User
     faction: Faction
 }) => {
@@ -369,11 +436,19 @@ export const VoiceChatInner = ({
                     )}
 
                     <Box>
-                        <FactionCommanderItem />
+                        {!hasFactionCommander && <FactionCommanderItem onJoinFactionCommander={onJoinFactionCommander} />}
                         {listenStreams &&
                             listenStreams &&
                             listenStreams.map((s, idx) => {
-                                return <PlayerItem user={user} voiceStream={s} faction={faction} key={idx} />
+                                return (
+                                    <PlayerItem
+                                        currentUser={user}
+                                        onLeaveFactionCommander={onLeaveFactionCommander}
+                                        voiceStream={s}
+                                        faction={faction}
+                                        key={idx}
+                                    />
+                                )
                             })}
                     </Box>
                 </Box>
@@ -434,10 +509,30 @@ export const VoiceChatInner = ({
     )
 }
 
-const PlayerItem = ({ voiceStream, user, faction }: { voiceStream: VoiceStream; user: User; faction: Faction }) => {
+const PlayerItem = ({
+    voiceStream,
+    faction,
+    currentUser,
+    onLeaveFactionCommander,
+}: {
+    onLeaveFactionCommander: () => void
+    currentUser: User
+
+    voiceStream: VoiceStream
+    faction: Faction
+}) => {
     const theme = useTheme()
     const bannerColor = useMemo(() => shadeColor(theme.factionTheme.primary, -70), [theme.factionTheme.primary])
     const player = OvenPlayer.getPlayerByContainerId(voiceStream.listen_url)
+    const factionCammenderTag = voiceStream.is_faction_commander ? "(FC)" : ""
+
+    const LeaveFactionCommanderButton = useMemo(() => {
+        return `${currentUser.gid}` === `${voiceStream.user_gid}` && voiceStream.is_faction_commander ? (
+            <Button onClick={onLeaveFactionCommander}>Leave</Button>
+        ) : (
+            <></>
+        )
+    }, [voiceStream.is_faction_commander, currentUser.gid])
 
     const onMute = () => {
         // get oven player via id
@@ -494,7 +589,7 @@ const PlayerItem = ({ voiceStream, user, faction }: { voiceStream: VoiceStream; 
                         text={
                             <>
                                 {`${voiceStream.username}`}
-                                <span style={{ marginLeft: ".2rem", opacity: 0.8 }}>{`#${voiceStream.user_gid}`}</span>
+                                <span style={{ marginLeft: ".2rem", opacity: 0.8 }}>{`#${voiceStream.user_gid} ${factionCammenderTag}`}</span>
                             </>
                         }
                         color={faction.primary_color}
@@ -512,6 +607,7 @@ const PlayerItem = ({ voiceStream, user, faction }: { voiceStream: VoiceStream; 
                         />
                     )}
                 </Box>
+                {LeaveFactionCommanderButton}
 
                 {!voiceStream.send_url && (
                     <>
@@ -541,7 +637,7 @@ const PlayerItem = ({ voiceStream, user, faction }: { voiceStream: VoiceStream; 
     )
 }
 
-const FactionCommanderItem = () => {
+const FactionCommanderItem = ({ onJoinFactionCommander }: { onJoinFactionCommander: () => void }) => {
     const theme = useTheme()
     const bannerColor = useMemo(() => shadeColor(theme.factionTheme.primary, -70), [theme.factionTheme.primary])
 
@@ -568,6 +664,7 @@ const FactionCommanderItem = () => {
                             border: "1px solid " + colors.green,
                         }}
                         onClick={() => {
+                            onJoinFactionCommander()
                             // onListen(listenStreams || [])
                         }}
                     >
