@@ -15,7 +15,7 @@ import { SvgSupremacyLogo } from "../assets"
 import BigNumber from "bignumber.js"
 import { useAuth } from "../containers"
 import { Player } from "../components/Common/Player"
-import { PDFDownloadLink } from "@react-pdf/renderer"
+import { BlobProvider } from "@react-pdf/renderer"
 import { PDFInvoice } from "../components/BillingHistory/PDFInvoice"
 
 export const BillingHistoryItemPage = () => {
@@ -118,51 +118,55 @@ export const BillingHistoryItemPage = () => {
                 <Box sx={{ p: "2rem" }}>
                     <Typography sx={{ fontFamily: fonts.nostromoBlack, fontSize: "1.8rem", mb: "2rem" }}>INVOICE DETAILS</Typography>
                     <Box component={"table"} sx={{ display: "inline-table" }}>
-                        <tr>
-                            <Box component={"td"} sx={{ pr: "4rem" }}>
-                                <Typography>Buyer:</Typography>
-                            </Box>
-                            <td>{user && <Player player={user} />}</td>
-                        </tr>
-                        <tr>
-                            <Box component={"td"} sx={{ pr: "4rem" }}>
-                                <Typography>Order Date:</Typography>
-                            </Box>
-                            <td>
-                                <Typography>{moment(order.created_at).format("DD/MM/YYYY h:mm A")}</Typography>
-                            </td>
-                        </tr>
-                        <tr>
-                            <Box component={"td"} sx={{ pr: "4rem" }}>
-                                <Typography>Order Number:</Typography>
-                            </Box>
-                            <td>
-                                <Typography>{order.order_number}</Typography>
-                            </td>
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <Box component={"td"} sx={{ pr: "4rem" }}>
+                                    <Typography>Buyer:</Typography>
+                                </Box>
+                                <td>{user && <Player player={user} />}</td>
+                            </tr>
+                            <tr>
+                                <Box component={"td"} sx={{ pr: "4rem" }}>
+                                    <Typography>Order Date:</Typography>
+                                </Box>
+                                <td>
+                                    <Typography>{moment(order.created_at).format("DD/MM/YYYY h:mm A")}</Typography>
+                                </td>
+                            </tr>
+                            <tr>
+                                <Box component={"td"} sx={{ pr: "4rem" }}>
+                                    <Typography>Order Number:</Typography>
+                                </Box>
+                                <td>
+                                    <Typography>{order.order_number}</Typography>
+                                </td>
+                            </tr>
+                        </tbody>
                     </Box>
                 </Box>
 
                 <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ m: "2rem" }}>
                     <Typography sx={{ fontFamily: fonts.nostromoBlack, fontSize: "1.8rem" }}>ORDER SUMMARY</Typography>
-                    <FancyButton
-                        clipThingsProps={{
-                            clipSize: "6px",
-                            backgroundColor: colors.neonBlue,
-                            opacity: 1,
-                            border: { borderColor: colors.neonBlue, borderThickness: "1px" },
-                            sx: { position: "relative" },
-                        }}
-                        sx={{ px: "1.2rem", py: 0, color: colors.darkestNeonBlue }}
-                        href={`/billing-history/${id}/pdf`}
-                        target="_blank"
-                    >
-                        <PDFDownloadLink document={<PDFInvoice order={order} />} fileName={`Order #${order.order_number}.pdf`}>
-                            <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold, color: colors.darkestNeonBlue }}>
-                                Download PDF
-                            </Typography>
-                        </PDFDownloadLink>
-                    </FancyButton>
+                    <BlobProvider document={<PDFInvoice order={order} />}>
+                        {({ loading, url }) => (
+                            <FancyButton
+                                clipThingsProps={{
+                                    clipSize: "6px",
+                                    backgroundColor: colors.neonBlue,
+                                    opacity: 1,
+                                    border: { borderColor: colors.neonBlue, borderThickness: "1px" },
+                                    sx: { position: "relative" },
+                                }}
+                                sx={{ px: "1.2rem", py: 0, color: colors.darkestNeonBlue }}
+                                href={url || undefined}
+                                target="_blank"
+                            >
+                                <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold, color: colors.darkestNeonBlue }}>
+                                    {loading ? "Generating PDF..." : "Download PDF"}
+                                </Typography>
+                            </FancyButton>
+                        )}
+                    </BlobProvider>
                 </Stack>
 
                 <div>
@@ -190,14 +194,16 @@ export const BillingHistoryItemPage = () => {
 
                 <Stack direction="row" justifyContent="space-between" alignItems="flex-start" sx={{ mt: "4rem", p: "1rem" }}>
                     <Box component={"table"} sx={{ display: "inline-table" }}>
-                        <tr>
-                            <Box component={"td"} sx={{ pr: "4rem" }}>
-                                <Typography>Payment Type:</Typography>
-                            </Box>
-                            <td>
-                                <Typography>Credit Card</Typography>
-                            </td>
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <Box component={"td"} sx={{ pr: "4rem" }}>
+                                    <Typography>Payment Type:</Typography>
+                                </Box>
+                                <td>
+                                    <Typography>Credit Card</Typography>
+                                </td>
+                            </tr>
+                        </tbody>
                     </Box>
                     <Stack direction="row" justifyContent="flex-end">
                         <Typography variant={"h5"} sx={{ color: "white", fontFamily: fonts.nostromoHeavy }}>
@@ -216,7 +222,7 @@ export const BillingHistoryItemPage = () => {
                 </Stack>
             </>
         )
-    }, [order, isLoading, loadError, primaryColor, background, user, id])
+    }, [order, isLoading, loadError, primaryColor, background, user])
 
     return (
         <Stack
