@@ -1,6 +1,6 @@
 import { Avatar, Box, Stack, Typography } from "@mui/material"
 import React, { useMemo, useState } from "react"
-import { SvgLock } from "../../../assets"
+import { SvgLock, SvgSupToken } from "../../../assets"
 import { useArena, useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { camelToTitle, supFormatter } from "../../../helpers"
@@ -143,31 +143,127 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                         {name ? name : `Lobby #${number}`}
                                     </Typography>
                                     {is_private ? (
-                                        <Typography
-                                            sx={{
-                                                display: "flex",
-                                                alignItems: "baseline",
-                                                color: colors.gold,
-                                            }}
-                                        >
-                                            <SvgLock
-                                                size="1.2rem"
+                                        <Stack direction="row" spacing=".5rem">
+                                            <SvgLock size="1.2rem" fill={colors.gold} />
+                                            <Typography
                                                 sx={{
-                                                    mr: ".5rem",
+                                                    display: "flex",
+                                                    alignItems: "baseline",
+                                                    color: colors.gold,
                                                 }}
-                                            />
-                                            Private Lobby
-                                        </Typography>
+                                            >
+                                                Private Lobby
+                                            </Typography>
+                                            <Box
+                                                component="span"
+                                                sx={{
+                                                    fontFamily: fonts.shareTech,
+                                                }}
+                                            >
+                                                &#8212;
+                                            </Box>
+                                            {entry_fee && entry_fee !== "0" ? (
+                                                <Stack direction="row" spacing=".2rem" alignItems="center">
+                                                    <Typography
+                                                        sx={{
+                                                            color: colors.grey,
+                                                        }}
+                                                    >
+                                                        Entry Fee:
+                                                    </Typography>
+                                                    <SvgSupToken size="1.6rem" fill={colors.gold} />
+                                                    <Typography
+                                                        sx={{
+                                                            color: "white",
+                                                        }}
+                                                    >
+                                                        {supFormatter(entry_fee)}
+                                                    </Typography>
+                                                </Stack>
+                                            ) : (
+                                                <Typography
+                                                    sx={{
+                                                        color: colors.green,
+                                                    }}
+                                                >
+                                                    No entry fee
+                                                </Typography>
+                                            )}
+                                        </Stack>
                                     ) : (
-                                        <Typography
-                                            sx={{
-                                                color: colors.neonBlue,
-                                            }}
-                                        >
-                                            Public Lobby
-                                        </Typography>
+                                        <Stack direction="row" spacing=".5rem" alignItems="baseline">
+                                            <Typography
+                                                sx={{
+                                                    color: colors.neonBlue,
+                                                }}
+                                            >
+                                                Public Lobby
+                                            </Typography>
+                                            <Box
+                                                component="span"
+                                                sx={{
+                                                    fontFamily: fonts.shareTech,
+                                                }}
+                                            >
+                                                &#8212;
+                                            </Box>
+                                            {entry_fee && entry_fee !== "0" ? (
+                                                <Stack direction="row" spacing=".2rem" alignItems="center">
+                                                    <Typography
+                                                        sx={{
+                                                            color: colors.grey,
+                                                        }}
+                                                    >
+                                                        Entry Fee:
+                                                    </Typography>
+                                                    <SvgSupToken size="1.6rem" fill={colors.gold} />
+                                                    <Typography
+                                                        sx={{
+                                                            color: "white",
+                                                        }}
+                                                    >
+                                                        {supFormatter(entry_fee)}
+                                                    </Typography>
+                                                </Stack>
+                                            ) : (
+                                                <Typography
+                                                    sx={{
+                                                        color: colors.green,
+                                                    }}
+                                                >
+                                                    No entry fee
+                                                </Typography>
+                                            )}
+                                        </Stack>
                                     )}
                                 </Box>
+                                {assignedToArenaName && (
+                                    <Stack direction="row" spacing=".5rem">
+                                        <Typography
+                                            component="span"
+                                            sx={{
+                                                color: colors.grey,
+                                                textTransform: "uppercase",
+                                            }}
+                                        >
+                                            Arena:{" "}
+                                        </Typography>
+                                        <Typography
+                                            component="span"
+                                            sx={{
+                                                display: "-webkit-box",
+                                                overflow: "hidden",
+                                                overflowWrap: "anywhere",
+                                                textOverflow: "ellipsis",
+                                                WebkitLineClamp: 1, // change to max number of lines
+                                                WebkitBoxOrient: "vertical",
+                                                fontFamily: fonts.nostromoBold,
+                                            }}
+                                        >
+                                            {assignedToArenaName}
+                                        </Typography>
+                                    </Stack>
+                                )}
                                 <Stack direction="row" spacing=".5rem">
                                     <Typography
                                         component="span"
@@ -218,16 +314,86 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                         {host_by.username}
                                     </Typography>
                                 </Stack>
-                                {assignedToArenaName && <Typography sx={{ fontFamily: fonts.nostromoBlack }}>Arena: {assignedToArenaName}</Typography>}
+                                {/* Prize allocation */}
                                 {entry_fee !== "0" && (
                                     <>
-                                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>JOIN FEE: {entry_fee ? supFormatter(entry_fee) : "0"}</Typography>
-                                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>DISTRIBUTION (1 - 2 - 3)</Typography>
-                                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>
-                                            {`${Math.round(parseFloat(first_faction_cut) * 100)}% - ${Math.round(
-                                                parseFloat(second_faction_cut) * 100,
-                                            )}% - ${Math.round(parseFloat(third_faction_cut) * 100)}%`}
-                                        </Typography>
+                                        <Stack direction="row" spacing="1rem">
+                                            <Stack direction="row" alignItems="center" spacing=".5rem">
+                                                <Box
+                                                    sx={{
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        justifyContent: "center",
+                                                        height: "1.8rem",
+                                                        width: "1.8rem",
+                                                        borderRadius: "50%",
+                                                        backgroundColor: colors.gold,
+                                                    }}
+                                                >
+                                                    <Typography
+                                                        sx={{
+                                                            color: `${colors.grey}aa`,
+                                                            fontSize: "1.4rem",
+                                                        }}
+                                                    >
+                                                        1
+                                                    </Typography>
+                                                </Box>
+                                                <Typography>
+                                                    {`${Math.round(parseFloat(first_faction_cut) * Math.round(parseFloat(entry_fee)))}`} SUPS
+                                                </Typography>
+                                            </Stack>
+                                            <Stack direction="row" alignItems="center" spacing=".5rem">
+                                                <Box
+                                                    sx={{
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        justifyContent: "center",
+                                                        height: "1.8rem",
+                                                        width: "1.8rem",
+                                                        borderRadius: "50%",
+                                                        backgroundColor: colors.silver,
+                                                    }}
+                                                >
+                                                    <Typography
+                                                        sx={{
+                                                            color: `${colors.grey}aa`,
+                                                            fontSize: "1.4rem",
+                                                        }}
+                                                    >
+                                                        2
+                                                    </Typography>
+                                                </Box>
+                                                <Typography>
+                                                    {`${Math.round(parseFloat(second_faction_cut) * Math.round(parseFloat(entry_fee)))}`} SUPS
+                                                </Typography>
+                                            </Stack>
+                                            <Stack direction="row" alignItems="center" spacing=".5rem">
+                                                <Box
+                                                    sx={{
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        justifyContent: "center",
+                                                        height: "1.8rem",
+                                                        width: "1.8rem",
+                                                        borderRadius: "50%",
+                                                        backgroundColor: colors.bronze,
+                                                    }}
+                                                >
+                                                    <Typography
+                                                        sx={{
+                                                            color: `${colors.offWhite}aa`,
+                                                            fontSize: "1.4rem",
+                                                        }}
+                                                    >
+                                                        3
+                                                    </Typography>
+                                                </Box>
+                                                <Typography>
+                                                    {`${Math.round(parseFloat(third_faction_cut) * Math.round(parseFloat(entry_fee)))}`} SUPS
+                                                </Typography>
+                                            </Stack>
+                                        </Stack>
                                     </>
                                 )}
                                 {/* Other faction mech slots */}
