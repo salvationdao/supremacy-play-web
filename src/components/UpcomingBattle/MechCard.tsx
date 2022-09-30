@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material"
-import React, { useState } from "react"
+import React, { useMemo, useState } from "react"
 import { BCBorder, BCDeploy, BCWaiting, RMBorder, RMDeploy, RMWaiting, ZHIBorder, ZHIDeploy, ZHIWaiting } from "../../assets"
 import { FactionIDs } from "../../constants"
 import { useAuth, useUI } from "../../containers"
@@ -46,13 +46,16 @@ const getCardStyles = (factionID: string) => {
 interface MechCardProps {
     mechID: string
     faction: Faction
+
+    mechName?: string
+    avatarURL?: string
 }
 
 const propsAreEqual = (prevProps: MechCardProps, nextProps: MechCardProps) => {
     return prevProps.mechID === nextProps.mechID && prevProps.faction.id === nextProps.faction.id
 }
 
-export const MechCard = React.memo(function MechCard({ mechID, faction }: MechCardProps) {
+export const MechCard = React.memo(function MechCard({ mechID, faction, mechName, avatarURL }: MechCardProps) {
     const { factionID } = useAuth()
     const { setLeftDrawerActiveTabID } = useUI()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
@@ -62,7 +65,7 @@ export const MechCard = React.memo(function MechCard({ mechID, faction }: MechCa
         {
             URI: `/public/mech/${mechID}/details`,
             key: GameServerKeys.PlayerAssetMechDetailPublic,
-            ready: !!mechID,
+            ready: !!mechID && (!mechName || !avatarURL), // don't subscribe, if data is already provided
         },
         (payload) => {
             if (!payload) return
@@ -71,7 +74,18 @@ export const MechCard = React.memo(function MechCard({ mechID, faction }: MechCa
     )
 
     const clickToDeploy = faction.id === factionID && !mechID
-    const avatarUrl = mechDetails?.chassis_skin?.avatar_url || mechDetails?.avatar_url
+    const avatarUrl = avatarURL || mechDetails?.chassis_skin?.avatar_url || mechDetails?.avatar_url
+    const showMechLabel = useMemo((): string => {
+        if (mechName) return mechName
+
+        if (!mechDetails) return "Waiting..."
+
+        if (mechDetails.name) return mechDetails.name
+
+        if (mechDetails.label) return mechDetails.label
+
+        return "Unnamed"
+    }, [mechName, mechDetails])
 
     return (
         <Box
@@ -162,7 +176,7 @@ export const MechCard = React.memo(function MechCard({ mechID, faction }: MechCa
                         textOverflow: "ellipsis",
                     }}
                 >
-                    {mechID ? mechDetails?.name || mechDetails?.label || "Unnamed" : "Waiting..."}
+                    {showMechLabel}
                 </Typography>
             </ClipThing>
         </Box>
