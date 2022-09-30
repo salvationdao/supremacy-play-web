@@ -4,7 +4,7 @@ import FlipMove from "react-flip-move"
 import { ThreeMechsJPG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { useDebounce, usePagination } from "../../../hooks"
-import { useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
+import { useGameServerSubscriptionFaction, useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleLobby } from "../../../types/battle_queue"
@@ -37,7 +37,7 @@ export const BattleLobbies = () => {
 
     // load battle lobbies
     const [battleLobbies, setBattleLobbies] = useState<BattleLobby[]>([])
-    useGameServerSubscriptionSecured<BattleLobby[]>(
+    useGameServerSubscriptionFaction<BattleLobby[]>(
         {
             URI: `/battle_lobbies`,
             key: GameServerKeys.SubBattleLobbyListUpdate,
