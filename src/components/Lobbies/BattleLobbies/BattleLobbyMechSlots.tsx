@@ -169,7 +169,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                 clipThingsProps={{
                                     clipSize: "6px",
                                     clipSlantSize: "0px",
-                                    corners: { bottomLeft: true },
+                                    corners: { bottomLeft: index === 0 },
                                     backgroundColor: theme.factionTheme.primary,
                                     sx: {
                                         flex: 1,

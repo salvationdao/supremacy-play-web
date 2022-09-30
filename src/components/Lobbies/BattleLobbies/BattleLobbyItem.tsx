@@ -3,7 +3,7 @@ import React, { useMemo, useState } from "react"
 import { useArena, useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { camelToTitle, supFormatter } from "../../../helpers"
-import { fonts } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { BattleLobby } from "../../../types/battle_queue"
 import { ClipThing } from "../../Common/ClipThing"
 import { BattleLobbyJoinModal } from "../BattleLobbyJoinModal"
@@ -50,7 +50,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
     const { factionID } = useAuth()
     const { arenaList } = useArena()
     const { factionsAll } = useSupremacy()
-    const { game_map, name, entry_fee, first_faction_cut, second_faction_cut, third_faction_cut, assigned_to_arena_id } = battleLobby
+    const { game_map, name, number, entry_fee, first_faction_cut, second_faction_cut, third_faction_cut, assigned_to_arena_id } = battleLobby
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
     const { battle_lobbies_mechs, ready_at } = battleLobby
@@ -130,7 +130,17 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
 
                             {/* Lobby Info */}
                             <Stack direction="column" flexBasis="250px" height="100%">
-                                <Typography sx={{ fontFamily: fonts.nostromoBlack }}>Lobby: {name}</Typography>
+                                <Typography sx={{ fontFamily: fonts.nostromoBlack }}>
+                                    Lobby:{" "}
+                                    <Box
+                                        component="span"
+                                        sx={{
+                                            color: name ? "white" : colors.grey,
+                                        }}
+                                    >
+                                        {name || `#${number}`}
+                                    </Box>
+                                </Typography>
                                 <Typography sx={{ fontFamily: fonts.nostromoBlack }}>MAP: {game_map ? camelToTitle(game_map.name) : "Random"}</Typography>
                                 {assignedToArenaName && <Typography sx={{ fontFamily: fonts.nostromoBlack }}>Arena: {assignedToArenaName}</Typography>}
                                 {entry_fee !== "0" && (
@@ -168,7 +178,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                             sx={{
                                                 alignItems: "center",
                                                 p: ".5rem",
-                                                backgroundColor: `${myFactionLobbySlots.faction.primary_color}10`,
+                                                backgroundColor: `${myFactionLobbySlots.faction.primary_color}20`,
                                             }}
                                         >
                                             <Avatar
