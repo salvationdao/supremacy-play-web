@@ -1,5 +1,6 @@
 import { User } from "./user"
 import { GameMap } from "./game"
+import { RarityEnum } from "./assets"
 
 export interface BattleLobby {
     id: string
@@ -32,18 +33,35 @@ export interface BattleLobbiesMech {
     label: string
     tier: string
     avatar_url: string
-    factionID: string
+    faction_id: string
     owner?: User
     is_destroyed: boolean
 }
 
-export interface BattleBounty {
-    id: string
-    battle_lobby_id: string
-    targeted_mech_id: string
-    amount: string // sups
-    offered_by_id: string
-    is_closed: boolean
+export interface MechWeaponSlot {
+    mech_id: string
+    weapon_id: string
+    slot_number: number
+    allow_melee: boolean
+    is_skin_inherited: boolean
+    weapon?: Weapon
+}
 
-    offered_by_player: User
+export interface Weapon {
+    label: string
+    avatar_url: string
+    damage: number
+    damage_falloff: number
+    damage_falloff_rate: number
+    power_cost: string
+    projectile_amount: number
+    projectile_speed: string
+    radius: number
+    radius_damage_falloff: number
+    rate_of_fire: string
+    spread: string
+    tier: RarityEnum
+    weapon_type: string
+    is_melee: boolean
+    is_arced: boolean
 }
