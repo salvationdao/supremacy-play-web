@@ -2,7 +2,7 @@ import { ease } from "pixi-ease"
 import * as PIXI from "pixi.js"
 import { pixiViewportZIndexes } from "../../../../../containers"
 import { PixiImageIcon } from "../../../../../pixi/pixiImageIcon"
-import { Dimension, DisplayedAbility, GAME_CLIENT_TILE_SIZE } from "../../../../../types"
+import { Dimension, DisplayedAbility, GAME_CLIENT_TILE_SIZE, MiniMapDisplayEffectType } from "../../../../../types"
 
 export class PixiMapAbilitySingle {
     root: PIXI.Container<PIXI.DisplayObject>
@@ -45,7 +45,7 @@ export class PixiMapAbilitySingle {
 
         // Position
         const pos = ability.location_in_pixels ? ability.location : gridCellToViewportPosition.current(ability.location.x, ability.location.y)
-        this.imageIcon.root.position.set(pos.x, pos.y)
+        this.root.position.set(pos.x, pos.y)
 
         // Radius
         if (ability.radius) {
@@ -64,7 +64,15 @@ export class PixiMapAbilitySingle {
         this.rootInner.addChild(this.imageIcon.root)
         this.root.addChild(this.rootInner)
         this.rootInner.alpha = 0
+
+        // Animations
         ease.add(this.rootInner, { alpha: 1 }, { duration: 500, ease: "linear", removeExisting: true })
+
+        // Drop effect
+        if (ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Drop) {
+            this.rootInner.scale.set(2)
+            ease.add(this.rootInner, { scale: 1 }, { duration: 3000, ease: "easeOutQuad", removeExisting: true })
+        }
     }
 
     destroy() {

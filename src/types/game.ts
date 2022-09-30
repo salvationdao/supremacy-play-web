@@ -206,9 +206,9 @@ export enum MiniMapDisplayEffectType {
     None = "NONE",
     Range = "RANGE",
     Pulse = "PULSE",
-    Drop = "DROP",
     Explosion = "EXPLOSION",
     Fade = "FADE",
+    Drop = "DROP",
     Landmine = "LANDMINE",
 }
 
@@ -216,6 +216,7 @@ export enum MechDisplayEffectType {
     None = "NONE",
     Border = "BORDER",
     Shake = "SHAKE",
+    Pulse = "PULSE",
 }
 
 export interface DisplayedAbility {
