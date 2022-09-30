@@ -35,7 +35,7 @@ interface PendingHiveStateChange {
 
 export const MapAbilities = React.memo(function MapAbilities() {
     const { currentArenaID } = useArena()
-    const { pixiMainItems, gridSizeRef, gridCellToViewportPosition } = useMiniMapPixi()
+    const { pixiMainItems, gridSizeRef, clientPositionToViewportPosition, gridCellToViewportPosition } = useMiniMapPixi()
     const [pixiMapAbilities, setPixiMapAbilities] = useState<PixiMapAbilities>()
 
     // Refs, doesnt cause re-render
@@ -47,12 +47,19 @@ export const MapAbilities = React.memo(function MapAbilities() {
     // Initial setup
     useEffect(() => {
         if (!pixiMainItems) return
-        const pixiMapAbilities = new PixiMapAbilities(pixiMainItems.viewport, gridSizeRef, gridCellToViewportPosition, basicAbilities, complexAbilities)
+        const pixiMapAbilities = new PixiMapAbilities(
+            pixiMainItems.viewport,
+            gridSizeRef,
+            clientPositionToViewportPosition,
+            gridCellToViewportPosition,
+            basicAbilities,
+            complexAbilities,
+        )
         setPixiMapAbilities((prev) => {
             prev?.destroy()
             return pixiMapAbilities
         })
-    }, [pixiMainItems, gridSizeRef, gridCellToViewportPosition])
+    }, [pixiMainItems, gridSizeRef, clientPositionToViewportPosition, gridCellToViewportPosition])
 
     // Cleanup
     useEffect(() => {
@@ -219,7 +226,7 @@ export const MapAbilities = React.memo(function MapAbilities() {
                                     colour,
                                     border_width: 1,
                                     show_below_mechs: true,
-                                    grid_size_multiplier: 0.3,
+                                    grid_size_multiplier: 0.5,
                                     location_in_pixels: true,
                                 }
                                 if (timeOffset === 0) {
@@ -375,6 +382,8 @@ export const MapAbilities = React.memo(function MapAbilities() {
                 )
                 timeouts.current.set(hiveTimeoutID, t)
             }
+
+            console.log(complexAbilities.current)
         },
     )
 

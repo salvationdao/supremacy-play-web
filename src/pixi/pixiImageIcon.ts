@@ -8,10 +8,11 @@ export class PixiImageIcon {
     private icon: PIXI.Container
     private countdownLabel: PIXI.Text
     private animationFrame: number | undefined
+    private imageBorder: PIXI.Graphics
     private rangeRadius: PIXI.Graphics
     private borderColor: string
 
-    constructor(imageUrl: string, width: number, height: number, borderColor: string, centerPivot?: boolean, alpha = 0.8) {
+    constructor(imageUrl: string, width: number, height: number, borderColor: string, centerPivot?: boolean, alpha = 0.8, hideBorder = false) {
         this.borderColor = borderColor
 
         this.root = new PIXI.Container()
@@ -19,18 +20,20 @@ export class PixiImageIcon {
         this.root.sortableChildren = true
 
         // Image border
-        const imageBorder = new PIXI.Graphics()
-        imageBorder.zIndex = 4
+        this.imageBorder = new PIXI.Graphics()
+        this.imageBorder.zIndex = 4
 
         this.icon = new PIXI.Container()
         this.icon.sortableChildren = true
-        this.icon.addChild(imageBorder)
+        this.icon.addChild(this.imageBorder)
         this.icon.alpha = alpha
 
         // Image
         if (imageUrl) {
-            imageBorder.lineStyle(1.2, HEXToVBColor(borderColor))
-            imageBorder.drawRoundedRect(0, 0, width, height, 2)
+            this.imageBorder.lineStyle(1.2, HEXToVBColor(borderColor))
+            this.imageBorder.drawRoundedRect(0, 0, width, height, 2)
+            if (!hideBorder) this.hideBorder()
+
             this.imageSprite = PIXI.Sprite.from(imageUrl)
             this.imageSprite.width = width
             this.imageSprite.height = height
@@ -123,5 +126,9 @@ export class PixiImageIcon {
             this.rangeRadius.drawCircle(0, 0, radius)
             this.rangeRadius.endFill()
         }
+    }
+
+    hideBorder() {
+        this.imageBorder.clear()
     }
 }

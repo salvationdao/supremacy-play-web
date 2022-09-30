@@ -19,6 +19,15 @@ export class PixiMapAbilitySingle {
     constructor(
         ability: DisplayedAbility,
         gridSizeRef: React.MutableRefObject<Dimension>,
+        clientPositionToViewportPosition: React.MutableRefObject<
+            (
+                x: number,
+                y: number,
+            ) => {
+                x: number
+                y: number
+            }
+        >,
         gridCellToViewportPosition: React.MutableRefObject<
             (
                 xCell: number,
@@ -38,7 +47,7 @@ export class PixiMapAbilitySingle {
         this.rootInner.sortableChildren = true
 
         // Create image icon
-        const sizeMultiplier = ability.grid_size_multiplier || 0.5
+        const sizeMultiplier = ability.grid_size_multiplier || 0.7
         this.imageIcon = new PixiImageIcon(
             ability.image_url,
             gridSizeRef.current.width * sizeMultiplier,
@@ -49,13 +58,13 @@ export class PixiMapAbilitySingle {
 
         // Position
         const radius = ability.radius ? (gridSizeRef.current.width * ability.radius) / GAME_CLIENT_TILE_SIZE : undefined
-        const pos = ability.location_in_pixels ? ability.location : gridCellToViewportPosition.current(ability.location.x, ability.location.y)
+        const pos = ability.location_in_pixels
+            ? clientPositionToViewportPosition.current(ability.location.x, ability.location.y)
+            : gridCellToViewportPosition.current(ability.location.x, ability.location.y)
         this.root.position.set(pos.x, pos.y)
 
         // Radius
-        if (radius) {
-            this.imageIcon.showRangeRadius(radius, ability.border_width)
-        }
+        if (radius) this.imageIcon.showRangeRadius(radius, ability.border_width)
 
         // Countdown timer
         if (ability.launching_at) {
@@ -82,6 +91,16 @@ export class PixiMapAbilitySingle {
 
         // Landmines has a 3s arm delay, change image after 3s
         if (ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Landmine) {
+            this.imageIcon.hideBorder()
+
+            // Show an inactive landmine, then after 3s, show the active version
+            if (this.imageIcon.imageSprite) {
+                const newTexture = PIXI.Texture.from(
+                    "https://ninjasoftware-static-media.s3.ap-southeast-2.amazonaws.com/supremacy/mini-map/landmines/landmine.webp",
+                )
+                this.imageIcon.imageSprite.texture = newTexture
+            }
+
             setTimeout(() => {
                 if (this.imageIcon.imageSprite) {
                     const newTexture = PIXI.Texture.from(ability.image_url)
@@ -117,15 +136,14 @@ export class PixiMapAbilitySingle {
 
         // Explosion / range effect
         if (
-            (ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Explosion ||
-                ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Range) &&
-            radius
+            ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Explosion ||
+            ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Range
         ) {
             // Disabled the range radius
             this.imageIcon.showRangeRadius(undefined)
 
             const config = mergeDeep(explosionParticlesConfig, {
-                spawnCircle: { r: radius / 4, minR: radius / 4 },
+                spawnCircle: { r: 1 },
                 emitterLifetime: ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Range ? 2 : 0.45,
             })
             this.emitter?.destroy()
