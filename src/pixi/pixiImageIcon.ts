@@ -32,7 +32,7 @@ export class PixiImageIcon {
         if (imageUrl) {
             this.imageBorder.lineStyle(1.2, HEXToVBColor(borderColor))
             this.imageBorder.drawRoundedRect(0, 0, width, height, 2)
-            if (!hideBorder) this.hideBorder()
+            if (hideBorder) this.hideBorder()
 
             this.imageSprite = PIXI.Sprite.from(imageUrl)
             this.imageSprite.width = width
