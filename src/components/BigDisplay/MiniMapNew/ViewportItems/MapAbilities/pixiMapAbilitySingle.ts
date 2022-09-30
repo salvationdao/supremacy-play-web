@@ -93,6 +93,8 @@ export class PixiMapAbilitySingle {
         if (ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Landmine) {
             this.imageIcon.hideBorder()
 
+            if (ability.noAnim) return
+
             // Show an inactive landmine, then after 3s, show the active version
             if (this.imageIcon.imageSprite) {
                 const newTexture = PIXI.Texture.from(
@@ -152,7 +154,7 @@ export class PixiMapAbilitySingle {
                     max: 0.16,
                 },
                 spawnCircle: { r: radius / 4 },
-                emitterLifetime: ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Range ? 3.5 : 0.3,
+                emitterLifetime: ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Range ? -1 : 0.3,
             })
             this.emitter?.destroy()
             this.emitter = new particles.Emitter(this.rootInner, CircleParticle, config)

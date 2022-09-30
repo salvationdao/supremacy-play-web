@@ -94,8 +94,8 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         iconDimension.current = { width: gridSizeRef.current.width, height: gridSizeRef.current.height }
         // If it's a mini mech, make it look smaller
         if (isAI) {
-            iconDimension.current.width *= 0.7
-            iconDimension.current.height *= 0.7
+            iconDimension.current.width *= 0.6
+            iconDimension.current.height *= 0.6
         }
 
         pixiMapMech.updateStyles(primaryColor, iconDimension.current)
@@ -146,6 +146,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             // Show the dashed line border box around mech is it can be clicked on for the ability
             let showDashedBox = false
             const ability = wn?.game_ability || pa?.ability
+
             if (isAlive && !abilityBorderEffect && ability) {
                 const locationSelectType = ability.location_select_type
                 switch (locationSelectType) {
@@ -164,6 +165,21 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             }
 
             pixiMapMech?.showDashedBox(showDashedBox)
+
+            if (pixiMapMech) {
+                // If the winner/ability is not a mech select type, disable mech click
+                if (
+                    ability &&
+                    ability.location_select_type !== LocationSelectType.MechCommand &&
+                    ability.location_select_type !== LocationSelectType.MechSelect &&
+                    ability.location_select_type !== LocationSelectType.MechSelectAllied &&
+                    ability.location_select_type !== LocationSelectType.MechSelectOpponent
+                ) {
+                    pixiMapMech.rootInner.interactive = false
+                } else {
+                    pixiMapMech.rootInner.interactive = true
+                }
+            }
         }
 
         onSelectMapPositionCallbacks.current[`map-mech-${hash}`] = (
