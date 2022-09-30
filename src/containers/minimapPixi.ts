@@ -118,7 +118,6 @@ export const MiniMapPixiContainer = createContainer(() => {
 
         // Only run if something was changed
         if (prevValue !== wn || (prevValue && wn && !deepEqual(prevValue, wn))) {
-            console.log("useWinner", wn)
             Object.values(onAbilityUseCallbacks.current).forEach((cb) => cb(wn, playerAbility.current))
         }
     })
@@ -140,7 +139,6 @@ export const MiniMapPixiContainer = createContainer(() => {
 
         // Only run if something was changed
         if (prevValue !== mapPos || (prevValue && mapPos && !deepEqual(prevValue, mapPos))) {
-            console.log("selectMapPosition", mapPos)
             Object.values(onSelectMapPositionCallbacks.current).forEach((cb) => cb(mapPos, winner.current, playerAbility.current))
         }
     })
@@ -282,7 +280,6 @@ export const MiniMapPixiContainer = createContainer(() => {
                 }
 
                 send(hubKey, payload)
-                console.log("Sends:", payload)
                 newSnackbarMessage("Successfully submitted target location.", "success")
             } catch (err) {
                 newSnackbarMessage(typeof err === "string" ? err : "Failed to submit target location.", "error")
