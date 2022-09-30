@@ -15,6 +15,8 @@ import { SvgSupremacyLogo } from "../assets"
 import BigNumber from "bignumber.js"
 import { useAuth } from "../containers"
 import { Player } from "../components/Common/Player"
+import { PDFDownloadLink } from "@react-pdf/renderer"
+import { PDFInvoice } from "../components/BillingHistory/PDFInvoice"
 
 export const BillingHistoryItemPage = () => {
     const theme = useTheme()
@@ -152,12 +154,14 @@ export const BillingHistoryItemPage = () => {
                             sx: { position: "relative" },
                         }}
                         sx={{ px: "1.2rem", py: 0, color: colors.darkestNeonBlue }}
-                        href={"#"}
+                        href={`/billing-history/${id}/pdf`}
                         target="_blank"
                     >
-                        <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold, color: colors.darkestNeonBlue }}>
-                            Download PDF
-                        </Typography>
+                        <PDFDownloadLink document={<PDFInvoice order={order} />} fileName={`Order #${order.order_number}.pdf`}>
+                            <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold, color: colors.darkestNeonBlue }}>
+                                Download PDF
+                            </Typography>
+                        </PDFDownloadLink>
                     </FancyButton>
                 </Stack>
 
@@ -212,7 +216,7 @@ export const BillingHistoryItemPage = () => {
                 </Stack>
             </>
         )
-    }, [order, isLoading, loadError, primaryColor, background, user])
+    }, [order, isLoading, loadError, primaryColor, background, user, id])
 
     return (
         <Stack
