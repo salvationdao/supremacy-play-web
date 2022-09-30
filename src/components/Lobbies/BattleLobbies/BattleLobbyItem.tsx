@@ -50,7 +50,8 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
     const { factionID } = useAuth()
     const { arenaList } = useArena()
     const { factionsAll } = useSupremacy()
-    const { game_map, name, number, entry_fee, first_faction_cut, second_faction_cut, third_faction_cut, assigned_to_arena_id } = battleLobby
+    const { host_by, is_private, game_map, name, number, entry_fee, first_faction_cut, second_faction_cut, third_faction_cut, assigned_to_arena_id } =
+        battleLobby
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
     const { battle_lobbies_mechs, ready_at } = battleLobby
@@ -129,19 +130,60 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                             />
 
                             {/* Lobby Info */}
-                            <Stack direction="column" flexBasis="250px" height="100%">
-                                <Typography sx={{ fontFamily: fonts.nostromoBlack }}>
-                                    Lobby:{" "}
-                                    <Box
+                            <Stack direction="column" flexBasis="250px" height="100%" mr="1rem">
+                                <Typography variant="h4" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                    {name ? name : `Lobby #${number}`}
+                                </Typography>
+                                <Stack direction="row" spacing=".5rem">
+                                    <Typography
                                         component="span"
                                         sx={{
-                                            color: name ? "white" : colors.grey,
+                                            color: colors.grey,
+                                            textTransform: "uppercase",
                                         }}
                                     >
-                                        {name || `#${number}`}
-                                    </Box>
-                                </Typography>
-                                <Typography sx={{ fontFamily: fonts.nostromoBlack }}>MAP: {game_map ? camelToTitle(game_map.name) : "Random"}</Typography>
+                                        Map:{" "}
+                                    </Typography>
+                                    <Typography
+                                        component="span"
+                                        sx={{
+                                            display: "-webkit-box",
+                                            overflow: "hidden",
+                                            overflowWrap: "anywhere",
+                                            textOverflow: "ellipsis",
+                                            WebkitLineClamp: 1, // change to max number of lines
+                                            WebkitBoxOrient: "vertical",
+                                            fontFamily: fonts.nostromoBold,
+                                        }}
+                                    >
+                                        {game_map ? camelToTitle(game_map.name) : "Random"}
+                                    </Typography>
+                                </Stack>
+                                <Stack direction="row" spacing=".5rem">
+                                    <Typography
+                                        component="span"
+                                        sx={{
+                                            color: colors.grey,
+                                            textTransform: "uppercase",
+                                        }}
+                                    >
+                                        Hosted by:{" "}
+                                    </Typography>
+                                    <Typography
+                                        component="span"
+                                        sx={{
+                                            display: "-webkit-box",
+                                            overflow: "hidden",
+                                            overflowWrap: "anywhere",
+                                            textOverflow: "ellipsis",
+                                            WebkitLineClamp: 1, // change to max number of lines
+                                            WebkitBoxOrient: "vertical",
+                                            fontFamily: fonts.nostromoBold,
+                                        }}
+                                    >
+                                        {host_by.username}
+                                    </Typography>
+                                </Stack>
                                 {assignedToArenaName && <Typography sx={{ fontFamily: fonts.nostromoBlack }}>Arena: {assignedToArenaName}</Typography>}
                                 {entry_fee !== "0" && (
                                     <>
