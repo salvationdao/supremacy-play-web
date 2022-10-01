@@ -298,11 +298,7 @@ const MiniMapInner = ({ map, isPoppedout, width = 100, height = 100, poppedOutCo
                         </Typography>
                     </Stack>
 
-                    <MiniMapPixi
-                        key={`mini-map-pixi-key-${isStreamBigDisplay}-${isEnlarged}`}
-                        containerDimensions={{ width: sizes.insideWidth, height: sizes.insideHeight }}
-                        poppedOutContainerRef={poppedOutContainerRef}
-                    />
+                    <MiniMapPixi containerDimensions={{ width: sizes.insideWidth, height: sizes.insideHeight }} poppedOutContainerRef={poppedOutContainerRef} />
                 </Box>
 
                 {/* Not scaled map background image, for background only */}
