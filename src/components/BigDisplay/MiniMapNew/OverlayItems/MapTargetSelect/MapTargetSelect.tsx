@@ -91,10 +91,6 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
     useEffect(() => {
         if (!pixiMainItems) return
 
-        // Hide mouse cursor
-        const pixiMapEl = document.getElementById("minimap-pixi-container")
-        if (pixiMapEl) pixiMapEl.style.cursor = "none"
-
         const pixiTargetHint = new PixiMapTargetSelect(
             pixiMainItems.viewport,
             mapMousePosition,
@@ -115,17 +111,17 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
     // Cleanup
     useEffect(() => {
         return () => {
-            // Unhide mouse cursor
-            const pixiMapEl = document.getElementById("minimap-pixi-container")
-            if (pixiMapEl) pixiMapEl.style.cursor = "auto"
-
             pixiTargetHint?.destroy()
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pixiTargetHint])
 
-    // Unhide mouse cursor
+    // Hide the mouse cursor
     useEffect(() => {
+        // Hide mouse cursor
+        const pixiMapEl = document.getElementById("minimap-pixi-container")
+        if (pixiMapEl) pixiMapEl.style.cursor = "none"
+
         return () => {
             const pixiMapEl = document.getElementById("minimap-pixi-container")
             if (pixiMapEl) pixiMapEl.style.cursor = "auto"
