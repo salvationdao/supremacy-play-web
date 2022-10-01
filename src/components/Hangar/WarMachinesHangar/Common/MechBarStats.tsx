@@ -34,24 +34,12 @@ export const MechBarStats = ({
     const boostedHealth = mechDetails?.boosted_max_hitpoints || mech.boosted_max_hitpoints
     const speed = mechDetails?.speed || mech.speed
     const boostedSpeed = mechDetails?.boosted_speed || mech.boosted_speed
-    let powerCoreCapacity = 0
-    let powerCoreRechargeRate = 0
-    let totalShield = 0
-    let totalShieldRechargeRate = 0
-    let boostedTotalShieldRechargeRate = 0
-
-    if (mechDetails) {
-        powerCoreCapacity = mechDetails.power_core?.capacity || 0
-        powerCoreRechargeRate = mechDetails.power_core?.recharge_rate || 0
-
-        mechDetails.utility?.forEach((utility) => {
-            if (utility.shield) {
-                totalShield += utility.shield.hitpoints
-                totalShieldRechargeRate += utility.shield.recharge_rate
-                boostedTotalShieldRechargeRate += utility.shield.boosted_recharge_rate || 0
-            }
-        })
-    }
+    const totalShield = mechDetails?.shield || mech.shield
+    const totalShieldRechargeRate = mechDetails?.shield_recharge_rate || mech.shield_recharge_rate
+    const boostedTotalShieldRechargeRate = mechDetails?.shield_recharge_rate || mech.shield_recharge_rate
+    const totalShieldRechargePowerCost = mechDetails?.shield_recharge_power_cost || mech.shield_recharge_power_cost
+    const powerCoreCapacity = mechDetails?.power_core?.capacity || mech.power_core_capacity || 0
+    const powerCoreRechargeRate = mechDetails?.power_core?.recharge_rate || mech.power_core_recharge_rate || 0
 
     if (iconVersion) {
         return (
@@ -64,6 +52,25 @@ export const MechBarStats = ({
                     boostedTo={boostedHealth}
                     total={3000}
                     Icon={SvgHealth}
+                />
+                <IconStat primaryColor={primaryColor} fontSize={fontSize} label="SHIELD" current={totalShield} total={3000} Icon={SvgShield} />
+                <IconStat
+                    primaryColor={primaryColor}
+                    fontSize={fontSize}
+                    label="SHIELD REGEN"
+                    current={totalShieldRechargeRate}
+                    boostedTo={boostedTotalShieldRechargeRate}
+                    total={1000}
+                    Icon={SvgShieldRegen}
+                />
+                <IconStat
+                    primaryColor={primaryColor}
+                    fontSize={fontSize}
+                    label="SHIELD REGEN POWER COST"
+                    current={totalShieldRechargePowerCost}
+                    total={100}
+                    unit="/S"
+                    Icon={SvgPowerCoreRegen}
                 />
                 <IconStat
                     primaryColor={primaryColor}
@@ -91,16 +98,6 @@ export const MechBarStats = ({
                     total={500}
                     unit="/S"
                     Icon={SvgPowerCoreRegen}
-                />
-                <IconStat primaryColor={primaryColor} fontSize={fontSize} label="SHIELD" current={totalShield} total={3000} Icon={SvgShield} />
-                <IconStat
-                    primaryColor={primaryColor}
-                    fontSize={fontSize}
-                    label="SHIELD REGEN"
-                    current={totalShieldRechargeRate}
-                    boostedTo={boostedTotalShieldRechargeRate}
-                    total={1000}
-                    Icon={SvgShieldRegen}
                 />
             </Stack>
         )
@@ -149,6 +146,35 @@ export const MechBarStats = ({
                     primaryColor={primaryColor}
                     fontSize={fontSize}
                     barHeight={barHeight}
+                    label="SHIELD"
+                    current={totalShield}
+                    total={4000}
+                    Icon={SvgShield}
+                />
+                <BarStat
+                    primaryColor={primaryColor}
+                    fontSize={fontSize}
+                    barHeight={barHeight}
+                    label="SHIELD REGEN"
+                    current={totalShieldRechargeRate}
+                    boostedTo={boostedTotalShieldRechargeRate}
+                    total={500}
+                    Icon={SvgShieldRegen}
+                />
+                <BarStat
+                    primaryColor={primaryColor}
+                    fontSize={fontSize}
+                    barHeight={barHeight}
+                    label="SHIELD REGEN POWER COST"
+                    current={totalShieldRechargePowerCost}
+                    total={100}
+                    unit="/S"
+                    Icon={SvgPowerCoreRegen}
+                />
+                <BarStat
+                    primaryColor={primaryColor}
+                    fontSize={fontSize}
+                    barHeight={barHeight}
                     label="SPEED"
                     current={speed}
                     boostedTo={boostedSpeed}
@@ -174,25 +200,6 @@ export const MechBarStats = ({
                     total={500}
                     unit="/S"
                     Icon={SvgPowerCoreRegen}
-                />
-                <BarStat
-                    primaryColor={primaryColor}
-                    fontSize={fontSize}
-                    barHeight={barHeight}
-                    label="SHIELD"
-                    current={totalShield}
-                    total={4000}
-                    Icon={SvgShield}
-                />
-                <BarStat
-                    primaryColor={primaryColor}
-                    fontSize={fontSize}
-                    barHeight={barHeight}
-                    label="SHIELD REGEN"
-                    current={totalShieldRechargeRate}
-                    boostedTo={boostedTotalShieldRechargeRate}
-                    total={500}
-                    Icon={SvgShieldRegen}
                 />
             </Stack>
         </Box>

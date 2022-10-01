@@ -28,17 +28,21 @@ const sortOptions = [
     { label: SortTypeLabel.RarestDesc, value: SortTypeLabel.RarestDesc },
 ]
 
-interface GetWeaponsRequest {
+export interface GetWeaponsRequest {
+    search: string
     page: number
     page_size: number
+    display_xsyn_mechs?: boolean
+    display_genesis_and_limited?: boolean
     include_market_listed: boolean
     exclude_equipped?: boolean
+    exclude_mech_locked?: boolean
     sort_by: string
     sort_dir: string
+    exclude_ids: string[]
     weapon_types: string[]
     rarities: string[]
     equipped_statuses: string[]
-    search: string
     stat_ammo?: GetWeaponStatFilter
     stat_damage?: GetWeaponStatFilter
     stat_damage_falloff?: GetWeaponStatFilter
@@ -56,7 +60,7 @@ interface GetWeaponStatFilter {
     max?: number
 }
 
-interface GetWeaponsResponse {
+export interface GetWeaponsResponse {
     weapons: Weapon[]
     total: number
 }
@@ -338,6 +342,7 @@ export const WeaponsHangar = () => {
                 sort_by: sortBy,
                 sort_dir: sortDir,
                 include_market_listed: true,
+                exclude_ids: [],
                 weapon_types: weaponTypes,
                 rarities,
                 equipped_statuses: equippedStatuses,

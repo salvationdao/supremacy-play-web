@@ -16,7 +16,7 @@ import {
     SvgWrapperProps,
 } from "../assets"
 import { colors } from "../theme/theme"
-import { AssetItemType, MysteryCrateType, Rarity, UserRank } from "../types"
+import { AssetItemType, Dimension, GAME_CLIENT_TILE_SIZE, MysteryCrateType, Rarity, RarityEnum, UserRank } from "../types"
 
 // Capitalize convert a string "example" to "Example"
 export const Capitalize = (str: string): string => str[0].toUpperCase() + str.substring(1).toLowerCase()
@@ -184,30 +184,30 @@ export const hexToRGB = (hexx: string) => {
 
 export const getRarityDeets = (rarityKey: string): Rarity => {
     switch (rarityKey) {
-        case "COLOSSAL":
-            return { label: "Colossal", color: colors.rarity.COLOSSAL, textColor: "#FFFFFF" }
-        case "RARE":
-            return { label: "Rare", color: colors.rarity.RARE, textColor: "#FFFFFF" }
-        case "LEGENDARY":
-            return { label: "Legendary", color: colors.rarity.LEGENDARY, textColor: "#FFFFFF" }
-        case "ELITE_LEGENDARY":
-            return { label: "Elite Legendary", color: colors.rarity.ELITE_LEGENDARY, textColor: "#FFFFFF" }
-        case "ULTRA_RARE":
-            return { label: "Ultra Rare", color: colors.rarity.ULTRA_RARE, textColor: "#FFFFFF" }
-        case "EXOTIC":
-            return { label: "Exotic", color: colors.rarity.EXOTIC, textColor: "#FFFFFF" }
-        case "GUARDIAN":
-            return { label: "Guardian", color: colors.rarity.GUARDIAN, textColor: "#FFFFFF" }
-        case "MYTHIC":
-            return { label: "Mythic", color: colors.rarity.MYTHIC, textColor: "#000000" }
-        case "DEUS_EX":
-            return { label: "Deus Ex", color: colors.rarity.DEUS_EX, textColor: "#000000" }
-        case "TITAN":
-            return { label: "Titan", color: colors.rarity.TITAN, textColor: "#000000" }
-        case "MEGA":
-            return { label: "Mega", color: colors.rarity.MEGA, textColor: "#FFFFFF" }
+        case RarityEnum.Mega:
+            return { label: "Mega", color: colors.rarity.MEGA, textColor: "#FFFFFF", rank: 11 }
+        case RarityEnum.Colossal:
+            return { label: "Colossal", color: colors.rarity.COLOSSAL, textColor: "#FFFFFF", rank: 10 }
+        case RarityEnum.Rare:
+            return { label: "Rare", color: colors.rarity.RARE, textColor: "#FFFFFF", rank: 9 }
+        case RarityEnum.Legendary:
+            return { label: "Legendary", color: colors.rarity.LEGENDARY, textColor: "#FFFFFF", rank: 8 }
+        case RarityEnum.EliteLegendary:
+            return { label: "Elite Legendary", color: colors.rarity.ELITE_LEGENDARY, textColor: "#FFFFFF", rank: 7 }
+        case RarityEnum.UltraRare:
+            return { label: "Ultra Rare", color: colors.rarity.ULTRA_RARE, textColor: "#FFFFFF", rank: 6 }
+        case RarityEnum.Exotic:
+            return { label: "Exotic", color: colors.rarity.EXOTIC, textColor: "#FFFFFF", rank: 5 }
+        case RarityEnum.Guardian:
+            return { label: "Guardian", color: colors.rarity.GUARDIAN, textColor: "#FFFFFF", rank: 4 }
+        case RarityEnum.Mythic:
+            return { label: "Mythic", color: colors.rarity.MYTHIC, textColor: "#000000", rank: 3 }
+        case RarityEnum.DeusEx:
+            return { label: "Deus Ex", color: colors.rarity.DEUS_EX, textColor: "#000000", rank: 2 }
+        case RarityEnum.Titan:
+            return { label: "Titan", color: colors.rarity.TITAN, textColor: "#000000", rank: 1 }
         default:
-            return { label: "", color: colors.rarity.MEGA, textColor: "#FFFFFF" }
+            return { label: "", color: colors.rarity.MEGA, textColor: "#FFFFFF", rank: 100 }
     }
 }
 
@@ -442,6 +442,40 @@ export const calculateDutchAuctionEndPrice = ({ endAt, dropRate, startPrice }: {
     return Math.max(startPrice - dropRate * timeDiff(new Date(), endAt).minutes, 1)
 }
 
+export const getPowerCoreSizeColor = (powerCoreSize: string | undefined) => {
+    if (!powerCoreSize) return colors.neonBlue
+
+    switch (powerCoreSize.toUpperCase()) {
+        case "SMALL":
+            return colors.yellow
+        case "MEDIUM":
+            return colors.blue
+        case "LARGE":
+            return colors.purple
+        default:
+            return colors.neonBlue
+    }
+}
+
+export const getUtilityTypeColor = (utilityType: string | undefined) => {
+    if (!utilityType) return colors.neonBlue
+
+    switch (utilityType.toUpperCase()) {
+        case "SHIELD":
+            return colors.shield
+        case "ATTACK DRONE":
+            return colors.red
+        case "REPAIR DRONE":
+            return colors.green
+        case "ANTI MISSILE":
+            return colors.black2
+        case "ACCELERATOR":
+            return colors.silver
+        default:
+            return colors.neonBlue
+    }
+}
+
 export const getWeaponTypeColor = (weaponType: string | undefined) => {
     if (!weaponType) return colors.neonBlue
 
@@ -551,11 +585,15 @@ export const getAssetItemDeets = (
     return { icon, color, label, subRoute }
 }
 
-export const generatePriceText = (dollars: number, cents: number) => {
-    const totalDollars = dollars + Math.floor(cents / 100)
-    const remainingCents = cents % 100
+export const generatePriceText = (currency: string, cents: string | BigNumber) => {
+    if (typeof cents === "string") {
+        cents = new BigNumber(cents)
+    }
 
-    return `$${totalDollars}.${remainingCents < 10 ? `0${remainingCents}` : remainingCents}`
+    const totalDollars = cents.div(100).toNumber()
+    const remainingCents = cents.mod(100).toNumber()
+
+    return `${currency} ${totalDollars}.${remainingCents < 10 ? `0${remainingCents}` : remainingCents}`
 }
 
 // Converts number to alphabet letter. E.g. 0 -> "a"
@@ -572,7 +610,7 @@ export const autoTextColor = (hex: string) => {
 }
 
 export const convertCellsToGameLocation = (x: number, y: number, mapLeft: number, mapTop: number) => {
-    const gameClientTileSize = 2000
+    const gameClientTileSize = GAME_CLIENT_TILE_SIZE
     return {
         x: x * gameClientTileSize + gameClientTileSize / 2 + mapLeft,
         y: y * gameClientTileSize + gameClientTileSize / 2 + mapTop,
@@ -580,3 +618,43 @@ export const convertCellsToGameLocation = (x: number, y: number, mapLeft: number
 }
 
 export const diff = (a: number, b: number) => (a > b ? a - b : b - a)
+
+// Adjusts dimensions so that the smallest side fits in a parent dimension, and keeping aspect ratio
+// E.g 1. dimension: = (100, 40), parent dimension = (80, 80), returns (200, 80).
+// E.g 2. dimension: = (80, 100), parent dimension = (40, 40), returns (40, 50).
+export const calculateCoverDimensions = (dimensions: Dimension, containerDimensions: Dimension): Dimension => {
+    const ratio = dimensions.height / dimensions.width
+    const result = { ...dimensions }
+
+    result.width = containerDimensions.width
+    result.height = containerDimensions.width * ratio
+
+    if (result.height < containerDimensions.height) {
+        result.height = containerDimensions.height
+        result.width = containerDimensions.height / ratio
+    }
+
+    return result
+}
+
+export const HEXToVBColor = (hex: string): number => {
+    return parseInt(hex.substring(hex.length - 6), 16)
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const deepEqual = (object1: Record<any, any>, object2: Record<any, any>) => {
+    const keys1 = Object.keys(object1)
+    const keys2 = Object.keys(object2)
+    if (keys1.length !== keys2.length) {
+        return false
+    }
+    for (const key of keys1) {
+        const val1 = object1[key]
+        const val2 = object2[key]
+        const areObjects = isObject(val1) && isObject(val2)
+        if ((areObjects && !deepEqual(val1, val2)) || (!areObjects && val1 !== val2)) {
+            return false
+        }
+    }
+    return true
+}

@@ -1,10 +1,7 @@
 import { Box, Typography } from "@mui/material"
-import { useState } from "react"
 import { ClipThing, FancyButton, TooltipHelper } from "../../.."
 import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
-import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../../keys"
 import { MARKETPLACE_TABS } from "../../../../pages"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechDetails, MechStatus, MechStatusEnum } from "../../../../types"
@@ -12,6 +9,7 @@ import { ItemType } from "../../../../types/marketplace"
 
 export const MechButtons = ({
     mechDetails,
+    mechStatus,
     setSelectedMechDetails,
     setDeployMechModalOpen,
     setRentalMechModalOpen,
@@ -19,6 +17,7 @@ export const MechButtons = ({
     marketLocked,
 }: {
     mechDetails: MechDetails
+    mechStatus?: MechStatus
     setSelectedMechDetails: React.Dispatch<React.SetStateAction<MechDetails | undefined>>
     setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -26,19 +25,6 @@ export const MechButtons = ({
     marketLocked: boolean
 }) => {
     const theme = useTheme()
-    const [mechStatus, setMechStatus] = useState<MechStatus>()
-
-    useGameServerSubscriptionFaction<MechStatus>(
-        {
-            URI: `/queue/${mechDetails.id}`,
-            key: GameServerKeys.SubMechQueuePosition,
-        },
-        (payload) => {
-            if (!payload || mechStatus?.status === MechStatusEnum.Sold) return
-            setMechStatus(payload)
-        },
-    )
-
     const mechState = mechStatus?.status
 
     return (
@@ -54,17 +40,30 @@ export const MechButtons = ({
         >
             <Box sx={{ p: "1rem", gap: ".8rem", display: "grid", gridTemplateColumns: "repeat(2, 1fr)" }}>
                 {/* Button 1 */}
-                <ReusableButton
-                    isFancy
-                    primaryColor={colors.green}
-                    backgroundColor={colors.green}
-                    label="DEPLOY"
-                    disabled={!BATTLE_ARENA_OPEN || !mechStatus?.can_deploy || !mechDetails.battle_ready}
-                    onClick={() => {
-                        setSelectedMechDetails(mechDetails)
-                        setDeployMechModalOpen(true)
-                    }}
-                />
+                {mechState === MechStatusEnum.Battle || mechState === MechStatusEnum.Queue ? (
+                    <ReusableButton
+                        primaryColor="#E0B61B"
+                        secondaryColor="#111111"
+                        backgroundColor="#E0B61B"
+                        label="UNDEPLOY"
+                        disabled={!BATTLE_ARENA_OPEN || !mechState || mechState === MechStatusEnum.Battle}
+                        onClick={() => {
+                            setSelectedMechDetails(mechDetails)
+                        }}
+                    />
+                ) : (
+                    <ReusableButton
+                        isFancy
+                        primaryColor={colors.green}
+                        backgroundColor={colors.green}
+                        label="DEPLOY"
+                        disabled={!BATTLE_ARENA_OPEN || !mechStatus?.can_deploy || !mechDetails.battle_ready}
+                        onClick={() => {
+                            setSelectedMechDetails(mechDetails)
+                            setDeployMechModalOpen(true)
+                        }}
+                    />
+                )}
 
                 {/* Button 2 */}
                 <ReusableButton

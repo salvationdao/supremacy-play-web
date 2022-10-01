@@ -2,7 +2,7 @@ import { Box, keyframes, Typography } from "@mui/material"
 import React, { useCallback, useEffect, useMemo, useRef } from "react"
 import { useTraining } from "../../../../containers"
 import { colors } from "../../../../theme/theme"
-import { Map } from "../../../../types"
+import { Map, GAME_CLIENT_TILE_SIZE } from "../../../../types"
 
 interface RangeIndicatorProps {
     parentRef: React.RefObject<HTMLDivElement>
@@ -15,7 +15,7 @@ interface RangeIndicatorProps {
 export const RangeIndicatorBT = ({ parentRef, mapScale: zoomScale, map, gestureRef, empRef }: RangeIndicatorProps) => {
     const { abilityDetails, playerAbility, winner, empCoords } = useTraining()
     const indicatorRef = useRef<HTMLDivElement>(null)
-    const mapScale = useMemo(() => map?.Width / (map?.Cells_X * 2000), [map])
+    const mapScale = useMemo(() => map?.Width / (map?.Cells_X * GAME_CLIENT_TILE_SIZE), [map])
     const ability = useMemo(() => winner?.game_ability || playerAbility?.ability, [winner, playerAbility])
     const abilityDetail = typeof ability?.game_client_ability_id !== "undefined" ? abilityDetails[ability.game_client_ability_id] : undefined
     const diameter = useMemo(() => (abilityDetail ? abilityDetail.radius * mapScale * zoomScale * 2 : undefined), [abilityDetail, mapScale, zoomScale])

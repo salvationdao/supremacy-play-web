@@ -15,7 +15,9 @@ export enum GameServerKeys {
     SubGameNotification = "GAME:NOTIFICATION",
 
     // Battle Arena
+    SubPlayerMechsBrief = "PLAYER:MECHS:BRIEF",
     SubArenaStatus = "ARENA:STATUS:UPDATED",
+    SunBattleETA = "BATTLE:ETA:UPDATE",
     SubBattleArenaList = "BATTLE:ARENA:LIST",
     SubBattleArenaClosed = "BATTLE:ARENA:CLOSED",
     SubMiniMapAbilityDisplayList = "MINI:MAP:ABILITY:DISPLAY:LIST",
@@ -45,16 +47,25 @@ export enum GameServerKeys {
     SystemMessageSend = "SYSTEM:MESSAGE:SEND",
 
     // Asset / queue
+    JoinQueue = "BATTLE:QUEUE:JOIN",
+    LeaveQueue = "BATTLE:QUEUE:LEAVE",
     SubQueueFeed = "BATTLE:QUEUE:STATUS:SUBSCRIBE",
+    SubMechQueuePosition = "PLAYER:ASSET:MECH:QUEUE:SUBSCRIBE",
+    MechQueueUpdated = "PLAYER:ASSET:MECH:QUEUE:UPDATE",
+    SubBattleLobbyListUpdate = "BATTLE:LOBBY:LIST:UPDATE",
+    CreateBattleLobby = "BATTLE:LOBBY:CREATE",
+    JoinBattleLobby = "BATTLE:LOBBY:JOIN",
+    LeaveBattleLobby = "BATTLE:LOBBY:LEAVE",
     GetMechs = "PLAYER:ASSET:MECH:LIST",
     PlayerQueueStatus = "PLAYER:QUEUE:STATUS",
-    // Weapons
+    EquipMech = "PLAYER:ASSET:MECH:EQUIP",
+    GetMechDetails = "PLAYER:ASSET:MECH:DETAIL",
     GetWeapons = "PLAYER:ASSET:WEAPON:LIST",
     GetWeaponDetails = "PLAYER:ASSET:WEAPON:DETAIL",
-    GetMechDetails = "PLAYER:ASSET:MECH:DETAIL",
-    SubMechQueuePosition = "PLAYER:ASSET:MECH:QUEUE:SUBSCRIBE",
-    JoinQueue = "BATTLE:QUEUE:JOIN",
-    MechQueueUpdated = "PLAYER:ASSET:MECH:QUEUE:UPDATE",
+    GetPowerCores = "PLAYER:ASSET:POWER_CORE:LIST",
+    GetPowerCoreDetails = "PLAYER:ASSET:POWER_CORE:DETAIL",
+    GetUtilities = "PLAYER:ASSET:UTILITY:LIST",
+    GetUtilityDetails = "PLAYER:ASSET:UTILITY:DETAIL",
     TriggerMechStatusUpdate = "PLAYER:ASSET:MECH:STATUS:UPDATE",
     MechRename = "PLAYER:MECH:RENAME",
 
@@ -63,7 +74,6 @@ export enum GameServerKeys {
     SubSaleAbilitiesPrice = "SALE:ABILITIES:PRICE:SUBSCRIBE",
     SubSaleAbilitiesList = "SALE:ABILITIES:LIST:SUBSCRIBE",
     SaleAbilitiesList = "SALE:ABILITIES:LIST",
-    SaleAbilityClaim = "SALE:ABILITY:CLAIM",
     SaleAbilityPurchase = "SALE:ABILITY:PURCHASE",
     PlayerAbilityUse = "PLAYER:ABILITY:USE",
 
@@ -113,7 +123,7 @@ export enum GameServerKeys {
     // Player Profile
     GetNotificationPreferences = "PLAYER:PREFERENCES_GET",
     UpdateNotificationPreferences = "PLAYER:PREFERENCES_UPDATE",
-
+    UpdateMarketingPreferences = "PLAYER:MARKETING:UPDATE",
     EnlistFaction = "FACTION:ENLIST",
 
     //Redeem Coupon Code
@@ -123,10 +133,18 @@ export enum GameServerKeys {
     GetMysteryCrates = "STORE:MYSTERY:CRATES",
     SubMysteryCrate = "STORE:MYSTERY:CRATE:SUBSCRIBE",
     PurchaseMysteryCrate = "STORE:MYSTERY:CRATE:PURCHASE",
-    GetPackages = "STORE:PACKAGES",
 
-    // FIAT
-    BillingHistoryList = "FIAT:BILLING_HISTORY:LIST",
+    // Fiat
+    FiatProductList = "FIAT:PRODUCT:LIST",
+    FiatProductGet = "FIAT:PRODUCT:GET",
+    FiatBillingHistoryList = "FIAT:BILLING_HISTORY:LIST",
+    FiatShoppingCartItemAdd = "FIAT:SHOPPING_CART:ITEM:ADD",
+    FiatShoppingCartItemUpdate = "FIAT:SHOPPING_CART:ITEM:UPDATE",
+    FiatShoppingCartItemRemove = "FIAT:SHOPPING_CART:ITEM:REMOVE",
+    FiatShoppingCartItemClear = "FIAT:SHOPPING_CART:ITEM:CLEAR",
+    FiatShoppingCartExpired = "FIAT:SHOPPING_CART:EXPIRED",
+    FiatShoppingCartUpdated = "FIAT:SHOPPING_CART:UPDATED",
+    FiatCheckoutSetup = "FIAT:CHECKOUT:SETUP",
 
     // Marketplace
     MarketplaceSalesList = "MARKETPLACE:SALES:LIST",
@@ -214,7 +232,6 @@ export enum GameServerKeys {
     SubPlayerQuestStats = "PLAYER:QUEST:STAT",
     SubPlayerQuestStatsProgression = "PLAYER:QUEST:PROGRESSIONS",
 
-    NextBattleDetails = "BATTLE:NEXT:DETAILS",
     SubChallengeFunds = "CHALLENGE:FUND",
 
     // Replays

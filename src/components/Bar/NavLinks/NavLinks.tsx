@@ -6,7 +6,7 @@ import { ROUTES_ARRAY } from "../../../routes"
 import { fonts } from "../../../theme/theme"
 import { FancyButton } from "../../Common/FancyButton"
 
-export const HIDE_NAV_LINKS_WIDTH = 1720
+export const HIDE_NAV_LINKS_WIDTH = 1880
 
 export const NavLinks = () => {
     const hideNavLinks = useMediaQuery(`(max-width:${HIDE_NAV_LINKS_WIDTH}px)`)

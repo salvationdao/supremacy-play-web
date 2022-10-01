@@ -2,15 +2,17 @@ import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import Marquee from "react-fast-marquee"
 import { BuySupsButton, FancyButton, Logo, ProfileCard, WalletDetails } from ".."
 import { SvgDisconnected } from "../../assets"
-import { DRAWER_TRANSITION_DURATION, FEEDBACK_FORM_URL, GAME_BAR_HEIGHT, IS_TESTING_MODE, NEXT_RESET_TIME } from "../../constants"
+import { DRAWER_TRANSITION_DURATION, FEEDBACK_FORM_URL, GAME_BAR_HEIGHT, IS_TESTING_MODE, STAGING_OR_DEV_ONLY, NEXT_RESET_TIME } from "../../constants"
 import { useAuth, useSupremacy } from "../../containers"
 import { hexToRGB, timeSinceInWords } from "../../helpers"
 import { useTimer } from "../../hooks"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { User } from "../../types"
+import { BarSocials } from "./BarSocials"
 import { Messages } from "./Messages/Messages"
 import { NavLinks } from "./NavLinks/NavLinks"
 import { Quests } from "./Quests/Quests"
+import { ShoppingCart } from "./ShoppingCart/ShoppingCart"
 import { Tutorial } from "./Tutorial"
 
 const Countdown = ({ endTime }: { endTime: Date }) => {
@@ -114,6 +116,7 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
                 <Box sx={{ flexGrow: 1 }} />
                 <Tutorial />
                 <BuySupsButton />
+                <BarSocials />
                 <Stack direction="row" alignItems="center" spacing="1.3rem" sx={{ mx: "1.6rem" }}>
                     <SvgDisconnected size="1.7rem" sx={{ pb: ".6rem" }} />
                     <Typography sx={{ fontFamily: fonts.nostromoBold }} variant="caption">
@@ -131,6 +134,7 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
                 <Box sx={{ flexGrow: 1 }} />
                 <Tutorial />
                 <BuySupsButton />
+                <BarSocials />
                 <Stack direction="row" alignItems="center" spacing="1.3rem" sx={{ mx: "1.6rem" }}>
                     <CircularProgress size="1.9rem" sx={{ color: colors.neonBlue, mb: ".5rem !important" }} />
                     <Typography sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoBold }} variant="caption">
@@ -168,7 +172,9 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
             {userID && <WalletDetails />}
             <BuySupsButton />
             {userID && <Quests />}
+            <BarSocials />
             {userID && <Messages />}
+            {userID && STAGING_OR_DEV_ONLY && <ShoppingCart />}
             <ProfileCard userID={userID} user={user} />
         </>
     )

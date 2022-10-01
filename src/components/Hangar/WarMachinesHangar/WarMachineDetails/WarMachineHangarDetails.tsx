@@ -9,7 +9,7 @@ import { getRarityDeets } from "../../../../helpers"
 import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { fonts } from "../../../../theme/theme"
-import { MechDetails } from "../../../../types"
+import { MechDetails, MechStatus, MechStatusEnum } from "../../../../types"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { MechBattleHistoryDetails } from "../../../Marketplace/WarMachinesMarket/WarMachineMarketDetails/MechBattleHistoryDetails"
 import { MechBarStats } from "../Common/MechBarStats"
@@ -18,16 +18,16 @@ import { MechRepairBlocks } from "../Common/MechRepairBlocks"
 import { MechButtons } from "./MechButtons"
 import { MechLoadout } from "./MechLoadout"
 import { MechName } from "./MechName"
-import { MechViewer } from "./MechViewer"
 import { DeployModal } from "./Modals/DeployModal"
 import { RentalModal } from "./Modals/RentalModal"
 import { RepairModal } from "./Modals/RepairModal/RepairModal"
 
 interface WarMachineHangarDetailsProps {
+    drawerContainerRef: React.MutableRefObject<HTMLElement | undefined>
     mechID: string
 }
 
-export const WarMachineHangarDetails = ({ mechID }: WarMachineHangarDetailsProps) => {
+export const WarMachineHangarDetails = ({ drawerContainerRef, mechID }: WarMachineHangarDetailsProps) => {
     const [selectedMechDetails, setSelectedMechDetails] = useState<MechDetails>()
     const [deployMechModalOpen, setDeployMechModalOpen] = useState<boolean>(false)
     const [rentalMechModalOpen, setRentalMechModalOpen] = useState<boolean>(false)
@@ -36,6 +36,7 @@ export const WarMachineHangarDetails = ({ mechID }: WarMachineHangarDetailsProps
     return (
         <>
             <WarMachineHangarDetailsInner
+                drawerContainerRef={drawerContainerRef}
                 mechID={mechID}
                 setSelectedMechDetails={setSelectedMechDetails}
                 setDeployMechModalOpen={setDeployMechModalOpen}
@@ -71,6 +72,7 @@ export const WarMachineHangarDetails = ({ mechID }: WarMachineHangarDetailsProps
 }
 
 interface WarMachineHangarDetailsInnerProps {
+    drawerContainerRef: React.MutableRefObject<HTMLElement | undefined>
     mechID: string
     setSelectedMechDetails: React.Dispatch<React.SetStateAction<MechDetails | undefined>>
     setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -79,6 +81,7 @@ interface WarMachineHangarDetailsInnerProps {
 }
 
 export const WarMachineHangarDetailsInner = ({
+    drawerContainerRef,
     mechID,
     setSelectedMechDetails,
     setDeployMechModalOpen,
@@ -88,8 +91,11 @@ export const WarMachineHangarDetailsInner = ({
     const theme = useTheme()
     const { userID } = useAuth()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
+    const [mechStatus, setMechStatus] = useState<MechStatus>()
 
     const rarityDeets = useMemo(() => getRarityDeets(mechDetails?.chassis_skin?.tier || mechDetails?.tier || ""), [mechDetails])
+
+    const updateMechDetails = (newMechDetails: MechDetails) => setMechDetails(newMechDetails)
 
     useGameServerSubscriptionFaction<MechDetails>(
         {
@@ -102,13 +108,24 @@ export const WarMachineHangarDetailsInner = ({
         },
     )
 
+    useGameServerSubscriptionFaction<MechStatus>(
+        {
+            URI: `/queue/${mechID}`,
+            key: GameServerKeys.SubMechQueuePosition,
+        },
+        (payload) => {
+            if (!payload || payload.status === MechStatusEnum.Sold) return
+            setMechStatus(payload)
+        },
+    )
+
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
     const avatarUrl = mechDetails?.chassis_skin?.avatar_url || mechDetails?.avatar_url
     const imageUrl = mechDetails?.chassis_skin?.image_url || mechDetails?.image_url
 
     return (
-        <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
+        <Stack position="relative" direction="row" spacing="1rem" sx={{ height: "100%" }}>
             {/* Left side */}
             <ClipThing
                 clipSize="10px"
@@ -247,6 +264,7 @@ export const WarMachineHangarDetailsInner = ({
                     {mechDetails && (
                         <MechButtons
                             mechDetails={mechDetails}
+                            mechStatus={mechStatus}
                             setSelectedMechDetails={setSelectedMechDetails}
                             setDeployMechModalOpen={setDeployMechModalOpen}
                             setRentalMechModalOpen={setRentalMechModalOpen}
@@ -268,10 +286,7 @@ export const WarMachineHangarDetailsInner = ({
                 sx={{ height: "100%", flex: 1 }}
             >
                 {mechDetails ? (
-                    <>
-                        <MechLoadout mechDetails={mechDetails} />
-                        <MechViewer mechDetails={mechDetails} />
-                    </>
+                    <MechLoadout drawerContainerRef={drawerContainerRef} mechDetails={mechDetails} mechStatus={mechStatus} onUpdate={updateMechDetails} />
                 ) : (
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                         <CircularProgress size="3rem" sx={{ color: primaryColor }} />

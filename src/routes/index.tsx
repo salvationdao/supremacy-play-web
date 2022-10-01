@@ -18,6 +18,8 @@ import { ReplayPage } from "../pages/ReplayPage"
 import { StorefrontPage } from "../pages/StorefrontPage"
 import { WeaponPage } from "../pages/WeaponPage"
 import { colors } from "../theme/theme"
+import { StorefrontShoppingCartPage } from "../pages/StorefrontShoppingCartPage"
+import { BattleLobbiesPage } from "../pages/BattleLobbiesPage"
 
 // ************
 // ** ROUTES **
@@ -118,6 +120,17 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
     },
 
     // Storefront
+    storefront_shopping_cart: {
+        id: "storefront_shopping_cart",
+        path: "/storefront/shopping-cart",
+        exact: true,
+        Component: StorefrontShoppingCartPage,
+        requireAuth: true,
+        requireFaction: true,
+        matchNavLinkID: "storefront",
+        enable: !IS_TESTING_MODE,
+        pageTitle: "Supremacy - Shopping Cart",
+    },
     storefront: {
         id: "storefront",
         path: "/storefront/:type?",
@@ -171,6 +184,22 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         matchNavLinkID: "marketplace",
         enable: !IS_TESTING_MODE,
         pageTitle: "Supremacy - Marketplace",
+    },
+
+    battle_lobbies: {
+        id: "battle_lobbies",
+        path: "/battle_lobbies",
+        exact: true,
+        Component: BattleLobbiesPage,
+        requireAuth: true,
+        requireFaction: true,
+        navLink: {
+            enable: true,
+            label: "Battle Lobbies",
+        },
+        matchNavLinkID: "battle_lobby",
+        enable: true,
+        pageTitle: "Supremacy - Battle Lobbies",
     },
 
     // Player profile
