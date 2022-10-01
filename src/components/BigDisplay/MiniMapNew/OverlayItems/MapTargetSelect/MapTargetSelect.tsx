@@ -115,6 +115,12 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pixiTargetHint])
 
+    // Unhide mouse cursor
+    useEffect(() => {
+        const pixiMapEl = document.getElementById("minimap-pixi-container")
+        if (pixiMapEl) pixiMapEl.style.cursor = "auto"
+    }, [])
+
     // Update the onTargetConfirm function within
     useEffect(() => {
         if (!pixiTargetHint) return
