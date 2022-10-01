@@ -126,8 +126,10 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
 
     // Unhide mouse cursor
     useEffect(() => {
-        const pixiMapEl = document.getElementById("minimap-pixi-container")
-        if (pixiMapEl) pixiMapEl.style.cursor = "auto"
+        return () => {
+            const pixiMapEl = document.getElementById("minimap-pixi-container")
+            if (pixiMapEl) pixiMapEl.style.cursor = "auto"
+        }
     }, [])
 
     // Update the onTargetConfirm function within
