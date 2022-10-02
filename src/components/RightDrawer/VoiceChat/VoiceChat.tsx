@@ -28,12 +28,35 @@ export const VoiceChat = () => {
     const [listenStreams, setListenStreams] = useState<VoiceStream[]>()
     const [hasFactionCommander, setHasFactionCommander] = useState<boolean>(false)
     const [connected, setConnected] = useState(false)
+    const { send } = useGameServerCommandsFaction("/faction_commander")
 
     const ovenLiveKitInstance = useRef<any>()
 
-    // ws
-    const { send } = useGameServerCommandsFaction("/faction_commander")
+    const startStream = useCallback((url: string) => {
+        if (!url) {
+            return
+        }
 
+        const liveKit = OvenLiveKit.create()
+        const constraints = { video: false, audio: true }
+        liveKit.getUserMedia(constraints).then(() => {
+            liveKit.startStreaming(url)
+        })
+
+        ovenLiveKitInstance.current = liveKit
+    }, [])
+
+    const stopStream = () => {
+        if (ovenLiveKitInstance && ovenLiveKitInstance.current) {
+            ovenLiveKitInstance.current.remove()
+            ovenLiveKitInstance.current = undefined
+            OvenLiveKit.getDevices().then((d: any) => {
+                console.log(d)
+            })
+        }
+    }
+
+    // ws
     useGameServerSubscriptionSecuredUser<VoiceStream[]>(
         {
             URI: `/arena/${currentArenaID}`,
@@ -41,7 +64,6 @@ export const VoiceChat = () => {
             ready: !!(currentArenaID && factionID),
         },
         (payload: VoiceStream[]) => {
-            console.log("voice streams payload", payload)
             setListenStreams(payload)
 
             if (payload) {
@@ -57,18 +79,15 @@ export const VoiceChat = () => {
                 arena_id: currentArenaID,
             })
 
-            if (resp) {
-                // success message
-                newSnackbarMessage("Successfully left as faction commander", "success")
-            } else {
+            if (!resp) {
                 newSnackbarMessage("Failed to leave as faction commmander", "error")
+                return
             }
+
+            stopStream()
+            newSnackbarMessage("Successfully left as faction commander", "success")
         } catch (e) {
             const message = typeof e === "string" ? e : "Failed to leave as faction commmander"
-
-            console.log("error boi", e)
-
-            // error message
             newSnackbarMessage(message, "error")
         }
     }, [currentArenaID])
@@ -79,18 +98,32 @@ export const VoiceChat = () => {
                 arena_id: currentArenaID,
             })
 
-            if (resp) {
-                // success message
-                newSnackbarMessage("You are now faction commander", "success")
-            } else {
+            if (!resp) {
                 newSnackbarMessage("Failed to update faction commmander", "error")
+                return
             }
+
+            newSnackbarMessage("You are now faction commander", "success")
         } catch (e) {
             const message = typeof e === "string" ? e : "Failed to update faction commmander"
+            newSnackbarMessage(message, "error")
+        }
+    }, [currentArenaID])
 
-            console.log("error boi", e)
+    const voteKick = useCallback(async () => {
+        try {
+            const resp = await send<{ success: boolean }>(GameServerKeys.VoiceChatVoteKick, {
+                arena_id: currentArenaID,
+            })
 
-            // error message
+            if (!resp) {
+                newSnackbarMessage("Failed to vote to kick faction commmander", "error")
+                return
+            }
+
+            newSnackbarMessage("Voted to kick faction commander", "success")
+        } catch (e) {
+            const message = typeof e === "string" ? e : "Failed to vote to kick faction commmander"
             newSnackbarMessage(message, "error")
         }
     }, [currentArenaID])
@@ -99,41 +132,6 @@ export const VoiceChat = () => {
         const audio = new Audio(url)
         audio.play()
     }
-
-    const startStream = useCallback((url: string) => {
-        if (!url) {
-            return
-        }
-
-        // Configuration
-        // const config = {
-        //     callbacks: {
-        //         error: function (error: any) {
-        //             // if (!connected) return
-
-        //             console.log(" this is error: ", error)
-        //             //     console.log("error trying to reconnect oven live kit")
-        //             // // try reconnect on error
-        //             // setTimeout(() => {
-        //             //     console.log(" this is error: ", error)
-        //             //     console.log("error trying to reconnect oven live kit")
-        //             //     startStream(url)
-        //             // }, 1000)
-        //         },
-        //         connected: function (event: any) {
-        //             console.log("fucking connected")
-        //         },
-        //     },
-        // }
-
-        const liveKit = OvenLiveKit.create()
-        const constraints = { video: false, audio: true }
-        liveKit.getUserMedia(constraints).then(() => {
-            liveKit.startStreaming(url)
-        })
-
-        ovenLiveKitInstance.current = liveKit
-    }, [])
 
     // listen stream
     const listen: any = useCallback(
@@ -179,8 +177,6 @@ export const VoiceChat = () => {
 
                         // try reconnect on error
                         setTimeout(() => {
-                            console.log("error occured trying to reconnect")
-
                             listen(stream)
                         }, 5000)
                     }
@@ -210,7 +206,6 @@ export const VoiceChat = () => {
 
             // play sound: connect
             playSound(ConnectSound)
-
             setConnected(true)
         },
         [listenStreams, listen, startStream],
@@ -228,22 +223,12 @@ export const VoiceChat = () => {
     }, [listenStreams, connected, listen, startStream])
 
     const onDisconnect = () => {
-        console.log("disconnecting")
-        if (ovenLiveKitInstance && ovenLiveKitInstance.current) {
-            ovenLiveKitInstance.current.remove()
-            ovenLiveKitInstance.current = undefined
-
-            console.log("removing ")
-        }
+        stopStream()
 
         // remove listen streams
         if (listenStreams) {
-            console.log("removing listen streams")
-
             listenStreams.map((l) => {
                 const player = OvenPlayer.getPlayerByContainerId(l.listen_url)
-                console.log("listen player", player)
-
                 if (player) {
                     player.off("ready")
                     player.off("error")
@@ -289,6 +274,7 @@ export const VoiceChat = () => {
                             onListen={onListen}
                             onJoinFactionCommander={joinFactionCommander}
                             onLeaveFactionCommander={leaveFactionCommander}
+                            onVoteKick={voteKick}
                             user={user}
                         />
                     }
@@ -317,6 +303,7 @@ export const VoiceChatInner = ({
     onDisconnect,
     onJoinFactionCommander,
     onLeaveFactionCommander,
+    onVoteKick,
     connected,
     listenStreams,
 
@@ -326,6 +313,7 @@ export const VoiceChatInner = ({
     onDisconnect: () => void
     onJoinFactionCommander: () => void
     onLeaveFactionCommander: () => void
+    onVoteKick: () => void
 
     connected: boolean
     listenStreams: VoiceStream[]
@@ -436,7 +424,7 @@ export const VoiceChatInner = ({
                     )}
 
                     <Box>
-                        {!hasFactionCommander && <FactionCommanderItem onJoinFactionCommander={onJoinFactionCommander} />}
+                        {!hasFactionCommander && <FactionCommanderJoinButton onJoinFactionCommander={onJoinFactionCommander} />}
                         {listenStreams &&
                             listenStreams &&
                             listenStreams.map((s, idx) => {
@@ -444,6 +432,7 @@ export const VoiceChatInner = ({
                                     <PlayerItem
                                         currentUser={user}
                                         onLeaveFactionCommander={onLeaveFactionCommander}
+                                        onVoteKick={onVoteKick}
                                         voiceStream={s}
                                         faction={faction}
                                         key={idx}
@@ -514,10 +503,11 @@ const PlayerItem = ({
     faction,
     currentUser,
     onLeaveFactionCommander,
+    onVoteKick,
 }: {
     onLeaveFactionCommander: () => void
+    onVoteKick: () => void
     currentUser: User
-
     voiceStream: VoiceStream
     faction: Faction
 }) => {
@@ -533,6 +523,10 @@ const PlayerItem = ({
             <></>
         )
     }, [voiceStream.is_faction_commander, currentUser.gid])
+
+    const KickVoteButton = useMemo(() => {
+        return `${currentUser.gid}` !== `${voiceStream.user_gid}` && voiceStream.is_faction_commander ? <Button onClick={onVoteKick}>Vote</Button> : <></>
+    }, [currentUser.gid])
 
     const onMute = () => {
         // get oven player via id
@@ -563,8 +557,6 @@ const PlayerItem = ({
                 player.setVolume(0)
                 return
             }
-
-            console.log("this is volume", volume)
 
             player.setVolume(volume * 100)
         }
@@ -607,6 +599,7 @@ const PlayerItem = ({
                         />
                     )}
                 </Box>
+                {KickVoteButton}
                 {LeaveFactionCommanderButton}
 
                 {!voiceStream.send_url && (
@@ -637,7 +630,7 @@ const PlayerItem = ({
     )
 }
 
-const FactionCommanderItem = ({ onJoinFactionCommander }: { onJoinFactionCommander: () => void }) => {
+const FactionCommanderJoinButton = ({ onJoinFactionCommander }: { onJoinFactionCommander: () => void }) => {
     const theme = useTheme()
     const bannerColor = useMemo(() => shadeColor(theme.factionTheme.primary, -70), [theme.factionTheme.primary])
 
@@ -665,7 +658,6 @@ const FactionCommanderItem = ({ onJoinFactionCommander }: { onJoinFactionCommand
                         }}
                         onClick={() => {
                             onJoinFactionCommander()
-                            // onListen(listenStreams || [])
                         }}
                     >
                         ICON

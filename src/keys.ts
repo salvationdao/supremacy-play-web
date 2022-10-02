@@ -228,6 +228,7 @@ export enum GameServerKeys {
 
     // Voice chat
     SubPlayerVoiceStream = "PLAYER:VOICE:STREAM",
+    VoiceChatVoteKick = "VOICE:VOTE:KICK",
 }
 
 export enum PassportServerKeys {
