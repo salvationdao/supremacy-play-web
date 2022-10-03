@@ -1,4 +1,4 @@
-import { Faction } from "../../../types"
+import { Faction, RoleType } from "../../../types"
 import { BattleLobbiesMech } from "../../../types/battle_queue"
 import { useAuth, useGlobalNotifications, useSupremacy } from "../../../containers"
 import React, { useCallback, useMemo, useState } from "react"
@@ -53,6 +53,7 @@ export const BattleLobbyMechSlots = ({ battleLobbyMechs, isLocked }: { battleLob
                             gid: 0,
                             rank: "NEW_RECRUIT",
                             features: [],
+                            role_type: RoleType.player,
                         },
                         is_destroyed: false,
                     })

@@ -129,6 +129,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const { query: passportLoginCheck } = useQuery(PassportLoginCheck(), false)
     const { query: gameserverLoginCheck } = useQuery(GameServerLoginCheck(), false)
 
+
     const handleVisibilityChange = useCallback(() => {
         if (document["hidden"]) {
             setIsHidden(true)

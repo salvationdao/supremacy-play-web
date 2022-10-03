@@ -32,8 +32,6 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
         }
     }, [localOpen, onClose, preferencesModalOpen])
 
-    console.log(user)
-
     return (
         <>
             <Popover
