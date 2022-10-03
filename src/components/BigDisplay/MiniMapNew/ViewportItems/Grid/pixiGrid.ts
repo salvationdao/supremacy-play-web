@@ -45,7 +45,7 @@ export class PixiGrid {
                         lineHeight: 1,
                     })
                     label.resolution = 4
-                    label.alpha = 0.9
+                    label.alpha = 0.8
                     label.anchor.set(0.5, 0)
                     label.position.set(posX + cellWidth / 2, 0)
                     this.topLabels.addChild(label)
@@ -59,7 +59,7 @@ export class PixiGrid {
                         lineHeight: 1,
                     })
                     label.resolution = 4
-                    label.alpha = 0.9
+                    label.alpha = 0.8
                     label.anchor.set(0, 0.5)
                     label.position.set(3, posY + cellHeight / 2)
                     this.leftLabels.addChild(label)
