@@ -1,7 +1,7 @@
 import { Autocomplete, Box, TextField, Typography } from "@mui/material"
-import { useArena } from "../../../containers"
-import { useTheme } from "../../../containers/theme"
-import { fonts } from "../../../theme/theme"
+import { useArena } from "../../../../containers"
+import { useTheme } from "../../../../containers/theme"
+import { fonts } from "../../../../theme/theme"
 
 export const ArenaSelector = () => {
     const { factionTheme } = useTheme()
@@ -20,7 +20,6 @@ export const ArenaSelector = () => {
             value={currentArena}
             getOptionLabel={(option) => `ARENA - ${option.name.toUpperCase()}`}
             sx={{
-                mb: ".3rem",
                 "&& .MuiInputBase-hiddenLabel": {
                     p: 0,
                     backgroundColor: "unset",
@@ -65,7 +64,7 @@ export const ArenaSelector = () => {
                             height: "unset",
                             fontSize: "1.8rem",
                             fontFamily: fonts.nostromoBold,
-                            borderRadius: 0.5,
+                            borderRadius: 0,
                             border: `${factionTheme.primary}50 2px solid`,
                             backgroundColor: factionTheme.primary,
                             cursor: "pointer",

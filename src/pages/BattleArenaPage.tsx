@@ -1,11 +1,10 @@
 import { Box, Stack } from "@mui/material"
 import React, { useEffect, useState } from "react"
-import { SvgAbility, SvgHistoryClock, SvgRobot } from "../assets"
+import { SvgAbility, SvgHistoryClock } from "../assets"
 import { BattleAbility, BattleEndScreen, BigDisplay, Controls, EarlyAccessWarning, Notifications, WarMachineStats } from "../components"
 import { BattleRewardsSkyHighBanner } from "../components/Common/BannersPromotions/BattleRewardsSkyHighBanner"
 import { PlayerAbilities } from "../components/LeftDrawer/BattleArena/PlayerAbilities/PlayerAbilities"
 import { QuickPlayerAbilities } from "../components/LeftDrawer/BattleArena/QuickPlayerAbilities/QuickPlayerAbilities"
-import { QuickDeploy } from "../components/LeftDrawer/QuickDeploy/QuickDeploy"
 import { BattleArenaCountDown } from "../components/Maintenance/BattleArenaCountDown"
 import { BATTLE_ARENA_OPEN } from "../constants"
 import { useAuth, useDimension, useMobile } from "../containers"
@@ -98,19 +97,6 @@ const BattleArenaPageInner = React.memo(function BattleArenaPageInner() {
                                 </Stack>
                             </Box>
                         </Box>
-                    </Stack>
-                ),
-            },
-            {
-                id: "quick-deploy",
-                icon: <SvgRobot size="1.2rem" sx={{ pt: ".1rem" }} />,
-                label: "QUICK DEPLOY",
-                requireAuth: true,
-                onlyShowOnRoute: "",
-                mountAllTime: true,
-                Component: () => (
-                    <Stack sx={{ position: "relative", height: "100%" }}>
-                        <QuickDeploy />
                     </Stack>
                 ),
             },

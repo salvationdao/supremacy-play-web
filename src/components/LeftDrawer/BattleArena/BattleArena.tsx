@@ -6,7 +6,8 @@ import { BattleAbility } from "./BattleAbility/BattleAbility"
 import { PlayerAbilities } from "./PlayerAbilities/PlayerAbilities"
 import { QuickPlayerAbilities } from "./QuickPlayerAbilities/QuickPlayerAbilities"
 import { UnauthPrompt } from "./Common/UnauthPrompt"
-import { ArenaSelector } from "../ArenaSelector/ArenaSelector"
+import { ArenaSelector } from "./ArenaSelector/ArenaSelector"
+import { AIMatchBanner } from "./AIMatchBanner"
 
 export const BattleArena = () => {
     const { setSmallDisplayRef } = useUI()
@@ -19,7 +20,8 @@ export const BattleArena = () => {
                 <ArenaSelector />
 
                 {/* The minimap or the stream will mount here */}
-                <Box ref={setSmallDisplayRef} sx={{ flexShrink: 0 }} />
+                <Box ref={setSmallDisplayRef} sx={{ flexShrink: 0, mt: "1rem" }} />
+                <AIMatchBanner />
 
                 <Box
                     sx={{
