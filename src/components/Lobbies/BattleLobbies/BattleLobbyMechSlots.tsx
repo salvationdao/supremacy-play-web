@@ -226,8 +226,11 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                             flex: 1,
                                         },
                                     }}
+                                    to={`/mech/${ms.mech_id}`}
                                 >
-                                    View Mech
+                                    <Typography fontSize="1.3rem" fontWeight="fontWeightBold">
+                                        View Mech
+                                    </Typography>
                                 </FancyButton>
                                 {ms.owner?.id === userID && (
                                     <>
