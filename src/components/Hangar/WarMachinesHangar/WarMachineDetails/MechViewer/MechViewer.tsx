@@ -54,30 +54,30 @@ export const MechViewer = React.forwardRef<UnityHandle, MechViewerProps>(functio
                 }}
             />
 
-            <Box
-                sx={{
-                    position: "absolute",
-                    zIndex: 3,
-                    aspectRatio: "1.1",
-                    height: "80%",
-                    left: "50%",
-                    top: "50%",
-                    transform: "translate(-50%, -50%)",
-                    overflow: "hidden",
-                }}
-            >
-                <FeatherFade color={backgroundColor} />
-                {unity ? (
-                    <UnityViewer unityRef={ref} {...props} />
-                ) : (
+            {unity ? (
+                <UnityViewer unityRef={ref} {...props} />
+            ) : (
+                <Box
+                    sx={{
+                        position: "absolute",
+                        zIndex: 3,
+                        aspectRatio: "1.1",
+                        height: "80%",
+                        left: "50%",
+                        top: "50%",
+                        transform: "translate(-50%, -50%)",
+                        overflow: "hidden",
+                    }}
+                >
+                    <FeatherFade color={backgroundColor} />
                     <MediaPreview
                         imageUrl={largeImageUrl || imageUrl || avatarUrl}
                         videoUrls={[animationUrl, cardAnimationUrl]}
                         objectFit="cover"
                         blurBackground
                     />
-                )}
-            </Box>
+                </Box>
+            )}
         </Box>
     )
 })
