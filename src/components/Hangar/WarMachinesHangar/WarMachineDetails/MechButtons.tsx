@@ -47,7 +47,7 @@ export const MechButtons = ({
                         color: colors.yellow,
                     }}
                 >
-                    This mech will be ready to deploy after Nexus Release
+                    This War Machine can be deployed following the Nexus Update.
                 </Typography>
             )}
             <Box sx={{ p: "1rem", gap: ".8rem", display: "grid", gridTemplateColumns: "repeat(2, 1fr)" }}>

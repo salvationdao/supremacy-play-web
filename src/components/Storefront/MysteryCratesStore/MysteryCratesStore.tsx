@@ -132,13 +132,13 @@ export const MysteryCratesStore = () => {
                             ))}
                         </Box>
                         <Typography
-                            variant="h4"
                             sx={{
                                 mt: "2rem",
+                                fontSize: "2.1rem",
                                 textAlign: "center",
                             }}
                         >
-                            Nexus mechs obtained from crates can only be deployed into the Battle Arena after Nexus Release.
+                            Nexus War Machines can be deployed into the Battle Arena following the upcoming Nexus Update.
                         </Typography>
                     </>
                 )
@@ -147,13 +147,13 @@ export const MysteryCratesStore = () => {
             return (
                 <Box sx={{ direction: "ltr", height: 0 }}>
                     <Typography
-                        variant="h4"
                         sx={{
                             mb: "2rem",
+                            fontSize: "1.6rem",
                             textAlign: "center",
                         }}
                     >
-                        Nexus mechs obtained from crates can only be deployed into the Battle Arena after Nexus Release.
+                        Nexus War Machines can be deployed into the Battle Arena following the upcoming Nexus Update.
                     </Typography>
                     <Box
                         sx={{
