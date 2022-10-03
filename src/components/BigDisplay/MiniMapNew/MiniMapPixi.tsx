@@ -119,10 +119,10 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
 
         // When parent container size changes, resize the renderer and viewport dimension
         pixiMainItems.app.renderer.resize(containerDimensions.width, containerDimensions.height)
-        pixiMainItems.viewport.resize(pixiMainItems.app.renderer.width, pixiMainItems.app.renderer.height)
+        pixiMainItems.viewport.resize(containerDimensions.width, containerDimensions.height)
 
         // Fit to cover
-        if (pixiMainItems.app.renderer.width > pixiMainItems.app.renderer.height) {
+        if (containerDimensions.width > containerDimensions.height) {
             pixiMainItems.viewport.fitWidth()
         } else {
             pixiMainItems.viewport.fitHeight()
@@ -223,7 +223,6 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
     return useMemo(
         () => (
             <Box
-                id="minimap-pixi-container"
                 ref={setMiniMapPixiRef}
                 sx={{
                     position: "relative",
