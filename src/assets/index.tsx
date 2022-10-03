@@ -26,7 +26,6 @@ import Graph from "!@svgr/webpack!./svg/Graph.svg"
 import Hamburger from "!@svgr/webpack!./svg/Hamburger.svg"
 import Hammer from "!@svgr/webpack!./svg/Hammer.svg"
 import Health from "!@svgr/webpack!./svg/Health.svg"
-import HideGrid from "!@svgr/webpack!./svg/HideGrid.svg"
 import IntroAnimation from "!@svgr/webpack!./svg/IntroAnimation.svg"
 import Lock from "!@svgr/webpack!./svg/Lock.svg"
 import Logout from "!@svgr/webpack!./svg/Logout.svg"
@@ -1372,11 +1371,5 @@ export const SvgWrench: React.VoidFunctionComponent<SvgWrapperProps> = (props) =
 export const SvgGrid: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Grid />
-    </SvgWrapper>
-)
-
-export const SvgHideGride: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
-    <SvgWrapper {...props}>
-        <HideGrid />
     </SvgWrapper>
 )
