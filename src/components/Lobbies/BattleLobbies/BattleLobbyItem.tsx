@@ -128,7 +128,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                     left: 0,
                                     right: 0,
                                     background: game_map
-                                        ? `linear-gradient(to right, ${backgroundColor}cc 0%, transparent 100%), url(${game_map.background_url})`
+                                        ? `linear-gradient(to right, ${backgroundColor}dd 0%, transparent 100%), url(${game_map.background_url})`
                                         : undefined,
                                     opacity: 0.4,
                                 }}
@@ -423,7 +423,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                             sx={{
                                                 alignItems: "center",
                                                 p: ".5rem",
-                                                backgroundColor: `${myFactionLobbySlots.faction.primary_color}20`,
+                                                backgroundColor: `${myFactionLobbySlots.faction.primary_color}30`,
                                             }}
                                         >
                                             <Avatar
@@ -438,7 +438,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                             <Typography
                                                 sx={{
                                                     fontFamily: fonts.nostromoBlack,
-                                                    color: myFactionLobbySlots.faction.secondary_color,
+                                                    color: "white",
                                                     ml: ".45rem",
                                                     display: "-webkit-box",
                                                     overflow: "hidden",

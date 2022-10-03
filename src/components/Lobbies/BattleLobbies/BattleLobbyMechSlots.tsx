@@ -67,15 +67,15 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                 flexDirection: "column",
                                 padding: "1rem",
                                 borderRadius: 0,
-                                backgroundColor: `${colors.offWhite}10`,
+                                backgroundColor: `${colors.offWhite}20`,
                             }}
                         >
                             <SvgPlus
                                 size="40px"
-                                fill={`${colors.offWhite}20`}
+                                fill={`${colors.offWhite}30`}
                                 sx={{
                                     padding: "2.5rem",
-                                    backgroundColor: `${colors.offWhite}05`,
+                                    backgroundColor: `${colors.offWhite}10`,
                                     borderRadius: "50%",
                                 }}
                             />
@@ -83,7 +83,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                 display="block"
                                 sx={{
                                     mt: "1rem",
-                                    color: `${colors.offWhite}20`,
+                                    color: `${colors.offWhite}30`,
                                 }}
                             >
                                 DEPLOY MECH
@@ -104,7 +104,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                 alignItems: "start",
                                 textAlign: "initial",
                                 borderRadius: 0,
-                                backgroundColor: `${colors.offWhite}10`,
+                                backgroundColor: `${colors.offWhite}20`,
                             }}
                         >
                             <Stack direction="row" spacing="1rem" mb=".5rem">
@@ -131,7 +131,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                             left: "50%",
                                             bottom: 0,
                                             width: "100%",
-                                            transform: "translate(-50%, 50%)",
+                                            transform: "translate(-50%, 0)",
                                             backgroundColor: `${factionLobby.faction.background_color}dd`,
                                         }}
                                     >
@@ -192,7 +192,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                             WebkitBoxOrient: "vertical",
                                             textTransform: "uppercase",
                                             fontWeight: "fontWeightBold",
-                                            color: `${theme.factionTheme.secondary}`,
+                                            color: `#ffffff`,
                                             letterSpacing: 1.1,
                                         }}
                                     >
@@ -207,7 +207,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                                 textOverflow: "ellipsis",
                                                 WebkitLineClamp: 1, // change to max number of lines
                                                 WebkitBoxOrient: "vertical",
-                                                color: `${theme.factionTheme.secondary}aa`,
+                                                color: `#ffffffaa`,
                                             }}
                                         >
                                             {`@${ms.owner.username}#${ms.owner.gid}`}{" "}
@@ -228,42 +228,30 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                     }}
                                     to={`/mech/${ms.mech_id}`}
                                 >
-                                    <Typography fontSize="1.3rem" fontWeight="fontWeightBold">
+                                    <Typography
+                                        fontSize="1.3rem"
+                                        fontWeight="fontWeightBold"
+                                        sx={{
+                                            color: factionLobby.faction.secondary_color,
+                                        }}
+                                    >
                                         View Mech
                                     </Typography>
                                 </FancyButton>
                                 {ms.owner?.id === userID && (
-                                    <>
-                                        {/* <FancyButton
+                                    <FancyButton
+                                        onClick={() => setShowConfirmModal(true)}
+                                        disabled={isLocked || userID !== ms.owner?.id}
+                                        loading={isLoading}
                                         clipThingsProps={{
                                             clipSize: "6px",
                                             clipSlantSize: "0px",
                                             corners: { topLeft: false, topRight: false, bottomLeft: false, bottomRight: false },
-                                            backgroundColor: colors.grey,
-                                        }}
-                                        innerSx={{
-                                            display: "flex",
+                                            backgroundColor: colors.red,
                                         }}
                                     >
-                                        <SvgWrench />
-                                        <Box component="span" ml=".5rem">
-                                            Modify
-                                        </Box>
-                                    </FancyButton> */}
-                                        <FancyButton
-                                            onClick={() => setShowConfirmModal(true)}
-                                            disabled={isLocked || userID !== ms.owner?.id}
-                                            loading={isLoading}
-                                            clipThingsProps={{
-                                                clipSize: "6px",
-                                                clipSlantSize: "0px",
-                                                corners: { topLeft: false, topRight: false, bottomLeft: false, bottomRight: false },
-                                                backgroundColor: colors.red,
-                                            }}
-                                        >
-                                            <SvgLogout />
-                                        </FancyButton>
-                                    </>
+                                        <SvgLogout />
+                                    </FancyButton>
                                 )}
                             </Stack>
                         </Stack>
