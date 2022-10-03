@@ -1,6 +1,6 @@
 import { Box } from "@mui/material"
 import { useEffect, useRef } from "react"
-import { useAuth, useGame, useTraining } from "../../../../containers"
+import { useAuth, useTraining } from "../../../../containers"
 import { glowEffect } from "../../../../theme/keyframes"
 import { BattleAbilityHighlight } from "../../../../types"
 import { SectionCollapsibleBT } from "../../SectionCollapsibleBT"
