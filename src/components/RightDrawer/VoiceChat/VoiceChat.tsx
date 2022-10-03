@@ -15,6 +15,8 @@ import OvenLiveKit from "ovenlivekit"
 
 import ConnectSound from "../../../assets/voiceChat/Connect.wav"
 import DisconnectSound from "../../../assets/voiceChat/Disconnect.wav"
+import { FancyButton } from "../../Common/FancyButton"
+import { ConfirmModal } from "../../Common/ConfirmModal"
 
 export const VoiceChat = () => {
     const [open, setOpen] = useState(false)
@@ -50,9 +52,6 @@ export const VoiceChat = () => {
         if (ovenLiveKitInstance && ovenLiveKitInstance.current) {
             ovenLiveKitInstance.current.remove()
             ovenLiveKitInstance.current = undefined
-            OvenLiveKit.getDevices().then((d: any) => {
-                console.log(d)
-            })
         }
     }
 
@@ -64,9 +63,19 @@ export const VoiceChat = () => {
             ready: !!(currentArenaID && factionID),
         },
         (payload: VoiceStream[]) => {
-            setListenStreams(payload)
+            console.log("vs", payload)
 
             if (payload) {
+                // put faction commander on top
+                const newArr: VoiceStream[] = []
+                const sorted = payload
+                    .sort((x, y) => Number(y.is_faction_commander) - Number(x.is_faction_commander))
+                    .forEach((s) => {
+                        const has = newArr.filter((n) => n.user_gid === s.user_gid)
+                        newArr.push(s)
+                    })
+                setListenStreams(sorted)
+
                 const factionCommander = payload.filter((v) => v.is_faction_commander)
                 setHasFactionCommander(!!(factionCommander && factionCommander.length > 0))
             }
@@ -90,7 +99,7 @@ export const VoiceChat = () => {
             const message = typeof e === "string" ? e : "Failed to leave as faction commmander"
             newSnackbarMessage(message, "error")
         }
-    }, [currentArenaID])
+    }, [currentArenaID, newSnackbarMessage, send])
 
     const joinFactionCommander = useCallback(async () => {
         try {
@@ -108,7 +117,7 @@ export const VoiceChat = () => {
             const message = typeof e === "string" ? e : "Failed to update faction commmander"
             newSnackbarMessage(message, "error")
         }
-    }, [currentArenaID])
+    }, [currentArenaID, newSnackbarMessage, send])
 
     const voteKick = useCallback(async () => {
         try {
@@ -126,7 +135,7 @@ export const VoiceChat = () => {
             const message = typeof e === "string" ? e : "Failed to vote to kick faction commmander"
             newSnackbarMessage(message, "error")
         }
-    }, [currentArenaID])
+    }, [currentArenaID, newSnackbarMessage, send])
 
     const playSound = (url: string) => {
         const audio = new Audio(url)
@@ -134,7 +143,7 @@ export const VoiceChat = () => {
     }
 
     // listen stream
-    const listen: any = useCallback(
+    const listen = useCallback(
         (stream: VoiceStream) => {
             if (document.getElementById(stream.listen_url)) {
                 let newOvenPlayer = OvenPlayer.getPlayerByContainerId(stream.listen_url)
@@ -208,7 +217,7 @@ export const VoiceChat = () => {
             playSound(ConnectSound)
             setConnected(true)
         },
-        [listenStreams, listen, startStream],
+        [listen, startStream],
     )
 
     useEffect(() => {
@@ -250,6 +259,9 @@ export const VoiceChat = () => {
             </Button>
 
             <Popover
+                sx={{
+                    zIndex: 400,
+                }}
                 id={"voice-chat"}
                 open={open}
                 onClose={() => setOpen(false)}
@@ -263,7 +275,7 @@ export const VoiceChat = () => {
                     horizontal: "center",
                 }}
             >
-                <Box sx={{ width: "40rem", height: "55rem" }}>
+                <Box sx={{ width: "50rem", height: "55rem" }}>
                     {
                         <VoiceChatInner
                             hasFactionCommander={hasFactionCommander}
@@ -285,7 +297,7 @@ export const VoiceChat = () => {
                 {listenStreams &&
                     listenStreams.map((s) => {
                         return (
-                            <Box key={s.username + s.user_gid} sx={{ width: "30rem", height: "30rem" }}>
+                            <Box key={s.username + s.user_gid} sx={{ display: "none" }}>
                                 <div id={s.listen_url} key={s.username + s.user_gid} />
                                 <div style={{ fontSize: "2rem", color: "white" }}>user: {s.username}</div>
                             </Box>
@@ -324,6 +336,10 @@ export const VoiceChatInner = ({
 }) => {
     const theme = useTheme()
     const bannerColor = useMemo(() => shadeColor(theme.factionTheme.primary, -70), [theme.factionTheme.primary])
+    const isSpeaker = useMemo(() => {
+        const arr = listenStreams.filter((l) => !!l.send_url && l.user_gid == user.gid)
+        return arr && arr.length > 0
+    }, [listenStreams, user.gid])
 
     return (
         <Stack direction="row" width="100%" height="100%">
@@ -368,29 +384,37 @@ export const VoiceChatInner = ({
 
                         <Box>
                             {connected ? (
-                                <Button
-                                    sx={{
-                                        color: colors.red,
-                                        fontSize: "1.2rem",
-                                        border: "1px solid " + colors.red,
+                                <FancyButton
+                                    clipThingsProps={{
+                                        clipSize: "5px",
+                                        backgroundColor: colors.red,
+                                        border: { borderColor: colors.red, borderThickness: "1px" },
+                                        sx: { position: "relative" },
                                     }}
+                                    sx={{ px: "1rem", pt: 0, pb: ".1rem", minWidth: "7rem", color: "#FFFFFF" }}
                                     onClick={onDisconnect}
                                 >
-                                    Disconnect
-                                </Button>
+                                    <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                        Disconnect
+                                    </Typography>
+                                </FancyButton>
                             ) : (
-                                <Button
-                                    sx={{
-                                        color: colors.green,
-                                        fontSize: "1.2rem",
-                                        border: "1px solid " + colors.green,
+                                <FancyButton
+                                    clipThingsProps={{
+                                        clipSize: "5px",
+                                        backgroundColor: colors.green,
+                                        border: { borderColor: colors.green, borderThickness: "1px" },
+                                        sx: { position: "relative" },
                                     }}
+                                    sx={{ px: "1rem", pt: 0, pb: ".1rem", minWidth: "7rem", color: "#FFFFFF" }}
                                     onClick={() => {
                                         onListen(listenStreams || [])
                                     }}
                                 >
-                                    Connect
-                                </Button>
+                                    <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                        Connect
+                                    </Typography>
+                                </FancyButton>
                             )}
                         </Box>
                     </Stack>
@@ -431,6 +455,7 @@ export const VoiceChatInner = ({
                                 return (
                                     <PlayerItem
                                         currentUser={user}
+                                        isSpeaker={isSpeaker}
                                         onLeaveFactionCommander={onLeaveFactionCommander}
                                         onVoteKick={onVoteKick}
                                         voiceStream={s}
@@ -498,35 +523,112 @@ export const VoiceChatInner = ({
     )
 }
 
+enum ConfirmModalKeys {
+    LeaveFactionCommander = "LeaveFactionCommander",
+    JoinFactionCommander = "JoinFactionCommander",
+    VoteKickFactionCommander = "VoteKickFactionCommander",
+}
 const PlayerItem = ({
     voiceStream,
     faction,
     currentUser,
     onLeaveFactionCommander,
     onVoteKick,
+    isSpeaker,
 }: {
     onLeaveFactionCommander: () => void
     onVoteKick: () => void
     currentUser: User
     voiceStream: VoiceStream
     faction: Faction
+    isSpeaker: boolean
 }) => {
     const theme = useTheme()
     const bannerColor = useMemo(() => shadeColor(theme.factionTheme.primary, -70), [theme.factionTheme.primary])
     const player = OvenPlayer.getPlayerByContainerId(voiceStream.listen_url)
     const factionCammenderTag = voiceStream.is_faction_commander ? "(FC)" : ""
+    const [confirmModal, setConfirmModal] = useState<ConfirmModalKeys | undefined>(undefined)
 
     const LeaveFactionCommanderButton = useMemo(() => {
         return `${currentUser.gid}` === `${voiceStream.user_gid}` && voiceStream.is_faction_commander ? (
-            <Button onClick={onLeaveFactionCommander}>Leave</Button>
+            <>
+                <FancyButton
+                    clipThingsProps={{
+                        clipSize: "5px",
+                        backgroundColor: colors.red,
+                        border: { borderColor: colors.red, borderThickness: "1px" },
+                        sx: { position: "relative" },
+                    }}
+                    sx={{ px: "1rem", pt: 0, pb: ".1rem", color: "#FFFFFF" }}
+                    onClick={() => setConfirmModal(ConfirmModalKeys.LeaveFactionCommander)}
+                >
+                    LEAVE
+                </FancyButton>
+
+                {confirmModal === ConfirmModalKeys.LeaveFactionCommander && (
+                    <ConfirmModal
+                        title="LEAVE AS FACTION COMMANDER"
+                        onConfirm={() => {
+                            onLeaveFactionCommander()
+                            setConfirmModal(undefined)
+                        }}
+                        onClose={() => setConfirmModal(undefined)}
+                        // isLoading={isLoading}
+                        // error={error}
+                    >
+                        <></>
+                    </ConfirmModal>
+                )}
+            </>
+        ) : (
+            <> </>
+        )
+    }, [voiceStream.is_faction_commander, currentUser.gid, voiceStream.user_gid, onLeaveFactionCommander, confirmModal])
+
+    const KickVoteButton = useMemo(() => {
+        return `${currentUser.gid}` !== `${voiceStream.user_gid}` && voiceStream.is_faction_commander && isSpeaker ? (
+            <>
+                <FancyButton
+                    clipThingsProps={{
+                        clipSize: "5px",
+                        backgroundColor: colors.red,
+                        border: { borderColor: colors.red, borderThickness: "1px" },
+                        sx: { position: "relative" },
+                    }}
+                    sx={{ px: "1rem", pt: 0, pb: ".1rem", color: "#FFFFFF" }}
+                    innerSx={{ width: "17rem" }}
+                    onClick={() => setConfirmModal(ConfirmModalKeys.VoteKickFactionCommander)}
+                >
+                    KICK VOTE ({voiceStream.current_kick_vote})
+                </FancyButton>
+                {confirmModal === ConfirmModalKeys.VoteKickFactionCommander && (
+                    <ConfirmModal
+                        title="VOTE TO KICK FACTION COMMANDER"
+                        onConfirm={() => {
+                            onVoteKick()
+                            setConfirmModal(undefined)
+                        }}
+                        onClose={() => setConfirmModal(undefined)}
+                        // isLoading={isLoading}
+                        // error={error}
+                    >
+                        <></>
+                    </ConfirmModal>
+                )}
+            </>
         ) : (
             <></>
         )
-    }, [voiceStream.is_faction_commander, currentUser.gid])
-
-    const KickVoteButton = useMemo(() => {
-        return `${currentUser.gid}` !== `${voiceStream.user_gid}` && voiceStream.is_faction_commander ? <Button onClick={onVoteKick}>Vote</Button> : <></>
-    }, [currentUser.gid])
+    }, [
+        currentUser.gid,
+        voiceStream.user_gid,
+        voiceStream.is_faction_commander,
+        voiceStream.current_kick_vote,
+        voiceStream.send_url,
+        onVoteKick,
+        confirmModal,
+        isSpeaker,
+    ])
 
     const onMute = () => {
         // get oven player via id
@@ -560,7 +662,7 @@ const PlayerItem = ({
 
             player.setVolume(volume * 100)
         }
-    }, [volume, isMute])
+    }, [volume, isMute, player])
 
     return (
         <>
@@ -584,7 +686,7 @@ const PlayerItem = ({
                                 <span style={{ marginLeft: ".2rem", opacity: 0.8 }}>{`#${voiceStream.user_gid} ${factionCammenderTag}`}</span>
                             </>
                         }
-                        color={faction.primary_color}
+                        color={voiceStream.is_faction_commander ? colors.yellow : "#FFF"}
                         imageUrl={faction.logo_url}
                         {...StyledImageText}
                     />
@@ -599,8 +701,6 @@ const PlayerItem = ({
                         />
                     )}
                 </Box>
-                {KickVoteButton}
-                {LeaveFactionCommanderButton}
 
                 {!voiceStream.send_url && (
                     <>
@@ -620,11 +720,15 @@ const PlayerItem = ({
                             }}
                         />
 
-                        <IconButton size="small" onClick={onMute} sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}>
+                        <IconButton size="small" onClick={onMute} sx={{ opacity: 0.5, mr: "1rem", transition: "all .2s", ":hover": { opacity: 1 } }}>
                             {isMute || volume <= 0 ? <SvgVolumeMute size="2rem" sx={{ pb: 0 }} /> : <SvgVolume size="2rem" sx={{ pb: 0 }} />}
                         </IconButton>
+
+                        {KickVoteButton}
                     </>
                 )}
+
+                {LeaveFactionCommanderButton}
             </Box>
         </>
     )
@@ -633,6 +737,7 @@ const PlayerItem = ({
 const FactionCommanderJoinButton = ({ onJoinFactionCommander }: { onJoinFactionCommander: () => void }) => {
     const theme = useTheme()
     const bannerColor = useMemo(() => shadeColor(theme.factionTheme.primary, -70), [theme.factionTheme.primary])
+    const [confirmModal, setConfirmModal] = useState(false)
 
     return (
         <>
@@ -650,20 +755,36 @@ const FactionCommanderJoinButton = ({ onJoinFactionCommander }: { onJoinFactionC
                 <Stack width="100%" direction={"row"} justifyContent="space-between" alignItems="center">
                     <Typography sx={{ textTransfrom: "uppercase" }}>NO FACTION COMMANDER</Typography>
 
-                    <Button
-                        sx={{
-                            color: colors.green,
-                            fontSize: "1.2rem",
-                            border: "1px solid " + colors.green,
+                    <FancyButton
+                        clipThingsProps={{
+                            clipSize: "5px",
+                            backgroundColor: colors.green,
+                            border: { borderColor: colors.green, borderThickness: "1px" },
+                            sx: { position: "relative" },
                         }}
-                        onClick={() => {
-                            onJoinFactionCommander()
-                        }}
+                        sx={{ px: "1rem", pt: 0, pb: ".1rem", color: "#FFFFFF" }}
+                        innerSx={{}}
+                        onClick={() => setConfirmModal(true)}
                     >
-                        ICON
-                    </Button>
+                        become faction commander
+                    </FancyButton>
                 </Stack>
             </Box>
+
+            {confirmModal && (
+                <ConfirmModal
+                    title="BECOME FACTION COMMANDER"
+                    onConfirm={() => {
+                        onJoinFactionCommander()
+                        setConfirmModal(false)
+                    }}
+                    onClose={() => setConfirmModal(false)}
+                    // isLoading={isLoading}
+                    // error={error}
+                >
+                    <></>
+                </ConfirmModal>
+            )}
         </>
     )
 }

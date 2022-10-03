@@ -28,7 +28,8 @@ export interface VoiceStream {
     send_url: string
     is_faction_commander: boolean
     username: string
-    user_gid: string
+    user_gid: number
+    current_kick_vote: number
 
     ovenPlayer: React.MutableRefObject<OvenPlayerInstance> | undefined
     liveKit: any

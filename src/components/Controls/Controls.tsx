@@ -11,7 +11,7 @@ import { ArenaSelect } from "./ArenaSelect"
 import { OvenResolutionSelect } from "./ResolutionSelect"
 import { OvenStreamSelect } from "./StreamSelect"
 
-export const CONTROLS_HEIGHT = 50.0 // rem
+export const CONTROLS_HEIGHT = 3.0 // rem
 
 export const Controls = () => {
     const { isMobile } = useMobile()
