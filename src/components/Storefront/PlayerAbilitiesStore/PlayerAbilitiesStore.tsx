@@ -20,7 +20,7 @@ export const PlayerAbilitiesStore = () => {
     const { userID } = useAuth()
 
     const { query: queryAvailability } = useParameterizedQuery(GetSaleAbilityAvailability)
-    const [availability, setAvailability] = useState<SaleAbilityAvailability>(SaleAbilityAvailability.CanClaim)
+    const [availability, setAvailability] = useState<SaleAbilityAvailability>(SaleAbilityAvailability.CanPurchase)
     const [availabilityError, setAvailabilityError] = useState<string>()
 
     const [isLoaded, setIsLoaded] = useState(false)
@@ -169,8 +169,7 @@ export const PlayerAbilitiesStore = () => {
                                 saleAbility={s}
                                 price={priceMap.get(s.id)}
                                 amount={ownedAbilities.get(s.blueprint_id)}
-                                onClaim={() => setAvailability(SaleAbilityAvailability.CanPurchase)}
-                                onPurchase={() => setAvailability(SaleAbilityAvailability.Unavailable)}
+                                onPurchase={() => refetchSaleAvailability()}
                                 availability={availability}
                             />
                         ))}
@@ -210,7 +209,7 @@ export const PlayerAbilitiesStore = () => {
                 </Stack>
             </Stack>
         )
-    }, [isLoaded, saleAbilities, theme.factionTheme.primary, priceMap, ownedAbilities, availability])
+    }, [isLoaded, saleAbilities, theme.factionTheme.primary, priceMap, ownedAbilities, availability, refetchSaleAvailability])
 
     return (
         <ClipThing
