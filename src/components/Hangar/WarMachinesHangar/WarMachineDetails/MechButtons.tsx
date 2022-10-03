@@ -38,6 +38,18 @@ export const MechButtons = ({
             backgroundColor={theme.factionTheme.background}
             sx={{ m: "-.3rem" }}
         >
+            {!mechDetails.battle_ready && (
+                <Typography
+                    p="1rem"
+                    pb="0"
+                    textAlign="center"
+                    sx={{
+                        color: colors.yellow,
+                    }}
+                >
+                    This mech will be ready to deploy after Nexus Release
+                </Typography>
+            )}
             <Box sx={{ p: "1rem", gap: ".8rem", display: "grid", gridTemplateColumns: "repeat(2, 1fr)" }}>
                 {/* Button 1 */}
                 {mechState === MechStatusEnum.Battle || mechState === MechStatusEnum.Queue ? (
