@@ -1,11 +1,12 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useMemo } from "react"
+import React, { useMemo } from "react"
 import { useAuth, useSupremacy, useUI } from "../../../containers"
 import { fonts } from "../../../theme/theme"
 import { BattleAbility } from "./BattleAbility/BattleAbility"
 import { PlayerAbilities } from "./PlayerAbilities/PlayerAbilities"
 import { QuickPlayerAbilities } from "./QuickPlayerAbilities/QuickPlayerAbilities"
 import { UnauthPrompt } from "./Common/UnauthPrompt"
+import { ArenaSelector } from "../ArenaSelector/ArenaSelector"
 
 export const BattleArena = () => {
     const { setSmallDisplayRef } = useUI()
@@ -15,6 +16,8 @@ export const BattleArena = () => {
     const content = useMemo(() => {
         return (
             <>
+                <ArenaSelector />
+
                 {/* The minimap or the stream will mount here */}
                 <Box ref={setSmallDisplayRef} sx={{ flexShrink: 0 }} />
 
