@@ -239,6 +239,9 @@ export enum GameServerKeys {
     // Replays
     GetReplays = "GET:BATTLE:REPLAYS",
     GetReplayDetails = "GET:REPLAY:DETAILS",
+
+    // Admins
+    ModGetUser = "MOD:GET:USER"
 }
 
 export enum PassportServerKeys {

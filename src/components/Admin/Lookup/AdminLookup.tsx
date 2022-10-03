@@ -12,28 +12,27 @@ import { useHistory } from "react-router-dom"
 import { User } from "../../../types"
 import { SxProps } from "@mui/system"
 import { Player } from "../../Common/Player"
+import { PlayerProfile } from "./PlayerProfile"
 
 
 export const AdminLookup = () => {
     const theme = useTheme()
-    const history = useHistory()
     const [query, updateQuery] = useUrlQuery()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const { newSnackbarMessage } = useGlobalNotifications()
     const [selectedGID, setSelectedGID] = useState(parseString(query.get("selectedGID"), -1))
-
-    useEffect(() => {
-        updateQuery({
-            selectedGID: selectedGID > 0 ? `${selectedGID}` : "",
-        })
-    }, [selectedGID, updateQuery])
-
     // Items
     const [userDropdown, setUserDropdown] = useState<User[]>([])
     const [selectedUser, setSelectedUser] = useState<User | null | undefined>()
     const [isLoadingUsers, toggleIsLoadingUsers] = useToggle()
     const [searchValue, setSearchValue] = useDebounce("", 300)
 
+
+    useEffect(() => {
+        updateQuery({
+            selectedGID: selectedGID > 0 ? `${selectedGID}` : "",
+        })
+    }, [selectedGID, updateQuery])
 
     // When searching for player, update the dropdown list
     useEffect(() => {
@@ -48,7 +47,6 @@ export const AdminLookup = () => {
 
                 if (!resp) return
                 setUserDropdown(resp)
-                console.log(userDropdown)
             } catch (e) {
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to load ban options.", "error")
             } finally {
@@ -58,6 +56,10 @@ export const AdminLookup = () => {
     }, [searchValue, send, toggleIsLoadingUsers, newSnackbarMessage, userDropdown])
 
     const content = useMemo(() => {
+        if (selectedGID > 0) {
+            return <PlayerProfile gid={selectedGID} updateQuery={updateQuery} />
+        }
+
         return (
             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                 <Stack alignItems="center" justifyContent="center"
