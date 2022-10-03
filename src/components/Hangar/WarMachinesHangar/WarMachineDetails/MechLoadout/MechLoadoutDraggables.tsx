@@ -1,17 +1,62 @@
 import { Box, Stack } from "@mui/material"
-import { useRef } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import Draggable from "react-draggable"
+import { SvgWeapons } from "../../../../../assets"
+import { getRarityDeets } from "../../../../../helpers"
+import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../../keys"
 import { colors, theme } from "../../../../../theme/theme"
+import { AssetItemType, MechSkin, PowerCore, Utility, Weapon } from "../../../../../types"
 import { ClipThing } from "../../../../Common/ClipThing"
+import { GetWeaponsRequest, GetWeaponsResponse } from "../../../WeaponsHangar/WeaponsHangar"
 import { MechLoadoutItemDraggable } from "../../Common/MechLoadoutItem"
 
-type DragStopEvent = (clientRect: DOMRect) => void
+type DragStopEvent = (clientRect: DOMRect, type: AssetItemType, item: Weapon | PowerCore | Utility | MechSkin) => void
 
 export interface MechLoadoutDraggablesProps {
     onDragStop: DragStopEvent
 }
 
 export const MechLoadoutDraggables = ({ onDragStop }: MechLoadoutDraggablesProps) => {
+    const { send } = useGameServerCommandsUser("/user_commander")
+
+    const [weapons, setWeapons] = useState<Weapon[]>([])
+    const [isLoading, setIsLoading] = useState(true)
+    const [loadError, setLoadError] = useState<string>()
+
+    const getWeapons = useCallback(async () => {
+        try {
+            setIsLoading(true)
+
+            const resp = await send<GetWeaponsResponse, GetWeaponsRequest>(GameServerKeys.GetWeapons, {
+                page: 1,
+                page_size: 10,
+                sort_by: "asc",
+                sort_dir: "rarity",
+                include_market_listed: false,
+                display_genesis_and_limited: true,
+                exclude_ids: [],
+                weapon_types: [],
+                rarities: [],
+                equipped_statuses: ["unequipped"],
+                search: "",
+            })
+
+            if (!resp) return
+            setLoadError(undefined)
+            setWeapons(resp.weapons)
+        } catch (e) {
+            setLoadError(typeof e === "string" ? e : "Failed to get weapons.")
+            console.error(e)
+        } finally {
+            setIsLoading(false)
+        }
+    }, [send])
+
+    useEffect(() => {
+        getWeapons()
+    }, [getWeapons])
+
     return (
         <Box
             sx={{
@@ -49,17 +94,20 @@ export const MechLoadoutDraggables = ({ onDragStop }: MechLoadoutDraggablesProps
                 }}
             >
                 {/*  render multiple of these */}
-                <MechLoadoutDraggable onDragStop={onDragStop} />
+                {weapons.map((w) => (
+                    <MechLoadoutDraggable key={w.id} onDragStop={onDragStop} item={w} />
+                ))}
             </Stack>
         </Box>
     )
 }
 
 interface MechLoadoutDraggableProps {
+    item: Weapon
     onDragStop: DragStopEvent
 }
 
-const MechLoadoutDraggable = ({ onDragStop }: MechLoadoutDraggableProps) => {
+const MechLoadoutDraggable = ({ item, onDragStop }: MechLoadoutDraggableProps) => {
     const draggableRef = useRef<HTMLDivElement>(null)
 
     return (
@@ -83,10 +131,19 @@ const MechLoadoutDraggable = ({ onDragStop }: MechLoadoutDraggableProps) => {
                 // onDrag={this.handleDrag}
                 onStop={() => {
                     if (!draggableRef.current) return
-                    onDragStop(draggableRef.current.getBoundingClientRect())
+                    onDragStop(draggableRef.current.getBoundingClientRect(), AssetItemType.Weapon, item)
                 }}
             >
-                <MechLoadoutItemDraggable ref={draggableRef} label="OUTRO ANIMATION" primaryColor={colors.outroAnimation} isEmpty />
+                <MechLoadoutItemDraggable
+                    ref={draggableRef}
+                    imageUrl={item.image_url || item.avatar_url}
+                    videoUrls={[item.card_animation_url]}
+                    label={item.label}
+                    primaryColor={colors.weapons}
+                    Icon={SvgWeapons}
+                    rarity={item.weapon_skin ? getRarityDeets(item.weapon_skin.tier) : undefined}
+                    hasSkin={!!item.weapon_skin}
+                />
             </Draggable>
         </Box>
     )

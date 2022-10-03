@@ -9,7 +9,7 @@ import { Rarity } from "../../../../types"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { MediaPreviewModal } from "../../../Common/MediaPreview/MediaPreviewModal"
 
-interface LoadoutItem {
+export interface LoadoutItem {
     slotNumber?: number
     imageUrl?: string
     videoUrls?: (string | undefined)[] | undefined
