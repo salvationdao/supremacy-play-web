@@ -227,6 +227,7 @@ const MiniMapInner = ({ map, isPoppedout, width = 100, height = 100, poppedOutCo
 
         return (
             <Stack
+                id="mini-map"
                 alignItems="center"
                 justifyContent="center"
                 tabIndex={0}

@@ -8,13 +8,13 @@ import { calculateCoverDimensions, HEXToVBColor } from "../../../helpers"
 import { colors } from "../../../theme/theme"
 import { Dimension } from "../../../types"
 import { MapScale } from "./OverlayItems/MapScale/MapScale"
-import { MechAbilities } from "./OverlayItems/MechAbilities/MechAbilities"
 import { MapTargetSelect } from "./OverlayItems/MapTargetSelect/MapTargetSelect"
+import { MechAbilities } from "./OverlayItems/MechAbilities/MechAbilities"
+import { BattleZone } from "./ViewportItems/BattlesZone/BattleZone"
+import { Blackouts } from "./ViewportItems/Blackouts/Blackouts"
+import { MapAbilities } from "./ViewportItems/MapAbilities/MapAbilities"
 import { MapMechs } from "./ViewportItems/MapMechs/MapMechs"
 import { MechMoveDests } from "./ViewportItems/MechMoveDests/MechMoveDests"
-import { Blackouts } from "./ViewportItems/Blackouts/Blackouts"
-import { BattleZone } from "./ViewportItems/BattlesZone/BattleZone"
-import { MapAbilities } from "./ViewportItems/MapAbilities/MapAbilities"
 
 interface PixiItems {
     mapSprite?: PIXI.Sprite
@@ -223,6 +223,7 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
     return useMemo(
         () => (
             <Box
+                id="minimap-pixi-container"
                 ref={setMiniMapPixiRef}
                 sx={{
                     position: "relative",
