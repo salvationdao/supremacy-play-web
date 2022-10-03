@@ -90,8 +90,7 @@ export interface RepairSlot {
 export interface MechStatus {
     status: MechStatusEnum
     can_deploy: boolean
-    battle_lobby_number: number | null | undefined
-    battle_lobby_queue_position: number | null | undefined
+    battle_lobby_is_locked: boolean
 }
 
 export interface Images {

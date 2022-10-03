@@ -312,10 +312,10 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
             isUnityPendingChange ||
             xsyn_locked ||
             locked_to_marketplace ||
-            mechStatus?.status === MechStatusEnum.Queue ||
+            (mechStatus?.battle_lobby_is_locked && mechStatus?.status === MechStatusEnum.Queue) ||
             mechStatus?.status === MechStatusEnum.Battle ||
             mechStatus?.status === MechStatusEnum.Sold,
-        [isUnityPendingChange, locked_to_marketplace, mechStatus?.status, xsyn_locked],
+        [isUnityPendingChange, locked_to_marketplace, mechStatus?.battle_lobby_is_locked, mechStatus?.status, xsyn_locked],
     )
 
     return (
