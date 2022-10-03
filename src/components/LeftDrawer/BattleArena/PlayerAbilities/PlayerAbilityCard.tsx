@@ -1,7 +1,8 @@
 import { Box, Stack, Typography } from "@mui/material"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../../assets"
-import { useGame, useMiniMap } from "../../../../containers"
+import { useMiniMapPixi } from "../../../../containers"
+import { useGame} from "../../../../containers"
 import { colors } from "../../../../theme/theme"
 import { LocationSelectType, PlayerAbility } from "../../../../types"
 import { FancyButton } from "../../../Common/FancyButton"
@@ -25,7 +26,7 @@ const propsAreEqual = (prevProps: PlayerAbilityCardProps, nextProps: PlayerAbili
 }
 
 export const PlayerAbilityCard = React.memo(function PlayerAbilityCard({ playerAbility, viewOnly }: PlayerAbilityCardProps) {
-    const { setPlayerAbility } = useMiniMap()
+    const { usePlayerAbility } = useMiniMapPixi()
     const { isAIDrivenMatch } = useGame()
     const [disabled, setDisabled] = useState(false)
 
@@ -67,9 +68,9 @@ export const PlayerAbilityCard = React.memo(function PlayerAbilityCard({ playerA
     }, [playerAbility])
 
     const onActivate = useCallback(() => {
-        if (isAIDrivenMatch || !playerAbility) return
-        setPlayerAbility(playerAbility)
-    }, [isAIDrivenMatch, playerAbility, setPlayerAbility])
+        if (!playerAbility) return
+        usePlayerAbility.current(playerAbility)
+    }, [playerAbility, usePlayerAbility])
 
     const disable = viewOnly || disabled
 
@@ -104,7 +105,6 @@ export const PlayerAbilityCard = React.memo(function PlayerAbilityCard({ playerA
                         spacing=".3rem"
                         sx={{
                             height: "100%",
-
                             ":hover img": {
                                 transform: "scale(1.2)",
                                 filter: "brightness(2)",
