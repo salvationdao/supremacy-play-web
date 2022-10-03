@@ -95,6 +95,7 @@ import Facebook from "!react-svg-loader!./svg/Facebook.svg"
 import Filter from "!react-svg-loader!./svg/Filter.svg"
 import Fullscreen from "!react-svg-loader!./svg/Fullscreen.svg"
 import GoldBars from "!react-svg-loader!./svg/GoldBars.svg"
+import Grid from "!react-svg-loader!./svg/Grid.svg"
 import GridView from "!react-svg-loader!./svg/GridView.svg"
 import Hide from "!react-svg-loader!./svg/Hide.svg"
 import History from "!react-svg-loader!./svg/History.svg"
@@ -1364,5 +1365,11 @@ export const SvgCheckMark: React.VoidFunctionComponent<SvgWrapperProps> = (props
 export const SvgWrench: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Wrench />
+    </SvgWrapper>
+)
+
+export const SvgGrid: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Grid />
     </SvgWrapper>
 )

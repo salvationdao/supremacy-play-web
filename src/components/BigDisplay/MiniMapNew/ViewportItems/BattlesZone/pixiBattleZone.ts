@@ -41,6 +41,7 @@ export class PixiBattleZone {
                 y: number
             }
         >,
+        battleZone: BattleZoneStruct,
     ) {
         this.viewport = viewport
         this.gridSizeRef = gridSizeRef
@@ -50,11 +51,48 @@ export class PixiBattleZone {
         this.root = new PIXI.Container()
         this.root.zIndex = pixiViewportZIndexes.battleZone
         this.root.sortableChildren = true
+        this.root.alpha = 0
 
-        this.darkBackgroundTrick = new PIXI.Graphics()
+        const pos = this.clientPositionToViewportPosition.current(battleZone.location.x, battleZone.location.y)
+        const radius = (this.gridSizeRef.current.width * battleZone.radius) / GAME_CLIENT_TILE_SIZE
+
+        // Particles
         this.particleContainer = new PIXI.Container()
-        this.darkBackgroundTrick.zIndex = 2
         this.particleContainer.zIndex = 6
+        this.particleContainer.position.set(pos.x, pos.y)
+
+        const config = merge(ringCloudParticlesConfig, {
+            scale: {
+                start: (0.2 * this.gridSizeRef.current.width) / 10,
+                end: (0.06 * this.gridSizeRef.current.width) / 10,
+            },
+            spawnCircle: { r: radius, minR: radius },
+            color: { start: colors.niceRed, end: colors.niceRed },
+        })
+        this.emitter = new particles.Emitter(this.particleContainer, CircleParticle, config)
+        this.emitter.emit = true
+
+        // Dim the outside, this is a trick where the outside is darkened, trick is really thick border
+        const borderThickness = this.viewport.worldWidth * 3
+        this.darkBackgroundTrick = new PIXI.Graphics()
+        this.darkBackgroundTrick.zIndex = 2
+        this.darkBackgroundTrick.clear()
+        this.darkBackgroundTrick.lineStyle(borderThickness, HEXToVBColor(colors.darkRed), 0.4)
+        this.darkBackgroundTrick.beginFill(HEXToVBColor("#FFFFFF"), 0)
+        this.darkBackgroundTrick.drawCircle(0, 0, radius + borderThickness / 2)
+        this.darkBackgroundTrick.endFill()
+        this.darkBackgroundTrick.position.set(pos.x, pos.y)
+        ease.add(this.darkBackgroundTrick, { alpha: 0.2 }, { duration: 800, ease: "linear", repeat: true, reverse: true, removeExisting: true })
+
+        if (battleZone.warn_time) {
+            this.darkBackgroundTrick.scale.set(1 + this.viewport.worldWidth / radius)
+            setTimeout(() => {
+                ease.add(this.darkBackgroundTrick, { scale: 1 }, { duration: battleZone.shrink_time * 1000, ease: "linear", removeExisting: true })
+            }, battleZone.warn_time * 1000)
+        }
+
+        // Transition in
+        ease.add(this.root, { alpha: 1 }, { duration: 1000, ease: "linear", removeExisting: true })
 
         // Add everything to container
         this.root.addChild(this.particleContainer)
@@ -80,44 +118,24 @@ export class PixiBattleZone {
         this.animationFrame = requestAnimationFrame(step)
     }
 
-    updateBattleZone(battleZone: BattleZoneStruct | undefined) {
-        this.emitter?.destroy()
-        this.darkBackgroundTrick.clear()
-        if (!battleZone) return
+    updateBattleZone(battleZone: BattleZoneStruct) {
+        if (!this.emitter) return
 
         const pos = this.clientPositionToViewportPosition.current(battleZone.location.x, battleZone.location.y)
         const radius = (this.gridSizeRef.current.width * battleZone.radius) / GAME_CLIENT_TILE_SIZE
-        this.particleContainer.position.set(pos.x, pos.y)
 
-        // Particles
-        const config = merge(ringCloudParticlesConfig, {
-            scale: {
-                start: 0.2,
-                end: 0.05,
-            },
-            spawnCircle: { r: radius, minR: radius },
-            color: { start: colors.niceRed, end: colors.niceRed },
-        })
-        this.emitter = new particles.Emitter(this.particleContainer, CircleParticle, config)
-        this.emitter.emit = true
-
-        // Dim the outside, this is a trick where the outside is darkened, trick is really thick border
-        const borderThickness = this.viewport.worldWidth * 2
-        this.darkBackgroundTrick.lineStyle(borderThickness, HEXToVBColor(colors.darkRed), 0.3)
-        this.darkBackgroundTrick.beginFill(HEXToVBColor("#FFFFFF"), 0)
-        this.darkBackgroundTrick.drawCircle(0, 0, radius + borderThickness / 2)
-        this.darkBackgroundTrick.endFill()
-        this.darkBackgroundTrick.position.set(pos.x, pos.y)
-        ease.add(this.darkBackgroundTrick, { alpha: 0.7 }, { duration: 800, ease: "linear", repeat: true, reverse: true, removeExisting: true })
+        // Particles and the outside dark overlay
+        const scale = radius / this.emitter.spawnCircle.radius
+        ease.add(this.particleContainer, { scale, x: pos.x, y: pos.y }, { duration: 2000, ease: "linear", removeExisting: true })
 
         if (battleZone.warn_time) {
-            this.darkBackgroundTrick.scale.set(1 + this.viewport.worldWidth / radius)
             setTimeout(() => {
-                ease.add(this.darkBackgroundTrick, { scale: 1 }, { duration: battleZone.shrink_time * 1000, ease: "linear", removeExisting: true })
+                ease.add(
+                    this.darkBackgroundTrick,
+                    { scale, x: pos.x, y: pos.y },
+                    { duration: battleZone.shrink_time * 1000, ease: "linear", removeExisting: true },
+                )
             }, battleZone.warn_time * 1000)
         }
-
-        this.root.alpha = 0
-        ease.add(this.root, { alpha: 1 }, { duration: 1000, ease: "linear", removeExisting: true })
     }
 }
