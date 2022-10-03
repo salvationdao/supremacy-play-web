@@ -1,23 +1,23 @@
-import { BattleLobby } from "../../types/battle_queue"
-import React, { useCallback, useEffect, useMemo, useState } from "react"
-import { ConfirmModal } from "../Common/ConfirmModal"
 import { Box, Pagination, Stack, Typography } from "@mui/material"
-import { QuickDeployItem } from "../LeftDrawer/QuickDeploy/QuickDeployItem"
-import { GameServerKeys } from "../../keys"
-import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } from "../../hooks/useGameServer"
-import { QueueDetails } from "../LeftDrawer/QuickDeploy/QueueDetails"
-import { MechBasicWithQueueStatus } from "../../types"
-import { usePagination } from "../../hooks"
-import { getRarityDeets } from "../../helpers"
-import { SortTypeLabel } from "../../types/marketplace"
-import { TotalAndPageSizeOptions } from "../Common/TotalAndPageSizeOptions"
-import { colors, fonts } from "../../theme/theme"
-import { useTheme } from "../../containers/theme"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import FlipMove from "react-flip-move"
-import { SearchBattle } from "../Replays/BattlesReplays/SearchBattle"
-import { PlayerQueueStatus } from "../LeftDrawer/QuickDeploy/QuickDeploy"
 import { EmptyWarMachinesPNG } from "../../assets"
 import { useAuth } from "../../containers"
+import { useTheme } from "../../containers/theme"
+import { getRarityDeets } from "../../helpers"
+import { usePagination } from "../../hooks"
+import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } from "../../hooks/useGameServer"
+import { GameServerKeys } from "../../keys"
+import { colors, fonts } from "../../theme/theme"
+import { MechBasicWithQueueStatus } from "../../types"
+import { BattleLobby } from "../../types/battle_queue"
+import { SortTypeLabel } from "../../types/marketplace"
+import { ConfirmModal } from "../Common/ConfirmModal"
+import { TotalAndPageSizeOptions } from "../Common/TotalAndPageSizeOptions"
+import { QueueDetails } from "../LeftDrawer/QuickDeploy/QueueDetails"
+import { PlayerQueueStatus } from "../LeftDrawer/QuickDeploy/QuickDeploy"
+import { QuickDeployItem } from "../LeftDrawer/QuickDeploy/QuickDeployItem"
+import { SearchBattle } from "../Replays/BattlesReplays/SearchBattle"
 
 const sortOptions = [
     { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
@@ -27,19 +27,18 @@ const sortOptions = [
 ]
 
 interface BattleLobbyJoinModalProps {
-    selectedBattleLobby?: BattleLobby
-    setSelectedBattleLobby: (value: BattleLobby | undefined) => void
+    show: boolean
+    battleLobby: BattleLobby
+    onJoin: () => void
+    onClose: () => void
 }
 
-export const BattleLobbyJoinModal = ({ selectedBattleLobby, setSelectedBattleLobby }: BattleLobbyJoinModalProps) => {
+export const BattleLobbyJoinModal = ({ show, battleLobby, onJoin, onClose }: BattleLobbyJoinModalProps) => {
     const { factionID } = useAuth()
     const { factionTheme } = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [error, setError] = useState("")
     const [selectedMechIDs, setSelectedMechIDs] = useState<string[]>([])
-    useEffect(() => {
-        if (!selectedBattleLobby) setSelectedMechIDs([])
-    }, [setSelectedMechIDs, selectedBattleLobby])
 
     const [currentPlayerQueue, setCurrentPlayerQueue] = useState<PlayerQueueStatus>({
         queue_limit: 10,
@@ -95,9 +94,7 @@ export const BattleLobbyJoinModal = ({ selectedBattleLobby, setSelectedBattleLob
 
     const selectLimit = useMemo(() => {
         let queueLimit = 0
-        if (selectedBattleLobby)
-            queueLimit =
-                selectedBattleLobby.each_faction_mech_amount - selectedBattleLobby.battle_lobbies_mechs.filter((m) => m.owner.faction_id === factionID).length
+        if (battleLobby) queueLimit = battleLobby.each_faction_mech_amount - battleLobby.battle_lobbies_mechs.filter((m) => m.faction_id === factionID).length
         const playerQueueRemain = currentPlayerQueue.queue_limit - currentPlayerQueue.total_queued
 
         let limit = queueLimit
@@ -105,7 +102,7 @@ export const BattleLobbyJoinModal = ({ selectedBattleLobby, setSelectedBattleLob
             limit = playerQueueRemain
         }
         return limit
-    }, [currentPlayerQueue.queue_limit, currentPlayerQueue.total_queued, factionID, selectedBattleLobby])
+    }, [currentPlayerQueue.queue_limit, currentPlayerQueue.total_queued, factionID, battleLobby])
 
     const [search, setSearch] = useState("")
     const [sort, setSort] = useState<string>(SortTypeLabel.RarestDesc)
@@ -151,19 +148,20 @@ export const BattleLobbyJoinModal = ({ selectedBattleLobby, setSelectedBattleLob
     }, [mechsWithQueueStatus, search, sort, page, pageSize, setTotalItems, selectedMechIDs])
 
     const joinBattleLobby = useCallback(
-        async (battleLobbyID: string, mechIDs: string[], password?: string) => {
+        async (battleLobbyID: string, password?: string) => {
             try {
                 await send(GameServerKeys.JoinBattleLobby, {
                     battle_lobby_id: battleLobbyID,
-                    mech_ids: mechIDs,
+                    mech_ids: selectedMechIDs,
                     password,
                 })
-                setSelectedBattleLobby(undefined)
+                setSelectedMechIDs([])
+                onJoin()
             } catch (err) {
                 setError(typeof err === "string" ? err : "Failed to the join battle lobby.")
             }
         },
-        [send, setSelectedBattleLobby],
+        [onJoin, selectedMechIDs, send],
     )
 
     const content = useMemo(() => {
@@ -260,17 +258,20 @@ export const BattleLobbyJoinModal = ({ selectedBattleLobby, setSelectedBattleLob
         )
     }, [list, selectLimit, selectedMechIDs])
 
-    if (!selectedBattleLobby || !!selectedBattleLobby?.ready_at) {
+    if (!show) {
         return null
     }
 
     // filter
     return (
         <ConfirmModal
-            title={`JOIN BATTLE LOBBY #${selectedBattleLobby.number}`}
+            title={`JOIN BATTLE LOBBY #${battleLobby.number}`}
             disableConfirm={!selectedMechIDs.length}
-            onConfirm={() => joinBattleLobby(selectedBattleLobby?.id || "", selectedMechIDs)}
-            onClose={() => setSelectedBattleLobby(undefined)}
+            onConfirm={() => joinBattleLobby(battleLobby.id || "")}
+            onClose={() => {
+                setSelectedMechIDs([])
+                onClose()
+            }}
             isLoading={false}
             error={error}
             width="75rem"
