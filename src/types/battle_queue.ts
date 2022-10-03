@@ -23,6 +23,14 @@ export interface BattleLobby {
     game_map?: GameMap
     is_private: boolean
     battle_lobbies_mechs: BattleLobbiesMech[]
+
+    opted_in_rm_supporters: BattleLobbySupporter[]
+    opted_in_zai_supporters: BattleLobbySupporter[]
+    opted_in_bc_supporters: BattleLobbySupporter[]
+
+    selected_rm_supporters: BattleLobbySupporter[]
+    selected_zai_supporters: BattleLobbySupporter[]
+    selected_bc_supporters: BattleLobbySupporter[]
 }
 
 export interface BattleLobbiesMech {
@@ -34,6 +42,14 @@ export interface BattleLobbiesMech {
     avatar_url: string
     owner: User
     is_destroyed: boolean
+}
+
+export interface BattleLobbySupporter {
+    id: string
+    username: string
+    faction_id: string
+    avatar_url?: string
+    custom_avatar_id?: string
 }
 
 export interface BattleBounty {

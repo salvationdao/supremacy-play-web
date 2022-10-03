@@ -587,7 +587,7 @@ export const LayerList = ({ setLayer, layerType, primaryColor }: LayerListProps)
     )
 }
 
-interface CustomAvatar {
+export interface CustomAvatar {
     face: Layer
     body: Layer
     hair?: Layer

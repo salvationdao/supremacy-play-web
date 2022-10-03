@@ -1,16 +1,21 @@
 import { Box, CircularProgress, Grid, Stack, Typography } from "@mui/material"
-import { useMemo, useState } from "react"
-import { useSupremacy } from "../../containers"
-import { useGameServerSubscription } from "../../hooks/useGameServer"
+import React, { useCallback, useMemo, useState } from "react"
+import { useAuth, useGlobalNotifications, useSupremacy } from "../../containers"
+import { useGameServerCommandsFaction, useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
-import { opacityEffect, shake } from "../../theme/keyframes"
-import { colors, fonts } from "../../theme/theme"
-import { MechCard } from "./MechCard"
-import { FancyButton } from "../Common/FancyButton"
-import { BattleLobbiesMech, BattleLobby } from "../../types/battle_queue"
+import { opacityEffect } from "../../theme/keyframes"
+import { colors } from "../../theme/theme"
+import { getCardStyles, MechCard } from "./MechCard"
+import { BattleLobbiesMech, BattleLobby, BattleLobbySupporter } from "../../types/battle_queue"
 import { FactionIDs } from "../../constants"
+import { Avatar } from "../Avatar"
+import { SvgPlus } from "../../assets"
+import QuestionMarkIcon from "@mui/icons-material/QuestionMark"
+
+const avatarsToShow = 16
 
 export const UpcomingBattle = () => {
+    const { factionID: usersFactionID } = useAuth()
     const [nextBattle, setNextBattle] = useState<BattleLobby | undefined>()
 
     // Subscribe on battle end information
@@ -59,19 +64,37 @@ export const UpcomingBattle = () => {
                     flex: 1,
                     height: "100%",
                     width: "100%",
-                    maxHeight: "600px",
+                    // maxHeight: "600px",
                     maxWidth: "95%",
                     minWidth: "300px",
                     overflow: "auto",
                     gap: "1rem",
                 }}
             >
-                <CardGroup mechs={bcMechs} factionID={FactionIDs.BC} />
-                <CardGroup mechs={zaiMechs} factionID={FactionIDs.ZHI} />
-                <CardGroup mechs={rmMechs} factionID={FactionIDs.RM} />
+                <CardGroup
+                    mechs={bcMechs}
+                    factionID={FactionIDs.BC}
+                    usersFactionID={usersFactionID}
+                    battleLobbyID={nextBattle.id}
+                    optedInSupporters={nextBattle.opted_in_bc_supporters || []}
+                />
+                <CardGroup
+                    mechs={zaiMechs}
+                    factionID={FactionIDs.ZHI}
+                    usersFactionID={usersFactionID}
+                    battleLobbyID={nextBattle.id}
+                    optedInSupporters={nextBattle.opted_in_zai_supporters || []}
+                />
+                <CardGroup
+                    mechs={rmMechs}
+                    factionID={FactionIDs.RM}
+                    usersFactionID={usersFactionID}
+                    battleLobbyID={nextBattle.id}
+                    optedInSupporters={nextBattle.opted_in_rm_supporters || []}
+                />
             </Box>
         )
-    }, [nextBattle])
+    }, [nextBattle, usersFactionID])
 
     return (
         <Box
@@ -92,113 +115,236 @@ export const UpcomingBattle = () => {
                 animation: `${opacityEffect} .2s ease-in`,
             }}
         >
-            <Typography
-                variant="h4"
-                gutterBottom={true}
-                sx={{
-                    lineHeight: 1,
-                    textAlign: "center",
-                    fontFamily: fonts.nostromoBlack,
-                }}
-            >
-                <i>COMING UP... {nextBattle?.game_map?.name || ""}</i>
-            </Typography>
             {content}
         </Box>
     )
 }
 
-const CardGroup = ({ factionID, mechs }: { factionID: string; mechs: BattleLobbiesMech[] }) => {
+const CardGroup = ({
+    factionID,
+    mechs,
+    battleLobbyID,
+    optedInSupporters,
+    usersFactionID,
+}: {
+    battleLobbyID: string | undefined
+    factionID: string
+    usersFactionID: string
+    mechs: BattleLobbiesMech[]
+    optedInSupporters: BattleLobbySupporter[]
+}) => {
     const { getFaction } = useSupremacy()
     const faction = getFaction(factionID)
+    const usersFaction = factionID === usersFactionID
 
     return (
         <Box
             sx={{
                 display: "flex",
+                flexDirection: "column",
                 flex: 1,
                 width: "100%",
-                maxWidth: "700px",
+                maxWidth: "800px",
+                gap: "0.5rem",
                 margin: "auto",
             }}
         >
-            <Grid container spacing={0} direction="row" sx={{ width: "100%", height: "100%" }}>
+            <Grid container spacing={0} direction="row" sx={{ width: "100%", maxHeight: "70%", flexWrap: "nowrap" }}>
                 {mechs.map((m) => (
-                    <Grid
-                        item
-                        xs={4}
-                        sm={3}
-                        sx={{
-                            maxHeight: {
-                                xs: "80%",
-                                sm: "100%",
-                            },
-                        }}
-                    >
+                    <Grid key={`${m.mech_id}-${m.is_destroyed}-${m.battle_lobby_id}`} item sm={4} maxHeight={"100%"}>
                         <MechCard mech={m} faction={faction} />
                     </Grid>
                 ))}
-
-                <Grid
-                    item
-                    xs={12}
-                    sm={3}
+            </Grid>
+            {!usersFaction && (
+                <Box
                     sx={{
                         maxHeight: "100%",
                         display: "flex",
                         justifyContent: "space-evenly",
+                        alignItems: "center",
                         flexWrap: "wrap",
                         flex: 1,
                         gap: "0.5rem",
-                        overflow: "hidden",
-                        minWidth: "100px",
                     }}
                 >
-                    <Typography variant={"h3"} textAlign={"center"} sx={{ width: "100%" }}>
-                        Support Team
-                    </Typography>
-                    <OptInButton />
-                    <OptInButton />
-                    <OptInButton />
-                    <OptInButton />
-                    <OptInButton />
-                </Grid>
-            </Grid>
+                    {5 - optedInSupporters.length > 0 &&
+                        new Array(5 - optedInSupporters.length).fill(0).map((_, i) => <QuestionMark key={`${i}-question`} factionID={factionID} />)}
+                </Box>
+            )}
+            {usersFaction && (
+                <Box
+                    sx={{
+                        maxHeight: "100%",
+                        display: "flex",
+                        justifyContent: "space-evenly",
+                        alignItems: "center",
+                        flexWrap: "wrap",
+                        flex: 1,
+                        gap: "0.5rem",
+                    }}
+                >
+                    {optedInSupporters.map((sup, i) => {
+                        if (i >= avatarsToShow) return null
+                        return (
+                            <Avatar
+                                key={`${sup.id}`}
+                                username={sup.username}
+                                factionID={sup.faction_id}
+                                avatarURL={sup.avatar_url}
+                                customAvatarID={sup.custom_avatar_id}
+                            />
+                        )
+                    })}
+                    {5 - optedInSupporters.length > 0 &&
+                        new Array(5 - optedInSupporters.length)
+                            .fill(0)
+                            .map((_, i) => <OptInButton key={`${factionID}-add-${i}`} battleLobbyID={battleLobbyID} factionID={factionID} />)}
+                    {optedInSupporters.length >= avatarsToShow && <CountButton factionID={factionID} count={optedInSupporters.length - avatarsToShow} />}
+                    <OptInButton key={`${factionID}-add-extra-one`} battleLobbyID={battleLobbyID} factionID={factionID} />
+                </Box>
+            )}
         </Box>
     )
 }
 
-const OptInButton = () => {
-    const optIn = () => {
-        //todo - add backend call to opt in for team support
-    }
+const CountButton = ({ factionID, count }: { factionID: string; count: number }) => {
+    const { border } = getCardStyles(factionID)
 
     return (
-        <Box sx={{ flex: 1, minWidth: "45%", maxWidth: "200px", minHeight: "36px" }}>
-            <FancyButton
-                // disabled={disabled}
-                clipThingsProps={{
-                    clipSize: "5px",
-                    backgroundColor: colors.green,
-                    border: { borderColor: colors.green, borderThickness: "1px" },
-                    // sx: { position: "relative", animation: !disabled ? `${shake(0.38)} 1s infinite` : "unset" },
-                    sx: {
-                        position: "relative",
-                        animation: `${shake(0.38)} 1s infinite`,
-                        flex: 1,
-                        minWidth: "45%",
-                        maxWidth: "200px",
-                        minHeight: "36px",
-                    },
+        <Box
+            sx={{
+                position: "relative",
+                height: "75px",
+                width: "75px",
+                overflow: "hidden",
+            }}
+        >
+            <Box
+                component={"img"}
+                src={border}
+                sx={{
+                    height: "100%",
+                    width: "100%",
+                    maxHeight: "100%",
+                    maxWidth: "100%",
+                    zIndex: 3,
+                    overflow: "hidden",
+                    pointerEvents: "none",
+                    position: "absolute",
                 }}
-                sx={{ px: "1rem", pt: 0, pb: ".1rem", minWidth: "7rem", color: "#FFFFFF" }}
-                onClick={optIn}
+            />
+            <Typography
+                variant={"h4"}
+                sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                }}
+                color={"primary"}
             >
-                <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack, margin: "auto" }}>
-                    OPT IN
-                    {/*{isOptedIn ? "OPTED IN" : "OPT IN"}*/}
-                </Typography>
-            </FancyButton>
+                + {count}
+            </Typography>
+        </Box>
+    )
+}
+
+const OptInButton = ({ battleLobbyID, factionID }: { battleLobbyID: string | undefined; factionID: string }) => {
+    const { border } = getCardStyles(factionID)
+    const { send } = useGameServerCommandsFaction("/faction_commander")
+    const { newSnackbarMessage } = useGlobalNotifications()
+
+    const optIn = useCallback(async () => {
+        if (!battleLobbyID) return
+        try {
+            await send(GameServerKeys.JoinBattleLobbySupporter, { battle_lobby_id: battleLobbyID })
+        } catch (err) {
+            const message = typeof err === "string" ? err : "Failed to opt in to support battle."
+            console.error(message)
+            newSnackbarMessage(message, "error")
+        }
+    }, [send, battleLobbyID, newSnackbarMessage])
+
+    return (
+        <Box
+            sx={{
+                position: "relative",
+                height: "75px",
+                width: "75px",
+                overflow: "hidden",
+                cursor: "pointer",
+            }}
+            onClick={optIn}
+        >
+            <Box
+                component={"img"}
+                src={border}
+                sx={{
+                    height: "100%",
+                    width: "100%",
+                    maxHeight: "100%",
+                    maxWidth: "100%",
+                    zIndex: 3,
+                    overflow: "hidden",
+                    pointerEvents: "none",
+                    position: "absolute",
+                }}
+            />
+            <SvgPlus
+                sx={{
+                    scale: 2,
+                    height: "100%",
+                    width: "100%",
+                    zIndex: 3,
+                    overflow: "hidden",
+                    pointerEvents: "none",
+                    position: "absolute",
+                }}
+            />
+        </Box>
+    )
+}
+
+const QuestionMark = ({ factionID }: { factionID: string }) => {
+    const { border } = getCardStyles(factionID)
+    return (
+        <Box
+            sx={{
+                position: "relative",
+                height: "75px",
+                width: "75px",
+                overflow: "hidden",
+            }}
+        >
+            <Box
+                component={"img"}
+                src={border}
+                sx={{
+                    height: "100%",
+                    width: "100%",
+                    maxHeight: "100%",
+                    maxWidth: "100%",
+                    zIndex: 3,
+                    overflow: "hidden",
+                    pointerEvents: "none",
+                    position: "absolute",
+                }}
+            />
+            <QuestionMarkIcon
+                color={"warning"}
+                sx={{
+                    height: "60%",
+                    width: "60%",
+                    zIndex: 3,
+                    overflow: "hidden",
+                    pointerEvents: "none",
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                }}
+            />
         </Box>
     )
 }

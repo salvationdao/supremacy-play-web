@@ -1,18 +1,14 @@
 import { Box, Typography } from "@mui/material"
-import React, { useMemo, useState } from "react"
+import React, { useMemo } from "react"
 import { BCBorder, BCDeploy, BCWaiting, RMBorder, RMDeploy, RMWaiting, ZHIBorder, ZHIDeploy, ZHIWaiting } from "../../assets"
 import { FactionIDs } from "../../constants"
-import { useAuth, useUI } from "../../containers"
-import { useGameServerSubscription } from "../../hooks/useGameServer"
-import { GameServerKeys } from "../../keys"
-import { LEFT_DRAWER_MAP } from "../../routes"
+import { useAuth } from "../../containers"
 import { zoomEffect } from "../../theme/keyframes"
 import { Faction } from "../../types"
-import { MechDetails } from "../../types/assets"
 import { ClipThing } from "../Common/ClipThing"
 import { BattleLobbiesMech } from "../../types/battle_queue"
 
-const getCardStyles = (factionID: string) => {
+export const getCardStyles = (factionID: string) => {
     if (factionID === FactionIDs.BC) {
         return {
             border: BCBorder,
@@ -49,13 +45,8 @@ interface MechCardProps {
     faction: Faction
 }
 
-// const propsAreEqual = (prevProps: MechCardProps, nextProps: MechCardProps) => {
-//     return prevProps.mechID === nextProps.mechID && prevProps.faction.id === nextProps.faction.id
-// }
-
 export const MechCard = React.memo(function MechCard({ mech, faction }: MechCardProps) {
     const { factionID } = useAuth()
-    const { setLeftDrawerActiveTabID } = useUI()
     const { border, waiting, deploy } = getCardStyles(faction.id)
 
     const clickToDeploy = faction.id === factionID && !mech
@@ -87,6 +78,7 @@ export const MechCard = React.memo(function MechCard({ mech, faction }: MechCard
                 gap: "0.5rem",
                 zIndex: 9,
                 overflow: "hidden",
+                margin: "auto",
             }}
         >
             <Box
