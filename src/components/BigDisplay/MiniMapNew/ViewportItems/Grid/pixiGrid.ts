@@ -133,7 +133,7 @@ export class PixiGrid {
             // Highlight the grid that the mouse is at
             this.gridMatrix[this.prevHighlightRowIndex][this.prevHighlightColIndex].alpha = 0.05
             if (highlightColIndex >= 0 && highlightRowIndex >= 0) {
-                this.gridMatrix[highlightRowIndex][highlightColIndex].alpha = 1
+                this.gridMatrix[highlightRowIndex][highlightColIndex].alpha = 0.8
 
                 this.prevHighlightColIndex = highlightColIndex
                 this.prevHighlightRowIndex = highlightRowIndex
