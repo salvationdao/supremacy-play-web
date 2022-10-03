@@ -3,6 +3,7 @@ import { useCallback, useState } from "react"
 import { SvgCheckMark, SvgLogout, SvgPlus, SvgQuestionMark2, SvgWeapons } from "../../../assets"
 import { useAuth, useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
+import { getRarityDeets } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { scaleUpKeyframes } from "../../../theme/keyframes"
@@ -91,6 +92,8 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                     )
                 }
 
+                const rarity = getRarityDeets(ms.tier)
+
                 return (
                     <>
                         <Stack
@@ -106,12 +109,45 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                         >
                             <Stack direction="row" spacing="1rem" mb=".5rem">
                                 <Box
-                                    component="img"
-                                    src={ms.avatar_url}
                                     sx={{
-                                        maxHeight: "70px",
+                                        position: "relative",
+                                        height: "70px",
+                                        width: "70px",
                                     }}
-                                />
+                                >
+                                    <Box
+                                        component="img"
+                                        src={ms.avatar_url}
+                                        sx={{
+                                            position: "absolute",
+                                            top: 0,
+                                            left: 0,
+                                            width: "100%",
+                                        }}
+                                    />
+                                    <Box
+                                        sx={{
+                                            position: "absolute",
+                                            left: "50%",
+                                            bottom: 0,
+                                            width: "100%",
+                                            transform: "translate(-50%, 50%)",
+                                            backgroundColor: `${factionLobby.faction.background_color}dd`,
+                                        }}
+                                    >
+                                        <Typography
+                                            sx={{
+                                                fontSize: "1.2rem",
+                                                fontFamily: fonts.nostromoMedium,
+                                                textTransform: "uppercase",
+                                                textAlign: "center",
+                                                color: rarity.color,
+                                            }}
+                                        >
+                                            {rarity.label}
+                                        </Typography>
+                                    </Box>
+                                </Box>
                                 <Box>
                                     <Stack direction="row" spacing=".5rem" mb=".5rem">
                                         {ms.weapon_slots.map((ws, index) => (
@@ -148,14 +184,16 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                     <Typography
                                         variant="h6"
                                         sx={{
-                                            color: theme.factionTheme.primary,
-                                            fontWeight: "fontWeightBold",
                                             display: "-webkit-box",
                                             overflow: "hidden",
                                             overflowWrap: "anywhere",
                                             textOverflow: "ellipsis",
                                             WebkitLineClamp: 1, // change to max number of lines
                                             WebkitBoxOrient: "vertical",
+                                            textTransform: "uppercase",
+                                            fontWeight: "fontWeightBold",
+                                            color: `${theme.factionTheme.secondary}`,
+                                            letterSpacing: 1.1,
                                         }}
                                     >
                                         {ms.name || ms.label}
@@ -163,16 +201,16 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                     {ms.owner && (
                                         <Typography
                                             sx={{
-                                                color: theme.factionTheme.primary,
                                                 display: "-webkit-box",
                                                 overflow: "hidden",
                                                 overflowWrap: "anywhere",
                                                 textOverflow: "ellipsis",
                                                 WebkitLineClamp: 1, // change to max number of lines
                                                 WebkitBoxOrient: "vertical",
+                                                color: `${theme.factionTheme.secondary}aa`,
                                             }}
                                         >
-                                            <i>{`@${ms.owner.username}#${ms.owner.gid}`}</i>
+                                            {`@${ms.owner.username}#${ms.owner.gid}`}{" "}
                                         </Typography>
                                     )}
                                 </Box>
