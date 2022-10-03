@@ -96,12 +96,9 @@ export const MechGeneralStatus = ({
                     color = colors.green
                     break
                 case MechStatusEnum.Queue:
-                    if (payload.battle_lobby_number) {
-                        text = `In Lobby ${payload.battle_lobby_number}`
-                    } else if (payload.battle_lobby_queue_position) {
-                        text = `POSITION ${payload.battle_lobby_queue_position}`
-                    } else {
-                        text = "IN QUEUE"
+                    text = "In Lobby"
+                    if (payload.battle_lobby_is_locked) {
+                        text = `In Queue`
                     }
                     color = colors.yellow
                     break

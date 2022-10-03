@@ -1,238 +1,346 @@
-import { Faction } from "../../../types"
-import { BattleLobbiesMech } from "../../../types/battle_queue"
-import { useAuth, useGlobalNotifications, useSupremacy } from "../../../containers"
-import React, { useCallback, useMemo, useState } from "react"
-import { Avatar, Box, IconButton, Stack, Typography } from "@mui/material"
-import { colors, fonts } from "../../../theme/theme"
+import { Box, Button, Stack, Typography } from "@mui/material"
+import { useCallback, useState } from "react"
+import { SvgCheckMark, SvgLogout, SvgPlus, SvgQuestionMark2, SvgWeapons } from "../../../assets"
+import { useAuth, useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
+import { getRarityDeets } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { MechThumbnail } from "../../Hangar/WarMachinesHangar/Common/MechThumbnail"
-import { SvgClose } from "../../../assets"
+import { scaleUpKeyframes } from "../../../theme/keyframes"
+import { colors, fonts } from "../../../theme/theme"
+import { Faction } from "../../../types"
+import { BattleLobbiesMech } from "../../../types/battle_queue"
+import { ConfirmModal } from "../../Common/ConfirmModal"
+import { FancyButton } from "../../Common/FancyButton"
 
-interface BattleLobbySlot {
+export interface BattleLobbyFaction {
     faction: Faction
-    mechSlots: BattleLobbiesMech[]
+    mechSlots: (BattleLobbiesMech | null)[] // null represents empty slot
 }
 
-export const BattleLobbyMechSlots = ({ battleLobbyMechs, isLocked }: { battleLobbyMechs: BattleLobbiesMech[]; isLocked: boolean }) => {
-    const { factionsAll } = useSupremacy()
-    // fill up slot
-    const battleLobbySlots = useMemo(() => {
-        const blss: BattleLobbySlot[] = []
-        const mechAmountPerFaction = 3
-        Object.values(factionsAll)
-            .sort((a, b) => a.label.localeCompare(b.label))
-            .forEach((f) => {
-                const bls: BattleLobbySlot = {
-                    faction: f,
-                    mechSlots: [],
-                }
-
-                battleLobbyMechs.forEach((blm) => {
-                    // skip, if not in the same faction
-                    if (blm.owner.faction_id != f.id) return
-
-                    // parse data
-                    bls.mechSlots.push(blm)
-                })
-
-                // fill up with empty struct
-                while (bls.mechSlots.length < mechAmountPerFaction) {
-                    bls.mechSlots.push({
-                        mech_id: "",
-                        battle_lobby_id: "",
-                        name: "",
-                        label: "",
-                        tier: "",
-                        avatar_url: "",
-                        owner: {
-                            id: "",
-                            faction_id: "",
-                            username: "UNKNOWN",
-                            gid: 0,
-                            rank: "NEW_RECRUIT",
-                            features: [],
-                        },
-                        is_destroyed: false,
-                    })
-                }
-
-                blss.push(bls)
-            })
-
-        return blss
-    }, [factionsAll, battleLobbyMechs])
-
-    return (
-        <Stack direction="row" flex={1} justifyContent="space-between">
-            {battleLobbySlots.map((bls) => {
-                const { faction, mechSlots } = bls
-                return (
-                    <Stack
-                        key={faction.id}
-                        direction="column"
-                        width="33%"
-                        sx={{
-                            p: ".35rem",
-                            position: "relative",
-                            minHeight: "21rem",
-                            backgroundColor: colors.darkestNeonBlue + "a0",
-                            borderRadius: "4px",
-                        }}
-                    >
-                        <Stack direction="row" sx={{ mb: ".25rem" }}>
-                            <Avatar
-                                src={faction.logo_url}
-                                alt={`${faction.label}'s Avatar`}
-                                sx={{
-                                    height: "2.6rem",
-                                    width: "2.6rem",
-                                    borderRadius: 0.8,
-                                    border: `${faction.primary_color} 2px solid`,
-                                    backgroundColor: faction.primary_color,
-                                }}
-                                variant="square"
-                            />
-                            <Typography
-                                sx={{
-                                    fontFamily: fonts.nostromoBlack,
-                                    color: faction.primary_color,
-                                    ml: ".45rem",
-                                    display: "-webkit-box",
-                                    overflow: "hidden",
-                                    overflowWrap: "anywhere",
-                                    textOverflow: "ellipsis",
-                                    WebkitLineClamp: 1, // change to max number of lines
-                                    WebkitBoxOrient: "vertical",
-                                }}
-                            >
-                                {faction.label}
-                            </Typography>
-                        </Stack>
-
-                        <Box
-                            flex={1}
-                            sx={{
-                                width: "100%",
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "center",
-                                justifyContent: "center",
-                            }}
-                        >
-                            {mechSlots.map((ms, i) => (
-                                <Box
-                                    key={i}
-                                    sx={{
-                                        display: "flex",
-                                        flex: 1,
-                                        flexDirection: "row",
-                                        p: ".15rem",
-                                        my: ".1rem",
-                                        width: "100%",
-                                        backgroundColor: colors.offWhite + "20",
-                                        borderRadius: "4px",
-                                    }}
-                                >
-                                    <MechSlotContent battleLobbiesMech={ms} faction={faction} isLocked={isLocked} />
-                                </Box>
-                            ))}
-                        </Box>
-                    </Stack>
-                )
-            })}
-        </Stack>
-    )
+interface MyFactionLobbySlotsProps {
+    factionLobby: BattleLobbyFaction
+    isLocked: boolean
+    onSlotClick: () => void
 }
 
-const MechSlotContent = ({ battleLobbiesMech, faction, isLocked }: { battleLobbiesMech: BattleLobbiesMech; faction: Faction; isLocked: boolean }) => {
+export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyFactionLobbySlotsProps) => {
+    const theme = useTheme()
     const { userID } = useAuth()
     const { newSnackbarMessage } = useGlobalNotifications()
-    const { factionTheme } = useTheme()
+
+    // Leaving lobby
     const { send } = useGameServerCommandsFaction("/faction_commander")
+    const [showConfirmModal, setShowConfirmModal] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
-    const canLeave = useMemo(() => !isLocked && userID === battleLobbiesMech.owner.id, [battleLobbiesMech.owner.id, isLocked, userID])
 
     const leaveLobby = useCallback(
         async (mechID: string) => {
-            if (!canLeave) return
+            setIsLoading(true)
             try {
-                setIsLoading(true)
-
-                const resp = await send<{ success: boolean; code: string }>(GameServerKeys.LeaveBattleLobby, {
+                await send(GameServerKeys.LeaveBattleLobby, {
                     mech_ids: [mechID],
                 })
-
-                if (resp && resp.success) {
-                    newSnackbarMessage("Successfully deployed war machines.", "success")
-                }
+                setShowConfirmModal(false)
+                newSnackbarMessage("Successfully removed mech from lobby.", "success")
             } catch (e) {
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to leave battle lobby.", "error")
-                return
             } finally {
                 setIsLoading(false)
             }
         },
-        [canLeave, newSnackbarMessage, send],
+        [newSnackbarMessage, send],
     )
 
-    if (battleLobbiesMech.mech_id == "") return null
-    // display queued mech
     return (
         <>
-            <Stack>
-                <MechThumbnail avatarUrl={battleLobbiesMech.avatar_url} tier={battleLobbiesMech.tier} factionID={battleLobbiesMech.owner.faction_id} tiny />
-            </Stack>
-            <Stack direction={"column"} flex={1}>
-                <Typography
-                    variant="h6"
-                    sx={{
-                        flex: 1,
-                        color: faction.primary_color,
-                        ml: ".45rem",
-                        fontWeight: "fontWeightBold",
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1, // change to max number of lines
-                        WebkitBoxOrient: "vertical",
-                    }}
-                >
-                    {battleLobbiesMech.name || battleLobbiesMech.label}
-                </Typography>
-                <Typography
-                    sx={{
-                        flex: 1,
-                        color: faction.primary_color,
-                        ml: ".45rem",
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1, // change to max number of lines
-                        WebkitBoxOrient: "vertical",
-                    }}
-                >
-                    <i>{`@${battleLobbiesMech.owner.username}#${battleLobbiesMech.owner.gid}`}</i>
-                </Typography>
-            </Stack>
+            {factionLobby.mechSlots.map((ms, index) => {
+                if (!ms) {
+                    return (
+                        <Button
+                            key={index}
+                            onClick={() => onSlotClick()}
+                            disabled={isLocked}
+                            sx={{
+                                flex: 1,
+                                display: "flex",
+                                flexDirection: "column",
+                                padding: "1rem",
+                                borderRadius: 0,
+                                backgroundColor: `${colors.offWhite}20`,
+                            }}
+                        >
+                            <SvgPlus
+                                size="40px"
+                                fill={`${colors.offWhite}30`}
+                                sx={{
+                                    padding: "2.5rem",
+                                    backgroundColor: `${colors.offWhite}10`,
+                                    borderRadius: "50%",
+                                }}
+                            />
+                            <Typography
+                                display="block"
+                                sx={{
+                                    mt: "1rem",
+                                    color: `${colors.offWhite}30`,
+                                }}
+                            >
+                                DEPLOY MECH
+                            </Typography>
+                        </Button>
+                    )
+                }
 
-            {canLeave && (
-                <IconButton
-                    disableRipple
-                    disabled={!canLeave || isLoading}
-                    onClick={async (e) => {
-                        e.preventDefault()
-                        e.stopPropagation()
+                const rarity = getRarityDeets(ms.tier)
 
-                        await leaveLobby(battleLobbiesMech.mech_id)
-                    }}
-                >
-                    <SvgClose fill={factionTheme.primary} />
-                </IconButton>
-            )}
+                return (
+                    <>
+                        <Stack
+                            key={index}
+                            sx={{
+                                flex: 1,
+                                padding: "1rem",
+                                alignItems: "start",
+                                textAlign: "initial",
+                                borderRadius: 0,
+                                backgroundColor: `${colors.offWhite}20`,
+                            }}
+                        >
+                            <Stack direction="row" spacing="1rem" mb=".5rem">
+                                <Box
+                                    sx={{
+                                        position: "relative",
+                                        height: "70px",
+                                        width: "70px",
+                                    }}
+                                >
+                                    <Box
+                                        component="img"
+                                        src={ms.avatar_url}
+                                        sx={{
+                                            position: "absolute",
+                                            top: 0,
+                                            left: 0,
+                                            width: "100%",
+                                        }}
+                                    />
+                                    <Box
+                                        sx={{
+                                            position: "absolute",
+                                            left: "50%",
+                                            bottom: 0,
+                                            width: "100%",
+                                            transform: "translate(-50%, 0)",
+                                            backgroundColor: `${factionLobby.faction.background_color}dd`,
+                                        }}
+                                    >
+                                        <Typography
+                                            sx={{
+                                                fontSize: "1.2rem",
+                                                fontFamily: fonts.nostromoMedium,
+                                                textTransform: "uppercase",
+                                                textAlign: "center",
+                                                color: rarity.color,
+                                            }}
+                                        >
+                                            {rarity.label}
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                                <Box>
+                                    <Stack direction="row" spacing=".5rem" mb=".5rem">
+                                        {ms.weapon_slots.map((ws, index) => (
+                                            <Box
+                                                key={index}
+                                                sx={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    width: "25px",
+                                                    height: "25px",
+                                                    border: `1px solid ${theme.factionTheme.primary}66`,
+                                                    backgroundColor: `${theme.factionTheme.background}`,
+                                                }}
+                                            >
+                                                {ws.weapon ? (
+                                                    <Box
+                                                        key={ws.weapon.avatar_url}
+                                                        component="img"
+                                                        src={ws.weapon.avatar_url}
+                                                        sx={{
+                                                            width: "100%",
+                                                            height: "100%",
+                                                            objectFit: "cover",
+                                                            animation: `${scaleUpKeyframes} .5s ease-out`,
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    <SvgWeapons />
+                                                )}
+                                            </Box>
+                                        ))}
+                                    </Stack>
+                                    <Typography
+                                        variant="h6"
+                                        sx={{
+                                            display: "-webkit-box",
+                                            overflow: "hidden",
+                                            overflowWrap: "anywhere",
+                                            textOverflow: "ellipsis",
+                                            WebkitLineClamp: 1, // change to max number of lines
+                                            WebkitBoxOrient: "vertical",
+                                            textTransform: "uppercase",
+                                            fontWeight: "fontWeightBold",
+                                            color: `#ffffff`,
+                                            letterSpacing: 1.1,
+                                        }}
+                                    >
+                                        {ms.name || ms.label}
+                                    </Typography>
+                                    {ms.owner && (
+                                        <Typography
+                                            sx={{
+                                                display: "-webkit-box",
+                                                overflow: "hidden",
+                                                overflowWrap: "anywhere",
+                                                textOverflow: "ellipsis",
+                                                WebkitLineClamp: 1, // change to max number of lines
+                                                WebkitBoxOrient: "vertical",
+                                                color: `#ffffffaa`,
+                                            }}
+                                        >
+                                            {`@${ms.owner.username}#${ms.owner.gid}`}{" "}
+                                        </Typography>
+                                    )}
+                                </Box>
+                            </Stack>
+                            <Stack direction="row" alignSelf="stretch" mt="auto" spacing=".5rem">
+                                <FancyButton
+                                    clipThingsProps={{
+                                        clipSize: "6px",
+                                        clipSlantSize: "0px",
+                                        corners: { bottomLeft: index === 0 },
+                                        backgroundColor: theme.factionTheme.primary,
+                                        sx: {
+                                            flex: 1,
+                                        },
+                                    }}
+                                    to={`/mech/${ms.mech_id}`}
+                                >
+                                    <Typography
+                                        fontSize="1.3rem"
+                                        fontWeight="fontWeightBold"
+                                        sx={{
+                                            color: factionLobby.faction.secondary_color,
+                                        }}
+                                    >
+                                        View Mech
+                                    </Typography>
+                                </FancyButton>
+                                {ms.owner?.id === userID && (
+                                    <FancyButton
+                                        onClick={() => setShowConfirmModal(true)}
+                                        disabled={isLocked || userID !== ms.owner?.id}
+                                        loading={isLoading}
+                                        clipThingsProps={{
+                                            clipSize: "6px",
+                                            clipSlantSize: "0px",
+                                            corners: { topLeft: false, topRight: false, bottomLeft: false, bottomRight: false },
+                                            backgroundColor: colors.red,
+                                        }}
+                                    >
+                                        <SvgLogout />
+                                    </FancyButton>
+                                )}
+                            </Stack>
+                        </Stack>
+                        {showConfirmModal && (
+                            <ConfirmModal title="Confirm Removal" onConfirm={() => leaveLobby(ms.mech_id)} onClose={() => setShowConfirmModal(false)}>
+                                <Typography
+                                    variant="h6"
+                                    sx={{
+                                        "& span": {
+                                            fontWeight: "fontWeightBold",
+                                        },
+                                    }}
+                                >
+                                    Withdraw <span>{ms.name || ms.label}</span> from this lobby?
+                                </Typography>
+                            </ConfirmModal>
+                        )}
+                    </>
+                )
+            })}
+        </>
+    )
+}
+
+interface OtherFactionLobbySlotsProps {
+    factionLobbies: BattleLobbyFaction[]
+}
+
+export const OtherFactionLobbySlots = ({ factionLobbies }: OtherFactionLobbySlotsProps) => {
+    return (
+        <>
+            {factionLobbies.map((fl) => (
+                <Box key={fl.faction.id}>
+                    <Stack
+                        direction="row"
+                        sx={{
+                            alignItems: "center",
+                            mb: ".3rem",
+                        }}
+                    >
+                        <Typography
+                            sx={{
+                                display: "-webkit-box",
+                                fontSize: "1.2rem",
+                                fontFamily: fonts.nostromoBlack,
+                                color: fl.faction.primary_color,
+                                overflow: "hidden",
+                                overflowWrap: "anywhere",
+                                textOverflow: "ellipsis",
+                                WebkitLineClamp: 1, // change to max number of lines
+                                WebkitBoxOrient: "vertical",
+                            }}
+                        >
+                            {fl.faction.label}
+                        </Typography>
+                    </Stack>
+                    <Stack direction="row" spacing=".5rem">
+                        {fl.mechSlots.map((ms, index) => (
+                            <Stack
+                                key={index}
+                                sx={{
+                                    height: "30px",
+                                    width: "30px",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    border: `1px solid ${fl.faction.primary_color}`,
+                                    backgroundColor: fl.faction.background_color,
+                                }}
+                            >
+                                {ms ? (
+                                    <SvgCheckMark
+                                        fill={`${colors.green}`}
+                                        sx={{
+                                            animation: `${scaleUpKeyframes} .5s ease-out`,
+                                        }}
+                                    />
+                                ) : (
+                                    <SvgQuestionMark2
+                                        fill={`${colors.offWhite}20`}
+                                        sx={{
+                                            animation: `${scaleUpKeyframes} .5s ease-out`,
+                                        }}
+                                    />
+                                )}
+                            </Stack>
+                        ))}
+                    </Stack>
+                </Box>
+            ))}
         </>
     )
 }
