@@ -11,14 +11,14 @@ export const ArenaSelector = () => {
         <Autocomplete
             disableClearable
             fullWidth
-            options={arenaList.map((a) => ({ id: a.id, name: a.name.toUpperCase() }))}
+            options={arenaList.map((a) => ({ id: a.id, name: a?.name?.toUpperCase() || "" }))}
             onChange={(event, value) => {
                 const it: { id: string; name: string } | string = value
                 if (typeof it === "string") return
                 setCurrentArena((prev) => arenaList.find((a) => a.id === it.id) || prev)
             }}
             value={currentArena}
-            getOptionLabel={(option) => `ARENA - ${option.name.toUpperCase()}`}
+            getOptionLabel={(option) => `ARENA - ${option?.name?.toUpperCase() || ""}`}
             sx={{
                 "&& .MuiInputBase-hiddenLabel": {
                     p: 0,

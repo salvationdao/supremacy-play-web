@@ -20,7 +20,7 @@ export const BattleArena = () => {
                 <ArenaSelector />
 
                 {/* The minimap or the stream will mount here */}
-                <Box ref={setSmallDisplayRef} sx={{ flexShrink: 0, mt: "1rem" }} />
+                <Box ref={setSmallDisplayRef} sx={{ flexShrink: 0, mt: ".5rem" }} />
                 <AIMatchBanner />
 
                 <Box
