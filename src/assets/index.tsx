@@ -3,6 +3,7 @@ import Ammo from "!@svgr/webpack!./svg/Ammo.svg"
 import Armor from "!@svgr/webpack!./svg/Armor.svg"
 import Assets from "!@svgr/webpack!./svg/Assets.svg"
 import BostonMechKillIcon from "!@svgr/webpack!./svg/BostonKillIcon.svg"
+import CheckMark from "!@svgr/webpack!./svg/CheckMark.svg"
 import Chest from "!@svgr/webpack!./svg/Chest.svg"
 import Close from "!@svgr/webpack!./svg/Close.svg"
 import Close2 from "!@svgr/webpack!./svg/Close2.svg"
@@ -40,6 +41,7 @@ import PowerCoreCapacity from "!@svgr/webpack!./svg/PowerCoreCapacity.svg"
 import PowerCoreRegen from "!@svgr/webpack!./svg/PowerCoreRegen.svg"
 import Profile from "!@svgr/webpack!./svg/Profile.svg"
 import ProjectileSpeed from "!@svgr/webpack!./svg/ProjectileSpeed.svg"
+import QuestionMark2 from "!@svgr/webpack!./svg/QuestionMark2.svg"
 import Radius from "!@svgr/webpack!./svg/Radius.svg"
 import RadiusDamageFalloffRate from "!@svgr/webpack!./svg/RadiusDamageFalloffRate.svg"
 import Rank from "!@svgr/webpack!./svg/Rank.svg"
@@ -65,6 +67,7 @@ import Utilities from "!@svgr/webpack!./svg/Utilities.svg"
 import View from "!@svgr/webpack!./svg/View.svg"
 import Wallet from "!@svgr/webpack!./svg/Wallet.svg"
 import Weapons from "!@svgr/webpack!./svg/Weapons.svg"
+import Wrench from "!@svgr/webpack!./svg/Wrench.svg"
 import ZaibatsuMechKillIcon from "!@svgr/webpack!./svg/ZaibatsuKillIcon.svg"
 import Angle from "!react-svg-loader!./svg/Angle.svg"
 import Announcement from "!react-svg-loader!./svg/Announcement.svg"
@@ -1343,5 +1346,23 @@ export const SvgChevronDown: React.VoidFunctionComponent<SvgWrapperProps> = (pro
 export const SvgDoubleChevronDown: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <DoubleChevronDown />
+    </SvgWrapper>
+)
+
+export const SvgQuestionMark2: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <QuestionMark2 />
+    </SvgWrapper>
+)
+
+export const SvgCheckMark: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <CheckMark />
+    </SvgWrapper>
+)
+
+export const SvgWrench: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Wrench />
     </SvgWrapper>
 )

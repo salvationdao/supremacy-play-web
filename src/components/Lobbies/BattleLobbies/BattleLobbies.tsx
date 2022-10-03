@@ -1,22 +1,19 @@
-import { useTheme } from "../../../containers/theme"
 import { Box, Pagination, Stack, Typography } from "@mui/material"
-import { BattleLobbyItem } from "./BattleLobbyItem"
 import { useEffect, useMemo, useState } from "react"
-import { PageHeader } from "../../Common/PageHeader"
-import { colors, fonts } from "../../../theme/theme"
+import FlipMove from "react-flip-move"
 import { ThreeMechsJPG } from "../../../assets"
+import { useTheme } from "../../../containers/theme"
+import { useDebounce, usePagination } from "../../../hooks"
+import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
+import { fonts } from "../../../theme/theme"
+import { BattleLobby } from "../../../types/battle_queue"
+import { SortTypeLabel } from "../../../types/marketplace"
+import { ClipThing } from "../../Common/ClipThing"
+import { PageHeader } from "../../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { SearchBattle } from "../../Replays/BattlesReplays/SearchBattle"
-import { ClipThing } from "../../Common/ClipThing"
-import { useDebounce, usePagination } from "../../../hooks"
-import { SortTypeLabel } from "../../../types/marketplace"
-import FlipMove from "react-flip-move"
-import { BattleLobby } from "../../../types/battle_queue"
-import { FancyButton } from "../../Common/FancyButton"
-import { BattleLobbyJoinModal } from "../BattleLobbyJoinModal"
-import { useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../keys"
-import { BattleLobbyCreateModal } from "../BattleLobbyCreateModal"
+import { BattleLobbyItem } from "./BattleLobbyItem"
 
 const sortOptionsPending: { label: string; value: string }[] = [
     { label: SortTypeLabel.QueuedAmountHighest, value: SortTypeLabel.QueuedAmountHighest },
@@ -29,18 +26,21 @@ const sortOptionsReady: { label: string; value: string }[] = [
     { label: SortTypeLabel.ReadyTimeNewestFirst, value: SortTypeLabel.ReadyTimeNewestFirst },
 ]
 
-enum filterLobbyStatus {
+export enum LobbyStatusEnum {
     Ready = "READY",
     Pending = "PENDING",
 }
 
-export const BattleLobbies = () => {
+interface BattleLobbiesProps {
+    lobbyStatus: LobbyStatusEnum
+}
+
+export const BattleLobbies = ({ lobbyStatus }: BattleLobbiesProps) => {
     const theme = useTheme()
-    const [openLobbyCreateModal, setOpenLobbyCreateModal] = useState(false)
 
     // load battle lobbies
     const [battleLobbies, setBattleLobbies] = useState<BattleLobby[]>([])
-    useGameServerSubscriptionSecured<BattleLobby[]>(
+    useGameServerSubscriptionFaction<BattleLobby[]>(
         {
             URI: `/battle_lobbies`,
             key: GameServerKeys.SubBattleLobbyListUpdate,
@@ -84,10 +84,28 @@ export const BattleLobbies = () => {
 
     // Search, sort, filters
     const [searchValue, setSearchValue, searchValueInstant] = useDebounce("", 300)
-    const [sort, setSort] = useState<string>(SortTypeLabel.QueuedAmountHighest)
-    const [sortOptions, setSortOptions] = useState(sortOptionsPending)
-    const [lobbyStatus, setLobbyStatus] = useState<filterLobbyStatus>(filterLobbyStatus.Pending)
-    const [selectedLobby, setSelectedLobby] = useState<BattleLobby>()
+    const [sort, setSort] = useState<string>(
+        (() => {
+            switch (lobbyStatus) {
+                case LobbyStatusEnum.Pending:
+                    return SortTypeLabel.QueuedAmountHighest
+                case LobbyStatusEnum.Ready:
+                    return SortTypeLabel.ReadyTimeOldestFirst
+                default:
+                    return SortTypeLabel.QueuedAmountHighest
+            }
+        })(),
+    )
+    const sortOptions = useMemo(() => {
+        switch (lobbyStatus) {
+            case LobbyStatusEnum.Pending:
+                return sortOptionsPending
+            case LobbyStatusEnum.Ready:
+                return sortOptionsReady
+            default:
+                return sortOptionsPending
+        }
+    }, [lobbyStatus])
 
     // Apply filter, sorting and pagination
     useEffect(() => {
@@ -99,10 +117,10 @@ export const BattleLobbies = () => {
         }
 
         switch (lobbyStatus) {
-            case filterLobbyStatus.Ready:
+            case LobbyStatusEnum.Ready:
                 sorted = sorted.filter((s) => !!s.ready_at)
                 break
-            case filterLobbyStatus.Pending:
+            case LobbyStatusEnum.Pending:
                 sorted = sorted.filter((s) => !s.ready_at)
                 break
         }
@@ -129,7 +147,7 @@ export const BattleLobbies = () => {
                 break
         }
 
-        if (lobbyStatus === filterLobbyStatus.Ready) {
+        if (lobbyStatus === LobbyStatusEnum.Ready) {
             sorted = sorted.sort((a, b) => (a.assigned_to_arena_id && !b.assigned_to_arena_id ? -1 : 1))
         }
 
@@ -145,16 +163,16 @@ export const BattleLobbies = () => {
                 <FlipMove>
                     {list.map((battleLobby) => {
                         return (
-                            <div
-                                key={`repair-job-${battleLobby.id}`}
-                                style={{ marginBottom: "1.3rem", cursor: battleLobby.ready_at ? "default" : "pointer" }}
-                                onClick={() => {
-                                    if (battleLobby.ready_at) return
-                                    setSelectedLobby(battleLobby)
+                            <Box
+                                key={`battle-lobby-${battleLobby.id}`}
+                                sx={{
+                                    "&:not(:last-child)": {
+                                        mb: "1.5rem",
+                                    },
                                 }}
                             >
                                 <BattleLobbyItem battleLobby={battleLobby} />
-                            </div>
+                            </Box>
                         )
                     })}
                 </FlipMove>
@@ -189,40 +207,7 @@ export const BattleLobbies = () => {
                             }
                             description={<Typography sx={{ fontSize: "1.85rem" }}>Join lobby to enter battles.</Typography>}
                             imageUrl={ThreeMechsJPG}
-                        >
-                            <Stack
-                                direction="row"
-                                flex={1}
-                                justifyContent="flex-end"
-                                sx={{
-                                    pr: "2rem",
-                                }}
-                            >
-                                <FancyButton
-                                    clipThingsProps={{
-                                        clipSize: "6px",
-                                        backgroundColor: theme.factionTheme.primary,
-                                        opacity: 1,
-                                        border: { borderColor: theme.factionTheme.primary, borderThickness: "1.5px" },
-                                        sx: { position: "relative" },
-                                    }}
-                                    sx={{ px: "3rem", py: ".4rem", color: theme.factionTheme.secondary, flexWrap: 0, whiteSpace: "nowrap" }}
-                                    onClick={() => setOpenLobbyCreateModal(true)}
-                                >
-                                    <Stack justifyContent="center" sx={{ height: "100%" }}>
-                                        <Typography
-                                            variant="caption"
-                                            sx={{
-                                                fontFamily: fonts.nostromoBlack,
-                                                color: colors.offWhite,
-                                            }}
-                                        >
-                                            New Lobby
-                                        </Typography>
-                                    </Stack>
-                                </FancyButton>
-                            </Stack>
-                        </PageHeader>
+                        />
 
                         <TotalAndPageSizeOptions
                             countItems={list.length}
@@ -248,67 +233,6 @@ export const BattleLobbies = () => {
                                     SEARCH:
                                 </Typography>
                                 <SearchBattle placeholder="Lobby Number" searchValueInstant={searchValueInstant} setSearchValue={setSearchValue} />
-                            </Stack>
-
-                            {/* Filter */}
-                            <Stack spacing="1rem" direction="row" alignItems="center">
-                                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                    FILTER:
-                                </Typography>
-                                <FancyButton
-                                    clipThingsProps={{
-                                        clipSize: "6px",
-                                        backgroundColor: lobbyStatus === filterLobbyStatus.Ready ? theme.factionTheme.primary : theme.factionTheme.background,
-                                        opacity: 1,
-                                        border: { borderColor: theme.factionTheme.primary, borderThickness: "1.5px" },
-                                        sx: { position: "relative" },
-                                    }}
-                                    sx={{ px: "3rem", py: ".4rem", color: theme.factionTheme.secondary, flexWrap: 0, whiteSpace: "nowrap" }}
-                                    onClick={() => {
-                                        setLobbyStatus(filterLobbyStatus.Ready)
-                                        setSortOptions(sortOptionsReady)
-                                        setSort(SortTypeLabel.ReadyTimeOldestFirst)
-                                    }}
-                                >
-                                    <Stack justifyContent="center" sx={{ height: "100%" }}>
-                                        <Typography
-                                            variant="caption"
-                                            sx={{
-                                                fontFamily: fonts.nostromoBlack,
-                                                color: lobbyStatus === filterLobbyStatus.Ready ? theme.factionTheme.secondary : colors.offWhite,
-                                            }}
-                                        >
-                                            READY
-                                        </Typography>
-                                    </Stack>
-                                </FancyButton>
-                                <FancyButton
-                                    clipThingsProps={{
-                                        clipSize: "6px",
-                                        backgroundColor: lobbyStatus === filterLobbyStatus.Pending ? theme.factionTheme.primary : theme.factionTheme.background,
-                                        opacity: 1,
-                                        border: { borderColor: theme.factionTheme.primary, borderThickness: "1.5px" },
-                                        sx: { position: "relative" },
-                                    }}
-                                    sx={{ px: "3rem", py: ".4rem", color: theme.factionTheme.secondary, flexWrap: 0, whiteSpace: "nowrap" }}
-                                    onClick={() => {
-                                        setLobbyStatus(filterLobbyStatus.Pending)
-                                        setSortOptions(sortOptionsPending)
-                                        setSort(SortTypeLabel.QueuedAmountHighest)
-                                    }}
-                                >
-                                    <Stack justifyContent="center" sx={{ height: "100%" }}>
-                                        <Typography
-                                            variant="caption"
-                                            sx={{
-                                                fontFamily: fonts.nostromoBlack,
-                                                color: lobbyStatus === filterLobbyStatus.Pending ? theme.factionTheme.secondary : colors.offWhite,
-                                            }}
-                                        >
-                                            PENDING
-                                        </Typography>
-                                    </Stack>
-                                </FancyButton>
                             </Stack>
 
                             <Box sx={{ flex: 1 }} />
@@ -372,9 +296,6 @@ export const BattleLobbies = () => {
                     </Stack>
                 </Stack>
             </ClipThing>
-
-            <BattleLobbyJoinModal selectedBattleLobby={selectedLobby} setSelectedBattleLobby={setSelectedLobby} />
-            {openLobbyCreateModal && <BattleLobbyCreateModal setOpen={setOpenLobbyCreateModal} />}
         </>
     )
 }

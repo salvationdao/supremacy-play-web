@@ -9,6 +9,7 @@ import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
 import { RepairJobs } from "../components/RightDrawer/RepairJobs/RepairJobs"
 import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../constants"
 import { BattleArenaPage, BillingHistoryPage, ClaimPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
+import { BattleLobbiesPage } from "../pages/BattleLobbiesPage"
 import { LeaderboardPage } from "../pages/LeaderboardPage"
 import { MarketplaceItemPage } from "../pages/MarketplaceItemPage"
 import { MarketplaceSellPage } from "../pages/MarketplaceSellPage"
@@ -16,10 +17,9 @@ import { MechPage } from "../pages/MechPage"
 import { ReplayItemPage } from "../pages/ReplayItemPage"
 import { ReplayPage } from "../pages/ReplayPage"
 import { StorefrontPage } from "../pages/StorefrontPage"
+import { StorefrontShoppingCartPage } from "../pages/StorefrontShoppingCartPage"
 import { WeaponPage } from "../pages/WeaponPage"
 import { colors } from "../theme/theme"
-import { StorefrontShoppingCartPage } from "../pages/StorefrontShoppingCartPage"
-import { BattleLobbiesPage } from "../pages/BattleLobbiesPage"
 
 // ************
 // ** ROUTES **
@@ -188,7 +188,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
 
     battle_lobbies: {
         id: "battle_lobbies",
-        path: "/battle_lobbies",
+        path: "/battle_lobbies/:status?",
         exact: true,
         Component: BattleLobbiesPage,
         requireAuth: true,
