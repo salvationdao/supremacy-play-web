@@ -32,6 +32,7 @@ export const Grid = React.memo(function Grid() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pixiGrid])
 
+    // Do the toggle
     useEffect(() => {
         if (!pixiGrid) return
         localStorage.setItem("minimap-show-grid", showGrid.toString())
