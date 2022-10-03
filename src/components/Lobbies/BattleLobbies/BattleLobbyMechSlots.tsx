@@ -1,6 +1,6 @@
 import { Box, Button, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
-import { SvgCheckMark, SvgLogout, SvgPlus, SvgQuestionMark2, SvgWeapons, SvgWrench } from "../../../assets"
+import { SvgCheckMark, SvgLogout, SvgPlus, SvgQuestionMark2, SvgWeapons } from "../../../assets"
 import { useAuth, useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
@@ -9,6 +9,7 @@ import { scaleUpKeyframes } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { Faction } from "../../../types"
 import { BattleLobbiesMech } from "../../../types/battle_queue"
+import { ConfirmModal } from "../../Common/ConfirmModal"
 import { FancyButton } from "../../Common/FancyButton"
 
 export interface BattleLobbyFaction {
@@ -29,6 +30,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
 
     // Leaving lobby
     const { send } = useGameServerCommandsFaction("/faction_commander")
+    const [showConfirmModal, setShowConfirmModal] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
 
     const leaveLobby = useCallback(
@@ -38,6 +40,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                 await send(GameServerKeys.LeaveBattleLobby, {
                     mech_ids: [mechID],
                 })
+                setShowConfirmModal(false)
                 newSnackbarMessage("Successfully removed mech from lobby.", "success")
             } catch (e) {
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to leave battle lobby.", "error")
@@ -89,77 +92,64 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                 }
 
                 return (
-                    <Stack
-                        key={index}
-                        sx={{
-                            flex: 1,
-                            padding: "1rem",
-                            alignItems: "start",
-                            textAlign: "initial",
-                            borderRadius: 0,
-                            backgroundColor: `${colors.offWhite}10`,
-                        }}
-                    >
-                        <Stack direction="row" spacing="1rem" mb=".5rem">
-                            <Box
-                                component="img"
-                                src={ms.avatar_url}
-                                sx={{
-                                    maxHeight: "70px",
-                                }}
-                            />
-                            <Box>
-                                <Stack direction="row" spacing=".5rem" mb=".5rem">
-                                    {ms.weapon_slots.map((ws, index) => (
-                                        <Box
-                                            key={index}
-                                            sx={{
-                                                display: "flex",
-                                                alignItems: "center",
-                                                justifyContent: "center",
-                                                width: "25px",
-                                                height: "25px",
-                                                border: `1px solid ${theme.factionTheme.primary}66`,
-                                                backgroundColor: `${theme.factionTheme.background}`,
-                                            }}
-                                        >
-                                            {ws.weapon ? (
-                                                <Box
-                                                    key={ws.weapon.avatar_url}
-                                                    component="img"
-                                                    src={ws.weapon.avatar_url}
-                                                    sx={{
-                                                        width: "100%",
-                                                        height: "100%",
-                                                        objectFit: "cover",
-                                                        animation: `${scaleUpKeyframes} .5s ease-out`,
-                                                    }}
-                                                />
-                                            ) : (
-                                                <SvgWeapons />
-                                            )}
-                                        </Box>
-                                    ))}
-                                </Stack>
-                                <Typography
-                                    variant="h6"
+                    <>
+                        <Stack
+                            key={index}
+                            sx={{
+                                flex: 1,
+                                padding: "1rem",
+                                alignItems: "start",
+                                textAlign: "initial",
+                                borderRadius: 0,
+                                backgroundColor: `${colors.offWhite}10`,
+                            }}
+                        >
+                            <Stack direction="row" spacing="1rem" mb=".5rem">
+                                <Box
+                                    component="img"
+                                    src={ms.avatar_url}
                                     sx={{
-                                        color: theme.factionTheme.primary,
-                                        fontWeight: "fontWeightBold",
-                                        display: "-webkit-box",
-                                        overflow: "hidden",
-                                        overflowWrap: "anywhere",
-                                        textOverflow: "ellipsis",
-                                        WebkitLineClamp: 1, // change to max number of lines
-                                        WebkitBoxOrient: "vertical",
+                                        maxHeight: "70px",
                                     }}
-                                >
-                                    {ms.name || ms.label}
-                                </Typography>
-                                {ms.owner && (
+                                />
+                                <Box>
+                                    <Stack direction="row" spacing=".5rem" mb=".5rem">
+                                        {ms.weapon_slots.map((ws, index) => (
+                                            <Box
+                                                key={index}
+                                                sx={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    width: "25px",
+                                                    height: "25px",
+                                                    border: `1px solid ${theme.factionTheme.primary}66`,
+                                                    backgroundColor: `${theme.factionTheme.background}`,
+                                                }}
+                                            >
+                                                {ws.weapon ? (
+                                                    <Box
+                                                        key={ws.weapon.avatar_url}
+                                                        component="img"
+                                                        src={ws.weapon.avatar_url}
+                                                        sx={{
+                                                            width: "100%",
+                                                            height: "100%",
+                                                            objectFit: "cover",
+                                                            animation: `${scaleUpKeyframes} .5s ease-out`,
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    <SvgWeapons />
+                                                )}
+                                            </Box>
+                                        ))}
+                                    </Stack>
                                     <Typography
+                                        variant="h6"
                                         sx={{
                                             color: theme.factionTheme.primary,
+                                            fontWeight: "fontWeightBold",
                                             display: "-webkit-box",
                                             overflow: "hidden",
                                             overflowWrap: "anywhere",
@@ -168,28 +158,42 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                             WebkitBoxOrient: "vertical",
                                         }}
                                     >
-                                        <i>{`@${ms.owner.username}#${ms.owner.gid}`}</i>
+                                        {ms.name || ms.label}
                                     </Typography>
-                                )}
-                            </Box>
-                        </Stack>
-                        <Stack direction="row" alignSelf="stretch" mt="auto" spacing=".5rem">
-                            <FancyButton
-                                clipThingsProps={{
-                                    clipSize: "6px",
-                                    clipSlantSize: "0px",
-                                    corners: { bottomLeft: index === 0 },
-                                    backgroundColor: theme.factionTheme.primary,
-                                    sx: {
-                                        flex: 1,
-                                    },
-                                }}
-                            >
-                                View Mech
-                            </FancyButton>
-                            {ms.owner?.id === userID && (
-                                <>
-                                    <FancyButton
+                                    {ms.owner && (
+                                        <Typography
+                                            sx={{
+                                                color: theme.factionTheme.primary,
+                                                display: "-webkit-box",
+                                                overflow: "hidden",
+                                                overflowWrap: "anywhere",
+                                                textOverflow: "ellipsis",
+                                                WebkitLineClamp: 1, // change to max number of lines
+                                                WebkitBoxOrient: "vertical",
+                                            }}
+                                        >
+                                            <i>{`@${ms.owner.username}#${ms.owner.gid}`}</i>
+                                        </Typography>
+                                    )}
+                                </Box>
+                            </Stack>
+                            <Stack direction="row" alignSelf="stretch" mt="auto" spacing=".5rem">
+                                <FancyButton
+                                    clipThingsProps={{
+                                        clipSize: "6px",
+                                        clipSlantSize: "0px",
+                                        corners: { bottomLeft: index === 0 },
+                                        backgroundColor: theme.factionTheme.primary,
+                                        sx: {
+                                            flex: 1,
+                                        },
+                                    }}
+                                >
+                                    View Mech
+                                </FancyButton>
+                                {ms.owner?.id === userID && (
+                                    <>
+                                        {/* <FancyButton
                                         clipThingsProps={{
                                             clipSize: "6px",
                                             clipSlantSize: "0px",
@@ -204,24 +208,39 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                         <Box component="span" ml=".5rem">
                                             Modify
                                         </Box>
-                                    </FancyButton>
-                                    <FancyButton
-                                        onClick={() => leaveLobby(ms.mech_id)}
-                                        disabled={isLocked || userID !== ms.owner?.id}
-                                        loading={isLoading}
-                                        clipThingsProps={{
-                                            clipSize: "6px",
-                                            clipSlantSize: "0px",
-                                            corners: { topLeft: false, topRight: false, bottomLeft: false, bottomRight: false },
-                                            backgroundColor: colors.red,
-                                        }}
-                                    >
-                                        <SvgLogout />
-                                    </FancyButton>
-                                </>
-                            )}
+                                    </FancyButton> */}
+                                        <FancyButton
+                                            onClick={() => setShowConfirmModal(true)}
+                                            disabled={isLocked || userID !== ms.owner?.id}
+                                            loading={isLoading}
+                                            clipThingsProps={{
+                                                clipSize: "6px",
+                                                clipSlantSize: "0px",
+                                                corners: { topLeft: false, topRight: false, bottomLeft: false, bottomRight: false },
+                                                backgroundColor: colors.red,
+                                            }}
+                                        >
+                                            <SvgLogout />
+                                        </FancyButton>
+                                    </>
+                                )}
+                            </Stack>
                         </Stack>
-                    </Stack>
+                        {showConfirmModal && (
+                            <ConfirmModal title="Confirm Removal" onConfirm={() => leaveLobby(ms.mech_id)} onClose={() => setShowConfirmModal(false)}>
+                                <Typography
+                                    variant="h6"
+                                    sx={{
+                                        "& span": {
+                                            fontWeight: "fontWeightBold",
+                                        },
+                                    }}
+                                >
+                                    Withdraw <span>{ms.name || ms.label}</span> from this lobby?
+                                </Typography>
+                            </ConfirmModal>
+                        )}
+                    </>
                 )
             })}
         </>
