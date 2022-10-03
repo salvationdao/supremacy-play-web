@@ -188,7 +188,7 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
                 mapMousePosition.current = pixiMainItems?.viewport.toLocal(event.data.global)
             })
         }
-    }, [map, pixiMainItems, mapMousePosition, containerDimensions])
+    }, [map, pixiMainItems, mapMousePosition])
 
     // On map click handler to unselect a mech when click anywhere on the map
     useEffect(() => {

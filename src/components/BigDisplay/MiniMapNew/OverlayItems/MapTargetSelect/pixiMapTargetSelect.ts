@@ -119,7 +119,7 @@ export class PixiMapTargetSelect {
 
             setTimeout(() => {
                 this.cancelButton?.pivot.set(this.cancelButton.width, this.cancelButton.height / 2)
-            }, 180)
+            }, 500)
         }
 
         // Mouse icon

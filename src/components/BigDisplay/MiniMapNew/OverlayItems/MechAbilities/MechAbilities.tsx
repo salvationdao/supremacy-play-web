@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react"
 import { useArena, useAuth, useGame, useMiniMapPixi } from "../../../../../containers"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
-import { BribeStage, GameAbility, MechMoveCommandAbility, WarMachineLiveState, WarMachineState } from "../../../../../types"
+import { AIType, BribeStage, GameAbility, WarMachineLiveState, WarMachineState } from "../../../../../types"
 import { MechAbility } from "./MechAbility"
 import { PixiMechAbilities } from "./pixiMechAbilities"
 
@@ -41,6 +41,8 @@ const MechAbilitiesInner = React.memo(function MechAbilitiesInner({ warMachine }
 
     const [pixiMechAbilities, setPixiMechAbilities] = useState<PixiMechAbilities>()
     const [gameAbilities, setGameAbilities] = useState<GameAbility[]>([])
+
+    const isMiniMech = warMachine.aiType === AIType.MiniMech
 
     // Initial setup for the mech and show on the map
     useEffect(() => {
@@ -88,7 +90,8 @@ const MechAbilitiesInner = React.memo(function MechAbilitiesInner({ warMachine }
     )
 
     return useMemo(() => {
-        if (!pixiMechAbilities) {
+        // Mini mechs dont have abilities
+        if (!pixiMechAbilities || isMiniMech) {
             return null
         }
 
@@ -107,17 +110,7 @@ const MechAbilitiesInner = React.memo(function MechAbilitiesInner({ warMachine }
                             />
                         )
                     })}
-
-                {/* Mech move command */}
-                <MechAbility
-                    key={`mech-move-ability-${hash}`}
-                    pixiMechAbilities={pixiMechAbilities}
-                    index={gameAbilities.length}
-                    hash={hash}
-                    participantID={participantID}
-                    playerAbility={MechMoveCommandAbility}
-                />
             </>
         )
-    }, [gameAbilities, hash, participantID, pixiMechAbilities])
+    }, [gameAbilities, hash, participantID, pixiMechAbilities, isMiniMech])
 }, propsAreEqual)
