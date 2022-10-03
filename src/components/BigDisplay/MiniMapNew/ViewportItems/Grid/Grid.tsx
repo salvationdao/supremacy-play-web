@@ -4,14 +4,14 @@ import { useToggle } from "../../../../../hooks"
 import { PixiGrid } from "./pixiGrid"
 
 export const Grid = React.memo(function Grid() {
-    const { pixiMainItems, gridSizeRef } = useMiniMapPixi()
+    const { pixiMainItems, gridSizeRef, mapMousePosition } = useMiniMapPixi()
     const [pixiGrid, setPixiGrid] = useState<PixiGrid>()
     const [showGrid, toggleShowGrid] = useToggle(localStorage.getItem("minimap-show-grid") === "true")
 
     // Initial setup
     useEffect(() => {
         if (!pixiMainItems) return
-        const pixiGrid = new PixiGrid(pixiMainItems.viewport, gridSizeRef)
+        const pixiGrid = new PixiGrid(pixiMainItems.viewport, gridSizeRef, mapMousePosition)
         pixiMainItems.viewport.addChild(pixiGrid.root)
         setPixiGrid((prev) => {
             prev?.destroy()
@@ -24,7 +24,7 @@ export const Grid = React.memo(function Grid() {
                 toggleShowGrid()
             })
         }
-    }, [gridSizeRef, pixiMainItems, toggleShowGrid])
+    }, [gridSizeRef, pixiMainItems, toggleShowGrid, mapMousePosition])
 
     // Cleanup
     useEffect(() => {
