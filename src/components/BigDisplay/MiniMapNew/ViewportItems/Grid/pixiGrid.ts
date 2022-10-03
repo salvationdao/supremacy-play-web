@@ -39,8 +39,8 @@ export class PixiGrid {
 
                 if (i === 0) {
                     const label = new PIXI.Text(`${intToLetter(j + 1)}`, {
-                        fontFamily: fonts.shareTech,
-                        fontSize: cellHeight / 3,
+                        fontFamily: fonts.nostromoBold,
+                        fontSize: cellHeight / 4,
                         fill: "#FFFFFF",
                         lineHeight: 1,
                     })
@@ -53,8 +53,8 @@ export class PixiGrid {
 
                 if (j === 0) {
                     const label = new PIXI.Text(`${i + 1}`, {
-                        fontFamily: fonts.shareTech,
-                        fontSize: cellHeight / 3,
+                        fontFamily: fonts.nostromoBold,
+                        fontSize: cellHeight / 4,
                         fill: "#FFFFFF",
                         lineHeight: 1,
                     })
@@ -70,7 +70,7 @@ export class PixiGrid {
                 graphics.drawRect(0, 0, cellWidth, cellHeight)
                 graphics.position.set(posX, posY)
 
-                graphics.alpha = 0.1
+                graphics.alpha = 0.05
                 this.root.addChild(graphics)
             }
         }
