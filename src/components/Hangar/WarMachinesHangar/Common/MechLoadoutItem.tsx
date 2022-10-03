@@ -1,6 +1,6 @@
 import { Box, Grow, IconButton, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useRef } from "react"
-import { FancyButton } from "../../.."
+import { ClipThing, FancyButton } from "../../.."
 import { SvgLock, SvgPlus, SvgRemove, SvgSkin, SvgSwap, SvgWrapperProps } from "../../../../assets"
 import { shadeColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
@@ -254,5 +254,136 @@ const MechLoadoutItemButton = ({
                 </Box>
             </Stack>
         </FancyButton>
+    )
+}
+
+interface MechLoadoutItemDraggableProps extends LoadoutItem {
+    style?: React.CSSProperties
+    className?: string
+    onMouseDown?: React.MouseEventHandler<HTMLDivElement>
+    onMouseUp?: React.MouseEventHandler<HTMLDivElement>
+    onTouchStart?: React.TouchEventHandler<HTMLDivElement>
+    something?: boolean
+}
+
+export const MechLoadoutItemDraggable = ({
+    slotNumber,
+    imageUrl,
+    videoUrls,
+    label,
+    subLabel,
+    primaryColor,
+    isEmpty,
+    Icon,
+    rarity,
+    hasSkin,
+    imageTransform,
+    locked,
+    ...draggableProps
+}: MechLoadoutItemDraggableProps) => {
+    const backgroundColor = useMemo(() => shadeColor(primaryColor, -90), [primaryColor])
+
+    return (
+        <Stack position="relative" direction="row" spacing="1rem" alignItems="center" sx={{ p: ".8rem", width: "fit-content" }} {...draggableProps}>
+            {locked && (
+                <Stack
+                    alignItems="center"
+                    justifyContent="center"
+                    sx={{
+                        zIndex: 1,
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: colors.black2,
+                        opacity: 0.6,
+                    }}
+                >
+                    <SvgLock />
+                </Stack>
+            )}
+            <ClipThing
+                clipSize={"10px"}
+                clipSlantSize={"0px"}
+                corners={{ topLeft: true, topRight: true, bottomLeft: true, bottomRight: true }}
+                backgroundColor={backgroundColor}
+                opacity={0.9}
+                border={{ isFancy: false, borderColor: primaryColor, borderThickness: ".3rem" }}
+            >
+                <Stack spacing="1rem" alignItems="center" sx={{ width: "100%", maxWidth: "16rem", p: "1rem", textAlign: "center" }}>
+                    <Stack justifyContent="center" sx={{ position: "relative", height: "9rem", alignSelf: "stretch", backgroundColor: "#00000060" }}>
+                        {isEmpty ? (
+                            <SvgPlus fill={`${primaryColor}80`} size="2rem" />
+                        ) : (
+                            <MediaPreview imageUrl={imageUrl} videoUrls={videoUrls} objectFit="contain" sx={{ p: ".5rem" }} imageTransform={imageTransform} />
+                        )}
+
+                        <Stack spacing=".3rem" direction="row" alignItems="center" sx={{ position: "absolute", top: ".1rem", left: ".5rem" }}>
+                            {Icon && <Icon fill={primaryColor} size="1.8rem" />}
+                            {hasSkin && <SvgSkin fill={colors.chassisSkin} size="1.4rem" />}
+                        </Stack>
+
+                        {slotNumber != null && (
+                            <Typography
+                                sx={{
+                                    position: "absolute",
+                                    top: ".1rem",
+                                    right: ".5rem",
+                                    opacity: 0.6,
+                                }}
+                            >
+                                SLOT {slotNumber}
+                            </Typography>
+                        )}
+
+                        {rarity && (
+                            <Typography
+                                variant="caption"
+                                sx={{ position: "absolute", bottom: ".3rem", left: 0, right: 0, color: rarity.color, fontFamily: fonts.nostromoBlack }}
+                            >
+                                {rarity.label}
+                            </Typography>
+                        )}
+                    </Stack>
+
+                    <Box>
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                color: primaryColor,
+                                fontFamily: fonts.nostromoBold,
+                                display: "-webkit-box",
+                                overflow: "hidden",
+                                overflowWrap: "anywhere",
+                                textOverflow: "ellipsis",
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: "vertical",
+                            }}
+                        >
+                            {label}
+                        </Typography>
+
+                        {subLabel && (
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    color: primaryColor,
+                                    fontFamily: fonts.nostromoBold,
+                                    display: "-webkit-box",
+                                    overflow: "hidden",
+                                    overflowWrap: "anywhere",
+                                    textOverflow: "ellipsis",
+                                    WebkitLineClamp: 1,
+                                    WebkitBoxOrient: "vertical",
+                                }}
+                            >
+                                {subLabel}
+                            </Typography>
+                        )}
+                    </Box>
+                </Stack>
+            </ClipThing>
+        </Stack>
     )
 }

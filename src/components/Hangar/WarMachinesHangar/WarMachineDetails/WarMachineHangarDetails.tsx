@@ -8,6 +8,7 @@ import { useTheme } from "../../../../containers/theme"
 import { getRarityDeets } from "../../../../helpers"
 import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
+import { pulseEffect } from "../../../../theme/keyframes"
 import { fonts } from "../../../../theme/theme"
 import { MechDetails, MechStatus, MechStatusEnum } from "../../../../types"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
@@ -276,23 +277,31 @@ export const WarMachineHangarDetailsInner = ({
             </ClipThing>
 
             {/* Right side */}
-            <ClipThing
-                clipSize="10px"
-                border={{
-                    borderColor: primaryColor,
-                    borderThickness: ".3rem",
-                }}
-                backgroundColor={backgroundColor}
-                sx={{ height: "100%", flex: 1 }}
-            >
-                {mechDetails ? (
-                    <MechLoadout drawerContainerRef={drawerContainerRef} mechDetails={mechDetails} mechStatus={mechStatus} onUpdate={updateMechDetails} />
-                ) : (
+            {mechDetails ? (
+                <MechLoadout drawerContainerRef={drawerContainerRef} mechDetails={mechDetails} mechStatus={mechStatus} onUpdate={updateMechDetails} />
+            ) : (
+                <ClipThing
+                    clipSize="10px"
+                    border={{
+                        borderColor: theme.factionTheme.primary,
+                        borderThickness: ".3rem",
+                    }}
+                    backgroundColor={theme.factionTheme.background}
+                    sx={{ height: "100%", flex: 1 }}
+                >
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                        <CircularProgress size="3rem" sx={{ color: primaryColor }} />
+                        <Typography
+                            variant="h4"
+                            fontWeight="fontWeightBold"
+                            sx={{
+                                animation: `${pulseEffect} 2s infinite`,
+                            }}
+                        >
+                            LOADING MECH...
+                        </Typography>
                     </Stack>
-                )}
-            </ClipThing>
+                </ClipThing>
+            )}
         </Stack>
     )
 }

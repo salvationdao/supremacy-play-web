@@ -1,14 +1,17 @@
 import { Box, Fade, Slide, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import Draggable from "react-draggable"
 import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgWeapons } from "../../../../assets"
 import { useGlobalNotifications } from "../../../../containers"
+import { useTheme } from "../../../../containers/theme"
 import { getRarityDeets } from "../../../../helpers"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
 import { MechDetails, MechSkin, MechStatus, MechStatusEnum, PowerCore, Utility, Weapon } from "../../../../types"
+import { ClipThing } from "../../../Common/ClipThing"
 import { FancyButton } from "../../../Common/FancyButton"
-import { MechLoadoutItem } from "../Common/MechLoadoutItem"
+import { MechLoadoutItem, MechLoadoutItemDraggable } from "../Common/MechLoadoutItem"
 import { MechViewer, UnityHandle } from "./MechViewer/MechViewer"
 import { MechLoadoutMechSkinModal } from "./Modals/Loadout/MechLoadoutMechSkinModal"
 import { MechLoadoutPowerCoreModal } from "./Modals/Loadout/MechLoadoutPowerCoreModal"
@@ -109,6 +112,7 @@ interface MechLoadoutProps {
 }
 
 export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpdate }: MechLoadoutProps) => {
+    const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
     const { newSnackbarMessage } = useGlobalNotifications()
     const unityViewRef = useRef<UnityHandle>(null)
@@ -318,248 +322,274 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         [isUnityPendingChange, locked_to_marketplace, mechStatus?.battle_lobby_is_locked, mechStatus?.status, xsyn_locked],
     )
 
+    const eventLogger = (e: MouseEvent, data: any) => {
+        console.log("Event: ", e)
+        console.log("Data: ", data)
+    }
+
     return (
         <>
-            <Box
-                sx={{
-                    position: "absolute",
-                    top: 0,
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    overflow: "hidden",
-                    zIndex: 6,
+            <ClipThing
+                clipSize="10px"
+                border={{
+                    borderColor: theme.factionTheme.primary,
+                    borderThickness: ".3rem",
                 }}
+                backgroundColor={theme.factionTheme.background}
+                sx={{ height: "100%", flex: 1 }}
             >
-                {/* Save Changes Button */}
+                {/* Unity View */}
+                <MechViewer
+                    ref={unityViewRef}
+                    mechDetails={mechDetails}
+                    unity={{
+                        onUnlock: () => {
+                            setIsUnityPendingChange(false)
+                        },
+                    }}
+                />
+
+                {/* Main Loadout */}
                 <Box
                     sx={{
-                        zIndex: 1,
                         position: "absolute",
-                        right: "6rem",
-                        bottom: "5rem",
+                        top: 0,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        overflow: "hidden",
+                        zIndex: 6,
                     }}
                 >
-                    <Slide direction="up" in={hasUnsavedChanges} mountOnEnter unmountOnExit>
-                        <Stack direction="row" alignItems="end">
-                            {
-                                <Fade in={!!error} mountOnEnter unmountOnExit>
-                                    <Typography
-                                        sx={{
-                                            color: colors.red,
-                                        }}
-                                    >
-                                        {error}
-                                    </Typography>
-                                </Fade>
+                    {/* Save Changes Button */}
+                    <Box
+                        sx={{
+                            zIndex: 1,
+                            position: "absolute",
+                            right: "6rem",
+                            bottom: "5rem",
+                        }}
+                    >
+                        <Slide direction="up" in={hasUnsavedChanges} mountOnEnter unmountOnExit>
+                            <Stack direction="row" alignItems="end">
+                                {
+                                    <Fade in={!!error} mountOnEnter unmountOnExit>
+                                        <Typography
+                                            sx={{
+                                                color: colors.red,
+                                            }}
+                                        >
+                                            {error}
+                                        </Typography>
+                                    </Fade>
+                                }
+                                <FancyButton
+                                    sx={{ px: "1.6rem", py: ".6rem" }}
+                                    clipThingsProps={{
+                                        backgroundColor: colors.green,
+                                    }}
+                                    onClick={() => saveSelection()}
+                                    loading={loading}
+                                    disabled={isUnityPendingChange}
+                                >
+                                    <Typography variant="h6">Save Changes</Typography>
+                                </FancyButton>
+                            </Stack>
+                        </Slide>
+                    </Box>
+                    {/* Left side */}
+                    <Stack
+                        flexWrap="wrap"
+                        sx={{
+                            position: "absolute",
+                            top: "5rem",
+                            bottom: "5rem",
+                            left: "6rem",
+                        }}
+                    >
+                        {(() => {
+                            let powerCore = power_core
+                            let isOriginal = true
+                            const changed = changed_power_core
+                            if (changed) {
+                                if (changed.unequip) {
+                                    powerCore = undefined
+                                } else if (changed.power_core) {
+                                    isOriginal = false
+                                    powerCore = changed.power_core
+                                }
                             }
-                            <FancyButton
-                                sx={{ px: "1.6rem", py: ".6rem" }}
-                                clipThingsProps={{
-                                    backgroundColor: colors.green,
-                                }}
-                                onClick={() => saveSelection()}
-                                loading={loading}
-                                disabled={isUnityPendingChange}
-                            >
-                                <Typography variant="h6">Save Changes</Typography>
-                            </FancyButton>
-                        </Stack>
-                    </Slide>
-                </Box>
-                {/* Left side */}
-                <Stack
-                    flexWrap="wrap"
-                    sx={{
-                        position: "absolute",
-                        top: "5rem",
-                        bottom: "5rem",
-                        left: "6rem",
-                    }}
-                >
-                    {(() => {
-                        let powerCore = power_core
-                        let isOriginal = true
-                        const changed = changed_power_core
-                        if (changed) {
-                            if (changed.unequip) {
-                                powerCore = undefined
-                            } else if (changed.power_core) {
-                                isOriginal = false
-                                powerCore = changed.power_core
+
+                            const renderModal = (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => (
+                                <MechLoadoutPowerCoreModal
+                                    onClose={() => toggleShowLoadoutModal(false)}
+                                    onConfirm={(selectedPowerCore) => {
+                                        modifyPowerCore({
+                                            power_core: selectedPowerCore,
+                                            power_core_id: selectedPowerCore.id,
+                                        })
+                                        toggleShowLoadoutModal(false)
+                                    }}
+                                    equipped={powerCore}
+                                    powerCoresAlreadyEquippedInOtherSlots={changed_power_core?.power_core ? [changed_power_core.power_core.id] : []}
+                                />
+                            )
+
+                            const prevEquipped = () => {
+                                if (!changed_power_core) return
+
+                                const previouslyEquipped = power_core
+                                if (!previouslyEquipped) return
+
+                                return {
+                                    imageUrl: previouslyEquipped.image_url || previouslyEquipped.avatar_url,
+                                    videoUrls: [previouslyEquipped.card_animation_url],
+                                    label: previouslyEquipped.label,
+                                    primaryColor: colors.powerCore,
+                                    Icon: SvgPowerCore,
+                                    rarity: getRarityDeets(previouslyEquipped.tier),
+                                    onClick: () => undoPowerCoreChanges(),
+                                    disabled: loadoutDisabled,
+                                }
                             }
-                        }
 
-                        const renderModal = (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => (
-                            <MechLoadoutPowerCoreModal
-                                onClose={() => toggleShowLoadoutModal(false)}
-                                onConfirm={(selectedPowerCore) => {
-                                    modifyPowerCore({
-                                        power_core: selectedPowerCore,
-                                        power_core_id: selectedPowerCore.id,
-                                    })
-                                    toggleShowLoadoutModal(false)
-                                }}
-                                equipped={powerCore}
-                                powerCoresAlreadyEquippedInOtherSlots={changed_power_core?.power_core ? [changed_power_core.power_core.id] : []}
-                            />
-                        )
-
-                        const prevEquipped = () => {
-                            if (!changed_power_core) return
-
-                            const previouslyEquipped = power_core
-                            if (!previouslyEquipped) return
-
-                            return {
-                                imageUrl: previouslyEquipped.image_url || previouslyEquipped.avatar_url,
-                                videoUrls: [previouslyEquipped.card_animation_url],
-                                label: previouslyEquipped.label,
-                                primaryColor: colors.powerCore,
-                                Icon: SvgPowerCore,
-                                rarity: getRarityDeets(previouslyEquipped.tier),
-                                onClick: () => undoPowerCoreChanges(),
-                                disabled: loadoutDisabled,
+                            if (powerCore) {
+                                return (
+                                    <MechLoadoutItem
+                                        locked
+                                        disabled={loadoutDisabled}
+                                        imageUrl={powerCore.image_url || powerCore.avatar_url}
+                                        videoUrls={[powerCore.card_animation_url]}
+                                        label={powerCore.label}
+                                        primaryColor={colors.powerCore}
+                                        Icon={SvgPowerCore}
+                                        rarity={getRarityDeets(powerCore.tier)}
+                                        renderModal={renderModal}
+                                        prevEquipped={prevEquipped()}
+                                        onUnequip={
+                                            isOriginal
+                                                ? () =>
+                                                      modifyPowerCore({
+                                                          power_core_id: "",
+                                                          unequip: true,
+                                                      })
+                                                : undefined
+                                        }
+                                    />
+                                )
                             }
-                        }
 
-                        if (powerCore) {
                             return (
                                 <MechLoadoutItem
-                                    locked
                                     disabled={loadoutDisabled}
-                                    imageUrl={powerCore.image_url || powerCore.avatar_url}
-                                    videoUrls={[powerCore.card_animation_url]}
-                                    label={powerCore.label}
+                                    label="POWER CORE"
                                     primaryColor={colors.powerCore}
-                                    Icon={SvgPowerCore}
-                                    rarity={getRarityDeets(powerCore.tier)}
                                     renderModal={renderModal}
                                     prevEquipped={prevEquipped()}
-                                    onUnequip={
-                                        isOriginal
-                                            ? () =>
-                                                  modifyPowerCore({
-                                                      power_core_id: "",
-                                                      unequip: true,
-                                                  })
-                                            : undefined
-                                    }
+                                    isEmpty
+                                    locked
                                 />
                             )
-                        }
+                        })()}
 
-                        return (
-                            <MechLoadoutItem
-                                disabled={loadoutDisabled}
-                                label="POWER CORE"
-                                primaryColor={colors.powerCore}
-                                renderModal={renderModal}
-                                prevEquipped={prevEquipped()}
-                                isEmpty
-                                locked
-                            />
-                        )
-                    })()}
-
-                    {Array.from(weapons_map, ([slotNumber, w]) => {
-                        let weapon = w
-                        let isOriginal = true
-                        const changed = changed_weapons_map.get(slotNumber)
-                        if (changed) {
-                            if (changed.unequip) {
-                                weapon = null
-                            } else if (changed.weapon) {
-                                isOriginal = false
-                                weapon = changed.weapon
+                        {Array.from(weapons_map, ([slotNumber, w]) => {
+                            let weapon = w
+                            let isOriginal = true
+                            const changed = changed_weapons_map.get(slotNumber)
+                            if (changed) {
+                                if (changed.unequip) {
+                                    weapon = null
+                                } else if (changed.weapon) {
+                                    isOriginal = false
+                                    weapon = changed.weapon
+                                }
                             }
-                        }
 
-                        const renderModal = (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => (
-                            <MechLoadoutWeaponModal
-                                containerRef={drawerContainerRef}
-                                onClose={() => toggleShowLoadoutModal(false)}
-                                onConfirm={(selectedWeapon, inheritSkin) => {
-                                    modifyWeaponSlot({
-                                        weapon: selectedWeapon,
-                                        weapon_id: selectedWeapon.id,
-                                        slot_number: slotNumber,
-                                        inherit_skin: inheritSkin,
-                                    })
-                                    toggleShowLoadoutModal(false)
-                                }}
-                                equipped={weapon || undefined}
-                                weaponsWithSkinInheritance={blueprint_weapon_ids_with_skin_inheritance}
-                                weaponsAlreadyEquippedInOtherSlots={Array.from(changed_weapons_map.values(), (w) => w.weapon_id).filter((w) => !!w)}
-                            />
-                        )
+                            const renderModal = (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => (
+                                <MechLoadoutWeaponModal
+                                    containerRef={drawerContainerRef}
+                                    onClose={() => toggleShowLoadoutModal(false)}
+                                    onConfirm={(selectedWeapon, inheritSkin) => {
+                                        modifyWeaponSlot({
+                                            weapon: selectedWeapon,
+                                            weapon_id: selectedWeapon.id,
+                                            slot_number: slotNumber,
+                                            inherit_skin: inheritSkin,
+                                        })
+                                        toggleShowLoadoutModal(false)
+                                    }}
+                                    equipped={weapon || undefined}
+                                    weaponsWithSkinInheritance={blueprint_weapon_ids_with_skin_inheritance}
+                                    weaponsAlreadyEquippedInOtherSlots={Array.from(changed_weapons_map.values(), (w) => w.weapon_id).filter((w) => !!w)}
+                                />
+                            )
 
-                        const prevEquipped = () => {
-                            if (!changed_weapons_map.has(slotNumber)) return
+                            const prevEquipped = () => {
+                                if (!changed_weapons_map.has(slotNumber)) return
 
-                            const previouslyEquipped = weapons_map.get(slotNumber)
-                            if (!previouslyEquipped) return
+                                const previouslyEquipped = weapons_map.get(slotNumber)
+                                if (!previouslyEquipped) return
 
-                            return {
-                                slotNumber,
-                                imageUrl: previouslyEquipped.image_url || previouslyEquipped.avatar_url,
-                                videoUrls: [previouslyEquipped.card_animation_url],
-                                label: previouslyEquipped.label,
-                                primaryColor: colors.weapons,
-                                Icon: SvgWeapons,
-                                rarity: previouslyEquipped.weapon_skin ? getRarityDeets(previouslyEquipped.weapon_skin.tier) : undefined,
-                                hasSkin: !!previouslyEquipped.weapon_skin,
-                                onClick: () => undoWeaponChanges(slotNumber),
-                                disabled: loadoutDisabled,
+                                return {
+                                    slotNumber,
+                                    imageUrl: previouslyEquipped.image_url || previouslyEquipped.avatar_url,
+                                    videoUrls: [previouslyEquipped.card_animation_url],
+                                    label: previouslyEquipped.label,
+                                    primaryColor: colors.weapons,
+                                    Icon: SvgWeapons,
+                                    rarity: previouslyEquipped.weapon_skin ? getRarityDeets(previouslyEquipped.weapon_skin.tier) : undefined,
+                                    hasSkin: !!previouslyEquipped.weapon_skin,
+                                    onClick: () => undoWeaponChanges(slotNumber),
+                                    disabled: loadoutDisabled,
+                                }
                             }
-                        }
 
-                        if (weapon) {
+                            if (weapon) {
+                                return (
+                                    <MechLoadoutItem
+                                        disabled={loadoutDisabled}
+                                        key={weapon.id}
+                                        slotNumber={slotNumber}
+                                        imageUrl={weapon.image_url || weapon.avatar_url}
+                                        videoUrls={[weapon.card_animation_url]}
+                                        label={weapon.label}
+                                        primaryColor={colors.weapons}
+                                        Icon={SvgWeapons}
+                                        rarity={weapon.weapon_skin ? getRarityDeets(weapon.weapon_skin.tier) : undefined}
+                                        hasSkin={!!weapon.weapon_skin}
+                                        renderModal={renderModal}
+                                        prevEquipped={prevEquipped()}
+                                        locked={weapon.locked_to_mech}
+                                        onUnequip={
+                                            isOriginal
+                                                ? () =>
+                                                      modifyWeaponSlot({
+                                                          weapon_id: "",
+                                                          slot_number: slotNumber,
+                                                          unequip: true,
+                                                      })
+                                                : undefined
+                                        }
+                                    />
+                                )
+                            }
+
                             return (
                                 <MechLoadoutItem
                                     disabled={loadoutDisabled}
-                                    key={weapon.id}
+                                    key={slotNumber}
                                     slotNumber={slotNumber}
-                                    imageUrl={weapon.image_url || weapon.avatar_url}
-                                    videoUrls={[weapon.card_animation_url]}
-                                    label={weapon.label}
+                                    label="WEAPON"
                                     primaryColor={colors.weapons}
-                                    Icon={SvgWeapons}
-                                    rarity={weapon.weapon_skin ? getRarityDeets(weapon.weapon_skin.tier) : undefined}
-                                    hasSkin={!!weapon.weapon_skin}
                                     renderModal={renderModal}
                                     prevEquipped={prevEquipped()}
-                                    locked={weapon.locked_to_mech}
-                                    onUnequip={
-                                        isOriginal
-                                            ? () =>
-                                                  modifyWeaponSlot({
-                                                      weapon_id: "",
-                                                      slot_number: slotNumber,
-                                                      unequip: true,
-                                                  })
-                                            : undefined
-                                    }
+                                    isEmpty
                                 />
                             )
-                        }
+                        })}
 
-                        return (
-                            <MechLoadoutItem
-                                disabled={loadoutDisabled}
-                                key={slotNumber}
-                                slotNumber={slotNumber}
-                                label="WEAPON"
-                                primaryColor={colors.weapons}
-                                renderModal={renderModal}
-                                prevEquipped={prevEquipped()}
-                                isEmpty
-                            />
-                        )
-                    })}
-
-                    {/* IN FUTURE: COMMENT THIS BACK IN WHEN UTILITIES ARE ADDED */}
-                    {/* {Array.from(utility_map, ([slotNumber, u]) => {
+                        {/* IN FUTURE: COMMENT THIS BACK IN WHEN UTILITIES ARE ADDED */}
+                        {/* {Array.from(utility_map, ([slotNumber, u]) => {
                     let utility = u
                     if (changed_utility_map.has(slotNumber)) {
                         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -630,127 +660,191 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                         />
                     )
                 })} */}
-                </Stack>
+                    </Stack>
 
-                {/* Right side */}
-                <Stack
-                    flexWrap="wrap"
-                    sx={{
-                        position: "absolute",
-                        top: "5rem",
-                        bottom: "5rem",
-                        right: "6rem",
-                    }}
-                    alignItems="end"
-                >
-                    {(() => {
-                        const mechSkin = changed_mech_skin?.mech_skin || chassis_skin
+                    {/* Right side */}
+                    <Stack
+                        flexWrap="wrap"
+                        sx={{
+                            position: "absolute",
+                            top: "5rem",
+                            bottom: "5rem",
+                            right: "6rem",
+                        }}
+                        alignItems="end"
+                    >
+                        {(() => {
+                            const mechSkin = changed_mech_skin?.mech_skin || chassis_skin
 
-                        const renderModal = (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => (
-                            <MechLoadoutMechSkinModal
-                                onClose={() => toggleShowLoadoutModal(false)}
-                                onConfirm={(selectedMechSkin) => {
-                                    modifyMechSkin({
-                                        mech_skin: selectedMechSkin,
-                                        mech_skin_id: selectedMechSkin.id,
-                                    })
-                                    toggleShowLoadoutModal(false)
-                                }}
-                                mech={mechDetails}
-                                equipped={mechSkin}
-                                mechSkinsAlreadyEquippedInOtherSlots={
-                                    changed_mech_skin?.mech_skin ? [changed_mech_skin.mech_skin.id] : chassis_skin ? [chassis_skin.id] : []
-                                }
-                                compatibleMechSkins={compatible_blueprint_mech_skin_ids}
-                            />
-                        )
-
-                        if (mechSkin) {
-                            return (
-                                <MechLoadoutItem
-                                    side="right"
-                                    locked={chassis_skin?.locked_to_mech}
-                                    disabled={loadoutDisabled}
-                                    imageUrl={
-                                        mechSkin.swatch_images?.image_url || mechSkin.swatch_images?.avatar_url || mechSkin.image_url || mechSkin.avatar_url
+                            const renderModal = (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => (
+                                <MechLoadoutMechSkinModal
+                                    onClose={() => toggleShowLoadoutModal(false)}
+                                    onConfirm={(selectedMechSkin) => {
+                                        modifyMechSkin({
+                                            mech_skin: selectedMechSkin,
+                                            mech_skin_id: selectedMechSkin.id,
+                                        })
+                                        toggleShowLoadoutModal(false)
+                                    }}
+                                    mech={mechDetails}
+                                    equipped={mechSkin}
+                                    mechSkinsAlreadyEquippedInOtherSlots={
+                                        changed_mech_skin?.mech_skin ? [changed_mech_skin.mech_skin.id] : chassis_skin ? [chassis_skin.id] : []
                                     }
-                                    label={mechSkin.label}
-                                    primaryColor={colors.chassisSkin}
-                                    Icon={SvgSkin}
-                                    rarity={getRarityDeets(mechSkin.tier)}
-                                    renderModal={renderModal}
-                                    prevEquipped={(() => {
-                                        if (!changed_mech_skin) return
-
-                                        const previouslyEquipped = chassis_skin
-                                        if (!previouslyEquipped) return
-
-                                        return {
-                                            imageUrl:
-                                                previouslyEquipped.swatch_images?.image_url ||
-                                                previouslyEquipped.swatch_images?.avatar_url ||
-                                                previouslyEquipped.image_url ||
-                                                previouslyEquipped.avatar_url,
-                                            label: previouslyEquipped.label,
-                                            primaryColor: colors.powerCore,
-                                            Icon: SvgPowerCore,
-                                            rarity: getRarityDeets(previouslyEquipped.tier),
-                                            onClick: () => undoMechSkinChanges(),
-                                            disabled: loadoutDisabled,
-                                        }
-                                    })()}
+                                    compatibleMechSkins={compatible_blueprint_mech_skin_ids}
                                 />
                             )
-                        }
 
-                        return (
+                            if (mechSkin) {
+                                return (
+                                    <MechLoadoutItem
+                                        side="right"
+                                        locked={chassis_skin?.locked_to_mech}
+                                        disabled={loadoutDisabled}
+                                        imageUrl={
+                                            mechSkin.swatch_images?.image_url || mechSkin.swatch_images?.avatar_url || mechSkin.image_url || mechSkin.avatar_url
+                                        }
+                                        label={mechSkin.label}
+                                        primaryColor={colors.chassisSkin}
+                                        Icon={SvgSkin}
+                                        rarity={getRarityDeets(mechSkin.tier)}
+                                        renderModal={renderModal}
+                                        prevEquipped={(() => {
+                                            if (!changed_mech_skin) return
+
+                                            const previouslyEquipped = chassis_skin
+                                            if (!previouslyEquipped) return
+
+                                            return {
+                                                imageUrl:
+                                                    previouslyEquipped.swatch_images?.image_url ||
+                                                    previouslyEquipped.swatch_images?.avatar_url ||
+                                                    previouslyEquipped.image_url ||
+                                                    previouslyEquipped.avatar_url,
+                                                label: previouslyEquipped.label,
+                                                primaryColor: colors.powerCore,
+                                                Icon: SvgPowerCore,
+                                                rarity: getRarityDeets(previouslyEquipped.tier),
+                                                onClick: () => undoMechSkinChanges(),
+                                                disabled: loadoutDisabled,
+                                            }
+                                        })()}
+                                    />
+                                )
+                            }
+
+                            return (
+                                <MechLoadoutItem
+                                    disabled={loadoutDisabled}
+                                    label="SUBMODEL"
+                                    primaryColor={colors.chassisSkin}
+                                    renderModal={renderModal}
+                                    isEmpty
+                                    locked
+                                />
+                            )
+                        })()}
+
+                        {intro_animation ? (
                             <MechLoadoutItem
-                                disabled={loadoutDisabled}
-                                label="SUBMODEL"
-                                primaryColor={colors.chassisSkin}
-                                renderModal={renderModal}
-                                isEmpty
-                                locked
+                                imageUrl={intro_animation.image_url || intro_animation.avatar_url}
+                                videoUrls={[intro_animation.card_animation_url]}
+                                label={intro_animation.label}
+                                primaryColor={colors.introAnimation}
+                                Icon={SvgIntroAnimation}
+                                side="right"
                             />
-                        )
-                    })()}
+                        ) : (
+                            <MechLoadoutItem
+                                label="INTRO ANIMATION"
+                                primaryColor={colors.introAnimation}
+                                onClick={() => console.log("AAAAA")}
+                                isEmpty
+                                disabled
+                            />
+                        )}
 
-                    {intro_animation ? (
-                        <MechLoadoutItem
-                            imageUrl={intro_animation.image_url || intro_animation.avatar_url}
-                            videoUrls={[intro_animation.card_animation_url]}
-                            label={intro_animation.label}
-                            primaryColor={colors.introAnimation}
-                            Icon={SvgIntroAnimation}
-                            side="right"
-                        />
-                    ) : (
-                        <MechLoadoutItem label="INTRO ANIMATION" primaryColor={colors.introAnimation} onClick={() => console.log("AAAAA")} isEmpty disabled />
-                    )}
-
-                    {outro_animation ? (
-                        <MechLoadoutItem
-                            imageUrl={outro_animation.image_url || outro_animation.avatar_url}
-                            videoUrls={[outro_animation.card_animation_url]}
-                            label={outro_animation.label}
-                            primaryColor={colors.outroAnimation}
-                            Icon={SvgOutroAnimation}
-                            side="right"
-                        />
-                    ) : (
-                        <MechLoadoutItem label="OUTRO ANIMATION" primaryColor={colors.outroAnimation} onClick={() => console.log("AAAAA")} isEmpty disabled />
-                    )}
+                        {outro_animation ? (
+                            <MechLoadoutItem
+                                imageUrl={outro_animation.image_url || outro_animation.avatar_url}
+                                videoUrls={[outro_animation.card_animation_url]}
+                                label={outro_animation.label}
+                                primaryColor={colors.outroAnimation}
+                                Icon={SvgOutroAnimation}
+                                side="right"
+                            />
+                        ) : (
+                            <MechLoadoutItem
+                                label="OUTRO ANIMATION"
+                                primaryColor={colors.outroAnimation}
+                                onClick={() => console.log("AAAAA")}
+                                isEmpty
+                                disabled
+                            />
+                        )}
+                    </Stack>
+                </Box>
+            </ClipThing>
+            <Box
+                sx={{
+                    position: "relative",
+                    height: "100%",
+                }}
+            >
+                <MechLoadoutItemDraggable
+                    style={{
+                        visibility: "hidden",
+                    }}
+                    label="OUTRO ANIMATION"
+                    primaryColor={colors.outroAnimation}
+                    isEmpty
+                />
+                <ClipThing
+                    clipSize="10px"
+                    border={{
+                        borderColor: theme.factionTheme.primary,
+                        borderThickness: ".3rem",
+                    }}
+                    backgroundColor={theme.factionTheme.background}
+                    sx={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+                >
+                    <></>
+                </ClipThing>
+                <Stack
+                    sx={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        padding: "1rem",
+                    }}
+                >
+                    <Box
+                        sx={{
+                            transition: "transform .1s ease-out",
+                            "&:hover": {
+                                transform: "scale(1.1)",
+                                cursor: "grab",
+                            },
+                            "&:active": {
+                                cursor: "grabbing",
+                            },
+                        }}
+                    >
+                        <Draggable
+                            defaultPosition={{ x: 0, y: 0 }}
+                            position={{ x: 0, y: 0 }}
+                            scale={1}
+                            // onStart={this.handleStart}
+                            // onDrag={this.handleDrag}
+                            // onStop={this.handleStop}
+                        >
+                            <MechLoadoutItemDraggable label="OUTRO ANIMATION" primaryColor={colors.outroAnimation} isEmpty />
+                        </Draggable>
+                    </Box>
                 </Stack>
             </Box>
-            <MechViewer
-                ref={unityViewRef}
-                mechDetails={mechDetails}
-                unity={{
-                    onUnlock: () => {
-                        setIsUnityPendingChange(false)
-                    },
-                }}
-            />
         </>
     )
 }
