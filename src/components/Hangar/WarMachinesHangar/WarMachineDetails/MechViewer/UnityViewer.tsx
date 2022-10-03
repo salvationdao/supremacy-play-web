@@ -6,7 +6,7 @@ import { useTheme } from "../../../../../containers/theme"
 import { pulseEffect } from "../../../../../theme/keyframes"
 import { fonts } from "../../../../../theme/theme"
 import { ClipThing } from "../../../../Common/ClipThing"
-import { LoadoutMechSkin, LoadoutPowerCore, LoadoutWeapon } from "../MechLoadout"
+import { LoadoutMechSkin, LoadoutPowerCore, LoadoutWeapon } from "../MechLoadout/MechLoadout"
 import { MechViewerProps, UnityHandle } from "./MechViewer"
 
 export interface HangarSilo {

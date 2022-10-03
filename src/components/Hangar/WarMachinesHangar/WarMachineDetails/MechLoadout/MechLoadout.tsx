@@ -1,21 +1,21 @@
 import { Box, Fade, Slide, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import Draggable from "react-draggable"
-import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgWeapons } from "../../../../assets"
-import { useGlobalNotifications } from "../../../../containers"
-import { useTheme } from "../../../../containers/theme"
-import { getRarityDeets } from "../../../../helpers"
-import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../../keys"
-import { colors } from "../../../../theme/theme"
-import { MechDetails, MechSkin, MechStatus, MechStatusEnum, PowerCore, Utility, Weapon } from "../../../../types"
-import { ClipThing } from "../../../Common/ClipThing"
-import { FancyButton } from "../../../Common/FancyButton"
-import { MechLoadoutItem, MechLoadoutItemDraggable } from "../Common/MechLoadoutItem"
-import { MechViewer, UnityHandle } from "./MechViewer/MechViewer"
-import { MechLoadoutMechSkinModal } from "./Modals/Loadout/MechLoadoutMechSkinModal"
-import { MechLoadoutPowerCoreModal } from "./Modals/Loadout/MechLoadoutPowerCoreModal"
-import { MechLoadoutWeaponModal } from "./Modals/Loadout/MechLoadoutWeaponModal"
+import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgWeapons } from "../../../../../assets"
+import { useGlobalNotifications } from "../../../../../containers"
+import { useTheme } from "../../../../../containers/theme"
+import { getRarityDeets } from "../../../../../helpers"
+import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../../keys"
+import { colors } from "../../../../../theme/theme"
+import { MechDetails, MechSkin, MechStatus, MechStatusEnum, PowerCore, Utility, Weapon } from "../../../../../types"
+import { ClipThing } from "../../../../Common/ClipThing"
+import { FancyButton } from "../../../../Common/FancyButton"
+import { MechLoadoutItem } from "../../Common/MechLoadoutItem"
+import { MechViewer, UnityHandle } from "../MechViewer/MechViewer"
+import { MechLoadoutMechSkinModal } from "../Modals/Loadout/MechLoadoutMechSkinModal"
+import { MechLoadoutPowerCoreModal } from "../Modals/Loadout/MechLoadoutPowerCoreModal"
+import { MechLoadoutWeaponModal } from "../Modals/Loadout/MechLoadoutWeaponModal"
+import { MechLoadoutDraggables } from "./MechLoadoutDraggables"
 
 interface PlayerAssetMechEquipRequest {
     mech_id: string
@@ -229,6 +229,10 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         })
     }, [])
 
+    // const onWeaponDragStop = useCallback(() => {
+
+    // }, [])
+
     // const addUtilitySelection = useCallback((eu: LoadoutUtility) => {
     //     setCurrLoadout((prev) => {
     //         const updated = new Map(prev.changed_utility_map)
@@ -321,11 +325,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
             mechStatus?.status === MechStatusEnum.Sold,
         [isUnityPendingChange, locked_to_marketplace, mechStatus?.battle_lobby_is_locked, mechStatus?.status, xsyn_locked],
     )
-
-    const eventLogger = (e: MouseEvent, data: any) => {
-        console.log("Event: ", e)
-        console.log("Data: ", data)
-    }
 
     return (
         <>
@@ -785,66 +784,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                     </Stack>
                 </Box>
             </ClipThing>
-            <Box
-                sx={{
-                    position: "relative",
-                    height: "100%",
-                }}
-            >
-                <MechLoadoutItemDraggable
-                    style={{
-                        visibility: "hidden",
-                    }}
-                    label="OUTRO ANIMATION"
-                    primaryColor={colors.outroAnimation}
-                    isEmpty
-                />
-                <ClipThing
-                    clipSize="10px"
-                    border={{
-                        borderColor: theme.factionTheme.primary,
-                        borderThickness: ".3rem",
-                    }}
-                    backgroundColor={theme.factionTheme.background}
-                    sx={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
-                >
-                    <></>
-                </ClipThing>
-                <Stack
-                    sx={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        padding: "1rem",
-                    }}
-                >
-                    <Box
-                        sx={{
-                            transition: "transform .1s ease-out",
-                            "&:hover": {
-                                transform: "scale(1.1)",
-                                cursor: "grab",
-                            },
-                            "&:active": {
-                                cursor: "grabbing",
-                            },
-                        }}
-                    >
-                        <Draggable
-                            defaultPosition={{ x: 0, y: 0 }}
-                            position={{ x: 0, y: 0 }}
-                            scale={1}
-                            // onStart={this.handleStart}
-                            // onDrag={this.handleDrag}
-                            // onStop={this.handleStop}
-                        >
-                            <MechLoadoutItemDraggable label="OUTRO ANIMATION" primaryColor={colors.outroAnimation} isEmpty />
-                        </Draggable>
-                    </Box>
-                </Stack>
-            </Box>
+            <MechLoadoutDraggables onDragStop={(rect) => console.log(rect)} />
         </>
     )
 }

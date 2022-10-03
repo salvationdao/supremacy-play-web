@@ -3,7 +3,7 @@ import React from "react"
 import { useTheme } from "../../../../../containers/theme"
 import { MechDetails } from "../../../../../types"
 import { MediaPreview } from "../../../../Common/MediaPreview/MediaPreview"
-import { LoadoutMechSkin, LoadoutPowerCore, LoadoutWeapon } from "../MechLoadout"
+import { LoadoutMechSkin, LoadoutPowerCore, LoadoutWeapon } from "../MechLoadout/MechLoadout"
 import { UnityViewer } from "./UnityViewer"
 
 export type UnityHandle = {

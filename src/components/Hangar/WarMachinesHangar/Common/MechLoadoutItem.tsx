@@ -1,5 +1,5 @@
 import { Box, Grow, IconButton, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useRef } from "react"
+import React, { useEffect, useMemo, useRef } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SvgLock, SvgPlus, SvgRemove, SvgSkin, SvgSwap, SvgWrapperProps } from "../../../../assets"
 import { shadeColor } from "../../../../helpers"
@@ -266,25 +266,14 @@ interface MechLoadoutItemDraggableProps extends LoadoutItem {
     something?: boolean
 }
 
-export const MechLoadoutItemDraggable = ({
-    slotNumber,
-    imageUrl,
-    videoUrls,
-    label,
-    subLabel,
-    primaryColor,
-    isEmpty,
-    Icon,
-    rarity,
-    hasSkin,
-    imageTransform,
-    locked,
-    ...draggableProps
-}: MechLoadoutItemDraggableProps) => {
+export const MechLoadoutItemDraggable = React.forwardRef<HTMLDivElement, MechLoadoutItemDraggableProps>(function MechLoadoutItemDraggable(
+    { slotNumber, imageUrl, videoUrls, label, subLabel, primaryColor, isEmpty, Icon, rarity, hasSkin, imageTransform, locked, ...draggableProps },
+    ref,
+) {
     const backgroundColor = useMemo(() => shadeColor(primaryColor, -90), [primaryColor])
 
     return (
-        <Stack position="relative" direction="row" spacing="1rem" alignItems="center" sx={{ p: ".8rem", width: "fit-content" }} {...draggableProps}>
+        <Stack ref={ref} position="relative" direction="row" spacing="1rem" alignItems="center" sx={{ p: ".8rem", width: "fit-content" }} {...draggableProps}>
             {locked && (
                 <Stack
                     alignItems="center"
@@ -386,4 +375,4 @@ export const MechLoadoutItemDraggable = ({
             </ClipThing>
         </Stack>
     )
-}
+})
