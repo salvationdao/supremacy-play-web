@@ -94,6 +94,8 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
         return [myFactionLobbySlots, otherFactionLobbySlots]
     }, [factionsAll, battle_lobbies_mechs, factionID])
 
+    console.log(game_map)
+
     return (
         <>
             <Stack sx={{ color: primaryColor, textAlign: "start", height: "100%" }}>
@@ -125,7 +127,9 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                     bottom: 0,
                                     left: 0,
                                     right: 0,
-                                    background: game_map ? `url(${game_map.background_url})` : undefined,
+                                    background: game_map
+                                        ? `linear-gradient(to right, ${backgroundColor}cc 0%, transparent 100%), url(${game_map.background_url})`
+                                        : undefined,
                                     opacity: 0.4,
                                 }}
                             />
