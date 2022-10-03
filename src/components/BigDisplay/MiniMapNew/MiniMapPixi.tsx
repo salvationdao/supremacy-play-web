@@ -12,6 +12,7 @@ import { MapTargetSelect } from "./OverlayItems/MapTargetSelect/MapTargetSelect"
 import { MechAbilities } from "./OverlayItems/MechAbilities/MechAbilities"
 import { BattleZone } from "./ViewportItems/BattlesZone/BattleZone"
 import { Blackouts } from "./ViewportItems/Blackouts/Blackouts"
+import { Grid } from "./ViewportItems/Grid/Grid"
 import { MapAbilities } from "./ViewportItems/MapAbilities/MapAbilities"
 import { MapMechs } from "./ViewportItems/MapMechs/MapMechs"
 import { MechMoveDests } from "./ViewportItems/MechMoveDests/MechMoveDests"
@@ -251,6 +252,7 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
                         <Blackouts />
                         <BattleZone />
                         <MapAbilities />
+                        <Grid />
                     </>
                 )}
             </Box>

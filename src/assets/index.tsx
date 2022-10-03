@@ -26,6 +26,7 @@ import Graph from "!@svgr/webpack!./svg/Graph.svg"
 import Hamburger from "!@svgr/webpack!./svg/Hamburger.svg"
 import Hammer from "!@svgr/webpack!./svg/Hammer.svg"
 import Health from "!@svgr/webpack!./svg/Health.svg"
+import HideGrid from "!@svgr/webpack!./svg/HideGrid.svg"
 import IntroAnimation from "!@svgr/webpack!./svg/IntroAnimation.svg"
 import Lock from "!@svgr/webpack!./svg/Lock.svg"
 import Logout from "!@svgr/webpack!./svg/Logout.svg"
@@ -95,6 +96,7 @@ import Facebook from "!react-svg-loader!./svg/Facebook.svg"
 import Filter from "!react-svg-loader!./svg/Filter.svg"
 import Fullscreen from "!react-svg-loader!./svg/Fullscreen.svg"
 import GoldBars from "!react-svg-loader!./svg/GoldBars.svg"
+import Grid from "!react-svg-loader!./svg/Grid.svg"
 import GridView from "!react-svg-loader!./svg/GridView.svg"
 import Hide from "!react-svg-loader!./svg/Hide.svg"
 import History from "!react-svg-loader!./svg/History.svg"
@@ -1364,5 +1366,17 @@ export const SvgCheckMark: React.VoidFunctionComponent<SvgWrapperProps> = (props
 export const SvgWrench: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Wrench />
+    </SvgWrapper>
+)
+
+export const SvgGrid: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Grid />
+    </SvgWrapper>
+)
+
+export const SvgHideGride: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <HideGrid />
     </SvgWrapper>
 )

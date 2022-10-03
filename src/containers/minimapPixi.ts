@@ -13,6 +13,7 @@ import { useGlobalNotifications } from "./globalNotifications"
 import { RecordType, useHotkey } from "./hotkeys"
 
 export const pixiViewportZIndexes = {
+    grid: 5,
     mapAbilitiesBelowMechs: 15,
     mapMech: 30,
     mechMoveDests: 60,
