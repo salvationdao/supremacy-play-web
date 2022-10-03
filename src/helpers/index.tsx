@@ -596,8 +596,17 @@ export const generatePriceText = (currency: string, cents: string | BigNumber) =
     return `${currency} ${totalDollars}.${remainingCents < 10 ? `0${remainingCents}` : remainingCents}`
 }
 
-// Converts number to alphabet letter. E.g. 0 -> "a"
-export const intToLetter = (i: number) => String.fromCharCode(97 + i)
+// Converts number to alphabet letter like excel spreadsheet columns. E.g. 0 -> "A", 27 -> AA
+export const intToLetter = (i: number) => {
+    let temp,
+        letter = ""
+    while (i > 0) {
+        temp = (i - 1) % 26
+        letter = String.fromCharCode(temp + 65) + letter
+        i = (i - temp - 1) / 26
+    }
+    return letter
+}
 
 export const autoTextColor = (hex: string) => {
     const rgb = hexToRGB(hex)

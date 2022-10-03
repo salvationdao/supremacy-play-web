@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
+import { Crosshair } from "../../../../../assets"
 import { MapSelection, useGame, useGlobalNotifications, useMiniMapPixi, WinnerStruct } from "../../../../../containers"
 import { BlueprintPlayerAbility, GameAbility, LocationSelectType, MechMoveCommandAbility, PlayerAbility, Position } from "../../../../../types"
 import { PixiMapTargetSelect } from "./pixiMapTargetSelect"
@@ -118,9 +119,12 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
 
     // Hide the mouse cursor
     useEffect(() => {
-        // Hide mouse cursor
+        // Focus on the minimap and hide mouse cursor
+        document.getElementById("mini-map")?.focus()
         const pixiMapEl = document.getElementById("minimap-pixi-container")
-        if (pixiMapEl) pixiMapEl.style.cursor = "none"
+        if (pixiMapEl) {
+            pixiMapEl.style.cursor = `url(${Crosshair}) 5 5, auto`
+        }
 
         return () => {
             const pixiMapEl = document.getElementById("minimap-pixi-container")

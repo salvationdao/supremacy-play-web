@@ -1,22 +1,32 @@
 import React, { useEffect, useState } from "react"
 import { useGame, useMiniMapPixi } from "../../../../../containers"
+import { BattleZoneStruct } from "../../../../../types"
 import { PixiBattleZone } from "./pixiBattleZone"
 
 export const BattleZone = React.memo(function BattleZone() {
     const { battleZone } = useGame()
+
+    if (!battleZone) {
+        return null
+    }
+
+    return <BattleZoneInner battleZone={battleZone} />
+})
+
+const BattleZoneInner = React.memo(function BattleZone({ battleZone }: { battleZone: BattleZoneStruct }) {
     const { pixiMainItems, clientPositionToViewportPosition, gridSizeRef } = useMiniMapPixi()
     const [pixiBattleZone, setPixiBattleZone] = useState<PixiBattleZone>()
 
     // Initial setup
     useEffect(() => {
-        if (!pixiMainItems) return
-        const pixiBattleZone = new PixiBattleZone(pixiMainItems.viewport, gridSizeRef, clientPositionToViewportPosition)
-        pixiMainItems.viewport.addChild(pixiBattleZone.root)
+        if (!pixiMainItems || pixiBattleZone) return
+        const pbz = new PixiBattleZone(pixiMainItems.viewport, gridSizeRef, clientPositionToViewportPosition, battleZone)
+        pixiMainItems.viewport.addChild(pbz.root)
         setPixiBattleZone((prev) => {
             prev?.destroy()
-            return pixiBattleZone
+            return pbz
         })
-    }, [pixiMainItems, clientPositionToViewportPosition, gridSizeRef])
+    }, [pixiMainItems, clientPositionToViewportPosition, gridSizeRef, pixiBattleZone, battleZone])
 
     // Cleanup
     useEffect(() => {

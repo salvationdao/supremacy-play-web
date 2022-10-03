@@ -14,6 +14,7 @@ export class PixiBlackout {
     private emitter: particles.Emitter
     private animationFrame: number | undefined
     private circle: PIXI.Graphics
+    private gridSizeRef: React.MutableRefObject<Dimension>
 
     constructor(
         blackout: BlackoutEvent,
@@ -28,6 +29,8 @@ export class PixiBlackout {
             }
         >,
     ) {
+        this.gridSizeRef = gridSizeRef
+
         // Create container for everything
         this.root = new PIXI.Container()
         this.root.zIndex = pixiViewportZIndexes.blackouts
@@ -45,7 +48,14 @@ export class PixiBlackout {
         ease.add(this.circle, { alpha: 1 }, { duration: 500, ease: "linear", removeExisting: true })
 
         // Particles
-        const config = merge(ringCloudParticlesConfig, { spawnCircle: { r: radius, minR: radius }, color: { start: "#000000", end: "#000000" } })
+        const config = merge(ringCloudParticlesConfig, {
+            scale: {
+                start: (0.25 * this.gridSizeRef.current.width) / 10,
+                end: (0.08 * this.gridSizeRef.current.width) / 10,
+            },
+            spawnCircle: { r: radius, minR: radius },
+            color: { start: "#000000", end: "#000000" },
+        })
         this.emitter = new particles.Emitter(this.circle, CircleParticle, config)
         this.emitter.emit = true
         this.render()
