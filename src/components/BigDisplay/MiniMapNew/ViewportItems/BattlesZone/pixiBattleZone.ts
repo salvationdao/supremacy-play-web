@@ -92,8 +92,8 @@ export class PixiBattleZone {
         // Particles
         const config = merge(ringCloudParticlesConfig, {
             scale: {
-                start: 0.2,
-                end: 0.05,
+                start: (0.2 * this.gridSizeRef.current.width) / 10,
+                end: (0.05 * this.gridSizeRef.current.width) / 10,
             },
             spawnCircle: { r: radius, minR: radius },
             color: { start: colors.niceRed, end: colors.niceRed },
