@@ -17,7 +17,7 @@ export const ShoppingCart = () => {
                 alignItems="center"
                 ref={popoverRef}
                 sx={{
-                    mx: "1.2rem",
+                    mx: "1rem",
                     height: "100%",
                 }}
             >

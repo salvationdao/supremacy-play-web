@@ -90,7 +90,8 @@ export interface RepairSlot {
 export interface MechStatus {
     status: MechStatusEnum
     can_deploy: boolean
-    queue_position: number | null
+    battle_lobby_number: number | null | undefined
+    battle_lobby_queue_position: number | null | undefined
 }
 
 export interface Images {
@@ -154,10 +155,24 @@ export interface MechBasic extends Collection, Images {
     queue_position: number | null
     updated_at: Date
     created_at: Date
+
+    damaged_blocks: number
+    equipped_weapon_count: number | null
+    equipped_utility_count: number | null
+    power_core_recharge_rate: number | null
+    power_core_capacity: number | null
 }
 
 export interface MechBasicWithQueueStatus extends MechBasic {
     in_queue: boolean
+
+    status: MechStatusEnum
+    can_deploy: boolean
+    lobby_locked_at?: Date
+    assigned_to_battle_id?: string
+    lobby_number?: number
+    is_battle_ready: boolean
+    in_market_place: boolean
 }
 
 export interface MechDetails extends MechBasic {
@@ -550,6 +565,7 @@ export interface Rarity {
     label: string
     color: string
     textColor: string
+    rank: number
 }
 
 export interface StorefrontPackage {

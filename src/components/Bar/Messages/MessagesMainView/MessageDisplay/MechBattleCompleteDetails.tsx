@@ -1,6 +1,6 @@
 import { Stack, Typography } from "@mui/material"
 import { fonts } from "../../../../../theme/theme"
-import { SystemMessageDataMechBattleComplete } from "../../../../../types"
+import { BattleReward, SystemMessageDataMechBattleComplete, SystemMessageMechStruct } from "../../../../../types"
 import { RewardAbility } from "./Common/RewardAbility"
 import { RewardSups } from "./Common/RewardSups"
 import { SystemMessageMech } from "./Common/SystemMessageMech"
@@ -14,13 +14,13 @@ export const MechBattleCompleteDetails = ({ message, data }: MechBattleCompleteD
     return (
         <Stack spacing="3rem" sx={{ px: "1rem", pt: "1rem", pb: "3rem" }}>
             <Typography variant="h6">{message}</Typography>
-            <RewardsSection data={data} />
-            <MechsSection data={data} />
+            {data.battle_reward && <RewardsSection data={data.battle_reward} />}
+            {data.mech_battle_briefs && data.mech_battle_briefs.length > 0 && <MechsSection data={data.mech_battle_briefs} />}
         </Stack>
     )
 }
 
-const RewardsSection = ({ data }: { data: SystemMessageDataMechBattleComplete }) => {
+const RewardsSection = ({ data }: { data: BattleReward }) => {
     const sups = data.rewarded_sups
     const supsBonus = data.rewarded_sups_bonus
     const ability = data.rewarded_player_ability
@@ -38,17 +38,13 @@ const RewardsSection = ({ data }: { data: SystemMessageDataMechBattleComplete })
     )
 }
 
-const MechsSection = ({ data }: { data: SystemMessageDataMechBattleComplete }) => {
-    if (!data.mech_battle_briefs || data.mech_battle_briefs.length <= 0) {
-        return null
-    }
-
+const MechsSection = ({ data }: { data: SystemMessageMechStruct[] }) => {
     return (
         <Stack spacing="1rem">
-            <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{`YOUR MECH${data.mech_battle_briefs.length > 1 ? "S" : ""}:`}</Typography>
+            <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{`YOUR MECH${data.length > 1 ? "S" : ""}:`}</Typography>
 
             <Stack direction="row" spacing="1.4rem">
-                {data.mech_battle_briefs.map((mech) => (
+                {data.map((mech) => (
                     <SystemMessageMech key={mech.mech_id} mech={mech} />
                 ))}
             </Stack>

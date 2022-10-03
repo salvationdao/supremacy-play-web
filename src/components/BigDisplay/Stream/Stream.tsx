@@ -1,11 +1,11 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { SvgFullscreen, SvgMinimize, SvgSwap } from "../../../assets"
 import { useDimension, useUI } from "../../../containers"
 import { useOvenStream } from "../../../containers/oven"
 import { fonts, siteZIndex } from "../../../theme/theme"
 import { LEFT_DRAWER_WIDTH } from "../../LeftDrawer/LeftDrawer"
-import { TOP_BAR_HEIGHT } from "../MiniMap/MiniMap"
+import { TOP_BAR_HEIGHT } from "../MiniMapNew/MiniMapNew"
 import { NoStreamScreen } from "./NoStreamScreen"
 import { OvenplayerStream } from "./OvenPlayerStream"
 import { Trailer } from "./Trailer"
@@ -14,10 +14,12 @@ export const Stream = () => {
     const { remToPxRatio } = useDimension()
     const { smallDisplayRef, bigDisplayRef, isStreamBigDisplay, setIsStreamBigDisplay } = useUI()
     const { isEnlarged, toggleIsEnlarged } = useOvenStream()
-    const ref = useRef<HTMLElement | null>(null)
+    const [ref, setRef] = useState<HTMLDivElement | null>(null)
 
     useEffect(() => {
-        const thisElement = ref.current
+        if (!ref) return
+
+        const thisElement = ref
         const newContainerElement = !isStreamBigDisplay ? smallDisplayRef : bigDisplayRef
 
         if (thisElement && newContainerElement) {
@@ -29,11 +31,11 @@ export const Stream = () => {
 
             newContainerElement.appendChild(thisElement)
         }
-    }, [bigDisplayRef, isStreamBigDisplay, smallDisplayRef])
+    }, [ref, bigDisplayRef, isStreamBigDisplay, smallDisplayRef])
 
     return (
         <Stack
-            ref={ref}
+            ref={setRef}
             sx={{
                 width: "100%",
                 height: isStreamBigDisplay ? "100%" : (LEFT_DRAWER_WIDTH * remToPxRatio) / (16 / 9) + TOP_BAR_HEIGHT * remToPxRatio,
