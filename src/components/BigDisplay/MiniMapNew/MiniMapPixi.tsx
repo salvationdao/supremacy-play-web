@@ -49,6 +49,7 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
     const [miniMapPixiRef, setMiniMapPixiRef] = useState<HTMLDivElement | null>(null)
     const pixiItems = useRef<PixiItems>({})
     const isDragging = useRef(false)
+    const [isReady, setIsReady] = useState(false)
 
     const setupPixi = useCallback(
         (mapRef: HTMLDivElement, dimension: Dimension) => {
@@ -103,6 +104,11 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
             app.stage.addChild(viewport)
 
             setPixiMainItems({ app, viewport })
+
+            // Need this timeout to allow some time for pixi and map things to setup
+            setTimeout(() => {
+                setIsReady(true)
+            }, 500)
         },
         [pixiMainItems, setPixiMainItems],
     )
@@ -220,8 +226,8 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
 
     // TODO: If we are popped out, we need to move the pixi canvas to the poppedout window
 
-    return useMemo(
-        () => (
+    return useMemo(() => {
+        return (
             <Box
                 id="minimap-pixi-container"
                 ref={setMiniMapPixiRef}
@@ -232,19 +238,22 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
                     overflow: "hidden",
                 }}
             >
-                {/* Overlay items: items that are overlay'ed on top */}
-                <MechAbilities />
-                <MapScale />
-                <MapTargetSelect />
+                {isReady && (
+                    <>
+                        {/* Overlay items: items that are overlay'ed on top */}
+                        <MechAbilities />
+                        <MapScale />
+                        <MapTargetSelect />
 
-                {/* Viewport items: items inside the viewport (map), affected by zoom and panning etc. */}
-                <MapMechs />
-                <MechMoveDests />
-                <Blackouts />
-                <BattleZone />
-                <MapAbilities />
+                        {/* Viewport items: items inside the viewport (map), affected by zoom and panning etc. */}
+                        <MapMechs />
+                        <MechMoveDests />
+                        <Blackouts />
+                        <BattleZone />
+                        <MapAbilities />
+                    </>
+                )}
             </Box>
-        ),
-        [containerDimensions],
-    )
+        )
+    }, [containerDimensions.height, containerDimensions.width, isReady])
 }, propsAreEqual)

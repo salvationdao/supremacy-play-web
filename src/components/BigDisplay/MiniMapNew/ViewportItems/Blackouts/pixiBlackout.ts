@@ -50,8 +50,8 @@ export class PixiBlackout {
         // Particles
         const config = merge(ringCloudParticlesConfig, {
             scale: {
-                start: (0.8 * this.gridSizeRef.current.width) / 10,
-                end: (0.3 * this.gridSizeRef.current.width) / 10,
+                start: (0.25 * this.gridSizeRef.current.width) / 10,
+                end: (0.08 * this.gridSizeRef.current.width) / 10,
             },
             spawnCircle: { r: radius, minR: radius },
             color: { start: "#000000", end: "#000000" },
