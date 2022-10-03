@@ -6,11 +6,15 @@ import { useGameServerSubscription } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 
 export const Avatar = ({
+    zIndexAdded,
+    marginLeft,
     factionID,
     username,
     avatarURL,
     customAvatarID,
 }: {
+    zIndexAdded: number
+    marginLeft: number
     factionID: string
     username: string
     avatarURL: string | undefined
@@ -25,6 +29,8 @@ export const Avatar = ({
                 height: "75px",
                 width: "75px",
                 overflow: "hidden",
+                marginLeft: marginLeft,
+                zIndex: zIndexAdded + 1,
             }}
         >
             <Box
@@ -35,25 +41,24 @@ export const Avatar = ({
                     width: "100%",
                     maxHeight: "100%",
                     maxWidth: "100%",
-                    zIndex: 3,
+                    zIndex: zIndexAdded + 2,
                     overflow: "hidden",
                     pointerEvents: "none",
                     position: "absolute",
                 }}
             />
-            {avatarURL && (
-                <Box
-                    sx={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        backgroundColor: "red",
-                        clipPath: "polygon(11% 4%, 90% 4%, 97% 11%, 97% 93%, 2% 93%, 2% 11%)",
-                    }}
-                />
-            )}
+            <Box
+                sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    zIndex: zIndexAdded,
+                    backgroundColor: "black",
+                    clipPath: "polygon(11% 4%, 90% 4%, 97% 11%, 97% 93%, 2% 93%, 2% 11%)",
+                }}
+            />
             {!customAvatarID && !avatarURL && (
                 <Typography
                     variant={"h5"}
@@ -62,17 +67,18 @@ export const Avatar = ({
                         top: "50%",
                         left: "50%",
                         transform: "translate(-50%, -50%)",
+                        zIndex: zIndexAdded + 1,
                     }}
                     color={"primary"}
                 >
                     {username}
                 </Typography>
             )}
-            {!avatarURL && customAvatarID && <CustomAvatarImg customAvatarID={customAvatarID} />}
+            {!avatarURL && customAvatarID && <CustomAvatarImg zIndexAdded={zIndexAdded} customAvatarID={customAvatarID} />}
             {!customAvatarID && avatarURL && (
                 <img
                     key={`${avatarURL}-username`}
-                    style={{ zIndex: 3, position: "absolute", top: "0", left: "0", maxHeight: "100%" }}
+                    style={{ zIndex: zIndexAdded + 3, position: "absolute", top: "0", left: "0", maxHeight: "100%" }}
                     src={avatarURL}
                     alt="avatar"
                 />
@@ -81,7 +87,7 @@ export const Avatar = ({
     )
 }
 
-const CustomAvatarImg = ({ customAvatarID }: { customAvatarID: string }) => {
+const CustomAvatarImg = ({ customAvatarID, zIndexAdded }: { customAvatarID: string; zIndexAdded: number }) => {
     const [avatarDetails, setAvatarDetails] = useState<CustomAvatar>()
 
     useGameServerSubscription<CustomAvatar>(
@@ -104,12 +110,13 @@ const CustomAvatarImg = ({ customAvatarID }: { customAvatarID: string }) => {
                 right: 0,
                 bottom: 0,
                 maxHeight: "100%",
+                zIndex: zIndexAdded + 1,
             }}
         >
             {avatarDetails?.accessory && (
                 <img
                     key={avatarDetails?.accessory?.image_url}
-                    style={{ zIndex: 3, position: "absolute", top: "0", left: "0", maxHeight: "100%" }}
+                    style={{ zIndex: zIndexAdded + 3, position: "absolute", top: "0", left: "0", maxHeight: "100%" }}
                     src={avatarDetails?.accessory?.image_url}
                     alt="accessory"
                 />
@@ -118,7 +125,7 @@ const CustomAvatarImg = ({ customAvatarID }: { customAvatarID: string }) => {
             {avatarDetails?.hair && (
                 <img
                     key={avatarDetails?.hair?.image_url}
-                    style={{ zIndex: 3, position: "absolute", top: "0", left: "0", maxHeight: "100%" }}
+                    style={{ zIndex: zIndexAdded + 3, position: "absolute", top: "0", left: "0", maxHeight: "100%" }}
                     src={avatarDetails?.hair?.image_url}
                     alt="hair"
                 />
@@ -126,13 +133,13 @@ const CustomAvatarImg = ({ customAvatarID }: { customAvatarID: string }) => {
 
             <img
                 key={avatarDetails?.face?.image_url}
-                style={{ zIndex: 2, top: "0", left: "0", maxHeight: "100%" }}
+                style={{ zIndex: zIndexAdded + 2, top: "0", left: "0", maxHeight: "100%" }}
                 src={avatarDetails?.face?.image_url}
                 alt="face"
             />
             <img
                 key={avatarDetails?.body?.image_url}
-                style={{ zIndex: 1, position: "absolute", top: "0", left: "0", maxHeight: "100%" }}
+                style={{ zIndex: zIndexAdded + 1, position: "absolute", top: "0", left: "0", maxHeight: "100%" }}
                 src={avatarDetails?.body?.image_url}
                 alt="body"
             />

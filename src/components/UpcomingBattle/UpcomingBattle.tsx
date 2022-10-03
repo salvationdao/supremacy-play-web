@@ -12,7 +12,7 @@ import { Avatar } from "../Avatar"
 import { SvgPlus } from "../../assets"
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark"
 
-const avatarsToShow = 16
+const avatarsToShow = 10
 
 export const UpcomingBattle = () => {
     const { factionID: usersFactionID } = useAuth()
@@ -137,6 +137,9 @@ const CardGroup = ({
     const faction = getFaction(factionID)
     const usersFaction = factionID === usersFactionID
 
+    console.log(factionID)
+    console.log(usersFactionID)
+
     return (
         <Box
             sx={{
@@ -149,7 +152,7 @@ const CardGroup = ({
                 margin: "auto",
             }}
         >
-            <Grid container spacing={0} direction="row" sx={{ width: "100%", maxHeight: "70%", flexWrap: "nowrap" }}>
+            <Grid container spacing={0} direction="row" sx={{ width: "100%", maxHeight: "70%", flexWrap: "nowrap", justifyContent: "space-evenly" }}>
                 {mechs.map((m) => (
                     <Grid key={`${m.mech_id}-${m.is_destroyed}-${m.battle_lobby_id}`} item sm={4} maxHeight={"100%"}>
                         <MechCard mech={m} faction={faction} />
@@ -159,35 +162,39 @@ const CardGroup = ({
             {!usersFaction && (
                 <Box
                     sx={{
-                        maxHeight: "100%",
+                        maxHeight: "30%",
                         display: "flex",
                         justifyContent: "space-evenly",
                         alignItems: "center",
-                        flexWrap: "wrap",
+                        flexWrap: "nowrap",
                         flex: 1,
                         gap: "0.5rem",
                     }}
                 >
-                    {5 - optedInSupporters.length > 0 &&
-                        new Array(5 - optedInSupporters.length).fill(0).map((_, i) => <QuestionMark key={`${i}-question`} factionID={factionID} />)}
+                    {new Array(5).fill(0).map((_, i) => (
+                        <QuestionMark key={`${i}-question`} factionID={factionID} />
+                    ))}
                 </Box>
             )}
             {usersFaction && (
                 <Box
                     sx={{
-                        maxHeight: "100%",
+                        maxHeight: "30%",
                         display: "flex",
                         justifyContent: "space-evenly",
                         alignItems: "center",
-                        flexWrap: "wrap",
+                        flexWrap: "nowrap",
                         flex: 1,
                         gap: "0.5rem",
+                        padding: "0 40px",
                     }}
                 >
                     {optedInSupporters.map((sup, i) => {
                         if (i >= avatarsToShow) return null
                         return (
                             <Avatar
+                                marginLeft={optedInSupporters.length > avatarsToShow ? -10 : 0}
+                                zIndexAdded={i}
                                 key={`${sup.id}`}
                                 username={sup.username}
                                 factionID={sup.faction_id}
@@ -200,7 +207,14 @@ const CardGroup = ({
                         new Array(5 - optedInSupporters.length)
                             .fill(0)
                             .map((_, i) => <OptInButton key={`${factionID}-add-${i}`} battleLobbyID={battleLobbyID} factionID={factionID} />)}
-                    {optedInSupporters.length >= avatarsToShow && <CountButton factionID={factionID} count={optedInSupporters.length - avatarsToShow} />}
+                    {optedInSupporters.length >= avatarsToShow && (
+                        <CountButton
+                            factionID={factionID}
+                            count={optedInSupporters.length - avatarsToShow}
+                            marginLeft={optedInSupporters.length > avatarsToShow ? -10 : 0}
+                            zIndexAdded={optedInSupporters.length + 1}
+                        />
+                    )}
                     <OptInButton key={`${factionID}-add-extra-one`} battleLobbyID={battleLobbyID} factionID={factionID} />
                 </Box>
             )}
@@ -208,7 +222,7 @@ const CardGroup = ({
     )
 }
 
-const CountButton = ({ factionID, count }: { factionID: string; count: number }) => {
+const CountButton = ({ factionID, count, marginLeft, zIndexAdded }: { factionID: string; count: number; zIndexAdded: number; marginLeft: number }) => {
     const { border } = getCardStyles(factionID)
 
     return (
@@ -218,6 +232,8 @@ const CountButton = ({ factionID, count }: { factionID: string; count: number })
                 height: "75px",
                 width: "75px",
                 overflow: "hidden",
+                zIndex: zIndexAdded,
+                marginLeft: marginLeft,
             }}
         >
             <Box
@@ -228,18 +244,33 @@ const CountButton = ({ factionID, count }: { factionID: string; count: number })
                     width: "100%",
                     maxHeight: "100%",
                     maxWidth: "100%",
-                    zIndex: 3,
+                    zIndex: zIndexAdded + 2,
                     overflow: "hidden",
                     pointerEvents: "none",
                     position: "absolute",
                 }}
             />
+            <Box
+                sx={{
+                    height: "100%",
+                    width: "100%",
+                    maxHeight: "100%",
+                    maxWidth: "100%",
+                    zIndex: zIndexAdded + 1,
+                    overflow: "hidden",
+                    pointerEvents: "none",
+                    position: "absolute",
+                    backgroundColor: "black",
+                    clipPath: "polygon(11% 4%, 90% 4%, 97% 11%, 97% 93%, 2% 93%, 2% 11%)",
+                }}
+            />
             <Typography
-                variant={"h4"}
+                variant={"h5"}
                 sx={{
                     position: "absolute",
                     top: "50%",
                     left: "50%",
+                    zIndex: zIndexAdded + 2,
                     transform: "translate(-50%, -50%)",
                 }}
                 color={"primary"}
