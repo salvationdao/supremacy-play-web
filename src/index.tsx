@@ -21,7 +21,7 @@ import {
     DimensionProvider,
     GameProvider,
     GlobalNotificationsProvider,
-    MiniMapProvider,
+    MiniMapPixiProvider,
     MobileProvider,
     SupremacyProvider,
     UiProvider,
@@ -254,7 +254,7 @@ const App = () => {
                                                                         <UiProvider>
                                                                             <GameProvider>
                                                                                 <HotkeyProvider>
-                                                                                    <MiniMapProvider>
+                                                                                    <MiniMapPixiProvider>
                                                                                         <FiatProvider>
                                                                                             <UserUpdater />
                                                                                             <Switch>
@@ -263,7 +263,7 @@ const App = () => {
                                                                                                 <Route path="" component={AppInner} />
                                                                                             </Switch>
                                                                                         </FiatProvider>
-                                                                                    </MiniMapProvider>
+                                                                                    </MiniMapPixiProvider>
                                                                                 </HotkeyProvider>
                                                                             </GameProvider>
                                                                         </UiProvider>

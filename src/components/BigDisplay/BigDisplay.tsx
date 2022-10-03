@@ -3,7 +3,7 @@ import { useMemo } from "react"
 import { useUI } from "../../containers"
 import { siteZIndex } from "../../theme/theme"
 import { UpcomingBattle } from "../UpcomingBattle/UpcomingBattle"
-import { MiniMap } from "./MiniMap/MiniMap"
+import { MiniMapNew } from "./MiniMapNew/MiniMapNew"
 import { Stream } from "./Stream/Stream"
 
 export const BigDisplay = () => {
@@ -21,7 +21,7 @@ export const BigDisplay = () => {
                 <Box ref={setBigDisplayRef} sx={{ position: "relative", width: "100%", height: "100%" }}>
                     {/* One of the stream and minimap will mount itself to the left drawer, not both are rendered here */}
                     <Stream />
-                    <MiniMap />
+                    <MiniMapNew />
                 </Box>
             </>
         )

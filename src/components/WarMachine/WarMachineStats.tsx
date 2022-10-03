@@ -39,12 +39,12 @@ const WarMachineStatsInner = () => {
                                 }}
                             >
                                 <Box sx={{ display: "grid", gridTemplateColumns: "repeat(2, 50%)" }}>
-                                    {ownedMiniMechs.map((mm) => (
+                                    {ownedMiniMechs.map((wm) => (
                                         <WarMachineItem
-                                            key={`${mm.participantID}`}
-                                            warMachine={mm}
+                                            key={`war-machine-item-${wm.hash}`}
+                                            warMachine={wm}
                                             scale={0.5}
-                                            label={mm.participantID - ADD_MINI_MECH_PARTICIPANT_ID}
+                                            label={wm.participantID - ADD_MINI_MECH_PARTICIPANT_ID}
                                             transformOrigin="0 0"
                                             initialExpanded
                                         />
@@ -71,7 +71,7 @@ const WarMachineStatsInner = () => {
                                 {factionWarMachines &&
                                     factionWarMachines.map((wm, i) => (
                                         <WarMachineItem
-                                            key={`${wm.participantID} - ${wm.hash}`}
+                                            key={`war-machine-item-${wm.hash}`}
                                             warMachine={wm}
                                             scale={0.7}
                                             label={i + 1}
@@ -100,7 +100,7 @@ const WarMachineStatsInner = () => {
                                 {otherWarMachines &&
                                     otherWarMachines.map((wm, i) => (
                                         <WarMachineItem
-                                            key={`${wm.participantID} - ${wm.hash}`}
+                                            key={`war-machine-item-${wm.hash}`}
                                             warMachine={wm}
                                             scale={0.7}
                                             transformOrigin="0 0"
@@ -157,11 +157,11 @@ const WarMachineStatsInner = () => {
                             {ownedMiniMechs.length > 0 && (
                                 <Fade in>
                                     <Stack spacing="-1.2rem" direction="row" alignItems="center">
-                                        {ownedMiniMechs.map((mm) => (
+                                        {ownedMiniMechs.map((wm) => (
                                             <WarMachineItem
-                                                key={`${mm.participantID}`}
-                                                warMachine={mm}
-                                                label={mm.participantID - ADD_MINI_MECH_PARTICIPANT_ID}
+                                                key={`war-machine-item-${wm.hash}`}
+                                                warMachine={wm}
+                                                label={wm.participantID - ADD_MINI_MECH_PARTICIPANT_ID}
                                                 scale={0.6}
                                             />
                                         ))}
@@ -173,14 +173,14 @@ const WarMachineStatsInner = () => {
                                 {haveFactionMechs &&
                                     factionWarMachines &&
                                     factionWarMachines.map((wm, i) => (
-                                        <WarMachineItem key={`${wm.participantID} - ${wm.hash}`} warMachine={wm} scale={0.75} label={i + 1} />
+                                        <WarMachineItem key={`war-machine-item-${wm.hash}`} warMachine={wm} scale={0.75} label={i + 1} />
                                     ))}
 
                                 {otherWarMachines &&
                                     otherWarMachines.length > 0 &&
                                     otherWarMachines.map((wm, i) => (
                                         <WarMachineItem
-                                            key={`${wm.participantID} - ${wm.hash}`}
+                                            key={`war-machine-item-${wm.hash}`}
                                             warMachine={wm}
                                             scale={0.7}
                                             label={i + 1 + (factionWarMachines ? factionWarMachines?.length : 0)}
