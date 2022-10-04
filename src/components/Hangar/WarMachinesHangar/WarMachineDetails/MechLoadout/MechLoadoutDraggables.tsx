@@ -130,6 +130,7 @@ export const MechLoadoutDraggables = ({ draggablesRef, excludeIDs, onDrag, onDra
                 <></>
             </ClipThing>
             <Stack
+                spacing="1rem"
                 sx={{
                     position: "absolute",
                     top: 0,

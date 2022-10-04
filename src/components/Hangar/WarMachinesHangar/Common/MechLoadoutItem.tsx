@@ -260,7 +260,7 @@ const MechLoadoutItemButton = ({
 
 export const MechLoadoutItemSkeleton = () => {
     return (
-        <Box p=".8rem">
+        <Box>
             <ClipThing>
                 <Skeleton variant="rectangular" width="100%" height={130} />
             </ClipThing>
@@ -316,7 +316,13 @@ export const MechLoadoutItemDraggable = React.forwardRef<HTMLDivElement, MechLoa
                         {isEmpty ? (
                             <SvgPlus fill={`${primaryColor}80`} size="2rem" />
                         ) : (
-                            <MediaPreview imageUrl={imageUrl} videoUrls={videoUrls} objectFit="contain" sx={{ p: ".5rem" }} imageTransform={imageTransform} />
+                            <MediaPreview
+                                imageUrl={imageUrl}
+                                videoUrls={videoUrls}
+                                objectFit="contain"
+                                sx={{ p: ".5rem", pointerEvents: "none" }}
+                                imageTransform={imageTransform}
+                            />
                         )}
 
                         <Stack spacing=".3rem" direction="row" alignItems="center" sx={{ position: "absolute", top: ".1rem", left: ".5rem" }}>
