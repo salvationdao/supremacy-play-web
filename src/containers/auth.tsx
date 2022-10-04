@@ -1,6 +1,6 @@
 import { createContext, Dispatch, ReactNode, useCallback, useContext, useEffect, useRef, useState } from "react"
 import { useQuery } from "react-fetching-library"
-import { useSupremacy } from "."
+import { useFingerprint, useSupremacy } from "."
 import { PASSPORT_WEB } from "../constants"
 import { GameServerLoginCheck, GetGlobalFeatures, PassportLoginCheck } from "../fetching"
 import { shadeColor } from "../helpers"
@@ -118,9 +118,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const { query: getGlobalFeatures } = useQuery(GetGlobalFeatures())
     const [globalFeatures, setGlobalFeatures] = useState<Feature[]>([])
+    const { fingerprint } = useFingerprint()
 
     const { query: passportLoginCheck } = useQuery(PassportLoginCheck(), false)
-    const { query: gameserverLoginCheck } = useQuery(GameServerLoginCheck(), false)
+    const { query: gameserverLoginCheck } = useQuery(GameServerLoginCheck(fingerprint), false)
 
     const handleVisibilityChange = useCallback(() => {
         if (document["hidden"]) {

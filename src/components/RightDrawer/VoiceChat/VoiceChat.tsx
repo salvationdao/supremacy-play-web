@@ -199,8 +199,7 @@ export const VoiceChat = () => {
         },
         [connected],
     )
-    const onListen = (enableSound: boolean) => {
-        if (!listenStreams) return
+    const onConnect = (enableSound: boolean) => {
         listenStreams?.map((l) => {
             if (l.send_url) {
                 startStream(l.send_url)
@@ -217,7 +216,7 @@ export const VoiceChat = () => {
 
     useEffect(() => {
         if (!connected) return
-        onListen(false)
+        onConnect(false)
     }, [listenStreams])
 
     const onDisconnect = () => {
@@ -272,7 +271,7 @@ export const VoiceChat = () => {
                             onDisconnect={onDisconnect}
                             faction={getFaction(user.faction_id)}
                             listenStreams={listenStreams || []}
-                            onListen={() => onListen(true)}
+                            onConnect={() => onConnect(true)}
                             onJoinFactionCommander={joinFactionCommander}
                             onLeaveFactionCommander={leaveFactionCommander}
                             onVoteKick={voteKick}
@@ -300,7 +299,7 @@ export const VoiceChat = () => {
 export const VoiceChatInner = ({
     user,
     faction,
-    onListen,
+    onConnect,
     onDisconnect,
     onJoinFactionCommander,
     onLeaveFactionCommander,
@@ -310,7 +309,7 @@ export const VoiceChatInner = ({
 
     hasFactionCommander,
 }: {
-    onListen: () => void
+    onConnect: () => void
     onDisconnect: () => void
     onJoinFactionCommander: () => void
     onLeaveFactionCommander: () => void
@@ -397,7 +396,7 @@ export const VoiceChatInner = ({
                                     }}
                                     sx={{ px: "1rem", pt: 0, pb: ".1rem", minWidth: "7rem", color: "#FFFFFF" }}
                                     onClick={() => {
-                                        onListen()
+                                        onConnect()
                                     }}
                                 >
                                     <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBlack }}>
