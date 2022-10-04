@@ -81,6 +81,8 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
 
                         <NavButton href="https://supremacyhelp.zendesk.com/" startIcon={<SvgSupport sx={{ pb: ".5rem" }} size="1.6rem" />} text="SUPPORT" />
 
+                        <NavButton href={FEEDBACK_FORM_URL} startIcon={<SvgFeedback sx={{ pb: ".5rem" }} size="1.6rem" />} text="Feedback" />
+
                         <NavButton
                             onClick={() => {
                                 togglePreferencesModalOpen(true)
@@ -88,8 +90,6 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
                             startIcon={<SvgSettings sx={{ pb: ".5rem" }} size="1.6rem" />}
                             text="Preferences"
                         />
-
-                        <NavButton href={FEEDBACK_FORM_URL} startIcon={<SvgFeedback sx={{ pb: ".5rem" }} size="1.6rem" />} text="Feedback" />
 
                         <LogoutButton />
                     </Stack>

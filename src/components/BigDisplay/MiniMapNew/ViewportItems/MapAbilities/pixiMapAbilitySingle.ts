@@ -78,7 +78,7 @@ export class PixiMapAbilitySingle {
         this.rootInner.alpha = 0
 
         // Animations
-        ease.add(this.rootInner, { alpha: 1 }, { duration: 500, ease: "linear", removeExisting: true })
+        ease.add(this.rootInner, { alpha: 0.9 }, { duration: 500, ease: "linear", removeExisting: true })
 
         // Drop effect
         if (

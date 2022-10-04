@@ -82,7 +82,7 @@ export class PixiBattleZone {
         this.darkBackgroundTrick.drawCircle(0, 0, radius + borderThickness / 2)
         this.darkBackgroundTrick.endFill()
         this.darkBackgroundTrick.position.set(pos.x, pos.y)
-        ease.add(this.darkBackgroundTrick, { alpha: 0.2 }, { duration: 800, ease: "linear", repeat: true, reverse: true, removeExisting: true })
+        ease.add(this.darkBackgroundTrick, { alpha: 0.2 }, { duration: 1200, ease: "linear", repeat: true, reverse: true, removeExisting: true })
 
         if (battleZone.warn_time) {
             this.darkBackgroundTrick.scale.set(1 + this.viewport.worldWidth / radius)
