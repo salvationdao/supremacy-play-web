@@ -18,7 +18,6 @@ export interface PlayerAbilityStoreItemProps {
     saleAbility: SaleAbility
     price?: string
     amount?: number
-    onClaim: () => void
     onPurchase: () => void
     availability: SaleAbilityAvailability
 }
@@ -29,7 +28,6 @@ const propsAreEqual = (prevProps: PlayerAbilityStoreItemProps, nextProps: Player
         prevProps.availability === nextProps.availability &&
         prevProps.saleAbility.id === nextProps.saleAbility.id &&
         prevProps.amount === nextProps.amount &&
-        prevProps.onClaim === nextProps.onClaim &&
         prevProps.onPurchase === nextProps.onPurchase
     )
 }
@@ -38,7 +36,6 @@ export const PlayerAbilityStoreItem = React.memo(function PlayerAbilityStoreItem
     saleAbility,
     price = saleAbility.current_price,
     amount = 0,
-    onClaim: onClaimCallback,
     onPurchase: onPurchaseCallback,
     availability,
 }: PlayerAbilityStoreItemProps) {
@@ -59,8 +56,6 @@ export const PlayerAbilityStoreItem = React.memo(function PlayerAbilityStoreItem
         switch (availability) {
             case SaleAbilityAvailability.CanPurchase:
                 return "PURCHASE"
-            case SaleAbilityAvailability.CanClaim:
-                return "CLAIM"
             default:
                 return "PURCHASE"
         }
@@ -85,27 +80,6 @@ export const PlayerAbilityStoreItem = React.memo(function PlayerAbilityStoreItem
         return [<SvgQuestionMark key="MISCELLANEOUS" />, "Miscellaneous ability type."]
     }, [saleAbility])
 
-    const onClaim = useCallback(async () => {
-        try {
-            setLoading(true)
-            await send(GameServerKeys.SaleAbilityClaim, {
-                ability_id: saleAbility.id,
-            })
-            newSnackbarMessage(`Successfully claimed 1 x ${saleAbility.ability.label || "ability"}`, "success")
-            toggleShowPurchaseModal(false)
-            onClaimCallback()
-            setError(undefined)
-        } catch (e) {
-            if (e instanceof Error) {
-                setError(e.message)
-            } else if (typeof e === "string") {
-                setError(e)
-            }
-        } finally {
-            setLoading(false)
-        }
-    }, [send, saleAbility.id, saleAbility.ability.label, newSnackbarMessage, toggleShowPurchaseModal, onClaimCallback])
-
     const onPurchase = useCallback(async () => {
         try {
             setLoading(true)
@@ -129,13 +103,11 @@ export const PlayerAbilityStoreItem = React.memo(function PlayerAbilityStoreItem
     }, [send, saleAbility.id, saleAbility.ability.label, price, newSnackbarMessage, toggleShowPurchaseModal, onPurchaseCallback])
 
     const onClick = useMemo(() => {
-        if (availability === SaleAbilityAvailability.CanClaim) {
-            return onClaim
-        } else if (availability === SaleAbilityAvailability.CanPurchase) {
+        if (availability === SaleAbilityAvailability.CanPurchase) {
             return onPurchase
         }
         return () => null
-    }, [availability, onClaim, onPurchase])
+    }, [availability, onPurchase])
 
     return (
         <>
@@ -240,23 +212,17 @@ export const PlayerAbilityStoreItem = React.memo(function PlayerAbilityStoreItem
                                     color: theme.factionTheme.secondary,
                                 }}
                             >
-                                {availability === SaleAbilityAvailability.CanClaim ? (
-                                    "CLAIM ABILITY"
-                                ) : (
-                                    <>
-                                        PURCHASE FOR{" "}
-                                        <Box
-                                            key={price}
-                                            component="span"
-                                            sx={{
-                                                font: "inherit",
-                                                animation: `${scaleUpKeyframes} .2s ease-out`,
-                                            }}
-                                        >
-                                            {supFormatter(price, 2)} SUPS
-                                        </Box>
-                                    </>
-                                )}
+                                PURCHASE FOR{" "}
+                                <Box
+                                    key={price}
+                                    component="span"
+                                    sx={{
+                                        font: "inherit",
+                                        animation: `${scaleUpKeyframes} .2s ease-out`,
+                                    }}
+                                >
+                                    {supFormatter(price, 2)} SUPS
+                                </Box>
                             </Typography>
                         </FancyButton>
                     </Stack>
@@ -287,8 +253,6 @@ export const PlayerAbilityStoreItem = React.memo(function PlayerAbilityStoreItem
                                         ({supFormatter(price, 2)} SUPS)
                                     </Box>
                                 </>
-                            ) : availability === SaleAbilityAvailability.CanClaim ? (
-                                "CLAIM"
                             ) : (
                                 "UNAVAILABLE"
                             )}

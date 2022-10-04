@@ -1,8 +1,8 @@
-import { Checkbox, Fade, Stack, Typography } from "@mui/material"
+import { Fade, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { ClipThing } from "../../.."
-import { BribeStageResponse, useAuth, useGame, useGlobalNotifications } from "../../../../containers"
+import { BribeStageResponse, useAuth, useGame } from "../../../../containers"
 import { useArena } from "../../../../containers/arena"
 import { useTheme } from "../../../../containers/theme"
 import { shadeColor } from "../../../../helpers"
@@ -67,21 +67,8 @@ interface InnerProps {
 const BattleAbilityItemInner = ({ bribeStage, battleAbility, fadeEffect }: InnerProps) => {
     const { label, colour, image_url, description } = battleAbility
     const { factionID } = useAuth()
-    const { sendBrowserNotification } = useGlobalNotifications()
-
-    const [sendBANotifications, toggleSendBANotifications] = useToggle(localStorage.getItem("sendBANotifications") === "true" ?? false)
 
     const backgroundColor = useMemo(() => shadeColor(colour, -75), [colour])
-
-    const toggleNotifications = useCallback(() => {
-        localStorage.setItem("sendBANotifications", String(!sendBANotifications))
-        toggleSendBANotifications()
-    }, [toggleSendBANotifications, sendBANotifications])
-
-    useEffect(() => {
-        if (bribeStage?.phase !== BribeStage.OptIn || !sendBANotifications) return
-        sendBrowserNotification.current(`Battle Ability: ${label} Available`, `Opt in now to lead your faction to victory!`)
-    }, [bribeStage?.phase, label, sendBANotifications, sendBrowserNotification])
 
     return (
         <Stack spacing=".8rem">
@@ -118,22 +105,6 @@ const BattleAbilityItemInner = ({ bribeStage, battleAbility, fadeEffect }: Inner
                         </Stack>
                     </ClipThing>
                 </Fade>
-            </Stack>
-
-            <Stack spacing=".7rem" alignItems="center" direction={"row"} sx={{ alignSelf: "flex-end" }}>
-                <Typography>Send notifications when there is a new ability</Typography>
-                <Checkbox
-                    size="small"
-                    checked={sendBANotifications}
-                    onChange={toggleNotifications}
-                    sx={{
-                        p: 0,
-                        color: (theme) => theme.factionTheme.primary,
-                        "& > .MuiSvgIcon-root": { width: "2rem", height: "2rem" },
-                        ".Mui-checked, .MuiSvgIcon-root": { color: (theme) => `${theme.factionTheme.primary} !important` },
-                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: (theme) => `${theme.factionTheme.primary}50 !important` },
-                    }}
-                />
             </Stack>
         </Stack>
     )

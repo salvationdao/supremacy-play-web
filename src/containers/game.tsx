@@ -23,23 +23,24 @@ export interface GameSettingsResponse {
 
 // Game data that needs to be shared between different components
 export const GameContainer = createContainer(() => {
-    const { toggleIsStreamBigDisplayMemorized, restoreIsStreamBigDisplayMemorized } = useUI()
-    const { setBattleIdentifier } = useSupremacy()
+    const { send } = useGameServerCommandsUser("/user_commander")
     const { factionID, user } = useAuth()
     const { currentArenaID } = useArena()
-    const { send } = useGameServerCommandsUser("/user_commander")
+    const { setBattleIdentifier } = useSupremacy()
+    const { toggleIsStreamBigDisplayMemorized, restoreIsStreamBigDisplayMemorized } = useUI()
 
     // States
     const [map, setMap] = useState<Map>()
     const [battleZone, setBattleZone] = useState<BattleZoneStruct>()
     const [abilityDetails, setAbilityDetails] = useState<AbilityDetail[]>([])
-    const [warMachines, setWarMachines] = useState<WarMachineState[] | undefined>([])
-    const [spawnedAI, setSpawnedAI] = useState<WarMachineState[] | undefined>([])
     const [bribeStage, setBribeStage] = useState<BribeStageResponse | undefined>()
     const [battleEndDetail, setBattleEndDetail] = useState<BattleEndDetail>()
     const [forceDisplay100Percentage, setForceDisplay100Percentage] = useState<string>("")
-
     const isBattleStarted = useMemo(() => (map && bribeStage && bribeStage.phase !== BribeStage.Hold ? true : false), [bribeStage, map])
+
+    // Mechs
+    const [warMachines, setWarMachines] = useState<WarMachineState[] | undefined>([])
+    const [spawnedAI, setSpawnedAI] = useState<WarMachineState[] | undefined>([])
 
     const factionWarMachines = useMemo(() => {
         if (!warMachines) return
@@ -60,6 +61,12 @@ export const GameContainer = createContainer(() => {
         () => (spawnedAI ? spawnedAI.filter((sa) => sa.aiType === AIType.MiniMech && sa.ownedByID === user.id) : []),
         [spawnedAI, user],
     )
+
+    // Tell server user is online for the round
+    useEffect(() => {
+        if (!map || !currentArenaID) return
+        send(GameServerKeys.GameUserOnline, { arena_id: currentArenaID })
+    }, [send, map, currentArenaID])
 
     // Subscribe for game settings
     useGameServerSubscription<GameSettingsResponse | undefined>(
@@ -91,11 +98,6 @@ export const GameContainer = createContainer(() => {
             setSpawnedAI(payload)
         },
     )
-
-    useEffect(() => {
-        if (!map || !currentArenaID) return
-        send(GameServerKeys.GameUserOnline, { arena_id: currentArenaID })
-    }, [send, map, currentArenaID])
 
     // Subscribe on battle end information
     useGameServerSubscription<BattleEndDetail>(
@@ -134,19 +136,25 @@ export const GameContainer = createContainer(() => {
     }, [isBattleStarted, restoreIsStreamBigDisplayMemorized, toggleIsStreamBigDisplayMemorized])
 
     return {
-        bribeStage,
         map,
         setMap,
+        bribeStage,
         isBattleStarted,
+
+        // Abilities and map stuff
         battleZone,
         setBattleZone,
         abilityDetails,
-        warMachines,
-        factionWarMachines,
-        otherWarMachines,
-        orderedWarMachines,
-        ownedMiniMechs,
-        spawnedAI,
+
+        // Mechs for map etc.
+        warMachines, // All
+        spawnedAI, // All
+        orderedWarMachines, // All
+        factionWarMachines, // Filtered
+        otherWarMachines, // Filtered
+        ownedMiniMechs, // Filtered
+
+        // Others
         battleEndDetail,
         setBattleEndDetail,
         forceDisplay100Percentage,

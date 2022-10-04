@@ -6,7 +6,7 @@ import { useDimension, useTraining } from "../../containers"
 import { opacityEffect } from "../../theme/keyframes"
 import { colors, fonts } from "../../theme/theme"
 import { CompletedTraining } from "../../types"
-import { TOP_BAR_HEIGHT } from "../BigDisplay/MiniMap/MiniMap"
+import { TOP_BAR_HEIGHT } from "../BigDisplay/MiniMapNew/MiniMapNew"
 import { FancyButton } from "../Common/FancyButton"
 
 export enum TrainingAbility {

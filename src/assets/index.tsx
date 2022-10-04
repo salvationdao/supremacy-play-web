@@ -4,6 +4,7 @@ import Ammo from "!@svgr/webpack!./svg/Ammo.svg"
 import Armor from "!@svgr/webpack!./svg/Armor.svg"
 import Assets from "!@svgr/webpack!./svg/Assets.svg"
 import BostonMechKillIcon from "!@svgr/webpack!./svg/BostonKillIcon.svg"
+import CheckMark from "!@svgr/webpack!./svg/CheckMark.svg"
 import Chest from "!@svgr/webpack!./svg/Chest.svg"
 import Close from "!@svgr/webpack!./svg/Close.svg"
 import Close2 from "!@svgr/webpack!./svg/Close2.svg"
@@ -41,6 +42,7 @@ import PowerCoreCapacity from "!@svgr/webpack!./svg/PowerCoreCapacity.svg"
 import PowerCoreRegen from "!@svgr/webpack!./svg/PowerCoreRegen.svg"
 import Profile from "!@svgr/webpack!./svg/Profile.svg"
 import ProjectileSpeed from "!@svgr/webpack!./svg/ProjectileSpeed.svg"
+import QuestionMark2 from "!@svgr/webpack!./svg/QuestionMark2.svg"
 import Radius from "!@svgr/webpack!./svg/Radius.svg"
 import RadiusDamageFalloffRate from "!@svgr/webpack!./svg/RadiusDamageFalloffRate.svg"
 import Rank from "!@svgr/webpack!./svg/Rank.svg"
@@ -66,6 +68,7 @@ import Utilities from "!@svgr/webpack!./svg/Utilities.svg"
 import View from "!@svgr/webpack!./svg/View.svg"
 import Wallet from "!@svgr/webpack!./svg/Wallet.svg"
 import Weapons from "!@svgr/webpack!./svg/Weapons.svg"
+import Wrench from "!@svgr/webpack!./svg/Wrench.svg"
 import ZaibatsuMechKillIcon from "!@svgr/webpack!./svg/ZaibatsuKillIcon.svg"
 import Angle from "!react-svg-loader!./svg/Angle.svg"
 import Announcement from "!react-svg-loader!./svg/Announcement.svg"
@@ -93,6 +96,7 @@ import Facebook from "!react-svg-loader!./svg/Facebook.svg"
 import Filter from "!react-svg-loader!./svg/Filter.svg"
 import Fullscreen from "!react-svg-loader!./svg/Fullscreen.svg"
 import GoldBars from "!react-svg-loader!./svg/GoldBars.svg"
+import Grid from "!react-svg-loader!./svg/Grid.svg"
 import GridView from "!react-svg-loader!./svg/GridView.svg"
 import Hide from "!react-svg-loader!./svg/Hide.svg"
 import History from "!react-svg-loader!./svg/History.svg"
@@ -172,12 +176,15 @@ import CoinsRightPNG from "./BattleRewardsBanners/CoinsRight.png"
 import LightningBackgroundPNG from "./BattleRewardsBanners/LightningBackground.png"
 import LightningBackgroundBluePNG from "./BattleRewardsBanners/LightningBackgroundBlue.png"
 import SkyHighGroupedTextPNG from "./BattleRewardsBanners/SkyHighGroupedText.png"
+import AbilityCancelPNG from "./images/AbilityCancel.png"
 import BattleArenaOpeningWebP from "./images/BattleArenaOpening.webp"
 import BattleBgWebP from "./images/BattleBg.webp"
 import BostonCyberneticsLogo from "./images/BostonCyberneticsLogo.png"
 import BottomMechWEBP from "./images/BottomMech.webp"
 import ClaimsBg from "./images/ClaimsBg.jpg"
+import CrossPNG from "./images/Cross.png"
 import Crosshair from "./images/Crosshair.png"
+import DeadSkullPNG from "./images/DeadSkull.png"
 import EmptyWarMachinesPNG from "./images/EmptyWarMachines.png"
 import FlamesPNG from "./images/Flames.png"
 import Gabs from "./images/Gabs.png"
@@ -186,6 +193,7 @@ import HangarBg from "./images/HangarBg.jpg"
 import KeycardPNG from "./images/Keycard.png"
 import LogoWEBP from "./images/Logo.webp"
 import MaintenancePNG from "./images/Maintenance.png"
+import CircleParticle from "./images/Particles/circle.png"
 import PlayerAbilityPNG from "./images/PlayerAbility.png"
 import AboutMeSVG from "./images/profileIcons/AboutMe.svg"
 import BattleHistorySVG from "./images/profileIcons/BattleHistory.svg"
@@ -316,6 +324,10 @@ export {
     BattleBgWebP,
     BattleArenaOpeningWebP,
     ThreeMechsJPG,
+    CrossPNG,
+    DeadSkullPNG,
+    AbilityCancelPNG,
+    CircleParticle,
 }
 export { BCBorder, RMBorder, ZHIBorder, BCWaiting, RMWaiting, ZHIWaiting, BCDeploy, RMDeploy, ZHIDeploy }
 
@@ -1342,5 +1354,29 @@ export const SvgChevronDown: React.VoidFunctionComponent<SvgWrapperProps> = (pro
 export const SvgDoubleChevronDown: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <DoubleChevronDown />
+    </SvgWrapper>
+)
+
+export const SvgQuestionMark2: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <QuestionMark2 />
+    </SvgWrapper>
+)
+
+export const SvgCheckMark: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <CheckMark />
+    </SvgWrapper>
+)
+
+export const SvgWrench: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Wrench />
+    </SvgWrapper>
+)
+
+export const SvgGrid: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Grid />
     </SvgWrapper>
 )
