@@ -379,8 +379,8 @@ export class PixiMapMech {
                     end: 0.1,
                 },
                 speed: {
-                    start: 28,
-                    end: 15,
+                    start: 24,
+                    end: 12,
                 },
                 lifetime: {
                     min: (this.gridSizeRef.current.width * 2.3) / 20,
