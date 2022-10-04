@@ -55,7 +55,7 @@ export const MechLoadoutItem = React.forwardRef<HTMLDivElement, MechLoadoutItemP
                 direction={side === "left" ? "row" : "row-reverse"}
                 spacing="1rem"
                 alignItems="center"
-                sx={{ p: ".8rem", width: "fit-content" }}
+                sx={{ position: "relative", p: ".8rem", width: "fit-content" }}
             >
                 <MechLoadoutItemButton
                     onClick={() => {
@@ -284,7 +284,7 @@ export const MechLoadoutItemDraggable = React.forwardRef<HTMLDivElement, MechLoa
     const backgroundColor = useMemo(() => shadeColor(primaryColor, -90), [primaryColor])
 
     return (
-        <Stack ref={ref} position="relative" direction="row" spacing="1rem" alignItems="center" sx={{ p: ".8rem", width: "fit-content" }} {...draggableProps}>
+        <Stack ref={ref} position="relative" direction="row" spacing="1rem" alignItems="center" sx={{ width: "fit-content" }} {...draggableProps}>
             {locked && (
                 <Stack
                     alignItems="center"

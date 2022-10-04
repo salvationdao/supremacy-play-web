@@ -6,7 +6,7 @@ import { useTheme } from "../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../helpers"
 import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
-import { colors } from "../../../../../theme/theme"
+import { colors, fonts } from "../../../../../theme/theme"
 import { MechDetails, MechSkin, MechStatus, MechStatusEnum, PowerCore, Utility, Weapon } from "../../../../../types"
 import { ClipThing } from "../../../../Common/ClipThing"
 import { FancyButton } from "../../../../Common/FancyButton"
@@ -16,7 +16,7 @@ import { UnityHandle } from "../MechViewer/UnityViewer"
 import { MechLoadoutMechSkinModal } from "../Modals/Loadout/MechLoadoutMechSkinModal"
 import { MechLoadoutPowerCoreModal } from "../Modals/Loadout/MechLoadoutPowerCoreModal"
 import { MechLoadoutWeaponModal } from "../Modals/Loadout/MechLoadoutWeaponModal"
-import { CustomDragEvent, DraggablesHandle, DragStopEvent, MechLoadoutDraggables } from "./MechLoadoutDraggables"
+import { CustomDragEvent, DraggablesHandle, DragStartEvent, DragStopEvent, MechLoadoutDraggables } from "./MechLoadoutDraggables"
 
 interface PlayerAssetMechEquipRequest {
     mech_id: string
@@ -124,6 +124,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
     const [currLoadout, setCurrLoadout] = useState<MechDetailsWithMaps>(generateLoadout(mechDetails))
     const [isUnityPendingChange, setIsUnityPendingChange] = useState(false)
+    const [isDragging, setIsDragging] = useState(false)
 
     const {
         weapons_map,
@@ -333,6 +334,13 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         },
         [loadoutDisabled],
     )
+    const onItemDragStart = useCallback<DragStartEvent>(
+        (el) => {
+            if (loadoutDisabled) return
+            setIsDragging(true)
+        },
+        [loadoutDisabled],
+    )
     const onItemDragStop = useCallback<DragStopEvent>(
         (el, rect, type, item) => {
             if (loadoutDisabled) return
@@ -356,15 +364,23 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                         slot_number: kv[0],
                         inherit_skin: false,
                     })
-                    return
+                    break
                 }
             }
+            setIsDragging(false)
         },
         [loadoutDisabled, modifyWeaponSlot],
     )
 
     return (
-        <>
+        <Stack
+            direction="row"
+            sx={{
+                flex: 1,
+                position: "relative",
+                height: "100%",
+            }}
+        >
             <ClipThing
                 clipSize="10px"
                 border={{
@@ -372,7 +388,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                     borderThickness: ".3rem",
                 }}
                 backgroundColor={theme.factionTheme.background}
-                sx={{ height: "100%", flex: 1 }}
+                sx={{ flex: 1, height: "100%" }}
             >
                 {/* Unity View */}
                 <MechViewer
@@ -384,6 +400,32 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                         },
                     }}
                 />
+                {/* Drag and Drop Overlay */}
+                <Fade in={isDragging} unmountOnExit>
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            backgroundColor: `${colors.black2}aa`,
+                        }}
+                    >
+                        <Typography
+                            sx={{
+                                fontFamily: fonts.nostromoBlack,
+                                fontSize: "3rem",
+                                textTransform: "uppercase",
+                            }}
+                        >
+                            Drag loadout item to a valid slot
+                        </Typography>
+                    </Box>
+                </Fade>
 
                 {/* Main Loadout */}
                 <Box
@@ -754,8 +796,9 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                 draggablesRef={draggablesRef}
                 excludeIDs={Array.from(changed_weapons_map.values(), (w) => w.weapon_id)}
                 onDrag={onItemDrag}
+                onDragStart={onItemDragStart}
                 onDragStop={onItemDragStop}
             />
-        </>
+        </Stack>
     )
 }

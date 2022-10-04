@@ -30,7 +30,6 @@ export const MechViewer = (props: MechViewerProps) => {
                 left: 0,
                 right: 0,
                 overflow: "hidden",
-                zIndex: 5,
             }}
         >
             <Box

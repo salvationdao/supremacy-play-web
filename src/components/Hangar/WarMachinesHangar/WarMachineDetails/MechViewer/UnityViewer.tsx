@@ -68,6 +68,8 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
     const [isPendingChange, setIsPendingChange] = useState(false)
     const [showClickToLoadOverlay, setShowClickToLoadOverlay] = useState(true)
 
+    // todo: unload unity viewer when this bug is fixed https://react-unity-webgl.dev/docs/api/unload
+
     useImperativeHandle(unity.unityRef, () => ({
         handleWeaponUpdate: (wu: LoadoutWeapon) => {
             const weapon = wu.weapon
@@ -284,6 +286,7 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
                             fontFamily: fonts.nostromoBlack,
                             fontSize: "3rem",
                             textTransform: "uppercase",
+                            color: theme.factionTheme.secondary,
                         }}
                     >
                         Click here to load 3D viewer

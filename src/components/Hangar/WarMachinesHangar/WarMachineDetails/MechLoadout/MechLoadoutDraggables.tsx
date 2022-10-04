@@ -12,6 +12,7 @@ import { GetWeaponsRequest } from "../../../WeaponsHangar/WeaponsHangar"
 import { MechLoadoutItemDraggable, MechLoadoutItemSkeleton } from "../../Common/MechLoadoutItem"
 
 export type CustomDragEvent = (parentRef: HTMLDivElement, clientRect: DOMRect) => void
+export type DragStartEvent = (parentRef: HTMLDivElement) => void
 export type DragStopEvent = (parentRef: HTMLDivElement, clientRect: DOMRect, type: AssetItemType, item: Weapon | PowerCore | Utility | MechSkin) => void
 
 export type DraggablesHandle = {
@@ -27,10 +28,11 @@ export interface MechLoadoutDraggablesProps {
     draggablesRef: React.ForwardedRef<DraggablesHandle>
     excludeIDs: string[]
     onDrag: CustomDragEvent
+    onDragStart: DragStartEvent
     onDragStop: DragStopEvent
 }
 
-export const MechLoadoutDraggables = ({ draggablesRef, excludeIDs, onDrag, onDragStop }: MechLoadoutDraggablesProps) => {
+export const MechLoadoutDraggables = ({ draggablesRef, excludeIDs, onDrag, onDragStart, onDragStop }: MechLoadoutDraggablesProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
 
     const weaponsMemoized = useRef<Weapon[]>([])
@@ -98,8 +100,8 @@ export const MechLoadoutDraggables = ({ draggablesRef, excludeIDs, onDrag, onDra
             return loadError
         }
 
-        return weapons.map((w) => <MechLoadoutDraggable key={w.id} onDrag={onDrag} onDragStop={onDragStop} item={w} />)
-    }, [isLoading, loadError, onDrag, onDragStop, weapons])
+        return weapons.map((w) => <MechLoadoutDraggable key={w.id} onDrag={onDrag} onDragStart={onDragStart} onDragStop={onDragStop} item={w} />)
+    }, [isLoading, loadError, onDrag, onDragStart, onDragStop, weapons])
 
     return (
         <Box
@@ -146,10 +148,11 @@ export const MechLoadoutDraggables = ({ draggablesRef, excludeIDs, onDrag, onDra
 interface MechLoadoutDraggableProps {
     item: Weapon
     onDrag: CustomDragEvent
+    onDragStart: DragStartEvent
     onDragStop: DragStopEvent
 }
 
-const MechLoadoutDraggable = ({ item, onDrag, onDragStop }: MechLoadoutDraggableProps) => {
+const MechLoadoutDraggable = ({ item, onDrag, onDragStart, onDragStop }: MechLoadoutDraggableProps) => {
     const transformableRef = useRef<HTMLDivElement>(null)
     const draggableRef = useRef<HTMLDivElement>(null)
 
@@ -175,6 +178,10 @@ const MechLoadoutDraggable = ({ item, onDrag, onDragStop }: MechLoadoutDraggable
                     if (!draggableRef.current || !transformableRef.current) return
                     onDrag(transformableRef.current, draggableRef.current.getBoundingClientRect())
                 }}
+                onStart={() => {
+                    if (!draggableRef.current || !transformableRef.current) return
+                    onDragStart(transformableRef.current)
+                }}
                 onStop={() => {
                     if (!draggableRef.current || !transformableRef.current) return
                     onDragStop(transformableRef.current, draggableRef.current.getBoundingClientRect(), AssetItemType.Weapon, item)
@@ -183,7 +190,7 @@ const MechLoadoutDraggable = ({ item, onDrag, onDragStop }: MechLoadoutDraggable
                 <MechLoadoutItemDraggable
                     ref={draggableRef}
                     imageUrl={item.image_url || item.avatar_url}
-                    videoUrls={[item.card_animation_url]}
+                    // videoUrls={[item.card_animation_url]}
                     label={item.label}
                     primaryColor={colors.weapons}
                     Icon={SvgWeapons}
