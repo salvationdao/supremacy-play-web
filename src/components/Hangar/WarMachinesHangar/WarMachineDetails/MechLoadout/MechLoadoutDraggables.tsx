@@ -20,16 +20,23 @@ export interface GetWeaponsDetailedResponse {
 }
 
 export interface MechLoadoutDraggablesProps {
+    excludeIDs: string[]
     onDrag: CustomDragEvent
     onDragStop: DragStopEvent
 }
 
-export const MechLoadoutDraggables = ({ onDrag, onDragStop }: MechLoadoutDraggablesProps) => {
+export const MechLoadoutDraggables = ({ excludeIDs, onDrag, onDragStop }: MechLoadoutDraggablesProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
 
+    const weaponsMemoized = useRef<Weapon[]>([])
     const [weapons, setWeapons] = useState<Weapon[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
+
+    useEffect(() => {
+        const set = new Set(excludeIDs)
+        setWeapons([...weaponsMemoized.current.filter((w) => !set.has(w.id))])
+    }, [excludeIDs])
 
     const getWeapons = useCallback(async () => {
         try {
@@ -52,6 +59,7 @@ export const MechLoadoutDraggables = ({ onDrag, onDragStop }: MechLoadoutDraggab
             if (!resp) return
             setLoadError(undefined)
             setWeapons(resp.weapons)
+            weaponsMemoized.current = resp.weapons
         } catch (e) {
             setLoadError(typeof e === "string" ? e : "Failed to get weapons.")
             console.error(e)

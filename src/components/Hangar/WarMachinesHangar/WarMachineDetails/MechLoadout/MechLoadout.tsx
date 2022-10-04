@@ -740,7 +740,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                     </Stack>
                 </Box>
             </ClipThing>
-            <MechLoadoutDraggables onDrag={onItemDrag} onDragStop={onItemDragStop} />
+            <MechLoadoutDraggables excludeIDs={Array.from(changed_weapons_map.values(), (w) => w.weapon_id)} onDrag={onItemDrag} onDragStop={onItemDragStop} />
         </>
     )
 }
