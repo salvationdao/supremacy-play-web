@@ -8,13 +8,14 @@ import { calculateCoverDimensions, HEXToVBColor } from "../../../helpers"
 import { colors } from "../../../theme/theme"
 import { Dimension } from "../../../types"
 import { MapScale } from "./OverlayItems/MapScale/MapScale"
-import { MechAbilities } from "./OverlayItems/MechAbilities/MechAbilities"
 import { MapTargetSelect } from "./OverlayItems/MapTargetSelect/MapTargetSelect"
+import { MechAbilities } from "./OverlayItems/MechAbilities/MechAbilities"
+import { BattleZone } from "./ViewportItems/BattlesZone/BattleZone"
+import { Blackouts } from "./ViewportItems/Blackouts/Blackouts"
+import { Grid } from "./ViewportItems/Grid/Grid"
+import { MapAbilities } from "./ViewportItems/MapAbilities/MapAbilities"
 import { MapMechs } from "./ViewportItems/MapMechs/MapMechs"
 import { MechMoveDests } from "./ViewportItems/MechMoveDests/MechMoveDests"
-import { Blackouts } from "./ViewportItems/Blackouts/Blackouts"
-import { BattleZone } from "./ViewportItems/BattlesZone/BattleZone"
-import { MapAbilities } from "./ViewportItems/MapAbilities/MapAbilities"
 
 interface PixiItems {
     mapSprite?: PIXI.Sprite
@@ -49,6 +50,7 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
     const [miniMapPixiRef, setMiniMapPixiRef] = useState<HTMLDivElement | null>(null)
     const pixiItems = useRef<PixiItems>({})
     const isDragging = useRef(false)
+    const [isReady, setIsReady] = useState(false)
 
     const setupPixi = useCallback(
         (mapRef: HTMLDivElement, dimension: Dimension) => {
@@ -103,6 +105,11 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
             app.stage.addChild(viewport)
 
             setPixiMainItems({ app, viewport })
+
+            // Need this timeout to allow some time for pixi and map things to setup
+            setTimeout(() => {
+                setIsReady(true)
+            }, 500)
         },
         [pixiMainItems, setPixiMainItems],
     )
@@ -119,10 +126,10 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
 
         // When parent container size changes, resize the renderer and viewport dimension
         pixiMainItems.app.renderer.resize(containerDimensions.width, containerDimensions.height)
-        pixiMainItems.viewport.resize(pixiMainItems.app.renderer.width, pixiMainItems.app.renderer.height)
+        pixiMainItems.viewport.resize(containerDimensions.width, containerDimensions.height)
 
         // Fit to cover
-        if (pixiMainItems.app.renderer.width > pixiMainItems.app.renderer.height) {
+        if (containerDimensions.width > containerDimensions.height) {
             pixiMainItems.viewport.fitWidth()
         } else {
             pixiMainItems.viewport.fitHeight()
@@ -220,8 +227,8 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
 
     // TODO: If we are popped out, we need to move the pixi canvas to the poppedout window
 
-    return useMemo(
-        () => (
+    return useMemo(() => {
+        return (
             <Box
                 id="minimap-pixi-container"
                 ref={setMiniMapPixiRef}
@@ -232,19 +239,23 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
                     overflow: "hidden",
                 }}
             >
-                {/* Overlay items: items that are overlay'ed on top */}
-                <MechAbilities />
-                <MapScale />
-                <MapTargetSelect />
+                {isReady && (
+                    <>
+                        {/* Overlay items: items that are overlay'ed on top */}
+                        <MechAbilities />
+                        <MapScale />
+                        <MapTargetSelect />
 
-                {/* Viewport items: items inside the viewport (map), affected by zoom and panning etc. */}
-                <MapMechs />
-                <MechMoveDests />
-                <Blackouts />
-                <BattleZone />
-                <MapAbilities />
+                        {/* Viewport items: items inside the viewport (map), affected by zoom and panning etc. */}
+                        <MapMechs />
+                        <MechMoveDests />
+                        <Blackouts />
+                        <BattleZone />
+                        <MapAbilities />
+                        <Grid />
+                    </>
+                )}
             </Box>
-        ),
-        [containerDimensions],
-    )
+        )
+    }, [containerDimensions.height, containerDimensions.width, isReady])
 }, propsAreEqual)

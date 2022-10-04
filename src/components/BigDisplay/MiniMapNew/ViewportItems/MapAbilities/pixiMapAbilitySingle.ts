@@ -147,11 +147,15 @@ export class PixiMapAbilitySingle {
             const config = merge(explosionParticlesConfig, {
                 scale: {
                     start: 0.6,
-                    end: 0.11,
+                    end: 0.07,
                 },
                 lifetime: {
-                    min: 0.16,
-                    max: 0.16,
+                    min: 2,
+                    max: 3,
+                },
+                speed: {
+                    start: 15,
+                    end: 0.4,
                 },
                 spawnCircle: { r: radius / 4 },
                 emitterLifetime: ability.mini_map_display_effect_type === MiniMapDisplayEffectType.Range ? -1 : 0.3,
