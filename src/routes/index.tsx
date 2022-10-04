@@ -1,8 +1,7 @@
 import { Box } from "@mui/system"
-import { SvgChat, SvgDamage1, SvgHistoryClock, SvgRepair, SvgRobot, SvgVoice } from "../assets"
+import { SvgChat, SvgDamage1, SvgHistoryClock, SvgRepair } from "../assets"
 import { BattleArena } from "../components/LeftDrawer/BattleArena/BattleArena"
 import { BattleEndScreen } from "../components/LeftDrawer/BattleEndScreen/BattleEndScreen"
-import { QuickDeploy } from "../components/LeftDrawer/QuickDeploy/QuickDeploy"
 import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
 import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
 import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
@@ -10,7 +9,8 @@ import { VoiceChat } from "../components/RightDrawer/VoiceChat/VoiceChat"
 
 import { RepairJobs } from "../components/RightDrawer/RepairJobs/RepairJobs"
 import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../constants"
-import { BattleArenaPage, BillingHistoryPage, ClaimPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
+import { BattleArenaPage, BillingHistoryPage, BillingHistoryItemPage, ClaimPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
+import { BattleLobbiesPage } from "../pages/BattleLobbiesPage"
 import { LeaderboardPage } from "../pages/LeaderboardPage"
 import { MarketplaceItemPage } from "../pages/MarketplaceItemPage"
 import { MarketplaceSellPage } from "../pages/MarketplaceSellPage"
@@ -18,6 +18,7 @@ import { MechPage } from "../pages/MechPage"
 import { ReplayItemPage } from "../pages/ReplayItemPage"
 import { ReplayPage } from "../pages/ReplayPage"
 import { StorefrontPage } from "../pages/StorefrontPage"
+import { StorefrontShoppingCartPage } from "../pages/StorefrontShoppingCartPage"
 import { WeaponPage } from "../pages/WeaponPage"
 import { colors } from "../theme/theme"
 
@@ -57,6 +58,22 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         matchNavLinkID: "home",
         enable: true,
         pageTitle: "Supremacy - Battle Arena",
+    },
+
+    battle_lobbies: {
+        id: "battle_lobbies",
+        path: "/battle_lobbies/:status?",
+        exact: true,
+        Component: BattleLobbiesPage,
+        requireAuth: true,
+        requireFaction: true,
+        navLink: {
+            enable: true,
+            label: "Battle Lobbies",
+        },
+        matchNavLinkID: "battle_lobby",
+        enable: true,
+        pageTitle: "Supremacy - Battle Lobbies",
     },
 
     // Leaderboard
@@ -120,6 +137,17 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
     },
 
     // Storefront
+    storefront_shopping_cart: {
+        id: "storefront_shopping_cart",
+        path: "/storefront/shopping-cart",
+        exact: true,
+        Component: StorefrontShoppingCartPage,
+        requireAuth: true,
+        requireFaction: true,
+        matchNavLinkID: "storefront",
+        enable: !IS_TESTING_MODE,
+        pageTitle: "Supremacy - Shopping Cart",
+    },
     storefront: {
         id: "storefront",
         path: "/storefront/:type?",
@@ -193,6 +221,16 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         path: "/billing-history",
         exact: true,
         Component: BillingHistoryPage,
+        requireAuth: true,
+        requireFaction: true,
+        enable: true,
+        pageTitle: "Supremacy - Billing",
+    },
+    billing_history_item: {
+        id: "billing_history_item",
+        path: "/billing-history/:id",
+        exact: true,
+        Component: BillingHistoryItemPage,
         requireAuth: true,
         requireFaction: true,
         enable: true,
@@ -282,15 +320,6 @@ export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         requireAuth: false,
         matchNavLinkIDs: BATTLE_ARENA_OPEN ? ["home"] : [],
         mountAllTime: true,
-    },
-    quick_deploy: {
-        id: "quick_deploy",
-        icon: <SvgRobot size="1.3rem" sx={{ pt: ".3rem" }} />,
-        label: "Quick Deploy",
-        Component: QuickDeploy,
-        requireAuth: true,
-        matchNavLinkIDs: BATTLE_ARENA_OPEN ? ["home"] : [],
-        mountAllTime: false,
     },
     previous_battle: {
         id: "previous_battle",

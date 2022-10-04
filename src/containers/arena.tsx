@@ -2,8 +2,7 @@ import React, { useState } from "react"
 import { createContainer } from "unstated-next"
 import { useGameServerSubscription } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { Arena, ArenaStatus, ArenaType } from "../types"
-import { OvenPlayerInstance } from "./oven"
+import { Arena, ArenaStatus } from "../types"
 
 export const ArenaContainer = createContainer(() => {
     const [arenaList, setArenaList] = useState<Arena[]>([])
@@ -23,18 +22,6 @@ export const ArenaContainer = createContainer(() => {
 export const ArenaProvider = ArenaContainer.Provider
 export const useArena = ArenaContainer.useContainer
 
-export interface VoiceStream {
-    listen_url: string
-    send_url: string
-    is_faction_commander: boolean
-    username: string
-    user_gid: number
-    current_kick_vote: number
-
-    ovenPlayer: React.MutableRefObject<OvenPlayerInstance> | undefined
-    liveKit: any
-}
-
 export const ArenaListener = () => {
     const { setArenaList, currentArenaID, setCurrentArena } = useArena()
 
@@ -50,14 +37,8 @@ export const ArenaListener = () => {
                 return
             }
 
-            // NOTE: temporary default arena to the first one
-            const storyArena = payload.find((arena) => arena.type === ArenaType.Story)
-            if (storyArena) {
-                setCurrentArena(storyArena)
-            } else {
-                setCurrentArena(undefined)
-            }
-            // above code will be refactor when players are able to select arena
+            // default arena to the first one
+            setCurrentArena(payload[0])
 
             setArenaList(payload)
         },

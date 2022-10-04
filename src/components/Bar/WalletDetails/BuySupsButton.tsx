@@ -1,16 +1,21 @@
 import { Button, Divider, Stack } from "@mui/material"
 import { useCallback } from "react"
-import { IS_TESTING_MODE, TOKEN_SALE_PAGE } from "../../../constants"
+import { IS_TESTING_MODE, PASSPORT_WEB, TOKEN_SALE_PAGE } from "../../../constants"
+import { useAuth } from "../../../containers"
 import { colors, fonts } from "../../../theme/theme"
 
 export const BuySupsButton = () => {
+    const { userID, setPassportPopup } = useAuth()
+
     const openBuySupsPage = useCallback(() => {
         const width = 520
         const height = 690
         const top = window.screenY + (window.outerHeight - height) / 2.5
         const left = window.screenX + (window.outerWidth - width) / 2
-        window.open(TOKEN_SALE_PAGE, "SUPS Token Sale", `width=${width},height=${height},left=${left},top=${top},popup=1`)
-    }, [])
+        const href = userID ? TOKEN_SALE_PAGE : `${PASSPORT_WEB}external/login?tenant=supremacy&redirectURL=${TOKEN_SALE_PAGE}`
+        const popup = window.open(href, "SUPS Token Sale", `width=${width},height=${height},left=${left},top=${top},popup=1`)
+        setPassportPopup(popup)
+    }, [setPassportPopup, userID])
 
     if (IS_TESTING_MODE) return null
 

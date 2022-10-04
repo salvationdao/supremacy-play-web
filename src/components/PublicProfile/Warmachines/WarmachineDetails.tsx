@@ -10,7 +10,7 @@ import { ClipThing } from "../../Common/ClipThing"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { MechBarStats } from "../../Hangar/WarMachinesHangar/Common/MechBarStats"
 import { MechRepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
-import { MechViewer } from "../../Hangar/WarMachinesHangar/WarMachineDetails/MechViewer"
+import { MechViewer } from "../../Hangar/WarMachinesHangar/WarMachineDetails/MechViewer/MechViewer"
 import { MechBattleHistoryDetails } from "../../Marketplace/WarMachinesMarket/WarMachineMarketDetails/MechBattleHistoryDetails"
 
 export const WarmachineDetails = ({ mechID, primaryColor, backgroundColor }: { mechID: string; primaryColor: string; backgroundColor: string }) => {

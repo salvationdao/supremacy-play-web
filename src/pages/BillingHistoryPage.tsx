@@ -1,16 +1,20 @@
+import moment from "moment"
 import { Box, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
+import { Link } from "react-router-dom"
 import { HangarBg, SafePNG } from "../assets"
 import { ClipThing } from "../components"
 import { CoolTable } from "../components/Common/CoolTable"
 import { PageHeader } from "../components/Common/PageHeader"
 import { useTheme } from "../containers/theme"
-import { parseString } from "../helpers"
+import { generatePriceText, getOrderStatusDeets, parseString } from "../helpers"
 import { usePagination, useUrlQuery } from "../hooks"
 import { useGameServerCommandsUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { fonts, siteZIndex } from "../theme/theme"
-import { BillingHistory } from "../types/fiat"
+import { fonts, colors, siteZIndex } from "../theme/theme"
+import { FiatOrder } from "../types/fiat"
+import BigNumber from "bignumber.js"
+import { MysteryCrateBanner } from "../components/Common/BannersPromotions/MysteryCrateBanner"
 
 export const BillingHistoryPage = () => {
     const theme = useTheme()
@@ -25,12 +29,12 @@ export const BillingHistoryPage = () => {
     // Items
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const [billingHistoryItems, setBillingHistoryItems] = useState<BillingHistory[]>()
+    const [billingHistoryItems, setBillingHistoryItems] = useState<FiatOrder[]>()
 
     const getItems = useCallback(async () => {
         try {
             setIsLoading(true)
-            const resp = await send<{ total: number; records: BillingHistory[] }>(GameServerKeys.BillingHistoryList, {
+            const resp = await send<{ total: number; records: FiatOrder[] }>(GameServerKeys.FiatBillingHistoryList, {
                 page: page - 1,
                 page_size: pageSize,
             })
@@ -72,6 +76,10 @@ export const BillingHistoryPage = () => {
             }}
         >
             <Stack sx={{ mt: "1.5rem", mb: "2rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "160rem" }}>
+                t{" "}
+                <Stack direction="row" alignItems="center" sx={{ mb: "1.1rem", gap: "1.2rem" }}>
+                    <MysteryCrateBanner />
+                </Stack>
                 <ClipThing
                     clipSize="10px"
                     border={{
@@ -88,7 +96,7 @@ export const BillingHistoryPage = () => {
 
                             <Box sx={{ flex: 1 }}>
                                 <CoolTable
-                                    tableHeadings={["RECEIPT NUMBER", "DATE", "PAID", "REFUNDED"]}
+                                    tableHeadings={["RECEIPT NUMBER", "DATE", "STATUS", "TOTAL"]}
                                     alignments={["left", "center", "center", "center"]}
                                     widths={["25%", "25%", "25%", "25%"]}
                                     titleRowHeight="3.5rem"
@@ -103,8 +111,41 @@ export const BillingHistoryPage = () => {
                                         changePage,
                                         changePageSize,
                                     }}
-                                    renderItem={(item, index) => {
-                                        return { cells: [<Typography key={1}>{index + 1}</Typography>] }
+                                    renderItem={(order) => {
+                                        let total = new BigNumber(0)
+                                        order.items.forEach((oi) => {
+                                            total = total.plus(new BigNumber(oi.amount).multipliedBy(oi.quantity))
+                                        })
+                                        const statusDeets = getOrderStatusDeets(order.order_status)
+                                        return {
+                                            cells: [
+                                                <Typography key={1}>
+                                                    <Link to={`/billing-history/${order.id}`}>
+                                                        <Typography sx={{ textDecoration: "underline" }}>{order.order_number}</Typography>
+                                                    </Link>
+                                                </Typography>,
+                                                <Typography key={2}>{moment(order.created_at).format("DD/MM/YYYY")}</Typography>,
+                                                <ClipThing
+                                                    key={3}
+                                                    clipSize="6px"
+                                                    corners={{
+                                                        bottomLeft: true,
+                                                        topRight: true,
+                                                    }}
+                                                    border={{
+                                                        borderColor: colors.offWhite,
+                                                        borderThickness: "1px",
+                                                    }}
+                                                    backgroundColor={statusDeets.color}
+                                                    sx={{ position: "relative", px: "2rem", py: 0 }}
+                                                >
+                                                    <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold, color: statusDeets.textColor }}>
+                                                        {statusDeets.label.toUpperCase()}
+                                                    </Typography>
+                                                </ClipThing>,
+                                                <Typography key={4}>{generatePriceText("$USD", total)}</Typography>,
+                                            ],
+                                        }
                                     }}
                                 />
                             </Box>

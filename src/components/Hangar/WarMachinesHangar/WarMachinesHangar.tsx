@@ -2,11 +2,11 @@ import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/mater
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
-import { BATTLE_ARENA_OPEN, HANGAR_PAGE } from "../../../constants"
+import { HANGAR_PAGE } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, parseString } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
-import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
+import { useGameServerCommandsUser, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MechBasic, MechBasicWithQueueStatus, MechStatus, MechStatusEnum } from "../../../types"
@@ -18,10 +18,8 @@ import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { QueueDetails } from "../../LeftDrawer/QuickDeploy/QueueDetails"
 import { PlayerQueueStatus } from "../../LeftDrawer/QuickDeploy/QuickDeploy"
-import { BulkDeployConfirmModal } from "./Common/BulkDeployConfirmModal"
 import { BulkRepairConfirmModal } from "./Common/BulkRepairConfirmModal"
 import { RepairBay } from "./RepairBay/RepairBay"
-import { QueueFeed } from "./WarMachineDetails/Modals/DeployModal"
 import { WarMachineHangarItem } from "./WarMachineHangarItem"
 
 const sortOptions = [
@@ -51,12 +49,24 @@ interface GetMechsResponse {
 }
 
 export const WarMachinesHangar = () => {
-    const [query, updateQuery] = useUrlQuery()
+    const [query] = useUrlQuery()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
 
     // Player Queue Status
-    const [playerQueueStatus, setPlayerQueueStatus] = useState<PlayerQueueStatus>()
+    const [playerQueueStatus, setPlayerQueueStatus] = useState<PlayerQueueStatus>({
+        queue_limit: 10,
+        total_queued: 0,
+    })
+    useGameServerSubscriptionSecuredUser<PlayerQueueStatus>(
+        {
+            URI: "/queue_status",
+            key: GameServerKeys.PlayerQueueStatus,
+        },
+        (payload) => {
+            setPlayerQueueStatus(payload)
+        },
+    )
 
     // Items
     const [isLoading, setIsLoading] = useState(true)
@@ -65,7 +75,6 @@ export const WarMachinesHangar = () => {
 
     // Bulk action
     const [selectedMechs, setSelectedMechs] = useState<MechBasic[]>([])
-    const [bulkDeployConfirmModalOpen, setBulkDeployConfirmModalOpen] = useState(false)
     const [bulkRepairConfirmModalOpen, setBulkRepairConfirmModalOpen] = useState(false)
     const childrenMechStatus = useRef<{ [mechID: string]: MechStatus }>({})
     const childrenRepairStatus = useRef<{ [mechID: string]: RepairStatus }>({})
@@ -92,17 +101,6 @@ export const WarMachinesHangar = () => {
         localStorage.setItem("isWarMachinesHangarFiltersExpanded", isFiltersExpanded.toString())
     }, [isFiltersExpanded])
 
-    const updateTotalDeployed = (amount: number) => {
-        setPlayerQueueStatus((prev) => {
-            if (!prev) return
-
-            return {
-                ...prev,
-                total_queued: prev.total_queued + amount,
-            }
-        })
-    }
-
     const toggleSelected = useCallback((mech: MechBasic) => {
         setSelectedMechs((prev) => {
             const newArray = [...prev]
@@ -124,12 +122,6 @@ export const WarMachinesHangar = () => {
     const onUnSelectAll = useCallback(() => {
         setSelectedMechs([])
     }, [])
-
-    // Queuing cost, queue length win reward etc.
-    const queueFeed = useGameServerSubscriptionFaction<QueueFeed>({
-        URI: "/queue",
-        key: GameServerKeys.SubQueueFeed,
-    })
 
     // Filters
     const statusFilterSection = useRef<ChipFilter>({
@@ -203,18 +195,6 @@ export const WarMachinesHangar = () => {
                 include_market_listed: true,
             })
 
-            const resp2 = await send<PlayerQueueStatus>(GameServerKeys.PlayerQueueStatus)
-            setPlayerQueueStatus(resp2)
-
-            updateQuery({
-                sort,
-                search,
-                rarities: rarities.join("||"),
-                statuses: status.join("||"),
-                page: page.toString(),
-                pageSize: pageSize.toString(),
-            })
-
             if (!resp) return
             setLoadError(undefined)
             setMechs(resp.mechs)
@@ -226,7 +206,7 @@ export const WarMachinesHangar = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, search, rarities, status, updateQuery, sort, setTotalItems])
+    }, [send, page, pageSize, search, rarities, status, sort, setTotalItems])
 
     useEffect(() => {
         getItems()
@@ -383,23 +363,6 @@ export const WarMachinesHangar = () => {
                                 <PageHeader title="WAR MACHINES" description="Your war machines." imageUrl={WarMachineIconPNG}>
                                     <Stack spacing="1rem" direction="row" alignItems="center" sx={{ ml: "auto !important", pr: "2rem" }}>
                                         <FancyButton
-                                            disabled={!BATTLE_ARENA_OPEN || selectedMechs.length <= 0}
-                                            clipThingsProps={{
-                                                clipSize: "9px",
-                                                backgroundColor: colors.green,
-                                                opacity: 1,
-                                                border: { borderColor: colors.green, borderThickness: "2px" },
-                                                sx: { position: "relative" },
-                                            }}
-                                            sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
-                                            onClick={() => setBulkDeployConfirmModalOpen(true)}
-                                        >
-                                            <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                                DEPLOY SELECTED
-                                            </Typography>
-                                        </FancyButton>
-
-                                        <FancyButton
                                             disabled={selectedMechs.length <= 0}
                                             clipThingsProps={{
                                                 clipSize: "9px",
@@ -460,7 +423,7 @@ export const WarMachinesHangar = () => {
                                     onSelectAll={onSelectAll}
                                     onUnselectedAll={onUnSelectAll}
                                 >
-                                    <QueueDetails queueFeed={queueFeed} playerQueueStatus={playerQueueStatus} />
+                                    <QueueDetails playerQueueStatus={playerQueueStatus} />
                                 </TotalAndPageSizeOptions>
 
                                 <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
@@ -522,17 +485,6 @@ export const WarMachinesHangar = () => {
                     <RepairBay selectedMechs={selectedMechs} setSelectedMechs={setSelectedMechs} />
                 </Stack>
 
-                {bulkDeployConfirmModalOpen && (
-                    <BulkDeployConfirmModal
-                        setBulkDeployConfirmModalOpen={setBulkDeployConfirmModalOpen}
-                        selectedMechs={selectedMechs}
-                        setSelectedMechs={setSelectedMechs}
-                        childrenMechStatus={childrenMechStatus}
-                        queueFeed={queueFeed}
-                        onBulkDeploy={(amount) => updateTotalDeployed(amount)}
-                    />
-                )}
-
                 {bulkRepairConfirmModalOpen && (
                     <BulkRepairConfirmModal
                         setBulkRepairConfirmModalOpen={setBulkRepairConfirmModalOpen}
@@ -546,7 +498,6 @@ export const WarMachinesHangar = () => {
             </>
         ),
         [
-            bulkDeployConfirmModalOpen,
             bulkRepairConfirmModalOpen,
             changePage,
             changePageSize,
@@ -560,7 +511,6 @@ export const WarMachinesHangar = () => {
             page,
             pageSize,
             playerQueueStatus,
-            queueFeed,
             search,
             selectedMechs,
             sort,

@@ -1,14 +1,12 @@
 import { Stack } from "@mui/material"
 import { useMemo } from "react"
 import { LiveCounts, OverlayToggles, VideoPlayerControls } from ".."
-import { DEV_ONLY } from "../../constants"
 import { useMobile } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { shadeColor } from "../../helpers"
 import { siteZIndex } from "../../theme/theme"
-import { VoiceChat } from "../RightDrawer/VoiceChat/VoiceChat"
-import { ArenaSelect } from "./ArenaSelect"
 import { OvenResolutionSelect } from "./ResolutionSelect"
+import { VoiceChat } from "../RightDrawer/VoiceChat/VoiceChat"
 import { OvenStreamSelect } from "./StreamSelect"
 
 export const CONTROLS_HEIGHT = 3.0 // rem
@@ -58,7 +56,6 @@ export const Controls = () => {
 
             <Stack direction="row" spacing="1.2rem" sx={{ flexShrink: 0, height: "100%" }}>
                 <VoiceChat />
-                {DEV_ONLY && <ArenaSelect />}
                 <OvenStreamSelect />
                 <OvenResolutionSelect />
                 <VideoPlayerControls />

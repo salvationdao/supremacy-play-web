@@ -41,6 +41,12 @@ declare module "*.wav" {
     export default content
 }
 
+declare module "*.otf" {
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+    const content: any
+    export default content
+}
+
 // ant media
 declare module "@antmedia/webrtc_adaptor"
 

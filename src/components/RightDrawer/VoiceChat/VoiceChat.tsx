@@ -2,7 +2,7 @@ import { Box, Button, IconButton, Popover, Slider, Stack, Typography } from "@mu
 import OvenPlayer from "ovenplayer"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { SvgHeadphone, SvgMicrophone, SvgVolume, SvgVolumeMute } from "../../../assets"
-import { useArena, useAuth, useGlobalNotifications, useSupremacy, VoiceStream } from "../../../containers"
+import { useArena, useAuth, useGlobalNotifications, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { acronym, shadeColor } from "../../../helpers"
 import { useToggle } from "../../../hooks"
@@ -17,6 +17,15 @@ import ConnectSound from "../../../assets/voiceChat/Connect.wav"
 import DisconnectSound from "../../../assets/voiceChat/Disconnect.wav"
 import { FancyButton } from "../../Common/FancyButton"
 import { ConfirmModal } from "../../Common/ConfirmModal"
+
+export interface VoiceStream {
+    listen_url: string
+    send_url: string
+    is_faction_commander: boolean
+    username: string
+    user_gid: number
+    current_kick_vote: number
+}
 
 export const VoiceChat = () => {
     const [open, setOpen] = useState(false)
@@ -670,13 +679,13 @@ const PlayerItem = ({
                         imageUrl={faction.logo_url}
                         {...StyledImageText}
                     />
-                    {voiceStream.listen_url && voiceStream.ovenPlayer && (
+                    {voiceStream.listen_url && player && (
                         <Box
                             sx={{
                                 width: ".8rem",
                                 height: ".8rem",
                                 borderRadius: "50%",
-                                backgroundColor: voiceStream.ovenPlayer.current.getState() === "playing" ? colors.green : colors.red,
+                                backgroundColor: player.getState() === "playing" ? colors.green : colors.red,
                             }}
                         />
                     )}

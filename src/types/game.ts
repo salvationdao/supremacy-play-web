@@ -1,4 +1,5 @@
 import { Faction, WarMachineState } from "."
+import { colors } from "../theme/theme"
 import { FactionIDs } from "./../constants"
 import { User } from "./user"
 
@@ -46,7 +47,7 @@ export interface GameMap {
 }
 
 export interface BattleZoneStruct {
-    location: Position
+    location: Position // position from center of map
     radius: number
     shrink_time: number
     warn_time: number
@@ -129,7 +130,6 @@ export interface SaleAbility {
 
 export enum SaleAbilityAvailability {
     Unavailable,
-    CanClaim,
     CanPurchase,
 }
 
@@ -186,6 +186,7 @@ export interface BattleMechReward {
     rewarded_sups: string
     rewarded_sups_bonus: string
     owner_id: string
+    is_afk: boolean
 }
 
 export interface WarMachineDestroyedRecord {
@@ -205,17 +206,16 @@ export enum MiniMapDisplayEffectType {
     None = "NONE",
     Range = "RANGE",
     Pulse = "PULSE",
-    Drop = "DROP",
     Explosion = "EXPLOSION",
-    Fade = "FADE",
+    Drop = "DROP",
     Landmine = "LANDMINE",
 }
 
 export enum MechDisplayEffectType {
     None = "NONE",
     Border = "BORDER",
-    Pulse = "PULSE",
     Shake = "SHAKE",
+    Pulse = "PULSE",
 }
 
 export interface DisplayedAbility {
@@ -225,29 +225,23 @@ export interface DisplayedAbility {
     location_select_type: LocationSelectType
     image_url: string
     colour: string
-    radius?: number
-    mech_id?: string
     location: {
         x: number
         y: number
     }
+    radius?: number
+    mech_id?: string
     launching_at?: Date
-    location_in_pixels?: boolean
     border_width?: number
     show_below_mechs?: boolean
-    no_background_colour?: boolean
-    // defaults to 1.5
-    size_grid_override?: number
-}
-
-export enum ArenaType {
-    Story = "STORY",
-    Expedition = "EXPEDITION",
+    location_in_pixels?: boolean
+    grid_size_multiplier?: number // defaults to 1.5
+    noAnim?: boolean
 }
 
 export interface Arena {
     id: string
-    type: ArenaType
+    name: string
     gid: number
     status?: ArenaStatus
 }
@@ -347,4 +341,38 @@ export interface BattleFactionAbilityAlertProps {
 export interface NotificationStruct {
     type: NotificationType
     data: BattleFactionAbilityAlertProps | KillAlertProps | LocationSelectAlertProps | WarMachineAbilityAlertProps | BattleZoneStruct | string
+}
+
+export const MechMoveCommandAbility: PlayerAbility = {
+    id: "mech_move_command",
+    blueprint_id: "mech_move_command",
+    count: 1,
+    last_purchased_at: new Date(),
+    cooldown_expires_on: new Date(),
+    ability: {
+        id: "",
+        game_client_ability_id: 8,
+        label: "MOVE COMMAND",
+        image_url: "https://afiles.ninja-cdn.com/supremacy-stream-site/assets/img/ability-mech-move-command.png",
+        description: "Command the war machine to move to a specific location.",
+        text_colour: "#000000",
+        colour: colors.gold,
+        location_select_type: LocationSelectType.MechCommand,
+        created_at: new Date(),
+        inventory_limit: 10,
+        cooldown_seconds: 5,
+    },
+}
+
+export interface MechMoveCommand {
+    id: string
+    mech_id: string
+    triggered_by_id: string
+    cell_x: number
+    cell_y: number
+    cancelled_at?: string
+    reached_at?: string
+    is_moving: boolean
+    remain_cooldown_seconds: number
+    is_mini_mech: boolean
 }
