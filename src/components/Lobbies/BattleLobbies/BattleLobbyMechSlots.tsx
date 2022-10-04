@@ -254,21 +254,22 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                     </FancyButton>
                                 )}
                             </Stack>
+
+                            {showConfirmModal && (
+                                <ConfirmModal title="Confirm Removal" onConfirm={() => leaveLobby(ms.mech_id)} onClose={() => setShowConfirmModal(false)}>
+                                    <Typography
+                                        variant="h6"
+                                        sx={{
+                                            "& span": {
+                                                fontWeight: "fontWeightBold",
+                                            },
+                                        }}
+                                    >
+                                        Withdraw <span>{ms.name || ms.label}</span> from this lobby?
+                                    </Typography>
+                                </ConfirmModal>
+                            )}
                         </Stack>
-                        {showConfirmModal && (
-                            <ConfirmModal title="Confirm Removal" onConfirm={() => leaveLobby(ms.mech_id)} onClose={() => setShowConfirmModal(false)}>
-                                <Typography
-                                    variant="h6"
-                                    sx={{
-                                        "& span": {
-                                            fontWeight: "fontWeightBold",
-                                        },
-                                    }}
-                                >
-                                    Withdraw <span>{ms.name || ms.label}</span> from this lobby?
-                                </Typography>
-                            </ConfirmModal>
-                        )}
                     </>
                 )
             })}
@@ -283,8 +284,8 @@ interface OtherFactionLobbySlotsProps {
 export const OtherFactionLobbySlots = ({ factionLobbies }: OtherFactionLobbySlotsProps) => {
     return (
         <>
-            {factionLobbies.map((fl) => (
-                <Box key={fl.faction.id}>
+            {factionLobbies.map((fl, index) => (
+                <Box key={index}>
                     <Stack
                         direction="row"
                         sx={{

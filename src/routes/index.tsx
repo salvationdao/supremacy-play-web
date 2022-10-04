@@ -58,6 +58,22 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         pageTitle: "Supremacy - Battle Arena",
     },
 
+    battle_lobbies: {
+        id: "battle_lobbies",
+        path: "/battle_lobbies/:status?",
+        exact: true,
+        Component: BattleLobbiesPage,
+        requireAuth: true,
+        requireFaction: true,
+        navLink: {
+            enable: true,
+            label: "Battle Lobbies",
+        },
+        matchNavLinkID: "battle_lobby",
+        enable: true,
+        pageTitle: "Supremacy - Battle Lobbies",
+    },
+
     // Leaderboard
     leaderboard: {
         id: "leaderboard",
@@ -183,22 +199,6 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         matchNavLinkID: "marketplace",
         enable: !IS_TESTING_MODE,
         pageTitle: "Supremacy - Marketplace",
-    },
-
-    battle_lobbies: {
-        id: "battle_lobbies",
-        path: "/battle_lobbies/:status?",
-        exact: true,
-        Component: BattleLobbiesPage,
-        requireAuth: true,
-        requireFaction: true,
-        navLink: {
-            enable: true,
-            label: "Battle Lobbies",
-        },
-        matchNavLinkID: "battle_lobby",
-        enable: true,
-        pageTitle: "Supremacy - Battle Lobbies",
     },
 
     // Player profile
