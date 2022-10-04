@@ -6,6 +6,7 @@ import { fonts } from "../../../../theme/theme"
 export const ArenaSelector = () => {
     const { factionTheme } = useTheme()
     const { arenaList, currentArena, setCurrentArena } = useArena()
+    console.log(arenaList.map((a) => ({ id: a.id, name: a?.name?.toUpperCase() || "" })))
 
     return (
         <Autocomplete
@@ -17,7 +18,7 @@ export const ArenaSelector = () => {
                 if (typeof it === "string") return
                 setCurrentArena((prev) => arenaList.find((a) => a.id === it.id) || prev)
             }}
-            value={currentArena}
+            value={currentArena ? { id: currentArena.id, name: currentArena.name } : undefined}
             getOptionLabel={(option) => `ARENA - ${option?.name?.toUpperCase() || ""}`}
             sx={{
                 "&& .MuiInputBase-hiddenLabel": {
