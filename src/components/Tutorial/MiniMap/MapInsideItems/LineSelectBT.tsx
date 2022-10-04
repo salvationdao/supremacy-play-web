@@ -1,6 +1,7 @@
 import { Stack, Typography, useTheme } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { MapSelection, useTraining } from "../../../../containers"
+import { useTraining } from "../../../../containers"
+import { MapSelectionBT } from "../../../../containers/training"
 import { diff } from "../../../../helpers"
 import { glowEffect } from "../../../../theme/keyframes"
 import { colors, fonts } from "../../../../theme/theme"
@@ -8,7 +9,7 @@ import { Position } from "../../../../types"
 
 const MIN_CANVAS_HEIGHT = 700
 
-const hintSelection: MapSelection = {
+const hintSelection: MapSelectionBT = {
     startCoords: { x: 23.56, y: 18.88 },
     endCoords: {
         x: 26,

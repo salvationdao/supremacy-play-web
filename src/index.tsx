@@ -20,7 +20,7 @@ import {
     DimensionProvider,
     GameProvider,
     GlobalNotificationsProvider,
-    MiniMapProvider,
+    MiniMapPixiProvider,
     MobileProvider,
     SupremacyProvider,
     UiProvider,
@@ -249,14 +249,14 @@ const App = () => {
                                                                     <UiProvider>
                                                                         <GameProvider>
                                                                             <HotkeyProvider>
-                                                                                <MiniMapProvider>
+                                                                                <MiniMapPixiProvider>
                                                                                     <UserUpdater />
                                                                                     <Switch>
                                                                                         <Route path="/404" exact component={NotFoundPage} />
                                                                                         <Route path="/login-redirect" exact component={LoginRedirect} />
                                                                                         <Route path="" component={AppInner} />
                                                                                     </Switch>
-                                                                                </MiniMapProvider>
+                                                                                </MiniMapPixiProvider>
                                                                             </HotkeyProvider>
                                                                         </GameProvider>
                                                                     </UiProvider>
