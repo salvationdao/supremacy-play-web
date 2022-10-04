@@ -6,7 +6,7 @@ import { colors, fonts } from "../../../theme/theme"
 import { Faction, User } from "../../../types"
 import { AdminChatView } from "../../../types/admin"
 
-export const RelatedAccounts = ({ relatedAccounts }: { relatedAccounts: User[] }) => {
+export const RelatedAccounts = ({ relatedAccounts, fetchPlayer }: { relatedAccounts: User[]; fetchPlayer: (newGid: number) => void }) => {
     const { getFaction } = useSupremacy()
 
     return (
@@ -15,7 +15,13 @@ export const RelatedAccounts = ({ relatedAccounts }: { relatedAccounts: User[] }
                 const faction = getFaction(relatedAccount.faction_id)
 
                 return (
-                    <Stack key={i} sx={{ width: "100%", p: "1rem" }}>
+                    <Stack
+                        key={i}
+                        sx={{ width: "100%", p: "1rem", cursor: "pointer" }}
+                        onClick={() => {
+                            fetchPlayer(relatedAccount.gid)
+                        }}
+                    >
                         <Stack justifyContent={"space-between"} direction="row" alignItems="center">
                             <Stack direction="row">
                                 <Box
@@ -31,10 +37,14 @@ export const RelatedAccounts = ({ relatedAccounts }: { relatedAccounts: User[] }
                                         backgroundSize: "contain",
                                     }}
                                 />
-                                <Typography sx={{ ml: "0.3rem", fontWeight: "700" }}>{`${relatedAccount.username} #${relatedAccount.gid}`}</Typography>
+                                <Typography
+                                    sx={{ ml: "0.3rem", fontWeight: "700", userSelect: "none" }}
+                                >{`${relatedAccount.username} #${relatedAccount.gid}`}</Typography>
                             </Stack>
                             {relatedAccount.created_at && (
-                                <Typography sx={{ color: colors.lightGrey }}>Created On: {dateFormatter(relatedAccount.created_at)}</Typography>
+                                <Typography sx={{ color: colors.lightGrey, userSelect: "none" }}>
+                                    Created on: {relatedAccount.created_at.toLocaleDateString()} {dateFormatter(relatedAccount.created_at)}
+                                </Typography>
                             )}
                         </Stack>
                     </Stack>

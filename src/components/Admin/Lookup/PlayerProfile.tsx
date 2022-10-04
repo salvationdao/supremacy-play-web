@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { SvgBack } from "../../../assets"
 import { useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -7,7 +7,7 @@ import { useToggle } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { RoleType, User } from "../../../types"
+import { Faction, RoleType, User } from "../../../types"
 import { GetUserResp } from "../../../types/admin"
 import { FancyButton } from "../../Common/FancyButton"
 import { PageHeader } from "../../Common/PageHeader"
@@ -23,6 +23,8 @@ export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: 
     const { user } = useAuth()
     const [isLoading, setIsLoading] = useToggle(false)
     const [loadError, setLoadError] = useState<string>("")
+    const { getFaction } = useSupremacy()
+    const [faction, setFaction] = useState<Faction>(getFaction(user.faction_id))
 
     // When searching for player, update the dropdown list
     useEffect(() => {
@@ -36,6 +38,7 @@ export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: 
                 if (!resp) return
                 console.log(resp)
                 setUserData(resp)
+                setFaction(getFaction(resp.user.faction_id))
             } catch (e) {
                 setLoadError(typeof e === "string" ? e : "Failed to get replays.")
                 console.error(e)
@@ -45,9 +48,43 @@ export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: 
         })()
     }, [gid, send])
 
+    const fetchPlayer = useCallback(
+        (newGid: number) => {
+            ;(async () => {
+                setIsLoading(true)
+                try {
+                    const resp = await send<GetUserResp, { gid: number }>(GameServerKeys.ModGetUser, {
+                        gid: newGid,
+                    })
+
+                    if (!resp) return
+                    console.log(resp)
+                    setUserData(resp)
+                    setFaction(getFaction(resp.user.faction_id))
+                } catch (e) {
+                    setLoadError(typeof e === "string" ? e : "Failed to get replays.")
+                    console.error(e)
+                } finally {
+                    setIsLoading(false)
+                }
+            })()
+        },
+        [send],
+    )
+
     if (!userData) return <Box></Box>
 
-    return <PlayerProfileInner userData={userData} updateQuery={updateQuery} isLoading={isLoading} loadError={loadError} user={user} />
+    return (
+        <PlayerProfileInner
+            userData={userData}
+            updateQuery={updateQuery}
+            isLoading={isLoading}
+            loadError={loadError}
+            user={user}
+            fetchPlayer={fetchPlayer}
+            faction={faction}
+        />
+    )
 }
 
 const PlayerProfileInner = ({
@@ -56,16 +93,18 @@ const PlayerProfileInner = ({
     isLoading,
     loadError,
     user,
+    fetchPlayer,
+    faction,
 }: {
     userData: GetUserResp
     updateQuery: (newQuery: { [p: string]: string | undefined }) => void
     isLoading: boolean
     loadError: string
     user: User
+    fetchPlayer: (newGid: number) => void
+    faction: Faction
 }) => {
     const theme = useTheme()
-    const { getFaction } = useSupremacy()
-    const faction = useMemo(() => getFaction(userData.user.faction_id), [getFaction])
 
     console.log(userData)
 
@@ -151,7 +190,7 @@ const PlayerProfileInner = ({
                     </PlayerProfileCard>
                     <PlayerProfileCard faction={faction} title="Related Accounts">
                         {userData.related_accounts ? (
-                            <RelatedAccounts relatedAccounts={userData.related_accounts} />
+                            <RelatedAccounts relatedAccounts={userData.related_accounts} fetchPlayer={fetchPlayer} />
                         ) : (
                             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                                 <Typography>No Related Accounts</Typography>
