@@ -11,13 +11,15 @@ import { ClipThing } from "../../../../Common/ClipThing"
 import { GetWeaponsRequest, GetWeaponsResponse } from "../../../WeaponsHangar/WeaponsHangar"
 import { MechLoadoutItemDraggable } from "../../Common/MechLoadoutItem"
 
-type DragStopEvent = (clientRect: DOMRect, type: AssetItemType, item: Weapon | PowerCore | Utility | MechSkin) => void
+export type CustomDragEvent = (clientRect: DOMRect) => void
+export type DragStopEvent = (clientRect: DOMRect, type: AssetItemType, item: Weapon | PowerCore | Utility | MechSkin) => void
 
 export interface MechLoadoutDraggablesProps {
+    onDrag: CustomDragEvent
     onDragStop: DragStopEvent
 }
 
-export const MechLoadoutDraggables = ({ onDragStop }: MechLoadoutDraggablesProps) => {
+export const MechLoadoutDraggables = ({ onDrag, onDragStop }: MechLoadoutDraggablesProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
 
     const [weapons, setWeapons] = useState<Weapon[]>([])
@@ -28,7 +30,7 @@ export const MechLoadoutDraggables = ({ onDragStop }: MechLoadoutDraggablesProps
         try {
             setIsLoading(true)
 
-            const resp = await send<GetWeaponsResponse, GetWeaponsRequest>(GameServerKeys.GetWeapons, {
+            const resp = await send<GetWeaponsResponse, GetWeaponsRequest>(GameServerKeys.GetWeaponsDetailed, {
                 page: 1,
                 page_size: 10,
                 sort_by: "asc",
@@ -95,7 +97,7 @@ export const MechLoadoutDraggables = ({ onDragStop }: MechLoadoutDraggablesProps
             >
                 {/*  render multiple of these */}
                 {weapons.map((w) => (
-                    <MechLoadoutDraggable key={w.id} onDragStop={onDragStop} item={w} />
+                    <MechLoadoutDraggable key={w.id} onDrag={onDrag} onDragStop={onDragStop} item={w} />
                 ))}
             </Stack>
         </Box>
@@ -104,12 +106,14 @@ export const MechLoadoutDraggables = ({ onDragStop }: MechLoadoutDraggablesProps
 
 interface MechLoadoutDraggableProps {
     item: Weapon
+    onDrag: CustomDragEvent
     onDragStop: DragStopEvent
 }
 
-const MechLoadoutDraggable = ({ item, onDragStop }: MechLoadoutDraggableProps) => {
+const MechLoadoutDraggable = ({ item, onDrag, onDragStop }: MechLoadoutDraggableProps) => {
     const draggableRef = useRef<HTMLDivElement>(null)
 
+    console.log(item)
     return (
         <Box
             sx={{
@@ -127,8 +131,10 @@ const MechLoadoutDraggable = ({ item, onDragStop }: MechLoadoutDraggableProps) =
         >
             <Draggable
                 position={{ x: 0, y: 0 }}
-                // onStart={this.handleStart}
-                // onDrag={this.handleDrag}
+                onDrag={() => {
+                    if (!draggableRef.current) return
+                    onDrag(draggableRef.current.getBoundingClientRect())
+                }}
                 onStop={() => {
                     if (!draggableRef.current) return
                     onDragStop(draggableRef.current.getBoundingClientRect(), AssetItemType.Weapon, item)

@@ -15,7 +15,7 @@ import { MechViewer, UnityHandle } from "../MechViewer/MechViewer"
 import { MechLoadoutMechSkinModal } from "../Modals/Loadout/MechLoadoutMechSkinModal"
 import { MechLoadoutPowerCoreModal } from "../Modals/Loadout/MechLoadoutPowerCoreModal"
 import { MechLoadoutWeaponModal } from "../Modals/Loadout/MechLoadoutWeaponModal"
-import { MechLoadoutDraggables } from "./MechLoadoutDraggables"
+import { CustomDragEvent, DragStopEvent, MechLoadoutDraggables } from "./MechLoadoutDraggables"
 
 interface PlayerAssetMechEquipRequest {
     mech_id: string
@@ -298,6 +298,56 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     //     })
     // }, [])
 
+    const weaponItemRefs = useRef<Map<number, HTMLDivElement | null>>(new Map()) // Map<slot_number, Element ref>
+    const onItemDrag = useCallback<CustomDragEvent>((rect) => {
+        for (const kv of weaponItemRefs.current.entries()) {
+            const element = kv[1]
+            if (!element) continue
+            const slotBoundingRect = element.getBoundingClientRect()
+            const overlaps = !(
+                rect.right < slotBoundingRect.left ||
+                rect.left > slotBoundingRect.right ||
+                rect.bottom < slotBoundingRect.top ||
+                rect.top > slotBoundingRect.bottom
+            )
+            if (overlaps) {
+                element.style.transform = "scale(1.1)"
+                element.style.transition = "transform .1s ease-out"
+            } else {
+                element.style.transform = "scale(1.0)"
+                element.style.transition = "transform .1s ease-in"
+            }
+        }
+    }, [])
+    const onItemDragStop = useCallback<DragStopEvent>(
+        (rect, type, item) => {
+            const weapon = item as Weapon
+            for (const kv of weaponItemRefs.current.entries()) {
+                const element = kv[1]
+                if (!element) continue
+
+                const slotBoundingRect = element.getBoundingClientRect()
+                const overlaps = !(
+                    rect.right < slotBoundingRect.left ||
+                    rect.left > slotBoundingRect.right ||
+                    rect.bottom < slotBoundingRect.top ||
+                    rect.top > slotBoundingRect.bottom
+                )
+
+                if (overlaps) {
+                    modifyWeaponSlot({
+                        weapon: weapon,
+                        weapon_id: weapon.id,
+                        slot_number: kv[0],
+                        inherit_skin: false,
+                    })
+                    return
+                }
+            }
+        },
+        [modifyWeaponSlot],
+    )
+
     const {
         weapons_map,
         changed_weapons_map,
@@ -546,6 +596,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                             if (weapon) {
                                 return (
                                     <MechLoadoutItem
+                                        ref={(r) => weaponItemRefs.current.set(slotNumber, r)}
                                         disabled={loadoutDisabled}
                                         key={weapon.id}
                                         slotNumber={slotNumber}
@@ -575,6 +626,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
 
                             return (
                                 <MechLoadoutItem
+                                    ref={(r) => weaponItemRefs.current.set(slotNumber, r)}
                                     disabled={loadoutDisabled}
                                     key={slotNumber}
                                     slotNumber={slotNumber}
@@ -784,7 +836,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                     </Stack>
                 </Box>
             </ClipThing>
-            <MechLoadoutDraggables onDragStop={(rect) => console.log(rect)} />
+            <MechLoadoutDraggables onDrag={onItemDrag} onDragStop={onItemDragStop} />
         </>
     )
 }

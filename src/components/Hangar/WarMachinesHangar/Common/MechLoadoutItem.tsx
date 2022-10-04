@@ -33,7 +33,7 @@ export interface MechLoadoutItemProps extends LoadoutItem {
     renderModal?: (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => React.ReactNode
 }
 
-export const MechLoadoutItem = (props: MechLoadoutItemProps) => {
+export const MechLoadoutItem = React.forwardRef<HTMLDivElement, MechLoadoutItemProps>(function MechLoadoutItem(props, ref) {
     const { imageUrl, videoUrls } = props
     const { side = "left", prevEquipped, onUnequip, renderModal, onClick, ...loadoutItemButtonProps } = props
     const [showLoadoutModal, toggleShowLoadoutModal] = useToggle()
@@ -50,6 +50,7 @@ export const MechLoadoutItem = (props: MechLoadoutItemProps) => {
     return (
         <>
             <Stack
+                ref={ref}
                 position="relative"
                 direction={side === "left" ? "row" : "row-reverse"}
                 spacing="1rem"
@@ -95,7 +96,7 @@ export const MechLoadoutItem = (props: MechLoadoutItemProps) => {
                 ))}
         </>
     )
-}
+})
 
 interface MechLoadoutItemButtonProps extends LoadoutItem {
     isPreviouslyEquipped?: boolean
