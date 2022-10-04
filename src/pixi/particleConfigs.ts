@@ -110,7 +110,7 @@ export const pulseParticlesConfig = {
 
 export const explosionParticlesConfig = {
     alpha: {
-        start: 0.8,
+        start: 0.7,
         end: 0.2,
     },
     scale: {
