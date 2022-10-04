@@ -10,6 +10,7 @@ import { GameServerKeys } from "../../keys"
 import { GameMap } from "../../types"
 import { FactionBasedDatePicker } from "../Common/FactionBasedDatePicker"
 import moment from "moment"
+import { FactionBasedTimePicker } from "../Common/FactionBasedTimePicker"
 
 interface BattleLobbyCreateModalProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -40,7 +41,10 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
         },
     )
 
-    const [startAfterDate, setStartAfterDate] = useState<moment.Moment | null>(null)
+    const [startAfterDate, setStartAfterDate] = useState<moment.Moment | null>(moment())
+    const [startAfterTime, setStartAfterTime] = useState<moment.Moment | null>(moment())
+
+    const disableTimePicker = useMemo(() => !startAfterDate || !startAfterDate.isValid(), [startAfterDate])
 
     const [lobbyForm, setLobbyForm] = useState<LobbyForm>({
         name: "",
@@ -143,6 +147,12 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                                 Start After:
                             </Typography>
                             <FactionBasedDatePicker value={startAfterDate} onChange={setStartAfterDate} />
+                        </Stack>
+                        <Stack spacing=".5rem" sx={{ opacity: disableTimePicker ? 0.5 : 1 }}>
+                            <Typography variant="body2" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
+                                Start After:
+                            </Typography>
+                            <FactionBasedTimePicker value={startAfterTime} onChange={setStartAfterTime} disabled={disableTimePicker} />
                         </Stack>
                     </Stack>
                     <Stack direction="column"></Stack>
