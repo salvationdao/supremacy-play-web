@@ -375,8 +375,8 @@ export class PixiMapMech {
             const config = merge(pulseParticlesConfig, {
                 color: { start: "#FFFFFF", end: "#FFFFFF" },
                 scale: {
-                    start: 0.3,
-                    end: 0.1,
+                    start: (0.3 * this.gridSizeRef.current.width) / 10,
+                    end: (0.1 * this.gridSizeRef.current.width) / 10,
                 },
                 speed: {
                     start: 24,
