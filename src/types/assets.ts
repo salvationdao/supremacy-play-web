@@ -115,6 +115,12 @@ export interface Collection {
     locked_to_marketplace: boolean
     xsyn_locked: boolean
     market_locked: boolean
+}
+
+export interface PlayerAsset extends Collection {
+    id: string
+    label: string
+    name?: string
     item_sale_id?: string
 }
 
@@ -189,6 +195,7 @@ export interface MechDetails extends MechBasic {
     battle_ready: boolean
     blueprint_weapon_ids_with_skin_inheritance: string[]
     compatible_blueprint_mech_skin_ids: string[]
+    item_sale_id?: string
 }
 
 export enum BoostStatEnum {
@@ -514,6 +521,7 @@ export interface MysteryCrate extends Collection, Images {
     deleted_at?: string
     updated_at: string
     created_at: string
+    item_sale_id?: string
 }
 
 export interface Keycard {

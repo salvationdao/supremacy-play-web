@@ -8,11 +8,16 @@ import { GameServerKeys } from "../../../../../keys"
 import { colors, theme } from "../../../../../theme/theme"
 import { AssetItemType, MechSkin, PowerCore, Utility, Weapon } from "../../../../../types"
 import { ClipThing } from "../../../../Common/ClipThing"
-import { GetWeaponsRequest, GetWeaponsResponse } from "../../../WeaponsHangar/WeaponsHangar"
+import { GetWeaponsRequest } from "../../../WeaponsHangar/WeaponsHangar"
 import { MechLoadoutItemDraggable } from "../../Common/MechLoadoutItem"
 
 export type CustomDragEvent = (clientRect: DOMRect) => void
 export type DragStopEvent = (clientRect: DOMRect, type: AssetItemType, item: Weapon | PowerCore | Utility | MechSkin) => void
+
+export interface GetWeaponsDetailedResponse {
+    weapons: Weapon[]
+    total: number
+}
 
 export interface MechLoadoutDraggablesProps {
     onDrag: CustomDragEvent
@@ -30,7 +35,7 @@ export const MechLoadoutDraggables = ({ onDrag, onDragStop }: MechLoadoutDraggab
         try {
             setIsLoading(true)
 
-            const resp = await send<GetWeaponsResponse, GetWeaponsRequest>(GameServerKeys.GetWeaponsDetailed, {
+            const resp = await send<GetWeaponsDetailedResponse, GetWeaponsRequest>(GameServerKeys.GetWeaponsDetailed, {
                 page: 1,
                 page_size: 10,
                 sort_by: "asc",
