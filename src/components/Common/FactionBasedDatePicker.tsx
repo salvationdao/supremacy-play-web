@@ -3,6 +3,7 @@ import { useTheme } from "../../containers/theme"
 import moment from "moment"
 import React from "react"
 import { TextField } from "@mui/material"
+import { fonts } from "../../theme/theme"
 
 interface FactionBasedDatePickerProps {
     value: moment.Moment | null
@@ -44,9 +45,10 @@ export const FactionBasedDatePicker = ({ value, onChange, enableYear }: FactionB
                             ".MuiPickersCalendarHeader-labelContainer": {
                                 ".MuiPickersFadeTransitionGroup-root": {
                                     ".MuiPickersCalendarHeader-label": {
-                                        fontSize: "2rem",
+                                        fontSize: "1.5rem",
                                         fontWeight: "bold",
                                         color: factionTheme.secondary,
+                                        fontFamily: fonts.nostromoBlack,
                                     },
                                 },
                                 ".MuiPickersCalendarHeader-switchViewButton": {
@@ -68,15 +70,17 @@ export const FactionBasedDatePicker = ({ value, onChange, enableYear }: FactionB
                         ".MuiDayPicker-header": {
                             span: {
                                 color: factionTheme.primary,
-                                fontSize: "1.65rem",
+                                fontSize: "1.3rem",
                                 fontWeight: "bold",
+                                fontFamily: fonts.nostromoBlack,
                             },
                         },
                         ".MuiDayPicker-weekContainer": {
                             "& .MuiPickersDay-root": {
                                 color: factionTheme.secondary,
-                                fontSize: "1.65rem",
+                                fontSize: "1.3rem",
                                 fontWeight: "bold",
+                                fontFamily: fonts.nostromoBlack,
                                 backgroundColor: `${factionTheme.primary}20`,
                                 borderColor: `${factionTheme.primary}20`,
                                 ":hover, :focus, :active": {
