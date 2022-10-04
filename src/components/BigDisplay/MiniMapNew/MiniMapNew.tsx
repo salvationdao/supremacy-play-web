@@ -149,7 +149,7 @@ const MiniMapInner = ({ map, isPoppedout, width = 100, height = 100, poppedOutCo
     const { remToPxRatio } = useDimension()
     const { onAbilityUseCallbacks } = useMiniMapPixi()
     const { isStreamBigDisplay, setIsStreamBigDisplay, toggleIsStreamBigDisplayMemorized, restoreIsStreamBigDisplayMemorized, stopMapRender } = useUI()
-    const [isEnlarged, toggleIsEnlarged] = useToggle(false)
+    const [isEnlarged, toggleIsEnlarged] = useToggle(localStorage.getItem("isMiniMapEnlarged") === "true")
 
     const mapHeightWidthRatio = useRef(1)
 
@@ -157,6 +157,10 @@ const MiniMapInner = ({ map, isPoppedout, width = 100, height = 100, poppedOutCo
     useEffect(() => {
         if (isStreamBigDisplay) toggleIsEnlarged(false)
     }, [isStreamBigDisplay, toggleIsEnlarged])
+
+    useEffect(() => {
+        localStorage.setItem("isMiniMapEnlarged", isEnlarged.toString())
+    }, [isEnlarged])
 
     // When it's targeting, enlarge to big display, else restore to the prev location
     useEffect(() => {
