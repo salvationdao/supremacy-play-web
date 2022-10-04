@@ -1,5 +1,6 @@
-import { Box, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { ClipThing, FancyButton, TooltipHelper } from "../../.."
+import { SvgInfoCircular } from "../../../../assets"
 import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
 import { MARKETPLACE_TABS } from "../../../../pages"
@@ -39,16 +40,18 @@ export const MechButtons = ({
             sx={{ m: "-.3rem" }}
         >
             {!mechDetails.battle_ready && (
-                <Typography
-                    p="1rem"
-                    pb="0"
-                    textAlign="center"
-                    sx={{
-                        color: colors.yellow,
-                    }}
-                >
-                    This War Machine can be deployed following the Nexus Update.
-                </Typography>
+                <Stack direction="row" spacing="1rem" p="1rem" pb="0">
+                    <SvgInfoCircular fill={colors.neonBlue} />
+                    <Typography
+                        sx={{
+                            fontSize: "1.4rem",
+                            fontFamily: fonts.nostromoBold,
+                            color: colors.neonBlue,
+                        }}
+                    >
+                        This War Machine can be deployed following the Nexus Update.
+                    </Typography>
+                </Stack>
             )}
             <Box sx={{ p: "1rem", gap: ".8rem", display: "grid", gridTemplateColumns: "repeat(2, 1fr)" }}>
                 {/* Button 1 */}
