@@ -18,6 +18,7 @@ interface BattleLobbyCreateModalProps {
 
 interface LobbyForm {
     name: string
+    password: string
     entryFee: string
     first_faction_cut: string
     second_faction_cut: string
@@ -48,6 +49,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
 
     const [lobbyForm, setLobbyForm] = useState<LobbyForm>({
         name: "",
+        password: "",
         entryFee: "0",
         first_faction_cut: "75",
         second_faction_cut: "25",
@@ -77,82 +79,104 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
             <Stack direction="row">
                 <Stack direction="column" flex={1}>
                     <Stack direction="column" spacing={1}>
-                        <InputField
-                            variant="outlined"
-                            label="Lobby Name"
-                            value={lobbyForm.name}
-                            onChange={(e) => setLobbyForm((prev) => ({ ...prev, name: e.target.value }))}
-                        />
-                        <InputField
-                            variant="outlined"
-                            label="Entry Fee"
-                            type="number"
-                            startAdornmentLabel={<SvgSupToken fill={colors.yellow} size="1.9rem" />}
-                            endAdornmentLabel={<Typography variant="body2">PER MECH</Typography>}
-                            value={lobbyForm.entryFee}
-                            onChange={(e) => setLobbyForm((prev) => ({ ...prev, entryFee: e.target.value }))}
-                        />
-                        <InputField
-                            variant="outlined"
-                            label="Winning Faction Cut"
-                            type="number"
-                            disabled={disableFactionCutOptions}
-                            endAdornmentLabel={<Typography variant="body2">%</Typography>}
-                            value={lobbyForm.first_faction_cut}
-                            onChange={(e) =>
-                                setLobbyForm((prev) => ({
-                                    ...prev,
-                                    first_faction_cut: e.target.value,
-                                }))
-                            }
-                        />
-                        <InputField
-                            variant="outlined"
-                            label="Second Faction Cut"
-                            type="number"
-                            endAdornmentLabel={<Typography variant="body2">%</Typography>}
-                            disabled={disableFactionCutOptions}
-                            value={lobbyForm.second_faction_cut}
-                            onChange={(e) =>
-                                setLobbyForm((prev) => ({
-                                    ...prev,
-                                    second_faction_cut: e.target.value,
-                                }))
-                            }
-                        />
-                        <InputField
-                            variant="outlined"
-                            label="Loosing Faction Cut"
-                            type="number"
-                            endAdornmentLabel={<Typography variant="body2">%</Typography>}
-                            disabled={disableFactionCutOptions}
-                            value={lobbyForm.third_faction_cut}
-                            onChange={(e) =>
-                                setLobbyForm((prev) => ({
-                                    ...prev,
-                                    third_faction_cut: e.target.value,
-                                }))
-                            }
-                        />
-
-                        <SelectField
-                            label="Game Map"
-                            options={[{ id: "", label: "RANDOM" }].concat(gameMaps.map((gm) => ({ id: gm.id, label: gm.name })))}
-                            value={lobbyForm.game_map_id}
-                            onChange={(e) => setLobbyForm((prev) => ({ ...prev, game_map_id: e.target.value as string }))}
-                        />
-
-                        <Stack spacing=".5rem">
-                            <Typography variant="body2" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
-                                Start After:
-                            </Typography>
-                            <FactionBasedDatePicker value={startAfterDate} onChange={setStartAfterDate} />
+                        <Typography variant="body2" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
+                            SETTING:
+                        </Typography>
+                        <Stack direction="column" spacing={0.6} sx={{ px: "1rem" }}>
+                            <InputField
+                                variant="outlined"
+                                label="Name"
+                                value={lobbyForm.name}
+                                onChange={(e) => setLobbyForm((prev) => ({ ...prev, name: e.target.value }))}
+                            />
+                            <SelectField
+                                label="Game Map"
+                                options={[{ id: "", label: "RANDOM" }].concat(gameMaps.map((gm) => ({ id: gm.id, label: gm.name })))}
+                                value={lobbyForm.game_map_id}
+                                onChange={(e) => setLobbyForm((prev) => ({ ...prev, game_map_id: e.target.value as string }))}
+                            />
+                            <InputField
+                                variant="outlined"
+                                label="Password (optional)"
+                                placeholder="password"
+                                value={lobbyForm.password}
+                                onChange={(e) => setLobbyForm((prev) => ({ ...prev, password: e.target.value }))}
+                            />
                         </Stack>
-                        <Stack spacing=".5rem" sx={{ opacity: disableTimePicker ? 0.5 : 1 }}>
-                            <Typography variant="body2" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
-                                Start After:
-                            </Typography>
-                            <FactionBasedTimePicker value={startAfterTime} onChange={setStartAfterTime} disabled={disableTimePicker} />
+
+                        <Typography variant="body2" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
+                            FEE:
+                        </Typography>
+                        <Stack direction="column" spacing={0.6} sx={{ px: "1rem" }}>
+                            <InputField
+                                variant="outlined"
+                                label="Entry Fee"
+                                type="number"
+                                startAdornmentLabel={<SvgSupToken fill={colors.yellow} size="1.9rem" />}
+                                endAdornmentLabel={<Typography variant="body2">PER MECH</Typography>}
+                                value={lobbyForm.entryFee}
+                                onChange={(e) => setLobbyForm((prev) => ({ ...prev, entryFee: e.target.value }))}
+                            />
+                            <InputField
+                                variant="outlined"
+                                label="Winning Faction Cut"
+                                type="number"
+                                disabled={disableFactionCutOptions}
+                                endAdornmentLabel={<Typography variant="body2">%</Typography>}
+                                value={lobbyForm.first_faction_cut}
+                                onChange={(e) =>
+                                    setLobbyForm((prev) => ({
+                                        ...prev,
+                                        first_faction_cut: e.target.value,
+                                    }))
+                                }
+                            />
+                            <InputField
+                                variant="outlined"
+                                label="Second Faction Cut"
+                                type="number"
+                                endAdornmentLabel={<Typography variant="body2">%</Typography>}
+                                disabled={disableFactionCutOptions}
+                                value={lobbyForm.second_faction_cut}
+                                onChange={(e) =>
+                                    setLobbyForm((prev) => ({
+                                        ...prev,
+                                        second_faction_cut: e.target.value,
+                                    }))
+                                }
+                            />
+                            <InputField
+                                variant="outlined"
+                                label="Loosing Faction Cut"
+                                type="number"
+                                endAdornmentLabel={<Typography variant="body2">%</Typography>}
+                                disabled={disableFactionCutOptions}
+                                value={lobbyForm.third_faction_cut}
+                                onChange={(e) =>
+                                    setLobbyForm((prev) => ({
+                                        ...prev,
+                                        third_faction_cut: e.target.value,
+                                    }))
+                                }
+                            />
+                        </Stack>
+
+                        <Typography variant="body2" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
+                            SCHEDULE:
+                        </Typography>
+                        <Stack direction="column" spacing={0.6} sx={{ px: "1rem" }}>
+                            <Stack spacing=".5rem">
+                                <Typography variant="body2" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
+                                    DATE:
+                                </Typography>
+                                <FactionBasedDatePicker value={startAfterDate} onChange={setStartAfterDate} />
+                            </Stack>
+                            <Stack spacing=".5rem" sx={{ opacity: disableTimePicker ? 0.5 : 1 }}>
+                                <Typography variant="body2" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
+                                    TIME:
+                                </Typography>
+                                <FactionBasedTimePicker value={startAfterTime} onChange={setStartAfterTime} disabled={disableTimePicker} />
+                            </Stack>
                         </Stack>
                     </Stack>
                     <Stack direction="column"></Stack>
