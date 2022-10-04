@@ -89,6 +89,7 @@ class PixiHexagonTile {
     updateRaised(raised: boolean) {
         if (this.raised !== raised) {
             ease.add(this.root, { alpha: raised ? 1 : 0 }, { duration: 900, ease: "linear", removeExisting: true })
+            this.raised = raised
         }
     }
 }

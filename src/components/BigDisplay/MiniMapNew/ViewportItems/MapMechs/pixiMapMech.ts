@@ -375,18 +375,18 @@ export class PixiMapMech {
             const config = merge(pulseParticlesConfig, {
                 color: { start: "#FFFFFF", end: "#FFFFFF" },
                 scale: {
-                    start: 0.4,
+                    start: 0.6,
                     end: 0.1,
                 },
                 speed: {
-                    start: 60,
-                    end: 60,
+                    start: 20,
+                    end: 15,
                 },
                 lifetime: {
-                    min: (this.gridSizeRef.current.width * 2.3) / 60,
-                    max: (this.gridSizeRef.current.width * 2.3) / 60,
+                    min: (this.gridSizeRef.current.width * 2.3) / 20,
+                    max: (this.gridSizeRef.current.width * 2.3) / 20,
                 },
-                frequency: 0.4,
+                frequency: 0.6,
             })
             this.emitter?.destroy()
             this.emitter = new particles.Emitter(this.particlesContainer, CircleParticle, config)
