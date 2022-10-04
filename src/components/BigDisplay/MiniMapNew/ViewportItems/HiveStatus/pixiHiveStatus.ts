@@ -54,10 +54,7 @@ export class PixiHiveStatus {
             for (let index = 0; index < this.hiveStatus.current.length; index++) {
                 const hexTile = this.hexagons[index]
                 const raised = this.hiveStatus.current[index]
-
-                if (hexTile) {
-                    ease.add(hexTile.root, { alpha: raised ? 0.9 : 0 }, { duration: 700, ease: "linear", removeExisting: true })
-                }
+                hexTile?.updateRaised(!!raised)
             }
 
             this.animationFrame = requestAnimationFrame(step)
@@ -68,6 +65,7 @@ export class PixiHiveStatus {
 
 class PixiHexagonTile {
     root: PIXI.Graphics
+    private raised: boolean = false
 
     constructor(radius: number, x: number, y: number, yaw: number, half: boolean) {
         const height = radius * Math.sqrt(3)
@@ -86,5 +84,11 @@ class PixiHexagonTile {
         this.root.alpha = 0
         this.root.x = x
         this.root.y = y
+    }
+
+    updateRaised(raised: boolean) {
+        if (this.raised !== raised) {
+            ease.add(this.root, { alpha: raised ? 0.9 : 0 }, { duration: 700, ease: "linear", removeExisting: true })
+        }
     }
 }
