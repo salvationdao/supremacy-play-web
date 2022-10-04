@@ -229,22 +229,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         })
     }, [])
 
-    // const onWeaponDragStop = useCallback(() => {
-
-    // }, [])
-
-    // const addUtilitySelection = useCallback((eu: LoadoutUtility) => {
-    //     setCurrLoadout((prev) => {
-    //         const updated = new Map(prev.changed_utility_map)
-    //         updated.set(eu.slot_number, eu)
-
-    //         return {
-    //             ...prev,
-    //             changed_utility_map: updated,
-    //         }
-    //     })
-    // }, [])
-
     const undoMechSkinChanges = useCallback(() => {
         setCurrLoadout((prev) => ({ ...prev, changed_mech_skin: undefined }))
     }, [])
@@ -285,18 +269,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         },
         [currLoadout.weapons_map],
     )
-
-    // const undoUtilitySelection = useCallback((slotNumber: number) => {
-    //     setCurrLoadout((prev) => {
-    //         const updated = prev.changed_utility_map
-    //         updated.delete(slotNumber)
-
-    //         return {
-    //             ...prev,
-    //             changed_utility_map: updated,
-    //         }
-    //     })
-    // }, [])
 
     const weaponItemRefs = useRef<Map<number, HTMLDivElement | null>>(new Map()) // Map<slot_number, Element ref>
     const onItemDrag = useCallback<CustomDragEvent>((rect) => {
@@ -638,79 +610,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                 />
                             )
                         })}
-
-                        {/* IN FUTURE: COMMENT THIS BACK IN WHEN UTILITIES ARE ADDED */}
-                        {/* {Array.from(utility_map, ([slotNumber, u]) => {
-                    let utility = u
-                    if (changed_utility_map.has(slotNumber)) {
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        utility = changed_utility_map.get(slotNumber)!.utility
-                    }
-
-                    const renderModal = (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => (
-                        <MechLoadoutUtilityModal
-                            onClose={() => toggleShowLoadoutModal(false)}
-                            onConfirm={(selectedUtility) => {
-                                addUtilitySelection({
-                                    utility: selectedUtility,
-                                    utility_id: selectedUtility.id,
-                                    slot_number: slotNumber,
-                                })
-                                toggleShowLoadoutModal(false)
-                            }}
-                            equipped={utility || undefined}
-                            utilitiesAlreadyEquippedInOtherSlots={Array.from(changed_utility_map.values(), (u) => u.utility_id).filter(u => !!u)}
-                        />
-                    )
-
-                    if (utility) {
-                        return (
-                            <MechLoadoutItem
-                                disabled={loadoutDisabled}
-                                key={utility.id}
-                                slotNumber={slotNumber}
-                                imageUrl={utility.image_url || utility.avatar_url}
-                                videoUrls={[utility.card_animation_url]}
-                                label={utility.label}
-                                primaryColor={colors.utilities}
-                                Icon={SvgUtilities}
-                                rarity={getRarityDeets(utility.tier)}
-                                renderModal={renderModal}
-                                prevEquipped={(() => {
-                                    if (!changed_utility_map.has(slotNumber)) return
-
-                                    const previouslyEquipped = utility_map.get(slotNumber)
-                                    if (!previouslyEquipped) return
-
-                                    return {
-                                        slotNumber,
-                                        imageUrl: previouslyEquipped.image_url || previouslyEquipped.avatar_url,
-                                        videoUrls: [previouslyEquipped.card_animation_url],
-                                        label: previouslyEquipped.label,
-                                        primaryColor: colors.utilities,
-                                        Icon: SvgUtilities,
-                                        rarity: getRarityDeets(previouslyEquipped.tier),
-                                        onClick: () => undoUtilitySelection(slotNumber),
-                                        disabled: loadoutDisabled,
-                                    }
-                                })()}
-                                locked={utility.locked_to_mech}
-                            />
-                        )
-                    }
-
-                    return (
-                        <MechLoadoutItem
-                            disabled={loadoutDisabled}
-                            key={slotNumber}
-                            slotNumber={slotNumber}
-                            label="UTILITY"
-                            primaryColor={colors.utilities}
-                            renderModal={renderModal}
-                            isEmpty
-                        />
-                    )
-                })} */}
                     </Stack>
 
                     {/* Right side */}

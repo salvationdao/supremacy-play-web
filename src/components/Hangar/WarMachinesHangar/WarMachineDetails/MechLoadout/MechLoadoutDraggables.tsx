@@ -113,7 +113,6 @@ interface MechLoadoutDraggableProps {
 const MechLoadoutDraggable = ({ item, onDrag, onDragStop }: MechLoadoutDraggableProps) => {
     const draggableRef = useRef<HTMLDivElement>(null)
 
-    console.log(item)
     return (
         <Box
             sx={{
