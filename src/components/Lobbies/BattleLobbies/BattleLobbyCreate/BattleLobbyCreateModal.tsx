@@ -1,16 +1,19 @@
-import { ConfirmModal } from "../Common/ConfirmModal"
+import { ConfirmModal } from "../../../Common/ConfirmModal"
 import React, { ReactNode, useMemo, useState } from "react"
-import { Box, InputAdornment, MenuItem, Select, SelectProps, Stack, TextField, Typography } from "@mui/material"
-import { colors, fonts } from "../../theme/theme"
-import { SvgSupToken } from "../../assets"
+import { InputAdornment, MenuItem, Select, SelectProps, Stack, TextField, Typography } from "@mui/material"
+import { colors, fonts } from "../../../../theme/theme"
+import { SvgSupToken } from "../../../../assets"
 import { TextFieldProps } from "@mui/material/TextField"
-import { useTheme } from "../../containers/theme"
-import { useGameServerSubscriptionSecured } from "../../hooks/useGameServer"
-import { GameServerKeys } from "../../keys"
-import { GameMap } from "../../types"
-import { FactionBasedDatePicker } from "../Common/FactionBasedDatePicker"
+import { useTheme } from "../../../../containers/theme"
+import { useGameServerSubscriptionSecured } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
+import { GameMap } from "../../../../types"
+import { FactionBasedDatePicker } from "../../../Common/FactionBasedDatePicker"
 import moment from "moment"
-import { FactionBasedTimePicker } from "../Common/FactionBasedTimePicker"
+import { FactionBasedTimePicker } from "../../../Common/FactionBasedTimePicker"
+import { MechSlot } from "./MechSlot"
+import { MechSelector } from "./MechSelector"
+import { FancyButton } from "../../../Common/FancyButton"
 
 interface BattleLobbyCreateModalProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -24,6 +27,8 @@ interface LobbyForm {
     second_faction_cut: string
     third_faction_cut: string
     game_map_id: string
+    wont_start_until_date: moment.Moment | null
+    wont_start_until_time: moment.Moment | null
 }
 
 export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps) => {
@@ -42,11 +47,6 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
         },
     )
 
-    const [startAfterDate, setStartAfterDate] = useState<moment.Moment | null>(moment())
-    const [startAfterTime, setStartAfterTime] = useState<moment.Moment | null>(moment())
-
-    const disableTimePicker = useMemo(() => !startAfterDate || !startAfterDate.isValid(), [startAfterDate])
-
     const [lobbyForm, setLobbyForm] = useState<LobbyForm>({
         name: "",
         password: "",
@@ -55,7 +55,11 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
         second_faction_cut: "25",
         third_faction_cut: "0",
         game_map_id: "",
+        wont_start_until_date: null,
+        wont_start_until_time: null,
     })
+
+    const disableTimePicker = useMemo(() => !lobbyForm.wont_start_until_date || !lobbyForm.wont_start_until_date.isValid(), [lobbyForm.wont_start_until_date])
 
     const disableFactionCutOptions: boolean = useMemo(() => {
         const entryFee = parseFloat(lobbyForm.entryFee)
@@ -70,17 +74,43 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
         <ConfirmModal
             title={`CREATE BATTLE LOBBY`}
             onConfirm={() => console.log(lobbyForm)}
+            confirmButton={
+                <FancyButton
+                    clipThingsProps={{
+                        clipSize: "6px",
+                        clipSlantSize: "0px",
+                        corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
+                        backgroundColor: colors.green,
+                        border: { isFancy: true, borderColor: colors.green, borderThickness: "1.5px" },
+                        sx: { position: "relative", minWidth: "10rem" },
+                    }}
+                    sx={{ px: ".6rem", py: ".5rem", color: "#FFFFFF" }}
+                    onClick={() => console.log(true)}
+                >
+                    <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                        CREATE LOBBY
+                    </Typography>
+                </FancyButton>
+            }
             onClose={() => {
                 setOpen(false)
             }}
             isLoading={false}
             error={error}
+            width="130rem"
+            omitCancel
         >
-            <Stack direction="row">
-                <Stack direction="column" flex={1}>
-                    <Stack direction="column" spacing={1}>
+            <Stack direction="column">
+                <Stack direction="row" flex={1} spacing={3}>
+                    <Stack
+                        direction="column"
+                        spacing={1}
+                        sx={{
+                            width: "45rem",
+                        }}
+                    >
                         <Typography variant="body2" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
-                            SETTING:
+                            ROOM SETTING:
                         </Typography>
                         <Stack direction="column" spacing={0.6} sx={{ px: "1rem" }}>
                             <InputField
@@ -105,7 +135,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                         </Stack>
 
                         <Typography variant="body2" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
-                            FEE:
+                            FEE & REWARD:
                         </Typography>
                         <Stack direction="column" spacing={0.6} sx={{ px: "1rem" }}>
                             <InputField
@@ -169,17 +199,45 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                                 <Typography variant="body2" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
                                     DATE:
                                 </Typography>
-                                <FactionBasedDatePicker value={startAfterDate} onChange={setStartAfterDate} />
+                                <FactionBasedDatePicker
+                                    value={lobbyForm.wont_start_until_date}
+                                    onChange={(v) => setLobbyForm((prev) => ({ ...prev, wont_start_until_date: v }))}
+                                />
                             </Stack>
                             <Stack spacing=".5rem" sx={{ opacity: disableTimePicker ? 0.5 : 1 }}>
                                 <Typography variant="body2" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
                                     TIME:
                                 </Typography>
-                                <FactionBasedTimePicker value={startAfterTime} onChange={setStartAfterTime} disabled={disableTimePicker} />
+                                <FactionBasedTimePicker
+                                    value={lobbyForm.wont_start_until_time}
+                                    onChange={(v) => setLobbyForm((prev) => ({ ...prev, wont_start_until_time: v }))}
+                                    disabled={disableTimePicker}
+                                />
                             </Stack>
                         </Stack>
                     </Stack>
-                    <Stack direction="column"></Stack>
+                    <Stack direction="column" flex={1} spacing={1}>
+                        <Typography variant="body2" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
+                            WAR MACHINES:
+                        </Typography>
+                        <MechSelector SetSelectedMechID={console.log} />
+                    </Stack>
+                </Stack>
+                <Typography variant="body2" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack, mt: "1rem", mb: "1rem" }}>
+                    WAR MACHINE SLOTS:
+                </Typography>
+
+                <Stack
+                    direction="row"
+                    spacing="1rem"
+                    sx={{
+                        height: "25rem",
+                        width: "100%",
+                    }}
+                >
+                    <MechSlot />
+                    <MechSlot />
+                    <MechSlot />
                 </Stack>
             </Stack>
         </ConfirmModal>

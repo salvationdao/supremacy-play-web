@@ -15,7 +15,7 @@ import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { SearchBattle } from "../../Replays/BattlesReplays/SearchBattle"
 import { BattleLobbyItem } from "./BattleLobbyItem"
 import { FancyButton } from "../../Common/FancyButton"
-import { BattleLobbyCreateModal } from "../BattleLobbyCreateModal"
+import { BattleLobbyCreateModal } from "./BattleLobbyCreate/BattleLobbyCreateModal"
 
 const sortOptionsPending: { label: string; value: string }[] = [
     { label: SortTypeLabel.QueuedAmountHighest, value: SortTypeLabel.QueuedAmountHighest },
@@ -215,7 +215,7 @@ export const BattleLobbies = ({ lobbyStatus, battleLobbies }: BattleLobbiesProps
                                     border: { isFancy: true, borderColor: colors.bronze, borderThickness: "1.5px" },
                                     sx: { position: "relative", minWidth: "10rem" },
                                 }}
-                                sx={{ px: ".35rem", py: ".5rem", color: "#FFFFFF" }}
+                                sx={{ px: ".6rem", py: ".5rem", color: "#FFFFFF" }}
                                 onClick={() => setOpenNewLobbyModal(true)}
                             >
                                 <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>

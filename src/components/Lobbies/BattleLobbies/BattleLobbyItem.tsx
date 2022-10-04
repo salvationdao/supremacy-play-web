@@ -452,12 +452,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                     </ClipThing>
                 </Box>
             </Stack>
-            <BattleLobbyJoinModal
-                show={showJoinModal}
-                battleLobby={battleLobby}
-                onJoin={() => setShowJoinModal(false)}
-                onClose={() => setShowJoinModal(false)}
-            />
+            {showJoinModal && <BattleLobbyJoinModal battleLobby={battleLobby} onJoin={() => setShowJoinModal(false)} onClose={() => setShowJoinModal(false)} />}
         </>
     )
 }, propsAreEqual)

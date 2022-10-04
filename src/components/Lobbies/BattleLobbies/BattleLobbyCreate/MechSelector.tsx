@@ -1,23 +1,19 @@
 import { Box, Pagination, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useTheme } from "../../../../containers/theme"
+import { useDebounce, usePagination } from "../../../../hooks"
+import { useEffect, useMemo, useState } from "react"
+import { MechBasicWithQueueStatus } from "../../../../types"
+import { colors, fonts } from "../../../../theme/theme"
+import { SearchBattle } from "../../../Replays/BattlesReplays/SearchBattle"
+import { TotalAndPageSizeOptions } from "../../../Common/TotalAndPageSizeOptions"
+import { SortTypeLabel } from "../../../../types/marketplace"
+import { useGameServerSubscriptionSecuredUser } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
+import { getRarityDeets } from "../../../../helpers"
 import FlipMove from "react-flip-move"
-import { EmptyWarMachinesPNG } from "../../assets"
-import { useAuth } from "../../containers"
-import { useTheme } from "../../containers/theme"
-import { getRarityDeets } from "../../helpers"
-import { usePagination } from "../../hooks"
-import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } from "../../hooks/useGameServer"
-import { GameServerKeys } from "../../keys"
-import { colors, fonts } from "../../theme/theme"
-import { MechBasicWithQueueStatus } from "../../types"
-import { BattleLobby } from "../../types/battle_queue"
-import { SortTypeLabel } from "../../types/marketplace"
-import { ConfirmModal } from "../Common/ConfirmModal"
-import { TotalAndPageSizeOptions } from "../Common/TotalAndPageSizeOptions"
-import { QueueDetails } from "../LeftDrawer/QuickDeploy/QueueDetails"
-import { PlayerQueueStatus } from "../LeftDrawer/QuickDeploy/QuickDeploy"
-import { QuickDeployItem } from "../LeftDrawer/QuickDeploy/QuickDeployItem"
-import { SearchBattle } from "../Replays/BattlesReplays/SearchBattle"
+import { QuickDeployItem } from "../../../LeftDrawer/QuickDeploy/QuickDeployItem"
+import { PlayerQueueStatus } from "../../../LeftDrawer/QuickDeploy/QuickDeploy"
+import { EmptyWarMachinesPNG } from "../../../../assets"
 
 const sortOptions = [
     { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
@@ -26,18 +22,21 @@ const sortOptions = [
     { label: SortTypeLabel.RarestDesc, value: SortTypeLabel.RarestDesc },
 ]
 
-interface BattleLobbyJoinModalProps {
-    battleLobby: BattleLobby
-    onJoin: () => void
-    onClose: () => void
+interface MechSelectorProps {
+    SetSelectedMechID: () => void
 }
 
-export const BattleLobbyJoinModal = ({ battleLobby, onJoin, onClose }: BattleLobbyJoinModalProps) => {
-    const { factionID } = useAuth()
+export const MechSelector = ({ SetSelectedMechID }: MechSelectorProps) => {
     const { factionTheme } = useTheme()
-    const { send } = useGameServerCommandsFaction("/faction_commander")
-    const [error, setError] = useState("")
+    const [searchValue, setSearchValue, searchValueInstant] = useDebounce("", 300)
     const [selectedMechIDs, setSelectedMechIDs] = useState<string[]>([])
+    const [list, setList] = useState<MechBasicWithQueueStatus[]>([])
+    const { page, changePage, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
+        pageSize: 10,
+        page: 1,
+    })
+
+    const [sort, setSort] = useState<string>(SortTypeLabel.RarestDesc)
 
     const [currentPlayerQueue, setCurrentPlayerQueue] = useState<PlayerQueueStatus>({
         queue_limit: 10,
@@ -53,7 +52,7 @@ export const BattleLobbyJoinModal = ({ battleLobby, onJoin, onClose }: BattleLob
         },
     )
 
-    const [mechsWithQueueStatus, setMechsWithQueueStatus] = useState<MechBasicWithQueueStatus[]>([])
+    const [ownedMechs, setOwnedMechs] = useState<MechBasicWithQueueStatus[]>([])
     useGameServerSubscriptionSecuredUser<MechBasicWithQueueStatus[]>(
         {
             URI: "/owned_mechs",
@@ -62,7 +61,7 @@ export const BattleLobbyJoinModal = ({ battleLobby, onJoin, onClose }: BattleLob
         (payload) => {
             if (!payload) return
 
-            setMechsWithQueueStatus((mqs) => {
+            setOwnedMechs((mqs) => {
                 if (mqs.length === 0) {
                     return payload.filter((p) => p.can_deploy)
                 }
@@ -85,34 +84,13 @@ export const BattleLobbyJoinModal = ({ battleLobby, onJoin, onClose }: BattleLob
         },
     )
 
-    const [list, setList] = useState<MechBasicWithQueueStatus[]>([])
-    const { page, changePage, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
-        pageSize: 10,
-        page: 1,
-    })
-
-    const selectLimit = useMemo(() => {
-        let queueLimit = 0
-        if (battleLobby) queueLimit = battleLobby.each_faction_mech_amount - battleLobby.battle_lobbies_mechs.filter((m) => m.faction_id === factionID).length
-        const playerQueueRemain = currentPlayerQueue.queue_limit - currentPlayerQueue.total_queued
-
-        let limit = queueLimit
-        if (queueLimit > playerQueueRemain) {
-            limit = playerQueueRemain
-        }
-        return limit
-    }, [currentPlayerQueue.queue_limit, currentPlayerQueue.total_queued, factionID, battleLobby])
-
-    const [search, setSearch] = useState("")
-    const [sort, setSort] = useState<string>(SortTypeLabel.RarestDesc)
-
     useEffect(() => {
-        let result = [...mechsWithQueueStatus]
+        let result = [...ownedMechs]
         let selectedMechs = result.filter((r) => selectedMechIDs.includes(r.id))
 
         // filter
-        if (search) {
-            result = result.filter((r) => `${r.label.toLowerCase()} ${r.name.toLowerCase()}`.includes(search.toLowerCase()))
+        if (searchValue) {
+            result = result.filter((r) => `${r.label.toLowerCase()} ${r.name.toLowerCase()}`.includes(searchValue.toLowerCase()))
         }
 
         setTotalItems(result.length)
@@ -144,24 +122,7 @@ export const BattleLobbyJoinModal = ({ battleLobby, onJoin, onClose }: BattleLob
         result = selectedMechs.concat(...result.filter((r) => !selectedMechIDs.includes(r.id))).slice(0, pageSize)
 
         setList(result)
-    }, [mechsWithQueueStatus, search, sort, page, pageSize, setTotalItems, selectedMechIDs])
-
-    const joinBattleLobby = useCallback(
-        async (battleLobbyID: string, password?: string) => {
-            try {
-                await send(GameServerKeys.JoinBattleLobby, {
-                    battle_lobby_id: battleLobbyID,
-                    mech_ids: selectedMechIDs,
-                    password,
-                })
-                setSelectedMechIDs([])
-                onJoin()
-            } catch (err) {
-                setError(typeof err === "string" ? err : "Failed to the join battle lobby.")
-            }
-        },
-        [onJoin, selectedMechIDs, send],
-    )
+    }, [ownedMechs, sort, page, pageSize, setTotalItems, searchValue, selectedMechIDs])
 
     const content = useMemo(() => {
         if (list.length > 0) {
@@ -189,7 +150,7 @@ export const BattleLobbyJoinModal = ({ battleLobby, onJoin, onClose }: BattleLob
                             },
                         }}
                     >
-                        <Box sx={{ direction: "ltr", height: "60vh" }}>
+                        <Box sx={{ direction: "ltr", maxHeight: 0 }}>
                             <FlipMove>
                                 {list.map((mech) => {
                                     return (
@@ -206,7 +167,7 @@ export const BattleLobbyJoinModal = ({ battleLobby, onJoin, onClose }: BattleLob
                                                         }
 
                                                         // return prev stat, if already reach queue limit
-                                                        if (selectLimit <= prev.length) {
+                                                        if (3 <= prev.length) {
                                                             return prev
                                                         }
 
@@ -229,7 +190,7 @@ export const BattleLobbyJoinModal = ({ battleLobby, onJoin, onClose }: BattleLob
         }
 
         return (
-            <Stack alignItems="center" justifyContent="center" sx={{ height: "60vh", width: "100%" }}>
+            <Stack alignItems="center" justifyContent="center" sx={{ maxHeight: 0, width: "100%" }}>
                 <Box
                     sx={{
                         width: "80%",
@@ -255,23 +216,15 @@ export const BattleLobbyJoinModal = ({ battleLobby, onJoin, onClose }: BattleLob
                 </Typography>
             </Stack>
         )
-    }, [list, selectLimit, selectedMechIDs])
+    }, [list, selectedMechIDs])
 
-    // filter
     return (
-        <ConfirmModal
-            title={`JOIN BATTLE LOBBY #${battleLobby.number}`}
-            disableConfirm={!selectedMechIDs.length}
-            onConfirm={() => joinBattleLobby(battleLobby.id || "")}
-            onClose={() => {
-                setSelectedMechIDs([])
-                onClose()
+        <Stack
+            flex={1}
+            sx={{
+                border: `${factionTheme.primary}99 2px solid`,
             }}
-            isLoading={false}
-            error={error}
-            width="75rem"
         >
-            <QueueDetails playerQueueStatus={currentPlayerQueue} />
             <TotalAndPageSizeOptions
                 pageSize={pageSize}
                 changePageSize={changePageSize}
@@ -286,7 +239,7 @@ export const BattleLobbyJoinModal = ({ battleLobby, onJoin, onClose }: BattleLob
                     <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
                         SEARCH:
                     </Typography>
-                    <SearchBattle searchValueInstant={search} setSearchValue={setSearch} />
+                    <SearchBattle searchValueInstant={searchValueInstant} setSearchValue={setSearchValue} />
                 </Stack>
             </TotalAndPageSizeOptions>
 
@@ -318,6 +271,6 @@ export const BattleLobbyJoinModal = ({ battleLobby, onJoin, onClose }: BattleLob
                     />
                 </Box>
             )}
-        </ConfirmModal>
+        </Stack>
     )
 }

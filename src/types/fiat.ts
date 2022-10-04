@@ -6,6 +6,12 @@ export enum FiatProductType {
     MechAnimation = "mech_animation",
 }
 
+export enum FiatOrderStatus {
+    Pending = "pending",
+    Completed = "completed",
+    Refunded = "refunded",
+}
+
 export interface FiatProduct {
     id: string
     product_type: FiatProductType
@@ -25,7 +31,7 @@ export interface FiatOrder {
     id: string
     order_number: number
     user_id: string
-    order_status: string
+    order_status: FiatOrderStatus
     payment_method: string
     txn_reference: string
     currency: string
