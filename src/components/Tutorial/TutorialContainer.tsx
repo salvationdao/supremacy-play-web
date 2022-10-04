@@ -8,10 +8,10 @@ import { useTraining } from "../../containers"
 import { zoomEffect } from "../../theme/keyframes"
 import { fonts } from "../../theme/theme"
 import { Context, TrainingLobby } from "../../types"
-import { TOP_BAR_HEIGHT } from "../BigDisplay/MiniMap/MiniMap"
 import { FancyButton } from "../Common/FancyButton"
 import { tourStyles } from "./SetupTutorial"
 import { Congratulations, TrainingAbility } from "./Congratulations"
+import { TOP_BAR_HEIGHT } from "../BigDisplay/MiniMapNew/MiniMapNew"
 
 interface TutorialContainerProps {
     currentAbility: TrainingAbility

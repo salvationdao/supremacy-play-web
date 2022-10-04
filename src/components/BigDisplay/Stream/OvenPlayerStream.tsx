@@ -8,7 +8,7 @@ import { siteZIndex } from "../../../theme/theme"
 
 export const OvenplayerStream = () => {
     const { newSnackbarMessage } = useGlobalNotifications()
-    const { currentOvenStream, isEnlarged, ovenPlayer, isMute, setSelectedOvenResolution } = useOvenStream()
+    const { currentOvenStream, isEnlarged, ovenPlayer, setSelectedOvenResolution } = useOvenStream()
 
     // Load the stream when its changed
     useEffect(() => {
@@ -41,7 +41,7 @@ export const OvenplayerStream = () => {
             const newOvenPlayer = OvenPlayer.create("oven-player", {
                 autoStart: true,
                 controls: false,
-                mute: isMute,
+                mute: true,
                 volume: parseString(localStorage.getItem("streamVolume"), 0.3) * 100,
                 sources: _sources,
                 autoFallback: true,

@@ -4,7 +4,7 @@ import { SvgMapSkull, SvgMapWarMachine } from "../../../../../assets"
 import { useAuth, useSupremacy, useTraining } from "../../../../../containers"
 import { spinEffect } from "../../../../../theme/keyframes"
 import { colors, fonts } from "../../../../../theme/theme"
-import { LocationSelectType, Map, WarMachineState } from "../../../../../types"
+import { LocationSelectType, Map, GAME_CLIENT_TILE_SIZE, WarMachineState } from "../../../../../types"
 import { MechAbilityStages } from "../../../../../types/training"
 const TRANSITION_DURATION = 0.275 // seconds
 
@@ -50,7 +50,7 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
     )
     // const factionLogoUrl = useMemo(() => getFaction(warMachineFactionID).logo_url, [getFaction, warMachineFactionID])
     const isAlive = useMemo(() => health > 0, [health])
-    const mapScale = useMemo(() => map.Width / (map.Cells_X * 2000), [map])
+    const mapScale = useMemo(() => map.Width / (map.Cells_X * GAME_CLIENT_TILE_SIZE), [map])
     const mechMapX = useMemo(() => ((position?.x || 0) - map.Pixel_Left) * mapScale, [map.Pixel_Left, mapScale, position?.x])
     const mechMapY = useMemo(() => ((position?.y || 0) - map.Pixel_Top) * mapScale, [map.Pixel_Top, mapScale, position?.y])
     const isMechHighlighted = useMemo(
