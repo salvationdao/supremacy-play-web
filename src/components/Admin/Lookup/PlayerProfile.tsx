@@ -7,13 +7,15 @@ import { useToggle } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { RoleType, TextMessageData, User } from "../../../types"
+import { RoleType, User } from "../../../types"
 import { GetUserResp } from "../../../types/admin"
-import { ClipThing } from "../../Common/ClipThing"
 import { FancyButton } from "../../Common/FancyButton"
 import { PageHeader } from "../../Common/PageHeader"
-import { TextMessage } from "../../RightDrawer/LiveChat/ChatMessages/MessageTypes/TextMessage"
+import { PlayerProfileCard } from "./PlayerProfileCard"
+import { BanHistoryPanel } from "./BanHistoryPanel"
 import { ChatHistory } from "./ChatHistory"
+import { RelatedAccounts } from "./RelatedAccounts"
+import { AdminUserAsset } from "./AdminUserAsset"
 
 export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: (newQuery: { [p: string]: string | undefined }) => void }) => {
     const [userData, setUserData] = useState<GetUserResp>()
@@ -32,6 +34,7 @@ export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: 
                 })
 
                 if (!resp) return
+                console.log(resp)
                 setUserData(resp)
             } catch (e) {
                 setLoadError(typeof e === "string" ? e : "Failed to get replays.")
@@ -63,6 +66,8 @@ const PlayerProfileInner = ({
     const theme = useTheme()
     const { getFaction } = useSupremacy()
     const faction = useMemo(() => getFaction(userData.user.faction_id), [getFaction])
+
+    console.log(userData)
 
     const content = useMemo(() => {
         if (isLoading) {
@@ -101,139 +106,69 @@ const PlayerProfileInner = ({
         return (
             <Stack alignItems="center" justifyContent="center" spacing="2rem" flex="1">
                 <Stack alignItems="center" justifyContent="center" direction={"row"} spacing="2rem" sx={{ height: "50rem", width: "100%" }}>
-                    <ClipThing
-                        clipSize="10px"
-                        border={{
-                            borderColor: faction.primary_color,
-                            borderThickness: ".3rem",
-                        }}
-                        opacity={0.9}
-                        backgroundColor={faction.background_color}
-                        sx={{ height: "100%", flex: 1 }}
-                    >
-                        <Stack sx={{ height: "100%" }}>
-                            <Typography
-                                variant="h6"
-                                sx={{ fontFamily: fonts.nostromoBlack, p: "1rem", width: "100%", textAlign: "center", background: faction.primary_color }}
+                    <PlayerProfileCard faction={faction} title="Recent Chat History">
+                        {userData.recent_chat_history ? (
+                            <Box
+                                sx={{
+                                    flex: 1,
+                                    overflowY: "auto",
+                                    overflowX: "hidden",
+                                    direction: "ltr",
+                                    mr: ".4rem",
+                                    my: ".3rem",
+                                    "::-webkit-scrollbar": {
+                                        width: ".4rem",
+                                    },
+                                    "::-webkit-scrollbar-track": {
+                                        background: "#FFFFFF15",
+                                        borderRadius: 3,
+                                    },
+                                    "::-webkit-scrollbar-thumb": {
+                                        background: faction.primary_color,
+                                        borderRadius: 3,
+                                    },
+                                }}
                             >
-                                Recent Chat History
-                            </Typography>
-                            <Stack sx={{ flex: 1 }}>
-                                {userData.recent_chat_history ? (
-                                    <Box
-                                        sx={{
-                                            flex: 1,
-                                            overflowY: "auto",
-                                            overflowX: "hidden",
-                                            direction: "ltr",
-                                            mr: ".4rem",
-                                            my: ".3rem",
-                                            "::-webkit-scrollbar": {
-                                                width: ".4rem",
-                                            },
-                                            "::-webkit-scrollbar-track": {
-                                                background: "#FFFFFF15",
-                                                borderRadius: 3,
-                                            },
-                                            "::-webkit-scrollbar-thumb": {
-                                                background: faction.primary_color,
-                                                borderRadius: 3,
-                                            },
-                                        }}
-                                    >
-                                        <Box sx={{ height: 0 }}>
-                                            <ChatHistory chatHistory={userData.recent_chat_history} faction={faction} user={userData.user} />
-                                        </Box>
-                                    </Box>
-                                ) : (
-                                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                                        <Typography>No Recent Chat History</Typography>
-                                    </Stack>
-                                )}
+                                <Box sx={{ height: 0 }}>
+                                    <ChatHistory chatHistory={userData.recent_chat_history} faction={faction} user={userData.user} />
+                                </Box>
+                            </Box>
+                        ) : (
+                            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                                <Typography>No Recent Chat History</Typography>
                             </Stack>
-                        </Stack>
-                    </ClipThing>
+                        )}
+                    </PlayerProfileCard>
 
-                    <ClipThing
-                        clipSize="10px"
-                        border={{
-                            borderColor: faction.primary_color,
-                            borderThickness: ".3rem",
-                        }}
-                        opacity={0.9}
-                        backgroundColor={faction.background_color}
-                        sx={{ height: "100%", flex: 1 }}
-                    >
-                        <Typography
-                            variant="h6"
-                            sx={{ fontFamily: fonts.nostromoBlack, p: "1rem", width: "100%", textAlign: "center", background: faction.primary_color }}
-                        >
-                            Recent Ban History
-                        </Typography>
-                        <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                            {userData.ban_history ? (
-                                <Typography>Ban History</Typography>
-                            ) : (
-                                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                                    <Typography>No Recent Ban History</Typography>
-                                </Stack>
-                            )}
-                        </Stack>
-                    </ClipThing>
-                    <ClipThing
-                        clipSize="10px"
-                        border={{
-                            borderColor: faction.primary_color,
-                            borderThickness: ".3rem",
-                        }}
-                        opacity={0.9}
-                        backgroundColor={faction.background_color}
-                        sx={{ height: "100%", flex: 1 }}
-                    >
-                        <Typography
-                            variant="h6"
-                            sx={{ fontFamily: fonts.nostromoBlack, p: "1rem", width: "100%", textAlign: "center", background: faction.primary_color }}
-                        >
-                            Related Accounts
-                        </Typography>
-                        <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                            {userData.ban_history ? (
-                                <Typography>Related Accounts</Typography>
-                            ) : (
-                                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                                    <Typography>No Related Accounts</Typography>
-                                </Stack>
-                            )}
-                        </Stack>
-                    </ClipThing>
+                    <PlayerProfileCard faction={faction} title="Recent Ban History">
+                        {userData.ban_history ? (
+                            <BanHistoryPanel faction={faction} playerBans={userData.ban_history} />
+                        ) : (
+                            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                                <Typography>No Recent Ban History</Typography>
+                            </Stack>
+                        )}
+                    </PlayerProfileCard>
+                    <PlayerProfileCard faction={faction} title="Related Accounts">
+                        {userData.related_accounts ? (
+                            <RelatedAccounts relatedAccounts={userData.related_accounts} />
+                        ) : (
+                            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                                <Typography>No Related Accounts</Typography>
+                            </Stack>
+                        )}
+                    </PlayerProfileCard>
                 </Stack>
                 {user.role_type === RoleType.admin && (
-                    <ClipThing
-                        clipSize="10px"
-                        border={{
-                            borderColor: faction.primary_color,
-                            borderThickness: ".3rem",
-                        }}
-                        opacity={0.9}
-                        backgroundColor={faction.background_color}
-                        sx={{ flex: 1, width: "100%" }}
-                    >
-                        <Typography
-                            variant="h6"
-                            sx={{ fontFamily: fonts.nostromoBlack, p: "1rem", width: "100%", textAlign: "center", background: faction.primary_color }}
-                        >
-                            User Assets
-                        </Typography>
-                        <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                            {userData.ban_history ? (
-                                <Typography>User Assets</Typography>
-                            ) : (
-                                <Stack alignItems="center" justifyContent="center" sx={{ height: "50rem" }}>
-                                    <Typography>User Has No Assets</Typography>
-                                </Stack>
-                            )}
-                        </Stack>
-                    </ClipThing>
+                    <PlayerProfileCard faction={faction} title="User Assets" fullWidth={true}>
+                        {userData.user_assets ? (
+                            <AdminUserAsset userAsset={userData.user_assets} faction={faction} />
+                        ) : (
+                            <Stack alignItems="center" justifyContent="center" sx={{ height: "50rem" }}>
+                                <Typography>User Has No Assets</Typography>
+                            </Stack>
+                        )}
+                    </PlayerProfileCard>
                 )}
             </Stack>
         )

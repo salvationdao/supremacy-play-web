@@ -48,6 +48,7 @@ export interface User {
     features: Feature[]
     role_type: RoleType
     accepts_marketing?: boolean
+    created_at?: Date
 }
 
 export interface FactionStat {
