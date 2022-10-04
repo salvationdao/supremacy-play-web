@@ -8,6 +8,8 @@ import { useTheme } from "../../containers/theme"
 import { useGameServerSubscriptionSecured } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { GameMap } from "../../types"
+import { FactionBasedDatePicker } from "../Common/FactionBasedDatePicker"
+import moment from "moment"
 
 interface BattleLobbyCreateModalProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -24,6 +26,7 @@ interface LobbyForm {
 
 export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps) => {
     const [error, setError] = useState("")
+    const { factionTheme } = useTheme()
 
     const [gameMaps, setGameMaps] = useState<GameMap[]>([])
     useGameServerSubscriptionSecured<GameMap[]>(
@@ -37,6 +40,8 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
         },
     )
 
+    const [startAfterDate, setStartAfterDate] = useState<moment.Moment | null>(null)
+
     const [lobbyForm, setLobbyForm] = useState<LobbyForm>({
         name: "",
         entryFee: "0",
@@ -45,6 +50,15 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
         third_faction_cut: "0",
         game_map_id: "",
     })
+
+    const disableFactionCutOptions: boolean = useMemo(() => {
+        const entryFee = parseFloat(lobbyForm.entryFee)
+        // return true, if
+        // 1. entry is NaN OR
+        // 2. entry is less than or equal to zero
+        // otherwise, return false
+        return isNaN(entryFee) || entryFee <= 0
+    }, [lobbyForm.entryFee])
 
     return (
         <ConfirmModal
@@ -78,36 +92,61 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                             variant="outlined"
                             label="Winning Faction Cut"
                             type="number"
+                            disabled={disableFactionCutOptions}
                             endAdornmentLabel={<Typography variant="body2">%</Typography>}
                             value={lobbyForm.first_faction_cut}
-                            onChange={(e) => setLobbyForm((prev) => ({ ...prev, first_faction_cut: e.target.value }))}
+                            onChange={(e) =>
+                                setLobbyForm((prev) => ({
+                                    ...prev,
+                                    first_faction_cut: e.target.value,
+                                }))
+                            }
                         />
                         <InputField
                             variant="outlined"
                             label="Second Faction Cut"
                             type="number"
                             endAdornmentLabel={<Typography variant="body2">%</Typography>}
+                            disabled={disableFactionCutOptions}
                             value={lobbyForm.second_faction_cut}
-                            onChange={(e) => setLobbyForm((prev) => ({ ...prev, second_faction_cut: e.target.value }))}
+                            onChange={(e) =>
+                                setLobbyForm((prev) => ({
+                                    ...prev,
+                                    second_faction_cut: e.target.value,
+                                }))
+                            }
                         />
                         <InputField
                             variant="outlined"
                             label="Loosing Faction Cut"
                             type="number"
                             endAdornmentLabel={<Typography variant="body2">%</Typography>}
+                            disabled={disableFactionCutOptions}
                             value={lobbyForm.third_faction_cut}
-                            onChange={(e) => setLobbyForm((prev) => ({ ...prev, third_faction_cut: e.target.value }))}
+                            onChange={(e) =>
+                                setLobbyForm((prev) => ({
+                                    ...prev,
+                                    third_faction_cut: e.target.value,
+                                }))
+                            }
                         />
+
                         <SelectField
                             label="Game Map"
                             options={[{ id: "", label: "RANDOM" }].concat(gameMaps.map((gm) => ({ id: gm.id, label: gm.name })))}
                             value={lobbyForm.game_map_id}
                             onChange={(e) => setLobbyForm((prev) => ({ ...prev, game_map_id: e.target.value as string }))}
                         />
+
+                        <Stack spacing=".5rem">
+                            <Typography variant="body2" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
+                                Start After:
+                            </Typography>
+                            <FactionBasedDatePicker value={startAfterDate} onChange={setStartAfterDate} />
+                        </Stack>
                     </Stack>
                     <Stack direction="column"></Stack>
                 </Stack>
-                <Stack></Stack>
             </Stack>
         </ConfirmModal>
     )
@@ -118,7 +157,7 @@ interface InputFieldProps {
     endAdornmentLabel?: ReactNode
 }
 
-const InputField = ({ label, startAdornmentLabel, endAdornmentLabel, placeholder, ...props }: InputFieldProps & TextFieldProps) => {
+const InputField = ({ label, startAdornmentLabel, endAdornmentLabel, placeholder, disabled, ...props }: InputFieldProps & TextFieldProps) => {
     const { factionTheme } = useTheme()
     const title = useMemo(() => {
         if (typeof label === "string") {
@@ -142,13 +181,19 @@ const InputField = ({ label, startAdornmentLabel, endAdornmentLabel, placeholder
     }, [endAdornmentLabel])
 
     return (
-        <Stack spacing=".5rem">
+        <Stack
+            spacing=".5rem"
+            sx={{
+                opacity: disabled ? 0.5 : 1,
+            }}
+        >
             {title}
             <TextField
                 {...props}
                 hiddenLabel
                 fullWidth
                 placeholder={placeholder || "ANY"}
+                disabled={disabled}
                 InputProps={{
                     startAdornment,
                     endAdornment,
