@@ -59,7 +59,7 @@ export const ArenaSelector = () => {
                             height: "unset",
                             fontSize: "1.8rem",
                             color: factionTheme.secondary,
-                            fontFamily: fonts.nostromoBold,
+                            fontFamily: fonts.nostromoBlack,
                             borderRadius: 0,
                             border: `${factionTheme.primary}50 2px solid`,
                             backgroundColor: factionTheme.primary,

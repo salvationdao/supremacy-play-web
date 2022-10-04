@@ -1,15 +1,15 @@
 import { Box, Stack, Typography } from "@mui/material"
-import React, { useMemo } from "react"
-import { useAuth, useSupremacy, useUI } from "../../../containers"
-import { fonts } from "../../../theme/theme"
+import { useMemo } from "react"
+import { useAuth, useGame, useSupremacy, useUI } from "../../../containers"
+import { colors, fonts } from "../../../theme/theme"
+import { ArenaSelector } from "./ArenaSelector/ArenaSelector"
 import { BattleAbility } from "./BattleAbility/BattleAbility"
+import { UnauthPrompt } from "./Common/UnauthPrompt"
 import { PlayerAbilities } from "./PlayerAbilities/PlayerAbilities"
 import { QuickPlayerAbilities } from "./QuickPlayerAbilities/QuickPlayerAbilities"
-import { UnauthPrompt } from "./Common/UnauthPrompt"
-import { ArenaSelector } from "./ArenaSelector/ArenaSelector"
-import { AIMatchBanner } from "./AIMatchBanner"
 
 export const BattleArena = () => {
+    const { isAIDrivenMatch } = useGame()
     const { setSmallDisplayRef } = useUI()
     const { battleIdentifier } = useSupremacy()
     const { userID } = useAuth()
@@ -21,8 +21,6 @@ export const BattleArena = () => {
 
                 {/* The minimap or the stream will mount here */}
                 <Box ref={setSmallDisplayRef} sx={{ flexShrink: 0, mt: ".5rem" }} />
-
-                <AIMatchBanner />
 
                 <Box
                     sx={{
@@ -65,11 +63,17 @@ export const BattleArena = () => {
                 {content}
 
                 {battleIdentifier && (
-                    <Box sx={{ p: ".4rem 1rem", borderTop: (theme) => `${theme.factionTheme.primary}30 1px solid` }}>
+                    <Stack
+                        direction="row"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        sx={{ p: ".4rem 1rem", borderTop: (theme) => `${theme.factionTheme.primary}30 1px solid` }}
+                    >
                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>BATTLE ID #{battleIdentifier.toString().padStart(4, "0")}</Typography>
-                    </Box>
+                        {isAIDrivenMatch && <Typography sx={{ color: colors.green, fontFamily: fonts.nostromoBlack }}>AI MATCH</Typography>}
+                    </Stack>
                 )}
             </Stack>
         )
-    }, [battleIdentifier, content])
+    }, [battleIdentifier, content, isAIDrivenMatch])
 }
