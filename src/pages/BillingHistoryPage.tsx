@@ -1,18 +1,20 @@
 import moment from "moment"
 import { Box, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
+import { Link } from "react-router-dom"
 import { HangarBg, SafePNG } from "../assets"
 import { ClipThing } from "../components"
 import { CoolTable } from "../components/Common/CoolTable"
 import { PageHeader } from "../components/Common/PageHeader"
 import { useTheme } from "../containers/theme"
-import { generatePriceText, parseString } from "../helpers"
+import { generatePriceText, getOrderStatusDeets, parseString } from "../helpers"
 import { usePagination, useUrlQuery } from "../hooks"
 import { useGameServerCommandsUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { fonts, siteZIndex } from "../theme/theme"
+import { fonts, colors, siteZIndex } from "../theme/theme"
 import { FiatOrder } from "../types/fiat"
 import BigNumber from "bignumber.js"
+import { MysteryCrateBanner } from "../components/Common/BannersPromotions/MysteryCrateBanner"
 
 export const BillingHistoryPage = () => {
     const theme = useTheme()
@@ -74,6 +76,10 @@ export const BillingHistoryPage = () => {
             }}
         >
             <Stack sx={{ mt: "1.5rem", mb: "2rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "160rem" }}>
+                t{" "}
+                <Stack direction="row" alignItems="center" sx={{ mb: "1.1rem", gap: "1.2rem" }}>
+                    <MysteryCrateBanner />
+                </Stack>
                 <ClipThing
                     clipSize="10px"
                     border={{
@@ -90,9 +96,9 @@ export const BillingHistoryPage = () => {
 
                             <Box sx={{ flex: 1 }}>
                                 <CoolTable
-                                    tableHeadings={["RECEIPT NUMBER", "DATE", "STATUS", "TOTAL", "VIEW"]}
-                                    alignments={["left", "center", "center", "center", "center"]}
-                                    widths={["20%", "20%", "20%", "20%", "20%"]}
+                                    tableHeadings={["RECEIPT NUMBER", "DATE", "STATUS", "TOTAL"]}
+                                    alignments={["left", "center", "center", "center"]}
+                                    widths={["25%", "25%", "25%", "25%"]}
                                     titleRowHeight="3.5rem"
                                     cellPadding=".4rem 1rem"
                                     items={billingHistoryItems}
@@ -105,18 +111,39 @@ export const BillingHistoryPage = () => {
                                         changePage,
                                         changePageSize,
                                     }}
-                                    renderItem={(item) => {
+                                    renderItem={(order) => {
                                         let total = new BigNumber(0)
-                                        item.items.forEach((oi) => {
+                                        order.items.forEach((oi) => {
                                             total = total.plus(new BigNumber(oi.amount).multipliedBy(oi.quantity))
                                         })
+                                        const statusDeets = getOrderStatusDeets(order.order_status)
                                         return {
                                             cells: [
-                                                <Typography key={1}>{item.order_number}</Typography>,
-                                                <Typography key={2}>{moment(item.created_at).format("DD/MM/YYYY h:mm A")}</Typography>,
-                                                <Typography key={3}>{item.order_status.toUpperCase()}</Typography>,
+                                                <Typography key={1}>
+                                                    <Link to={`/billing-history/${order.id}`}>
+                                                        <Typography sx={{ textDecoration: "underline" }}>{order.order_number}</Typography>
+                                                    </Link>
+                                                </Typography>,
+                                                <Typography key={2}>{moment(order.created_at).format("DD/MM/YYYY")}</Typography>,
+                                                <ClipThing
+                                                    key={3}
+                                                    clipSize="6px"
+                                                    corners={{
+                                                        bottomLeft: true,
+                                                        topRight: true,
+                                                    }}
+                                                    border={{
+                                                        borderColor: colors.offWhite,
+                                                        borderThickness: "1px",
+                                                    }}
+                                                    backgroundColor={statusDeets.color}
+                                                    sx={{ position: "relative", px: "2rem", py: 0 }}
+                                                >
+                                                    <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold, color: statusDeets.textColor }}>
+                                                        {statusDeets.label.toUpperCase()}
+                                                    </Typography>
+                                                </ClipThing>,
                                                 <Typography key={4}>{generatePriceText("$USD", total)}</Typography>,
-                                                <Typography key={5}>TBA Link</Typography>,
                                             ],
                                         }
                                     }}

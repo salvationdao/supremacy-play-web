@@ -92,9 +92,11 @@ import Drag from "!react-svg-loader!./svg/Drag.svg"
 import Edit from "!react-svg-loader!./svg/Edit.svg"
 import Emergency from "!react-svg-loader!./svg/Emergency.svg"
 import Facebook from "!react-svg-loader!./svg/Facebook.svg"
+import Feedback from "!react-svg-loader!./svg/Feedback.svg"
 import Filter from "!react-svg-loader!./svg/Filter.svg"
 import Fullscreen from "!react-svg-loader!./svg/Fullscreen.svg"
 import GoldBars from "!react-svg-loader!./svg/GoldBars.svg"
+import Grid from "!react-svg-loader!./svg/Grid.svg"
 import GridView from "!react-svg-loader!./svg/GridView.svg"
 import Hide from "!react-svg-loader!./svg/Hide.svg"
 import History from "!react-svg-loader!./svg/History.svg"
@@ -1364,5 +1366,17 @@ export const SvgCheckMark: React.VoidFunctionComponent<SvgWrapperProps> = (props
 export const SvgWrench: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Wrench />
+    </SvgWrapper>
+)
+
+export const SvgGrid: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Grid />
+    </SvgWrapper>
+)
+
+export const SvgFeedback: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Feedback />
     </SvgWrapper>
 )

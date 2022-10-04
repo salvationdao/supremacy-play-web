@@ -138,6 +138,7 @@ export enum GameServerKeys {
     FiatProductList = "FIAT:PRODUCT:LIST",
     FiatProductGet = "FIAT:PRODUCT:GET",
     FiatBillingHistoryList = "FIAT:BILLING_HISTORY:LIST",
+    FiatBillingHistoryGet = "FIAT:BILLING_HISTORY:GET",
     FiatShoppingCartItemAdd = "FIAT:SHOPPING_CART:ITEM:ADD",
     FiatShoppingCartItemUpdate = "FIAT:SHOPPING_CART:ITEM:UPDATE",
     FiatShoppingCartItemRemove = "FIAT:SHOPPING_CART:ITEM:REMOVE",

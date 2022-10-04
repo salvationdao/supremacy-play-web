@@ -1,6 +1,6 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import React, { useEffect, useMemo, useRef, useState } from "react"
-import { BattleBgWebP, SvgFullscreen, SvgMinimize, SvgSwap } from "../../../assets"
+import { BattleBgWebP, SvgFullscreen, SvgGrid, SvgMinimize, SvgSwap } from "../../../assets"
 import { useDimension, useGame, useMiniMapPixi, useUI, WinnerStruct } from "../../../containers"
 import { useHotkey } from "../../../containers/hotkeys"
 import { useToggle } from "../../../hooks"
@@ -288,6 +288,10 @@ const MiniMapInner = ({ map, isPoppedout, width = 100, height = 100, poppedOutCo
                             </Box>
                         )}
 
+                        <Box id="minimap-show-grid-button" sx={{ cursor: "pointer", opacity: 0.4, ":hover": { opacity: 1 } }}>
+                            <SvgGrid size="1.6rem" />
+                        </Box>
+
                         <Typography sx={{ fontFamily: fonts.nostromoHeavy }}>
                             {map.Name.replace(/([A-Z])/g, " $1")
                                 .trim()
@@ -317,20 +321,20 @@ const MiniMapInner = ({ map, isPoppedout, width = 100, height = 100, poppedOutCo
             </Stack>
         )
     }, [
-        isEnlarged,
+        stopMapRender,
         handleMiniMapHotKey,
+        isPoppedout,
+        isStreamBigDisplay,
         sizes.outsideWidth,
         sizes.outsideHeight,
         sizes.insideWidth,
         sizes.insideHeight,
+        isEnlarged,
         map.Name,
         map?.Background_Url,
         map?.Image_Url,
-        isPoppedout,
-        isStreamBigDisplay,
+        poppedOutContainerRef,
         setIsStreamBigDisplay,
         toggleIsEnlarged,
-        poppedOutContainerRef,
-        stopMapRender,
     ])
 }
