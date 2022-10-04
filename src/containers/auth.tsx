@@ -38,6 +38,7 @@ export interface AuthState {
     isHidden: boolean
     isLoggingIn: boolean
     onLogInClick: () => void
+    setPassportPopup: Dispatch<React.SetStateAction<Window | null>>
     userHasFeature: (featureName: FeatureName) => boolean
     user: User
     userID: string
@@ -60,6 +61,9 @@ const initialState: AuthState = {
     isHidden: false,
     isLoggingIn: false,
     onLogInClick: () => {
+        return
+    },
+    setPassportPopup: () => {
         return
     },
     userHasFeature: () => {
@@ -227,13 +231,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const onLogInClick = useCallback(async () => {
         if (isLoggingIn) return
         setIsLoggingIn(true)
-
-        const width = 520
-        const height = 730
-        const top = window.screenY + (window.outerHeight - height) / 2.5
-        const left = window.screenX + (window.outerWidth - width) / 2
         const href = `${PASSPORT_WEB}external/login?tenant=supremacy&redirectURL=${encodeURIComponent(`${window.location.origin}/login-redirect`)}`
-        const popup = window.open(href, "Connect with XSYN Passport", `width=${width},height=${height},left=${left},top=${top},popup=1`)
+        const popup = window.open(href, "_blank")
 
         setPassportPopup(popup)
     }, [isLoggingIn])
@@ -255,6 +254,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 isHidden,
                 isLoggingIn,
                 onLogInClick,
+                setPassportPopup,
                 userHasFeature,
                 user,
                 userID,
