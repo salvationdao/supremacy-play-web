@@ -55,6 +55,7 @@ export const UnityViewer = ({ unityRef, mechDetails, unity }: UnityViewerProps) 
     const sent = useRef(false)
     const [siloReady, setSiloReady] = useState(false)
     const [isPendingChange, setIsPendingChange] = useState(false)
+    const [showClickToLoadOverlay, setShowClickToLoadOverlay] = useState(true)
 
     useImperativeHandle(unityRef, () => ({
         handleWeaponUpdate: (wu: LoadoutWeapon) => {
@@ -107,6 +108,14 @@ export const UnityViewer = ({ unityRef, mechDetails, unity }: UnityViewerProps) 
             setIsPendingChange(true)
         },
     }))
+
+    useEffect(() => {
+        const handleMouseClick = () => {
+            setShowClickToLoadOverlay(false)
+        }
+        window.addEventListener("click", handleMouseClick)
+        return () => window.removeEventListener("click", handleMouseClick)
+    }, [])
 
     useEffect(() => {
         const onSiloReady = () => setSiloReady(true)
@@ -245,6 +254,31 @@ export const UnityViewer = ({ unityRef, mechDetails, unity }: UnityViewerProps) 
                     visibility: isLoaded ? "visible" : "hidden",
                 }}
             />
+            {showClickToLoadOverlay && (
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        backgroundColor: theme.factionTheme.background,
+                    }}
+                >
+                    <Typography
+                        sx={{
+                            fontFamily: fonts.nostromoBlack,
+                            fontSize: "3rem",
+                            textTransform: "uppercase",
+                        }}
+                    >
+                        Click here to load 3D viewer
+                    </Typography>
+                </Box>
+            )}
             <Fade in={isPendingChange} mountOnEnter unmountOnExit>
                 <Box
                     sx={{
