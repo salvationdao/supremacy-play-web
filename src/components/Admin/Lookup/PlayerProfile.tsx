@@ -26,7 +26,6 @@ export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: 
     const { getFaction } = useSupremacy()
     const [faction, setFaction] = useState<Faction>(getFaction(user.faction_id))
 
-    // When searching for player, update the dropdown list
     useEffect(() => {
         ;(async () => {
             setIsLoading(true)
