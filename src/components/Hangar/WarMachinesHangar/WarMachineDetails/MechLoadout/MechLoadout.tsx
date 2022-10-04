@@ -195,6 +195,11 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     ])
 
     const modifyMechSkin = useCallback((ems: LoadoutMechSkin) => {
+        if (unityViewRef.current) {
+            unityViewRef.current.handleMechSkinUpdate(ems)
+            setIsUnityPendingChange(true)
+        }
+
         setCurrLoadout((prev) => {
             return {
                 ...prev,
