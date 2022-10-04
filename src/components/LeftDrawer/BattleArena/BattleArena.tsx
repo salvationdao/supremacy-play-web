@@ -70,7 +70,9 @@ export const BattleArena = () => {
                         sx={{ p: ".4rem 1rem", borderTop: (theme) => `${theme.factionTheme.primary}30 1px solid` }}
                     >
                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>BATTLE ID #{battleIdentifier.toString().padStart(4, "0")}</Typography>
-                        {isAIDrivenMatch && <Typography sx={{ color: colors.green, fontFamily: fonts.nostromoBlack }}>AI MATCH</Typography>}
+                        <Typography sx={{ color: isAIDrivenMatch ? colors.green : colors.red, fontFamily: fonts.nostromoBlack }}>
+                            {isAIDrivenMatch ? "AI MATCH" : "PvP"}
+                        </Typography>
                     </Stack>
                 )}
             </Stack>
