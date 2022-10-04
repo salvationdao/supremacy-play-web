@@ -1,5 +1,5 @@
 import { Box, Stack } from "@mui/material"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react"
 import Draggable from "react-draggable"
 import { SvgWeapons } from "../../../../../assets"
 import { getRarityDeets } from "../../../../../helpers"
@@ -14,24 +14,35 @@ import { MechLoadoutItemDraggable, MechLoadoutItemSkeleton } from "../../Common/
 export type CustomDragEvent = (parentRef: HTMLDivElement, clientRect: DOMRect) => void
 export type DragStopEvent = (parentRef: HTMLDivElement, clientRect: DOMRect, type: AssetItemType, item: Weapon | PowerCore | Utility | MechSkin) => void
 
+export type DraggablesHandle = {
+    handleMechLoadoutUpdated: () => void
+}
+
 export interface GetWeaponsDetailedResponse {
     weapons: Weapon[]
     total: number
 }
 
 export interface MechLoadoutDraggablesProps {
+    draggablesRef: React.ForwardedRef<DraggablesHandle>
     excludeIDs: string[]
     onDrag: CustomDragEvent
     onDragStop: DragStopEvent
 }
 
-export const MechLoadoutDraggables = ({ excludeIDs, onDrag, onDragStop }: MechLoadoutDraggablesProps) => {
+export const MechLoadoutDraggables = ({ draggablesRef, excludeIDs, onDrag, onDragStop }: MechLoadoutDraggablesProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
 
     const weaponsMemoized = useRef<Weapon[]>([])
     const [weapons, setWeapons] = useState<Weapon[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
+
+    useImperativeHandle(draggablesRef, () => ({
+        handleMechLoadoutUpdated: () => {
+            getWeapons()
+        },
+    }))
 
     useEffect(() => {
         const set = new Set(excludeIDs)

@@ -7,7 +7,13 @@ import { pulseEffect } from "../../../../../theme/keyframes"
 import { fonts } from "../../../../../theme/theme"
 import { ClipThing } from "../../../../Common/ClipThing"
 import { LoadoutMechSkin, LoadoutPowerCore, LoadoutWeapon } from "../MechLoadout/MechLoadout"
-import { MechViewerProps, UnityHandle } from "./MechViewer"
+import { MechViewerProps } from "./MechViewer"
+
+export type UnityHandle = {
+    handleWeaponUpdate: (wu: LoadoutWeapon) => void
+    handlePowerCoreUpdate: (pcu: LoadoutPowerCore) => void
+    handleMechSkinUpdate: (msu: LoadoutMechSkin) => void
+}
 
 export interface HangarSilo {
     faction: string
@@ -39,11 +45,16 @@ if (DEV_ONLY) {
     baseUrl += process.env.REACT_APP_ENVIRONMENT + "/"
 }
 
-interface UnityViewerProps extends MechViewerProps {
+export interface UnityParams {
     unityRef: React.ForwardedRef<UnityHandle>
+    onUnlock: () => void
 }
 
-export const UnityViewer = ({ unityRef, mechDetails, unity }: UnityViewerProps) => {
+interface UnityViewerProps extends MechViewerProps {
+    unity: UnityParams
+}
+
+export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
     const theme = useTheme()
     const { unityProvider, sendMessage, addEventListener, removeEventListener, isLoaded } = useUnityContext({
         loaderUrl: `${baseUrl}WebGL.loader.js`,
@@ -57,7 +68,7 @@ export const UnityViewer = ({ unityRef, mechDetails, unity }: UnityViewerProps) 
     const [isPendingChange, setIsPendingChange] = useState(false)
     const [showClickToLoadOverlay, setShowClickToLoadOverlay] = useState(true)
 
-    useImperativeHandle(unityRef, () => ({
+    useImperativeHandle(unity.unityRef, () => ({
         handleWeaponUpdate: (wu: LoadoutWeapon) => {
             const weapon = wu.weapon
             if (wu.unequip) {
@@ -126,7 +137,7 @@ export const UnityViewer = ({ unityRef, mechDetails, unity }: UnityViewerProps) 
     useEffect(() => {
         const onSlotLoaded = () => {
             console.log("slot unlocked")
-            unity?.onUnlock()
+            unity.onUnlock()
             setIsPendingChange(false)
         }
         addEventListener("SlotLoaded", onSlotLoaded)

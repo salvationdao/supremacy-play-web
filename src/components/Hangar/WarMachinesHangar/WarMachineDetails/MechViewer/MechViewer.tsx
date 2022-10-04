@@ -1,25 +1,16 @@
 import { Box } from "@mui/material"
-import React from "react"
 import { useTheme } from "../../../../../containers/theme"
 import { MechDetails } from "../../../../../types"
 import { MediaPreview } from "../../../../Common/MediaPreview/MediaPreview"
-import { LoadoutMechSkin, LoadoutPowerCore, LoadoutWeapon } from "../MechLoadout/MechLoadout"
-import { UnityViewer } from "./UnityViewer"
+import { UnityParams, UnityViewer } from "./UnityViewer"
 
-export type UnityHandle = {
-    handleWeaponUpdate: (wu: LoadoutWeapon) => void
-    handlePowerCoreUpdate: (pcu: LoadoutPowerCore) => void
-    handleMechSkinUpdate: (msu: LoadoutMechSkin) => void
-}
 export interface MechViewerProps {
     mechDetails: MechDetails
-    unity?: {
-        onUnlock: () => void
-    }
+    unity?: UnityParams
 }
 
-export const MechViewer = React.forwardRef<UnityHandle, MechViewerProps>(function MechViewer(props, ref) {
-    const { mechDetails, unity } = props
+export const MechViewer = (props: MechViewerProps) => {
+    const { mechDetails } = props
     const theme = useTheme()
     const backgroundColor = theme.factionTheme.background
 
@@ -54,8 +45,8 @@ export const MechViewer = React.forwardRef<UnityHandle, MechViewerProps>(functio
                 }}
             />
 
-            {unity ? (
-                <UnityViewer unityRef={ref} {...props} />
+            {props.unity ? (
+                <UnityViewer {...props} unity={props.unity} />
             ) : (
                 <Box
                     sx={{
@@ -80,7 +71,7 @@ export const MechViewer = React.forwardRef<UnityHandle, MechViewerProps>(functio
             )}
         </Box>
     )
-})
+}
 
 interface FeatherFadeProps {
     color: string

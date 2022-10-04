@@ -11,11 +11,12 @@ import { MechDetails, MechSkin, MechStatus, MechStatusEnum, PowerCore, Utility, 
 import { ClipThing } from "../../../../Common/ClipThing"
 import { FancyButton } from "../../../../Common/FancyButton"
 import { MechLoadoutItem } from "../../Common/MechLoadoutItem"
-import { MechViewer, UnityHandle } from "../MechViewer/MechViewer"
+import { MechViewer } from "../MechViewer/MechViewer"
+import { UnityHandle } from "../MechViewer/UnityViewer"
 import { MechLoadoutMechSkinModal } from "../Modals/Loadout/MechLoadoutMechSkinModal"
 import { MechLoadoutPowerCoreModal } from "../Modals/Loadout/MechLoadoutPowerCoreModal"
 import { MechLoadoutWeaponModal } from "../Modals/Loadout/MechLoadoutWeaponModal"
-import { CustomDragEvent, DragStopEvent, MechLoadoutDraggables } from "./MechLoadoutDraggables"
+import { CustomDragEvent, DraggablesHandle, DragStopEvent, MechLoadoutDraggables } from "./MechLoadoutDraggables"
 
 interface PlayerAssetMechEquipRequest {
     mech_id: string
@@ -116,6 +117,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     const { send } = useGameServerCommandsUser("/user_commander")
     const { newSnackbarMessage } = useGlobalNotifications()
     const unityViewRef = useRef<UnityHandle>(null)
+    const draggablesRef = useRef<DraggablesHandle>(null)
 
     const [error, setError] = useState<string>()
     const [loading, setLoading] = useState(false)
@@ -201,6 +203,10 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
             newSnackbarMessage(`Successfully saved loadout.`, "success")
             setError(undefined)
             onUpdate(newMechDetails)
+
+            if (draggablesRef.current) {
+                draggablesRef.current.handleMechLoadoutUpdated()
+            }
         } catch (e) {
             if (e instanceof Error) {
                 setError(e.message)
@@ -370,9 +376,9 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
             >
                 {/* Unity View */}
                 <MechViewer
-                    ref={unityViewRef}
                     mechDetails={mechDetails}
                     unity={{
+                        unityRef: unityViewRef,
                         onUnlock: () => {
                             setIsUnityPendingChange(false)
                         },
@@ -744,7 +750,12 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                     </Stack>
                 </Box>
             </ClipThing>
-            <MechLoadoutDraggables excludeIDs={Array.from(changed_weapons_map.values(), (w) => w.weapon_id)} onDrag={onItemDrag} onDragStop={onItemDragStop} />
+            <MechLoadoutDraggables
+                draggablesRef={draggablesRef}
+                excludeIDs={Array.from(changed_weapons_map.values(), (w) => w.weapon_id)}
+                onDrag={onItemDrag}
+                onDragStop={onItemDragStop}
+            />
         </>
     )
 }

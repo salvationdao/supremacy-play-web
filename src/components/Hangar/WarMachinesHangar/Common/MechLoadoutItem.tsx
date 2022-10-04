@@ -1,7 +1,7 @@
 import { Box, Grow, IconButton, Skeleton, Stack, Typography } from "@mui/material"
 import React, { useEffect, useMemo, useRef } from "react"
 import { ClipThing, FancyButton } from "../../.."
-import { SvgLock, SvgPlus, SvgRemove, SvgSkin, SvgSwap, SvgWrapperProps } from "../../../../assets"
+import { SvgDrag, SvgLock, SvgPlus, SvgRemove, SvgSkin, SvgSwap, SvgWrapperProps } from "../../../../assets"
 import { shadeColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { colors, fonts } from "../../../../theme/theme"
@@ -322,6 +322,15 @@ export const MechLoadoutItemDraggable = React.forwardRef<HTMLDivElement, MechLoa
                         <Stack spacing=".3rem" direction="row" alignItems="center" sx={{ position: "absolute", top: ".1rem", left: ".5rem" }}>
                             {Icon && <Icon fill={primaryColor} size="1.8rem" />}
                             {hasSkin && <SvgSkin fill={colors.chassisSkin} size="1.4rem" />}
+                        </Stack>
+                        <Stack
+                            sx={{
+                                position: "absolute",
+                                top: ".1rem",
+                                right: ".5rem",
+                            }}
+                        >
+                            <SvgDrag fill={`${primaryColor}aa`} />
                         </Stack>
 
                         {slotNumber != null && (
