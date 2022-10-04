@@ -48,7 +48,7 @@ export const Tutorial = () => {
                     sx={{ px: "1.2rem", py: 0, color: colors.darkestNeonBlue }}
                     to="/training?muted=false"
                 >
-                    <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold, color: colors.darkestNeonBlue }}>
+                    <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack, color: colors.darkestNeonBlue }}>
                         TUTORIAL
                     </Typography>
                 </FancyButton>
