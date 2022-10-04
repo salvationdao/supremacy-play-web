@@ -285,7 +285,7 @@ export class PixiMapMech {
                     color: HEXToVBColor(this.primaryColor),
                     alpha: 0.8,
                 })
-                dash.moveTo(this.rootInner.x + this.rectGraphics.width / 2, this.rootInner.y + this.rectGraphics.height / 2).lineTo(newX, newY)
+                dash.moveTo(this.rootInner.x, this.rootInner.y).lineTo(newX, newY)
             }
 
             // Particles stuff
