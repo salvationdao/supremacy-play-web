@@ -19,6 +19,7 @@ export interface GameSettingsResponse {
     spawned_ai: WarMachineState[]
     ability_details: AbilityDetail[]
     server_time: Date
+    is_ai_driven_match: boolean
 }
 
 // Game data that needs to be shared between different components
@@ -33,6 +34,7 @@ export const GameContainer = createContainer(() => {
     const [map, setMap] = useState<Map>()
     const [battleZone, setBattleZone] = useState<BattleZoneStruct>()
     const [abilityDetails, setAbilityDetails] = useState<AbilityDetail[]>([])
+    const [isAIDrivenMatch, setIsAIDrivenMatch] = useState<boolean>(false)
     const [bribeStage, setBribeStage] = useState<BribeStageResponse | undefined>()
     const [battleEndDetail, setBattleEndDetail] = useState<BattleEndDetail>()
     const [forceDisplay100Percentage, setForceDisplay100Percentage] = useState<string>("")
@@ -83,6 +85,7 @@ export const GameContainer = createContainer(() => {
             setAbilityDetails(payload.ability_details)
             setWarMachines(payload.war_machines)
             setSpawnedAI(payload.spawned_ai)
+            setIsAIDrivenMatch(payload.is_ai_driven_match)
         },
     )
 
@@ -155,6 +158,7 @@ export const GameContainer = createContainer(() => {
         ownedMiniMechs, // Filtered
 
         // Others
+        isAIDrivenMatch,
         battleEndDetail,
         setBattleEndDetail,
         forceDisplay100Percentage,
