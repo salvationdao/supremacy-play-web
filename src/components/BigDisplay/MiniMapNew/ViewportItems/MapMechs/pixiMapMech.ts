@@ -374,6 +374,10 @@ export class PixiMapMech {
         if (displayAbility) {
             const config = merge(pulseParticlesConfig, {
                 color: { start: this.primaryColor, end: this.primaryColor },
+                alpha: {
+                    start: 1,
+                    end: 0.3,
+                },
                 scale: {
                     start: (0.3 * this.gridSizeRef.current.width) / 10,
                     end: (0.1 * this.gridSizeRef.current.width) / 10,
