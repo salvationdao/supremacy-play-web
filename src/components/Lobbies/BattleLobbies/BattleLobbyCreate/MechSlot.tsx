@@ -1,13 +1,12 @@
 import { colors, fonts } from "../../../../theme/theme"
 import { Box, Stack, Typography } from "@mui/material"
-import { scaleUpKeyframes } from "../../../../theme/keyframes"
-import { EmptyWarMachinesPNG, SvgPlus, SvgWeapons } from "../../../../assets"
+import { EmptyWarMachinesPNG } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
-import { BattleLobbiesMech } from "../../../../types/battle_queue"
 import { getRarityDeets } from "../../../../helpers"
+import { MechBasicWithQueueStatus } from "../../../../types"
 
 interface MechSlotProps {
-    battleLobbyMech?: BattleLobbiesMech
+    battleLobbyMech: MechBasicWithQueueStatus | null
 }
 
 export const MechSlot = ({ battleLobbyMech }: MechSlotProps) => {
@@ -105,38 +104,38 @@ export const MechSlot = ({ battleLobbyMech }: MechSlotProps) => {
                     </Box>
                 </Box>
                 <Box>
-                    <Stack direction="row" spacing=".5rem" mb=".5rem">
-                        {battleLobbyMech.weapon_slots.map((ws, index) => (
-                            <Box
-                                key={index}
-                                sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    width: "25px",
-                                    height: "25px",
-                                    border: `1px solid ${factionTheme.primary}66`,
-                                    backgroundColor: `${factionTheme.background}`,
-                                }}
-                            >
-                                {ws.weapon ? (
-                                    <Box
-                                        key={ws.weapon.avatar_url}
-                                        component="img"
-                                        src={ws.weapon.avatar_url}
-                                        sx={{
-                                            width: "100%",
-                                            height: "100%",
-                                            objectFit: "cover",
-                                            animation: `${scaleUpKeyframes} .5s ease-out`,
-                                        }}
-                                    />
-                                ) : (
-                                    <SvgWeapons />
-                                )}
-                            </Box>
-                        ))}
-                    </Stack>
+                    {/*<Stack direction="row" spacing=".5rem" mb=".5rem">*/}
+                    {/*    {battleLobbyMech.weapon_slots.map((ws, index) => (*/}
+                    {/*        <Box*/}
+                    {/*            key={index}*/}
+                    {/*            sx={{*/}
+                    {/*                display: "flex",*/}
+                    {/*                alignItems: "center",*/}
+                    {/*                justifyContent: "center",*/}
+                    {/*                width: "25px",*/}
+                    {/*                height: "25px",*/}
+                    {/*                border: `1px solid ${factionTheme.primary}66`,*/}
+                    {/*                backgroundColor: `${factionTheme.background}`,*/}
+                    {/*            }}*/}
+                    {/*        >*/}
+                    {/*            {ws.weapon ? (*/}
+                    {/*                <Box*/}
+                    {/*                    key={ws.weapon.avatar_url}*/}
+                    {/*                    component="img"*/}
+                    {/*                    src={ws.weapon.avatar_url}*/}
+                    {/*                    sx={{*/}
+                    {/*                        width: "100%",*/}
+                    {/*                        height: "100%",*/}
+                    {/*                        objectFit: "cover",*/}
+                    {/*                        animation: `${scaleUpKeyframes} .5s ease-out`,*/}
+                    {/*                    }}*/}
+                    {/*                />*/}
+                    {/*            ) : (*/}
+                    {/*                <SvgWeapons />*/}
+                    {/*            )}*/}
+                    {/*        </Box>*/}
+                    {/*    ))}*/}
+                    {/*</Stack>*/}
                     <Typography
                         variant="h6"
                         sx={{
@@ -154,21 +153,21 @@ export const MechSlot = ({ battleLobbyMech }: MechSlotProps) => {
                     >
                         {battleLobbyMech.name || battleLobbyMech.label}
                     </Typography>
-                    {battleLobbyMech.owner && (
-                        <Typography
-                            sx={{
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 1, // change to max number of lines
-                                WebkitBoxOrient: "vertical",
-                                color: `#ffffffaa`,
-                            }}
-                        >
-                            {`@${battleLobbyMech.owner.username}#${battleLobbyMech.owner.gid}`}{" "}
-                        </Typography>
-                    )}
+                    {/*{battleLobbyMech.owner && (*/}
+                    {/*    <Typography*/}
+                    {/*        sx={{*/}
+                    {/*            display: "-webkit-box",*/}
+                    {/*            overflow: "hidden",*/}
+                    {/*            overflowWrap: "anywhere",*/}
+                    {/*            textOverflow: "ellipsis",*/}
+                    {/*            WebkitLineClamp: 1, // change to max number of lines*/}
+                    {/*            WebkitBoxOrient: "vertical",*/}
+                    {/*            color: `#ffffffaa`,*/}
+                    {/*        }}*/}
+                    {/*    >*/}
+                    {/*        {`@${battleLobbyMech.owner.username}#${battleLobbyMech.owner.gid}`}{" "}*/}
+                    {/*    </Typography>*/}
+                    {/*)}*/}
                 </Box>
             </Stack>
         </Stack>

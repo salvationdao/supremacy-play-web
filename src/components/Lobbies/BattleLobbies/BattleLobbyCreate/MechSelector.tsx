@@ -23,13 +23,13 @@ const sortOptions = [
 ]
 
 interface MechSelectorProps {
-    SetSelectedMechID: () => void
+    selectedMechs: MechBasicWithQueueStatus[]
+    setSelectedMechs: React.Dispatch<React.SetStateAction<MechBasicWithQueueStatus[]>>
 }
 
-export const MechSelector = ({ SetSelectedMechID }: MechSelectorProps) => {
+export const MechSelector = ({ selectedMechs, setSelectedMechs }: MechSelectorProps) => {
     const { factionTheme } = useTheme()
     const [searchValue, setSearchValue, searchValueInstant] = useDebounce("", 300)
-    const [selectedMechIDs, setSelectedMechIDs] = useState<string[]>([])
     const [list, setList] = useState<MechBasicWithQueueStatus[]>([])
     const { page, changePage, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: 10,
@@ -85,8 +85,7 @@ export const MechSelector = ({ SetSelectedMechID }: MechSelectorProps) => {
     )
 
     useEffect(() => {
-        let result = [...ownedMechs]
-        let selectedMechs = result.filter((r) => selectedMechIDs.includes(r.id))
+        let result = [...ownedMechs].filter((r) => !selectedMechs.some((m) => m.id === r.id))
 
         // filter
         if (searchValue) {
@@ -99,30 +98,23 @@ export const MechSelector = ({ SetSelectedMechID }: MechSelectorProps) => {
         switch (sort) {
             case SortTypeLabel.Alphabetical:
                 result = result.sort((a, b) => `${a.name}${a.label}`.localeCompare(`${b.name}${b.label}`))
-                selectedMechs = selectedMechs.sort((a, b) => `${a.name}${a.label}`.localeCompare(`${b.name}${b.label}`))
                 break
             case SortTypeLabel.AlphabeticalReverse:
                 result = result.sort((a, b) => `${b.name}${b.label}`.localeCompare(`${a.name}${a.label}`))
-                selectedMechs = selectedMechs.sort((a, b) => `${b.name}${b.label}`.localeCompare(`${a.name}${a.label}`))
                 break
             case SortTypeLabel.RarestAsc:
                 result = result.sort((a, b) => (getRarityDeets(a.tier.toUpperCase()).rank < getRarityDeets(b.tier.toUpperCase()).rank ? 1 : -1))
-                selectedMechs = selectedMechs.sort((a, b) => (getRarityDeets(a.tier.toUpperCase()).rank < getRarityDeets(b.tier.toUpperCase()).rank ? 1 : -1))
                 break
             case SortTypeLabel.RarestDesc:
                 result = result.sort((a, b) => (getRarityDeets(a.tier.toUpperCase()).rank > getRarityDeets(b.tier.toUpperCase()).rank ? 1 : -1))
-                selectedMechs = selectedMechs.sort((a, b) => (getRarityDeets(a.tier.toUpperCase()).rank > getRarityDeets(b.tier.toUpperCase()).rank ? 1 : -1))
                 break
         }
 
         // pagination
         result = result.slice((page - 1) * pageSize, page * pageSize)
 
-        // shift selected mech to the top
-        result = selectedMechs.concat(...result.filter((r) => !selectedMechIDs.includes(r.id))).slice(0, pageSize)
-
         setList(result)
-    }, [ownedMechs, sort, page, pageSize, setTotalItems, searchValue, selectedMechIDs])
+    }, [ownedMechs, sort, page, pageSize, setTotalItems, searchValue, selectedMechs])
 
     const content = useMemo(() => {
         if (list.length > 0) {
@@ -157,27 +149,9 @@ export const MechSelector = ({ SetSelectedMechID }: MechSelectorProps) => {
                                         <div key={`mech-id-${mech.id}`} style={{ marginBottom: "1.3rem", cursor: "pointer" }}>
                                             <QuickDeployItem
                                                 key={mech.id}
-                                                isSelected={selectedMechIDs.includes(mech.id)}
-                                                toggleIsSelected={() => {
-                                                    setSelectedMechIDs((prev) => {
-                                                        // remove, if exists
-                                                        if (prev.includes(mech.id)) {
-                                                            setCurrentPlayerQueue((cpq) => ({ ...cpq, total_queued: cpq.total_queued - 1 }))
-                                                            return prev.filter((id) => id !== mech.id)
-                                                        }
-
-                                                        // return prev stat, if already reach queue limit
-                                                        if (3 <= prev.length) {
-                                                            return prev
-                                                        }
-
-                                                        setCurrentPlayerQueue((cpq) => ({ ...cpq, total_queued: cpq.total_queued + 1 }))
-
-                                                        // otherwise, append
-                                                        return prev.concat(mech.id)
-                                                    })
-                                                }}
+                                                isSelected={selectedMechs.some((sm) => sm.id === mech.id)}
                                                 mech={mech}
+                                                toggleIsSelected={() => setSelectedMechs((prev) => prev.concat(mech))}
                                             />
                                         </div>
                                     )
@@ -190,7 +164,7 @@ export const MechSelector = ({ SetSelectedMechID }: MechSelectorProps) => {
         }
 
         return (
-            <Stack alignItems="center" justifyContent="center" sx={{ maxHeight: 0, width: "100%" }}>
+            <Stack alignItems="center" justifyContent="center" flex={1}>
                 <Box
                     sx={{
                         width: "80%",
@@ -216,7 +190,7 @@ export const MechSelector = ({ SetSelectedMechID }: MechSelectorProps) => {
                 </Typography>
             </Stack>
         )
-    }, [list, selectedMechIDs])
+    }, [list, selectedMechs, setSelectedMechs])
 
     return (
         <Stack

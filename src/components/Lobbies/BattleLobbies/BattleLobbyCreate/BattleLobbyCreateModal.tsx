@@ -7,13 +7,14 @@ import { TextFieldProps } from "@mui/material/TextField"
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerSubscriptionSecured } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { GameMap } from "../../../../types"
+import { GameMap, MechBasicWithQueueStatus } from "../../../../types"
 import { FactionBasedDatePicker } from "../../../Common/FactionBasedDatePicker"
 import moment from "moment"
 import { FactionBasedTimePicker } from "../../../Common/FactionBasedTimePicker"
 import { MechSlot } from "./MechSlot"
 import { MechSelector } from "./MechSelector"
 import { FancyButton } from "../../../Common/FancyButton"
+import { SelectedMechSlots } from "./SelectedMechSlots"
 
 interface BattleLobbyCreateModalProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -34,6 +35,8 @@ interface LobbyForm {
 export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps) => {
     const [error, setError] = useState("")
     const { factionTheme } = useTheme()
+
+    const [selectedMechs, setSelectedMechs] = useState<MechBasicWithQueueStatus[]>([])
 
     const [gameMaps, setGameMaps] = useState<GameMap[]>([])
     useGameServerSubscriptionSecured<GameMap[]>(
@@ -109,7 +112,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                             width: "45rem",
                         }}
                     >
-                        <Typography variant="body2" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
+                        <Typography variant="body1" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
                             ROOM SETTING:
                         </Typography>
                         <Stack direction="column" spacing={0.6} sx={{ px: "1rem" }}>
@@ -134,7 +137,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                             />
                         </Stack>
 
-                        <Typography variant="body2" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
+                        <Typography variant="body1" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
                             FEE & REWARD:
                         </Typography>
                         <Stack direction="column" spacing={0.6} sx={{ px: "1rem" }}>
@@ -191,7 +194,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                             />
                         </Stack>
 
-                        <Typography variant="body2" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
+                        <Typography variant="body1" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
                             SCHEDULE:
                         </Typography>
                         <Stack direction="column" spacing={0.6} sx={{ px: "1rem" }}>
@@ -217,28 +220,17 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                         </Stack>
                     </Stack>
                     <Stack direction="column" flex={1} spacing={1}>
-                        <Typography variant="body2" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
+                        <Typography variant="body1" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
                             WAR MACHINES:
                         </Typography>
-                        <MechSelector SetSelectedMechID={console.log} />
+                        <MechSelector setSelectedMechs={setSelectedMechs} selectedMechs={selectedMechs} />
                     </Stack>
                 </Stack>
-                <Typography variant="body2" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack, mt: "1rem", mb: "1rem" }}>
+                <Typography variant="body1" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack, mt: "1rem", mb: "1rem" }}>
                     WAR MACHINE SLOTS:
                 </Typography>
 
-                <Stack
-                    direction="row"
-                    spacing="1rem"
-                    sx={{
-                        height: "25rem",
-                        width: "100%",
-                    }}
-                >
-                    <MechSlot />
-                    <MechSlot />
-                    <MechSlot />
-                </Stack>
+                <SelectedMechSlots selectedMechs={selectedMechs} setSelectedMechs={setSelectedMechs} />
             </Stack>
         </ConfirmModal>
     )
