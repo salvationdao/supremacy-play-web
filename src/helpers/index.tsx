@@ -16,7 +16,7 @@ import {
     SvgWrapperProps,
 } from "../assets"
 import { colors } from "../theme/theme"
-import { AssetItemType, GAME_CLIENT_TILE_SIZE, MysteryCrateType, Rarity, RarityEnum, UserRank } from "../types"
+import { AssetItemType, Dimension, GAME_CLIENT_TILE_SIZE, MysteryCrateType, Rarity, RarityEnum, UserRank } from "../types"
 import { FiatOrderStatus } from "../types/fiat"
 
 // Capitalize convert a string "example" to "Example"
@@ -608,8 +608,17 @@ export const generatePriceText = (currency: string, cents: string | BigNumber) =
     return `${currency} ${totalDollars}.${remainingCents < 10 ? `0${remainingCents}` : remainingCents}`
 }
 
-// Converts number to alphabet letter. E.g. 0 -> "a"
-export const intToLetter = (i: number) => String.fromCharCode(97 + i)
+// Converts number to alphabet letter like excel spreadsheet columns. E.g. 0 -> "A", 27 -> AA
+export const intToLetter = (i: number) => {
+    let temp,
+        letter = ""
+    while (i > 0) {
+        temp = (i - 1) % 26
+        letter = String.fromCharCode(temp + 65) + letter
+        i = (i - temp - 1) / 26
+    }
+    return letter
+}
 
 export const autoTextColor = (hex: string) => {
     const rgb = hexToRGB(hex)
@@ -630,3 +639,43 @@ export const convertCellsToGameLocation = (x: number, y: number, mapLeft: number
 }
 
 export const diff = (a: number, b: number) => (a > b ? a - b : b - a)
+
+// Adjusts dimensions so that the smallest side fits in a parent dimension, and keeping aspect ratio
+// E.g 1. dimension: = (100, 40), parent dimension = (80, 80), returns (200, 80).
+// E.g 2. dimension: = (80, 100), parent dimension = (40, 40), returns (40, 50).
+export const calculateCoverDimensions = (dimensions: Dimension, containerDimensions: Dimension): Dimension => {
+    const ratio = dimensions.height / dimensions.width
+    const result = { ...dimensions }
+
+    result.width = containerDimensions.width
+    result.height = containerDimensions.width * ratio
+
+    if (result.height < containerDimensions.height) {
+        result.height = containerDimensions.height
+        result.width = containerDimensions.height / ratio
+    }
+
+    return result
+}
+
+export const HEXToVBColor = (hex: string): number => {
+    return parseInt(hex.substring(hex.length - 6), 16)
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const deepEqual = (object1: Record<any, any>, object2: Record<any, any>) => {
+    const keys1 = Object.keys(object1)
+    const keys2 = Object.keys(object2)
+    if (keys1.length !== keys2.length) {
+        return false
+    }
+    for (const key of keys1) {
+        const val1 = object1[key]
+        const val2 = object2[key]
+        const areObjects = isObject(val1) && isObject(val2)
+        if ((areObjects && !deepEqual(val1, val2)) || (!areObjects && val1 !== val2)) {
+            return false
+        }
+    }
+    return true
+}

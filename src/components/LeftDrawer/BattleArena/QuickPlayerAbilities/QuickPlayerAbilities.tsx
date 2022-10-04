@@ -22,7 +22,7 @@ const QuickPlayerAbilitiesInner = React.memo(function QuickPlayerAbilitiesInner(
     const theme = useTheme()
 
     const { query: queryAvailability } = useParameterizedQuery(GetSaleAbilityAvailability)
-    const [availability, setAvailability] = useState<SaleAbilityAvailability>(SaleAbilityAvailability.CanClaim)
+    const [availability, setAvailability] = useState<SaleAbilityAvailability>(SaleAbilityAvailability.CanPurchase)
     const [availabilityError, setAvailabilityError] = useState<string>()
 
     const [isLoaded, setIsLoaded] = useState(false)
@@ -122,7 +122,7 @@ const QuickPlayerAbilitiesInner = React.memo(function QuickPlayerAbilitiesInner(
 
     return (
         <SectionCollapsible
-            label={availability === SaleAbilityAvailability.CanClaim ? "CLAIM AN ABILITY" : "PURCHASE ABILITIES"}
+            label="PURCHASE ABILITIES"
             tooltip="Purchase abilities that are currently on sale."
             initialExpanded={true}
             localStoragePrefix="quickPlayerAbility"
@@ -173,8 +173,7 @@ const QuickPlayerAbilitiesInner = React.memo(function QuickPlayerAbilitiesInner(
                                 price={priceMap.get(s.id)}
                                 amount={ownedAbilities.get(s.blueprint_id)}
                                 setClaimError={setError}
-                                onClaim={() => setAvailability(SaleAbilityAvailability.CanPurchase)}
-                                onPurchase={() => setAvailability(SaleAbilityAvailability.Unavailable)}
+                                onPurchase={() => refetchSaleAvailability()}
                                 availability={availability}
                             />
                         ))}

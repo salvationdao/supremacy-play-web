@@ -22,7 +22,7 @@ import { MechMoveCommand } from "./../components/Tutorial/WarMachine/WarMachineI
 import { useAuth } from "./auth"
 import { useGlobalNotifications } from "./globalNotifications"
 
-interface MapSelection {
+export interface MapSelectionBT {
     // start coords (used for LINE_SELECT and LOCATION_SELECT abilities)
     startCoords?: Position
     // end coords (only used for LINE_SELECT abilities)
@@ -84,7 +84,7 @@ export const TrainingContainer = createContainer(() => {
 
     // Other stuff
     const [highlightedMechParticipantID, setHighlightedMechParticipantID] = useState<number>()
-    const [selection, setSelection] = useState<MapSelection>()
+    const [selection, setSelection] = useState<MapSelectionBT>()
 
     // Toggle expand if user is using player ability or user is chosen to use battle ability
     useEffect(() => {

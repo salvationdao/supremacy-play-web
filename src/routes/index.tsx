@@ -1,14 +1,14 @@
 import { Box } from "@mui/system"
-import { SvgChat, SvgDamage1, SvgHistoryClock, SvgRepair, SvgRobot } from "../assets"
+import { SvgChat, SvgDamage1, SvgHistoryClock, SvgRepair } from "../assets"
 import { BattleArena } from "../components/LeftDrawer/BattleArena/BattleArena"
 import { BattleEndScreen } from "../components/LeftDrawer/BattleEndScreen/BattleEndScreen"
-import { QuickDeploy } from "../components/LeftDrawer/QuickDeploy/QuickDeploy"
 import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
 import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
 import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
 import { RepairJobs } from "../components/RightDrawer/RepairJobs/RepairJobs"
 import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../constants"
 import { BattleArenaPage, BillingHistoryPage, BillingHistoryItemPage, ClaimPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
+import { BattleLobbiesPage } from "../pages/BattleLobbiesPage"
 import { LeaderboardPage } from "../pages/LeaderboardPage"
 import { MarketplaceItemPage } from "../pages/MarketplaceItemPage"
 import { MarketplaceSellPage } from "../pages/MarketplaceSellPage"
@@ -16,10 +16,9 @@ import { MechPage } from "../pages/MechPage"
 import { ReplayItemPage } from "../pages/ReplayItemPage"
 import { ReplayPage } from "../pages/ReplayPage"
 import { StorefrontPage } from "../pages/StorefrontPage"
+import { StorefrontShoppingCartPage } from "../pages/StorefrontShoppingCartPage"
 import { WeaponPage } from "../pages/WeaponPage"
 import { colors } from "../theme/theme"
-import { StorefrontShoppingCartPage } from "../pages/StorefrontShoppingCartPage"
-import { BattleLobbiesPage } from "../pages/BattleLobbiesPage"
 
 // ************
 // ** ROUTES **
@@ -188,7 +187,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
 
     battle_lobbies: {
         id: "battle_lobbies",
-        path: "/battle_lobbies",
+        path: "/battle_lobbies/:status?",
         exact: true,
         Component: BattleLobbiesPage,
         requireAuth: true,
@@ -318,15 +317,6 @@ export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         requireAuth: false,
         matchNavLinkIDs: BATTLE_ARENA_OPEN ? ["home"] : [],
         mountAllTime: true,
-    },
-    quick_deploy: {
-        id: "quick_deploy",
-        icon: <SvgRobot size="1.3rem" sx={{ pt: ".3rem" }} />,
-        label: "Quick Deploy",
-        Component: QuickDeploy,
-        requireAuth: true,
-        matchNavLinkIDs: BATTLE_ARENA_OPEN ? ["home"] : [],
-        mountAllTime: false,
     },
     previous_battle: {
         id: "previous_battle",

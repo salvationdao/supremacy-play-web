@@ -74,7 +74,6 @@ export enum GameServerKeys {
     SubSaleAbilitiesPrice = "SALE:ABILITIES:PRICE:SUBSCRIBE",
     SubSaleAbilitiesList = "SALE:ABILITIES:LIST:SUBSCRIBE",
     SaleAbilitiesList = "SALE:ABILITIES:LIST",
-    SaleAbilityClaim = "SALE:ABILITY:CLAIM",
     SaleAbilityPurchase = "SALE:ABILITY:PURCHASE",
     PlayerAbilityUse = "PLAYER:ABILITY:USE",
 
@@ -124,7 +123,7 @@ export enum GameServerKeys {
     // Player Profile
     GetNotificationPreferences = "PLAYER:PREFERENCES_GET",
     UpdateNotificationPreferences = "PLAYER:PREFERENCES_UPDATE",
-
+    UpdateMarketingPreferences = "PLAYER:MARKETING:UPDATE",
     EnlistFaction = "FACTION:ENLIST",
 
     //Redeem Coupon Code

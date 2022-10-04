@@ -33,7 +33,7 @@ export const ReplayPlayer = ({
 
         // Show/hide the skip button based on current video watch time
         if (videoTime > 2 && playerEl && battleReplay?.intro_ended_at && battleReplay?.started_at) {
-            if (videoTime < (battleReplay.intro_ended_at.getTime() - battleReplay.started_at.getTime()) / 1000) {
+            if (videoTime < (battleReplay.intro_ended_at.getTime() - battleReplay.started_at.getTime()) / 1000 - 5) {
                 playerEl.style.display = "block"
             } else {
                 playerEl.style.display = "none"

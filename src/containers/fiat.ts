@@ -16,7 +16,6 @@ export const FiatContainer = createContainer(() => {
         },
         (payload) => {
             if (loading) setLoading(false)
-            console.log("Cart Updated", payload)
             setShoppingCart(payload)
         },
     )

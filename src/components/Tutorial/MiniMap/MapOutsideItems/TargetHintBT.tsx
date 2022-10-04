@@ -7,7 +7,7 @@ import { useTheme } from "../../../../containers/theme"
 import { colors } from "../../../../theme/theme"
 import { BattleAbilityStages, LocationSelectType } from "../../../../types"
 import { MechAbilityStages, PlayerAbilityStages } from "../../../../types/training"
-import { TOP_BAR_HEIGHT } from "../../../BigDisplay/MiniMap/MiniMap"
+import { TOP_BAR_HEIGHT } from "../../../BigDisplay/MiniMapNew/MiniMapNew"
 
 export const TargetHintBT = () => {
     const { isTargeting, winner, playerAbility } = useTraining()
