@@ -1,5 +1,5 @@
 import { Box, Stack } from "@mui/material"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import Draggable from "react-draggable"
 import { SvgWeapons } from "../../../../../assets"
 import { getRarityDeets } from "../../../../../helpers"
@@ -9,7 +9,7 @@ import { colors, theme } from "../../../../../theme/theme"
 import { AssetItemType, MechSkin, PowerCore, Utility, Weapon } from "../../../../../types"
 import { ClipThing } from "../../../../Common/ClipThing"
 import { GetWeaponsRequest } from "../../../WeaponsHangar/WeaponsHangar"
-import { MechLoadoutItemDraggable } from "../../Common/MechLoadoutItem"
+import { MechLoadoutItemDraggable, MechLoadoutItemSkeleton } from "../../Common/MechLoadoutItem"
 
 export type CustomDragEvent = (parentRef: HTMLDivElement, clientRect: DOMRect) => void
 export type DragStopEvent = (parentRef: HTMLDivElement, clientRect: DOMRect, type: AssetItemType, item: Weapon | PowerCore | Utility | MechSkin) => void
@@ -72,6 +72,24 @@ export const MechLoadoutDraggables = ({ excludeIDs, onDrag, onDragStop }: MechLo
         getWeapons()
     }, [getWeapons])
 
+    const content = useMemo(() => {
+        if (isLoading) {
+            return (
+                <>
+                    <MechLoadoutItemSkeleton />
+                    <MechLoadoutItemSkeleton />
+                    <MechLoadoutItemSkeleton />
+                    <MechLoadoutItemSkeleton />
+                </>
+            )
+        }
+        if (loadError) {
+            return loadError
+        }
+
+        return weapons.map((w) => <MechLoadoutDraggable key={w.id} onDrag={onDrag} onDragStop={onDragStop} item={w} />)
+    }, [isLoading, loadError, onDrag, onDragStop, weapons])
+
     return (
         <Box
             sx={{
@@ -108,10 +126,7 @@ export const MechLoadoutDraggables = ({ excludeIDs, onDrag, onDragStop }: MechLo
                     padding: "1rem",
                 }}
             >
-                {/*  render multiple of these */}
-                {weapons.map((w) => (
-                    <MechLoadoutDraggable key={w.id} onDrag={onDrag} onDragStop={onDragStop} item={w} />
-                ))}
+                {content}
             </Stack>
         </Box>
     )

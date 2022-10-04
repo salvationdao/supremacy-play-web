@@ -1,4 +1,4 @@
-import { Box, Grow, IconButton, Stack, Typography } from "@mui/material"
+import { Box, Grow, IconButton, Skeleton, Stack, Typography } from "@mui/material"
 import React, { useEffect, useMemo, useRef } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SvgLock, SvgPlus, SvgRemove, SvgSkin, SvgSwap, SvgWrapperProps } from "../../../../assets"
@@ -255,6 +255,16 @@ const MechLoadoutItemButton = ({
                 </Box>
             </Stack>
         </FancyButton>
+    )
+}
+
+export const MechLoadoutItemSkeleton = () => {
+    return (
+        <Box p=".8rem">
+            <ClipThing>
+                <Skeleton variant="rectangular" width="100%" height={130} />
+            </ClipThing>
+        </Box>
     )
 }
 
