@@ -1,8 +1,8 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import Marquee from "react-fast-marquee"
-import { BuySupsButton, FancyButton, Logo, ProfileCard, WalletDetails } from ".."
+import { BuySupsButton, Logo, ProfileCard, WalletDetails } from ".."
 import { SvgDisconnected } from "../../assets"
-import { DRAWER_TRANSITION_DURATION, FEEDBACK_FORM_URL, GAME_BAR_HEIGHT, IS_TESTING_MODE, STAGING_OR_DEV_ONLY, NEXT_RESET_TIME } from "../../constants"
+import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, IS_TESTING_MODE, NEXT_RESET_TIME, STAGING_OR_DEV_ONLY } from "../../constants"
 import { useAuth, useSupremacy } from "../../containers"
 import { hexToRGB, timeSinceInWords } from "../../helpers"
 import { useTimer } from "../../hooks"
@@ -151,24 +151,6 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
             <NavLinks />
             <Box sx={{ flexGrow: 1 }} />
             <Tutorial />
-            {userID && (
-                <FancyButton
-                    clipThingsProps={{
-                        clipSize: "6px",
-                        backgroundColor: colors.neonBlue,
-                        opacity: 1,
-                        border: { borderColor: colors.neonBlue, borderThickness: "1px" },
-                        sx: { position: "relative", mx: "2rem" },
-                    }}
-                    sx={{ px: "1.2rem", py: 0, color: colors.darkestNeonBlue }}
-                    href={FEEDBACK_FORM_URL}
-                    target="_blank"
-                >
-                    <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold, color: colors.darkestNeonBlue }}>
-                        FEEDBACK
-                    </Typography>
-                </FancyButton>
-            )}
             {userID && <WalletDetails />}
             <BuySupsButton />
             {userID && <Quests />}

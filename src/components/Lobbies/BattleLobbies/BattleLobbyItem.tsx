@@ -28,24 +28,6 @@ const propsAreEqual = (prevProps: BattleLobbyItemProps, nextProps: BattleLobbyIt
     )
 }
 
-// {
-//     mech_id: "",
-//     battle_lobby_id: "",
-//     name: "",
-//     label: "",
-//     tier: "",
-//     avatar_url: "",
-//     owner: {
-//         id: "",
-//         faction_id: "",
-//         username: "UNKNOWN",
-//         gid: 0,
-//         rank: "NEW_RECRUIT",
-//         features: [],
-//     },
-//     is_destroyed: false,
-// }
-
 export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby }: BattleLobbyItemProps) {
     const theme = useTheme()
     const { factionID } = useAuth()
@@ -93,8 +75,6 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
 
         return [myFactionLobbySlots, otherFactionLobbySlots]
     }, [factionsAll, battle_lobbies_mechs, factionID])
-
-    console.log(game_map)
 
     return (
         <>
