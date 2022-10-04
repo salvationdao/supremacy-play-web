@@ -179,7 +179,7 @@ const MechLoadoutItemButton = ({
                         opacity: 0.6,
                     }}
                 >
-                    <Typography>Previous Selection</Typography>
+                    <Typography>Reset Selection</Typography>
                 </Stack>
             )}
             <Stack spacing="1rem" alignItems="center" sx={{ height: "16rem", width: "16rem", p: "1rem", textAlign: "center" }}>
