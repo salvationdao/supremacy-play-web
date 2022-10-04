@@ -29,8 +29,8 @@ export class PixiMapScale {
 
         // Co-ordinate text
         this.coordLabel = new PIXI.Text("", {
-            fontFamily: fonts.shareTech,
-            fontSize: 12,
+            fontFamily: fonts.nostromoBold,
+            fontSize: 10,
             fill: "#FFFFFF",
             lineHeight: 1,
         })
@@ -42,8 +42,8 @@ export class PixiMapScale {
 
         // Label
         this.label = new PIXI.Text(`${Math.round(GAME_CLIENT_TILE_SIZE / 100)}m`, {
-            fontFamily: fonts.shareTech,
-            fontSize: 12,
+            fontFamily: fonts.nostromoBold,
+            fontSize: 10,
             fill: "#FFFFFF",
             lineHeight: 1,
         })

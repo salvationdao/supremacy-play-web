@@ -40,15 +40,15 @@ export const Tutorial = () => {
                 <FancyButton
                     clipThingsProps={{
                         clipSize: "6px",
-                        backgroundColor: colors.neonBlue,
+                        backgroundColor: colors.neonPink,
                         opacity: 1,
-                        border: { borderColor: colors.neonBlue, borderThickness: "1px" },
+                        border: { borderColor: colors.neonPink, borderThickness: "1px" },
                         sx: { position: "relative", mx: "2rem" },
                     }}
-                    sx={{ px: "1.2rem", py: 0, color: colors.darkestNeonBlue }}
+                    sx={{ px: "1.2rem", py: 0, color: "#FFFFFF" }}
                     to="/training?muted=false"
                 >
-                    <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack, color: colors.darkestNeonBlue }}>
+                    <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack, color: "#FFFFFF" }}>
                         TUTORIAL
                     </Typography>
                 </FancyButton>
