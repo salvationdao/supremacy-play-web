@@ -123,6 +123,33 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     const [currLoadout, setCurrLoadout] = useState<MechDetailsWithMaps>(generateLoadout(mechDetails))
     const [isUnityPendingChange, setIsUnityPendingChange] = useState(false)
 
+    const {
+        weapons_map,
+        changed_weapons_map,
+        blueprint_weapon_ids_with_skin_inheritance,
+        // utility_map,
+        // changed_utility_map,
+        power_core,
+        changed_power_core,
+        chassis_skin,
+        changed_mech_skin,
+        compatible_blueprint_mech_skin_ids,
+        intro_animation,
+        outro_animation,
+        locked_to_marketplace,
+        xsyn_locked,
+    } = currLoadout
+    const loadoutDisabled = useMemo(
+        () =>
+            isUnityPendingChange ||
+            xsyn_locked ||
+            locked_to_marketplace ||
+            (mechStatus?.battle_lobby_is_locked && mechStatus?.status === MechStatusEnum.Queue) ||
+            mechStatus?.status === MechStatusEnum.Battle ||
+            mechStatus?.status === MechStatusEnum.Sold,
+        [isUnityPendingChange, locked_to_marketplace, mechStatus?.battle_lobby_is_locked, mechStatus?.status, xsyn_locked],
+    )
+
     useEffect(() => {
         setCurrLoadout(generateLoadout(mechDetails))
     }, [mechDetails])
@@ -276,28 +303,33 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     )
 
     const weaponItemRefs = useRef<Map<number, HTMLDivElement | null>>(new Map()) // Map<slot_number, Element ref>
-    const onItemDrag = useCallback<CustomDragEvent>((rect) => {
-        for (const kv of weaponItemRefs.current.entries()) {
-            const element = kv[1]
-            if (!element) continue
-            const slotBoundingRect = element.getBoundingClientRect()
-            const overlaps = !(
-                rect.right < slotBoundingRect.left ||
-                rect.left > slotBoundingRect.right ||
-                rect.bottom < slotBoundingRect.top ||
-                rect.top > slotBoundingRect.bottom
-            )
-            if (overlaps) {
-                element.style.transform = "scale(1.1)"
-                element.style.transition = "transform .1s ease-out"
-            } else {
-                element.style.transform = "scale(1.0)"
-                element.style.transition = "transform .1s ease-in"
+    const onItemDrag = useCallback<CustomDragEvent>(
+        (el, rect) => {
+            if (loadoutDisabled) return
+            for (const kv of weaponItemRefs.current.entries()) {
+                const element = kv[1]
+                if (!element) continue
+                const slotBoundingRect = element.getBoundingClientRect()
+                const overlaps = !(
+                    rect.right < slotBoundingRect.left ||
+                    rect.left > slotBoundingRect.right ||
+                    rect.bottom < slotBoundingRect.top ||
+                    rect.top > slotBoundingRect.bottom
+                )
+                if (overlaps) {
+                    element.style.transform = "scale(1.1)"
+                    element.style.transition = "transform .1s ease-out"
+                } else {
+                    element.style.transform = "scale(1.0)"
+                    element.style.transition = "transform .1s ease-in"
+                }
             }
-        }
-    }, [])
+        },
+        [loadoutDisabled],
+    )
     const onItemDragStop = useCallback<DragStopEvent>(
-        (rect, type, item) => {
+        (el, rect, type, item) => {
+            if (loadoutDisabled) return
             const weapon = item as Weapon
             for (const kv of weaponItemRefs.current.entries()) {
                 const element = kv[1]
@@ -322,35 +354,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                 }
             }
         },
-        [modifyWeaponSlot],
-    )
-
-    const {
-        weapons_map,
-        changed_weapons_map,
-        blueprint_weapon_ids_with_skin_inheritance,
-        // utility_map,
-        // changed_utility_map,
-        power_core,
-        changed_power_core,
-        chassis_skin,
-        changed_mech_skin,
-        compatible_blueprint_mech_skin_ids,
-        intro_animation,
-        outro_animation,
-        locked_to_marketplace,
-        xsyn_locked,
-    } = currLoadout
-
-    const loadoutDisabled = useMemo(
-        () =>
-            isUnityPendingChange ||
-            xsyn_locked ||
-            locked_to_marketplace ||
-            (mechStatus?.battle_lobby_is_locked && mechStatus?.status === MechStatusEnum.Queue) ||
-            mechStatus?.status === MechStatusEnum.Battle ||
-            mechStatus?.status === MechStatusEnum.Sold,
-        [isUnityPendingChange, locked_to_marketplace, mechStatus?.battle_lobby_is_locked, mechStatus?.status, xsyn_locked],
+        [loadoutDisabled, modifyWeaponSlot],
     )
 
     return (

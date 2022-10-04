@@ -11,8 +11,8 @@ import { ClipThing } from "../../../../Common/ClipThing"
 import { GetWeaponsRequest } from "../../../WeaponsHangar/WeaponsHangar"
 import { MechLoadoutItemDraggable } from "../../Common/MechLoadoutItem"
 
-export type CustomDragEvent = (clientRect: DOMRect) => void
-export type DragStopEvent = (clientRect: DOMRect, type: AssetItemType, item: Weapon | PowerCore | Utility | MechSkin) => void
+export type CustomDragEvent = (parentRef: HTMLDivElement, clientRect: DOMRect) => void
+export type DragStopEvent = (parentRef: HTMLDivElement, clientRect: DOMRect, type: AssetItemType, item: Weapon | PowerCore | Utility | MechSkin) => void
 
 export interface GetWeaponsDetailedResponse {
     weapons: Weapon[]
@@ -124,10 +124,12 @@ interface MechLoadoutDraggableProps {
 }
 
 const MechLoadoutDraggable = ({ item, onDrag, onDragStop }: MechLoadoutDraggableProps) => {
+    const transformableRef = useRef<HTMLDivElement>(null)
     const draggableRef = useRef<HTMLDivElement>(null)
 
     return (
         <Box
+            ref={transformableRef}
             sx={{
                 "&:hover": {
                     transition: "transform .1s ease-out",
@@ -144,12 +146,12 @@ const MechLoadoutDraggable = ({ item, onDrag, onDragStop }: MechLoadoutDraggable
             <Draggable
                 position={{ x: 0, y: 0 }}
                 onDrag={() => {
-                    if (!draggableRef.current) return
-                    onDrag(draggableRef.current.getBoundingClientRect())
+                    if (!draggableRef.current || !transformableRef.current) return
+                    onDrag(transformableRef.current, draggableRef.current.getBoundingClientRect())
                 }}
                 onStop={() => {
-                    if (!draggableRef.current) return
-                    onDragStop(draggableRef.current.getBoundingClientRect(), AssetItemType.Weapon, item)
+                    if (!draggableRef.current || !transformableRef.current) return
+                    onDragStop(transformableRef.current, draggableRef.current.getBoundingClientRect(), AssetItemType.Weapon, item)
                 }}
             >
                 <MechLoadoutItemDraggable
