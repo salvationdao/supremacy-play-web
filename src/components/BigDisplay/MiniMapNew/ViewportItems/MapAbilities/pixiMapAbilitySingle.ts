@@ -146,7 +146,7 @@ export class PixiMapAbilitySingle {
             this.imageIcon.showRangeRadius(undefined)
             const config = merge(explosionParticlesConfig, {
                 scale: {
-                    start: 0.14,
+                    start: 0.45,
                     end: 0.04,
                 },
                 lifetime: {
