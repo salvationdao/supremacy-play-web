@@ -4,6 +4,7 @@ import { useArena, useMiniMapPixi } from "../../../../../containers"
 import { useGameServerSubscription } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { DisplayedAbility, LocationSelectType, MechDisplayEffectType, MiniMapDisplayEffectType } from "../../../../../types"
+import { HiveStatus } from "../HiveStatus/HiveStatus"
 import { PixiMapAbilities } from "./pixiMapAbilities"
 
 export enum MapEventType {
@@ -385,5 +386,5 @@ export const MapAbilities = React.memo(function MapAbilities() {
         },
     )
 
-    return null
+    return <HiveStatus hiveStatus={hiveStatus} />
 })
