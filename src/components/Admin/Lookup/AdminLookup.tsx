@@ -1,7 +1,7 @@
 import { Autocomplete, Box, CircularProgress, Stack, TextField, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { ClipThing } from "../.."
-import {  useGlobalNotifications } from "../../../containers"
+import { useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useDebounce, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
@@ -13,7 +13,6 @@ import { User } from "../../../types"
 import { SxProps } from "@mui/system"
 import { Player } from "../../Common/Player"
 import { PlayerProfile } from "./PlayerProfile"
-
 
 export const AdminLookup = () => {
     const theme = useTheme()
@@ -27,7 +26,6 @@ export const AdminLookup = () => {
     const [isLoadingUsers, toggleIsLoadingUsers] = useToggle()
     const [searchValue, setSearchValue] = useDebounce("", 300)
 
-
     useEffect(() => {
         updateQuery({
             selectedGID: selectedGID > 0 ? `${selectedGID}` : "",
@@ -37,8 +35,7 @@ export const AdminLookup = () => {
     // When searching for player, update the dropdown list
     useEffect(() => {
         if (searchValue === "") return
-            ;
-        (async () => {
+        ;(async () => {
             toggleIsLoadingUsers(true)
             try {
                 const resp = await send<User[], { search: string }>(GameServerKeys.GetPlayerList, {
@@ -62,8 +59,7 @@ export const AdminLookup = () => {
 
         return (
             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                <Stack alignItems="center" justifyContent="center"
-                       sx={{ height: "100%", maxWidth: "100rem", width: "100%" }}>
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "100rem", width: "100%" }}>
                     <Typography
                         sx={{
                             px: "1.28rem",
@@ -87,7 +83,14 @@ export const AdminLookup = () => {
                         value={selectedUser}
                         onChange={(e, value) => setSelectedUser(value)}
                         renderOption={(props, u) => (
-                            <Box key={u.id} component="li" {...props} onClick={() => {setSelectedGID(u.gid)}}>
+                            <Box
+                                key={u.id}
+                                component="li"
+                                {...props}
+                                onClick={() => {
+                                    setSelectedGID(u.gid)
+                                }}
+                            >
                                 <UserItem user={u} />
                             </Box>
                         )}
@@ -127,8 +130,7 @@ export const AdminLookup = () => {
                                     ...params.InputProps,
                                     endAdornment: (
                                         <>
-                                            {isLoadingUsers ? <CircularProgress size="1.2rem"
-                                                                                sx={{ color: colors.neonBlue }} /> : null}
+                                            {isLoadingUsers ? <CircularProgress size="1.2rem" sx={{ color: colors.neonBlue }} /> : null}
                                             {params.InputProps.endAdornment}
                                         </>
                                     ),
@@ -139,15 +141,12 @@ export const AdminLookup = () => {
                 </Stack>
             </Stack>
         )
-    }, [userDropdown, isLoadingUsers, selectedUser, searchValue, setSearchValue])
+    }, [userDropdown, isLoadingUsers, selectedUser, searchValue, setSearchValue, selectedGID])
 
     const UserItem = ({ user, sx }: { user: User; sx?: SxProps }) => {
         return (
             <Stack direction="row" spacing=".6rem" alignItems="center" sx={sx}>
-                <Player
-                    player={user}
-                    styledImageTextProps={{ textColor: "#FFFFFF" }}
-                />
+                <Player player={user} styledImageTextProps={{ textColor: "#FFFFFF" }} />
             </Stack>
         )
     }
@@ -173,10 +172,6 @@ export const AdminLookup = () => {
                     <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
                         <Box
                             sx={{
-                                ml: "1.9rem",
-                                mr: ".5rem",
-                                pr: "1.4rem",
-                                my: "1rem",
                                 flex: 1,
                                 overflowY: "auto",
                                 overflowX: "hidden",
@@ -198,7 +193,6 @@ export const AdminLookup = () => {
                             {content}
                         </Box>
                     </Stack>
-
                 </Stack>
             </Stack>
         </ClipThing>

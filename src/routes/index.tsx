@@ -20,8 +20,6 @@ import { StorefrontPage } from "../pages/StorefrontPage"
 import { StorefrontShoppingCartPage } from "../pages/StorefrontShoppingCartPage"
 import { WeaponPage } from "../pages/WeaponPage"
 import { colors } from "../theme/theme"
-import { StorefrontShoppingCartPage } from "../pages/StorefrontShoppingCartPage"
-import { BattleLobbiesPage } from "../pages/BattleLobbiesPage"
 import { AdminPage } from "../pages/AdminPage"
 
 // ************
