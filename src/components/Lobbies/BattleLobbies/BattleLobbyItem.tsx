@@ -28,24 +28,6 @@ const propsAreEqual = (prevProps: BattleLobbyItemProps, nextProps: BattleLobbyIt
     )
 }
 
-// {
-//     mech_id: "",
-//     battle_lobby_id: "",
-//     name: "",
-//     label: "",
-//     tier: "",
-//     avatar_url: "",
-//     owner: {
-//         id: "",
-//         faction_id: "",
-//         username: "UNKNOWN",
-//         gid: 0,
-//         rank: "NEW_RECRUIT",
-//         features: [],
-//     },
-//     is_destroyed: false,
-// }
-
 export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby }: BattleLobbyItemProps) {
     const theme = useTheme()
     const { factionID } = useAuth()
@@ -94,7 +76,37 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
         return [myFactionLobbySlots, otherFactionLobbySlots]
     }, [factionsAll, battle_lobbies_mechs, factionID])
 
-    console.log(game_map)
+    const entryFeeDisplay = useMemo(() => {
+        if (entry_fee && entry_fee !== "0")
+            return (
+                <Stack direction="row" spacing=".2rem" alignItems="center">
+                    <Typography
+                        sx={{
+                            color: colors.grey,
+                        }}
+                    >
+                        Entry Fee:
+                    </Typography>
+                    <SvgSupToken size="1.6rem" fill={colors.gold} />
+                    <Typography
+                        sx={{
+                            color: "white",
+                        }}
+                    >
+                        {supFormatter(entry_fee)}
+                    </Typography>
+                </Stack>
+            )
+        return (
+            <Typography
+                sx={{
+                    color: colors.green,
+                }}
+            >
+                No entry fee
+            </Typography>
+        )
+    }, [entry_fee])
 
     return (
         <>
@@ -138,7 +150,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                             <Stack direction="column" flexBasis="250px" height="100%" mr="1rem">
                                 <Box mb="1rem">
                                     <Typography
-                                        variant="h4"
+                                        variant="h5"
                                         sx={{
                                             lineHeight: 1,
                                             fontFamily: fonts.nostromoBlack,
@@ -166,33 +178,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                             >
                                                 &#8212;
                                             </Box>
-                                            {entry_fee && entry_fee !== "0" ? (
-                                                <Stack direction="row" spacing=".2rem" alignItems="center">
-                                                    <Typography
-                                                        sx={{
-                                                            color: colors.grey,
-                                                        }}
-                                                    >
-                                                        Entry Fee:
-                                                    </Typography>
-                                                    <SvgSupToken size="1.6rem" fill={colors.gold} />
-                                                    <Typography
-                                                        sx={{
-                                                            color: "white",
-                                                        }}
-                                                    >
-                                                        {supFormatter(entry_fee)}
-                                                    </Typography>
-                                                </Stack>
-                                            ) : (
-                                                <Typography
-                                                    sx={{
-                                                        color: colors.green,
-                                                    }}
-                                                >
-                                                    No entry fee
-                                                </Typography>
-                                            )}
+                                            {entryFeeDisplay}
                                         </Stack>
                                     ) : (
                                         <Stack direction="row" spacing=".5rem" alignItems="baseline">
@@ -211,38 +197,12 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                             >
                                                 &#8212;
                                             </Box>
-                                            {entry_fee && entry_fee !== "0" ? (
-                                                <Stack direction="row" spacing=".2rem" alignItems="center">
-                                                    <Typography
-                                                        sx={{
-                                                            color: colors.grey,
-                                                        }}
-                                                    >
-                                                        Entry Fee:
-                                                    </Typography>
-                                                    <SvgSupToken size="1.6rem" fill={colors.gold} />
-                                                    <Typography
-                                                        sx={{
-                                                            color: "white",
-                                                        }}
-                                                    >
-                                                        {supFormatter(entry_fee)}
-                                                    </Typography>
-                                                </Stack>
-                                            ) : (
-                                                <Typography
-                                                    sx={{
-                                                        color: colors.green,
-                                                    }}
-                                                >
-                                                    No entry fee
-                                                </Typography>
-                                            )}
+                                            {entryFeeDisplay}
                                         </Stack>
                                     )}
                                 </Box>
                                 {assignedToArenaName && (
-                                    <Stack direction="row" spacing=".5rem">
+                                    <Stack direction="column" sx={{ mb: ".35rem" }}>
                                         <Typography
                                             component="span"
                                             sx={{
@@ -268,18 +228,17 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                         </Typography>
                                     </Stack>
                                 )}
-                                <Stack direction="row" spacing=".5rem">
+                                <Stack direction="column" sx={{ mb: ".35rem" }}>
                                     <Typography
-                                        component="span"
                                         sx={{
                                             color: colors.grey,
                                             textTransform: "uppercase",
+                                            textAlign: "bottom",
                                         }}
                                     >
-                                        Map:{" "}
+                                        Map:
                                     </Typography>
                                     <Typography
-                                        component="span"
                                         sx={{
                                             display: "-webkit-box",
                                             overflow: "hidden",
@@ -293,18 +252,16 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                         {game_map ? camelToTitle(game_map.name) : "Random"}
                                     </Typography>
                                 </Stack>
-                                <Stack direction="row" spacing=".5rem">
+                                <Stack direction="column" sx={{ mb: ".35rem" }}>
                                     <Typography
-                                        component="span"
                                         sx={{
                                             color: colors.grey,
                                             textTransform: "uppercase",
                                         }}
                                     >
-                                        Hosted by:{" "}
+                                        Hosted by
                                     </Typography>
                                     <Typography
-                                        component="span"
                                         sx={{
                                             display: "-webkit-box",
                                             overflow: "hidden",

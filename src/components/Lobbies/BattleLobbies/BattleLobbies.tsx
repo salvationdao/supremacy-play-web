@@ -6,7 +6,7 @@ import { useTheme } from "../../../containers/theme"
 import { useDebounce, usePagination } from "../../../hooks"
 import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { fonts } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { BattleLobby } from "../../../types/battle_queue"
 import { SortTypeLabel } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
@@ -14,6 +14,8 @@ import { PageHeader } from "../../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { SearchBattle } from "../../Replays/BattlesReplays/SearchBattle"
 import { BattleLobbyItem } from "./BattleLobbyItem"
+import { FancyButton } from "../../Common/FancyButton"
+import { BattleLobbyCreateModal } from "../BattleLobbyCreateModal"
 
 const sortOptionsPending: { label: string; value: string }[] = [
     { label: SortTypeLabel.QueuedAmountHighest, value: SortTypeLabel.QueuedAmountHighest },
@@ -33,49 +35,17 @@ export enum LobbyStatusEnum {
 
 interface BattleLobbiesProps {
     lobbyStatus: LobbyStatusEnum
+    battleLobbies: BattleLobby[]
 }
 
-export const BattleLobbies = ({ lobbyStatus }: BattleLobbiesProps) => {
+export const BattleLobbies = ({ lobbyStatus, battleLobbies }: BattleLobbiesProps) => {
     const theme = useTheme()
-
-    // load battle lobbies
-    const [battleLobbies, setBattleLobbies] = useState<BattleLobby[]>([])
-    useGameServerSubscriptionFaction<BattleLobby[]>(
-        {
-            URI: `/battle_lobbies`,
-            key: GameServerKeys.SubBattleLobbyListUpdate,
-        },
-        (payload) => {
-            if (!payload) return
-            setBattleLobbies((bls) => {
-                if (bls.length === 0) {
-                    return payload
-                }
-
-                // replace current list
-                let list = bls.map((bl) => payload.find((p) => p.id === bl.id) || bl)
-
-                // append new list
-                payload.forEach((p) => {
-                    // if already exists
-                    if (list.some((b) => b.id === p.id)) {
-                        return
-                    }
-                    // otherwise, push to the list
-                    list.push(p)
-                })
-
-                // remove any finished lobby
-                list = list.filter((bl) => !bl.ended_at && !bl.deleted_at)
-
-                return list
-            })
-        },
-    )
 
     const [list, setList] = useState<BattleLobby[]>([])
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
+
+    const [openNewLobbyModal, setOpenNewLobbyModal] = useState(false)
 
     const { page, changePage, changePageSize, totalItems, setTotalItems, totalPages, pageSize } = usePagination({
         pageSize: 10,
@@ -113,7 +83,7 @@ export const BattleLobbies = ({ lobbyStatus }: BattleLobbiesProps) => {
 
         // filter
         if (searchValue !== "") {
-            sorted = sorted.filter((s) => `${s.number}` === searchValue)
+            sorted = sorted.filter((s) => `${s.name}`.toLowerCase().includes(searchValue.toLowerCase()))
         }
 
         switch (lobbyStatus) {
@@ -225,6 +195,7 @@ export const BattleLobbies = ({ lobbyStatus }: BattleLobbiesProps) => {
                             spacing="2.6rem"
                             direction="row"
                             alignItems="center"
+                            justifyContent="space-between"
                             sx={{ p: ".8rem 1.8rem", borderBottom: (theme) => `${theme.factionTheme.primary}70 1.5px solid` }}
                         >
                             {/* Search */}
@@ -232,10 +203,25 @@ export const BattleLobbies = ({ lobbyStatus }: BattleLobbiesProps) => {
                                 <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
                                     SEARCH:
                                 </Typography>
-                                <SearchBattle placeholder="Lobby Number" searchValueInstant={searchValueInstant} setSearchValue={setSearchValue} />
+                                <SearchBattle placeholder="Lobby Name" searchValueInstant={searchValueInstant} setSearchValue={setSearchValue} />
                             </Stack>
 
-                            <Box sx={{ flex: 1 }} />
+                            <FancyButton
+                                clipThingsProps={{
+                                    clipSize: "6px",
+                                    clipSlantSize: "0px",
+                                    corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
+                                    backgroundColor: colors.bronze,
+                                    border: { isFancy: true, borderColor: colors.bronze, borderThickness: "1.5px" },
+                                    sx: { position: "relative", minWidth: "10rem" },
+                                }}
+                                sx={{ px: ".35rem", py: ".5rem", color: "#FFFFFF" }}
+                                onClick={() => setOpenNewLobbyModal(true)}
+                            >
+                                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                    NEW BATTLE LOBBY
+                                </Typography>
+                            </FancyButton>
                         </Stack>
 
                         <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
@@ -296,6 +282,7 @@ export const BattleLobbies = ({ lobbyStatus }: BattleLobbiesProps) => {
                     </Stack>
                 </Stack>
             </ClipThing>
+            {openNewLobbyModal && <BattleLobbyCreateModal setOpen={setOpenNewLobbyModal} />}
         </>
     )
 }

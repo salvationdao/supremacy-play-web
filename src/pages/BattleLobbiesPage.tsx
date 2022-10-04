@@ -8,6 +8,9 @@ import { BattleLobbies, LobbyStatusEnum } from "../components/Lobbies/BattleLobb
 import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
 import { siteZIndex } from "../theme/theme"
+import { BattleLobby } from "../types/battle_queue"
+import { useGameServerSubscriptionFaction } from "../hooks/useGameServer"
+import { GameServerKeys } from "../keys"
 
 export enum BATTLE_LOBBY_TABS {
     Ready = "central-queue",
@@ -36,6 +39,41 @@ export const BattleLobbiesPage = () => {
             history.push(`${ROUTES_MAP.battle_lobbies.path.replace(":status", newValue)}`)
         },
         [history],
+    )
+
+    // load battle lobbies
+    const [battleLobbies, setBattleLobbies] = useState<BattleLobby[]>([])
+    useGameServerSubscriptionFaction<BattleLobby[]>(
+        {
+            URI: `/battle_lobbies`,
+            key: GameServerKeys.SubBattleLobbyListUpdate,
+        },
+        (payload) => {
+            if (!payload) return
+            setBattleLobbies((bls) => {
+                if (bls.length === 0) {
+                    return payload
+                }
+
+                // replace current list
+                let list = bls.map((bl) => payload.find((p) => p.id === bl.id) || bl)
+
+                // append new list
+                payload.forEach((p) => {
+                    // if already exists
+                    if (list.some((b) => b.id === p.id)) {
+                        return
+                    }
+                    // otherwise, push to the list
+                    list.push(p)
+                })
+
+                // remove any finished lobby
+                list = list.filter((bl) => !bl.ended_at && !bl.deleted_at)
+
+                return list
+            })
+        },
     )
 
     if (!currentValue) return null
@@ -95,11 +133,11 @@ export const BattleLobbiesPage = () => {
                 </Stack>
 
                 <TabPanel currentValue={currentValue} value={BATTLE_LOBBY_TABS.Pending}>
-                    <BattleLobbies lobbyStatus={LobbyStatusEnum.Pending} />
+                    <BattleLobbies battleLobbies={battleLobbies} lobbyStatus={LobbyStatusEnum.Pending} />
                 </TabPanel>
 
                 <TabPanel currentValue={currentValue} value={BATTLE_LOBBY_TABS.Ready}>
-                    <BattleLobbies lobbyStatus={LobbyStatusEnum.Ready} />
+                    <BattleLobbies battleLobbies={battleLobbies} lobbyStatus={LobbyStatusEnum.Ready} />
                 </TabPanel>
             </Stack>
         </Stack>

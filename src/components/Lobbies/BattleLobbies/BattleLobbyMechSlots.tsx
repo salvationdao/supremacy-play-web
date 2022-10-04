@@ -284,7 +284,7 @@ export const OtherFactionLobbySlots = ({ factionLobbies }: OtherFactionLobbySlot
     return (
         <>
             {factionLobbies.map((fl) => (
-                <Box key={fl.faction.id}>
+                <Box key={fl.faction.id} sx={{ mb: ".35rem" }}>
                     <Stack
                         direction="row"
                         sx={{
