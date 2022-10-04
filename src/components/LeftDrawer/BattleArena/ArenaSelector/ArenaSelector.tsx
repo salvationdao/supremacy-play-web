@@ -6,19 +6,18 @@ import { fonts } from "../../../../theme/theme"
 export const ArenaSelector = () => {
     const { factionTheme } = useTheme()
     const { arenaList, currentArena, setCurrentArena } = useArena()
-    console.log(arenaList.map((a) => ({ id: a.id, name: a?.name?.toUpperCase() || "" })))
 
     return (
         <Autocomplete
             fullWidth
             disableClearable
-            options={arenaList.map((a) => ({ id: a.id, name: a?.name?.toUpperCase() || "" }))}
+            options={arenaList}
             onChange={(event, value) => {
                 const it: { id: string; name: string } | string = value
                 if (typeof it === "string") return
                 setCurrentArena((prev) => arenaList.find((a) => a.id === it.id) || prev)
             }}
-            value={currentArena ? { id: currentArena.id, name: currentArena.name } : undefined}
+            value={currentArena}
             getOptionLabel={(option) => `ARENA - ${option?.name?.toUpperCase() || ""}`}
             sx={{
                 "&& .MuiInputBase-hiddenLabel": {
@@ -45,7 +44,7 @@ export const ArenaSelector = () => {
             renderOption={(props, option: { id: string; name: string }) => (
                 <Box component="li" {...props}>
                     <Typography variant="body1" sx={{ fontFamily: fonts.nostromoBold }}>
-                        Arena - {option.name}
+                        Arena - {option.name.toUpperCase()}
                     </Typography>
                 </Box>
             )}
