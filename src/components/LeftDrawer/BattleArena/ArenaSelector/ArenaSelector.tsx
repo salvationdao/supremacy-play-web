@@ -9,9 +9,9 @@ export const ArenaSelector = () => {
 
     return (
         <Autocomplete
-            disableClearable
             fullWidth
-            options={arenaList.map((a) => ({ id: a.id, name: a?.name?.toUpperCase() || "" }))}
+            disableClearable
+            options={arenaList}
             onChange={(event, value) => {
                 const it: { id: string; name: string } | string = value
                 if (typeof it === "string") return
@@ -30,7 +30,7 @@ export const ArenaSelector = () => {
                 },
                 "&& .MuiAutocomplete-input": {
                     px: "1.5rem",
-                    py: "1rem",
+                    py: ".8rem",
                 },
             }}
             componentsProps={{
@@ -43,13 +43,8 @@ export const ArenaSelector = () => {
             }}
             renderOption={(props, option: { id: string; name: string }) => (
                 <Box component="li" {...props}>
-                    <Typography
-                        variant="body1"
-                        sx={{
-                            fontFamily: fonts.nostromoBold,
-                        }}
-                    >
-                        Arena - {option.name}
+                    <Typography variant="body1" sx={{ fontFamily: fonts.nostromoBold }}>
+                        Arena - {option.name.toUpperCase()}
                     </Typography>
                 </Box>
             )}
@@ -63,7 +58,8 @@ export const ArenaSelector = () => {
                         ".MuiOutlinedInput-input": {
                             height: "unset",
                             fontSize: "1.8rem",
-                            fontFamily: fonts.nostromoBold,
+                            color: factionTheme.secondary,
+                            fontFamily: fonts.nostromoBlack,
                             borderRadius: 0,
                             border: `${factionTheme.primary}50 2px solid`,
                             backgroundColor: factionTheme.primary,
@@ -74,6 +70,9 @@ export const ArenaSelector = () => {
                             },
                         },
                         ".MuiOutlinedInput-notchedOutline": { border: "unset" },
+                        ".MuiSvgIcon-root": {
+                            fill: factionTheme.secondary,
+                        },
                     }}
                 />
             )}

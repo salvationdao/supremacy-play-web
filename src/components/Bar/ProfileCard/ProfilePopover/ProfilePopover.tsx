@@ -1,17 +1,17 @@
 import { Popover, Stack } from "@mui/material"
 import { MutableRefObject, useEffect, useState } from "react"
 import { ClipThing } from "../../.."
-import { SvgAssets, SvgProfile, SvgSettings, SvgSupport } from "../../../../assets"
-import { PASSPORT_WEB, DEV_ONLY, STAGING_OR_DEV_ONLY } from "../../../../constants"
+import { SvgAssets, SvgFeedback, SvgProfile, SvgSettings, SvgSupport } from "../../../../assets"
+import { DEV_ONLY, FEEDBACK_FORM_URL, PASSPORT_WEB, STAGING_OR_DEV_ONLY } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
 import { siteZIndex } from "../../../../theme/theme"
 import { User } from "../../../../types"
+import { DeviceRegisterModal } from "../PreferencesModal/DeviceRegisterModal"
 import { PreferencesModal } from "../PreferencesModal/PreferencesModal"
 import { TelegramRegisterModal } from "../PreferencesModal/TelegramRegisterModal"
 import { LogoutButton } from "./LogoutButton"
 import { NavButton } from "./NavButton"
-import { DeviceRegisterModal } from "../PreferencesModal/DeviceRegisterModal"
 
 export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: boolean; popoverRef: MutableRefObject<null>; onClose: () => void; user: User }) => {
     const theme = useTheme()
@@ -88,6 +88,8 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
                             startIcon={<SvgSettings sx={{ pb: ".5rem" }} size="1.6rem" />}
                             text="Preferences"
                         />
+
+                        <NavButton href={FEEDBACK_FORM_URL} startIcon={<SvgFeedback sx={{ pb: ".5rem" }} size="1.6rem" />} text="Feedback" />
 
                         <LogoutButton />
                     </Stack>

@@ -1,5 +1,4 @@
 import { ConfirmModal } from "../Common/ConfirmModal"
-import { Typography } from "@mui/material"
 
 interface BattleLobbyCreateModalProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -15,7 +14,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
             error={""}
             width="75rem"
         >
-            <Typography></Typography>
+            <></>
         </ConfirmModal>
     )
 }
