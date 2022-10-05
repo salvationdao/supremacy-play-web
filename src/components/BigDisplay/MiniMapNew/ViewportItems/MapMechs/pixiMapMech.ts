@@ -264,6 +264,7 @@ export class PixiMapMech {
     }
 
     updateVisibility(isVisible: boolean) {
+        this.mechMoveDashedLine.visible = isVisible
         this.rootInner.visible = isVisible
     }
 
