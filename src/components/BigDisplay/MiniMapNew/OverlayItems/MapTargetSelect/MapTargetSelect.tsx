@@ -181,8 +181,7 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
                         ability.location_select_type === LocationSelectType.MechCommand ||
                         ability.game_client_ability_id === MechMoveCommandAbility.ability.game_client_ability_id
                     ) {
-                        // pixiTargetHint.startCountdown(0, 3, false) // TODO: turn this one back on after adding debounce for mech move
-                        pixiTargetHint.startCountdown(2, 3, false)
+                        pixiTargetHint.startCountdown(2, 3, false, false)
                     } else {
                         pixiTargetHint.startCountdown()
                     }
