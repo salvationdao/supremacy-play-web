@@ -118,28 +118,19 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
             return
         }
 
-        // When parent container size changes, resize the renderer and viewport dimension
-        pixiMainItems.app.renderer.resize(containerDimensions.width, containerDimensions.height)
-        pixiMainItems.viewport.resize(
-            containerDimensions.width,
-            containerDimensions.height,
-            pixiMainItems.viewport.worldWidth,
-            pixiMainItems.viewport.worldHeight,
-        )
-        pixiMainItems.viewport.clampZoom({
-            maxWidth: pixiMainItems.viewport.worldWidth,
-            maxHeight: pixiMainItems.viewport.worldWidth,
-            minWidth: 50,
-            minHeight: 50,
-        })
+        setTimeout(() => {
+            // When parent container size changes, resize the renderer and viewport dimension
+            pixiMainItems.app.renderer.resize(containerDimensions.width, containerDimensions.height)
+            pixiMainItems.viewport.resize(containerDimensions.width, containerDimensions.height)
 
-        // Fit to cover
-        if (containerDimensions.width > containerDimensions.height) {
-            pixiMainItems.viewport.fitWidth()
-        } else {
-            pixiMainItems.viewport.fitHeight()
-        }
-        pixiMainItems.viewport.moveCorner(0, 0)
+            // Fit to cover
+            if (containerDimensions.width > containerDimensions.height) {
+                pixiMainItems.viewport.fitWidth()
+            } else {
+                pixiMainItems.viewport.fitHeight()
+            }
+            pixiMainItems.viewport.moveCorner(0, 0)
+        }, 0)
     }, [pixiMainItems, containerDimensions, setupPixi, miniMapPixiRef])
 
     // Cleanup
@@ -178,12 +169,7 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
 
             // Update pixi viewport world dimension
             pixiMainItems.viewport.resize(pixiMainItems.app.renderer.width, pixiMainItems.app.renderer.height, dimension.width, dimension.height)
-            pixiMainItems.viewport.clampZoom({
-                maxWidth: dimension.width,
-                maxHeight: dimension.height,
-                minWidth: 50,
-                minHeight: 50,
-            })
+            pixiMainItems.viewport.clampZoom({ minWidth: 50, minHeight: 50, maxWidth: dimension.width, maxHeight: dimension.height })
 
             // Update the map's dimension and texture
             pixiItems.current.mapSprite.width = dimension.width
