@@ -2,7 +2,7 @@ import { Box } from "@mui/material"
 import { Viewport } from "pixi-viewport"
 import * as PIXI from "pixi.js"
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { useGame } from "../../../containers"
+import { useGame, useSupremacy } from "../../../containers"
 import { useMiniMapPixi } from "../../../containers/minimapPixi"
 import { calculateCoverDimensions, HEXToVBColor } from "../../../helpers"
 import { colors } from "../../../theme/theme"
@@ -36,6 +36,7 @@ const propsAreEqual = (prevProps: MiniMapPixiProps, nextProps: MiniMapPixiProps)
 
 export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions }: MiniMapPixiProps) {
     const { map } = useGame()
+    const { battleIdentifier } = useSupremacy()
     const {
         pixiMainItems,
         setPixiMainItems,
@@ -228,7 +229,7 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
             <Box
                 id="minimap-pixi-container"
                 ref={setMiniMapPixiRef}
-                key={map?.Name}
+                key={`mini-map-pixi-${battleIdentifier}-${map?.Name}`}
                 sx={{
                     position: "relative",
                     width: containerDimensions.width,
@@ -254,5 +255,5 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
                 )}
             </Box>
         )
-    }, [containerDimensions.height, containerDimensions.width, isReady, map])
+    }, [battleIdentifier, containerDimensions.height, containerDimensions.width, isReady, map?.Name])
 }, propsAreEqual)
