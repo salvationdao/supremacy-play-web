@@ -61,7 +61,6 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
                 backgroundColor: HEXToVBColor(colors.darkNavyBlue),
                 width: dimension.width,
                 height: dimension.height,
-                resolution: window.devicePixelRatio || 1,
             })
 
             // Append pixi canvas to the DOM
