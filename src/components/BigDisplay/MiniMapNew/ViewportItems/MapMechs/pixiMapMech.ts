@@ -54,11 +54,11 @@ export class PixiMapMech {
         this.rootInner = new PIXI.Container()
         this.rootInner.x = -100
         this.rootInner.y = -100
-        this.rootInner.interactive = true
-        this.rootInner.buttonMode = true
         this.rootInner.zIndex = 3
         this.rootInner2 = new PIXI.Container()
         this.rootInner2.sortableChildren = true
+        this.rootInner2.interactive = true
+        this.rootInner2.buttonMode = true
 
         // Rect
         this.rectGraphics = new PIXI.Graphics()
@@ -109,7 +109,6 @@ export class PixiMapMech {
         this.particlesContainer = new PIXI.Container()
 
         // Add everything to container
-        this.rootInner2.addChild(this.particlesContainer)
         this.rootInner2.addChild(this.rectGraphics)
         this.rootInner2.addChild(this.blinkingBorder)
         this.rootInner2.addChild(this.arrowGraphics)
@@ -119,6 +118,7 @@ export class PixiMapMech {
         this.rootInner2.addChild(this.highlightedCircle)
         this.rootInner2.addChild(this.dashedBox)
         this.rootInner2.addChild(this.skull)
+        this.rootInner.addChild(this.particlesContainer)
         this.rootInner.addChild(this.rootInner2)
         this.root.addChild(this.rootInner)
         this.root.addChild(this.mechMoveDashedLine)
@@ -264,6 +264,7 @@ export class PixiMapMech {
     }
 
     updateVisibility(isVisible: boolean) {
+        this.mechMoveDashedLine.visible = isVisible
         this.rootInner.visible = isVisible
     }
 

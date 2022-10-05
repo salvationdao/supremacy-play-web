@@ -286,8 +286,8 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     useEffect(() => {
         if (!pixiMapMech) return
 
-        pixiMapMech.rootInner.removeListener("pointerup")
-        pixiMapMech.rootInner.on("pointerup", onMechClick)
+        pixiMapMech.rootInner2.removeListener("pointerup")
+        pixiMapMech.rootInner2.on("pointerup", onMechClick)
     }, [onMechClick, pixiMapMech])
 
     // Add hotkey to select this mech
