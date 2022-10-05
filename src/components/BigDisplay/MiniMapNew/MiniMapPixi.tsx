@@ -87,12 +87,6 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
                     direction: "all",
                     underflow: "center",
                 })
-                .clampZoom({
-                    maxWidth: viewport.screenWidth,
-                    maxHeight: viewport.screenHeight,
-                    minWidth: 50,
-                    minHeight: 50,
-                })
                 .on("drag-start", () => {
                     isDragging.current = true
                 })
@@ -126,7 +120,18 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
 
         // When parent container size changes, resize the renderer and viewport dimension
         pixiMainItems.app.renderer.resize(containerDimensions.width, containerDimensions.height)
-        pixiMainItems.viewport.resize(containerDimensions.width, containerDimensions.height)
+        pixiMainItems.viewport.resize(
+            containerDimensions.width,
+            containerDimensions.height,
+            pixiMainItems.viewport.worldWidth,
+            pixiMainItems.viewport.worldHeight,
+        )
+        pixiMainItems.viewport.clampZoom({
+            maxWidth: pixiMainItems.viewport.worldWidth,
+            maxHeight: pixiMainItems.viewport.worldWidth,
+            minWidth: 50,
+            minHeight: 50,
+        })
 
         // Fit to cover
         if (containerDimensions.width > containerDimensions.height) {
@@ -173,6 +178,12 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
 
             // Update pixi viewport world dimension
             pixiMainItems.viewport.resize(pixiMainItems.app.renderer.width, pixiMainItems.app.renderer.height, dimension.width, dimension.height)
+            pixiMainItems.viewport.clampZoom({
+                maxWidth: dimension.width,
+                maxHeight: dimension.height,
+                minWidth: 50,
+                minHeight: 50,
+            })
 
             // Update the map's dimension and texture
             pixiItems.current.mapSprite.width = dimension.width
