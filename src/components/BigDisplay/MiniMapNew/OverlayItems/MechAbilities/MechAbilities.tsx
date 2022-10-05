@@ -17,7 +17,6 @@ export const MechAbilities = React.memo(function MechAbilities() {
 
     useEffect(() => {
         const mech = [...(warMachines || []), ...(spawnedAI || [])].find((m) => m.participantID === highlightedMechParticipantID)
-
         if (mech) setHighlightedMech(mech)
     }, [highlightedMechParticipantID, spawnedAI, warMachines])
 
