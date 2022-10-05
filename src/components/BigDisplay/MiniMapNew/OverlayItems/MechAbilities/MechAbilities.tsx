@@ -16,7 +16,7 @@ export const MechAbilities = React.memo(function MechAbilities() {
     const isVoting = useMemo(() => bribeStage && bribeStage?.phase !== BribeStage.Hold, [bribeStage])
 
     useEffect(() => {
-        const mech = [...(warMachines || []), ...(spawnedAI || [])].find((m) => m.participantID === highlightedMechParticipantID && m.ownedByID !== userID)
+        const mech = [...(warMachines || []), ...(spawnedAI || [])].find((m) => m.participantID === highlightedMechParticipantID && m.ownedByID === userID)
         if (mech) setHighlightedMech(mech)
     }, [highlightedMechParticipantID, spawnedAI, userID, warMachines])
 
