@@ -1,9 +1,8 @@
 import { ConfirmModal } from "../../../Common/ConfirmModal"
-import React, { ReactNode, useMemo, useState } from "react"
-import { InputAdornment, MenuItem, Select, SelectProps, Stack, TextField, Typography } from "@mui/material"
+import React, { useMemo, useState } from "react"
+import { Box, Stack, Typography } from "@mui/material"
 import { colors, fonts } from "../../../../theme/theme"
 import { SvgSupToken } from "../../../../assets"
-import { TextFieldProps } from "@mui/material/TextField"
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerSubscriptionSecured } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -11,10 +10,14 @@ import { GameMap, MechBasicWithQueueStatus } from "../../../../types"
 import { FactionBasedDatePicker } from "../../../Common/FactionBasedDatePicker"
 import moment from "moment"
 import { FactionBasedTimePicker } from "../../../Common/FactionBasedTimePicker"
-import { MechSlot } from "./MechSlot"
 import { MechSelector } from "./MechSelector"
 import { FancyButton } from "../../../Common/FancyButton"
 import { SelectedMechSlots } from "./SelectedMechSlots"
+import { InputField } from "./InputField"
+import { SelectField } from "./SelectField"
+import { RadioGroupField } from "./RadioGroupField"
+import { makeid } from "../../../../containers/ws/util"
+import { shortCodeGenerator } from "../../../../helpers"
 
 interface BattleLobbyCreateModalProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -22,7 +25,7 @@ interface BattleLobbyCreateModalProps {
 
 interface LobbyForm {
     name: string
-    password: string
+    access_code: string
     entryFee: string
     first_faction_cut: string
     second_faction_cut: string
@@ -30,6 +33,12 @@ interface LobbyForm {
     game_map_id: string
     wont_start_until_date: moment.Moment | null
     wont_start_until_time: moment.Moment | null
+    accessibility: string
+}
+
+enum Accessibility {
+    Public = "PUBLIC",
+    Private = "PRIVATE",
 }
 
 export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps) => {
@@ -52,7 +61,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
 
     const [lobbyForm, setLobbyForm] = useState<LobbyForm>({
         name: "",
-        password: "",
+        access_code: "",
         entryFee: "0",
         first_faction_cut: "75",
         second_faction_cut: "25",
@@ -60,7 +69,17 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
         game_map_id: "",
         wont_start_until_date: null,
         wont_start_until_time: null,
+        accessibility: Accessibility.Public,
     })
+
+    const accessCode = useMemo(() => {
+        let code = ""
+        if (lobbyForm.accessibility === Accessibility.Private) code = shortCodeGenerator(10, false, true, false)
+
+        setLobbyForm((prev) => ({ ...prev, access_code: code }))
+        return code
+    }, [lobbyForm.accessibility])
+    const [isCopied, setIsCopied] = useState(false)
 
     const disableTimePicker = useMemo(() => !lobbyForm.wont_start_until_date || !lobbyForm.wont_start_until_date.isValid(), [lobbyForm.wont_start_until_date])
 
@@ -128,12 +147,80 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                                 value={lobbyForm.game_map_id}
                                 onChange={(e) => setLobbyForm((prev) => ({ ...prev, game_map_id: e.target.value as string }))}
                             />
-                            <InputField
-                                variant="outlined"
-                                label="Password (optional)"
-                                placeholder="password"
-                                value={lobbyForm.password}
-                                onChange={(e) => setLobbyForm((prev) => ({ ...prev, password: e.target.value }))}
+                            <RadioGroupField
+                                label="Accessibility"
+                                options={[
+                                    { id: Accessibility.Public, label: Accessibility.Public },
+                                    {
+                                        id: Accessibility.Private,
+                                        label: (
+                                            <Stack direction="row" alignItems="center" flex={1} sx={{ height: "100%" }}>
+                                                <Typography variant="subtitle1" fontFamily={fonts.nostromoBlack}>
+                                                    {Accessibility.Private}
+                                                </Typography>
+                                                <Stack
+                                                    direction="row"
+                                                    alignItems="center"
+                                                    flex={1}
+                                                    sx={{
+                                                        height: "100%",
+                                                        pl: "1rem",
+                                                        opacity: lobbyForm.accessibility === Accessibility.Private ? 1 : 0.5,
+                                                    }}
+                                                >
+                                                    <Stack
+                                                        direction="row"
+                                                        alignItems="center"
+                                                        flex={1}
+                                                        sx={{
+                                                            height: "100%",
+                                                            pl: "1.5rem",
+                                                            borderTop: `${factionTheme.primary} 2px dashed`,
+                                                            borderLeft: `${factionTheme.primary} 2px dashed`,
+                                                            borderBottom: `${factionTheme.primary} 2px dashed`,
+                                                        }}
+                                                        onClick={(e) => {
+                                                            e.preventDefault()
+                                                            e.stopPropagation()
+                                                            if (isCopied || !accessCode) return
+                                                        }}
+                                                    >
+                                                        <Typography variant="subtitle1" fontFamily={fonts.nostromoHeavy}>
+                                                            {accessCode}
+                                                        </Typography>
+                                                    </Stack>
+                                                    <Stack
+                                                        direction="row"
+                                                        alignItems="center"
+                                                        justifyContent="center"
+                                                        sx={{
+                                                            px: "1rem",
+                                                            height: "100%",
+                                                            backgroundColor: factionTheme.primary,
+                                                            minWidth: "9.5rem",
+                                                        }}
+                                                        onClick={async (e) => {
+                                                            e.preventDefault()
+                                                            e.stopPropagation()
+                                                            if (isCopied || !accessCode) return
+                                                            await navigator.clipboard.writeText(accessCode)
+                                                            setIsCopied(true)
+                                                            setTimeout(() => setIsCopied(false), 1000)
+                                                        }}
+                                                    >
+                                                        <Typography variant="body2" fontFamily={fonts.nostromoBlack}>
+                                                            {isCopied ? "COPIED" : "COPY"}
+                                                        </Typography>
+                                                    </Stack>
+                                                </Stack>
+                                            </Stack>
+                                        ),
+                                    },
+                                ]}
+                                value={lobbyForm.accessibility}
+                                onChange={(value) => {
+                                    setLobbyForm((prev) => ({ ...prev, accessibility: value }))
+                                }}
                             />
                         </Stack>
 
@@ -233,153 +320,5 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                 <SelectedMechSlots selectedMechs={selectedMechs} setSelectedMechs={setSelectedMechs} />
             </Stack>
         </ConfirmModal>
-    )
-}
-
-interface InputFieldProps {
-    startAdornmentLabel?: ReactNode
-    endAdornmentLabel?: ReactNode
-}
-
-const InputField = ({ label, startAdornmentLabel, endAdornmentLabel, placeholder, disabled, ...props }: InputFieldProps & TextFieldProps) => {
-    const { factionTheme } = useTheme()
-    const title = useMemo(() => {
-        if (typeof label === "string") {
-            return (
-                <Typography variant="body2" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
-                    {label}
-                </Typography>
-            )
-        }
-        return label
-    }, [factionTheme.primary, label])
-
-    const startAdornment = useMemo(() => {
-        if (!startAdornmentLabel) return null
-        return <InputAdornment position="start">{startAdornmentLabel}</InputAdornment>
-    }, [startAdornmentLabel])
-
-    const endAdornment = useMemo(() => {
-        if (!endAdornmentLabel) return null
-        return <InputAdornment position="start">{endAdornmentLabel}</InputAdornment>
-    }, [endAdornmentLabel])
-
-    return (
-        <Stack
-            spacing=".5rem"
-            sx={{
-                opacity: disabled ? 0.5 : 1,
-            }}
-        >
-            {title}
-            <TextField
-                {...props}
-                hiddenLabel
-                fullWidth
-                placeholder={placeholder || "ANY"}
-                disabled={disabled}
-                InputProps={{
-                    startAdornment,
-                    endAdornment,
-                }}
-                sx={{
-                    backgroundColor: "#00000090",
-                    ".MuiOutlinedInput-root": { borderRadius: 0.5, border: `${factionTheme.primary}99 2px dashed` },
-                    ".MuiOutlinedInput-input": {
-                        px: "1.5rem",
-                        py: ".6rem",
-                        fontSize: "1.7rem",
-                        height: "unset",
-                        "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
-                            WebkitAppearance: "none",
-                        },
-                    },
-                    ".MuiOutlinedInput-notchedOutline": { border: "unset" },
-                }}
-            />
-        </Stack>
-    )
-}
-
-interface SelectFieldProps {
-    options: SelectOption[]
-}
-
-interface SelectOption {
-    id: string
-    label: string
-}
-
-const SelectField = ({ options, label, ...props }: SelectFieldProps & SelectProps) => {
-    const { factionTheme } = useTheme()
-    const title = useMemo(() => {
-        if (typeof label === "string") {
-            return (
-                <Typography variant="body2" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
-                    {label}
-                </Typography>
-            )
-        }
-        return label
-    }, [factionTheme.primary, label])
-    return (
-        <Stack spacing=".5rem">
-            {title}
-            <Select
-                {...props}
-                sx={{
-                    width: "100%",
-                    borderRadius: 0.5,
-                    border: `${factionTheme.primary}99 2px dashed`,
-                    backgroundColor: "#00000090",
-                    "&:hover": {
-                        backgroundColor: colors.darkNavy,
-                    },
-                    ".MuiTypography-root": {
-                        px: "2.4rem",
-                        py: ".6rem",
-                        fontSize: "1.7rem",
-                        height: "unset",
-                        "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
-                            WebkitAppearance: "none",
-                        },
-                    },
-
-                    "& .MuiSelect-outlined": {
-                        p: 0,
-                        height: "4rem",
-                    },
-                    ".MuiOutlinedInput-notchedOutline": {
-                        border: "none !important",
-                    },
-                }}
-                displayEmpty
-                MenuProps={{
-                    variant: "menu",
-                    sx: {
-                        "&& .Mui-selected": {
-                            ".MuiTypography-root": {
-                                color: "#FFFFFF",
-                            },
-                            backgroundColor: factionTheme.primary,
-                        },
-                    },
-                    PaperProps: {
-                        sx: {
-                            backgroundColor: colors.darkNavy,
-                            borderRadius: 0.5,
-                        },
-                    },
-                }}
-            >
-                {options.map((x, i) => {
-                    return (
-                        <MenuItem key={`${x.id} ${i}`} value={x.id} sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}>
-                            <Typography textTransform="uppercase">{x.label}</Typography>
-                        </MenuItem>
-                    )
-                })}
-            </Select>
-        </Stack>
     )
 }

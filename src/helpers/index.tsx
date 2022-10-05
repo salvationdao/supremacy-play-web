@@ -679,3 +679,15 @@ export const deepEqual = (object1: Record<any, any>, object2: Record<any, any>) 
     }
     return true
 }
+
+export const shortCodeGenerator = (length: number = 12, omitUppercase?: boolean, omitLowerCase?: boolean, omitNumber?: boolean): string => {
+    let result = ""
+    let base = ""
+    if (!omitUppercase) base += "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    if (!omitLowerCase) base += "abcdefghijklmnopqrstuvwxyz"
+    if (!omitNumber) base += "0123456789"
+    for (let i = 0; i < length; i++) {
+        result += base.charAt(Math.floor(Math.random() * base.length))
+    }
+    return result
+}
