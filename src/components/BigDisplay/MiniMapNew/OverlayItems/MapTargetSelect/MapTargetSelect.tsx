@@ -183,7 +183,7 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
                     ) {
                         // TODO: restore when unreal optimizes mech move
                         // pixiTargetHint.startCountdown(0, 3, false, false)
-                        pixiTargetHint.startCountdown(4, 3, false, false)
+                        pixiTargetHint.startCountdown(1, 3, false, false)
                     } else {
                         pixiTargetHint.startCountdown()
                     }
