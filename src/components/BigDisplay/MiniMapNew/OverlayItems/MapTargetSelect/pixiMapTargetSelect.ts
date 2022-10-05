@@ -223,11 +223,16 @@ export class PixiMapTargetSelect {
     startCountdown(timeLeft = 2, speed = 3, destroyOnConfirm = true, showCountdownLabel = true) {
         this.resetCountdown()
         this.endCoord.startCountdown(timeLeft, speed, undefined, showCountdownLabel)
-        this.startCoord.startCountdown(timeLeft, speed, () => {
-            this.onTargetConfirm && this.onTargetConfirm({ startCoord: this.startCoord.root.position, endCoord: this.endCoord.root.position })
-            this.startCoord.showIcon(false)
-            if (destroyOnConfirm) this.destroy()
-        })
+        this.startCoord.startCountdown(
+            timeLeft,
+            speed,
+            () => {
+                this.onTargetConfirm && this.onTargetConfirm({ startCoord: this.startCoord.root.position, endCoord: this.endCoord.root.position })
+                this.startCoord.showIcon(false)
+                if (destroyOnConfirm) this.destroy()
+            },
+            showCountdownLabel,
+        )
     }
 
     resetCountdown() {
