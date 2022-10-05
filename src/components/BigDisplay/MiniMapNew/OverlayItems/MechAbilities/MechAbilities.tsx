@@ -16,11 +16,11 @@ export const MechAbilities = React.memo(function MechAbilities() {
     const isVoting = useMemo(() => bribeStage && bribeStage?.phase !== BribeStage.Hold, [bribeStage])
 
     useEffect(() => {
-        const mech = [...(warMachines || []), ...(spawnedAI || [])].find((m) => m.participantID === highlightedMechParticipantID)
+        const mech = [...(warMachines || []), ...(spawnedAI || [])].find((m) => m.participantID === highlightedMechParticipantID && m.ownedByID !== userID)
         if (mech) setHighlightedMech(mech)
-    }, [highlightedMechParticipantID, spawnedAI, warMachines])
+    }, [highlightedMechParticipantID, spawnedAI, userID, warMachines])
 
-    if (!pixiMainItems || !highlightedMech || highlightedMech?.ownedByID !== userID || !isVoting) {
+    if (!pixiMainItems || !highlightedMech || !isVoting) {
         return null
     }
 
