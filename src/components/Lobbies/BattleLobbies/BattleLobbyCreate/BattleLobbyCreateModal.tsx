@@ -1,10 +1,10 @@
 import { ConfirmModal } from "../../../Common/ConfirmModal"
-import React, { useMemo, useState } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 import { Box, Stack, Typography } from "@mui/material"
 import { colors, fonts } from "../../../../theme/theme"
 import { SvgSupToken } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
-import { useGameServerSubscriptionSecured } from "../../../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerSubscriptionSecured } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { GameMap, MechBasicWithQueueStatus } from "../../../../types"
 import { FactionBasedDatePicker } from "../../../Common/FactionBasedDatePicker"
@@ -16,7 +16,7 @@ import { SelectedMechSlots } from "./SelectedMechSlots"
 import { InputField } from "./InputField"
 import { SelectField } from "./SelectField"
 import { RadioGroupField } from "./RadioGroupField"
-import { shortCodeGenerator } from "../../../../helpers"
+import { combineDateTime, shortCodeGenerator } from "../../../../helpers"
 import { SliderField } from "./SliderField"
 
 interface BattleLobbyCreateModalProps {
@@ -26,7 +26,7 @@ interface BattleLobbyCreateModalProps {
 interface LobbyForm {
     name: string
     access_code: string
-    entryFee: string
+    entry_fee: string
     first_faction_cut: string
     second_faction_cut: string
     third_faction_cut: string
@@ -36,6 +36,7 @@ interface LobbyForm {
     wont_start_until_time: moment.Moment | null
     accessibility: string
     max_deploy_number: number
+    extra_reward: string
 }
 
 enum Accessibility {
@@ -50,7 +51,9 @@ enum Scheduling {
 
 export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps) => {
     const [error, setError] = useState("")
+    const [isLoading, setIsLoading] = useState(true)
     const { factionTheme } = useTheme()
+    const { send } = useGameServerCommandsFaction("/faction_commander")
 
     const [selectedMechs, setSelectedMechs] = useState<MechBasicWithQueueStatus[]>([])
     const [mapURL, setMapURL] = useState("")
@@ -70,7 +73,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
     const [lobbyForm, setLobbyForm] = useState<LobbyForm>({
         name: "",
         access_code: "",
-        entryFee: "0",
+        entry_fee: "0",
         first_faction_cut: "75",
         second_faction_cut: "25",
         third_faction_cut: "0",
@@ -80,6 +83,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
         wont_start_until_time: null,
         accessibility: Accessibility.Public,
         max_deploy_number: 3,
+        extra_reward: "0",
     })
 
     const accessCode = useMemo(() => {
@@ -94,19 +98,45 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
     const disableScheduling = useMemo(() => lobbyForm.scheduling_type === Scheduling.OnReady, [lobbyForm.scheduling_type])
     const disableTimePicker = useMemo(() => !lobbyForm.wont_start_until_date || !lobbyForm.wont_start_until_date.isValid(), [lobbyForm.wont_start_until_date])
 
-    const disableFactionCutOptions: boolean = useMemo(() => {
-        const entryFee = parseFloat(lobbyForm.entryFee)
-        // return true, if
-        // 1. entry is NaN OR
-        // 2. entry is less than or equal to zero
-        // otherwise, return false
-        return isNaN(entryFee) || entryFee <= 0
-    }, [lobbyForm.entryFee])
+    const onCreate = useCallback(async () => {
+        console.log(lobbyForm)
+
+        let wontStartUntil: Date | undefined = undefined
+
+        if (lobbyForm.scheduling_type === Scheduling.SetTime) {
+            if (
+                !lobbyForm.wont_start_until_date ||
+                !lobbyForm.wont_start_until_date.isValid() ||
+                !lobbyForm.wont_start_until_time ||
+                !lobbyForm.wont_start_until_time.isValid()
+            ) {
+                return
+            }
+
+            wontStartUntil = combineDateTime(lobbyForm.wont_start_until_date, lobbyForm.wont_start_until_time).toDate()
+        }
+
+        try {
+            setIsLoading(true)
+            await send<boolean>(GameServerKeys.CreateBattleLobby, {
+                ...lobbyForm,
+                will_not_start_until: wontStartUntil,
+                game_map_id: lobbyForm.game_map_id !== "" ? lobbyForm.game_map_id : undefined,
+            })
+
+            setOpen(false)
+        } catch (err) {
+            const message = typeof err === "string" ? err : "Failed to insert into repair bay."
+            setError(message)
+            console.error(err)
+        } finally {
+            setIsLoading(false)
+        }
+    }, [lobbyForm, send])
 
     return (
         <ConfirmModal
             title={`CREATE BATTLE LOBBY`}
-            onConfirm={() => console.log(lobbyForm)}
             confirmButton={
                 <FancyButton
                     clipThingsProps={{
@@ -118,17 +148,15 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                         sx: { position: "relative", minWidth: "10rem" },
                     }}
                     sx={{ px: ".6rem", py: ".5rem", color: "#FFFFFF" }}
-                    onClick={() => console.log(true)}
+                    onClick={onCreate}
                 >
                     <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
                         CREATE LOBBY
                     </Typography>
                 </FancyButton>
             }
-            onClose={() => {
-                setOpen(false)
-            }}
-            isLoading={false}
+            onClose={() => setOpen(false)}
+            isLoading={isLoading}
             error={error}
             width="150rem"
             omitCancel
@@ -341,16 +369,23 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                                 label="Entry Fee"
                                 type="number"
                                 startAdornmentLabel={<SvgSupToken fill={colors.yellow} size="1.9rem" />}
-                                endAdornmentLabel={<Typography variant="body2">PER MECH</Typography>}
-                                value={lobbyForm.entryFee}
-                                onChange={(e) => setLobbyForm((prev) => ({ ...prev, entryFee: e.target.value }))}
+                                endAdornmentLabel={
+                                    <Typography variant="body2" fontWeight="bold" fontFamily={fonts.shareTech}>
+                                        PER MECH
+                                    </Typography>
+                                }
+                                value={lobbyForm.entry_fee}
+                                onChange={(e) => setLobbyForm((prev) => ({ ...prev, entry_fee: e.target.value }))}
                             />
                             <InputField
                                 variant="outlined"
                                 label="Winning Faction Cut"
                                 type="number"
-                                disabled={disableFactionCutOptions}
-                                endAdornmentLabel={<Typography variant="body2">%</Typography>}
+                                endAdornmentLabel={
+                                    <Typography variant="body2" fontWeight="bold" fontFamily={fonts.shareTech}>
+                                        %
+                                    </Typography>
+                                }
                                 value={lobbyForm.first_faction_cut}
                                 onChange={(e) =>
                                     setLobbyForm((prev) => ({
@@ -363,8 +398,11 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                                 variant="outlined"
                                 label="Second Faction Cut"
                                 type="number"
-                                endAdornmentLabel={<Typography variant="body2">%</Typography>}
-                                disabled={disableFactionCutOptions}
+                                endAdornmentLabel={
+                                    <Typography variant="body2" fontWeight="bold" fontFamily={fonts.shareTech}>
+                                        %
+                                    </Typography>
+                                }
                                 value={lobbyForm.second_faction_cut}
                                 onChange={(e) =>
                                     setLobbyForm((prev) => ({
@@ -377,8 +415,11 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                                 variant="outlined"
                                 label="Loosing Faction Cut"
                                 type="number"
-                                endAdornmentLabel={<Typography variant="body2">%</Typography>}
-                                disabled={disableFactionCutOptions}
+                                endAdornmentLabel={
+                                    <Typography variant="body2" fontWeight="bold" fontFamily={fonts.shareTech}>
+                                        %
+                                    </Typography>
+                                }
                                 value={lobbyForm.third_faction_cut}
                                 onChange={(e) =>
                                     setLobbyForm((prev) => ({
@@ -392,8 +433,8 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                                 label="EXTRA REWARD"
                                 type="number"
                                 startAdornmentLabel={<SvgSupToken fill={colors.yellow} size="1.9rem" />}
-                                value={lobbyForm.entryFee}
-                                onChange={(e) => setLobbyForm((prev) => ({ ...prev, entryFee: e.target.value }))}
+                                value={lobbyForm.extra_reward}
+                                onChange={(e) => setLobbyForm((prev) => ({ ...prev, extra_reward: e.target.value }))}
                             />
                         </Stack>
                     </Stack>

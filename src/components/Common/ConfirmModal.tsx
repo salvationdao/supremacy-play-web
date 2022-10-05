@@ -8,7 +8,7 @@ import { colors, fonts, siteZIndex } from "../../theme/theme"
 interface ConfirmModalProps {
     title: string
     children: ReactNode
-    onConfirm: () => void
+    onConfirm?: () => void
     onClose: () => void
     isLoading?: boolean
     width?: string

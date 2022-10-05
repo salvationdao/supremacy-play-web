@@ -148,7 +148,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
 
                             {/* Lobby Info */}
                             <Stack direction="column" flexBasis="250px" height="100%" mr="1rem">
-                                <Box mb="1rem">
+                                <Box mb=".6rem">
                                     <Typography
                                         variant="h5"
                                         sx={{
@@ -156,15 +156,13 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                             fontFamily: fonts.nostromoBlack,
                                         }}
                                     >
-                                        {name ? name : `Lobby #${number}`}
+                                        {name ? name : `Lobby ${number}`}
                                     </Typography>
                                     {is_private ? (
-                                        <Stack direction="row" spacing=".5rem">
+                                        <Stack direction="row" spacing=".5rem" alignItems="center">
                                             <SvgLock size="1.2rem" fill={colors.gold} />
                                             <Typography
                                                 sx={{
-                                                    display: "flex",
-                                                    alignItems: "baseline",
                                                     color: colors.gold,
                                                 }}
                                             >
@@ -278,81 +276,109 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                 {/* Prize allocation */}
                                 {entry_fee !== "0" && (
                                     <>
-                                        <Stack direction="row" spacing="1rem">
-                                            <Stack direction="row" alignItems="center" spacing=".5rem">
-                                                <Box
-                                                    sx={{
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        justifyContent: "center",
-                                                        height: "1.8rem",
-                                                        width: "1.8rem",
-                                                        borderRadius: "50%",
-                                                        backgroundColor: colors.gold,
-                                                    }}
-                                                >
-                                                    <Typography
+                                        <Stack direction="column" sx={{ mb: ".35rem" }}>
+                                            <Typography
+                                                sx={{
+                                                    color: colors.grey,
+                                                    textTransform: "uppercase",
+                                                }}
+                                            >
+                                                Distribution (%)
+                                            </Typography>
+                                            <Stack direction="row" spacing="1rem">
+                                                <Stack direction="row" alignItems="center" spacing=".5rem">
+                                                    <Box
                                                         sx={{
-                                                            color: `${colors.grey}aa`,
-                                                            fontSize: "1.4rem",
+                                                            display: "flex",
+                                                            alignItems: "center",
+                                                            justifyContent: "center",
+                                                            height: "2rem",
+                                                            width: "2rem",
+                                                            borderRadius: "50%",
+                                                            backgroundColor: colors.gold,
                                                         }}
                                                     >
-                                                        1
-                                                    </Typography>
-                                                </Box>
-                                                <Typography>
-                                                    {`${Math.round(parseFloat(first_faction_cut) * Math.round(parseFloat(entry_fee)))}`} SUPS
-                                                </Typography>
-                                            </Stack>
-                                            <Stack direction="row" alignItems="center" spacing=".5rem">
-                                                <Box
-                                                    sx={{
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        justifyContent: "center",
-                                                        height: "1.8rem",
-                                                        width: "1.8rem",
-                                                        borderRadius: "50%",
-                                                        backgroundColor: colors.silver,
-                                                    }}
-                                                >
+                                                        <Typography
+                                                            variant="body2"
+                                                            sx={{
+                                                                color: `${colors.darkerNavy}99`,
+                                                                fontFamily: fonts.nostromoBlack,
+                                                            }}
+                                                        >
+                                                            1
+                                                        </Typography>
+                                                    </Box>
                                                     <Typography
+                                                        variant="body2"
                                                         sx={{
-                                                            color: `${colors.grey}aa`,
-                                                            fontSize: "1.4rem",
+                                                            fontFamily: fonts.nostromoMedium,
                                                         }}
                                                     >
-                                                        2
+                                                        {(parseFloat(first_faction_cut) * 100).toFixed(1)}
                                                     </Typography>
-                                                </Box>
-                                                <Typography>
-                                                    {`${Math.round(parseFloat(second_faction_cut) * Math.round(parseFloat(entry_fee)))}`} SUPS
-                                                </Typography>
-                                            </Stack>
-                                            <Stack direction="row" alignItems="center" spacing=".5rem">
-                                                <Box
-                                                    sx={{
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        justifyContent: "center",
-                                                        height: "1.8rem",
-                                                        width: "1.8rem",
-                                                        borderRadius: "50%",
-                                                        backgroundColor: colors.bronze,
-                                                    }}
-                                                >
-                                                    <Typography
+                                                </Stack>
+                                                <Stack direction="row" alignItems="center" spacing=".5rem">
+                                                    <Box
                                                         sx={{
-                                                            color: `${colors.offWhite}aa`,
-                                                            fontSize: "1.4rem",
+                                                            display: "flex",
+                                                            alignItems: "center",
+                                                            justifyContent: "center",
+                                                            height: "2rem",
+                                                            width: "2rem",
+                                                            borderRadius: "50%",
+                                                            backgroundColor: colors.silver,
                                                         }}
                                                     >
-                                                        3
+                                                        <Typography
+                                                            variant="body2"
+                                                            sx={{
+                                                                color: `${colors.darkerNavy}99`,
+                                                                fontFamily: fonts.nostromoBlack,
+                                                            }}
+                                                        >
+                                                            2
+                                                        </Typography>
+                                                    </Box>
+                                                    <Typography
+                                                        variant="body2"
+                                                        sx={{
+                                                            fontFamily: fonts.nostromoMedium,
+                                                        }}
+                                                    >
+                                                        {(parseFloat(second_faction_cut) * 100).toFixed(1)}
                                                     </Typography>
-                                                </Box>
-                                                <Typography>
-                                                    {`${Math.round(parseFloat(third_faction_cut) * Math.round(parseFloat(entry_fee)))}`} SUPS
-                                                </Typography>
+                                                </Stack>
+                                                <Stack direction="row" alignItems="center" spacing=".5rem">
+                                                    <Box
+                                                        sx={{
+                                                            display: "flex",
+                                                            alignItems: "center",
+                                                            justifyContent: "center",
+                                                            height: "2rem",
+                                                            width: "2rem",
+                                                            borderRadius: "50%",
+                                                            backgroundColor: colors.bronze,
+                                                        }}
+                                                    >
+                                                        <Typography
+                                                            variant="body2"
+                                                            sx={{
+                                                                color: `${colors.darkerNavy}99`,
+                                                                fontFamily: fonts.nostromoBlack,
+                                                            }}
+                                                        >
+                                                            3
+                                                        </Typography>
+                                                    </Box>
+                                                    <Typography
+                                                        variant="body2"
+                                                        sx={{
+                                                            fontFamily: fonts.nostromoMedium,
+                                                        }}
+                                                    >
+                                                        {(parseFloat(third_faction_cut) * 100).toFixed(1)}
+                                                    </Typography>
+                                                </Stack>
                                             </Stack>
                                         </Stack>
                                     </>
