@@ -1,34 +1,21 @@
 import { Box, CircularProgress, Grid, Stack, Typography } from "@mui/material"
-import React, { useCallback, useMemo, useState } from "react"
+import React, { useCallback, useMemo } from "react"
 import { useAuth, useGlobalNotifications, useSupremacy } from "../../containers"
-import { useGameServerCommandsFaction, useGameServerSubscription } from "../../hooks/useGameServer"
-import { GameServerKeys } from "../../keys"
 import { opacityEffect } from "../../theme/keyframes"
 import { colors } from "../../theme/theme"
 import { getCardStyles, MechCard } from "./MechCard"
 import { BattleLobbiesMech, BattleLobby, BattleLobbySupporter } from "../../types/battle_queue"
 import { FactionIDs } from "../../constants"
 import { Avatar } from "../Avatar"
+import { useGameServerCommandsFaction } from "../../hooks/useGameServer"
+import { GameServerKeys } from "../../keys"
 import { SvgPlus } from "../../assets"
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark"
 
 const avatarsToShow = 10
 
-export const UpcomingBattle = () => {
+export const UpcomingBattle = ({ nextBattle }: { nextBattle: BattleLobby }) => {
     const { factionID: usersFactionID } = useAuth()
-    const [nextBattle, setNextBattle] = useState<BattleLobby | undefined>()
-
-    // Subscribe on battle end information
-    useGameServerSubscription<BattleLobby>(
-        {
-            URI: `/public/upcoming_battle`,
-            key: GameServerKeys.NextBattleDetails,
-        },
-        (payload) => {
-            if (!payload) return
-            setNextBattle(payload)
-        },
-    )
 
     const content = useMemo(() => {
         if (!nextBattle) {
@@ -74,23 +61,29 @@ export const UpcomingBattle = () => {
                 <CardGroup
                     mechs={bcMechs}
                     factionID={FactionIDs.BC}
+                    factionLabel={"Boston Cybernetics"}
                     usersFactionID={usersFactionID}
                     battleLobbyID={nextBattle.id}
                     optedInSupporters={nextBattle.opted_in_bc_supporters || []}
+                    selectedSupporters={nextBattle.selected_bc_supporters || []}
                 />
                 <CardGroup
                     mechs={zaiMechs}
                     factionID={FactionIDs.ZHI}
+                    factionLabel={"Zaibatsu Heavy Industries"}
                     usersFactionID={usersFactionID}
                     battleLobbyID={nextBattle.id}
                     optedInSupporters={nextBattle.opted_in_zai_supporters || []}
+                    selectedSupporters={nextBattle.selected_zai_supporters || []}
                 />
                 <CardGroup
                     mechs={rmMechs}
                     factionID={FactionIDs.RM}
+                    factionLabel={"Red Mountain Offworld Mining Corporation"}
                     usersFactionID={usersFactionID}
                     battleLobbyID={nextBattle.id}
                     optedInSupporters={nextBattle.opted_in_rm_supporters || []}
+                    selectedSupporters={nextBattle.selected_rm_supporters || []}
                 />
             </Box>
         )
@@ -122,23 +115,24 @@ export const UpcomingBattle = () => {
 
 const CardGroup = ({
     factionID,
+    factionLabel,
     mechs,
     battleLobbyID,
     optedInSupporters,
+    selectedSupporters,
     usersFactionID,
 }: {
     battleLobbyID: string | undefined
     factionID: string
+    factionLabel: string
     usersFactionID: string
     mechs: BattleLobbiesMech[]
     optedInSupporters: BattleLobbySupporter[]
+    selectedSupporters: BattleLobbySupporter[]
 }) => {
     const { getFaction } = useSupremacy()
     const faction = getFaction(factionID)
     const usersFaction = factionID === usersFactionID
-
-    console.log(factionID)
-    console.log(usersFactionID)
 
     return (
         <Box
@@ -152,62 +146,73 @@ const CardGroup = ({
                 margin: "auto",
             }}
         >
-            <Grid container spacing={0} direction="row" sx={{ width: "100%", maxHeight: "70%", flexWrap: "nowrap", justifyContent: "space-evenly" }}>
+            <Grid container spacing={0} direction="row" sx={{ width: "100%", flexWrap: "nowrap", justifyContent: "space-evenly" }}>
                 {mechs.map((m) => (
                     <Grid key={`${m.mech_id}-${m.is_destroyed}-${m.battle_lobby_id}`} item sm={4} maxHeight={"100%"}>
                         <MechCard mech={m} faction={faction} />
                     </Grid>
                 ))}
             </Grid>
-            {!usersFaction && (
+            <Box
+                sx={{
+                    width: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    flexWrap: "nowrap",
+                    flex: 1,
+                    gap: "0.5rem",
+                    padding: "0 40px",
+                    margin: "auto",
+                }}
+            >
+                {/*title*/}
+                {usersFaction && selectedSupporters.length === 0 && <Typography variant={"h4"}>{factionLabel} Sign up for Support</Typography>}
+                {usersFaction && selectedSupporters.length > 0 && <Typography variant={"h4"}>{factionLabel} Selected Supporters</Typography>}
+                {!usersFaction && <Typography variant={"h4"}>{factionLabel}</Typography>}
+
                 <Box
                     sx={{
-                        maxHeight: "30%",
                         display: "flex",
+                        width: "100%",
+                        flexDirection: "row",
                         justifyContent: "space-evenly",
-                        alignItems: "center",
-                        flexWrap: "nowrap",
-                        flex: 1,
-                        gap: "0.5rem",
-                    }}
-                >
-                    {new Array(5).fill(0).map((_, i) => (
-                        <QuestionMark key={`${i}-question`} factionID={factionID} />
-                    ))}
-                </Box>
-            )}
-            {usersFaction && (
-                <Box
-                    sx={{
-                        maxHeight: "30%",
-                        display: "flex",
-                        justifyContent: "space-evenly",
-                        alignItems: "center",
+                        alignItems: "start",
                         flexWrap: "nowrap",
                         flex: 1,
                         gap: "0.5rem",
                         padding: "0 40px",
                     }}
                 >
-                    {optedInSupporters.map((sup, i) => {
-                        if (i >= avatarsToShow) return null
-                        return (
-                            <Avatar
-                                marginLeft={optedInSupporters.length > avatarsToShow ? -10 : 0}
-                                zIndexAdded={i}
-                                key={`${sup.id}`}
-                                username={sup.username}
-                                factionID={sup.faction_id}
-                                avatarURL={sup.avatar_url}
-                                customAvatarID={sup.custom_avatar_id}
-                            />
-                        )
-                    })}
-                    {5 - optedInSupporters.length > 0 &&
+                    {/* not the users faction, display ? */}
+                    {!usersFaction && new Array(5).fill(0).map((_, i) => <QuestionMark key={`${i}-question`} factionID={factionID} />)}
+
+                    {/* users faction and no selected supporters, display opted in users and join buttons*/}
+                    {usersFaction &&
+                        selectedSupporters.length === 0 &&
+                        optedInSupporters.map((sup, i) => {
+                            if (i >= avatarsToShow) return null
+                            return (
+                                <Avatar
+                                    marginLeft={optedInSupporters.length > avatarsToShow ? -10 : 0}
+                                    zIndexAdded={i}
+                                    key={`${sup.id}`}
+                                    username={sup.username}
+                                    factionID={sup.faction_id}
+                                    avatarURL={sup.avatar_url}
+                                    customAvatarID={sup.custom_avatar_id}
+                                />
+                            )
+                        })}
+                    {/* users faction, display opt in buttons*/}
+                    {usersFaction &&
+                        selectedSupporters.length === 0 &&
+                        5 - optedInSupporters.length > 0 &&
                         new Array(5 - optedInSupporters.length)
                             .fill(0)
                             .map((_, i) => <OptInButton key={`${factionID}-add-${i}`} battleLobbyID={battleLobbyID} factionID={factionID} />)}
-                    {optedInSupporters.length >= avatarsToShow && (
+                    {/* users faction and more than 5 opted in supporters, display count */}
+                    {usersFaction && selectedSupporters.length === 0 && 5 - optedInSupporters.length > 0 && optedInSupporters.length >= avatarsToShow && (
                         <CountButton
                             factionID={factionID}
                             count={optedInSupporters.length - avatarsToShow}
@@ -215,9 +220,31 @@ const CardGroup = ({
                             zIndexAdded={optedInSupporters.length + 1}
                         />
                     )}
-                    <OptInButton key={`${factionID}-add-extra-one`} battleLobbyID={battleLobbyID} factionID={factionID} />
+                    {/* users faction, display opt in button */}
+                    {usersFaction && selectedSupporters.length === 0 && (
+                        <OptInButton key={`${factionID}-add-extra-one`} battleLobbyID={battleLobbyID} factionID={factionID} />
+                    )}
+
+                    {/* if users faction and we have some selected supporter, display the supporters */}
+                    {usersFaction &&
+                        selectedSupporters.length > 0 &&
+                        selectedSupporters.map((sup, i) => {
+                            return (
+                                <Box key={`selected-${sup.id}`} sx={{ display: "flex", flexDirection: "row" }}>
+                                    <Typography>{i + 1}. </Typography>
+                                    <Avatar
+                                        marginLeft={0}
+                                        zIndexAdded={i}
+                                        username={sup.username}
+                                        factionID={sup.faction_id}
+                                        avatarURL={sup.avatar_url}
+                                        customAvatarID={sup.custom_avatar_id}
+                                    />
+                                </Box>
+                            )
+                        })}
                 </Box>
-            )}
+            </Box>
         </Box>
     )
 }

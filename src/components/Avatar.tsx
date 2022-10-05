@@ -76,9 +76,18 @@ export const Avatar = ({
             )}
             {!avatarURL && customAvatarID && <CustomAvatarImg zIndexAdded={zIndexAdded} customAvatarID={customAvatarID} />}
             {!customAvatarID && avatarURL && (
-                <img
+                <Box
+                    component={"img"}
+                    sx={{
+                        zIndex: zIndexAdded + 1,
+                        position: "absolute",
+                        top: "0",
+                        left: "0",
+                        maxHeight: "100%",
+                        clipPath: "polygon(11% 4%, 90% 4%, 97% 11%, 97% 93%, 2% 93%, 2% 11%)",
+                    }}
                     key={`${avatarURL}-username`}
-                    style={{ zIndex: zIndexAdded + 3, position: "absolute", top: "0", left: "0", maxHeight: "100%" }}
+                    // style={{  }}
                     src={avatarURL}
                     alt="avatar"
                 />
@@ -111,6 +120,7 @@ const CustomAvatarImg = ({ customAvatarID, zIndexAdded }: { customAvatarID: stri
                 bottom: 0,
                 maxHeight: "100%",
                 zIndex: zIndexAdded + 1,
+                clipPath: "polygon(11% 4%, 90% 4%, 97% 11%, 97% 93%, 2% 93%, 2% 11%)",
             }}
         >
             {avatarDetails?.accessory && (
