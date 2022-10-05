@@ -11,18 +11,21 @@ export const MechAbilities = React.memo(function MechAbilities() {
     const { userID } = useAuth()
     const { bribeStage, warMachines, spawnedAI } = useGame()
     const { pixiMainItems, highlightedMechParticipantID } = useMiniMapPixi()
+    const [highlightedMech, setHighlightedMech] = useState<WarMachineState>()
 
     const isVoting = useMemo(() => bribeStage && bribeStage?.phase !== BribeStage.Hold, [bribeStage])
 
-    const highlightedMech = useMemo(() => {
-        return [...(warMachines || []), ...(spawnedAI || [])].find((m) => m.participantID === highlightedMechParticipantID)
+    useEffect(() => {
+        const mech = [...(warMachines || []), ...(spawnedAI || [])].find((m) => m.participantID === highlightedMechParticipantID)
+
+        if (mech) setHighlightedMech(mech)
     }, [highlightedMechParticipantID, spawnedAI, warMachines])
 
-    if (!pixiMainItems || !highlightedMechParticipantID || !highlightedMech || highlightedMech?.ownedByID !== userID || !isVoting) {
+    if (!pixiMainItems || !highlightedMech || highlightedMech?.ownedByID !== userID || !isVoting) {
         return null
     }
 
-    return <MechAbilitiesInner key={highlightedMechParticipantID} warMachine={highlightedMech} />
+    return <MechAbilitiesInner key={highlightedMech.participantID} warMachine={highlightedMech} />
 })
 
 // Inner component starts here
