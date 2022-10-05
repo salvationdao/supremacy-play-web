@@ -53,6 +53,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
     const { factionTheme } = useTheme()
 
     const [selectedMechs, setSelectedMechs] = useState<MechBasicWithQueueStatus[]>([])
+    const [mapURL, setMapURL] = useState("")
 
     const [gameMaps, setGameMaps] = useState<GameMap[]>([])
     useGameServerSubscriptionSecured<GameMap[]>(
@@ -132,7 +133,22 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
             width="150rem"
             omitCancel
         >
-            <Stack direction="column">
+            <Stack direction="column" sx={{ position: "relative" }}>
+                {/*Background image*/}
+                <Box
+                    sx={{
+                        position: "absolute",
+                        zIndex: -1,
+                        top: 0,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        background: mapURL ? `linear-gradient(to right, ${factionTheme.background}dd 0%, transparent 100%), url(${mapURL})` : undefined,
+                        opacity: 0.3,
+                    }}
+                />
+
+                {/* form */}
                 <Stack direction="row" flex={1} spacing={3}>
                     <Stack
                         direction="column"
@@ -164,9 +180,13 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                                 label="Game Map"
                                 options={[{ id: "", label: "RANDOM" }].concat(gameMaps.map((gm) => ({ id: gm.id, label: gm.name })))}
                                 value={lobbyForm.game_map_id}
-                                onChange={(e) => setLobbyForm((prev) => ({ ...prev, game_map_id: e.target.value as string }))}
+                                onChange={(e) => {
+                                    const mapID = e.target.value as string
+                                    setMapURL(gameMaps.find((gm) => gm.id === mapID)?.background_url || "")
+                                    setLobbyForm((prev) => ({ ...prev, game_map_id: mapID }))
+                                }}
                             />
-                            <Stack>
+                            <Stack sx={{ pb: ".7rem" }}>
                                 <RadioGroupField
                                     label="Accessibility"
                                     options={[
