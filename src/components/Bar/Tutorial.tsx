@@ -4,8 +4,8 @@ import { useAuth } from "../../containers"
 import { useUrlQuery } from "../../hooks"
 import { zoomEffect } from "../../theme/keyframes"
 import { colors, fonts } from "../../theme/theme"
+import { FancyButton } from "../Common/FancyButton"
 import { TooltipHelper } from "../Common/TooltipHelper"
-import { NavLink } from "./NavLinks/NavLinks"
 export const Tutorial = () => {
     const isTraining = location.pathname.includes("/training")
     const { userID, factionID } = useAuth()
@@ -37,7 +37,21 @@ export const Tutorial = () => {
             }
         >
             <Box>
-                <NavLink label="Tutorial" isActive={false} to="/training?muted=false" />
+                <FancyButton
+                    clipThingsProps={{
+                        clipSize: "6px",
+                        backgroundColor: colors.neonPink,
+                        opacity: 1,
+                        border: { borderColor: colors.neonPink, borderThickness: "1px" },
+                        sx: { position: "relative", mx: "2rem" },
+                    }}
+                    sx={{ px: "1.2rem", py: 0, color: "#FFFFFF" }}
+                    to="/training?muted=false"
+                >
+                    <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack, color: "#FFFFFF" }}>
+                        TUTORIAL
+                    </Typography>
+                </FancyButton>
             </Box>
         </TooltipHelper>
     )

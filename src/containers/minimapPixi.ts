@@ -13,6 +13,7 @@ import { useGlobalNotifications } from "./globalNotifications"
 import { RecordType, useHotkey } from "./hotkeys"
 
 export const pixiViewportZIndexes = {
+    hiveStatus: 10,
     mapAbilitiesBelowMechs: 15,
     mapMech: 30,
     mechMoveDests: 60,
@@ -20,6 +21,7 @@ export const pixiViewportZIndexes = {
     mapAbilitiesAboveMechs: 80,
     blackouts: 150,
     targetSelect: 200,
+    grid: 300,
 }
 
 export const pixiStageZIndexes = {
@@ -68,8 +70,8 @@ export const MiniMapPixiContainer = createContainer(() => {
 
     // Update cached map values
     useEffect(() => {
-        if (!map || !pixiMainItems) return
         mapRef.current = map
+        if (!map || !pixiMainItems) return
         mapScalingRef.current = { x: pixiMainItems.viewport.worldWidth / map.Width, y: pixiMainItems.viewport.worldHeight / map.Height }
         gridSizeRef.current = { width: (mapScalingRef.current.x * map.Width) / map.Cells_X, height: (mapScalingRef.current.y * map.Height) / map.Cells_Y }
     }, [map, pixiMainItems])

@@ -30,7 +30,7 @@ export const UpcomingBattle = ({ nextBattle }: { nextBattle: BattleLobby }) => {
         const zaiMechs: BattleLobbiesMech[] = []
         const rmMechs: BattleLobbiesMech[] = []
         nextBattle.battle_lobbies_mechs.forEach((m) => {
-            switch (m.owner.faction_id) {
+            switch (m.faction_id) {
                 case FactionIDs.ZHI:
                     zaiMechs.push(m)
                     break

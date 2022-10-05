@@ -5,7 +5,6 @@ import { MechBasicWithQueueStatus, MechStatusEnum } from "../../../types"
 
 export const QuickDeployMechStatus = ({ mech }: { mech: MechBasicWithQueueStatus }) => {
     const color = useMemo(() => {
-        console.log(mech.status)
         switch (mech.status) {
             case MechStatusEnum.Idle:
                 return colors.green

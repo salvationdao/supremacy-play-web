@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { FancyButton } from "../../.."
-import { useGlobalNotifications } from "../../../../containers"
+import { useGame, useGlobalNotifications } from "../../../../containers"
 import { useArena } from "../../../../containers/arena"
 import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -18,6 +18,7 @@ interface BattleAbilityTextTopProps {
 export const BattleAbilityTextTop = ({ label, image_url, colour, disableButton }: BattleAbilityTextTopProps) => {
     const [isOptedIn, setIsOptedIn] = useState(false)
     const { currentArenaID } = useArena()
+    const { isAIDrivenMatch } = useGame()
 
     useGameServerSubscriptionSecuredUser<boolean | undefined>(
         {
@@ -63,9 +64,11 @@ export const BattleAbilityTextTop = ({ label, image_url, colour, disableButton }
                     {label}
                 </Typography>
             </Stack>
-            <Box>
-                <OptInButton disable={disableButton} isOptedIn={isOptedIn} />
-            </Box>
+            {!isAIDrivenMatch && (
+                <Box>
+                    <OptInButton disable={disableButton} isOptedIn={isOptedIn} />
+                </Box>
+            )}
         </Stack>
     )
 }

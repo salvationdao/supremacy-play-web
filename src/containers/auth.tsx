@@ -1,6 +1,6 @@
 import { createContext, Dispatch, ReactNode, useCallback, useContext, useEffect, useRef, useState } from "react"
 import { useQuery } from "react-fetching-library"
-import { useSupremacy } from "."
+import { useFingerprint, useSupremacy } from "."
 import { PASSPORT_WEB } from "../constants"
 import { GameServerLoginCheck, GetGlobalFeatures, PassportLoginCheck } from "../fetching"
 import { shadeColor } from "../helpers"
@@ -38,6 +38,7 @@ export interface AuthState {
     isHidden: boolean
     isLoggingIn: boolean
     onLogInClick: () => void
+    setPassportPopup: Dispatch<React.SetStateAction<Window | null>>
     userHasFeature: (featureName: FeatureName) => boolean
     user: User
     userID: string
@@ -60,6 +61,9 @@ const initialState: AuthState = {
     isHidden: false,
     isLoggingIn: false,
     onLogInClick: () => {
+        return
+    },
+    setPassportPopup: () => {
         return
     },
     userHasFeature: () => {
@@ -100,6 +104,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [isLoggingIn, setIsLoggingIn] = useState(true)
     const [passportPopup, setPassportPopup] = useState<Window | null>(null)
     const popupCheckInterval = useRef<NodeJS.Timer>()
+    const { fingerprint } = useFingerprint()
 
     const [userFromPassport, setUserFromPassport] = useState<UserFromPassport>()
     const [user, setUser] = useState<User>(initialState.user)
@@ -116,7 +121,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [globalFeatures, setGlobalFeatures] = useState<Feature[]>([])
 
     const { query: passportLoginCheck } = useQuery(PassportLoginCheck(), false)
-    const { query: gameserverLoginCheck } = useQuery(GameServerLoginCheck(), false)
+    const { query: gameserverLoginCheck } = useQuery(GameServerLoginCheck(fingerprint), false)
 
     const handleVisibilityChange = useCallback(() => {
         if (document["hidden"]) {
@@ -250,6 +255,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 isHidden,
                 isLoggingIn,
                 onLogInClick,
+                setPassportPopup,
                 userHasFeature,
                 user,
                 userID,
