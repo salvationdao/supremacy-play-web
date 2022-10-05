@@ -22,7 +22,6 @@ const uiContainer = createContainer(() => {
     const prevIsStreamBigDisplay = useRef<boolean>()
 
     const [showTrailer, toggleShowTrailer] = useToggle()
-    const [showUpcomingBattle, toggleShowUpcomingBattle] = useToggle()
     const [isBattleHistoryOpen, toggleIsBattleHistoryOpen] = useToggle()
     const [stopMapRender, setStopMapRender] = useState(false)
 
@@ -98,8 +97,6 @@ const uiContainer = createContainer(() => {
         isBattleHistoryOpen,
         toggleShowTrailer,
         toggleIsBattleHistoryOpen,
-        showUpcomingBattle,
-        toggleShowUpcomingBattle,
 
         hasModalsOpen,
         stopMapRender,
