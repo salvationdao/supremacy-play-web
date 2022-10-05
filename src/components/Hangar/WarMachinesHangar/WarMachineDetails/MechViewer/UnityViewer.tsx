@@ -18,7 +18,7 @@ export type UnityHandle = {
 
 export interface HangarSilo {
     faction: string
-    silos: SiloType[]
+    silos?: SiloType[]
 }
 
 export interface SiloObject {
@@ -190,15 +190,15 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
         for (let i = 0; i < mechDetails.weapon_hardpoints; i++) {
             accessories.push({
                 type: "weapon",
-                skin: {
-                    type: "skin",
-                },
             })
         }
         if (mechDetails.weapons) {
             mechDetails.weapons.forEach((w) => {
-                if (w.slot_number == null || w.weapon_type === WeaponType.MissileLauncher) return
-
+                if (w.slot_number == null) return
+                if (w.weapon_type === WeaponType.MissileLauncher) {
+                    accessories.splice(w.slot_number, 1)
+                    return
+                }
                 accessories[w.slot_number] = {
                     type: "weapon",
                     ownership_id: w.id,
@@ -249,27 +249,26 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
             }
         }
 
-        const siloItems: HangarSilo = {
+        const inventory: HangarSilo = {
             faction: mechDetails.faction_id,
-            silos: [
-                {
-                    type: "mech",
-                    ownership_id: mechDetails.id,
-                    static_id: mechDetails.blueprint_id,
-                    skin: mechDetails.chassis_skin
-                        ? {
-                              type: "skin",
-                              ownership_id: mechDetails.chassis_skin.owner_id,
-                              static_id: mechDetails.chassis_skin.blueprint_id,
-                          }
-                        : undefined,
-                    accessories,
-                },
-            ],
         }
-        console.log(siloItems)
-        sendMessage("ProjectContext(Clone)", "GetPlayerInventoryFromPage", JSON.stringify(siloItems))
-        sendMessage("ProjectContext(Clone)", "FittingRoom", "")
+        const mech: SiloType = {
+            type: "mech",
+            ownership_id: mechDetails.id,
+            static_id: mechDetails.blueprint_id,
+            skin: mechDetails.chassis_skin
+                ? {
+                      type: "skin",
+                      ownership_id: mechDetails.chassis_skin.owner_id,
+                      static_id: mechDetails.chassis_skin.blueprint_id,
+                  }
+                : undefined,
+            accessories,
+        }
+        console.log(inventory)
+        console.log(mech)
+        sendMessage("ProjectContext(Clone)", "GetPlayerInventoryFromPage", JSON.stringify(inventory))
+        sendMessage("ProjectContext(Clone)", "FittingRoom", JSON.stringify(mech))
         sent.current = true
     }, [
         sendMessage,

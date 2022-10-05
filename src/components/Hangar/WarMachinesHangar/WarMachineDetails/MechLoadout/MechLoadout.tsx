@@ -16,7 +16,7 @@ import { UnityHandle } from "../MechViewer/UnityViewer"
 import { MechLoadoutMechSkinModal } from "../Modals/Loadout/MechLoadoutMechSkinModal"
 import { MechLoadoutPowerCoreModal } from "../Modals/Loadout/MechLoadoutPowerCoreModal"
 import { MechLoadoutWeaponModal } from "../Modals/Loadout/MechLoadoutWeaponModal"
-import { CustomDragEvent, DraggablesHandle, DragStartEvent, DragStopEvent, MechLoadoutDraggables } from "./MechLoadoutDraggables"
+import { CustomDragEvent, DraggablesHandle, DragStartEvent, DragStopEventWithType, MechLoadoutDraggables } from "./MechLoadoutDraggables"
 
 interface PlayerAssetMechEquipRequest {
     mech_id: string
@@ -335,13 +335,13 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         [loadoutDisabled],
     )
     const onItemDragStart = useCallback<DragStartEvent>(
-        (el) => {
+        () => {
             if (loadoutDisabled) return
             setIsDragging(true)
         },
         [loadoutDisabled],
     )
-    const onItemDragStop = useCallback<DragStopEvent>(
+    const onItemDragStop = useCallback<DragStopEventWithType>(
         (el, rect, type, item) => {
             if (loadoutDisabled) return
             const weapon = item as Weapon
@@ -794,7 +794,8 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
             </ClipThing>
             <MechLoadoutDraggables
                 draggablesRef={draggablesRef}
-                excludeIDs={Array.from(changed_weapons_map.values(), (w) => w.weapon_id)}
+                excludeWeaponIDs={Array.from(changed_weapons_map.values(), (w) => w.weapon_id)}
+                includeMechSkinIDs={compatible_blueprint_mech_skin_ids}
                 onDrag={onItemDrag}
                 onDragStart={onItemDragStart}
                 onDragStop={onItemDragStop}
