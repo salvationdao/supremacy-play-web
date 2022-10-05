@@ -77,7 +77,7 @@ export class PixiMapScale {
                 const cellHeight = this.viewport.worldHeight / rowCount
                 highlightColIndex = Math.floor(mousePos.x / cellWidth)
                 highlightRowIndex = Math.floor(mousePos.y / cellHeight)
-                this.coordLabel.text = `[${intToLetter(highlightColIndex + 1)}${highlightRowIndex}]`
+                this.coordLabel.text = `[${intToLetter(highlightColIndex + 1)}${highlightRowIndex + 1}]`
             }
 
             // Rect
