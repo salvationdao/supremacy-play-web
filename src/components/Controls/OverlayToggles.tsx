@@ -1,6 +1,6 @@
 import { IconButton, Stack, Typography } from "@mui/material"
 import { TooltipHelper } from ".."
-import { SvgTrailer, SvgUpcomingBattle } from "../../assets"
+import { SvgTrailer } from "../../assets"
 import { useUI } from "../../containers"
 
 export const OverlayToggles = () => {
