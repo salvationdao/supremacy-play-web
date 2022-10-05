@@ -311,7 +311,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
 
     const weaponItemRefs = useRef<Map<number, HTMLDivElement | null>>(new Map()) // Map<slot_number, Element ref>
     const onItemDrag = useCallback<CustomDragEvent>(
-        (el, rect) => {
+        (_el, rect) => {
             if (loadoutDisabled) return
             for (const kv of weaponItemRefs.current.entries()) {
                 const element = kv[1]

@@ -5,6 +5,7 @@ import { DEV_ONLY, WEBGL_BASE_URL } from "../../../../../constants"
 import { useTheme } from "../../../../../containers/theme"
 import { pulseEffect } from "../../../../../theme/keyframes"
 import { fonts } from "../../../../../theme/theme"
+import { WeaponType } from "../../../../../types"
 import { ClipThing } from "../../../../Common/ClipThing"
 import { LoadoutMechSkin, LoadoutPowerCore, LoadoutWeapon } from "../MechLoadout/MechLoadout"
 import { MechViewerProps } from "./MechViewer"
@@ -64,6 +65,7 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
         streamingAssetsUrl: `${baseUrl}/StreamingAssets`,
     })
     const sent = useRef(false)
+    const canvasRef = useRef<HTMLCanvasElement>(null)
     const [siloReady, setSiloReady] = useState(false)
     const [isPendingChange, setIsPendingChange] = useState(false)
     const [showClickToLoadOverlay, setShowClickToLoadOverlay] = useState(true)
@@ -146,6 +148,41 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
         return () => removeEventListener("SlotLoaded", onSlotLoaded)
     }, [addEventListener, removeEventListener, unity])
 
+    const isMouseDown = useRef(false)
+    useEffect(() => {
+        if (!isLoaded || !canvasRef.current) return
+
+        const handleMouseUp = (event: MouseEvent) => {
+            console.log("mouse up")
+            if (event.button == 0 && isMouseDown.current) {
+                isMouseDown.current = false
+                sendMessage("FittingRoomPlayer", "OnMouseClick")
+            }
+        }
+        const handleMouseDown = (event: MouseEvent) => {
+            console.log("mouse down")
+            if (event.button == 0) {
+                isMouseDown.current = !isMouseDown.current
+                sendMessage("FittingRoomPlayer", "OnMouseClick")
+            }
+        }
+        const handleMouseWheel = (event: WheelEvent) => {
+            console.log("mouse wheel")
+            sendMessage("FittingRoomPlayer", "OnZoomChange", event.deltaY / -100)
+        }
+
+        const canvas = canvasRef.current
+        canvas.addEventListener("mouseup", handleMouseUp)
+        canvas.addEventListener("mousedown", handleMouseDown)
+        canvas.addEventListener("wheel", handleMouseWheel)
+
+        return () => {
+            canvas.removeEventListener("mouseup", handleMouseUp)
+            canvas.removeEventListener("mousedown", handleMouseDown)
+            canvas.removeEventListener("wheel", handleMouseWheel)
+        }
+    }, [isLoaded, sendMessage])
+
     useEffect(() => {
         if (!isLoaded || !siloReady || sent.current) return
 
@@ -160,7 +197,7 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
         }
         if (mechDetails.weapons) {
             mechDetails.weapons.forEach((w) => {
-                if (w.slot_number == null) return
+                if (w.slot_number == null || w.weapon_type === WeaponType.MissileLauncher) return
 
                 accessories[w.slot_number] = {
                     type: "weapon",
@@ -173,7 +210,6 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
                           }
                         : undefined,
                 }
-
                 if (w.inherit_skin && mechDetails.chassis_skin?.blueprint_weapon_skin_id) {
                     accessories[w.slot_number].skin = {
                         type: "skin",
@@ -260,11 +296,11 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
             }}
         >
             <Unity
+                ref={canvasRef}
                 unityProvider={unityProvider}
                 style={{
                     width: "100%",
                     height: "100%",
-                    visibility: isLoaded ? "visible" : "hidden",
                 }}
             />
             {showClickToLoadOverlay && (
@@ -286,7 +322,7 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
                             fontFamily: fonts.nostromoBlack,
                             fontSize: "3rem",
                             textTransform: "uppercase",
-                            color: theme.factionTheme.secondary,
+                            color: "white",
                         }}
                     >
                         Click here to load 3D viewer
