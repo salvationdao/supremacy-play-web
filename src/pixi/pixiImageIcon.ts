@@ -74,7 +74,7 @@ export class PixiImageIcon {
         this.root.destroy()
     }
 
-    startCountdown(secondsLeft: number, countdownSpeed = 1, onExpired: undefined | (() => void), showCountdownLabel = true) {
+    startCountdown(secondsLeft: number, countdownSpeed = 1, onExpired?: undefined | (() => void), showCountdownLabel = true) {
         if (secondsLeft < 0) return
 
         let start: number | undefined
