@@ -39,6 +39,7 @@ export const VoiceChat = () => {
     const [listenStreams, setListenStreams] = useState<VoiceStream[]>()
     const [hasFactionCommander, setHasFactionCommander] = useState<boolean>(false)
     const [connected, setConnected] = useState(false)
+
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
     const ovenLiveKitInstance = useRef<any>()
@@ -75,6 +76,9 @@ export const VoiceChat = () => {
                 const factionCommander = payload.filter((v) => v.is_faction_commander)
                 setListenStreams(sorted)
                 setHasFactionCommander(!!(factionCommander && factionCommander.length > 0))
+
+                if (!connected) return
+                onConnect(sorted, false)
             }
         },
     )
@@ -171,9 +175,20 @@ export const VoiceChat = () => {
 
                 newOvenPlayer.on("ready", () => {
                     console.log("voice chat ready Ready.")
+                    if (newOvenPlayer) {
+                        newOvenPlayer.play()
+                    }
+                })
+
+                newOvenPlayer.on("destroy", () => {
+                    if (newOvenPlayer) {
+                        newOvenPlayer.off("ready")
+                        newOvenPlayer.off("error")
+                    }
                 })
 
                 newOvenPlayer.on("error", (err: { code: number }) => {
+                    // if (!connected) return
                     if (err.code === 501) {
                         console.log("501: failed to connnect attempting to recconnect", err)
                     } else {
@@ -187,7 +202,6 @@ export const VoiceChat = () => {
                 })
 
                 newOvenPlayer.play()
-
                 return () => {
                     if (newOvenPlayer) {
                         newOvenPlayer.off("ready")
@@ -199,26 +213,24 @@ export const VoiceChat = () => {
         },
         [connected],
     )
-    const onConnect = (enableSound: boolean) => {
-        listenStreams?.map((l) => {
-            if (l.send_url) {
-                startStream(l.send_url)
+
+    const onConnect = useCallback(
+        (streams: VoiceStream[], enableSound: boolean) => {
+            streams?.map((l) => {
+                if (l.send_url) {
+                    startStream(l.send_url)
+                }
+                listen(l)
+            })
+
+            // play sound: connect
+            if (enableSound) {
+                playSound(ConnectSound)
             }
-            listen(l)
-        })
-
-        // play sound: connect
-        if (enableSound) {
-            playSound(ConnectSound)
-        }
-        setConnected(true)
-    }
-
-    useEffect(() => {
-        if (!connected) return
-        onConnect(false)
-    }, [listenStreams])
-
+            setConnected(true)
+        },
+        [listen, startStream],
+    )
     const onDisconnect = () => {
         stopStream()
 
@@ -271,7 +283,7 @@ export const VoiceChat = () => {
                             onDisconnect={onDisconnect}
                             faction={getFaction(user.faction_id)}
                             listenStreams={listenStreams || []}
-                            onConnect={() => onConnect(true)}
+                            onConnect={() => onConnect(listenStreams || [], true)}
                             onJoinFactionCommander={joinFactionCommander}
                             onLeaveFactionCommander={leaveFactionCommander}
                             onVoteKick={voteKick}
@@ -285,7 +297,7 @@ export const VoiceChat = () => {
                 {listenStreams &&
                     listenStreams.map((s) => {
                         return (
-                            <Box key={s.username + s.user_gid} sx={{}}>
+                            <Box key={s.username + s.user_gid} sx={{ display: "none" }}>
                                 <div id={s.listen_url} key={s.username + s.user_gid} />
                                 <div style={{ fontSize: "2rem", color: "white" }}>user: {s.username}</div>
                             </Box>
@@ -561,8 +573,6 @@ const PlayerItem = ({
                             setConfirmModal(undefined)
                         }}
                         onClose={() => setConfirmModal(undefined)}
-                        // isLoading={isLoading}
-                        // error={error}
                     >
                         <></>
                     </ConfirmModal>
@@ -597,8 +607,6 @@ const PlayerItem = ({
                             setConfirmModal(undefined)
                         }}
                         onClose={() => setConfirmModal(undefined)}
-                        // isLoading={isLoading}
-                        // error={error}
                     >
                         <></>
                     </ConfirmModal>
@@ -665,7 +673,7 @@ const PlayerItem = ({
                     background: `linear-gradient(${bannerColor} 26%, ${bannerColor}95)`,
                 }}
             >
-                <Box width="90%">
+                <Box width="90%" display="flex" alignItems="center">
                     <StyledImageText
                         key={voiceStream.listen_url}
                         text={
@@ -678,7 +686,9 @@ const PlayerItem = ({
                         imageUrl={faction.logo_url}
                         {...StyledImageText}
                     />
-                    {voiceStream.listen_url && player && (
+
+                    {/* TODO: implement oven player "playing" status */}
+                    {/* {voiceStream.listen_url && player && (
                         <Box
                             sx={{
                                 width: ".8rem",
@@ -687,7 +697,7 @@ const PlayerItem = ({
                                 backgroundColor: player.getState() === "playing" ? colors.green : colors.red,
                             }}
                         />
-                    )}
+                    )} */}
                 </Box>
 
                 {!voiceStream.send_url && (
@@ -767,8 +777,6 @@ const FactionCommanderJoinButton = ({ onJoinFactionCommander }: { onJoinFactionC
                         setConfirmModal(false)
                     }}
                     onClose={() => setConfirmModal(false)}
-                    // isLoading={isLoading}
-                    // error={error}
                 >
                     <></>
                 </ConfirmModal>
