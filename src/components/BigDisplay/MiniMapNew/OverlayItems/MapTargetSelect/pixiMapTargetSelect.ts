@@ -220,9 +220,9 @@ export class PixiMapTargetSelect {
         }
     }
 
-    startCountdown(timeLeft = 2, speed = 3, destroyOnConfirm = true) {
+    startCountdown(timeLeft = 2, speed = 3, destroyOnConfirm = true, showCountdownLabel = false) {
         this.resetCountdown()
-        this.endCoord.startCountdown(timeLeft, speed)
+        this.endCoord.startCountdown(timeLeft, speed, undefined, showCountdownLabel)
         this.startCoord.startCountdown(timeLeft, speed, () => {
             this.onTargetConfirm && this.onTargetConfirm({ startCoord: this.startCoord.root.position, endCoord: this.endCoord.root.position })
             this.startCoord.showIcon(false)
