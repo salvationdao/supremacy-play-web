@@ -181,7 +181,7 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
                         ability.location_select_type === LocationSelectType.MechCommand ||
                         ability.game_client_ability_id === MechMoveCommandAbility.ability.game_client_ability_id
                     ) {
-                        pixiTargetHint.startCountdown(2, 3, false, false)
+                        pixiTargetHint.startCountdown(4, 3, false, false)
                     } else {
                         pixiTargetHint.startCountdown()
                     }
@@ -219,12 +219,10 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
             }
 
             // If ability selection is placed, hide the mouse icon
-            if (ability.location_select_type !== LocationSelectType.MechCommand) {
-                if (isLocationSelection) {
-                    pixiTargetHint.mouseIcon.showIcon(!selectedStartCoord.current)
-                } else if (isLineSelection) {
-                    pixiTargetHint.mouseIcon.showIcon(!selectedStartCoord.current || !selectedEndCoord.current)
-                }
+            if (isLocationSelection) {
+                pixiTargetHint.mouseIcon.showIcon(!selectedStartCoord.current)
+            } else if (isLineSelection) {
+                pixiTargetHint.mouseIcon.showIcon(!selectedStartCoord.current || !selectedEndCoord.current)
             }
         }
     }, [ability.game_client_ability_id, ability.location_select_type, endTime, gridCellToViewportPosition, onSelectMapPositionCallbacks, pixiTargetHint, selectMapPosition])
