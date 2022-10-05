@@ -9,9 +9,10 @@ interface FactionBasedDatePickerProps {
     value: moment.Moment | null
     onChange: (v: moment.Moment | null) => void
     enableYear?: boolean
+    disabled?: boolean
 }
 
-export const FactionBasedDatePicker = ({ value, onChange, enableYear }: FactionBasedDatePickerProps) => {
+export const FactionBasedDatePicker = ({ value, onChange, enableYear, disabled }: FactionBasedDatePickerProps) => {
     const { factionTheme } = useTheme()
 
     return (
@@ -20,6 +21,7 @@ export const FactionBasedDatePicker = ({ value, onChange, enableYear }: FactionB
             value={value || null}
             onChange={onChange}
             minDate={moment()}
+            disabled={disabled}
             OpenPickerButtonProps={{
                 sx: {
                     color: factionTheme.primary,

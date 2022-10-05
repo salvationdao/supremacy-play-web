@@ -16,8 +16,8 @@ import { SelectedMechSlots } from "./SelectedMechSlots"
 import { InputField } from "./InputField"
 import { SelectField } from "./SelectField"
 import { RadioGroupField } from "./RadioGroupField"
-import { makeid } from "../../../../containers/ws/util"
 import { shortCodeGenerator } from "../../../../helpers"
+import { SliderField } from "./SliderField"
 
 interface BattleLobbyCreateModalProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -31,14 +31,21 @@ interface LobbyForm {
     second_faction_cut: string
     third_faction_cut: string
     game_map_id: string
+    scheduling_type: string
     wont_start_until_date: moment.Moment | null
     wont_start_until_time: moment.Moment | null
     accessibility: string
+    max_deploy_number: number
 }
 
 enum Accessibility {
     Public = "PUBLIC",
     Private = "PRIVATE",
+}
+
+enum Scheduling {
+    OnReady = "ON LOBBY FULL",
+    SetTime = "WON'T START UNTIL",
 }
 
 export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps) => {
@@ -67,9 +74,11 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
         second_faction_cut: "25",
         third_faction_cut: "0",
         game_map_id: "",
+        scheduling_type: Scheduling.OnReady,
         wont_start_until_date: null,
         wont_start_until_time: null,
         accessibility: Accessibility.Public,
+        max_deploy_number: 3,
     })
 
     const accessCode = useMemo(() => {
@@ -81,6 +90,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
     }, [lobbyForm.accessibility])
     const [isCopied, setIsCopied] = useState(false)
 
+    const disableScheduling = useMemo(() => lobbyForm.scheduling_type === Scheduling.OnReady, [lobbyForm.scheduling_type])
     const disableTimePicker = useMemo(() => !lobbyForm.wont_start_until_date || !lobbyForm.wont_start_until_date.isValid(), [lobbyForm.wont_start_until_date])
 
     const disableFactionCutOptions: boolean = useMemo(() => {
@@ -119,22 +129,31 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
             }}
             isLoading={false}
             error={error}
-            width="130rem"
+            width="150rem"
             omitCancel
         >
             <Stack direction="column">
                 <Stack direction="row" flex={1} spacing={3}>
                     <Stack
                         direction="column"
-                        spacing={1}
+                        spacing={2}
                         sx={{
-                            width: "45rem",
+                            width: "37rem",
                         }}
                     >
-                        <Typography variant="body1" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
-                            ROOM SETTING:
+                        <Typography
+                            variant="body1"
+                            sx={{
+                                color: factionTheme.secondary,
+                                pl: "1rem",
+                                fontFamily: fonts.nostromoBlack,
+                                backgroundColor: factionTheme.primary,
+                                borderRadius: 0.8,
+                            }}
+                        >
+                            ROOM SETTING
                         </Typography>
-                        <Stack direction="column" spacing={0.6} sx={{ px: "1rem" }}>
+                        <Stack direction="column" spacing={2} sx={{ px: "1rem", pb: "2rem" }}>
                             <InputField
                                 variant="outlined"
                                 label="Name"
@@ -147,87 +166,156 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                                 value={lobbyForm.game_map_id}
                                 onChange={(e) => setLobbyForm((prev) => ({ ...prev, game_map_id: e.target.value as string }))}
                             />
-                            <RadioGroupField
-                                label="Accessibility"
-                                options={[
-                                    { id: Accessibility.Public, label: Accessibility.Public },
-                                    {
-                                        id: Accessibility.Private,
-                                        label: (
-                                            <Stack direction="row" alignItems="center" flex={1} sx={{ height: "100%" }}>
-                                                <Typography variant="subtitle1" fontFamily={fonts.nostromoBlack}>
-                                                    {Accessibility.Private}
-                                                </Typography>
-                                                <Stack
-                                                    direction="row"
-                                                    alignItems="center"
-                                                    flex={1}
-                                                    sx={{
-                                                        height: "100%",
-                                                        pl: "1rem",
-                                                        opacity: lobbyForm.accessibility === Accessibility.Private ? 1 : 0.5,
-                                                    }}
-                                                >
-                                                    <Stack
-                                                        direction="row"
-                                                        alignItems="center"
-                                                        flex={1}
-                                                        sx={{
-                                                            height: "100%",
-                                                            pl: "1.5rem",
-                                                            borderTop: `${factionTheme.primary} 2px dashed`,
-                                                            borderLeft: `${factionTheme.primary} 2px dashed`,
-                                                            borderBottom: `${factionTheme.primary} 2px dashed`,
-                                                        }}
-                                                        onClick={(e) => {
-                                                            e.preventDefault()
-                                                            e.stopPropagation()
-                                                            if (isCopied || !accessCode) return
-                                                        }}
-                                                    >
-                                                        <Typography variant="subtitle1" fontFamily={fonts.nostromoHeavy}>
-                                                            {accessCode}
-                                                        </Typography>
-                                                    </Stack>
-                                                    <Stack
-                                                        direction="row"
-                                                        alignItems="center"
-                                                        justifyContent="center"
-                                                        sx={{
-                                                            px: "1rem",
-                                                            height: "100%",
-                                                            backgroundColor: factionTheme.primary,
-                                                            minWidth: "9.5rem",
-                                                        }}
-                                                        onClick={async (e) => {
-                                                            e.preventDefault()
-                                                            e.stopPropagation()
-                                                            if (isCopied || !accessCode) return
-                                                            await navigator.clipboard.writeText(accessCode)
-                                                            setIsCopied(true)
-                                                            setTimeout(() => setIsCopied(false), 1000)
-                                                        }}
-                                                    >
-                                                        <Typography variant="body2" fontFamily={fonts.nostromoBlack}>
-                                                            {isCopied ? "COPIED" : "COPY"}
-                                                        </Typography>
-                                                    </Stack>
+                            <Stack>
+                                <RadioGroupField
+                                    label="Accessibility"
+                                    options={[
+                                        { id: Accessibility.Public, label: Accessibility.Public },
+                                        {
+                                            id: Accessibility.Private,
+                                            label: (
+                                                <Stack direction="row" alignItems="center" flex={1} sx={{ height: "100%" }}>
+                                                    <Typography variant="subtitle1" fontFamily={fonts.nostromoBlack}>
+                                                        {Accessibility.Private}
+                                                    </Typography>
                                                 </Stack>
-                                            </Stack>
-                                        ),
-                                    },
-                                ]}
-                                value={lobbyForm.accessibility}
-                                onChange={(value) => {
-                                    setLobbyForm((prev) => ({ ...prev, accessibility: value }))
-                                }}
-                            />
-                        </Stack>
+                                            ),
+                                        },
+                                    ]}
+                                    value={lobbyForm.accessibility}
+                                    onChange={(value) => {
+                                        setLobbyForm((prev) => ({ ...prev, accessibility: value }))
+                                    }}
+                                />
+                                <Stack
+                                    direction="row"
+                                    alignItems="center"
+                                    flex={1}
+                                    sx={{
+                                        pt: "0,4rem",
+                                        pl: "3.5rem",
+                                        opacity: lobbyForm.accessibility === Accessibility.Private ? 1 : 0.5,
+                                    }}
+                                >
+                                    <Stack
+                                        direction="row"
+                                        alignItems="center"
+                                        flex={1}
+                                        sx={{
+                                            height: "4rem",
+                                            pl: "1.5rem",
+                                            borderTop: `${factionTheme.primary} 2px dashed`,
+                                            borderLeft: `${factionTheme.primary} 2px dashed`,
+                                            borderBottom: `${factionTheme.primary} 2px dashed`,
+                                        }}
+                                        onClick={(e) => {
+                                            e.preventDefault()
+                                            e.stopPropagation()
+                                            if (isCopied || !accessCode) return
+                                        }}
+                                    >
+                                        <Typography variant="subtitle1" fontFamily={fonts.nostromoHeavy}>
+                                            {accessCode}
+                                        </Typography>
+                                    </Stack>
+                                    <Stack
+                                        direction="row"
+                                        alignItems="center"
+                                        justifyContent="center"
+                                        sx={{
+                                            px: "1rem",
+                                            height: "4rem",
+                                            backgroundColor: factionTheme.primary,
+                                            minWidth: "9.5rem",
+                                            cursor: "pointer",
+                                        }}
+                                        onClick={async (e) => {
+                                            e.preventDefault()
+                                            e.stopPropagation()
+                                            if (isCopied || !accessCode) return
+                                            await navigator.clipboard.writeText(accessCode)
+                                            setIsCopied(true)
+                                            setTimeout(() => setIsCopied(false), 1000)
+                                        }}
+                                    >
+                                        <Typography variant="body2" fontFamily={fonts.nostromoBlack}>
+                                            {isCopied ? "COPIED" : "COPY"}
+                                        </Typography>
+                                    </Stack>
+                                </Stack>
+                            </Stack>
 
-                        <Typography variant="body1" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
-                            FEE & REWARD:
+                            <SliderField
+                                label="MAX DEPLOY PER PLAYER"
+                                min={1}
+                                max={3}
+                                value={lobbyForm.max_deploy_number}
+                                onChange={(e, v) => setLobbyForm((prev) => ({ ...prev, max_deploy_number: typeof v === "number" ? v : 3 }))}
+                                marks={[
+                                    { value: 1, label: "1" },
+                                    { value: 2, label: "2" },
+                                    { value: 3, label: "3" },
+                                ]}
+                            />
+
+                            <Stack>
+                                <RadioGroupField
+                                    label="Scheduling"
+                                    value={lobbyForm.scheduling_type}
+                                    onChange={(value) => {
+                                        setLobbyForm((prev) => ({ ...prev, scheduling_type: value }))
+                                    }}
+                                    options={[
+                                        { id: Scheduling.OnReady, label: Scheduling.OnReady },
+                                        { id: Scheduling.SetTime, label: Scheduling.SetTime },
+                                    ]}
+                                />
+                                <Stack direction="column" spacing={0.6} sx={{ pl: "3.5rem" }}>
+                                    <Stack spacing=".5rem" sx={{ opacity: disableScheduling ? 0.5 : 1 }}>
+                                        <Typography variant="body2" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
+                                            DATE:
+                                        </Typography>
+                                        <FactionBasedDatePicker
+                                            value={lobbyForm.wont_start_until_date}
+                                            onChange={(v) => setLobbyForm((prev) => ({ ...prev, wont_start_until_date: v }))}
+                                            disabled={disableScheduling}
+                                        />
+                                    </Stack>
+                                    <Stack spacing=".5rem" sx={{ opacity: disableTimePicker ? 0.5 : 1 }}>
+                                        <Typography variant="body2" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
+                                            TIME:
+                                        </Typography>
+                                        <FactionBasedTimePicker
+                                            value={lobbyForm.wont_start_until_time}
+                                            onChange={(v) => setLobbyForm((prev) => ({ ...prev, wont_start_until_time: v }))}
+                                            disabled={disableScheduling || disableTimePicker}
+                                        />
+                                    </Stack>
+                                </Stack>
+                            </Stack>
+                        </Stack>
+                    </Stack>
+
+                    <Stack
+                        direction="column"
+                        spacing={2}
+                        sx={{
+                            width: "37rem",
+                        }}
+                    >
+                        <Typography
+                            variant="body1"
+                            sx={{
+                                color: factionTheme.secondary,
+                                pl: "1rem",
+                                fontFamily: fonts.nostromoBlack,
+                                backgroundColor: factionTheme.primary,
+                                borderRadius: 0.8,
+                            }}
+                        >
+                            FEE & REWARD
                         </Typography>
-                        <Stack direction="column" spacing={0.6} sx={{ px: "1rem" }}>
+                        <Stack direction="column" spacing={2} sx={{ px: "1rem" }}>
                             <InputField
                                 variant="outlined"
                                 label="Entry Fee"
@@ -279,42 +367,45 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                                     }))
                                 }
                             />
-                        </Stack>
-
-                        <Typography variant="body1" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
-                            SCHEDULE:
-                        </Typography>
-                        <Stack direction="column" spacing={0.6} sx={{ px: "1rem" }}>
-                            <Stack spacing=".5rem">
-                                <Typography variant="body2" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
-                                    DATE:
-                                </Typography>
-                                <FactionBasedDatePicker
-                                    value={lobbyForm.wont_start_until_date}
-                                    onChange={(v) => setLobbyForm((prev) => ({ ...prev, wont_start_until_date: v }))}
-                                />
-                            </Stack>
-                            <Stack spacing=".5rem" sx={{ opacity: disableTimePicker ? 0.5 : 1 }}>
-                                <Typography variant="body2" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
-                                    TIME:
-                                </Typography>
-                                <FactionBasedTimePicker
-                                    value={lobbyForm.wont_start_until_time}
-                                    onChange={(v) => setLobbyForm((prev) => ({ ...prev, wont_start_until_time: v }))}
-                                    disabled={disableTimePicker}
-                                />
-                            </Stack>
+                            <InputField
+                                variant="outlined"
+                                label="EXTRA REWARD"
+                                type="number"
+                                startAdornmentLabel={<SvgSupToken fill={colors.yellow} size="1.9rem" />}
+                                value={lobbyForm.entryFee}
+                                onChange={(e) => setLobbyForm((prev) => ({ ...prev, entryFee: e.target.value }))}
+                            />
                         </Stack>
                     </Stack>
                     <Stack direction="column" flex={1} spacing={1}>
-                        <Typography variant="body1" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack }}>
-                            WAR MACHINES:
+                        <Typography
+                            variant="body1"
+                            sx={{
+                                color: factionTheme.secondary,
+                                pl: "1rem",
+                                fontFamily: fonts.nostromoBlack,
+                                backgroundColor: factionTheme.primary,
+                                borderRadius: 0.8,
+                            }}
+                        >
+                            WAR MACHINES
                         </Typography>
                         <MechSelector setSelectedMechs={setSelectedMechs} selectedMechs={selectedMechs} />
                     </Stack>
                 </Stack>
-                <Typography variant="body1" sx={{ color: factionTheme.primary, fontFamily: fonts.nostromoBlack, mt: "1rem", mb: "1rem" }}>
-                    WAR MACHINE SLOTS:
+                <Typography
+                    variant="body1"
+                    sx={{
+                        color: factionTheme.secondary,
+                        pl: "1rem",
+                        fontFamily: fonts.nostromoBlack,
+                        backgroundColor: factionTheme.primary,
+                        borderRadius: 0.8,
+                        mt: "1rem",
+                        mb: "1rem",
+                    }}
+                >
+                    WAR MACHINE SLOTS
                 </Typography>
 
                 <SelectedMechSlots selectedMechs={selectedMechs} setSelectedMechs={setSelectedMechs} />

@@ -59,6 +59,7 @@ export const SelectField = ({ options, label, ...props }: SelectFieldProps & Sel
                 MenuProps={{
                     variant: "menu",
                     sx: {
+                        py: 0,
                         "&& .Mui-selected": {
                             ".MuiTypography-root": {
                                 color: "#FFFFFF",
@@ -68,8 +69,17 @@ export const SelectField = ({ options, label, ...props }: SelectFieldProps & Sel
                     },
                     PaperProps: {
                         sx: {
-                            backgroundColor: colors.darkNavy,
-                            borderRadius: 0.5,
+                            border: `${factionTheme.primary}99 2px solid`,
+                            borderRadius: 0.8,
+                            ".MuiList-root": {
+                                py: 0,
+                                backgroundColor: factionTheme.background,
+                                ".MuiMenuItem-root": {
+                                    "&:hover": {
+                                        backgroundColor: `${factionTheme.primary}99`,
+                                    },
+                                },
+                            },
                         },
                     },
                 }}
