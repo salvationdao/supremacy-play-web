@@ -11,6 +11,7 @@ import { Dimension, DisplayedAbility, GAME_CLIENT_TILE_SIZE, MiniMapDisplayEffec
 export class PixiMapAbilitySingle {
     root: PIXI.Container<PIXI.DisplayObject>
     ability: DisplayedAbility
+    private gridSizeRef: React.MutableRefObject<Dimension>
     private rootInner: PIXI.Container<PIXI.DisplayObject>
     private imageIcon: PixiImageIcon
     private emitter: particles.Emitter | undefined
@@ -39,6 +40,7 @@ export class PixiMapAbilitySingle {
         >,
     ) {
         this.ability = ability
+        this.gridSizeRef = gridSizeRef
 
         // Create container
         this.root = new PIXI.Container()
@@ -116,8 +118,8 @@ export class PixiMapAbilitySingle {
             const config = merge(pulseParticlesConfig, {
                 color: { start: ability.colour, end: ability.colour },
                 scale: {
-                    start: 0.6,
-                    end: 0.15,
+                    start: (0.6 * this.gridSizeRef.current.width) / 10,
+                    end: (0.15 * this.gridSizeRef.current.width) / 10,
                 },
                 speed: {
                     start: 150,
@@ -147,14 +149,14 @@ export class PixiMapAbilitySingle {
             const config = merge(explosionParticlesConfig, {
                 scale: {
                     start: 0.5,
-                    end: 0.06,
+                    end: 0.04,
                 },
                 lifetime: {
-                    min: 1.8,
-                    max: 2.8,
+                    min: 1.1,
+                    max: 2.1,
                 },
                 speed: {
-                    start: 15,
+                    start: 14,
                     end: 0.4,
                 },
                 spawnCircle: { r: radius / 4 },

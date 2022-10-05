@@ -285,7 +285,7 @@ export class PixiMapMech {
                     color: HEXToVBColor(this.primaryColor),
                     alpha: 0.8,
                 })
-                dash.moveTo(this.rootInner.x + this.rectGraphics.width / 2, this.rootInner.y + this.rectGraphics.height / 2).lineTo(newX, newY)
+                dash.moveTo(this.rootInner.x, this.rootInner.y).lineTo(newX, newY)
             }
 
             // Particles stuff
@@ -373,20 +373,24 @@ export class PixiMapMech {
     pulseEffect(displayAbility: DisplayedAbility | undefined) {
         if (displayAbility) {
             const config = merge(pulseParticlesConfig, {
-                color: { start: "#FFFFFF", end: "#FFFFFF" },
+                color: { start: this.primaryColor, end: this.primaryColor },
+                alpha: {
+                    start: 1,
+                    end: 0.3,
+                },
                 scale: {
-                    start: 0.4,
-                    end: 0.1,
+                    start: (0.3 * this.gridSizeRef.current.width) / 10,
+                    end: (0.1 * this.gridSizeRef.current.width) / 10,
                 },
                 speed: {
-                    start: 60,
-                    end: 60,
+                    start: 24,
+                    end: 12,
                 },
                 lifetime: {
-                    min: (this.gridSizeRef.current.width * 2.3) / 60,
-                    max: (this.gridSizeRef.current.width * 2.3) / 60,
+                    min: (this.gridSizeRef.current.width * 2.3) / 20,
+                    max: (this.gridSizeRef.current.width * 2.3) / 20,
                 },
-                frequency: 0.4,
+                frequency: 0.9,
             })
             this.emitter?.destroy()
             this.emitter = new particles.Emitter(this.particlesContainer, CircleParticle, config)
