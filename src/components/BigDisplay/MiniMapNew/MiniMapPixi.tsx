@@ -229,6 +229,7 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
             <Box
                 id="minimap-pixi-container"
                 ref={setMiniMapPixiRef}
+                key={map?.Name}
                 sx={{
                     position: "relative",
                     width: containerDimensions.width,
@@ -254,5 +255,5 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
                 )}
             </Box>
         )
-    }, [containerDimensions.height, containerDimensions.width, isReady])
+    }, [containerDimensions.height, containerDimensions.width, isReady, map])
 }, propsAreEqual)
