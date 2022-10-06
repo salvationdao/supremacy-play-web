@@ -299,6 +299,7 @@ export const MiniMapPixiContainer = createContainer(() => {
         setHighlightedMechParticipantID,
 
         // Pixi and map related stuff
+        mapRef,
         pixiMainItems,
         setPixiMainItems,
         mapScalingRef,

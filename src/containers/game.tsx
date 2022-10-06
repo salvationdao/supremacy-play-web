@@ -89,31 +89,31 @@ export const GameContainer = createContainer(() => {
             // Map images
             let mapImageUrl = payload.game_map.Image_Url
             switch (payload.game_map.Name) {
-                case "ArcticBay":
+                case "Arctic Bay":
                     mapImageUrl = "https://afiles.ninja-cdn.com/supremacy/images/map/ArcticBay.webp"
                     break
-                case "AokigaharaForest":
+                case "Aokigahara Sea of Trees":
                     mapImageUrl = "https://afiles.ninja-cdn.com/supremacy/images/map/AokigaharaForest.webp"
                     break
-                case "CityBlockArena":
+                case "Kazuya City":
                     mapImageUrl = "https://afiles.ninja-cdn.com/supremacy/images/map/CityBlockArena.webp"
                     break
-                case "CloudKu":
+                case "CloudKu 9":
                     mapImageUrl = "https://afiles.ninja-cdn.com/supremacy/images/map/CloudKu.webp"
                     break
-                case "DesertCity":
+                case "Desert City":
                     mapImageUrl = "https://afiles.ninja-cdn.com/supremacy/images/map/DesertCity.webp"
                     break
-                case "NeoTokyo":
+                case "NyuTokyo":
                     mapImageUrl = "https://afiles.ninja-cdn.com/supremacy/images/map/NeoTokyo.webp"
                     break
-                case "RedMountainMine":
+                case "IronDust 5":
                     mapImageUrl = "https://afiles.ninja-cdn.com/supremacy/images/map/RedMountainMine.webp"
                     break
                 case "TheHive":
                     mapImageUrl = "https://afiles.ninja-cdn.com/supremacy/images/map/TheHive.webp"
                     break
-                case "UrbanBuildings":
+                case "MIBT":
                     mapImageUrl = "https://afiles.ninja-cdn.com/supremacy/images/map/UrbanBuildings.webp"
                     break
             }
