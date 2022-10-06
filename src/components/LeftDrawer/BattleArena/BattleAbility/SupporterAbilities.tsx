@@ -57,7 +57,6 @@ export const SupporterAbilities = () => {
                 setSupportAbilities([])
                 return
             }
-            console.log(payload.supporter_abilities)
             setSupportAbilities(payload.supporter_abilities || [])
         },
     )

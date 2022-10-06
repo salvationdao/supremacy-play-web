@@ -7,7 +7,6 @@ import { useGameServerCommandsFaction } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 import { Dimension, GAME_CLIENT_TILE_SIZE, LocationSelectType, Map, PlayerAbility, Position, Vector2i } from "../types"
 import { useArena } from "./arena"
-import { useAuth } from "./auth"
 import { BattleState, useGame } from "./game"
 import { useGlobalNotifications } from "./globalNotifications"
 import { RecordType, useHotkey } from "./hotkeys"
@@ -43,7 +42,6 @@ interface PixiMainItems {
 
 export const MiniMapPixiContainer = createContainer(() => {
     const { map, battleState } = useGame()
-    const { factionID } = useAuth()
     const { currentArenaID } = useArena()
     const { addToHotkeyRecord } = useHotkey()
     const { newSnackbarMessage } = useGlobalNotifications()
@@ -194,11 +192,11 @@ export const MiniMapPixiContainer = createContainer(() => {
                         mech_hash?: string
                     } = {
                         arena_id: currentArenaID,
-                        ability_id: supportAbility.current!.id,
-                        location_select_type: supportAbility.current!.location_select_type,
+                        ability_id: supportAbility.current.id,
+                        location_select_type: supportAbility.current.location_select_type,
                     }
                     // Else if it's a player ability
-                    switch (supportAbility.current!.location_select_type) {
+                    switch (supportAbility.current.location_select_type) {
                         case LocationSelectType.LineSelect:
                             if (!startCoord || !endCoord) {
                                 newSnackbarMessage("Missing map target location(s).", "error")
@@ -246,11 +244,11 @@ export const MiniMapPixiContainer = createContainer(() => {
                         mech_hash?: string
                     } = {
                         arena_id: currentArenaID,
-                        blueprint_ability_id: playerAbility.current!.ability.id,
-                        location_select_type: playerAbility.current!.ability.location_select_type,
+                        blueprint_ability_id: playerAbility.current.ability.id,
+                        location_select_type: playerAbility.current.ability.location_select_type,
                     }
                     // Else if it's a player ability
-                    switch (playerAbility.current!.ability.location_select_type) {
+                    switch (playerAbility.current.ability.location_select_type) {
                         case LocationSelectType.LineSelect:
                             if (!startCoord || !endCoord) {
                                 newSnackbarMessage("Missing map target location(s).", "error")
@@ -278,7 +276,7 @@ export const MiniMapPixiContainer = createContainer(() => {
                                 return
                             }
                             payload.start_coords = viewportPositionToGridCell.current(startCoord.x, startCoord.y)
-                            payload.mech_hash = playerAbility.current!.mechHash
+                            payload.mech_hash = playerAbility.current.mechHash
                             break
 
                         case LocationSelectType.Global:

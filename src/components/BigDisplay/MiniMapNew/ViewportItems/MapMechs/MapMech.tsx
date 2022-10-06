@@ -148,7 +148,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         if (!isAlive && supportAbility.current?.mech_hash === hash) {
             useSupportAbility.current(undefined)
         }
-    }, [hash, isAlive, playerAbility, usePlayerAbility, useSupportAbility, playerAbility])
+    }, [hash, isAlive, playerAbility, usePlayerAbility, useSupportAbility, supportAbility])
 
     // Handle what happens when ability is used or map location is selected
     useEffect(() => {
@@ -284,6 +284,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         supportAbility,
         isAlive,
         usePlayerAbility,
+        useSupportAbility,
         participantID,
         highlightedMechParticipantID,
         factionID,

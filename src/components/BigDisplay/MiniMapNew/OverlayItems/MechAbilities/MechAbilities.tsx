@@ -9,7 +9,7 @@ import { PixiMechAbilities } from "./pixiMechAbilities"
 // Outer component to determine whether to render the mech abilities or not
 export const MechAbilities = React.memo(function MechAbilities() {
     const { userID } = useAuth()
-    const { battleState, warMachines, spawnedAI } = useGame()
+    const { warMachines, spawnedAI } = useGame()
     const { pixiMainItems, highlightedMechParticipantID } = useMiniMapPixi()
     const [highlightedMech, setHighlightedMech] = useState<WarMachineState>()
 
