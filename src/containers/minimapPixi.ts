@@ -75,7 +75,7 @@ export const MiniMapPixiContainer = createContainer(() => {
         if (!map || !pixiMainItems) return
         mapScalingRef.current = { x: pixiMainItems.viewport.worldWidth / map.Width, y: pixiMainItems.viewport.worldHeight / map.Height }
         gridSizeRef.current = { width: (mapScalingRef.current.x * map.Width) / map.Cells_X, height: (mapScalingRef.current.y * map.Height) / map.Cells_Y }
-        mapItemMinSize.current = Math.max(gridSizeRef.current.width, 0.01 * map.Width)
+        mapItemMinSize.current = Math.max(gridSizeRef.current.width, 0.01 * map.Width) // Use this when necessary, min size 1% of the map width
     }, [map, pixiMainItems])
 
     // Converts game client position (x, y) to (x, y) that fits into the viewport (viewport position)
