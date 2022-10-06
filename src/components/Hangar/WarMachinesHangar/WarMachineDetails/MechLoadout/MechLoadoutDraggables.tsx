@@ -1,7 +1,7 @@
 import { Box, Stack } from "@mui/material"
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react"
 import Draggable from "react-draggable"
-import { SvgWeapons } from "../../../../../assets"
+import { SvgSkin, SvgWeapons } from "../../../../../assets"
 import { getRarityDeets } from "../../../../../helpers"
 import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
@@ -13,6 +13,7 @@ import { GetWeaponsRequest } from "../../../WeaponsHangar/WeaponsHangar"
 import { MechLoadoutItemDraggable, MechLoadoutItemSkeleton } from "../../Common/MechLoadoutItem"
 
 export type CustomDragEvent = (parentRef: HTMLDivElement, clientRect: DOMRect) => void
+export type CustomDragEventWithType = (parentRef: HTMLDivElement, clientRect: DOMRect, type: AssetItemType) => void
 export type DragStartEvent = (parentRef: HTMLDivElement) => void
 export type DragStopEvent = (parentRef: HTMLDivElement, clientRect: DOMRect) => void
 export type DragStopEventWithType = (parentRef: HTMLDivElement, clientRect: DOMRect, type: AssetItemType, item: Weapon | PowerCore | Utility | MechSkin) => void
@@ -28,7 +29,7 @@ export interface GetWeaponsDetailedResponse {
 
 export interface MechLoadoutDraggablesProps {
     draggablesRef: React.ForwardedRef<DraggablesHandle>
-    onDrag: CustomDragEvent
+    onDrag: CustomDragEventWithType
     onDragStart: DragStartEvent
     onDragStop: DragStopEventWithType
     excludeWeaponIDs: string[]
@@ -144,12 +145,23 @@ export const MechLoadoutDraggables = ({ draggablesRef, onDrag, onDragStart, onDr
         return weapons.map((w) => (
             <MechLoadoutDraggable
                 key={w.id}
-                onDrag={onDrag}
+                onDrag={(parentEl, rect) => {
+                    onDrag(parentEl, rect, AssetItemType.Weapon)
+                }}
                 onDragStart={onDragStart}
                 onDragStop={(parentEl, rect) => {
                     onDragStop(parentEl, rect, AssetItemType.Weapon, w)
                 }}
-                item={w}
+                renderDraggable={(ref) => (
+                    <MechLoadoutItemDraggable
+                        ref={ref}
+                        imageUrl={w.image_url || w.avatar_url}
+                        label={w.label}
+                        primaryColor={colors.weapons}
+                        Icon={SvgWeapons}
+                        rarity={w.tier ? getRarityDeets(w.tier) : undefined}
+                    />
+                )}
             />
         ))
     }, [isWeaponsLoading, weaponsError, onDrag, onDragStart, onDragStop, weapons])
@@ -172,12 +184,23 @@ export const MechLoadoutDraggables = ({ draggablesRef, onDrag, onDragStart, onDr
         return mechSkins.map((ms) => (
             <MechLoadoutDraggable
                 key={ms.id}
-                onDrag={onDrag}
+                onDrag={(parentEl, rect) => {
+                    onDrag(parentEl, rect, AssetItemType.MechSkin)
+                }}
                 onDragStart={onDragStart}
                 onDragStop={(parentEl, rect) => {
                     onDragStop(parentEl, rect, AssetItemType.MechSkin, ms)
                 }}
-                item={ms}
+                renderDraggable={(ref) => (
+                    <MechLoadoutItemDraggable
+                        ref={ref}
+                        imageUrl={ms.swatch_images?.image_url || ms.swatch_images?.avatar_url || ms.image_url || ms.avatar_url}
+                        label={ms.label}
+                        primaryColor={colors.chassisSkin}
+                        Icon={SvgSkin}
+                        rarity={ms.tier ? getRarityDeets(ms.tier) : undefined}
+                    />
+                )}
             />
         ))
     }, [isMechSkinsLoading, mechSkins, mechSkinsError, onDrag, onDragStart, onDragStop])
@@ -266,15 +289,14 @@ export const MechLoadoutDraggables = ({ draggablesRef, onDrag, onDragStart, onDr
     )
 }
 
-type WeaponOrMechSkin = Weapon | MechSkin
-interface MechLoadoutDraggableProps<WeaponOrMechSkin> {
-    item: WeaponOrMechSkin
+interface MechLoadoutDraggableProps {
+    renderDraggable: (ref: React.RefObject<HTMLDivElement>) => JSX.Element
     onDrag: CustomDragEvent
     onDragStart: DragStartEvent
     onDragStop: DragStopEvent
 }
 
-const MechLoadoutDraggable = ({ item, onDrag, onDragStart, onDragStop }: MechLoadoutDraggableProps<WeaponOrMechSkin>) => {
+const MechLoadoutDraggable = ({ renderDraggable, onDrag, onDragStart, onDragStop }: MechLoadoutDraggableProps) => {
     const transformableRef = useRef<HTMLDivElement>(null)
     const draggableRef = useRef<HTMLDivElement>(null)
 
@@ -309,15 +331,7 @@ const MechLoadoutDraggable = ({ item, onDrag, onDragStart, onDragStop }: MechLoa
                     onDragStop(transformableRef.current, draggableRef.current.getBoundingClientRect())
                 }}
             >
-                <MechLoadoutItemDraggable
-                    ref={draggableRef}
-                    imageUrl={item.image_url || item.avatar_url}
-                    // videoUrls={[item.card_animation_url]}
-                    label={item.label}
-                    primaryColor={colors.weapons}
-                    Icon={SvgWeapons}
-                    rarity={item.tier ? getRarityDeets(item.tier) : undefined}
-                />
+                {renderDraggable(draggableRef)}
             </Draggable>
         </Box>
     )

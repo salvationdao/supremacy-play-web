@@ -7,7 +7,7 @@ import { getRarityDeets } from "../../../../../helpers"
 import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
-import { MechDetails, MechSkin, MechStatus, MechStatusEnum, PowerCore, Utility, Weapon } from "../../../../../types"
+import { AssetItemType, MechDetails, MechSkin, MechStatus, MechStatusEnum, PowerCore, Utility, Weapon } from "../../../../../types"
 import { ClipThing } from "../../../../Common/ClipThing"
 import { FancyButton } from "../../../../Common/FancyButton"
 import { MechLoadoutItem } from "../../Common/MechLoadoutItem"
@@ -16,7 +16,7 @@ import { UnityHandle } from "../MechViewer/UnityViewer"
 import { MechLoadoutMechSkinModal } from "../Modals/Loadout/MechLoadoutMechSkinModal"
 import { MechLoadoutPowerCoreModal } from "../Modals/Loadout/MechLoadoutPowerCoreModal"
 import { MechLoadoutWeaponModal } from "../Modals/Loadout/MechLoadoutWeaponModal"
-import { CustomDragEvent, DraggablesHandle, DragStartEvent, DragStopEventWithType, MechLoadoutDraggables } from "./MechLoadoutDraggables"
+import { CustomDragEventWithType, DraggablesHandle, DragStartEvent, DragStopEventWithType, MechLoadoutDraggables } from "./MechLoadoutDraggables"
 
 interface PlayerAssetMechEquipRequest {
     mech_id: string
@@ -309,72 +309,107 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         [currLoadout.weapons_map],
     )
 
+    const mechSkinItemRef = useRef<HTMLDivElement>(null)
     const weaponItemRefs = useRef<Map<number, HTMLDivElement | null>>(new Map()) // Map<slot_number, Element ref>
-    const onItemDrag = useCallback<CustomDragEvent>(
-        (_el, rect) => {
+    const onItemDrag = useCallback<CustomDragEventWithType>(
+        (_el, rect, type) => {
             if (loadoutDisabled) return
-            for (const kv of weaponItemRefs.current.entries()) {
-                const element = kv[1]
-                if (!element) continue
-                const slotBoundingRect = element.getBoundingClientRect()
-                const overlaps = !(
-                    rect.right < slotBoundingRect.left ||
-                    rect.left > slotBoundingRect.right ||
-                    rect.bottom < slotBoundingRect.top ||
-                    rect.top > slotBoundingRect.bottom
-                )
-                if (overlaps) {
-                    element.style.transform = "scale(1.1)"
-                    element.style.transition = "transform .1s ease-out"
-                } else {
-                    element.style.transform = "scale(1.0)"
-                    element.style.transition = "transform .1s ease-in"
+            switch (type) {
+                case AssetItemType.Weapon:
+                    for (const kv of weaponItemRefs.current.entries()) {
+                        const slotNumber = kv[0]
+                        const element = kv[1]
+                        if (!element) continue
+                        if (weapons_map.get(slotNumber)?.locked_to_mech) continue
+
+                        const slotBoundingRect = element.getBoundingClientRect()
+                        const overlaps = checkDOMRectOverlap(rect, slotBoundingRect)
+
+                        if (overlaps) {
+                            element.style.transform = "scale(1.1)"
+                            element.style.transition = "transform .1s ease-out"
+                        } else {
+                            element.style.transform = "scale(1.0)"
+                            element.style.transition = "transform .1s ease-in"
+                        }
+                    }
+                    break
+                case AssetItemType.MechSkin: {
+                    if (!mechSkinItemRef.current) return
+                    if (chassis_skin?.locked_to_mech) return
+
+                    const slotBoundingRect = mechSkinItemRef.current.getBoundingClientRect()
+                    const overlaps = checkDOMRectOverlap(rect, slotBoundingRect)
+
+                    if (overlaps) {
+                        mechSkinItemRef.current.style.transform = "scale(1.1)"
+                        mechSkinItemRef.current.style.transition = "transform .1s ease-out"
+                    } else {
+                        mechSkinItemRef.current.style.transform = "scale(1.0)"
+                        mechSkinItemRef.current.style.transition = "transform .1s ease-in"
+                    }
+                    break
                 }
             }
         },
-        [loadoutDisabled],
+        [chassis_skin?.locked_to_mech, loadoutDisabled, weapons_map],
     )
-    const onItemDragStart = useCallback<DragStartEvent>(
-        () => {
-            if (loadoutDisabled) return
-            setIsDragging(true)
-        },
-        [loadoutDisabled],
-    )
+    const onItemDragStart = useCallback<DragStartEvent>(() => {
+        if (loadoutDisabled) return
+        setIsDragging(true)
+    }, [loadoutDisabled])
     const onItemDragStop = useCallback<DragStopEventWithType>(
         (el, rect, type, item) => {
             if (loadoutDisabled) return
-            const weapon = item as Weapon
-            for (const kv of weaponItemRefs.current.entries()) {
-                const element = kv[1]
-                if (!element) continue
+            switch (type) {
+                case AssetItemType.Weapon:
+                    for (const kv of weaponItemRefs.current.entries()) {
+                        const slotNumber = kv[0]
+                        const element = kv[1]
+                        if (!element) continue
+                        if (weapons_map.get(slotNumber)?.locked_to_mech) continue
 
-                const slotBoundingRect = element.getBoundingClientRect()
-                const overlaps = !(
-                    rect.right < slotBoundingRect.left ||
-                    rect.left > slotBoundingRect.right ||
-                    rect.bottom < slotBoundingRect.top ||
-                    rect.top > slotBoundingRect.bottom
-                )
+                        const slotBoundingRect = element.getBoundingClientRect()
+                        const overlaps = checkDOMRectOverlap(rect, slotBoundingRect)
 
-                if (overlaps) {
-                    modifyWeaponSlot({
-                        weapon: weapon,
-                        weapon_id: weapon.id,
-                        slot_number: kv[0],
-                        inherit_skin: false,
-                    })
+                        if (overlaps) {
+                            const weapon = item as Weapon
+                            modifyWeaponSlot({
+                                weapon: weapon,
+                                weapon_id: weapon.id,
+                                slot_number: kv[0],
+                                inherit_skin: false,
+                            })
+                            break
+                        }
+                    }
+                    break
+                case AssetItemType.MechSkin: {
+                    if (!mechSkinItemRef.current) return
+                    if (chassis_skin?.locked_to_mech) return
+
+                    const slotBoundingRect = mechSkinItemRef.current.getBoundingClientRect()
+                    const overlaps = checkDOMRectOverlap(rect, slotBoundingRect)
+
+                    if (overlaps) {
+                        const mechSkin = item as MechSkin
+                        modifyMechSkin({
+                            mech_skin: mechSkin,
+                            mech_skin_id: mechSkin.id,
+                        })
+                    }
                     break
                 }
             }
             setIsDragging(false)
         },
-        [loadoutDisabled, modifyWeaponSlot],
+        [chassis_skin?.locked_to_mech, loadoutDisabled, modifyMechSkin, modifyWeaponSlot, weapons_map],
     )
 
     return (
         <Stack
             direction="row"
+            spacing="1rem"
             sx={{
                 flex: 1,
                 position: "relative",
@@ -705,6 +740,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                             if (mechSkin) {
                                 return (
                                     <MechLoadoutItem
+                                        ref={mechSkinItemRef}
                                         side="right"
                                         locked={chassis_skin?.locked_to_mech}
                                         disabled={loadoutDisabled}
@@ -742,6 +778,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
 
                             return (
                                 <MechLoadoutItem
+                                    ref={mechSkinItemRef}
                                     disabled={loadoutDisabled}
                                     label="SUBMODEL"
                                     primaryColor={colors.chassisSkin}
@@ -802,4 +839,8 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
             />
         </Stack>
     )
+}
+
+const checkDOMRectOverlap = (rect1: DOMRect, rect2: DOMRect) => {
+    return !(rect1.right < rect2.left || rect1.left > rect2.right || rect1.bottom < rect2.top || rect1.top > rect2.bottom)
 }
