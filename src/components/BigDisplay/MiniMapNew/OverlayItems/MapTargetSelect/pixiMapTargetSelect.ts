@@ -7,8 +7,9 @@ import { HEXToVBColor } from "../../../../../helpers"
 import { PixiImageIcon } from "../../../../../pixi/pixiImageIcon"
 import { fonts } from "../../../../../theme/theme"
 import { AbilityDetail, BlueprintPlayerAbility, Dimension, GameAbility, GAME_CLIENT_TILE_SIZE, LocationSelectType, Position } from "../../../../../types"
+import { PlayerSupporterAbility } from "../../../../LeftDrawer/BattleArena/BattleAbility/SupporterAbilities"
 
-const getAbilityLabel = (ability: GameAbility | BlueprintPlayerAbility): string => {
+const getAbilityLabel = (ability: GameAbility | BlueprintPlayerAbility | PlayerSupporterAbility): string => {
     let label = "Select a location to use"
 
     switch (ability.location_select_type) {
@@ -43,7 +44,7 @@ export class PixiMapTargetSelect {
     private readonly cancelButton: PIXI.Sprite | undefined
 
     private viewport: Viewport
-    private ability: GameAbility | BlueprintPlayerAbility
+    private ability: GameAbility | BlueprintPlayerAbility | PlayerSupporterAbility
     private gridSizeRef: React.MutableRefObject<Dimension>
     private mapMousePosition: React.MutableRefObject<Position | undefined>
     private animationFrame: number | undefined
@@ -61,7 +62,7 @@ export class PixiMapTargetSelect {
         viewport: Viewport,
         mapMousePosition: React.MutableRefObject<Position | undefined>,
         gridSizeRef: React.MutableRefObject<Dimension>,
-        ability: GameAbility | BlueprintPlayerAbility,
+        ability: GameAbility | BlueprintPlayerAbility | PlayerSupporterAbility,
         endTime: Date | undefined,
         onCancel: (() => void) | undefined,
     ) {

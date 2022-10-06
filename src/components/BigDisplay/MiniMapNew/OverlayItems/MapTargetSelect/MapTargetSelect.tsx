@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import { Crosshair } from "../../../../../assets"
-import { MapSelection, useGame, useGlobalNotifications, useMiniMapPixi } from "../../../../../containers"
+import { MapSelection, useGame, useMiniMapPixi } from "../../../../../containers"
 import { BlueprintPlayerAbility, GameAbility, LocationSelectType, MechMoveCommandAbility, PlayerAbility, Position } from "../../../../../types"
 import { PixiMapTargetSelect } from "./pixiMapTargetSelect"
 import { PlayerSupporterAbility } from "../../../../LeftDrawer/BattleArena/BattleAbility/SupporterAbilities"
 
 interface MapTargetHintAbility {
-    ability: GameAbility | BlueprintPlayerAbility
+    ability: GameAbility | BlueprintPlayerAbility | PlayerSupporterAbility
     endTime?: Date
     cancelable?: boolean
 }
@@ -37,7 +37,12 @@ export const MapTargetSelect = React.memo(function TargetHint() {
             //         isTargetingWinner.current = true
             //     }
             // } else
-            if (pa) {
+            if (sa) {
+                setTargetHintAbility({
+                    ability: sa,
+                    cancelable: true,
+                })
+            } else if (pa) {
                 setTargetHintAbility({
                     ability: pa.ability,
                     cancelable: true,
@@ -68,6 +73,7 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
         onSelectMapPositionCallbacks,
         gridCellToViewportPosition,
         usePlayerAbility,
+        useSupportAbility,
         selectMapPosition,
         onTargetConfirm,
     } = useMiniMapPixi()
@@ -78,7 +84,8 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
 
     const onCancel = useCallback(() => {
         usePlayerAbility.current(undefined)
-    }, [usePlayerAbility])
+        useSupportAbility.current(undefined)
+    }, [usePlayerAbility, useSupportAbility])
 
     // Initial setup for the mech and show on the map
     useEffect(() => {

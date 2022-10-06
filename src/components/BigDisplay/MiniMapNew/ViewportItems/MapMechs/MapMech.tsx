@@ -44,10 +44,12 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         highlightedMechParticipantID,
         setHighlightedMechParticipantID,
         playerAbility,
+        supportAbility,
         onTargetConfirm,
         selection,
         selectMapPosition,
         usePlayerAbility,
+        useSupportAbility,
         onAbilityUseCallbacks,
         onSelectMapPositionCallbacks,
     } = useMiniMapPixi()
@@ -121,7 +123,8 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     }, [onTargetConfirm, pixiMapMech])
 
     const updateIsMechHighlighted = useCallback(() => {
-        const isHighlighted = highlightedMechParticipantID === participantID || playerAbility.current?.mechHash === hash
+        const isHighlighted =
+            highlightedMechParticipantID === participantID || playerAbility.current?.mechHash === hash || supportAbility.current?.mech_hash === hash
 
         // Highlight the mech circle
         if (!pixiMapMech) return
@@ -130,14 +133,17 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         } else {
             pixiMapMech.unhighlightMech()
         }
-    }, [hash, highlightedMechParticipantID, pixiMapMech, playerAbility, participantID])
+    }, [hash, highlightedMechParticipantID, pixiMapMech, playerAbility, participantID, supportAbility])
 
     // If the mech dies and its mech is about to use player ability is active, cancel it
     useEffect(() => {
         if (!isAlive && playerAbility.current?.mechHash === hash) {
             usePlayerAbility.current(undefined)
         }
-    }, [hash, isAlive, playerAbility, usePlayerAbility])
+        if (!isAlive && supportAbility.current?.mech_hash === hash) {
+            useSupportAbility.current(undefined)
+        }
+    }, [hash, isAlive, playerAbility, usePlayerAbility, useSupportAbility, playerAbility])
 
     // Handle what happens when ability is used or map location is selected
     useEffect(() => {
@@ -146,7 +152,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
             // Show the dashed line border box around mech is it can be clicked on for the ability
             let showDashedBox = false
-            // todo vinnie, handle it here
+
             const ability = pa?.ability || sa
 
             if (isAlive && !abilityBorderEffect && ability) {

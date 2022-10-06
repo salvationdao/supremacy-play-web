@@ -23,6 +23,7 @@ export interface PlayerSupporterAbility {
     image_url: string
     description: string
     text_colour: string
+    game_client_ability_id: number
     location_select_type: LocationSelectType
     mech_hash: string
 }
