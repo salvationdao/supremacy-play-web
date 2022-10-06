@@ -1,6 +1,6 @@
 import { decode } from "base64-arraybuffer"
 import React, { useEffect, useRef, useState } from "react"
-import { useArena, useMiniMapPixi } from "../../../../../containers"
+import { useArena, useMiniMapPixi, useSupremacy } from "../../../../../containers"
 import { useGameServerSubscription } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { DisplayedAbility, LocationSelectType, MechDisplayEffectType, MiniMapDisplayEffectType } from "../../../../../types"
@@ -36,6 +36,7 @@ interface PendingHiveStateChange {
 
 export const MapAbilities = React.memo(function MapAbilities() {
     const { currentArenaID } = useArena()
+    const { isWindowFocused } = useSupremacy()
     const { pixiMainItems, gridSizeRef, clientPositionToViewportPosition, gridCellToViewportPosition, mapItemMinSize } = useMiniMapPixi()
     const [pixiMapAbilities, setPixiMapAbilities] = useState<PixiMapAbilities>()
 
@@ -103,6 +104,9 @@ export const MapAbilities = React.memo(function MapAbilities() {
             ready: !!currentArenaID,
         },
         (payload) => {
+            // If window is not in focus, discard the payloads else will crash browser
+            if (!isWindowFocused.current) return
+
             if (!payload) return
 
             const buffer = decode(payload)

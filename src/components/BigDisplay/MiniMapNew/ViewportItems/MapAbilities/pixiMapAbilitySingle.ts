@@ -154,7 +154,7 @@ export class PixiMapAbilitySingle {
                 },
                 scale: {
                     start: 0.5,
-                    end: 0.04,
+                    end: 0.03,
                 },
                 lifetime: {
                     min: 1.6,
