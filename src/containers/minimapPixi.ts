@@ -285,6 +285,7 @@ export const MiniMapPixiContainer = createContainer(() => {
 
                 send(hubKey, payload)
                 newSnackbarMessage("Successfully submitted target location.", "success")
+                selectMapPosition.current(undefined)
             } catch (err) {
                 newSnackbarMessage(typeof err === "string" ? err : "Failed to submit target location.", "error")
                 console.error(err)

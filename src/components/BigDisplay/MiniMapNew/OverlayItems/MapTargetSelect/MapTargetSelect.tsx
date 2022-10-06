@@ -31,7 +31,7 @@ export const MapTargetSelect = React.memo(function TargetHint() {
                     setTimeout(() => {
                         setTargetHintAbility(newTha)
                         isTargetingWinner.current = true
-                    }, 1000)
+                    }, 1500)
                 } else {
                     setTargetHintAbility(newTha)
                     isTargetingWinner.current = true
@@ -228,6 +228,11 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
                     pixiTargetHint.mouseIcon.showIcon(!selectedStartCoord.current || !selectedEndCoord.current)
                 }
             }
+        }
+
+        return () => {
+            const cb = onSelectMapPositionCallbacks
+            delete cb.current["target-hint-inner"]
         }
     }, [ability.game_client_ability_id, ability.location_select_type, endTime, gridCellToViewportPosition, onSelectMapPositionCallbacks, pixiTargetHint, selectMapPosition])
 
