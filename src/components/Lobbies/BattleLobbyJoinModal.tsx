@@ -9,7 +9,7 @@ import { usePagination } from "../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
-import { MechBasicWithQueueStatus } from "../../types"
+import { LobbyMech } from "../../types"
 import { BattleLobby } from "../../types/battle_queue"
 import { SortTypeLabel } from "../../types/marketplace"
 import { ConfirmModal } from "../Common/ConfirmModal"
@@ -53,8 +53,8 @@ export const BattleLobbyJoinModal = ({ battleLobby, onJoin, onClose }: BattleLob
         },
     )
 
-    const [mechsWithQueueStatus, setMechsWithQueueStatus] = useState<MechBasicWithQueueStatus[]>([])
-    useGameServerSubscriptionSecuredUser<MechBasicWithQueueStatus[]>(
+    const [mechsWithQueueStatus, setMechsWithQueueStatus] = useState<LobbyMech[]>([])
+    useGameServerSubscriptionSecuredUser<LobbyMech[]>(
         {
             URI: "/owned_mechs",
             key: GameServerKeys.SubPlayerMechsBrief,
@@ -85,7 +85,7 @@ export const BattleLobbyJoinModal = ({ battleLobby, onJoin, onClose }: BattleLob
         },
     )
 
-    const [list, setList] = useState<MechBasicWithQueueStatus[]>([])
+    const [list, setList] = useState<LobbyMech[]>([])
     const { page, changePage, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: 10,
         page: 1,

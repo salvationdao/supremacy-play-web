@@ -2,7 +2,7 @@ import { Box, Pagination, Stack, Typography } from "@mui/material"
 import { useTheme } from "../../../../containers/theme"
 import { useDebounce, usePagination } from "../../../../hooks"
 import { useEffect, useMemo, useState } from "react"
-import { MechBasicWithQueueStatus } from "../../../../types"
+import { LobbyMech } from "../../../../types"
 import { colors, fonts } from "../../../../theme/theme"
 import { SearchBattle } from "../../../Replays/BattlesReplays/SearchBattle"
 import { TotalAndPageSizeOptions } from "../../../Common/TotalAndPageSizeOptions"
@@ -23,14 +23,14 @@ const sortOptions = [
 ]
 
 interface MechSelectorProps {
-    selectedMechs: MechBasicWithQueueStatus[]
-    setSelectedMechs: React.Dispatch<React.SetStateAction<MechBasicWithQueueStatus[]>>
+    selectedMechs: LobbyMech[]
+    setSelectedMechs: React.Dispatch<React.SetStateAction<LobbyMech[]>>
 }
 
 export const MechSelector = ({ selectedMechs, setSelectedMechs }: MechSelectorProps) => {
     const { factionTheme } = useTheme()
     const [searchValue, setSearchValue, searchValueInstant] = useDebounce("", 300)
-    const [list, setList] = useState<MechBasicWithQueueStatus[]>([])
+    const [list, setList] = useState<LobbyMech[]>([])
     const { page, changePage, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: 10,
         page: 1,
@@ -52,8 +52,8 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs }: MechSelectorPr
         },
     )
 
-    const [ownedMechs, setOwnedMechs] = useState<MechBasicWithQueueStatus[]>([])
-    useGameServerSubscriptionSecuredUser<MechBasicWithQueueStatus[]>(
+    const [ownedMechs, setOwnedMechs] = useState<LobbyMech[]>([])
+    useGameServerSubscriptionSecuredUser<LobbyMech[]>(
         {
             URI: "/owned_mechs",
             key: GameServerKeys.SubPlayerMechsBrief,
@@ -202,7 +202,7 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs }: MechSelectorPr
             <TotalAndPageSizeOptions
                 pageSize={pageSize}
                 changePageSize={changePageSize}
-                pageSizeOptions={[10, 20, 30]}
+                pageSizeOptions={[10, 20]}
                 changePage={changePage}
                 sortOptions={sortOptions}
                 selectedSort={sort}
