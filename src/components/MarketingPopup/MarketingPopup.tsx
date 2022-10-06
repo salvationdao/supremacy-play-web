@@ -1,5 +1,6 @@
-import { Box, Checkbox, FormControlLabel, Modal, Stack, Typography } from "@mui/material"
+import { Box, Checkbox, FormControlLabel, InputAdornment, Modal, Stack, TextField, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
+import { SvgMail } from "../../assets"
 import { useAuth, useGlobalNotifications } from "../../containers"
 import { useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
@@ -8,26 +9,32 @@ import { ClipThing } from "../Common/ClipThing"
 import { FancyButton } from "../Common/FancyButton"
 
 export const MarketingPopup = () => {
-    const { user } = useAuth()
+    const { user, userFromPassport } = useAuth()
     const { newSnackbarMessage } = useGlobalNotifications()
     const [showMarketingPopup, setShowMarketingPopup] = useState(!!user.id && user.accepts_marketing == null && user.faction_id != null)
 
     const { send } = useGameServerCommandsUser("/user_commander")
     const [isLoading, setIsLoading] = useState(false)
     const [acceptMarketing, setAcceptMarketing] = useState(false)
+    const [newEmail, setNewEmail] = useState<string>()
 
     const updateMarketingPreferences = useCallback(async () => {
         setIsLoading(true)
         try {
-            await send<null, { accepts_marketing: boolean }>(GameServerKeys.UpdateMarketingPreferences, { accepts_marketing: acceptMarketing })
-            newSnackbarMessage("Successfully updated mearketing preferences.", "success")
+            console.log(newEmail)
+            await send<null, { accepts_marketing: boolean; new_email?: string }>(GameServerKeys.UpdateMarketingPreferences, {
+                accepts_marketing: acceptMarketing,
+                new_email: newEmail,
+            })
+            setShowMarketingPopup(false)
+            newSnackbarMessage("Successfully updated marketing preferences.", "success")
         } catch (e) {
             newSnackbarMessage(typeof e === "string" ? e : "Failed to update marketing preferences.", "error")
             console.error(e)
         } finally {
             setIsLoading(false)
         }
-    }, [acceptMarketing, newSnackbarMessage, send])
+    }, [acceptMarketing, newEmail, newSnackbarMessage, send])
 
     return (
         <Modal open={showMarketingPopup}>
@@ -58,45 +65,68 @@ export const MarketingPopup = () => {
                             padding: "2rem",
                         }}
                     >
-                        <Typography variant="body1">
+                        <Typography variant="body1" mb="1rem">
                             Please check the box below if you would like to receive updates, special offers and newsletters from Supremacy. All promotional
                             content will be sent to your registered email on XSYN.
                         </Typography>
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    disabled={isLoading}
-                                    size="small"
-                                    checked={acceptMarketing}
-                                    onChange={(e) => {
-                                        setAcceptMarketing(e.currentTarget.checked)
-                                    }}
-                                    sx={{
-                                        color: colors.yellow,
-                                        "& > .MuiSvgIcon-root": { width: "2.8rem", height: "2.8rem" },
-                                        ".Mui-checked, .MuiSvgIcon-root": { color: `${colors.yellow} !important` },
-                                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.yellow}50 !important` },
-                                    }}
-                                />
-                            }
-                            label="Opt-in to marketing emails"
-                        />
-                        <FancyButton
-                            clipThingsProps={{
-                                clipSize: "9px",
-                                backgroundColor: colors.yellow,
-                                opacity: 1,
-                                border: { borderColor: colors.yellow, borderThickness: "2.5px" },
-                                sx: {},
-                            }}
-                            sx={{ px: "2rem", py: ".6rem", color: "#000000" }}
-                            onClick={() => {
+                        <form
+                            onSubmit={(e) => {
+                                e.preventDefault()
                                 updateMarketingPreferences()
-                                setShowMarketingPopup(false)
                             }}
                         >
-                            <Typography sx={{ fontFamily: fonts.nostromoHeavy, color: "#000000" }}>UPDATE MARKETING PREFERENCES</Typography>
-                        </FancyButton>
+                            <Stack>
+                                {!userFromPassport?.email && (
+                                    <TextField
+                                        variant="outlined"
+                                        placeholder="Your email"
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <SvgMail fill={colors.yellow} size="2.4rem" />
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                        type="email"
+                                        value={newEmail || ""}
+                                        onChange={(e) => setNewEmail(e.target.value)}
+                                        required
+                                    />
+                                )}
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            disabled={isLoading}
+                                            size="small"
+                                            checked={acceptMarketing}
+                                            onChange={(e) => {
+                                                setAcceptMarketing(e.currentTarget.checked)
+                                            }}
+                                            sx={{
+                                                color: colors.yellow,
+                                                "& > .MuiSvgIcon-root": { width: "2.8rem", height: "2.8rem" },
+                                                ".Mui-checked, .MuiSvgIcon-root": { color: `${colors.yellow} !important` },
+                                                ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.yellow}50 !important` },
+                                            }}
+                                        />
+                                    }
+                                    label="Subscribe to Supremacy news and updates"
+                                />
+                                <FancyButton
+                                    clipThingsProps={{
+                                        clipSize: "9px",
+                                        backgroundColor: colors.yellow,
+                                        opacity: 1,
+                                        border: { borderColor: colors.yellow, borderThickness: "2.5px" },
+                                        sx: {},
+                                    }}
+                                    sx={{ px: "2rem", py: ".6rem", color: "#000000" }}
+                                    type="submit"
+                                >
+                                    <Typography sx={{ fontFamily: fonts.nostromoHeavy, color: "#000000" }}>UPDATE MARKETING PREFERENCES</Typography>
+                                </FancyButton>
+                            </Stack>
+                        </form>
                     </Stack>
                 </ClipThing>
             </Box>
