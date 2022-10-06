@@ -1,11 +1,11 @@
-import { Box, Stack } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react"
 import Draggable from "react-draggable"
 import { SvgSkin, SvgWeapons } from "../../../../../assets"
 import { getRarityDeets } from "../../../../../helpers"
 import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
-import { colors, theme } from "../../../../../theme/theme"
+import { colors, fonts, theme } from "../../../../../theme/theme"
 import { AssetItemType, MechSkin, PowerCore, Utility, Weapon } from "../../../../../types"
 import { ClipThing } from "../../../../Common/ClipThing"
 import { GetSubmodelsRequest, GetSubmodelsResponse } from "../../../SubmodelHangar/SubmodelsHangar"
@@ -141,6 +141,21 @@ export const MechLoadoutDraggables = ({ draggablesRef, onDrag, onDragStart, onDr
         if (weaponsError) {
             return weaponsError
         }
+        if (weapons.length === 0) {
+            return (
+                <Stack alignItems="center" justifyContent="center" height="100%">
+                    <Typography
+                        sx={{
+                            fontFamily: fonts.nostromoBlack,
+                            color: `${theme.factionTheme.primary}aa`,
+                            textTransform: "uppercase",
+                        }}
+                    >
+                        No Weapons
+                    </Typography>
+                </Stack>
+            )
+        }
 
         return weapons.map((w) => (
             <MechLoadoutDraggable
@@ -179,6 +194,21 @@ export const MechLoadoutDraggables = ({ draggablesRef, onDrag, onDragStart, onDr
         }
         if (mechSkinsError) {
             return mechSkinsError
+        }
+        if (mechSkins.length === 0) {
+            return (
+                <Stack alignItems="center" justifyContent="center" height="100%">
+                    <Typography
+                        sx={{
+                            fontFamily: fonts.nostromoBlack,
+                            color: `${theme.factionTheme.primary}aa`,
+                            textTransform: "uppercase",
+                        }}
+                    >
+                        No Submodels
+                    </Typography>
+                </Stack>
+            )
         }
 
         return mechSkins.map((ms) => (
