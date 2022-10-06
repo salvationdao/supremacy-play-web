@@ -229,6 +229,11 @@ export const MiniMapPixiContainer = createContainer(() => {
                             break
                     }
 
+                    // If it's mech move command, dont reset so player can keep moving the mech
+                    if (playerAbility.current?.ability.location_select_type !== LocationSelectType.MechCommand) {
+                        useSupportAbility.current(undefined)
+                    }
+
                     send(GameServerKeys.PlayerSupportAbilityUse, payload)
                     newSnackbarMessage("Successfully submitted target location.", "success")
                 } else if (playerAbility.current) {
@@ -274,11 +279,15 @@ export const MiniMapPixiContainer = createContainer(() => {
                             }
                             payload.start_coords = viewportPositionToGridCell.current(startCoord.x, startCoord.y)
                             payload.mech_hash = playerAbility.current!.mechHash
-                            usePlayerAbility.current(undefined)
                             break
 
                         case LocationSelectType.Global:
                             break
+                    }
+
+                    // If it's mech move command, dont reset so player can keep moving the mech
+                    if (playerAbility.current?.ability.location_select_type !== LocationSelectType.MechCommand) {
+                        usePlayerAbility.current(undefined)
                     }
 
                     send(GameServerKeys.PlayerAbilityUse, payload)

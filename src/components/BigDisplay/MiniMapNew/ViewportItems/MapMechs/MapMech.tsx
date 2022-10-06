@@ -238,8 +238,8 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     const onMechClick = useCallback(() => {
         let alreadyApplyingAbility = false
 
-        if (playerAbility.current && isAlive) {
-            const locationSelectType = playerAbility.current?.ability.location_select_type
+        if ((playerAbility.current && isAlive) || (supportAbility.current && isAlive)) {
+            const locationSelectType = playerAbility.current?.ability.location_select_type || supportAbility.current?.location_select_type
 
             if (
                 (locationSelectType === LocationSelectType.MechSelectAllied && factionID === warMachineFactionID) ||
@@ -260,7 +260,10 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         if (participantID === highlightedMechParticipantID) {
             setHighlightedMechParticipantID(undefined)
             tempMechMoveCommand.current = undefined
-            if (!alreadyApplyingAbility) usePlayerAbility.current(undefined)
+            if (!alreadyApplyingAbility) {
+                if (playerAbility.current) usePlayerAbility.current(undefined)
+                if (supportAbility.current) useSupportAbility.current(undefined)
+            }
         } else {
             setHighlightedMechParticipantID(participantID)
 
@@ -271,12 +274,14 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
                         mechHash: hash,
                     })
                 } else {
-                    usePlayerAbility.current(undefined)
+                    if (playerAbility.current) usePlayerAbility.current(undefined)
+                    if (supportAbility.current) useSupportAbility.current(undefined)
                 }
             }
         }
     }, [
         playerAbility,
+        supportAbility,
         isAlive,
         usePlayerAbility,
         participantID,
