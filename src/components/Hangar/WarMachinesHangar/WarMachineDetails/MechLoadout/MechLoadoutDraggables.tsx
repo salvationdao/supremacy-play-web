@@ -15,6 +15,7 @@ import { MechLoadoutItemDraggable, MechLoadoutItemSkeleton } from "../../Common/
 export type CustomDragEvent = (parentRef: HTMLDivElement, clientRect: DOMRect) => void
 export type CustomDragEventWithType = (parentRef: HTMLDivElement, clientRect: DOMRect, type: AssetItemType) => void
 export type DragStartEvent = (parentRef: HTMLDivElement) => void
+export type DragStartEventWithType = (parentRef: HTMLDivElement, type: AssetItemType) => void
 export type DragStopEvent = (parentRef: HTMLDivElement, clientRect: DOMRect) => void
 export type DragStopEventWithType = (parentRef: HTMLDivElement, clientRect: DOMRect, type: AssetItemType, item: Weapon | PowerCore | Utility | MechSkin) => void
 
@@ -30,7 +31,7 @@ export interface GetWeaponsDetailedResponse {
 export interface MechLoadoutDraggablesProps {
     draggablesRef: React.ForwardedRef<DraggablesHandle>
     onDrag: CustomDragEventWithType
-    onDragStart: DragStartEvent
+    onDragStart: DragStartEventWithType
     onDragStop: DragStopEventWithType
     excludeWeaponIDs: string[]
     includeMechSkinIDs: string[]
@@ -163,7 +164,9 @@ export const MechLoadoutDraggables = ({ draggablesRef, onDrag, onDragStart, onDr
                 onDrag={(parentEl, rect) => {
                     onDrag(parentEl, rect, AssetItemType.Weapon)
                 }}
-                onDragStart={onDragStart}
+                onDragStart={(parentEl) => {
+                    onDragStart(parentEl, AssetItemType.Weapon)
+                }}
                 onDragStop={(parentEl, rect) => {
                     onDragStop(parentEl, rect, AssetItemType.Weapon, w)
                 }}
@@ -179,7 +182,7 @@ export const MechLoadoutDraggables = ({ draggablesRef, onDrag, onDragStart, onDr
                 )}
             />
         ))
-    }, [isWeaponsLoading, weaponsError, onDrag, onDragStart, onDragStop, weapons])
+    }, [isWeaponsLoading, weaponsError, weapons, onDrag, onDragStart, onDragStop])
 
     const mechSkinsContent = useMemo(() => {
         if (isMechSkinsLoading) {
@@ -217,7 +220,9 @@ export const MechLoadoutDraggables = ({ draggablesRef, onDrag, onDragStart, onDr
                 onDrag={(parentEl, rect) => {
                     onDrag(parentEl, rect, AssetItemType.MechSkin)
                 }}
-                onDragStart={onDragStart}
+                onDragStart={(parentEl) => {
+                    onDragStart(parentEl, AssetItemType.MechSkin)
+                }}
                 onDragStop={(parentEl, rect) => {
                     onDragStop(parentEl, rect, AssetItemType.MechSkin, ms)
                 }}

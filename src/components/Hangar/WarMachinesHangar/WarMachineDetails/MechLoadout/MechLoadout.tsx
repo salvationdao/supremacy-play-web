@@ -16,7 +16,7 @@ import { UnityHandle } from "../MechViewer/UnityViewer"
 import { MechLoadoutMechSkinModal } from "../Modals/Loadout/MechLoadoutMechSkinModal"
 import { MechLoadoutPowerCoreModal } from "../Modals/Loadout/MechLoadoutPowerCoreModal"
 import { MechLoadoutWeaponModal } from "../Modals/Loadout/MechLoadoutWeaponModal"
-import { CustomDragEventWithType, DraggablesHandle, DragStartEvent, DragStopEventWithType, MechLoadoutDraggables } from "./MechLoadoutDraggables"
+import { CustomDragEventWithType, DraggablesHandle, DragStartEventWithType, DragStopEventWithType, MechLoadoutDraggables } from "./MechLoadoutDraggables"
 
 interface PlayerAssetMechEquipRequest {
     mech_id: string
@@ -123,8 +123,9 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     const [loading, setLoading] = useState(false)
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
     const [currLoadout, setCurrLoadout] = useState<MechDetailsWithMaps>(generateLoadout(mechDetails))
-    const [isUnityPendingChange, setIsUnityPendingChange] = useState(false)
     const [isDragging, setIsDragging] = useState(false)
+    const [isUnityLoaded, setIsUnityLoaded] = useState(false)
+    const [isUnityPendingChange, setIsUnityPendingChange] = useState(false)
 
     const {
         weapons_map,
@@ -145,12 +146,13 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     const loadoutDisabled = useMemo(
         () =>
             isUnityPendingChange ||
+            !isUnityLoaded ||
             xsyn_locked ||
             locked_to_marketplace ||
             (mechStatus?.battle_lobby_is_locked && mechStatus?.status === MechStatusEnum.Queue) ||
             mechStatus?.status === MechStatusEnum.Battle ||
             mechStatus?.status === MechStatusEnum.Sold,
-        [isUnityPendingChange, locked_to_marketplace, mechStatus?.battle_lobby_is_locked, mechStatus?.status, xsyn_locked],
+        [isUnityLoaded, isUnityPendingChange, locked_to_marketplace, mechStatus?.battle_lobby_is_locked, mechStatus?.status, xsyn_locked],
     )
 
     useEffect(() => {
@@ -325,6 +327,8 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                         const slotBoundingRect = element.getBoundingClientRect()
                         const overlaps = checkDOMRectOverlap(rect, slotBoundingRect)
 
+                        element.style
+
                         if (overlaps) {
                             element.style.transform = "scale(1.1)"
                             element.style.transition = "transform .1s ease-out"
@@ -354,10 +358,48 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         },
         [chassis_skin?.locked_to_mech, loadoutDisabled, weapons_map],
     )
-    const onItemDragStart = useCallback<DragStartEvent>(() => {
-        if (loadoutDisabled) return
-        setIsDragging(true)
-    }, [loadoutDisabled])
+    const onItemDragStart = useCallback<DragStartEventWithType>(
+        (el, type) => {
+            if (loadoutDisabled) return
+            setIsDragging(true)
+
+            switch (type) {
+                case AssetItemType.Weapon:
+                    // Highlight elements
+                    for (const kv of weaponItemRefs.current.entries()) {
+                        const slotNumber = kv[0]
+                        const element = kv[1]
+                        if (!element) continue
+                        if (weapons_map.get(slotNumber)?.locked_to_mech) continue
+
+                        element.style.filter = `drop-shadow(0 0 1rem ${colors.weapons})`
+                    }
+
+                    // Unhighlight unrelated slots
+                    if (!mechSkinItemRef.current) return
+                    if (chassis_skin?.locked_to_mech) return
+
+                    mechSkinItemRef.current.style.filter = `grayscale(80%)`
+                    break
+                case AssetItemType.MechSkin:
+                    if (!mechSkinItemRef.current) return
+                    if (chassis_skin?.locked_to_mech) return
+
+                    mechSkinItemRef.current.style.filter = `drop-shadow(0 0 1rem ${colors.chassisSkin})`
+
+                    for (const kv of weaponItemRefs.current.entries()) {
+                        const slotNumber = kv[0]
+                        const element = kv[1]
+                        if (!element) continue
+                        if (weapons_map.get(slotNumber)?.locked_to_mech) continue
+
+                        element.style.filter = `grayscale(80%)`
+                    }
+                    break
+            }
+        },
+        [chassis_skin?.locked_to_mech, loadoutDisabled, weapons_map],
+    )
     const onItemDragStop = useCallback<DragStopEventWithType>(
         (el, rect, type, item) => {
             if (loadoutDisabled) return
@@ -401,6 +443,20 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                     break
                 }
             }
+
+            for (const kv of weaponItemRefs.current.entries()) {
+                const slotNumber = kv[0]
+                const element = kv[1]
+                if (!element) continue
+                if (weapons_map.get(slotNumber)?.locked_to_mech) continue
+
+                element.style.filter = "none"
+            }
+
+            if (!mechSkinItemRef.current) return
+            if (chassis_skin?.locked_to_mech) return
+            mechSkinItemRef.current.style.filter = "none"
+
             setIsDragging(false)
         },
         [chassis_skin?.locked_to_mech, loadoutDisabled, modifyMechSkin, modifyWeaponSlot, weapons_map],
@@ -432,6 +488,9 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                         unityRef: unityViewRef,
                         onUnlock: () => {
                             setIsUnityPendingChange(false)
+                        },
+                        onReady: () => {
+                            setIsUnityLoaded(true)
                         },
                     }}
                 />
