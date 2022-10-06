@@ -43,18 +43,17 @@ export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: 
                 setUserData(resp)
                 setFaction(getFaction(resp.user.faction_id))
             } catch (e) {
-                setLoadError(typeof e === "string" ? e : "Failed to get replays.")
+                setLoadError(typeof e === "string" ? e : "Failed to get player data.")
                 console.error(e)
             } finally {
                 setIsLoading(false)
             }
         })()
-    }, [gid, send])
+    }, [getFaction, gid, send, setIsLoading])
 
     const fetchPlayer = useCallback(
         (newGid: number) => {
             ;(async () => {
-                setIsLoading(true)
                 try {
                     const resp = await send<GetUserResp, { gid: number }>(GameServerKeys.ModGetUser, {
                         gid: newGid,
@@ -64,17 +63,22 @@ export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: 
                     setUserData(resp)
                     setFaction(getFaction(resp.user.faction_id))
                 } catch (e) {
-                    setLoadError(typeof e === "string" ? e : "Failed to get replays.")
+                    setLoadError(typeof e === "string" ? e : "Failed to get player data.")
                     console.error(e)
-                } finally {
-                    setIsLoading(false)
                 }
             })()
         },
-        [send],
+        [getFaction, send],
     )
 
-    if (!userData) return <Box></Box>
+    if (!userData)
+        return (
+            <Box>
+                <Typography variant="body2" sx={{ mt: ".3rem", color: colors.red }}>
+                    {loadError}
+                </Typography>
+            </Box>
+        )
 
     return (
         <PlayerProfileInner
@@ -161,9 +165,18 @@ const PlayerProfileInner = ({
         }
 
         return (
-            <Stack alignItems="center" justifyContent="center" spacing="2rem" flex="1">
-                <Stack alignItems="center" justifyContent="center" direction={"row"} spacing="2rem" sx={{ height: "50rem", width: "100%" }}>
-                    <PlayerProfileCard faction={faction} title="Recent Chat History">
+            <Stack alignItems="center" justifyContent="center" direction="row" spacing="2rem" sx={{ height: "100%" }}>
+                <Stack spacing="2rem" sx={{ width: "100%", height: "100%" }} flex="1">
+                    <PlayerProfileCard faction={faction} title="Related Accounts" sx={{ flex: 1 }}>
+                        {userData.related_accounts ? (
+                            <RelatedAccounts relatedAccounts={userData.related_accounts} fetchPlayer={fetchPlayer} />
+                        ) : (
+                            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                                <Typography>No Related Accounts</Typography>
+                            </Stack>
+                        )}
+                    </PlayerProfileCard>
+                    <PlayerProfileCard faction={faction} title="Recent Chat History" sx={{ flex: 2 }}>
                         {userData.recent_chat_history ? (
                             <Box
                                 sx={{
@@ -196,7 +209,8 @@ const PlayerProfileInner = ({
                             </Stack>
                         )}
                     </PlayerProfileCard>
-
+                </Stack>
+                <Stack spacing="2rem" sx={{ width: "100%", height: "100%" }} flex="2">
                     <PlayerProfileCard faction={faction} title="Recent Ban History">
                         {userData.ban_history ? (
                             <Box
@@ -235,27 +249,18 @@ const PlayerProfileInner = ({
                             </Stack>
                         )}
                     </PlayerProfileCard>
-                    <PlayerProfileCard faction={faction} title="Related Accounts">
-                        {userData.related_accounts ? (
-                            <RelatedAccounts relatedAccounts={userData.related_accounts} fetchPlayer={fetchPlayer} />
-                        ) : (
-                            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                                <Typography>No Related Accounts</Typography>
-                            </Stack>
-                        )}
-                    </PlayerProfileCard>
                 </Stack>
-                {user.role_type === RoleType.admin && (
-                    <PlayerProfileCard faction={faction} title="User Assets" fullWidth={true}>
-                        {userData.user_assets ? (
-                            <AdminUserAsset userAsset={userData.user_assets} faction={faction} />
-                        ) : (
-                            <Stack alignItems="center" justifyContent="center" sx={{ height: "50rem" }}>
-                                <Typography>User Has No Assets</Typography>
-                            </Stack>
-                        )}
-                    </PlayerProfileCard>
-                )}
+                {/*{user.role_type === RoleType.admin && (*/}
+                {/*    <PlayerProfileCard faction={faction} title="User Assets" fullWidth={true}>*/}
+                {/*        {userData.user_assets ? (*/}
+                {/*            <AdminUserAsset userAsset={userData.user_assets} faction={faction} />*/}
+                {/*        ) : (*/}
+                {/*            <Stack alignItems="center" justifyContent="center" sx={{ height: "50rem" }}>*/}
+                {/*                <Typography>User Has No Assets</Typography>*/}
+                {/*            </Stack>*/}
+                {/*        )}*/}
+                {/*    </PlayerProfileCard>*/}
+                {/*)}*/}
             </Stack>
         )
     }, [
@@ -330,9 +335,7 @@ const PlayerProfileInner = ({
                     </Stack>
                 </PageHeader>
 
-                <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
-                    <Stack sx={{ height: 0 }}> {content}</Stack>
-                </Stack>
+                <Box sx={{ px: "1rem", py: "1rem", flex: 1 }}>{content}</Box>
 
                 {banModalOpen && (
                     <AdminBanModal user={userData.user} modalOpen={banModalOpen} setModalOpen={setBanModalOpen} faction={faction} fetchPlayer={fetchPlayer} />
