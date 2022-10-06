@@ -241,7 +241,8 @@ export enum GameServerKeys {
 
     // Admins
     ModGetUser = "MOD:GET:USER",
-    ModBanUser = "MOD:BAN:USER"
+    ModBanUser = "MOD:BAN:USER",
+    ModUnbanUser = "MOD:UNBAN:USER",
 }
 
 export enum PassportServerKeys {

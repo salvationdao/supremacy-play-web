@@ -8,7 +8,7 @@ import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { Faction, RoleType, User } from "../../../types"
-import { GetUserResp } from "../../../types/admin"
+import { AdminPlayerBan, GetUserResp } from "../../../types/admin"
 import { FancyButton } from "../../Common/FancyButton"
 import { PageHeader } from "../../Common/PageHeader"
 import { PlayerProfileCard } from "./PlayerProfileCard"
@@ -17,6 +17,7 @@ import { ChatHistory } from "./ChatHistory"
 import { RelatedAccounts } from "./RelatedAccounts"
 import { AdminUserAsset } from "./AdminUserAsset"
 import { AdminBanModal } from "./AdminBanModal"
+import { AdminUnbanModal } from "./AdminUnbanModal"
 
 export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: (newQuery: { [p: string]: string | undefined }) => void }) => {
     const [userData, setUserData] = useState<GetUserResp>()
@@ -27,6 +28,8 @@ export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: 
     const { getFaction } = useSupremacy()
     const [faction, setFaction] = useState<Faction>(getFaction(user.faction_id))
     const [banModalOpen, setBanModalOpen] = useState<boolean>(false)
+    const [unbanModalOpen, setUnbanModalOpen] = useState<boolean>(false)
+    const [playerUnban, setPlayerUnban] = useState<AdminPlayerBan>()
 
     useEffect(() => {
         ;(async () => {
@@ -37,7 +40,6 @@ export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: 
                 })
 
                 if (!resp) return
-                console.log(resp)
                 setUserData(resp)
                 setFaction(getFaction(resp.user.faction_id))
             } catch (e) {
@@ -59,7 +61,6 @@ export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: 
                     })
 
                     if (!resp) return
-                    console.log(resp)
                     setUserData(resp)
                     setFaction(getFaction(resp.user.faction_id))
                 } catch (e) {
@@ -86,6 +87,10 @@ export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: 
             faction={faction}
             setBanModalOpen={setBanModalOpen}
             banModalOpen={banModalOpen}
+            setUnbanModalOpen={setUnbanModalOpen}
+            unbanModalOpen={unbanModalOpen}
+            setPlayerUnban={setPlayerUnban}
+            playerUnban={playerUnban}
         />
     )
 }
@@ -100,6 +105,10 @@ const PlayerProfileInner = ({
     faction,
     setBanModalOpen,
     banModalOpen,
+    setUnbanModalOpen,
+    unbanModalOpen,
+    setPlayerUnban,
+    playerUnban,
 }: {
     userData: GetUserResp
     updateQuery: (newQuery: { [p: string]: string | undefined }) => void
@@ -110,10 +119,12 @@ const PlayerProfileInner = ({
     faction: Faction
     setBanModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     banModalOpen: boolean
+    setUnbanModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    unbanModalOpen: boolean
+    setPlayerUnban: (value: ((prevState: AdminPlayerBan | undefined) => AdminPlayerBan | undefined) | AdminPlayerBan | undefined) => void
+    playerUnban: AdminPlayerBan | undefined
 }) => {
     const theme = useTheme()
-
-    console.log(userData)
 
     const content = useMemo(() => {
         if (isLoading) {
@@ -210,7 +221,12 @@ const PlayerProfileInner = ({
                                 }}
                             >
                                 <Box sx={{ height: 0 }}>
-                                    <BanHistoryPanel faction={faction} playerBans={userData.ban_history} />
+                                    <BanHistoryPanel
+                                        faction={faction}
+                                        playerBans={userData.ban_history}
+                                        setModalOpen={setUnbanModalOpen}
+                                        setPlayerUnban={setPlayerUnban}
+                                    />
                                 </Box>
                             </Box>
                         ) : (
@@ -319,11 +335,15 @@ const PlayerProfileInner = ({
                 </Stack>
 
                 {banModalOpen && (
-                    <AdminBanModal
-                        relatedAccounts={userData.related_accounts}
+                    <AdminBanModal user={userData.user} modalOpen={banModalOpen} setModalOpen={setBanModalOpen} faction={faction} fetchPlayer={fetchPlayer} />
+                )}
+
+                {unbanModalOpen && playerUnban && (
+                    <AdminUnbanModal
+                        playerBan={playerUnban}
+                        modalOpen={unbanModalOpen}
+                        setModalOpen={setUnbanModalOpen}
                         user={userData.user}
-                        modalOpen={banModalOpen}
-                        setModalOpen={setBanModalOpen}
                         faction={faction}
                         fetchPlayer={fetchPlayer}
                     />

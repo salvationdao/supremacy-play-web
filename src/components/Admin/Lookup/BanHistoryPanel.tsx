@@ -9,33 +9,17 @@ import React, { useCallback } from "react"
 import { GameServerKeys } from "../../../keys"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 
-export const BanHistoryPanel = ({ faction, playerBans }: { faction: Faction; playerBans: AdminPlayerBan[] }) => {
-    const { send } = useGameServerCommandsUser("/user_commander")
-
-    const sendBanCommand = useCallback(() => {
-        ;(async () => {
-            try {
-                const resp = await send<
-                    boolean,
-                    {
-                        player_ban_id: string
-                    }
-                >(GameServerKeys.ModBanUser, {
-                    player_ban_id: "",
-                })
-
-                if (!resp) return
-                fetchPlayer(user.gid)
-                onClose()
-            } catch (e) {
-                setReqError(typeof e === "string" ? e : "Failed to get replays.")
-                console.error(e)
-            } finally {
-                setIsLoading(false)
-            }
-        })()
-    }, [])
-
+export const BanHistoryPanel = ({
+    faction,
+    playerBans,
+    setModalOpen,
+    setPlayerUnban,
+}: {
+    faction: Faction
+    playerBans: AdminPlayerBan[]
+    setModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setPlayerUnban: (value: ((prevState: AdminPlayerBan | undefined) => AdminPlayerBan | undefined) | AdminPlayerBan | undefined) => void
+}) => {
     return (
         <Stack sx={{ flex: 1, p: "1rem" }} spacing={"1rem"}>
             {playerBans.map((playerBan, i) => {
@@ -86,8 +70,12 @@ export const BanHistoryPanel = ({ faction, playerBans }: { faction: Faction; pla
                                     opacity: 1,
                                     border: { borderColor: colors.green, borderThickness: "2px" },
                                 }}
-                                sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
+                                sx={{ px: "1.6rem", py: ".2rem", color: "#FFFFFF" }}
                                 disabled={playerBan.manually_unbanned}
+                                onClick={() => {
+                                    setModalOpen(true)
+                                    setPlayerUnban(playerBan)
+                                }}
                             >
                                 <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
                                     Unban

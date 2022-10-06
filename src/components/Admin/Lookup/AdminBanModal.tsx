@@ -10,24 +10,19 @@ import { MAX_BAN_PROPOSAL_REASON_LENGTH } from "../../../constants"
 import { FancyButton } from "../../Common/FancyButton"
 
 export const AdminBanModal = ({
-    relatedAccounts,
     user,
     modalOpen,
     setModalOpen,
     faction,
     fetchPlayer,
 }: {
-    relatedAccounts: User[] | undefined
     user: User
     modalOpen: boolean
     setModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     faction: Faction
     fetchPlayer: (newGid: number) => void
 }) => {
-    const [selectedGID, setSelectedGID] = useState<number[]>([user.gid])
     const { send } = useGameServerCommandsUser("/user_commander")
-    const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [onSuccess, setOnSuccess] = useState<boolean>()
     const [reqError, setReqError] = useState<string>("")
     const [chatBan, setChatBan] = useState<boolean>(false)
     const [locationSelectBan, setLocationSelectBan] = useState<boolean>(false)
@@ -35,6 +30,7 @@ export const AdminBanModal = ({
     const [banDurationHours, setBanDurationHours] = useState<number>(0)
     const [banDurationDays, setDurationDays] = useState<number>(0)
     const [banReason, setBanReason] = useState<string>("")
+    const [isShadowBan, setIsShadowBan] = useState<boolean>(true)
 
     const onClose = useCallback(() => {
         setModalOpen(false)
@@ -42,7 +38,6 @@ export const AdminBanModal = ({
 
     const sendBanCommand = useCallback(() => {
         ;(async () => {
-            setIsLoading(true)
             try {
                 const resp = await send<
                     boolean,
@@ -54,35 +49,32 @@ export const AdminBanModal = ({
                         ban_duration_hours: number
                         ban_duration_days: number
                         ban_reason: string
+                        is_shadow_ban: boolean
                     }
                 >(GameServerKeys.ModBanUser, {
-                    gid: selectedGID,
+                    gid: [user.gid],
                     chat_ban: chatBan,
                     location_select_ban: locationSelectBan,
                     sup_contribute_ban: supContributeBan,
                     ban_duration_hours: banDurationHours,
                     ban_duration_days: banDurationDays,
                     ban_reason: banReason,
+                    is_shadow_ban: isShadowBan,
                 })
 
-                if (!resp) return
                 fetchPlayer(user.gid)
                 onClose()
             } catch (e) {
-                setReqError(typeof e === "string" ? e : "Failed to get replays.")
+                setReqError(typeof e === "string" ? e : "Failed to ban player")
                 console.error(e)
-            } finally {
-                setIsLoading(false)
             }
         })()
-    }, [banDurationDays, banDurationHours, banReason, chatBan, fetchPlayer, locationSelectBan, onClose, selectedGID, send, supContributeBan, user.gid])
+    }, [banDurationDays, banDurationHours, banReason, chatBan, fetchPlayer, locationSelectBan, onClose, send, supContributeBan, user.gid])
 
     return (
         <AdminBanModalInner
-            relatedAccounts={relatedAccounts}
             user={user}
             modalOpen={modalOpen}
-            setModalOpen={setModalOpen}
             banDurationDays={banDurationDays}
             banDurationHours={banDurationHours}
             banReason={banReason}
@@ -97,43 +89,37 @@ export const AdminBanModal = ({
             setLocationSelectBan={setLocationSelectBan}
             setSupContributeBan={setSupContributeBan}
             supContributeBan={supContributeBan}
-            isLoading={isLoading}
-            onSuccess={onSuccess}
             reqError={reqError}
-            setSelectedGID={setSelectedGID}
             faction={faction}
-            fetchPlayer={fetchPlayer}
+            setModalOpen={setModalOpen}
+            setIsShadowBan={setIsShadowBan}
+            shadowBan={isShadowBan}
         />
     )
 }
 
 const AdminBanModalInner = ({
-    relatedAccounts,
     user,
     modalOpen,
-    setModalOpen,
     onClose,
     setChatBan,
     setLocationSelectBan,
     setSupContributeBan,
+    setIsShadowBan,
     setBanDurationHours,
     setDurationDays,
     setBanReason,
     chatBan,
     locationSelectBan,
     supContributeBan,
+    shadowBan,
     banDurationHours,
     banDurationDays,
     banReason,
     sendBanCommand,
-    isLoading,
-    onSuccess,
     reqError,
-    setSelectedGID,
     faction,
-    fetchPlayer,
 }: {
-    relatedAccounts: User[] | undefined
     user: User
     modalOpen: boolean
     setModalOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -141,22 +127,20 @@ const AdminBanModalInner = ({
     setChatBan: React.Dispatch<React.SetStateAction<boolean>>
     setLocationSelectBan: React.Dispatch<React.SetStateAction<boolean>>
     setSupContributeBan: React.Dispatch<React.SetStateAction<boolean>>
+    setIsShadowBan: React.Dispatch<React.SetStateAction<boolean>>
     setBanDurationHours: React.Dispatch<React.SetStateAction<number>>
     setDurationDays: React.Dispatch<React.SetStateAction<number>>
     setBanReason: React.Dispatch<React.SetStateAction<string>>
     chatBan: boolean
     locationSelectBan: boolean
     supContributeBan: boolean
+    shadowBan: boolean
     banDurationHours: number
     banDurationDays: number
     banReason: string
     sendBanCommand: () => void
-    isLoading: boolean
-    onSuccess: boolean | undefined
     reqError: string
-    setSelectedGID: React.Dispatch<React.SetStateAction<number[]>>
     faction: Faction
-    fetchPlayer: (newGid: number) => void
 }) => {
     return (
         <Modal open={modalOpen} onClose={onClose}>
@@ -197,6 +181,23 @@ const AdminBanModalInner = ({
                         <Typography sx={{ mb: "1.2rem", fontFamily: fonts.nostromoBlack }}>
                             Ban user {user.username} #{user.gid.toString()}
                         </Typography>
+
+                        <Stack spacing="1rem" direction="row" alignItems="center" onClick={() => setIsShadowBan(!shadowBan)} sx={{ cursor: "pointer" }}>
+                            <Checkbox
+                                size="small"
+                                checked={shadowBan}
+                                onClick={() => setIsShadowBan(!shadowBan)}
+                                sx={{
+                                    p: 0,
+                                    color: faction.primary_color,
+                                    "& > .MuiSvgIcon-root": { width: "2.5rem", height: "2.5rem" },
+                                    ".Mui-checked, .MuiSvgIcon-root": { color: `${faction.primary_color} !important` },
+                                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${faction.primary_color}50 !important` },
+                                }}
+                            />
+
+                            <Typography sx={{ pt: ".4rem", userSelect: "none" }}>Shadowban user</Typography>
+                        </Stack>
 
                         <Stack spacing="1rem" direction="row" alignItems="center" onClick={() => setChatBan(!chatBan)} sx={{ cursor: "pointer" }}>
                             <Checkbox
