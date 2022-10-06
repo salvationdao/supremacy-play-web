@@ -21,6 +21,7 @@ export enum GameServerKeys {
     SubBattleArenaList = "BATTLE:ARENA:LIST",
     SubBattleArenaClosed = "BATTLE:ARENA:CLOSED",
     SubMiniMapAbilityDisplayList = "MINI:MAP:ABILITY:DISPLAY:LIST",
+    NextBattleDetails = "NEXT:BATTLE:DETAILS",
 
     // Voting abilities
     SubBribeStageUpdated = "BRIBE:STAGE:UPDATED:SUBSCRIBE",
@@ -56,11 +57,14 @@ export enum GameServerKeys {
     CreateBattleLobby = "BATTLE:LOBBY:CREATE",
     JoinBattleLobby = "BATTLE:LOBBY:JOIN",
     LeaveBattleLobby = "BATTLE:LOBBY:LEAVE",
+    JoinBattleLobbySupporter = "BATTLE:LOBBY:SUPPORTER:JOIN",
+
     GetMechs = "PLAYER:ASSET:MECH:LIST",
     PlayerQueueStatus = "PLAYER:QUEUE:STATUS",
     EquipMech = "PLAYER:ASSET:MECH:EQUIP",
     GetMechDetails = "PLAYER:ASSET:MECH:DETAIL",
     GetWeapons = "PLAYER:ASSET:WEAPON:LIST",
+    GetWeaponsDetailed = "PLAYER:ASSET:WEAPON:DETAIL:LIST",
     GetWeaponDetails = "PLAYER:ASSET:WEAPON:DETAIL",
     GetPowerCores = "PLAYER:ASSET:POWER_CORE:LIST",
     GetPowerCoreDetails = "PLAYER:ASSET:POWER_CORE:DETAIL",
@@ -170,10 +174,10 @@ export enum GameServerKeys {
     OpenCrate = "CRATE:OPEN",
 
     //submodels
-    GetMechSubmodels = "PLAYER:ASSET:MECH:SUBMODEL:LIST",
-    GetWeaponSubmodels = "PLAYER:ASSET:WEAPON:SUBMODEL:LIST",
-    GetMechBlueprints = "PLAYER:MECH:BLUEPRINT:LIST",
-    GetWeaponBlueprints = "PLAYER:WEAPON:BLUEPRINT:LIST",
+    GetMechSubmodelsDetailed = "PLAYER:ASSET:MECH:SUBMODEL:DETAIL:LIST",
+    GetWeaponSubmodelsDetailed = "PLAYER:ASSET:WEAPON:SUBMODEL:DETAIL:LIST",
+    GetMechBlueprintsDetailed = "PLAYER:MECH:BLUEPRINT:DETAIL:LIST",
+    GetWeaponBlueprintsDetailed = "PLAYER:WEAPON:BLUEPRINT:DETAIL:LIST",
 
     // Keycards
     GetPlayerKeycards = "PLAYER:ASSET:KEYCARD:LIST",

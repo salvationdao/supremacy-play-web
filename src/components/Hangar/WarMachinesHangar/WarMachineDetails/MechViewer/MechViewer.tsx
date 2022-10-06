@@ -1,25 +1,16 @@
 import { Box } from "@mui/material"
-import React from "react"
 import { useTheme } from "../../../../../containers/theme"
 import { MechDetails } from "../../../../../types"
 import { MediaPreview } from "../../../../Common/MediaPreview/MediaPreview"
-import { LoadoutMechSkin, LoadoutPowerCore, LoadoutWeapon } from "../MechLoadout"
-import { UnityViewer } from "./UnityViewer"
+import { UnityParams, UnityViewer } from "./UnityViewer"
 
-export type UnityHandle = {
-    handleWeaponUpdate: (wu: LoadoutWeapon) => void
-    handlePowerCoreUpdate: (pcu: LoadoutPowerCore) => void
-    handleMechSkinUpdate: (msu: LoadoutMechSkin) => void
-}
 export interface MechViewerProps {
     mechDetails: MechDetails
-    unity?: {
-        onUnlock: () => void
-    }
+    unity?: UnityParams
 }
 
-export const MechViewer = React.forwardRef<UnityHandle, MechViewerProps>(function MechViewer(props, ref) {
-    const { mechDetails, unity } = props
+export const MechViewer = (props: MechViewerProps) => {
+    const { mechDetails } = props
     const theme = useTheme()
     const backgroundColor = theme.factionTheme.background
 
@@ -39,7 +30,6 @@ export const MechViewer = React.forwardRef<UnityHandle, MechViewerProps>(functio
                 left: 0,
                 right: 0,
                 overflow: "hidden",
-                zIndex: 5,
             }}
         >
             <Box
@@ -54,33 +44,33 @@ export const MechViewer = React.forwardRef<UnityHandle, MechViewerProps>(functio
                 }}
             />
 
-            <Box
-                sx={{
-                    position: "absolute",
-                    zIndex: 3,
-                    aspectRatio: "1.1",
-                    height: "80%",
-                    left: "50%",
-                    top: "50%",
-                    transform: "translate(-50%, -50%)",
-                    overflow: "hidden",
-                }}
-            >
-                <FeatherFade color={backgroundColor} />
-                {unity ? (
-                    <UnityViewer unityRef={ref} {...props} />
-                ) : (
+            {props.unity ? (
+                <UnityViewer {...props} unity={props.unity} />
+            ) : (
+                <Box
+                    sx={{
+                        position: "absolute",
+                        zIndex: 3,
+                        aspectRatio: "1.1",
+                        height: "80%",
+                        left: "50%",
+                        top: "50%",
+                        transform: "translate(-50%, -50%)",
+                        overflow: "hidden",
+                    }}
+                >
+                    <FeatherFade color={backgroundColor} />
                     <MediaPreview
                         imageUrl={largeImageUrl || imageUrl || avatarUrl}
                         videoUrls={[animationUrl, cardAnimationUrl]}
                         objectFit="cover"
                         blurBackground
                     />
-                )}
-            </Box>
+                </Box>
+            )}
         </Box>
     )
-})
+}
 
 interface FeatherFadeProps {
     color: string

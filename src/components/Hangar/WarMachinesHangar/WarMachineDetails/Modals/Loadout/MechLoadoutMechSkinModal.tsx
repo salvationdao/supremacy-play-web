@@ -137,7 +137,7 @@ export const MechLoadoutMechSkinModal = ({
                     sortBy = "rarity"
             }
 
-            const resp = await send<GetSubmodelsResponse, GetSubmodelsRequest>(GameServerKeys.GetMechSubmodels, {
+            const resp = await send<GetSubmodelsResponse, GetSubmodelsRequest>(GameServerKeys.GetMechSubmodelsDetailed, {
                 search: search,
                 sort_by: sortBy,
                 sort_dir: sortDir,

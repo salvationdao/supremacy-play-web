@@ -7,7 +7,7 @@ export interface UserFromPassport {
     created_at: Date
     deleted_at: Date
     discord_id: string
-    email: string
+    email?: string
     facebook_id: string
     faction_id: string
     first_name: string
