@@ -52,11 +52,13 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         useSupportAbility,
         onAbilityUseCallbacks,
         onSelectMapPositionCallbacks,
+        mapItemMinSize,
     } = useMiniMapPixi()
     const { id, hash, participantID, factionID: warMachineFactionID, maxHealth, maxShield, ownedByID } = warMachine
 
     const [pixiMapMech, setPixiMapMech] = useState<PixiMapMech>()
 
+    const tickIteration = useRef(0)
     const iconDimension = useRef<Dimension>({ width: 5, height: 5 })
     const prevRotation = useRef(warMachine.rotation)
     const [isAlive, setIsAlive] = useState(warMachine.health > 0)
@@ -78,10 +80,10 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     // Initial setup for the mech and show on the map
     useEffect(() => {
         if (!pixiMainItems) return
-        const pixiMapMech = new PixiMapMech(label, hash, gridSizeRef)
+        const pixiMapMech = new PixiMapMech(label, hash, gridSizeRef, mapItemMinSize)
         pixiMainItems.viewport.addChild(pixiMapMech.root)
         setPixiMapMech(pixiMapMech)
-    }, [hash, label, gridSizeRef, pixiMainItems])
+    }, [hash, label, gridSizeRef, pixiMainItems, mapItemMinSize])
 
     // Cleanup
     useEffect(() => {
@@ -94,7 +96,10 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         if (!pixiMapMech) return
 
         // Set the icon dimensions
-        iconDimension.current = { width: gridSizeRef.current.width, height: gridSizeRef.current.height }
+        iconDimension.current = {
+            width: Math.max(gridSizeRef.current.width, mapItemMinSize.current),
+            height: Math.max(gridSizeRef.current.height, mapItemMinSize.current),
+        }
         // If it's a mini mech, make it look smaller
         if (isAI) {
             iconDimension.current.width *= 0.6
@@ -103,7 +108,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
         pixiMapMech.updateStyles(primaryColor, iconDimension.current)
         pixiMapMech.updateHpShieldBars(iconDimension.current)
-    }, [pixiMapMech, primaryColor, map, gridSizeRef, isAI])
+    }, [pixiMapMech, primaryColor, map, gridSizeRef, isAI, mapItemMinSize])
 
     // Update zIndex
     useEffect(() => {
@@ -290,8 +295,8 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     useEffect(() => {
         if (!pixiMapMech) return
 
-        pixiMapMech.rootInner.removeListener("pointerup")
-        pixiMapMech.rootInner.on("pointerup", onMechClick)
+        pixiMapMech.rootInner2.removeListener("pointerup")
+        pixiMapMech.rootInner2.on("pointerup", onMechClick)
     }, [onMechClick, pixiMapMech])
 
     // Add hotkey to select this mech
@@ -321,6 +326,9 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             batchURI: `/public/arena/${currentArenaID}/mech`,
         },
         (payload) => {
+            if (!payload || payload.tick_order < tickIteration.current) return
+            tickIteration.current = payload.tick_order
+
             if (payload?.health !== undefined && pixiMapMech) {
                 setIsAlive(payload.health > 0)
                 const percent = (payload.health / maxHealth) * 100

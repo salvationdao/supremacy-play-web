@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useEffect, useMemo, useRef, useState } from "react"
 import { useArena, useAuth, useGame, useMiniMapPixi } from "../../../../../containers"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
@@ -11,16 +11,18 @@ export const MechAbilities = React.memo(function MechAbilities() {
     const { userID } = useAuth()
     const { battleState, warMachines, spawnedAI } = useGame()
     const { pixiMainItems, highlightedMechParticipantID } = useMiniMapPixi()
+    const [highlightedMech, setHighlightedMech] = useState<WarMachineState>()
 
-    const highlightedMech = useMemo(() => {
-        return [...(warMachines || []), ...(spawnedAI || [])].find((m) => m.participantID === highlightedMechParticipantID)
-    }, [highlightedMechParticipantID, spawnedAI, warMachines])
+    useEffect(() => {
+        const mech = [...(warMachines || []), ...(spawnedAI || [])].find((m) => m.participantID === highlightedMechParticipantID && m.ownedByID === userID)
+        if (mech) setHighlightedMech(mech)
+    }, [highlightedMechParticipantID, spawnedAI, userID, warMachines])
 
-    if (!pixiMainItems || !highlightedMechParticipantID || !highlightedMech || highlightedMech?.ownedByID !== userID) {
+    if (!pixiMainItems || !highlightedMech) {
         return null
     }
 
-    return <MechAbilitiesInner key={highlightedMechParticipantID} warMachine={highlightedMech} />
+    return <MechAbilitiesInner key={highlightedMech.participantID} warMachine={highlightedMech} />
 })
 
 // Inner component starts here
@@ -36,6 +38,7 @@ const MechAbilitiesInner = React.memo(function MechAbilitiesInner({ warMachine }
     const { currentArenaID } = useArena()
     const { pixiMainItems } = useMiniMapPixi()
     const { hash, participantID } = warMachine
+    const tickIteration = useRef(0)
 
     const [pixiMechAbilities, setPixiMechAbilities] = useState<PixiMechAbilities>()
     const [gameAbilities, setGameAbilities] = useState<GameAbility[]>([])
@@ -65,6 +68,9 @@ const MechAbilitiesInner = React.memo(function MechAbilitiesInner({ warMachine }
             batchURI: `/public/arena/${currentArenaID}/mech`,
         },
         (payload) => {
+            if (!payload || payload.tick_order < tickIteration.current) return
+            tickIteration.current = payload.tick_order
+
             if (payload?.health !== undefined) {
                 pixiMechAbilities?.updateVisibility(payload.health > 0)
             }

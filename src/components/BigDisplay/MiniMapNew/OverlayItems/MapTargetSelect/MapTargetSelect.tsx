@@ -76,6 +76,7 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
         useSupportAbility,
         selectMapPosition,
         onTargetConfirm,
+        mapItemMinSize,
     } = useMiniMapPixi()
     const { abilityDetails } = useGame()
     const [pixiTargetHint, setPixiTargetHint] = useState<PixiMapTargetSelect>()
@@ -98,6 +99,7 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
             ability,
             endTime,
             cancelable ? onCancel : undefined,
+            mapItemMinSize,
         )
         pixiMainItems.viewport.addChild(pixiTargetHint.viewportRoot)
         pixiMainItems.app.stage.addChild(pixiTargetHint.stageRoot)
@@ -105,7 +107,7 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
             prev?.destroy()
             return pixiTargetHint
         })
-    }, [ability, endTime, pixiMainItems, mapMousePosition, gridSizeRef, onCancel, cancelable])
+    }, [ability, endTime, pixiMainItems, mapMousePosition, gridSizeRef, onCancel, cancelable, mapItemMinSize])
 
     // Cleanup
     useEffect(() => {
@@ -179,7 +181,7 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
                         ability.location_select_type === LocationSelectType.MechCommand ||
                         ability.game_client_ability_id === MechMoveCommandAbility.ability.game_client_ability_id
                     ) {
-                        pixiTargetHint.startCountdown(0, 3, false)
+                        pixiTargetHint.startCountdown(0, 3, false, false)
                     } else {
                         pixiTargetHint.startCountdown()
                     }
