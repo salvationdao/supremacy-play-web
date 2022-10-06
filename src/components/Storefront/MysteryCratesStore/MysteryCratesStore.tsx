@@ -105,36 +105,56 @@ export const MysteryCratesStore = () => {
         if (crates && crates.length > 0) {
             if (enlargedView) {
                 return (
-                    <Box
-                        sx={{
-                            width: "100%",
-                            pt: "1rem",
-                            display: "grid",
-                            gridTemplateColumns: "repeat(auto-fill, minmax(min-content, 45%))",
-                            gridTemplateRows: "min-content",
-                            gap: "5rem",
-                            alignItems: "center",
-                            alignContent: "center",
-                            justifyContent: "center",
-                            overflow: "visible",
-                        }}
-                    >
-                        {crates.map((crate, index) => (
-                            <MysteryCrateStoreItem
-                                key={`storefront-mystery-crate-${crate.id}-${index}`}
-                                enlargedView={enlargedView}
-                                crate={crate}
-                                setOpeningCrate={setOpeningCrate}
-                                setOpenedRewards={setOpenedRewards}
-                                setFutureCratesToOpen={setFutureCratesToOpen}
-                            />
-                        ))}
-                    </Box>
+                    <>
+                        <Box
+                            sx={{
+                                width: "100%",
+                                pt: "1rem",
+                                display: "grid",
+                                gridTemplateColumns: "repeat(auto-fill, minmax(min-content, 45%))",
+                                gridTemplateRows: "min-content",
+                                gap: "5rem",
+                                alignItems: "center",
+                                alignContent: "center",
+                                justifyContent: "center",
+                                overflow: "visible",
+                            }}
+                        >
+                            {crates.map((crate, index) => (
+                                <MysteryCrateStoreItem
+                                    key={`storefront-mystery-crate-${crate.id}-${index}`}
+                                    enlargedView={enlargedView}
+                                    crate={crate}
+                                    setOpeningCrate={setOpeningCrate}
+                                    setOpenedRewards={setOpenedRewards}
+                                    setFutureCratesToOpen={setFutureCratesToOpen}
+                                />
+                            ))}
+                        </Box>
+                        <Typography
+                            sx={{
+                                mt: "2rem",
+                                fontSize: "2.1rem",
+                                textAlign: "center",
+                            }}
+                        >
+                            Nexus War Machines can be deployed into the Battle Arena following the upcoming Nexus Update.
+                        </Typography>
+                    </>
                 )
             }
 
             return (
                 <Box sx={{ direction: "ltr", height: 0 }}>
+                    <Typography
+                        sx={{
+                            mb: "2rem",
+                            fontSize: "1.6rem",
+                            textAlign: "center",
+                        }}
+                    >
+                        Nexus War Machines can be deployed into the Battle Arena following the upcoming Nexus Update.
+                    </Typography>
                     <Box
                         sx={{
                             width: "100%",
@@ -185,7 +205,7 @@ export const MysteryCratesStore = () => {
                             textAlign: "center",
                         }}
                     >
-                        {"There are no mystery crates on sale at this time, come back later."}
+                        There are no mystery crates on sale at this time, come back later.
                     </Typography>
                 </Stack>
             </Stack>

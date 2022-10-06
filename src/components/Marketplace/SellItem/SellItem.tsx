@@ -10,7 +10,7 @@ import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { MARKETPLACE_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
-import { Keycard, MechBasic, MysteryCrate, Weapon } from "../../../types"
+import { Keycard, MechBasic, MysteryCrate, PlayerAsset } from "../../../types"
 import { ItemType, MarketplaceBuyAuctionItem } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { ConfirmModal } from "../../Common/ConfirmModal"
@@ -24,7 +24,7 @@ export interface AssetToSellStruct {
     id: string
     mech?: MechBasic
     keycard?: Keycard
-    weapon?: Weapon
+    weapon?: PlayerAsset
     mysteryCrate?: MysteryCrate
 }
 

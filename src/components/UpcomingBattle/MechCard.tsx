@@ -84,7 +84,6 @@ export const MechCard = React.memo(function MechCard({ mech, faction }: MechCard
             <Box
                 component={"img"}
                 src={border}
-                // onClick={clickToDeploy ? () => setLeftDrawerActiveTabID(LEFT_DRAWER_MAP["quick_deploy"]?.id) : undefined}
                 sx={{
                     position: "relative",
                     height: "80%",
@@ -97,7 +96,6 @@ export const MechCard = React.memo(function MechCard({ mech, faction }: MechCard
                 }}
             />
             <Box
-                // onClick={clickToDeploy ? () => setLeftDrawerActiveTabID(LEFT_DRAWER_MAP["quick_deploy"]?.id) : undefined}
                 sx={{
                     position: "absolute",
                     top: 0,

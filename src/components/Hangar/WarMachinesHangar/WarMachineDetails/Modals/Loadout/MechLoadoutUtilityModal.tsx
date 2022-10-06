@@ -7,7 +7,7 @@ import { usePagination, useToggle } from "../../../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../../../theme/theme"
-import { Utility, UtilityType } from "../../../../../../types"
+import { PlayerAsset, Utility, UtilityType } from "../../../../../../types"
 import { SortTypeLabel } from "../../../../../../types/marketplace"
 import { ClipThing } from "../../../../../Common/ClipThing"
 import { PageHeader } from "../../../../../Common/PageHeader"
@@ -40,7 +40,7 @@ export interface GetUtilitiesRequest {
 }
 
 export interface GetUtilitiesResponse {
-    utilities: Utility[]
+    utilities: PlayerAsset[]
     total: number
 }
 
@@ -60,7 +60,7 @@ export const MechLoadoutUtilityModal = ({ onClose, onConfirm, equipped, utilitie
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
 
-    const [utilities, setUtilities] = useState<Utility[]>([])
+    const [utilities, setUtilities] = useState<PlayerAsset[]>([])
     const [selectedUtility, setSelectedUtility] = useState<Utility>()
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
