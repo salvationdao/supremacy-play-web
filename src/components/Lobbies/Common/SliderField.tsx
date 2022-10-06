@@ -1,7 +1,7 @@
 import { Box, Slider, SliderProps, Stack, Typography } from "@mui/material"
 import React, { ReactNode, useMemo } from "react"
-import { useTheme } from "../../../../containers/theme"
-import { fonts } from "../../../../theme/theme"
+import { useTheme } from "../../../containers/theme"
+import { fonts } from "../../../theme/theme"
 
 interface SliderFieldProps {
     label?: ReactNode

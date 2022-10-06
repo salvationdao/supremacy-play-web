@@ -4,6 +4,20 @@ import { ClipThing } from ".."
 import { autoTextColor } from "../../helpers"
 import { fonts, siteZIndex } from "../../theme/theme"
 
+export type TooltipPlacement =
+    | "bottom-end"
+    | "bottom-start"
+    | "bottom"
+    | "left-end"
+    | "left-start"
+    | "left"
+    | "right-end"
+    | "right-start"
+    | "right"
+    | "top-end"
+    | "top-start"
+    | "top"
+
 export const TooltipHelper = ({
     text,
     renderNode,
@@ -20,19 +34,7 @@ export const TooltipHelper = ({
     renderNode?: React.ReactNode
     children: ReactElement
     isCentered?: boolean
-    placement?:
-        | "bottom-end"
-        | "bottom-start"
-        | "bottom"
-        | "left-end"
-        | "left-start"
-        | "left"
-        | "right-end"
-        | "right-start"
-        | "right"
-        | "top-end"
-        | "top-start"
-        | "top"
+    placement?: TooltipPlacement
     open?: boolean
     color?: string
     textColor?: string

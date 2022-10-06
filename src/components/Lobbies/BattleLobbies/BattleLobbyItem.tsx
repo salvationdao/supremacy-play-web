@@ -7,7 +7,7 @@ import { camelToTitle, supFormatter } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleLobby } from "../../../types/battle_queue"
 import { ClipThing } from "../../Common/ClipThing"
-import { BattleLobbyJoinModal } from "../BattleLobbyJoinModal"
+import { BattleLobbyJoinModal } from "./BattleLobbyJoinModal"
 import { BattleLobbyFaction, MyFactionLobbySlots, OtherFactionLobbySlots } from "../BattleLobbyMech/BattleLobbyMechSlots"
 
 interface BattleLobbyItemProps {

@@ -1,8 +1,8 @@
 import React, { ReactNode, useMemo } from "react"
 import { TextFieldProps } from "@mui/material/TextField"
-import { useTheme } from "../../../../containers/theme"
+import { useTheme } from "../../../containers/theme"
 import { InputAdornment, Stack, TextField, Typography } from "@mui/material"
-import { fonts } from "../../../../theme/theme"
+import { fonts } from "../../../theme/theme"
 
 interface InputFieldProps {
     startAdornmentLabel?: ReactNode
