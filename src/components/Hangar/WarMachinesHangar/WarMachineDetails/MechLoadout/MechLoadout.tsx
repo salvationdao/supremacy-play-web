@@ -374,12 +374,27 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
 
                         element.style.filter = `drop-shadow(0 0 1rem ${colors.weapons})`
                     }
+
+                    // Unhighlight unrelated slots
+                    if (!mechSkinItemRef.current) return
+                    if (chassis_skin?.locked_to_mech) return
+
+                    mechSkinItemRef.current.style.filter = `grayscale(80%)`
                     break
                 case AssetItemType.MechSkin:
                     if (!mechSkinItemRef.current) return
                     if (chassis_skin?.locked_to_mech) return
 
                     mechSkinItemRef.current.style.filter = `drop-shadow(0 0 1rem ${colors.chassisSkin})`
+
+                    for (const kv of weaponItemRefs.current.entries()) {
+                        const slotNumber = kv[0]
+                        const element = kv[1]
+                        if (!element) continue
+                        if (weapons_map.get(slotNumber)?.locked_to_mech) continue
+
+                        element.style.filter = `grayscale(80%)`
+                    }
                     break
             }
         },
@@ -398,8 +413,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
 
                         const slotBoundingRect = element.getBoundingClientRect()
                         const overlaps = checkDOMRectOverlap(rect, slotBoundingRect)
-
-                        element.style.filter = "none"
 
                         if (overlaps) {
                             const weapon = item as Weapon
@@ -420,8 +433,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                     const slotBoundingRect = mechSkinItemRef.current.getBoundingClientRect()
                     const overlaps = checkDOMRectOverlap(rect, slotBoundingRect)
 
-                    mechSkinItemRef.current.style.filter = "none"
-
                     if (overlaps) {
                         const mechSkin = item as MechSkin
                         modifyMechSkin({
@@ -432,6 +443,19 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                     break
                 }
             }
+
+            for (const kv of weaponItemRefs.current.entries()) {
+                const slotNumber = kv[0]
+                const element = kv[1]
+                if (!element) continue
+                if (weapons_map.get(slotNumber)?.locked_to_mech) continue
+
+                element.style.filter = "none"
+            }
+
+            if (!mechSkinItemRef.current) return
+            if (chassis_skin?.locked_to_mech) return
+            mechSkinItemRef.current.style.filter = "none"
 
             setIsDragging(false)
         },
