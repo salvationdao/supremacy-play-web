@@ -182,11 +182,11 @@ export interface MechBasicWithQueueStatus extends MechBasic {
 }
 
 export interface LobbyMech extends MechBasic {
-    in_queue: boolean
-
+    owner_id: string
     power_core?: PowerCore
     weapon_slots?: MechWeaponSlot[]
 
+    in_queue: boolean
     status: MechStatusEnum
     can_deploy: boolean
     lobby_locked_at?: Date

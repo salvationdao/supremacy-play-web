@@ -12,6 +12,8 @@ import { Faction } from "../../../types"
 import { BattleLobbiesMech } from "../../../types/battle_queue"
 import { ConfirmModal } from "../../Common/ConfirmModal"
 import { FancyButton } from "../../Common/FancyButton"
+import { WeaponSlot } from "../Common/weaponSlot"
+import { MechBarStats } from "../../Hangar/WarMachinesHangar/Common/MechBarStats"
 
 export interface BattleLobbyFaction {
     faction: Faction
@@ -149,35 +151,8 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                             </Box>
                             <Box>
                                 <Stack direction="row" spacing=".5rem" mb=".5rem">
-                                    {ms.weapon_slots.map((ws, index) => (
-                                        <Box
-                                            key={index}
-                                            sx={{
-                                                display: "flex",
-                                                alignItems: "center",
-                                                justifyContent: "center",
-                                                width: "25px",
-                                                height: "25px",
-                                                border: `1px solid ${theme.factionTheme.primary}66`,
-                                                backgroundColor: `${theme.factionTheme.background}`,
-                                            }}
-                                        >
-                                            {ws.weapon ? (
-                                                <Box
-                                                    key={ws.weapon.avatar_url}
-                                                    component="img"
-                                                    src={ws.weapon.avatar_url}
-                                                    sx={{
-                                                        width: "100%",
-                                                        height: "100%",
-                                                        objectFit: "cover",
-                                                        animation: `${scaleUpKeyframes} .5s ease-out`,
-                                                    }}
-                                                />
-                                            ) : (
-                                                <SvgWeapons />
-                                            )}
-                                        </Box>
+                                    {ms.weapon_slots.map((ws) => (
+                                        <WeaponSlot key={ws.slot_number} weaponSlot={ws} tooltipPlacement={"top-end"} size="3rem" />
                                     ))}
                                 </Stack>
                                 <Typography

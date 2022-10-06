@@ -11,8 +11,9 @@ import { scaleUpKeyframes } from "../../../theme/keyframes"
 interface WeaponSlotProps {
     weaponSlot: MechWeaponSlot
     tooltipPlacement: TooltipPlacement
+    size?: string
 }
-export const WeaponSlot = ({ weaponSlot, tooltipPlacement }: WeaponSlotProps) => {
+export const WeaponSlot = ({ weaponSlot, tooltipPlacement, size }: WeaponSlotProps) => {
     const { factionTheme } = useTheme()
     const weapon = weaponSlot.weapon
 
@@ -101,8 +102,8 @@ export const WeaponSlot = ({ weaponSlot, tooltipPlacement }: WeaponSlotProps) =>
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                height: "4rem",
-                width: "4rem",
+                height: size || "4rem",
+                width: size || "4rem",
                 border: `${factionTheme.primary}80 2px solid`,
                 borderRadius: 0.6,
                 backgroundColor: `${factionTheme.background}`,

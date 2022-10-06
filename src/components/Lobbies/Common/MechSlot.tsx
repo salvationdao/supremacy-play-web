@@ -1,21 +1,28 @@
 import { colors, fonts } from "../../../theme/theme"
 import { Box, Stack, Typography } from "@mui/material"
-import { EmptyWarMachinesPNG } from "../../../assets"
+import { EmptyWarMachinesPNG, SvgLogout } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets } from "../../../helpers"
 import { LobbyMech } from "../../../types"
 import { MechThumbnail } from "../../Hangar/WarMachinesHangar/Common/MechThumbnail"
-import React from "react"
+import React, { useMemo } from "react"
 import { MechBarStats } from "../../Hangar/WarMachinesHangar/Common/MechBarStats"
 import { WeaponSlot } from "./weaponSlot"
 import { MechRepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
+import { useAuth } from "../../../containers"
+import { FancyButton } from "../../Common/FancyButton"
 
 interface MechSlotProps {
     lobbyMech: LobbyMech | null
+    leftQueue: () => void
+    canLeave?: boolean
 }
 
-export const MechSlot = ({ lobbyMech }: MechSlotProps) => {
+export const MechSlot = ({ lobbyMech, canLeave, leftQueue }: MechSlotProps) => {
+    const { userID } = useAuth()
     const { factionTheme } = useTheme()
+
+    const showLeaveButton = useMemo(() => canLeave && lobbyMech?.owner_id === userID, [canLeave])
 
     if (!lobbyMech) {
         return (
@@ -25,6 +32,7 @@ export const MechSlot = ({ lobbyMech }: MechSlotProps) => {
                 justifyContent="center"
                 sx={{
                     flex: 1,
+                    height: "26rem",
                     padding: "1rem",
                     borderRadius: 0,
                     backgroundColor: `${colors.offWhite}20`,
@@ -47,6 +55,7 @@ export const MechSlot = ({ lobbyMech }: MechSlotProps) => {
                     sx={{
                         mt: "1rem",
                         color: `${colors.offWhite}30`,
+                        fontFamily: fonts.nostromoBold,
                     }}
                 >
                     DEPLOYED MECH
@@ -62,6 +71,7 @@ export const MechSlot = ({ lobbyMech }: MechSlotProps) => {
             flex={1}
             spacing={0.6}
             sx={{
+                height: "26rem",
                 padding: "1rem",
                 alignItems: "start",
                 textAlign: "initial",
@@ -69,7 +79,7 @@ export const MechSlot = ({ lobbyMech }: MechSlotProps) => {
                 backgroundColor: `${colors.offWhite}20`,
             }}
         >
-            <Stack direction="row" spacing="1rem" mb=".5rem">
+            <Stack direction="row" spacing="1rem" mb=".5rem" sx={{ width: "100%" }}>
                 <Box
                     sx={{
                         position: "relative",
@@ -129,6 +139,23 @@ export const MechSlot = ({ lobbyMech }: MechSlotProps) => {
                             lobbyMech.weapon_slots.map((ws) => <WeaponSlot key={ws.slot_number} weaponSlot={ws} tooltipPlacement="top-end" />)}
                     </Stack>
                 </Stack>
+
+                <Box>
+                    <FancyButton
+                        onClick={leftQueue}
+                        disabled={!!showLeaveButton}
+                        loading={false}
+                        sx={{ height: "fit-content" }}
+                        clipThingsProps={{
+                            clipSize: "6px",
+                            clipSlantSize: "0px",
+                            corners: { topLeft: false, topRight: false, bottomLeft: false, bottomRight: false },
+                            backgroundColor: colors.red,
+                        }}
+                    >
+                        <SvgLogout />
+                    </FancyButton>
+                </Box>
             </Stack>
             <MechBarStats
                 mech={lobbyMech}

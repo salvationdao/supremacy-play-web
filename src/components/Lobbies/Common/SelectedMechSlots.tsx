@@ -23,13 +23,13 @@ export const SelectedMechSlots = ({ selectedMechs, setSelectedMechs }: SelectedM
         <Stack
             direction="row"
             spacing="1rem"
+            flex={1}
             sx={{
-                height: "26rem",
                 width: "100%",
             }}
         >
             {mechSlots.map((ms, i) => (
-                <MechSlot key={i} lobbyMech={ms} />
+                <MechSlot key={i} lobbyMech={ms} canLeave leftQueue={() => setSelectedMechs((prev) => prev.filter((p) => p.id !== ms?.id))} />
             ))}
         </Stack>
     )

@@ -161,7 +161,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
             width="150rem"
             omitCancel
         >
-            <Stack direction="column" sx={{ width: "100%", position: "relative" }}>
+            <Stack direction="column" spacing={1} sx={{ width: "100%", position: "relative" }}>
                 {/*Background image*/}
                 <Box
                     sx={{
@@ -180,7 +180,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                 <Stack direction="row" flex={1} spacing={3}>
                     <Stack
                         direction="column"
-                        spacing={2}
+                        spacing={1}
                         sx={{
                             width: "37rem",
                         }}
@@ -197,7 +197,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                         >
                             ROOM SETTING
                         </Typography>
-                        <Stack direction="column" spacing={2} sx={{ px: "1rem", pb: "2rem" }}>
+                        <Stack direction="column" spacing={1} sx={{ px: "1rem", pb: "2rem" }}>
                             <InputField
                                 variant="outlined"
                                 label="Name"
@@ -344,9 +344,10 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                         </Stack>
                     </Stack>
 
+                    {/* FEE & REWARD */}
                     <Stack
                         direction="column"
-                        spacing={2}
+                        spacing={1}
                         sx={{
                             width: "37rem",
                         }}
@@ -363,7 +364,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                         >
                             FEE & REWARD
                         </Typography>
-                        <Stack direction="column" spacing={2} sx={{ px: "1rem" }}>
+                        <Stack direction="column" spacing={1} sx={{ px: "1rem" }}>
                             <InputField
                                 variant="outlined"
                                 label="Entry Fee"
