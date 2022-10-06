@@ -209,7 +209,7 @@ export class PixiMapMech {
         this.updateZIndex(10, true)
 
         // Enlarge the map mech
-        ease.add(this.rootInner, { scale: 1.5 }, { duration: 100, ease: "linear", removeExisting: true })
+        ease.add(this.rootInner, { scale: 1.2 }, { duration: 100, ease: "linear", removeExisting: true })
     }
 
     unhighlightMech() {
@@ -384,7 +384,7 @@ export class PixiMapMech {
                 color: { start: this.primaryColor, end: this.primaryColor },
                 alpha: {
                     start: 1,
-                    end: 0.3,
+                    end: 0.6,
                 },
                 scale: {
                     start: (0.3 * this.gridSizeRef.current.width) / 10,
