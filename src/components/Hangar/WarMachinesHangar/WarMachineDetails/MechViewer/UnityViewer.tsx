@@ -265,8 +265,6 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
             faction: mechDetails.faction_id,
             silos: [mech],
         }
-        console.log(inventory)
-        console.log(mech)
         sendMessage("ProjectContext(Clone)", "GetPlayerInventoryFromPage", JSON.stringify(inventory))
         sendMessage("ProjectContext(Clone)", "FittingRoom")
         sent.current = true
