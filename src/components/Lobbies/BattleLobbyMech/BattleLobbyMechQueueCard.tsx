@@ -27,10 +27,8 @@ const propsAreMechEqual = (prevProps: QuickDeployItemProps, nextProps: QuickDepl
 
 export const BattleLobbyMechQueueCard = React.memo(function QuickDeployItem({ isSelected, toggleIsSelected, mech }: QuickDeployItemProps) {
     const { factionTheme } = useTheme()
-    const { getFaction } = useSupremacy()
     const rarityDeets = useMemo(() => getRarityDeets(mech.tier || ""), [mech])
 
-    const faction = useMemo(() => getFaction(mech.faction_id), [getFaction, mech.faction_id])
     return (
         <Stack
             direction="row"
@@ -93,11 +91,11 @@ export const BattleLobbyMechQueueCard = React.memo(function QuickDeployItem({ is
 
                     <Stack direction="row" spacing={1} sx={{ pt: "1rem", width: "100%" }}>
                         <Stack direction="column" spacing={1}>
-                            {mech.weapon_slots && mech.weapon_slots.map((ws) => <WeaponSlot key={ws.slot_number} weaponSlot={ws} faction={faction} />)}
+                            {mech.weapon_slots && mech.weapon_slots.map((ws) => <WeaponSlot key={ws.slot_number} weaponSlot={ws} />)}
                         </Stack>
                         <MechBarStats
                             mech={mech}
-                            color={faction.primary_color}
+                            color={factionTheme.primary}
                             fontSize="1.3rem"
                             width="100%"
                             spacing=".75rem"
@@ -114,9 +112,9 @@ export const BattleLobbyMechQueueCard = React.memo(function QuickDeployItem({ is
 
 interface WeaponSlotProps {
     weaponSlot: MechWeaponSlot
-    faction: Faction
 }
-const WeaponSlot = ({ weaponSlot, faction }: WeaponSlotProps) => {
+const WeaponSlot = ({ weaponSlot }: WeaponSlotProps) => {
+    const { factionTheme } = useTheme()
     const weapon = weaponSlot.weapon
 
     const weaponStat = useCallback((label: string, value: string | number) => {
@@ -141,8 +139,8 @@ const WeaponSlot = ({ weaponSlot, faction }: WeaponSlotProps) => {
                 tooltipSx={{
                     maxWidth: "50rem",
                 }}
-                color={faction.background_color}
-                clipThingColor={faction.primary_color}
+                color={factionTheme.background}
+                clipThingColor={factionTheme.primary}
                 renderNode={
                     <Stack direction="column" sx={{ width: "30rem" }}>
                         <Stack direction="row" alignItems="center">
@@ -206,11 +204,11 @@ const WeaponSlot = ({ weaponSlot, faction }: WeaponSlotProps) => {
                 justifyContent: "center",
                 height: "4rem",
                 width: "4rem",
-                border: `${faction.primary_color}80 2px solid`,
+                border: `${factionTheme.primary}80 2px solid`,
                 borderRadius: 0.6,
-                backgroundColor: `${faction.background_color}`,
+                backgroundColor: `${factionTheme.background}`,
                 "&:hover": {
-                    border: `${faction.primary_color} 2px solid`,
+                    border: `${factionTheme.primary} 2px solid`,
                 },
             }}
         >
