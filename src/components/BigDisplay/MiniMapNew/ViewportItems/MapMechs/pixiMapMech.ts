@@ -398,7 +398,7 @@ export class PixiMapMech {
                     min: (this.gridSizeRef.current.width * 2.3) / 20,
                     max: (this.gridSizeRef.current.width * 2.3) / 20,
                 },
-                frequency: 0.9,
+                frequency: 0.8,
             })
             this.emitter?.destroy()
             this.emitter = new particles.Emitter(this.particlesContainer, CircleParticle, config)
