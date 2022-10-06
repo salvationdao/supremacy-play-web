@@ -198,7 +198,7 @@ const PlayerAbilitiesInner = () => {
     )
 }
 
-const FilterButton = ({
+export const FilterButton = ({
     value,
     currentSelectedValue,
     onChange: setLocationSelectTypes,

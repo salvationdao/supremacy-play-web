@@ -1,7 +1,7 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import React, { useEffect, useMemo, useRef, useState } from "react"
 import { BattleBgWebP, SvgFullscreen, SvgGrid, SvgMinimize, SvgSwap } from "../../../assets"
-import { BattleState, useDimension, useGame, useMiniMapPixi, useUI, WinnerStruct } from "../../../containers"
+import { BattleState, useDimension, useGame, useMiniMapPixi, useUI } from "../../../containers"
 import { useHotkey } from "../../../containers/hotkeys"
 import { useToggle } from "../../../hooks"
 import { fonts } from "../../../theme/theme"
@@ -10,6 +10,7 @@ import { WindowPortal } from "../../Common/WindowPortal/WindowPortal"
 import { useWindowPortal } from "../../Common/WindowPortal/WindowPortalContainer"
 import { LEFT_DRAWER_WIDTH } from "../../LeftDrawer/LeftDrawer"
 import { MiniMapPixi } from "./MiniMapPixi"
+import { PlayerSupporterAbility } from "../../LeftDrawer/BattleArena/BattleAbility/SupporterAbilities"
 
 export const TOP_BAR_HEIGHT = 3.4 // rems
 const PADDING = 6 // rems
@@ -164,8 +165,8 @@ const MiniMapInner = ({ map, isPoppedout, width = 100, height = 100, poppedOutCo
 
     // When it's targeting, enlarge to big display, else restore to the prev location
     useEffect(() => {
-        onAbilityUseCallbacks.current["mini-map-new"] = (wn: WinnerStruct | undefined, pa: PlayerAbility | undefined) => {
-            if (wn || pa) {
+        onAbilityUseCallbacks.current["mini-map-new"] = (pa: PlayerAbility | undefined, sa: PlayerSupporterAbility | undefined) => {
+            if (sa || pa) {
                 toggleIsStreamBigDisplayMemorized(false)
             } else {
                 setTimeout(() => {

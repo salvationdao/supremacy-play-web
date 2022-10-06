@@ -15,6 +15,7 @@ export enum BattleState {
 }
 
 export interface GameSettingsResponse {
+    battle_id: string
     battle_identifier: number
     game_map: Map
     battle_zone: BattleZoneStruct
@@ -35,7 +36,7 @@ export const GameContainer = createContainer(() => {
     const { send } = useGameServerCommandsUser("/user_commander")
     const { factionID, user } = useAuth()
     const { currentArenaID } = useArena()
-    const { setBattleIdentifier } = useSupremacy()
+    const { setBattleIdentifier, setBattleID } = useSupremacy()
     const { toggleIsStreamBigDisplayMemorized, restoreIsStreamBigDisplayMemorized } = useUI()
 
     // States
@@ -99,6 +100,7 @@ export const GameContainer = createContainer(() => {
         (payload) => {
             if (!payload) return
             if (payload.battle_identifier > 0) setBattleIdentifier(payload.battle_identifier)
+            setBattleID(payload.battle_id)
             setMap(payload.game_map)
             setBattleZone(payload.battle_zone)
             setAbilityDetails(payload.ability_details)

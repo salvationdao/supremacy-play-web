@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../../../../constants"
-import { MapSelection, useArena, useAuth, useGame, useMiniMapPixi, useSupremacy, WinnerStruct } from "../../../../../containers"
+import { MapSelection, useArena, useAuth, useGame, useMiniMapPixi, useSupremacy } from "../../../../../containers"
 import { RecordType, useHotkey } from "../../../../../containers/hotkeys"
 import { closestAngle, deg2rad } from "../../../../../helpers"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
@@ -18,6 +18,7 @@ import {
     WarMachineState,
 } from "../../../../../types"
 import { PixiMapMech } from "./pixiMapMech"
+import { PlayerSupporterAbility } from "../../../../LeftDrawer/BattleArena/BattleAbility/SupporterAbilities"
 
 interface MapMechProps {
     warMachine: WarMachineState
@@ -140,12 +141,13 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
     // Handle what happens when ability is used or map location is selected
     useEffect(() => {
-        onAbilityUseCallbacks.current[`map-mech-${hash}`] = (wn: WinnerStruct | undefined, pa: PlayerAbility | undefined) => {
+        onAbilityUseCallbacks.current[`map-mech-${hash}`] = (pa: PlayerAbility | undefined, sa: PlayerSupporterAbility | undefined) => {
             updateIsMechHighlighted()
 
             // Show the dashed line border box around mech is it can be clicked on for the ability
             let showDashedBox = false
-            const ability = wn?.game_ability || pa?.ability
+            // todo vinnie, handle it here
+            const ability = pa?.ability || sa
 
             if (isAlive && !abilityBorderEffect && ability) {
                 const locationSelectType = ability.location_select_type
@@ -168,29 +170,25 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
             if (pixiMapMech) {
                 // If the winner/ability is not a mech select type, disable mech click
-                if (
+                pixiMapMech.rootInner.interactive = !(
                     ability &&
                     ability.location_select_type !== LocationSelectType.MechCommand &&
                     ability.location_select_type !== LocationSelectType.MechSelect &&
                     ability.location_select_type !== LocationSelectType.MechSelectAllied &&
                     ability.location_select_type !== LocationSelectType.MechSelectOpponent
-                ) {
-                    pixiMapMech.rootInner.interactive = false
-                } else {
-                    pixiMapMech.rootInner.interactive = true
-                }
+                )
             }
         }
 
         onSelectMapPositionCallbacks.current[`map-mech-${hash}`] = (
             mapPos: MapSelection | undefined,
-            wn: WinnerStruct | undefined,
             pa: PlayerAbility | undefined,
+            sa: PlayerSupporterAbility | undefined,
         ) => {
             updateIsMechHighlighted()
 
             // Immediately render the mech move dashed line when player selects it for fast UX
-            if (!wn && pa?.ability.location_select_type === LocationSelectType.MechCommand && pa.mechHash === hash) {
+            if (pa?.ability.location_select_type === LocationSelectType.MechCommand && pa.mechHash === hash) {
                 if (mapPos?.position) {
                     const mCommand: MechMoveCommand = {
                         id: "move_command",
@@ -210,7 +208,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             }
 
             // If mech is selected for ability, show it
-            const ability = wn?.game_ability || pa?.ability
+            const ability = pa?.ability || sa
             if (ability && mapPos?.mechHash === hash) {
                 pixiMapMech?.applyAbility(ability)
             } else {

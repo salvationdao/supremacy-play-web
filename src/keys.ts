@@ -80,6 +80,7 @@ export enum GameServerKeys {
     SaleAbilitiesList = "SALE:ABILITIES:LIST",
     SaleAbilityPurchase = "SALE:ABILITY:PURCHASE",
     PlayerAbilityUse = "PLAYER:ABILITY:USE",
+    PlayerSupportAbilityUse = "PLAYER:SUPPORT:ABILITY:USE",
 
     // Minimap ability updates
     MinimapUpdatesSubscribe = "MINIMAP:UPDATES:SUBSCRIBE",
@@ -105,6 +106,7 @@ export enum GameServerKeys {
     SubscribeUserStat = "USER:STAT:SUBSCRIBE",
     UpdateSettings = "PLAYER:UPDATE_SETTINGS",
     GetSettings = "PLAYER:GET_SETTINGS",
+    PlayerSupportAbilities = "PLAYER:SUPPORT:ABILITIES",
 
     // Ban system
     GetBanOptions = "PUNISH:OPTIONS",

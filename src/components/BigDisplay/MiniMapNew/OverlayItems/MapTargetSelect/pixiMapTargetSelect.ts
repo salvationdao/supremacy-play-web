@@ -34,13 +34,13 @@ const getAbilityLabel = (ability: GameAbility | BlueprintPlayerAbility): string 
 }
 
 export class PixiMapTargetSelect {
-    stageRoot: PIXI.Container<PIXI.DisplayObject>
-    viewportRoot: PIXI.Container<PIXI.DisplayObject>
+    stageRoot: PIXI.Container
+    viewportRoot: PIXI.Container
     mouseIcon: PixiImageIcon
-    private colorOverlay: PIXI.Sprite
-    private outerBorder: PIXI.Graphics
-    private bottomContainer: PIXI.Graphics
-    private cancelButton: PIXI.Sprite | undefined
+    private readonly colorOverlay: PIXI.Sprite
+    private readonly outerBorder: PIXI.Graphics
+    private readonly bottomContainer: PIXI.Graphics
+    private readonly cancelButton: PIXI.Sprite | undefined
 
     private viewport: Viewport
     private ability: GameAbility | BlueprintPlayerAbility
@@ -63,7 +63,6 @@ export class PixiMapTargetSelect {
         gridSizeRef: React.MutableRefObject<Dimension>,
         ability: GameAbility | BlueprintPlayerAbility,
         endTime: Date | undefined,
-        onExpired: () => void | undefined,
         onCancel: (() => void) | undefined,
     ) {
         this.viewport = viewport
@@ -125,7 +124,7 @@ export class PixiMapTargetSelect {
         // Mouse icon
         this.mouseIcon = new PixiImageIcon(ability.image_url, gridSizeRef.current.width / 1.6, gridSizeRef.current.height / 1.6, ability.colour, true)
         if (secondsLeft) {
-            this.mouseIcon.startCountdown(secondsLeft, 1, onExpired)
+            this.mouseIcon.startCountdown(secondsLeft, 1)
         }
 
         // Start and end coord icons, made invisible

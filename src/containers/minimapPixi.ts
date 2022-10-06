@@ -3,14 +3,15 @@ import * as PIXI from "pixi.js"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { deepEqual } from "../helpers"
-import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } from "../hooks/useGameServer"
+import { useGameServerCommandsFaction } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { Dimension, GAME_CLIENT_TILE_SIZE, GameAbility, LocationSelectType, Map, PlayerAbility, Position, Vector2i } from "../types"
+import { Dimension, GAME_CLIENT_TILE_SIZE, LocationSelectType, Map, PlayerAbility, Position, Vector2i } from "../types"
 import { useArena } from "./arena"
 import { useAuth } from "./auth"
 import { BattleState, useGame } from "./game"
 import { useGlobalNotifications } from "./globalNotifications"
 import { RecordType, useHotkey } from "./hotkeys"
+import { PlayerSupporterAbility } from "../components"
 
 export const pixiViewportZIndexes = {
     hiveStatus: 10,
@@ -28,11 +29,6 @@ export const pixiStageZIndexes = {
     mapScale: 20,
     targetSelect: 50,
     mechAbilities: 20,
-}
-
-export interface WinnerStruct {
-    game_ability: GameAbility
-    end_time: Date
 }
 
 export interface MapSelection {
@@ -72,8 +68,14 @@ export const MiniMapPixiContainer = createContainer(() => {
     useEffect(() => {
         mapRef.current = map
         if (!map || !pixiMainItems) return
-        mapScalingRef.current = { x: pixiMainItems.viewport.worldWidth / map.Width, y: pixiMainItems.viewport.worldHeight / map.Height }
-        gridSizeRef.current = { width: (mapScalingRef.current.x * map.Width) / map.Cells_X, height: (mapScalingRef.current.y * map.Height) / map.Cells_Y }
+        mapScalingRef.current = {
+            x: pixiMainItems.viewport.worldWidth / map.Width,
+            y: pixiMainItems.viewport.worldHeight / map.Height,
+        }
+        gridSizeRef.current = {
+            width: (mapScalingRef.current.x * map.Width) / map.Cells_X,
+            height: (mapScalingRef.current.y * map.Height) / map.Cells_Y,
+        }
     }, [map, pixiMainItems])
 
     // Converts game client position (x, y) to (x, y) that fits into the viewport (viewport position)
@@ -103,26 +105,15 @@ export const MiniMapPixiContainer = createContainer(() => {
     // ***************************************
     // ********** Ability use stuff **********
     // ***************************************
-    const winner = useRef<WinnerStruct | undefined>()
     const playerAbility = useRef<PlayerAbility | undefined>()
+    const supportAbility = useRef<PlayerSupporterAbility | undefined>()
     const selection = useRef<MapSelection | undefined>()
     const onAbilityUseCallbacks = useRef<{
-        [name: string]: (winner: WinnerStruct | undefined, playerAbility: PlayerAbility | undefined) => void
+        [name: string]: (playerAbility: PlayerAbility | undefined, supportAbility: PlayerSupporterAbility | undefined) => void
     }>({})
     const onSelectMapPositionCallbacks = useRef<{
-        [name: string]: (mapPos: MapSelection | undefined, winner: WinnerStruct | undefined, playerAbility: PlayerAbility | undefined) => void
+        [name: string]: (mapPos: MapSelection | undefined, playerAbility: PlayerAbility | undefined, supportAbility: PlayerSupporterAbility | undefined) => void
     }>({})
-
-    const useWinner = useRef((wn: WinnerStruct | undefined) => {
-        const prevValue = winner.current
-        winner.current = wn
-        selectMapPosition.current(undefined)
-
-        // Only run if something was changed
-        if (prevValue !== wn || (prevValue && wn && !deepEqual(prevValue, wn))) {
-            Object.values(onAbilityUseCallbacks.current).forEach((cb) => cb(wn, playerAbility.current))
-        }
-    })
 
     const usePlayerAbility = useRef((pa: PlayerAbility | undefined) => {
         const prevValue = playerAbility.current
@@ -131,7 +122,18 @@ export const MiniMapPixiContainer = createContainer(() => {
 
         // Only run if something was changed
         if (prevValue !== pa || (prevValue && pa && !deepEqual(prevValue, pa))) {
-            Object.values(onAbilityUseCallbacks.current).forEach((cb) => cb(winner.current, pa))
+            Object.values(onAbilityUseCallbacks.current).forEach((cb) => cb(pa, supportAbility.current))
+        }
+    })
+
+    const useSupportAbility = useRef((sa: PlayerSupporterAbility | undefined) => {
+        const prevValue = supportAbility.current
+        supportAbility.current = sa
+        selectMapPosition.current(undefined)
+
+        // Only run if something was changed
+        if (prevValue !== sa || (prevValue && sa && !deepEqual(prevValue, sa))) {
+            Object.values(onAbilityUseCallbacks.current).forEach((cb) => cb(playerAbility.current, sa))
         }
     })
 
@@ -141,38 +143,15 @@ export const MiniMapPixiContainer = createContainer(() => {
 
         // Only run if something was changed
         if (prevValue !== mapPos || (prevValue && mapPos && !deepEqual(prevValue, mapPos))) {
-            Object.values(onSelectMapPositionCallbacks.current).forEach((cb) => cb(mapPos, winner.current, playerAbility.current))
+            Object.values(onSelectMapPositionCallbacks.current).forEach((cb) => cb(mapPos, playerAbility.current, supportAbility.current))
         }
     })
-
-    // Subscribe on winner announcements
-    useGameServerSubscriptionSecuredUser<WinnerStruct | undefined>(
-        {
-            URI: "",
-            key: GameServerKeys.SubBribeWinnerAnnouncement,
-            ready: !!factionID,
-        },
-        (payload) => {
-            if (!payload) return
-
-            let endTime = payload.end_time
-            const dateNow = new Date()
-            const diff = endTime.getTime() - dateNow.getTime()
-
-            // Just a temp fix, if user's pc time is not correct then at least set for them
-            // Checked by seeing if they have at least 8s to do stuff
-            if (endTime < dateNow || diff < 8000 || diff > 20000) {
-                endTime = new Date(dateNow.getTime() + 15000)
-            }
-
-            useWinner.current({ ...payload, end_time: endTime })
-        },
-    )
 
     // Escape hot key
     useEffect(() => {
         addToHotkeyRecord(RecordType.MiniMap, "Escape", () => {
             usePlayerAbility.current(undefined)
+            useSupportAbility.current(undefined)
             setHighlightedMechParticipantID(undefined)
         })
     }, [addToHotkeyRecord])
@@ -180,109 +159,135 @@ export const MiniMapPixiContainer = createContainer(() => {
     // When battle ends, cancel abilities etc.
     useEffect(() => {
         if (battleState != BattleState.BattlingState) {
-            useWinner.current(undefined)
             usePlayerAbility.current(undefined)
+            useSupportAbility.current(undefined)
         }
     }, [battleState])
 
     const onTargetConfirm = useCallback(
         ({ startCoord, endCoord, mechHash }: { startCoord?: Position; endCoord?: Position; mechHash?: string }) => {
             if (!currentArenaID) return
-
-            let payload: {
-                arena_id: string
-                blueprint_ability_id: string
-                location_select_type: string
-                start_coords?: Position
-                end_coords?: Position
-                mech_hash?: string
-            } | null = null
-
-            let hubKey = GameServerKeys.PlayerAbilityUse
-
             try {
                 // If it's a winner (battle ability)
-                if (winner.current?.game_ability) {
-                    if (!startCoord) {
-                        throw new Error("Missing map target location.")
-                    }
-
-                    payload = {
+                // if (winner.current?.game_ability) {
+                //     if (!startCoord) {
+                //         throw new Error("Missing map target location.")
+                //     }
+                //
+                //     payload = {
+                //         arena_id: currentArenaID,
+                //         blueprint_ability_id: "",
+                //         location_select_type: "",
+                //         start_coords: viewportPositionToGridCell.current(startCoord.x, startCoord.y),
+                //         end_coords:
+                //             winner.current.game_ability.location_select_type === LocationSelectType.LineSelect && endCoord
+                //                 ? viewportPositionToGridCell.current(endCoord.x, endCoord.y)
+                //                 : undefined,
+                //     }
+                //
+                //     hubKey = GameServerKeys.SubmitAbilityLocationSelect
+                //     useWinner.current(undefined)
+                // } else
+                if (supportAbility.current) {
+                    const payload: {
+                        ability_id: string
+                        arena_id: string
+                        location_select_type: string
+                        start_coords?: Position
+                        end_coords?: Position
+                        mech_hash?: string
+                    } = {
                         arena_id: currentArenaID,
-                        blueprint_ability_id: "",
-                        location_select_type: "",
-                        start_coords: viewportPositionToGridCell.current(startCoord.x, startCoord.y),
-                        end_coords:
-                            winner.current.game_ability.location_select_type === LocationSelectType.LineSelect && endCoord
-                                ? viewportPositionToGridCell.current(endCoord.x, endCoord.y)
-                                : undefined,
+                        ability_id: supportAbility.current!.id,
+                        location_select_type: supportAbility.current!.location_select_type,
                     }
-
-                    hubKey = GameServerKeys.SubmitAbilityLocationSelect
-                    useWinner.current(undefined)
-                } else if (playerAbility.current) {
                     // Else if it's a player ability
-                    switch (playerAbility.current.ability.location_select_type) {
+                    switch (supportAbility.current!.location_select_type) {
                         case LocationSelectType.LineSelect:
                             if (!startCoord || !endCoord) {
-                                throw new Error("Missing map target location(s).")
+                                newSnackbarMessage("Missing map target location(s).", "error")
+                                return
                             }
-                            payload = {
-                                arena_id: currentArenaID,
-                                blueprint_ability_id: playerAbility.current.ability.id,
-                                location_select_type: playerAbility.current.ability.location_select_type,
-                                start_coords: viewportPositionToGridCell.current(startCoord.x, startCoord.y),
-                                end_coords: viewportPositionToGridCell.current(endCoord.x, endCoord.y),
-                            }
+                            payload.start_coords = viewportPositionToGridCell.current(startCoord.x, startCoord.y)
+                            payload.end_coords = viewportPositionToGridCell.current(endCoord.x, endCoord.y)
+
                             break
                         case LocationSelectType.MechSelect:
                         case LocationSelectType.MechSelectAllied:
                         case LocationSelectType.MechSelectOpponent:
                             if (!mechHash) {
-                                throw new Error("Missing mech hash.")
+                                newSnackbarMessage("Missing mech hash.", "error")
+                                return
                             }
-                            payload = {
-                                arena_id: currentArenaID,
-                                blueprint_ability_id: playerAbility.current.ability.id,
-                                location_select_type: playerAbility.current.ability.location_select_type,
-                                mech_hash: mechHash,
+                            payload.mech_hash = mechHash
+                            setHighlightedMechParticipantID(undefined)
+                            break
+                        case LocationSelectType.LocationSelect:
+                            if (!startCoord) {
+                                newSnackbarMessage("Missing map target location(s).", "error")
+                                return
                             }
+                            payload.start_coords = viewportPositionToGridCell.current(startCoord.x, startCoord.y)
+                            break
+                        case LocationSelectType.Global:
+                            break
+                    }
+
+                    send(GameServerKeys.PlayerSupportAbilityUse, payload)
+                    newSnackbarMessage("Successfully submitted target location.", "success")
+                } else if (playerAbility.current) {
+                    const payload: {
+                        arena_id: string
+                        blueprint_ability_id: string
+                        location_select_type: string
+                        start_coords?: Position
+                        end_coords?: Position
+                        mech_hash?: string
+                    } = {
+                        arena_id: currentArenaID,
+                        blueprint_ability_id: playerAbility.current!.ability.id,
+                        location_select_type: playerAbility.current!.ability.location_select_type,
+                    }
+                    // Else if it's a player ability
+                    switch (playerAbility.current!.ability.location_select_type) {
+                        case LocationSelectType.LineSelect:
+                            if (!startCoord || !endCoord) {
+                                newSnackbarMessage("Missing map target location(s).", "error")
+                                return
+                            }
+                            payload.start_coords = viewportPositionToGridCell.current(startCoord.x, startCoord.y)
+                            payload.end_coords = viewportPositionToGridCell.current(endCoord.x, endCoord.y)
+
+                            break
+                        case LocationSelectType.MechSelect:
+                        case LocationSelectType.MechSelectAllied:
+                        case LocationSelectType.MechSelectOpponent:
+                            if (!mechHash) {
+                                newSnackbarMessage("Missing mech hash.", "error")
+                                return
+                            }
+                            payload.mech_hash = mechHash
+                            setHighlightedMechParticipantID(undefined)
                             break
 
                         case LocationSelectType.LocationSelect:
                         case LocationSelectType.MechCommand:
                             if (!startCoord) {
-                                throw new Error("Missing map target location.")
+                                newSnackbarMessage("Missing map target location.", "error")
+                                return
                             }
-                            payload = {
-                                arena_id: currentArenaID,
-                                blueprint_ability_id: playerAbility.current.ability.id,
-                                location_select_type: playerAbility.current.ability.location_select_type,
-                                start_coords: viewportPositionToGridCell.current(startCoord.x, startCoord.y),
-                                mech_hash: playerAbility.current.mechHash,
-                            }
+                            payload.start_coords = viewportPositionToGridCell.current(startCoord.x, startCoord.y)
+                            payload.mech_hash = playerAbility.current!.mechHash
+                            usePlayerAbility.current(undefined)
                             break
 
                         case LocationSelectType.Global:
                             break
                     }
 
-                    // If it's mech move command, don't reset so player can keep moving the mech
-                    if (playerAbility.current?.ability.location_select_type !== LocationSelectType.MechCommand) {
-                        usePlayerAbility.current(undefined)
-                    }
-
-                    if (playerAbility.current?.ability.location_select_type === LocationSelectType.MechSelect) {
-                        setHighlightedMechParticipantID(undefined)
-                    }
-
-                    if (!payload) {
-                        throw new Error("Something went wrong while activating this ability. Please try again, or contact support if the issue persists.")
-                    }
+                    send(GameServerKeys.PlayerAbilityUse, payload)
+                    newSnackbarMessage("Successfully submitted target location.", "success")
                 }
-
-                send(hubKey, payload)
-                newSnackbarMessage("Successfully submitted target location.", "success")
             } catch (err) {
                 newSnackbarMessage(typeof err === "string" ? err : "Failed to submit target location.", "error")
                 console.error(err)
@@ -306,11 +311,11 @@ export const MiniMapPixiContainer = createContainer(() => {
         gridCellToViewportPosition,
 
         // Ability use related stuff
-        winner,
         playerAbility,
+        supportAbility,
         selection,
-        useWinner,
         usePlayerAbility,
+        useSupportAbility,
         selectMapPosition,
         onAbilityUseCallbacks,
         onSelectMapPositionCallbacks,
