@@ -5,7 +5,6 @@ import { DEV_ONLY, WEBGL_BASE_URL } from "../../../../../constants"
 import { useTheme } from "../../../../../containers/theme"
 import { pulseEffect } from "../../../../../theme/keyframes"
 import { fonts } from "../../../../../theme/theme"
-import { WeaponType } from "../../../../../types"
 import { ClipThing } from "../../../../Common/ClipThing"
 import { LoadoutMechSkin, LoadoutPowerCore, LoadoutWeapon } from "../MechLoadout/MechLoadout"
 import { MechViewerProps } from "./MechViewer"
@@ -195,10 +194,10 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
         if (mechDetails.weapons) {
             mechDetails.weapons.forEach((w) => {
                 if (w.slot_number == null) return
-                if (w.weapon_type === WeaponType.MissileLauncher) {
-                    accessories.splice(w.slot_number, 1)
-                    return
-                }
+                // if (w.weapon_type === WeaponType.MissileLauncher) {
+                //     accessories.splice(w.slot_number, 1)
+                //     return
+                // }
                 accessories[w.slot_number] = {
                     type: "weapon",
                     ownership_id: w.id,
@@ -249,9 +248,6 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
             }
         }
 
-        const inventory: HangarSilo = {
-            faction: mechDetails.faction_id,
-        }
         const mech: SiloType = {
             type: "mech",
             ownership_id: mechDetails.id,
@@ -265,10 +261,14 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
                 : undefined,
             accessories,
         }
+        const inventory: HangarSilo = {
+            faction: mechDetails.faction_id,
+            silos: [mech],
+        }
         console.log(inventory)
         console.log(mech)
         sendMessage("ProjectContext(Clone)", "GetPlayerInventoryFromPage", JSON.stringify(inventory))
-        sendMessage("ProjectContext(Clone)", "FittingRoom", JSON.stringify(mech))
+        sendMessage("ProjectContext(Clone)", "FittingRoom")
         sent.current = true
     }, [
         sendMessage,
