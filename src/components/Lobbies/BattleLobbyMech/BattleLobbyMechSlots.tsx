@@ -108,6 +108,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                             height: "26.5rem",
                             borderRadius: 0,
                             backgroundColor: `${colors.offWhite}20`,
+                            border: ms?.owner?.id === userID ? `${colors.gold}BB 2px solid` : undefined,
                         }}
                     >
                         <Stack direction="row" spacing="1rem" mb=".5rem">

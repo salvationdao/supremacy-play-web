@@ -7,9 +7,20 @@ import { fonts } from "../../../theme/theme"
 interface InputFieldProps {
     startAdornmentLabel?: ReactNode
     endAdornmentLabel?: ReactNode
+    border?: string
+    borderRadius?: number
 }
 
-export const InputField = ({ label, startAdornmentLabel, endAdornmentLabel, placeholder, disabled, ...props }: InputFieldProps & TextFieldProps) => {
+export const InputField = ({
+    border,
+    borderRadius,
+    label,
+    startAdornmentLabel,
+    endAdornmentLabel,
+    placeholder,
+    disabled,
+    ...props
+}: InputFieldProps & TextFieldProps) => {
     const { factionTheme } = useTheme()
     const title = useMemo(() => {
         if (typeof label === "string") {
@@ -52,7 +63,10 @@ export const InputField = ({ label, startAdornmentLabel, endAdornmentLabel, plac
                 }}
                 sx={{
                     backgroundColor: "#00000090",
-                    ".MuiOutlinedInput-root": { borderRadius: 0.5, border: `${factionTheme.primary}99 2px dashed` },
+                    ".MuiOutlinedInput-root": {
+                        borderRadius: borderRadius !== undefined ? borderRadius : 0.5,
+                        border: border || `${factionTheme.primary}99 2px dashed`,
+                    },
                     ".MuiOutlinedInput-input": {
                         px: "1.5rem",
                         py: ".6rem",

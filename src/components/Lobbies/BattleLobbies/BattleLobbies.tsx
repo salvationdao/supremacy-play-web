@@ -16,6 +16,7 @@ import { SearchBattle } from "../../Replays/BattlesReplays/SearchBattle"
 import { BattleLobbyItem } from "./BattleLobbyItem"
 import { FancyButton } from "../../Common/FancyButton"
 import { BattleLobbyCreateModal } from "./BattleLobbyCreate/BattleLobbyCreateModal"
+import { BattleLobbyPrivateAccessModal } from "./BattleLobbyPrivateAccessModal"
 
 const sortOptionsPending: { label: string; value: string }[] = [
     { label: SortTypeLabel.QueuedAmountHighest, value: SortTypeLabel.QueuedAmountHighest },
@@ -46,6 +47,7 @@ export const BattleLobbies = ({ lobbyStatus, battleLobbies }: BattleLobbiesProps
     const secondaryColor = theme.factionTheme.secondary
 
     const [openNewLobbyModal, setOpenNewLobbyModal] = useState(false)
+    const [openPrivateRoom, setOpenPrivateRoom] = useState(false)
 
     const { page, changePage, changePageSize, totalItems, setTotalItems, totalPages, pageSize } = usePagination({
         pageSize: 10,
@@ -199,29 +201,48 @@ export const BattleLobbies = ({ lobbyStatus, battleLobbies }: BattleLobbiesProps
                             sx={{ p: ".8rem 1.8rem", borderBottom: (theme) => `${theme.factionTheme.primary}70 1.5px solid` }}
                         >
                             {/* Search */}
-                            <Stack spacing="1rem" direction="row" alignItems="center">
+                            <Stack spacing={1} direction="row" alignItems="center">
                                 <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
                                     SEARCH:
                                 </Typography>
                                 <SearchBattle placeholder="Lobby Name" searchValueInstant={searchValueInstant} setSearchValue={setSearchValue} />
                             </Stack>
 
-                            <FancyButton
-                                clipThingsProps={{
-                                    clipSize: "6px",
-                                    clipSlantSize: "0px",
-                                    corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
-                                    backgroundColor: colors.bronze,
-                                    border: { isFancy: true, borderColor: colors.bronze, borderThickness: "1.5px" },
-                                    sx: { position: "relative", minWidth: "10rem" },
-                                }}
-                                sx={{ px: ".6rem", py: ".5rem", color: "#FFFFFF" }}
-                                onClick={() => setOpenNewLobbyModal(true)}
-                            >
-                                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                    NEW BATTLE LOBBY
-                                </Typography>
-                            </FancyButton>
+                            <Stack spacing={1} direction="row" alignItems="center">
+                                <FancyButton
+                                    clipThingsProps={{
+                                        clipSize: "6px",
+                                        clipSlantSize: "0px",
+                                        corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
+                                        backgroundColor: colors.bronze,
+                                        border: { isFancy: true, borderColor: colors.bronze, borderThickness: "1.5px" },
+                                        sx: { position: "relative", minWidth: "10rem" },
+                                    }}
+                                    sx={{ px: ".6rem", py: ".5rem", color: "#FFFFFF" }}
+                                    onClick={() => setOpenNewLobbyModal(true)}
+                                >
+                                    <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                        NEW BATTLE LOBBY
+                                    </Typography>
+                                </FancyButton>
+
+                                <FancyButton
+                                    clipThingsProps={{
+                                        clipSize: "6px",
+                                        clipSlantSize: "0px",
+                                        corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
+                                        backgroundColor: colors.bronze,
+                                        border: { isFancy: true, borderColor: colors.bronze, borderThickness: "1.5px" },
+                                        sx: { position: "relative", minWidth: "10rem" },
+                                    }}
+                                    sx={{ px: ".6rem", py: ".5rem", color: "#FFFFFF" }}
+                                    onClick={() => setOpenPrivateRoom(true)}
+                                >
+                                    <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                        ACCESS CODE
+                                    </Typography>
+                                </FancyButton>
+                            </Stack>
                         </Stack>
 
                         <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
@@ -283,6 +304,7 @@ export const BattleLobbies = ({ lobbyStatus, battleLobbies }: BattleLobbiesProps
                 </Stack>
             </ClipThing>
             {openNewLobbyModal && <BattleLobbyCreateModal setOpen={setOpenNewLobbyModal} />}
+            {openPrivateRoom && <BattleLobbyPrivateAccessModal setOpen={setOpenPrivateRoom} />}
         </>
     )
 }

@@ -12,6 +12,8 @@ import { BattleLobbyFaction, MyFactionLobbySlots, OtherFactionLobbySlots } from 
 
 interface BattleLobbyItemProps {
     battleLobby: BattleLobby
+    omitClip?: boolean
+    disabled?: boolean
 }
 
 const FACTION_LOBBY_SIZE = 3
@@ -28,13 +30,24 @@ const propsAreEqual = (prevProps: BattleLobbyItemProps, nextProps: BattleLobbyIt
     )
 }
 
-export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby }: BattleLobbyItemProps) {
+export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby, omitClip, disabled }: BattleLobbyItemProps) {
     const theme = useTheme()
     const { factionID } = useAuth()
     const { arenaList } = useArena()
     const { factionsAll } = useSupremacy()
-    const { host_by, is_private, game_map, name, number, entry_fee, first_faction_cut, second_faction_cut, third_faction_cut, assigned_to_arena_id } =
-        battleLobby
+    const {
+        host_by,
+        is_private,
+        generated_by_system,
+        game_map,
+        name,
+        number,
+        entry_fee,
+        first_faction_cut,
+        second_faction_cut,
+        third_faction_cut,
+        assigned_to_arena_id,
+    } = battleLobby
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
     const { battle_lobbies_mechs, ready_at } = battleLobby
@@ -110,14 +123,18 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
 
     return (
         <>
-            <Stack sx={{ color: primaryColor, textAlign: "start", height: "100%" }}>
+            <Stack sx={{ color: primaryColor, textAlign: "start", height: "100%", opacity: disabled ? 0.4 : 1 }}>
                 <Box>
                     <ClipThing
                         clipSize="6px"
-                        border={{
-                            borderColor: primaryColor,
-                            borderThickness: ".3rem",
-                        }}
+                        border={
+                            omitClip
+                                ? undefined
+                                : {
+                                      borderColor: primaryColor,
+                                      borderThickness: ".3rem",
+                                  }
+                        }
                         backgroundColor={backgroundColor}
                         opacity={0.7}
                     >
@@ -158,46 +175,25 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                     >
                                         {name ? name : `Lobby ${number}`}
                                     </Typography>
-                                    {is_private ? (
-                                        <Stack direction="row" spacing=".5rem" alignItems="center">
-                                            <SvgLock size="1.2rem" fill={colors.gold} />
-                                            <Typography
-                                                sx={{
-                                                    color: colors.gold,
-                                                }}
-                                            >
-                                                Private Lobby
-                                            </Typography>
-                                            <Box
-                                                component="span"
-                                                sx={{
-                                                    fontFamily: fonts.shareTech,
-                                                }}
-                                            >
-                                                &#8212;
-                                            </Box>
-                                            {entryFeeDisplay}
-                                        </Stack>
-                                    ) : (
-                                        <Stack direction="row" spacing=".5rem" alignItems="baseline">
-                                            <Typography
-                                                sx={{
-                                                    color: colors.neonBlue,
-                                                }}
-                                            >
-                                                Public Lobby
-                                            </Typography>
-                                            <Box
-                                                component="span"
-                                                sx={{
-                                                    fontFamily: fonts.shareTech,
-                                                }}
-                                            >
-                                                &#8212;
-                                            </Box>
-                                            {entryFeeDisplay}
-                                        </Stack>
-                                    )}
+                                    <Stack direction="row" spacing=".5rem" alignItems="center">
+                                        {is_private && <SvgLock size="1.2rem" fill={colors.gold} />}
+                                        <Typography
+                                            sx={{
+                                                color: is_private ? colors.gold : colors.neonBlue,
+                                            }}
+                                        >
+                                            {is_private ? "Private" : "Public"} Lobby
+                                        </Typography>
+                                        <Box
+                                            component="span"
+                                            sx={{
+                                                fontFamily: fonts.shareTech,
+                                            }}
+                                        >
+                                            &#8212;
+                                        </Box>
+                                        {entryFeeDisplay}
+                                    </Stack>
                                 </Box>
                                 {assignedToArenaName && (
                                     <Stack direction="column" sx={{ mb: ".35rem" }}>
@@ -260,6 +256,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                         Hosted by
                                     </Typography>
                                     <Typography
+                                        variant="h6"
                                         sx={{
                                             display: "-webkit-box",
                                             overflow: "hidden",
@@ -267,10 +264,10 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                             textOverflow: "ellipsis",
                                             WebkitLineClamp: 1, // change to max number of lines
                                             WebkitBoxOrient: "vertical",
-                                            fontFamily: fonts.nostromoBold,
+                                            // color: factionsAll[host_by.faction_id]?.primary_color,
                                         }}
                                     >
-                                        {host_by.username}
+                                        {generated_by_system ? "SYSTEM" : `${host_by.username} #${host_by.gid}`}
                                     </Typography>
                                 </Stack>
                                 {/* Prize allocation */}
@@ -394,7 +391,6 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                 <ClipThing
                                     corners={{
                                         topRight: true,
-                                        bottomLeft: true,
                                     }}
                                     sx={{
                                         flex: 1,
