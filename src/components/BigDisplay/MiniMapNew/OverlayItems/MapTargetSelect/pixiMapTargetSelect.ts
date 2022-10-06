@@ -2,7 +2,7 @@ import { ease } from "pixi-ease"
 import { Viewport } from "pixi-viewport"
 import * as PIXI from "pixi.js"
 import { AbilityCancelPNG } from "../../../../../assets"
-import { pixiStageZIndexes, pixiViewportZIndexes } from "../../../../../containers"
+import { MAP_ITEM_MINI_SIZE, pixiStageZIndexes, pixiViewportZIndexes } from "../../../../../containers"
 import { HEXToVBColor } from "../../../../../helpers"
 import { PixiImageIcon } from "../../../../../pixi/pixiImageIcon"
 import { fonts } from "../../../../../theme/theme"
@@ -123,14 +123,32 @@ export class PixiMapTargetSelect {
         }
 
         // Mouse icon
-        this.mouseIcon = new PixiImageIcon(ability.image_url, gridSizeRef.current.width / 1.6, gridSizeRef.current.height / 1.6, ability.colour, true)
+        this.mouseIcon = new PixiImageIcon(
+            ability.image_url,
+            Math.max(gridSizeRef.current.width, MAP_ITEM_MINI_SIZE) / 1.6,
+            Math.max(gridSizeRef.current.height, MAP_ITEM_MINI_SIZE) / 1.6,
+            ability.colour,
+            true,
+        )
         if (secondsLeft) {
             this.mouseIcon.startCountdown(secondsLeft, 1, onExpired)
         }
 
         // Start and end coord icons, made invisible
-        this.startCoord = new PixiImageIcon(ability.image_url, gridSizeRef.current.width, gridSizeRef.current.height, ability.colour, true)
-        this.endCoord = new PixiImageIcon(ability.image_url, gridSizeRef.current.width, gridSizeRef.current.height, ability.colour, true)
+        this.startCoord = new PixiImageIcon(
+            ability.image_url,
+            Math.max(gridSizeRef.current.width, MAP_ITEM_MINI_SIZE),
+            Math.max(gridSizeRef.current.height, MAP_ITEM_MINI_SIZE),
+            ability.colour,
+            true,
+        )
+        this.endCoord = new PixiImageIcon(
+            ability.image_url,
+            Math.max(gridSizeRef.current.width, MAP_ITEM_MINI_SIZE),
+            Math.max(gridSizeRef.current.height, MAP_ITEM_MINI_SIZE),
+            ability.colour,
+            true,
+        )
         this.startEndLine = new PIXI.Graphics()
         this.startCoord.showIcon(false)
         this.endCoord.showIcon(false)

@@ -12,6 +12,8 @@ import { useGame } from "./game"
 import { useGlobalNotifications } from "./globalNotifications"
 import { RecordType, useHotkey } from "./hotkeys"
 
+export const MAP_ITEM_MINI_SIZE = 25
+
 export const pixiViewportZIndexes = {
     hiveStatus: 10,
     mapAbilitiesBelowMechs: 15,

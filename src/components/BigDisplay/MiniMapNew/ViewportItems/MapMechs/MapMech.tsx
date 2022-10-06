@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../../../../constants"
-import { MapSelection, useArena, useAuth, useGame, useMiniMapPixi, useSupremacy, WinnerStruct } from "../../../../../containers"
+import { MapSelection, MAP_ITEM_MINI_SIZE, useArena, useAuth, useGame, useMiniMapPixi, useSupremacy, WinnerStruct } from "../../../../../containers"
 import { RecordType, useHotkey } from "../../../../../containers/hotkeys"
 import { closestAngle, deg2rad } from "../../../../../helpers"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
@@ -91,7 +91,10 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         if (!pixiMapMech) return
 
         // Set the icon dimensions
-        iconDimension.current = { width: gridSizeRef.current.width, height: gridSizeRef.current.height }
+        iconDimension.current = {
+            width: Math.max(gridSizeRef.current.width, MAP_ITEM_MINI_SIZE),
+            height: Math.max(gridSizeRef.current.height, MAP_ITEM_MINI_SIZE),
+        }
         // If it's a mini mech, make it look smaller
         if (isAI) {
             iconDimension.current.width *= 0.6

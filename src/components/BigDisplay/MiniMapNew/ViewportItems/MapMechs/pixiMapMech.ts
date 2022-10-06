@@ -4,7 +4,7 @@ import { ease } from "pixi-ease"
 import * as particles from "pixi-particles"
 import * as PIXI from "pixi.js"
 import { CircleParticle, DeadSkullPNG } from "../../../../../assets"
-import { pixiViewportZIndexes } from "../../../../../containers"
+import { MAP_ITEM_MINI_SIZE, pixiViewportZIndexes } from "../../../../../containers"
 import { deg2rad, HEXToVBColor } from "../../../../../helpers"
 import { pulseParticlesConfig } from "../../../../../pixi/particleConfigs"
 import { PixiImageIcon } from "../../../../../pixi/pixiImageIcon"
@@ -304,7 +304,14 @@ export class PixiMapMech {
     applyAbility(ability: GameAbility | BlueprintPlayerAbility) {
         if (!this.iconDimension) return
 
-        this.abilityToApply = new PixiImageIcon(ability.image_url, this.iconDimension.width / 1.6, this.iconDimension.height / 1.6, ability.colour, true, 1)
+        this.abilityToApply = new PixiImageIcon(
+            ability.image_url,
+            Math.max(this.iconDimension.width, MAP_ITEM_MINI_SIZE) / 1.6,
+            Math.max(this.iconDimension.height, MAP_ITEM_MINI_SIZE) / 1.6,
+            ability.colour,
+            true,
+            1,
+        )
         this.abilityToApply.startCountdown(2, 3, () => {
             this.onTargetConfirm && this.onTargetConfirm({ mechHash: this.mechHash })
             this.unApplyAbility()
