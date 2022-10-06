@@ -2,7 +2,7 @@ import { Box, Button, ButtonGroup, Pagination, Stack, Typography } from "@mui/ma
 import { ReactNode, useCallback, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgTarget } from "../../../../assets"
-import { useGame } from "../../../../containers"
+import { BattleState, useGame } from "../../../../containers"
 import { useAuth } from "../../../../containers/auth"
 import { useTheme } from "../../../../containers/theme"
 import { usePagination } from "../../../../hooks"
@@ -15,18 +15,18 @@ import { PlayerAbilityCard } from "./PlayerAbilityCard"
 
 export const PlayerAbilities = () => {
     const { userID } = useAuth()
-    const { bribeStage, isBattleStarted, isAIDrivenMatch } = useGame()
+    const { battleState, isAIDrivenMatch } = useGame()
 
-    if (!bribeStage || !userID) return null
+    if (battleState !== BattleState.BattlingState || !userID) return null
 
     return (
         <Box sx={{ position: "relative" }}>
             <SectionCollapsible label="OWNED ABILITIES" tooltip="Launch your own abilities." initialExpanded={true} localStoragePrefix="playerAbility">
-                <Box sx={{ pointerEvents: isBattleStarted ? "all" : "none" }}>
+                <Box sx={{ pointerEvents: battleState === BattleState.BattlingState ? "all" : "none" }}>
                     <PlayerAbilitiesInner />
                 </Box>
 
-                {(isAIDrivenMatch || !isBattleStarted) && (
+                {(isAIDrivenMatch || battleState !== BattleState.BattlingState) && (
                     <Box sx={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "#000000AA" }} />
                 )}
             </SectionCollapsible>

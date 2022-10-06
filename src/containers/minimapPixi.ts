@@ -5,10 +5,10 @@ import { createContainer } from "unstated-next"
 import { deepEqual } from "../helpers"
 import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { Dimension, GameAbility, GAME_CLIENT_TILE_SIZE, LocationSelectType, Map, PlayerAbility, Position, Vector2i } from "../types"
+import { Dimension, GAME_CLIENT_TILE_SIZE, GameAbility, LocationSelectType, Map, PlayerAbility, Position, Vector2i } from "../types"
 import { useArena } from "./arena"
 import { useAuth } from "./auth"
-import { useGame } from "./game"
+import { BattleState, useGame } from "./game"
 import { useGlobalNotifications } from "./globalNotifications"
 import { RecordType, useHotkey } from "./hotkeys"
 
@@ -46,7 +46,7 @@ interface PixiMainItems {
 }
 
 export const MiniMapPixiContainer = createContainer(() => {
-    const { map, isBattleStarted } = useGame()
+    const { map, battleState } = useGame()
     const { factionID } = useAuth()
     const { currentArenaID } = useArena()
     const { addToHotkeyRecord } = useHotkey()
@@ -63,7 +63,7 @@ export const MiniMapPixiContainer = createContainer(() => {
     // ************************************
     const [pixiMainItems, setPixiMainItems] = useState<PixiMainItems>()
     const mapMousePosition = useRef<Position>()
-    // Cache map related values into ref so it can be used within subscription callbacks
+    // Cache map related values into ref, so it can be used within subscription callbacks
     const mapRef = useRef<Map>()
     const mapScalingRef = useRef<Vector2i>({ x: 0, y: 0 }) // Map co-ordinate from server * mapScaling.x = position in viewport
     const gridSizeRef = useRef<Dimension>({ width: 50, height: 50 })
@@ -179,11 +179,11 @@ export const MiniMapPixiContainer = createContainer(() => {
 
     // When battle ends, cancel abilities etc.
     useEffect(() => {
-        if (!isBattleStarted) {
+        if (battleState != BattleState.BattlingState) {
             useWinner.current(undefined)
             usePlayerAbility.current(undefined)
         }
-    }, [isBattleStarted])
+    }, [battleState])
 
     const onTargetConfirm = useCallback(
         ({ startCoord, endCoord, mechHash }: { startCoord?: Position; endCoord?: Position; mechHash?: string }) => {
@@ -201,7 +201,7 @@ export const MiniMapPixiContainer = createContainer(() => {
             let hubKey = GameServerKeys.PlayerAbilityUse
 
             try {
-                // If its a winner (battle ability)
+                // If it's a winner (battle ability)
                 if (winner.current?.game_ability) {
                     if (!startCoord) {
                         throw new Error("Missing map target location.")
@@ -221,7 +221,7 @@ export const MiniMapPixiContainer = createContainer(() => {
                     hubKey = GameServerKeys.SubmitAbilityLocationSelect
                     useWinner.current(undefined)
                 } else if (playerAbility.current) {
-                    // Else if its a player ability
+                    // Else if it's a player ability
                     switch (playerAbility.current.ability.location_select_type) {
                         case LocationSelectType.LineSelect:
                             if (!startCoord || !endCoord) {
@@ -267,7 +267,7 @@ export const MiniMapPixiContainer = createContainer(() => {
                             break
                     }
 
-                    // If it's mech move command, dont reset so player can keep moving the mech
+                    // If it's mech move command, don't reset so player can keep moving the mech
                     if (playerAbility.current?.ability.location_select_type !== LocationSelectType.MechCommand) {
                         usePlayerAbility.current(undefined)
                     }

@@ -1,7 +1,7 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import React, { useEffect, useMemo, useRef, useState } from "react"
 import { BattleBgWebP, SvgFullscreen, SvgGrid, SvgMinimize, SvgSwap } from "../../../assets"
-import { useDimension, useGame, useMiniMapPixi, useUI, WinnerStruct } from "../../../containers"
+import { BattleState, useDimension, useGame, useMiniMapPixi, useUI, WinnerStruct } from "../../../containers"
 import { useHotkey } from "../../../containers/hotkeys"
 import { useToggle } from "../../../hooks"
 import { fonts } from "../../../theme/theme"
@@ -17,7 +17,7 @@ const BOTTOM_PADDING = 11.5 // rems
 
 export const MiniMapNew = () => {
     const { smallDisplayRef, bigDisplayRef, isStreamBigDisplay } = useUI()
-    const { map, isBattleStarted } = useGame()
+    const { map, battleState } = useGame()
     const [isPoppedout, setIsPoppedout] = useState(false)
     const [ref, setRef] = useState<HTMLDivElement | null>(null)
 
@@ -39,7 +39,7 @@ export const MiniMapNew = () => {
     }, [ref, isStreamBigDisplay, isPoppedout, smallDisplayRef, bigDisplayRef])
 
     const content = useMemo(() => {
-        if (isBattleStarted && map) {
+        if (battleState === BattleState.BattlingState && map) {
             if (isPoppedout) {
                 return (
                     <WindowPortal title="Supremacy - Battle Arena" onClose={() => setIsPoppedout(false)} features={{ width: 600, height: 600 }}>
@@ -52,7 +52,7 @@ export const MiniMapNew = () => {
         }
 
         return <BattleNotStarted />
-    }, [isBattleStarted, isPoppedout, map])
+    }, [battleState, isPoppedout, map])
 
     return (
         <Box ref={setRef} sx={{ width: "100%", height: "100%" }}>

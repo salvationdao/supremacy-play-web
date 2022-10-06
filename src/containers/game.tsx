@@ -3,13 +3,15 @@ import { createContainer } from "unstated-next"
 import { useAuth, useSupremacy, useUI } from "."
 import { useGameServerCommandsUser, useGameServerSubscription } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { AbilityDetail, AIType, BattleEndDetail, BattleZoneStruct, BribeStage, Map, WarMachineState } from "../types"
+import { AbilityDetail, AIType, BattleEndDetail, BattleZoneStruct, Map, WarMachineState } from "../types"
 import { useArena } from "./arena"
 import { BattleLobby } from "../types/battle_queue"
 
-export interface BribeStageResponse {
-    phase: BribeStage
-    end_time: Date
+export enum BattleState {
+    EndState = 0,
+    SetupState = 1,
+    IntroState = 2,
+    BattlingState = 3,
 }
 
 export interface GameSettingsResponse {
@@ -37,15 +39,15 @@ export const GameContainer = createContainer(() => {
     const { toggleIsStreamBigDisplayMemorized, restoreIsStreamBigDisplayMemorized } = useUI()
 
     // States
+    const [battleState, setBattleState] = useState<BattleState>(BattleState.EndState)
     const [map, setMap] = useState<Map>()
     const [battleZone, setBattleZone] = useState<BattleZoneStruct>()
     const [abilityDetails, setAbilityDetails] = useState<AbilityDetail[]>([])
     const [isAIDrivenMatch, setIsAIDrivenMatch] = useState<boolean>(false)
-    const [bribeStage, setBribeStage] = useState<BribeStageResponse | undefined>()
     const [nextBattle, setNextBattle] = useState<BattleLobby | undefined>()
     const [battleEndDetail, setBattleEndDetail] = useState<BattleEndDetail>()
     const [forceDisplay100Percentage, setForceDisplay100Percentage] = useState<string>("")
-    const isBattleStarted = useMemo(() => !!(map && bribeStage && bribeStage.phase !== BribeStage.Hold), [bribeStage, map])
+    // const isBattleStarted = useMemo(() => !!(map && bribeStage && bribeStage.phase !== BribeStage.Hold), [bribeStage, map])
 
     // Mechs
     const [warMachines, setWarMachines] = useState<WarMachineState[] | undefined>([])
@@ -77,6 +79,16 @@ export const GameContainer = createContainer(() => {
         send(GameServerKeys.GameUserOnline, { arena_id: currentArenaID })
     }, [send, map, currentArenaID])
 
+    // Subscribe for pre battle screen
+    useGameServerSubscription<BattleState>(
+        {
+            URI: `/public/arena/${currentArenaID}/battle_state`,
+            key: GameServerKeys.BattleState,
+            ready: !!currentArenaID,
+        },
+        (payload) => setBattleState(payload),
+    )
+
     // Subscribe for game settings
     useGameServerSubscription<GameSettingsResponse | undefined>(
         {
@@ -104,7 +116,6 @@ export const GameContainer = createContainer(() => {
             ready: !!currentArenaID,
         },
         (payload) => {
-            console.log("upcoming_battle: ", payload)
             if (!payload || !payload.is_pre_battle) {
                 // set nil
                 setNextBattle(undefined)
@@ -141,34 +152,19 @@ export const GameContainer = createContainer(() => {
         },
     )
 
-    // Subscribe on current voting state
-    useGameServerSubscription<BribeStageResponse | undefined>(
-        {
-            URI: `/public/arena/${currentArenaID}/bribe_stage`,
-            key: GameServerKeys.SubBribeStageUpdated,
-            ready: !!currentArenaID,
-        },
-        (payload) => {
-            setBribeStage(payload)
-            // reset force display, if
-            if (payload?.phase === BribeStage.Cooldown || payload?.phase === BribeStage.Hold) setForceDisplay100Percentage("")
-        },
-    )
-
     // If battle ends, then we will focus on the stream for watch mech intro
     useEffect(() => {
-        if (!isBattleStarted) {
+        if (battleState != BattleState.BattlingState) {
             toggleIsStreamBigDisplayMemorized(true)
         } else {
             restoreIsStreamBigDisplayMemorized()
         }
-    }, [isBattleStarted, restoreIsStreamBigDisplayMemorized, toggleIsStreamBigDisplayMemorized])
+    }, [battleState, restoreIsStreamBigDisplayMemorized, toggleIsStreamBigDisplayMemorized])
 
     return {
+        battleState,
         map,
         setMap,
-        bribeStage,
-        isBattleStarted,
 
         // Abilities and map stuff
         battleZone,
