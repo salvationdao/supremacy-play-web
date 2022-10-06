@@ -148,13 +148,17 @@ export class PixiMapAbilitySingle {
             // Disabled the range radius
             this.imageIcon.showRangeRadius(undefined)
             const config = merge(explosionParticlesConfig, {
+                alpha: {
+                    start: 0.18,
+                    end: 0.08,
+                },
                 scale: {
                     start: 0.5,
                     end: 0.04,
                 },
                 lifetime: {
-                    min: 1.1,
-                    max: 2.1,
+                    min: 1.6,
+                    max: 2.6,
                 },
                 speed: {
                     start: 14,
@@ -166,7 +170,6 @@ export class PixiMapAbilitySingle {
             this.emitter?.destroy()
             this.emitter = new particles.Emitter(this.rootInner, CircleParticle, config)
             this.emitter.emit = true
-            this.root.alpha = 0.4
         }
 
         this.render()
