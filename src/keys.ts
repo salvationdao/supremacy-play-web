@@ -240,7 +240,8 @@ export enum GameServerKeys {
     GetReplayDetails = "GET:REPLAY:DETAILS",
 
     // Admins
-    ModGetUser = "MOD:GET:USER"
+    ModGetUser = "MOD:GET:USER",
+    ModBanUser = "MOD:BAN:USER"
 }
 
 export enum PassportServerKeys {

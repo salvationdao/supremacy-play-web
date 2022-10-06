@@ -1,6 +1,5 @@
 import BigNumber from "bignumber.js"
-import { MechBasic, MechDetails } from "./assets"
-import { SystemBanMessageData, TextMessageData } from "./chat"
+import { MechDetails } from "./assets"
 import { User } from "./user"
 
 export interface GetUserResp {
@@ -17,11 +16,13 @@ export interface AdminGetUserAsset {
 }
 
 export interface AdminPlayerBan {
+    id: string
     reason: string
     end_at: Date
     created_at: Date
     banned_by: User
     banned_at: Date
+    manually_unbanned: boolean
 }
 
 export interface AdminChatView {

@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { SvgBack } from "../../../assets"
 import { useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -16,6 +16,7 @@ import { BanHistoryPanel } from "./BanHistoryPanel"
 import { ChatHistory } from "./ChatHistory"
 import { RelatedAccounts } from "./RelatedAccounts"
 import { AdminUserAsset } from "./AdminUserAsset"
+import { AdminBanModal } from "./AdminBanModal"
 
 export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: (newQuery: { [p: string]: string | undefined }) => void }) => {
     const [userData, setUserData] = useState<GetUserResp>()
@@ -25,6 +26,7 @@ export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: 
     const [loadError, setLoadError] = useState<string>("")
     const { getFaction } = useSupremacy()
     const [faction, setFaction] = useState<Faction>(getFaction(user.faction_id))
+    const [banModalOpen, setBanModalOpen] = useState<boolean>(false)
 
     useEffect(() => {
         ;(async () => {
@@ -82,6 +84,8 @@ export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: 
             user={user}
             fetchPlayer={fetchPlayer}
             faction={faction}
+            setBanModalOpen={setBanModalOpen}
+            banModalOpen={banModalOpen}
         />
     )
 }
@@ -94,6 +98,8 @@ const PlayerProfileInner = ({
     user,
     fetchPlayer,
     faction,
+    setBanModalOpen,
+    banModalOpen,
 }: {
     userData: GetUserResp
     updateQuery: (newQuery: { [p: string]: string | undefined }) => void
@@ -102,6 +108,8 @@ const PlayerProfileInner = ({
     user: User
     fetchPlayer: (newGid: number) => void
     faction: Faction
+    setBanModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    banModalOpen: boolean
 }) => {
     const theme = useTheme()
 
@@ -180,7 +188,31 @@ const PlayerProfileInner = ({
 
                     <PlayerProfileCard faction={faction} title="Recent Ban History">
                         {userData.ban_history ? (
-                            <BanHistoryPanel faction={faction} playerBans={userData.ban_history} />
+                            <Box
+                                sx={{
+                                    flex: 1,
+                                    overflowY: "auto",
+                                    overflowX: "hidden",
+                                    direction: "ltr",
+                                    mr: ".4rem",
+                                    my: ".3rem",
+                                    "::-webkit-scrollbar": {
+                                        width: ".4rem",
+                                    },
+                                    "::-webkit-scrollbar-track": {
+                                        background: "#FFFFFF15",
+                                        borderRadius: 3,
+                                    },
+                                    "::-webkit-scrollbar-thumb": {
+                                        background: faction.primary_color,
+                                        borderRadius: 3,
+                                    },
+                                }}
+                            >
+                                <Box sx={{ height: 0 }}>
+                                    <BanHistoryPanel faction={faction} playerBans={userData.ban_history} />
+                                </Box>
+                            </Box>
                         ) : (
                             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                                 <Typography>No Recent Ban History</Typography>
@@ -210,7 +242,19 @@ const PlayerProfileInner = ({
                 )}
             </Stack>
         )
-    }, [isLoading, loadError, userData])
+    }, [
+        faction,
+        fetchPlayer,
+        isLoading,
+        loadError,
+        theme.factionTheme.primary,
+        user.role_type,
+        userData.ban_history,
+        userData.recent_chat_history,
+        userData.related_accounts,
+        userData.user,
+        userData.user_assets,
+    ])
 
     return (
         <Stack sx={{ position: "relative", height: "100%" }}>
@@ -261,6 +305,7 @@ const PlayerProfileInner = ({
                                 sx: { position: "relative" },
                             }}
                             sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
+                            onClick={() => setBanModalOpen(true)}
                         >
                             <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
                                 Ban Player
@@ -272,6 +317,17 @@ const PlayerProfileInner = ({
                 <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
                     <Stack sx={{ height: 0 }}> {content}</Stack>
                 </Stack>
+
+                {banModalOpen && (
+                    <AdminBanModal
+                        relatedAccounts={userData.related_accounts}
+                        user={userData.user}
+                        modalOpen={banModalOpen}
+                        setModalOpen={setBanModalOpen}
+                        faction={faction}
+                        fetchPlayer={fetchPlayer}
+                    />
+                )}
             </Stack>
         </Stack>
     )
