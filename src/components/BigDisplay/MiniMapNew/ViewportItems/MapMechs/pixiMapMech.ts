@@ -384,7 +384,7 @@ export class PixiMapMech {
                 color: { start: this.primaryColor, end: this.primaryColor },
                 alpha: {
                     start: 1,
-                    end: 0.6,
+                    end: 0.3,
                 },
                 scale: {
                     start: (0.3 * this.gridSizeRef.current.width) / 10,
@@ -406,9 +406,9 @@ export class PixiMapMech {
 
             // Fades in
             this.particlesContainer.alpha = 0
-            ease.add(this.particlesContainer, { alpha: 1 }, { duration: 500, ease: "linear", removeExisting: true })
+            ease.add(this.particlesContainer, { alpha: 1 }, { duration: 200, ease: "linear", removeExisting: true })
         } else {
-            ease.add(this.particlesContainer, { alpha: 0 }, { duration: 500, ease: "linear", removeExisting: true })
+            ease.add(this.particlesContainer, { alpha: 0 }, { duration: 200, ease: "linear", removeExisting: true })
             setTimeout(() => {
                 this.emitter?.destroy()
             }, 1000)
