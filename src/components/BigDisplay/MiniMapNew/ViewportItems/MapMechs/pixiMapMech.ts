@@ -386,10 +386,10 @@ export class PixiMapMech {
                 color: { start: this.primaryColor, end: this.primaryColor },
                 alpha: {
                     start: 1,
-                    end: 0.3,
+                    end: 1,
                 },
                 scale: {
-                    start: (0.3 * this.gridSizeRef.current.width) / 10,
+                    start: (0.2 * this.gridSizeRef.current.width) / 10,
                     end: (0.1 * this.gridSizeRef.current.width) / 10,
                 },
                 speed: {
