@@ -1,4 +1,4 @@
-import { Box, Checkbox, FormControlLabel, InputAdornment, Modal, Stack, TextField, Typography } from "@mui/material"
+import { Box, Checkbox, Collapse, FormControlLabel, InputAdornment, Modal, Stack, TextField, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { SvgMail } from "../../assets"
 import { useAuth, useGlobalNotifications } from "../../containers"
@@ -65,7 +65,7 @@ export const MarketingPopup = () => {
                             padding: "2rem",
                         }}
                     >
-                        <Typography variant="body1" mb="1rem">
+                        <Typography variant="body1">
                             Please check the box below if you would like to receive updates, special offers and newsletters from Supremacy. All promotional
                             content will be sent to your registered email on XSYN.
                         </Typography>
@@ -76,23 +76,6 @@ export const MarketingPopup = () => {
                             }}
                         >
                             <Stack>
-                                {!userFromPassport?.email && (
-                                    <TextField
-                                        variant="outlined"
-                                        placeholder="Your email"
-                                        InputProps={{
-                                            startAdornment: (
-                                                <InputAdornment position="start">
-                                                    <SvgMail fill={colors.yellow} size="2.4rem" />
-                                                </InputAdornment>
-                                            ),
-                                        }}
-                                        type="email"
-                                        value={newEmail || ""}
-                                        onChange={(e) => setNewEmail(e.target.value)}
-                                        required
-                                    />
-                                )}
                                 <FormControlLabel
                                     control={
                                         <Checkbox
@@ -112,6 +95,28 @@ export const MarketingPopup = () => {
                                     }
                                     label="Subscribe to Supremacy news and updates"
                                 />
+                                <Collapse in={!userFromPassport?.email && acceptMarketing} unmountOnExit>
+                                    <TextField
+                                        variant="outlined"
+                                        placeholder="Your email"
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <SvgMail fill={colors.yellow} size="2.4rem" />
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                        sx={{
+                                            mb: "1rem",
+                                        }}
+                                        type="email"
+                                        value={newEmail || ""}
+                                        onChange={(e) => setNewEmail(e.target.value)}
+                                        disabled={isLoading}
+                                        required
+                                        fullWidth
+                                    />
+                                </Collapse>
                                 <FancyButton
                                     clipThingsProps={{
                                         clipSize: "9px",
