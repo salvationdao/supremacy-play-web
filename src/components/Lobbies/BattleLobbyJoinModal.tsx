@@ -10,13 +10,12 @@ import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } fr
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
 import { LobbyMech } from "../../types"
-import { BattleLobby } from "../../types/battle_queue"
+import { BattleLobby, PlayerQueueStatus } from "../../types/battle_queue"
 import { SortTypeLabel } from "../../types/marketplace"
 import { ConfirmModal } from "../Common/ConfirmModal"
 import { TotalAndPageSizeOptions } from "../Common/TotalAndPageSizeOptions"
-import { QueueDetails } from "../LeftDrawer/QuickDeploy/QueueDetails"
-import { PlayerQueueStatus } from "../LeftDrawer/QuickDeploy/QuickDeploy"
-import { QuickDeployItem } from "../LeftDrawer/QuickDeploy/QuickDeployItem"
+import { QueueDetails } from "./BattleLobbyMech/QueueDetails"
+import { BattleLobbyMechQueueCard } from "./BattleLobbyMech/BattleLobbyMechQueueCard"
 import { SearchBattle } from "../Replays/BattlesReplays/SearchBattle"
 
 const sortOptions = [
@@ -194,7 +193,7 @@ export const BattleLobbyJoinModal = ({ battleLobby, onJoin, onClose }: BattleLob
                                 {list.map((mech) => {
                                     return (
                                         <div key={`mech-id-${mech.id}`} style={{ marginBottom: "1.3rem", cursor: "pointer" }}>
-                                            <QuickDeployItem
+                                            <BattleLobbyMechQueueCard
                                                 key={mech.id}
                                                 isSelected={selectedMechIDs.includes(mech.id)}
                                                 toggleIsSelected={() => {

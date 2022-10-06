@@ -11,9 +11,9 @@ import { useGameServerSubscriptionSecuredUser } from "../../../../hooks/useGameS
 import { GameServerKeys } from "../../../../keys"
 import { getRarityDeets } from "../../../../helpers"
 import FlipMove from "react-flip-move"
-import { QuickDeployItem } from "../../../LeftDrawer/QuickDeploy/QuickDeployItem"
-import { PlayerQueueStatus } from "../../../LeftDrawer/QuickDeploy/QuickDeploy"
+import { BattleLobbyMechQueueCard } from "../../BattleLobbyMech/BattleLobbyMechQueueCard"
 import { EmptyWarMachinesPNG } from "../../../../assets"
+import { PlayerQueueStatus } from "../../../../types/battle_queue"
 
 const sortOptions = [
     { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
@@ -147,7 +147,7 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs }: MechSelectorPr
                                 {list.map((mech) => {
                                     return (
                                         <div key={`mech-id-${mech.id}`} style={{ marginBottom: "1.3rem", cursor: "pointer" }}>
-                                            <QuickDeployItem
+                                            <BattleLobbyMechQueueCard
                                                 key={mech.id}
                                                 isSelected={selectedMechs.some((sm) => sm.id === mech.id)}
                                                 mech={mech}

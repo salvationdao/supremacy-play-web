@@ -56,17 +56,6 @@ export interface BattleLobbySupporter {
     custom_avatar_id?: string
 }
 
-export interface BattleBounty {
-    id: string
-    battle_lobby_id: string
-    targeted_mech_id: string
-    amount: string // sups
-    offered_by_id: string
-    is_closed: boolean
-
-    offered_by_player: User
-}
-
 export interface MechWeaponSlot {
     mech_id: string
     weapon_id: string
@@ -93,4 +82,9 @@ export interface Weapon {
     weapon_type: string
     is_melee: boolean
     is_arced: boolean
+}
+
+export interface PlayerQueueStatus {
+    total_queued: number
+    queue_limit: number
 }

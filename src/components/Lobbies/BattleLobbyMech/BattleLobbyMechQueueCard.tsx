@@ -1,13 +1,12 @@
-// new quick deploy item
-import { Faction, LobbyMech, MechBasicWithQueueStatus } from "../../../types"
+import { Faction, LobbyMech } from "../../../types"
 import React, { useCallback, useMemo } from "react"
 import { getRarityDeets } from "../../../helpers"
 import { Box, Stack, Typography } from "@mui/material"
 import { MechThumbnail } from "../../Hangar/WarMachinesHangar/Common/MechThumbnail"
-import { fonts, theme } from "../../../theme/theme"
+import { fonts } from "../../../theme/theme"
 import { MechName } from "../../Hangar/WarMachinesHangar/WarMachineDetails/MechName"
 import { MechRepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
-import { QuickDeployMechStatus } from "./QuickDeployMechStatus"
+import { MechQueueStatus } from "../MechQueueStatus"
 import { useSupremacy } from "../../../containers"
 import { scaleUpKeyframes } from "../../../theme/keyframes"
 import { SvgWeapons } from "../../../assets"
@@ -26,7 +25,7 @@ const propsAreMechEqual = (prevProps: QuickDeployItemProps, nextProps: QuickDepl
     return prevProps.isSelected === nextProps.isSelected && prevProps.mech === nextProps.mech
 }
 
-export const QuickDeployItem = React.memo(function QuickDeployItem({ isSelected, toggleIsSelected, mech }: QuickDeployItemProps) {
+export const BattleLobbyMechQueueCard = React.memo(function QuickDeployItem({ isSelected, toggleIsSelected, mech }: QuickDeployItemProps) {
     const { factionTheme } = useTheme()
     const { getFaction } = useSupremacy()
     const rarityDeets = useMemo(() => getRarityDeets(mech.tier || ""), [mech])
@@ -71,7 +70,7 @@ export const QuickDeployItem = React.memo(function QuickDeployItem({ isSelected,
                             <MechName allowEdit mech={mech} />
                         </Box>
 
-                        <QuickDeployMechStatus mech={mech} />
+                        <MechQueueStatus mech={mech} />
                     </Stack>
 
                     <Typography
