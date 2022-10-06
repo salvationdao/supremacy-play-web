@@ -74,12 +74,12 @@ export class PixiImageIcon {
         this.root.destroy()
     }
 
-    startCountdown(secondsLeft: number, countdownSpeed = 1, onExpired?: () => void) {
+    startCountdown(secondsLeft: number, countdownSpeed = 1, onExpired?: undefined | (() => void), showCountdownLabel = true) {
         if (secondsLeft < 0) return
 
         let start: number | undefined
         let isDone = false
-        this.countdownLabel.visible = true
+        this.countdownLabel.visible = showCountdownLabel
 
         const step = (timestamp: DOMHighResTimeStamp) => {
             if (start === undefined) {
