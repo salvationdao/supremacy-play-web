@@ -41,6 +41,7 @@ export interface AuthState {
     setPassportPopup: Dispatch<React.SetStateAction<Window | null>>
     userHasFeature: (featureName: FeatureName) => boolean
     user: User
+    userFromPassport?: UserFromPassport
     userID: string
     factionID: string
     setUser: Dispatch<React.SetStateAction<User>>
@@ -258,6 +259,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 setPassportPopup,
                 userHasFeature,
                 user,
+                userFromPassport,
                 userID,
                 factionID,
                 setUser,
