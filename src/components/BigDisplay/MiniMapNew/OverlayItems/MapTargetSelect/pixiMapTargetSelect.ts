@@ -65,6 +65,7 @@ export class PixiMapTargetSelect {
         endTime: Date | undefined,
         onExpired: () => void | undefined,
         onCancel: (() => void) | undefined,
+        mapItemMinSize: React.MutableRefObject<number>,
     ) {
         this.viewport = viewport
         this.ability = ability
@@ -123,14 +124,32 @@ export class PixiMapTargetSelect {
         }
 
         // Mouse icon
-        this.mouseIcon = new PixiImageIcon(ability.image_url, gridSizeRef.current.width / 1.6, gridSizeRef.current.height / 1.6, ability.colour, true)
+        this.mouseIcon = new PixiImageIcon(
+            ability.image_url,
+            Math.max(gridSizeRef.current.width, mapItemMinSize.current) / 1.6,
+            Math.max(gridSizeRef.current.height, mapItemMinSize.current) / 1.6,
+            ability.colour,
+            true,
+        )
         if (secondsLeft) {
             this.mouseIcon.startCountdown(secondsLeft, 1, onExpired)
         }
 
         // Start and end coord icons, made invisible
-        this.startCoord = new PixiImageIcon(ability.image_url, gridSizeRef.current.width, gridSizeRef.current.height, ability.colour, true)
-        this.endCoord = new PixiImageIcon(ability.image_url, gridSizeRef.current.width, gridSizeRef.current.height, ability.colour, true)
+        this.startCoord = new PixiImageIcon(
+            ability.image_url,
+            Math.max(gridSizeRef.current.width, mapItemMinSize.current),
+            Math.max(gridSizeRef.current.height, mapItemMinSize.current),
+            ability.colour,
+            true,
+        )
+        this.endCoord = new PixiImageIcon(
+            ability.image_url,
+            Math.max(gridSizeRef.current.width, mapItemMinSize.current),
+            Math.max(gridSizeRef.current.height, mapItemMinSize.current),
+            ability.colour,
+            true,
+        )
         this.startEndLine = new PIXI.Graphics()
         this.startCoord.showIcon(false)
         this.endCoord.showIcon(false)
@@ -220,14 +239,19 @@ export class PixiMapTargetSelect {
         }
     }
 
-    startCountdown(timeLeft = 2, speed = 3, destroyOnConfirm = true) {
+    startCountdown(timeLeft = 2, speed = 3, destroyOnConfirm = true, showCountdownLabel = true) {
         this.resetCountdown()
-        this.endCoord.startCountdown(timeLeft, speed)
-        this.startCoord.startCountdown(timeLeft, speed, () => {
-            this.onTargetConfirm && this.onTargetConfirm({ startCoord: this.startCoord.root.position, endCoord: this.endCoord.root.position })
-            this.startCoord.showIcon(false)
-            if (destroyOnConfirm) this.destroy()
-        })
+        this.endCoord.startCountdown(timeLeft, speed, undefined, showCountdownLabel)
+        this.startCoord.startCountdown(
+            timeLeft,
+            speed,
+            () => {
+                this.onTargetConfirm && this.onTargetConfirm({ startCoord: this.startCoord.root.position, endCoord: this.endCoord.root.position })
+                this.startCoord.showIcon(false)
+                if (destroyOnConfirm) this.destroy()
+            },
+            showCountdownLabel,
+        )
     }
 
     resetCountdown() {

@@ -38,6 +38,7 @@ export class PixiMapAbilitySingle {
                 y: number
             }
         >,
+        mapItemMinSize: React.MutableRefObject<number>,
     ) {
         this.ability = ability
         this.gridSizeRef = gridSizeRef
@@ -49,11 +50,11 @@ export class PixiMapAbilitySingle {
         this.rootInner.sortableChildren = true
 
         // Create image icon
-        const sizeMultiplier = ability.grid_size_multiplier || 0.7
+        const sizeMultiplier = ability.grid_size_multiplier || 0.4
         this.imageIcon = new PixiImageIcon(
             ability.image_url,
-            gridSizeRef.current.width * sizeMultiplier,
-            gridSizeRef.current.height * sizeMultiplier,
+            Math.max(gridSizeRef.current.width, mapItemMinSize.current) * sizeMultiplier,
+            Math.max(gridSizeRef.current.height, mapItemMinSize.current) * sizeMultiplier,
             ability.colour,
             true,
         )
@@ -165,6 +166,7 @@ export class PixiMapAbilitySingle {
             this.emitter?.destroy()
             this.emitter = new particles.Emitter(this.rootInner, CircleParticle, config)
             this.emitter.emit = true
+            this.root.alpha = 0.4
         }
 
         this.render()
