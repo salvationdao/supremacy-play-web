@@ -21,6 +21,7 @@ export enum GameServerKeys {
     SubBattleArenaList = "BATTLE:ARENA:LIST",
     SubBattleArenaClosed = "BATTLE:ARENA:CLOSED",
     SubMiniMapAbilityDisplayList = "MINI:MAP:ABILITY:DISPLAY:LIST",
+    NextBattleDetails = "NEXT:BATTLE:DETAILS",
 
     // Voting abilities
     SubBribeStageUpdated = "BRIBE:STAGE:UPDATED:SUBSCRIBE",
@@ -56,6 +57,8 @@ export enum GameServerKeys {
     CreateBattleLobby = "BATTLE:LOBBY:CREATE",
     JoinBattleLobby = "BATTLE:LOBBY:JOIN",
     LeaveBattleLobby = "BATTLE:LOBBY:LEAVE",
+    JoinBattleLobbySupporter = "BATTLE:LOBBY:SUPPORTER:JOIN",
+
     GetMechs = "PLAYER:ASSET:MECH:LIST",
     PlayerQueueStatus = "PLAYER:QUEUE:STATUS",
     EquipMech = "PLAYER:ASSET:MECH:EQUIP",

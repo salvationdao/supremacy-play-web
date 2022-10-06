@@ -1,18 +1,14 @@
-import { Box, Stack, Typography } from "@mui/material"
-import React, { useMemo, useState } from "react"
+import { Box, Typography } from "@mui/material"
+import React, { useMemo } from "react"
 import { BCBorder, BCDeploy, BCWaiting, RMBorder, RMDeploy, RMWaiting, ZHIBorder, ZHIDeploy, ZHIWaiting } from "../../assets"
 import { FactionIDs } from "../../constants"
-import { useAuth, useUI } from "../../containers"
-import { useGameServerSubscription } from "../../hooks/useGameServer"
-import { GameServerKeys } from "../../keys"
-import { LEFT_DRAWER_MAP } from "../../routes"
+import { useAuth } from "../../containers"
 import { zoomEffect } from "../../theme/keyframes"
-import { colors } from "../../theme/theme"
 import { Faction } from "../../types"
-import { MechDetails } from "../../types/assets"
 import { ClipThing } from "../Common/ClipThing"
+import { BattleLobbiesMech } from "../../types/battle_queue"
 
-const getCardStyles = (factionID: string) => {
+export const getCardStyles = (factionID: string) => {
     if (factionID === FactionIDs.BC) {
         return {
             border: BCBorder,
@@ -45,100 +41,87 @@ const getCardStyles = (factionID: string) => {
 }
 
 interface MechCardProps {
-    mechID: string
+    mech?: BattleLobbiesMech
     faction: Faction
-
-    mechName?: string
-    avatarURL?: string
 }
 
-const propsAreEqual = (prevProps: MechCardProps, nextProps: MechCardProps) => {
-    return prevProps.mechID === nextProps.mechID && prevProps.faction.id === nextProps.faction.id
-}
-
-export const MechCard = React.memo(function MechCard({ mechID, faction, mechName, avatarURL }: MechCardProps) {
+export const MechCard = React.memo(function MechCard({ mech, faction }: MechCardProps) {
     const { factionID } = useAuth()
-    const { setLeftDrawerActiveTabID } = useUI()
-    const [mechDetails, setMechDetails] = useState<MechDetails>()
     const { border, waiting, deploy } = getCardStyles(faction.id)
 
-    useGameServerSubscription<MechDetails>(
-        {
-            URI: `/public/mech/${mechID}/details`,
-            key: GameServerKeys.PlayerAssetMechDetailPublic,
-            ready: !!mechID && (!mechName || !avatarURL), // don't subscribe, if data is already provided
-        },
-        (payload) => {
-            if (!payload) return
-            setMechDetails(payload)
-        },
-    )
+    const clickToDeploy = faction.id === factionID && !mech
+    const avatarUrl = mech?.avatar_url
 
-    const clickToDeploy = faction.id === factionID && !mechID
-    const avatarUrl = avatarURL || mechDetails?.chassis_skin?.avatar_url || mechDetails?.avatar_url
     const showMechLabel = useMemo((): string => {
-        if (mechName) return mechName
+        if (!mech) return "Waiting..."
 
-        if (!mechDetails) return "Waiting..."
+        if (mech.name) return mech.name
 
-        if (mechDetails.name) return mechDetails.name
-
-        if (mechDetails.label) return mechDetails.label
+        if (mech.label) return mech.label
 
         return "Unnamed"
-    }, [mechName, mechDetails])
+    }, [mech])
 
     return (
-        <Stack alignItems="center" sx={{ position: "relative", height: "100%", width: "100%", zIndex: 9, mt: "-2.8rem" }}>
-            {/* The fancy box border */}
-            <img
-                style={{ position: "absolute", top: "-.85rem", left: 0, width: "100%", height: "100%", zIndex: 4, pointerEvents: "none" }}
-                src={border}
-                alt=""
-            />
-
-            {/* Mech image */}
+        <Box
+            sx={{
+                display: "flex",
+                flexDirection: "column",
+                position: "relative",
+                flex: 1,
+                width: "100%",
+                height: "100%",
+                maxWidth: "150px",
+                maxHeight: "200px",
+                minHeight: "50px",
+                minWidth: "35px",
+                gap: "0.5rem",
+                zIndex: 9,
+                overflow: "hidden",
+                margin: "auto",
+            }}
+        >
             <Box
+                component={"img"}
+                src={border}
                 sx={{
                     position: "relative",
-                    width: "calc(100% - 2rem)",
-                    height: "calc(100% - 2rem)",
-                    backgroundColor: colors.darkNavy,
-                    clipPath: "polygon(10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%, 0% 10%)",
+                    height: "80%",
+                    width: "100%",
+                    maxHeight: "80%",
+                    maxWidth: "100%",
                     zIndex: 3,
                     overflow: "hidden",
+                    pointerEvents: "none",
                 }}
-            >
-                <Box
-                    onClick={clickToDeploy ? () => setLeftDrawerActiveTabID(LEFT_DRAWER_MAP["quick_deploy"]?.id) : undefined}
-                    sx={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        width: "100%",
-                        height: "100%",
-                        backgroundImage: `url(${avatarUrl || (clickToDeploy ? deploy : waiting)})`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "center",
-                        backgroundSize: "cover",
-                        opacity: clickToDeploy ? 0.8 : !mechID ? 0.3 : 1,
-                        cursor: clickToDeploy ? "pointer" : "unset",
-                        ...(clickToDeploy
-                            ? {
-                                  animation: `${zoomEffect(1.08)} 3s infinite`,
-                                  ":hover": {
-                                      opacity: 1,
-                                  },
-                                  ":active": {
-                                      opacity: 0.8,
-                                  },
-                              }
-                            : {}),
-                    }}
-                />
-            </Box>
-
-            {/* Mech name */}
+            />
+            <Box
+                sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: "80%",
+                    clipPath: "polygon(11% 4%, 90% 4%, 97% 11%, 97% 93%, 2% 93%, 2% 11%)",
+                    backgroundImage: `url(${avatarUrl || (clickToDeploy ? deploy : waiting)})`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    backgroundSize: "cover",
+                    opacity: clickToDeploy ? 0.8 : !mech ? 0.3 : 1,
+                    cursor: clickToDeploy ? "pointer" : "unset",
+                    ...(clickToDeploy
+                        ? {
+                              animation: `${zoomEffect(1.08)} 3s infinite`,
+                              ":hover": {
+                                  opacity: 1,
+                              },
+                              ":active": {
+                                  opacity: 0.8,
+                              },
+                          }
+                        : {}),
+                }}
+            />
             <ClipThing
                 clipSize="10px"
                 border={{
@@ -147,26 +130,29 @@ export const MechCard = React.memo(function MechCard({ mechID, faction, mechName
                 }}
                 corners={{ bottomLeft: true, bottomRight: true }}
                 backgroundColor={faction.background_color}
-                sx={{ position: "absolute", left: "1rem", right: "1rem", bottom: "-3.4rem", zIndex: -1 }}
+                sx={{
+                    display: "flex",
+                    margin: "auto",
+                    flex: 1,
+                    width: "100%",
+                }}
+                innerSx={{
+                    margin: "auto",
+                }}
             >
-                <Box sx={{ p: ".6rem", pt: "2.5rem" }}>
-                    <Typography
-                        variant="h6"
-                        sx={{
-                            textAlign: "center",
-                            opacity: !mechID ? 0.4 : 1,
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            overflowWrap: "anywhere",
-                            textOverflow: "ellipsis",
-                            WebkitLineClamp: 1, // change to max number of lines
-                            WebkitBoxOrient: "vertical",
-                        }}
-                    >
-                        {showMechLabel}
-                    </Typography>
-                </Box>
+                <Typography
+                    variant="h5"
+                    sx={{
+                        textAlign: "center",
+                        opacity: !mech ? 0.4 : 1,
+                        overflow: "hidden",
+                        overflowWrap: "anywhere",
+                        textOverflow: "ellipsis",
+                    }}
+                >
+                    {showMechLabel}
+                </Typography>
             </ClipThing>
-        </Stack>
+        </Box>
     )
-}, propsAreEqual)
+})
