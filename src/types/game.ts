@@ -164,6 +164,7 @@ export interface WarMachineLiveState {
     shield?: number
     energy?: number
     is_hidden: boolean
+    tick_order: number
 }
 
 export interface BattleEndDetail {

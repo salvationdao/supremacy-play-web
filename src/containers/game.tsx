@@ -5,6 +5,7 @@ import { useGameServerCommandsUser, useGameServerSubscription } from "../hooks/u
 import { GameServerKeys } from "../keys"
 import { AbilityDetail, AIType, BattleEndDetail, BattleZoneStruct, BribeStage, Map, WarMachineState } from "../types"
 import { useArena } from "./arena"
+import { BattleLobby } from "../types/battle_queue"
 
 export interface BribeStageResponse {
     phase: BribeStage
@@ -22,6 +23,11 @@ export interface GameSettingsResponse {
     is_ai_driven_match: boolean
 }
 
+export interface UpcomingBattleResponse {
+    is_pre_battle: boolean
+    upcoming_battle: BattleLobby | undefined
+}
+
 // Game data that needs to be shared between different components
 export const GameContainer = createContainer(() => {
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -36,9 +42,10 @@ export const GameContainer = createContainer(() => {
     const [abilityDetails, setAbilityDetails] = useState<AbilityDetail[]>([])
     const [isAIDrivenMatch, setIsAIDrivenMatch] = useState<boolean>(false)
     const [bribeStage, setBribeStage] = useState<BribeStageResponse | undefined>()
+    const [nextBattle, setNextBattle] = useState<BattleLobby | undefined>()
     const [battleEndDetail, setBattleEndDetail] = useState<BattleEndDetail>()
     const [forceDisplay100Percentage, setForceDisplay100Percentage] = useState<string>("")
-    const isBattleStarted = useMemo(() => (map && bribeStage && bribeStage.phase !== BribeStage.Hold ? true : false), [bribeStage, map])
+    const isBattleStarted = useMemo(() => !!(map && bribeStage && bribeStage.phase !== BribeStage.Hold), [bribeStage, map])
 
     // Mechs
     const [warMachines, setWarMachines] = useState<WarMachineState[] | undefined>([])
@@ -122,6 +129,25 @@ export const GameContainer = createContainer(() => {
         },
     )
 
+    // Subscribe for pre battle screen
+    useGameServerSubscription<UpcomingBattleResponse>(
+        {
+            URI: `/public/arena/${currentArenaID}/upcoming_battle`,
+            key: GameServerKeys.NextBattleDetails,
+            ready: !!currentArenaID,
+        },
+        (payload) => {
+            console.log("upcoming_battle: ", payload)
+            if (!payload || !payload.is_pre_battle) {
+                // set nil
+                setNextBattle(undefined)
+                return
+            }
+            // set upcoming details
+            setNextBattle(payload.upcoming_battle)
+        },
+    )
+
     // Subscribe for spawned AI
     useGameServerSubscription<WarMachineState[] | undefined>(
         {
@@ -193,9 +219,9 @@ export const GameContainer = createContainer(() => {
         // Others
         isAIDrivenMatch,
         battleEndDetail,
-        setBattleEndDetail,
         forceDisplay100Percentage,
         setForceDisplay100Percentage,
+        nextBattle,
     }
 })
 

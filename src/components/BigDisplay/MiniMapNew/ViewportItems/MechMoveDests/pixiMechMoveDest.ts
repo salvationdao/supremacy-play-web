@@ -20,6 +20,7 @@ export class PixiMechMoveDest {
                 y: number
             }
         >,
+        mapItemMinSize: React.MutableRefObject<number>,
     ) {
         // Create container for everything
         this.root = new PIXI.Container()
@@ -27,7 +28,13 @@ export class PixiMechMoveDest {
         this.root.sortableChildren = true
 
         const moveAbility = MechMoveCommandAbility.ability
-        this.icon = new PixiImageIcon(moveAbility.image_url, gridSizeRef.current.width / 2, gridSizeRef.current.height / 2, moveAbility.colour, true)
+        this.icon = new PixiImageIcon(
+            moveAbility.image_url,
+            Math.max(gridSizeRef.current.width, mapItemMinSize.current) / 2,
+            Math.max(gridSizeRef.current.height, mapItemMinSize.current) / 2,
+            moveAbility.colour,
+            true,
+        )
 
         const pos = gridCellToViewportPosition.current(moveCommand.cell_x, moveCommand.cell_y)
         this.root.position.set(pos.x, pos.y)

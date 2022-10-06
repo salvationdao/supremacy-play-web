@@ -12,7 +12,7 @@ import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { Weapon, WeaponType } from "../../../types"
+import { PlayerAsset, WeaponType } from "../../../types"
 import { SortDir, SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
@@ -61,7 +61,7 @@ interface GetWeaponStatFilter {
 }
 
 export interface GetWeaponsResponse {
-    weapons: Weapon[]
+    weapons: PlayerAsset[]
     total: number
 }
 
@@ -74,7 +74,7 @@ export const WeaponsHangar = () => {
     // Items
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
-    const [weapons, setWeapons] = useState<Weapon[]>([])
+    const [weapons, setWeapons] = useState<PlayerAsset[]>([])
 
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),

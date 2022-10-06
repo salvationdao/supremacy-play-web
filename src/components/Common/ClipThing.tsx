@@ -151,7 +151,7 @@ export const ClipThing = React.forwardRef(function ClipThing(
                     }
                 />
             </Box>
-            <Box sx={{ height: "100%", ...innerClipStyles }}>{children}</Box>
+            <Box sx={{ height: "100%", ...innerClipStyles, ...innerSx }}>{children}</Box>
         </Box>
     )
 })

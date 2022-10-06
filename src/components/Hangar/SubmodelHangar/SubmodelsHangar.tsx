@@ -155,7 +155,7 @@ const SubmodelsHangarInner = () => {
                     sortBy = "rarity"
             }
 
-            const key = submodelType === SubmodelType.warMachine ? GameServerKeys.GetMechSubmodels : GameServerKeys.GetWeaponSubmodels
+            const key = submodelType === SubmodelType.warMachine ? GameServerKeys.GetMechSubmodelsDetailed : GameServerKeys.GetWeaponSubmodelsDetailed
             const resp = await send<GetSubmodelsResponse, GetSubmodelsRequest>(key, {
                 search: search,
                 sort_by: sortBy,
@@ -205,8 +205,8 @@ const SubmodelsHangarInner = () => {
                 setIsLoading(true)
                 const resp =
                     submodelType === SubmodelType.warMachine
-                        ? await send<BlueprintMech[]>(GameServerKeys.GetMechBlueprints)
-                        : await send<BlueprintWeapon[]>(GameServerKeys.GetWeaponBlueprints)
+                        ? await send<BlueprintMech[]>(GameServerKeys.GetMechBlueprintsDetailed)
+                        : await send<BlueprintWeapon[]>(GameServerKeys.GetWeaponBlueprintsDetailed)
 
                 if (!resp) return
 
