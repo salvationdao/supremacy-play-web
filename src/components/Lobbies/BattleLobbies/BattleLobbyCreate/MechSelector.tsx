@@ -132,7 +132,7 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs }: MechSelectorPr
                             direction: "ltr",
                             scrollbarWidth: "none",
                             "::-webkit-scrollbar": {
-                                width: "1rem",
+                                width: ".5rem",
                             },
                             "::-webkit-scrollbar-track": {
                                 background: "#FFFFFF15",
@@ -202,7 +202,7 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs }: MechSelectorPr
             <TotalAndPageSizeOptions
                 pageSize={pageSize}
                 changePageSize={changePageSize}
-                pageSizeOptions={[10, 20]}
+                pageSizeOptions={[]}
                 changePage={changePage}
                 sortOptions={sortOptions}
                 selectedSort={sort}

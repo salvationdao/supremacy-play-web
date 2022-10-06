@@ -4,7 +4,7 @@ import React, { useCallback, useMemo } from "react"
 import { getRarityDeets } from "../../../helpers"
 import { Box, Stack, Typography } from "@mui/material"
 import { MechThumbnail } from "../../Hangar/WarMachinesHangar/Common/MechThumbnail"
-import { fonts } from "../../../theme/theme"
+import { fonts, theme } from "../../../theme/theme"
 import { MechName } from "../../Hangar/WarMachinesHangar/WarMachineDetails/MechName"
 import { MechRepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
 import { QuickDeployMechStatus } from "./QuickDeployMechStatus"
@@ -13,6 +13,8 @@ import { scaleUpKeyframes } from "../../../theme/keyframes"
 import { SvgWeapons } from "../../../assets"
 import { TooltipHelper } from "../../Common/TooltipHelper"
 import { MechWeaponSlot } from "../../../types/battle_queue"
+import { MechBarStats } from "../../Hangar/WarMachinesHangar/Common/MechBarStats"
+import { useTheme } from "../../../containers/theme"
 
 interface QuickDeployItemProps {
     mech: LobbyMech
@@ -25,6 +27,7 @@ const propsAreMechEqual = (prevProps: QuickDeployItemProps, nextProps: QuickDepl
 }
 
 export const QuickDeployItem = React.memo(function QuickDeployItem({ isSelected, toggleIsSelected, mech }: QuickDeployItemProps) {
+    const { factionTheme } = useTheme()
     const { getFaction } = useSupremacy()
     const rarityDeets = useMemo(() => getRarityDeets(mech.tier || ""), [mech])
 
@@ -33,7 +36,6 @@ export const QuickDeployItem = React.memo(function QuickDeployItem({ isSelected,
         <Stack
             direction="row"
             spacing="1.2rem"
-            alignItems="center"
             onClick={() => toggleIsSelected && toggleIsSelected()}
             sx={{
                 position: "relative",
@@ -41,12 +43,13 @@ export const QuickDeployItem = React.memo(function QuickDeployItem({ isSelected,
                 pl: ".5rem",
                 pr: ".7rem",
                 backgroundColor: isSelected ? "#FFFFFF20" : "unset",
-                borderRadius: 0.8,
+                borderRadius: 0.6,
                 cursor: "pointer",
+                border: `${factionTheme.primary}45 2px solid`,
             }}
         >
             {/* Mech image and deploy button */}
-            <Stack sx={{ height: "8rem" }}>
+            <Stack sx={{ height: "8rem", mt: ".2rem", ml: ".5rem" }}>
                 <MechThumbnail mech={mech} smallSize />
             </Stack>
 
@@ -89,10 +92,20 @@ export const QuickDeployItem = React.memo(function QuickDeployItem({ isSelected,
 
                     <MechRepairBlocks mechID={mech.id} defaultBlocks={mech.repair_blocks} />
 
-                    <Stack direction="row" sx={{ pt: "1rem" }}>
+                    <Stack direction="row" spacing={1} sx={{ pt: "1rem", width: "100%" }}>
                         <Stack direction="column" spacing={1}>
                             {mech.weapon_slots && mech.weapon_slots.map((ws) => <WeaponSlot key={ws.slot_number} weaponSlot={ws} faction={faction} />)}
                         </Stack>
+                        <MechBarStats
+                            mech={mech}
+                            color={faction.primary_color}
+                            fontSize="1.3rem"
+                            width="100%"
+                            spacing=".75rem"
+                            barHeight="1.2rem"
+                            compact
+                            outerSx={{ flex: 1 }}
+                        />
                     </Stack>
                 </Stack>
             </Stack>
@@ -113,7 +126,7 @@ const WeaponSlot = ({ weaponSlot, faction }: WeaponSlotProps) => {
                 <Typography variant="body2" fontFamily={fonts.nostromoMedium}>
                     {label}:
                 </Typography>
-                <Typography variant="body2" fontFamily={fonts.nostromoLight}>
+                <Typography variant="body2" fontFamily={fonts.nostromoLight} sx={{ minWidth: "6rem" }}>
                     {value}
                 </Typography>
             </Stack>
@@ -126,8 +139,13 @@ const WeaponSlot = ({ weaponSlot, faction }: WeaponSlotProps) => {
         const weaponRarity = getRarityDeets(weapon?.tier || "")
         return (
             <TooltipHelper
+                tooltipSx={{
+                    maxWidth: "50rem",
+                }}
+                color={faction.background_color}
+                clipThingColor={faction.primary_color}
                 renderNode={
-                    <Stack direction="column">
+                    <Stack direction="column" sx={{ width: "30rem" }}>
                         <Stack direction="row" alignItems="center">
                             <Box
                                 key={weapon.avatar_url}
@@ -155,6 +173,12 @@ const WeaponSlot = ({ weaponSlot, faction }: WeaponSlotProps) => {
                             </Stack>
                         </Stack>
                         {weaponStat("DAMAGE", weapon.damage)}
+                        {weaponStat("DAMAGE FALLOFF", weapon.damage_falloff)}
+                        {weaponStat("RADIUS", weapon.radius)}
+                        {weaponStat("RADIAL DAMAGE FALLOFF", weapon.radius_damage_falloff)}
+                        {weaponStat("SPREAD", weapon.spread)}
+                        {weaponStat("RATE OF FIRE", weapon.rate_of_fire)}
+                        {weaponStat("ENERGY COST", weapon.power_cost)}
                     </Stack>
                 }
                 placement="left-start"
@@ -173,7 +197,7 @@ const WeaponSlot = ({ weaponSlot, faction }: WeaponSlotProps) => {
                 />
             </TooltipHelper>
         )
-    }, [weapon])
+    }, [weapon, weaponStat])
 
     return (
         <Box
@@ -181,8 +205,8 @@ const WeaponSlot = ({ weaponSlot, faction }: WeaponSlotProps) => {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                height: "3.5rem",
-                width: "3.5rem",
+                height: "4rem",
+                width: "4rem",
                 border: `${faction.primary_color}80 2px solid`,
                 borderRadius: 0.6,
                 backgroundColor: `${faction.background_color}`,

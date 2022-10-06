@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, Stack, SxProps, Typography } from "@mui/material"
 import React, { useMemo } from "react"
 import { TooltipHelper } from "../../.."
 import { SvgHealth, SvgPowerCoreCapacity, SvgPowerCoreRegen, SvgShield, SvgShieldRegen, SvgSpeed, SvgWrapperProps } from "../../../../assets"
@@ -15,6 +15,8 @@ export const MechBarStats = ({
     spacing,
     barHeight,
     iconVersion,
+    compact,
+    outerSx,
 }: {
     mech: MechBasic
     mechDetails?: MechDetails
@@ -24,6 +26,8 @@ export const MechBarStats = ({
     spacing?: string
     barHeight?: string
     iconVersion?: boolean
+    compact?: boolean
+    outerSx?: SxProps
 }) => {
     const theme = useTheme()
 
@@ -122,6 +126,7 @@ export const MechBarStats = ({
                 "::-webkit-scrollbar-thumb": {
                     background: primaryColor,
                 },
+                ...outerSx,
             }}
         >
             <Stack
@@ -141,6 +146,7 @@ export const MechBarStats = ({
                     boostedTo={boostedHealth}
                     total={15000}
                     Icon={SvgHealth}
+                    compact={compact}
                 />
                 <BarStat
                     primaryColor={primaryColor}
@@ -150,6 +156,7 @@ export const MechBarStats = ({
                     current={totalShield}
                     total={4000}
                     Icon={SvgShield}
+                    compact={compact}
                 />
                 <BarStat
                     primaryColor={primaryColor}
@@ -160,6 +167,7 @@ export const MechBarStats = ({
                     boostedTo={boostedTotalShieldRechargeRate}
                     total={500}
                     Icon={SvgShieldRegen}
+                    compact={compact}
                 />
                 <BarStat
                     primaryColor={primaryColor}
@@ -170,6 +178,7 @@ export const MechBarStats = ({
                     total={100}
                     unit="/S"
                     Icon={SvgPowerCoreRegen}
+                    compact={compact}
                 />
                 <BarStat
                     primaryColor={primaryColor}
@@ -181,6 +190,7 @@ export const MechBarStats = ({
                     total={5000}
                     unit="CM/S"
                     Icon={SvgSpeed}
+                    compact={compact}
                 />
                 <BarStat
                     primaryColor={primaryColor}
@@ -190,6 +200,7 @@ export const MechBarStats = ({
                     current={powerCoreCapacity}
                     total={3000}
                     Icon={SvgPowerCoreCapacity}
+                    compact={compact}
                 />
                 <BarStat
                     primaryColor={primaryColor}
@@ -200,6 +211,7 @@ export const MechBarStats = ({
                     total={500}
                     unit="/S"
                     Icon={SvgPowerCoreRegen}
+                    compact={compact}
                 />
             </Stack>
         </Box>
@@ -216,6 +228,7 @@ export const BarStat = ({
     unit,
     barHeight,
     Icon,
+    compact,
 }: {
     primaryColor: string
     fontSize: string
@@ -226,64 +239,39 @@ export const BarStat = ({
     unit?: string
     barHeight?: string
     Icon: React.VoidFunctionComponent<SvgWrapperProps>
+    compact?: boolean
 }) => {
-    return useMemo(() => {
-        const parsedCurrent = typeof current === "string" ? parseFloat(current) : current
-        const parsedBoosted = typeof boostedTo === "string" ? parseFloat(boostedTo) : boostedTo
-        if (!parsedCurrent && !parsedBoosted) return null
+    const parsedCurrent = useMemo(() => (typeof current === "string" ? parseFloat(current) : current), [])
+    const parsedBoosted = useMemo(() => (typeof boostedTo === "string" ? parseFloat(boostedTo) : boostedTo), [])
+    if (!parsedCurrent && !parsedBoosted) return null
 
+    if (compact)
         return (
-            <Box>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" spacing=".6rem">
                 <TooltipHelper
-                    placement="right"
-                    text={
-                        parsedBoosted && parsedBoosted != parsedCurrent
-                            ? `The attached submodel has boosted this stat from ${parsedCurrent} to ${parsedBoosted}`
-                            : ""
-                    }
-                >
-                    <Stack direction="row" alignItems="center" justifyContent="space-between" spacing=".6rem">
-                        <Stack spacing=".5rem" direction="row" alignItems="center">
-                            <Icon size={fontSize} sx={{ pb: "3px", height: "unset" }} />
-                            <Typography
-                                variant="caption"
-                                sx={{
-                                    fontSize,
-                                    fontFamily: fonts.nostromoBlack,
-                                    display: "-webkit-box",
-                                    overflow: "hidden",
-                                    overflowWrap: "anywhere",
-                                    textOverflow: "ellipsis",
-                                    WebkitLineClamp: 1,
-                                    WebkitBoxOrient: "vertical",
-                                }}
-                            >
-                                {label}
-                            </Typography>
-                        </Stack>
-
+                    placement="right-start"
+                    renderNode={
                         <Typography
                             variant="caption"
                             sx={{
                                 fontSize,
-                                textAlign: "end",
-                                fontFamily: fonts.nostromoBold,
+                                fontFamily: fonts.nostromoBlack,
                                 display: "-webkit-box",
                                 overflow: "hidden",
                                 overflowWrap: "anywhere",
                                 textOverflow: "ellipsis",
                                 WebkitLineClamp: 1,
                                 WebkitBoxOrient: "vertical",
-                                color: parsedBoosted && parsedBoosted != parsedCurrent ? colors.gold : "#FFFFFF",
                             }}
                         >
-                            {parsedBoosted || parsedCurrent}
-                            {unit}
+                            {label}
                         </Typography>
-                    </Stack>
+                    }
+                >
+                    <Icon size={fontSize} sx={{ pb: "3px", height: "unset" }} />
                 </TooltipHelper>
 
-                <Box sx={{ height: barHeight || ".7rem", backgroundColor: "#FFFFFF25", position: "relative" }}>
+                <Box flex={1} sx={{ height: barHeight || ".7rem", backgroundColor: "#FFFFFF25", position: "relative" }}>
                     <Box
                         sx={{
                             width: `${(100 * parsedCurrent) / total}%`,
@@ -307,9 +295,114 @@ export const BarStat = ({
                         />
                     )}
                 </Box>
-            </Box>
+                <TooltipHelper
+                    placement="right"
+                    text={
+                        parsedBoosted && parsedBoosted != parsedCurrent
+                            ? `The attached submodel has boosted this stat from ${parsedCurrent} to ${parsedBoosted}`
+                            : ""
+                    }
+                >
+                    <Typography
+                        variant="caption"
+                        sx={{
+                            fontSize,
+                            textAlign: "end",
+                            fontFamily: fonts.nostromoBold,
+                            display: "-webkit-box",
+                            overflow: "hidden",
+                            overflowWrap: "anywhere",
+                            textOverflow: "ellipsis",
+                            WebkitLineClamp: 1,
+                            WebkitBoxOrient: "vertical",
+                            color: parsedBoosted && parsedBoosted != parsedCurrent ? colors.gold : "#FFFFFF",
+                            width: "10rem",
+                        }}
+                    >
+                        {parsedBoosted || parsedCurrent}
+                        {unit}
+                    </Typography>
+                </TooltipHelper>
+            </Stack>
         )
-    }, [Icon, barHeight, current, fontSize, label, primaryColor, total, unit, boostedTo])
+
+    return (
+        <Box>
+            <TooltipHelper
+                placement="right"
+                text={
+                    parsedBoosted && parsedBoosted != parsedCurrent
+                        ? `The attached submodel has boosted this stat from ${parsedCurrent} to ${parsedBoosted}`
+                        : ""
+                }
+            >
+                <Stack direction="row" alignItems="center" justifyContent="space-between" spacing=".6rem">
+                    <Stack spacing=".5rem" direction="row" alignItems="center">
+                        <Icon size={fontSize} sx={{ pb: "3px", height: "unset" }} />
+                        <Typography
+                            variant="caption"
+                            sx={{
+                                fontSize,
+                                fontFamily: fonts.nostromoBlack,
+                                display: "-webkit-box",
+                                overflow: "hidden",
+                                overflowWrap: "anywhere",
+                                textOverflow: "ellipsis",
+                                WebkitLineClamp: 1,
+                                WebkitBoxOrient: "vertical",
+                            }}
+                        >
+                            {label}
+                        </Typography>
+                    </Stack>
+
+                    <Typography
+                        variant="caption"
+                        sx={{
+                            fontSize,
+                            textAlign: "end",
+                            fontFamily: fonts.nostromoBold,
+                            display: "-webkit-box",
+                            overflow: "hidden",
+                            overflowWrap: "anywhere",
+                            textOverflow: "ellipsis",
+                            WebkitLineClamp: 1,
+                            WebkitBoxOrient: "vertical",
+                            color: parsedBoosted && parsedBoosted != parsedCurrent ? colors.gold : "#FFFFFF",
+                        }}
+                    >
+                        {parsedBoosted || parsedCurrent}
+                        {unit}
+                    </Typography>
+                </Stack>
+            </TooltipHelper>
+
+            <Box sx={{ height: barHeight || ".7rem", backgroundColor: "#FFFFFF25", position: "relative" }}>
+                <Box
+                    sx={{
+                        width: `${(100 * parsedCurrent) / total}%`,
+                        height: "100%",
+                        backgroundColor: primaryColor,
+                        transition: "all .15s",
+                        zIndex: 10,
+                        position: "absolute",
+                    }}
+                />
+                {parsedBoosted && (
+                    <Box
+                        sx={{
+                            width: `${(100 * parsedBoosted) / total}%`,
+                            height: "100%",
+                            backgroundColor: colors.gold,
+                            transition: "all .15s",
+                            zIndex: 9,
+                            position: "absolute",
+                        }}
+                    />
+                )}
+            </Box>
+        </Box>
+    )
 }
 
 export const IconStat = ({
