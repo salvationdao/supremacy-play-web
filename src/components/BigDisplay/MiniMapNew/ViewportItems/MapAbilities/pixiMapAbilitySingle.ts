@@ -150,7 +150,7 @@ export class PixiMapAbilitySingle {
             const config = merge(explosionParticlesConfig, {
                 alpha: {
                     start: 0.16,
-                    end: 0.08,
+                    end: 0.05,
                 },
                 scale: {
                     start: 0.5,
