@@ -1,4 +1,4 @@
-import { RarityEnum } from "./assets"
+import { MechBasic, RarityEnum } from "./assets"
 import { GameMap } from "./game"
 import { User } from "./user"
 
@@ -35,7 +35,7 @@ export interface BattleLobby {
     selected_bc_supporters: BattleLobbySupporter[]
 }
 
-export interface BattleLobbiesMech {
+export interface BattleLobbiesMech extends MechBasic {
     mech_id: string
     battle_lobby_id: string
     name: string

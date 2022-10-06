@@ -1,5 +1,5 @@
 import { Box, Button, Stack, Typography } from "@mui/material"
-import { useCallback, useState } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 import { SvgCheckMark, SvgLogout, SvgPlus, SvgQuestionMark2, SvgWeapons } from "../../../assets"
 import { useAuth, useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -33,7 +33,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
 
     // Leaving lobby
     const { send } = useGameServerCommandsFaction("/faction_commander")
-    const [showConfirmModal, setShowConfirmModal] = useState(false)
+    const [leftMechID, setLeftMechID] = useState("")
     const [isLoading, setIsLoading] = useState(false)
 
     const leaveLobby = useCallback(
@@ -43,7 +43,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                 await send(GameServerKeys.LeaveBattleLobby, {
                     mech_ids: [mechID],
                 })
-                setShowConfirmModal(false)
+                setLeftMechID("")
                 newSnackbarMessage("Successfully removed mech from lobby.", "success")
             } catch (e) {
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to leave battle lobby.", "error")
@@ -68,6 +68,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                 display: "flex",
                                 flexDirection: "column",
                                 padding: "1rem",
+                                height: "26.5rem",
                                 borderRadius: 0,
                                 backgroundColor: `${colors.offWhite}20`,
                             }}
@@ -104,6 +105,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                             padding: "1rem",
                             alignItems: "start",
                             textAlign: "initial",
+                            height: "26.5rem",
                             borderRadius: 0,
                             backgroundColor: `${colors.offWhite}20`,
                         }}
@@ -189,6 +191,18 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                 )}
                             </Box>
                         </Stack>
+
+                        <MechBarStats
+                            mech={ms}
+                            color={theme.factionTheme.primary}
+                            fontSize="1.3rem"
+                            width="100%"
+                            spacing=".45rem"
+                            barHeight=".8rem"
+                            compact
+                            outerSx={{ flex: 1, width: "100%" }}
+                        />
+
                         <Stack direction="row" alignSelf="stretch" mt="auto" spacing=".5rem">
                             <FancyButton
                                 clipThingsProps={{
@@ -214,7 +228,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                             </FancyButton>
                             {ms.owner?.id === userID && (
                                 <FancyButton
-                                    onClick={() => setShowConfirmModal(true)}
+                                    onClick={() => setLeftMechID(ms?.mech_id || "")}
                                     disabled={isLocked || userID !== ms.owner?.id}
                                     loading={isLoading}
                                     clipThingsProps={{
@@ -228,9 +242,8 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                 </FancyButton>
                             )}
                         </Stack>
-
-                        {showConfirmModal && (
-                            <ConfirmModal title="Confirm Removal" onConfirm={() => leaveLobby(ms.mech_id)} onClose={() => setShowConfirmModal(false)}>
+                        {ms.owner?.id === userID && leftMechID === ms.mech_id && (
+                            <ConfirmModal title="Confirm Removal" onConfirm={() => leaveLobby(ms.mech_id)} onClose={() => setLeftMechID("")}>
                                 <Typography
                                     variant="h6"
                                     sx={{

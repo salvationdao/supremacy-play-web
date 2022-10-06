@@ -122,6 +122,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                 ...lobbyForm,
                 will_not_start_until: wontStartUntil,
                 game_map_id: lobbyForm.game_map_id !== "" ? lobbyForm.game_map_id : undefined,
+                mech_ids: selectedMechs.map((sm) => sm.id),
             })
 
             setOpen(false)
@@ -132,7 +133,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
         } finally {
             setIsLoading(false)
         }
-    }, [lobbyForm, send])
+    }, [lobbyForm, send, selectedMechs])
 
     return (
         <ConfirmModal
