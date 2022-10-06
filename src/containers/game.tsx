@@ -137,7 +137,6 @@ export const GameContainer = createContainer(() => {
             ready: !!currentArenaID,
         },
         (payload) => {
-            console.log("upcoming_battle: ", payload)
             if (!payload || !payload.is_pre_battle) {
                 // set nil
                 setNextBattle(undefined)
