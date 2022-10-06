@@ -29,8 +29,8 @@ export class PixiMapScale {
 
         // Co-ordinate text
         this.coordLabel = new PIXI.Text("", {
-            fontFamily: fonts.shareTech,
-            fontSize: 12,
+            fontFamily: fonts.nostromoBold,
+            fontSize: 10,
             fill: "#FFFFFF",
             lineHeight: 1,
         })
@@ -42,8 +42,8 @@ export class PixiMapScale {
 
         // Label
         this.label = new PIXI.Text(`${Math.round(GAME_CLIENT_TILE_SIZE / 100)}m`, {
-            fontFamily: fonts.shareTech,
-            fontSize: 12,
+            fontFamily: fonts.nostromoBold,
+            fontSize: 10,
             fill: "#FFFFFF",
             lineHeight: 1,
         })
@@ -77,7 +77,7 @@ export class PixiMapScale {
                 const cellHeight = this.viewport.worldHeight / rowCount
                 highlightColIndex = Math.floor(mousePos.x / cellWidth)
                 highlightRowIndex = Math.floor(mousePos.y / cellHeight)
-                this.coordLabel.text = `[${intToLetter(highlightColIndex + 1)}${highlightRowIndex}]`
+                this.coordLabel.text = `[${intToLetter(highlightColIndex + 1)}${highlightRowIndex + 1}]`
             }
 
             // Rect
