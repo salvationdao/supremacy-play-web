@@ -6,6 +6,7 @@ export class PixiMapAbilities {
     private viewport: Viewport
     private pixiAbilities: { [id: string]: PixiMapAbilitySingle } = {}
     private gridSizeRef: React.MutableRefObject<Dimension>
+    private mapItemMinSize: React.MutableRefObject<number>
     private clientPositionToViewportPosition: React.MutableRefObject<
         (
             x: number,
@@ -51,6 +52,7 @@ export class PixiMapAbilities {
         >,
         basicAbilities: React.MutableRefObject<DisplayedAbility[]>,
         complexAbilities: React.MutableRefObject<DisplayedAbility[]>,
+        mapItemMinSize: React.MutableRefObject<number>,
     ) {
         // We use viewport to add children instead of using a root because zIndexing
         this.viewport = viewport
@@ -59,6 +61,7 @@ export class PixiMapAbilities {
         this.gridCellToViewportPosition = gridCellToViewportPosition
         this.basicAbilities = basicAbilities
         this.complexAbilities = complexAbilities
+        this.mapItemMinSize = mapItemMinSize
 
         this.render()
     }
@@ -98,7 +101,13 @@ export class PixiMapAbilities {
                     delete this.pixiAbilities[ab.offering_id]
                 }
 
-                const newPixiAbility = new PixiMapAbilitySingle(ab, this.gridSizeRef, this.clientPositionToViewportPosition, this.gridCellToViewportPosition)
+                const newPixiAbility = new PixiMapAbilitySingle(
+                    ab,
+                    this.gridSizeRef,
+                    this.clientPositionToViewportPosition,
+                    this.gridCellToViewportPosition,
+                    this.mapItemMinSize,
+                )
                 this.viewport.addChild(newPixiAbility.root)
                 this.pixiAbilities[ab.offering_id] = newPixiAbility
             })
