@@ -1,5 +1,5 @@
 import { Stack } from "@mui/material"
-import React, { useMemo } from "react"
+import React, { useMemo, useRef } from "react"
 import { WIDTH_STAT_BAR } from "../.."
 import { useArena } from "../../../containers/arena"
 import { useGameServerSubscription } from "../../../hooks/useGameServer"
@@ -20,6 +20,7 @@ const propsAreEqual = (prevProps: HealthShieldBarsProps, nextProps: HealthShield
 export const HealthShieldBars = React.memo(function HealthShieldBars({ warMachine, setIsAlive }: HealthShieldBarsProps) {
     const { currentArenaID } = useArena()
     const { hash, participantID, maxHealth, maxShield } = warMachine
+    const tickIteration = useRef(0)
 
     // Listen on current war machine changes
     useGameServerSubscription<WarMachineLiveState | undefined>(
@@ -30,6 +31,9 @@ export const HealthShieldBars = React.memo(function HealthShieldBars({ warMachin
             batchURI: `/public/arena/${currentArenaID}/mech`,
         },
         (payload) => {
+            if (!payload || payload.tick_order < tickIteration.current) return
+            tickIteration.current = payload.tick_order
+
             // Direct DOM manipulation is a lot more optimized than re-rendering
             if (payload?.health !== undefined) {
                 setIsAlive(payload.health > 0)
