@@ -54,6 +54,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
     const [pixiMapMech, setPixiMapMech] = useState<PixiMapMech>()
 
+    const tickIteration = useRef(0)
     const iconDimension = useRef<Dimension>({ width: 5, height: 5 })
     const prevRotation = useRef(warMachine.rotation)
     const [isAlive, setIsAlive] = useState(warMachine.health > 0)
@@ -320,6 +321,9 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             batchURI: `/public/arena/${currentArenaID}/mech`,
         },
         (payload) => {
+            if (!payload || payload.tick_order < tickIteration.current) return
+            tickIteration.current = payload.tick_order
+
             if (payload?.health !== undefined && pixiMapMech) {
                 setIsAlive(payload.health > 0)
                 const percent = (payload.health / maxHealth) * 100
