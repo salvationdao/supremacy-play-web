@@ -1,7 +1,7 @@
 import BigNumber from "bignumber.js"
 import ReactGA from "react-ga"
 
-const USE_PROD = false
+const USE_PROD = process.env.REACT_APP_PROD_DATA === "true"
 
 // Envar stuff
 export const STAGING_OR_DEV_ONLY = process.env.REACT_APP_ENVIRONMENT !== "production"
