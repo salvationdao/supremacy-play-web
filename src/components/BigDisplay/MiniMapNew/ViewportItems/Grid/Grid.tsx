@@ -26,18 +26,22 @@ export const Grid = React.memo(function Grid() {
         }
     }, [gridSizeRef, pixiMainItems, toggleShowGrid, mapMousePosition])
 
-    // Cleanup
-    useEffect(() => {
-        return () => pixiGrid?.destroy()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [pixiGrid])
-
     // Do the toggle
     useEffect(() => {
         if (!pixiGrid) return
         localStorage.setItem("minimap-show-grid", showGrid.toString())
         pixiGrid.showGrid(showGrid)
+
+        // Change button opacity
+        const btn = document.getElementById("minimap-show-grid-button")
+        if (btn) btn.style.opacity = showGrid ? "1" : " 0.4"
     }, [pixiGrid, showGrid])
+
+    // Cleanup
+    useEffect(() => {
+        return () => pixiGrid?.destroy()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [pixiGrid])
 
     return null
 })
