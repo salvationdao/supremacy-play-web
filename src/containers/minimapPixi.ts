@@ -12,8 +12,6 @@ import { useGame } from "./game"
 import { useGlobalNotifications } from "./globalNotifications"
 import { RecordType, useHotkey } from "./hotkeys"
 
-export const MAP_ITEM_MINI_SIZE = 19
-
 export const pixiViewportZIndexes = {
     hiveStatus: 10,
     mapAbilitiesBelowMechs: 15,
@@ -69,6 +67,7 @@ export const MiniMapPixiContainer = createContainer(() => {
     const mapRef = useRef<Map>()
     const mapScalingRef = useRef<Vector2i>({ x: 0, y: 0 }) // Map co-ordinate from server * mapScaling.x = position in viewport
     const gridSizeRef = useRef<Dimension>({ width: 50, height: 50 })
+    const mapItemMinSize = useRef(20)
 
     // Update cached map values
     useEffect(() => {
@@ -76,6 +75,7 @@ export const MiniMapPixiContainer = createContainer(() => {
         if (!map || !pixiMainItems) return
         mapScalingRef.current = { x: pixiMainItems.viewport.worldWidth / map.Width, y: pixiMainItems.viewport.worldHeight / map.Height }
         gridSizeRef.current = { width: (mapScalingRef.current.x * map.Width) / map.Cells_X, height: (mapScalingRef.current.y * map.Height) / map.Cells_Y }
+        mapItemMinSize.current = Math.max(gridSizeRef.current.width, 0.01 * map.Width)
     }, [map, pixiMainItems])
 
     // Converts game client position (x, y) to (x, y) that fits into the viewport (viewport position)
@@ -303,6 +303,7 @@ export const MiniMapPixiContainer = createContainer(() => {
         setPixiMainItems,
         mapScalingRef,
         gridSizeRef,
+        mapItemMinSize,
         mapMousePosition,
         clientPositionToViewportPosition,
         gridCellToViewportPosition,

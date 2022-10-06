@@ -3,7 +3,7 @@ import { ease } from "pixi-ease"
 import * as particles from "pixi-particles"
 import * as PIXI from "pixi.js"
 import { CircleParticle } from "../../../../../assets"
-import { MAP_ITEM_MINI_SIZE, pixiViewportZIndexes } from "../../../../../containers"
+import { pixiViewportZIndexes } from "../../../../../containers"
 import { explosionParticlesConfig, pulseParticlesConfig } from "../../../../../pixi/particleConfigs"
 import { PixiImageIcon } from "../../../../../pixi/pixiImageIcon"
 import { Dimension, DisplayedAbility, GAME_CLIENT_TILE_SIZE, MiniMapDisplayEffectType } from "../../../../../types"
@@ -38,6 +38,7 @@ export class PixiMapAbilitySingle {
                 y: number
             }
         >,
+        mapItemMinSize: React.MutableRefObject<number>,
     ) {
         this.ability = ability
         this.gridSizeRef = gridSizeRef
@@ -52,8 +53,8 @@ export class PixiMapAbilitySingle {
         const sizeMultiplier = ability.grid_size_multiplier || 0.4
         this.imageIcon = new PixiImageIcon(
             ability.image_url,
-            Math.max(gridSizeRef.current.width, MAP_ITEM_MINI_SIZE) * sizeMultiplier,
-            Math.max(gridSizeRef.current.height, MAP_ITEM_MINI_SIZE) * sizeMultiplier,
+            Math.max(gridSizeRef.current.width, mapItemMinSize.current) * sizeMultiplier,
+            Math.max(gridSizeRef.current.height, mapItemMinSize.current) * sizeMultiplier,
             ability.colour,
             true,
         )

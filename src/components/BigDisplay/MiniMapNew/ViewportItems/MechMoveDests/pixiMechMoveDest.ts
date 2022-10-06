@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js"
-import { MAP_ITEM_MINI_SIZE, pixiViewportZIndexes } from "../../../../../containers"
+import { pixiViewportZIndexes } from "../../../../../containers"
 import { PixiImageIcon } from "../../../../../pixi/pixiImageIcon"
 import { Dimension, MechMoveCommandAbility } from "../../../../../types"
 import { FactionMechCommand } from "./MechMoveDests"
@@ -20,6 +20,7 @@ export class PixiMechMoveDest {
                 y: number
             }
         >,
+        mapItemMinSize: React.MutableRefObject<number>,
     ) {
         // Create container for everything
         this.root = new PIXI.Container()
@@ -29,8 +30,8 @@ export class PixiMechMoveDest {
         const moveAbility = MechMoveCommandAbility.ability
         this.icon = new PixiImageIcon(
             moveAbility.image_url,
-            Math.max(gridSizeRef.current.width, MAP_ITEM_MINI_SIZE) / 2,
-            Math.max(gridSizeRef.current.height, MAP_ITEM_MINI_SIZE) / 2,
+            Math.max(gridSizeRef.current.width, mapItemMinSize.current) / 2,
+            Math.max(gridSizeRef.current.height, mapItemMinSize.current) / 2,
             moveAbility.colour,
             true,
         )

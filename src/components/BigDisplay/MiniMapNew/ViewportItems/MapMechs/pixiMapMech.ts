@@ -4,7 +4,7 @@ import { ease } from "pixi-ease"
 import * as particles from "pixi-particles"
 import * as PIXI from "pixi.js"
 import { CircleParticle, DeadSkullPNG } from "../../../../../assets"
-import { MAP_ITEM_MINI_SIZE, pixiViewportZIndexes } from "../../../../../containers"
+import { pixiViewportZIndexes } from "../../../../../containers"
 import { deg2rad, HEXToVBColor } from "../../../../../helpers"
 import { pulseParticlesConfig } from "../../../../../pixi/particleConfigs"
 import { PixiImageIcon } from "../../../../../pixi/pixiImageIcon"
@@ -30,6 +30,7 @@ export class PixiMapMech {
     private iconDimension: Dimension | undefined
     private mechHash: string
     private gridSizeRef: React.MutableRefObject<Dimension>
+    private mapItemMinSize: React.MutableRefObject<number>
     private primaryColor: string | undefined
     private cachedZIndex = 10
     private abilityToApply: PixiImageIcon | undefined
@@ -41,9 +42,10 @@ export class PixiMapMech {
         | undefined
         | (({ startCoord, endCoord, mechHash }: { startCoord?: Position | undefined; endCoord?: Position | undefined; mechHash?: string | undefined }) => void)
 
-    constructor(label: number, mechHash: string, gridSizeRef: React.MutableRefObject<Dimension>) {
+    constructor(label: number, mechHash: string, gridSizeRef: React.MutableRefObject<Dimension>, mapItemMinSize: React.MutableRefObject<number>) {
         this.gridSizeRef = gridSizeRef
         this.mechHash = mechHash
+        this.mapItemMinSize = mapItemMinSize
 
         // Create container for everything
         this.root = new PIXI.Container()
@@ -306,8 +308,8 @@ export class PixiMapMech {
 
         this.abilityToApply = new PixiImageIcon(
             ability.image_url,
-            Math.max(this.iconDimension.width, MAP_ITEM_MINI_SIZE) / 1.6,
-            Math.max(this.iconDimension.height, MAP_ITEM_MINI_SIZE) / 1.6,
+            Math.max(this.iconDimension.width, this.mapItemMinSize.current) / 1.6,
+            Math.max(this.iconDimension.height, this.mapItemMinSize.current) / 1.6,
             ability.colour,
             true,
             1,

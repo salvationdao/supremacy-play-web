@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../../../../constants"
-import { MapSelection, MAP_ITEM_MINI_SIZE, useArena, useAuth, useGame, useMiniMapPixi, useSupremacy, WinnerStruct } from "../../../../../containers"
+import { MapSelection, useArena, useAuth, useGame, useMiniMapPixi, useSupremacy, WinnerStruct } from "../../../../../containers"
 import { RecordType, useHotkey } from "../../../../../containers/hotkeys"
 import { closestAngle, deg2rad } from "../../../../../helpers"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
@@ -49,6 +49,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         usePlayerAbility,
         onAbilityUseCallbacks,
         onSelectMapPositionCallbacks,
+        mapItemMinSize,
     } = useMiniMapPixi()
     const { id, hash, participantID, factionID: warMachineFactionID, maxHealth, maxShield, ownedByID } = warMachine
 
@@ -76,10 +77,10 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     // Initial setup for the mech and show on the map
     useEffect(() => {
         if (!pixiMainItems) return
-        const pixiMapMech = new PixiMapMech(label, hash, gridSizeRef)
+        const pixiMapMech = new PixiMapMech(label, hash, gridSizeRef, mapItemMinSize)
         pixiMainItems.viewport.addChild(pixiMapMech.root)
         setPixiMapMech(pixiMapMech)
-    }, [hash, label, gridSizeRef, pixiMainItems])
+    }, [hash, label, gridSizeRef, pixiMainItems, mapItemMinSize])
 
     // Cleanup
     useEffect(() => {
@@ -93,8 +94,8 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
         // Set the icon dimensions
         iconDimension.current = {
-            width: Math.max(gridSizeRef.current.width, MAP_ITEM_MINI_SIZE),
-            height: Math.max(gridSizeRef.current.height, MAP_ITEM_MINI_SIZE),
+            width: Math.max(gridSizeRef.current.width, mapItemMinSize.current),
+            height: Math.max(gridSizeRef.current.height, mapItemMinSize.current),
         }
         // If it's a mini mech, make it look smaller
         if (isAI) {
@@ -104,7 +105,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
         pixiMapMech.updateStyles(primaryColor, iconDimension.current)
         pixiMapMech.updateHpShieldBars(iconDimension.current)
-    }, [pixiMapMech, primaryColor, map, gridSizeRef, isAI])
+    }, [pixiMapMech, primaryColor, map, gridSizeRef, isAI, mapItemMinSize])
 
     // Update zIndex
     useEffect(() => {

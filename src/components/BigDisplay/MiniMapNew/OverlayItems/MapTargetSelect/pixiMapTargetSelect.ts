@@ -2,7 +2,7 @@ import { ease } from "pixi-ease"
 import { Viewport } from "pixi-viewport"
 import * as PIXI from "pixi.js"
 import { AbilityCancelPNG } from "../../../../../assets"
-import { MAP_ITEM_MINI_SIZE, pixiStageZIndexes, pixiViewportZIndexes } from "../../../../../containers"
+import { pixiStageZIndexes, pixiViewportZIndexes } from "../../../../../containers"
 import { HEXToVBColor } from "../../../../../helpers"
 import { PixiImageIcon } from "../../../../../pixi/pixiImageIcon"
 import { fonts } from "../../../../../theme/theme"
@@ -65,6 +65,7 @@ export class PixiMapTargetSelect {
         endTime: Date | undefined,
         onExpired: () => void | undefined,
         onCancel: (() => void) | undefined,
+        mapItemMinSize: React.MutableRefObject<number>,
     ) {
         this.viewport = viewport
         this.ability = ability
@@ -125,8 +126,8 @@ export class PixiMapTargetSelect {
         // Mouse icon
         this.mouseIcon = new PixiImageIcon(
             ability.image_url,
-            Math.max(gridSizeRef.current.width, MAP_ITEM_MINI_SIZE) / 1.6,
-            Math.max(gridSizeRef.current.height, MAP_ITEM_MINI_SIZE) / 1.6,
+            Math.max(gridSizeRef.current.width, mapItemMinSize.current) / 1.6,
+            Math.max(gridSizeRef.current.height, mapItemMinSize.current) / 1.6,
             ability.colour,
             true,
         )
@@ -137,15 +138,15 @@ export class PixiMapTargetSelect {
         // Start and end coord icons, made invisible
         this.startCoord = new PixiImageIcon(
             ability.image_url,
-            Math.max(gridSizeRef.current.width, MAP_ITEM_MINI_SIZE),
-            Math.max(gridSizeRef.current.height, MAP_ITEM_MINI_SIZE),
+            Math.max(gridSizeRef.current.width, mapItemMinSize.current),
+            Math.max(gridSizeRef.current.height, mapItemMinSize.current),
             ability.colour,
             true,
         )
         this.endCoord = new PixiImageIcon(
             ability.image_url,
-            Math.max(gridSizeRef.current.width, MAP_ITEM_MINI_SIZE),
-            Math.max(gridSizeRef.current.height, MAP_ITEM_MINI_SIZE),
+            Math.max(gridSizeRef.current.width, mapItemMinSize.current),
+            Math.max(gridSizeRef.current.height, mapItemMinSize.current),
             ability.colour,
             true,
         )
