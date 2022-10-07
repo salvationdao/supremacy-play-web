@@ -29,9 +29,10 @@ interface BattleLobbyJoinModalProps {
     battleLobby: BattleLobby
     onJoin: () => void
     onClose: () => void
+    accessCode?: string
 }
 
-export const BattleLobbyJoinModal = ({ battleLobby, onJoin, onClose }: BattleLobbyJoinModalProps) => {
+export const BattleLobbyJoinModal = ({ battleLobby, onJoin, onClose, accessCode }: BattleLobbyJoinModalProps) => {
     const { factionID } = useAuth()
     const { factionTheme } = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -146,12 +147,12 @@ export const BattleLobbyJoinModal = ({ battleLobby, onJoin, onClose }: BattleLob
     }, [mechsWithQueueStatus, search, sort, page, pageSize, setTotalItems, selectedMechIDs])
 
     const joinBattleLobby = useCallback(
-        async (battleLobbyID: string, password?: string) => {
+        async (battleLobbyID: string) => {
             try {
                 await send(GameServerKeys.JoinBattleLobby, {
                     battle_lobby_id: battleLobbyID,
                     mech_ids: selectedMechIDs,
-                    password,
+                    access_code: accessCode,
                 })
                 setSelectedMechIDs([])
                 onJoin()
@@ -159,7 +160,7 @@ export const BattleLobbyJoinModal = ({ battleLobby, onJoin, onClose }: BattleLob
                 setError(typeof err === "string" ? err : "Failed to the join battle lobby.")
             }
         },
-        [onJoin, selectedMechIDs, send],
+        [onJoin, selectedMechIDs, send, accessCode],
     )
 
     const content = useMemo(() => {

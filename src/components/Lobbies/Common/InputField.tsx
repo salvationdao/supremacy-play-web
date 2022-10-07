@@ -46,8 +46,10 @@ export const InputField = ({
     return (
         <Stack
             spacing=".5rem"
+            flex={1}
             sx={{
                 opacity: disabled ? 0.5 : 1,
+                height: "100%",
             }}
         >
             {title}
@@ -63,10 +65,18 @@ export const InputField = ({
                 }}
                 sx={{
                     backgroundColor: "#00000090",
+                    height: "100%",
+                    ".MuiFormControl-root": {
+                        height: "100%",
+                    },
+
                     ".MuiOutlinedInput-root": {
+                        height: "100%",
                         borderRadius: borderRadius !== undefined ? borderRadius : 0.5,
                         border: border || `${factionTheme.primary}99 2px dashed`,
+                        pr: 0,
                     },
+
                     ".MuiOutlinedInput-input": {
                         px: "1.5rem",
                         py: ".6rem",
@@ -76,6 +86,13 @@ export const InputField = ({
                             WebkitAppearance: "none",
                         },
                     },
+
+                    ".MuiInputAdornment-root": {
+                        height: "100%",
+                        mr: 0,
+                        maxHeight: "unset",
+                    },
+
                     ".MuiOutlinedInput-notchedOutline": { border: "unset" },
                 }}
             />

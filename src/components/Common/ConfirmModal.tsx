@@ -26,9 +26,11 @@ interface ConfirmModalProps {
     omitCancel?: boolean
     omitConfirm?: boolean
     omitButtons?: boolean
+    open?: boolean
 }
 
 export const ConfirmModal = ({
+    open,
     title,
     children,
     onConfirm,
@@ -80,7 +82,7 @@ export const ConfirmModal = ({
     }, [omitConfirm, confirmButton, disableConfirm, isLoading, confirmBackground, onConfirm, confirmPrefix, confirmColor, confirmLabel, confirmSuffix])
 
     return (
-        <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
+        <Modal open={open !== undefined ? open : true} onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
             <Box
                 sx={{
                     position: "absolute",

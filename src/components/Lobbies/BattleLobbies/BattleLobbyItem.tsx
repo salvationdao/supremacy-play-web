@@ -15,12 +15,15 @@ interface BattleLobbyItemProps {
     battleLobby: BattleLobby
     omitClip?: boolean
     disabled?: boolean
+    accessCode?: string
 }
 
 const FACTION_LOBBY_SIZE = 3
 
 const propsAreEqual = (prevProps: BattleLobbyItemProps, nextProps: BattleLobbyItemProps) => {
     return (
+        prevProps.accessCode === prevProps.accessCode &&
+        prevProps.disabled === nextProps.disabled &&
         prevProps.battleLobby.id === nextProps.battleLobby.id &&
         prevProps.battleLobby.ready_at === nextProps.battleLobby.ready_at &&
         prevProps.battleLobby.ended_at === nextProps.battleLobby.ended_at &&
@@ -31,7 +34,7 @@ const propsAreEqual = (prevProps: BattleLobbyItemProps, nextProps: BattleLobbyIt
     )
 }
 
-export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby, omitClip, disabled }: BattleLobbyItemProps) {
+export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby, omitClip, disabled, accessCode }: BattleLobbyItemProps) {
     const theme = useTheme()
     const { factionID } = useAuth()
     const { arenaList } = useArena()
@@ -455,7 +458,14 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                     </ClipThing>
                 </Box>
             </Stack>
-            {showJoinModal && <BattleLobbyJoinModal battleLobby={battleLobby} onJoin={() => setShowJoinModal(false)} onClose={() => setShowJoinModal(false)} />}
+            {showJoinModal && (
+                <BattleLobbyJoinModal
+                    battleLobby={battleLobby}
+                    onJoin={() => setShowJoinModal(false)}
+                    onClose={() => setShowJoinModal(false)}
+                    accessCode={accessCode}
+                />
+            )}
         </>
     )
 }, propsAreEqual)

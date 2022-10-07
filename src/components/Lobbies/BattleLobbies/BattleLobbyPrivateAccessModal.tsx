@@ -1,11 +1,11 @@
-import { fonts } from "../../../theme/theme"
-import { Box, Stack, Typography } from "@mui/material"
+import { Stack } from "@mui/material"
 import React, { useState } from "react"
 import { ConfirmModal } from "../../Common/ConfirmModal"
 import { BattleLobby } from "../../../types/battle_queue"
 import { BattleLobbyItem } from "./BattleLobbyItem"
-import { InputField } from "../Common/InputField"
 import { useTheme } from "../../../containers/theme"
+import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
 
 const lobbyPlaceholder: BattleLobby = {
     id: "",
@@ -40,51 +40,42 @@ const lobbyPlaceholder: BattleLobby = {
 }
 
 interface BattleLobbyPrivateAccessModalProps {
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setAccessCode: React.Dispatch<React.SetStateAction<string>>
+    accessCode: string
 }
-export const BattleLobbyPrivateAccessModal = ({ setOpen }: BattleLobbyPrivateAccessModalProps) => {
+export const BattleLobbyPrivateAccessModal = ({ setAccessCode, accessCode }: BattleLobbyPrivateAccessModalProps) => {
     const { factionTheme } = useTheme()
     const [error, setError] = useState()
-    const [isLoading, setIsLoading] = useState(false)
-    const [accessCode, setAccessCode] = useState("")
+    const [isLoading, setIsLoading] = useState(true)
+
+    const [lobby, setLobby] = useState<BattleLobby>(lobbyPlaceholder)
+
+    useGameServerSubscriptionFaction<BattleLobby>(
+        {
+            URI: `/private_battle_lobby/${accessCode}`,
+            key: GameServerKeys.SubPrivateBattleLobby,
+        },
+        (payload) => {
+            if (!payload) return
+
+            console.log(payload)
+            setLobby(payload)
+            setIsLoading(false)
+        },
+    )
 
     return (
-        <ConfirmModal title={`ACCESS PRIVATE LOBBY`} omitButtons onClose={() => setOpen(false)} isLoading={isLoading} error={error} width="150rem" omitCancel>
+        <ConfirmModal
+            title={`ACCESS PRIVATE LOBBY`}
+            omitButtons
+            onClose={() => setAccessCode("")}
+            isLoading={isLoading}
+            error={error}
+            width="150rem"
+            omitCancel
+        >
             <Stack direction="column">
-                <Stack
-                    direction="row"
-                    alignItems="center"
-                    sx={{
-                        ml: "2rem",
-                        my: "1rem",
-                        height: "4rem",
-                    }}
-                >
-                    <InputField
-                        placeholder="ACCESS CODE"
-                        border={`${factionTheme.primary} 2px solid`}
-                        borderRadius={0}
-                        value={accessCode}
-                        onChange={(e) => setAccessCode(e.target.value)}
-                    />
-                    <Box
-                        sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            height: "100%",
-                            backgroundColor: factionTheme.primary,
-                            px: "1rem",
-                            cursor: "pointer",
-                        }}
-                        onClick={() => console.log(accessCode)}
-                    >
-                        <Typography variant="body2" fontFamily={fonts.nostromoBlack}>
-                            submit
-                        </Typography>
-                    </Box>
-                </Stack>
-                <BattleLobbyItem battleLobby={lobbyPlaceholder} omitClip disabled />
+                <BattleLobbyItem battleLobby={lobby} omitClip disabled={isLoading} accessCode={accessCode} />
             </Stack>
         </ConfirmModal>
     )

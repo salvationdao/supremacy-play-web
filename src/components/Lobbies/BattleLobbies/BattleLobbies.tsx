@@ -17,6 +17,7 @@ import { BattleLobbyItem } from "./BattleLobbyItem"
 import { FancyButton } from "../../Common/FancyButton"
 import { BattleLobbyCreateModal } from "./BattleLobbyCreate/BattleLobbyCreateModal"
 import { BattleLobbyPrivateAccessModal } from "./BattleLobbyPrivateAccessModal"
+import { BattleLobbyAccessCodeModal } from "./BattleLobbyAccessCodeModal"
 
 const sortOptionsPending: { label: string; value: string }[] = [
     { label: SortTypeLabel.QueuedAmountHighest, value: SortTypeLabel.QueuedAmountHighest },
@@ -48,6 +49,7 @@ export const BattleLobbies = ({ lobbyStatus, battleLobbies }: BattleLobbiesProps
 
     const [openNewLobbyModal, setOpenNewLobbyModal] = useState(false)
     const [openPrivateRoom, setOpenPrivateRoom] = useState(false)
+    const [accessCode, setAccessCode] = useState("")
 
     const { page, changePage, changePageSize, totalItems, setTotalItems, totalPages, pageSize } = usePagination({
         pageSize: 10,
@@ -304,7 +306,8 @@ export const BattleLobbies = ({ lobbyStatus, battleLobbies }: BattleLobbiesProps
                 </Stack>
             </ClipThing>
             {openNewLobbyModal && <BattleLobbyCreateModal setOpen={setOpenNewLobbyModal} />}
-            {openPrivateRoom && <BattleLobbyPrivateAccessModal setOpen={setOpenPrivateRoom} />}
+            {!accessCode && openPrivateRoom && <BattleLobbyAccessCodeModal setOpen={setOpenPrivateRoom} setAccessCode={setAccessCode} />}
+            {accessCode && <BattleLobbyPrivateAccessModal setAccessCode={setAccessCode} accessCode={accessCode} />}
         </>
     )
 }
