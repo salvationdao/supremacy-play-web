@@ -36,7 +36,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     const { getFaction, isWindowFocused } = useSupremacy()
     const { addToHotkeyRecord } = useHotkey()
     const {
-        pixiMainItems,
+        pixiMiniMapPixi,
         gridSizeRef,
         clientPositionToViewportPosition,
         gridCellToViewportPosition,
@@ -76,11 +76,11 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
     // Initial setup for the mech and show on the map
     useEffect(() => {
-        if (!pixiMainItems) return
+        if (!pixiMiniMapPixi) return
         const pixiMapMech = new PixiMapMech(label, hash, gridSizeRef, mapItemMinSize)
-        pixiMainItems.viewport.addChild(pixiMapMech.root)
+        pixiMiniMapPixi.viewport.addChild(pixiMapMech.root)
         setPixiMapMech(pixiMapMech)
-    }, [hash, label, gridSizeRef, pixiMainItems, mapItemMinSize])
+    }, [hash, label, gridSizeRef, pixiMiniMapPixi, mapItemMinSize])
 
     // Cleanup
     useEffect(() => {

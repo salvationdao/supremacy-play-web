@@ -8,7 +8,7 @@ import { AnyAbility, BattleState, Map } from "../../../types"
 import { WindowPortal } from "../../Common/WindowPortal/WindowPortal"
 import { useWindowPortal } from "../../Common/WindowPortal/WindowPortalContainer"
 import { LEFT_DRAWER_WIDTH } from "../../LeftDrawer/LeftDrawer"
-import { MiniMapPixi } from "./MiniMapPixi"
+import { MiniMapPixi } from "./MiniMapPixi/MiniMapPixi"
 
 export const TOP_BAR_HEIGHT = 3.4 // rems
 const BOTTOM_PADDING = 12 // rems

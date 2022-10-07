@@ -4,16 +4,16 @@ import { AnyAbility } from "../../../../../types"
 import { PixiMapScale } from "./pixiMapScale"
 
 export const MapScale = React.memo(function MapScale() {
-    const { pixiMainItems, gridSizeRef, onAnyAbilityUseCallbacks, mapMousePosition } = useMiniMapPixi()
+    const { pixiMiniMapPixi, gridSizeRef, onAnyAbilityUseCallbacks, mapMousePosition } = useMiniMapPixi()
     const [pixiMapScale, setPixiMapScale] = useState<PixiMapScale>()
 
     // Initial setup for the mech and show on the map
     useEffect(() => {
-        if (!pixiMainItems) return
-        const pixiMapScale = new PixiMapScale(pixiMainItems.viewport, gridSizeRef, mapMousePosition)
-        pixiMainItems.app.stage.addChild(pixiMapScale.root)
+        if (!pixiMiniMapPixi) return
+        const pixiMapScale = new PixiMapScale(pixiMiniMapPixi.viewport, gridSizeRef, mapMousePosition)
+        pixiMiniMapPixi.app.stage.addChild(pixiMapScale.root)
         setPixiMapScale(pixiMapScale)
-    }, [gridSizeRef, pixiMainItems, mapMousePosition])
+    }, [gridSizeRef, pixiMiniMapPixi, mapMousePosition])
 
     // Cleanup
     useEffect(() => {
