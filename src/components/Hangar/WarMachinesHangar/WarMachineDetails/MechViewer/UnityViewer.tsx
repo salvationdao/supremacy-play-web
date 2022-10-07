@@ -48,6 +48,7 @@ if (DEV_ONLY) {
 export interface UnityParams {
     unityRef: React.ForwardedRef<UnityHandle>
     onUnlock: () => void
+    onReady: () => void
 }
 
 interface UnityViewerProps extends MechViewerProps {
@@ -64,6 +65,7 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
         streamingAssetsUrl: `${baseUrl}/StreamingAssets`,
     })
     const sent = useRef(false)
+    const ready = useRef(false)
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const [siloReady, setSiloReady] = useState(false)
     const [isPendingChange, setIsPendingChange] = useState(false)
@@ -122,6 +124,14 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
             setIsPendingChange(true)
         },
     }))
+
+    // Check if hangar is ready, finished loading, user has clicked etc.
+    useEffect(() => {
+        console.log(siloReady)
+        if (showClickToLoadOverlay || !siloReady || ready.current) return
+        unity.onReady()
+        ready.current = true
+    }, [showClickToLoadOverlay, siloReady, unity])
 
     useEffect(() => {
         const handleMouseClick = () => {
