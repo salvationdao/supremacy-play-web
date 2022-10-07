@@ -42,6 +42,7 @@ export const VoiceChat = () => {
 
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
+    /* eslint-disable @typescript-eslint/no-explicit-any */
     const ovenLiveKitInstance = useRef<any>()
 
     const startStream = useCallback((url: string) => {
@@ -68,8 +69,6 @@ export const VoiceChat = () => {
             ready: !!(currentArenaID && factionID),
         },
         (payload: VoiceStream[]) => {
-            console.log("vs", payload)
-
             if (payload) {
                 // put faction commander on top
                 const sorted = payload.sort((x, y) => Number(y.is_faction_commander) - Number(x.is_faction_commander))
@@ -144,75 +143,71 @@ export const VoiceChat = () => {
     }
 
     // listen stream
-    const listen = useCallback(
-        (stream: VoiceStream) => {
-            if (document.getElementById(stream.listen_url)) {
-                let newOvenPlayer = OvenPlayer.getPlayerByContainerId(stream.listen_url)
+    const listen = useCallback((stream: VoiceStream) => {
+        if (document.getElementById(stream.listen_url)) {
+            let newOvenPlayer = OvenPlayer.getPlayerByContainerId(stream.listen_url)
 
+            if (newOvenPlayer) {
+                newOvenPlayer.remove()
+                newOvenPlayer = null
+
+                listen(stream)
+                return
+            }
+
+            if (!newOvenPlayer) {
+                newOvenPlayer = OvenPlayer.create(stream.listen_url, {
+                    autoStart: true,
+                    controls: true,
+                    volume: 100,
+                    sources: [
+                        {
+                            type: "webrtc",
+                            file: stream.listen_url,
+                        },
+                    ],
+                    autoFallback: true,
+                    disableSeekUI: true,
+                })
+            }
+
+            newOvenPlayer.on("ready", () => {
+                console.log("voice chat ready Ready.")
                 if (newOvenPlayer) {
-                    newOvenPlayer.remove()
-                    newOvenPlayer = null
+                    newOvenPlayer.play()
+                }
+            })
 
+            newOvenPlayer.on("destroy", () => {
+                if (newOvenPlayer) {
+                    newOvenPlayer.off("ready")
+                    newOvenPlayer.off("error")
+                }
+            })
+
+            newOvenPlayer.on("error", (err: { code: number }) => {
+                if (err.code === 501) {
+                    console.log("501: failed to connnect attempting to recconnect", err)
+                } else {
+                    console.error("voice chat error: ", err)
+                }
+
+                // try reconnect on error
+                setTimeout(() => {
                     listen(stream)
-                    return
-                }
+                }, 5000)
+            })
 
-                if (!newOvenPlayer) {
-                    newOvenPlayer = OvenPlayer.create(stream.listen_url, {
-                        autoStart: true,
-                        controls: true,
-                        volume: 100,
-                        sources: [
-                            {
-                                type: "webrtc",
-                                file: stream.listen_url,
-                            },
-                        ],
-                        autoFallback: true,
-                        disableSeekUI: true,
-                    })
-                }
-
-                newOvenPlayer.on("ready", () => {
-                    console.log("voice chat ready Ready.")
-                    if (newOvenPlayer) {
-                        newOvenPlayer.play()
-                    }
-                })
-
-                newOvenPlayer.on("destroy", () => {
-                    if (newOvenPlayer) {
-                        newOvenPlayer.off("ready")
-                        newOvenPlayer.off("error")
-                    }
-                })
-
-                newOvenPlayer.on("error", (err: { code: number }) => {
-                    // if (!connected) return
-                    if (err.code === 501) {
-                        console.log("501: failed to connnect attempting to recconnect", err)
-                    } else {
-                        console.error("voice chat error: ", err)
-                    }
-
-                    // try reconnect on error
-                    setTimeout(() => {
-                        listen(stream)
-                    }, 5000)
-                })
-
-                newOvenPlayer.play()
-                return () => {
-                    if (newOvenPlayer) {
-                        newOvenPlayer.off("ready")
-                        newOvenPlayer.off("error")
-                        newOvenPlayer.remove()
-                    }
+            newOvenPlayer.play()
+            return () => {
+                if (newOvenPlayer) {
+                    newOvenPlayer.off("ready")
+                    newOvenPlayer.off("error")
+                    newOvenPlayer.remove()
                 }
             }
-        },
-        [connected],
-    )
+        }
+    }, [])
 
     const onConnect = useCallback(
         (streams: VoiceStream[], enableSound: boolean) => {
@@ -243,8 +238,6 @@ export const VoiceChat = () => {
                     player.off("error")
                     player.remove()
                 }
-
-                document.getElementsByTagName("video")
             })
         }
 
@@ -505,8 +498,7 @@ export const VoiceChatInner = ({
                         <IconButton
                             size="small"
                             onClick={() => {
-                                // TODO
-                                console.log("implement self mute/unmute")
+                                // TODO implement self mute/unmute
                             }}
                             sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}
                         >
@@ -515,7 +507,7 @@ export const VoiceChatInner = ({
                         <IconButton
                             size="small"
                             onClick={() => {
-                                console.log("implement deafen")
+                                // TODO implement deafen
                             }}
                             sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}
                         >
@@ -620,16 +612,7 @@ const PlayerItem = ({
         ) : (
             <></>
         )
-    }, [
-        currentUser.gid,
-        voiceStream.user_gid,
-        voiceStream.is_faction_commander,
-        voiceStream.current_kick_vote,
-        voiceStream.send_url,
-        onVoteKick,
-        confirmModal,
-        isSpeaker,
-    ])
+    }, [currentUser.gid, voiceStream.user_gid, voiceStream.is_faction_commander, voiceStream.current_kick_vote, onVoteKick, confirmModal, isSpeaker])
 
     const onMute = () => {
         // get oven player via id

@@ -5,7 +5,6 @@ import { BattleEndScreen } from "../components/LeftDrawer/BattleEndScreen/Battle
 import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
 import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
 import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
-import { VoiceChat } from "../components/RightDrawer/VoiceChat/VoiceChat"
 
 import { RepairJobs } from "../components/RightDrawer/RepairJobs/RepairJobs"
 import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../constants"
@@ -308,7 +307,6 @@ export interface SideTabsStruct {
     matchNavLinkIDs?: string[] // Leave undefined to have the tab available on all pages, else specify the routes
     mountAllTime: boolean // Whether to keep component mounted even not on the tab
     requireAuth: boolean
-    requireFaction?: boolean
 }
 
 export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
@@ -350,16 +348,6 @@ export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         matchNavLinkIDs: undefined,
         mountAllTime: true,
     },
-    // voice_chat: {
-    //     id: "voice_chat",
-    //     icon: <SvgVoice size="1.5rem" />,
-    //     label: "Voice Chat",
-    //     Component: VoiceChat,
-    //     requireAuth: true,
-    //     requireFaction: true,
-    //     matchNavLinkIDs: undefined,
-    //     mountAllTime: true,
-    // },
     active_players: {
         id: "active_players",
         icon: (

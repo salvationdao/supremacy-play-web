@@ -120,7 +120,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const { query: getGlobalFeatures } = useQuery(GetGlobalFeatures())
     const [globalFeatures, setGlobalFeatures] = useState<Feature[]>([])
-    const { fingerprint } = useFingerprint()
 
     const { query: passportLoginCheck } = useQuery(PassportLoginCheck(), false)
     const { query: gameserverLoginCheck } = useQuery(GameServerLoginCheck(fingerprint), false)
