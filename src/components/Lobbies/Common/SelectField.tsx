@@ -1,7 +1,7 @@
 import { MenuItem, Select, SelectProps, Stack, Typography } from "@mui/material"
-import { useTheme } from "../../../../containers/theme"
+import { useTheme } from "../../../containers/theme"
 import React, { useMemo } from "react"
-import { colors, fonts } from "../../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 
 interface SelectFieldProps {
     options: SelectOption[]

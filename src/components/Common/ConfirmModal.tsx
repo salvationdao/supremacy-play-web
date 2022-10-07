@@ -1,5 +1,5 @@
 import { Box, IconButton, Modal, Stack, Typography } from "@mui/material"
-import { ReactNode } from "react"
+import { ReactNode, useMemo } from "react"
 import { ClipThing, FancyButton } from ".."
 import { SvgClose } from "../../assets"
 import { useTheme } from "../../containers/theme"
@@ -24,6 +24,8 @@ interface ConfirmModalProps {
     confirmColor?: string
     cancelColor?: string
     omitCancel?: boolean
+    omitConfirm?: boolean
+    omitButtons?: boolean
 }
 
 export const ConfirmModal = ({
@@ -44,9 +46,38 @@ export const ConfirmModal = ({
     confirmColor,
     cancelColor,
     omitCancel,
+    omitConfirm,
+    omitButtons,
     confirmButton,
 }: ConfirmModalProps) => {
     const theme = useTheme()
+
+    const confirmButtonElement = useMemo(() => {
+        if (omitConfirm) return null
+        if (confirmButton) return confirmButton
+        return (
+            <FancyButton
+                disabled={disableConfirm}
+                loading={isLoading}
+                clipThingsProps={{
+                    clipSize: "5px",
+                    backgroundColor: confirmBackground || colors.green,
+                    border: { borderColor: confirmBackground || colors.green, borderThickness: "2px" },
+                    sx: { flex: 2, position: "relative" },
+                }}
+                sx={{ pt: 0, pb: 0, minWidth: "5rem" }}
+                onClick={onConfirm}
+            >
+                <Stack direction="row" justifyContent="center">
+                    {confirmPrefix}
+                    <Typography variant="h6" sx={{ color: confirmColor || "#FFFFFF", fontWeight: "fontWeightBold" }}>
+                        {confirmLabel || "CONFIRM"}
+                    </Typography>
+                    {confirmSuffix}
+                </Stack>
+            </FancyButton>
+        )
+    }, [omitConfirm, confirmButton])
 
     return (
         <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
@@ -99,47 +130,30 @@ export const ConfirmModal = ({
                             </Typography>
                         )}
 
-                        <Stack direction="row" spacing="1rem" sx={{ pt: ".4rem" }}>
-                            <FancyButton
-                                clipThingsProps={{
-                                    clipSize: "5px",
-                                    backgroundColor: cancelBackground || colors.red,
-                                    border: { borderColor: cancelBackground || colors.red, borderThickness: "2px" },
-                                    sx: { flex: 2, position: "relative", visibility: omitCancel ? "hidden" : undefined },
-                                }}
-                                sx={{ pt: 0, pb: 0, minWidth: "5rem", visibility: omitCancel ? "hidden" : undefined }}
-                                onClick={!omitCancel ? onClose : undefined}
-                            >
-                                <Typography variant="h6" sx={{ color: cancelColor || "#FFFFFF", fontWeight: "fontWeightBold" }}>
-                                    {cancelLabel || "CANCEL"}
-                                </Typography>
-                            </FancyButton>
-
-                            {confirmButton ? (
-                                confirmButton
-                            ) : (
+                        {!omitButtons && (
+                            <Stack direction="row" spacing="1rem" sx={{ pt: ".4rem" }}>
                                 <FancyButton
-                                    disabled={disableConfirm}
-                                    loading={isLoading}
                                     clipThingsProps={{
                                         clipSize: "5px",
-                                        backgroundColor: confirmBackground || colors.green,
-                                        border: { borderColor: confirmBackground || colors.green, borderThickness: "2px" },
-                                        sx: { flex: 2, position: "relative" },
+                                        backgroundColor: cancelBackground || colors.red,
+                                        border: { borderColor: cancelBackground || colors.red, borderThickness: "2px" },
+                                        sx: {
+                                            flex: 2,
+                                            position: "relative",
+                                            visibility: omitCancel ? "hidden" : undefined,
+                                        },
                                     }}
-                                    sx={{ pt: 0, pb: 0, minWidth: "5rem" }}
-                                    onClick={onConfirm}
+                                    sx={{ pt: 0, pb: 0, minWidth: "5rem", visibility: omitCancel ? "hidden" : undefined }}
+                                    onClick={!omitCancel ? onClose : undefined}
                                 >
-                                    <Stack direction="row" justifyContent="center">
-                                        {confirmPrefix}
-                                        <Typography variant="h6" sx={{ color: confirmColor || "#FFFFFF", fontWeight: "fontWeightBold" }}>
-                                            {confirmLabel || "CONFIRM"}
-                                        </Typography>
-                                        {confirmSuffix}
-                                    </Stack>
+                                    <Typography variant="h6" sx={{ color: cancelColor || "#FFFFFF", fontWeight: "fontWeightBold" }}>
+                                        {cancelLabel || "CANCEL"}
+                                    </Typography>
                                 </FancyButton>
-                            )}
-                        </Stack>
+
+                                {confirmButtonElement}
+                            </Stack>
+                        )}
                     </Stack>
 
                     <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>

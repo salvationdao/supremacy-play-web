@@ -9,7 +9,7 @@ import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
 import { MechDetails } from "../../../../../types"
 import { MechModal } from "../../Common/MechModal"
-import { PlayerQueueStatus } from "../../../../LeftDrawer/QuickDeploy/QuickDeploy"
+import { PlayerQueueStatus } from "../../../../../types/battle_queue"
 
 export interface QueueFeed {
     queue_position: number

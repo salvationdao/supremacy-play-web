@@ -1,13 +1,13 @@
 import { IconButton, Stack, Typography } from "@mui/material"
 import { useState } from "react"
-import { TooltipHelper } from "../.."
+import { TooltipHelper } from "../../index"
 import { SvgNotification, SvgSupToken } from "../../../assets"
 import { useToggle } from "../../../hooks"
 import { colors } from "../../../theme/theme"
 import { PreferencesModal } from "../../Bar/ProfileCard/PreferencesModal/PreferencesModal"
 import { TelegramRegisterModal } from "../../Bar/ProfileCard/PreferencesModal/TelegramRegisterModal"
-import { PlayerQueueStatus } from "./QuickDeploy"
 import { BattleETA } from "../../BattleHistory/BattleETA"
+import { PlayerQueueStatus } from "../../../types/battle_queue"
 
 interface QueueDetailsProps {
     playerQueueStatus?: PlayerQueueStatus

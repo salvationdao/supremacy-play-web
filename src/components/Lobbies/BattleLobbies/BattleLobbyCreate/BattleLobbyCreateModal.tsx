@@ -6,18 +6,18 @@ import { SvgSupToken } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerCommandsFaction, useGameServerSubscriptionSecured } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { GameMap, MechBasicWithQueueStatus } from "../../../../types"
+import { GameMap, LobbyMech } from "../../../../types"
 import { FactionBasedDatePicker } from "../../../Common/FactionBasedDatePicker"
 import moment from "moment"
 import { FactionBasedTimePicker } from "../../../Common/FactionBasedTimePicker"
-import { MechSelector } from "./MechSelector"
+import { MechSelector } from "../../Common/MechSelector"
 import { FancyButton } from "../../../Common/FancyButton"
-import { SelectedMechSlots } from "./SelectedMechSlots"
-import { InputField } from "./InputField"
-import { SelectField } from "./SelectField"
-import { RadioGroupField } from "./RadioGroupField"
+import { SelectedMechSlots } from "../../Common/SelectedMechSlots"
+import { InputField } from "../../Common/InputField"
+import { SelectField } from "../../Common/SelectField"
+import { RadioGroupField } from "../../Common/RadioGroupField"
 import { combineDateTime, shortCodeGenerator } from "../../../../helpers"
-import { SliderField } from "./SliderField"
+import { SliderField } from "../../Common/SliderField"
 
 interface BattleLobbyCreateModalProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -55,7 +55,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
     const { factionTheme } = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
-    const [selectedMechs, setSelectedMechs] = useState<MechBasicWithQueueStatus[]>([])
+    const [selectedMechs, setSelectedMechs] = useState<LobbyMech[]>([])
     const [mapURL, setMapURL] = useState("")
 
     const [gameMaps, setGameMaps] = useState<GameMap[]>([])
@@ -122,6 +122,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                 ...lobbyForm,
                 will_not_start_until: wontStartUntil,
                 game_map_id: lobbyForm.game_map_id !== "" ? lobbyForm.game_map_id : undefined,
+                mech_ids: selectedMechs.map((sm) => sm.id),
             })
 
             setOpen(false)
@@ -132,7 +133,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
         } finally {
             setIsLoading(false)
         }
-    }, [lobbyForm, send])
+    }, [lobbyForm, send, selectedMechs])
 
     return (
         <ConfirmModal
@@ -161,7 +162,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
             width="150rem"
             omitCancel
         >
-            <Stack direction="column" sx={{ position: "relative" }}>
+            <Stack direction="column" spacing={1} sx={{ width: "100%", position: "relative" }}>
                 {/*Background image*/}
                 <Box
                     sx={{
@@ -180,7 +181,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                 <Stack direction="row" flex={1} spacing={3}>
                     <Stack
                         direction="column"
-                        spacing={2}
+                        spacing={1}
                         sx={{
                             width: "37rem",
                         }}
@@ -197,7 +198,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                         >
                             ROOM SETTING
                         </Typography>
-                        <Stack direction="column" spacing={2} sx={{ px: "1rem", pb: "2rem" }}>
+                        <Stack direction="column" spacing={1} sx={{ px: "1rem", pb: "2rem" }}>
                             <InputField
                                 variant="outlined"
                                 label="Name"
@@ -344,9 +345,10 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                         </Stack>
                     </Stack>
 
+                    {/* FEE & REWARD */}
                     <Stack
                         direction="column"
-                        spacing={2}
+                        spacing={1}
                         sx={{
                             width: "37rem",
                         }}
@@ -363,7 +365,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                         >
                             FEE & REWARD
                         </Typography>
-                        <Stack direction="column" spacing={2} sx={{ px: "1rem" }}>
+                        <Stack direction="column" spacing={1} sx={{ px: "1rem" }}>
                             <InputField
                                 variant="outlined"
                                 label="Entry Fee"

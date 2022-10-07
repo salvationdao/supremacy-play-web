@@ -1,16 +1,16 @@
 import { MechSlot } from "./MechSlot"
 import { Stack } from "@mui/material"
 import React, { useMemo } from "react"
-import { MechBasicWithQueueStatus } from "../../../../types"
+import { LobbyMech } from "../../../types"
 
 interface SelectedMechSlotsProps {
-    selectedMechs: MechBasicWithQueueStatus[]
-    setSelectedMechs: React.Dispatch<React.SetStateAction<MechBasicWithQueueStatus[]>>
+    selectedMechs: LobbyMech[]
+    setSelectedMechs: React.Dispatch<React.SetStateAction<LobbyMech[]>>
 }
 
 export const SelectedMechSlots = ({ selectedMechs, setSelectedMechs }: SelectedMechSlotsProps) => {
     const mechSlots = useMemo(() => {
-        const list: (MechBasicWithQueueStatus | null)[] = [...selectedMechs]
+        const list: (LobbyMech | null)[] = [...selectedMechs]
 
         while (list.length < 3) {
             list.push(null)
@@ -23,13 +23,13 @@ export const SelectedMechSlots = ({ selectedMechs, setSelectedMechs }: SelectedM
         <Stack
             direction="row"
             spacing="1rem"
+            flex={1}
             sx={{
-                height: "25rem",
                 width: "100%",
             }}
         >
             {mechSlots.map((ms, i) => (
-                <MechSlot key={i} battleLobbyMech={ms} />
+                <MechSlot key={i} lobbyMech={ms} canLeave leftQueue={() => setSelectedMechs((prev) => prev.filter((p) => p.id !== ms?.id))} />
             ))}
         </Stack>
     )

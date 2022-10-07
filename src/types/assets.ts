@@ -1,5 +1,6 @@
 import { Battle, Faction, Map, User, Vector2i } from "."
 import { FiatProduct } from "./fiat"
+import { MechWeaponSlot } from "./battle_queue"
 
 export enum RarityEnum {
     Mega = "MEGA",
@@ -171,6 +172,21 @@ export interface MechBasic extends Collection, Images {
 export interface MechBasicWithQueueStatus extends MechBasic {
     in_queue: boolean
 
+    status: MechStatusEnum
+    can_deploy: boolean
+    lobby_locked_at?: Date
+    assigned_to_battle_id?: string
+    lobby_number?: number
+    is_battle_ready: boolean
+    in_market_place: boolean
+}
+
+export interface LobbyMech extends MechBasic {
+    owner_id: string
+    power_core?: PowerCore
+    weapon_slots?: MechWeaponSlot[]
+
+    in_queue: boolean
     status: MechStatusEnum
     can_deploy: boolean
     lobby_locked_at?: Date

@@ -1,23 +1,22 @@
 import { Box, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import FlipMove from "react-flip-move"
-import { EmptyWarMachinesPNG } from "../../assets"
-import { useAuth } from "../../containers"
-import { useTheme } from "../../containers/theme"
-import { getRarityDeets } from "../../helpers"
-import { usePagination } from "../../hooks"
-import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } from "../../hooks/useGameServer"
-import { GameServerKeys } from "../../keys"
-import { colors, fonts } from "../../theme/theme"
-import { MechBasicWithQueueStatus } from "../../types"
-import { BattleLobby } from "../../types/battle_queue"
-import { SortTypeLabel } from "../../types/marketplace"
-import { ConfirmModal } from "../Common/ConfirmModal"
-import { TotalAndPageSizeOptions } from "../Common/TotalAndPageSizeOptions"
-import { QueueDetails } from "../LeftDrawer/QuickDeploy/QueueDetails"
-import { PlayerQueueStatus } from "../LeftDrawer/QuickDeploy/QuickDeploy"
-import { QuickDeployItem } from "../LeftDrawer/QuickDeploy/QuickDeployItem"
-import { SearchBattle } from "../Replays/BattlesReplays/SearchBattle"
+import { EmptyWarMachinesPNG } from "../../../assets"
+import { useAuth } from "../../../containers"
+import { useTheme } from "../../../containers/theme"
+import { getRarityDeets } from "../../../helpers"
+import { usePagination } from "../../../hooks"
+import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
+import { colors, fonts } from "../../../theme/theme"
+import { LobbyMech } from "../../../types"
+import { BattleLobby, PlayerQueueStatus } from "../../../types/battle_queue"
+import { SortTypeLabel } from "../../../types/marketplace"
+import { ConfirmModal } from "../../Common/ConfirmModal"
+import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
+import { QueueDetails } from "../BattleLobbyMech/QueueDetails"
+import { BattleLobbyMechQueueCard } from "../BattleLobbyMech/BattleLobbyMechQueueCard"
+import { SearchBattle } from "../../Replays/BattlesReplays/SearchBattle"
 
 const sortOptions = [
     { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
@@ -53,8 +52,8 @@ export const BattleLobbyJoinModal = ({ battleLobby, onJoin, onClose }: BattleLob
         },
     )
 
-    const [mechsWithQueueStatus, setMechsWithQueueStatus] = useState<MechBasicWithQueueStatus[]>([])
-    useGameServerSubscriptionSecuredUser<MechBasicWithQueueStatus[]>(
+    const [mechsWithQueueStatus, setMechsWithQueueStatus] = useState<LobbyMech[]>([])
+    useGameServerSubscriptionSecuredUser<LobbyMech[]>(
         {
             URI: "/owned_mechs",
             key: GameServerKeys.SubPlayerMechsBrief,
@@ -85,7 +84,7 @@ export const BattleLobbyJoinModal = ({ battleLobby, onJoin, onClose }: BattleLob
         },
     )
 
-    const [list, setList] = useState<MechBasicWithQueueStatus[]>([])
+    const [list, setList] = useState<LobbyMech[]>([])
     const { page, changePage, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: 10,
         page: 1,
@@ -194,7 +193,7 @@ export const BattleLobbyJoinModal = ({ battleLobby, onJoin, onClose }: BattleLob
                                 {list.map((mech) => {
                                     return (
                                         <div key={`mech-id-${mech.id}`} style={{ marginBottom: "1.3rem", cursor: "pointer" }}>
-                                            <QuickDeployItem
+                                            <BattleLobbyMechQueueCard
                                                 key={mech.id}
                                                 isSelected={selectedMechIDs.includes(mech.id)}
                                                 toggleIsSelected={() => {

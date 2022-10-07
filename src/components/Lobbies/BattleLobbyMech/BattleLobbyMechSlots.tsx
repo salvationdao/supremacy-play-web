@@ -1,5 +1,5 @@
 import { Box, Button, Stack, Typography } from "@mui/material"
-import { useCallback, useState } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 import { SvgCheckMark, SvgLogout, SvgPlus, SvgQuestionMark2, SvgWeapons } from "../../../assets"
 import { useAuth, useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -12,6 +12,8 @@ import { Faction } from "../../../types"
 import { BattleLobbiesMech } from "../../../types/battle_queue"
 import { ConfirmModal } from "../../Common/ConfirmModal"
 import { FancyButton } from "../../Common/FancyButton"
+import { WeaponSlot } from "../Common/weaponSlot"
+import { MechBarStats } from "../../Hangar/WarMachinesHangar/Common/MechBarStats"
 
 export interface BattleLobbyFaction {
     faction: Faction
@@ -31,7 +33,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
 
     // Leaving lobby
     const { send } = useGameServerCommandsFaction("/faction_commander")
-    const [showConfirmModal, setShowConfirmModal] = useState(false)
+    const [leftMechID, setLeftMechID] = useState("")
     const [isLoading, setIsLoading] = useState(false)
 
     const leaveLobby = useCallback(
@@ -41,7 +43,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                 await send(GameServerKeys.LeaveBattleLobby, {
                     mech_ids: [mechID],
                 })
-                setShowConfirmModal(false)
+                setLeftMechID("")
                 newSnackbarMessage("Successfully removed mech from lobby.", "success")
             } catch (e) {
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to leave battle lobby.", "error")
@@ -66,6 +68,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                 display: "flex",
                                 flexDirection: "column",
                                 padding: "1rem",
+                                height: "26.5rem",
                                 borderRadius: 0,
                                 backgroundColor: `${colors.offWhite}20`,
                             }}
@@ -102,8 +105,10 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                             padding: "1rem",
                             alignItems: "start",
                             textAlign: "initial",
+                            height: "26.5rem",
                             borderRadius: 0,
                             backgroundColor: `${colors.offWhite}20`,
+                            border: ms?.owner?.id === userID ? `${colors.gold}BB 2px solid` : undefined,
                         }}
                     >
                         <Stack direction="row" spacing="1rem" mb=".5rem">
@@ -149,35 +154,8 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                             </Box>
                             <Box>
                                 <Stack direction="row" spacing=".5rem" mb=".5rem">
-                                    {ms.weapon_slots.map((ws, index) => (
-                                        <Box
-                                            key={index}
-                                            sx={{
-                                                display: "flex",
-                                                alignItems: "center",
-                                                justifyContent: "center",
-                                                width: "25px",
-                                                height: "25px",
-                                                border: `1px solid ${theme.factionTheme.primary}66`,
-                                                backgroundColor: `${theme.factionTheme.background}`,
-                                            }}
-                                        >
-                                            {ws.weapon ? (
-                                                <Box
-                                                    key={ws.weapon.avatar_url}
-                                                    component="img"
-                                                    src={ws.weapon.avatar_url}
-                                                    sx={{
-                                                        width: "100%",
-                                                        height: "100%",
-                                                        objectFit: "cover",
-                                                        animation: `${scaleUpKeyframes} .5s ease-out`,
-                                                    }}
-                                                />
-                                            ) : (
-                                                <SvgWeapons />
-                                            )}
-                                        </Box>
+                                    {ms.weapon_slots.map((ws) => (
+                                        <WeaponSlot key={ws.slot_number} weaponSlot={ws} tooltipPlacement={"top-end"} size="3rem" />
                                     ))}
                                 </Stack>
                                 <Typography
@@ -214,6 +192,18 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                 )}
                             </Box>
                         </Stack>
+
+                        <MechBarStats
+                            mech={ms}
+                            color={theme.factionTheme.primary}
+                            fontSize="1.3rem"
+                            width="100%"
+                            spacing=".45rem"
+                            barHeight=".8rem"
+                            compact
+                            outerSx={{ flex: 1, width: "100%" }}
+                        />
+
                         <Stack direction="row" alignSelf="stretch" mt="auto" spacing=".5rem">
                             <FancyButton
                                 clipThingsProps={{
@@ -239,7 +229,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                             </FancyButton>
                             {ms.owner?.id === userID && (
                                 <FancyButton
-                                    onClick={() => setShowConfirmModal(true)}
+                                    onClick={() => setLeftMechID(ms?.mech_id || "")}
                                     disabled={isLocked || userID !== ms.owner?.id}
                                     loading={isLoading}
                                     clipThingsProps={{
@@ -253,9 +243,8 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                 </FancyButton>
                             )}
                         </Stack>
-
-                        {showConfirmModal && (
-                            <ConfirmModal title="Confirm Removal" onConfirm={() => leaveLobby(ms.mech_id)} onClose={() => setShowConfirmModal(false)}>
+                        {ms.owner?.id === userID && leftMechID === ms.mech_id && (
+                            <ConfirmModal title="Confirm Removal" onConfirm={() => leaveLobby(ms.mech_id)} onClose={() => setLeftMechID("")}>
                                 <Typography
                                     variant="h6"
                                     sx={{

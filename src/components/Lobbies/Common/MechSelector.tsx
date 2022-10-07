@@ -1,19 +1,19 @@
 import { Box, Pagination, Stack, Typography } from "@mui/material"
-import { useTheme } from "../../../../containers/theme"
-import { useDebounce, usePagination } from "../../../../hooks"
+import { useTheme } from "../../../containers/theme"
+import { useDebounce, usePagination } from "../../../hooks"
 import { useEffect, useMemo, useState } from "react"
-import { MechBasicWithQueueStatus } from "../../../../types"
-import { colors, fonts } from "../../../../theme/theme"
-import { SearchBattle } from "../../../Replays/BattlesReplays/SearchBattle"
-import { TotalAndPageSizeOptions } from "../../../Common/TotalAndPageSizeOptions"
-import { SortTypeLabel } from "../../../../types/marketplace"
-import { useGameServerSubscriptionSecuredUser } from "../../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../../keys"
-import { getRarityDeets } from "../../../../helpers"
+import { LobbyMech } from "../../../types"
+import { colors, fonts } from "../../../theme/theme"
+import { SearchBattle } from "../../Replays/BattlesReplays/SearchBattle"
+import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
+import { SortTypeLabel } from "../../../types/marketplace"
+import { useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
+import { getRarityDeets } from "../../../helpers"
 import FlipMove from "react-flip-move"
-import { QuickDeployItem } from "../../../LeftDrawer/QuickDeploy/QuickDeployItem"
-import { PlayerQueueStatus } from "../../../LeftDrawer/QuickDeploy/QuickDeploy"
-import { EmptyWarMachinesPNG } from "../../../../assets"
+import { BattleLobbyMechQueueCard } from "../BattleLobbyMech/BattleLobbyMechQueueCard"
+import { EmptyWarMachinesPNG } from "../../../assets"
+import { PlayerQueueStatus } from "../../../types/battle_queue"
 
 const sortOptions = [
     { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
@@ -23,14 +23,14 @@ const sortOptions = [
 ]
 
 interface MechSelectorProps {
-    selectedMechs: MechBasicWithQueueStatus[]
-    setSelectedMechs: React.Dispatch<React.SetStateAction<MechBasicWithQueueStatus[]>>
+    selectedMechs: LobbyMech[]
+    setSelectedMechs: React.Dispatch<React.SetStateAction<LobbyMech[]>>
 }
 
 export const MechSelector = ({ selectedMechs, setSelectedMechs }: MechSelectorProps) => {
     const { factionTheme } = useTheme()
     const [searchValue, setSearchValue, searchValueInstant] = useDebounce("", 300)
-    const [list, setList] = useState<MechBasicWithQueueStatus[]>([])
+    const [list, setList] = useState<LobbyMech[]>([])
     const { page, changePage, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: 10,
         page: 1,
@@ -52,8 +52,8 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs }: MechSelectorPr
         },
     )
 
-    const [ownedMechs, setOwnedMechs] = useState<MechBasicWithQueueStatus[]>([])
-    useGameServerSubscriptionSecuredUser<MechBasicWithQueueStatus[]>(
+    const [ownedMechs, setOwnedMechs] = useState<LobbyMech[]>([])
+    useGameServerSubscriptionSecuredUser<LobbyMech[]>(
         {
             URI: "/owned_mechs",
             key: GameServerKeys.SubPlayerMechsBrief,
@@ -132,7 +132,7 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs }: MechSelectorPr
                             direction: "ltr",
                             scrollbarWidth: "none",
                             "::-webkit-scrollbar": {
-                                width: "1rem",
+                                width: ".5rem",
                             },
                             "::-webkit-scrollbar-track": {
                                 background: "#FFFFFF15",
@@ -147,7 +147,7 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs }: MechSelectorPr
                                 {list.map((mech) => {
                                     return (
                                         <div key={`mech-id-${mech.id}`} style={{ marginBottom: "1.3rem", cursor: "pointer" }}>
-                                            <QuickDeployItem
+                                            <BattleLobbyMechQueueCard
                                                 key={mech.id}
                                                 isSelected={selectedMechs.some((sm) => sm.id === mech.id)}
                                                 mech={mech}
@@ -202,7 +202,7 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs }: MechSelectorPr
             <TotalAndPageSizeOptions
                 pageSize={pageSize}
                 changePageSize={changePageSize}
-                pageSizeOptions={[10, 20, 30]}
+                pageSizeOptions={[]}
                 changePage={changePage}
                 sortOptions={sortOptions}
                 selectedSort={sort}
