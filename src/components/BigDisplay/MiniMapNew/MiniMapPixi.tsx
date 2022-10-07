@@ -113,6 +113,22 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
             pixiMainItems.app.renderer.resize(containerDimensions.width, containerDimensions.height)
             pixiMainItems.viewport.resize(containerDimensions.width, containerDimensions.height)
 
+            // Clamp the zooming
+            const maxWidth =
+                pixiMainItems.app.renderer.width > pixiMainItems.app.renderer.height
+                    ? 10 * pixiMainItems.viewport.worldWidth
+                    : pixiMainItems.viewport.worldWidth
+            const maxHeight =
+                pixiMainItems.app.renderer.width < pixiMainItems.app.renderer.height
+                    ? 10 * pixiMainItems.viewport.worldHeight
+                    : pixiMainItems.viewport.worldHeight
+            pixiMainItems.viewport.clampZoom({
+                minWidth: 50,
+                minHeight: 50,
+                maxWidth,
+                maxHeight,
+            })
+
             // Fit to cover
             if (containerDimensions.width > containerDimensions.height) {
                 pixiMainItems.viewport.fitWidth()
@@ -149,7 +165,7 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
             }
 
             // Calculate the fit to cover dimension
-            const dimension = calculateCoverDimensions(
+            const coverDimension = calculateCoverDimensions(
                 { width: map.Width, height: map.Height },
                 {
                     width: pixiMainItems.app.renderer.width,
@@ -158,12 +174,11 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
             )
 
             // Update pixi viewport world dimension
-            pixiMainItems.viewport.resize(pixiMainItems.app.renderer.width, pixiMainItems.app.renderer.height, dimension.width, dimension.height)
-            pixiMainItems.viewport.clampZoom({ minWidth: 50, minHeight: 50, maxWidth: dimension.width, maxHeight: dimension.height })
+            pixiMainItems.viewport.resize(pixiMainItems.app.renderer.width, pixiMainItems.app.renderer.height, coverDimension.width, coverDimension.height)
 
             // Update the map's dimension and texture
-            pixiItems.current.mapSprite.width = dimension.width
-            pixiItems.current.mapSprite.height = dimension.height
+            pixiItems.current.mapSprite.width = coverDimension.width
+            pixiItems.current.mapSprite.height = coverDimension.height
             pixiItems.current.mapSprite.texture = mapTexture
 
             // Draw a line around the pixi viewport for easy debug
