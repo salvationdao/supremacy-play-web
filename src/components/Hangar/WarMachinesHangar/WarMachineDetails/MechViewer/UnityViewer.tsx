@@ -1,10 +1,10 @@
-import { Box, Fade, Typography } from "@mui/material"
-import { useEffect, useImperativeHandle, useRef, useState } from "react"
+import { Box, Fade, LinearProgress, Typography } from "@mui/material"
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react"
 import { Unity, useUnityContext } from "react-unity-webgl"
 import { DEV_ONLY, WEBGL_BASE_URL } from "../../../../../constants"
 import { useTheme } from "../../../../../containers/theme"
 import { pulseEffect } from "../../../../../theme/keyframes"
-import { fonts } from "../../../../../theme/theme"
+import { colors, fonts } from "../../../../../theme/theme"
 import { ClipThing } from "../../../../Common/ClipThing"
 import { LoadoutMechSkin, LoadoutPowerCore, LoadoutWeapon } from "../MechLoadout/MechLoadout"
 import { MechViewerProps } from "./MechViewer"
@@ -47,6 +47,7 @@ if (DEV_ONLY) {
 
 export interface UnityParams {
     unityRef: React.ForwardedRef<UnityHandle>
+    orbitControlsRef: React.RefObject<HTMLElement>
     onUnlock: () => void
     onReady: () => void
 }
@@ -57,7 +58,7 @@ interface UnityViewerProps extends MechViewerProps {
 
 export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
     const theme = useTheme()
-    const { unityProvider, sendMessage, addEventListener, removeEventListener, isLoaded } = useUnityContext({
+    const { unityProvider, sendMessage, addEventListener, removeEventListener, isLoaded, loadingProgression } = useUnityContext({
         loaderUrl: `${baseUrl}WebGL.loader.js`,
         dataUrl: `${baseUrl}/WebGL.data.br`,
         frameworkUrl: `${baseUrl}/WebGL.framework.js.br`,
@@ -66,8 +67,9 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
     })
     const sent = useRef(false)
     const ready = useRef(false)
-    const canvasRef = useRef<HTMLCanvasElement>(null)
     const [siloReady, setSiloReady] = useState(false)
+    const [progress, setProgress] = useState(0)
+    const [showLoader, setShowLoader] = useState(true)
     const [isPendingChange, setIsPendingChange] = useState(false)
     const [showClickToLoadOverlay, setShowClickToLoadOverlay] = useState(true)
 
@@ -126,12 +128,21 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
     }))
 
     // Check if hangar is ready, finished loading, user has clicked etc.
+    const isEverythingReady = useMemo(
+        () => !showClickToLoadOverlay && isLoaded && siloReady && progress === 100,
+        [isLoaded, progress, showClickToLoadOverlay, siloReady],
+    )
     useEffect(() => {
-        console.log(siloReady)
-        if (showClickToLoadOverlay || !siloReady || ready.current) return
+        if (!isEverythingReady || ready.current) return
         unity.onReady()
         ready.current = true
-    }, [showClickToLoadOverlay, siloReady, unity])
+    }, [isEverythingReady, unity])
+
+    // Update progress based on unity
+    useEffect(() => {
+        if (progress === 100 || showClickToLoadOverlay) return
+        setProgress((loadingProgression * 100) / 1.25)
+    }, [loadingProgression, progress, showClickToLoadOverlay])
 
     useEffect(() => {
         const handleMouseClick = () => {
@@ -148,6 +159,15 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
     }, [addEventListener, removeEventListener])
 
     useEffect(() => {
+        const onFittingRoomLoaded = () => {
+            setProgress(100)
+            setTimeout(() => setShowLoader(false), 1000)
+        }
+        addEventListener("FittingRoomLoaded", onFittingRoomLoaded)
+        return () => removeEventListener("FittingRoomLoaded", onFittingRoomLoaded)
+    }, [addEventListener, removeEventListener])
+
+    useEffect(() => {
         const onSlotLoaded = () => {
             console.log("slot unlocked")
             unity.onUnlock()
@@ -159,38 +179,35 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
 
     const isMouseDown = useRef(false)
     useEffect(() => {
-        if (!isLoaded || !canvasRef.current) return
+        if (!isEverythingReady || !unity.orbitControlsRef.current) return
 
         const handleMouseUp = (event: MouseEvent) => {
-            console.log("mouse up")
             if (event.button == 0 && isMouseDown.current) {
                 isMouseDown.current = false
                 sendMessage("FittingRoomPlayer", "OnMouseClick")
             }
         }
         const handleMouseDown = (event: MouseEvent) => {
-            console.log("mouse down")
             if (event.button == 0) {
                 isMouseDown.current = !isMouseDown.current
                 sendMessage("FittingRoomPlayer", "OnMouseClick")
             }
         }
         const handleMouseWheel = (event: WheelEvent) => {
-            console.log("mouse wheel")
             sendMessage("FittingRoomPlayer", "OnZoomChange", event.deltaY / -100)
         }
 
-        const canvas = canvasRef.current
-        canvas.addEventListener("mouseup", handleMouseUp)
-        canvas.addEventListener("mousedown", handleMouseDown)
-        canvas.addEventListener("wheel", handleMouseWheel)
+        const orbitDiv = unity.orbitControlsRef.current
+        orbitDiv.addEventListener("mouseup", handleMouseUp)
+        orbitDiv.addEventListener("mousedown", handleMouseDown)
+        orbitDiv.addEventListener("wheel", handleMouseWheel)
 
         return () => {
-            canvas.removeEventListener("mouseup", handleMouseUp)
-            canvas.removeEventListener("mousedown", handleMouseDown)
-            canvas.removeEventListener("wheel", handleMouseWheel)
+            orbitDiv.removeEventListener("mouseup", handleMouseUp)
+            orbitDiv.removeEventListener("mousedown", handleMouseDown)
+            orbitDiv.removeEventListener("wheel", handleMouseWheel)
         }
-    }, [isLoaded, sendMessage])
+    }, [isEverythingReady, sendMessage, unity.orbitControlsRef])
 
     useEffect(() => {
         if (!isLoaded || !siloReady || sent.current) return
@@ -204,10 +221,6 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
         if (mechDetails.weapons) {
             mechDetails.weapons.forEach((w) => {
                 if (w.slot_number == null) return
-                // if (w.weapon_type === WeaponType.MissileLauncher) {
-                //     accessories.splice(w.slot_number, 1)
-                //     return
-                // }
                 accessories[w.slot_number] = {
                     type: "weapon",
                     ownership_id: w.id,
@@ -273,10 +286,9 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
         }
         const inventory: HangarSilo = {
             faction: mechDetails.faction_id,
-            silos: [mech],
         }
         sendMessage("ProjectContext(Clone)", "GetPlayerInventoryFromPage", JSON.stringify(inventory))
-        sendMessage("ProjectContext(Clone)", "FittingRoom")
+        sendMessage("ProjectContext(Clone)", "FittingRoom", JSON.stringify(mech))
         sent.current = true
     }, [
         sendMessage,
@@ -294,6 +306,20 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
         mechDetails.id,
     ])
 
+    const renderProgress = useCallback(() => {
+        return (
+            <LinearProgress
+                sx={{
+                    height: "9px",
+                    backgroundColor: `${colors.gold}15`,
+                    ".MuiLinearProgress-bar": { backgroundColor: colors.gold },
+                }}
+                variant="determinate"
+                value={progress}
+            />
+        )
+    }, [progress])
+
     return (
         <Box
             sx={{
@@ -303,13 +329,51 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
             }}
         >
             <Unity
-                ref={canvasRef}
                 unityProvider={unityProvider}
                 style={{
                     width: "100%",
                     height: "100%",
                 }}
             />
+            <Fade in={showLoader} mountOnEnter unmountOnExit>
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        backgroundColor: theme.factionTheme.background,
+                    }}
+                >
+                    <ClipThing
+                        border={{
+                            borderColor: theme.factionTheme.primary,
+                        }}
+                        corners={{
+                            topLeft: true,
+                            bottomRight: true,
+                        }}
+                        backgroundColor={theme.factionTheme.background}
+                        sx={{
+                            padding: "1rem",
+                        }}
+                    >
+                        <Typography
+                            sx={{
+                                fontFamily: fonts.nostromoBlack,
+                                fontSize: "3rem",
+                            }}
+                        >
+                            Loading Mech
+                        </Typography>
+                        {renderProgress()}
+                    </ClipThing>
+                </Box>
+            </Fade>
             {showClickToLoadOverlay && (
                 <Box
                     sx={{
@@ -336,6 +400,7 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
                     </Typography>
                 </Box>
             )}
+
             <Fade in={isPendingChange} mountOnEnter unmountOnExit>
                 <Box
                     sx={{
