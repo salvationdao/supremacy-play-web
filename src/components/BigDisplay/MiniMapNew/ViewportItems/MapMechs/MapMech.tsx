@@ -172,18 +172,13 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             pixiMapMech?.showDashedBox(showDashedBox)
 
             if (pixiMapMech) {
-                // If the winner/ability is not a mech select type, disable mech click
-                if (
-                    ability &&
-                    ability.location_select_type !== LocationSelectType.MechCommand &&
-                    ability.location_select_type !== LocationSelectType.MechSelect &&
-                    ability.location_select_type !== LocationSelectType.MechSelectAllied &&
-                    ability.location_select_type !== LocationSelectType.MechSelectOpponent
-                ) {
-                    pixiMapMech.rootInner.interactive = false
-                } else {
-                    pixiMapMech.rootInner.interactive = true
-                }
+                // Allow clicking on mech IF not using any ability, or using ability and it related to this mech
+                pixiMapMech.rootInner2.interactive =
+                    !ability ||
+                    ability.location_select_type === LocationSelectType.MechSelect ||
+                    ability.location_select_type === LocationSelectType.MechSelectAllied ||
+                    ability.location_select_type === LocationSelectType.MechSelectOpponent ||
+                    (ability.location_select_type === LocationSelectType.MechCommand && pa?.mechHash === hash)
             }
         }
 
