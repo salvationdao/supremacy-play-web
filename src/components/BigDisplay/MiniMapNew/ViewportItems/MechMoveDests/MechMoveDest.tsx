@@ -4,19 +4,19 @@ import { FactionMechCommand } from "./MechMoveDests"
 import { PixiMechMoveDest } from "./pixiMechMoveDest"
 
 export const MechMoveDest = React.memo(function MechMoveDests({ moveCommand }: { moveCommand: FactionMechCommand }) {
-    const { pixiMainItems, gridSizeRef, gridCellToViewportPosition, mapItemMinSize } = useMiniMapPixi()
+    const { pixiMiniMapPixi, gridSizeRef, gridCellToViewportPosition, mapItemMinSize } = useMiniMapPixi()
     const [pixiMechMoveDest, setPixiMechMoveDest] = useState<PixiMechMoveDest>()
 
     // Initial setup
     useEffect(() => {
-        if (!pixiMainItems) return
+        if (!pixiMiniMapPixi) return
         const pixiMechMoveDest = new PixiMechMoveDest(moveCommand, gridSizeRef, gridCellToViewportPosition, mapItemMinSize)
-        pixiMainItems.viewport.addChild(pixiMechMoveDest.root)
+        pixiMiniMapPixi.viewport.addChild(pixiMechMoveDest.root)
         setPixiMechMoveDest((prev) => {
             prev?.destroy()
             return pixiMechMoveDest
         })
-    }, [gridCellToViewportPosition, gridSizeRef, moveCommand, pixiMainItems, mapItemMinSize])
+    }, [gridCellToViewportPosition, gridSizeRef, moveCommand, pixiMiniMapPixi, mapItemMinSize])
 
     // Cleanup
     useEffect(() => {

@@ -1,7 +1,6 @@
-import { Viewport } from "pixi-viewport"
-import * as PIXI from "pixi.js"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
+import { PixiMiniMapPixi } from "../components/BigDisplay/MiniMapNew/MiniMapPixi/pixiMiniMapPixi"
 import { deepEqual } from "../helpers"
 import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
@@ -40,11 +39,6 @@ export interface MapSelection {
     mechHash?: string
 }
 
-interface PixiMainItems {
-    app: PIXI.Application
-    viewport: Viewport
-}
-
 export const MiniMapPixiContainer = createContainer(() => {
     const { map, isBattleStarted } = useGame()
     const { factionID } = useAuth()
@@ -61,7 +55,7 @@ export const MiniMapPixiContainer = createContainer(() => {
     // ************************************
     // ********** PIXI map stuff **********
     // ************************************
-    const [pixiMainItems, setPixiMainItems] = useState<PixiMainItems>()
+    const [pixiMiniMapPixi, setPixiMiniMapPixi] = useState<PixiMiniMapPixi>()
     const mapMousePosition = useRef<Position>()
     // Cache map related values into ref so it can be used within subscription callbacks
     const mapRef = useRef<Map>()
@@ -72,11 +66,11 @@ export const MiniMapPixiContainer = createContainer(() => {
     // Update cached map values
     useEffect(() => {
         mapRef.current = map
-        if (!map || !pixiMainItems) return
-        mapScalingRef.current = { x: pixiMainItems.viewport.worldWidth / map.Width, y: pixiMainItems.viewport.worldHeight / map.Height }
+        if (!map || !pixiMiniMapPixi) return
+        mapScalingRef.current = { x: pixiMiniMapPixi.viewport.worldWidth / map.Width, y: pixiMiniMapPixi.viewport.worldHeight / map.Height }
         gridSizeRef.current = { width: (mapScalingRef.current.x * map.Width) / map.Cells_X, height: (mapScalingRef.current.y * map.Height) / map.Cells_Y }
         mapItemMinSize.current = Math.max(gridSizeRef.current.width, 0.03 * map.Width * mapScalingRef.current.x)
-    }, [map, pixiMainItems])
+    }, [map, pixiMiniMapPixi])
 
     // Converts game client position (x, y) to (x, y) that fits into the viewport (viewport position)
     const clientPositionToViewportPosition = useRef((x: number, y: number) => {
@@ -301,8 +295,8 @@ export const MiniMapPixiContainer = createContainer(() => {
 
         // Pixi and map related stuff
         mapRef,
-        pixiMainItems,
-        setPixiMainItems,
+        pixiMiniMapPixi,
+        setPixiMiniMapPixi,
         mapScalingRef,
         gridSizeRef,
         mapItemMinSize,

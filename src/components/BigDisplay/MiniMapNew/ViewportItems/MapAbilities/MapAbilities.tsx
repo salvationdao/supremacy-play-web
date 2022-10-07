@@ -36,7 +36,7 @@ interface PendingHiveStateChange {
 
 export const MapAbilities = React.memo(function MapAbilities() {
     const { currentArenaID } = useArena()
-    const { pixiMainItems, gridSizeRef, clientPositionToViewportPosition, gridCellToViewportPosition, mapItemMinSize } = useMiniMapPixi()
+    const { pixiMiniMapPixi, gridSizeRef, clientPositionToViewportPosition, gridCellToViewportPosition, mapItemMinSize } = useMiniMapPixi()
     const [pixiMapAbilities, setPixiMapAbilities] = useState<PixiMapAbilities>()
 
     // Refs, doesnt cause re-render
@@ -47,9 +47,9 @@ export const MapAbilities = React.memo(function MapAbilities() {
 
     // Initial setup
     useEffect(() => {
-        if (!pixiMainItems) return
+        if (!pixiMiniMapPixi) return
         const pixiMapAbilities = new PixiMapAbilities(
-            pixiMainItems.viewport,
+            pixiMiniMapPixi.viewport,
             gridSizeRef,
             clientPositionToViewportPosition,
             gridCellToViewportPosition,
@@ -61,7 +61,7 @@ export const MapAbilities = React.memo(function MapAbilities() {
             prev?.destroy()
             return pixiMapAbilities
         })
-    }, [pixiMainItems, gridSizeRef, clientPositionToViewportPosition, gridCellToViewportPosition, mapItemMinSize])
+    }, [pixiMiniMapPixi, gridSizeRef, clientPositionToViewportPosition, gridCellToViewportPosition, mapItemMinSize])
 
     // Cleanup
     useEffect(() => {
