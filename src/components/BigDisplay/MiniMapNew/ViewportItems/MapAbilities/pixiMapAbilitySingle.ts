@@ -170,7 +170,6 @@ export class PixiMapAbilitySingle {
             this.emitter?.destroy()
             this.emitter = new particles.Emitter(this.rootInner, CircleParticle, config)
             this.emitter.emit = true
-            this.root.alpha = 0.4
         }
 
         this.render()

@@ -43,7 +43,6 @@ export const SupremacyContainer = createContainer(() => {
         const callback = () => {
             setHasInteracted(true)
         }
-
         document.addEventListener("pointerdown", callback, { once: true })
     }, [])
 

@@ -43,11 +43,5 @@ export const Grid = React.memo(function Grid() {
         if (btn) btn.style.opacity = showGrid ? "1" : " 0.4"
     }, [pixiGrid, showGrid])
 
-    // Cleanup
-    useEffect(() => {
-        return () => pixiGrid?.destroy()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [pixiGrid])
-
     return null
 })
