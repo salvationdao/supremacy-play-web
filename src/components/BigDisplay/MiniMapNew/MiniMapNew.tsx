@@ -1,11 +1,11 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import React, { useEffect, useMemo, useRef, useState } from "react"
 import { BattleBgWebP, SvgFullscreen, SvgGrid, SvgMinimize, SvgSwap } from "../../../assets"
-import { useDimension, useGame, useMiniMapPixi, useUI, WinnerStruct } from "../../../containers"
+import { useDimension, useGame, useMiniMapPixi, useUI } from "../../../containers"
 import { useHotkey } from "../../../containers/hotkeys"
 import { useToggle } from "../../../hooks"
 import { fonts } from "../../../theme/theme"
-import { Map, PlayerAbility } from "../../../types"
+import { AnyAbility, BattleState, Map } from "../../../types"
 import { WindowPortal } from "../../Common/WindowPortal/WindowPortal"
 import { useWindowPortal } from "../../Common/WindowPortal/WindowPortalContainer"
 import { LEFT_DRAWER_WIDTH } from "../../LeftDrawer/LeftDrawer"
@@ -17,7 +17,7 @@ const BOTTOM_PADDING = 11.5 // rems
 
 export const MiniMapNew = () => {
     const { smallDisplayRef, bigDisplayRef, isStreamBigDisplay } = useUI()
-    const { map, isBattleStarted } = useGame()
+    const { map, battleState } = useGame()
     const [isPoppedout, setIsPoppedout] = useState(false)
     const [ref, setRef] = useState<HTMLDivElement | null>(null)
 
@@ -39,7 +39,7 @@ export const MiniMapNew = () => {
     }, [ref, isStreamBigDisplay, isPoppedout, smallDisplayRef, bigDisplayRef])
 
     const content = useMemo(() => {
-        if (isBattleStarted && map) {
+        if (battleState === BattleState.BattlingState && map) {
             if (isPoppedout) {
                 return (
                     <WindowPortal title="Supremacy - Battle Arena" onClose={() => setIsPoppedout(false)} features={{ width: 600, height: 600 }}>
@@ -52,7 +52,7 @@ export const MiniMapNew = () => {
         }
 
         return <BattleNotStarted />
-    }, [isBattleStarted, isPoppedout, map])
+    }, [battleState, isPoppedout, map])
 
     return (
         <Box ref={setRef} sx={{ width: "100%", height: "100%" }}>
@@ -147,9 +147,9 @@ const MiniMapInnerNormal = ({ map, isPoppedout, setIsPoppedout }: MiniMapInnerPr
 const MiniMapInner = ({ map, isPoppedout, width = 100, height = 100, poppedOutContainerRef }: MiniMapInnerProps) => {
     const { handleMiniMapHotKey } = useHotkey()
     const { remToPxRatio } = useDimension()
-    const { onAbilityUseCallbacks } = useMiniMapPixi()
+    const { onAnyAbilityUseCallbacks } = useMiniMapPixi()
     const { isStreamBigDisplay, setIsStreamBigDisplay, toggleIsStreamBigDisplayMemorized, restoreIsStreamBigDisplayMemorized, stopMapRender } = useUI()
-    const [isEnlarged, toggleIsEnlarged] = useToggle(false)
+    const [isEnlarged, toggleIsEnlarged] = useToggle(localStorage.getItem("isMiniMapEnlarged") === "true")
 
     const mapHeightWidthRatio = useRef(1)
 
@@ -158,10 +158,14 @@ const MiniMapInner = ({ map, isPoppedout, width = 100, height = 100, poppedOutCo
         if (isStreamBigDisplay) toggleIsEnlarged(false)
     }, [isStreamBigDisplay, toggleIsEnlarged])
 
+    useEffect(() => {
+        localStorage.setItem("isMiniMapEnlarged", isEnlarged.toString())
+    }, [isEnlarged])
+
     // When it's targeting, enlarge to big display, else restore to the prev location
     useEffect(() => {
-        onAbilityUseCallbacks.current["mini-map-new"] = (wn: WinnerStruct | undefined, pa: PlayerAbility | undefined) => {
-            if (wn || pa) {
+        onAnyAbilityUseCallbacks.current["mini-map-new"] = (aa: AnyAbility | undefined) => {
+            if (aa) {
                 toggleIsStreamBigDisplayMemorized(false)
             } else {
                 setTimeout(() => {
@@ -169,7 +173,7 @@ const MiniMapInner = ({ map, isPoppedout, width = 100, height = 100, poppedOutCo
                 }, 3000)
             }
         }
-    }, [onAbilityUseCallbacks, restoreIsStreamBigDisplayMemorized, toggleIsStreamBigDisplayMemorized])
+    }, [onAnyAbilityUseCallbacks, restoreIsStreamBigDisplayMemorized, toggleIsStreamBigDisplayMemorized])
 
     // Set sizes
     const sizes = useMemo(() => {
@@ -292,11 +296,7 @@ const MiniMapInner = ({ map, isPoppedout, width = 100, height = 100, poppedOutCo
                             <SvgGrid size="1.6rem" />
                         </Box>
 
-                        <Typography sx={{ fontFamily: fonts.nostromoHeavy }}>
-                            {map.Name.replace(/([A-Z])/g, " $1")
-                                .trim()
-                                .toUpperCase()}
-                        </Typography>
+                        <Typography sx={{ fontFamily: fonts.nostromoHeavy }}>{map.Name}</Typography>
                     </Stack>
 
                     <MiniMapPixi containerDimensions={{ width: sizes.insideWidth, height: sizes.insideHeight }} poppedOutContainerRef={poppedOutContainerRef} />

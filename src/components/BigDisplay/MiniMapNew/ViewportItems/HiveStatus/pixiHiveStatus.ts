@@ -70,7 +70,7 @@ class PixiHexagonTile {
     constructor(radius: number, x: number, y: number, yaw: number, half: boolean) {
         const height = radius * Math.sqrt(3)
         this.root = new PIXI.Graphics()
-        this.root.beginFill(HEXToVBColor("#000000"))
+        this.root.beginFill(HEXToVBColor("#000000"), 0.8)
 
         if (half) {
             this.root.drawPolygon([radius, 0, radius / 2, -height / 2, -radius / 2, -height / 2, -radius, 0])
@@ -89,6 +89,7 @@ class PixiHexagonTile {
     updateRaised(raised: boolean) {
         if (this.raised !== raised) {
             ease.add(this.root, { alpha: raised ? 1 : 0 }, { duration: 900, ease: "linear", removeExisting: true })
+            this.raised = raised
         }
     }
 }

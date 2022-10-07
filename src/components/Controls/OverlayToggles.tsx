@@ -11,24 +11,6 @@ export const OverlayToggles = () => {
             <Typography variant="body2" sx={{ lineHeight: 1, mr: ".4rem" }}>
                 OVERLAYS:{" "}
             </Typography>
-
-            {/* Upcoming battle */}
-            {/*<TooltipHelper text="Toggle the upcoming battle screen.">*/}
-            {/*    <IconButton*/}
-            {/*        size="small"*/}
-            {/*        onClick={() => toggleShowUpcomingBattle()}*/}
-            {/*        sx={{*/}
-            {/*            filter: showUpcomingBattle ? "grayscale(0)" : "grayscale(1)",*/}
-            {/*            opacity: showUpcomingBattle ? 1 : 0.4,*/}
-            {/*            transition: "all .2s",*/}
-            {/*            ":hover": { filter: "grayscale(0.2)" },*/}
-            {/*            ":active": { filter: "grayscale(.6)" },*/}
-            {/*        }}*/}
-            {/*    >*/}
-            {/*        <SvgUpcomingBattle size="1.7rem" fill="#E8BB3F" />*/}
-            {/*    </IconButton>*/}
-            {/*</TooltipHelper>*/}
-
             {/* Battle history */}
             {/* <TooltipHelper text="Toggle the battle history page.">
                 <IconButton
@@ -45,7 +27,6 @@ export const OverlayToggles = () => {
                     <SvgHistory size="1.7rem" fill="#E8BB3F" />
                 </IconButton>
             </TooltipHelper> */}
-
             {/* Watch trailer */}
             <TooltipHelper text="Watch the Supremacy trailer video.">
                 <IconButton

@@ -3,7 +3,7 @@ import { useMemo } from "react"
 import { useAuth, useGame, useSupremacy, useUI } from "../../../containers"
 import { colors, fonts } from "../../../theme/theme"
 import { ArenaSelector } from "./ArenaSelector/ArenaSelector"
-import { BattleAbility } from "./BattleAbility/BattleAbility"
+import { SupporterAbilities } from "./SupporterAbilities/SupporterAbilities"
 import { UnauthPrompt } from "./Common/UnauthPrompt"
 import { PlayerAbilities } from "./PlayerAbilities/PlayerAbilities"
 import { QuickPlayerAbilities } from "./QuickPlayerAbilities/QuickPlayerAbilities"
@@ -47,7 +47,7 @@ export const BattleArena = () => {
                     <Box sx={{ direction: "ltr", height: 0 }}>
                         <Stack>
                             {!userID && <UnauthPrompt />}
-                            <BattleAbility />
+                            <SupporterAbilities />
                             <PlayerAbilities />
                             <QuickPlayerAbilities />
                         </Stack>

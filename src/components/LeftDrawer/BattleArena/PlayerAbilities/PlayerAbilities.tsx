@@ -9,24 +9,24 @@ import { usePagination } from "../../../../hooks"
 import { useGameServerSubscriptionSecuredUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
-import { LocationSelectType, PlayerAbility } from "../../../../types"
+import { BattleState, LocationSelectType, PlayerAbility } from "../../../../types"
 import { SectionCollapsible } from "../Common/SectionCollapsible"
 import { PlayerAbilityCard } from "./PlayerAbilityCard"
 
 export const PlayerAbilities = () => {
     const { userID } = useAuth()
-    const { bribeStage, isBattleStarted, isAIDrivenMatch } = useGame()
+    const { battleState, isAIDrivenMatch } = useGame()
 
-    if (!bribeStage || !userID) return null
+    if (battleState !== BattleState.BattlingState || !userID) return null
 
     return (
         <Box sx={{ position: "relative" }}>
             <SectionCollapsible label="OWNED ABILITIES" tooltip="Launch your own abilities." initialExpanded={true} localStoragePrefix="playerAbility">
-                <Box sx={{ pointerEvents: isBattleStarted ? "all" : "none" }}>
+                <Box sx={{ pointerEvents: battleState === BattleState.BattlingState ? "all" : "none" }}>
                     <PlayerAbilitiesInner />
                 </Box>
 
-                {(isAIDrivenMatch || !isBattleStarted) && (
+                {(isAIDrivenMatch || battleState !== BattleState.BattlingState) && (
                     <Box sx={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "#000000AA" }} />
                 )}
             </SectionCollapsible>
@@ -198,7 +198,7 @@ const PlayerAbilitiesInner = () => {
     )
 }
 
-const FilterButton = ({
+export const FilterButton = ({
     value,
     currentSelectedValue,
     onChange: setLocationSelectTypes,
@@ -211,21 +211,21 @@ const FilterButton = ({
 }) => {
     const theme = useTheme()
 
-    const isSame = value.join("||") === currentSelectedValue.join("||")
+    const isSelected = value.join("||") === currentSelectedValue.join("||")
 
     return (
         <Button
             sx={{
                 "&&": {
-                    backgroundColor: isSame ? theme.factionTheme.primary : "unset",
+                    backgroundColor: isSelected ? theme.factionTheme.primary : "unset",
                     border: `1px solid ${theme.factionTheme.primary}`,
                 },
                 svg: {
-                    fill: isSame ? theme.factionTheme.secondary : "#FFFFFF",
+                    fill: isSelected ? `${theme.factionTheme.secondary} !important` : "#FFFFFF",
                 },
             }}
             onClick={() => {
-                setLocationSelectTypes(isSame ? [] : value)
+                setLocationSelectTypes(isSelected ? [] : value)
             }}
         >
             {icon}

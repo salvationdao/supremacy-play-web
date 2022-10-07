@@ -2,8 +2,7 @@ import { Box } from "@mui/material"
 import { Viewport } from "pixi-viewport"
 import * as PIXI from "pixi.js"
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { useGame } from "../../../containers"
-import { useMiniMapPixi } from "../../../containers/minimapPixi"
+import { useGame, useMiniMapPixi, useSupremacy } from "../../../containers"
 import { calculateCoverDimensions, HEXToVBColor } from "../../../helpers"
 import { colors } from "../../../theme/theme"
 import { Dimension } from "../../../types"
@@ -36,17 +35,9 @@ const propsAreEqual = (prevProps: MiniMapPixiProps, nextProps: MiniMapPixiProps)
 
 export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions }: MiniMapPixiProps) {
     const { map } = useGame()
-    const {
-        pixiMainItems,
-        setPixiMainItems,
-        gridSizeRef,
-        mapMousePosition,
-        setHighlightedMechParticipantID,
-        selectMapPosition,
-        winner,
-        playerAbility,
-        selection,
-    } = useMiniMapPixi()
+    const { battleIdentifier } = useSupremacy()
+    const { pixiMainItems, setPixiMainItems, gridSizeRef, mapMousePosition, setHighlightedMechParticipantID, selectMapPosition, anyAbility, selection } =
+        useMiniMapPixi()
     const [miniMapPixiRef, setMiniMapPixiRef] = useState<HTMLDivElement | null>(null)
     const pixiItems = useRef<PixiItems>({})
     const isDragging = useRef(false)
@@ -61,7 +52,6 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
                 backgroundColor: HEXToVBColor(colors.darkNavyBlue),
                 width: dimension.width,
                 height: dimension.height,
-                resolution: window.devicePixelRatio || 1,
             })
 
             // Append pixi canvas to the DOM
@@ -87,12 +77,6 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
                     direction: "all",
                     underflow: "center",
                 })
-                .clampZoom({
-                    maxWidth: viewport.screenWidth,
-                    maxHeight: viewport.screenHeight,
-                    minWidth: 50,
-                    minHeight: 50,
-                })
                 .on("drag-start", () => {
                     isDragging.current = true
                 })
@@ -106,7 +90,7 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
 
             setPixiMainItems({ app, viewport })
 
-            // Need this timeout to allow some time for pixi and map things to setup
+            // Need this timeout to allow some time for pixi and map things to set up
             setTimeout(() => {
                 setIsReady(true)
             }, 500)
@@ -114,7 +98,7 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
         [pixiMainItems, setPixiMainItems],
     )
 
-    // Setup the pixi app
+    // Set up the pixi app
     useEffect(() => {
         if (!miniMapPixiRef) return
 
@@ -124,17 +108,19 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
             return
         }
 
-        // When parent container size changes, resize the renderer and viewport dimension
-        pixiMainItems.app.renderer.resize(containerDimensions.width, containerDimensions.height)
-        pixiMainItems.viewport.resize(containerDimensions.width, containerDimensions.height)
+        setTimeout(() => {
+            // When parent container size changes, resize the renderer and viewport dimension
+            pixiMainItems.app.renderer.resize(containerDimensions.width, containerDimensions.height)
+            pixiMainItems.viewport.resize(containerDimensions.width, containerDimensions.height)
 
-        // Fit to cover
-        if (containerDimensions.width > containerDimensions.height) {
-            pixiMainItems.viewport.fitWidth()
-        } else {
-            pixiMainItems.viewport.fitHeight()
-        }
-        pixiMainItems.viewport.moveCorner(0, 0)
+            // Fit to cover
+            if (containerDimensions.width > containerDimensions.height) {
+                pixiMainItems.viewport.fitWidth()
+            } else {
+                pixiMainItems.viewport.fitHeight()
+            }
+            pixiMainItems.viewport.moveCorner(0, 0)
+        }, 0)
     }, [pixiMainItems, containerDimensions, setupPixi, miniMapPixiRef])
 
     // Cleanup
@@ -173,6 +159,7 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
 
             // Update pixi viewport world dimension
             pixiMainItems.viewport.resize(pixiMainItems.app.renderer.width, pixiMainItems.app.renderer.height, dimension.width, dimension.height)
+            pixiMainItems.viewport.clampZoom({ minWidth: 50, minHeight: 50, maxWidth: dimension.width, maxHeight: dimension.height })
 
             // Update the map's dimension and texture
             pixiItems.current.mapSprite.width = dimension.width
@@ -206,14 +193,14 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
             if (isDragging.current) return
 
             // Unhighlight mech
-            if (!playerAbility.current) {
+            if (!anyAbility.current) {
                 setHighlightedMechParticipantID(undefined)
             }
 
             const clickedPos = pixiMainItems?.viewport.toLocal(event.data.global)
             if (!clickedPos) return
 
-            if (winner.current || playerAbility.current) {
+            if (anyAbility.current) {
                 selectMapPosition.current({
                     ...selection.current,
                     position: {
@@ -223,15 +210,16 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
                 })
             }
         })
-    }, [setHighlightedMechParticipantID, map, pixiMainItems, winner, playerAbility, gridSizeRef, selectMapPosition, selection])
+    }, [setHighlightedMechParticipantID, map, pixiMainItems, anyAbility, gridSizeRef, selectMapPosition, selection])
 
-    // TODO: If we are popped out, we need to move the pixi canvas to the poppedout window
+    // TODO: If we are popped out, we need to move the pixi canvas to the popped out window
 
     return useMemo(() => {
         return (
             <Box
                 id="minimap-pixi-container"
                 ref={setMiniMapPixiRef}
+                key={`mini-map-pixi-${battleIdentifier}-${map?.Name}`}
                 sx={{
                     position: "relative",
                     width: containerDimensions.width,
@@ -241,7 +229,7 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
             >
                 {isReady && (
                     <>
-                        {/* Overlay items: items that are overlay'ed on top */}
+                        {/* Overlay items: items that are overlaid on top */}
                         <MechAbilities />
                         <MapScale />
                         <MapTargetSelect />
@@ -257,5 +245,5 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
                 )}
             </Box>
         )
-    }, [containerDimensions.height, containerDimensions.width, isReady])
+    }, [battleIdentifier, containerDimensions.height, containerDimensions.width, isReady, map?.Name])
 }, propsAreEqual)

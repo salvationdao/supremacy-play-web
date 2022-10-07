@@ -1,92 +1,71 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import { Crosshair } from "../../../../../assets"
-import { MapSelection, useGame, useGlobalNotifications, useMiniMapPixi, WinnerStruct } from "../../../../../containers"
-import { BlueprintPlayerAbility, GameAbility, LocationSelectType, MechMoveCommandAbility, PlayerAbility, Position } from "../../../../../types"
+import { MapSelection, useGame, useMiniMapPixi } from "../../../../../containers"
+import { AnyAbility, LocationSelectType, MechMoveCommandAbility, Position } from "../../../../../types"
 import { PixiMapTargetSelect } from "./pixiMapTargetSelect"
 
 interface MapTargetHintAbility {
-    ability: GameAbility | BlueprintPlayerAbility
+    anyAbility: AnyAbility
     endTime?: Date
     cancelable?: boolean
 }
 
 export const MapTargetSelect = React.memo(function TargetHint() {
-    const { onAbilityUseCallbacks } = useMiniMapPixi()
+    const { onAnyAbilityUseCallbacks } = useMiniMapPixi()
     const [targetHintAbility, setTargetHintAbility] = useState<MapTargetHintAbility>()
-    const isTargetingWinner = useRef(false)
 
     useEffect(() => {
-        onAbilityUseCallbacks.current["target-hint"] = (wn: WinnerStruct | undefined, pa: PlayerAbility | undefined) => {
-            if (wn) {
-                const newTha = {
-                    ability: wn.game_ability,
-                    endTime: wn.end_time,
-                    cancelable: false,
-                }
-
-                // If we are transitioning from player ability to winner, then do a X second gap
-                if (pa && !isTargetingWinner.current) {
-                    setTargetHintAbility(undefined)
-
-                    setTimeout(() => {
-                        setTargetHintAbility(newTha)
-                        isTargetingWinner.current = true
-                    }, 1000)
-                } else {
-                    setTargetHintAbility(newTha)
-                    isTargetingWinner.current = true
-                }
-            } else if (pa) {
+        onAnyAbilityUseCallbacks.current["target-hint"] = (aa: AnyAbility | undefined) => {
+            if (aa) {
                 setTargetHintAbility({
-                    ability: pa.ability,
+                    anyAbility: aa,
                     cancelable: true,
                 })
-                isTargetingWinner.current = false
             } else {
                 setTargetHintAbility(undefined)
-                isTargetingWinner.current = false
             }
         }
-    }, [onAbilityUseCallbacks])
+    }, [onAnyAbilityUseCallbacks])
 
     if (targetHintAbility) {
-        const { ability, endTime, cancelable } = targetHintAbility
-        return <TargetHintInner key={`target-hint-${ability.id}-${endTime?.toDateString()}`} ability={ability} endTime={endTime} cancelable={cancelable} />
+        const { anyAbility, endTime, cancelable } = targetHintAbility
+        return (
+            <TargetHintInner
+                key={`target-hint-${anyAbility.id}-${endTime?.toDateString()}`}
+                anyAbility={anyAbility}
+                endTime={endTime}
+                cancelable={cancelable}
+            />
+        )
     }
 
     return null
 })
 
 const propsAreEqual = (prevProps: MapTargetHintAbility, nextProps: MapTargetHintAbility) => {
-    return prevProps.endTime === nextProps.endTime && prevProps.cancelable === nextProps.cancelable && prevProps.ability.id === nextProps.ability.id
+    return prevProps.endTime === nextProps.endTime && prevProps.cancelable === nextProps.cancelable && prevProps.anyAbility.id === nextProps.anyAbility.id
 }
 
-const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, cancelable }: MapTargetHintAbility) {
-    const { newSnackbarMessage } = useGlobalNotifications()
+const TargetHintInner = React.memo(function TargetHintInner({ anyAbility, endTime, cancelable }: MapTargetHintAbility) {
     const {
         pixiMainItems,
         mapMousePosition,
         gridSizeRef,
         onSelectMapPositionCallbacks,
         gridCellToViewportPosition,
-        usePlayerAbility,
-        useWinner,
+        useAnyAbility,
         selectMapPosition,
         onTargetConfirm,
+        mapItemMinSize,
     } = useMiniMapPixi()
     const { abilityDetails } = useGame()
     const [pixiTargetHint, setPixiTargetHint] = useState<PixiMapTargetSelect>()
     const selectedStartCoord = useRef<Position>()
     const selectedEndCoord = useRef<Position>()
 
-    const onCountdownExpired = useCallback(() => {
-        newSnackbarMessage("Failed to submit target location on time.", "error")
-        useWinner.current(undefined)
-    }, [newSnackbarMessage, useWinner])
-
     const onCancel = useCallback(() => {
-        usePlayerAbility.current(undefined)
-    }, [usePlayerAbility])
+        useAnyAbility.current(undefined)
+    }, [useAnyAbility])
 
     // Initial setup for the mech and show on the map
     useEffect(() => {
@@ -96,10 +75,11 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
             pixiMainItems.viewport,
             mapMousePosition,
             gridSizeRef,
-            ability,
+            anyAbility,
             endTime,
-            onCountdownExpired,
+            undefined,
             cancelable ? onCancel : undefined,
+            mapItemMinSize,
         )
         pixiMainItems.viewport.addChild(pixiTargetHint.viewportRoot)
         pixiMainItems.app.stage.addChild(pixiTargetHint.stageRoot)
@@ -107,7 +87,7 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
             prev?.destroy()
             return pixiTargetHint
         })
-    }, [ability, endTime, pixiMainItems, mapMousePosition, gridSizeRef, onCountdownExpired, onCancel, cancelable])
+    }, [anyAbility, endTime, pixiMainItems, mapMousePosition, gridSizeRef, onCancel, cancelable, mapItemMinSize])
 
     // Cleanup
     useEffect(() => {
@@ -141,17 +121,17 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
     // Update pixi's abilityDetails array
     useEffect(() => {
         if (!pixiTargetHint) return
-        const abilityDetail = typeof ability?.game_client_ability_id !== "undefined" ? abilityDetails[ability.game_client_ability_id] : undefined
+        const abilityDetail = typeof anyAbility?.game_client_ability_id !== "undefined" ? abilityDetails[anyAbility.game_client_ability_id] : undefined
         pixiTargetHint.updateAbilityDetail(abilityDetail)
-    }, [ability.game_client_ability_id, abilityDetails, pixiTargetHint])
+    }, [anyAbility.game_client_ability_id, abilityDetails, pixiTargetHint])
 
     useEffect(() => {
         if (!pixiTargetHint) return
 
         onSelectMapPositionCallbacks.current["target-hint-inner"] = (mapPos: MapSelection | undefined) => {
-            const abilityType = ability.location_select_type
-            const isLocationSelection = abilityType === LocationSelectType.LocationSelect || abilityType === LocationSelectType.MechCommand
-            const isLineSelection = abilityType === LocationSelectType.LineSelect
+            const locationSelectType = anyAbility.location_select_type
+            const isLocationSelection = locationSelectType === LocationSelectType.LocationSelect || locationSelectType === LocationSelectType.MechCommand
+            const isLineSelection = locationSelectType === LocationSelectType.LineSelect
 
             // If ability is not a map select type, ignore
             if ((!isLocationSelection && !isLineSelection) || !mapPos?.position) {
@@ -178,10 +158,10 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
                 if (selectedStartCoord.current) {
                     // For mech commands/mini mech commands, dont countdown, and dont destroy pixi object when confirmed, keep going
                     if (
-                        ability.location_select_type === LocationSelectType.MechCommand ||
-                        ability.game_client_ability_id === MechMoveCommandAbility.ability.game_client_ability_id
+                        locationSelectType === LocationSelectType.MechCommand ||
+                        anyAbility.game_client_ability_id === MechMoveCommandAbility.game_client_ability_id
                     ) {
-                        pixiTargetHint.startCountdown(0, 3, false)
+                        pixiTargetHint.startCountdown(0, 3, false, false)
                     } else {
                         pixiTargetHint.startCountdown()
                     }
@@ -219,15 +199,20 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
             }
 
             // If ability selection is placed, hide the mouse icon
-            if (ability.location_select_type !== LocationSelectType.MechCommand) {
+            if (locationSelectType !== LocationSelectType.MechCommand) {
                 if (isLocationSelection) {
                     pixiTargetHint.mouseIcon.showIcon(!selectedStartCoord.current)
                 } else if (isLineSelection) {
                     pixiTargetHint.mouseIcon.showIcon(!selectedStartCoord.current || !selectedEndCoord.current)
                 }
             }
+
+            return () => {
+                const cb = onSelectMapPositionCallbacks
+                delete cb.current["target-hint-inner"]
+            }
         }
-    }, [ability.game_client_ability_id, ability.location_select_type, endTime, gridCellToViewportPosition, onSelectMapPositionCallbacks, pixiTargetHint, selectMapPosition])
+    }, [anyAbility.game_client_ability_id, anyAbility.location_select_type, endTime, gridCellToViewportPosition, onSelectMapPositionCallbacks, pixiTargetHint, selectMapPosition])
 
     return null
 }, propsAreEqual)

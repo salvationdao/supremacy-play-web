@@ -38,6 +38,7 @@ export const QuickPlayerAbilitiesItem = React.memo(function QuickPlayerAbilities
     amount = 0,
     onPurchase: onPurchaseCallback,
     availability,
+    setClaimError,
 }: QuickPlayerAbilitiesItemProps) {
     // Purchasing
     const { newSnackbarMessage } = useGlobalNotifications()
@@ -101,13 +102,15 @@ export const QuickPlayerAbilitiesItem = React.memo(function QuickPlayerAbilities
         } catch (e) {
             if (e instanceof Error) {
                 setPurchaseError(e.message)
+                setClaimError(e.message)
             } else if (typeof e === "string") {
                 setPurchaseError(e)
+                setClaimError(e)
             }
         } finally {
             setLoading(false)
         }
-    }, [send, saleAbility.id, saleAbility.ability.label, price, newSnackbarMessage, onPurchaseCallback, showConfirmation])
+    }, [send, saleAbility.id, saleAbility.ability.label, price, newSnackbarMessage, onPurchaseCallback, showConfirmation, setClaimError])
 
     const onClick = useMemo(() => {
         if (availability === SaleAbilityAvailability.CanPurchase) {
@@ -279,7 +282,6 @@ export const QuickPlayerAbilitiesItem = React.memo(function QuickPlayerAbilities
                     </TooltipHelper>
                 </FancyButton>
             </Fade>
-
             {showPurchaseModal && (
                 <ConfirmModal
                     title="Confirm Purchase"

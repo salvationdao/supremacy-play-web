@@ -41,6 +41,7 @@ export interface AuthState {
     setPassportPopup: Dispatch<React.SetStateAction<Window | null>>
     userHasFeature: (featureName: FeatureName) => boolean
     user: User
+    userFromPassport?: UserFromPassport
     userID: string
     factionID: string
     setUser: Dispatch<React.SetStateAction<User>>
@@ -104,6 +105,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [isLoggingIn, setIsLoggingIn] = useState(true)
     const [passportPopup, setPassportPopup] = useState<Window | null>(null)
     const popupCheckInterval = useRef<NodeJS.Timer>()
+    const { fingerprint } = useFingerprint()
 
     const [userFromPassport, setUserFromPassport] = useState<UserFromPassport>()
     const [user, setUser] = useState<User>(initialState.user)
@@ -258,6 +260,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 setPassportPopup,
                 userHasFeature,
                 user,
+                userFromPassport,
                 userID,
                 factionID,
                 setUser,

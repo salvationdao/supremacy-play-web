@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react"
-import { useMiniMapPixi, WinnerStruct } from "../../../../../containers"
-import { PlayerAbility } from "../../../../../types"
+import { useMiniMapPixi } from "../../../../../containers"
+import { AnyAbility } from "../../../../../types"
 import { PixiMapScale } from "./pixiMapScale"
 
 export const MapScale = React.memo(function MapScale() {
-    const { pixiMainItems, gridSizeRef, onAbilityUseCallbacks, mapMousePosition } = useMiniMapPixi()
+    const { pixiMainItems, gridSizeRef, onAnyAbilityUseCallbacks, mapMousePosition } = useMiniMapPixi()
     const [pixiMapScale, setPixiMapScale] = useState<PixiMapScale>()
 
     // Initial setup for the mech and show on the map
@@ -21,14 +21,14 @@ export const MapScale = React.memo(function MapScale() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pixiMapScale])
 
-    // When targeting, dont show the scale
+    // When targeting, don't show the scale
     useEffect(() => {
         if (!pixiMapScale) return
 
-        onAbilityUseCallbacks.current[`map-scale`] = (wn: WinnerStruct | undefined, pa: PlayerAbility | undefined) => {
-            pixiMapScale.updateVisibility(!(wn || pa))
+        onAnyAbilityUseCallbacks.current[`map-scale`] = (aa: AnyAbility | undefined) => {
+            pixiMapScale.updateVisibility(!aa)
         }
-    }, [onAbilityUseCallbacks, pixiMapScale])
+    }, [onAnyAbilityUseCallbacks, pixiMapScale])
 
     return null
 })
