@@ -224,7 +224,6 @@ const MiniMapInner = ({ map, isPoppedout, width = 100, height = 100, poppedOutCo
                         pointerEvents: "all",
                         transition: "width .2s, height .2s",
                         overflow: "hidden",
-                        boxShadow: 1,
                         zIndex: 2,
                     }}
                 >

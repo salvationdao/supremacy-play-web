@@ -1,7 +1,6 @@
 import { Viewport } from "pixi-viewport"
 import * as PIXI from "pixi.js"
 import { calculateCoverDimensions, HEXToVBColor } from "../../../../helpers"
-import { colors } from "../../../../theme/theme"
 import { Dimension, Map, Position } from "../../../../types"
 
 export class PixiMiniMapPixi {
@@ -18,9 +17,9 @@ export class PixiMiniMapPixi {
 
         // Create pixi app
         this.app = new PIXI.Application({
-            backgroundColor: HEXToVBColor(colors.darkNavyBlue),
             width: dimension.width,
             height: dimension.height,
+            backgroundAlpha: 0,
         })
 
         // Append pixi canvas to the DOM
