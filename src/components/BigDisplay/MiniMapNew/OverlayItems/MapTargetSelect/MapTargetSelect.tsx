@@ -17,26 +17,6 @@ export const MapTargetSelect = React.memo(function TargetHint() {
 
     useEffect(() => {
         onAbilityUseCallbacks.current["target-hint"] = (pa: PlayerAbility | undefined, sa: PlayerSupporterAbility | undefined) => {
-            // if (wn) {
-            //     const newTha = {
-            //         ability: wn.game_ability,
-            //         endTime: wn.end_time,
-            //         cancelable: false,
-            //     }
-            //
-            //     // If we are transitioning from player ability to winner, then do a X second gap
-            //     if (pa && !isTargetingWinner.current) {
-            //         setTargetHintAbility(undefined)
-            //
-            //         setTimeout(() => {
-            //             setTargetHintAbility(newTha)
-            //             isTargetingWinner.current = true
-            //         }, 1000)
-            //     } else {
-            //         setTargetHintAbility(newTha)
-            //         isTargetingWinner.current = true
-            //     }
-            // } else
             if (sa) {
                 setTargetHintAbility({
                     ability: sa,

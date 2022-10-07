@@ -48,7 +48,6 @@ export const GameContainer = createContainer(() => {
     const [nextBattle, setNextBattle] = useState<BattleLobby | undefined>()
     const [battleEndDetail, setBattleEndDetail] = useState<BattleEndDetail>()
     const [forceDisplay100Percentage, setForceDisplay100Percentage] = useState<string>("")
-    // const isBattleStarted = useMemo(() => !!(map && bribeStage && bribeStage.phase !== BribeStage.Hold), [bribeStage, map])
 
     // Mechs
     const [warMachines, setWarMachines] = useState<WarMachineState[] | undefined>([])

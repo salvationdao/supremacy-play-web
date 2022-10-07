@@ -142,7 +142,6 @@ export const SupporterAbilities = () => {
 
 export const SupportAbilityCard = ({ supportAbility }: { supportAbility: PlayerSupporterAbility }) => {
     const { useSupportAbility } = useMiniMapPixi()
-    // const [disabled, setDisabled] = useState(false)
 
     const abilityTypeIcon = useMemo(() => {
         switch (supportAbility.location_select_type) {
