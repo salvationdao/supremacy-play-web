@@ -22,6 +22,7 @@ export enum GameServerKeys {
     SubBattleArenaClosed = "BATTLE:ARENA:CLOSED",
     SubMiniMapAbilityDisplayList = "MINI:MAP:ABILITY:DISPLAY:LIST",
     NextBattleDetails = "NEXT:BATTLE:DETAILS",
+    BattleState = "BATTLE:STATE",
 
     // Voting abilities
     SubBribeStageUpdated = "BRIBE:STAGE:UPDATED:SUBSCRIBE",
@@ -80,6 +81,7 @@ export enum GameServerKeys {
     SaleAbilitiesList = "SALE:ABILITIES:LIST",
     SaleAbilityPurchase = "SALE:ABILITY:PURCHASE",
     PlayerAbilityUse = "PLAYER:ABILITY:USE",
+    PlayerSupportAbilityUse = "PLAYER:SUPPORT:ABILITY:USE",
 
     // Minimap ability updates
     MinimapUpdatesSubscribe = "MINIMAP:UPDATES:SUBSCRIBE",
@@ -105,6 +107,7 @@ export enum GameServerKeys {
     SubscribeUserStat = "USER:STAT:SUBSCRIBE",
     UpdateSettings = "PLAYER:UPDATE_SETTINGS",
     GetSettings = "PLAYER:GET_SETTINGS",
+    PlayerSupportAbilities = "PLAYER:SUPPORT:ABILITIES",
 
     // Ban system
     GetBanOptions = "PUNISH:OPTIONS",

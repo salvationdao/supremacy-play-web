@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import { Crosshair } from "../../../../../assets"
-import { MapSelection, useGame, useGlobalNotifications, useMiniMapPixi, WinnerStruct } from "../../../../../containers"
+import { MapSelection, useGame, useMiniMapPixi } from "../../../../../containers"
 import { BlueprintPlayerAbility, GameAbility, LocationSelectType, MechMoveCommandAbility, PlayerAbility, Position } from "../../../../../types"
 import { PixiMapTargetSelect } from "./pixiMapTargetSelect"
+import { PlayerSupporterAbility } from "../../../../LeftDrawer/BattleArena/BattleAbility/SupporterAbilities"
 
 interface MapTargetHintAbility {
-    ability: GameAbility | BlueprintPlayerAbility
+    ability: GameAbility | BlueprintPlayerAbility | PlayerSupporterAbility
     endTime?: Date
     cancelable?: boolean
 }
@@ -13,38 +14,21 @@ interface MapTargetHintAbility {
 export const MapTargetSelect = React.memo(function TargetHint() {
     const { onAbilityUseCallbacks } = useMiniMapPixi()
     const [targetHintAbility, setTargetHintAbility] = useState<MapTargetHintAbility>()
-    const isTargetingWinner = useRef(false)
 
     useEffect(() => {
-        onAbilityUseCallbacks.current["target-hint"] = (wn: WinnerStruct | undefined, pa: PlayerAbility | undefined) => {
-            if (wn) {
-                const newTha = {
-                    ability: wn.game_ability,
-                    endTime: wn.end_time,
-                    cancelable: false,
-                }
-
-                // If we are transitioning from player ability to winner, then do a X second gap
-                if (pa && !isTargetingWinner.current) {
-                    setTargetHintAbility(undefined)
-
-                    setTimeout(() => {
-                        setTargetHintAbility(newTha)
-                        isTargetingWinner.current = true
-                    }, 1000)
-                } else {
-                    setTargetHintAbility(newTha)
-                    isTargetingWinner.current = true
-                }
+        onAbilityUseCallbacks.current["target-hint"] = (pa: PlayerAbility | undefined, sa: PlayerSupporterAbility | undefined) => {
+            if (sa) {
+                setTargetHintAbility({
+                    ability: sa,
+                    cancelable: true,
+                })
             } else if (pa) {
                 setTargetHintAbility({
                     ability: pa.ability,
                     cancelable: true,
                 })
-                isTargetingWinner.current = false
             } else {
                 setTargetHintAbility(undefined)
-                isTargetingWinner.current = false
             }
         }
     }, [onAbilityUseCallbacks])
@@ -62,7 +46,6 @@ const propsAreEqual = (prevProps: MapTargetHintAbility, nextProps: MapTargetHint
 }
 
 const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, cancelable }: MapTargetHintAbility) {
-    const { newSnackbarMessage } = useGlobalNotifications()
     const {
         pixiMainItems,
         mapMousePosition,
@@ -70,7 +53,7 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
         onSelectMapPositionCallbacks,
         gridCellToViewportPosition,
         usePlayerAbility,
-        useWinner,
+        useSupportAbility,
         selectMapPosition,
         onTargetConfirm,
         mapItemMinSize,
@@ -80,14 +63,10 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
     const selectedStartCoord = useRef<Position>()
     const selectedEndCoord = useRef<Position>()
 
-    const onCountdownExpired = useCallback(() => {
-        newSnackbarMessage("Failed to submit target location on time.", "error")
-        useWinner.current(undefined)
-    }, [newSnackbarMessage, useWinner])
-
     const onCancel = useCallback(() => {
         usePlayerAbility.current(undefined)
-    }, [usePlayerAbility])
+        useSupportAbility.current(undefined)
+    }, [usePlayerAbility, useSupportAbility])
 
     // Initial setup for the mech and show on the map
     useEffect(() => {
@@ -99,7 +78,6 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
             gridSizeRef,
             ability,
             endTime,
-            onCountdownExpired,
             cancelable ? onCancel : undefined,
             mapItemMinSize,
         )
@@ -109,7 +87,7 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
             prev?.destroy()
             return pixiTargetHint
         })
-    }, [ability, endTime, pixiMainItems, mapMousePosition, gridSizeRef, onCountdownExpired, onCancel, cancelable, mapItemMinSize])
+    }, [ability, endTime, pixiMainItems, mapMousePosition, gridSizeRef, onCancel, cancelable, mapItemMinSize])
 
     // Cleanup
     useEffect(() => {

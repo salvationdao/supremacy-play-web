@@ -2,25 +2,23 @@ import React, { useEffect, useMemo, useRef, useState } from "react"
 import { useArena, useAuth, useGame, useMiniMapPixi } from "../../../../../containers"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
-import { AIType, BribeStage, GameAbility, WarMachineLiveState, WarMachineState } from "../../../../../types"
+import { AIType, GameAbility, WarMachineLiveState, WarMachineState } from "../../../../../types"
 import { MechAbility } from "./MechAbility"
 import { PixiMechAbilities } from "./pixiMechAbilities"
 
 // Outer component to determine whether to render the mech abilities or not
 export const MechAbilities = React.memo(function MechAbilities() {
     const { userID } = useAuth()
-    const { bribeStage, warMachines, spawnedAI } = useGame()
+    const { warMachines, spawnedAI } = useGame()
     const { pixiMainItems, highlightedMechParticipantID } = useMiniMapPixi()
     const [highlightedMech, setHighlightedMech] = useState<WarMachineState>()
-
-    const isVoting = useMemo(() => bribeStage && bribeStage?.phase !== BribeStage.Hold, [bribeStage])
 
     useEffect(() => {
         const mech = [...(warMachines || []), ...(spawnedAI || [])].find((m) => m.participantID === highlightedMechParticipantID && m.ownedByID === userID)
         if (mech) setHighlightedMech(mech)
     }, [highlightedMechParticipantID, spawnedAI, userID, warMachines])
 
-    if (!pixiMainItems || !highlightedMech || !isVoting) {
+    if (!pixiMainItems || !highlightedMech) {
         return null
     }
 

@@ -1,7 +1,7 @@
 import { Box, Fade, Slide, Stack } from "@mui/material"
 import { useMemo } from "react"
 import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../constants"
-import { useGame, useMobile, useSupremacy } from "../../containers"
+import { BattleState, useGame, useMobile, useSupremacy } from "../../containers"
 import { siteZIndex } from "../../theme/theme"
 import { SectionHeading } from "../LeftDrawer/BattleArena/Common/SectionHeading"
 import { WarMachineItem } from "./WarMachineItem/WarMachineItem"
@@ -13,14 +13,14 @@ export const WarMachineStats = () => {
 
 const WarMachineStatsInner = () => {
     const { isMobile } = useMobile()
-    const { isBattleStarted, warMachines, factionWarMachines, otherWarMachines, ownedMiniMechs } = useGame()
+    const { warMachines, factionWarMachines, otherWarMachines, ownedMiniMechs, battleState } = useGame()
 
     const haveFactionMechs = useMemo(() => factionWarMachines && factionWarMachines.length > 0, [factionWarMachines])
 
     if (!warMachines || warMachines.length <= 0) return null
 
     if (isMobile) {
-        if (!isBattleStarted) return null
+        if (battleState !== BattleState.BattlingState) return null
 
         return (
             <>
@@ -117,7 +117,7 @@ const WarMachineStatsInner = () => {
     }
 
     return (
-        <Slide in={isBattleStarted} direction="up">
+        <Slide in={battleState === BattleState.BattlingState} direction="up">
             <Box
                 sx={{
                     position: "absolute",
