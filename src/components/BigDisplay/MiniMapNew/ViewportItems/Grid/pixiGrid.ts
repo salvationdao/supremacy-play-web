@@ -100,7 +100,7 @@ export class PixiGrid {
 
             // Makes sure the top and left labels are always visible
             this.topLabels.forEach((label, i) => {
-                label.y = -this.viewport.getLocalBounds().y
+                label.y = this.viewport.top
 
                 if (i === highlightColIndex) {
                     label.alpha = 1
@@ -112,7 +112,7 @@ export class PixiGrid {
             })
 
             this.leftLabels.forEach((label, i) => {
-                label.x = -this.viewport.getLocalBounds().x
+                label.x = this.viewport.left
 
                 if (i === highlightRowIndex) {
                     label.alpha = 1
@@ -130,7 +130,5 @@ export class PixiGrid {
 
     showGrid(show: boolean) {
         this.root.visible = show
-
-        console.log(this.viewport.left, this.viewport.getBounds(), this.viewport.getLocalBounds())
     }
 }
