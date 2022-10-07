@@ -154,8 +154,8 @@ export const MiniMapPixiContainer = createContainer(() => {
                 // We will construct the payload and then send it off
                 const payload: {
                     arena_id: string
-                    ability_id?: string
-                    blueprint_ability_id?: string
+                    ability_id: string
+                    blueprint_ability_id: string
                     location_select_type: string
                     start_coords?: Position
                     end_coords?: Position
