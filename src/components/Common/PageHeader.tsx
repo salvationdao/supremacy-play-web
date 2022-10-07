@@ -1,9 +1,9 @@
 import { Box, Stack, Typography } from "@mui/material"
-import React, { ReactNode } from "react"
+import React, { ReactNode, useMemo } from "react"
 import { fonts } from "../../theme/theme"
 
 interface PageHeaderProps {
-    title: ReactNode
+    title?: ReactNode
     description?: ReactNode
     imageUrl?: string
     children?: ReactNode
@@ -24,6 +24,24 @@ export const PageHeader = React.memo(function PageHeader({
     imageHeight,
     imageWidth,
 }: PageHeaderProps) {
+    const showTitle = useMemo(() => {
+        if (!title) return null
+        if (typeof title === "string")
+            return (
+                <Typography variant={smallSize ? "h6" : "h5"} sx={{ fontFamily: fonts.nostromoBlack }}>
+                    {title}
+                </Typography>
+            )
+
+        return title
+    }, [smallSize, title])
+
+    const showDescription = useMemo(() => {
+        if (!description) return null
+        if (typeof description === "string") return <Typography sx={{ fontSize: "1.85rem" }}>{description}</Typography>
+        return description
+    }, [description])
+
     return (
         <Stack
             direction="row"
@@ -58,17 +76,9 @@ export const PageHeader = React.memo(function PageHeader({
                     />
                 )}
                 <Box>
-                    {typeof title === "string" && (
-                        <Typography variant={smallSize ? "h6" : "h5"} sx={{ fontFamily: fonts.nostromoBlack }}>
-                            {title}
-                        </Typography>
-                    )}
+                    {showTitle}
 
-                    {typeof title !== "string" && title}
-
-                    {description && typeof description === "string" && <Typography sx={{ fontSize: "1.85rem" }}>{description}</Typography>}
-
-                    {description && typeof description !== "string" && description}
+                    {showDescription}
                 </Box>
             </Stack>
 
