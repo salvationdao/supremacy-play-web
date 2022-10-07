@@ -18,6 +18,7 @@ import {
 import { colors } from "../theme/theme"
 import { AssetItemType, Dimension, GAME_CLIENT_TILE_SIZE, MysteryCrateType, Rarity, RarityEnum, UserRank } from "../types"
 import { FiatOrderStatus } from "../types/fiat"
+import moment from "moment"
 
 // Capitalize convert a string "example" to "Example"
 export const Capitalize = (str: string): string => str[0].toUpperCase() + str.substring(1).toLowerCase()
@@ -678,4 +679,20 @@ export const deepEqual = (object1: Record<any, any>, object2: Record<any, any>) 
         }
     }
     return true
+}
+
+export const shortCodeGenerator = (length: number = 12, omitUppercase?: boolean, omitLowerCase?: boolean, omitNumber?: boolean): string => {
+    let result = ""
+    let base = ""
+    if (!omitUppercase) base += "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    if (!omitLowerCase) base += "abcdefghijklmnopqrstuvwxyz"
+    if (!omitNumber) base += "0123456789"
+    for (let i = 0; i < length; i++) {
+        result += base.charAt(Math.floor(Math.random() * base.length))
+    }
+    return result
+}
+
+export const combineDateTime = (date: moment.Moment, time: moment.Moment): moment.Moment => {
+    return moment(`${date.format("YYYY-MM-DD")} ${time.format("HH:mm")}`)
 }

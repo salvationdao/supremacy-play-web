@@ -3,6 +3,7 @@ import { useAuth } from "../../../../containers"
 import { colors } from "../../../../theme/theme"
 import { MarketUser } from "../../../../types/marketplace"
 import { General } from "./General"
+import { CropMaxLengthText } from "../../../../theme/styles"
 
 export const UserInfo = ({ isGridView, marketUser, title }: { isGridView?: boolean; marketUser: MarketUser; title?: string }) => {
     const { userID } = useAuth()
@@ -15,12 +16,8 @@ export const UserInfo = ({ isGridView, marketUser, title }: { isGridView?: boole
             <Typography
                 sx={{
                     fontWeight: "fontWeightBold",
-                    display: "-webkit-box",
-                    overflow: "hidden",
-                    overflowWrap: "anywhere",
-                    textOverflow: "ellipsis",
+                    ...CropMaxLengthText,
                     WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
                 }}
             >
                 {username}

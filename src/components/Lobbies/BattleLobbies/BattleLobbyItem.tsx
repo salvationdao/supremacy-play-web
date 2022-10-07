@@ -7,17 +7,23 @@ import { camelToTitle, supFormatter } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleLobby } from "../../../types/battle_queue"
 import { ClipThing } from "../../Common/ClipThing"
-import { BattleLobbyJoinModal } from "../BattleLobbyJoinModal"
-import { BattleLobbyFaction, MyFactionLobbySlots, OtherFactionLobbySlots } from "./BattleLobbyMechSlots"
+import { BattleLobbyJoinModal } from "./BattleLobbyJoinModal"
+import { BattleLobbyFaction, MyFactionLobbySlots, OtherFactionLobbySlots } from "../BattleLobbyMech/BattleLobbyMechSlots"
+import { CropMaxLengthText } from "../../../theme/styles"
 
 interface BattleLobbyItemProps {
     battleLobby: BattleLobby
+    omitClip?: boolean
+    disabled?: boolean
+    accessCode?: string
 }
 
 const FACTION_LOBBY_SIZE = 3
 
 const propsAreEqual = (prevProps: BattleLobbyItemProps, nextProps: BattleLobbyItemProps) => {
     return (
+        prevProps.accessCode === prevProps.accessCode &&
+        prevProps.disabled === nextProps.disabled &&
         prevProps.battleLobby.id === nextProps.battleLobby.id &&
         prevProps.battleLobby.ready_at === nextProps.battleLobby.ready_at &&
         prevProps.battleLobby.ended_at === nextProps.battleLobby.ended_at &&
@@ -28,13 +34,24 @@ const propsAreEqual = (prevProps: BattleLobbyItemProps, nextProps: BattleLobbyIt
     )
 }
 
-export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby }: BattleLobbyItemProps) {
+export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby, omitClip, disabled, accessCode }: BattleLobbyItemProps) {
     const theme = useTheme()
     const { factionID } = useAuth()
     const { arenaList } = useArena()
     const { factionsAll } = useSupremacy()
-    const { host_by, is_private, game_map, name, number, entry_fee, first_faction_cut, second_faction_cut, third_faction_cut, assigned_to_arena_id } =
-        battleLobby
+    const {
+        host_by,
+        is_private,
+        generated_by_system,
+        game_map,
+        name,
+        number,
+        entry_fee,
+        first_faction_cut,
+        second_faction_cut,
+        third_faction_cut,
+        assigned_to_arena_id,
+    } = battleLobby
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
     const { battle_lobbies_mechs, ready_at } = battleLobby
@@ -76,16 +93,52 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
         return [myFactionLobbySlots, otherFactionLobbySlots]
     }, [factionsAll, battle_lobbies_mechs, factionID])
 
+    const entryFeeDisplay = useMemo(() => {
+        if (entry_fee && entry_fee !== "0")
+            return (
+                <Stack direction="row" spacing=".2rem" alignItems="center">
+                    <Typography
+                        sx={{
+                            color: colors.grey,
+                        }}
+                    >
+                        Entry Fee:
+                    </Typography>
+                    <SvgSupToken size="1.6rem" fill={colors.gold} />
+                    <Typography
+                        sx={{
+                            color: "white",
+                        }}
+                    >
+                        {supFormatter(entry_fee)}
+                    </Typography>
+                </Stack>
+            )
+        return (
+            <Typography
+                sx={{
+                    color: colors.green,
+                }}
+            >
+                No entry fee
+            </Typography>
+        )
+    }, [entry_fee])
+
     return (
         <>
-            <Stack sx={{ color: primaryColor, textAlign: "start", height: "100%" }}>
+            <Stack sx={{ color: primaryColor, textAlign: "start", height: "100%", opacity: disabled ? 0.4 : 1 }}>
                 <Box>
                     <ClipThing
                         clipSize="6px"
-                        border={{
-                            borderColor: primaryColor,
-                            borderThickness: ".3rem",
-                        }}
+                        border={
+                            omitClip
+                                ? undefined
+                                : {
+                                      borderColor: primaryColor,
+                                      borderThickness: ".3rem",
+                                  }
+                        }
                         backgroundColor={backgroundColor}
                         opacity={0.7}
                     >
@@ -116,113 +169,38 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
 
                             {/* Lobby Info */}
                             <Stack direction="column" flexBasis="250px" height="100%" mr="1rem">
-                                <Box mb="1rem">
+                                <Box mb=".6rem">
                                     <Typography
-                                        variant="h4"
+                                        variant="h5"
                                         sx={{
                                             lineHeight: 1,
                                             fontFamily: fonts.nostromoBlack,
                                         }}
                                     >
-                                        {name ? name : `Lobby #${number}`}
+                                        {name ? name : `Lobby ${number}`}
                                     </Typography>
-                                    {is_private ? (
-                                        <Stack direction="row" spacing=".5rem">
-                                            <SvgLock size="1.2rem" fill={colors.gold} />
-                                            <Typography
-                                                sx={{
-                                                    display: "flex",
-                                                    alignItems: "baseline",
-                                                    color: colors.gold,
-                                                }}
-                                            >
-                                                Private Lobby
-                                            </Typography>
-                                            <Box
-                                                component="span"
-                                                sx={{
-                                                    fontFamily: fonts.shareTech,
-                                                }}
-                                            >
-                                                &#8212;
-                                            </Box>
-                                            {entry_fee && entry_fee !== "0" ? (
-                                                <Stack direction="row" spacing=".2rem" alignItems="center">
-                                                    <Typography
-                                                        sx={{
-                                                            color: colors.grey,
-                                                        }}
-                                                    >
-                                                        Entry Fee:
-                                                    </Typography>
-                                                    <SvgSupToken size="1.6rem" fill={colors.gold} />
-                                                    <Typography
-                                                        sx={{
-                                                            color: "white",
-                                                        }}
-                                                    >
-                                                        {supFormatter(entry_fee)}
-                                                    </Typography>
-                                                </Stack>
-                                            ) : (
-                                                <Typography
-                                                    sx={{
-                                                        color: colors.green,
-                                                    }}
-                                                >
-                                                    No entry fee
-                                                </Typography>
-                                            )}
-                                        </Stack>
-                                    ) : (
-                                        <Stack direction="row" spacing=".5rem" alignItems="baseline">
-                                            <Typography
-                                                sx={{
-                                                    color: colors.neonBlue,
-                                                }}
-                                            >
-                                                Public Lobby
-                                            </Typography>
-                                            <Box
-                                                component="span"
-                                                sx={{
-                                                    fontFamily: fonts.shareTech,
-                                                }}
-                                            >
-                                                &#8212;
-                                            </Box>
-                                            {entry_fee && entry_fee !== "0" ? (
-                                                <Stack direction="row" spacing=".2rem" alignItems="center">
-                                                    <Typography
-                                                        sx={{
-                                                            color: colors.grey,
-                                                        }}
-                                                    >
-                                                        Entry Fee:
-                                                    </Typography>
-                                                    <SvgSupToken size="1.6rem" fill={colors.gold} />
-                                                    <Typography
-                                                        sx={{
-                                                            color: "white",
-                                                        }}
-                                                    >
-                                                        {supFormatter(entry_fee)}
-                                                    </Typography>
-                                                </Stack>
-                                            ) : (
-                                                <Typography
-                                                    sx={{
-                                                        color: colors.green,
-                                                    }}
-                                                >
-                                                    No entry fee
-                                                </Typography>
-                                            )}
-                                        </Stack>
-                                    )}
+                                    <Stack direction="row" spacing=".5rem" alignItems="center">
+                                        {is_private && <SvgLock size="1.2rem" fill={colors.gold} />}
+                                        <Typography
+                                            sx={{
+                                                color: is_private ? colors.gold : colors.neonBlue,
+                                            }}
+                                        >
+                                            {is_private ? "Private" : "Public"} Lobby
+                                        </Typography>
+                                        <Box
+                                            component="span"
+                                            sx={{
+                                                fontFamily: fonts.shareTech,
+                                            }}
+                                        >
+                                            &#8212;
+                                        </Box>
+                                        {entryFeeDisplay}
+                                    </Stack>
                                 </Box>
                                 {assignedToArenaName && (
-                                    <Stack direction="row" spacing=".5rem">
+                                    <Stack direction="column" sx={{ mb: ".35rem" }}>
                                         <Typography
                                             component="span"
                                             sx={{
@@ -235,12 +213,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                         <Typography
                                             component="span"
                                             sx={{
-                                                display: "-webkit-box",
-                                                overflow: "hidden",
-                                                overflowWrap: "anywhere",
-                                                textOverflow: "ellipsis",
-                                                WebkitLineClamp: 1, // change to max number of lines
-                                                WebkitBoxOrient: "vertical",
+                                                ...CropMaxLengthText,
                                                 fontFamily: fonts.nostromoBold,
                                             }}
                                         >
@@ -248,134 +221,150 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                         </Typography>
                                     </Stack>
                                 )}
-                                <Stack direction="row" spacing=".5rem">
+                                <Stack direction="column" sx={{ mb: ".35rem" }}>
                                     <Typography
-                                        component="span"
                                         sx={{
                                             color: colors.grey,
                                             textTransform: "uppercase",
+                                            textAlign: "bottom",
                                         }}
                                     >
-                                        Map:{" "}
+                                        Map:
                                     </Typography>
                                     <Typography
-                                        component="span"
                                         sx={{
-                                            display: "-webkit-box",
-                                            overflow: "hidden",
-                                            overflowWrap: "anywhere",
-                                            textOverflow: "ellipsis",
-                                            WebkitLineClamp: 1, // change to max number of lines
-                                            WebkitBoxOrient: "vertical",
+                                            ...CropMaxLengthText,
                                             fontFamily: fonts.nostromoBold,
                                         }}
                                     >
                                         {game_map ? camelToTitle(game_map.name) : "Random"}
                                     </Typography>
                                 </Stack>
-                                <Stack direction="row" spacing=".5rem">
+                                <Stack direction="column" sx={{ mb: ".35rem" }}>
                                     <Typography
-                                        component="span"
                                         sx={{
                                             color: colors.grey,
                                             textTransform: "uppercase",
                                         }}
                                     >
-                                        Hosted by:{" "}
+                                        Hosted by
                                     </Typography>
                                     <Typography
-                                        component="span"
+                                        variant="h6"
                                         sx={{
-                                            display: "-webkit-box",
-                                            overflow: "hidden",
-                                            overflowWrap: "anywhere",
-                                            textOverflow: "ellipsis",
-                                            WebkitLineClamp: 1, // change to max number of lines
-                                            WebkitBoxOrient: "vertical",
-                                            fontFamily: fonts.nostromoBold,
+                                            ...CropMaxLengthText,
+                                            // color: factionsAll[host_by.faction_id]?.primary_color,
                                         }}
                                     >
-                                        {host_by.username}
+                                        {generated_by_system ? "SYSTEM" : `${host_by.username} #${host_by.gid}`}
                                     </Typography>
                                 </Stack>
                                 {/* Prize allocation */}
                                 {entry_fee !== "0" && (
                                     <>
-                                        <Stack direction="row" spacing="1rem">
-                                            <Stack direction="row" alignItems="center" spacing=".5rem">
-                                                <Box
-                                                    sx={{
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        justifyContent: "center",
-                                                        height: "1.8rem",
-                                                        width: "1.8rem",
-                                                        borderRadius: "50%",
-                                                        backgroundColor: colors.gold,
-                                                    }}
-                                                >
-                                                    <Typography
+                                        <Stack direction="column" sx={{ mb: ".35rem" }}>
+                                            <Typography
+                                                sx={{
+                                                    color: colors.grey,
+                                                    textTransform: "uppercase",
+                                                }}
+                                            >
+                                                Distribution (%)
+                                            </Typography>
+                                            <Stack direction="row" spacing="1rem">
+                                                <Stack direction="row" alignItems="center" spacing=".5rem">
+                                                    <Box
                                                         sx={{
-                                                            color: `${colors.grey}aa`,
-                                                            fontSize: "1.4rem",
+                                                            display: "flex",
+                                                            alignItems: "center",
+                                                            justifyContent: "center",
+                                                            height: "2rem",
+                                                            width: "2rem",
+                                                            borderRadius: "50%",
+                                                            backgroundColor: colors.gold,
                                                         }}
                                                     >
-                                                        1
-                                                    </Typography>
-                                                </Box>
-                                                <Typography>
-                                                    {`${Math.round(parseFloat(first_faction_cut) * Math.round(parseFloat(entry_fee)))}`} SUPS
-                                                </Typography>
-                                            </Stack>
-                                            <Stack direction="row" alignItems="center" spacing=".5rem">
-                                                <Box
-                                                    sx={{
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        justifyContent: "center",
-                                                        height: "1.8rem",
-                                                        width: "1.8rem",
-                                                        borderRadius: "50%",
-                                                        backgroundColor: colors.silver,
-                                                    }}
-                                                >
+                                                        <Typography
+                                                            variant="body2"
+                                                            sx={{
+                                                                color: `${colors.darkerNavy}99`,
+                                                                fontFamily: fonts.nostromoBlack,
+                                                            }}
+                                                        >
+                                                            1
+                                                        </Typography>
+                                                    </Box>
                                                     <Typography
+                                                        variant="body2"
                                                         sx={{
-                                                            color: `${colors.grey}aa`,
-                                                            fontSize: "1.4rem",
+                                                            fontFamily: fonts.nostromoMedium,
                                                         }}
                                                     >
-                                                        2
+                                                        {(parseFloat(first_faction_cut) * 100).toFixed(1)}
                                                     </Typography>
-                                                </Box>
-                                                <Typography>
-                                                    {`${Math.round(parseFloat(second_faction_cut) * Math.round(parseFloat(entry_fee)))}`} SUPS
-                                                </Typography>
-                                            </Stack>
-                                            <Stack direction="row" alignItems="center" spacing=".5rem">
-                                                <Box
-                                                    sx={{
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        justifyContent: "center",
-                                                        height: "1.8rem",
-                                                        width: "1.8rem",
-                                                        borderRadius: "50%",
-                                                        backgroundColor: colors.bronze,
-                                                    }}
-                                                >
-                                                    <Typography
+                                                </Stack>
+                                                <Stack direction="row" alignItems="center" spacing=".5rem">
+                                                    <Box
                                                         sx={{
-                                                            color: `${colors.offWhite}aa`,
-                                                            fontSize: "1.4rem",
+                                                            display: "flex",
+                                                            alignItems: "center",
+                                                            justifyContent: "center",
+                                                            height: "2rem",
+                                                            width: "2rem",
+                                                            borderRadius: "50%",
+                                                            backgroundColor: colors.silver,
                                                         }}
                                                     >
-                                                        3
+                                                        <Typography
+                                                            variant="body2"
+                                                            sx={{
+                                                                color: `${colors.darkerNavy}99`,
+                                                                fontFamily: fonts.nostromoBlack,
+                                                            }}
+                                                        >
+                                                            2
+                                                        </Typography>
+                                                    </Box>
+                                                    <Typography
+                                                        variant="body2"
+                                                        sx={{
+                                                            fontFamily: fonts.nostromoMedium,
+                                                        }}
+                                                    >
+                                                        {(parseFloat(second_faction_cut) * 100).toFixed(1)}
                                                     </Typography>
-                                                </Box>
-                                                <Typography>
-                                                    {`${Math.round(parseFloat(third_faction_cut) * Math.round(parseFloat(entry_fee)))}`} SUPS
-                                                </Typography>
+                                                </Stack>
+                                                <Stack direction="row" alignItems="center" spacing=".5rem">
+                                                    <Box
+                                                        sx={{
+                                                            display: "flex",
+                                                            alignItems: "center",
+                                                            justifyContent: "center",
+                                                            height: "2rem",
+                                                            width: "2rem",
+                                                            borderRadius: "50%",
+                                                            backgroundColor: colors.bronze,
+                                                        }}
+                                                    >
+                                                        <Typography
+                                                            variant="body2"
+                                                            sx={{
+                                                                color: `${colors.darkerNavy}99`,
+                                                                fontFamily: fonts.nostromoBlack,
+                                                            }}
+                                                        >
+                                                            3
+                                                        </Typography>
+                                                    </Box>
+                                                    <Typography
+                                                        variant="body2"
+                                                        sx={{
+                                                            fontFamily: fonts.nostromoMedium,
+                                                        }}
+                                                    >
+                                                        {(parseFloat(third_faction_cut) * 100).toFixed(1)}
+                                                    </Typography>
+                                                </Stack>
                                             </Stack>
                                         </Stack>
                                     </>
@@ -391,7 +380,6 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                 <ClipThing
                                     corners={{
                                         topRight: true,
-                                        bottomLeft: true,
                                     }}
                                     sx={{
                                         flex: 1,
@@ -420,12 +408,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                                     fontFamily: fonts.nostromoBlack,
                                                     color: "white",
                                                     ml: ".45rem",
-                                                    display: "-webkit-box",
-                                                    overflow: "hidden",
-                                                    overflowWrap: "anywhere",
-                                                    textOverflow: "ellipsis",
-                                                    WebkitLineClamp: 1, // change to max number of lines
-                                                    WebkitBoxOrient: "vertical",
+                                                    ...CropMaxLengthText,
                                                 }}
                                             >
                                                 {myFactionLobbySlots.faction.label}
@@ -475,12 +458,14 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                     </ClipThing>
                 </Box>
             </Stack>
-            <BattleLobbyJoinModal
-                show={showJoinModal}
-                battleLobby={battleLobby}
-                onJoin={() => setShowJoinModal(false)}
-                onClose={() => setShowJoinModal(false)}
-            />
+            {showJoinModal && (
+                <BattleLobbyJoinModal
+                    battleLobby={battleLobby}
+                    onJoin={() => setShowJoinModal(false)}
+                    onClose={() => setShowJoinModal(false)}
+                    accessCode={accessCode}
+                />
+            )}
         </>
     )
 }, propsAreEqual)
