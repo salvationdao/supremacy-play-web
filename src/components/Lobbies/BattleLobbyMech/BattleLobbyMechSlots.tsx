@@ -14,6 +14,7 @@ import { ConfirmModal } from "../../Common/ConfirmModal"
 import { FancyButton } from "../../Common/FancyButton"
 import { WeaponSlot } from "../Common/weaponSlot"
 import { MechBarStats } from "../../Hangar/WarMachinesHangar/Common/MechBarStats"
+import { CropMaxLengthText } from "../../../theme/styles"
 
 export interface BattleLobbyFaction {
     faction: Faction
@@ -161,12 +162,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                 <Typography
                                     variant="h6"
                                     sx={{
-                                        display: "-webkit-box",
-                                        overflow: "hidden",
-                                        overflowWrap: "anywhere",
-                                        textOverflow: "ellipsis",
-                                        WebkitLineClamp: 1, // change to max number of lines
-                                        WebkitBoxOrient: "vertical",
+                                        ...CropMaxLengthText,
                                         textTransform: "uppercase",
                                         fontWeight: "fontWeightBold",
                                         color: `#ffffff`,
@@ -178,12 +174,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                 {ms.owner && (
                                     <Typography
                                         sx={{
-                                            display: "-webkit-box",
-                                            overflow: "hidden",
-                                            overflowWrap: "anywhere",
-                                            textOverflow: "ellipsis",
-                                            WebkitLineClamp: 1, // change to max number of lines
-                                            WebkitBoxOrient: "vertical",
+                                            ...CropMaxLengthText,
                                             color: `#ffffffaa`,
                                         }}
                                     >
@@ -282,15 +273,10 @@ export const OtherFactionLobbySlots = ({ factionLobbies }: OtherFactionLobbySlot
                     >
                         <Typography
                             sx={{
-                                display: "-webkit-box",
                                 fontSize: "1.2rem",
                                 fontFamily: fonts.nostromoBlack,
                                 color: fl.faction.primary_color,
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 1, // change to max number of lines
-                                WebkitBoxOrient: "vertical",
+                                ...CropMaxLengthText,
                             }}
                         >
                             {fl.faction.label}

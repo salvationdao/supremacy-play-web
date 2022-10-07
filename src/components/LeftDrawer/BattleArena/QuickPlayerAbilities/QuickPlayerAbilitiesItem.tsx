@@ -13,6 +13,7 @@ import { PreferenceToggle } from "../../../Bar/ProfileCard/PreferencesModal/Noti
 import { ConfirmModal } from "../../../Common/ConfirmModal"
 import { FancyButton } from "../../../Common/FancyButton"
 import { TooltipHelper } from "../../../Common/TooltipHelper"
+import { CropMaxLengthText } from "../../../../theme/styles"
 
 export interface QuickPlayerAbilitiesItemProps {
     saleAbility: SaleAbility
@@ -263,12 +264,8 @@ export const QuickPlayerAbilitiesItem = React.memo(function QuickPlayerAbilities
                                     variant="body2"
                                     sx={{
                                         lineHeight: 1.2,
-                                        display: "-webkit-box",
-                                        overflow: "hidden",
-                                        overflowWrap: "anywhere",
-                                        textOverflow: "ellipsis",
+                                        ...CropMaxLengthText,
                                         WebkitLineClamp: 2,
-                                        WebkitBoxOrient: "vertical",
                                         fontWeight: "fontWeightBold",
                                     }}
                                 >

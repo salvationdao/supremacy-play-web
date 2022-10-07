@@ -11,6 +11,7 @@ import { WeaponSlot } from "./weaponSlot"
 import { MechRepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
 import { useAuth } from "../../../containers"
 import { FancyButton } from "../../Common/FancyButton"
+import { CropMaxLengthText } from "../../../theme/styles"
 
 interface MechSlotProps {
     lobbyMech: LobbyMech | null
@@ -117,12 +118,7 @@ export const MechSlot = ({ lobbyMech, canLeave, leftQueue }: MechSlotProps) => {
                     <Typography
                         variant="h6"
                         sx={{
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            overflowWrap: "anywhere",
-                            textOverflow: "ellipsis",
-                            WebkitLineClamp: 1, // change to max number of lines
-                            WebkitBoxOrient: "vertical",
+                            ...CropMaxLengthText,
                             textTransform: "uppercase",
                             fontWeight: "fontWeightBold",
                             color: `#ffffff`,

@@ -8,6 +8,7 @@ import { colors, fonts } from "../../../../theme/theme"
 import { Rarity } from "../../../../types"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { MediaPreviewModal } from "../../../Common/MediaPreview/MediaPreviewModal"
+import { CropMaxLengthText } from "../../../../theme/styles"
 
 export interface LoadoutItem {
     slotNumber?: number
@@ -224,12 +225,8 @@ const MechLoadoutItemButton = ({
                         sx={{
                             color: primaryColor,
                             fontFamily: fonts.nostromoBold,
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            overflowWrap: "anywhere",
-                            textOverflow: "ellipsis",
+                            ...CropMaxLengthText,
                             WebkitLineClamp: 2,
-                            WebkitBoxOrient: "vertical",
                         }}
                     >
                         {label}
@@ -241,12 +238,7 @@ const MechLoadoutItemButton = ({
                             sx={{
                                 color: primaryColor,
                                 fontFamily: fonts.nostromoBold,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 1,
-                                WebkitBoxOrient: "vertical",
+                                ...CropMaxLengthText,
                             }}
                         >
                             {subLabel}
@@ -371,12 +363,8 @@ export const MechLoadoutItemDraggable = React.forwardRef<HTMLDivElement, MechLoa
                             sx={{
                                 color: primaryColor,
                                 fontFamily: fonts.nostromoBold,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
+                                ...CropMaxLengthText,
                                 WebkitLineClamp: 2,
-                                WebkitBoxOrient: "vertical",
                             }}
                         >
                             {label}
@@ -388,12 +376,7 @@ export const MechLoadoutItemDraggable = React.forwardRef<HTMLDivElement, MechLoa
                                 sx={{
                                     color: primaryColor,
                                     fontFamily: fonts.nostromoBold,
-                                    display: "-webkit-box",
-                                    overflow: "hidden",
-                                    overflowWrap: "anywhere",
-                                    textOverflow: "ellipsis",
-                                    WebkitLineClamp: 1,
-                                    WebkitBoxOrient: "vertical",
+                                    ...CropMaxLengthText,
                                 }}
                             >
                                 {subLabel}

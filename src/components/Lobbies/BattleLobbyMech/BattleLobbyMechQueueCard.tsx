@@ -15,6 +15,7 @@ import { MechWeaponSlot } from "../../../types/battle_queue"
 import { MechBarStats } from "../../Hangar/WarMachinesHangar/Common/MechBarStats"
 import { useTheme } from "../../../containers/theme"
 import { WeaponSlot } from "../Common/weaponSlot"
+import { CropMaxLengthText } from "../../../theme/styles"
 
 interface QuickDeployItemProps {
     mech: LobbyMech
@@ -75,12 +76,7 @@ export const BattleLobbyMechQueueCard = React.memo(function QuickDeployItem({ is
                         sx={{
                             fontFamily: fonts.nostromoBlack,
                             fontWeight: "fontWeightBold",
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            overflowWrap: "anywhere",
-                            textOverflow: "ellipsis",
-                            WebkitLineClamp: 1,
-                            WebkitBoxOrient: "vertical",
+                            ...CropMaxLengthText,
                         }}
                     >
                         {mech.label}

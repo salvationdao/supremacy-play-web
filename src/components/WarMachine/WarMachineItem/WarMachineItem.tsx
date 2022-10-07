@@ -7,6 +7,7 @@ import { getRarityDeets } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { colors, fonts } from "../../../theme/theme"
 import { AIType, WarMachineState } from "../../../types"
+import { CropMaxLengthText } from "../../../theme/styles"
 
 // in rems
 const WIDTH_AVATAR = 8.6
@@ -210,13 +211,8 @@ export const WarMachineItem = ({
                                     mb: ".3rem",
                                     lineHeight: 1,
                                     fontWeight: "fontWeightBold",
-                                    textOverflow: "ellipsis",
-                                    overflow: "hidden",
                                     whiteSpace: "normal",
-                                    display: "-webkit-box",
-                                    overflowWrap: "anywhere",
-                                    WebkitBoxOrient: "vertical",
-                                    WebkitLineClamp: 1,
+                                    ...CropMaxLengthText,
                                 }}
                             >
                                 {isMiniMech ? "Support Machine" : name || hash}
@@ -227,13 +223,8 @@ export const WarMachineItem = ({
                                     variant="h6"
                                     sx={{
                                         lineHeight: 1,
-                                        textOverflow: "ellipsis",
-                                        overflow: "hidden",
                                         whiteSpace: "normal",
-                                        display: "-webkit-box",
-                                        overflowWrap: "anywhere",
-                                        WebkitBoxOrient: "vertical",
-                                        WebkitLineClamp: 1,
+                                        ...CropMaxLengthText,
                                     }}
                                 >
                                     @{ownerUsername}

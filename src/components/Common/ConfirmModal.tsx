@@ -77,7 +77,7 @@ export const ConfirmModal = ({
                 </Stack>
             </FancyButton>
         )
-    }, [omitConfirm, confirmButton])
+    }, [omitConfirm, confirmButton, disableConfirm, isLoading, confirmBackground, onConfirm, confirmPrefix, confirmColor, confirmLabel, confirmSuffix])
 
     return (
         <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>

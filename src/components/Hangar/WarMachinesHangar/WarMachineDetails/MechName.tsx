@@ -6,6 +6,7 @@ import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
 import { MechBasic } from "../../../../types"
+import { CropMaxLengthText } from "../../../../theme/styles"
 
 export const MechName = ({ mech, onRename, allowEdit }: { onRename?: (newName: string) => void; mech: MechBasic; allowEdit: boolean }) => {
     const { newSnackbarMessage } = useGlobalNotifications()
@@ -123,12 +124,7 @@ export const MechName = ({ mech, onRename, allowEdit }: { onRename?: (newName: s
                         sx={{
                             fontSize: "1.8rem",
                             color: !name ? colors.grey : "#FFFFFF",
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            overflowWrap: "anywhere",
-                            textOverflow: "ellipsis",
-                            WebkitLineClamp: 1,
-                            WebkitBoxOrient: "vertical",
+                            ...CropMaxLengthText,
                         }}
                     >
                         {name || "Unnamed"}

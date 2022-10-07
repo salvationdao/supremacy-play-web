@@ -11,6 +11,7 @@ import { PlayerAsset, Weapon } from "../../../types"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { General } from "../../Marketplace/Common/MarketItem/General"
 import { WeaponBarStats } from "./Common/WeaponBarStats"
+import { CropMaxLengthText } from "../../../theme/styles"
 
 interface WeaponHangarItemProps {
     weapon: PlayerAsset
@@ -173,12 +174,7 @@ export const WeaponCommonArea = ({
                             sx={{
                                 color: rarityDeets.color,
                                 fontFamily: fonts.nostromoBold,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 1,
-                                WebkitBoxOrient: "vertical",
+                                ...CropMaxLengthText,
                             }}
                         >
                             {rarityDeets.label}
@@ -191,12 +187,7 @@ export const WeaponCommonArea = ({
                 <Typography
                     sx={{
                         fontFamily: fonts.nostromoBlack,
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1, // change to max number of lines
-                        WebkitBoxOrient: "vertical",
+                        ...CropMaxLengthText,
                     }}
                 >
                     {weap?.label}
@@ -207,12 +198,7 @@ export const WeaponCommonArea = ({
                     sx={{
                         color: getWeaponTypeColor(weaponDetails?.weapon_type),
                         fontFamily: fonts.nostromoBold,
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1, // change to max number of lines
-                        WebkitBoxOrient: "vertical",
+                        ...CropMaxLengthText,
                     }}
                 >
                     {weaponDetails?.weapon_type}

@@ -5,6 +5,7 @@ import { SvgHealth, SvgPowerCoreCapacity, SvgPowerCoreRegen, SvgShield, SvgShiel
 import { useTheme } from "../../../../containers/theme"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
+import { CropMaxLengthText } from "../../../../theme/styles"
 
 export const MechBarStats = ({
     mech,
@@ -249,26 +250,24 @@ export const BarStat = ({
         return (
             <Stack direction="row" alignItems="center" justifyContent="space-between" spacing=".6rem">
                 <TooltipHelper
-                    placement="right-start"
+                    placement="left-end"
                     renderNode={
                         <Typography
                             variant="caption"
                             sx={{
                                 fontSize,
-                                fontFamily: fonts.nostromoBlack,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
+                                fontFamily: fonts.nostromoMedium,
+                                ...CropMaxLengthText,
                                 WebkitLineClamp: 1,
-                                WebkitBoxOrient: "vertical",
                             }}
                         >
                             {label}
                         </Typography>
                     }
                 >
-                    <Icon size={fontSize} sx={{ pb: "3px", height: "unset" }} />
+                    <Box>
+                        <Icon size={fontSize} sx={{ pb: "3px", height: "unset" }} />
+                    </Box>
                 </TooltipHelper>
 
                 <Box flex={1} sx={{ height: barHeight || ".7rem", backgroundColor: "#FFFFFF25", position: "relative" }}>
@@ -309,14 +308,9 @@ export const BarStat = ({
                             fontSize,
                             textAlign: "end",
                             fontFamily: fonts.nostromoBold,
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            overflowWrap: "anywhere",
-                            textOverflow: "ellipsis",
-                            WebkitLineClamp: 1,
-                            WebkitBoxOrient: "vertical",
                             color: parsedBoosted && parsedBoosted != parsedCurrent ? colors.gold : "#FFFFFF",
                             width: "10rem",
+                            ...CropMaxLengthText,
                         }}
                     >
                         {parsedBoosted || parsedCurrent}
@@ -344,12 +338,7 @@ export const BarStat = ({
                             sx={{
                                 fontSize,
                                 fontFamily: fonts.nostromoBlack,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 1,
-                                WebkitBoxOrient: "vertical",
+                                ...CropMaxLengthText,
                             }}
                         >
                             {label}
@@ -362,13 +351,8 @@ export const BarStat = ({
                             fontSize,
                             textAlign: "end",
                             fontFamily: fonts.nostromoBold,
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            overflowWrap: "anywhere",
-                            textOverflow: "ellipsis",
-                            WebkitLineClamp: 1,
-                            WebkitBoxOrient: "vertical",
                             color: parsedBoosted && parsedBoosted != parsedCurrent ? colors.gold : "#FFFFFF",
+                            ...CropMaxLengthText,
                         }}
                     >
                         {parsedBoosted || parsedCurrent}

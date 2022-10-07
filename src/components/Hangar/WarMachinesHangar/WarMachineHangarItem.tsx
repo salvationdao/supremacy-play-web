@@ -15,6 +15,7 @@ import { MechBarStats } from "./Common/MechBarStats"
 import { MechGeneralStatus } from "./Common/MechGeneralStatus"
 import { MechLoadoutIcons } from "./Common/MechLoadoutIcons"
 import { MechRepairBlocks } from "./Common/MechRepairBlocks"
+import { CropMaxLengthText } from "../../../theme/styles"
 
 interface WarMachineHangarItemProps {
     isSelected?: boolean
@@ -271,12 +272,7 @@ export const MechCommonArea = ({
                         sx={{
                             color: mech1?.name ? colors.offWhite : "#FFFFFF",
                             fontFamily: fonts.nostromoBlack,
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            overflowWrap: "anywhere",
-                            textOverflow: "ellipsis",
-                            WebkitLineClamp: 1, // change to max number of lines
-                            WebkitBoxOrient: "vertical",
+                            ...CropMaxLengthText,
                         }}
                     >
                         {mech1?.name || mech1?.label || label}

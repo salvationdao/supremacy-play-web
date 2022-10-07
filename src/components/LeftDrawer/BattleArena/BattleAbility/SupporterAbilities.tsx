@@ -10,6 +10,7 @@ import { TooltipHelper } from "../../../Common/TooltipHelper"
 import { FancyButton } from "../../../Common/FancyButton"
 import { colors } from "../../../../theme/theme"
 import { FilterButton } from "../PlayerAbilities/PlayerAbilities"
+import { CropMaxLengthText } from "../../../../theme/styles"
 
 export interface PlayerSupportAbilitiesResponse {
     battle_id: string
@@ -239,12 +240,8 @@ export const SupportAbilityCard = ({ supportAbility }: { supportAbility: PlayerS
                         variant="body2"
                         sx={{
                             lineHeight: 1.2,
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            overflowWrap: "anywhere",
-                            textOverflow: "ellipsis",
+                            ...CropMaxLengthText,
                             WebkitLineClamp: 2,
-                            WebkitBoxOrient: "vertical",
                             fontWeight: "fontWeightBold",
                         }}
                     >

@@ -7,6 +7,7 @@ import { glowEffect, zoomEffect } from "../../../../theme/keyframes"
 import { BattleAbilityStages, GameAbility, MechAbilitiesHighlight, MechAbilityStages, TrainingLocationSelects, WarMachineState } from "../../../../types"
 import { ClipThing } from "../../../Common/ClipThing"
 import { MoveCommandBT } from "../../WarMachine/WarMachineItem/MoveCommandBT"
+import { CropMaxLengthText } from "../../../../theme/styles"
 
 const trainingGameAbilities: GameAbility[] = [
     {
@@ -157,12 +158,7 @@ const AbilityItem = ({ ability }: { hash: string; participantID: number; ability
                     pt: ".4rem",
                     lineHeight: 1,
                     fontWeight: "fontWeightBold",
-                    display: "-webkit-box",
-                    overflow: "hidden",
-                    overflowWrap: "anywhere",
-                    textOverflow: "ellipsis",
-                    WebkitLineClamp: 1, // change to max number of lines
-                    WebkitBoxOrient: "vertical",
+                    ...CropMaxLengthText,
                 }}
             >
                 {ready ? label : `${remainSeconds}s`}

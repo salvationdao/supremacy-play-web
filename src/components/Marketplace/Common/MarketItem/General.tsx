@@ -1,6 +1,7 @@
 import { Stack, Typography } from "@mui/material"
 import { ReactNode } from "react"
 import { colors, fonts } from "../../../../theme/theme"
+import { CropMaxLengthText } from "../../../../theme/styles"
 
 export const General = ({
     isGridView,
@@ -34,12 +35,8 @@ export const General = ({
                     sx={{
                         color: textColor || "#FFFFFF",
                         fontWeight: "fontWeightBold",
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
+                        ...CropMaxLengthText,
                         WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
                     }}
                 >
                     {text}

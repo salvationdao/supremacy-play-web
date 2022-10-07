@@ -7,6 +7,7 @@ import { useToggle } from "../../../hooks"
 import { colors, fonts } from "../../../theme/theme"
 import { User } from "../../../types"
 import { ProfilePopover } from "./ProfilePopover/ProfilePopover"
+import { CropMaxLengthText } from "../../../theme/styles"
 
 export const ProfileCard = ({ userID, user }: { userID?: string; user: User }) => {
     const { punishments } = useAuth()
@@ -63,15 +64,10 @@ export const ProfileCard = ({ userID, user }: { userID?: string; user: User }) =
                     variant="body2"
                     sx={{
                         mt: ".29rem !important",
-                        lineHeight: 1,
                         fontFamily: fonts.nostromoBlack,
                         color: (theme) => theme.factionTheme.primary,
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
+                        ...CropMaxLengthText,
                         WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
                     }}
                 >
                     {username}

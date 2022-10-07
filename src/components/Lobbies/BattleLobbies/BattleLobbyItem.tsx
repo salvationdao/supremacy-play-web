@@ -9,6 +9,7 @@ import { BattleLobby } from "../../../types/battle_queue"
 import { ClipThing } from "../../Common/ClipThing"
 import { BattleLobbyJoinModal } from "./BattleLobbyJoinModal"
 import { BattleLobbyFaction, MyFactionLobbySlots, OtherFactionLobbySlots } from "../BattleLobbyMech/BattleLobbyMechSlots"
+import { CropMaxLengthText } from "../../../theme/styles"
 
 interface BattleLobbyItemProps {
     battleLobby: BattleLobby
@@ -209,12 +210,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                         <Typography
                                             component="span"
                                             sx={{
-                                                display: "-webkit-box",
-                                                overflow: "hidden",
-                                                overflowWrap: "anywhere",
-                                                textOverflow: "ellipsis",
-                                                WebkitLineClamp: 1, // change to max number of lines
-                                                WebkitBoxOrient: "vertical",
+                                                ...CropMaxLengthText,
                                                 fontFamily: fonts.nostromoBold,
                                             }}
                                         >
@@ -234,12 +230,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                     </Typography>
                                     <Typography
                                         sx={{
-                                            display: "-webkit-box",
-                                            overflow: "hidden",
-                                            overflowWrap: "anywhere",
-                                            textOverflow: "ellipsis",
-                                            WebkitLineClamp: 1, // change to max number of lines
-                                            WebkitBoxOrient: "vertical",
+                                            ...CropMaxLengthText,
                                             fontFamily: fonts.nostromoBold,
                                         }}
                                     >
@@ -258,12 +249,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                     <Typography
                                         variant="h6"
                                         sx={{
-                                            display: "-webkit-box",
-                                            overflow: "hidden",
-                                            overflowWrap: "anywhere",
-                                            textOverflow: "ellipsis",
-                                            WebkitLineClamp: 1, // change to max number of lines
-                                            WebkitBoxOrient: "vertical",
+                                            ...CropMaxLengthText,
                                             // color: factionsAll[host_by.faction_id]?.primary_color,
                                         }}
                                     >
@@ -419,12 +405,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                                     fontFamily: fonts.nostromoBlack,
                                                     color: "white",
                                                     ml: ".45rem",
-                                                    display: "-webkit-box",
-                                                    overflow: "hidden",
-                                                    overflowWrap: "anywhere",
-                                                    textOverflow: "ellipsis",
-                                                    WebkitLineClamp: 1, // change to max number of lines
-                                                    WebkitBoxOrient: "vertical",
+                                                    ...CropMaxLengthText,
                                                 }}
                                             >
                                                 {myFactionLobbySlots.faction.label}

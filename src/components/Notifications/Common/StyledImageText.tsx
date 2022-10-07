@@ -2,6 +2,7 @@ import { Box, SxProps, Typography, TypographyPropsVariantOverrides } from "@mui/
 import { Variant } from "@mui/material/styles/createTypography"
 import { OverridableStringUnion } from "@mui/types"
 import { ReactNode, useMemo } from "react"
+import { CropMaxLengthText } from "../../../theme/styles"
 
 export interface StyledImageTextProps {
     imageUrl?: string

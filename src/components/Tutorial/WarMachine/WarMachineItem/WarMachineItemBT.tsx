@@ -13,6 +13,7 @@ import { WarMachineAbilitiesPopoverBT } from "../WarMachineAbilitiesPopover/WarM
 import { WarMachineDestroyedInfoBT } from "../WarMachineDestroyedInfoBT"
 import { HealthShieldBarsBT } from "./HealthShieldBarsBT"
 import { MoveCommandBT } from "./MoveCommandBT"
+import { CropMaxLengthText } from "../../../../theme/styles"
 
 // in rems
 const WIDTH_AVATAR = 8.6
@@ -233,12 +234,8 @@ export const WarMachineItemBT = ({
                                 sx={{
                                     lineHeight: 1,
                                     fontWeight: "fontWeightBold",
-                                    textOverflow: "ellipsis",
-                                    overflow: "hidden",
                                     whiteSpace: "normal",
-                                    display: "-webkit-box",
-                                    overflowWrap: "anywhere",
-                                    WebkitBoxOrient: "vertical",
+                                    ...CropMaxLengthText,
                                     WebkitLineClamp: 2,
                                 }}
                             >
