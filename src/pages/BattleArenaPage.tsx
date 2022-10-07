@@ -1,7 +1,7 @@
 import { Box, Stack } from "@mui/material"
 import React, { useEffect, useState } from "react"
 import { SvgAbility, SvgHistoryClock } from "../assets"
-import { BattleAbility, BattleEndScreen, BigDisplay, Controls, EarlyAccessWarning, Notifications, WarMachineStats } from "../components"
+import { SupporterAbilities, BattleEndScreen, BigDisplay, Controls, EarlyAccessWarning, Notifications, WarMachineStats } from "../components"
 import { BattleRewardsSkyHighBanner } from "../components/Common/BannersPromotions/BattleRewardsSkyHighBanner"
 import { PlayerAbilities } from "../components/LeftDrawer/BattleArena/PlayerAbilities/PlayerAbilities"
 import { QuickPlayerAbilities } from "../components/LeftDrawer/BattleArena/QuickPlayerAbilities/QuickPlayerAbilities"
@@ -90,7 +90,7 @@ const BattleArenaPageInner = React.memo(function BattleArenaPageInner() {
                                     </Stack>
 
                                     <Stack spacing="1.5rem" sx={{ width: "50%", position: "relative", p: ".8rem 1rem" }}>
-                                        <BattleAbility />
+                                        <SupporterAbilities />
                                         <PlayerAbilities />
                                         <QuickPlayerAbilities />
                                     </Stack>

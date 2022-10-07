@@ -11,6 +11,7 @@ import { PixiImageIcon } from "../../../../../pixi/pixiImageIcon"
 import { PixiProgressBar } from "../../../../../pixi/pixiProgressBar"
 import { colors, fonts } from "../../../../../theme/theme"
 import { BlueprintPlayerAbility, Dimension, DisplayedAbility, GameAbility, Position } from "../../../../../types"
+import { PlayerSupporterAbility } from "../../../../LeftDrawer/BattleArena/BattleAbility/SupporterAbilities"
 
 export class PixiMapMech {
     root: PIXI.Container<PIXI.DisplayObject>
@@ -303,7 +304,7 @@ export class PixiMapMech {
     }
 
     // Ability to by applied to the mech
-    applyAbility(ability: GameAbility | BlueprintPlayerAbility) {
+    applyAbility(ability: GameAbility | BlueprintPlayerAbility | PlayerSupporterAbility) {
         if (!this.iconDimension) return
 
         this.abilityToApply = new PixiImageIcon(

@@ -7,8 +7,9 @@ import { HEXToVBColor } from "../../../../../helpers"
 import { PixiImageIcon } from "../../../../../pixi/pixiImageIcon"
 import { fonts } from "../../../../../theme/theme"
 import { AbilityDetail, BlueprintPlayerAbility, Dimension, GameAbility, GAME_CLIENT_TILE_SIZE, LocationSelectType, Position } from "../../../../../types"
+import { PlayerSupporterAbility } from "../../../../LeftDrawer/BattleArena/BattleAbility/SupporterAbilities"
 
-const getAbilityLabel = (ability: GameAbility | BlueprintPlayerAbility): string => {
+const getAbilityLabel = (ability: GameAbility | BlueprintPlayerAbility | PlayerSupporterAbility): string => {
     let label = "Select a location to use"
 
     switch (ability.location_select_type) {
@@ -34,16 +35,16 @@ const getAbilityLabel = (ability: GameAbility | BlueprintPlayerAbility): string 
 }
 
 export class PixiMapTargetSelect {
-    stageRoot: PIXI.Container<PIXI.DisplayObject>
-    viewportRoot: PIXI.Container<PIXI.DisplayObject>
+    stageRoot: PIXI.Container
+    viewportRoot: PIXI.Container
     mouseIcon: PixiImageIcon
-    private colorOverlay: PIXI.Sprite
-    private outerBorder: PIXI.Graphics
-    private bottomContainer: PIXI.Graphics
-    private cancelButton: PIXI.Sprite | undefined
+    private readonly colorOverlay: PIXI.Sprite
+    private readonly outerBorder: PIXI.Graphics
+    private readonly bottomContainer: PIXI.Graphics
+    private readonly cancelButton: PIXI.Sprite | undefined
 
     private viewport: Viewport
-    private ability: GameAbility | BlueprintPlayerAbility
+    private ability: GameAbility | BlueprintPlayerAbility | PlayerSupporterAbility
     private gridSizeRef: React.MutableRefObject<Dimension>
     private mapMousePosition: React.MutableRefObject<Position | undefined>
     private animationFrame: number | undefined
@@ -61,9 +62,8 @@ export class PixiMapTargetSelect {
         viewport: Viewport,
         mapMousePosition: React.MutableRefObject<Position | undefined>,
         gridSizeRef: React.MutableRefObject<Dimension>,
-        ability: GameAbility | BlueprintPlayerAbility,
+        ability: GameAbility | BlueprintPlayerAbility | PlayerSupporterAbility,
         endTime: Date | undefined,
-        onExpired: () => void | undefined,
         onCancel: (() => void) | undefined,
         mapItemMinSize: React.MutableRefObject<number>,
     ) {
@@ -132,7 +132,7 @@ export class PixiMapTargetSelect {
             true,
         )
         if (secondsLeft) {
-            this.mouseIcon.startCountdown(secondsLeft, 1, onExpired)
+            this.mouseIcon.startCountdown(secondsLeft, 1)
         }
 
         // Start and end coord icons, made invisible

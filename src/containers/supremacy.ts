@@ -22,6 +22,7 @@ export const SupremacyContainer = createContainer(() => {
     const [haveSups, toggleHaveSups] = useState<boolean>() // Needs 3 states: true, false, undefined. Undefined means it's not loaded yet.
     const [factionsAll, setFactionsAll] = useState<FactionsAll>({})
     const [battleIdentifier, setBattleIdentifier] = useState<number>()
+    const [battleID, setBattleID] = useState<string>()
 
     const { query: queryGetFactionsAll } = useParameterizedQuery(GetFactionsAll)
 
@@ -109,6 +110,8 @@ export const SupremacyContainer = createContainer(() => {
         getFaction,
         battleIdentifier,
         setBattleIdentifier,
+        battleID,
+        setBattleID,
         haveSups,
         toggleHaveSups,
     }
