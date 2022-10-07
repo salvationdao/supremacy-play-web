@@ -64,7 +64,7 @@ const propsAreEqual = (prevProps: MapTargetHintAbility, nextProps: MapTargetHint
 const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, cancelable }: MapTargetHintAbility) {
     const { newSnackbarMessage } = useGlobalNotifications()
     const {
-        pixiMainItems,
+        pixiMiniMapPixi,
         mapMousePosition,
         gridSizeRef,
         onSelectMapPositionCallbacks,
@@ -91,10 +91,10 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
 
     // Initial setup for the mech and show on the map
     useEffect(() => {
-        if (!pixiMainItems) return
+        if (!pixiMiniMapPixi) return
 
         const pixiTargetHint = new PixiMapTargetSelect(
-            pixiMainItems.viewport,
+            pixiMiniMapPixi.viewport,
             mapMousePosition,
             gridSizeRef,
             ability,
@@ -103,13 +103,13 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
             cancelable ? onCancel : undefined,
             mapItemMinSize,
         )
-        pixiMainItems.viewport.addChild(pixiTargetHint.viewportRoot)
-        pixiMainItems.app.stage.addChild(pixiTargetHint.stageRoot)
+        pixiMiniMapPixi.viewport.addChild(pixiTargetHint.viewportRoot)
+        pixiMiniMapPixi.app.stage.addChild(pixiTargetHint.stageRoot)
         setPixiTargetHint((prev) => {
             prev?.destroy()
             return pixiTargetHint
         })
-    }, [ability, endTime, pixiMainItems, mapMousePosition, gridSizeRef, onCountdownExpired, onCancel, cancelable, mapItemMinSize])
+    }, [ability, endTime, pixiMiniMapPixi, mapMousePosition, gridSizeRef, onCountdownExpired, onCancel, cancelable, mapItemMinSize])
 
     // Cleanup
     useEffect(() => {

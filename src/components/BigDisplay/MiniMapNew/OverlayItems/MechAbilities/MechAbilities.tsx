@@ -10,7 +10,7 @@ import { PixiMechAbilities } from "./pixiMechAbilities"
 export const MechAbilities = React.memo(function MechAbilities() {
     const { userID } = useAuth()
     const { bribeStage, warMachines, spawnedAI } = useGame()
-    const { pixiMainItems, highlightedMechParticipantID } = useMiniMapPixi()
+    const { pixiMiniMapPixi, highlightedMechParticipantID } = useMiniMapPixi()
     const [highlightedMech, setHighlightedMech] = useState<WarMachineState>()
 
     const isVoting = useMemo(() => bribeStage && bribeStage?.phase !== BribeStage.Hold, [bribeStage])
@@ -20,7 +20,7 @@ export const MechAbilities = React.memo(function MechAbilities() {
         if (mech) setHighlightedMech(mech)
     }, [highlightedMechParticipantID, spawnedAI, userID, warMachines])
 
-    if (!pixiMainItems || !highlightedMech || !isVoting) {
+    if (!pixiMiniMapPixi || !highlightedMech || !isVoting) {
         return null
     }
 
@@ -38,7 +38,7 @@ const propsAreEqual = (prevProps: MechAbilitiesInnerProps, nextProps: MechAbilit
 
 const MechAbilitiesInner = React.memo(function MechAbilitiesInner({ warMachine }: MechAbilitiesInnerProps) {
     const { currentArenaID } = useArena()
-    const { pixiMainItems } = useMiniMapPixi()
+    const { pixiMiniMapPixi } = useMiniMapPixi()
     const { hash, participantID } = warMachine
     const tickIteration = useRef(0)
 
@@ -49,11 +49,11 @@ const MechAbilitiesInner = React.memo(function MechAbilitiesInner({ warMachine }
 
     // Initial setup for the mech and show on the map
     useEffect(() => {
-        if (!pixiMainItems) return
+        if (!pixiMiniMapPixi) return
         const pixiMechAbilities = new PixiMechAbilities()
-        pixiMainItems.app.stage.addChild(pixiMechAbilities.root)
+        pixiMiniMapPixi.app.stage.addChild(pixiMechAbilities.root)
         setPixiMechAbilities(pixiMechAbilities)
-    }, [pixiMainItems])
+    }, [pixiMiniMapPixi])
 
     // Cleanup
     useEffect(() => {
