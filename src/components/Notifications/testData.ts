@@ -1,4 +1,4 @@
-import { User, UserRank, NotificationStruct } from "../../types"
+import { AnyAbility, LocationSelectType, NotificationStruct, User, UserRank } from "../../types"
 
 enum NotificationType {
     Text = "TEXT",
@@ -47,26 +47,26 @@ const user2 = {
     features: [],
 }
 
-const ability1 = {
+const ability1: AnyAbility = {
     label: "AIRSTRIKE",
     image_url: "https://i.pinimg.com/originals/b1/92/4d/b1924dce177345b5485bb5490ab3441f.jpg",
     colour: "#428EC1",
     id: "aaaaaa",
     text_colour: "#FFFFFF",
     description: "mmmmmmmmmmm",
-    cooldown_duration_second: 30,
-    ability_offering_id: "4c5cdc8c-4a11-40e6-981c-e2a83e0c9e15",
+    game_client_ability_id: 1,
+    location_select_type: LocationSelectType.LineSelect,
 }
 
-const ability2 = {
+const ability2: AnyAbility = {
     label: "OVERCHARGE",
     image_url: "https://i.pinimg.com/originals/b1/92/4d/b1924dce177345b5485bb5490ab3441f.jpg",
     colour: "#FFFFFF",
     id: "aaaaaa",
     text_colour: "#FFFFFF",
     description: "mmmmmmmmmmm",
-    cooldown_duration_second: 30,
-    ability_offering_id: "6ed7a47b-a3b6-43a3-98ea-28b0855f03f5",
+    game_client_ability_id: 2,
+    location_select_type: LocationSelectType.MechSelect,
 }
 
 const wm1 = {

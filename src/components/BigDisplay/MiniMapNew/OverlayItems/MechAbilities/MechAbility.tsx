@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from "react"
-import { useArena, useMiniMapPixi } from "../../../../../containers"
+import { useArena } from "../../../../../containers"
 import { MECH_ABILITY_KEY, RecordType, useHotkey } from "../../../../../containers/hotkeys"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
-import { GameAbility, PlayerAbility } from "../../../../../types"
+import { AnyAbility } from "../../../../../types"
 import { PixiMechAbilities } from "./pixiMechAbilities"
 import { PixiMechAbility } from "./pixiMechAbility"
 
@@ -11,34 +11,30 @@ export const MechAbility = ({
     pixiMechAbilities,
     hash,
     participantID,
-    gameAbility,
-    playerAbility,
+    anyAbility,
     index,
 }: {
     pixiMechAbilities: PixiMechAbilities
     hash: string
     participantID: number
-    gameAbility?: GameAbility
-    playerAbility?: PlayerAbility
+    anyAbility?: AnyAbility
     index: number
 }) => {
     const { currentArenaID } = useArena()
-    const { usePlayerAbility } = useMiniMapPixi()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const { addToHotkeyRecord } = useHotkey()
     const [pixiMechAbility, setPixiMechAbility] = useState<PixiMechAbility>()
 
     // Initial setup for the mech and show on the map
     useEffect(() => {
-        const ab = playerAbility?.ability || gameAbility
-        if (!ab) return
-        const pixiMechAbility = new PixiMechAbility(index, ab)
+        if (!anyAbility) return
+        const pixiMechAbility = new PixiMechAbility(index, anyAbility)
         pixiMechAbilities.addMechAbility(pixiMechAbility, index)
         setPixiMechAbility((prev) => {
             prev?.destroy()
             return pixiMechAbility
         })
-    }, [index, pixiMechAbilities, gameAbility, playerAbility])
+    }, [index, pixiMechAbilities, anyAbility])
 
     // Cleanup
     useEffect(() => {
@@ -48,9 +44,9 @@ export const MechAbility = ({
 
     useGameServerSubscriptionFaction<number | undefined>(
         {
-            URI: `/arena/${currentArenaID}/mech/${participantID}/abilities/${gameAbility?.id}/cool_down_seconds`,
+            URI: `/arena/${currentArenaID}/mech/${participantID}/abilities/${anyAbility?.id}/cool_down_seconds`,
             key: GameServerKeys.SubMechAbilityCoolDown,
-            ready: !!currentArenaID && !!participantID && !!pixiMechAbility && !!gameAbility,
+            ready: !!currentArenaID && !!participantID && !!pixiMechAbility && !!anyAbility,
         },
         (payload) => {
             if (payload === undefined || payload <= 0) return
@@ -61,25 +57,18 @@ export const MechAbility = ({
     const onTrigger = useCallback(async () => {
         if (!currentArenaID) return
 
-        if (playerAbility) {
-            usePlayerAbility.current({
-                ...playerAbility,
-                mechHash: hash,
-            })
-        }
-
-        if (gameAbility) {
+        if (anyAbility) {
             try {
                 await send<boolean, { arena_id: string; mech_hash: string; game_ability_id: string }>(GameServerKeys.TriggerWarMachineAbility, {
                     arena_id: currentArenaID,
                     mech_hash: hash,
-                    game_ability_id: gameAbility.id,
+                    game_ability_id: anyAbility.id,
                 })
             } catch (e) {
                 console.error(e)
             }
         }
-    }, [currentArenaID, playerAbility, gameAbility, usePlayerAbility, hash, send])
+    }, [currentArenaID, anyAbility, hash, send])
 
     // Add trigger to hotkeys
     useEffect(() => {

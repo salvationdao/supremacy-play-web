@@ -13,12 +13,11 @@ import {
     MechDisplayEffectType,
     MechMoveCommand,
     MechMoveCommandAbility,
-    PlayerAbility,
+    AnyAbility,
     WarMachineLiveState,
     WarMachineState,
 } from "../../../../../types"
 import { PixiMapMech } from "./pixiMapMech"
-import { PlayerSupporterAbility } from "../../../../LeftDrawer/BattleArena/BattleAbility/SupporterAbilities"
 
 interface MapMechProps {
     warMachine: WarMachineState
@@ -34,7 +33,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     const { map } = useGame()
     const { userID, factionID } = useAuth()
     const { currentArenaID } = useArena()
-    const { getFaction } = useSupremacy()
+    const { getFaction, isWindowFocused } = useSupremacy()
     const { addToHotkeyRecord } = useHotkey()
     const {
         pixiMainItems,
@@ -43,14 +42,12 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         gridCellToViewportPosition,
         highlightedMechParticipantID,
         setHighlightedMechParticipantID,
-        playerAbility,
-        supportAbility,
+        anyAbility,
         onTargetConfirm,
         selection,
         selectMapPosition,
-        usePlayerAbility,
-        useSupportAbility,
-        onAbilityUseCallbacks,
+        useAnyAbility,
+        onAnyAbilityUseCallbacks,
         onSelectMapPositionCallbacks,
         mapItemMinSize,
     } = useMiniMapPixi()
@@ -128,8 +125,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     }, [onTargetConfirm, pixiMapMech])
 
     const updateIsMechHighlighted = useCallback(() => {
-        const isHighlighted =
-            highlightedMechParticipantID === participantID || playerAbility.current?.mechHash === hash || supportAbility.current?.mech_hash === hash
+        const isHighlighted = highlightedMechParticipantID === participantID || anyAbility.current?.mech_hash === hash
 
         // Highlight the mech circle
         if (!pixiMapMech) return
@@ -138,30 +134,25 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         } else {
             pixiMapMech.unhighlightMech()
         }
-    }, [hash, highlightedMechParticipantID, pixiMapMech, playerAbility, participantID, supportAbility])
+    }, [hash, highlightedMechParticipantID, pixiMapMech, anyAbility, participantID])
 
-    // If the mech dies and its mech is about to use player ability is active, cancel it
+    // If the mech dies and the mech is about to use player ability is active, cancel it
     useEffect(() => {
-        if (!isAlive && playerAbility.current?.mechHash === hash) {
-            usePlayerAbility.current(undefined)
+        if (!isAlive && anyAbility.current?.mech_hash === hash) {
+            useAnyAbility.current(undefined)
         }
-        if (!isAlive && supportAbility.current?.mech_hash === hash) {
-            useSupportAbility.current(undefined)
-        }
-    }, [hash, isAlive, playerAbility, usePlayerAbility, useSupportAbility, supportAbility])
+    }, [hash, isAlive, anyAbility, useAnyAbility])
 
     // Handle what happens when ability is used or map location is selected
     useEffect(() => {
-        onAbilityUseCallbacks.current[`map-mech-${hash}`] = (pa: PlayerAbility | undefined, sa: PlayerSupporterAbility | undefined) => {
+        onAnyAbilityUseCallbacks.current[`map-mech-${hash}`] = (aa: AnyAbility | undefined) => {
             updateIsMechHighlighted()
 
             // Show the dashed line border box around mech is it can be clicked on for the ability
             let showDashedBox = false
 
-            const ability = pa?.ability || sa
-
-            if (isAlive && !abilityBorderEffect && ability) {
-                const locationSelectType = ability.location_select_type
+            if (isAlive && !abilityBorderEffect && aa) {
+                const locationSelectType = aa.location_select_type
                 switch (locationSelectType) {
                     case LocationSelectType.MechSelectAllied:
                         showDashedBox = factionID === warMachineFactionID
@@ -182,24 +173,20 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             if (pixiMapMech) {
                 // If the winner/ability is not a mech select type, disable mech click
                 pixiMapMech.rootInner.interactive = !(
-                    ability &&
-                    ability.location_select_type !== LocationSelectType.MechCommand &&
-                    ability.location_select_type !== LocationSelectType.MechSelect &&
-                    ability.location_select_type !== LocationSelectType.MechSelectAllied &&
-                    ability.location_select_type !== LocationSelectType.MechSelectOpponent
+                    aa &&
+                    aa.location_select_type !== LocationSelectType.MechCommand &&
+                    aa.location_select_type !== LocationSelectType.MechSelect &&
+                    aa.location_select_type !== LocationSelectType.MechSelectAllied &&
+                    aa.location_select_type !== LocationSelectType.MechSelectOpponent
                 )
             }
         }
 
-        onSelectMapPositionCallbacks.current[`map-mech-${hash}`] = (
-            mapPos: MapSelection | undefined,
-            pa: PlayerAbility | undefined,
-            sa: PlayerSupporterAbility | undefined,
-        ) => {
+        onSelectMapPositionCallbacks.current[`map-mech-${hash}`] = (mapPos: MapSelection | undefined, aa: AnyAbility | undefined) => {
             updateIsMechHighlighted()
 
             // Immediately render the mech move dashed line when player selects it for fast UX
-            if (pa?.ability.location_select_type === LocationSelectType.MechCommand && pa.mechHash === hash) {
+            if (aa && aa.location_select_type === LocationSelectType.MechCommand && aa.mech_hash === hash) {
                 if (mapPos?.position) {
                     const mCommand: MechMoveCommand = {
                         id: "move_command",
@@ -219,14 +206,13 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             }
 
             // If mech is selected for ability, show it
-            const ability = pa?.ability || sa
-            if (ability && mapPos?.mechHash === hash) {
-                pixiMapMech?.applyAbility(ability)
+            if (aa && mapPos?.mechHash === hash) {
+                pixiMapMech?.applyAbility(aa)
             } else {
                 pixiMapMech?.unApplyAbility()
             }
         }
-    }, [abilityBorderEffect, factionID, hash, id, isAlive, onAbilityUseCallbacks, onSelectMapPositionCallbacks, pixiMapMech, selection, updateIsMechHighlighted, warMachineFactionID])
+    }, [abilityBorderEffect, factionID, hash, id, isAlive, onAnyAbilityUseCallbacks, onSelectMapPositionCallbacks, pixiMapMech, selection, updateIsMechHighlighted, warMachineFactionID])
 
     // A set time out to counter the race condition which makes the mech unhighlighted at beginning
     useEffect(() => {
@@ -238,8 +224,8 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     const onMechClick = useCallback(() => {
         let alreadyApplyingAbility = false
 
-        if ((playerAbility.current && isAlive) || (supportAbility.current && isAlive)) {
-            const locationSelectType = playerAbility.current?.ability.location_select_type || supportAbility.current?.location_select_type
+        if (anyAbility.current && isAlive) {
+            const locationSelectType = anyAbility.current.location_select_type
 
             if (
                 (locationSelectType === LocationSelectType.MechSelectAllied && factionID === warMachineFactionID) ||
@@ -261,40 +247,36 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             setHighlightedMechParticipantID(undefined)
             tempMechMoveCommand.current = undefined
             if (!alreadyApplyingAbility) {
-                if (playerAbility.current) usePlayerAbility.current(undefined)
-                if (supportAbility.current) useSupportAbility.current(undefined)
+                if (anyAbility.current) useAnyAbility.current(undefined)
             }
         } else {
             setHighlightedMechParticipantID(participantID)
 
             if (!alreadyApplyingAbility) {
                 if (isAlive && ownedByID === userID) {
-                    usePlayerAbility.current({
+                    useAnyAbility.current({
                         ...MechMoveCommandAbility,
-                        mechHash: hash,
+                        mech_hash: hash,
                     })
                 } else {
-                    if (playerAbility.current) usePlayerAbility.current(undefined)
-                    if (supportAbility.current) useSupportAbility.current(undefined)
+                    if (anyAbility.current) useAnyAbility.current(undefined)
                 }
             }
         }
     }, [
-        playerAbility,
-        supportAbility,
+        anyAbility,
         isAlive,
-        usePlayerAbility,
-        useSupportAbility,
         participantID,
         highlightedMechParticipantID,
         factionID,
         warMachineFactionID,
+        ownedByID,
+        userID,
         selection,
         hash,
         selectMapPosition,
         setHighlightedMechParticipantID,
-        ownedByID,
-        userID,
+        useAnyAbility,
     ])
 
     // Setup onclick handler
@@ -332,6 +314,9 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             batchURI: `/public/arena/${currentArenaID}/mech`,
         },
         (payload) => {
+            // If window is not in focus, discard the payloads else will crash browser
+            if (!isWindowFocused.current) return
+
             if (!payload || payload.tick_order < tickIteration.current) return
             tickIteration.current = payload.tick_order
 

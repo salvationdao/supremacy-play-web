@@ -101,7 +101,7 @@
     },
     "scripts": {
         "start": "git submodule update --init --recursive; cross-env SSL_CRT_FILE=./certs/__supremacygame_io_ca_all.ca-bundle SSL_KEY_FILE=./certs/_.supremacygame.io.key HOST=0.0.0.0 PORT=3002 HTTPS=true BROWSER=none react-scripts start",
-        "start-prod-data": "git submodule update --init --recursive; REACT_APP_PROD_DATA=true cross-env HOST=0.0.0.0 PORT=3002 BROWSER=none react-scripts start",
+        "start-prod-data": "git submodule update --init --recursive; cross-env REACT_APP_PROD_DATA=true HOST=0.0.0.0 PORT=3002 BROWSER=none react-scripts start",
         "start:windows": "git submodule update --init --recursive && cross-env SSL_CRT_FILE=./certs/__supremacygame_io_ca_all.ca-bundle SSL_KEY_FILE=./certs/_.supremacygame.io.key HOST=0.0.0.0 PORT=3002 HTTPS=true BROWSER=none react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",

@@ -7,6 +7,13 @@ export interface FactionsAll {
     [faction_id: string]: Faction
 }
 
+export enum BattleState {
+    EndState = 0,
+    SetupState = 1,
+    IntroState = 2,
+    BattlingState = 3,
+}
+
 export enum BribeStage {
     OptIn = "OPT_IN",
     LocationSelect = "LOCATION_SELECT",
@@ -68,41 +75,26 @@ export interface Vector2i {
     y: number
 }
 
-export interface BattleAbility {
-    id: string
-    label: string
-    colour: string
-    text_colour: string
-    description: string
-    image_url: string
-    cooldown_duration_second: number
-    ability_offering_id: string
-}
-
-export interface GameAbility {
+export interface AnyAbility {
     id: string
     game_client_ability_id: number
-    identity: string
+    location_select_type: LocationSelectType
     label: string
     colour: string
-    text_colour: string
-    description: string
     image_url: string
+    description: string
+    text_colour: string
+    mech_hash?: string
+}
+
+export interface GameAbility extends AnyAbility {
+    identity: string
     sups_cost: string
     current_sups: string
     ability_offering_id: string
-    location_select_type: string
 }
 
-export interface BlueprintPlayerAbility {
-    id: string
-    game_client_ability_id: number
-    label: string
-    colour: string
-    image_url: string
-    description: string
-    text_colour: string
-    location_select_type: LocationSelectType
+export interface BlueprintPlayerAbility extends AnyAbility {
     created_at: Date
     inventory_limit: number
     cooldown_seconds: number
@@ -115,9 +107,6 @@ export interface PlayerAbility {
     last_purchased_at: Date
     cooldown_expires_on: Date
     ability: BlueprintPlayerAbility
-
-    // Used for mech command related abilities
-    mechHash?: string
 }
 
 export interface SaleAbility {
@@ -139,12 +128,6 @@ export interface GameAbilityProgress {
     sups_cost: string
     current_sups: string
     should_reset: boolean
-}
-
-export interface BattleAbilityProgress {
-    faction_id: string
-    sups_cost: string
-    current_sups: string
 }
 
 export interface Battle {
@@ -316,14 +299,14 @@ export interface LocationSelectAlertProps {
     type: LocationSelectAlertType
     currentUser?: User
     nextUser?: User
-    ability: BattleAbility
+    ability: AnyAbility
     x?: number
     y?: number
 }
 
 export interface WarMachineAbilityAlertProps {
     user: User
-    ability: BattleAbility
+    ability: AnyAbility
     warMachine: WarMachineState
 }
 
@@ -336,7 +319,7 @@ export interface KillAlertProps {
 
 export interface BattleFactionAbilityAlertProps {
     user: User
-    ability: BattleAbility
+    ability: AnyAbility
 }
 
 export interface NotificationStruct {
@@ -344,25 +327,15 @@ export interface NotificationStruct {
     data: BattleFactionAbilityAlertProps | KillAlertProps | LocationSelectAlertProps | WarMachineAbilityAlertProps | BattleZoneStruct | string
 }
 
-export const MechMoveCommandAbility: PlayerAbility = {
-    id: "mech_move_command",
-    blueprint_id: "mech_move_command",
-    count: 1,
-    last_purchased_at: new Date(),
-    cooldown_expires_on: new Date(),
-    ability: {
-        id: "",
-        game_client_ability_id: 8,
-        label: "MOVE COMMAND",
-        image_url: "https://afiles.ninja-cdn.com/supremacy-stream-site/assets/img/ability-mech-move-command.png",
-        description: "Command the war machine to move to a specific location.",
-        text_colour: "#000000",
-        colour: colors.gold,
-        location_select_type: LocationSelectType.MechCommand,
-        created_at: new Date(),
-        inventory_limit: 10,
-        cooldown_seconds: 5,
-    },
+export const MechMoveCommandAbility: AnyAbility = {
+    id: "",
+    game_client_ability_id: 8,
+    label: "MOVE COMMAND",
+    image_url: "https://afiles.ninja-cdn.com/supremacy-stream-site/assets/img/ability-mech-move-command.png",
+    description: "Command the war machine to move to a specific location.",
+    text_colour: "#000000",
+    colour: colors.gold,
+    location_select_type: LocationSelectType.MechCommand,
 }
 
 export interface MechMoveCommand {
