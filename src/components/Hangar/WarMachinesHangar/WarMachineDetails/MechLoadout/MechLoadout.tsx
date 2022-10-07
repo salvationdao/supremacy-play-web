@@ -272,8 +272,17 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     }, [])
 
     const undoMechSkinChanges = useCallback(() => {
+        if (unityControlsRef.current && currLoadout.chassis_skin) {
+            const prevMechSkin = currLoadout.chassis_skin
+            unityControlsRef.current.handleMechSkinUpdate({
+                mech_skin_id: prevMechSkin.id,
+                mech_skin: prevMechSkin,
+            })
+            setIsUnityPendingChange(true)
+        }
+
         setCurrLoadout((prev) => ({ ...prev, changed_mech_skin: undefined }))
-    }, [])
+    }, [currLoadout.chassis_skin])
 
     const undoPowerCoreChanges = useCallback(() => {
         setCurrLoadout((prev) => ({ ...prev, changed_power_core: undefined }))
