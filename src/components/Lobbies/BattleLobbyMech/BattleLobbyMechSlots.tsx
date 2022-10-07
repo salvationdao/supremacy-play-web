@@ -1,6 +1,6 @@
 import { Box, Button, Stack, Typography } from "@mui/material"
-import React, { useCallback, useMemo, useState } from "react"
-import { SvgCheckMark, SvgLogout, SvgPlus, SvgQuestionMark2, SvgWeapons } from "../../../assets"
+import React, { useCallback, useState } from "react"
+import { SvgCheckMark, SvgLogout, SvgPlus, SvgQuestionMark2 } from "../../../assets"
 import { useAuth, useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets } from "../../../helpers"

@@ -3,7 +3,6 @@ import React, { useState } from "react"
 import { ConfirmModal } from "../../Common/ConfirmModal"
 import { BattleLobby } from "../../../types/battle_queue"
 import { BattleLobbyItem } from "./BattleLobbyItem"
-import { useTheme } from "../../../containers/theme"
 import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 
@@ -44,8 +43,6 @@ interface BattleLobbyPrivateAccessModalProps {
     accessCode: string
 }
 export const BattleLobbyPrivateAccessModal = ({ setAccessCode, accessCode }: BattleLobbyPrivateAccessModalProps) => {
-    const { factionTheme } = useTheme()
-    const [error, setError] = useState()
     const [isLoading, setIsLoading] = useState(true)
 
     const [lobby, setLobby] = useState<BattleLobby>(lobbyPlaceholder)
@@ -65,15 +62,7 @@ export const BattleLobbyPrivateAccessModal = ({ setAccessCode, accessCode }: Bat
     )
 
     return (
-        <ConfirmModal
-            title={`ACCESS PRIVATE LOBBY`}
-            omitButtons
-            onClose={() => setAccessCode("")}
-            isLoading={isLoading}
-            error={error}
-            width="150rem"
-            omitCancel
-        >
+        <ConfirmModal title={`ACCESS PRIVATE LOBBY`} omitButtons onClose={() => setAccessCode("")} isLoading={isLoading} width="150rem" omitCancel>
             <Stack direction="column">
                 <BattleLobbyItem battleLobby={lobby} omitClip disabled={isLoading} accessCode={accessCode} />
             </Stack>

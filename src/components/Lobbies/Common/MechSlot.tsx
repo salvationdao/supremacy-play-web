@@ -23,7 +23,7 @@ export const MechSlot = ({ lobbyMech, canLeave, leftQueue }: MechSlotProps) => {
     const { userID } = useAuth()
     const { factionTheme } = useTheme()
 
-    const showLeaveButton = useMemo(() => canLeave && lobbyMech?.owner_id === userID, [canLeave])
+    const showLeaveButton = useMemo(() => canLeave && lobbyMech?.owner_id === userID, [canLeave, lobbyMech?.owner_id, userID])
 
     if (!lobbyMech) {
         return (

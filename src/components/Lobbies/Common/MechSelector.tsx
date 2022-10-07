@@ -13,7 +13,6 @@ import { getRarityDeets } from "../../../helpers"
 import FlipMove from "react-flip-move"
 import { BattleLobbyMechQueueCard } from "../BattleLobbyMech/BattleLobbyMechQueueCard"
 import { EmptyWarMachinesPNG } from "../../../assets"
-import { PlayerQueueStatus } from "../../../types/battle_queue"
 
 const sortOptions = [
     { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
@@ -37,20 +36,6 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs }: MechSelectorPr
     })
 
     const [sort, setSort] = useState<string>(SortTypeLabel.RarestDesc)
-
-    const [currentPlayerQueue, setCurrentPlayerQueue] = useState<PlayerQueueStatus>({
-        queue_limit: 10,
-        total_queued: 0,
-    })
-    useGameServerSubscriptionSecuredUser<PlayerQueueStatus>(
-        {
-            URI: "/queue_status",
-            key: GameServerKeys.PlayerQueueStatus,
-        },
-        (payload) => {
-            setCurrentPlayerQueue(payload)
-        },
-    )
 
     const [ownedMechs, setOwnedMechs] = useState<LobbyMech[]>([])
     useGameServerSubscriptionSecuredUser<LobbyMech[]>(

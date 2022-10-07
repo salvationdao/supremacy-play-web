@@ -242,8 +242,8 @@ export const BarStat = ({
     Icon: React.VoidFunctionComponent<SvgWrapperProps>
     compact?: boolean
 }) => {
-    const parsedCurrent = useMemo(() => (typeof current === "string" ? parseFloat(current) : current), [])
-    const parsedBoosted = useMemo(() => (typeof boostedTo === "string" ? parseFloat(boostedTo) : boostedTo), [])
+    const parsedCurrent = useMemo(() => (typeof current === "string" ? parseFloat(current) : current), [current])
+    const parsedBoosted = useMemo(() => (typeof boostedTo === "string" ? parseFloat(boostedTo) : boostedTo), [boostedTo])
     if (!parsedCurrent && !parsedBoosted) return null
 
     if (compact)

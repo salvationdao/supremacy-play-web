@@ -133,7 +133,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
         } finally {
             setIsLoading(false)
         }
-    }, [lobbyForm, send, selectedMechs])
+    }, [lobbyForm, send, selectedMechs, setOpen])
 
     return (
         <ConfirmModal

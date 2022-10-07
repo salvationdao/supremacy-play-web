@@ -94,7 +94,7 @@ export const WeaponSlot = ({ weaponSlot, tooltipPlacement, size }: WeaponSlotPro
                 />
             </TooltipHelper>
         )
-    }, [weapon, weaponStat])
+    }, [factionTheme.background, factionTheme.primary, tooltipPlacement, weapon, weaponStat])
 
     return (
         <Box

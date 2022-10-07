@@ -12,11 +12,9 @@ interface BattleLobbyAccessCodeModalProps {
 
 export const BattleLobbyAccessCodeModal = ({ setOpen, setAccessCode }: BattleLobbyAccessCodeModalProps) => {
     const { factionTheme } = useTheme()
-    const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState("")
     const [code, setCode] = useState("")
     return (
-        <ConfirmModal title={`ACCESS CODE`} omitButtons onClose={() => setOpen(false)} isLoading={isLoading} error={error} omitCancel>
+        <ConfirmModal title={`ACCESS CODE`} omitButtons onClose={() => setOpen(false)} isLoading={false} omitCancel>
             <Stack
                 direction="row"
                 alignItems="center"
