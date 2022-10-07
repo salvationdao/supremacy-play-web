@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react"
 import { useArena, useAuth, useGame, useMiniMapPixi } from "../../../../../containers"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
-import { AIType, BattleState, GameAbility, WarMachineLiveState, WarMachineState } from "../../../../../types"
+import { AIType, BattleState, AnyAbility, WarMachineLiveState, WarMachineState } from "../../../../../types"
 import { MechAbility } from "./MechAbility"
 import { PixiMechAbilities } from "./pixiMechAbilities"
 
@@ -41,7 +41,7 @@ const MechAbilitiesInner = React.memo(function MechAbilitiesInner({ warMachine }
     const tickIteration = useRef(0)
 
     const [pixiMechAbilities, setPixiMechAbilities] = useState<PixiMechAbilities>()
-    const [gameAbilities, setGameAbilities] = useState<GameAbility[]>([])
+    const [anyAbilities, setAnyAbilities] = useState<AnyAbility[]>([])
 
     const isMiniMech = warMachine.aiType === AIType.MiniMech
 
@@ -78,7 +78,7 @@ const MechAbilitiesInner = React.memo(function MechAbilitiesInner({ warMachine }
     )
 
     // Subscribe to war machine ability updates
-    useGameServerSubscriptionFaction<GameAbility[] | undefined>(
+    useGameServerSubscriptionFaction<AnyAbility[] | undefined>(
         {
             URI: `/arena/${currentArenaID}/mech/${participantID}/abilities`,
             key: GameServerKeys.SubWarMachineAbilitiesUpdated,
@@ -86,10 +86,10 @@ const MechAbilitiesInner = React.memo(function MechAbilitiesInner({ warMachine }
         },
         (payload) => {
             if (!payload || payload.length <= 0) {
-                setGameAbilities([])
+                setAnyAbilities([])
                 return
             }
-            setGameAbilities(payload)
+            setAnyAbilities(payload)
         },
     )
 
@@ -101,14 +101,14 @@ const MechAbilitiesInner = React.memo(function MechAbilitiesInner({ warMachine }
 
         return (
             <>
-                {gameAbilities &&
-                    gameAbilities.map((ga, index) => {
+                {anyAbilities &&
+                    anyAbilities.map((aa, index) => {
                         return (
                             <MechAbility
-                                key={ga.id}
+                                key={aa.id}
                                 pixiMechAbilities={pixiMechAbilities}
                                 index={index}
-                                gameAbility={ga}
+                                anyAbility={aa}
                                 hash={hash}
                                 participantID={participantID}
                             />
@@ -116,5 +116,5 @@ const MechAbilitiesInner = React.memo(function MechAbilitiesInner({ warMachine }
                     })}
             </>
         )
-    }, [gameAbilities, hash, participantID, pixiMechAbilities, isMiniMech])
+    }, [anyAbilities, hash, participantID, pixiMechAbilities, isMiniMech])
 }, propsAreEqual)

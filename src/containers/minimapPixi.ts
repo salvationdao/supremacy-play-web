@@ -5,7 +5,7 @@ import { createContainer } from "unstated-next"
 import { deepEqual } from "../helpers"
 import { useGameServerCommandsFaction } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { BattleState, Dimension, GAME_CLIENT_TILE_SIZE, LocationSelectType, Map, PlayerAbility, PlayerSupporterAbility, Position, Vector2i } from "../types"
+import { AnyAbility, BattleState, Dimension, GAME_CLIENT_TILE_SIZE, LocationSelectType, Map, Position, Vector2i } from "../types"
 import { useArena } from "./arena"
 import { useGame } from "./game"
 import { useGlobalNotifications } from "./globalNotifications"
@@ -98,37 +98,25 @@ export const MiniMapPixiContainer = createContainer(() => {
     // ***************************************
     // ********** Ability use stuff **********
     // ***************************************
-    const playerAbility = useRef<PlayerAbility | undefined>()
-    const supportAbility = useRef<PlayerSupporterAbility | undefined>()
+    const anyAbility = useRef<AnyAbility | undefined>()
     const selection = useRef<MapSelection | undefined>()
 
     const onAnyAbilityUseCallbacks = useRef<{
-        [name: string]: (playerAbility: PlayerAbility | undefined, supportAbility: PlayerSupporterAbility | undefined) => void
+        [name: string]: (anyAbility: AnyAbility | undefined) => void
     }>({})
 
     const onSelectMapPositionCallbacks = useRef<{
-        [name: string]: (mapPos: MapSelection | undefined, playerAbility: PlayerAbility | undefined, supportAbility: PlayerSupporterAbility | undefined) => void
+        [name: string]: (mapPos: MapSelection | undefined, anyAbility: AnyAbility | undefined) => void
     }>({})
 
-    const usePlayerAbility = useRef((pa: PlayerAbility | undefined) => {
-        const prevValue = playerAbility.current
-        playerAbility.current = pa
+    const useAnyAbility = useRef((aa: AnyAbility | undefined) => {
+        const prevValue = anyAbility.current
+        anyAbility.current = aa
         selectMapPosition.current(undefined)
 
         // Only run if something was changed
-        if (prevValue !== pa || (prevValue && pa && !deepEqual(prevValue, pa))) {
-            Object.values(onAnyAbilityUseCallbacks.current).forEach((cb) => cb(pa, supportAbility.current))
-        }
-    })
-
-    const useSupportAbility = useRef((sa: PlayerSupporterAbility | undefined) => {
-        const prevValue = supportAbility.current
-        supportAbility.current = sa
-        selectMapPosition.current(undefined)
-
-        // Only run if something was changed
-        if (prevValue !== sa || (prevValue && sa && !deepEqual(prevValue, sa))) {
-            Object.values(onAnyAbilityUseCallbacks.current).forEach((cb) => cb(playerAbility.current, sa))
+        if (prevValue !== aa || (prevValue && aa && !deepEqual(prevValue, aa))) {
+            Object.values(onAnyAbilityUseCallbacks.current).forEach((cb) => cb(aa))
         }
     })
 
@@ -138,15 +126,14 @@ export const MiniMapPixiContainer = createContainer(() => {
 
         // Only run if something was changed
         if (prevValue !== mapPos || (prevValue && mapPos && !deepEqual(prevValue, mapPos))) {
-            Object.values(onSelectMapPositionCallbacks.current).forEach((cb) => cb(mapPos, playerAbility.current, supportAbility.current))
+            Object.values(onSelectMapPositionCallbacks.current).forEach((cb) => cb(mapPos, anyAbility.current))
         }
     })
 
     // Escape hot key
     useEffect(() => {
         addToHotkeyRecord(RecordType.MiniMap, "Escape", () => {
-            usePlayerAbility.current(undefined)
-            useSupportAbility.current(undefined)
+            useAnyAbility.current(undefined)
             setHighlightedMechParticipantID(undefined)
         })
     }, [addToHotkeyRecord])
@@ -154,19 +141,15 @@ export const MiniMapPixiContainer = createContainer(() => {
     // When battle ends, cancel abilities etc.
     useEffect(() => {
         if (battleState != BattleState.BattlingState) {
-            usePlayerAbility.current(undefined)
-            useSupportAbility.current(undefined)
+            useAnyAbility.current(undefined)
         }
     }, [battleState])
 
     const onTargetConfirm = useCallback(
         ({ startCoord, endCoord, mechHash }: { startCoord?: Position; endCoord?: Position; mechHash?: string }) => {
             try {
-                // Prioritize supporter abilities first
-                const abilityToUse = supportAbility.current || playerAbility.current?.ability
-
                 // If no ability is selected, then return
-                if (!abilityToUse || !currentArenaID) return
+                if (!anyAbility.current || !currentArenaID) return
 
                 // We will construct the payload and then send it off
                 const payload: {
@@ -178,11 +161,11 @@ export const MiniMapPixiContainer = createContainer(() => {
                     mech_hash?: string
                 } = {
                     arena_id: currentArenaID,
-                    ability_id: abilityToUse.id,
-                    location_select_type: abilityToUse.location_select_type,
+                    ability_id: anyAbility.current.id,
+                    location_select_type: anyAbility.current.location_select_type,
                 }
 
-                switch (abilityToUse.location_select_type) {
+                switch (anyAbility.current.location_select_type) {
                     case LocationSelectType.LineSelect:
                         if (!startCoord || !endCoord) {
                             newSnackbarMessage("Missing map target location(s).", "error")
@@ -217,8 +200,8 @@ export const MiniMapPixiContainer = createContainer(() => {
                 }
 
                 // If it's mech move command, dont reset so player can keep moving the mech
-                if (playerAbility.current?.ability.location_select_type !== LocationSelectType.MechCommand) {
-                    usePlayerAbility.current(undefined)
+                if (anyAbility.current?.location_select_type !== LocationSelectType.MechCommand) {
+                    useAnyAbility.current(undefined)
                 }
 
                 send(GameServerKeys.PlayerAbilityUse, payload)
@@ -249,11 +232,9 @@ export const MiniMapPixiContainer = createContainer(() => {
         gridCellToViewportPosition,
 
         // Ability use related stuff
-        playerAbility,
-        supportAbility,
+        anyAbility,
         selection,
-        usePlayerAbility,
-        useSupportAbility,
+        useAnyAbility,
         selectMapPosition,
         onAnyAbilityUseCallbacks,
         onSelectMapPositionCallbacks,

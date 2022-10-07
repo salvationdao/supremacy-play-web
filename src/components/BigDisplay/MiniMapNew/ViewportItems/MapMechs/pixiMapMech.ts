@@ -10,7 +10,7 @@ import { pulseParticlesConfig } from "../../../../../pixi/particleConfigs"
 import { PixiImageIcon } from "../../../../../pixi/pixiImageIcon"
 import { PixiProgressBar } from "../../../../../pixi/pixiProgressBar"
 import { colors, fonts } from "../../../../../theme/theme"
-import { BlueprintPlayerAbility, Dimension, DisplayedAbility, GameAbility, PlayerSupporterAbility, Position } from "../../../../../types"
+import { AnyAbility, Dimension, DisplayedAbility, Position } from "../../../../../types"
 
 export class PixiMapMech {
     root: PIXI.Container<PIXI.DisplayObject>
@@ -303,14 +303,14 @@ export class PixiMapMech {
     }
 
     // Ability to by applied to the mech
-    applyAbility(ability: GameAbility | BlueprintPlayerAbility | PlayerSupporterAbility) {
+    applyAbility(anyAbility: AnyAbility) {
         if (!this.iconDimension) return
 
         this.abilityToApply = new PixiImageIcon(
-            ability.image_url,
+            anyAbility.image_url,
             Math.max(this.iconDimension.width, this.mapItemMinSize.current) / 1.6,
             Math.max(this.iconDimension.height, this.mapItemMinSize.current) / 1.6,
-            ability.colour,
+            anyAbility.colour,
             true,
             1,
         )

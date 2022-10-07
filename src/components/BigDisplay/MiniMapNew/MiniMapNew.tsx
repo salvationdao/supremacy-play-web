@@ -5,7 +5,7 @@ import { useDimension, useGame, useMiniMapPixi, useUI } from "../../../container
 import { useHotkey } from "../../../containers/hotkeys"
 import { useToggle } from "../../../hooks"
 import { fonts } from "../../../theme/theme"
-import { BattleState, Map, PlayerAbility, PlayerSupporterAbility } from "../../../types"
+import { AnyAbility, BattleState, Map } from "../../../types"
 import { WindowPortal } from "../../Common/WindowPortal/WindowPortal"
 import { useWindowPortal } from "../../Common/WindowPortal/WindowPortalContainer"
 import { LEFT_DRAWER_WIDTH } from "../../LeftDrawer/LeftDrawer"
@@ -164,8 +164,8 @@ const MiniMapInner = ({ map, isPoppedout, width = 100, height = 100, poppedOutCo
 
     // When it's targeting, enlarge to big display, else restore to the prev location
     useEffect(() => {
-        onAnyAbilityUseCallbacks.current["mini-map-new"] = (pa: PlayerAbility | undefined, sa: PlayerSupporterAbility | undefined) => {
-            if (sa || pa) {
+        onAnyAbilityUseCallbacks.current["mini-map-new"] = (aa: AnyAbility | undefined) => {
+            if (aa) {
                 toggleIsStreamBigDisplayMemorized(false)
             } else {
                 setTimeout(() => {

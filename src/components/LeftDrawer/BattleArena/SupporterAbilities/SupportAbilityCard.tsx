@@ -3,12 +3,12 @@ import { useCallback, useMemo } from "react"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../../assets"
 import { useMiniMapPixi } from "../../../../containers"
 import { colors } from "../../../../theme/theme"
-import { LocationSelectType, PlayerSupporterAbility } from "../../../../types"
+import { LocationSelectType, AnyAbility } from "../../../../types"
 import { FancyButton } from "../../../Common/FancyButton"
 import { TooltipHelper } from "../../../Common/TooltipHelper"
 
-export const SupportAbilityCard = ({ supportAbility }: { supportAbility: PlayerSupporterAbility }) => {
-    const { useSupportAbility } = useMiniMapPixi()
+export const SupportAbilityCard = ({ supportAbility }: { supportAbility: AnyAbility }) => {
+    const { useAnyAbility } = useMiniMapPixi()
 
     const abilityTypeIcon = useMemo(() => {
         switch (supportAbility.location_select_type) {
@@ -29,8 +29,8 @@ export const SupportAbilityCard = ({ supportAbility }: { supportAbility: PlayerS
     }, [supportAbility])
 
     const onActivate = useCallback(() => {
-        useSupportAbility.current(supportAbility)
-    }, [supportAbility, useSupportAbility])
+        useAnyAbility.current(supportAbility)
+    }, [supportAbility, useAnyAbility])
 
     return (
         <TooltipHelper color={supportAbility.colour} text={supportAbility.description} placement="bottom">

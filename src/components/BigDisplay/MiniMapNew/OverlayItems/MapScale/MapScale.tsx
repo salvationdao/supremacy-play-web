@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { useMiniMapPixi } from "../../../../../containers"
-import { PlayerAbility, PlayerSupporterAbility } from "../../../../../types"
+import { AnyAbility } from "../../../../../types"
 import { PixiMapScale } from "./pixiMapScale"
 
 export const MapScale = React.memo(function MapScale() {
@@ -25,8 +25,8 @@ export const MapScale = React.memo(function MapScale() {
     useEffect(() => {
         if (!pixiMapScale) return
 
-        onAnyAbilityUseCallbacks.current[`map-scale`] = (pa: PlayerAbility | undefined, sa: PlayerSupporterAbility | undefined) => {
-            pixiMapScale.updateVisibility(!(pa || sa))
+        onAnyAbilityUseCallbacks.current[`map-scale`] = (aa: AnyAbility | undefined) => {
+            pixiMapScale.updateVisibility(!aa)
         }
     }, [onAnyAbilityUseCallbacks, pixiMapScale])
 

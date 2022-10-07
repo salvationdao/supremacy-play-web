@@ -4,9 +4,20 @@ import { ClipThing } from "../../.."
 import { useAuth, useTraining } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { shadeColor } from "../../../../helpers"
-import { BattleAbility as BattleAbilityType, BribeStage } from "../../../../types"
+import { BribeStage } from "../../../../types"
 import { TrainingBribeStageResponse } from "../../TrainingBattleAbility"
 import { BattleAbilityTextTopBT } from "./BattleAbilityTextTopBT"
+
+export interface BattleAbilityType {
+    id: string
+    label: string
+    colour: string
+    text_colour: string
+    description: string
+    image_url: string
+    cooldown_duration_second: number
+    ability_offering_id: string
+}
 
 export const trainingAirStrike: BattleAbilityType = {
     colour: "#173DD1",

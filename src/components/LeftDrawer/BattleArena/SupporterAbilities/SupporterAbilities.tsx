@@ -5,14 +5,14 @@ import { useArena, useAuth, useGame, useSupremacy } from "../../../../containers
 import { useGameServerSubscription } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
-import { BattleState, LocationSelectType, PlayerSupporterAbility } from "../../../../types"
+import { BattleState, LocationSelectType, AnyAbility } from "../../../../types"
 import { SectionCollapsible } from "../Common/SectionCollapsible"
 import { FilterButton } from "../PlayerAbilities/PlayerAbilities"
 import { SupportAbilityCard } from "./SupportAbilityCard"
 
 export interface PlayerSupportAbilitiesResponse {
     battle_id: string
-    supporter_abilities: PlayerSupporterAbility[]
+    supporter_abilities: AnyAbility[]
 }
 
 export const SupporterAbilities = () => {
@@ -40,8 +40,8 @@ const SupporterAbilitiesInner = () => {
     const { userID } = useAuth()
     const { currentArenaID } = useArena()
     const { battleID } = useSupremacy()
-    const [supportAbilities, setSupportAbilities] = useState<PlayerSupporterAbility[]>([])
-    const [filteredSupportAbilities, setFilteredSupportAbilities] = useState<PlayerSupporterAbility[]>([])
+    const [supportAbilities, setSupportAbilities] = useState<AnyAbility[]>([])
+    const [filteredSupportAbilities, setFilteredSupportAbilities] = useState<AnyAbility[]>([])
     const [locationSelectTypes, setLocationSelectTypes] = useState<LocationSelectType[]>([])
 
     useEffect(() => {
