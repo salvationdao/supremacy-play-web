@@ -246,6 +246,12 @@ export const VoiceChat = () => {
         setConnected(false)
     }
 
+    const muteMic = () => {
+        if (ovenLiveKitInstance) {
+            console.log("this is oven", ovenLiveKitInstance)
+        }
+    }
+
     return (
         <>
             {/* open button */}
@@ -295,7 +301,7 @@ export const VoiceChat = () => {
                 {listenStreams &&
                     listenStreams.map((s) => {
                         return (
-                            <Box key={s.username + s.user_gid} sx={{}}>
+                            <Box key={s.username + s.user_gid} sx={{ display: "none" }}>
                                 <div id={s.listen_url} key={s.username + s.user_gid} />
                                 <div style={{ fontSize: "2rem", color: "white" }}>user: {s.username}</div>
                             </Box>
