@@ -110,7 +110,7 @@ export const QuickPlayerAbilitiesItem = React.memo(function QuickPlayerAbilities
         } finally {
             setLoading(false)
         }
-    }, [send, saleAbility.id, saleAbility.ability.label, price, newSnackbarMessage, onPurchaseCallback, showConfirmation])
+    }, [send, saleAbility.id, saleAbility.ability.label, price, newSnackbarMessage, onPurchaseCallback, showConfirmation, setClaimError])
 
     const onClick = useMemo(() => {
         if (availability === SaleAbilityAvailability.CanPurchase) {
