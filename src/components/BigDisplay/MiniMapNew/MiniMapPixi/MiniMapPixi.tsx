@@ -47,6 +47,7 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
         if (pixiMiniMapPixi || !miniMapPixiRef) return
         const pixiObj = new PixiMiniMapPixi(miniMapPixiRef, mapMousePosition, containerDimensions)
 
+        console.log("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
         setPixiMiniMapPixi((prev) => {
             prev?.destroy()
             return pixiObj
@@ -61,6 +62,7 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
     // Cleanup
     useEffect(() => {
         return () => {
+            console.log("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD")
             pixiMiniMapPixi?.destroy()
             setPixiMiniMapPixi(undefined)
         }
@@ -70,18 +72,22 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
     // When parent container dimension changes
     useEffect(() => {
         if (!pixiMiniMapPixi) return
+        console.log("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC")
         pixiMiniMapPixi.onParentSizeChange(containerDimensions)
     }, [containerDimensions, pixiMiniMapPixi])
 
     // When map is changed
     useEffect(() => {
         if (!pixiMiniMapPixi || !map) return
+        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
         pixiMiniMapPixi.onMapChanged(map)
     }, [map, pixiMiniMapPixi])
 
     // On map click handler
     useEffect(() => {
         if (!pixiMiniMapPixi || !pixiMiniMapPixi.mapSprite) return
+
+        console.log("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
 
         pixiMiniMapPixi.mapSprite.removeListener("pointerup")
         pixiMiniMapPixi.mapSprite.on("pointerup", (event) => {
