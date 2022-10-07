@@ -47,6 +47,7 @@ if (DEV_ONLY) {
 
 export interface UnityParams {
     unityRef: React.ForwardedRef<UnityHandle>
+    orbitControlsRef: React.RefObject<HTMLElement>
     onUnlock: () => void
     onReady: () => void
 }
@@ -66,7 +67,6 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
     })
     const sent = useRef(false)
     const ready = useRef(false)
-    const canvasRef = useRef<HTMLCanvasElement>(null)
     const [siloReady, setSiloReady] = useState(false)
     const [isPendingChange, setIsPendingChange] = useState(false)
     const [showClickToLoadOverlay, setShowClickToLoadOverlay] = useState(true)
@@ -127,11 +127,10 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
 
     // Check if hangar is ready, finished loading, user has clicked etc.
     useEffect(() => {
-        console.log(siloReady)
-        if (showClickToLoadOverlay || !siloReady || ready.current) return
+        if (showClickToLoadOverlay || !isLoaded || !siloReady || ready.current) return
         unity.onReady()
         ready.current = true
-    }, [showClickToLoadOverlay, siloReady, unity])
+    }, [isLoaded, showClickToLoadOverlay, siloReady, unity])
 
     useEffect(() => {
         const handleMouseClick = () => {
@@ -159,38 +158,35 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
 
     const isMouseDown = useRef(false)
     useEffect(() => {
-        if (!isLoaded || !canvasRef.current) return
+        if (showClickToLoadOverlay || !isLoaded || !siloReady || !unity.orbitControlsRef.current) return
 
         const handleMouseUp = (event: MouseEvent) => {
-            console.log("mouse up")
             if (event.button == 0 && isMouseDown.current) {
                 isMouseDown.current = false
                 sendMessage("FittingRoomPlayer", "OnMouseClick")
             }
         }
         const handleMouseDown = (event: MouseEvent) => {
-            console.log("mouse down")
             if (event.button == 0) {
                 isMouseDown.current = !isMouseDown.current
                 sendMessage("FittingRoomPlayer", "OnMouseClick")
             }
         }
         const handleMouseWheel = (event: WheelEvent) => {
-            console.log("mouse wheel")
             sendMessage("FittingRoomPlayer", "OnZoomChange", event.deltaY / -100)
         }
 
-        const canvas = canvasRef.current
-        canvas.addEventListener("mouseup", handleMouseUp)
-        canvas.addEventListener("mousedown", handleMouseDown)
-        canvas.addEventListener("wheel", handleMouseWheel)
+        const orbitDiv = unity.orbitControlsRef.current
+        orbitDiv.addEventListener("mouseup", handleMouseUp)
+        orbitDiv.addEventListener("mousedown", handleMouseDown)
+        orbitDiv.addEventListener("wheel", handleMouseWheel)
 
         return () => {
-            canvas.removeEventListener("mouseup", handleMouseUp)
-            canvas.removeEventListener("mousedown", handleMouseDown)
-            canvas.removeEventListener("wheel", handleMouseWheel)
+            orbitDiv.removeEventListener("mouseup", handleMouseUp)
+            orbitDiv.removeEventListener("mousedown", handleMouseDown)
+            orbitDiv.removeEventListener("wheel", handleMouseWheel)
         }
-    }, [isLoaded, sendMessage])
+    }, [isLoaded, sendMessage, showClickToLoadOverlay, siloReady, unity.orbitControlsRef])
 
     useEffect(() => {
         if (!isLoaded || !siloReady || sent.current) return
@@ -204,10 +200,6 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
         if (mechDetails.weapons) {
             mechDetails.weapons.forEach((w) => {
                 if (w.slot_number == null) return
-                // if (w.weapon_type === WeaponType.MissileLauncher) {
-                //     accessories.splice(w.slot_number, 1)
-                //     return
-                // }
                 accessories[w.slot_number] = {
                     type: "weapon",
                     ownership_id: w.id,
@@ -303,7 +295,6 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
             }}
         >
             <Unity
-                ref={canvasRef}
                 unityProvider={unityProvider}
                 style={{
                     width: "100%",
