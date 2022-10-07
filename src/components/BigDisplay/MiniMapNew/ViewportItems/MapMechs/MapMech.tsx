@@ -7,13 +7,13 @@ import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../
 import { GameServerKeys } from "../../../../../keys"
 import { colors } from "../../../../../theme/theme"
 import {
+    AnyAbility,
     Dimension,
     DisplayedAbility,
     LocationSelectType,
     MechDisplayEffectType,
     MechMoveCommand,
     MechMoveCommandAbility,
-    AnyAbility,
     WarMachineLiveState,
     WarMachineState,
 } from "../../../../../types"
@@ -171,14 +171,13 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             pixiMapMech?.showDashedBox(showDashedBox)
 
             if (pixiMapMech) {
-                // If the winner/ability is not a mech select type, disable mech click
-                pixiMapMech.rootInner.interactive = !(
-                    aa &&
-                    aa.location_select_type !== LocationSelectType.MechCommand &&
-                    aa.location_select_type !== LocationSelectType.MechSelect &&
-                    aa.location_select_type !== LocationSelectType.MechSelectAllied &&
-                    aa.location_select_type !== LocationSelectType.MechSelectOpponent
-                )
+                // Allow clicking on mech IF not using any ability, or using ability and it related to this mech
+                pixiMapMech.rootInner2.interactive =
+                    !aa ||
+                    aa.location_select_type === LocationSelectType.MechSelect ||
+                    aa.location_select_type === LocationSelectType.MechSelectAllied ||
+                    aa.location_select_type === LocationSelectType.MechSelectOpponent ||
+                    (aa.location_select_type === LocationSelectType.MechCommand && aa.mech_hash === hash)
             }
         }
 
