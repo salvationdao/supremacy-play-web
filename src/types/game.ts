@@ -85,6 +85,7 @@ export interface AnyAbility {
     description: string
     text_colour: string
     mech_hash?: string
+    isSupportAbility?: boolean // Need a quick flag so when it triggers, it uses diff endpoint
 }
 
 export interface GameAbility extends AnyAbility {
