@@ -116,7 +116,8 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
     const { newSnackbarMessage } = useGlobalNotifications()
-    const unityViewRef = useRef<UnityHandle>(null)
+    const unityControlsRef = useRef<UnityHandle>(null)
+    const orbitControlsRef = useRef<HTMLDivElement>(null)
     const draggablesRef = useRef<DraggablesHandle>(null)
 
     const [error, setError] = useState<string>()
@@ -231,8 +232,8 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     ])
 
     const modifyMechSkin = useCallback((ems: LoadoutMechSkin) => {
-        if (unityViewRef.current) {
-            unityViewRef.current.handleMechSkinUpdate(ems)
+        if (unityControlsRef.current) {
+            unityControlsRef.current.handleMechSkinUpdate(ems)
             setIsUnityPendingChange(true)
         }
 
@@ -254,8 +255,8 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     }, [])
 
     const modifyWeaponSlot = useCallback((ew: LoadoutWeapon) => {
-        if (unityViewRef.current) {
-            unityViewRef.current.handleWeaponUpdate(ew)
+        if (unityControlsRef.current) {
+            unityControlsRef.current.handleWeaponUpdate(ew)
             setIsUnityPendingChange(true)
         }
 
@@ -271,8 +272,17 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     }, [])
 
     const undoMechSkinChanges = useCallback(() => {
+        if (unityControlsRef.current && currLoadout.chassis_skin) {
+            const prevMechSkin = currLoadout.chassis_skin
+            unityControlsRef.current.handleMechSkinUpdate({
+                mech_skin_id: prevMechSkin.id,
+                mech_skin: prevMechSkin,
+            })
+            setIsUnityPendingChange(true)
+        }
+
         setCurrLoadout((prev) => ({ ...prev, changed_mech_skin: undefined }))
-    }, [])
+    }, [currLoadout.chassis_skin])
 
     const undoPowerCoreChanges = useCallback(() => {
         setCurrLoadout((prev) => ({ ...prev, changed_power_core: undefined }))
@@ -280,9 +290,9 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
 
     const undoWeaponChanges = useCallback(
         (slotNumber: number) => {
-            if (unityViewRef.current) {
+            if (unityControlsRef.current) {
                 const prevWeapon = currLoadout.weapons_map.get(slotNumber)
-                unityViewRef.current.handleWeaponUpdate(
+                unityControlsRef.current.handleWeaponUpdate(
                     prevWeapon
                         ? {
                               weapon_id: prevWeapon.id,
@@ -485,7 +495,8 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                 <MechViewer
                     mechDetails={mechDetails}
                     unity={{
-                        unityRef: unityViewRef,
+                        unityRef: unityControlsRef,
+                        orbitControlsRef: orbitControlsRef,
                         onUnlock: () => {
                             setIsUnityPendingChange(false)
                         },
@@ -523,6 +534,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
 
                 {/* Main Loadout */}
                 <Box
+                    ref={orbitControlsRef}
                     sx={{
                         position: "absolute",
                         top: 0,
