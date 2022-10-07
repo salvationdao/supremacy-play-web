@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react"
-import { useMiniMapPixi, WinnerStruct } from "../../../../../containers"
+import { useMiniMapPixi } from "../../../../../containers"
 import { PlayerAbility } from "../../../../../types"
 import { PixiMapScale } from "./pixiMapScale"
+import { PlayerSupporterAbility } from "../../../../LeftDrawer/BattleArena/BattleAbility/SupporterAbilities"
 
 export const MapScale = React.memo(function MapScale() {
     const { pixiMainItems, gridSizeRef, onAbilityUseCallbacks, mapMousePosition } = useMiniMapPixi()
@@ -21,12 +22,12 @@ export const MapScale = React.memo(function MapScale() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pixiMapScale])
 
-    // When targeting, dont show the scale
+    // When targeting, don't show the scale
     useEffect(() => {
         if (!pixiMapScale) return
 
-        onAbilityUseCallbacks.current[`map-scale`] = (wn: WinnerStruct | undefined, pa: PlayerAbility | undefined) => {
-            pixiMapScale.updateVisibility(!(wn || pa))
+        onAbilityUseCallbacks.current[`map-scale`] = (pa: PlayerAbility | undefined, sa: PlayerSupporterAbility | undefined) => {
+            pixiMapScale.updateVisibility(!(pa || sa))
         }
     }, [onAbilityUseCallbacks, pixiMapScale])
 

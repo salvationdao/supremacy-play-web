@@ -7,8 +7,9 @@ import { HEXToVBColor } from "../../../../../helpers"
 import { PixiImageIcon } from "../../../../../pixi/pixiImageIcon"
 import { fonts } from "../../../../../theme/theme"
 import { AbilityDetail, BlueprintPlayerAbility, Dimension, GameAbility, GAME_CLIENT_TILE_SIZE, LocationSelectType, Position } from "../../../../../types"
+import { PlayerSupporterAbility } from "../../../../LeftDrawer/BattleArena/BattleAbility/SupporterAbilities"
 
-const getAbilityLabel = (ability: GameAbility | BlueprintPlayerAbility): string => {
+const getAbilityLabel = (ability: GameAbility | BlueprintPlayerAbility | PlayerSupporterAbility): string => {
     let label = "Select a location to use"
 
     switch (ability.location_select_type) {
@@ -34,16 +35,16 @@ const getAbilityLabel = (ability: GameAbility | BlueprintPlayerAbility): string 
 }
 
 export class PixiMapTargetSelect {
-    stageRoot: PIXI.Container<PIXI.DisplayObject>
-    viewportRoot: PIXI.Container<PIXI.DisplayObject>
+    stageRoot: PIXI.Container
+    viewportRoot: PIXI.Container
     mouseIcon: PixiImageIcon
-    private colorOverlay: PIXI.Sprite
-    private outerBorder: PIXI.Graphics
-    private bottomContainer: PIXI.Graphics
-    private cancelButton: PIXI.Sprite | undefined
+    private readonly colorOverlay: PIXI.Sprite
+    private readonly outerBorder: PIXI.Graphics
+    private readonly bottomContainer: PIXI.Graphics
+    private readonly cancelButton: PIXI.Sprite | undefined
 
     private viewport: Viewport
-    private ability: GameAbility | BlueprintPlayerAbility
+    private ability: GameAbility | BlueprintPlayerAbility | PlayerSupporterAbility
     private gridSizeRef: React.MutableRefObject<Dimension>
     private mapMousePosition: React.MutableRefObject<Position | undefined>
     private animationFrame: number | undefined
@@ -61,10 +62,10 @@ export class PixiMapTargetSelect {
         viewport: Viewport,
         mapMousePosition: React.MutableRefObject<Position | undefined>,
         gridSizeRef: React.MutableRefObject<Dimension>,
-        ability: GameAbility | BlueprintPlayerAbility,
+        ability: GameAbility | BlueprintPlayerAbility | PlayerSupporterAbility,
         endTime: Date | undefined,
-        onExpired: () => void | undefined,
         onCancel: (() => void) | undefined,
+        mapItemMinSize: React.MutableRefObject<number>,
     ) {
         this.viewport = viewport
         this.ability = ability
@@ -123,14 +124,32 @@ export class PixiMapTargetSelect {
         }
 
         // Mouse icon
-        this.mouseIcon = new PixiImageIcon(ability.image_url, gridSizeRef.current.width / 1.6, gridSizeRef.current.height / 1.6, ability.colour, true)
+        this.mouseIcon = new PixiImageIcon(
+            ability.image_url,
+            Math.max(gridSizeRef.current.width, mapItemMinSize.current) / 1.6,
+            Math.max(gridSizeRef.current.height, mapItemMinSize.current) / 1.6,
+            ability.colour,
+            true,
+        )
         if (secondsLeft) {
-            this.mouseIcon.startCountdown(secondsLeft, 1, onExpired)
+            this.mouseIcon.startCountdown(secondsLeft, 1)
         }
 
         // Start and end coord icons, made invisible
-        this.startCoord = new PixiImageIcon(ability.image_url, gridSizeRef.current.width, gridSizeRef.current.height, ability.colour, true)
-        this.endCoord = new PixiImageIcon(ability.image_url, gridSizeRef.current.width, gridSizeRef.current.height, ability.colour, true)
+        this.startCoord = new PixiImageIcon(
+            ability.image_url,
+            Math.max(gridSizeRef.current.width, mapItemMinSize.current),
+            Math.max(gridSizeRef.current.height, mapItemMinSize.current),
+            ability.colour,
+            true,
+        )
+        this.endCoord = new PixiImageIcon(
+            ability.image_url,
+            Math.max(gridSizeRef.current.width, mapItemMinSize.current),
+            Math.max(gridSizeRef.current.height, mapItemMinSize.current),
+            ability.colour,
+            true,
+        )
         this.startEndLine = new PIXI.Graphics()
         this.startCoord.showIcon(false)
         this.endCoord.showIcon(false)
@@ -220,14 +239,19 @@ export class PixiMapTargetSelect {
         }
     }
 
-    startCountdown(timeLeft = 2, speed = 3, destroyOnConfirm = true) {
+    startCountdown(timeLeft = 2, speed = 3, destroyOnConfirm = true, showCountdownLabel = true) {
         this.resetCountdown()
-        this.endCoord.startCountdown(timeLeft, speed)
-        this.startCoord.startCountdown(timeLeft, speed, () => {
-            this.onTargetConfirm && this.onTargetConfirm({ startCoord: this.startCoord.root.position, endCoord: this.endCoord.root.position })
-            this.startCoord.showIcon(false)
-            if (destroyOnConfirm) this.destroy()
-        })
+        this.endCoord.startCountdown(timeLeft, speed, undefined, showCountdownLabel)
+        this.startCoord.startCountdown(
+            timeLeft,
+            speed,
+            () => {
+                this.onTargetConfirm && this.onTargetConfirm({ startCoord: this.startCoord.root.position, endCoord: this.endCoord.root.position })
+                this.startCoord.showIcon(false)
+                if (destroyOnConfirm) this.destroy()
+            },
+            showCountdownLabel,
+        )
     }
 
     resetCountdown() {

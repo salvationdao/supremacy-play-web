@@ -1,28 +1,28 @@
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useEffect, useMemo, useRef, useState } from "react"
 import { useArena, useAuth, useGame, useMiniMapPixi } from "../../../../../containers"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
-import { AIType, BribeStage, GameAbility, WarMachineLiveState, WarMachineState } from "../../../../../types"
+import { AIType, GameAbility, WarMachineLiveState, WarMachineState } from "../../../../../types"
 import { MechAbility } from "./MechAbility"
 import { PixiMechAbilities } from "./pixiMechAbilities"
 
 // Outer component to determine whether to render the mech abilities or not
 export const MechAbilities = React.memo(function MechAbilities() {
     const { userID } = useAuth()
-    const { bribeStage, warMachines, spawnedAI } = useGame()
+    const { warMachines, spawnedAI } = useGame()
     const { pixiMainItems, highlightedMechParticipantID } = useMiniMapPixi()
+    const [highlightedMech, setHighlightedMech] = useState<WarMachineState>()
 
-    const isVoting = useMemo(() => bribeStage && bribeStage?.phase !== BribeStage.Hold, [bribeStage])
+    useEffect(() => {
+        const mech = [...(warMachines || []), ...(spawnedAI || [])].find((m) => m.participantID === highlightedMechParticipantID && m.ownedByID === userID)
+        if (mech) setHighlightedMech(mech)
+    }, [highlightedMechParticipantID, spawnedAI, userID, warMachines])
 
-    const highlightedMech = useMemo(() => {
-        return [...(warMachines || []), ...(spawnedAI || [])].find((m) => m.participantID === highlightedMechParticipantID)
-    }, [highlightedMechParticipantID, spawnedAI, warMachines])
-
-    if (!pixiMainItems || !highlightedMechParticipantID || !highlightedMech || highlightedMech?.ownedByID !== userID || !isVoting) {
+    if (!pixiMainItems || !highlightedMech) {
         return null
     }
 
-    return <MechAbilitiesInner key={highlightedMechParticipantID} warMachine={highlightedMech} />
+    return <MechAbilitiesInner key={highlightedMech.participantID} warMachine={highlightedMech} />
 })
 
 // Inner component starts here
@@ -38,6 +38,7 @@ const MechAbilitiesInner = React.memo(function MechAbilitiesInner({ warMachine }
     const { currentArenaID } = useArena()
     const { pixiMainItems } = useMiniMapPixi()
     const { hash, participantID } = warMachine
+    const tickIteration = useRef(0)
 
     const [pixiMechAbilities, setPixiMechAbilities] = useState<PixiMechAbilities>()
     const [gameAbilities, setGameAbilities] = useState<GameAbility[]>([])
@@ -67,6 +68,9 @@ const MechAbilitiesInner = React.memo(function MechAbilitiesInner({ warMachine }
             batchURI: `/public/arena/${currentArenaID}/mech`,
         },
         (payload) => {
+            if (!payload || payload.tick_order < tickIteration.current) return
+            tickIteration.current = payload.tick_order
+
             if (payload?.health !== undefined) {
                 pixiMechAbilities?.updateVisibility(payload.health > 0)
             }
