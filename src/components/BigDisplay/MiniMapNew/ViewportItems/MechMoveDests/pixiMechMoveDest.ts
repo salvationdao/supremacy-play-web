@@ -27,7 +27,7 @@ export class PixiMechMoveDest {
         this.root.zIndex = pixiViewportZIndexes.mechMoveDests
         this.root.sortableChildren = true
 
-        const moveAbility = MechMoveCommandAbility.ability
+        const moveAbility = MechMoveCommandAbility
         this.icon = new PixiImageIcon(
             moveAbility.image_url,
             Math.max(gridSizeRef.current.width, mapItemMinSize.current) / 2,

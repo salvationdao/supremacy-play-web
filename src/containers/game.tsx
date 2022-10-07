@@ -3,16 +3,9 @@ import { createContainer } from "unstated-next"
 import { useAuth, useSupremacy, useUI } from "."
 import { useGameServerCommandsUser, useGameServerSubscription } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { AbilityDetail, AIType, BattleEndDetail, BattleZoneStruct, Map, WarMachineState } from "../types"
+import { AbilityDetail, AIType, BattleEndDetail, BattleState, BattleZoneStruct, Map, WarMachineState } from "../types"
 import { useArena } from "./arena"
 import { BattleLobby } from "../types/battle_queue"
-
-export enum BattleState {
-    EndState = 0,
-    SetupState = 1,
-    IntroState = 2,
-    BattlingState = 3,
-}
 
 export interface GameSettingsResponse {
     battle_id: string
@@ -109,31 +102,31 @@ export const GameContainer = createContainer(() => {
             // Map images
             let mapImageUrl = payload.game_map.Image_Url
             switch (payload.game_map.Name) {
-                case "ArcticBay":
+                case "Arctic Bay":
                     mapImageUrl = "https://afiles.ninja-cdn.com/supremacy/images/map/ArcticBay.webp"
                     break
-                case "AokigaharaForest":
+                case "Aokigahara Sea of Trees":
                     mapImageUrl = "https://afiles.ninja-cdn.com/supremacy/images/map/AokigaharaForest.webp"
                     break
-                case "CityBlockArena":
+                case "Kazuya City":
                     mapImageUrl = "https://afiles.ninja-cdn.com/supremacy/images/map/CityBlockArena.webp"
                     break
-                case "CloudKu":
+                case "CloudKu 9":
                     mapImageUrl = "https://afiles.ninja-cdn.com/supremacy/images/map/CloudKu.webp"
                     break
-                case "DesertCity":
+                case "Desert City":
                     mapImageUrl = "https://afiles.ninja-cdn.com/supremacy/images/map/DesertCity.webp"
                     break
-                case "NeoTokyo":
+                case "NyuTokyo":
                     mapImageUrl = "https://afiles.ninja-cdn.com/supremacy/images/map/NeoTokyo.webp"
                     break
-                case "RedMountainMine":
+                case "IronDust 5":
                     mapImageUrl = "https://afiles.ninja-cdn.com/supremacy/images/map/RedMountainMine.webp"
                     break
                 case "TheHive":
                     mapImageUrl = "https://afiles.ninja-cdn.com/supremacy/images/map/TheHive.webp"
                     break
-                case "UrbanBuildings":
+                case "MIBT":
                     mapImageUrl = "https://afiles.ninja-cdn.com/supremacy/images/map/UrbanBuildings.webp"
                     break
             }

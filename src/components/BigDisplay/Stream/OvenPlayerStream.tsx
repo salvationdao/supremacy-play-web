@@ -55,6 +55,7 @@ export const OvenplayerStream = () => {
             newOvenPlayer.on("error", (err: Error) => {
                 newSnackbarMessage(err.message, "error")
                 console.error("ovenplayer error: ", err)
+                newOvenPlayer.setCurrentSource(0)
             })
 
             newOvenPlayer.play()

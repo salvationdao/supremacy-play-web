@@ -2,14 +2,14 @@ import { Box, Button, ButtonGroup, Pagination, Stack, Typography } from "@mui/ma
 import { ReactNode, useCallback, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgTarget } from "../../../../assets"
-import { BattleState, useGame } from "../../../../containers"
+import { useGame } from "../../../../containers"
 import { useAuth } from "../../../../containers/auth"
 import { useTheme } from "../../../../containers/theme"
 import { usePagination } from "../../../../hooks"
 import { useGameServerSubscriptionSecuredUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
-import { LocationSelectType, PlayerAbility } from "../../../../types"
+import { BattleState, LocationSelectType, PlayerAbility } from "../../../../types"
 import { SectionCollapsible } from "../Common/SectionCollapsible"
 import { PlayerAbilityCard } from "./PlayerAbilityCard"
 
@@ -211,21 +211,21 @@ export const FilterButton = ({
 }) => {
     const theme = useTheme()
 
-    const isSame = value.join("||") === currentSelectedValue.join("||")
+    const isSelected = value.join("||") === currentSelectedValue.join("||")
 
     return (
         <Button
             sx={{
                 "&&": {
-                    backgroundColor: isSame ? theme.factionTheme.primary : "unset",
+                    backgroundColor: isSelected ? theme.factionTheme.primary : "unset",
                     border: `1px solid ${theme.factionTheme.primary}`,
                 },
                 svg: {
-                    fill: isSame ? theme.factionTheme.secondary : "#FFFFFF",
+                    fill: isSelected ? `${theme.factionTheme.secondary} !important` : "#FFFFFF",
                 },
             }}
             onClick={() => {
-                setLocationSelectTypes(isSame ? [] : value)
+                setLocationSelectTypes(isSelected ? [] : value)
             }}
         >
             {icon}

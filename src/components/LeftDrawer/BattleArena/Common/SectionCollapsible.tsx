@@ -80,6 +80,7 @@ export const SectionCollapsible = ({
             <Collapse in={isExpanded}>
                 <Box
                     sx={{
+                        position: "relative",
                         p: "1.5rem 1.1rem",
                         backgroundColor: "#FFFFFF12",
                         boxShadow: 2,
