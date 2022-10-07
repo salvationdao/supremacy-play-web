@@ -1,16 +1,15 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import React, { useEffect, useMemo, useRef, useState } from "react"
 import { BattleBgWebP, SvgFullscreen, SvgGrid, SvgMinimize, SvgSwap } from "../../../assets"
-import { BattleState, useDimension, useGame, useMiniMapPixi, useUI } from "../../../containers"
+import { useDimension, useGame, useMiniMapPixi, useUI } from "../../../containers"
 import { useHotkey } from "../../../containers/hotkeys"
 import { useToggle } from "../../../hooks"
 import { fonts } from "../../../theme/theme"
-import { Map, PlayerAbility } from "../../../types"
+import { BattleState, Map, PlayerAbility, PlayerSupporterAbility } from "../../../types"
 import { WindowPortal } from "../../Common/WindowPortal/WindowPortal"
 import { useWindowPortal } from "../../Common/WindowPortal/WindowPortalContainer"
 import { LEFT_DRAWER_WIDTH } from "../../LeftDrawer/LeftDrawer"
 import { MiniMapPixi } from "./MiniMapPixi"
-import { PlayerSupporterAbility } from "../../LeftDrawer/BattleArena/BattleAbility/SupporterAbilities"
 
 export const TOP_BAR_HEIGHT = 3.4 // rems
 const PADDING = 6 // rems
@@ -148,7 +147,7 @@ const MiniMapInnerNormal = ({ map, isPoppedout, setIsPoppedout }: MiniMapInnerPr
 const MiniMapInner = ({ map, isPoppedout, width = 100, height = 100, poppedOutContainerRef }: MiniMapInnerProps) => {
     const { handleMiniMapHotKey } = useHotkey()
     const { remToPxRatio } = useDimension()
-    const { onAbilityUseCallbacks } = useMiniMapPixi()
+    const { onAnyAbilityUseCallbacks } = useMiniMapPixi()
     const { isStreamBigDisplay, setIsStreamBigDisplay, toggleIsStreamBigDisplayMemorized, restoreIsStreamBigDisplayMemorized, stopMapRender } = useUI()
     const [isEnlarged, toggleIsEnlarged] = useToggle(localStorage.getItem("isMiniMapEnlarged") === "true")
 
@@ -165,7 +164,7 @@ const MiniMapInner = ({ map, isPoppedout, width = 100, height = 100, poppedOutCo
 
     // When it's targeting, enlarge to big display, else restore to the prev location
     useEffect(() => {
-        onAbilityUseCallbacks.current["mini-map-new"] = (pa: PlayerAbility | undefined, sa: PlayerSupporterAbility | undefined) => {
+        onAnyAbilityUseCallbacks.current["mini-map-new"] = (pa: PlayerAbility | undefined, sa: PlayerSupporterAbility | undefined) => {
             if (sa || pa) {
                 toggleIsStreamBigDisplayMemorized(false)
             } else {
@@ -174,7 +173,7 @@ const MiniMapInner = ({ map, isPoppedout, width = 100, height = 100, poppedOutCo
                 }, 3000)
             }
         }
-    }, [onAbilityUseCallbacks, restoreIsStreamBigDisplayMemorized, toggleIsStreamBigDisplayMemorized])
+    }, [onAnyAbilityUseCallbacks, restoreIsStreamBigDisplayMemorized, toggleIsStreamBigDisplayMemorized])
 
     // Set sizes
     const sizes = useMemo(() => {

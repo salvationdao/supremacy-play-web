@@ -6,8 +6,16 @@ import { pixiStageZIndexes, pixiViewportZIndexes } from "../../../../../containe
 import { HEXToVBColor } from "../../../../../helpers"
 import { PixiImageIcon } from "../../../../../pixi/pixiImageIcon"
 import { fonts } from "../../../../../theme/theme"
-import { AbilityDetail, BlueprintPlayerAbility, Dimension, GameAbility, GAME_CLIENT_TILE_SIZE, LocationSelectType, Position } from "../../../../../types"
-import { PlayerSupporterAbility } from "../../../../LeftDrawer/BattleArena/BattleAbility/SupporterAbilities"
+import {
+    AbilityDetail,
+    BlueprintPlayerAbility,
+    Dimension,
+    GameAbility,
+    GAME_CLIENT_TILE_SIZE,
+    LocationSelectType,
+    PlayerSupporterAbility,
+    Position,
+} from "../../../../../types"
 
 const getAbilityLabel = (ability: GameAbility | BlueprintPlayerAbility | PlayerSupporterAbility): string => {
     let label = "Select a location to use"
@@ -38,10 +46,10 @@ export class PixiMapTargetSelect {
     stageRoot: PIXI.Container
     viewportRoot: PIXI.Container
     mouseIcon: PixiImageIcon
-    private readonly colorOverlay: PIXI.Sprite
-    private readonly outerBorder: PIXI.Graphics
-    private readonly bottomContainer: PIXI.Graphics
-    private readonly cancelButton: PIXI.Sprite | undefined
+    private colorOverlay: PIXI.Sprite
+    private outerBorder: PIXI.Graphics
+    private bottomContainer: PIXI.Graphics
+    private cancelButton: PIXI.Sprite | undefined
 
     private viewport: Viewport
     private ability: GameAbility | BlueprintPlayerAbility | PlayerSupporterAbility
@@ -64,6 +72,7 @@ export class PixiMapTargetSelect {
         gridSizeRef: React.MutableRefObject<Dimension>,
         ability: GameAbility | BlueprintPlayerAbility | PlayerSupporterAbility,
         endTime: Date | undefined,
+        onExpired: (() => void) | undefined,
         onCancel: (() => void) | undefined,
         mapItemMinSize: React.MutableRefObject<number>,
     ) {
@@ -132,7 +141,7 @@ export class PixiMapTargetSelect {
             true,
         )
         if (secondsLeft) {
-            this.mouseIcon.startCountdown(secondsLeft, 1)
+            this.mouseIcon.startCountdown(secondsLeft, 1, onExpired)
         }
 
         // Start and end coord icons, made invisible

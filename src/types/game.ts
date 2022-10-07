@@ -7,6 +7,13 @@ export interface FactionsAll {
     [faction_id: string]: Faction
 }
 
+export enum BattleState {
+    EndState = 0,
+    SetupState = 1,
+    IntroState = 2,
+    BattlingState = 3,
+}
+
 export enum BribeStage {
     OptIn = "OPT_IN",
     LocationSelect = "LOCATION_SELECT",
@@ -118,6 +125,18 @@ export interface PlayerAbility {
 
     // Used for mech command related abilities
     mechHash?: string
+}
+
+export interface PlayerSupporterAbility {
+    id: string
+    label: string
+    colour: string
+    image_url: string
+    description: string
+    text_colour: string
+    game_client_ability_id: number
+    location_select_type: LocationSelectType
+    mech_hash: string
 }
 
 export interface SaleAbility {

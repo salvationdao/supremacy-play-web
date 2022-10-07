@@ -1,8 +1,9 @@
 import { Box, Fade, Slide, Stack } from "@mui/material"
 import { useMemo } from "react"
 import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../constants"
-import { BattleState, useGame, useMobile, useSupremacy } from "../../containers"
+import { useGame, useMobile, useSupremacy } from "../../containers"
 import { siteZIndex } from "../../theme/theme"
+import { BattleState } from "../../types"
 import { SectionHeading } from "../LeftDrawer/BattleArena/Common/SectionHeading"
 import { WarMachineItem } from "./WarMachineItem/WarMachineItem"
 

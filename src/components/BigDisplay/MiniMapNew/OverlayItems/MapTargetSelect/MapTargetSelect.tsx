@@ -1,9 +1,16 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import { Crosshair } from "../../../../../assets"
 import { MapSelection, useGame, useMiniMapPixi } from "../../../../../containers"
-import { BlueprintPlayerAbility, GameAbility, LocationSelectType, MechMoveCommandAbility, PlayerAbility, Position } from "../../../../../types"
+import {
+    BlueprintPlayerAbility,
+    GameAbility,
+    LocationSelectType,
+    MechMoveCommandAbility,
+    PlayerAbility,
+    PlayerSupporterAbility,
+    Position,
+} from "../../../../../types"
 import { PixiMapTargetSelect } from "./pixiMapTargetSelect"
-import { PlayerSupporterAbility } from "../../../../LeftDrawer/BattleArena/BattleAbility/SupporterAbilities"
 
 interface MapTargetHintAbility {
     ability: GameAbility | BlueprintPlayerAbility | PlayerSupporterAbility
@@ -12,26 +19,22 @@ interface MapTargetHintAbility {
 }
 
 export const MapTargetSelect = React.memo(function TargetHint() {
-    const { onAbilityUseCallbacks } = useMiniMapPixi()
+    const { onAnyAbilityUseCallbacks } = useMiniMapPixi()
     const [targetHintAbility, setTargetHintAbility] = useState<MapTargetHintAbility>()
 
     useEffect(() => {
-        onAbilityUseCallbacks.current["target-hint"] = (pa: PlayerAbility | undefined, sa: PlayerSupporterAbility | undefined) => {
-            if (sa) {
+        onAnyAbilityUseCallbacks.current["target-hint"] = (pa: PlayerAbility | undefined, sa: PlayerSupporterAbility | undefined) => {
+            const ability = sa || pa?.ability
+            if (ability) {
                 setTargetHintAbility({
-                    ability: sa,
-                    cancelable: true,
-                })
-            } else if (pa) {
-                setTargetHintAbility({
-                    ability: pa.ability,
+                    ability: ability,
                     cancelable: true,
                 })
             } else {
                 setTargetHintAbility(undefined)
             }
         }
-    }, [onAbilityUseCallbacks])
+    }, [onAnyAbilityUseCallbacks])
 
     if (targetHintAbility) {
         const { ability, endTime, cancelable } = targetHintAbility
@@ -78,6 +81,7 @@ const TargetHintInner = React.memo(function TargetHintInner({ ability, endTime, 
             gridSizeRef,
             ability,
             endTime,
+            undefined,
             cancelable ? onCancel : undefined,
             mapItemMinSize,
         )

@@ -3,16 +3,9 @@ import { createContainer } from "unstated-next"
 import { useAuth, useSupremacy, useUI } from "."
 import { useGameServerCommandsUser, useGameServerSubscription } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { AbilityDetail, AIType, BattleEndDetail, BattleZoneStruct, Map, WarMachineState } from "../types"
+import { AbilityDetail, AIType, BattleEndDetail, BattleState, BattleZoneStruct, Map, WarMachineState } from "../types"
 import { useArena } from "./arena"
 import { BattleLobby } from "../types/battle_queue"
-
-export enum BattleState {
-    EndState = 0,
-    SetupState = 1,
-    IntroState = 2,
-    BattlingState = 3,
-}
 
 export interface GameSettingsResponse {
     battle_id: string

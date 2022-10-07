@@ -10,8 +10,7 @@ import { pulseParticlesConfig } from "../../../../../pixi/particleConfigs"
 import { PixiImageIcon } from "../../../../../pixi/pixiImageIcon"
 import { PixiProgressBar } from "../../../../../pixi/pixiProgressBar"
 import { colors, fonts } from "../../../../../theme/theme"
-import { BlueprintPlayerAbility, Dimension, DisplayedAbility, GameAbility, Position } from "../../../../../types"
-import { PlayerSupporterAbility } from "../../../../LeftDrawer/BattleArena/BattleAbility/SupporterAbilities"
+import { BlueprintPlayerAbility, Dimension, DisplayedAbility, GameAbility, PlayerSupporterAbility, Position } from "../../../../../types"
 
 export class PixiMapMech {
     root: PIXI.Container<PIXI.DisplayObject>
