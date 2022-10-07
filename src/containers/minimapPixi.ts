@@ -222,6 +222,7 @@ export const MiniMapPixiContainer = createContainer(() => {
                 }
 
                 send(GameServerKeys.PlayerAbilityUse, payload)
+                selectMapPosition.current(undefined)
                 newSnackbarMessage("Successfully submitted target location.", "success")
             } catch (err) {
                 newSnackbarMessage(typeof err === "string" ? err : "Failed to submit target location.", "error")
@@ -237,6 +238,7 @@ export const MiniMapPixiContainer = createContainer(() => {
         setHighlightedMechParticipantID,
 
         // Pixi and map related stuff
+        mapRef,
         pixiMainItems,
         setPixiMainItems,
         mapScalingRef,

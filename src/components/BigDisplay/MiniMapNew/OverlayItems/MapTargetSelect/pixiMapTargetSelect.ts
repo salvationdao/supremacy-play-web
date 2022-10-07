@@ -183,6 +183,7 @@ export class PixiMapTargetSelect {
 
     destroy() {
         if (this.animationFrame) cancelAnimationFrame(this.animationFrame)
+        this.resetCountdown()
         this.mouseIcon.resetCountdown()
         this.viewportRoot.destroy()
         this.stageRoot.destroy()

@@ -18,6 +18,7 @@ export const SupremacyContainer = createContainer(() => {
     const [firstConnectTimedOut, setFirstConnectTimedOut] = useState(false)
     const windowReloadTimeout = useRef<NodeJS.Timeout | null>(null)
     const [hasInteracted, setHasInteracted] = useState(false)
+    const isWindowFocused = useRef(document.visibilityState === "visible")
 
     const [haveSups, toggleHaveSups] = useState<boolean>() // Needs 3 states: true, false, undefined. Undefined means it's not loaded yet.
     const [factionsAll, setFactionsAll] = useState<FactionsAll>({})
@@ -44,6 +45,14 @@ export const SupremacyContainer = createContainer(() => {
         }
 
         document.addEventListener("pointerdown", callback, { once: true })
+    }, [])
+
+    useEffect(() => {
+        const callback = () => {
+            isWindowFocused.current = document.visibilityState === "visible"
+        }
+        document.addEventListener("visibilitychange", callback)
+        return () => document.removeEventListener("visibilitychange", callback)
     }, [])
 
     // If server is down and we're not trying to reconnect, reload window after 30 minutes
@@ -105,6 +114,7 @@ export const SupremacyContainer = createContainer(() => {
         isServerDown,
         firstConnectTimedOut,
         hasInteracted,
+        isWindowFocused,
 
         factionsAll,
         getFaction,

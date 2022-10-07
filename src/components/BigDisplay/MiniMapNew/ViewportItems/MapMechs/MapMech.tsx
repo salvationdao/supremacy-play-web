@@ -34,7 +34,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     const { map } = useGame()
     const { userID, factionID } = useAuth()
     const { currentArenaID } = useArena()
-    const { getFaction } = useSupremacy()
+    const { getFaction, isWindowFocused } = useSupremacy()
     const { addToHotkeyRecord } = useHotkey()
     const {
         pixiMainItems,
@@ -334,6 +334,9 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             batchURI: `/public/arena/${currentArenaID}/mech`,
         },
         (payload) => {
+            // If window is not in focus, discard the payloads else will crash browser
+            if (!isWindowFocused.current) return
+
             if (!payload || payload.tick_order < tickIteration.current) return
             tickIteration.current = payload.tick_order
 

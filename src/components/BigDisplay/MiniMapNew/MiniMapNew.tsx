@@ -296,11 +296,7 @@ const MiniMapInner = ({ map, isPoppedout, width = 100, height = 100, poppedOutCo
                             <SvgGrid size="1.6rem" />
                         </Box>
 
-                        <Typography sx={{ fontFamily: fonts.nostromoHeavy }}>
-                            {map.Name.replace(/([A-Z])/g, " $1")
-                                .trim()
-                                .toUpperCase()}
-                        </Typography>
+                        <Typography sx={{ fontFamily: fonts.nostromoHeavy }}>{map.Name}</Typography>
                     </Stack>
 
                     <MiniMapPixi containerDimensions={{ width: sizes.insideWidth, height: sizes.insideHeight }} poppedOutContainerRef={poppedOutContainerRef} />
