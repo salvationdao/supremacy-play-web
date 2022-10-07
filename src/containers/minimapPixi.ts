@@ -154,7 +154,8 @@ export const MiniMapPixiContainer = createContainer(() => {
                 // We will construct the payload and then send it off
                 const payload: {
                     arena_id: string
-                    ability_id: string
+                    ability_id?: string
+                    blueprint_ability_id?: string
                     location_select_type: string
                     start_coords?: Position
                     end_coords?: Position
@@ -162,8 +163,12 @@ export const MiniMapPixiContainer = createContainer(() => {
                 } = {
                     arena_id: currentArenaID,
                     ability_id: anyAbility.current.id,
+                    blueprint_ability_id: anyAbility.current.id,
                     location_select_type: anyAbility.current.location_select_type,
                 }
+
+                let endpoint = GameServerKeys.PlayerAbilityUse
+                if (anyAbility.current.isSupportAbility) endpoint = GameServerKeys.PlayerSupportAbilityUse
 
                 switch (anyAbility.current.location_select_type) {
                     case LocationSelectType.LineSelect:
@@ -204,7 +209,7 @@ export const MiniMapPixiContainer = createContainer(() => {
                     useAnyAbility.current(undefined)
                 }
 
-                send(GameServerKeys.PlayerAbilityUse, payload)
+                send(endpoint, payload)
                 selectMapPosition.current(undefined)
                 newSnackbarMessage("Successfully submitted target location.", "success")
             } catch (err) {

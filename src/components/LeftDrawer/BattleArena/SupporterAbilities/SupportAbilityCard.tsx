@@ -29,7 +29,7 @@ export const SupportAbilityCard = ({ supportAbility }: { supportAbility: AnyAbil
     }, [supportAbility])
 
     const onActivate = useCallback(() => {
-        useAnyAbility.current(supportAbility)
+        useAnyAbility.current({ ...supportAbility, isSupportAbility: true })
     }, [supportAbility, useAnyAbility])
 
     return (
