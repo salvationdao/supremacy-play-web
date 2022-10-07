@@ -1,8 +1,9 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import React, { useEffect, useMemo, useRef, useState } from "react"
-import { BattleBgWebP, SvgGrid, SvgSwap } from "../../../assets"
+import { BattleBgWebP, SvgFullscreen, SvgGrid, SvgMinimize, SvgSwap } from "../../../assets"
 import { useDimension, useGame, useMiniMapPixi, useUI, WinnerStruct } from "../../../containers"
 import { useHotkey } from "../../../containers/hotkeys"
+import { useToggle } from "../../../hooks"
 import { fonts } from "../../../theme/theme"
 import { Map, PlayerAbility } from "../../../types"
 import { WindowPortal } from "../../Common/WindowPortal/WindowPortal"
@@ -11,6 +12,7 @@ import { LEFT_DRAWER_WIDTH } from "../../LeftDrawer/LeftDrawer"
 import { MiniMapPixi } from "./MiniMapPixi/MiniMapPixi"
 
 export const TOP_BAR_HEIGHT = 3.4 // rems
+const PADDING = 6 // rems
 const BOTTOM_PADDING = 12 // rems
 
 export const MiniMapNew = () => {
@@ -147,8 +149,18 @@ const MiniMapInner = ({ map, isPoppedout, width = 100, height = 100, poppedOutCo
     const { remToPxRatio } = useDimension()
     const { onAbilityUseCallbacks } = useMiniMapPixi()
     const { isStreamBigDisplay, setIsStreamBigDisplay, toggleIsStreamBigDisplayMemorized, restoreIsStreamBigDisplayMemorized, stopMapRender } = useUI()
+    const [isEnlarged, toggleIsEnlarged] = useToggle(localStorage.getItem("isMiniMapEnlarged") === "true")
 
     const mapHeightWidthRatio = useRef(1)
+
+    // If small version, not allow enlarge
+    useEffect(() => {
+        if (isStreamBigDisplay) toggleIsEnlarged(false)
+    }, [isStreamBigDisplay, toggleIsEnlarged])
+
+    useEffect(() => {
+        localStorage.setItem("isMiniMapEnlarged", isEnlarged.toString())
+    }, [isEnlarged])
 
     // When it's targeting, enlarge to big display, else restore to the prev location
     useEffect(() => {
@@ -171,20 +183,36 @@ const MiniMapInner = ({ map, isPoppedout, width = 100, height = 100, poppedOutCo
         let defaultWidth = width
         let defaultHeight = 0
         if (isPoppedout || !isStreamBigDisplay) {
-            defaultHeight = height - TOP_BAR_HEIGHT * remToPxRatio
+            defaultHeight = Math.min(defaultWidth * mapHeightWidthRatio.current, height)
         } else {
             defaultWidth = LEFT_DRAWER_WIDTH * remToPxRatio
             defaultHeight = defaultWidth * mapHeightWidthRatio.current
         }
 
+        if (isEnlarged) defaultHeight = height - TOP_BAR_HEIGHT * remToPxRatio
+
         // Step 2: minus any padding and stuff, and calculate inside dimensions to keep a good ratio
-        let verticalPadding = 0
+        const padding = (isPoppedout || !isStreamBigDisplay) && !isEnlarged ? PADDING * remToPxRatio : 0
+        let verticalPadding = padding
         if (!isPoppedout && !isStreamBigDisplay) verticalPadding += BOTTOM_PADDING * remToPxRatio
 
-        const outsideWidth = defaultWidth
+        let outsideWidth = defaultWidth - padding
         let outsideHeight = defaultHeight - verticalPadding
-        const insideWidth = outsideWidth
-        const insideHeight = outsideHeight
+        let insideWidth = outsideWidth
+        let insideHeight = outsideHeight
+
+        if ((isPoppedout || !isStreamBigDisplay) && !isEnlarged) {
+            const maxHeight = outsideWidth * mapHeightWidthRatio.current
+            const maxWidth = outsideHeight / mapHeightWidthRatio.current
+
+            if (outsideHeight > maxHeight) outsideHeight = maxHeight
+            insideHeight = outsideHeight
+
+            if (outsideWidth > maxWidth) {
+                outsideWidth = maxWidth
+                insideWidth = outsideWidth
+            }
+        }
 
         outsideHeight += TOP_BAR_HEIGHT * remToPxRatio
 
@@ -194,7 +222,7 @@ const MiniMapInner = ({ map, isPoppedout, width = 100, height = 100, poppedOutCo
             insideWidth,
             insideHeight,
         }
-    }, [map.Height, map.Width, width, height, remToPxRatio, isStreamBigDisplay, isPoppedout])
+    }, [map.Height, map.Width, width, isEnlarged, height, remToPxRatio, isStreamBigDisplay, isPoppedout])
 
     return useMemo(() => {
         if (stopMapRender) {
@@ -257,6 +285,12 @@ const MiniMapInner = ({ map, isPoppedout, width = 100, height = 100, poppedOutCo
                             </>
                         )}
 
+                        {(!isStreamBigDisplay || isPoppedout) && (
+                            <Box onClick={() => toggleIsEnlarged()} sx={{ cursor: "pointer", opacity: 0.4, ":hover": { opacity: 1 } }}>
+                                {isEnlarged ? <SvgMinimize size="1.6rem" /> : <SvgFullscreen size="1.6rem" />}
+                            </Box>
+                        )}
+
                         <Box id="minimap-show-grid-button" sx={{ cursor: "pointer", opacity: 0.4, ":hover": { opacity: 1 } }}>
                             <SvgGrid size="1.6rem" />
                         </Box>
@@ -299,5 +333,7 @@ const MiniMapInner = ({ map, isPoppedout, width = 100, height = 100, poppedOutCo
         map?.Image_Url,
         poppedOutContainerRef,
         setIsStreamBigDisplay,
+        isEnlarged,
+        toggleIsEnlarged,
     ])
 }

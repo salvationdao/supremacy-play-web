@@ -68,16 +68,6 @@ export class PixiMiniMapPixi {
             this.app.renderer.resize(containerDimensions.width, containerDimensions.height)
             this.viewport.resize(containerDimensions.width, containerDimensions.height)
 
-            // Clamp the zooming
-            const maxWidth = this.app.renderer.width > this.app.renderer.height ? 10 * this.viewport.worldWidth : this.viewport.worldWidth
-            const maxHeight = this.app.renderer.width < this.app.renderer.height ? 10 * this.viewport.worldHeight : this.viewport.worldHeight
-            this.viewport.clampZoom({
-                minWidth: 50,
-                minHeight: 50,
-                maxWidth,
-                maxHeight,
-            })
-
             // Fit to cover
             if (containerDimensions.width > containerDimensions.height) {
                 this.viewport.fitWidth()
@@ -113,6 +103,7 @@ export class PixiMiniMapPixi {
 
             // Update pixi viewport world dimension
             this.viewport.resize(this.app.renderer.width, this.app.renderer.height, coverDimension.width, coverDimension.height)
+            this.viewport.clampZoom({ minWidth: 50, minHeight: 50, maxWidth: coverDimension.width, maxHeight: coverDimension.height })
 
             // Update the map's dimension and texture
             this.mapSprite.width = coverDimension.width
