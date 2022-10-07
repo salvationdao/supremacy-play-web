@@ -593,13 +593,11 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                     >
                         {(() => {
                             let powerCore = power_core
-                            let isOriginal = true
                             const changed = changed_power_core
                             if (changed) {
                                 if (changed.unequip) {
                                     powerCore = undefined
                                 } else if (changed.power_core) {
-                                    isOriginal = false
                                     powerCore = changed.power_core
                                 }
                             }
@@ -650,14 +648,11 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                         rarity={getRarityDeets(powerCore.tier)}
                                         renderModal={renderModal}
                                         prevEquipped={prevEquipped()}
-                                        onUnequip={
-                                            isOriginal
-                                                ? () =>
-                                                      modifyPowerCore({
-                                                          power_core_id: "",
-                                                          unequip: true,
-                                                      })
-                                                : undefined
+                                        onUnequip={() =>
+                                            modifyPowerCore({
+                                                power_core_id: "",
+                                                unequip: true,
+                                            })
                                         }
                                     />
                                 )
@@ -678,13 +673,11 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
 
                         {Array.from(weapons_map, ([slotNumber, w]) => {
                             let weapon = w
-                            let isOriginal = true
                             const changed = changed_weapons_map.get(slotNumber)
                             if (changed) {
                                 if (changed.unequip) {
                                     weapon = null
                                 } else if (changed.weapon) {
-                                    isOriginal = false
                                     weapon = changed.weapon
                                 }
                             }
@@ -745,15 +738,12 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                         renderModal={renderModal}
                                         prevEquipped={prevEquipped()}
                                         locked={weapon.locked_to_mech}
-                                        onUnequip={
-                                            isOriginal
-                                                ? () =>
-                                                      modifyWeaponSlot({
-                                                          weapon_id: "",
-                                                          slot_number: slotNumber,
-                                                          unequip: true,
-                                                      })
-                                                : undefined
+                                        onUnequip={() =>
+                                            modifyWeaponSlot({
+                                                weapon_id: "",
+                                                slot_number: slotNumber,
+                                                unequip: true,
+                                            })
                                         }
                                     />
                                 )
