@@ -284,6 +284,7 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
                 : undefined,
             accessories,
         }
+        console.log(mech)
         const inventory: HangarSilo = {
             faction: mechDetails.faction_id,
         }
@@ -368,7 +369,7 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
                                 fontSize: "3rem",
                             }}
                         >
-                            Loading Mech
+                            Loading Mech…
                         </Typography>
                         {renderProgress()}
                     </ClipThing>
