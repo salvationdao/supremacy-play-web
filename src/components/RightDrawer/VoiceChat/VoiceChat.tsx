@@ -243,6 +243,8 @@ export const VoiceChat = () => {
                     player.off("error")
                     player.remove()
                 }
+
+                document.getElementsByTagName("video")
             })
         }
 
@@ -285,7 +287,10 @@ export const VoiceChat = () => {
                             listenStreams={listenStreams || []}
                             onConnect={() => onConnect(listenStreams || [], true)}
                             onJoinFactionCommander={joinFactionCommander}
-                            onLeaveFactionCommander={leaveFactionCommander}
+                            onLeaveFactionCommander={() => {
+                                leaveFactionCommander()
+                                onDisconnect()
+                            }}
                             onVoteKick={voteKick}
                             user={user}
                         />
@@ -297,7 +302,7 @@ export const VoiceChat = () => {
                 {listenStreams &&
                     listenStreams.map((s) => {
                         return (
-                            <Box key={s.username + s.user_gid} sx={{ display: "none" }}>
+                            <Box key={s.username + s.user_gid} sx={{}}>
                                 <div id={s.listen_url} key={s.username + s.user_gid} />
                                 <div style={{ fontSize: "2rem", color: "white" }}>user: {s.username}</div>
                             </Box>
