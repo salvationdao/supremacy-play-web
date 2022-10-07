@@ -335,9 +335,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                         if (weapons_map.get(slotNumber)?.locked_to_mech) continue
 
                         const slotBoundingRect = element.getBoundingClientRect()
-                        const overlaps = checkDOMRectOverlap(rect, slotBoundingRect)
-
-                        element.style
+                        const overlaps = checkDOMRectOverlap(rect, slotBoundingRect, 70)
 
                         if (overlaps) {
                             element.style.transform = "scale(1.1)"
@@ -353,7 +351,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                     if (chassis_skin?.locked_to_mech) return
 
                     const slotBoundingRect = mechSkinItemRef.current.getBoundingClientRect()
-                    const overlaps = checkDOMRectOverlap(rect, slotBoundingRect)
+                    const overlaps = checkDOMRectOverlap(rect, slotBoundingRect, 70)
 
                     if (overlaps) {
                         mechSkinItemRef.current.style.transform = "scale(1.1)"
@@ -422,7 +420,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                         if (weapons_map.get(slotNumber)?.locked_to_mech) continue
 
                         const slotBoundingRect = element.getBoundingClientRect()
-                        const overlaps = checkDOMRectOverlap(rect, slotBoundingRect)
+                        const overlaps = checkDOMRectOverlap(rect, slotBoundingRect, 70)
 
                         if (overlaps) {
                             const weapon = item as Weapon
@@ -441,7 +439,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                     if (chassis_skin?.locked_to_mech) return
 
                     const slotBoundingRect = mechSkinItemRef.current.getBoundingClientRect()
-                    const overlaps = checkDOMRectOverlap(rect, slotBoundingRect)
+                    const overlaps = checkDOMRectOverlap(rect, slotBoundingRect, 70)
 
                     if (overlaps) {
                         const mechSkin = item as MechSkin
@@ -902,6 +900,12 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     )
 }
 
-const checkDOMRectOverlap = (rect1: DOMRect, rect2: DOMRect) => {
-    return !(rect1.right < rect2.left || rect1.left > rect2.right || rect1.bottom < rect2.top || rect1.top > rect2.bottom)
+const checkDOMRectOverlap = (rect1: DOMRect, rect2: DOMRect, give?: number) => {
+    const realGive = give || 0
+    return !(
+        rect1.right - realGive < rect2.left ||
+        rect1.left + realGive > rect2.right ||
+        rect1.bottom - realGive < rect2.top ||
+        rect1.top + realGive > rect2.bottom
+    )
 }
