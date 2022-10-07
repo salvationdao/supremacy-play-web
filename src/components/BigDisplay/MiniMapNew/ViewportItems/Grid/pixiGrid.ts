@@ -2,7 +2,7 @@ import { Viewport } from "pixi-viewport"
 import * as PIXI from "pixi.js"
 import { pixiViewportZIndexes } from "../../../../../containers"
 import { HEXToVBColor, intToLetter } from "../../../../../helpers"
-import { fonts } from "../../../../../theme/theme"
+import { colors, fonts } from "../../../../../theme/theme"
 import { Dimension, Position } from "../../../../../types"
 
 export const MAX_ROWS = 20
@@ -58,11 +58,11 @@ export class PixiGrid {
                 }
 
                 const graphics = new PIXI.Graphics()
-                graphics.lineStyle(1, HEXToVBColor("#FFFFFF"))
+                graphics.lineStyle(1, HEXToVBColor(colors.offWhite))
                 graphics.drawRect(0, 0, this.cellWidth, this.cellHeight)
                 graphics.position.set(posX, posY)
 
-                graphics.alpha = 0.04
+                graphics.alpha = 0.06
                 this.root.addChild(graphics)
             }
         }

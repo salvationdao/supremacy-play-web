@@ -54,8 +54,8 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
     const mechMapX = useMemo(() => ((position?.x || 0) - map.Pixel_Left) * mapScale, [map.Pixel_Left, mapScale, position?.x])
     const mechMapY = useMemo(() => ((position?.y || 0) - map.Pixel_Top) * mapScale, [map.Pixel_Top, mapScale, position?.y])
     const isMechHighlighted = useMemo(
-        () => highlightedMechParticipantID === warMachine.participantID || selection?.mechHash === hash || playerAbility?.mechHash === hash,
-        [hash, highlightedMechParticipantID, playerAbility?.mechHash, selection?.mechHash, warMachine.participantID],
+        () => highlightedMechParticipantID === warMachine.participantID || selection?.mechHash === hash || playerAbility?.ability.mech_hash === hash,
+        [hash, highlightedMechParticipantID, playerAbility?.ability.mech_hash, selection?.mechHash, warMachine.participantID],
     )
     const zIndex = useMemo(() => {
         if (isMechHighlighted) return 7
