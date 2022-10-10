@@ -111,6 +111,7 @@ export enum FeatureName {
     systemMessages = "SYSTEM_MESSAGES",
     chatBan = "CHAT_BAN",
     profileAvatar = "PROFILE_AVATAR",
+    voiceChat = "VOICE_CHAT",
 }
 
 export enum SystemMessageDataType {

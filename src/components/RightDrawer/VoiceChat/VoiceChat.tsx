@@ -1,7 +1,7 @@
-import { Box, Button, IconButton, Popover, Slider, Stack, Typography } from "@mui/material"
+import { Box, IconButton, Popover, Slider, Stack, Typography } from "@mui/material"
 import OvenPlayer from "ovenplayer"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { SvgVolume, SvgVolumeMute } from "../../../assets"
+import { SvgVoice, SvgVolume, SvgVolumeMute } from "../../../assets"
 import { useArena, useAuth, useGlobalNotifications, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { acronym, shadeColor } from "../../../helpers"
@@ -9,7 +9,7 @@ import { useToggle } from "../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { Faction, User } from "../../../types"
+import { Faction, FeatureName, User } from "../../../types"
 import { StyledImageText } from "../../Notifications/Common/StyledImageText"
 import OvenLiveKit from "ovenlivekit"
 
@@ -29,11 +29,12 @@ export interface VoiceStream {
 
 export const VoiceChat = () => {
     const [open, setOpen] = useState(false)
+    const theme = useTheme()
     const popoverRef = useRef(null)
     const { newSnackbarMessage } = useGlobalNotifications()
 
     const { getFaction } = useSupremacy()
-    const { user, factionID } = useAuth()
+    const { user, factionID, userHasFeature } = useAuth()
     const { currentArenaID } = useArena()
 
     const [listenStreams, setListenStreams] = useState<VoiceStream[]>()
@@ -41,6 +42,8 @@ export const VoiceChat = () => {
     const [connected, setConnected] = useState(false)
 
     const { send } = useGameServerCommandsFaction("/faction_commander")
+
+    const hasFeature = userHasFeature(FeatureName.voiceChat)
 
     /* eslint-disable @typescript-eslint/no-explicit-any */
     const ovenLiveKitInstance = useRef<any>()
@@ -260,12 +263,30 @@ export const VoiceChat = () => {
         }
     }
 
+    if (!hasFeature) {
+        return <></>
+    }
     return (
         <>
-            {/* open button */}
-            <Button ref={popoverRef} onClick={() => setOpen(!open)}>
-                Voice Chat
-            </Button>
+            <FancyButton
+                ref={popoverRef}
+                onClick={() => setOpen(!open)}
+                clipThingsProps={{
+                    clipSize: "5px",
+                    backgroundColor: theme.factionTheme.primary,
+                    border: { borderColor: theme.factionTheme.primary, borderThickness: "1px" },
+                    sx: { position: "relative" },
+                }}
+                sx={{ px: "1rem", pt: 0, pb: ".1rem", minWidth: "7rem", color: "#FFFFFF" }}
+            >
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <Typography variant="subtitle2" sx={{ mr: "1rem", fontFamily: fonts.nostromoBlack }}>
+                        Voice Chat
+                    </Typography>
+
+                    <SvgVoice size="1.5rem" />
+                </Box>
+            </FancyButton>
 
             <Popover
                 sx={{
