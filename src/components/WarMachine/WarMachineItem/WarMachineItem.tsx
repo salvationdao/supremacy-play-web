@@ -2,7 +2,9 @@ import { Box, IconButton, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing, HealthShieldBars, WarMachineDestroyedInfo } from "../.."
 import { GenericWarMachinePNG, SvgInfoCircular, SvgSkull } from "../../../assets"
+import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../../constants"
 import { useAuth, useMiniMapPixi, useMobile, useSupremacy } from "../../../containers"
+import { useHotkey } from "../../../containers/hotkeys"
 import { getRarityDeets } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { colors, fonts } from "../../../theme/theme"
@@ -30,8 +32,9 @@ export const WarMachineItem = ({
     label?: number
 }) => {
     const { isMobile } = useMobile()
-    const { userID, factionID } = useAuth()
+    const { userID } = useAuth()
     const { getFaction } = useSupremacy()
+    const { miniMapHotkeyRecord, miniMapControlHotkeyRecord } = useHotkey()
     const { highlightedMechParticipantID, setHighlightedMechParticipantID } = useMiniMapPixi()
 
     const { hash, participantID, factionID: wmFactionID, name, imageAvatar, tier, ownedByID, ownerUsername, aiType } = warMachine
@@ -51,12 +54,13 @@ export const WarMachineItem = ({
 
     // Highlighting on the map
     const handleClick = useCallback(() => {
-        if (participantID === highlightedMechParticipantID) {
-            setHighlightedMechParticipantID(undefined)
-        } else {
-            setHighlightedMechParticipantID(participantID)
+        if (!label) return
+        if (participantID > ADD_MINI_MECH_PARTICIPANT_ID) {
+            miniMapControlHotkeyRecord.current[label.toString()]?.()
+            return
         }
-    }, [participantID, highlightedMechParticipantID, setHighlightedMechParticipantID])
+        miniMapHotkeyRecord.current[label.toString()]?.()
+    }, [label, participantID, miniMapHotkeyRecord, miniMapControlHotkeyRecord])
 
     // Toggle out isExpanded if other mech is highlighted
     useEffect(() => {
@@ -84,7 +88,7 @@ export const WarMachineItem = ({
                 }}
             >
                 <Box sx={{ position: "absolute", top: "-3rem", right: 0 }}>
-                    {label && wmFactionID === factionID && (
+                    {label && (
                         <Typography sx={{ color: primaryColor }}>
                             <i>
                                 <strong>[{participantID > 100 ? `CTRL + ${label}` : label}]</strong>

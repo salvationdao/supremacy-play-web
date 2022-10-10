@@ -6,8 +6,9 @@ import { useEffect } from "react"
 import ReactDOM from "react-dom"
 import { ErrorBoundary } from "react-error-boundary"
 import { Action, ClientContextProvider, createClient } from "react-fetching-library"
+import ReactGA from "react-ga"
 import { Helmet } from "react-helmet"
-import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom"
+import { BrowserRouter, Redirect, Route, Switch, useHistory } from "react-router-dom"
 import { SupremacyPNG } from "./assets"
 import { Bar, GlobalSnackbar, Maintenance, RightDrawer } from "./components"
 import { NavLinksDrawer } from "./components/Bar/NavLinks/NavLinksDrawer"
@@ -51,6 +52,7 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment"
 import { LocalizationProvider } from "@mui/x-date-pickers"
 
 const AppInner = () => {
+    const history = useHistory()
     const isTraining = location.pathname.includes("/training")
     const { isServerDown, serverConnectedBefore, firstConnectTimedOut } = useSupremacy()
     const { isMobile } = useMobile()
@@ -65,6 +67,16 @@ const AppInner = () => {
 
         return () => clearTimeout(timeout)
     }, [toggleShowLoading])
+
+    // Record page changes to Google Analytics
+    useEffect(() => {
+        ReactGA.pageview(location.pathname + location.search)
+        history.listen((location, action) => {
+            if (action === "PUSH") {
+                ReactGA.pageview(location.pathname + location.search)
+            }
+        })
+    }, [history])
 
     if ((!serverConnectedBefore && !firstConnectTimedOut) || showLoading) {
         return (
