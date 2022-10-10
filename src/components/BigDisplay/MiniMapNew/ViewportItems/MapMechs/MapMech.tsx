@@ -7,13 +7,13 @@ import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../
 import { GameServerKeys } from "../../../../../keys"
 import { colors } from "../../../../../theme/theme"
 import {
+    AnyAbility,
     Dimension,
     DisplayedAbility,
     LocationSelectType,
     MechDisplayEffectType,
     MechMoveCommand,
     MechMoveCommandAbility,
-    AnyAbility,
     WarMachineLiveState,
     WarMachineState,
 } from "../../../../../types"
@@ -36,7 +36,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     const { getFaction, isWindowFocused } = useSupremacy()
     const { addToHotkeyRecord } = useHotkey()
     const {
-        pixiMainItems,
+        pixiMiniMapPixi,
         gridSizeRef,
         clientPositionToViewportPosition,
         gridCellToViewportPosition,
@@ -76,11 +76,11 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
     // Initial setup for the mech and show on the map
     useEffect(() => {
-        if (!pixiMainItems) return
+        if (!pixiMiniMapPixi) return
         const pixiMapMech = new PixiMapMech(label, hash, gridSizeRef, mapItemMinSize)
-        pixiMainItems.viewport.addChild(pixiMapMech.root)
+        pixiMiniMapPixi.viewport.addChild(pixiMapMech.root)
         setPixiMapMech(pixiMapMech)
-    }, [hash, label, gridSizeRef, pixiMainItems, mapItemMinSize])
+    }, [hash, label, gridSizeRef, pixiMiniMapPixi, mapItemMinSize])
 
     // Cleanup
     useEffect(() => {
@@ -171,14 +171,13 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             pixiMapMech?.showDashedBox(showDashedBox)
 
             if (pixiMapMech) {
-                // If the winner/ability is not a mech select type, disable mech click
-                pixiMapMech.rootInner.interactive = !(
-                    aa &&
-                    aa.location_select_type !== LocationSelectType.MechCommand &&
-                    aa.location_select_type !== LocationSelectType.MechSelect &&
-                    aa.location_select_type !== LocationSelectType.MechSelectAllied &&
-                    aa.location_select_type !== LocationSelectType.MechSelectOpponent
-                )
+                // Allow clicking on mech IF not using any ability, or using ability and it related to this mech
+                pixiMapMech.rootInner2.interactive =
+                    !aa ||
+                    aa.location_select_type === LocationSelectType.MechSelect ||
+                    aa.location_select_type === LocationSelectType.MechSelectAllied ||
+                    aa.location_select_type === LocationSelectType.MechSelectOpponent ||
+                    (aa.location_select_type === LocationSelectType.MechCommand && aa.mech_hash === hash)
             }
         }
 
@@ -350,9 +349,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
             // Update rotation
             if (payload?.rotation !== undefined && pixiMapMech) {
-                let newRot = closestAngle(prevRotation.current, payload.rotation || 0)
-                // If the rotation has spun around too many times, reset it, else pixijs will die after tab is on idle
-                if (newRot > 1800 || newRot < -1800) newRot %= 360
+                const newRot = closestAngle(prevRotation.current, payload.rotation || 0)
                 const newRotRad = deg2rad(newRot + 90)
                 pixiMapMech.updateRotation(newRotRad)
                 prevRotation.current = newRot

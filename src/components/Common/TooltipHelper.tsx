@@ -1,8 +1,22 @@
-import { Stack, Tooltip, Typography } from "@mui/material"
+import { Stack, SxProps, Tooltip, Typography } from "@mui/material"
 import { ReactElement } from "react"
 import { ClipThing } from ".."
 import { autoTextColor } from "../../helpers"
 import { fonts, siteZIndex } from "../../theme/theme"
+
+export type TooltipPlacement =
+    | "bottom-end"
+    | "bottom-start"
+    | "bottom"
+    | "left-end"
+    | "left-start"
+    | "left"
+    | "right-end"
+    | "right-start"
+    | "right"
+    | "top-end"
+    | "top-start"
+    | "top"
 
 export const TooltipHelper = ({
     text,
@@ -13,27 +27,19 @@ export const TooltipHelper = ({
     open,
     color,
     textColor: tColor,
+    tooltipSx,
+    clipThingColor,
 }: {
     text?: string
     renderNode?: React.ReactNode
     children: ReactElement
     isCentered?: boolean
-    placement?:
-        | "bottom-end"
-        | "bottom-start"
-        | "bottom"
-        | "left-end"
-        | "left-start"
-        | "left"
-        | "right-end"
-        | "right-start"
-        | "right"
-        | "top-end"
-        | "top-start"
-        | "top"
+    placement?: TooltipPlacement
     open?: boolean
     color?: string
     textColor?: string
+    tooltipSx?: SxProps
+    clipThingColor?: string
 }) => {
     if (!text && !renderNode) return <>{children}</>
 
@@ -56,7 +62,7 @@ export const TooltipHelper = ({
                     clipSize="6px"
                     clipSlantSize="3px"
                     border={{
-                        borderColor: primaryColor,
+                        borderColor: clipThingColor || primaryColor,
                         borderThickness: "1.2px",
                     }}
                     corners={{
@@ -84,7 +90,7 @@ export const TooltipHelper = ({
                     style: { filter: "drop-shadow(0 3px 3px #00000050)", zIndex: 999999 },
                 },
                 arrow: { sx: { color: primaryColor } },
-                tooltip: { sx: { padding: "0 !important", maxWidth: "25rem", background: "unset" } },
+                tooltip: { sx: { padding: "0 !important", maxWidth: "25rem", background: "unset", ...tooltipSx } },
             }}
         >
             {children}

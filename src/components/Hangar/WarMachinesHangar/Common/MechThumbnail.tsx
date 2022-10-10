@@ -15,6 +15,7 @@ export const MechThumbnail = ({
     mechDetails,
     smallSize,
     tiny,
+    omitClip,
 }: {
     avatarUrl?: string
     tier?: string
@@ -23,6 +24,7 @@ export const MechThumbnail = ({
     mechDetails?: MechDetails
     smallSize?: boolean
     tiny?: boolean
+    omitClip?: boolean
 }) => {
     const theme = useTheme()
     const { getFaction } = useSupremacy()
@@ -43,11 +45,15 @@ export const MechThumbnail = ({
 
     return (
         <ClipThing
-            clipSize={tiny ? "2px" : smallSize ? "6px" : "8px"}
-            border={{
-                borderColor: primaryColor,
-                borderThickness: imageUrl && !smallSize && !tiny ? "0" : ".18rem",
-            }}
+            clipSize={omitClip ? "0" : tiny ? "2px" : smallSize ? "6px" : "8px"}
+            border={
+                omitClip
+                    ? undefined
+                    : {
+                          borderColor: primaryColor,
+                          borderThickness: imageUrl && !smallSize && !tiny ? "0" : ".18rem",
+                      }
+            }
             backgroundColor={theme.factionTheme.background}
             sx={{ flex: 1, position: "relative" }}
         >

@@ -5,6 +5,7 @@ import { useAuth, useSupremacy } from "../../../../containers"
 import { supFormatterNoFixed } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
 import { BattleEndDetail } from "../../../../types"
+import { CropMaxLengthText } from "../../../../theme/styles"
 
 export const SectionMechRewards = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
     const { userID } = useAuth()
@@ -56,12 +57,7 @@ export const SectionMechRewards = ({ battleEndDetail }: { battleEndDetail: Battl
                                             lineHeight: 1,
                                             color: faction.primary_color,
                                             fontWeight: "fontWeightBold",
-                                            display: "-webkit-box",
-                                            overflow: "hidden",
-                                            overflowWrap: "anywhere",
-                                            textOverflow: "ellipsis",
-                                            WebkitLineClamp: 1, // change to max number of lines
-                                            WebkitBoxOrient: "vertical",
+                                            ...CropMaxLengthText,
 
                                             span: { color: colors.neonBlue },
                                         }}

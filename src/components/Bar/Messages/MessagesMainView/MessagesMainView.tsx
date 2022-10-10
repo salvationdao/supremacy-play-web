@@ -13,6 +13,7 @@ import { FancyButton } from "../../../Common/FancyButton"
 import { PreferenceToggle } from "../../ProfileCard/PreferencesModal/NotificationPreferences"
 import { SystemMessageDisplayable } from "../Messages"
 import { MessageDisplay } from "./MessageDisplay/MessageDisplay"
+import { CropMaxLengthText } from "../../../../theme/styles"
 
 export interface MessagesMainViewProps {
     lastUpdated: Date
@@ -178,14 +179,9 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                                             {item.icon}
                                             <Typography
                                                 sx={{
-                                                    display: "-webkit-box",
-                                                    overflow: "hidden",
-                                                    overflowWrap: "anywhere",
+                                                    ...CropMaxLengthText,
                                                     width: "100%",
                                                     maxWidth: "100px",
-                                                    textOverflow: "ellipsis",
-                                                    WebkitLineClamp: 1, // change to max number of lines
-                                                    WebkitBoxOrient: "vertical",
                                                     textAlign: "left",
                                                     textTransform: "none",
                                                 }}
@@ -196,14 +192,9 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                                         <Typography
                                             key={1}
                                             sx={{
-                                                display: "-webkit-box",
-                                                overflow: "hidden",
-                                                overflowWrap: "anywhere",
+                                                ...CropMaxLengthText,
                                                 width: "100%",
                                                 maxWidth: "100px",
-                                                textOverflow: "ellipsis",
-                                                WebkitLineClamp: 1, // change to max number of lines
-                                                WebkitBoxOrient: "vertical",
                                                 textAlign: "left",
                                             }}
                                         >
@@ -212,12 +203,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                                         <Typography
                                             key={2}
                                             sx={{
-                                                display: "-webkit-box",
-                                                overflow: "hidden",
-                                                overflowWrap: "anywhere",
-                                                textOverflow: "ellipsis",
-                                                WebkitLineClamp: 1, // change to max number of lines
-                                                WebkitBoxOrient: "vertical",
+                                                ...CropMaxLengthText,
                                                 textAlign: "left",
                                                 textTransform: "none",
                                             }}

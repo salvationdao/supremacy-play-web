@@ -8,6 +8,7 @@ import { colors, fonts } from "../../../../theme/theme"
 import { Rarity } from "../../../../types"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { MediaPreviewModal } from "../../../Common/MediaPreview/MediaPreviewModal"
+import { CropMaxLengthText } from "../../../../theme/styles"
 
 export interface LoadoutItem {
     slotNumber?: number
@@ -57,13 +58,34 @@ export const MechLoadoutItem = React.forwardRef<HTMLDivElement, MechLoadoutItemP
                 alignItems="center"
                 sx={{ position: "relative", p: ".8rem", width: "fit-content" }}
             >
-                <MechLoadoutItemButton
-                    onClick={() => {
-                        onClick && onClick()
-                        toggleShowLoadoutModal(true)
+                <Box
+                    sx={{
+                        position: "relative",
                     }}
-                    {...loadoutItemButtonProps}
-                />
+                >
+                    <MechLoadoutItemButton
+                        onClick={() => {
+                            onClick && onClick()
+                            toggleShowLoadoutModal(true)
+                        }}
+                        {...loadoutItemButtonProps}
+                    />
+                    {!props.disabled && !props.locked && onUnequip && (
+                        <IconButton
+                            onClick={() => {
+                                onUnequip()
+                            }}
+                            sx={{
+                                zIndex: 10,
+                                position: "absolute",
+                                top: "1rem",
+                                right: "1rem",
+                            }}
+                        >
+                            <SvgRemove fill={colors.red} />
+                        </IconButton>
+                    )}
+                </Box>
                 <Grow in={!!prevEquipped} mountOnEnter unmountOnExit>
                     <Stack direction={side === "left" ? "row" : "row-reverse"} alignItems="center">
                         <SvgSwap sx={{ opacity: 0.6 }} />
@@ -71,21 +93,6 @@ export const MechLoadoutItem = React.forwardRef<HTMLDivElement, MechLoadoutItemP
                         <MechLoadoutItemButton {...(prevEquipped! || memoizedPrevEquipped.current)} isPreviouslyEquipped />
                     </Stack>
                 </Grow>
-                {!props.disabled && !props.locked && onUnequip && (
-                    <IconButton
-                        onClick={() => {
-                            onUnequip()
-                        }}
-                        sx={{
-                            zIndex: 10,
-                            position: "absolute",
-                            top: "1rem",
-                            right: "1rem",
-                        }}
-                    >
-                        <SvgRemove fill={colors.red} />
-                    </IconButton>
-                )}
             </Stack>
 
             {showLoadoutModal &&
@@ -224,12 +231,8 @@ const MechLoadoutItemButton = ({
                         sx={{
                             color: primaryColor,
                             fontFamily: fonts.nostromoBold,
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            overflowWrap: "anywhere",
-                            textOverflow: "ellipsis",
+                            ...CropMaxLengthText,
                             WebkitLineClamp: 2,
-                            WebkitBoxOrient: "vertical",
                         }}
                     >
                         {label}
@@ -241,12 +244,7 @@ const MechLoadoutItemButton = ({
                             sx={{
                                 color: primaryColor,
                                 fontFamily: fonts.nostromoBold,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 1,
-                                WebkitBoxOrient: "vertical",
+                                ...CropMaxLengthText,
                             }}
                         >
                             {subLabel}
@@ -371,12 +369,8 @@ export const MechLoadoutItemDraggable = React.forwardRef<HTMLDivElement, MechLoa
                             sx={{
                                 color: primaryColor,
                                 fontFamily: fonts.nostromoBold,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
+                                ...CropMaxLengthText,
                                 WebkitLineClamp: 2,
-                                WebkitBoxOrient: "vertical",
                             }}
                         >
                             {label}
@@ -388,12 +382,7 @@ export const MechLoadoutItemDraggable = React.forwardRef<HTMLDivElement, MechLoa
                                 sx={{
                                     color: primaryColor,
                                     fontFamily: fonts.nostromoBold,
-                                    display: "-webkit-box",
-                                    overflow: "hidden",
-                                    overflowWrap: "anywhere",
-                                    textOverflow: "ellipsis",
-                                    WebkitLineClamp: 1,
-                                    WebkitBoxOrient: "vertical",
+                                    ...CropMaxLengthText,
                                 }}
                             >
                                 {subLabel}

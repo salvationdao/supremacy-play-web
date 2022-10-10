@@ -11,6 +11,7 @@ import { MechDetails, RepairSlot } from "../../../../types"
 import { ClipThing } from "../../../Common/ClipThing"
 import { MechRepairBlocks } from "../Common/MechRepairBlocks"
 import { RepairBayItemActions } from "./RepairBayItemActions"
+import { CropMaxLengthText } from "../../../../theme/styles"
 
 export const RepairBayItem = ({
     repairSlot,
@@ -96,12 +97,7 @@ export const RepairBayItem = ({
                                     sx={{
                                         fontSize: "1.8rem",
                                         color: !mechDetails.name ? colors.grey : "#FFFFFF",
-                                        display: "-webkit-box",
-                                        overflow: "hidden",
-                                        overflowWrap: "anywhere",
-                                        textOverflow: "ellipsis",
-                                        WebkitLineClamp: 1,
-                                        WebkitBoxOrient: "vertical",
+                                        ...CropMaxLengthText,
                                     }}
                                 >
                                     {mechDetails.name || "Unnamed"}
@@ -113,12 +109,7 @@ export const RepairBayItem = ({
                                 sx={{
                                     fontFamily: fonts.nostromoBlack,
                                     fontWeight: "fontWeightBold",
-                                    display: "-webkit-box",
-                                    overflow: "hidden",
-                                    overflowWrap: "anywhere",
-                                    textOverflow: "ellipsis",
-                                    WebkitLineClamp: 1,
-                                    WebkitBoxOrient: "vertical",
+                                    ...CropMaxLengthText,
                                 }}
                             >
                                 {mechDetails.label}
