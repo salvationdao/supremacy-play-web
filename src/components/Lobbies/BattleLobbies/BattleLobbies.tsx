@@ -14,7 +14,7 @@ import { SearchBattle } from "../../Replays/BattlesReplays/SearchBattle"
 import { BattleLobbyItem } from "./BattleLobbyItem"
 import { FancyButton } from "../../Common/FancyButton"
 import { BattleLobbyCreateModal } from "./BattleLobbyCreate/BattleLobbyCreateModal"
-import { BattleLobbyPrivateAccessModal } from "./BattleLobbyPrivateAccessModal"
+import { BattleLobbySingleModal } from "./BattleLobbySingleModal"
 import { BattleLobbyAccessCodeModal } from "./BattleLobbyAccessCodeModal"
 
 const sortOptionsPending: { label: string; value: string }[] = [
@@ -335,7 +335,7 @@ export const BattleLobbies = ({ lobbyStatus, battleLobbies }: BattleLobbiesProps
             </ClipThing>
             {openNewLobbyModal && <BattleLobbyCreateModal setOpen={setOpenNewLobbyModal} />}
             {!accessCode && openPrivateRoom && <BattleLobbyAccessCodeModal setOpen={setOpenPrivateRoom} setAccessCode={setAccessCode} />}
-            {accessCode && <BattleLobbyPrivateAccessModal setAccessCode={setAccessCode} accessCode={accessCode} />}
+            {accessCode && <BattleLobbySingleModal setAccessCode={setAccessCode} accessCode={accessCode} />}
         </>
     )
 }

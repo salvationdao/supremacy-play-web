@@ -7,6 +7,7 @@ import { GameServerKeys } from "../../../keys"
 import { BattleLobby } from "../../../types/battle_queue"
 import { useMemo, useState } from "react"
 import FlipMove from "react-flip-move"
+import { PlayerInvolvedLobbyCard } from "./PlayerInvolvedLobbyCard"
 
 export const InvolvedBattleLobbies = () => {
     const { factionTheme } = useTheme()
@@ -31,11 +32,11 @@ export const InvolvedBattleLobbies = () => {
                                 key={`battle-lobby-${battleLobby.id}`}
                                 sx={{
                                     "&:not(:last-child)": {
-                                        mb: "1.5rem",
+                                        mb: ".8rem",
                                     },
                                 }}
                             >
-                                <InvolvedLobbyCard battleLobby={battleLobby} />
+                                <PlayerInvolvedLobbyCard battleLobby={battleLobby} />
                             </Box>
                         )
                     })}
@@ -80,12 +81,8 @@ export const InvolvedBattleLobbies = () => {
 
                     <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
                         <Box
+                            flex={1}
                             sx={{
-                                ml: "1.9rem",
-                                mr: ".5rem",
-                                pr: "1.4rem",
-                                my: "1rem",
-                                flex: 1,
                                 overflowY: "auto",
                                 overflowX: "hidden",
                                 direction: "ltr",
@@ -109,27 +106,5 @@ export const InvolvedBattleLobbies = () => {
                 </Stack>
             </ClipThing>
         </>
-    )
-}
-
-interface InvolvedLobbyCardProps {
-    battleLobby: BattleLobby
-}
-
-export const InvolvedLobbyCard = ({ battleLobby }: InvolvedLobbyCardProps) => {
-    const { factionTheme } = useTheme()
-    const { name } = battleLobby
-    return (
-        <Stack
-            sx={{
-                backgroundColor: factionTheme.background,
-                border: `${factionTheme.primary}99 2px solid`,
-                width: "100%",
-                height: "10rem",
-                borderRadius: 0.8,
-            }}
-        >
-            <Typography>{name}</Typography>
-        </Stack>
     )
 }

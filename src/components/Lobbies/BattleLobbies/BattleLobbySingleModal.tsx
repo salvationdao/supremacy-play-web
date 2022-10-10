@@ -38,31 +38,42 @@ const lobbyPlaceholder: BattleLobby = {
     selected_zai_supporters: [],
 }
 
-interface BattleLobbyPrivateAccessModalProps {
-    setAccessCode: React.Dispatch<React.SetStateAction<string>>
-    accessCode: string
+interface BattleLobbySingleModalProps {
+    setAccessCode?: React.Dispatch<React.SetStateAction<string>>
+    accessCode?: string
+    showingLobby?: BattleLobby
+    setOpen?: React.Dispatch<React.SetStateAction<boolean>>
 }
-export const BattleLobbyPrivateAccessModal = ({ setAccessCode, accessCode }: BattleLobbyPrivateAccessModalProps) => {
-    const [isLoading, setIsLoading] = useState(true)
+export const BattleLobbySingleModal = ({ setAccessCode, accessCode, showingLobby, setOpen }: BattleLobbySingleModalProps) => {
+    const [isLoading, setIsLoading] = useState(!showingLobby)
 
-    const [lobby, setLobby] = useState<BattleLobby>(lobbyPlaceholder)
+    const [lobby, setLobby] = useState<BattleLobby>(showingLobby || lobbyPlaceholder)
 
     useGameServerSubscriptionFaction<BattleLobby>(
         {
             URI: `/private_battle_lobby/${accessCode}`,
             key: GameServerKeys.SubPrivateBattleLobby,
+            ready: !!accessCode && !!setAccessCode,
         },
         (payload) => {
             if (!payload) return
-
-            console.log(payload)
             setLobby(payload)
             setIsLoading(false)
         },
     )
 
     return (
-        <ConfirmModal title={`ACCESS PRIVATE LOBBY`} omitButtons onClose={() => setAccessCode("")} isLoading={isLoading} width="150rem" omitCancel>
+        <ConfirmModal
+            title={accessCode ? "ACCESS PRIVATE LOBBY" : "LOBBY"}
+            omitButtons
+            onClose={() => {
+                if (setAccessCode) setAccessCode("")
+                if (setOpen) setOpen(false)
+            }}
+            isLoading={isLoading}
+            width="150rem"
+            omitCancel
+        >
             <Stack direction="column">
                 <BattleLobbyItem battleLobby={lobby} omitClip disabled={isLoading} accessCode={accessCode} />
             </Stack>
