@@ -107,7 +107,7 @@ export const MechLoadoutDraggables = ({ draggablesRef, onDrag, onDragStart, onDr
                 exclude_ids: [],
                 include_ids: includeMechSkinIDs,
                 rarities: [],
-                equipped_statuses: ["unequipped"],
+                equipped_statuses: [],
                 search: "",
             })
 
