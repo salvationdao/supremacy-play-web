@@ -1,4 +1,4 @@
-import { Box, IconButton, Modal, Stack, Typography } from "@mui/material"
+import { Box, IconButton, Modal, Stack, SxProps, Typography } from "@mui/material"
 import { ReactNode, useMemo } from "react"
 import { ClipThing, FancyButton } from ".."
 import { SvgClose } from "../../assets"
@@ -27,6 +27,8 @@ interface ConfirmModalProps {
     omitConfirm?: boolean
     omitButtons?: boolean
     open?: boolean
+    omitHeader?: boolean
+    innerSx?: SxProps
 }
 
 export const ConfirmModal = ({
@@ -51,6 +53,8 @@ export const ConfirmModal = ({
     omitConfirm,
     omitButtons,
     confirmButton,
+    omitHeader,
+    innerSx,
 }: ConfirmModalProps) => {
     const theme = useTheme()
 
@@ -113,11 +117,14 @@ export const ConfirmModal = ({
                                 color: colors.neonBlue,
                                 fontWeight: "fontWeightBold",
                             },
+                            ...innerSx,
                         }}
                     >
-                        <Typography variant="h5" sx={{ lineHeight: 1, fontFamily: fonts.nostromoBlack }}>
-                            {title}
-                        </Typography>
+                        {!omitHeader && (
+                            <Typography variant="h5" sx={{ lineHeight: 1, fontFamily: fonts.nostromoBlack }}>
+                                {title}
+                            </Typography>
+                        )}
 
                         {children}
 
@@ -158,9 +165,11 @@ export const ConfirmModal = ({
                         )}
                     </Stack>
 
-                    <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
-                        <SvgClose size="2.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
-                    </IconButton>
+                    {!omitHeader && (
+                        <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
+                            <SvgClose size="2.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                        </IconButton>
+                    )}
                 </ClipThing>
             </Box>
         </Modal>

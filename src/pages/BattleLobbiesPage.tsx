@@ -52,12 +52,10 @@ export const BattleLobbiesPage = () => {
         (payload) => {
             if (!payload) return
             setBattleLobbies((bls) => {
-                if (bls.length === 0) {
-                    return payload
-                }
+                if (bls.length === 0) return payload
 
                 // replace current list
-                let list = bls.map((bl) => payload.find((p) => p.id === bl.id) || bl)
+                const list = bls.map((bl) => payload.find((p) => p.id === bl.id) || bl)
 
                 // append new list
                 payload.forEach((p) => {
@@ -70,9 +68,7 @@ export const BattleLobbiesPage = () => {
                 })
 
                 // remove any finished lobby
-                list = list.filter((bl) => !bl.ended_at && !bl.deleted_at)
-
-                return list
+                return list.filter((bl) => !bl.ended_at && !bl.deleted_at)
             })
         },
     )

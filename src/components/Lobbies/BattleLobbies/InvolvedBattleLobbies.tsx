@@ -18,7 +18,23 @@ export const InvolvedBattleLobbies = () => {
             key: GameServerKeys.SubInvolvedBattleLobbiesUpdate,
         },
         (payload) => {
-            setInvolvedLobbies(payload)
+            if (!payload) return
+            setInvolvedLobbies((prev) => {
+                if (prev.length === 0) return payload
+
+                const list = prev.map((bl) => payload.find((p) => p.id === bl.id) || bl)
+
+                payload.forEach((p) => {
+                    // if already exists
+                    if (list.some((b) => b.id === p.id)) {
+                        return
+                    }
+                    // otherwise, push to the list
+                    list.push(p)
+                })
+
+                return list.filter((bl) => !bl.ended_at && !bl.deleted_at)
+            })
         },
     )
 
@@ -75,7 +91,7 @@ export const InvolvedBattleLobbies = () => {
                         }}
                     >
                         <Typography color={factionTheme.secondary} fontFamily={fonts.nostromoBlack}>
-                            Your Lobbies
+                            My Lobbies
                         </Typography>
                     </Stack>
 

@@ -72,7 +72,11 @@ export const BattleLobbySingleModal = ({ setAccessCode, accessCode, showingLobby
             }}
             isLoading={isLoading}
             width="150rem"
-            omitCancel
+            omitHeader
+            innerSx={{
+                px: 0,
+                py: 0,
+            }}
         >
             <Stack direction="column">
                 <BattleLobbyItem battleLobby={lobby} omitClip disabled={isLoading} accessCode={accessCode} />
