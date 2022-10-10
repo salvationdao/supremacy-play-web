@@ -3,10 +3,10 @@ import { clamp, HEXToVBColor } from "../helpers"
 
 export class PixiProgressBar {
     root: PIXI.Container
+    percent: number
     private trackRect: PIXI.Graphics
     private barRect: PIXI.Graphics
     private color: string
-    private percent: number
     private width: number
     private height: number
 
