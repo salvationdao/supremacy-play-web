@@ -4,11 +4,11 @@ import { ClipThing, FancyButton } from "../../.."
 import { SvgDrag, SvgLock, SvgPlus, SvgRemove, SvgSkin, SvgSwap, SvgWrapperProps } from "../../../../assets"
 import { shadeColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
+import { CropMaxLengthText } from "../../../../theme/styles"
 import { colors, fonts } from "../../../../theme/theme"
 import { Rarity } from "../../../../types"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { MediaPreviewModal } from "../../../Common/MediaPreview/MediaPreviewModal"
-import { CropMaxLengthText } from "../../../../theme/styles"
 
 export interface LoadoutItem {
     slotNumber?: number
@@ -194,7 +194,13 @@ const MechLoadoutItemButton = ({
                     {isEmpty ? (
                         <SvgPlus fill={`${primaryColor}80`} size="2rem" />
                     ) : (
-                        <MediaPreview imageUrl={imageUrl} videoUrls={videoUrls} objectFit="contain" sx={{ p: ".5rem" }} imageTransform={imageTransform} />
+                        <MediaPreview
+                            imageUrl={imageUrl}
+                            videoUrls={videoUrls}
+                            objectFit="contain"
+                            sx={{ p: ".5rem", pointerEvents: "none" }}
+                            imageTransform={imageTransform}
+                        />
                     )}
 
                     <Stack spacing=".3rem" direction="row" alignItems="center" sx={{ position: "absolute", top: ".1rem", left: ".5rem" }}>
