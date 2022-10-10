@@ -179,7 +179,6 @@ export const MysteryCrateStoreItem = React.memo(function MysteryCrateStoreItem({
                                 </Stack>
                                 {STAGING_OR_DEV_ONLY && <Typography sx={{ fontFamily: fonts.nostromoMedium }}>{singleFiatPrice || "N/A"}</Typography>}
                             </Stack>
-
                             <Box
                                 sx={{
                                     position: "absolute",
@@ -200,7 +199,8 @@ export const MysteryCrateStoreItem = React.memo(function MysteryCrateStoreItem({
                                         },
                                     }}
                                 >
-                                    {numberCommaFormatter(mysteryCrate.amount)} LIMITED SUPPLY
+                                    <span>{numberCommaFormatter(mysteryCrate.amount - mysteryCrate.amount_sold)}</span> /{" "}
+                                    {numberCommaFormatter(mysteryCrate.amount)} left
                                 </Typography>
                             </Box>
                         </Box>
