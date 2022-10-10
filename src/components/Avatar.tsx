@@ -1,5 +1,5 @@
 import { getCardStyles } from "./UpcomingBattle/MechCard"
-import { Box, Tooltip, Typography } from "@mui/material"
+import { Box, Typography } from "@mui/material"
 import React, { useState } from "react"
 import { CustomAvatar } from "./PublicProfile/Avatar/CustomAvatar"
 import { useGameServerSubscription } from "../hooks/useGameServer"

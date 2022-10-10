@@ -1,7 +1,7 @@
 import { Avatar, Box, Stack, Typography } from "@mui/material"
 import React, { useMemo, useState } from "react"
 import { Avatar as SupremacyAvatar } from "../../Avatar"
-import { SvgBostonKillIcon, SvgDeath, SvgLock, SvgRedMoutainKillIcon, SvgSupToken, SvgZaibatsuKillIcon } from "../../../assets"
+import { SvgLock, SvgSupToken } from "../../../assets"
 import { useArena, useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { camelToTitle, supFormatter } from "../../../helpers"

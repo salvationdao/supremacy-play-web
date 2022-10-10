@@ -1,4 +1,4 @@
-import { Stack, Button } from "@mui/material"
+import { Stack } from "@mui/material"
 import React, { useState } from "react"
 import { ConfirmModal } from "../../Common/ConfirmModal"
 import { BattleLobby } from "../../../types/battle_queue"
