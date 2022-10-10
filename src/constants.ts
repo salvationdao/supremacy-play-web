@@ -126,7 +126,7 @@ export const TELEGRAM_BOT_URL = process.env.REACT_APP_TELEGRAM_BOT_URL || "https
 export const STRIPE_PUBLISHABLE_KEY = process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || ""
 
 // Google analytics
-export const GA_TAG = PROD_ONLY ? "G-BRBP3B75ZM" : STAGING_ONLY ? "G-FJ55GQ2WG9" : ""
-ReactGA.initialize("UA-000000-01")
+export const GA_TAG = PROD_ONLY ? "G-BRBP3B75ZM" : STAGING_ONLY ? "G-FJ55GQ2WG9" : USE_PROD_DATA ? "G-KFL5RHDV0Z" : "G-2KKQ46N29B"
+ReactGA.initialize(GA_TAG)
 
 export const TRAINING_ASSETS = "https://afiles.ninja-cdn.com/supremacy-stream-site/training"

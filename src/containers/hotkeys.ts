@@ -87,6 +87,8 @@ export const HotkeyContainer = createContainer(() => {
     }, [handleGlobalHotKey])
 
     return {
+        miniMapHotkeyRecord,
+        miniMapControlHotkeyRecord,
         addToHotkeyRecord,
         handleMiniMapHotKey,
     }
