@@ -127,6 +127,6 @@ export const STRIPE_PUBLISHABLE_KEY = process.env.REACT_APP_STRIPE_PUBLISHABLE_K
 
 // Google analytics
 export const GA_TAG = PROD_ONLY ? "G-BRBP3B75ZM" : STAGING_ONLY ? "G-FJ55GQ2WG9" : ""
-ReactGA.initialize("UA-000000-01")
+ReactGA.initialize(GA_TAG)
 
 export const TRAINING_ASSETS = "https://afiles.ninja-cdn.com/supremacy-stream-site/training"
