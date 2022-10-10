@@ -103,6 +103,7 @@ export const MechLoadoutDraggables = ({ draggablesRef, onDrag, onDragStart, onDr
                 display_genesis_and_limited: true,
                 exclude_market_locked: true,
                 display_xsyn: false,
+                display_unique: true,
                 skin_compatibility: [],
                 exclude_ids: [],
                 include_ids: includeMechSkinIDs,
@@ -140,7 +141,7 @@ export const MechLoadoutDraggables = ({ draggablesRef, onDrag, onDragStart, onDr
             )
         }
         if (weaponsError) {
-            return weaponsError
+            return <Typography>{weaponsError}</Typography>
         }
         if (weapons.length === 0) {
             return (
@@ -196,7 +197,7 @@ export const MechLoadoutDraggables = ({ draggablesRef, onDrag, onDragStart, onDr
             )
         }
         if (mechSkinsError) {
-            return mechSkinsError
+            return <Typography>{mechSkinsError}</Typography>
         }
         if (mechSkins.length === 0) {
             return (
