@@ -1,9 +1,10 @@
 import { getCardStyles } from "./UpcomingBattle/MechCard"
-import { Box, Typography } from "@mui/material"
+import { Box, Tooltip, Typography } from "@mui/material"
 import React, { useState } from "react"
 import { CustomAvatar } from "./PublicProfile/Avatar/CustomAvatar"
 import { useGameServerSubscription } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
+import { TooltipHelper } from "./Common/TooltipHelper"
 
 export const Avatar = ({
     zIndexAdded,
@@ -23,76 +24,78 @@ export const Avatar = ({
     const { border } = getCardStyles(factionID)
 
     return (
-        <Box
-            sx={{
-                position: "relative",
-                height: "75px",
-                width: "75px",
-                overflow: "hidden",
-                marginLeft: marginLeft,
-                zIndex: zIndexAdded + 1,
-            }}
-        >
+        <TooltipHelper text={username}>
             <Box
-                component={"img"}
-                src={border}
                 sx={{
-                    height: "100%",
-                    width: "100%",
-                    maxHeight: "100%",
-                    maxWidth: "100%",
-                    zIndex: zIndexAdded + 2,
+                    position: "relative",
+                    height: "75px",
+                    width: "75px",
                     overflow: "hidden",
-                    pointerEvents: "none",
-                    position: "absolute",
+                    marginLeft: marginLeft,
+                    zIndex: zIndexAdded + 1,
                 }}
-            />
-            <Box
-                sx={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    zIndex: zIndexAdded,
-                    backgroundColor: "black",
-                    clipPath: "polygon(11% 4%, 90% 4%, 97% 11%, 97% 93%, 2% 93%, 2% 11%)",
-                }}
-            />
-            {!customAvatarID && !avatarURL && (
-                <Typography
-                    variant={"h5"}
-                    sx={{
-                        position: "absolute",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translate(-50%, -50%)",
-                        zIndex: zIndexAdded + 1,
-                    }}
-                    color={"primary"}
-                >
-                    {username}
-                </Typography>
-            )}
-            {!avatarURL && customAvatarID && <CustomAvatarImg zIndexAdded={zIndexAdded} customAvatarID={customAvatarID} />}
-            {!customAvatarID && avatarURL && (
+            >
                 <Box
                     component={"img"}
+                    src={border}
                     sx={{
-                        zIndex: zIndexAdded + 1,
-                        position: "absolute",
-                        top: "0",
-                        left: "0",
+                        height: "100%",
+                        width: "100%",
                         maxHeight: "100%",
+                        maxWidth: "100%",
+                        zIndex: zIndexAdded + 2,
+                        overflow: "hidden",
+                        pointerEvents: "none",
+                        position: "absolute",
+                    }}
+                />
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        zIndex: zIndexAdded,
+                        backgroundColor: "black",
                         clipPath: "polygon(11% 4%, 90% 4%, 97% 11%, 97% 93%, 2% 93%, 2% 11%)",
                     }}
-                    key={`${avatarURL}-username`}
-                    // style={{  }}
-                    src={avatarURL}
-                    alt="avatar"
                 />
-            )}
-        </Box>
+                {!customAvatarID && !avatarURL && (
+                    <Typography
+                        variant={"h5"}
+                        sx={{
+                            position: "absolute",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%, -50%)",
+                            zIndex: zIndexAdded + 1,
+                        }}
+                        color={"primary"}
+                    >
+                        {username}
+                    </Typography>
+                )}
+                {!avatarURL && customAvatarID && <CustomAvatarImg zIndexAdded={zIndexAdded} customAvatarID={customAvatarID} />}
+                {!customAvatarID && avatarURL && (
+                    <Box
+                        component={"img"}
+                        sx={{
+                            zIndex: zIndexAdded + 1,
+                            position: "absolute",
+                            top: "0",
+                            left: "0",
+                            maxHeight: "100%",
+                            clipPath: "polygon(11% 4%, 90% 4%, 97% 11%, 97% 93%, 2% 93%, 2% 11%)",
+                        }}
+                        key={`${avatarURL}-username`}
+                        // style={{  }}
+                        src={avatarURL}
+                        alt="avatar"
+                    />
+                )}
+            </Box>
+        </TooltipHelper>
     )
 }
 
