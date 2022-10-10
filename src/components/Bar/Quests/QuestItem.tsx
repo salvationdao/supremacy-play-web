@@ -6,6 +6,7 @@ import { colors, fonts } from "../../../theme/theme"
 import { QuestProgress, QuestStat } from "../../../types"
 import { ProgressBar } from "../../Common/ProgressBar"
 import { TooltipHelper } from "../../Common/TooltipHelper"
+import { CropMaxLengthText } from "../../../theme/styles"
 
 interface QuestItemProps {
     questStat: QuestStat
@@ -76,12 +77,7 @@ export const QuestItem = React.memo(function QuestItem({ questStat, progress, sh
                         sx={{
                             lineHeight: 1,
                             fontWeight: "fontWeightBold",
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            overflowWrap: "anywhere",
-                            textOverflow: "ellipsis",
-                            WebkitLineClamp: 1, // change to max number of lines
-                            WebkitBoxOrient: "vertical",
+                            ...CropMaxLengthText,
                         }}
                     >
                         {questStat.name}

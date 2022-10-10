@@ -9,6 +9,7 @@ import { Keycard } from "../../../types"
 import { ItemType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
+import { CropMaxLengthText } from "../../../theme/styles"
 
 interface KeycardHangarItemProps {
     keycard: Keycard
@@ -149,12 +150,7 @@ export const KeycardCommonArea = ({
                     sx={{
                         fontFamily: fonts.nostromoBlack,
                         color: theme.factionTheme.primary,
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1,
-                        WebkitBoxOrient: "vertical",
+                        ...CropMaxLengthText,
                     }}
                 >
                     {label}
@@ -162,12 +158,8 @@ export const KeycardCommonArea = ({
 
                 <Typography
                     sx={{
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
+                        ...CropMaxLengthText,
                         WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
                     }}
                 >
                     {description}

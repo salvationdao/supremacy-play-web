@@ -68,7 +68,6 @@ export const MechLoadoutMechSkinModal = ({
     const [search, setSearch] = useState("")
     const [rarities, setRarities] = useState<string[]>([])
     const [equippedStatuses, setEquippedStatuses] = useState<string[]>([])
-    const [models, setModels] = useState<string[]>([])
 
     // Filters
     const statusFilterSection = useRef<ChipFilter>({
@@ -108,17 +107,6 @@ export const MechLoadoutMechSkinModal = ({
         },
     })
 
-    const modelFilterSection = useRef<ChipFilter>({
-        label: "MODEL COMPATIBILITY",
-        options: [],
-        initialSelected: models,
-        initialExpanded: true,
-        onSetSelected: (value: string[]) => {
-            setModels(value)
-            changePage(1)
-        },
-    })
-
     const getSubmodels = useCallback(async () => {
         try {
             setIsLoading(true)
@@ -150,7 +138,7 @@ export const MechLoadoutMechSkinModal = ({
                 exclude_ids: mechSkinsAlreadyEquippedInOtherSlots,
                 include_ids: compatibleMechSkins,
                 rarities: rarities,
-                skin_compatibility: models,
+                skin_compatibility: [],
                 equipped_statuses: equippedStatuses,
             })
 
@@ -164,7 +152,7 @@ export const MechLoadoutMechSkinModal = ({
         } finally {
             setIsLoading(false)
         }
-    }, [sort, send, search, pageSize, page, mechSkinsAlreadyEquippedInOtherSlots, compatibleMechSkins, rarities, models, equippedStatuses, setTotalItems])
+    }, [sort, send, search, pageSize, page, mechSkinsAlreadyEquippedInOtherSlots, compatibleMechSkins, rarities, equippedStatuses, setTotalItems])
 
     useEffect(() => {
         getSubmodels()
@@ -328,7 +316,7 @@ export const MechLoadoutMechSkinModal = ({
                         <SortAndFilters
                             initialSearch={search}
                             onSetSearch={setSearch}
-                            chipFilters={[statusFilterSection.current, rarityChipFilter.current, modelFilterSection.current]}
+                            chipFilters={[statusFilterSection.current, rarityChipFilter.current]}
                             changePage={changePage}
                             isExpanded={isFiltersExpanded}
                             width="25rem"

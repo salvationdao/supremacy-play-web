@@ -7,6 +7,7 @@ import { LocationSelectType, PlayerAbility } from "../../../../types"
 import { FancyButton } from "../../../Common/FancyButton"
 import { TooltipHelper } from "../../../Common/TooltipHelper"
 import { PlayerAbilityCooldownIndicator } from "./PlayerAbilityCooldownIndicator"
+import { CropMaxLengthText } from "../../../../theme/styles"
 
 interface PlayerAbilityCardProps {
     playerAbility: PlayerAbility
@@ -176,12 +177,8 @@ export const PlayerAbilityCard = React.memo(function PlayerAbilityCard({ playerA
                             variant="body2"
                             sx={{
                                 lineHeight: 1.2,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
+                                ...CropMaxLengthText,
                                 WebkitLineClamp: 2,
-                                WebkitBoxOrient: "vertical",
                                 fontWeight: "fontWeightBold",
                             }}
                         >

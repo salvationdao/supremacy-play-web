@@ -16,11 +16,11 @@ import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
-import { QueueDetails } from "../../LeftDrawer/QuickDeploy/QueueDetails"
-import { PlayerQueueStatus } from "../../LeftDrawer/QuickDeploy/QuickDeploy"
+import { QueueDetails } from "../../Lobbies/BattleLobbyMech/QueueDetails"
 import { BulkRepairConfirmModal } from "./Common/BulkRepairConfirmModal"
 import { RepairBay } from "./RepairBay/RepairBay"
 import { WarMachineHangarItem } from "./WarMachineHangarItem"
+import { PlayerQueueStatus } from "../../../types/battle_queue"
 
 const sortOptions = [
     { label: SortTypeLabel.MechQueueAsc, value: SortTypeLabel.MechQueueAsc },

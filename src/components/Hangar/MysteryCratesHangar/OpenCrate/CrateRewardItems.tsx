@@ -9,6 +9,7 @@ import { FancyButton } from "../../../Common/FancyButton"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { TooltipHelper } from "../../../Common/TooltipHelper"
 import { ArrayItem } from "./CrateRewardsModal"
+import { CropMaxLengthText } from "../../../../theme/styles"
 
 interface CrateRewardItemsProps {
     item?: ArrayItem
@@ -128,12 +129,8 @@ export const CrateRewardItemsSmall = ({ item }: CrateRewardItemsProps) => {
                                     textAlign: "start",
                                     color: rarityDeets.color,
                                     fontFamily: fonts.nostromoBlack,
-                                    display: "-webkit-box",
-                                    overflow: "hidden",
-                                    overflowWrap: "anywhere",
-                                    textOverflow: "ellipsis",
+                                    ...CropMaxLengthText,
                                     WebkitLineClamp: 2,
-                                    WebkitBoxOrient: "vertical",
                                 }}
                             >
                                 {rarityDeets.label}
