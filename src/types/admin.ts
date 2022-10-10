@@ -23,6 +23,7 @@ export interface AdminPlayerBan {
     banned_by: User
     banned_at: Date
     manually_unbanned: boolean
+    manually_unbanned_reason: string | undefined
 }
 
 export interface AdminChatView {

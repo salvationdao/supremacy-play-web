@@ -1,5 +1,5 @@
-import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import { Box, CircularProgress, Fade, Stack, Tab, Tabs, Typography } from "@mui/material"
+import React, { SyntheticEvent, useCallback, useEffect, useMemo, useState } from "react"
 import { SvgBack } from "../../../assets"
 import { useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -15,9 +15,10 @@ import { PlayerProfileCard } from "./PlayerProfileCard"
 import { BanHistoryPanel } from "./BanHistoryPanel"
 import { ChatHistory } from "./ChatHistory"
 import { RelatedAccounts } from "./RelatedAccounts"
-import { AdminUserAsset } from "./AdminUserAsset"
 import { AdminBanModal } from "./AdminBanModal"
 import { AdminUnbanModal } from "./AdminUnbanModal"
+import { ClipThing } from "../../Common/ClipThing"
+import { AdminUserAsset } from "./AdminUserAsset"
 
 export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: (newQuery: { [p: string]: string | undefined }) => void }) => {
     const [userData, setUserData] = useState<GetUserResp>()
@@ -30,6 +31,7 @@ export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: 
     const [banModalOpen, setBanModalOpen] = useState<boolean>(false)
     const [unbanModalOpen, setUnbanModalOpen] = useState<boolean>(false)
     const [playerUnban, setPlayerUnban] = useState<AdminPlayerBan>()
+    const [currentValue, setCurrentValue] = useState<string>("PLAYER-INFO")
 
     useEffect(() => {
         ;(async () => {
@@ -50,6 +52,10 @@ export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: 
             }
         })()
     }, [getFaction, gid, send, setIsLoading])
+
+    const handleChange = useCallback((event: SyntheticEvent, newValue: string) => {
+        setCurrentValue(newValue)
+    }, [])
 
     const fetchPlayer = useCallback(
         (newGid: number) => {
@@ -95,6 +101,8 @@ export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: 
             unbanModalOpen={unbanModalOpen}
             setPlayerUnban={setPlayerUnban}
             playerUnban={playerUnban}
+            handleChange={handleChange}
+            currentValue={currentValue}
         />
     )
 }
@@ -113,6 +121,8 @@ const PlayerProfileInner = ({
     unbanModalOpen,
     setPlayerUnban,
     playerUnban,
+    handleChange,
+    currentValue,
 }: {
     userData: GetUserResp
     updateQuery: (newQuery: { [p: string]: string | undefined }) => void
@@ -127,6 +137,8 @@ const PlayerProfileInner = ({
     unbanModalOpen: boolean
     setPlayerUnban: (value: ((prevState: AdminPlayerBan | undefined) => AdminPlayerBan | undefined) | AdminPlayerBan | undefined) => void
     playerUnban: AdminPlayerBan | undefined
+    handleChange: (event: SyntheticEvent, newValue: string) => void
+    currentValue: string
 }) => {
     const theme = useTheme()
 
@@ -234,14 +246,14 @@ const PlayerProfileInner = ({
                                     },
                                 }}
                             >
-                                <Box sx={{ height: 0 }}>
+                                <Stack sx={{ height: 0 }} flexWrap={"wrap"} direction={"row"}>
                                     <BanHistoryPanel
                                         faction={faction}
                                         playerBans={userData.ban_history}
                                         setModalOpen={setUnbanModalOpen}
                                         setPlayerUnban={setPlayerUnban}
                                     />
-                                </Box>
+                                </Stack>
                             </Box>
                         ) : (
                             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
@@ -250,17 +262,6 @@ const PlayerProfileInner = ({
                         )}
                     </PlayerProfileCard>
                 </Stack>
-                {/*{user.role_type === RoleType.admin && (*/}
-                {/*    <PlayerProfileCard faction={faction} title="User Assets" fullWidth={true}>*/}
-                {/*        {userData.user_assets ? (*/}
-                {/*            <AdminUserAsset userAsset={userData.user_assets} faction={faction} />*/}
-                {/*        ) : (*/}
-                {/*            <Stack alignItems="center" justifyContent="center" sx={{ height: "50rem" }}>*/}
-                {/*                <Typography>User Has No Assets</Typography>*/}
-                {/*            </Stack>*/}
-                {/*        )}*/}
-                {/*    </PlayerProfileCard>*/}
-                {/*)}*/}
             </Stack>
         )
     }, [
@@ -268,13 +269,13 @@ const PlayerProfileInner = ({
         fetchPlayer,
         isLoading,
         loadError,
+        setPlayerUnban,
+        setUnbanModalOpen,
         theme.factionTheme.primary,
-        user.role_type,
         userData.ban_history,
         userData.recent_chat_history,
         userData.related_accounts,
         userData.user,
-        userData.user_assets,
     ])
 
     return (
@@ -335,7 +336,46 @@ const PlayerProfileInner = ({
                     </Stack>
                 </PageHeader>
 
-                <Box sx={{ px: "1rem", py: "1rem", flex: 1 }}>{content}</Box>
+                <Box sx={{ px: "1rem", py: "1rem", flex: 1 }}>
+                    <Tabs
+                        value={currentValue}
+                        onChange={handleChange}
+                        variant="scrollable"
+                        scrollButtons="auto"
+                        sx={{
+                            flexShrink: 0,
+                            color: faction.primary_color,
+                            minHeight: 0,
+                            ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "6rem", width: "10rem" },
+                            ".Mui-selected": {
+                                color: `${faction.secondary_color} !important`,
+                                background: `linear-gradient(${faction.primary_color} 26%, ${faction.primary_color}BB)`,
+                            },
+                            ".MuiTabs-indicator": { display: "none" },
+                            ".MuiTabScrollButton-root": { display: "none" },
+                        }}
+                    >
+                        <Tab label="INFO" value={"PLAYER-INFO"} />
+
+                        {user.role_type === RoleType.admin && <Tab label="USER ASSET" value={"USER-ASSET"} />}
+                    </Tabs>
+
+                    <TabPanel currentValue={currentValue} value={"PLAYER-INFO"} faction={faction}>
+                        {content}
+                    </TabPanel>
+
+                    <TabPanel currentValue={currentValue} value={"USER-ASSET"} faction={faction}>
+                        <PlayerProfileCard faction={faction} title="User Assets" fullWidth={true}>
+                            {userData.user_assets ? (
+                                <AdminUserAsset userAsset={userData.user_assets} faction={faction} />
+                            ) : (
+                                <Stack alignItems="center" justifyContent="center" sx={{ height: "50rem" }}>
+                                    <Typography>User Has No Assets</Typography>
+                                </Stack>
+                            )}
+                        </PlayerProfileCard>
+                    </TabPanel>
+                </Box>
 
                 {banModalOpen && (
                     <AdminBanModal user={userData.user} modalOpen={banModalOpen} setModalOpen={setBanModalOpen} faction={faction} fetchPlayer={fetchPlayer} />
@@ -354,4 +394,42 @@ const PlayerProfileInner = ({
             </Stack>
         </Stack>
     )
+}
+
+interface TabPanelProps {
+    children?: React.ReactNode
+    value: string
+    currentValue: string
+    faction: Faction
+}
+
+const TabPanel = (props: TabPanelProps) => {
+    const { children, currentValue, value, faction } = props
+
+    if (currentValue === value) {
+        return (
+            <Fade in>
+                <ClipThing
+                    clipSize="5px"
+                    border={{
+                        borderColor: faction.primary_color,
+                        borderThickness: ".2rem",
+                    }}
+                    corners={{
+                        topLeft: false,
+                        topRight: true,
+                        bottomLeft: true,
+                        bottomRight: false,
+                    }}
+                    backgroundColor={faction.background_color}
+                    opacity={0.9}
+                    sx={{ flex: 1, width: "100%", height: "100%", p: "1rem" }}
+                >
+                    {children}
+                </ClipThing>
+            </Fade>
+        )
+    }
+
+    return null
 }

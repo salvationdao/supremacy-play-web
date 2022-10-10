@@ -21,7 +21,7 @@ export const BanHistoryPanel = ({
     setPlayerUnban: (value: ((prevState: AdminPlayerBan | undefined) => AdminPlayerBan | undefined) | AdminPlayerBan | undefined) => void
 }) => {
     return (
-        <Stack sx={{ flex: 1, p: "1rem" }} spacing={"1rem"}>
+        <Stack sx={{ flex: 2, p: "1rem" }} spacing={"1rem"}>
             {playerBans.map((playerBan, i) => {
                 return (
                     <ClipThing
@@ -32,8 +32,8 @@ export const BanHistoryPanel = ({
                         }}
                         backgroundColor={faction.background_color}
                         opacity={0.9}
-                        sx={{ flex: 1, width: "100%" }}
-                        key={i}
+                        sx={{ flex: 1 }}
+                        key={playerBan.id}
                     >
                         <Stack sx={{ width: "100%", p: "1rem" }}>
                             <Stack justifyContent={"space-between"} direction="row" alignItems="center">
@@ -60,28 +60,30 @@ export const BanHistoryPanel = ({
                                 </Typography>
                             </Stack>
                         </Stack>
+                        <Stack sx={{ width: "100%", p: "1rem" }}>
+                            <Stack justifyContent={"space-between"} direction="row-reverse" alignItems="center">
+                                <Stack direction={"row"} spacing={"1rem"} alignItems={"center"}>
+                                    <Typography>Status:</Typography>
+
+                                    <Typography
+                                        sx={{ color: playerBan.manually_unbanned ? colors.green : playerBan.end_at > new Date() ? colors.red : colors.green }}
+                                    >
+                                        {playerBan.manually_unbanned ? "Unbanned Manually" : playerBan.end_at > new Date() ? "Banned" : "Unbanned"}
+                                    </Typography>
+                                </Stack>
+                            </Stack>
+                        </Stack>
                         <Stack sx={{ p: "1rem" }}>
                             <Typography sx={{ ml: "0.3rem", fontWeight: "700", userSelect: "none" }}>Reason:</Typography>
                             <Typography sx={{ ml: "0.3rem", userSelect: "none" }}>{playerBan.reason}</Typography>
-                            <FancyButton
-                                clipThingsProps={{
-                                    clipSize: "9px",
-                                    backgroundColor: colors.green,
-                                    opacity: 1,
-                                    border: { borderColor: colors.green, borderThickness: "2px" },
-                                }}
-                                sx={{ px: "1.6rem", py: ".2rem", color: "#FFFFFF" }}
-                                disabled={playerBan.manually_unbanned}
-                                onClick={() => {
-                                    setModalOpen(true)
-                                    setPlayerUnban(playerBan)
-                                }}
-                            >
-                                <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                    Unban
-                                </Typography>
-                            </FancyButton>
                         </Stack>
+
+                        {playerBan.manually_unbanned_reason && (
+                            <Stack sx={{ p: "1rem" }}>
+                                <Typography sx={{ ml: "0.3rem", fontWeight: "700", userSelect: "none" }}>Unban Reason:</Typography>
+                                <Typography sx={{ ml: "0.3rem", userSelect: "none" }}>{playerBan.manually_unbanned_reason}</Typography>
+                            </Stack>
+                        )}
                     </ClipThing>
                 )
             })}
