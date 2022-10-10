@@ -35,6 +35,11 @@ declare module "*.json" {
     const content: any
     export default content
 }
+declare module "*.wav" {
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+    const content: any
+    export default content
+}
 
 declare module "*.otf" {
     // eslint-disable-next-line  @typescript-eslint/no-explicit-any
@@ -44,3 +49,5 @@ declare module "*.otf" {
 
 // ant media
 declare module "@antmedia/webrtc_adaptor"
+
+declare module "ovenlivekit"

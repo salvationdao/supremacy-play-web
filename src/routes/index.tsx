@@ -5,6 +5,7 @@ import { BattleEndScreen } from "../components/LeftDrawer/BattleEndScreen/Battle
 import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
 import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
 import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
+
 import { RepairJobs } from "../components/RightDrawer/RepairJobs/RepairJobs"
 import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../constants"
 import { BattleArenaPage, BillingHistoryPage, BillingHistoryItemPage, ClaimPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
