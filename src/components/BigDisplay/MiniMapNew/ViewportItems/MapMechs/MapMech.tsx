@@ -292,7 +292,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
     // Add hotkey to select this mech
     useEffect(() => {
-        if (!label || warMachineFactionID !== factionID) return
+        if (!label) return
         if (participantID > ADD_MINI_MECH_PARTICIPANT_ID) {
             addToHotkeyRecord(RecordType.MiniMapCtrl, label.toString(), onMechClick)
             return
