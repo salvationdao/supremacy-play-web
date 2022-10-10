@@ -9,7 +9,7 @@ const configureViewPort = (width: number) => {
 
 export const MobileContainer = createContainer(() => {
     const { width, height } = useWindowDimensions()
-    const [isNavOpen, setIsNavOpen] = useState(true)
+    const [isNavOpen, setIsNavOpen] = useState(false)
     const allowCloseNav = useRef(true)
     const [additionalTabs, setAdditionalTabs] = useState<SideTabsStruct[]>([])
 
