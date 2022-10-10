@@ -659,6 +659,24 @@ export const calculateCoverDimensions = (dimensions: Dimension, containerDimensi
     return result
 }
 
+// Adjusts dimensions so that the largest side fits in a parent dimension, and keeping aspect ratio
+// E.g 1. dimension: = (100, 40), parent dimension = (80, 80), returns (80, 32).
+// E.g 2. dimension: = (80, 100), parent dimension = (40, 40), returns (20, 40).
+export const calculateContainDimensions = (dimensions: Dimension, containerDimensions: Dimension): Dimension => {
+    const ratio = dimensions.height / dimensions.width
+    const result = { ...dimensions }
+
+    result.width = containerDimensions.width
+    result.height = containerDimensions.width * ratio
+
+    if (result.height > containerDimensions.height) {
+        result.height = containerDimensions.height
+        result.width = containerDimensions.height / ratio
+    }
+
+    return result
+}
+
 export const HEXToVBColor = (hex: string): number => {
     return parseInt(hex.substring(hex.length - 6), 16)
 }

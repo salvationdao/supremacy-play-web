@@ -48,7 +48,7 @@ const propsAreEqual = (prevProps: MapTargetHintAbility, nextProps: MapTargetHint
 
 const TargetHintInner = React.memo(function TargetHintInner({ anyAbility, endTime, cancelable }: MapTargetHintAbility) {
     const {
-        pixiMainItems,
+        pixiMiniMapPixi,
         mapMousePosition,
         gridSizeRef,
         onSelectMapPositionCallbacks,
@@ -69,10 +69,10 @@ const TargetHintInner = React.memo(function TargetHintInner({ anyAbility, endTim
 
     // Initial setup for the mech and show on the map
     useEffect(() => {
-        if (!pixiMainItems) return
+        if (!pixiMiniMapPixi) return
 
         const pixiTargetHint = new PixiMapTargetSelect(
-            pixiMainItems.viewport,
+            pixiMiniMapPixi.viewport,
             mapMousePosition,
             gridSizeRef,
             anyAbility,
@@ -81,13 +81,13 @@ const TargetHintInner = React.memo(function TargetHintInner({ anyAbility, endTim
             cancelable ? onCancel : undefined,
             mapItemMinSize,
         )
-        pixiMainItems.viewport.addChild(pixiTargetHint.viewportRoot)
-        pixiMainItems.app.stage.addChild(pixiTargetHint.stageRoot)
+        pixiMiniMapPixi.viewport.addChild(pixiTargetHint.viewportRoot)
+        pixiMiniMapPixi.app.stage.addChild(pixiTargetHint.stageRoot)
         setPixiTargetHint((prev) => {
             prev?.destroy()
             return pixiTargetHint
         })
-    }, [anyAbility, endTime, pixiMainItems, mapMousePosition, gridSizeRef, onCancel, cancelable, mapItemMinSize])
+    }, [anyAbility, endTime, pixiMiniMapPixi, mapMousePosition, gridSizeRef, onCancel, cancelable, mapItemMinSize])
 
     // Cleanup
     useEffect(() => {
