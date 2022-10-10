@@ -7,7 +7,7 @@ import { getRarityDeets } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { dropShadowEffect, zoomEffect } from "../../../../theme/keyframes"
 import { colors, fonts } from "../../../../theme/theme"
-import { GameAbility, MechAbilityStages, WarMachineState } from "../../../../types"
+import { GameAbility, LocationSelectType, MechAbilityStages, WarMachineState } from "../../../../types"
 import { ClipThing } from "../../../Common/ClipThing"
 import { WarMachineAbilitiesPopoverBT } from "../WarMachineAbilitiesPopover/WarMachineAbilitiesPopoverBT"
 import { WarMachineDestroyedInfoBT } from "../WarMachineDestroyedInfoBT"
@@ -34,7 +34,7 @@ const trainingGameAbilities: GameAbility[] = [
         description: "Support your Syndicate with a well-timed repair.",
         text_colour: "#FFFFFF",
         current_sups: "0",
-        location_select_type: "LOCATION_SELECT",
+        location_select_type: LocationSelectType.LocationSelect,
         identity: "",
         ability_offering_id: "",
     },
@@ -48,7 +48,7 @@ const trainingGameAbilities: GameAbility[] = [
         description: "Consume your remaining shield for an explosive defence mechanism.",
         text_colour: "#000000",
         current_sups: "0",
-        location_select_type: "LOCATION_SELECT",
+        location_select_type: LocationSelectType.LocationSelect,
         identity: "",
         ability_offering_id: "",
     },

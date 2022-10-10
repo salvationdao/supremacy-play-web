@@ -96,10 +96,9 @@ const MoveCommandInner = ({ isAlive, isMoving, hash, smallVersion }: MoveCommand
         if (trainingStage === MechAbilityStages.MoveActionMA) return
         if (!isAlive) return
 
-        setPlayerAbility({
-            ...MechMoveCommandAbilityBT,
-            mechHash: hash,
-        })
+        const aa = { ...MechMoveCommandAbilityBT }
+        aa.ability.mech_hash = hash
+        setPlayerAbility(aa)
 
         setTrainingStage(MechAbilityStages.MoveMA)
     }, [isAlive, hash, setPlayerAbility, setTrainingStage, trainingStage])

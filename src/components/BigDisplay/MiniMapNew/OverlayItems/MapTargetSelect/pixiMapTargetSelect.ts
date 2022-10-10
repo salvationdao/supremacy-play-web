@@ -6,13 +6,12 @@ import { pixiStageZIndexes, pixiViewportZIndexes } from "../../../../../containe
 import { HEXToVBColor } from "../../../../../helpers"
 import { PixiImageIcon } from "../../../../../pixi/pixiImageIcon"
 import { fonts } from "../../../../../theme/theme"
-import { AbilityDetail, BlueprintPlayerAbility, Dimension, GameAbility, GAME_CLIENT_TILE_SIZE, LocationSelectType, Position } from "../../../../../types"
-import { PlayerSupporterAbility } from "../../../../LeftDrawer/BattleArena/BattleAbility/SupporterAbilities"
+import { AbilityDetail, AnyAbility, Dimension, GAME_CLIENT_TILE_SIZE, LocationSelectType, Position } from "../../../../../types"
 
-const getAbilityLabel = (ability: GameAbility | BlueprintPlayerAbility | PlayerSupporterAbility): string => {
+const getAbilityLabel = (anyAbility: AnyAbility): string => {
     let label = "Select a location to use"
 
-    switch (ability.location_select_type) {
+    switch (anyAbility.location_select_type) {
         case LocationSelectType.LocationSelect:
         case LocationSelectType.MechCommand:
             label = "Select a location to deploy"
@@ -31,20 +30,20 @@ const getAbilityLabel = (ability: GameAbility | BlueprintPlayerAbility | PlayerS
             break
     }
 
-    return `${label} ${ability.label}.`
+    return `${label} ${anyAbility.label}.`
 }
 
 export class PixiMapTargetSelect {
     stageRoot: PIXI.Container
     viewportRoot: PIXI.Container
     mouseIcon: PixiImageIcon
-    private readonly colorOverlay: PIXI.Sprite
-    private readonly outerBorder: PIXI.Graphics
-    private readonly bottomContainer: PIXI.Graphics
-    private readonly cancelButton: PIXI.Sprite | undefined
+    private colorOverlay: PIXI.Sprite
+    private outerBorder: PIXI.Graphics
+    private bottomContainer: PIXI.Graphics
+    private cancelButton: PIXI.Sprite | undefined
 
     private viewport: Viewport
-    private ability: GameAbility | BlueprintPlayerAbility | PlayerSupporterAbility
+    private anyAbility: AnyAbility
     private gridSizeRef: React.MutableRefObject<Dimension>
     private mapMousePosition: React.MutableRefObject<Position | undefined>
     private animationFrame: number | undefined
@@ -62,13 +61,14 @@ export class PixiMapTargetSelect {
         viewport: Viewport,
         mapMousePosition: React.MutableRefObject<Position | undefined>,
         gridSizeRef: React.MutableRefObject<Dimension>,
-        ability: GameAbility | BlueprintPlayerAbility | PlayerSupporterAbility,
+        anyAbility: AnyAbility,
         endTime: Date | undefined,
+        onExpired: (() => void) | undefined,
         onCancel: (() => void) | undefined,
         mapItemMinSize: React.MutableRefObject<number>,
     ) {
         this.viewport = viewport
-        this.ability = ability
+        this.anyAbility = anyAbility
         this.gridSizeRef = gridSizeRef
         this.mapMousePosition = mapMousePosition
         const secondsLeft = endTime ? Math.max(Math.round((endTime.getTime() - new Date().getTime()) / 1000), 0) : undefined
@@ -85,7 +85,7 @@ export class PixiMapTargetSelect {
         // Big color overlay
         this.colorOverlay = PIXI.Sprite.from(PIXI.Texture.WHITE)
         this.colorOverlay.alpha = 0.05
-        this.colorOverlay.tint = HEXToVBColor(this.ability.colour)
+        this.colorOverlay.tint = HEXToVBColor(this.anyAbility.colour)
         this.colorOverlay.zIndex = 6
 
         // Border line
@@ -94,10 +94,10 @@ export class PixiMapTargetSelect {
 
         // Label and cancel button at bottom
         this.bottomContainer = new PIXI.Graphics()
-        const label = new PIXI.Text(getAbilityLabel(ability), {
+        const label = new PIXI.Text(getAbilityLabel(anyAbility), {
             fontFamily: fonts.nostromoBlack,
             fontSize: 11,
-            fill: ability.colour,
+            fill: anyAbility.colour,
             lineHeight: 1,
         })
         label.resolution = 4
@@ -120,34 +120,34 @@ export class PixiMapTargetSelect {
 
             setTimeout(() => {
                 this.cancelButton?.pivot.set(this.cancelButton.width, this.cancelButton.height / 2)
-            }, 800)
+            }, 400)
         }
 
         // Mouse icon
         this.mouseIcon = new PixiImageIcon(
-            ability.image_url,
+            anyAbility.image_url,
             Math.max(gridSizeRef.current.width, mapItemMinSize.current) / 1.6,
             Math.max(gridSizeRef.current.height, mapItemMinSize.current) / 1.6,
-            ability.colour,
+            anyAbility.colour,
             true,
         )
         if (secondsLeft) {
-            this.mouseIcon.startCountdown(secondsLeft, 1)
+            this.mouseIcon.startCountdown(secondsLeft, 1, onExpired)
         }
 
         // Start and end coord icons, made invisible
         this.startCoord = new PixiImageIcon(
-            ability.image_url,
+            anyAbility.image_url,
             Math.max(gridSizeRef.current.width, mapItemMinSize.current),
             Math.max(gridSizeRef.current.height, mapItemMinSize.current),
-            ability.colour,
+            anyAbility.colour,
             true,
         )
         this.endCoord = new PixiImageIcon(
-            ability.image_url,
+            anyAbility.image_url,
             Math.max(gridSizeRef.current.width, mapItemMinSize.current),
             Math.max(gridSizeRef.current.height, mapItemMinSize.current),
-            ability.colour,
+            anyAbility.colour,
             true,
         )
         this.startEndLine = new PIXI.Graphics()
@@ -174,6 +174,7 @@ export class PixiMapTargetSelect {
 
     destroy() {
         if (this.animationFrame) cancelAnimationFrame(this.animationFrame)
+        this.resetCountdown()
         this.mouseIcon.resetCountdown()
         this.viewportRoot.destroy()
         this.stageRoot.destroy()
@@ -200,14 +201,14 @@ export class PixiMapTargetSelect {
 
             // Line graphics
             this.outerBorder.clear()
-            this.outerBorder.lineStyle(4, HEXToVBColor(this.ability.colour))
+            this.outerBorder.lineStyle(4, HEXToVBColor(this.anyAbility.colour))
             this.outerBorder.drawRect(0, 0, this.viewport.screenWidth, this.viewport.screenHeight)
 
             // Draw a line to connect start and end coord if both coord are populated or its line select
             this.startEndLine.clear()
             const endPoint = this.mouseIcon.root.visible ? this.mouseIcon.root : this.endCoord.root.visible ? this.endCoord.root : undefined
             if (this.startCoord.root.visible && endPoint) {
-                this.startEndLine.lineStyle(this.gridSizeRef.current.width / 4, HEXToVBColor(this.ability.colour))
+                this.startEndLine.lineStyle(this.gridSizeRef.current.width / 4, HEXToVBColor(this.anyAbility.colour))
                 this.startEndLine.moveTo(this.startCoord.root.x, this.startCoord.root.y)
                 this.startEndLine.lineTo(endPoint.x, endPoint.y)
             }

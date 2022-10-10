@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from "react"
 import { useMiniMapPixi } from "../../../../../containers"
-import { PlayerAbility } from "../../../../../types"
+import { AnyAbility } from "../../../../../types"
 import { PixiMapScale } from "./pixiMapScale"
-import { PlayerSupporterAbility } from "../../../../LeftDrawer/BattleArena/BattleAbility/SupporterAbilities"
 
 export const MapScale = React.memo(function MapScale() {
-    const { pixiMainItems, gridSizeRef, onAbilityUseCallbacks, mapMousePosition } = useMiniMapPixi()
+    const { pixiMiniMapPixi, gridSizeRef, onAnyAbilityUseCallbacks, mapMousePosition } = useMiniMapPixi()
     const [pixiMapScale, setPixiMapScale] = useState<PixiMapScale>()
 
     // Initial setup for the mech and show on the map
     useEffect(() => {
-        if (!pixiMainItems) return
-        const pixiMapScale = new PixiMapScale(pixiMainItems.viewport, gridSizeRef, mapMousePosition)
-        pixiMainItems.app.stage.addChild(pixiMapScale.root)
+        if (!pixiMiniMapPixi) return
+        const pixiMapScale = new PixiMapScale(pixiMiniMapPixi.viewport, gridSizeRef, mapMousePosition)
+        pixiMiniMapPixi.app.stage.addChild(pixiMapScale.root)
         setPixiMapScale(pixiMapScale)
-    }, [gridSizeRef, pixiMainItems, mapMousePosition])
+    }, [gridSizeRef, pixiMiniMapPixi, mapMousePosition])
 
     // Cleanup
     useEffect(() => {
@@ -26,10 +25,10 @@ export const MapScale = React.memo(function MapScale() {
     useEffect(() => {
         if (!pixiMapScale) return
 
-        onAbilityUseCallbacks.current[`map-scale`] = (pa: PlayerAbility | undefined, sa: PlayerSupporterAbility | undefined) => {
-            pixiMapScale.updateVisibility(!(pa || sa))
+        onAnyAbilityUseCallbacks.current[`map-scale`] = (aa: AnyAbility | undefined) => {
+            pixiMapScale.updateVisibility(!aa)
         }
-    }, [onAbilityUseCallbacks, pixiMapScale])
+    }, [onAnyAbilityUseCallbacks, pixiMapScale])
 
     return null
 })

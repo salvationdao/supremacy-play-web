@@ -19,19 +19,19 @@ export const HiveStatus = React.memo(function HiveStatus({ hiveStatus }: HiveSta
 })
 
 const HiveStatusInner = React.memo(function HiveStatusInner({ hiveStatus }: HiveStatusProps) {
-    const { pixiMainItems, clientPositionToViewportPosition, mapScalingRef } = useMiniMapPixi()
+    const { pixiMiniMapPixi, clientPositionToViewportPosition, mapScalingRef } = useMiniMapPixi()
     const [pixiHiveStatus, setPixiHiveStatus] = useState<PixiHiveStatus>()
 
     // Initial setup
     useEffect(() => {
-        if (!pixiMainItems) return
+        if (!pixiMiniMapPixi) return
         const pixiHiveStatus = new PixiHiveStatus(hiveStatus, clientPositionToViewportPosition, mapScalingRef)
-        pixiMainItems.viewport.addChild(pixiHiveStatus.root)
+        pixiMiniMapPixi.viewport.addChild(pixiHiveStatus.root)
         setPixiHiveStatus((prev) => {
             prev?.destroy()
             return pixiHiveStatus
         })
-    }, [pixiMainItems, clientPositionToViewportPosition, hiveStatus, mapScalingRef])
+    }, [pixiMiniMapPixi, clientPositionToViewportPosition, hiveStatus, mapScalingRef])
 
     // Cleanup
     useEffect(() => {

@@ -7,11 +7,12 @@ import { useGame, useUI } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { LEFT_DRAWER_MAP } from "../../../routes"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
+import { BattleState } from "../../../types"
 import { SectionMechRewards } from "./Sections/SectionMechRewards"
 
 export const BattleEndScreen = () => {
     const theme = useTheme()
-    const { map, battleEndDetail } = useGame()
+    const { battleState, battleEndDetail } = useGame()
     const { hasModalsOpen, setLeftDrawerActiveTabID } = useUI()
     // When user first loads the web page and gets battle end, we want to prevent changing tabs
     const skippedFirstIteration = useRef(false)
@@ -19,9 +20,8 @@ export const BattleEndScreen = () => {
     // New game started, so close the panel
     useEffect(() => {
         if (hasModalsOpen()) return
-
-        if (map) setLeftDrawerActiveTabID((prev) => (prev ? LEFT_DRAWER_MAP.battle_arena?.id : prev))
-    }, [hasModalsOpen, map, setLeftDrawerActiveTabID])
+        if (battleState === BattleState.IntroState) setLeftDrawerActiveTabID((prev) => (prev ? LEFT_DRAWER_MAP.battle_arena?.id : prev))
+    }, [hasModalsOpen, battleState, setLeftDrawerActiveTabID])
 
     // Game ends, show the panel
     useEffect(() => {
