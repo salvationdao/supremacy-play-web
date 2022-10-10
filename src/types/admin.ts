@@ -6,6 +6,7 @@ export interface GetUserResp {
     user: User
     user_assets: AdminGetUserAsset | undefined
     ban_history: AdminPlayerBan[] | undefined
+    active_ban: AdminPlayerBan[] | undefined
     recent_chat_history: AdminChatView[] | undefined
     related_accounts: User[]
 }

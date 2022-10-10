@@ -7,7 +7,7 @@ import { useToggle } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { Faction, RoleType, User } from "../../../types"
+import { Faction, MechBasic, RoleType, User } from "../../../types"
 import { AdminPlayerBan, GetUserResp } from "../../../types/admin"
 import { FancyButton } from "../../Common/FancyButton"
 import { PageHeader } from "../../Common/PageHeader"
@@ -19,6 +19,7 @@ import { AdminBanModal } from "./AdminBanModal"
 import { AdminUnbanModal } from "./AdminUnbanModal"
 import { ClipThing } from "../../Common/ClipThing"
 import { AdminUserAsset } from "./AdminUserAsset"
+import { ActiveBanPanel } from "./ActiveBanPanel"
 
 export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: (newQuery: { [p: string]: string | undefined }) => void }) => {
     const [userData, setUserData] = useState<GetUserResp>()
@@ -32,6 +33,7 @@ export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: 
     const [unbanModalOpen, setUnbanModalOpen] = useState<boolean>(false)
     const [playerUnban, setPlayerUnban] = useState<AdminPlayerBan>()
     const [currentValue, setCurrentValue] = useState<string>("PLAYER-INFO")
+    const [playerUnbanIDs, setPlayerUnbanIDs] = useState<string[]>([])
 
     useEffect(() => {
         ;(async () => {
@@ -55,6 +57,20 @@ export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: 
 
     const handleChange = useCallback((event: SyntheticEvent, newValue: string) => {
         setCurrentValue(newValue)
+    }, [])
+
+    const toggleSelected = useCallback((playerBan: AdminPlayerBan) => {
+        setPlayerUnbanIDs((prev) => {
+            const newArray = [...prev]
+            const isAlreadySelected = prev.findIndex((s) => s === playerBan.id)
+            if (isAlreadySelected >= 0) {
+                newArray.splice(isAlreadySelected, 1)
+            } else {
+                newArray.push(playerBan.id)
+            }
+
+            return newArray
+        })
     }, [])
 
     const fetchPlayer = useCallback(
@@ -103,6 +119,9 @@ export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: 
             playerUnban={playerUnban}
             handleChange={handleChange}
             currentValue={currentValue}
+            playerUnbanIDs={playerUnbanIDs}
+            toggleSelected={toggleSelected}
+            setPlayerUnbanIDs={setPlayerUnbanIDs}
         />
     )
 }
@@ -123,6 +142,9 @@ const PlayerProfileInner = ({
     playerUnban,
     handleChange,
     currentValue,
+    setPlayerUnbanIDs,
+    playerUnbanIDs,
+    toggleSelected,
 }: {
     userData: GetUserResp
     updateQuery: (newQuery: { [p: string]: string | undefined }) => void
@@ -139,6 +161,9 @@ const PlayerProfileInner = ({
     playerUnban: AdminPlayerBan | undefined
     handleChange: (event: SyntheticEvent, newValue: string) => void
     currentValue: string
+    setPlayerUnbanIDs: (value: ((prevState: string[]) => string[]) | string[]) => void
+    playerUnbanIDs: string[]
+    toggleSelected: (playerBan: AdminPlayerBan) => void
 }) => {
     const theme = useTheme()
 
@@ -223,7 +248,46 @@ const PlayerProfileInner = ({
                     </PlayerProfileCard>
                 </Stack>
                 <Stack spacing="2rem" sx={{ width: "100%", height: "100%" }} flex="2">
-                    <PlayerProfileCard faction={faction} title="Recent Ban History">
+                    <PlayerProfileCard faction={faction} title="Active Bans" sx={{ flex: "1" }}>
+                        {userData.active_ban ? (
+                            <Box
+                                sx={{
+                                    flex: 1,
+                                    overflowY: "auto",
+                                    overflowX: "hidden",
+                                    direction: "ltr",
+                                    mr: ".4rem",
+                                    my: ".3rem",
+                                    "::-webkit-scrollbar": {
+                                        width: ".4rem",
+                                    },
+                                    "::-webkit-scrollbar-track": {
+                                        background: "#FFFFFF15",
+                                        borderRadius: 3,
+                                    },
+                                    "::-webkit-scrollbar-thumb": {
+                                        background: faction.primary_color,
+                                        borderRadius: 3,
+                                    },
+                                }}
+                            >
+                                <Stack sx={{ height: 0 }} flexWrap={"wrap"} direction={"row"}>
+                                    <ActiveBanPanel
+                                        faction={faction}
+                                        playerBans={userData.active_ban}
+                                        playerUnBanIDs={playerUnbanIDs}
+                                        toggleSelected={toggleSelected}
+                                    />
+                                </Stack>
+                            </Box>
+                        ) : (
+                            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                                <Typography>No Recent Ban History</Typography>
+                            </Stack>
+                        )}
+                    </PlayerProfileCard>
+
+                    <PlayerProfileCard faction={faction} title="Recent Ban History" sx={{ flex: "2" }}>
                         {userData.ban_history ? (
                             <Box
                                 sx={{
@@ -265,17 +329,20 @@ const PlayerProfileInner = ({
             </Stack>
         )
     }, [
-        faction,
-        fetchPlayer,
         isLoading,
         loadError,
-        setPlayerUnban,
-        setUnbanModalOpen,
-        theme.factionTheme.primary,
-        userData.ban_history,
-        userData.recent_chat_history,
+        faction,
         userData.related_accounts,
+        userData.recent_chat_history,
         userData.user,
+        userData.active_ban,
+        userData.ban_history,
+        fetchPlayer,
+        playerUnbanIDs,
+        toggleSelected,
+        setUnbanModalOpen,
+        setPlayerUnban,
+        theme.factionTheme.primary,
     ])
 
     return (
