@@ -367,6 +367,7 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
                             sx={{
                                 fontFamily: fonts.nostromoBlack,
                                 fontSize: "3rem",
+                                animation: `${pulseEffect} 2s infinite`,
                             }}
                         >
                             Loading Mech…
@@ -408,6 +409,7 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
                         position: "absolute",
                         left: "5rem",
                         bottom: "5rem",
+                        pointerEvents: "none",
                     }}
                 >
                     <ClipThing
