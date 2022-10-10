@@ -308,7 +308,7 @@ const CountButton = ({ factionID, count, marginLeft, zIndexAdded }: { factionID:
     )
 }
 
-const OptInButton = ({ battleLobbyID, factionID }: { battleLobbyID: string | undefined; factionID: string }) => {
+export const OptInButton = ({ battleLobbyID, factionID, accessCode }: { battleLobbyID: string | undefined; factionID: string; accessCode?: string }) => {
     const { border } = getCardStyles(factionID)
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const { newSnackbarMessage } = useGlobalNotifications()
@@ -316,13 +316,13 @@ const OptInButton = ({ battleLobbyID, factionID }: { battleLobbyID: string | und
     const optIn = useCallback(async () => {
         if (!battleLobbyID) return
         try {
-            await send(GameServerKeys.JoinBattleLobbySupporter, { battle_lobby_id: battleLobbyID })
+            await send(GameServerKeys.JoinBattleLobbySupporter, { battle_lobby_id: battleLobbyID, access_code: accessCode })
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to opt in to support battle."
             console.error(message)
             newSnackbarMessage(message, "error")
         }
-    }, [send, battleLobbyID, newSnackbarMessage])
+    }, [send, battleLobbyID, newSnackbarMessage, accessCode])
 
     return (
         <Box
