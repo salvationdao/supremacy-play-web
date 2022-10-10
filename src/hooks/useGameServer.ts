@@ -27,8 +27,6 @@ export const useGameServerCommands = (URI: string) => {
 
 export function useGameServerSubscriptionSecuredUser<T = DataType>({ URI, key, batchURI, ready = true }: SubProps, callback?: (payload: T) => void) {
     const { userID } = useAuth()
-    // console.log("this is uri  ", `/secure/user/${userID}${URI}`)
-
     return useSubscription({ URI: `/secure/user/${userID}${URI}`, key, host: GAME_SERVER_HOSTNAME, batchURI: batchURI, ready: !!userID && ready }, callback)
 }
 

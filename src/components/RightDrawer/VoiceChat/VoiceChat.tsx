@@ -255,7 +255,6 @@ export const VoiceChat = () => {
                 })
                 .then((d: any) => {
                     const audio = d.getAudioTracks()[0]
-                    console.log("d", audio)
                     audio.enabled = false
                 })
         }
@@ -332,7 +331,7 @@ export const VoiceChatInner = ({
     onVoteKick,
     connected,
     listenStreams,
-    onMuteMic,
+    // onMuteMic,
 
     hasFactionCommander,
 }: {
@@ -424,9 +423,7 @@ export const VoiceChatInner = ({
                                         sx: { position: "relative" },
                                     }}
                                     sx={{ px: "1rem", pt: 0, pb: ".1rem", minWidth: "7rem", color: "#FFFFFF" }}
-                                    onClick={() => {
-                                        onConnect()
-                                    }}
+                                    onClick={onConnect}
                                 >
                                     <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBlack }}>
                                         Connect
@@ -508,31 +505,7 @@ export const VoiceChatInner = ({
                         imageUrl={faction.logo_url}
                         {...StyledImageText}
                     />
-                    {/* <Stack
-                        sx={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                        }}
-                    >
-                        <IconButton
-                            size="small"
-                            onClick={() => {
-                                onMuteMic()
-                            }}
-                            sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}
-                        >
-                            <SvgMicrophone size="2rem" sx={{ pb: 0 }} />
-                        </IconButton>
-                        <IconButton
-                            size="small"
-                            onClick={() => {
-                                // TODO implement deafen
-                            }}
-                            sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}
-                        >
-                            <SvgHeadphone size="2rem" sx={{ pb: 0 }} />
-                        </IconButton>
-                    </Stack> */}
+                    {/* TODO: implement self mute */}
                 </Stack>
             </Stack>
         </Stack>
@@ -638,7 +611,6 @@ const PlayerItem = ({
     }, [currentUser.gid, voiceStream.user_gid, voiceStream.is_faction_commander, voiceStream.current_kick_vote, onVoteKick, confirmModal, isSpeaker])
 
     const onMute = () => {
-        // get oven player via id
         if (player) {
             if (!isMute) {
                 setVolume(0)
