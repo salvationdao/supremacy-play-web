@@ -1,7 +1,7 @@
 import { Box, Button, IconButton, Popover, Slider, Stack, Typography } from "@mui/material"
 import OvenPlayer from "ovenplayer"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { SvgHeadphone, SvgMicrophone, SvgVolume, SvgVolumeMute } from "../../../assets"
+import { SvgVolume, SvgVolumeMute } from "../../../assets"
 import { useArena, useAuth, useGlobalNotifications, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { acronym, shadeColor } from "../../../helpers"
@@ -246,9 +246,18 @@ export const VoiceChat = () => {
         setConnected(false)
     }
 
-    const muteMic = () => {
+    const onMuteMic = () => {
         if (ovenLiveKitInstance) {
-            console.log("this is oven", ovenLiveKitInstance)
+            ovenLiveKitInstance.current
+                .getUserMedia({
+                    video: false,
+                    audio: true,
+                })
+                .then((d: any) => {
+                    const audio = d.getAudioTracks()[0]
+                    console.log("d", audio)
+                    audio.enabled = false
+                })
         }
     }
 
@@ -282,6 +291,7 @@ export const VoiceChat = () => {
                             hasFactionCommander={hasFactionCommander}
                             connected={connected}
                             onDisconnect={onDisconnect}
+                            onMuteMic={onMuteMic}
                             faction={getFaction(user.faction_id)}
                             listenStreams={listenStreams || []}
                             onConnect={() => onConnect(listenStreams || [], true)}
@@ -322,6 +332,7 @@ export const VoiceChatInner = ({
     onVoteKick,
     connected,
     listenStreams,
+    onMuteMic,
 
     hasFactionCommander,
 }: {
@@ -330,6 +341,8 @@ export const VoiceChatInner = ({
     onJoinFactionCommander: () => void
     onLeaveFactionCommander: () => void
     onVoteKick: () => void
+
+    onMuteMic: () => void
 
     connected: boolean
     listenStreams: VoiceStream[]
@@ -495,7 +508,7 @@ export const VoiceChatInner = ({
                         imageUrl={faction.logo_url}
                         {...StyledImageText}
                     />
-                    <Stack
+                    {/* <Stack
                         sx={{
                             flexDirection: "row",
                             alignItems: "center",
@@ -504,7 +517,7 @@ export const VoiceChatInner = ({
                         <IconButton
                             size="small"
                             onClick={() => {
-                                // TODO implement self mute/unmute
+                                onMuteMic()
                             }}
                             sx={{ opacity: 0.5, transition: "all .2s", ":hover": { opacity: 1 } }}
                         >
@@ -519,7 +532,7 @@ export const VoiceChatInner = ({
                         >
                             <SvgHeadphone size="2rem" sx={{ pb: 0 }} />
                         </IconButton>
-                    </Stack>
+                    </Stack> */}
                 </Stack>
             </Stack>
         </Stack>
@@ -604,6 +617,7 @@ const PlayerItem = ({
                 </FancyButton>
                 {confirmModal === ConfirmModalKeys.VoteKickFactionCommander && (
                     <ConfirmModal
+                        width="55rem"
                         title="VOTE TO KICK FACTION COMMANDER"
                         onConfirm={() => {
                             onVoteKick()
@@ -611,7 +625,10 @@ const PlayerItem = ({
                         }}
                         onClose={() => setConfirmModal(undefined)}
                     >
-                        <></>
+                        <Typography variant="h6">
+                            If the majority of mech owners vote to kick the faction commander, the faction commander will be banned from being faction commander
+                            again for 24hrs
+                        </Typography>
                     </ConfirmModal>
                 )}
             </>
@@ -772,7 +789,12 @@ const FactionCommanderJoinButton = ({ onJoinFactionCommander }: { onJoinFactionC
                     }}
                     onClose={() => setConfirmModal(false)}
                 >
-                    <></>
+                    <Typography variant="h6">
+                        Becoming the Faction Commander will allow you to speak in the voice chat along side the mech opperators.
+                        <br />
+                        The active mech operators will have the choice to: vote to kick you as Faction Commander, which will result in a 24hr ban from becoming
+                        Faction Commander again.
+                    </Typography>
                 </ConfirmModal>
             )}
         </>
