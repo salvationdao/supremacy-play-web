@@ -316,7 +316,6 @@ export const OptInButton = ({ battleLobbyID, factionID, accessCode }: { battleLo
     const optIn = useCallback(async () => {
         if (!battleLobbyID) return
         try {
-            console.log(accessCode)
             await send(GameServerKeys.JoinBattleLobbySupporter, { battle_lobby_id: battleLobbyID, access_code: accessCode })
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to opt in to support battle."
