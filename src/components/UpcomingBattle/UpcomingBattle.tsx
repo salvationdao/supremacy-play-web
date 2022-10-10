@@ -42,6 +42,61 @@ export const UpcomingBattle = ({ nextBattle }: { nextBattle: BattleLobby }) => {
             }
         })
 
+        // below is to make users own faction be on the top
+        const cardGroups: JSX.Element[] = new Array<JSX.Element>(1)
+
+        for (const fact in FactionIDs) {
+            switch (FactionIDs[fact as keyof typeof FactionIDs]) {
+                case FactionIDs.ZHI: {
+                    const element = (
+                        <CardGroup
+                            mechs={zaiMechs}
+                            factionID={FactionIDs.ZHI}
+                            factionLabel={"Zaibatsu Heavy Industries"}
+                            usersFactionID={usersFactionID}
+                            battleLobbyID={nextBattle.id}
+                            optedInSupporters={nextBattle.opted_in_zai_supporters || []}
+                            selectedSupporters={nextBattle.selected_zai_supporters || []}
+                        />
+                    )
+                    if (usersFactionID === FactionIDs.ZHI) cardGroups[0] = element
+                    else cardGroups.push(element)
+                    break
+                }
+                case FactionIDs.BC: {
+                    const element = (
+                        <CardGroup
+                            mechs={bcMechs}
+                            factionID={FactionIDs.BC}
+                            factionLabel={"Boston Cybernetics"}
+                            usersFactionID={usersFactionID}
+                            battleLobbyID={nextBattle.id}
+                            optedInSupporters={nextBattle.opted_in_bc_supporters || []}
+                            selectedSupporters={nextBattle.selected_bc_supporters || []}
+                        />
+                    )
+                    if (usersFactionID === FactionIDs.BC) cardGroups[0] = element
+                    else cardGroups.push(element)
+                    break
+                }
+                case FactionIDs.RM: {
+                    const element = (
+                        <CardGroup
+                            mechs={rmMechs}
+                            factionID={FactionIDs.RM}
+                            factionLabel={"Red Mountain Offworld Mining Corporation"}
+                            usersFactionID={usersFactionID}
+                            battleLobbyID={nextBattle.id}
+                            optedInSupporters={nextBattle.opted_in_rm_supporters || []}
+                            selectedSupporters={nextBattle.selected_rm_supporters || []}
+                        />
+                    )
+                    if (usersFactionID === FactionIDs.RM) cardGroups[0] = element
+                    else cardGroups.push(element)
+                }
+            }
+        }
+
         return (
             <Box
                 sx={{
@@ -51,40 +106,13 @@ export const UpcomingBattle = ({ nextBattle }: { nextBattle: BattleLobby }) => {
                     flex: 1,
                     height: "100%",
                     width: "100%",
-                    // maxHeight: "600px",
                     maxWidth: "95%",
                     minWidth: "300px",
                     overflow: "auto",
                     gap: "1rem",
                 }}
             >
-                <CardGroup
-                    mechs={bcMechs}
-                    factionID={FactionIDs.BC}
-                    factionLabel={"Boston Cybernetics"}
-                    usersFactionID={usersFactionID}
-                    battleLobbyID={nextBattle.id}
-                    optedInSupporters={nextBattle.opted_in_bc_supporters || []}
-                    selectedSupporters={nextBattle.selected_bc_supporters || []}
-                />
-                <CardGroup
-                    mechs={zaiMechs}
-                    factionID={FactionIDs.ZHI}
-                    factionLabel={"Zaibatsu Heavy Industries"}
-                    usersFactionID={usersFactionID}
-                    battleLobbyID={nextBattle.id}
-                    optedInSupporters={nextBattle.opted_in_zai_supporters || []}
-                    selectedSupporters={nextBattle.selected_zai_supporters || []}
-                />
-                <CardGroup
-                    mechs={rmMechs}
-                    factionID={FactionIDs.RM}
-                    factionLabel={"Red Mountain Offworld Mining Corporation"}
-                    usersFactionID={usersFactionID}
-                    battleLobbyID={nextBattle.id}
-                    optedInSupporters={nextBattle.opted_in_rm_supporters || []}
-                    selectedSupporters={nextBattle.selected_rm_supporters || []}
-                />
+                {cardGroups}
             </Box>
         )
     }, [nextBattle, usersFactionID])
@@ -139,6 +167,7 @@ const CardGroup = ({
             sx={{
                 display: "flex",
                 flexDirection: "column",
+                justifyContent: "center",
                 flex: 1,
                 width: "100%",
                 maxWidth: "800px",
@@ -308,7 +337,7 @@ const CountButton = ({ factionID, count, marginLeft, zIndexAdded }: { factionID:
     )
 }
 
-const OptInButton = ({ battleLobbyID, factionID }: { battleLobbyID: string | undefined; factionID: string }) => {
+export const OptInButton = ({ battleLobbyID, factionID, accessCode }: { battleLobbyID: string | undefined; factionID: string; accessCode?: string }) => {
     const { border } = getCardStyles(factionID)
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const { newSnackbarMessage } = useGlobalNotifications()
@@ -316,13 +345,13 @@ const OptInButton = ({ battleLobbyID, factionID }: { battleLobbyID: string | und
     const optIn = useCallback(async () => {
         if (!battleLobbyID) return
         try {
-            await send(GameServerKeys.JoinBattleLobbySupporter, { battle_lobby_id: battleLobbyID })
+            await send(GameServerKeys.JoinBattleLobbySupporter, { battle_lobby_id: battleLobbyID, access_code: accessCode })
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to opt in to support battle."
             console.error(message)
             newSnackbarMessage(message, "error")
         }
-    }, [send, battleLobbyID, newSnackbarMessage])
+    }, [send, battleLobbyID, newSnackbarMessage, accessCode])
 
     return (
         <Box

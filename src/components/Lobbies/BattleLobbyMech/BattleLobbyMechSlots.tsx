@@ -9,7 +9,7 @@ import { GameServerKeys } from "../../../keys"
 import { scaleUpKeyframes } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { Faction } from "../../../types"
-import { BattleLobbiesMech } from "../../../types/battle_queue"
+import { BattleLobbiesMech, BattleLobbySupporter } from "../../../types/battle_queue"
 import { ConfirmModal } from "../../Common/ConfirmModal"
 import { FancyButton } from "../../Common/FancyButton"
 import { WeaponSlot } from "../Common/weaponSlot"
@@ -19,6 +19,7 @@ import { CropMaxLengthText } from "../../../theme/styles"
 export interface BattleLobbyFaction {
     faction: Faction
     mechSlots: (BattleLobbiesMech | null)[] // null represents empty slot
+    supporterSlots: BattleLobbySupporter[] // null represents empty slot
 }
 
 interface MyFactionLobbySlotsProps {
