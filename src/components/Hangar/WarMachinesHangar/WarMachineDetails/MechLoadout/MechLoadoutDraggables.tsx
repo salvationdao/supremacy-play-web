@@ -12,12 +12,12 @@ import { GetSubmodelsRequest, GetSubmodelsResponse } from "../../../SubmodelHang
 import { GetWeaponsRequest } from "../../../WeaponsHangar/WeaponsHangar"
 import { MechLoadoutItemDraggable, MechLoadoutItemSkeleton } from "../../Common/MechLoadoutItem"
 
-export type CustomDragEvent = (parentRef: HTMLDivElement, clientRect: DOMRect) => void
-export type CustomDragEventWithType = (parentRef: HTMLDivElement, clientRect: DOMRect, type: AssetItemType) => void
-export type DragStartEvent = (parentRef: HTMLDivElement) => void
-export type DragStartEventWithType = (parentRef: HTMLDivElement, type: AssetItemType) => void
-export type DragStopEvent = (parentRef: HTMLDivElement, clientRect: DOMRect) => void
-export type DragStopEventWithType = (parentRef: HTMLDivElement, clientRect: DOMRect, type: AssetItemType, item: Weapon | PowerCore | Utility | MechSkin) => void
+export type CustomDragEvent = (clientRect: DOMRect) => void
+export type CustomDragEventWithType = (clientRect: DOMRect, type: AssetItemType) => void
+export type DragStartEvent = () => void
+export type DragStartEventWithType = (type: AssetItemType) => void
+export type DragStopEvent = (clientRect: DOMRect) => void
+export type DragStopEventWithType = (clientRect: DOMRect, type: AssetItemType, item: Weapon | PowerCore | Utility | MechSkin) => void
 
 export type DraggablesHandle = {
     handleMechLoadoutUpdated: () => void
@@ -162,14 +162,14 @@ export const MechLoadoutDraggables = ({ draggablesRef, onDrag, onDragStart, onDr
         return weapons.map((w) => (
             <MechLoadoutDraggable
                 key={w.id}
-                onDrag={(parentEl, rect) => {
-                    onDrag(parentEl, rect, AssetItemType.Weapon)
+                onDrag={(rect) => {
+                    onDrag(rect, AssetItemType.Weapon)
                 }}
-                onDragStart={(parentEl) => {
-                    onDragStart(parentEl, AssetItemType.Weapon)
+                onDragStart={() => {
+                    onDragStart(AssetItemType.Weapon)
                 }}
-                onDragStop={(parentEl, rect) => {
-                    onDragStop(parentEl, rect, AssetItemType.Weapon, w)
+                onDragStop={(rect) => {
+                    onDragStop(rect, AssetItemType.Weapon, w)
                 }}
                 renderDraggable={(ref) => (
                     <MechLoadoutItemDraggable
@@ -218,14 +218,14 @@ export const MechLoadoutDraggables = ({ draggablesRef, onDrag, onDragStart, onDr
         return mechSkins.map((ms) => (
             <MechLoadoutDraggable
                 key={ms.id}
-                onDrag={(parentEl, rect) => {
-                    onDrag(parentEl, rect, AssetItemType.MechSkin)
+                onDrag={(rect) => {
+                    onDrag(rect, AssetItemType.MechSkin)
                 }}
-                onDragStart={(parentEl) => {
-                    onDragStart(parentEl, AssetItemType.MechSkin)
+                onDragStart={() => {
+                    onDragStart(AssetItemType.MechSkin)
                 }}
-                onDragStop={(parentEl, rect) => {
-                    onDragStop(parentEl, rect, AssetItemType.MechSkin, ms)
+                onDragStop={(rect) => {
+                    onDragStop(rect, AssetItemType.MechSkin, ms)
                 }}
                 renderDraggable={(ref) => (
                     <MechLoadoutItemDraggable
@@ -333,12 +333,10 @@ interface MechLoadoutDraggableProps {
 }
 
 const MechLoadoutDraggable = ({ renderDraggable, onDrag, onDragStart, onDragStop }: MechLoadoutDraggableProps) => {
-    const transformableRef = useRef<HTMLDivElement>(null)
     const draggableRef = useRef<HTMLDivElement>(null)
 
     return (
         <Box
-            ref={transformableRef}
             sx={{
                 "&:hover": {
                     transition: "transform .1s ease-out",
@@ -355,16 +353,16 @@ const MechLoadoutDraggable = ({ renderDraggable, onDrag, onDragStart, onDragStop
             <Draggable
                 position={{ x: 0, y: 0 }}
                 onDrag={() => {
-                    if (!draggableRef.current || !transformableRef.current) return
-                    onDrag(transformableRef.current, draggableRef.current.getBoundingClientRect())
+                    if (!draggableRef.current) return
+                    onDrag(draggableRef.current.getBoundingClientRect())
                 }}
                 onStart={() => {
-                    if (!draggableRef.current || !transformableRef.current) return
-                    onDragStart(transformableRef.current)
+                    if (!draggableRef.current) return
+                    onDragStart()
                 }}
                 onStop={() => {
-                    if (!draggableRef.current || !transformableRef.current) return
-                    onDragStop(transformableRef.current, draggableRef.current.getBoundingClientRect())
+                    if (!draggableRef.current) return
+                    onDragStop(draggableRef.current.getBoundingClientRect())
                 }}
             >
                 {renderDraggable(draggableRef)}

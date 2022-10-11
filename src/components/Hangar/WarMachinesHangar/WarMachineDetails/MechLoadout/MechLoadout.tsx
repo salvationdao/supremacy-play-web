@@ -332,7 +332,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     const mechSkinItemRef = useRef<HTMLDivElement>(null)
     const weaponItemRefs = useRef<Map<number, HTMLDivElement | null>>(new Map()) // Map<slot_number, Element ref>
     const onItemDrag = useCallback<CustomDragEventWithType>(
-        (_el, rect, type) => {
+        (rect, type) => {
             if (loadoutDisabled) return
             switch (type) {
                 case AssetItemType.Weapon:
@@ -375,7 +375,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         [chassis_skin?.locked_to_mech, loadoutDisabled, weapons_map],
     )
     const onItemDragStart = useCallback<DragStartEventWithType>(
-        (el, type) => {
+        (type) => {
             if (loadoutDisabled) return
             setIsDragging(true)
 
@@ -417,7 +417,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         [chassis_skin?.locked_to_mech, loadoutDisabled, weapons_map],
     )
     const onItemDragStop = useCallback<DragStopEventWithType>(
-        (el, rect, type, item) => {
+        (rect, type, item) => {
             if (loadoutDisabled) return
             switch (type) {
                 case AssetItemType.Weapon:
