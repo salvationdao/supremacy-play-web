@@ -39,7 +39,7 @@ export const AdminBanModal = ({
     const sendBanCommand = useCallback(() => {
         ;(async () => {
             try {
-                const resp = await send<
+                await send<
                     boolean,
                     {
                         gid: number[]
@@ -69,7 +69,7 @@ export const AdminBanModal = ({
                 console.error(e)
             }
         })()
-    }, [banDurationDays, banDurationHours, banReason, chatBan, fetchPlayer, locationSelectBan, onClose, send, supContributeBan, user.gid])
+    }, [banDurationDays, banDurationHours, banReason, chatBan, fetchPlayer, isShadowBan, locationSelectBan, onClose, send, supContributeBan, user.gid])
 
     return (
         <AdminBanModalInner
@@ -308,6 +308,11 @@ const AdminBanModalInner = ({
                                     value={banDurationDays === 0 ? "" : banDurationDays.toString()}
                                     placeholder="Ban duration in days"
                                     onChange={(e) => {
+                                        if (isNaN(parseInt(e.target.value))) {
+                                            setDurationDays(0)
+                                            return
+                                        }
+
                                         setDurationDays(parseInt(e.target.value))
                                     }}
                                     type="number"
@@ -386,6 +391,7 @@ const AdminBanModalInner = ({
                             }}
                             sx={{ px: "1.6rem", py: ".3rem", color: faction.secondary_color }}
                             onClick={sendBanCommand}
+                            disabled={!locationSelectBan && !chatBan && !supContributeBan}
                         >
                             <Typography
                                 variant="caption"

@@ -1,15 +1,15 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { dateFormatter } from "../../../helpers"
-import { colors, fonts } from "../../../theme/theme"
+import { colors } from "../../../theme/theme"
 import { Faction, User } from "../../../types"
 import { AdminChatView } from "../../../types/admin"
 
 export const ChatHistory = ({ chatHistory, faction, user }: { chatHistory: AdminChatView[]; faction: Faction; user: User }) => {
     return (
         <Box>
-            {chatHistory.map((chat, i) => {
+            {chatHistory.map((chat) => {
                 return (
-                    <Stack key={i} sx={{ width: "100%", p: "1rem" }}>
+                    <Stack key={chat.text + chat.created_at.toLocaleDateString()} sx={{ width: "100%", p: "1rem" }}>
                         <Stack justifyContent={"space-between"} direction="row" alignItems="center">
                             <Stack direction="row">
                                 <Box

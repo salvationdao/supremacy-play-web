@@ -7,7 +7,7 @@ import { useToggle } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { Faction, MechBasic, RoleType, User } from "../../../types"
+import { Faction, RoleType, User } from "../../../types"
 import { AdminPlayerBan, GetUserResp } from "../../../types/admin"
 import { FancyButton } from "../../Common/FancyButton"
 import { PageHeader } from "../../Common/PageHeader"
@@ -31,7 +31,6 @@ export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: 
     const [faction, setFaction] = useState<Faction>(getFaction(user.faction_id))
     const [banModalOpen, setBanModalOpen] = useState<boolean>(false)
     const [unbanModalOpen, setUnbanModalOpen] = useState<boolean>(false)
-    const [playerUnban, setPlayerUnban] = useState<AdminPlayerBan>()
     const [currentValue, setCurrentValue] = useState<string>("PLAYER-INFO")
     const [playerUnbanIDs, setPlayerUnbanIDs] = useState<string[]>([])
 
@@ -72,6 +71,16 @@ export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: 
             return newArray
         })
     }, [])
+
+    const toggleAll = useCallback(() => {
+        if (!userData?.active_ban) return
+        const allUser: string[] = []
+        userData.active_ban.map((activeBan) => {
+            allUser.push(...allUser, activeBan.id)
+        })
+
+        setPlayerUnbanIDs(allUser)
+    }, [userData?.active_ban])
 
     const fetchPlayer = useCallback(
         (newGid: number) => {
@@ -115,13 +124,11 @@ export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: 
             banModalOpen={banModalOpen}
             setUnbanModalOpen={setUnbanModalOpen}
             unbanModalOpen={unbanModalOpen}
-            setPlayerUnban={setPlayerUnban}
-            playerUnban={playerUnban}
             handleChange={handleChange}
             currentValue={currentValue}
             playerUnbanIDs={playerUnbanIDs}
             toggleSelected={toggleSelected}
-            setPlayerUnbanIDs={setPlayerUnbanIDs}
+            toggleAll={toggleAll}
         />
     )
 }
@@ -138,13 +145,11 @@ const PlayerProfileInner = ({
     banModalOpen,
     setUnbanModalOpen,
     unbanModalOpen,
-    setPlayerUnban,
-    playerUnban,
     handleChange,
     currentValue,
-    setPlayerUnbanIDs,
     playerUnbanIDs,
     toggleSelected,
+    toggleAll,
 }: {
     userData: GetUserResp
     updateQuery: (newQuery: { [p: string]: string | undefined }) => void
@@ -157,13 +162,11 @@ const PlayerProfileInner = ({
     banModalOpen: boolean
     setUnbanModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     unbanModalOpen: boolean
-    setPlayerUnban: (value: ((prevState: AdminPlayerBan | undefined) => AdminPlayerBan | undefined) | AdminPlayerBan | undefined) => void
-    playerUnban: AdminPlayerBan | undefined
     handleChange: (event: SyntheticEvent, newValue: string) => void
     currentValue: string
-    setPlayerUnbanIDs: (value: ((prevState: string[]) => string[]) | string[]) => void
     playerUnbanIDs: string[]
     toggleSelected: (playerBan: AdminPlayerBan) => void
+    toggleAll: () => void
 }) => {
     const theme = useTheme()
 
@@ -249,6 +252,44 @@ const PlayerProfileInner = ({
                 </Stack>
                 <Stack spacing="2rem" sx={{ width: "100%", height: "100%" }} flex="2">
                     <PlayerProfileCard faction={faction} title="Active Bans" sx={{ flex: "1" }}>
+                        <Stack sx={{ p: "1rem" }} spacing={"1rem"} direction={"row"}>
+                            <FancyButton
+                                clipThingsProps={{
+                                    clipSize: "9px",
+                                    backgroundColor: colors.orange,
+                                    opacity: 1,
+                                    border: { borderColor: colors.orange, borderThickness: "2px" },
+                                    sx: { position: "relative" },
+                                }}
+                                sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
+                                onClick={() => setUnbanModalOpen(true)}
+                                disabled={!userData.active_ban || playerUnbanIDs.length <= 0}
+                            >
+                                <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                    Unban Selected
+                                </Typography>
+                            </FancyButton>
+                            <FancyButton
+                                clipThingsProps={{
+                                    clipSize: "9px",
+                                    backgroundColor: colors.green,
+                                    opacity: 1,
+                                    border: { borderColor: colors.green, borderThickness: "2px" },
+                                    sx: { position: "relative" },
+                                }}
+                                sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
+                                onClick={() => {
+                                    toggleAll()
+                                    setUnbanModalOpen(true)
+                                }}
+                                disabled={!userData.active_ban}
+                            >
+                                <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                    Unban All
+                                </Typography>
+                            </FancyButton>
+                        </Stack>
+
                         {userData.active_ban ? (
                             <Box
                                 sx={{
@@ -282,7 +323,7 @@ const PlayerProfileInner = ({
                             </Box>
                         ) : (
                             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                                <Typography>No Recent Ban History</Typography>
+                                <Typography>No Active Bans</Typography>
                             </Stack>
                         )}
                     </PlayerProfileCard>
@@ -311,12 +352,7 @@ const PlayerProfileInner = ({
                                 }}
                             >
                                 <Stack sx={{ height: 0 }} flexWrap={"wrap"} direction={"row"}>
-                                    <BanHistoryPanel
-                                        faction={faction}
-                                        playerBans={userData.ban_history}
-                                        setModalOpen={setUnbanModalOpen}
-                                        setPlayerUnban={setPlayerUnban}
-                                    />
+                                    <BanHistoryPanel faction={faction} playerBans={userData.ban_history} />
                                 </Stack>
                             </Box>
                         ) : (
@@ -341,8 +377,8 @@ const PlayerProfileInner = ({
         playerUnbanIDs,
         toggleSelected,
         setUnbanModalOpen,
-        setPlayerUnban,
         theme.factionTheme.primary,
+        toggleAll,
     ])
 
     return (
@@ -448,14 +484,14 @@ const PlayerProfileInner = ({
                     <AdminBanModal user={userData.user} modalOpen={banModalOpen} setModalOpen={setBanModalOpen} faction={faction} fetchPlayer={fetchPlayer} />
                 )}
 
-                {unbanModalOpen && playerUnban && (
+                {unbanModalOpen && playerUnbanIDs.length > 0 && (
                     <AdminUnbanModal
-                        playerBan={playerUnban}
                         modalOpen={unbanModalOpen}
                         setModalOpen={setUnbanModalOpen}
                         user={userData.user}
                         faction={faction}
                         fetchPlayer={fetchPlayer}
+                        playerUnbanIDs={playerUnbanIDs}
                     />
                 )}
             </Stack>

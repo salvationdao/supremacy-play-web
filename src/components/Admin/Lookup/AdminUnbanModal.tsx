@@ -1,7 +1,6 @@
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import React, { useCallback, useState } from "react"
 import { GameServerKeys } from "../../../keys"
-import { AdminPlayerBan } from "../../../types/admin"
 import { Box, IconButton, Modal, Stack, TextField, Typography } from "@mui/material"
 import { ClipThing } from "../../Common/ClipThing"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
@@ -11,14 +10,14 @@ import { SvgClose } from "../../../assets"
 import { Faction, User } from "../../../types"
 
 export const AdminUnbanModal = ({
-    playerBan,
+    playerUnbanIDs,
     modalOpen,
     setModalOpen,
     user,
     faction,
     fetchPlayer,
 }: {
-    playerBan: AdminPlayerBan
+    playerUnbanIDs: string[]
     modalOpen: boolean
     setModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     user: User
@@ -36,14 +35,14 @@ export const AdminUnbanModal = ({
     const sendUnbanCommand = useCallback(() => {
         ;(async () => {
             try {
-                const resp = await send<
+                await send<
                     boolean,
                     {
-                        player_ban_id: string
+                        player_ban_id: string[]
                         unban_reason: string
                     }
                 >(GameServerKeys.ModUnbanUser, {
-                    player_ban_id: playerBan.id,
+                    player_ban_id: playerUnbanIDs,
                     unban_reason: unbanReason,
                 })
 
@@ -56,7 +55,7 @@ export const AdminUnbanModal = ({
                 console.log("success")
             }
         })()
-    }, [playerBan.id, send, unbanReason])
+    }, [fetchPlayer, onClose, playerUnbanIDs, send, unbanReason, user.gid])
 
     return (
         <AdminUnbanModalInner
@@ -169,27 +168,30 @@ const AdminUnbanModalInner = ({
                         </Stack>
                     </Stack>
 
-                    <FancyButton
-                        clipThingsProps={{
-                            clipSize: "9px",
-                            backgroundColor: faction.primary_color,
-                            opacity: 1,
-                            border: { isFancy: true, borderColor: faction.primary_color, borderThickness: "2px" },
-                            sx: { position: "relative", minWidth: 0, mt: "1.8rem" },
-                        }}
-                        sx={{ px: "0.5rem", py: ".3rem", color: faction.secondary_color }}
-                        onClick={() => sendUnbanCommand()}
-                    >
-                        <Typography
-                            variant="caption"
-                            sx={{
-                                color: faction.secondary_color,
-                                fontFamily: fonts.nostromoBlack,
+                    <Box sx={{ p: "1rem" }}>
+                        <FancyButton
+                            clipThingsProps={{
+                                clipSize: "9px",
+                                backgroundColor: faction.primary_color,
+                                opacity: 1,
+                                border: { isFancy: true, borderColor: faction.primary_color, borderThickness: "2px" },
+                                sx: { position: "relative", minWidth: 0, mt: "1.8rem" },
                             }}
+                            sx={{ px: "0.5rem", py: ".3rem", color: faction.secondary_color }}
+                            onClick={() => sendUnbanCommand()}
+                            disabled={unbanReason === ""}
                         >
-                            SUBMIT
-                        </Typography>
-                    </FancyButton>
+                            <Typography
+                                variant="caption"
+                                sx={{
+                                    color: faction.secondary_color,
+                                    fontFamily: fonts.nostromoBlack,
+                                }}
+                            >
+                                SUBMIT
+                            </Typography>
+                        </FancyButton>
+                    </Box>
 
                     {reqError && (
                         <Typography variant="body2" sx={{ mt: ".3rem", color: colors.red }}>

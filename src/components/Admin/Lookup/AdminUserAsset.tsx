@@ -1,7 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { Faction } from "../../../types"
 import { AdminGetUserAsset } from "../../../types/admin"
-import { ClipThing } from "../../Common/ClipThing"
 import { MechCommonArea } from "../../Hangar/WarMachinesHangar/WarMachineHangarItem"
 
 export const AdminUserAsset = ({ userAsset, faction }: { userAsset: AdminGetUserAsset; faction: Faction }) => {
@@ -22,7 +21,7 @@ export const AdminUserAsset = ({ userAsset, faction }: { userAsset: AdminGetUser
                                 overflow: "visible",
                             }}
                         >
-                            {userAsset.mechs.map((mechDetails, i) => {
+                            {userAsset.mechs.map((mechDetails) => {
                                 return (
                                     <MechCommonArea
                                         key={mechDetails.id}

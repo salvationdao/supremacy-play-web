@@ -3,7 +3,7 @@ import { dateFormatter } from "../../../helpers"
 import { Faction } from "../../../types"
 import { AdminPlayerBan } from "../../../types/admin"
 import { ClipThing } from "../../Common/ClipThing"
-import { colors, fonts } from "../../../theme/theme"
+import { colors } from "../../../theme/theme"
 import React from "react"
 
 export const ActiveBanPanel = ({
@@ -19,7 +19,7 @@ export const ActiveBanPanel = ({
 }) => {
     return (
         <Stack sx={{ flex: 2, p: "1rem" }} spacing={"1rem"}>
-            {playerBans.map((playerBan, i) => {
+            {playerBans.map((playerBan) => {
                 const isSelected = playerUnBanIDs.includes(playerBan.id)
 
                 return (

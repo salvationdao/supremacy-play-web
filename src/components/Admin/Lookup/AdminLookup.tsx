@@ -8,7 +8,6 @@ import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { parseString } from "../../../helpers"
-import { useHistory } from "react-router-dom"
 import { User } from "../../../types"
 import { SxProps } from "@mui/system"
 import { Player } from "../../Common/Player"
@@ -141,7 +140,7 @@ export const AdminLookup = () => {
                 </Stack>
             </Stack>
         )
-    }, [userDropdown, isLoadingUsers, selectedUser, searchValue, setSearchValue, selectedGID])
+    }, [selectedGID, userDropdown, isLoadingUsers, selectedUser, updateQuery, searchValue, setSearchValue])
 
     const UserItem = ({ user, sx }: { user: User; sx?: SxProps }) => {
         return (

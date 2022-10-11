@@ -1,10 +1,8 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useMemo } from "react"
 import { useSupremacy } from "../../../containers"
 import { dateFormatter } from "../../../helpers"
-import { colors, fonts } from "../../../theme/theme"
-import { Faction, User } from "../../../types"
-import { AdminChatView } from "../../../types/admin"
+import { colors } from "../../../theme/theme"
+import { User } from "../../../types"
 
 export const RelatedAccounts = ({ relatedAccounts, fetchPlayer }: { relatedAccounts: User[]; fetchPlayer: (newGid: number) => void }) => {
     const { getFaction } = useSupremacy()
