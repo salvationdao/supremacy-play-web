@@ -108,10 +108,15 @@ export class Game {
     }
 
     tick(elapsedTime: number) {
+        // Only the top block gets tick running, others are stationary
         if (this.blocks.length > 1) {
             this.blocks[this.blocks.length - 1].tick(this.blocks.length / 10, elapsedTime)
         }
+
+        // Run tick on all falling blocks
         this.fallingBlocks.forEach((block) => block.tick())
+
+        // If falling block falls below y=0, remove from stage
         this.fallingBlocks = this.fallingBlocks.filter((block) => {
             if (block.position.y > 0) {
                 return true
@@ -120,6 +125,7 @@ export class Game {
                 return false
             }
         })
+
         this.stage.render()
         this.animationID = requestAnimationFrame((ts) => {
             this.tick(ts - this.timestamp)
@@ -165,86 +171,104 @@ export class Game {
     }
 
     addBlock(triggeredWith: TriggeredWith) {
-        let prevBlock = this.blocks[this.blocks.length - 1]
-        const prevOfPrevBlock = this.blocks[this.blocks.length - 2]
+        let curBlock = this.blocks[this.blocks.length - 1] // Note this block is moving
+        const prevBlock = this.blocks[this.blocks.length - 2]
 
-        if (prevBlock && prevOfPrevBlock) {
-            const { axis, dimensionAlongAxis } = prevBlock.getAxis()
-            const distance = prevBlock.position[axis] - prevOfPrevBlock.position[axis]
+        if (curBlock && prevBlock) {
+            const { axis, dimensionAlongAxis } = curBlock.getAxis()
+
             let positionFalling, position
-            const { topTexture, frontTexture, rightTexture, direction } = prevBlock
-            const newLength = prevBlock.dimension[dimensionAlongAxis] - Math.abs(distance)
+            const distance = curBlock.position[axis] - prevBlock.position[axis]
+            const newLength = curBlock.dimension[dimensionAlongAxis] - Math.abs(distance)
 
-            // Game over
+            // Game over, don't continue the code
             if (newLength <= 0) {
-                this.stage.remove(prevBlock.mesh)
+                this.stage.remove(curBlock.mesh)
                 this.setState(GameState.Ended)
                 this.stage.setCamera(Math.max(this.blocks.length * blockConfig.initHeight - 6, 6) + cameraConfig.offsetY)
                 this.onNewGameScore.current({
                     score: this.score,
                     is_failed: true,
-                    dimension: prevBlock.dimension,
+                    dimension: curBlock.dimension,
                     stack_at: new Date(),
                     trigger_with: triggeredWith,
                 })
                 return
             }
 
-            const dimension = { ...prevBlock.dimension }
-            dimension[dimensionAlongAxis] = newLength
-            const dimensionFalling = { ...prevBlock.dimension }
-            dimensionFalling[dimensionAlongAxis] = Math.abs(distance)
-
             if (distance >= 0) {
-                position = prevBlock.position
-
-                positionFalling = { ...prevBlock.position }
-                positionFalling[axis] = prevBlock.position[axis] + newLength
+                position = curBlock.position
+                positionFalling = { ...curBlock.position }
+                positionFalling[axis] = curBlock.position[axis] + newLength
             } else {
-                position = { ...prevBlock.position }
-                position[axis] = prevBlock.position[axis] + Math.abs(distance)
+                position = { ...curBlock.position }
+                position[axis] = curBlock.position[axis] + Math.abs(distance)
 
-                positionFalling = { ...prevBlock.position }
-                positionFalling[axis] = prevBlock.position[axis] - Math.abs(distance)
+                positionFalling = { ...curBlock.position }
+                positionFalling[axis] = curBlock.position[axis] - Math.abs(distance)
             }
 
+            // Pop the current block out, and replace with a new one that's cropped, and doesn't move
             this.blocks.pop()
-            this.stage.remove(prevBlock.mesh)
-            prevBlock = new NormalBlock({ dimension, position, direction, axis, topTexture, frontTexture, rightTexture }, true)
+            this.stage.remove(curBlock.mesh)
 
-            this.blocks.push(prevBlock)
-            this.stage.add(prevBlock.mesh)
+            const newDimension = { ...curBlock.dimension }
+            newDimension[dimensionAlongAxis] = newLength
+
+            curBlock = new NormalBlock(
+                {
+                    dimension: newDimension,
+                    position,
+                    direction: curBlock.direction,
+                    axis,
+                    topTexture: curBlock.topTexture,
+                    frontTexture: curBlock.frontTexture,
+                    rightTexture: curBlock.rightTexture,
+                },
+                true,
+            )
+
+            this.blocks.push(curBlock)
+            this.stage.add(curBlock.mesh)
+
+            // Add falling block
+            const dimensionFalling = { ...curBlock.dimension }
+            dimensionFalling[dimensionAlongAxis] = Math.abs(distance)
 
             const fallingBlock = new FallingBlock({
                 dimension: dimensionFalling,
                 position: positionFalling,
-                direction,
+                direction: curBlock.direction,
                 axis,
-                topTexture,
-                frontTexture,
-                rightTexture,
+                topTexture: curBlock.topTexture,
+                frontTexture: curBlock.frontTexture,
+                rightTexture: curBlock.rightTexture,
             })
 
             this.fallingBlocks.push(fallingBlock)
             this.stage.add(fallingBlock.mesh)
         }
 
+        // Score will count from [0, 0, 1, 2 ...etc]
         this.score = Math.max(this.blocks.length - 1, 0)
 
-        if (prevBlock) {
+        // +1 score if there was a block before because the starting block doesn't count
+        if (curBlock) {
             this.onNewGameScore.current({
                 score: this.score,
                 is_failed: false,
-                dimension: prevBlock.dimension,
+                dimension: curBlock.dimension,
                 stack_at: new Date(),
                 trigger_with: triggeredWith,
             })
         }
 
-        const newBlock = new NormalBlock(prevBlock)
-        this.stage.add(newBlock.mesh)
+        // Add new block
+        const newBlock = new NormalBlock(curBlock)
         this.blocks.push(newBlock)
+        this.stage.add(newBlock.mesh)
 
+        // Update camera y position
         this.stage.setCamera(this.blocks.length * blockConfig.initHeight + cameraConfig.offsetY)
     }
 }
