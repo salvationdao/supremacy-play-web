@@ -1,5 +1,5 @@
 import { Stack } from "@mui/material"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { ConfirmModal } from "../../Common/ConfirmModal"
 import { BattleLobby } from "../../../types/battle_queue"
 import { BattleLobbyItem } from "./BattleLobbyItem"
@@ -30,6 +30,8 @@ const lobbyPlaceholder: BattleLobby = {
     },
     is_private: true,
     stage_order: 0,
+    access_code: "",
+
     battle_lobbies_mechs: [],
     opted_in_bc_supporters: [],
     opted_in_rm_supporters: [],
@@ -48,7 +50,12 @@ interface BattleLobbySingleModalProps {
 export const BattleLobbySingleModal = ({ setAccessCode, accessCode, showingLobby, setOpen }: BattleLobbySingleModalProps) => {
     const [isLoading, setIsLoading] = useState(!showingLobby)
 
-    const [lobby, setLobby] = useState<BattleLobby>(showingLobby || lobbyPlaceholder)
+    const [lobby, setLobby] = useState<BattleLobby>(lobbyPlaceholder)
+
+    useEffect(() => {
+        if (!showingLobby) return
+        setLobby(showingLobby)
+    }, [showingLobby])
 
     useGameServerSubscriptionFaction<BattleLobby>(
         {
@@ -72,16 +79,14 @@ export const BattleLobbySingleModal = ({ setAccessCode, accessCode, showingLobby
                 if (setOpen) setOpen(false)
             }}
             isLoading={isLoading}
-            width="150rem"
+            width="160rem"
             omitHeader
             innerSx={{
                 px: 0,
                 py: 0,
             }}
         >
-            <Stack direction="column">
-                <BattleLobbyItem battleLobby={lobby} omitClip disabled={isLoading} accessCode={accessCode} />
-            </Stack>
+            <BattleLobbyItem battleLobby={lobby} omitClip disabled={isLoading} accessCode={accessCode} />
         </ConfirmModal>
     )
 }

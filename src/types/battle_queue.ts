@@ -25,6 +25,7 @@ export interface BattleLobby {
     game_map?: GameMap
     is_private: boolean
     stage_order: number
+    access_code: string
 
     battle_lobbies_mechs: BattleLobbiesMech[]
 

@@ -73,7 +73,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                 display: "flex",
                                 flexDirection: "column",
                                 padding: "1rem",
-                                height: "26.5rem",
+                                height: "30rem",
                                 borderRadius: 0,
                                 backgroundColor: `${colors.offWhite}20`,
                             }}
@@ -110,7 +110,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                             padding: "1rem",
                             alignItems: "start",
                             textAlign: "initial",
-                            height: "26.5rem",
+                            height: "30rem",
                             borderRadius: 0,
                             backgroundColor: `${colors.offWhite}20`,
                             border: ms?.owner?.id === userID ? `${colors.gold}BB 2px solid` : undefined,

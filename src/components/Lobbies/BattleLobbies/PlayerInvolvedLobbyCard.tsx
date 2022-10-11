@@ -19,7 +19,7 @@ export const PlayerInvolvedLobbyCard = ({ battleLobby }: PlayerInvolvedLobbyCard
     const { factionID } = useAuth()
     const { factionsAll } = useSupremacy()
     const { factionTheme } = useTheme()
-    const { name, battle_lobbies_mechs } = battleLobby
+    const { name, battle_lobbies_mechs, game_map } = battleLobby
 
     const [showLobby, setShowLobby] = useState(false)
 
@@ -65,14 +65,19 @@ export const PlayerInvolvedLobbyCard = ({ battleLobby }: PlayerInvolvedLobbyCard
 
         if (battleLobby.assigned_to_battle_id) {
             textColor = colors.orange
-            text = "IN BATTLE"
+            text = "BATTLE"
         } else if (battleLobby.ready_at) {
             textColor = colors.gold
             text = "READY"
         }
 
         return (
-            <Typography variant="body2" color={textColor} fontFamily={fonts.nostromoHeavy}>
+            <Typography
+                variant="body2"
+                color={textColor}
+                fontFamily={fonts.nostromoHeavy}
+                sx={{ backgroundColor: `${factionTheme.background}CC`, borderRadius: 1, px: ".6rem", py: ".3rem", lineHeight: "unset" }}
+            >
                 {text}
             </Typography>
         )
@@ -90,6 +95,13 @@ export const PlayerInvolvedLobbyCard = ({ battleLobby }: PlayerInvolvedLobbyCard
                     p: ".8rem",
 
                     cursor: "pointer",
+
+                    background: game_map
+                        ? `linear-gradient(to right, ${factionTheme.background} 0%, transparent 100%), url(${game_map.background_url})`
+                        : undefined,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    backgroundSize: "cover",
                 }}
                 onClick={() => setShowLobby(true)}
             >
