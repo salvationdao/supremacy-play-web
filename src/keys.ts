@@ -248,6 +248,14 @@ export enum GameServerKeys {
     // Replays
     GetReplays = "GET:BATTLE:REPLAYS",
     GetReplayDetails = "GET:REPLAY:DETAILS",
+
+    // Faction Commander
+    JoinFactionCommander = "VOICE:JOIN:FACTION:COMMANDER",
+    LeaveFactionCommander = "VOICE:LEAVE:FACTION:COMMANDER",
+
+    // Voice chat
+    SubPlayerVoiceStream = "PLAYER:VOICE:STREAM",
+    VoiceChatVoteKick = "VOICE:VOTE:KICK",
 }
 
 export enum PassportServerKeys {
