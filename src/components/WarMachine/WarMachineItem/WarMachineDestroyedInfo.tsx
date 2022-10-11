@@ -8,6 +8,7 @@ import { useTheme } from "../../../containers/theme"
 import { useGlobalNotifications } from "../../../containers"
 import { useParameterizedQuery } from "react-fetching-library"
 import { GetMechDestroyedInfo } from "../../../fetching"
+import { CropMaxLengthText } from "../../../theme/styles"
 
 export const WarMachineDestroyedInfo = ({
     warMachine,
@@ -237,12 +238,8 @@ const WarMachineBig = ({
                 sx={{
                     textAlign: "center",
                     fontFamily: fonts.nostromoBlack,
-                    display: "-webkit-box",
-                    overflow: "hidden",
-                    overflowWrap: "anywhere",
-                    textOverflow: "ellipsis",
+                    ...CropMaxLengthText,
                     WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
                     color,
                 }}
             >
@@ -277,12 +274,7 @@ const WarMachineSmall = ({
                     variant="body2"
                     sx={{
                         fontFamily: fonts.nostromoBlack,
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1,
-                        WebkitBoxOrient: "vertical",
+                        ...CropMaxLengthText,
                         color,
                     }}
                 >

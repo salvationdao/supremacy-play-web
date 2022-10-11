@@ -3,7 +3,7 @@ import { MECH_ABILITY_KEY } from "../../../../../containers/hotkeys"
 import { HEXToVBColor } from "../../../../../helpers"
 import { PixiImageIcon } from "../../../../../pixi/pixiImageIcon"
 import { colors, fonts } from "../../../../../theme/theme"
-import { BlueprintPlayerAbility, GameAbility } from "../../../../../types"
+import { AnyAbility } from "../../../../../types"
 
 const SIZE = 22
 
@@ -16,16 +16,16 @@ export class PixiMechAbility {
     private labelText = ""
     private animationFrame: number | undefined
 
-    constructor(index: number, ability: GameAbility | BlueprintPlayerAbility) {
+    constructor(index: number, anyAbility: AnyAbility) {
         // Create container for everything
         this.root = new PIXI.Container()
         this.root.zIndex = 20
         this.root.sortableChildren = true
 
-        this.icon = new PixiImageIcon(ability.image_url, SIZE, SIZE, ability.colour)
+        this.icon = new PixiImageIcon(anyAbility.image_url, SIZE, SIZE, anyAbility.colour)
 
         // Label
-        this.labelText = `${ability.label} [${MECH_ABILITY_KEY[index]}]`
+        this.labelText = `${anyAbility.label} [${MECH_ABILITY_KEY[index]}]`
         this.label = new PIXI.Text(this.labelText, {
             fontFamily: fonts.shareTech,
             fontSize: 12,

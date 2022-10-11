@@ -39,7 +39,6 @@ export const ArenaListener = () => {
 
             // default arena to the first one
             setCurrentArena(payload[0])
-            // above code will be refactor when players are able to select arena
 
             setArenaList(payload)
         },

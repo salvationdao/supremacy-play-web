@@ -15,12 +15,15 @@ export enum GameServerKeys {
     SubGameNotification = "GAME:NOTIFICATION",
 
     // Battle Arena
+    SubGameMapList = "GAME:MAP:LIST",
     SubPlayerMechsBrief = "PLAYER:MECHS:BRIEF",
     SubArenaStatus = "ARENA:STATUS:UPDATED",
     SunBattleETA = "BATTLE:ETA:UPDATE",
     SubBattleArenaList = "BATTLE:ARENA:LIST",
     SubBattleArenaClosed = "BATTLE:ARENA:CLOSED",
     SubMiniMapAbilityDisplayList = "MINI:MAP:ABILITY:DISPLAY:LIST",
+    NextBattleDetails = "NEXT:BATTLE:DETAILS",
+    BattleState = "BATTLE:STATE",
 
     // Voting abilities
     SubBribeStageUpdated = "BRIBE:STAGE:UPDATED:SUBSCRIBE",
@@ -54,13 +57,17 @@ export enum GameServerKeys {
     MechQueueUpdated = "PLAYER:ASSET:MECH:QUEUE:UPDATE",
     SubBattleLobbyListUpdate = "BATTLE:LOBBY:LIST:UPDATE",
     CreateBattleLobby = "BATTLE:LOBBY:CREATE",
+    SubPrivateBattleLobby = "PRIVATE:BATTLE:LOBBY:UPDATE",
     JoinBattleLobby = "BATTLE:LOBBY:JOIN",
     LeaveBattleLobby = "BATTLE:LOBBY:LEAVE",
+    JoinBattleLobbySupporter = "BATTLE:LOBBY:SUPPORTER:JOIN",
+
     GetMechs = "PLAYER:ASSET:MECH:LIST",
     PlayerQueueStatus = "PLAYER:QUEUE:STATUS",
     EquipMech = "PLAYER:ASSET:MECH:EQUIP",
     GetMechDetails = "PLAYER:ASSET:MECH:DETAIL",
     GetWeapons = "PLAYER:ASSET:WEAPON:LIST",
+    GetWeaponsDetailed = "PLAYER:ASSET:WEAPON:DETAIL:LIST",
     GetWeaponDetails = "PLAYER:ASSET:WEAPON:DETAIL",
     GetPowerCores = "PLAYER:ASSET:POWER_CORE:LIST",
     GetPowerCoreDetails = "PLAYER:ASSET:POWER_CORE:DETAIL",
@@ -76,6 +83,7 @@ export enum GameServerKeys {
     SaleAbilitiesList = "SALE:ABILITIES:LIST",
     SaleAbilityPurchase = "SALE:ABILITY:PURCHASE",
     PlayerAbilityUse = "PLAYER:ABILITY:USE",
+    PlayerSupportAbilityUse = "PLAYER:SUPPORT:ABILITY:USE",
 
     // Minimap ability updates
     MinimapUpdatesSubscribe = "MINIMAP:UPDATES:SUBSCRIBE",
@@ -101,6 +109,7 @@ export enum GameServerKeys {
     SubscribeUserStat = "USER:STAT:SUBSCRIBE",
     UpdateSettings = "PLAYER:UPDATE_SETTINGS",
     GetSettings = "PLAYER:GET_SETTINGS",
+    PlayerSupportAbilities = "PLAYER:SUPPORT:ABILITIES",
 
     // Ban system
     GetBanOptions = "PUNISH:OPTIONS",
@@ -139,6 +148,7 @@ export enum GameServerKeys {
     FiatProductList = "FIAT:PRODUCT:LIST",
     FiatProductGet = "FIAT:PRODUCT:GET",
     FiatBillingHistoryList = "FIAT:BILLING_HISTORY:LIST",
+    FiatBillingHistoryGet = "FIAT:BILLING_HISTORY:GET",
     FiatShoppingCartItemAdd = "FIAT:SHOPPING_CART:ITEM:ADD",
     FiatShoppingCartItemUpdate = "FIAT:SHOPPING_CART:ITEM:UPDATE",
     FiatShoppingCartItemRemove = "FIAT:SHOPPING_CART:ITEM:REMOVE",
@@ -170,10 +180,10 @@ export enum GameServerKeys {
     OpenCrate = "CRATE:OPEN",
 
     //submodels
-    GetMechSubmodels = "PLAYER:ASSET:MECH:SUBMODEL:LIST",
-    GetWeaponSubmodels = "PLAYER:ASSET:WEAPON:SUBMODEL:LIST",
-    GetMechBlueprints = "PLAYER:MECH:BLUEPRINT:LIST",
-    GetWeaponBlueprints = "PLAYER:WEAPON:BLUEPRINT:LIST",
+    GetMechSubmodelsDetailed = "PLAYER:ASSET:MECH:SUBMODEL:DETAIL:LIST",
+    GetWeaponSubmodelsDetailed = "PLAYER:ASSET:WEAPON:SUBMODEL:DETAIL:LIST",
+    GetMechBlueprintsDetailed = "PLAYER:MECH:BLUEPRINT:DETAIL:LIST",
+    GetWeaponBlueprintsDetailed = "PLAYER:WEAPON:BLUEPRINT:DETAIL:LIST",
 
     // Keycards
     GetPlayerKeycards = "PLAYER:ASSET:KEYCARD:LIST",
@@ -243,6 +253,14 @@ export enum GameServerKeys {
     ModGetUser = "MOD:GET:USER",
     ModBanUser = "MOD:BAN:USER",
     ModUnbanUser = "MOD:UNBAN:USER",
+
+    // Faction Commander
+    JoinFactionCommander = "VOICE:JOIN:FACTION:COMMANDER",
+    LeaveFactionCommander = "VOICE:LEAVE:FACTION:COMMANDER",
+
+    // Voice chat
+    SubPlayerVoiceStream = "PLAYER:VOICE:STREAM",
+    VoiceChatVoteKick = "VOICE:VOTE:KICK",
 }
 
 export enum PassportServerKeys {

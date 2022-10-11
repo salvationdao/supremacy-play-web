@@ -17,6 +17,8 @@ import {
 } from "../assets"
 import { colors } from "../theme/theme"
 import { AssetItemType, Dimension, GAME_CLIENT_TILE_SIZE, MysteryCrateType, Rarity, RarityEnum, UserRank } from "../types"
+import { FiatOrderStatus } from "../types/fiat"
+import moment from "moment"
 
 // Capitalize convert a string "example" to "Example"
 export const Capitalize = (str: string): string => str[0].toUpperCase() + str.substring(1).toLowerCase()
@@ -208,6 +210,17 @@ export const getRarityDeets = (rarityKey: string): Rarity => {
             return { label: "Titan", color: colors.rarity.TITAN, textColor: "#000000", rank: 1 }
         default:
             return { label: "", color: colors.rarity.MEGA, textColor: "#FFFFFF", rank: 100 }
+    }
+}
+
+export const getOrderStatusDeets = (key: string) => {
+    switch (key) {
+        case FiatOrderStatus.Pending:
+            return { label: "Pending", color: colors.lightNeonBlue, textColor: "#FFFFFF" }
+        case FiatOrderStatus.Refunded:
+            return { label: "Refunded", color: colors.red, textColor: "#FFFFFF" }
+        default:
+            return { label: "Paid", color: colors.green, textColor: "#FFFFFF" }
     }
 }
 
@@ -646,6 +659,24 @@ export const calculateCoverDimensions = (dimensions: Dimension, containerDimensi
     return result
 }
 
+// Adjusts dimensions so that the largest side fits in a parent dimension, and keeping aspect ratio
+// E.g 1. dimension: = (100, 40), parent dimension = (80, 80), returns (80, 32).
+// E.g 2. dimension: = (80, 100), parent dimension = (40, 40), returns (20, 40).
+export const calculateContainDimensions = (dimensions: Dimension, containerDimensions: Dimension): Dimension => {
+    const ratio = dimensions.height / dimensions.width
+    const result = { ...dimensions }
+
+    result.width = containerDimensions.width
+    result.height = containerDimensions.width * ratio
+
+    if (result.height > containerDimensions.height) {
+        result.height = containerDimensions.height
+        result.width = containerDimensions.height / ratio
+    }
+
+    return result
+}
+
 export const HEXToVBColor = (hex: string): number => {
     return parseInt(hex.substring(hex.length - 6), 16)
 }
@@ -666,4 +697,20 @@ export const deepEqual = (object1: Record<any, any>, object2: Record<any, any>) 
         }
     }
     return true
+}
+
+export const shortCodeGenerator = (length: number = 12, omitUppercase?: boolean, omitLowerCase?: boolean, omitNumber?: boolean): string => {
+    let result = ""
+    let base = ""
+    if (!omitUppercase) base += "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    if (!omitLowerCase) base += "abcdefghijklmnopqrstuvwxyz"
+    if (!omitNumber) base += "0123456789"
+    for (let i = 0; i < length; i++) {
+        result += base.charAt(Math.floor(Math.random() * base.length))
+    }
+    return result
+}
+
+export const combineDateTime = (date: moment.Moment, time: moment.Moment): moment.Moment => {
+    return moment(`${date.format("YYYY-MM-DD")} ${time.format("HH:mm")}`)
 }

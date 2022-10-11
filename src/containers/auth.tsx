@@ -39,8 +39,10 @@ export interface AuthState {
     isHidden: boolean
     isLoggingIn: boolean
     onLogInClick: () => void
+    setPassportPopup: Dispatch<React.SetStateAction<Window | null>>
     userHasFeature: (featureName: FeatureName) => boolean
     user: User
+    userFromPassport?: UserFromPassport
     userID: string
     factionID: string
     setUser: Dispatch<React.SetStateAction<User>>
@@ -61,6 +63,9 @@ const initialState: AuthState = {
     isHidden: false,
     isLoggingIn: false,
     onLogInClick: () => {
+        return
+    },
+    setPassportPopup: () => {
         return
     },
     userHasFeature: () => {
@@ -252,8 +257,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 isHidden,
                 isLoggingIn,
                 onLogInClick,
+                setPassportPopup,
                 userHasFeature,
                 user,
+                userFromPassport,
                 userID,
                 factionID,
                 setUser,

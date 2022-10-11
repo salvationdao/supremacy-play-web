@@ -13,6 +13,7 @@ import { PreferenceToggle } from "../../../Bar/ProfileCard/PreferencesModal/Noti
 import { ConfirmModal } from "../../../Common/ConfirmModal"
 import { FancyButton } from "../../../Common/FancyButton"
 import { TooltipHelper } from "../../../Common/TooltipHelper"
+import { CropMaxLengthText } from "../../../../theme/styles"
 
 export interface QuickPlayerAbilitiesItemProps {
     saleAbility: SaleAbility
@@ -38,6 +39,7 @@ export const QuickPlayerAbilitiesItem = React.memo(function QuickPlayerAbilities
     amount = 0,
     onPurchase: onPurchaseCallback,
     availability,
+    setClaimError,
 }: QuickPlayerAbilitiesItemProps) {
     // Purchasing
     const { newSnackbarMessage } = useGlobalNotifications()
@@ -101,13 +103,15 @@ export const QuickPlayerAbilitiesItem = React.memo(function QuickPlayerAbilities
         } catch (e) {
             if (e instanceof Error) {
                 setPurchaseError(e.message)
+                setClaimError(e.message)
             } else if (typeof e === "string") {
                 setPurchaseError(e)
+                setClaimError(e)
             }
         } finally {
             setLoading(false)
         }
-    }, [send, saleAbility.id, saleAbility.ability.label, price, newSnackbarMessage, onPurchaseCallback, showConfirmation])
+    }, [send, saleAbility.id, saleAbility.ability.label, price, newSnackbarMessage, onPurchaseCallback, showConfirmation, setClaimError])
 
     const onClick = useMemo(() => {
         if (availability === SaleAbilityAvailability.CanPurchase) {
@@ -263,12 +267,8 @@ export const QuickPlayerAbilitiesItem = React.memo(function QuickPlayerAbilities
                                     variant="body2"
                                     sx={{
                                         lineHeight: 1.2,
-                                        display: "-webkit-box",
-                                        overflow: "hidden",
-                                        overflowWrap: "anywhere",
-                                        textOverflow: "ellipsis",
+                                        ...CropMaxLengthText,
                                         WebkitLineClamp: 2,
-                                        WebkitBoxOrient: "vertical",
                                         fontWeight: "fontWeightBold",
                                     }}
                                 >
@@ -279,7 +279,6 @@ export const QuickPlayerAbilitiesItem = React.memo(function QuickPlayerAbilities
                     </TooltipHelper>
                 </FancyButton>
             </Fade>
-
             {showPurchaseModal && (
                 <ConfirmModal
                     title="Confirm Purchase"

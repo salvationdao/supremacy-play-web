@@ -7,7 +7,7 @@ import { CircleParticle } from "../../../../../assets"
 import { pixiViewportZIndexes } from "../../../../../containers"
 import { ringCloudParticlesConfig } from "../../../../../pixi/particleConfigs"
 import { colors } from "../../../../../theme/theme"
-import { BattleZoneStruct, Dimension, GAME_CLIENT_TILE_SIZE } from "../../../../../types"
+import { BattleZoneStruct, Dimension, GAME_CLIENT_TILE_SIZE, Map } from "../../../../../types"
 import { HEXToVBColor } from "./../../../../../helpers/index"
 
 export class PixiBattleZone {
@@ -42,6 +42,7 @@ export class PixiBattleZone {
             }
         >,
         battleZone: BattleZoneStruct,
+        mapRef: React.MutableRefObject<Map | undefined>,
     ) {
         this.viewport = viewport
         this.gridSizeRef = gridSizeRef
@@ -74,15 +75,16 @@ export class PixiBattleZone {
 
         // Dim the outside, this is a trick where the outside is darkened, trick is really thick border
         const borderThickness = this.viewport.worldWidth * 3
+        const outsideColor = mapRef.current?.Name === "IronDust 5" ? "#000000" : colors.darkRed
         this.darkBackgroundTrick = new PIXI.Graphics()
         this.darkBackgroundTrick.zIndex = 2
         this.darkBackgroundTrick.clear()
-        this.darkBackgroundTrick.lineStyle(borderThickness, HEXToVBColor(colors.darkRed), 0.4)
+        this.darkBackgroundTrick.lineStyle(borderThickness, HEXToVBColor(outsideColor), 0.4)
         this.darkBackgroundTrick.beginFill(HEXToVBColor("#FFFFFF"), 0)
         this.darkBackgroundTrick.drawCircle(0, 0, radius + borderThickness / 2)
         this.darkBackgroundTrick.endFill()
         this.darkBackgroundTrick.position.set(pos.x, pos.y)
-        ease.add(this.darkBackgroundTrick, { alpha: 0.2 }, { duration: 800, ease: "linear", repeat: true, reverse: true, removeExisting: true })
+        ease.add(this.darkBackgroundTrick, { alpha: 0.2 }, { duration: 1100, ease: "linear", repeat: true, reverse: true, removeExisting: true })
 
         if (battleZone.warn_time) {
             this.darkBackgroundTrick.scale.set(1 + this.viewport.worldWidth / radius)

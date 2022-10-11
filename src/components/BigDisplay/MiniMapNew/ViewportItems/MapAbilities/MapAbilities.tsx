@@ -4,6 +4,7 @@ import { useArena, useMiniMapPixi } from "../../../../../containers"
 import { useGameServerSubscription } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { DisplayedAbility, LocationSelectType, MechDisplayEffectType, MiniMapDisplayEffectType } from "../../../../../types"
+import { HiveStatus } from "../HiveStatus/HiveStatus"
 import { PixiMapAbilities } from "./pixiMapAbilities"
 
 export enum MapEventType {
@@ -35,7 +36,7 @@ interface PendingHiveStateChange {
 
 export const MapAbilities = React.memo(function MapAbilities() {
     const { currentArenaID } = useArena()
-    const { pixiMainItems, gridSizeRef, clientPositionToViewportPosition, gridCellToViewportPosition } = useMiniMapPixi()
+    const { pixiMiniMapPixi, gridSizeRef, clientPositionToViewportPosition, gridCellToViewportPosition, mapItemMinSize } = useMiniMapPixi()
     const [pixiMapAbilities, setPixiMapAbilities] = useState<PixiMapAbilities>()
 
     // Refs, doesnt cause re-render
@@ -46,20 +47,21 @@ export const MapAbilities = React.memo(function MapAbilities() {
 
     // Initial setup
     useEffect(() => {
-        if (!pixiMainItems) return
+        if (!pixiMiniMapPixi) return
         const pixiMapAbilities = new PixiMapAbilities(
-            pixiMainItems.viewport,
+            pixiMiniMapPixi.viewport,
             gridSizeRef,
             clientPositionToViewportPosition,
             gridCellToViewportPosition,
             basicAbilities,
             complexAbilities,
+            mapItemMinSize,
         )
         setPixiMapAbilities((prev) => {
             prev?.destroy()
             return pixiMapAbilities
         })
-    }, [pixiMainItems, gridSizeRef, clientPositionToViewportPosition, gridCellToViewportPosition])
+    }, [pixiMiniMapPixi, gridSizeRef, clientPositionToViewportPosition, gridCellToViewportPosition, mapItemMinSize])
 
     // Cleanup
     useEffect(() => {
@@ -155,7 +157,7 @@ export const MapAbilities = React.memo(function MapAbilities() {
                                     radius: 2500,
                                     colour: "#FF6600",
                                     border_width: 1,
-                                    show_below_mechs: true,
+                                    show_below_mechs: false,
                                     location_in_pixels: true,
                                 }
                                 pendingMapEvents.push({ ability, delay: timeOffset, remove_after: 4000 })
@@ -385,5 +387,5 @@ export const MapAbilities = React.memo(function MapAbilities() {
         },
     )
 
-    return null
+    return <HiveStatus hiveStatus={hiveStatus} />
 })

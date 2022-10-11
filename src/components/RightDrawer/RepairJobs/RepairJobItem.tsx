@@ -10,6 +10,7 @@ import { FancyButton } from "../../Common/FancyButton"
 import { Player } from "../../Common/Player"
 import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
 import { General } from "../../Marketplace/Common/MarketItem/General"
+import { CropMaxLengthText } from "../../../theme/styles"
 
 interface RepairJobItemProps {
     repairJob: RepairJob
@@ -80,12 +81,8 @@ export const RepairJobItem = React.memo(function RepairJobItem({ repairJob, remo
                                     variant="body2"
                                     sx={{
                                         fontFamily: fonts.nostromoBlack,
-                                        display: "-webkit-box",
-                                        overflow: "hidden",
-                                        overflowWrap: "anywhere",
-                                        textOverflow: "ellipsis",
+                                        ...CropMaxLengthText,
                                         WebkitLineClamp: 2,
-                                        WebkitBoxOrient: "vertical",
                                         span: { color: colors.orange },
                                     }}
                                 >
@@ -108,12 +105,8 @@ export const RepairJobItem = React.memo(function RepairJobItem({ repairJob, remo
                                 <Typography
                                     sx={{
                                         fontWeight: "fontWeightBold",
-                                        display: "-webkit-box",
-                                        overflow: "hidden",
-                                        overflowWrap: "anywhere",
-                                        textOverflow: "ellipsis",
+                                        ...CropMaxLengthText,
                                         WebkitLineClamp: 2,
-                                        WebkitBoxOrient: "vertical",
                                     }}
                                 >
                                     {supFormatterNoFixed(repairJob.sups_worth_per_block || "0", 2)} / BLOCK

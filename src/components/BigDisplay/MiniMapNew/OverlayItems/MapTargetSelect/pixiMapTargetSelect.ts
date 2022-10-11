@@ -6,12 +6,12 @@ import { pixiStageZIndexes, pixiViewportZIndexes } from "../../../../../containe
 import { HEXToVBColor } from "../../../../../helpers"
 import { PixiImageIcon } from "../../../../../pixi/pixiImageIcon"
 import { fonts } from "../../../../../theme/theme"
-import { AbilityDetail, BlueprintPlayerAbility, Dimension, GameAbility, GAME_CLIENT_TILE_SIZE, LocationSelectType, Position } from "../../../../../types"
+import { AbilityDetail, AnyAbility, Dimension, GAME_CLIENT_TILE_SIZE, LocationSelectType, Position } from "../../../../../types"
 
-const getAbilityLabel = (ability: GameAbility | BlueprintPlayerAbility): string => {
+const getAbilityLabel = (anyAbility: AnyAbility): string => {
     let label = "Select a location to use"
 
-    switch (ability.location_select_type) {
+    switch (anyAbility.location_select_type) {
         case LocationSelectType.LocationSelect:
         case LocationSelectType.MechCommand:
             label = "Select a location to deploy"
@@ -30,12 +30,12 @@ const getAbilityLabel = (ability: GameAbility | BlueprintPlayerAbility): string 
             break
     }
 
-    return `${label} ${ability.label}.`
+    return `${label} ${anyAbility.label}.`
 }
 
 export class PixiMapTargetSelect {
-    stageRoot: PIXI.Container<PIXI.DisplayObject>
-    viewportRoot: PIXI.Container<PIXI.DisplayObject>
+    stageRoot: PIXI.Container
+    viewportRoot: PIXI.Container
     mouseIcon: PixiImageIcon
     private colorOverlay: PIXI.Sprite
     private outerBorder: PIXI.Graphics
@@ -43,7 +43,7 @@ export class PixiMapTargetSelect {
     private cancelButton: PIXI.Sprite | undefined
 
     private viewport: Viewport
-    private ability: GameAbility | BlueprintPlayerAbility
+    private anyAbility: AnyAbility
     private gridSizeRef: React.MutableRefObject<Dimension>
     private mapMousePosition: React.MutableRefObject<Position | undefined>
     private animationFrame: number | undefined
@@ -61,13 +61,14 @@ export class PixiMapTargetSelect {
         viewport: Viewport,
         mapMousePosition: React.MutableRefObject<Position | undefined>,
         gridSizeRef: React.MutableRefObject<Dimension>,
-        ability: GameAbility | BlueprintPlayerAbility,
+        anyAbility: AnyAbility,
         endTime: Date | undefined,
-        onExpired: () => void | undefined,
+        onExpired: (() => void) | undefined,
         onCancel: (() => void) | undefined,
+        mapItemMinSize: React.MutableRefObject<number>,
     ) {
         this.viewport = viewport
-        this.ability = ability
+        this.anyAbility = anyAbility
         this.gridSizeRef = gridSizeRef
         this.mapMousePosition = mapMousePosition
         const secondsLeft = endTime ? Math.max(Math.round((endTime.getTime() - new Date().getTime()) / 1000), 0) : undefined
@@ -84,7 +85,7 @@ export class PixiMapTargetSelect {
         // Big color overlay
         this.colorOverlay = PIXI.Sprite.from(PIXI.Texture.WHITE)
         this.colorOverlay.alpha = 0.05
-        this.colorOverlay.tint = HEXToVBColor(this.ability.colour)
+        this.colorOverlay.tint = HEXToVBColor(this.anyAbility.colour)
         this.colorOverlay.zIndex = 6
 
         // Border line
@@ -93,10 +94,10 @@ export class PixiMapTargetSelect {
 
         // Label and cancel button at bottom
         this.bottomContainer = new PIXI.Graphics()
-        const label = new PIXI.Text(getAbilityLabel(ability), {
+        const label = new PIXI.Text(getAbilityLabel(anyAbility), {
             fontFamily: fonts.nostromoBlack,
             fontSize: 11,
-            fill: ability.colour,
+            fill: anyAbility.colour,
             lineHeight: 1,
         })
         label.resolution = 4
@@ -119,18 +120,36 @@ export class PixiMapTargetSelect {
 
             setTimeout(() => {
                 this.cancelButton?.pivot.set(this.cancelButton.width, this.cancelButton.height / 2)
-            }, 800)
+            }, 0)
         }
 
         // Mouse icon
-        this.mouseIcon = new PixiImageIcon(ability.image_url, gridSizeRef.current.width / 1.6, gridSizeRef.current.height / 1.6, ability.colour, true)
+        this.mouseIcon = new PixiImageIcon(
+            anyAbility.image_url,
+            Math.max(gridSizeRef.current.width, mapItemMinSize.current) / 1.6,
+            Math.max(gridSizeRef.current.height, mapItemMinSize.current) / 1.6,
+            anyAbility.colour,
+            true,
+        )
         if (secondsLeft) {
             this.mouseIcon.startCountdown(secondsLeft, 1, onExpired)
         }
 
         // Start and end coord icons, made invisible
-        this.startCoord = new PixiImageIcon(ability.image_url, gridSizeRef.current.width, gridSizeRef.current.height, ability.colour, true)
-        this.endCoord = new PixiImageIcon(ability.image_url, gridSizeRef.current.width, gridSizeRef.current.height, ability.colour, true)
+        this.startCoord = new PixiImageIcon(
+            anyAbility.image_url,
+            Math.max(gridSizeRef.current.width, mapItemMinSize.current),
+            Math.max(gridSizeRef.current.height, mapItemMinSize.current),
+            anyAbility.colour,
+            true,
+        )
+        this.endCoord = new PixiImageIcon(
+            anyAbility.image_url,
+            Math.max(gridSizeRef.current.width, mapItemMinSize.current),
+            Math.max(gridSizeRef.current.height, mapItemMinSize.current),
+            anyAbility.colour,
+            true,
+        )
         this.startEndLine = new PIXI.Graphics()
         this.startCoord.showIcon(false)
         this.endCoord.showIcon(false)
@@ -155,6 +174,7 @@ export class PixiMapTargetSelect {
 
     destroy() {
         if (this.animationFrame) cancelAnimationFrame(this.animationFrame)
+        this.resetCountdown()
         this.mouseIcon.resetCountdown()
         this.viewportRoot.destroy()
         this.stageRoot.destroy()
@@ -181,14 +201,14 @@ export class PixiMapTargetSelect {
 
             // Line graphics
             this.outerBorder.clear()
-            this.outerBorder.lineStyle(4, HEXToVBColor(this.ability.colour))
+            this.outerBorder.lineStyle(4, HEXToVBColor(this.anyAbility.colour))
             this.outerBorder.drawRect(0, 0, this.viewport.screenWidth, this.viewport.screenHeight)
 
             // Draw a line to connect start and end coord if both coord are populated or its line select
             this.startEndLine.clear()
             const endPoint = this.mouseIcon.root.visible ? this.mouseIcon.root : this.endCoord.root.visible ? this.endCoord.root : undefined
             if (this.startCoord.root.visible && endPoint) {
-                this.startEndLine.lineStyle(this.gridSizeRef.current.width / 4, HEXToVBColor(this.ability.colour))
+                this.startEndLine.lineStyle(this.gridSizeRef.current.width / 4, HEXToVBColor(this.anyAbility.colour))
                 this.startEndLine.moveTo(this.startCoord.root.x, this.startCoord.root.y)
                 this.startEndLine.lineTo(endPoint.x, endPoint.y)
             }
@@ -220,14 +240,19 @@ export class PixiMapTargetSelect {
         }
     }
 
-    startCountdown(timeLeft = 2, speed = 3, destroyOnConfirm = true) {
+    startCountdown(timeLeft = 2, speed = 3, destroyOnConfirm = true, showCountdownLabel = true) {
         this.resetCountdown()
-        this.endCoord.startCountdown(timeLeft, speed)
-        this.startCoord.startCountdown(timeLeft, speed, () => {
-            this.onTargetConfirm && this.onTargetConfirm({ startCoord: this.startCoord.root.position, endCoord: this.endCoord.root.position })
-            this.startCoord.showIcon(false)
-            if (destroyOnConfirm) this.destroy()
-        })
+        this.endCoord.startCountdown(timeLeft, speed, undefined, showCountdownLabel)
+        this.startCoord.startCountdown(
+            timeLeft,
+            speed,
+            () => {
+                this.onTargetConfirm && this.onTargetConfirm({ startCoord: this.startCoord.root.position, endCoord: this.endCoord.root.position })
+                this.startCoord.showIcon(false)
+                if (destroyOnConfirm) this.destroy()
+            },
+            showCountdownLabel,
+        )
     }
 
     resetCountdown() {

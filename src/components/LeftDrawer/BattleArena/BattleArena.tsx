@@ -1,13 +1,15 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { useAuth, useSupremacy, useUI } from "../../../containers"
-import { fonts } from "../../../theme/theme"
-import { BattleAbility } from "./BattleAbility/BattleAbility"
+import { useAuth, useGame, useSupremacy, useUI } from "../../../containers"
+import { colors, fonts } from "../../../theme/theme"
+import { ArenaSelector } from "./ArenaSelector/ArenaSelector"
+import { SupporterAbilities } from "./SupporterAbilities/SupporterAbilities"
+import { UnauthPrompt } from "./Common/UnauthPrompt"
 import { PlayerAbilities } from "./PlayerAbilities/PlayerAbilities"
 import { QuickPlayerAbilities } from "./QuickPlayerAbilities/QuickPlayerAbilities"
-import { UnauthPrompt } from "./Common/UnauthPrompt"
 
 export const BattleArena = () => {
+    const { isAIDrivenMatch } = useGame()
     const { setSmallDisplayRef } = useUI()
     const { battleIdentifier } = useSupremacy()
     const { userID } = useAuth()
@@ -15,8 +17,10 @@ export const BattleArena = () => {
     const content = useMemo(() => {
         return (
             <>
+                <ArenaSelector />
+
                 {/* The minimap or the stream will mount here */}
-                <Box ref={setSmallDisplayRef} sx={{ flexShrink: 0 }} />
+                <Box ref={setSmallDisplayRef} sx={{ flexShrink: 0, mt: ".5rem" }} />
 
                 <Box
                     sx={{
@@ -43,7 +47,7 @@ export const BattleArena = () => {
                     <Box sx={{ direction: "ltr", height: 0 }}>
                         <Stack>
                             {!userID && <UnauthPrompt />}
-                            <BattleAbility />
+                            <SupporterAbilities />
                             <PlayerAbilities />
                             <QuickPlayerAbilities />
                         </Stack>
@@ -59,11 +63,20 @@ export const BattleArena = () => {
                 {content}
 
                 {battleIdentifier && (
-                    <Box sx={{ p: ".4rem 1rem", borderTop: (theme) => `${theme.factionTheme.primary}30 1px solid` }}>
+                    <Stack
+                        direction="row"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        sx={{
+                            p: ".4rem 1rem",
+                            backgroundColor: isAIDrivenMatch ? colors.green : colors.red,
+                        }}
+                    >
                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>BATTLE ID #{battleIdentifier.toString().padStart(4, "0")}</Typography>
-                    </Box>
+                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{isAIDrivenMatch ? "AI MATCH" : "PvP"}</Typography>
+                    </Stack>
                 )}
             </Stack>
         )
-    }, [battleIdentifier, content])
+    }, [battleIdentifier, content, isAIDrivenMatch])
 }

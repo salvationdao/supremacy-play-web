@@ -4,9 +4,18 @@ import { useAuth, useTraining } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { useInterval } from "../../../../hooks"
 import { glowEffect, zoomEffect } from "../../../../theme/keyframes"
-import { BattleAbilityStages, GameAbility, MechAbilitiesHighlight, MechAbilityStages, TrainingLocationSelects, WarMachineState } from "../../../../types"
+import {
+    BattleAbilityStages,
+    GameAbility,
+    LocationSelectType,
+    MechAbilitiesHighlight,
+    MechAbilityStages,
+    TrainingLocationSelects,
+    WarMachineState,
+} from "../../../../types"
 import { ClipThing } from "../../../Common/ClipThing"
 import { MoveCommandBT } from "../../WarMachine/WarMachineItem/MoveCommandBT"
+import { CropMaxLengthText } from "../../../../theme/styles"
 
 const trainingGameAbilities: GameAbility[] = [
     {
@@ -19,7 +28,7 @@ const trainingGameAbilities: GameAbility[] = [
         description: "Support your Syndicate with a well-timed repair.",
         text_colour: "#FFFFFF",
         current_sups: "0",
-        location_select_type: "LOCATION_SELECT",
+        location_select_type: LocationSelectType.LocationSelect,
         identity: "",
         ability_offering_id: "",
     },
@@ -33,7 +42,7 @@ const trainingGameAbilities: GameAbility[] = [
         description: "Consume your remaining shield for an explosive defence mechanism.",
         text_colour: "#000000",
         current_sups: "0",
-        location_select_type: "LOCATION_SELECT",
+        location_select_type: LocationSelectType.LocationSelect,
         identity: "",
         ability_offering_id: "",
     },
@@ -157,12 +166,7 @@ const AbilityItem = ({ ability }: { hash: string; participantID: number; ability
                     pt: ".4rem",
                     lineHeight: 1,
                     fontWeight: "fontWeightBold",
-                    display: "-webkit-box",
-                    overflow: "hidden",
-                    overflowWrap: "anywhere",
-                    textOverflow: "ellipsis",
-                    WebkitLineClamp: 1, // change to max number of lines
-                    WebkitBoxOrient: "vertical",
+                    ...CropMaxLengthText,
                 }}
             >
                 {ready ? label : `${remainSeconds}s`}

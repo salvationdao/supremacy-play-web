@@ -19,6 +19,8 @@ import DropdownArrow from "!@svgr/webpack!./svg/DropdownArrow.svg"
 import Emoji from "!@svgr/webpack!./svg/Emoji.svg"
 import EmojiSelector from "!@svgr/webpack!./svg/EmojiSelector.svg"
 import Energy from "!@svgr/webpack!./svg/Energy.svg"
+import Headphone from "!@svgr/webpack!./svg/Headphone.svg"
+import Microphone from "!@svgr/webpack!./svg/Microphone.svg"
 import ExternalLink from "!@svgr/webpack!./svg/ExternalLink.svg"
 import FastRepair from "!@svgr/webpack!./svg/FastRepair.svg"
 import FontCase from "!@svgr/webpack!./svg/FontCase.svg"
@@ -54,6 +56,7 @@ import Remove from "!@svgr/webpack!./svg/Remove.svg"
 import Save from "!@svgr/webpack!./svg/Save.svg"
 import Scrolldown from "!@svgr/webpack!./svg/Scrolldown.svg"
 import Send from "!@svgr/webpack!./svg/Send.svg"
+import VoiceChat from "!@svgr/webpack!./svg/VoiceChat.svg"
 import Shield from "!@svgr/webpack!./svg/Shield.svg"
 import ShieldRegen from "!@svgr/webpack!./svg/ShieldRegen.svg"
 import Shop from "!@svgr/webpack!./svg/Shop.svg"
@@ -93,6 +96,7 @@ import Drag from "!react-svg-loader!./svg/Drag.svg"
 import Edit from "!react-svg-loader!./svg/Edit.svg"
 import Emergency from "!react-svg-loader!./svg/Emergency.svg"
 import Facebook from "!react-svg-loader!./svg/Facebook.svg"
+import Feedback from "!react-svg-loader!./svg/Feedback.svg"
 import Filter from "!react-svg-loader!./svg/Filter.svg"
 import Fullscreen from "!react-svg-loader!./svg/Fullscreen.svg"
 import GoldBars from "!react-svg-loader!./svg/GoldBars.svg"
@@ -361,6 +365,24 @@ export const SvgWrapper = React.memo(function SvgWrapper({ fill, stroke, strokeW
         />
     )
 })
+
+export const SvgVoice: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <VoiceChat />
+    </SvgWrapper>
+)
+
+export const SvgHeadphone: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Headphone />
+    </SvgWrapper>
+)
+
+export const SvgMicrophone: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Microphone />
+    </SvgWrapper>
+)
 
 export const SvgSupToken: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
@@ -1378,5 +1400,11 @@ export const SvgWrench: React.VoidFunctionComponent<SvgWrapperProps> = (props) =
 export const SvgGrid: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Grid />
+    </SvgWrapper>
+)
+
+export const SvgFeedback: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Feedback />
     </SvgWrapper>
 )

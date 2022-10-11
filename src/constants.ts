@@ -1,7 +1,7 @@
 import BigNumber from "bignumber.js"
 import ReactGA from "react-ga"
 
-const USE_PROD = false
+const USE_PROD_DATA = process.env.REACT_APP_PROD_DATA === "true"
 
 // Envar stuff
 export const STAGING_OR_DEV_ONLY = process.env.REACT_APP_ENVIRONMENT !== "production"
@@ -43,7 +43,7 @@ export const BATTLE_ARENA_OPEN = !!(
 export const IS_TESTING_MODE = STAGING_ONLY
 export const NEXT_RESET_TIME = new Date("Sep 07 2022 14:00:00 GMT+0800 (AWST)")
 
-if (USE_PROD) {
+if (USE_PROD_DATA) {
     GAME_SERVER_HOSTNAME = process.env.REACT_APP_GAME_SERVER_HOSTNAME || "api.supremacy.game"
     PASSPORT_WEB = process.env.REACT_APP_PASSPORT_WEB || "https://passport.xsyn.io/"
     PASSPORT_SERVER_HOST = process.env.REACT_APP_PASSPORT_SERVER_HOST || "api.xsyn.io"
@@ -126,7 +126,7 @@ export const TELEGRAM_BOT_URL = process.env.REACT_APP_TELEGRAM_BOT_URL || "https
 export const STRIPE_PUBLISHABLE_KEY = process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || ""
 
 // Google analytics
-export const GA_TAG = PROD_ONLY ? "G-BRBP3B75ZM" : STAGING_ONLY ? "G-FJ55GQ2WG9" : ""
-ReactGA.initialize("UA-000000-01")
+export const GA_TAG = PROD_ONLY ? "G-BRBP3B75ZM" : STAGING_ONLY ? "G-FJ55GQ2WG9" : USE_PROD_DATA ? "G-KFL5RHDV0Z" : "G-2KKQ46N29B"
+ReactGA.initialize(GA_TAG)
 
 export const TRAINING_ASSETS = "https://afiles.ninja-cdn.com/supremacy-stream-site/training"

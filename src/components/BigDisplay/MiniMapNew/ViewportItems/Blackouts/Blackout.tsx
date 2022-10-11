@@ -12,19 +12,19 @@ const propsAreEqual = (prevProps: BlackoutProps, nextProps: BlackoutProps) => {
 }
 
 export const Blackout = React.memo(function Blackout({ blackout }: BlackoutProps) {
-    const { pixiMainItems, gridSizeRef, gridCellToViewportPosition } = useMiniMapPixi()
+    const { pixiMiniMapPixi, gridSizeRef, gridCellToViewportPosition } = useMiniMapPixi()
     const [pixiBlackout, setPixiBlackout] = useState<PixiBlackout>()
 
     // Initial setup
     useEffect(() => {
-        if (!pixiMainItems) return
+        if (!pixiMiniMapPixi) return
         const pixiBlackout = new PixiBlackout(blackout, gridSizeRef, gridCellToViewportPosition)
-        pixiMainItems.viewport.addChild(pixiBlackout.root)
+        pixiMiniMapPixi.viewport.addChild(pixiBlackout.root)
         setPixiBlackout((prev) => {
             prev?.destroy()
             return pixiBlackout
         })
-    }, [pixiMainItems, blackout, gridSizeRef, gridCellToViewportPosition])
+    }, [pixiMiniMapPixi, blackout, gridSizeRef, gridCellToViewportPosition])
 
     // Cleanup
     useEffect(() => {

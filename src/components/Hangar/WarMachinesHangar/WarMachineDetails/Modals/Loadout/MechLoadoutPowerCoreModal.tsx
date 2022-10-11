@@ -11,7 +11,7 @@ import { usePagination, useToggle } from "../../../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../../../theme/theme"
-import { PowerCore, PowerCoreSize } from "../../../../../../types"
+import { PlayerAsset, PowerCore, PowerCoreSize } from "../../../../../../types"
 import { SortTypeLabel } from "../../../../../../types/marketplace"
 import { ClipThing } from "../../../../../Common/ClipThing"
 import { PageHeader } from "../../../../../Common/PageHeader"
@@ -54,7 +54,7 @@ interface GetPowerCoreStatFilter {
 }
 
 interface GetPowerCoresResponse {
-    power_cores: PowerCore[]
+    power_cores: PlayerAsset[]
     total: number
 }
 
@@ -75,7 +75,7 @@ export const MechLoadoutPowerCoreModal = ({ onClose, onConfirm, equipped, powerC
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
 
-    const [powerCores, setPowerCores] = useState<PowerCore[]>([])
+    const [powerCores, setPowerCores] = useState<PlayerAsset[]>([])
     const [selectedPowerCore, setSelectedPowerCore] = useState<PowerCore>()
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()

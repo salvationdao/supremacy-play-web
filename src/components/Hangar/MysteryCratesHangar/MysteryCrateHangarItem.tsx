@@ -15,6 +15,7 @@ import { ClipThing } from "../../Common/ClipThing"
 import { FancyButton } from "../../Common/FancyButton"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { OpeningCrate } from "./MysteryCratesHangar"
+import { CropMaxLengthText } from "../../../theme/styles"
 
 interface MysteryCrateStoreItemProps {
     crate: MysteryCrate
@@ -249,12 +250,7 @@ export const CrateCommonArea = ({
                     sx={{
                         fontFamily: fonts.nostromoBlack,
                         color: theme.factionTheme.primary,
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1,
-                        WebkitBoxOrient: "vertical",
+                        ...CropMaxLengthText,
                     }}
                 >
                     {label}
@@ -262,12 +258,8 @@ export const CrateCommonArea = ({
 
                 <Typography
                     sx={{
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
+                        ...CropMaxLengthText,
                         WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
                     }}
                 >
                     {description}

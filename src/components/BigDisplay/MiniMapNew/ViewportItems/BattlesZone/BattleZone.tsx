@@ -14,19 +14,19 @@ export const BattleZone = React.memo(function BattleZone() {
 })
 
 const BattleZoneInner = React.memo(function BattleZone({ battleZone }: { battleZone: BattleZoneStruct }) {
-    const { pixiMainItems, clientPositionToViewportPosition, gridSizeRef } = useMiniMapPixi()
+    const { pixiMiniMapPixi, clientPositionToViewportPosition, gridSizeRef, mapRef } = useMiniMapPixi()
     const [pixiBattleZone, setPixiBattleZone] = useState<PixiBattleZone>()
 
     // Initial setup
     useEffect(() => {
-        if (!pixiMainItems || pixiBattleZone) return
-        const pbz = new PixiBattleZone(pixiMainItems.viewport, gridSizeRef, clientPositionToViewportPosition, battleZone)
-        pixiMainItems.viewport.addChild(pbz.root)
+        if (!pixiMiniMapPixi || pixiBattleZone) return
+        const pbz = new PixiBattleZone(pixiMiniMapPixi.viewport, gridSizeRef, clientPositionToViewportPosition, battleZone, mapRef)
+        pixiMiniMapPixi.viewport.addChild(pbz.root)
         setPixiBattleZone((prev) => {
             prev?.destroy()
             return pbz
         })
-    }, [pixiMainItems, clientPositionToViewportPosition, gridSizeRef, pixiBattleZone, battleZone])
+    }, [pixiMiniMapPixi, clientPositionToViewportPosition, gridSizeRef, pixiBattleZone, battleZone, mapRef])
 
     // Cleanup
     useEffect(() => {

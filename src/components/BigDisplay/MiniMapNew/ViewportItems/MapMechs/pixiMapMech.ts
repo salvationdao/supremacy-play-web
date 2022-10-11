@@ -10,7 +10,7 @@ import { pulseParticlesConfig } from "../../../../../pixi/particleConfigs"
 import { PixiImageIcon } from "../../../../../pixi/pixiImageIcon"
 import { PixiProgressBar } from "../../../../../pixi/pixiProgressBar"
 import { colors, fonts } from "../../../../../theme/theme"
-import { BlueprintPlayerAbility, Dimension, DisplayedAbility, GameAbility, Position } from "../../../../../types"
+import { AnyAbility, Dimension, DisplayedAbility, Position } from "../../../../../types"
 
 export class PixiMapMech {
     root: PIXI.Container<PIXI.DisplayObject>
@@ -30,6 +30,7 @@ export class PixiMapMech {
     private iconDimension: Dimension | undefined
     private mechHash: string
     private gridSizeRef: React.MutableRefObject<Dimension>
+    private mapItemMinSize: React.MutableRefObject<number>
     private primaryColor: string | undefined
     private cachedZIndex = 10
     private abilityToApply: PixiImageIcon | undefined
@@ -41,9 +42,10 @@ export class PixiMapMech {
         | undefined
         | (({ startCoord, endCoord, mechHash }: { startCoord?: Position | undefined; endCoord?: Position | undefined; mechHash?: string | undefined }) => void)
 
-    constructor(label: number, mechHash: string, gridSizeRef: React.MutableRefObject<Dimension>) {
+    constructor(label: number, mechHash: string, gridSizeRef: React.MutableRefObject<Dimension>, mapItemMinSize: React.MutableRefObject<number>) {
         this.gridSizeRef = gridSizeRef
         this.mechHash = mechHash
+        this.mapItemMinSize = mapItemMinSize
 
         // Create container for everything
         this.root = new PIXI.Container()
@@ -54,11 +56,11 @@ export class PixiMapMech {
         this.rootInner = new PIXI.Container()
         this.rootInner.x = -100
         this.rootInner.y = -100
-        this.rootInner.interactive = true
-        this.rootInner.buttonMode = true
         this.rootInner.zIndex = 3
         this.rootInner2 = new PIXI.Container()
         this.rootInner2.sortableChildren = true
+        this.rootInner2.interactive = true
+        this.rootInner2.buttonMode = true
 
         // Rect
         this.rectGraphics = new PIXI.Graphics()
@@ -109,7 +111,6 @@ export class PixiMapMech {
         this.particlesContainer = new PIXI.Container()
 
         // Add everything to container
-        this.rootInner2.addChild(this.particlesContainer)
         this.rootInner2.addChild(this.rectGraphics)
         this.rootInner2.addChild(this.blinkingBorder)
         this.rootInner2.addChild(this.arrowGraphics)
@@ -119,6 +120,7 @@ export class PixiMapMech {
         this.rootInner2.addChild(this.highlightedCircle)
         this.rootInner2.addChild(this.dashedBox)
         this.rootInner2.addChild(this.skull)
+        this.rootInner.addChild(this.particlesContainer)
         this.rootInner.addChild(this.rootInner2)
         this.root.addChild(this.rootInner)
         this.root.addChild(this.mechMoveDashedLine)
@@ -209,7 +211,7 @@ export class PixiMapMech {
         this.updateZIndex(10, true)
 
         // Enlarge the map mech
-        ease.add(this.rootInner, { scale: 1.5 }, { duration: 100, ease: "linear", removeExisting: true })
+        ease.add(this.rootInner, { scale: 1.2 }, { duration: 100, ease: "linear", removeExisting: true })
     }
 
     unhighlightMech() {
@@ -264,6 +266,7 @@ export class PixiMapMech {
     }
 
     updateVisibility(isVisible: boolean) {
+        this.mechMoveDashedLine.visible = isVisible && this.hpBar.percent > 0
         this.rootInner.visible = isVisible
     }
 
@@ -285,7 +288,7 @@ export class PixiMapMech {
                     color: HEXToVBColor(this.primaryColor),
                     alpha: 0.8,
                 })
-                dash.moveTo(this.rootInner.x + this.rectGraphics.width / 2, this.rootInner.y + this.rectGraphics.height / 2).lineTo(newX, newY)
+                dash.moveTo(this.rootInner.x, this.rootInner.y).lineTo(newX, newY)
             }
 
             // Particles stuff
@@ -300,10 +303,17 @@ export class PixiMapMech {
     }
 
     // Ability to by applied to the mech
-    applyAbility(ability: GameAbility | BlueprintPlayerAbility) {
+    applyAbility(anyAbility: AnyAbility) {
         if (!this.iconDimension) return
 
-        this.abilityToApply = new PixiImageIcon(ability.image_url, this.iconDimension.width / 1.6, this.iconDimension.height / 1.6, ability.colour, true, 1)
+        this.abilityToApply = new PixiImageIcon(
+            anyAbility.image_url,
+            Math.max(this.iconDimension.width, this.mapItemMinSize.current) / 1.6,
+            Math.max(this.iconDimension.height, this.mapItemMinSize.current) / 1.6,
+            anyAbility.colour,
+            true,
+            1,
+        )
         this.abilityToApply.startCountdown(2, 3, () => {
             this.onTargetConfirm && this.onTargetConfirm({ mechHash: this.mechHash })
             this.unApplyAbility()
@@ -373,20 +383,24 @@ export class PixiMapMech {
     pulseEffect(displayAbility: DisplayedAbility | undefined) {
         if (displayAbility) {
             const config = merge(pulseParticlesConfig, {
-                color: { start: "#FFFFFF", end: "#FFFFFF" },
+                color: { start: this.primaryColor, end: this.primaryColor },
+                alpha: {
+                    start: 1,
+                    end: 0.8,
+                },
                 scale: {
-                    start: 0.4,
-                    end: 0.1,
+                    start: (0.2 * this.gridSizeRef.current.width) / 10,
+                    end: (0.1 * this.gridSizeRef.current.width) / 10,
                 },
                 speed: {
-                    start: 60,
-                    end: 60,
+                    start: 24,
+                    end: 12,
                 },
                 lifetime: {
-                    min: (this.gridSizeRef.current.width * 2.3) / 60,
-                    max: (this.gridSizeRef.current.width * 2.3) / 60,
+                    min: (this.gridSizeRef.current.width * 2.3) / 20,
+                    max: (this.gridSizeRef.current.width * 2.3) / 20,
                 },
-                frequency: 0.4,
+                frequency: 0.8,
             })
             this.emitter?.destroy()
             this.emitter = new particles.Emitter(this.particlesContainer, CircleParticle, config)
@@ -394,9 +408,9 @@ export class PixiMapMech {
 
             // Fades in
             this.particlesContainer.alpha = 0
-            ease.add(this.particlesContainer, { alpha: 1 }, { duration: 500, ease: "linear", removeExisting: true })
+            ease.add(this.particlesContainer, { alpha: 1 }, { duration: 200, ease: "linear", removeExisting: true })
         } else {
-            ease.add(this.particlesContainer, { alpha: 0 }, { duration: 500, ease: "linear", removeExisting: true })
+            ease.add(this.particlesContainer, { alpha: 0 }, { duration: 200, ease: "linear", removeExisting: true })
             setTimeout(() => {
                 this.emitter?.destroy()
             }, 1000)

@@ -7,13 +7,14 @@ import { getRarityDeets, getWeaponDamageTypeColor, getWeaponTypeColor, shadeColo
 import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { Weapon } from "../../../types"
+import { PlayerAsset, Weapon } from "../../../types"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { General } from "../../Marketplace/Common/MarketItem/General"
 import { WeaponBarStats } from "./Common/WeaponBarStats"
+import { CropMaxLengthText } from "../../../theme/styles"
 
 interface WeaponHangarItemProps {
-    weapon: Weapon
+    weapon: PlayerAsset
     isGridView?: boolean
 }
 
@@ -124,7 +125,7 @@ export const WeaponCommonArea = ({
     primaryColor: string
     secondaryColor: string
     isGridView?: boolean
-    weapon?: Weapon
+    weapon?: PlayerAsset
     weaponDetails?: Weapon
     isExpanded?: boolean
     toggleIsExpanded?: (value?: boolean) => void
@@ -133,8 +134,8 @@ export const WeaponCommonArea = ({
     const backgroundColor = useMemo(() => shadeColor(primaryColor, -90), [primaryColor])
 
     const weap = weaponDetails || weapon
-    const avatarUrl = weaponDetails?.weapon_skin?.avatar_url || weaponDetails?.avatar_url || weapon?.avatar_url || ""
-    const imageUrl = weaponDetails?.weapon_skin?.image_url || weaponDetails?.image_url || weapon?.image_url || ""
+    const avatarUrl = weaponDetails?.weapon_skin?.avatar_url || weaponDetails?.avatar_url || ""
+    const imageUrl = weaponDetails?.weapon_skin?.image_url || weaponDetails?.image_url || ""
 
     return (
         <Stack direction={isGridView ? "column" : "row"} alignItems={isGridView ? "flex-start" : "center"} spacing="1.4rem" sx={{ position: "relative" }}>
@@ -167,36 +168,26 @@ export const WeaponCommonArea = ({
                 }}
             >
                 <Stack direction="row" alignItems="center" spacing=".5rem">
-                    {weap?.weapon_skin && (
+                    {weaponDetails?.weapon_skin && (
                         <Typography
                             variant="body2"
                             sx={{
                                 color: rarityDeets.color,
                                 fontFamily: fonts.nostromoBold,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
-                                WebkitLineClamp: 1,
-                                WebkitBoxOrient: "vertical",
+                                ...CropMaxLengthText,
                             }}
                         >
                             {rarityDeets.label}
                         </Typography>
                     )}
 
-                    <SvgSkin fill={weap?.weapon_skin ? rarityDeets.color : `${colors.darkGrey}80`} size="1.7rem" />
+                    <SvgSkin fill={weaponDetails?.weapon_skin ? rarityDeets.color : `${colors.darkGrey}80`} size="1.7rem" />
                 </Stack>
 
                 <Typography
                     sx={{
                         fontFamily: fonts.nostromoBlack,
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1, // change to max number of lines
-                        WebkitBoxOrient: "vertical",
+                        ...CropMaxLengthText,
                     }}
                 >
                     {weap?.label}
@@ -207,15 +198,10 @@ export const WeaponCommonArea = ({
                     sx={{
                         color: getWeaponTypeColor(weaponDetails?.weapon_type),
                         fontFamily: fonts.nostromoBold,
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        overflowWrap: "anywhere",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 1, // change to max number of lines
-                        WebkitBoxOrient: "vertical",
+                        ...CropMaxLengthText,
                     }}
                 >
-                    {weap?.weapon_type}
+                    {weaponDetails?.weapon_type}
                 </Typography>
 
                 {toggleIsExpanded && !isGridView && (
@@ -259,14 +245,17 @@ export const WeaponCommonArea = ({
                         >
                             <Stack direction="row" spacing="4rem" sx={{ p: "1.5rem 2.1rem", height: "100%" }}>
                                 <General title="DAMAGE TYPE" isGridView={isGridView}>
-                                    <Typography variant="h6" sx={{ color: getWeaponDamageTypeColor(weap?.default_damage_type), fontWeight: "fontWeightBold" }}>
-                                        {weap?.default_damage_type}
+                                    <Typography
+                                        variant="h6"
+                                        sx={{ color: getWeaponDamageTypeColor(weaponDetails?.default_damage_type), fontWeight: "fontWeightBold" }}
+                                    >
+                                        {weaponDetails?.default_damage_type}
                                     </Typography>
                                 </General>
 
-                                {weap && (
+                                {weaponDetails && (
                                     <Stack justifyContent="center" sx={{ width: "40rem" }}>
-                                        <WeaponBarStats fontSize="1.4rem" weapon={weap} color={primaryColor} iconVersion />
+                                        <WeaponBarStats fontSize="1.4rem" weapon={weaponDetails} color={primaryColor} iconVersion />
                                     </Stack>
                                 )}
                             </Stack>

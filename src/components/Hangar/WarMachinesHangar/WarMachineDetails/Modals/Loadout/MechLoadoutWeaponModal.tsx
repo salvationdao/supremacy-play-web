@@ -11,7 +11,7 @@ import { usePagination, useToggle } from "../../../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../../keys"
 import { colors, fonts } from "../../../../../../theme/theme"
-import { Weapon, WeaponType } from "../../../../../../types"
+import { PlayerAsset, Weapon, WeaponType } from "../../../../../../types"
 import { SortTypeLabel } from "../../../../../../types/marketplace"
 import { PageHeader } from "../../../../../Common/PageHeader"
 import { ChipFilter } from "../../../../../Common/SortAndFilters/ChipFilterSection"
@@ -56,7 +56,7 @@ export const MechLoadoutWeaponModal = ({
     const secondaryColor = theme.factionTheme.secondary
 
     // Weapon selection
-    const [weapons, setWeapons] = useState<Weapon[]>([])
+    const [weapons, setWeapons] = useState<PlayerAsset[]>([])
     const [selectedWeapon, setSelectedWeapon] = useState<Weapon>()
     const [inheritSkin, setInheritSkin] = useState(false)
     const skinInheritable = useMemo(
@@ -80,7 +80,7 @@ export const MechLoadoutWeaponModal = ({
     const [search, setSearch] = useState("")
     const [weaponTypes, setWeaponTypes] = useState<string[]>([])
     const [rarities, setRarities] = useState<string[]>([])
-    const [equippedStatuses, setEquippedStatuses] = useState<string[]>([])
+    const [equippedStatuses, setEquippedStatuses] = useState<string[]>(["unequipped"])
     const [ammoRange, setAmmoRange] = useState<number[] | undefined>()
     const [damageRange, setDamageRange] = useState<number[] | undefined>()
     const [damageFalloffRange, setDamageFalloffRange] = useState<number[] | undefined>()

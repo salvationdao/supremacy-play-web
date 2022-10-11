@@ -7,6 +7,7 @@ import { LocationSelectType, PlayerAbility } from "../../../../types"
 import { FancyButton } from "../../../Common/FancyButton"
 import { TooltipHelper } from "../../../Common/TooltipHelper"
 import { PlayerAbilityCooldownIndicator } from "./PlayerAbilityCooldownIndicator"
+import { CropMaxLengthText } from "../../../../theme/styles"
 
 interface PlayerAbilityCardProps {
     playerAbility: PlayerAbility
@@ -25,7 +26,7 @@ const propsAreEqual = (prevProps: PlayerAbilityCardProps, nextProps: PlayerAbili
 }
 
 export const PlayerAbilityCard = React.memo(function PlayerAbilityCard({ playerAbility, viewOnly }: PlayerAbilityCardProps) {
-    const { usePlayerAbility } = useMiniMapPixi()
+    const { useAnyAbility } = useMiniMapPixi()
     const [disabled, setDisabled] = useState(false)
 
     const checkIfDisabled = useCallback(() => {
@@ -67,8 +68,8 @@ export const PlayerAbilityCard = React.memo(function PlayerAbilityCard({ playerA
 
     const onActivate = useCallback(() => {
         if (!playerAbility) return
-        usePlayerAbility.current(playerAbility)
-    }, [playerAbility, usePlayerAbility])
+        useAnyAbility.current(playerAbility.ability)
+    }, [playerAbility, useAnyAbility])
 
     const disable = viewOnly || disabled
 
@@ -176,12 +177,8 @@ export const PlayerAbilityCard = React.memo(function PlayerAbilityCard({ playerA
                             variant="body2"
                             sx={{
                                 lineHeight: 1.2,
-                                display: "-webkit-box",
-                                overflow: "hidden",
-                                overflowWrap: "anywhere",
-                                textOverflow: "ellipsis",
+                                ...CropMaxLengthText,
                                 WebkitLineClamp: 2,
-                                WebkitBoxOrient: "vertical",
                                 fontWeight: "fontWeightBold",
                             }}
                         >

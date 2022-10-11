@@ -1,4 +1,4 @@
-import { RarityEnum } from "./assets"
+import { MechBasic, RarityEnum } from "./assets"
 import { GameMap } from "./game"
 import { User } from "./user"
 
@@ -25,9 +25,17 @@ export interface BattleLobby {
     game_map?: GameMap
     is_private: boolean
     battle_lobbies_mechs: BattleLobbiesMech[]
+
+    opted_in_rm_supporters: BattleLobbySupporter[]
+    opted_in_zai_supporters: BattleLobbySupporter[]
+    opted_in_bc_supporters: BattleLobbySupporter[]
+
+    selected_rm_supporters: BattleLobbySupporter[]
+    selected_zai_supporters: BattleLobbySupporter[]
+    selected_bc_supporters: BattleLobbySupporter[]
 }
 
-export interface BattleLobbiesMech {
+export interface BattleLobbiesMech extends MechBasic {
     mech_id: string
     battle_lobby_id: string
     name: string
@@ -38,6 +46,14 @@ export interface BattleLobbiesMech {
     owner?: User
     is_destroyed: boolean
     weapon_slots: MechWeaponSlot[]
+}
+
+export interface BattleLobbySupporter {
+    id: string
+    username: string
+    faction_id: string
+    avatar_url?: string
+    custom_avatar_id?: string
 }
 
 export interface MechWeaponSlot {
@@ -66,4 +82,9 @@ export interface Weapon {
     weapon_type: string
     is_melee: boolean
     is_arced: boolean
+}
+
+export interface PlayerQueueStatus {
+    total_queued: number
+    queue_limit: number
 }

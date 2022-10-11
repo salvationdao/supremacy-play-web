@@ -7,7 +7,7 @@ import { usePagination } from "../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
-import { Keycard, MechBasic, MysteryCrate, Weapon } from "../../../../types"
+import { Keycard, MechBasic, MysteryCrate, PlayerAsset } from "../../../../types"
 import { ItemType } from "../../../../types/marketplace"
 import { PageHeader } from "../../../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../../../Common/TotalAndPageSizeOptions"
@@ -17,7 +17,7 @@ import { AssetToSellItem } from "./AssetToSellItem"
 interface GetAssetsResponse {
     mechs: MechBasic[]
     keycards: Keycard[]
-    weapons: Weapon[]
+    weapons: PlayerAsset[]
     mystery_crates: MysteryCrate[]
     total: number
 }
