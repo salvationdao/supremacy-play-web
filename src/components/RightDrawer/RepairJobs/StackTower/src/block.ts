@@ -182,7 +182,6 @@ export class NormalBlock extends Block {
             this.reverseDirection()
             this.position[this.axis] = clamp(-this.MOVE_AMOUNT + 1, value, this.MOVE_AMOUNT - 1)
         }
-
         this.position[this.axis] += this.direction * (1 + speed) * (elapsedTime * (baseFrameRate / 1000))
         this.mesh.position[this.axis] = this.position[this.axis]
     }
@@ -190,15 +189,19 @@ export class NormalBlock extends Block {
 
 // Runs a tick
 export class FallingBlock extends Block {
-    constructor(prevBlock: PrevBlock) {
+    private distance: number
+
+    constructor(prevBlock: PrevBlock, distance: number) {
         super(prevBlock, true, true)
+        this.distance = distance
         this.speed *= 1.8
         this.direction = prevBlock.direction
     }
 
     tick() {
         this.position.y -= Math.abs(this.speed)
-        this.mesh.rotation[this.axis === Axis.x ? Axis.z : Axis.x] += (this.axis === Axis.x ? -1 : 1) * (this.direction / 6)
+        this.mesh.rotation[this.axis === Axis.x ? Axis.z : Axis.x] +=
+            (this.axis === Axis.x ? -1 : 1) * (this.direction / 6) * (-this.distance / Math.abs(this.distance))
         this.mesh.position.y = this.position.y
     }
 }

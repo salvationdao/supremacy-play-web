@@ -235,15 +235,18 @@ export class Game {
             const dimensionFalling = { ...curBlock.dimension }
             dimensionFalling[dimensionAlongAxis] = Math.abs(distance)
 
-            const fallingBlock = new FallingBlock({
-                dimension: dimensionFalling,
-                position: positionFalling,
-                direction: curBlock.direction,
-                axis,
-                topTexture: curBlock.topTexture,
-                frontTexture: curBlock.frontTexture,
-                rightTexture: curBlock.rightTexture,
-            })
+            const fallingBlock = new FallingBlock(
+                {
+                    dimension: dimensionFalling,
+                    position: positionFalling,
+                    direction: curBlock.direction,
+                    axis,
+                    topTexture: curBlock.topTexture,
+                    frontTexture: curBlock.frontTexture,
+                    rightTexture: curBlock.rightTexture,
+                },
+                distance,
+            )
 
             this.fallingBlocks.push(fallingBlock)
             this.stage.add(fallingBlock.mesh)
