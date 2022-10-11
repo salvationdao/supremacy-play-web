@@ -33,7 +33,7 @@ export class Game {
     blocks: NormalBlock[]
     fallingBlocks: FallingBlock[]
     setGameState: React.Dispatch<React.SetStateAction<GameState>>
-    oneNewGamePattern: (gamePattern: GamePattern) => void
+    oneNewGamePattern: React.MutableRefObject<(gamePattern: GamePattern) => Promise<void>>
     triggerWith: TriggerWith
     animationID: number | null
     timestamp: number
@@ -45,7 +45,7 @@ export class Game {
     constructor(
         backgroundColor: string,
         _setGameState: React.Dispatch<React.SetStateAction<GameState>>,
-        _oneNewGamePattern: (gamePattern: GamePattern) => void,
+        _oneNewGamePattern: React.MutableRefObject<(gamePattern: GamePattern) => Promise<void>>,
     ) {
         const gameContainer = document.getElementById("game")
         const container = document.createElement("div")
@@ -152,7 +152,7 @@ export class Game {
                 this.stage.remove(lastBlock.mesh)
                 this.setState(GameState.Ended)
                 this.stage.setCamera(Math.max(this.blocks.length * blockConfig.initHeight - 6, 6) + cameraConfig.offsetY)
-                this.oneNewGamePattern({
+                this.oneNewGamePattern.current({
                     score: this.score,
                     is_failed: true,
                     dimension: lastBlock.dimension,
@@ -204,7 +204,7 @@ export class Game {
         this.score = Math.max(this.blocks.length - 1, 0)
 
         if (lastBlock) {
-            this.oneNewGamePattern({
+            this.oneNewGamePattern.current({
                 score: this.score,
                 is_failed: false,
                 dimension: lastBlock.dimension,

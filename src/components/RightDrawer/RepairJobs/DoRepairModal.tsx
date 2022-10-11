@@ -175,7 +175,7 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
             </>
         ) : null
 
-        if (remainDamagedBlocks <= 0) {
+        if ((repairJob || repairStatus) && remainDamagedBlocks <= 0) {
             return (
                 <Stack spacing="2rem" alignItems="center">
                     {earnings}
@@ -205,7 +205,7 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
             )
         }
 
-        if (isFinished) {
+        if (repairJob && isFinished) {
             return (
                 <Stack spacing="2rem" alignItems="center">
                     <Typography variant="h4" sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack }}>
@@ -303,19 +303,20 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
 
         return null
     }, [
-        isFinished,
-        backgroundColor,
-        isRegistering,
-        isSubmitting,
-        onClose,
-        primaryColor,
-        registerAgentRepair,
-        remainDamagedBlocks,
-        repairAgent,
-        repairJob,
-        submitError,
         submitSuccess,
+        repairJob,
+        primaryColor,
+        backgroundColor,
+        repairStatus,
+        remainDamagedBlocks,
+        isFinished,
+        submitError,
+        isSubmitting,
+        repairAgent,
+        onClose,
+        registerAgentRepair,
         captchaToken,
+        isRegistering,
     ])
 
     return (
@@ -430,15 +431,17 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
                             </Box>
 
                             {/* Support other mini-games in the future */}
-                            <StackTower
-                                key={repairAgent?.id}
-                                primaryColor={primaryColor}
-                                disableGame={!repairAgent || !!submitError || isSubmitting || isFinished}
-                                repairAgent={repairAgent}
-                                setIsSubmitting={setIsSubmitting}
-                                setSubmitError={setSubmitError}
-                                onSubmitted={onSubmitted}
-                            />
+                            {repairAgent && (
+                                <StackTower
+                                    key={repairAgent?.id}
+                                    primaryColor={primaryColor}
+                                    disableGame={!repairAgent || !!submitError || isSubmitting || isFinished}
+                                    repairAgent={repairAgent}
+                                    setIsSubmitting={setIsSubmitting}
+                                    setSubmitError={setSubmitError}
+                                    onSubmitted={onSubmitted}
+                                />
+                            )}
                         </Box>
 
                         {/* Abandon button */}
