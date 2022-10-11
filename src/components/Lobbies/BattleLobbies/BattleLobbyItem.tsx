@@ -1,5 +1,6 @@
 import { Avatar, Box, Stack, Typography } from "@mui/material"
 import React, { useMemo, useState } from "react"
+import { Avatar as SupremacyAvatar } from "../../Avatar"
 import { SvgLock, SvgSupToken } from "../../../assets"
 import { useArena, useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -10,6 +11,8 @@ import { ClipThing } from "../../Common/ClipThing"
 import { BattleLobbyJoinModal } from "./BattleLobbyJoinModal"
 import { BattleLobbyFaction, MyFactionLobbySlots, OtherFactionLobbySlots } from "../BattleLobbyMech/BattleLobbyMechSlots"
 import { CropMaxLengthText } from "../../../theme/styles"
+import { FactionIDs } from "../../../constants"
+import { OptInButton } from "../../UpcomingBattle/UpcomingBattle"
 
 interface BattleLobbyItemProps {
     battleLobby: BattleLobby
@@ -51,10 +54,14 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
         second_faction_cut,
         third_faction_cut,
         assigned_to_arena_id,
+        battle_lobbies_mechs,
+        ready_at,
+        selected_zai_supporters,
+        selected_rm_supporters,
+        selected_bc_supporters,
     } = battleLobby
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
-    const { battle_lobbies_mechs, ready_at } = battleLobby
     const assignedToArenaName = useMemo(() => arenaList.find((a) => a.id === assigned_to_arena_id)?.name, [arenaList, assigned_to_arena_id])
 
     const [showJoinModal, setShowJoinModal] = useState(false)
@@ -68,6 +75,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                 const bls: BattleLobbyFaction = {
                     faction: f,
                     mechSlots: [],
+                    supporterSlots: [],
                 }
 
                 battle_lobbies_mechs.forEach((blm) => {
@@ -83,6 +91,19 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                     bls.mechSlots.push(null)
                 }
 
+                // since supporters are already split up by faction, use a switch to add the right one to this object
+                switch (f.id) {
+                    case FactionIDs.ZHI:
+                        bls.supporterSlots.push(...(selected_zai_supporters || []))
+                        break
+                    case FactionIDs.BC:
+                        bls.supporterSlots.push(...(selected_bc_supporters || []))
+                        break
+                    case FactionIDs.RM:
+                        bls.supporterSlots.push(...(selected_rm_supporters || []))
+                        break
+                }
+
                 if (f.id === factionID) {
                     myFactionLobbySlots = bls
                 } else {
@@ -91,7 +112,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
             })
 
         return [myFactionLobbySlots, otherFactionLobbySlots]
-    }, [factionsAll, battle_lobbies_mechs, factionID])
+    }, [factionsAll, battle_lobbies_mechs, factionID, selected_zai_supporters, selected_rm_supporters, selected_bc_supporters])
 
     const entryFeeDisplay = useMemo(() => {
         if (entry_fee && entry_fee !== "0")
@@ -455,6 +476,53 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                 </ClipThing>
                             )}
                         </Stack>
+                        {accessCode && (
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "center",
+                                    marginBottom: "1rem",
+                                }}
+                            >
+                                <Typography variant={"h5"}>Battle Supporters</Typography>
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        justifyContent: "space-evenly",
+                                        marginBottom: "1rem",
+                                    }}
+                                >
+                                    {myFactionLobbySlots?.supporterSlots.map((sup, i) => {
+                                        return (
+                                            <SupremacyAvatar
+                                                marginLeft={0}
+                                                zIndexAdded={i}
+                                                key={`${sup.id}`}
+                                                username={sup.username}
+                                                factionID={sup.faction_id}
+                                                avatarURL={sup.avatar_url}
+                                                customAvatarID={sup.custom_avatar_id}
+                                            />
+                                        )
+                                    })}
+                                    {/* users faction, display opt in buttons*/}
+                                    {myFactionLobbySlots &&
+                                        myFactionLobbySlots?.supporterSlots.length < 5 &&
+                                        new Array(5 - myFactionLobbySlots?.supporterSlots.length)
+                                            .fill(0)
+                                            .map((_, i) => (
+                                                <OptInButton
+                                                    key={`${factionID}-add-${i}`}
+                                                    battleLobbyID={battleLobby.id}
+                                                    factionID={factionID}
+                                                    accessCode={accessCode}
+                                                />
+                                            ))}
+                                </Box>
+                            </Box>
+                        )}
                     </ClipThing>
                 </Box>
             </Stack>

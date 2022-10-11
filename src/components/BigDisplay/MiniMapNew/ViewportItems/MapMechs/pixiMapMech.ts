@@ -266,7 +266,7 @@ export class PixiMapMech {
     }
 
     updateVisibility(isVisible: boolean) {
-        this.mechMoveDashedLine.visible = isVisible
+        this.mechMoveDashedLine.visible = isVisible && this.hpBar.percent > 0
         this.rootInner.visible = isVisible
     }
 

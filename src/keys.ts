@@ -113,7 +113,8 @@ export enum GameServerKeys {
 
     // Ban system
     GetBanOptions = "PUNISH:OPTIONS",
-    GetPlayerList = "FACTION:PLAYER:SEARCH",
+    GetPlayerListFaction = "FACTION:PLAYER:SEARCH",
+    GetPlayerList = "PLAYER:SEARCH",
     GetBanPlayerCost = "PUNISH:VOTE:PRICE:QUOTE",
     SubmitBanProposal = "ISSUE:PUNISH:VOTE",
     SubBanProposals = "PUNISH:VOTE:SUBSCRIBE",
@@ -247,6 +248,19 @@ export enum GameServerKeys {
     // Replays
     GetReplays = "GET:BATTLE:REPLAYS",
     GetReplayDetails = "GET:REPLAY:DETAILS",
+
+    // Admins
+    ModGetUser = "MOD:GET:USER",
+    ModBanUser = "MOD:BAN:USER",
+    ModUnbanUser = "MOD:UNBAN:USER",
+
+    // Faction Commander
+    JoinFactionCommander = "VOICE:JOIN:FACTION:COMMANDER",
+    LeaveFactionCommander = "VOICE:LEAVE:FACTION:COMMANDER",
+
+    // Voice chat
+    SubPlayerVoiceStream = "PLAYER:VOICE:STREAM",
+    VoiceChatVoteKick = "VOICE:VOTE:KICK",
 }
 
 export enum PassportServerKeys {

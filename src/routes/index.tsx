@@ -5,6 +5,7 @@ import { BattleEndScreen } from "../components/LeftDrawer/BattleEndScreen/Battle
 import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
 import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
 import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
+
 import { RepairJobs } from "../components/RightDrawer/RepairJobs/RepairJobs"
 import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../constants"
 import { BattleArenaPage, BillingHistoryPage, BillingHistoryItemPage, ClaimPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
@@ -19,6 +20,7 @@ import { StorefrontPage } from "../pages/StorefrontPage"
 import { StorefrontShoppingCartPage } from "../pages/StorefrontShoppingCartPage"
 import { WeaponPage } from "../pages/WeaponPage"
 import { colors } from "../theme/theme"
+import { AdminPage } from "../pages/AdminPage"
 
 // ************
 // ** ROUTES **
@@ -261,6 +263,22 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         matchNavLinkID: "replays",
         enable: BATTLE_ARENA_OPEN,
         pageTitle: "Supremacy - Replays",
+    },
+
+    admin: {
+        id: "admin",
+        path: "/admin/:type",
+        exact: true,
+        Component: AdminPage,
+        requireAuth: true,
+        requireFaction: true,
+        navLink: {
+            enable: false,
+            label: "Admin",
+        },
+        matchNavLinkID: "admin",
+        enable: true,
+        pageTitle: "Supremacy - Admin",
     },
 
     // Claim

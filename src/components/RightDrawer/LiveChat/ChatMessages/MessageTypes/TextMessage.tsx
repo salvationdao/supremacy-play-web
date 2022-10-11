@@ -10,7 +10,7 @@ import { useToggle } from "../../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
-import { ChatMessage, ChatMessageType, TextMessageData, User } from "../../../../../types"
+import { ChatMessage, ChatMessageType, RoleType, TextMessageData, User } from "../../../../../types"
 import { TooltipHelper } from "../../../../Common/TooltipHelper"
 import { Reactions } from "../../AdditionalOptions/Reactions"
 import { ReportModal } from "../../AdditionalOptions/ReportModal"
@@ -206,6 +206,7 @@ export const TextMessage = React.memo(function TextMessage({
                                         gid: gidSubstring,
                                         rank: "NEW_RECRUIT",
                                         features: [],
+                                        role_type: RoleType.player,
                                     })
 
                                     const resp = await send<User>(GameServerKeys.GetPlayerByGid, {
