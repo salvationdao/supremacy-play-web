@@ -1,4 +1,5 @@
 import Ability from "!@svgr/webpack!./svg/Ability.svg"
+import Admin from "!@svgr/webpack!./svg/Admin.svg"
 import Ammo from "!@svgr/webpack!./svg/Ammo.svg"
 import Armor from "!@svgr/webpack!./svg/Armor.svg"
 import Assets from "!@svgr/webpack!./svg/Assets.svg"
@@ -757,6 +758,12 @@ export const SvgShoppingCart: React.VoidFunctionComponent<SvgWrapperProps> = (pr
 export const SvgProfile: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Profile />
+    </SvgWrapper>
+)
+
+export const SvgAdmin: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Admin />
     </SvgWrapper>
 )
 
