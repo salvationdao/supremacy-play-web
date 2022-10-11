@@ -188,6 +188,7 @@ export class NormalBlock extends Block {
             this.position[this.axis] = clamp(-this.MOVE_AMOUNT + 1, axisPos, this.MOVE_AMOUNT - 1)
         }
 
+        // Move the block
         this.position[this.axis] += this.direction * (1 + boost) * (elapsedTime * (baseFrameRate / 1000)) * this.randomSpeedIncrease
         this.mesh.position[this.axis] = this.position[this.axis]
     }
