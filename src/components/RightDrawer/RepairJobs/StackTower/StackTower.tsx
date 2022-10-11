@@ -6,7 +6,7 @@ import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { RepairAgent } from "../../../../types/jobs"
 import { ProgressBar } from "../../../Common/ProgressBar"
-import { Game, GamePattern, GameState } from "./src/game"
+import { Game, GameScore, GameState } from "./src/game"
 
 interface StackTowerProps {
     primaryColor: string
@@ -37,11 +37,11 @@ export const StackTower = React.memo(function StackTower({
     const [cumulativeScore, setCumulativeScore] = useState(0)
 
     // Tells server we gained a point, and tell it the current game pattern
-    const updateScore = useRef(async (repairAgentID: string, gamePattern: GamePattern) => {
+    const updateScore = useRef(async (repairAgentID: string, gameScore: GameScore) => {
         try {
             const resp = await send(GameServerKeys.RepairAgentUpdate, {
                 repair_agent_id: repairAgentID,
-                ...gamePattern,
+                ...gameScore,
             })
 
             if (!resp) return Promise.reject(false)
@@ -76,15 +76,15 @@ export const StackTower = React.memo(function StackTower({
     })
 
     // As the player plays the mini game, this will be the game updates
-    const oneNewGamePattern = useRef(async (gamePattern: GamePattern) => {
-        setScore(gamePattern?.score)
+    const onNewGameScore = useRef(async (gameScore: GameScore) => {
+        setScore(gameScore?.score)
 
         if (!repairAgent?.id) return
 
         try {
-            const resp = await updateScore.current(repairAgent.id, gamePattern)
+            const resp = await updateScore.current(repairAgent.id, gameScore)
             if (resp) {
-                if (repairAgent.id && gamePattern?.score === repairAgent.required_stacks) {
+                if (repairAgent.id && gameScore?.score === repairAgent.required_stacks) {
                     completeGame.current(repairAgent.id)
                 }
 
@@ -99,13 +99,13 @@ export const StackTower = React.memo(function StackTower({
 
     // Initialize game
     useEffect(() => {
-        const game = new Game(theme.factionTheme.background, setGameState, oneNewGamePattern)
+        const game = new Game(theme.factionTheme.background, setGameState, onNewGameScore)
         setTimeout(() => {
             game.start()
         }, 100)
 
         return () => game.cleanup()
-    }, [oneNewGamePattern, setGameState, theme.factionTheme.background])
+    }, [onNewGameScore, setGameState, theme.factionTheme.background])
 
     return (
         <Box
@@ -153,7 +153,7 @@ export const StackTower = React.memo(function StackTower({
                 <Box sx={{ position: "relative", flex: 1, border: "#FFFFFF20 1px solid" }}>
                     <Box sx={{ position: "relative", width: "100%", height: "100%", overflow: "hidden", userSelect: "none" }}>
                         <Box
-                            id="game"
+                            id="tower-stack-game"
                             tabIndex={0}
                             sx={{
                                 position: "absolute",

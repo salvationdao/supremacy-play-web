@@ -203,7 +203,7 @@ export class NormalBlock extends Block {
 export class FallingBlock extends Block {
     constructor(lastBlock: LastBlock) {
         super(lastBlock, true, true)
-        this.speed *= 1.5
+        this.speed *= 1.8
         this.direction = lastBlock.direction
     }
 

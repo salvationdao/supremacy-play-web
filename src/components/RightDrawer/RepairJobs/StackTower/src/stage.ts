@@ -15,31 +15,30 @@ export class Stage {
     camera: THREE.OrthographicCamera
 
     constructor(container: HTMLElement | null, backgroundColor = "#D0CBC7") {
-        // container
+        // Container
         this.container = container
         const { width, height } = this.getContainerDimensions()
 
-        // renderer
+        // Renderer
         this.renderer = new THREE.WebGLRenderer({
             antialias: true,
             alpha: false,
         })
-
         this.renderer.setSize(width, height)
         this.renderer.setClearColor(backgroundColor, 1)
         this.container && this.container.appendChild(this.renderer.domElement)
 
-        // scene
+        // Scene
         this.scene = new THREE.Scene()
 
-        // camera
+        // Camera
         const aspect = width / height
         const depth = cameraConfig.depth
         this.camera = new THREE.OrthographicCamera(-depth * aspect, depth * aspect, depth, -depth, cameraConfig.near, cameraConfig.far)
         this.camera.position.fromArray(cameraConfig.position)
         this.camera.lookAt(new THREE.Vector3().fromArray(cameraConfig.lookAt))
 
-        // light
+        // Light
         lightsConfig.forEach((lightConfig) => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const LightClass = THREE[lightConfig.type as keyof typeof THREE] as any
@@ -50,7 +49,7 @@ export class Stage {
             }
         })
 
-        // tiling background image
+        // Very tall background image
         const textureLoader = new THREE.TextureLoader()
         const backgroundTexture = textureLoader.load(StackTowerBackgroundJPG, () => {
             cover(backgroundTexture, BACKGROUND_WIDTH / BACKGROUND_HEIGHT)
@@ -61,7 +60,7 @@ export class Stage {
             this.add(backgroundSprite)
         })
 
-        // set listener
+        // Set listener
         window.addEventListener("resize", () => this.onResize())
         this.onResize()
     }

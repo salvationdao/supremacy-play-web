@@ -2,19 +2,19 @@ import { FallingBlock, NormalBlock } from "./block"
 import { blockConfig, cameraConfig } from "./config"
 import { Stage } from "./stage"
 
-enum TriggerWith {
+enum TriggeredWith {
     Spacebar = "SPACE_BAR",
     LeftClick = "LEFT_CLICK",
     Touch = "TOUCH",
     None = "NONE",
 }
 
-export interface GamePattern {
+export interface GameScore {
     score: number
     stack_at: Date
     dimension: { width: number; height: number; depth: number }
     is_failed: boolean
-    trigger_with: TriggerWith
+    trigger_with: TriggeredWith
 }
 
 export enum GameState {
@@ -28,15 +28,15 @@ export enum GameState {
 export class Game {
     container: HTMLElement | null
     stage: Stage
-    state: GameState
-    score: number
-    blocks: NormalBlock[]
-    fallingBlocks: FallingBlock[]
+    blocks: NormalBlock[] = []
+    fallingBlocks: FallingBlock[] = []
+    state: GameState = GameState.Loading
+    score: number = 0
+    animationID: number | null = null
+    timestamp: number = 0
+
     setGameState: React.Dispatch<React.SetStateAction<GameState>>
-    oneNewGamePattern: React.MutableRefObject<(gamePattern: GamePattern) => Promise<void>>
-    triggerWith: TriggerWith
-    animationID: number | null
-    timestamp: number
+    onNewGameScore: React.MutableRefObject<(gameScore: GameScore) => Promise<void>>
 
     onKeydownBound: (e: KeyboardEvent) => void
     onClickBound: () => void
@@ -44,40 +44,35 @@ export class Game {
 
     constructor(
         backgroundColor: string,
-        _setGameState: React.Dispatch<React.SetStateAction<GameState>>,
-        _oneNewGamePattern: React.MutableRefObject<(gamePattern: GamePattern) => Promise<void>>,
+        setGameState: React.Dispatch<React.SetStateAction<GameState>>,
+        onNewGameScore: React.MutableRefObject<(gameScore: GameScore) => Promise<void>>,
     ) {
-        const gameContainer = document.getElementById("game")
-        const container = document.createElement("div")
-        container.style.width = "100%"
-        container.style.height = "100%"
-        container.tabIndex = 0
+        // DOM setup
+        const gameContainer = document.getElementById("tower-stack-game")
+        this.container = document.createElement("div")
+        this.container.style.width = "100%"
+        this.container.style.height = "100%"
+        this.container.tabIndex = 0
 
         if (gameContainer) {
+            // Empty out the parent container
             let child = gameContainer.lastElementChild
             while (child) {
                 gameContainer.removeChild(child)
                 child = gameContainer.lastElementChild
             }
 
-            gameContainer.appendChild(container)
+            // Then append our new container into it
+            gameContainer.appendChild(this.container)
         }
+        this.container.focus()
 
-        container.focus()
-        this.container = container
-
-        this.setGameState = _setGameState
-        this.oneNewGamePattern = _oneNewGamePattern
-        this.triggerWith = TriggerWith.None
-
+        // Set class variables
+        this.setGameState = setGameState
+        this.onNewGameScore = onNewGameScore
         this.stage = new Stage(this.container, backgroundColor)
-        this.blocks = []
-        this.fallingBlocks = []
-        this.state = GameState.Loading
-        this.score = 0
-        this.animationID = null
-        this.timestamp = 0
 
+        // Function binds
         this.onKeydownBound = this.onKeydown.bind(this)
         this.onClickBound = this.onClick.bind(this)
         this.onTouchedBound = this.onTouched.bind(this)
@@ -85,19 +80,16 @@ export class Game {
 
     onKeydown(e: KeyboardEvent) {
         if (e.key === "Spacebar" || e.key === " ") {
-            this.triggerWith = TriggerWith.Spacebar
-            this.handleEvent()
+            this.handleEvent(TriggeredWith.Spacebar)
         }
     }
 
     onClick() {
-        this.triggerWith = TriggerWith.LeftClick
-        this.handleEvent()
+        this.handleEvent(TriggeredWith.LeftClick)
     }
 
     onTouched() {
-        this.triggerWith = TriggerWith.Touch
-        this.handleEvent()
+        this.handleEvent(TriggeredWith.Touch)
     }
 
     start() {
@@ -105,7 +97,7 @@ export class Game {
         this.container?.addEventListener("click", this.onClickBound)
         this.container?.addEventListener("touchend", this.onTouchedBound)
 
-        this.addBlock()
+        this.addBlock(TriggeredWith.None)
         this.tick(0)
         setTimeout(() => {
             this.setState(GameState.Ready)
@@ -113,14 +105,43 @@ export class Game {
         this.stage.resetContainerSize()
     }
 
-    handleEvent() {
+    tick(elapsedTime: number) {
+        if (this.blocks.length > 1) {
+            this.blocks[this.blocks.length - 1].tick(this.blocks.length / 10, elapsedTime)
+        }
+        this.fallingBlocks.forEach((block) => block.tick())
+        this.fallingBlocks = this.fallingBlocks.filter((block) => {
+            if (block.position.y > 0) {
+                return true
+            } else {
+                this.stage.remove(block.mesh)
+                return false
+            }
+        })
+        this.stage.render()
+        this.animationID = requestAnimationFrame((ts) => {
+            this.tick(ts - this.timestamp)
+            this.timestamp = ts
+        })
+    }
+
+    cleanup() {
+        if (this.animationID) cancelAnimationFrame(this.animationID)
+        document.removeEventListener("keydown", this.onKeydownBound)
+        this.container?.removeEventListener("click", this.onClickBound)
+        this.container?.removeEventListener("touchend", this.onTouchedBound)
+        this.stage.renderer.dispose()
+        this.container?.remove()
+    }
+
+    handleEvent(triggeredWith: TriggeredWith) {
         switch (this.state) {
             case GameState.Ready:
                 this.setState(GameState.Playing)
-                this.addBlock()
+                this.addBlock(triggeredWith)
                 break
             case GameState.Playing:
-                this.addBlock()
+                this.addBlock(triggeredWith)
                 break
             case GameState.Ended:
                 this.blocks.forEach((block) => {
@@ -128,7 +149,7 @@ export class Game {
                 })
                 this.blocks = []
                 this.score = 0
-                this.addBlock()
+                this.addBlock(triggeredWith)
                 this.setState(GameState.Ready)
                 break
             default:
@@ -136,7 +157,7 @@ export class Game {
         }
     }
 
-    addBlock() {
+    addBlock(triggeredWith: TriggeredWith) {
         let lastBlock = this.blocks[this.blocks.length - 1]
         const lastToLastBlock = this.blocks[this.blocks.length - 2]
 
@@ -152,12 +173,12 @@ export class Game {
                 this.stage.remove(lastBlock.mesh)
                 this.setState(GameState.Ended)
                 this.stage.setCamera(Math.max(this.blocks.length * blockConfig.initHeight - 6, 6) + cameraConfig.offsetY)
-                this.oneNewGamePattern.current({
+                this.onNewGameScore.current({
                     score: this.score,
                     is_failed: true,
                     dimension: lastBlock.dimension,
                     stack_at: new Date(),
-                    trigger_with: this.triggerWith,
+                    trigger_with: triggeredWith,
                 })
                 return
             }
@@ -205,12 +226,12 @@ export class Game {
         this.score = Math.max(this.blocks.length - 1, 0)
 
         if (lastBlock) {
-            this.oneNewGamePattern.current({
+            this.onNewGameScore.current({
                 score: this.score,
                 is_failed: false,
                 dimension: lastBlock.dimension,
                 stack_at: new Date(),
-                trigger_with: this.triggerWith,
+                trigger_with: triggeredWith,
             })
         }
 
@@ -226,35 +247,5 @@ export class Game {
         this.state = state
         this.setGameState(state)
         return oldState
-    }
-
-    tick(elapsedTime: number) {
-        if (this.blocks.length > 1) {
-            this.blocks[this.blocks.length - 1].tick(this.blocks.length / 10, elapsedTime)
-        }
-        this.fallingBlocks.forEach((block) => block.tick())
-        this.fallingBlocks = this.fallingBlocks.filter((block) => {
-            if (block.position.y > 0) {
-                return true
-            } else {
-                this.stage.remove(block.mesh)
-                return false
-            }
-        })
-        this.stage.render()
-        this.animationID = requestAnimationFrame((ts) => {
-            this.tick(ts - this.timestamp)
-            this.timestamp = ts
-        })
-    }
-
-    cleanup() {
-        document.removeEventListener("keydown", this.onKeydownBound)
-        this.container?.removeEventListener("click", this.onClickBound)
-        this.container?.removeEventListener("touchend", this.onTouchedBound)
-
-        if (this.animationID) {
-            cancelAnimationFrame(this.animationID)
-        }
     }
 }
