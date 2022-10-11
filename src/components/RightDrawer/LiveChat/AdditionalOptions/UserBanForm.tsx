@@ -12,6 +12,7 @@ import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { BanOption, BanUser } from "../../../../types/chat"
 import { Player } from "../../../Common/Player"
+import { RoleType } from "../../../../types"
 
 interface SubmitRequest {
     intend_to_punish_player_id: string
@@ -30,6 +31,7 @@ const UserItem = ({ banUser, sx }: { banUser: BanUser; sx?: SxProps }) => {
                     faction_id: "",
                     rank: "NEW_RECRUIT",
                     features: [],
+                    role_type: RoleType.player,
                 }}
                 styledImageTextProps={{ textColor: "#FFFFFF" }}
             />
@@ -78,7 +80,7 @@ export const UserBanForm = ({ open, onClose, prefillUser }: { open: boolean; onC
         ;(async () => {
             toggleIsLoadingUsers(true)
             try {
-                const resp = await send<BanUser[], { search: string }>(GameServerKeys.GetPlayerList, {
+                const resp = await send<BanUser[], { search: string }>(GameServerKeys.GetPlayerListFaction, {
                     search: search || "",
                 })
 
