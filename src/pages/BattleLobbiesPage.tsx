@@ -11,7 +11,6 @@ import { siteZIndex } from "../theme/theme"
 import { BattleLobby } from "../types/battle_queue"
 import { useGameServerSubscriptionFaction } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { InvolvedBattleLobbies } from "../components/Lobbies/BattleLobbies/InvolvedBattleLobbies"
 
 export enum BATTLE_LOBBY_TABS {
     Ready = "central-queue",
@@ -136,8 +135,6 @@ export const BattleLobbiesPage = () => {
                     <TabPanel currentValue={currentValue} value={BATTLE_LOBBY_TABS.Ready}>
                         <BattleLobbies battleLobbies={battleLobbies} lobbyStatus={LobbyStatusEnum.Ready} />
                     </TabPanel>
-
-                    <InvolvedBattleLobbies />
                 </Stack>
             </Stack>
         </Stack>

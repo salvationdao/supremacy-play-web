@@ -1,7 +1,7 @@
-import { Box, Button, Stack, Typography } from "@mui/material"
+import { Box, Button, IconButton, Stack, Typography } from "@mui/material"
 import React, { useCallback, useState } from "react"
-import { SvgCheckMark, SvgLogout, SvgPlus, SvgQuestionMark2 } from "../../../assets"
-import { useAuth, useGlobalNotifications } from "../../../containers"
+import { SvgAssets, SvgCheckMark, SvgLogout, SvgPlus, SvgQuestionMark2, SvgUnhide } from "../../../assets"
+import { useAuth, useGlobalNotifications, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
@@ -15,6 +15,7 @@ import { FancyButton } from "../../Common/FancyButton"
 import { WeaponSlot } from "../Common/weaponSlot"
 import { MechBarStats } from "../../Hangar/WarMachinesHangar/Common/MechBarStats"
 import { CropMaxLengthText } from "../../../theme/styles"
+import { useHistory } from "react-router-dom"
 
 export interface BattleLobbyFaction {
     faction: Faction
@@ -32,6 +33,8 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
     const theme = useTheme()
     const { userID } = useAuth()
     const { newSnackbarMessage } = useGlobalNotifications()
+    const { getFaction } = useSupremacy()
+    const history = useHistory()
 
     // Leaving lobby
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -112,13 +115,14 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                             backgroundColor: `${colors.offWhite}20`,
                             border: ms?.owner?.id === userID ? `${colors.gold}BB 2px solid` : undefined,
                         }}
+                        spacing={0.8}
                     >
-                        <Stack direction="row" spacing="1rem" mb=".5rem">
+                        <Stack direction="row" spacing="1rem" sx={{ width: "100%" }}>
                             <Box
                                 sx={{
                                     position: "relative",
-                                    height: "70px",
-                                    width: "70px",
+                                    height: "9rem",
+                                    width: "9rem",
                                 }}
                             >
                                 <Box
@@ -153,13 +157,32 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                         {rarity.label}
                                     </Typography>
                                 </Box>
+
+                                <Box
+                                    sx={{
+                                        position: "absolute",
+                                        left: "1%",
+                                        top: "1%",
+                                        backgroundColor: `${factionLobby.faction.background_color}30`,
+                                        cursor: "pointer",
+                                    }}
+                                    onClick={() => history.push(`/mech/${ms.mech_id}`)}
+                                >
+                                    <SvgUnhide size="1.5rem" fill={`${colors.offWhite}DD`} />
+                                </Box>
                             </Box>
-                            <Box>
+                            <Stack flex={1} sx={{ position: "relative" }}>
                                 <Stack direction="row" spacing=".5rem" mb=".5rem">
                                     {ms.weapon_slots.map((ws) => (
                                         <WeaponSlot key={ws.slot_number} weaponSlot={ws} tooltipPlacement={"top-end"} size="3rem" />
                                     ))}
                                 </Stack>
+                                <Box sx={{ position: "absolute", right: 0, top: 0, transform: "translate(40%, -20%)" }}>
+                                    <IconButton size="small" onClick={() => setLeftMechID(ms?.mech_id || "")}>
+                                        <SvgLogout size="1.5rem" />
+                                    </IconButton>
+                                </Box>
+
                                 <Typography
                                     variant="h6"
                                     sx={{
@@ -174,15 +197,17 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                 </Typography>
                                 {ms.owner && (
                                     <Typography
+                                        variant="h6"
                                         sx={{
                                             ...CropMaxLengthText,
-                                            color: `#ffffffaa`,
+                                            color: `${getFaction(ms.faction_id).primary_color}`,
+                                            fontStyle: "italic",
                                         }}
                                     >
-                                        {`@${ms.owner.username}#${ms.owner.gid}`}{" "}
+                                        {`@${ms.owner.username}#${ms.owner.gid}`}
                                     </Typography>
                                 )}
-                            </Box>
+                            </Stack>
                         </Stack>
 
                         <MechBarStats
@@ -195,46 +220,6 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                             compact
                             outerSx={{ flex: 1, width: "100%" }}
                         />
-
-                        <Stack direction="row" alignSelf="stretch" mt="auto" spacing=".5rem">
-                            <FancyButton
-                                clipThingsProps={{
-                                    clipSize: "6px",
-                                    clipSlantSize: "0px",
-                                    corners: { bottomLeft: index === 0 },
-                                    backgroundColor: theme.factionTheme.primary,
-                                    sx: {
-                                        flex: 1,
-                                    },
-                                }}
-                                to={`/mech/${ms.mech_id}`}
-                            >
-                                <Typography
-                                    fontSize="1.3rem"
-                                    fontWeight="fontWeightBold"
-                                    sx={{
-                                        color: factionLobby.faction.secondary_color,
-                                    }}
-                                >
-                                    View Mech
-                                </Typography>
-                            </FancyButton>
-                            {ms.owner?.id === userID && (
-                                <FancyButton
-                                    onClick={() => setLeftMechID(ms?.mech_id || "")}
-                                    disabled={isLocked || userID !== ms.owner?.id}
-                                    loading={isLoading}
-                                    clipThingsProps={{
-                                        clipSize: "6px",
-                                        clipSlantSize: "0px",
-                                        corners: { topLeft: false, topRight: false, bottomLeft: false, bottomRight: false },
-                                        backgroundColor: colors.red,
-                                    }}
-                                >
-                                    <SvgLogout />
-                                </FancyButton>
-                            )}
-                        </Stack>
                         {ms.owner?.id === userID && leftMechID === ms.mech_id && (
                             <ConfirmModal title="Confirm Removal" onConfirm={() => leaveLobby(ms.mech_id)} onClose={() => setLeftMechID("")}>
                                 <Typography

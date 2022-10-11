@@ -141,6 +141,7 @@ const BattleLobbyMechList = ({ factionID, battleLobbiesMechs }: BattleLobbyMechL
     const MechBox = useCallback(
         (key: string, blm?: BattleLobbiesMech) => {
             const isOwned = blm?.owner?.id === userID
+            const isDestroyed = !!blm?.is_destroyed
 
             return (
                 <Stack
@@ -178,6 +179,18 @@ const BattleLobbyMechList = ({ factionID, battleLobbiesMechs }: BattleLobbyMechL
                                     width: "100%",
                                 }}
                             />
+                            {isDestroyed && (
+                                <Box
+                                    sx={{
+                                        position: "absolute",
+                                        top: 0,
+                                        left: 0,
+                                        width: "100%",
+                                        height: "100%",
+                                        backgroundColor: `${faction.background_color}AA`,
+                                    }}
+                                />
+                            )}
                         </>
                     ) : (
                         <SvgQuestionMark2
@@ -190,7 +203,7 @@ const BattleLobbyMechList = ({ factionID, battleLobbiesMechs }: BattleLobbyMechL
                 </Stack>
             )
         },
-        [faction],
+        [faction.background_color, faction.primary_color, userID],
     )
 
     return (

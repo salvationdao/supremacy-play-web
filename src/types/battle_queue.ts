@@ -24,6 +24,8 @@ export interface BattleLobby {
     host_by: User
     game_map?: GameMap
     is_private: boolean
+    stage_order: number
+
     battle_lobbies_mechs: BattleLobbiesMech[]
 
     opted_in_rm_supporters: BattleLobbySupporter[]

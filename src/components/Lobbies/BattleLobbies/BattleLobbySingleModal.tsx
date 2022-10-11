@@ -29,6 +29,7 @@ const lobbyPlaceholder: BattleLobby = {
         features: [],
     },
     is_private: true,
+    stage_order: 0,
     battle_lobbies_mechs: [],
     opted_in_bc_supporters: [],
     opted_in_rm_supporters: [],
