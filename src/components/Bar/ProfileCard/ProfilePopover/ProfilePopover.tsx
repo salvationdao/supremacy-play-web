@@ -69,7 +69,9 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
 
                         <NavButton to={`/profile/${user.gid}`} startIcon={<SvgProfile sx={{ pb: ".5rem" }} size="1.6rem" />} text="Profile" />
 
-                        {(user.role_type === RoleType.admin || user.role_type === RoleType.moderator) && <NavButton to={`/admin/lookup`} startIcon={<SvgAdmin sx={{ pb: ".5rem" }} size="1.6rem" />} text="Admin" />}
+                        {(user.role_type === RoleType.admin || user.role_type === RoleType.moderator) && (
+                            <NavButton to={`/admin/lookup`} startIcon={<SvgAdmin sx={{ pb: ".5rem" }} size="1.6rem" />} text="Admin" />
+                        )}
 
                         <NavButton
                             href={`${PASSPORT_WEB}profile/${user.username}/edit`}

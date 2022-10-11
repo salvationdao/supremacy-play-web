@@ -1,16 +1,4 @@
-import {
-    Autocomplete,
-    Box,
-    CircularProgress,
-    IconButton,
-    MenuItem,
-    Modal,
-    Select,
-    Stack,
-    SxProps,
-    TextField,
-    Typography,
-} from "@mui/material"
+import { Autocomplete, Box, CircularProgress, IconButton, MenuItem, Modal, Select, Stack, SxProps, TextField, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SvgClose, SvgCooldown, SvgSupToken } from "../../../../assets"

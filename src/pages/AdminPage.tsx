@@ -20,7 +20,7 @@ export const AdminPage = () => {
     const theme = useTheme()
     const history = useHistory()
     const { type } = useParams<{ type: ADMIN_TABS }>()
-    const {user} = useAuth()
+    const { user } = useAuth()
     const [currentValue, setCurrentValue] = useState<ADMIN_TABS>()
 
     if (user.role_type === RoleType.player) {
