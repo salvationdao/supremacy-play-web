@@ -1,5 +1,5 @@
 import { BattleLobby } from "../../../types/battle_queue"
-import { Box, IconButton, Stack, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { colors, fonts } from "../../../theme/theme"
 import React, { useCallback } from "react"
 import { TooltipHelper } from "../../Common/TooltipHelper"
