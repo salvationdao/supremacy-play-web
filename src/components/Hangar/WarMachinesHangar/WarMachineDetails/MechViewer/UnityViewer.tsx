@@ -99,6 +99,7 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
                         static_id: mechDetails.chassis_skin.blueprint_weapon_skin_id,
                     }
                 }
+                console.info(obj)
                 sendMessage("SceneContext", "SetSlotIndexToChange", wu.slot_number)
                 sendMessage("SceneContext", "ChangeSlotValue", JSON.stringify(obj))
             }
@@ -288,7 +289,7 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
                 : undefined,
             accessories,
         }
-        console.log(mech)
+        console.info(mech)
         const inventory: HangarSilo = {
             faction: mechDetails.faction_id,
         }
