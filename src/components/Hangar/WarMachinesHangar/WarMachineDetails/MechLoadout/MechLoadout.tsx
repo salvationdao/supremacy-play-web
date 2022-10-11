@@ -247,9 +247,13 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
 
     const modifyPowerCore = useCallback((ep: LoadoutPowerCore) => {
         setCurrLoadout((prev) => {
+            let updated: LoadoutPowerCore | undefined = ep
+            if (ep.unequip && !prev.power_core) {
+                updated = undefined
+            }
             return {
                 ...prev,
-                changed_power_core: ep,
+                changed_power_core: updated,
             }
         })
     }, [])
@@ -262,7 +266,11 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
 
         setCurrLoadout((prev) => {
             const updated = new Map(prev.changed_weapons_map)
-            updated.set(ew.slot_number, ew)
+            if (ew.unequip && !prev.weapons_map.get(ew.slot_number)) {
+                updated.delete(ew.slot_number)
+            } else {
+                updated.set(ew.slot_number, ew)
+            }
 
             return {
                 ...prev,
