@@ -13,7 +13,7 @@ import { AdminLookup } from "../components/Admin/Lookup/AdminLookup"
 
 export enum ADMIN_TABS {
     LOOKUP = "lookup",
-    BANLIST = "ban-list",
+    // BANLIST = "ban-list",
 }
 
 export const AdminPage = () => {
