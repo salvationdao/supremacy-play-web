@@ -899,6 +899,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
             <MechLoadoutDraggables
                 draggablesRef={draggablesRef}
                 excludeWeaponIDs={Array.from(changed_weapons_map.values(), (w) => w.weapon_id)}
+                excludeMechSkinIDs={changed_mech_skin?.mech_skin ? [changed_mech_skin.mech_skin.blueprint_id] : chassis_skin ? [chassis_skin.blueprint_id] : []}
                 includeMechSkinIDs={compatible_blueprint_mech_skin_ids}
                 onDrag={onItemDrag}
                 onDragStart={onItemDragStart}

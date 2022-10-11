@@ -34,10 +34,19 @@ export interface MechLoadoutDraggablesProps {
     onDragStart: DragStartEventWithType
     onDragStop: DragStopEventWithType
     excludeWeaponIDs: string[]
+    excludeMechSkinIDs: string[]
     includeMechSkinIDs: string[]
 }
 
-export const MechLoadoutDraggables = ({ draggablesRef, onDrag, onDragStart, onDragStop, excludeWeaponIDs, includeMechSkinIDs }: MechLoadoutDraggablesProps) => {
+export const MechLoadoutDraggables = ({
+    draggablesRef,
+    onDrag,
+    onDragStart,
+    onDragStop,
+    excludeWeaponIDs,
+    excludeMechSkinIDs,
+    includeMechSkinIDs,
+}: MechLoadoutDraggablesProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
 
     const weaponsMemoized = useRef<Weapon[]>([])
@@ -49,6 +58,8 @@ export const MechLoadoutDraggables = ({ draggablesRef, onDrag, onDragStart, onDr
     const [mechSkins, setMechSkins] = useState<MechSkin[]>([])
     const [isMechSkinsLoading, setIsMechSkinsLoading] = useState(true)
     const [mechSkinsError, setMechSkinsError] = useState<string>()
+
+    const sent = useRef(false)
 
     useImperativeHandle(draggablesRef, () => ({
         handleMechLoadoutUpdated: () => {
@@ -105,7 +116,7 @@ export const MechLoadoutDraggables = ({ draggablesRef, onDrag, onDragStart, onDr
                 display_xsyn: false,
                 display_unique: true,
                 skin_compatibility: [],
-                exclude_ids: [],
+                exclude_ids: excludeMechSkinIDs,
                 include_ids: includeMechSkinIDs,
                 rarities: [],
                 equipped_statuses: [],
@@ -122,11 +133,13 @@ export const MechLoadoutDraggables = ({ draggablesRef, onDrag, onDragStart, onDr
         } finally {
             setIsMechSkinsLoading(false)
         }
-    }, [includeMechSkinIDs, send])
+    }, [excludeMechSkinIDs, includeMechSkinIDs, send])
 
     useEffect(() => {
+        if (sent.current) return
         getWeapons()
         getMechSkins()
+        sent.current = true
     }, [getMechSkins, getWeapons])
 
     const weaponsContent = useMemo(() => {
