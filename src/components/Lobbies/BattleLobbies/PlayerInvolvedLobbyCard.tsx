@@ -81,7 +81,7 @@ export const PlayerInvolvedLobbyCard = ({ battleLobby }: PlayerInvolvedLobbyCard
                 {text}
             </Typography>
         )
-    }, [battleLobby])
+    }, [battleLobby.assigned_to_battle_id, battleLobby.ready_at, factionTheme.background])
 
     return (
         <>
@@ -132,7 +132,7 @@ interface BattleLobbyMechListProps {
     factionID: string
     battleLobbiesMechs: BattleLobbiesMech[]
 }
-const BattleLobbyMechList = ({ factionID, battleLobbiesMechs }: BattleLobbyMechListProps) => {
+export const BattleLobbyMechList = ({ factionID, battleLobbiesMechs }: BattleLobbyMechListProps) => {
     const { userID } = useAuth()
     const { getFaction } = useSupremacy()
 

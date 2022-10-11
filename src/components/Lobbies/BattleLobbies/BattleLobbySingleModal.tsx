@@ -1,4 +1,3 @@
-import { Stack } from "@mui/material"
 import React, { useEffect, useState } from "react"
 import { ConfirmModal } from "../../Common/ConfirmModal"
 import { BattleLobby } from "../../../types/battle_queue"
@@ -31,6 +30,7 @@ const lobbyPlaceholder: BattleLobby = {
     is_private: true,
     stage_order: 0,
     access_code: "",
+    sups_pool: "0",
 
     battle_lobbies_mechs: [],
     opted_in_bc_supporters: [],

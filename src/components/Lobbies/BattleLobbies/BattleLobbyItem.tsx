@@ -4,16 +4,16 @@ import { Avatar as SupremacyAvatar } from "../../Avatar"
 import { SvgGlobal, SvgLock, SvgSupToken } from "../../../assets"
 import { useArena, useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { camelToTitle, supFormatter } from "../../../helpers"
+import { supFormatter } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleLobby } from "../../../types/battle_queue"
 import { ClipThing } from "../../Common/ClipThing"
 import { BattleLobbyJoinModal } from "./BattleLobbyJoinModal"
-import { BattleLobbyFaction, MyFactionLobbySlots, OtherFactionLobbySlots } from "../BattleLobbyMech/BattleLobbyMechSlots"
+import { BattleLobbyFaction, MyFactionLobbySlots } from "../BattleLobbyMech/BattleLobbyMechSlots"
 import { CropMaxLengthText } from "../../../theme/styles"
 import { FactionIDs } from "../../../constants"
 import { OptInButton } from "../../UpcomingBattle/UpcomingBattle"
-import { green } from "@mui/material/colors"
+import { BattleLobbyMechList } from "./PlayerInvolvedLobbyCard"
 
 interface BattleLobbyItemProps {
     battleLobby: BattleLobby
@@ -21,8 +21,6 @@ interface BattleLobbyItemProps {
     disabled?: boolean
     accessCode?: string
 }
-
-const FACTION_LOBBY_SIZE = 3
 
 const propsAreEqual = (prevProps: BattleLobbyItemProps, nextProps: BattleLobbyItemProps) => {
     return (
@@ -42,7 +40,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
     const theme = useTheme()
     const { factionID, userID } = useAuth()
     const { arenaList } = useArena()
-    const { factionsAll } = useSupremacy()
+    const { factionsAll, getFaction } = useSupremacy()
     const {
         host_by,
         is_private,
@@ -60,6 +58,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
         selected_zai_supporters,
         selected_rm_supporters,
         selected_bc_supporters,
+        sups_pool,
     } = battleLobby
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
@@ -70,7 +69,11 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
     const [showJoinModal, setShowJoinModal] = useState(false)
 
     const [myFactionLobbySlots, otherFactionLobbySlots] = useMemo(() => {
-        let myFactionLobbySlots = null as BattleLobbyFaction | null
+        let myFactionLobbySlots: BattleLobbyFaction = {
+            faction: getFaction(factionID),
+            mechSlots: [],
+            supporterSlots: [],
+        }
         const otherFactionLobbySlots: BattleLobbyFaction[] = []
         Object.values(factionsAll)
             .sort((a, b) => a.label.localeCompare(b.label))
@@ -88,11 +91,6 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                     // parse data
                     bls.mechSlots.push(blm)
                 })
-
-                // fill up with empty struct
-                while (bls.mechSlots.length < FACTION_LOBBY_SIZE) {
-                    bls.mechSlots.push(null)
-                }
 
                 // since supporters are already split up by faction, use a switch to add the right one to this object
                 switch (f.id) {
@@ -115,17 +113,22 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
             })
 
         return [myFactionLobbySlots, otherFactionLobbySlots]
-    }, [factionsAll, battle_lobbies_mechs, factionID, selected_zai_supporters, selected_rm_supporters, selected_bc_supporters])
+    }, [getFaction, factionID, factionsAll, battle_lobbies_mechs, selected_zai_supporters, selected_bc_supporters, selected_rm_supporters])
 
     const entryFeeDisplay = useMemo(() => {
         const hasFee = entry_fee !== "0"
-
-        const textColor = hasFee ? colors.gold : colors.green
         const text = hasFee ? supFormatter(entry_fee) : "NONE"
 
         return (
-            <Stack direction="row" alignItems="center" spacing="1rem">
-                <Typography variant="body2" fontFamily={fonts.nostromoHeavy} color={textColor}>
+            <Stack direction="column">
+                <Typography
+                    variant="body2"
+                    fontFamily={fonts.nostromoHeavy}
+                    sx={{
+                        color: colors.grey,
+                        textAlign: "bottom",
+                    }}
+                >
                     Entry Fee:
                 </Typography>
                 <Stack direction="row" alignItems="center" spacing=".4rem">
@@ -192,195 +195,216 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                         opacity={0.7}
                     >
                         <Stack
-                            direction="row"
                             spacing="1rem"
                             sx={{
-                                position: "relative",
-                                minHeight: "10rem",
                                 p: "2rem",
                             }}
                         >
-                            {/* Lobby Info */}
-                            <Stack direction="column" flexBasis="25rem" height="100%" mr="1rem" spacing={0.5}>
-                                <Stack direction="row" alignItems="center" spacing={0.6}>
-                                    {is_private ? <SvgLock size="1.8rem" fill={colors.gold} /> : <SvgGlobal size="1.8rem" fill={colors.green} />}
-                                    <Typography
-                                        variant="h5"
-                                        sx={{
-                                            lineHeight: 1,
-                                            fontFamily: fonts.nostromoBlack,
-                                            ...CropMaxLengthText,
-                                        }}
-                                    >
-                                        {name ? name : `Lobby ${number}`}
-                                    </Typography>
-                                </Stack>
-
-                                {entryFeeDisplay}
-
-                                {assignedToArenaName && (
-                                    <Stack direction="column">
+                            <Stack
+                                direction="row"
+                                spacing="1rem"
+                                sx={{
+                                    position: "relative",
+                                    minHeight: "10rem",
+                                }}
+                            >
+                                {/* Lobby Info */}
+                                <Stack direction="column" flexBasis="25rem" height="100%" mr="1rem" spacing={0.5}>
+                                    <Stack direction="row" alignItems="center" spacing={0.6}>
+                                        {is_private ? <SvgLock size="1.8rem" fill={colors.gold} /> : <SvgGlobal size="1.8rem" fill={colors.green} />}
                                         <Typography
-                                            variant="body2"
-                                            fontFamily={fonts.nostromoHeavy}
+                                            variant="h5"
                                             sx={{
-                                                color: colors.grey,
-                                                textTransform: "uppercase",
-                                            }}
-                                        >
-                                            Arena:
-                                        </Typography>
-                                        <Typography
-                                            component="span"
-                                            sx={{
+                                                lineHeight: 1,
+                                                fontFamily: fonts.nostromoBlack,
                                                 ...CropMaxLengthText,
-                                                fontFamily: fonts.nostromoBold,
                                             }}
                                         >
-                                            {assignedToArenaName}
+                                            {name ? name : `Lobby ${number}`}
                                         </Typography>
                                     </Stack>
-                                )}
-                                {displayedAccessCode && userID === battleLobby.host_by_id && (
-                                    <Stack direction="column">
-                                        <Typography
-                                            variant="body2"
-                                            fontFamily={fonts.nostromoHeavy}
-                                            sx={{
-                                                color: colors.grey,
-                                                textAlign: "bottom",
-                                            }}
-                                        >
-                                            ACCESS CODE:
-                                        </Typography>
-                                        <Typography
-                                            sx={{
-                                                ...CropMaxLengthText,
-                                                fontFamily: fonts.nostromoBold,
-                                            }}
-                                        >
-                                            {displayedAccessCode}
-                                        </Typography>
-                                    </Stack>
-                                )}
-                                <Stack direction="column">
-                                    <Typography
-                                        variant="body2"
-                                        fontFamily={fonts.nostromoHeavy}
-                                        sx={{
-                                            color: colors.grey,
-                                        }}
-                                    >
-                                        Hosted by
-                                    </Typography>
-                                    <Typography
-                                        variant="h6"
-                                        sx={{
-                                            ...CropMaxLengthText,
-                                            // color: factionsAll[host_by.faction_id]?.primary_color,
-                                        }}
-                                    >
-                                        {generated_by_system ? "SYSTEM" : `${host_by.username} #${host_by.gid}`}
-                                    </Typography>
-                                </Stack>
-                                {/* Prize allocation */}
-                                {entry_fee !== "0" && (
-                                    <Stack direction="column" spacing={0.6}>
-                                        <Typography
-                                            variant="body2"
-                                            fontFamily={fonts.nostromoHeavy}
-                                            sx={{
-                                                color: colors.grey,
-                                            }}
-                                        >
-                                            Distribution (%)
-                                        </Typography>
-                                        <Stack direction="row" spacing="1rem">
-                                            {distributionValue(colors.gold, 1, first_faction_cut)}
-                                            {distributionValue(colors.silver, 2, second_faction_cut)}
-                                            {distributionValue(colors.bronze, 3, third_faction_cut)}
-                                        </Stack>
-                                    </Stack>
-                                )}
 
-                                {/* Other faction mech slots */}
-                                <Stack spacing=".5rem">
-                                    <OtherFactionLobbySlots factionLobbies={otherFactionLobbySlots} />
-                                </Stack>
-                            </Stack>
+                                    {entryFeeDisplay}
 
-                            {/* Map */}
-                            <Stack spacing="1rem" height="100%" width="30rem">
-                                <Stack
-                                    direction="row"
-                                    alignItems="center"
-                                    sx={{
-                                        p: ".5rem",
-                                        backgroundColor: `${theme.factionTheme.primary}30`,
-                                    }}
-                                >
-                                    <Typography
-                                        sx={{
-                                            fontFamily: fonts.nostromoBlack,
-                                            color: "white",
-                                            ml: ".45rem",
-                                            ...CropMaxLengthText,
-                                        }}
-                                    >
-                                        Map
-                                    </Typography>
-                                </Stack>
-                                {/*Background image*/}
-                                <Stack flex={1}>
-                                    {game_map ? (
-                                        <Box
-                                            sx={{
-                                                position: "relative",
-                                                width: "30rem",
-                                                height: "30rem",
-                                                backgroundRepeat: "no-repeat",
-                                                backgroundPosition: "center",
-                                                backgroundSize: "cover",
-                                                backgroundImage: `url(${game_map.background_url})`,
-                                                borderRadius: 0.8,
-                                            }}
-                                        >
-                                            <Box
+                                    {displayedAccessCode && userID === battleLobby.host_by_id && (
+                                        <Stack direction="column">
+                                            <Typography
+                                                variant="body2"
+                                                fontFamily={fonts.nostromoHeavy}
                                                 sx={{
-                                                    position: "absolute",
-                                                    bottom: "10%",
-                                                    left: "2rem",
-                                                    right: "2rem",
-                                                    top: 0,
-                                                    backgroundImage: `url(${game_map.logo_url})`,
-                                                    backgroundRepeat: "no-repeat",
-                                                    backgroundPosition: "bottom center",
-                                                    backgroundSize: "contain",
+                                                    color: colors.grey,
                                                 }}
-                                            />
-                                        </Box>
-                                    ) : (
-                                        <Stack
-                                            direction="row"
-                                            alignItems="end"
-                                            justifyContent="center"
-                                            sx={{
-                                                width: "30rem",
-                                                height: "30rem",
-                                                borderRadius: 0.8,
-                                                backgroundColor: `${colors.offWhite}10`,
-                                            }}
-                                        >
-                                            <Typography variant="h5" fontFamily={fonts.nostromoBlack} sx={{ pb: "5rem", opacity: 0.4 }}>
-                                                RANDOM
+                                            >
+                                                ACCESS CODE:
+                                            </Typography>
+                                            <Typography
+                                                sx={{
+                                                    ...CropMaxLengthText,
+                                                    fontFamily: fonts.nostromoBold,
+                                                }}
+                                            >
+                                                {displayedAccessCode}
                                             </Typography>
                                         </Stack>
                                     )}
-                                </Stack>
-                            </Stack>
 
-                            {/* My faction mech slots */}
-                            {myFactionLobbySlots && (
+                                    {assignedToArenaName && (
+                                        <Stack direction="column">
+                                            <Typography
+                                                variant="body2"
+                                                fontFamily={fonts.nostromoHeavy}
+                                                sx={{
+                                                    color: colors.grey,
+                                                }}
+                                            >
+                                                Arena:
+                                            </Typography>
+                                            <Typography
+                                                component="span"
+                                                sx={{
+                                                    ...CropMaxLengthText,
+                                                    fontFamily: fonts.nostromoBold,
+                                                }}
+                                            >
+                                                {assignedToArenaName}
+                                            </Typography>
+                                        </Stack>
+                                    )}
+
+                                    <Stack direction="column">
+                                        <Typography
+                                            variant="body2"
+                                            fontFamily={fonts.nostromoHeavy}
+                                            sx={{
+                                                color: colors.grey,
+                                            }}
+                                        >
+                                            Hosted by
+                                        </Typography>
+                                        <Stack direction="row" alignItems="center">
+                                            {!generated_by_system && (
+                                                <Avatar
+                                                    src={getFaction(host_by.faction_id).logo_url}
+                                                    alt={`${getFaction(host_by.faction_id).label}'s Avatar`}
+                                                    sx={{
+                                                        height: "2.6rem",
+                                                        width: "2.6rem",
+                                                    }}
+                                                    variant="square"
+                                                />
+                                            )}
+                                            <Typography
+                                                variant="h6"
+                                                sx={{
+                                                    ...CropMaxLengthText,
+                                                    lineHeight: "unset",
+                                                    fontStyle: "italic",
+                                                    color: generated_by_system ? colors.offWhite : getFaction(host_by.faction_id).primary_color,
+                                                }}
+                                            >
+                                                {generated_by_system ? "SYSTEM" : `${host_by.username} #${host_by.gid}`}
+                                            </Typography>
+                                        </Stack>
+                                    </Stack>
+                                    {/* Prize allocation */}
+                                    {(entry_fee !== "0" || sups_pool !== "0") && (
+                                        <Stack direction="column" spacing={0.6}>
+                                            <Typography
+                                                variant="body2"
+                                                fontFamily={fonts.nostromoHeavy}
+                                                sx={{
+                                                    color: colors.grey,
+                                                }}
+                                            >
+                                                Distribution (%)
+                                            </Typography>
+                                            <Stack direction="row" spacing="1rem">
+                                                {distributionValue(colors.gold, 1, first_faction_cut)}
+                                                {distributionValue(colors.silver, 2, second_faction_cut)}
+                                                {distributionValue(colors.bronze, 3, third_faction_cut)}
+                                            </Stack>
+                                        </Stack>
+                                    )}
+
+                                    {/* Other faction mech slots */}
+                                    <Stack spacing=".5rem">
+                                        {otherFactionLobbySlots.map((fls) => (
+                                            <BattleLobbyMechList key={fls.faction.id} factionID={fls.faction.id} battleLobbiesMechs={fls.mechSlots} />
+                                        ))}
+                                    </Stack>
+                                </Stack>
+
+                                {/* Map */}
+                                <Stack spacing="1rem" height="100%" width="30rem">
+                                    <Stack
+                                        direction="row"
+                                        alignItems="center"
+                                        sx={{
+                                            p: ".5rem",
+                                            backgroundColor: `${theme.factionTheme.primary}30`,
+                                        }}
+                                    >
+                                        <Typography
+                                            sx={{
+                                                fontFamily: fonts.nostromoBlack,
+                                                color: "white",
+                                                ml: ".45rem",
+                                                ...CropMaxLengthText,
+                                            }}
+                                        >
+                                            Map
+                                        </Typography>
+                                    </Stack>
+                                    {/*Background image*/}
+                                    <Stack flex={1}>
+                                        {game_map ? (
+                                            <Box
+                                                sx={{
+                                                    position: "relative",
+                                                    width: "30rem",
+                                                    height: "30rem",
+                                                    backgroundRepeat: "no-repeat",
+                                                    backgroundPosition: "center",
+                                                    backgroundSize: "cover",
+                                                    backgroundImage: `url(${game_map.background_url})`,
+                                                    borderRadius: 0.8,
+                                                }}
+                                            >
+                                                <Box
+                                                    sx={{
+                                                        position: "absolute",
+                                                        bottom: "10%",
+                                                        left: "2rem",
+                                                        right: "2rem",
+                                                        top: 0,
+                                                        backgroundImage: `url(${game_map.logo_url})`,
+                                                        backgroundRepeat: "no-repeat",
+                                                        backgroundPosition: "bottom center",
+                                                        backgroundSize: "contain",
+                                                    }}
+                                                />
+                                            </Box>
+                                        ) : (
+                                            <Stack
+                                                direction="row"
+                                                alignItems="end"
+                                                justifyContent="center"
+                                                sx={{
+                                                    width: "30rem",
+                                                    height: "30rem",
+                                                    borderRadius: 0.8,
+                                                    backgroundColor: `${colors.offWhite}10`,
+                                                }}
+                                            >
+                                                <Typography variant="h5" fontFamily={fonts.nostromoBlack} sx={{ pb: "5rem", opacity: 0.4 }}>
+                                                    RANDOM
+                                                </Typography>
+                                            </Stack>
+                                        )}
+                                    </Stack>
+                                </Stack>
+
+                                {/* My faction mech slots */}
                                 <ClipThing
                                     corners={{
                                         topRight: true,
@@ -457,55 +481,55 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                         </Box>
                                     </Stack>
                                 </ClipThing>
-                            )}
-                        </Stack>
-                        {displayedAccessCode && (
-                            <Box
-                                sx={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    justifyContent: "center",
-                                    marginBottom: "1rem",
-                                }}
-                            >
-                                <Typography variant={"h5"}>Battle Supporters</Typography>
-                                <Box
+                            </Stack>
+                            {displayedAccessCode && (
+                                <Stack
+                                    direction="column"
+                                    spacing={1}
                                     sx={{
-                                        display: "flex",
-                                        flexDirection: "row",
-                                        justifyContent: "space-evenly",
+                                        justifyContent: "center",
                                         marginBottom: "1rem",
                                     }}
                                 >
-                                    {myFactionLobbySlots?.supporterSlots.map((sup, i) => {
-                                        return (
-                                            <SupremacyAvatar
-                                                marginLeft={0}
-                                                zIndexAdded={i}
-                                                key={`${sup.id}`}
-                                                username={sup.username}
-                                                factionID={sup.faction_id}
-                                                avatarURL={sup.avatar_url}
-                                                customAvatarID={sup.custom_avatar_id}
-                                            />
-                                        )
-                                    })}
-                                    {/* users faction, display opt in buttons*/}
-                                    {myFactionLobbySlots &&
-                                        myFactionLobbySlots?.supporterSlots.length < 5 &&
-                                        new Array(5 - myFactionLobbySlots?.supporterSlots.length)
-                                            .fill(0)
-                                            .map((_, i) => (
-                                                <OptInButton
-                                                    key={`${factionID}-add-${i}`}
-                                                    battleLobbyID={battleLobby.id}
-                                                    factionID={factionID}
-                                                    accessCode={displayedAccessCode}
+                                    <Typography variant="body2" fontFamily={fonts.nostromoHeavy}>
+                                        Battle Supporters
+                                    </Typography>
+                                    <Box
+                                        sx={{
+                                            display: "grid",
+                                            gridTemplateColumns: "20% 20% 20% 20% 20%",
+                                        }}
+                                    >
+                                        {myFactionLobbySlots?.supporterSlots.map((sup, i) => {
+                                            return (
+                                                <SupremacyAvatar
+                                                    marginLeft={0}
+                                                    zIndexAdded={i}
+                                                    key={`${sup.id}`}
+                                                    username={sup.username}
+                                                    factionID={sup.faction_id}
+                                                    avatarURL={sup.avatar_url}
+                                                    customAvatarID={sup.custom_avatar_id}
                                                 />
-                                            ))}
-                                </Box>
-                            </Box>
-                        )}
+                                            )
+                                        })}
+                                        {/* users faction, display opt in buttons*/}
+                                        {myFactionLobbySlots &&
+                                            myFactionLobbySlots?.supporterSlots.length < 5 &&
+                                            new Array(5 - myFactionLobbySlots?.supporterSlots.length)
+                                                .fill(0)
+                                                .map((_, i) => (
+                                                    <OptInButton
+                                                        key={`${factionID}-add-${i}`}
+                                                        battleLobbyID={battleLobby.id}
+                                                        factionID={factionID}
+                                                        accessCode={displayedAccessCode}
+                                                    />
+                                                ))}
+                                    </Box>
+                                </Stack>
+                            )}
+                        </Stack>
                     </ClipThing>
                 </Box>
             </Stack>

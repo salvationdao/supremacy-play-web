@@ -26,6 +26,7 @@ export interface BattleLobby {
     is_private: boolean
     stage_order: number
     access_code: string
+    sups_pool: string
 
     battle_lobbies_mechs: BattleLobbiesMech[]
 

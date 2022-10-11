@@ -1,17 +1,15 @@
 import { Box, Button, IconButton, Stack, Typography } from "@mui/material"
-import React, { useCallback, useState } from "react"
-import { SvgAssets, SvgCheckMark, SvgLogout, SvgPlus, SvgQuestionMark2, SvgUnhide } from "../../../assets"
+import React, { useCallback, useMemo, useState } from "react"
+import { SvgLogout, SvgPlus, SvgUnhide } from "../../../assets"
 import { useAuth, useGlobalNotifications, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { scaleUpKeyframes } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { Faction } from "../../../types"
 import { BattleLobbiesMech, BattleLobbySupporter } from "../../../types/battle_queue"
 import { ConfirmModal } from "../../Common/ConfirmModal"
-import { FancyButton } from "../../Common/FancyButton"
 import { WeaponSlot } from "../Common/weaponSlot"
 import { MechBarStats } from "../../Hangar/WarMachinesHangar/Common/MechBarStats"
 import { CropMaxLengthText } from "../../../theme/styles"
@@ -19,7 +17,7 @@ import { useHistory } from "react-router-dom"
 
 export interface BattleLobbyFaction {
     faction: Faction
-    mechSlots: (BattleLobbiesMech | null)[] // null represents empty slot
+    mechSlots: BattleLobbiesMech[] // null represents empty slot
     supporterSlots: BattleLobbySupporter[] // null represents empty slot
 }
 
@@ -39,11 +37,19 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
     // Leaving lobby
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [leftMechID, setLeftMechID] = useState("")
-    const [isLoading, setIsLoading] = useState(false)
+
+    const mechSlots = useMemo(() => {
+        const list: (BattleLobbiesMech | null)[] = [...factionLobby.mechSlots]
+
+        while (list.length < 3) {
+            list.push(null)
+        }
+
+        return list
+    }, [factionLobby.mechSlots])
 
     const leaveLobby = useCallback(
         async (mechID: string) => {
-            setIsLoading(true)
             try {
                 await send(GameServerKeys.LeaveBattleLobby, {
                     mech_ids: [mechID],
@@ -52,8 +58,6 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                 newSnackbarMessage("Successfully removed mech from lobby.", "success")
             } catch (e) {
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to leave battle lobby.", "error")
-            } finally {
-                setIsLoading(false)
             }
         },
         [newSnackbarMessage, send],
@@ -61,7 +65,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
 
     return (
         <>
-            {factionLobby.mechSlots.map((ms, index) => {
+            {mechSlots.map((ms, index) => {
                 if (!ms) {
                     return (
                         <Button
@@ -166,7 +170,9 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                         backgroundColor: `${factionLobby.faction.background_color}30`,
                                         cursor: "pointer",
                                     }}
-                                    onClick={() => history.push(`/mech/${ms.mech_id}`)}
+                                    onClick={() => {
+                                        history.push(`/mech/${ms.mech_id}`)
+                                    }}
                                 >
                                     <SvgUnhide size="1.5rem" fill={`${colors.offWhite}DD`} />
                                 </Box>
@@ -237,70 +243,6 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                     </Stack>
                 )
             })}
-        </>
-    )
-}
-
-interface OtherFactionLobbySlotsProps {
-    factionLobbies: BattleLobbyFaction[]
-}
-
-export const OtherFactionLobbySlots = ({ factionLobbies }: OtherFactionLobbySlotsProps) => {
-    return (
-        <>
-            {factionLobbies.map((fl, index) => (
-                <Box key={index}>
-                    <Stack
-                        direction="row"
-                        sx={{
-                            alignItems: "center",
-                            mb: ".3rem",
-                        }}
-                    >
-                        <Typography
-                            sx={{
-                                fontSize: "1.2rem",
-                                fontFamily: fonts.nostromoBlack,
-                                color: fl.faction.primary_color,
-                                ...CropMaxLengthText,
-                            }}
-                        >
-                            {fl.faction.label}
-                        </Typography>
-                    </Stack>
-                    <Stack direction="row" spacing=".5rem">
-                        {fl.mechSlots.map((ms, index) => (
-                            <Stack
-                                key={index}
-                                sx={{
-                                    height: "30px",
-                                    width: "30px",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    border: `1px solid ${fl.faction.primary_color}`,
-                                    backgroundColor: fl.faction.background_color,
-                                }}
-                            >
-                                {ms ? (
-                                    <SvgCheckMark
-                                        fill={`${colors.green}`}
-                                        sx={{
-                                            animation: `${scaleUpKeyframes} .5s ease-out`,
-                                        }}
-                                    />
-                                ) : (
-                                    <SvgQuestionMark2
-                                        fill={`${colors.offWhite}20`}
-                                        sx={{
-                                            animation: `${scaleUpKeyframes} .5s ease-out`,
-                                        }}
-                                    />
-                                )}
-                            </Stack>
-                        ))}
-                    </Stack>
-                </Box>
-            ))}
         </>
     )
 }
