@@ -9,10 +9,10 @@ const BACKGROUND_WIDTH = 40
 const BACKGROUND_HEIGHT = 218.15
 
 export class Stage {
-    container: HTMLElement | null
-    renderer: THREE.WebGLRenderer
-    scene: THREE.Scene
-    camera: THREE.OrthographicCamera
+    private container: HTMLElement | null
+    private renderer: THREE.WebGLRenderer
+    private scene: THREE.Scene
+    private camera: THREE.OrthographicCamera
 
     constructor(container: HTMLElement | null, backgroundColor = "#D0CBC7") {
         // Container
@@ -63,6 +63,10 @@ export class Stage {
         // Set listener
         window.addEventListener("resize", () => this.onResize())
         this.onResize()
+    }
+
+    destroy() {
+        this.renderer.dispose()
     }
 
     getContainerDimensions() {

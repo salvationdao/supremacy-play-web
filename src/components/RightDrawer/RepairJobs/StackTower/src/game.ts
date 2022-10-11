@@ -26,21 +26,23 @@ export enum GameState {
 }
 
 export class Game {
-    container: HTMLElement | null
-    stage: Stage
-    blocks: NormalBlock[] = []
-    fallingBlocks: FallingBlock[] = []
-    state: GameState = GameState.Loading
-    score: number = 0
-    animationID: number | null = null
-    timestamp: number = 0
+    private container: HTMLElement | null
+    private stage: Stage
+    private blocks: NormalBlock[] = []
+    private fallingBlocks: FallingBlock[] = []
+    private state: GameState = GameState.Loading
+    private score: number = 0
+    private animationID: number | null = null
+    private timestamp: number = 0
 
-    setGameState: React.Dispatch<React.SetStateAction<GameState>>
-    onNewGameScore: React.MutableRefObject<(gameScore: GameScore) => Promise<void>>
+    // External
+    private setGameState: React.Dispatch<React.SetStateAction<GameState>>
+    private onNewGameScore: React.MutableRefObject<(gameScore: GameScore) => Promise<void>>
 
-    onKeydownBound: (e: KeyboardEvent) => void
-    onClickBound: () => void
-    onTouchedBound: () => void
+    // User events
+    private onKeydownBound: (e: KeyboardEvent) => void
+    private onClickBound: () => void
+    private onTouchedBound: () => void
 
     constructor(
         backgroundColor: string,
@@ -125,12 +127,12 @@ export class Game {
         })
     }
 
-    cleanup() {
+    destroy() {
         if (this.animationID) cancelAnimationFrame(this.animationID)
         document.removeEventListener("keydown", this.onKeydownBound)
         this.container?.removeEventListener("click", this.onClickBound)
         this.container?.removeEventListener("touchend", this.onTouchedBound)
-        this.stage.renderer.dispose()
+        this.stage.destroy()
         this.container?.remove()
     }
 
@@ -157,6 +159,11 @@ export class Game {
         }
     }
 
+    setState(state: GameState) {
+        this.state = state
+        this.setGameState(state)
+    }
+
     addBlock(triggeredWith: TriggeredWith) {
         let lastBlock = this.blocks[this.blocks.length - 1]
         const lastToLastBlock = this.blocks[this.blocks.length - 2]
@@ -165,7 +172,7 @@ export class Game {
             const { axis, dimensionAlongAxis } = lastBlock.getAxis()
             const distance = lastBlock.position[axis] - lastToLastBlock.position[axis]
             let positionFalling, position
-            const { color, topTexture, frontTexture, rightTexture, direction } = lastBlock
+            const { topTexture, frontTexture, rightTexture, direction } = lastBlock
             const newLength = lastBlock.dimension[dimensionAlongAxis] - Math.abs(distance)
 
             // Game over
@@ -203,7 +210,7 @@ export class Game {
 
             this.blocks.pop()
             this.stage.remove(lastBlock.mesh)
-            lastBlock = new NormalBlock({ dimension, position, direction, color, axis, topTexture, frontTexture, rightTexture }, true)
+            lastBlock = new NormalBlock({ dimension, position, direction, axis, topTexture, frontTexture, rightTexture }, true)
 
             this.blocks.push(lastBlock)
             this.stage.add(lastBlock.mesh)
@@ -212,7 +219,6 @@ export class Game {
                 dimension: dimensionFalling,
                 position: positionFalling,
                 direction,
-                color,
                 axis,
                 topTexture,
                 frontTexture,
@@ -240,12 +246,5 @@ export class Game {
         this.blocks.push(newBlock)
 
         this.stage.setCamera(this.blocks.length * blockConfig.initHeight + cameraConfig.offsetY)
-    }
-
-    setState(state: GameState) {
-        const oldState = this.state
-        this.state = state
-        this.setGameState(state)
-        return oldState
     }
 }

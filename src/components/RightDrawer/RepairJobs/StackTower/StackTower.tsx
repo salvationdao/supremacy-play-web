@@ -104,7 +104,7 @@ export const StackTower = React.memo(function StackTower({
             game.start()
         }, 100)
 
-        return () => game.cleanup()
+        return () => game.destroy()
     }, [onNewGameScore, setGameState, theme.factionTheme.background])
 
     return (

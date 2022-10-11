@@ -1,6 +1,5 @@
 import * as THREE from "three"
 import { clamp } from "three/src/math/MathUtils"
-import { getRandomColor } from "../../../../../helpers"
 import { baseFrameRate, blockConfig, skins } from "./config"
 import { cover } from "./utils"
 
@@ -31,7 +30,6 @@ export interface LastBlock {
     dimension: Dimension
     position: Position
     direction: number
-    color: THREE.Color
     axis: Axis
     topTexture: THREE.Texture
     frontTexture: THREE.Texture
@@ -44,8 +42,6 @@ export class Block {
     speed: number
     dimension: Dimension
     position: Position
-    color: THREE.Color
-    colorOffset: number
     axis: Axis
     mesh: THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial[]>
     topTexture: THREE.Texture
@@ -55,8 +51,6 @@ export class Block {
     constructor(lastBlock?: LastBlock, shouldReplace = false, isFalling = false) {
         // This is how far away to spawn from the center of the stacks (spawn loc)
         this.MOVE_AMOUNT = 20
-
-        let color = null
         let axis = null
 
         // Set the dimension and position from the target block, or defaults.
@@ -73,7 +67,6 @@ export class Block {
 
             if (shouldReplace === true) {
                 y = lastBlock.position.y
-                color = lastBlock.color.getHex()
                 axis = lastBlock.axis
             } else {
                 y = lastBlock.position.y + lastBlock.dimension.height
@@ -101,10 +94,6 @@ export class Block {
         if (lastBlock && !shouldReplace) {
             this.position[axis] = (Math.random() < 0.5 ? 1 : -1) * this.MOVE_AMOUNT
         }
-
-        // Set color
-        this.colorOffset = Math.round(Math.random() * 100)
-        this.color = new THREE.Color(color || getRandomColor()) //new THREE.Color(color || Math.random() * 0xffffff )
 
         // Set direction
         let speed = blockConfig.initSpeed + blockConfig.acceleration
