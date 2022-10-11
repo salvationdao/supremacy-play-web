@@ -19,7 +19,9 @@ interface StackTowerProps {
 
 const propsAreEqual = (prevProps: StackTowerProps, nextProps: StackTowerProps) => {
     return (
-        prevProps.primaryColor === nextProps.primaryColor && prevProps.disableGame === nextProps.disableGame && prevProps.repairAgent === nextProps.repairAgent
+        prevProps.primaryColor === nextProps.primaryColor &&
+        prevProps.disableGame === nextProps.disableGame &&
+        prevProps.repairAgent?.id === nextProps.repairAgent?.id
     )
 }
 
