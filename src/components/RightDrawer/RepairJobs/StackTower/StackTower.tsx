@@ -11,7 +11,7 @@ import { Game, GamePattern, GameState } from "./src/game"
 interface StackTowerProps {
     primaryColor: string
     disableGame: boolean
-    repairAgent: RepairAgent
+    repairAgent?: RepairAgent
     setIsSubmitting: React.Dispatch<React.SetStateAction<boolean>>
     setSubmitError: React.Dispatch<React.SetStateAction<string | undefined>>
     onSubmitted: () => void
@@ -79,6 +79,8 @@ export const StackTower = React.memo(function StackTower({
     const oneNewGamePattern = useRef(async (gamePattern: GamePattern) => {
         setScore(gamePattern?.score)
 
+        if (!repairAgent?.id) return
+
         try {
             const resp = await updateScore.current(repairAgent.id, gamePattern)
             if (resp) {
@@ -128,7 +130,7 @@ export const StackTower = React.memo(function StackTower({
             >
                 <Stack spacing=".7rem" sx={{ pb: ".4rem" }}>
                     <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", span: { color: colors.neonBlue } }}>
-                        YOU NEED A TOTAL OF <span>{repairAgent.required_stacks || "XXX"}</span> STACKS TO REPAIR A SINGLE BLOCK!
+                        YOU NEED A TOTAL OF <span>{repairAgent?.required_stacks || "XXX"}</span> STACKS TO REPAIR A SINGLE BLOCK!
                     </Typography>
 
                     <Stack direction="row" alignItems="center" spacing="1rem">
@@ -138,12 +140,12 @@ export const StackTower = React.memo(function StackTower({
                                 backgroundColor={colors.red}
                                 orientation="horizontal"
                                 thickness="12px"
-                                percent={(100 * cumulativeScore) / (repairAgent.required_stacks || 100)}
+                                percent={(100 * cumulativeScore) / (repairAgent?.required_stacks || 100)}
                             />
                         </Stack>
 
                         <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
-                            {cumulativeScore}/{repairAgent.required_stacks || "XXX"}
+                            {cumulativeScore}/{repairAgent?.required_stacks || "XXX"}
                         </Typography>
                     </Stack>
                 </Stack>
