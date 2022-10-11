@@ -266,8 +266,6 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
         // }
         accessories.push({
             type: "power_core",
-            ownership_id: "",
-            static_id: "",
         })
         if (mechDetails.power_core) {
             accessories[accessories.length - 1] = {
