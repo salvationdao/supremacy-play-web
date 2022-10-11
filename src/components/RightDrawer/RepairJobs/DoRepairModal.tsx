@@ -372,7 +372,7 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
                             </Stack>
                         </Stack>
 
-                        {/* Info cards */}
+                        {/* 3 x info cards */}
                         {repairJob && (
                             <Stack direction="row" spacing="1.6rem" justifyContent="center">
                                 <InfoCard primaryColor={primaryColor} label="ACTIVE WORKERS">
@@ -429,6 +429,7 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
                                 {overlayContent}
                             </Box>
 
+                            {/* Support other mini-games in the future */}
                             <StackTower
                                 key={repairAgent?.id}
                                 primaryColor={primaryColor}
@@ -440,7 +441,7 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
                             />
                         </Box>
 
-                        {/* Button */}
+                        {/* Abandon button */}
                         {repairAgent && (
                             <FancyButton
                                 clipThingsProps={{
@@ -455,7 +456,7 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
                                 sx={{ px: "1.6rem", py: "1rem", color: colors.red }}
                                 onClick={abandonJob}
                             >
-                                <Typography sx={{ color: colors.red, fontFamily: fonts.nostromoBlack }}>ABANDON JOB</Typography>
+                                <Typography sx={{ color: colors.red, fontFamily: fonts.nostromoBlack }}>ABANDON REPAIR</Typography>
                             </FancyButton>
                         )}
 
@@ -474,7 +475,17 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
     )
 }, propsAreEqual)
 
-const InfoCard = ({ primaryColor, children, label, sx }: { primaryColor: string; children: ReactNode; label: string; sx?: SxProps }) => {
+const InfoCard = React.memo(function InfoCard({
+    primaryColor,
+    children,
+    label,
+    sx,
+}: {
+    primaryColor: string
+    children: ReactNode
+    label: string
+    sx?: SxProps
+}) {
     return (
         <Stack
             alignItems="center"
@@ -500,9 +511,9 @@ const InfoCard = ({ primaryColor, children, label, sx }: { primaryColor: string;
             </Typography>
         </Stack>
     )
-}
+})
 
-const Countdown = ({ endTime }: { endTime: Date }) => {
+const Countdown = React.memo(function Countdown({ endTime }: { endTime: Date }) {
     const { totalSecRemain } = useTimer(endTime)
 
     let color = "#FFFFFF"
@@ -514,4 +525,4 @@ const Countdown = ({ endTime }: { endTime: Date }) => {
             {totalSecRemain > 0 ? timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000), true) : "EXPIRED"}
         </Typography>
     )
-}
+})
