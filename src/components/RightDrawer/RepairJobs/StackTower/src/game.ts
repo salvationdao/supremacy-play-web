@@ -165,55 +165,55 @@ export class Game {
     }
 
     addBlock(triggeredWith: TriggeredWith) {
-        let lastBlock = this.blocks[this.blocks.length - 1]
-        const lastToLastBlock = this.blocks[this.blocks.length - 2]
+        let prevBlock = this.blocks[this.blocks.length - 1]
+        const prevOfPrevBlock = this.blocks[this.blocks.length - 2]
 
-        if (lastBlock && lastToLastBlock) {
-            const { axis, dimensionAlongAxis } = lastBlock.getAxis()
-            const distance = lastBlock.position[axis] - lastToLastBlock.position[axis]
+        if (prevBlock && prevOfPrevBlock) {
+            const { axis, dimensionAlongAxis } = prevBlock.getAxis()
+            const distance = prevBlock.position[axis] - prevOfPrevBlock.position[axis]
             let positionFalling, position
-            const { topTexture, frontTexture, rightTexture, direction } = lastBlock
-            const newLength = lastBlock.dimension[dimensionAlongAxis] - Math.abs(distance)
+            const { topTexture, frontTexture, rightTexture, direction } = prevBlock
+            const newLength = prevBlock.dimension[dimensionAlongAxis] - Math.abs(distance)
 
             // Game over
             if (newLength <= 0) {
-                this.stage.remove(lastBlock.mesh)
+                this.stage.remove(prevBlock.mesh)
                 this.setState(GameState.Ended)
                 this.stage.setCamera(Math.max(this.blocks.length * blockConfig.initHeight - 6, 6) + cameraConfig.offsetY)
                 this.onNewGameScore.current({
                     score: this.score,
                     is_failed: true,
-                    dimension: lastBlock.dimension,
+                    dimension: prevBlock.dimension,
                     stack_at: new Date(),
                     trigger_with: triggeredWith,
                 })
                 return
             }
 
-            const dimension = { ...lastBlock.dimension }
+            const dimension = { ...prevBlock.dimension }
             dimension[dimensionAlongAxis] = newLength
-            const dimensionFalling = { ...lastBlock.dimension }
+            const dimensionFalling = { ...prevBlock.dimension }
             dimensionFalling[dimensionAlongAxis] = Math.abs(distance)
 
             if (distance >= 0) {
-                position = lastBlock.position
+                position = prevBlock.position
 
-                positionFalling = { ...lastBlock.position }
-                positionFalling[axis] = lastBlock.position[axis] + newLength
+                positionFalling = { ...prevBlock.position }
+                positionFalling[axis] = prevBlock.position[axis] + newLength
             } else {
-                position = { ...lastBlock.position }
-                position[axis] = lastBlock.position[axis] + Math.abs(distance)
+                position = { ...prevBlock.position }
+                position[axis] = prevBlock.position[axis] + Math.abs(distance)
 
-                positionFalling = { ...lastBlock.position }
-                positionFalling[axis] = lastBlock.position[axis] - Math.abs(distance)
+                positionFalling = { ...prevBlock.position }
+                positionFalling[axis] = prevBlock.position[axis] - Math.abs(distance)
             }
 
             this.blocks.pop()
-            this.stage.remove(lastBlock.mesh)
-            lastBlock = new NormalBlock({ dimension, position, direction, axis, topTexture, frontTexture, rightTexture }, true)
+            this.stage.remove(prevBlock.mesh)
+            prevBlock = new NormalBlock({ dimension, position, direction, axis, topTexture, frontTexture, rightTexture }, true)
 
-            this.blocks.push(lastBlock)
-            this.stage.add(lastBlock.mesh)
+            this.blocks.push(prevBlock)
+            this.stage.add(prevBlock.mesh)
 
             const fallingBlock = new FallingBlock({
                 dimension: dimensionFalling,
@@ -231,17 +231,17 @@ export class Game {
 
         this.score = Math.max(this.blocks.length - 1, 0)
 
-        if (lastBlock) {
+        if (prevBlock) {
             this.onNewGameScore.current({
                 score: this.score,
                 is_failed: false,
-                dimension: lastBlock.dimension,
+                dimension: prevBlock.dimension,
                 stack_at: new Date(),
                 trigger_with: triggeredWith,
             })
         }
 
-        const newBlock = new NormalBlock(lastBlock)
+        const newBlock = new NormalBlock(prevBlock)
         this.stage.add(newBlock.mesh)
         this.blocks.push(newBlock)
 

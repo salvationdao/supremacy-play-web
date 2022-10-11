@@ -26,7 +26,7 @@ enum AxisDimension {
     depth = "depth",
 }
 
-export interface LastBlock {
+export interface PrevBlock {
     dimension: Dimension
     position: Position
     direction: number
@@ -48,7 +48,7 @@ export class Block {
     frontTexture: THREE.Texture
     rightTexture: THREE.Texture
 
-    constructor(lastBlock?: LastBlock, shouldReplace = false, isFalling = false) {
+    constructor(prevBlock?: PrevBlock, shouldReplace = false, isFalling = false) {
         // This is how far away to spawn from the center of the stacks (spawn loc)
         this.MOVE_AMOUNT = 20
         let axis = null
@@ -57,19 +57,19 @@ export class Block {
         let height, width, depth
         let x, y, z
 
-        if (lastBlock) {
-            width = lastBlock.dimension.width
-            height = lastBlock.dimension.height
-            depth = lastBlock.dimension.depth
+        if (prevBlock) {
+            width = prevBlock.dimension.width
+            height = prevBlock.dimension.height
+            depth = prevBlock.dimension.depth
 
-            x = lastBlock.position.x
-            z = lastBlock.position.z
+            x = prevBlock.position.x
+            z = prevBlock.position.z
 
             if (shouldReplace === true) {
-                y = lastBlock.position.y
-                axis = lastBlock.axis
+                y = prevBlock.position.y
+                axis = prevBlock.axis
             } else {
-                y = lastBlock.position.y + lastBlock.dimension.height
+                y = prevBlock.position.y + prevBlock.dimension.height
             }
         } else {
             width = blockConfig.initWidth
@@ -91,7 +91,7 @@ export class Block {
         this.axis = axis
 
         // If there was a previous block AND we aren't replacing it, it will spawn MOVE_AMOUNT from center
-        if (lastBlock && !shouldReplace) {
+        if (prevBlock && !shouldReplace) {
             this.position[axis] = (Math.random() < 0.5 ? 1 : -1) * this.MOVE_AMOUNT
         }
 
@@ -106,11 +106,11 @@ export class Block {
         geometry.applyMatrix4(new THREE.Matrix4().makeTranslation(this.dimension.width / 2, this.dimension.height / 2, this.dimension.depth / 2))
 
         // Handle skin texture (custom theme)
-        if (lastBlock && shouldReplace) {
+        if (prevBlock && shouldReplace) {
             // If we are replacing previous block, it will have same dimension, so no need to run cover()
-            this.topTexture = lastBlock.topTexture
-            this.frontTexture = lastBlock.frontTexture
-            this.rightTexture = lastBlock.rightTexture
+            this.topTexture = prevBlock.topTexture
+            this.frontTexture = prevBlock.frontTexture
+            this.rightTexture = prevBlock.rightTexture
 
             // If we are replacing and it's the small falling block, then need to run cover()
             if (!isFalling) {
@@ -168,8 +168,8 @@ export class Block {
 
 // Runs a tick, moves back and forth
 export class NormalBlock extends Block {
-    constructor(lastBlock: LastBlock, shouldReplace = false) {
-        super(lastBlock, shouldReplace)
+    constructor(prevBlock: PrevBlock, shouldReplace = false) {
+        super(prevBlock, shouldReplace)
     }
 
     reverseDirection() {
@@ -190,10 +190,10 @@ export class NormalBlock extends Block {
 
 // Runs a tick
 export class FallingBlock extends Block {
-    constructor(lastBlock: LastBlock) {
-        super(lastBlock, true, true)
+    constructor(prevBlock: PrevBlock) {
+        super(prevBlock, true, true)
         this.speed *= 1.8
-        this.direction = lastBlock.direction
+        this.direction = prevBlock.direction
     }
 
     tick() {
