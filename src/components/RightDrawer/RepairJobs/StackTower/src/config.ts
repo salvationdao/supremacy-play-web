@@ -31,41 +31,6 @@ import {
     Stack10cJPG,
 } from "../../../../../assets"
 
-export const baseFrameRate = 144
-
-export const blockConfig = {
-    initWidth: 10, // Initial width of the box (x axis)
-    initHeight: 2, // Initial height of the box (y axis)
-    initDepth: 10, // Initial depth of the box (z axis)
-    initSpeed: 0.08, // Initial moving speed
-    acceleration: 0.005, // The acceleration, the box should move faster and faster
-    maxSpeed: 3, // The upper bound of the box's speed
-}
-
-export const cameraConfig = {
-    depth: 20,
-    near: -100,
-    far: 1000,
-    position: [2, 2, 2],
-    lookAt: [0, 0, 0],
-    offsetY: 10,
-}
-
-export const lightsConfig = [
-    {
-        type: "DirectionalLight",
-        intensity: 1,
-        position: [0, 499, 0],
-        color: 0xffffff,
-    },
-]
-
-export interface Skin {
-    top: string
-    left: string
-    bottom: string
-}
-
 export const skins: Skin[] = [
     {
         top: Stack1aJPG,
@@ -118,3 +83,38 @@ export const skins: Skin[] = [
         bottom: Stack10cJPG,
     },
 ]
+
+export const baseFrameRate = 144
+
+export const blockConfig = {
+    initWidth: 10, // initial width of the box (x axis)
+    initHeight: 2, // initial height of the box (y axis)
+    initDepth: 10, // initial depth of the box (z axis)
+    initSpeed: 0.08, // initial moving speed
+    acceleration: 0.005, // the acceleration, the box should move faster and faster
+    maxSpeed: 3, // the upper bound of the box's speed
+}
+
+export const cameraConfig = {
+    depth: 20,
+    near: -100,
+    far: 1000,
+    position: [2, 2, 2],
+    lookAt: [0, 0, 0],
+    offsetY: 10,
+}
+
+export const lightsConfig = [
+    {
+        type: "DirectionalLight",
+        intensity: 1,
+        position: [0, 499, 0],
+        color: 0xffffff,
+    },
+]
+
+export interface Skin {
+    top: string
+    left: string
+    bottom: string
+}
