@@ -70,6 +70,7 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
     const [captchaToken, setCaptchaToken] = useState<string>()
 
     // Registering to play (to be a repair agent)
+    const [repairAgentID, setRepairAgentID] = useState("") // Need this for the mini-game key prop
     const [repairAgent, setRepairAgent] = useState<RepairAgent>()
     const [isRegistering, setIsRegistering] = useState(false)
     const [error, setError] = useState<string>()
@@ -130,6 +131,7 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
 
             if (!resp) return
             setRepairAgent(resp)
+            setRepairAgentID(resp.id)
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to register repair job."
             setError(message)
@@ -432,7 +434,7 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
 
                             {/* Support other mini-games in the future */}
                             <StackTower
-                                key={repairAgent?.id}
+                                key={repairAgentID}
                                 primaryColor={primaryColor}
                                 disableGame={!repairAgent || !!submitError || isSubmitting || isFinished}
                                 repairAgent={repairAgent}
