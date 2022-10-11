@@ -281,7 +281,7 @@ interface MechLoadoutItemDraggableProps extends LoadoutItem {
     something?: boolean
 }
 
-export const MechLoadoutItemDraggable = React.forwardRef<HTMLDivElement, MechLoadoutItemDraggableProps>(function MechLoadoutItemDraggable(
+const MechLoadoutItemDraggableBase = React.forwardRef<HTMLDivElement, MechLoadoutItemDraggableProps>(function MechLoadoutItemDraggable(
     { slotNumber, imageUrl, videoUrls, label, subLabel, primaryColor, isEmpty, Icon, rarity, hasSkin, imageTransform, locked, ...draggableProps },
     ref,
 ) {
@@ -400,3 +400,5 @@ export const MechLoadoutItemDraggable = React.forwardRef<HTMLDivElement, MechLoa
         </Stack>
     )
 })
+
+export const MechLoadoutItemDraggable = React.memo(MechLoadoutItemDraggableBase)
