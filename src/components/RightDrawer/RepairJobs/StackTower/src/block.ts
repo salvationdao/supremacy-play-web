@@ -1,5 +1,6 @@
 import * as THREE from "three"
 import { clamp } from "three/src/math/MathUtils"
+import { getRandomFloat } from "../../../../../helpers"
 import { baseFrameRate, blockConfig, skins } from "./config"
 import { cover } from "./utils"
 
@@ -86,13 +87,13 @@ export class Block {
 
         // Set axis (x, y, or z)
         if (axis === null) {
-            axis = Math.random() < 0.5 ? Axis.x : Axis.z
+            axis = Math.random() > 0.5 ? Axis.x : Axis.z
         }
         this.axis = axis
 
         // If there was a previous block AND we aren't replacing it, it will spawn MOVE_AMOUNT from center
         if (prevBlock && !shouldReplace) {
-            this.position[axis] = (Math.random() < 0.5 ? 1 : -1) * this.MOVE_AMOUNT
+            this.position[axis] = (Math.random() > 0.5 ? 1 : -1) * this.MOVE_AMOUNT
         }
 
         // Set direction
@@ -168,21 +169,26 @@ export class Block {
 
 // Runs a tick, moves back and forth
 export class NormalBlock extends Block {
+    private randomSpeedIncrease: number
     constructor(prevBlock: PrevBlock, shouldReplace = false) {
         super(prevBlock, shouldReplace)
+        this.randomSpeedIncrease = getRandomFloat(1, 2.2)
     }
 
     reverseDirection() {
         this.direction = this.direction > 0 ? this.speed : Math.abs(this.speed)
     }
 
-    tick(speed = 0, elapsedTime: number) {
-        const value = this.position[this.axis]
-        if (value > this.MOVE_AMOUNT || value < -this.MOVE_AMOUNT) {
+    tick(boost = 0, elapsedTime: number) {
+        const axisPos = this.position[this.axis]
+        // If block is reaching the edge, then quickly change direction and give it a little bounce back
+        // So it will never get stuck
+        if (axisPos > this.MOVE_AMOUNT || axisPos < -this.MOVE_AMOUNT) {
             this.reverseDirection()
-            this.position[this.axis] = clamp(-this.MOVE_AMOUNT + 1, value, this.MOVE_AMOUNT - 1)
+            this.position[this.axis] = clamp(-this.MOVE_AMOUNT + 1, axisPos, this.MOVE_AMOUNT - 1)
         }
-        this.position[this.axis] += this.direction * (1 + speed) * (elapsedTime * (baseFrameRate / 1000))
+
+        this.position[this.axis] += this.direction * (1 + boost) * (elapsedTime * (baseFrameRate / 1000)) * this.randomSpeedIncrease
         this.mesh.position[this.axis] = this.position[this.axis]
     }
 }

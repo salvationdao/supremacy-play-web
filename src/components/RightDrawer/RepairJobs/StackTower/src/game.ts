@@ -107,32 +107,6 @@ export class Game {
         this.stage.resetContainerSize()
     }
 
-    tick(elapsedTime: number) {
-        // Only the top block gets tick running, others are stationary
-        if (this.blocks.length > 1) {
-            this.blocks[this.blocks.length - 1].tick(this.blocks.length / 10, elapsedTime)
-        }
-
-        // Run tick on all falling blocks
-        this.fallingBlocks.forEach((block) => block.tick())
-
-        // If falling block falls below y=0, remove from stage
-        this.fallingBlocks = this.fallingBlocks.filter((block) => {
-            if (block.position.y > 0) {
-                return true
-            } else {
-                this.stage.remove(block.mesh)
-                return false
-            }
-        })
-
-        this.stage.render()
-        this.animationID = requestAnimationFrame((ts) => {
-            this.tick(ts - this.timestamp)
-            this.timestamp = ts
-        })
-    }
-
     destroy() {
         if (this.animationID) cancelAnimationFrame(this.animationID)
         document.removeEventListener("keydown", this.onKeydownBound)
@@ -168,6 +142,32 @@ export class Game {
     setState(state: GameState) {
         this.state = state
         this.setGameState(state)
+    }
+
+    tick(elapsedTime: number) {
+        // Only the top block gets tick running, others are stationary
+        if (this.blocks.length > 1) {
+            this.blocks[this.blocks.length - 1].tick(this.blocks.length / 10, elapsedTime)
+        }
+
+        // Run tick on all falling blocks
+        this.fallingBlocks.forEach((block) => block.tick())
+
+        // If falling block falls below y=0, remove from stage
+        this.fallingBlocks = this.fallingBlocks.filter((block) => {
+            if (block.position.y > 0) {
+                return true
+            } else {
+                this.stage.remove(block.mesh)
+                return false
+            }
+        })
+
+        this.stage.render()
+        this.animationID = requestAnimationFrame((ts) => {
+            this.tick(ts - this.timestamp)
+            this.timestamp = ts
+        })
     }
 
     addBlock(triggeredWith: TriggeredWith) {

@@ -91,7 +91,7 @@ export const shadeColor = (hexColor: string, factor: number) => {
     return "#" + RR + GG + BB
 }
 
-export const getRandomArbitrary = (min: number, max: number): number => {
+export const getRandomFloat = (min: number, max: number): number => {
     return Math.random() * (max - min) + min
 }
 
