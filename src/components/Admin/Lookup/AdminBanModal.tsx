@@ -1,5 +1,5 @@
 import { Faction, User } from "../../../types"
-import React, { useCallback, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { GameServerKeys } from "../../../keys"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { Box, Checkbox, IconButton, Modal, Stack, TextField, Typography } from "@mui/material"
@@ -31,6 +31,19 @@ export const AdminBanModal = ({
     const [banDurationDays, setDurationDays] = useState<number>(0)
     const [banReason, setBanReason] = useState<string>("")
     const [isShadowBan, setIsShadowBan] = useState<boolean>(true)
+    const [canSubmit, setCanSubmit] = useState<boolean>(false)
+
+    useEffect(() => {
+        if (!supContributeBan || !locationSelectBan || !chatBan) {
+            if (banDurationDays > 0 || banDurationHours > 0) {
+                if (banReason != "") {
+                    setCanSubmit(true)
+                    return
+                }
+            }
+        }
+        setCanSubmit(false)
+    }, [banDurationDays, banDurationHours, banReason, chatBan, locationSelectBan, supContributeBan])
 
     const onClose = useCallback(() => {
         setModalOpen(false)
@@ -94,6 +107,7 @@ export const AdminBanModal = ({
             setModalOpen={setModalOpen}
             setIsShadowBan={setIsShadowBan}
             shadowBan={isShadowBan}
+            canSubmit={canSubmit}
         />
     )
 }
@@ -119,6 +133,7 @@ const AdminBanModalInner = ({
     sendBanCommand,
     reqError,
     faction,
+    canSubmit,
 }: {
     user: User
     modalOpen: boolean
@@ -141,6 +156,7 @@ const AdminBanModalInner = ({
     sendBanCommand: () => void
     reqError: string
     faction: Faction
+    canSubmit: boolean
 }) => {
     return (
         <Modal open={modalOpen} onClose={onClose}>
@@ -391,7 +407,7 @@ const AdminBanModalInner = ({
                             }}
                             sx={{ px: "1.6rem", py: ".3rem", color: faction.secondary_color }}
                             onClick={sendBanCommand}
-                            disabled={!locationSelectBan && !chatBan && !supContributeBan}
+                            disabled={!canSubmit}
                         >
                             <Typography
                                 variant="caption"
