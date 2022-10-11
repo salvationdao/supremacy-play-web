@@ -1,10 +1,10 @@
 import { Avatar, Box, Stack, Typography } from "@mui/material"
-import React, { useCallback, useMemo, useState } from "react"
+import React, { useMemo, useState } from "react"
 import { Avatar as SupremacyAvatar } from "../../Avatar"
 import { SvgGlobal, SvgLock, SvgSupToken } from "../../../assets"
 import { useArena, useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { supFormatter } from "../../../helpers"
+import { supFormatterNoFixed } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleLobby } from "../../../types/battle_queue"
 import { ClipThing } from "../../Common/ClipThing"
@@ -14,6 +14,7 @@ import { CropMaxLengthText } from "../../../theme/styles"
 import { FactionIDs } from "../../../constants"
 import { OptInButton } from "../../UpcomingBattle/UpcomingBattle"
 import { BattleLobbyMechList } from "./PlayerInvolvedLobbyCard"
+import { BattleLobbyPricePool } from "./BattleLobbyPricePool"
 
 interface BattleLobbyItemProps {
     battleLobby: BattleLobby
@@ -49,16 +50,12 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
         name,
         number,
         entry_fee,
-        first_faction_cut,
-        second_faction_cut,
-        third_faction_cut,
         assigned_to_arena_id,
         battle_lobbies_mechs,
         ready_at,
         selected_zai_supporters,
         selected_rm_supporters,
         selected_bc_supporters,
-        sups_pool,
     } = battleLobby
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
@@ -117,15 +114,15 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
 
     const entryFeeDisplay = useMemo(() => {
         const hasFee = entry_fee !== "0"
-        const text = hasFee ? supFormatter(entry_fee) : "NONE"
+        const text = hasFee ? supFormatterNoFixed(entry_fee, 2) : "NONE"
 
         return (
-            <Stack direction="column">
+            <Stack direction="row" spacing={0.8}>
                 <Typography
                     variant="body2"
                     fontFamily={fonts.nostromoHeavy}
                     sx={{
-                        color: colors.grey,
+                        color: hasFee ? colors.gold : colors.green,
                         textAlign: "bottom",
                     }}
                 >
@@ -140,42 +137,6 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
             </Stack>
         )
     }, [entry_fee])
-
-    const distributionValue = useCallback((backgroundColor: string, rank: number, value: string) => {
-        return (
-            <Stack direction="row" alignItems="center" spacing=".5rem">
-                <Box
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        height: "2rem",
-                        width: "2rem",
-                        borderRadius: "50%",
-                        backgroundColor: backgroundColor,
-                    }}
-                >
-                    <Typography
-                        variant="body2"
-                        sx={{
-                            color: `${colors.darkerNavy}99`,
-                            fontFamily: fonts.nostromoBlack,
-                        }}
-                    >
-                        {rank}
-                    </Typography>
-                </Box>
-                <Typography
-                    variant="body2"
-                    sx={{
-                        fontFamily: fonts.nostromoMedium,
-                    }}
-                >
-                    {(parseFloat(value) * 100).toFixed(1)}
-                </Typography>
-            </Stack>
-        )
-    }, [])
 
     return (
         <>
@@ -306,25 +267,9 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                             </Typography>
                                         </Stack>
                                     </Stack>
-                                    {/* Prize allocation */}
-                                    {(entry_fee !== "0" || sups_pool !== "0") && (
-                                        <Stack direction="column" spacing={0.6}>
-                                            <Typography
-                                                variant="body2"
-                                                fontFamily={fonts.nostromoHeavy}
-                                                sx={{
-                                                    color: colors.grey,
-                                                }}
-                                            >
-                                                Distribution (%)
-                                            </Typography>
-                                            <Stack direction="row" spacing="1rem">
-                                                {distributionValue(colors.gold, 1, first_faction_cut)}
-                                                {distributionValue(colors.silver, 2, second_faction_cut)}
-                                                {distributionValue(colors.bronze, 3, third_faction_cut)}
-                                            </Stack>
-                                        </Stack>
-                                    )}
+
+                                    {/* Prize pool */}
+                                    <BattleLobbyPricePool battleLobby={battleLobby} />
 
                                     {/* Other faction mech slots */}
                                     <Stack spacing=".5rem">
