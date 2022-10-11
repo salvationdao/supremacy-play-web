@@ -142,10 +142,10 @@ export class Game {
 
         if (lastBlock && lastToLastBlock) {
             const { axis, dimensionAlongAxis } = lastBlock.getAxis()
-            const distance = lastBlock.position[axis as keyof typeof lastBlock.position] - lastToLastBlock.position[axis as keyof typeof lastBlock.position]
+            const distance = lastBlock.position[axis] - lastToLastBlock.position[axis]
             let positionFalling, position
-            const { color, topTexture, leftTexture, bottomTexture } = lastBlock
-            const newLength = lastBlock.dimension[dimensionAlongAxis as keyof typeof lastBlock.dimension] - Math.abs(distance)
+            const { color, topTexture, frontTexture, rightTexture, direction } = lastBlock
+            const newLength = lastBlock.dimension[dimensionAlongAxis] - Math.abs(distance)
 
             // Game over
             if (newLength <= 0) {
@@ -163,26 +163,26 @@ export class Game {
             }
 
             const dimension = { ...lastBlock.dimension }
-            dimension[dimensionAlongAxis as keyof typeof dimension] = newLength
+            dimension[dimensionAlongAxis] = newLength
             const dimensionFalling = { ...lastBlock.dimension }
-            dimensionFalling[dimensionAlongAxis as keyof typeof lastBlock.dimension] = Math.abs(distance)
+            dimensionFalling[dimensionAlongAxis] = Math.abs(distance)
 
             if (distance >= 0) {
                 position = lastBlock.position
 
                 positionFalling = { ...lastBlock.position }
-                positionFalling[axis as keyof typeof positionFalling] = lastBlock.position[axis as keyof typeof lastBlock.position] + newLength
+                positionFalling[axis] = lastBlock.position[axis] + newLength
             } else {
                 position = { ...lastBlock.position }
-                position[axis as keyof typeof position] = lastBlock.position[axis as keyof typeof lastBlock.position] + Math.abs(distance)
+                position[axis] = lastBlock.position[axis] + Math.abs(distance)
 
                 positionFalling = { ...lastBlock.position }
-                positionFalling[axis as keyof typeof positionFalling] = lastBlock.position[axis as keyof typeof lastBlock.position] - Math.abs(distance)
+                positionFalling[axis] = lastBlock.position[axis] - Math.abs(distance)
             }
 
             this.blocks.pop()
             this.stage.remove(lastBlock.mesh)
-            lastBlock = new NormalBlock({ dimension, position, color, axis, topTexture, leftTexture, bottomTexture }, true)
+            lastBlock = new NormalBlock({ dimension, position, direction, color, axis, topTexture, frontTexture, rightTexture }, true)
 
             this.blocks.push(lastBlock)
             this.stage.add(lastBlock.mesh)
@@ -190,11 +190,12 @@ export class Game {
             const fallingBlock = new FallingBlock({
                 dimension: dimensionFalling,
                 position: positionFalling,
+                direction,
                 color,
-                axis: null,
+                axis,
                 topTexture,
-                leftTexture,
-                bottomTexture,
+                frontTexture,
+                rightTexture,
             })
 
             this.fallingBlocks.push(fallingBlock)

@@ -15,6 +15,29 @@ interface Position {
     z: number
 }
 
+enum Axis {
+    x = "x",
+    y = "y",
+    z = "z",
+}
+
+enum AxisDimension {
+    width = "width",
+    height = "height",
+    depth = "depth",
+}
+
+export interface LastBlock {
+    dimension: Dimension
+    position: Position
+    direction: number
+    color: THREE.Color
+    axis: Axis
+    topTexture: THREE.Texture
+    frontTexture: THREE.Texture
+    rightTexture: THREE.Texture
+}
+
 export class Block {
     MOVE_AMOUNT: number
     direction: number
@@ -23,35 +46,20 @@ export class Block {
     position: Position
     color: THREE.Color
     colorOffset: number
-    axis: string | null
+    axis: Axis
     mesh: THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial[]>
     topTexture: THREE.Texture
-    leftTexture: THREE.Texture
-    bottomTexture: THREE.Texture
+    frontTexture: THREE.Texture
+    rightTexture: THREE.Texture
 
-    constructor(
-        lastBlock?: {
-            dimension: Dimension
-            position: Position
-            color: THREE.Color
-            axis: string | null
-            topTexture: THREE.Texture
-            leftTexture: THREE.Texture
-            bottomTexture: THREE.Texture
-        },
-        shouldReplace = false,
-        isFalling = false,
-    ) {
+    constructor(lastBlock?: LastBlock, shouldReplace = false, isFalling = false) {
+        // This is how far away to spawn from the center of the stacks (spawn loc)
         this.MOVE_AMOUNT = 20
 
-        this.speed = 0
-        this.direction = 0
-        this.dimension = { width: 0, height: 0, depth: 0 }
-        this.position = { x: 0, y: 0, z: 0 }
         let color = null
         let axis = null
 
-        // set the dimensions from the target block, or defaults.
+        // Set the dimension and position from the target block, or defaults.
         let height, width, depth
         let x, y, z
 
@@ -65,11 +73,10 @@ export class Block {
 
             if (shouldReplace === true) {
                 y = lastBlock.position.y
-
                 color = lastBlock.color.getHex()
                 axis = lastBlock.axis
             } else {
-                y = lastBlock.position.y + blockConfig.initHeight
+                y = lastBlock.position.y + lastBlock.dimension.height
             }
         } else {
             width = blockConfig.initWidth
@@ -81,71 +88,68 @@ export class Block {
             z = 0
         }
 
-        this.dimension.width = width
-        this.dimension.height = height
-        this.dimension.depth = depth
+        this.dimension = { width, height, depth }
+        this.position = { x, y, z }
 
-        this.position.x = x
-        this.position.y = y
-        this.position.z = z
-
+        // Set axis (x, y, or z)
         if (axis === null) {
-            const random = Math.random()
-            axis = random < 0.5 ? "x" : "z"
+            axis = Math.random() < 0.5 ? Axis.x : Axis.z
         }
         this.axis = axis
 
+        // If there was a previous block AND we aren't replacing it, it will spawn MOVE_AMOUNT from center
         if (lastBlock && !shouldReplace) {
-            this.position[axis as keyof typeof this.position] = (Math.random() > 0.5 ? 1 : -1) * this.MOVE_AMOUNT
+            this.position[axis] = (Math.random() < 0.5 ? 1 : -1) * this.MOVE_AMOUNT
         }
 
+        // Set color
         this.colorOffset = Math.round(Math.random() * 100)
-
-        // set color
         this.color = new THREE.Color(color || getRandomColor()) //new THREE.Color(color || Math.random() * 0xffffff )
 
-        // set direction
+        // Set direction
         let speed = blockConfig.initSpeed + blockConfig.acceleration
-        speed = Math.min(speed, blockConfig.maxSpeed)
+        speed = Math.min(speed, blockConfig.maxSpeed) // Bound to a max speed
         this.speed = -speed
         this.direction = this.speed
 
-        // create block
+        // Create block
         const geometry = new THREE.BoxGeometry(this.dimension.width, this.dimension.height, this.dimension.depth)
         geometry.applyMatrix4(new THREE.Matrix4().makeTranslation(this.dimension.width / 2, this.dimension.height / 2, this.dimension.depth / 2))
 
-        // handle skin
+        // Handle skin texture (custom theme)
         if (lastBlock && shouldReplace) {
+            // If we are replacing previous block, it will have same dimension, so no need to run cover()
             this.topTexture = lastBlock.topTexture
-            this.leftTexture = lastBlock.leftTexture
-            this.bottomTexture = lastBlock.bottomTexture
+            this.frontTexture = lastBlock.frontTexture
+            this.rightTexture = lastBlock.rightTexture
 
+            // If we are replacing and it's the small falling block, then need to run cover()
             if (!isFalling) {
                 cover(this.topTexture, this.dimension.width / this.dimension.depth)
-                cover(this.leftTexture, this.dimension.width / this.dimension.height)
-                cover(this.bottomTexture, this.dimension.depth / this.dimension.height)
+                cover(this.frontTexture, this.dimension.width / this.dimension.height)
+                cover(this.rightTexture, this.dimension.depth / this.dimension.height)
             }
         } else {
-            // loading the texture from image
+            // Loading the texture from image
             const skin = this.getRandomSkin()
             const textureLoader = new THREE.TextureLoader()
             this.topTexture = textureLoader.load(skin.top, () => cover(this.topTexture, this.dimension.width / this.dimension.depth))
-            this.leftTexture = textureLoader.load(skin.left, () => cover(this.leftTexture, this.dimension.width / this.dimension.height))
-            this.bottomTexture = textureLoader.load(skin.bottom, () => cover(this.bottomTexture, this.dimension.depth / this.dimension.height))
+            this.frontTexture = textureLoader.load(skin.front, () => cover(this.frontTexture, this.dimension.width / this.dimension.height))
+            this.rightTexture = textureLoader.load(skin.right, () => cover(this.rightTexture, this.dimension.depth / this.dimension.height))
         }
 
-        // define materials from texture
+        // Define materials from texture
         const topMaterial = new THREE.MeshBasicMaterial({ map: this.topTexture })
-        const leftMaterial = new THREE.MeshBasicMaterial({ map: this.leftTexture })
-        const bottomMaterial = new THREE.MeshBasicMaterial({ map: this.bottomTexture })
+        const frontMaterial = new THREE.MeshBasicMaterial({ map: this.frontTexture })
+        const rightMaterial = new THREE.MeshBasicMaterial({ map: this.rightTexture })
 
         const materials = [
-            bottomMaterial, // bottom
-            bottomMaterial, // bottom opposite
-            topMaterial, // top
-            topMaterial, // top opposite
-            leftMaterial, // left
-            leftMaterial, // left opposite
+            rightMaterial, // Right
+            rightMaterial, // Right opposite
+            topMaterial, // Top
+            topMaterial, // Top opposite
+            frontMaterial, // Front
+            frontMaterial, // Front opposite
         ]
 
         this.mesh = new THREE.Mesh(geometry, materials)
@@ -157,13 +161,13 @@ export class Block {
     }
 
     getAxis() {
-        let dimensionAlongAxis = null
+        let dimensionAlongAxis = AxisDimension.depth
         switch (this.axis) {
-            case "x":
-                dimensionAlongAxis = "width"
+            case Axis.x:
+                dimensionAlongAxis = AxisDimension.width
                 break
-            case "z":
-                dimensionAlongAxis = "depth"
+            case Axis.z:
+                dimensionAlongAxis = AxisDimension.depth
                 break
         }
         return {
@@ -173,19 +177,9 @@ export class Block {
     }
 }
 
+// Runs a tick, moves back and forth
 export class NormalBlock extends Block {
-    constructor(
-        lastBlock: {
-            dimension: Dimension
-            position: Position
-            color: THREE.Color
-            axis: string | null
-            topTexture: THREE.Texture
-            leftTexture: THREE.Texture
-            bottomTexture: THREE.Texture
-        },
-        shouldReplace = false,
-    ) {
+    constructor(lastBlock: LastBlock, shouldReplace = false) {
         super(lastBlock, shouldReplace)
     }
 
@@ -194,35 +188,28 @@ export class NormalBlock extends Block {
     }
 
     tick(speed = 0, elapsedTime: number) {
-        const value = this.position[this.axis as keyof typeof this.position]
+        const value = this.position[this.axis]
         if (value > this.MOVE_AMOUNT || value < -this.MOVE_AMOUNT) {
             this.reverseDirection()
-            this.position[this.axis as keyof typeof this.position] = clamp(-this.MOVE_AMOUNT + 1, value, this.MOVE_AMOUNT - 1)
+            this.position[this.axis] = clamp(-this.MOVE_AMOUNT + 1, value, this.MOVE_AMOUNT - 1)
         }
 
-        this.position[this.axis as keyof typeof this.position] += (this.direction + this.direction * speed) * (elapsedTime * (baseFrameRate / 1000))
-        this.mesh.position[this.axis as keyof typeof this.position] = this.position[this.axis as keyof typeof this.position]
+        this.position[this.axis] += this.direction * (1 + speed) * (elapsedTime * (baseFrameRate / 1000))
+        this.mesh.position[this.axis] = this.position[this.axis]
     }
 }
 
+// Runs a tick
 export class FallingBlock extends Block {
-    constructor(lastBlock: {
-        dimension: Dimension
-        position: Position
-        color: THREE.Color
-        axis: string | null
-        topTexture: THREE.Texture
-        leftTexture: THREE.Texture
-        bottomTexture: THREE.Texture
-    }) {
+    constructor(lastBlock: LastBlock) {
         super(lastBlock, true, true)
-        this.speed *= 2
-        this.direction = this.speed
+        this.speed *= 1.5
+        this.direction = lastBlock.direction
     }
 
     tick() {
-        this.position.y -= Math.abs(this.direction)
-        this.mesh.rotation.z += this.direction / 6
+        this.position.y -= Math.abs(this.speed)
+        this.mesh.rotation[this.axis === Axis.x ? Axis.z : Axis.x] += (this.axis === Axis.x ? -1 : 1) * (this.direction / 6)
         this.mesh.position.y = this.position.y
     }
 }
