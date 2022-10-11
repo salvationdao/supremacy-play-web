@@ -431,17 +431,15 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
                             </Box>
 
                             {/* Support other mini-games in the future */}
-                            {repairAgent && (
-                                <StackTower
-                                    key={repairAgent?.id}
-                                    primaryColor={primaryColor}
-                                    disableGame={!repairAgent || !!submitError || isSubmitting || isFinished}
-                                    repairAgent={repairAgent}
-                                    setIsSubmitting={setIsSubmitting}
-                                    setSubmitError={setSubmitError}
-                                    onSubmitted={onSubmitted}
-                                />
-                            )}
+                            <StackTower
+                                key={repairAgent?.id}
+                                primaryColor={primaryColor}
+                                disableGame={!repairAgent || !!submitError || isSubmitting || isFinished}
+                                repairAgent={repairAgent}
+                                setIsSubmitting={setIsSubmitting}
+                                setSubmitError={setSubmitError}
+                                onSubmitted={onSubmitted}
+                            />
                         </Box>
 
                         {/* Abandon button */}
