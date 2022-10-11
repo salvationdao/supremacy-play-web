@@ -91,7 +91,8 @@ export const AdminPage = () => {
                                 }}
                             >
                                 <Tab label="LOOKUP" value={ADMIN_TABS.LOOKUP} />
-                                <Tab label="BAN LIST" value={ADMIN_TABS.BANLIST} />
+                                {/*TODO: Add ban list*/}
+                                {/*<Tab label="BAN LIST" value={ADMIN_TABS.BANLIST} />*/}
                             </Tabs>
                         </Box>
                     </ClipThing>
