@@ -40,6 +40,7 @@ export interface UserFromPassport {
 
 export interface User {
     id: string
+    account_id?: string
     username: string
     faction_id: string
     gid: number

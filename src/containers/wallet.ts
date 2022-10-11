@@ -3,7 +3,7 @@ import { createContainer } from "unstated-next"
 import BigNumber from "bignumber.js"
 import { PassportServerKeys } from "../keys"
 import { useSupremacy } from "."
-import { usePassportSubscriptionUser } from "../hooks/usePassport"
+import { usePassportSubscriptionAccount } from "../hooks/usePassport"
 
 export const WalletContainer = createContainer(() => {
     const { haveSups, toggleHaveSups } = useSupremacy()
@@ -11,7 +11,7 @@ export const WalletContainer = createContainer(() => {
     const [onWorldSups, setOnWorldSups] = useState<BigNumber>()
     const firstIteration = useRef(true)
 
-    usePassportSubscriptionUser<string>(
+    usePassportSubscriptionAccount<string>(
         {
             URI: "/sups",
             key: PassportServerKeys.SubscribeWallet,
