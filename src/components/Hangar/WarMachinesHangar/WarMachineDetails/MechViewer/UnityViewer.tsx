@@ -168,13 +168,19 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
     }, [addEventListener, removeEventListener])
 
     useEffect(() => {
+        let t: NodeJS.Timeout | null = null
         const onSlotLoaded = () => {
-            console.log("slot unlocked")
-            unity.onUnlock()
-            setIsPendingChange(false)
+            t = setTimeout(() => {
+                console.log("slot unlocked")
+                unity.onUnlock()
+                setIsPendingChange(false)
+            }, 500)
         }
         addEventListener("SlotLoaded", onSlotLoaded)
-        return () => removeEventListener("SlotLoaded", onSlotLoaded)
+        return () => {
+            if (t) clearTimeout(t)
+            removeEventListener("SlotLoaded", onSlotLoaded)
+        }
     }, [addEventListener, removeEventListener, unity])
 
     const isMouseDown = useRef(false)
