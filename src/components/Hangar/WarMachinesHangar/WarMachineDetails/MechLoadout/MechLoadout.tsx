@@ -1,4 +1,4 @@
-import { Box, Button, Fade, IconButton, Slide, Stack, Typography } from "@mui/material"
+import { Box, Divider, Fade, IconButton, Slide, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Svg3DView, SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgWeapons } from "../../../../../assets"
 import { useGlobalNotifications } from "../../../../../containers"
@@ -508,8 +508,13 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                 backgroundColor={theme.factionTheme.background}
                 sx={{ flex: 1, height: "100%" }}
             >
-                <Stack
-                    direction="row"
+                <ClipThing
+                    clipSize="5px"
+                    border={{
+                        borderColor: theme.factionTheme.primary,
+                        borderThickness: ".3rem",
+                    }}
+                    backgroundColor={theme.factionTheme.background}
                     sx={{
                         zIndex: 7,
                         position: "absolute",
@@ -517,14 +522,44 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                         bottom: 0,
                     }}
                 >
-                    {show3DViewer ? (
-                        <Button onClick={switchTo2DView}>2D</Button>
-                    ) : (
-                        <IconButton onClick={switchTo3DView}>
-                            <Svg3DView />
+                    <Stack direction="row">
+                        <IconButton
+                            sx={{
+                                width: "6rem",
+                                borderRadius: 0,
+                            }}
+                            onClick={switchTo2DView}
+                            disabled={!show3DViewer}
+                        >
+                            <Typography
+                                sx={{
+                                    fontFamily: fonts.nostromoBlack,
+                                    fontSize: "2rem",
+                                    color: !show3DViewer ? colors.darkGrey : "white",
+                                }}
+                            >
+                                2D
+                            </Typography>
                         </IconButton>
-                    )}
-                </Stack>
+                        <Divider
+                            sx={{
+                                height: "auto",
+                            }}
+                            orientation="vertical"
+                            color={colors.darkGrey}
+                        />
+                        <IconButton
+                            sx={{
+                                width: "6rem",
+                                borderRadius: 0,
+                            }}
+                            onClick={switchTo3DView}
+                            disabled={show3DViewer}
+                        >
+                            <Svg3DView fill={show3DViewer ? colors.darkGrey : "white"} />
+                        </IconButton>
+                    </Stack>
+                </ClipThing>
                 {/* Mech Viewer */}
                 {show3DViewer ? (
                     <MechViewer3D
