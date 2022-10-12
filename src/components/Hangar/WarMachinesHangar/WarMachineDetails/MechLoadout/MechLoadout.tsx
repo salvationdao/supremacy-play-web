@@ -233,6 +233,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         send,
     ])
 
+    // EQUIP HANDLERS
     const modifyMechSkin = useCallback((ems: LoadoutMechSkin) => {
         if (unityControlsRef.current) {
             unityControlsRef.current.handleMechSkinUpdate(ems)
@@ -246,7 +247,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
             }
         })
     }, [])
-
     const modifyPowerCore = useCallback((ep: LoadoutPowerCore) => {
         setCurrLoadout((prev) => {
             let updated: LoadoutPowerCore | undefined = ep
@@ -259,7 +259,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
             }
         })
     }, [])
-
     const modifyWeaponSlot = useCallback((ew: LoadoutWeapon) => {
         if (unityControlsRef.current) {
             unityControlsRef.current.handleWeaponUpdate(ew)
@@ -281,6 +280,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         })
     }, [])
 
+    // UNDO HANDLERS
     const undoMechSkinChanges = useCallback(() => {
         if (unityControlsRef.current && currLoadout.chassis_skin) {
             const prevMechSkin = currLoadout.chassis_skin
@@ -293,11 +293,9 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
 
         setCurrLoadout((prev) => ({ ...prev, changed_mech_skin: undefined }))
     }, [currLoadout.chassis_skin])
-
     const undoPowerCoreChanges = useCallback(() => {
         setCurrLoadout((prev) => ({ ...prev, changed_power_core: undefined }))
     }, [])
-
     const undoWeaponChanges = useCallback(
         (slotNumber: number) => {
             if (unityControlsRef.current) {
@@ -331,6 +329,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         [currLoadout.weapons_map],
     )
 
+    // DRAG HANDLERS
     const mechSkinItemRef = useRef<HTMLDivElement>(null)
     const weaponItemRefs = useRef<Map<number, HTMLDivElement | null>>(new Map()) // Map<slot_number, Element ref>
     const onItemDrag = useCallback<CustomDragEventWithType>(
@@ -480,6 +479,16 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         [chassis_skin?.locked_to_mech, loadoutDisabled, modifyMechSkin, modifyWeaponSlot, weapons_map],
     )
 
+    // 2D/3D VIEW SWITCHERS
+    const switchTo2DView = async () => {
+        if (!unityControlsRef.current) return
+        await unityControlsRef.current.handleUnload()
+        setShow3DViewer(false)
+    }
+    const switchTo3DView = async () => {
+        setShow3DViewer(true)
+    }
+
     return (
         <Stack
             direction="row"
@@ -508,10 +517,13 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                         bottom: 0,
                     }}
                 >
-                    <Button>2D View</Button>
-                    <IconButton onClick={() => setShow3DViewer(true)}>
-                        <Svg3DView />
-                    </IconButton>
+                    {show3DViewer ? (
+                        <Button onClick={switchTo2DView}>2D</Button>
+                    ) : (
+                        <IconButton onClick={switchTo3DView}>
+                            <Svg3DView />
+                        </IconButton>
+                    )}
                 </Stack>
                 {/* Mech Viewer */}
                 {show3DViewer ? (

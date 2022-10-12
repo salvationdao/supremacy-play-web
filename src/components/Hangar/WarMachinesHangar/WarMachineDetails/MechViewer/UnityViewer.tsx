@@ -10,6 +10,7 @@ import { LoadoutMechSkin, LoadoutPowerCore, LoadoutWeapon } from "../MechLoadout
 import { MechViewer3DProps } from "./MechViewer3D"
 
 export type UnityHandle = {
+    handleUnload: () => Promise<void>
     handleWeaponUpdate: (wu: LoadoutWeapon) => void
     handlePowerCoreUpdate: (pcu: LoadoutPowerCore) => void
     handleMechSkinUpdate: (msu: LoadoutMechSkin) => void
@@ -55,7 +56,7 @@ export interface UnityParams {
 
 export const UnityViewer = ({ mechDetailsWithMaps, unity }: MechViewer3DProps) => {
     const theme = useTheme()
-    const { unityProvider, sendMessage, addEventListener, removeEventListener, isLoaded, loadingProgression } = useUnityContext({
+    const { unityProvider, sendMessage, addEventListener, removeEventListener, isLoaded, loadingProgression, unload } = useUnityContext({
         loaderUrl: `${baseUrl}WebGL.loader.js`,
         dataUrl: `${baseUrl}/WebGL.data.br`,
         frameworkUrl: `${baseUrl}/WebGL.framework.js.br`,
@@ -73,6 +74,13 @@ export const UnityViewer = ({ mechDetailsWithMaps, unity }: MechViewer3DProps) =
     // todo: unload unity viewer when this bug is fixed https://react-unity-webgl.dev/docs/api/unload
 
     useImperativeHandle(unity.unityRef, () => ({
+        handleUnload: () => {
+            if (showClickToLoadOverlay || !isLoaded || !siloReady)
+                return new Promise((resolve) => {
+                    resolve()
+                })
+            return unload()
+        },
         handleWeaponUpdate: (wu: LoadoutWeapon) => {
             const weapon = wu.weapon
             if (wu.unequip) {
@@ -214,7 +222,7 @@ export const UnityViewer = ({ mechDetailsWithMaps, unity }: MechViewer3DProps) =
     }, [isEverythingReady, sendMessage, unity.orbitControlsRef])
 
     useEffect(() => {
-        if (!isLoaded || !siloReady || sent.current) return
+        if (showClickToLoadOverlay || !isLoaded || !siloReady || sent.current) return
 
         const accessories: SiloObject[] = []
         for (let i = 0; i < mechDetailsWithMaps.weapon_hardpoints; i++) {
@@ -307,6 +315,7 @@ export const UnityViewer = ({ mechDetailsWithMaps, unity }: MechViewer3DProps) =
         mechDetailsWithMaps.utility,
         mechDetailsWithMaps.utility_slots,
         mechDetailsWithMaps.id,
+        showClickToLoadOverlay,
     ])
 
     const renderProgress = useCallback(() => {
