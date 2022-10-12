@@ -106,10 +106,17 @@ export const UnityViewer = ({ mechDetailsWithMaps, unity }: MechViewer3DProps) =
                           }
                         : undefined,
                 } as SiloObject
-                if (wu.inherit_skin && mechDetailsWithMaps.chassis_skin?.blueprint_weapon_skin_id) {
-                    obj.skin = {
-                        type: "skin",
-                        static_id: mechDetailsWithMaps.chassis_skin.blueprint_weapon_skin_id,
+                if (wu.inherit_skin) {
+                    if (mechDetailsWithMaps.changed_mech_skin?.mech_skin.blueprint_weapon_skin_id) {
+                        obj.skin = {
+                            type: "skin",
+                            static_id: mechDetailsWithMaps.changed_mech_skin?.mech_skin.blueprint_weapon_skin_id,
+                        }
+                    } else if (mechDetailsWithMaps.chassis_skin?.blueprint_weapon_skin_id) {
+                        obj.skin = {
+                            type: "skin",
+                            static_id: mechDetailsWithMaps.chassis_skin.blueprint_weapon_skin_id,
+                        }
                     }
                 }
                 console.info(obj)
