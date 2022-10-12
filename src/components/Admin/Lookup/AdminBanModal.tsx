@@ -35,7 +35,7 @@ export const AdminBanModal = ({
     const [canSubmit, setCanSubmit] = useState<boolean>(false)
 
     useEffect(() => {
-        if (!supContributeBan || !locationSelectBan || !chatBan || !banMechQueue) {
+        if (!supContributeBan || !locationSelectBan || !chatBan || !banMechQueue || (supContributeBan && locationSelectBan && chatBan && banMechQueue)) {
             if (banDurationDays > 0 || banDurationHours > 0) {
                 if (banReason != "") {
                     setCanSubmit(true)

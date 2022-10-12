@@ -225,6 +225,7 @@ export enum GameServerKeys {
     ModGetUser = "MOD:GET:USER",
     ModBanUser = "MOD:BAN:USER",
     ModUnbanUser = "MOD:UNBAN:USER",
+    ModRestartServer = "MOD:RESTART:SERVER",
 }
 
 export enum PassportServerKeys {
