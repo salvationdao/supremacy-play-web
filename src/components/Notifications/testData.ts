@@ -1,4 +1,4 @@
-import { User, UserRank, NotificationStruct } from "../../types"
+import { NotificationStruct, RoleType, User, UserRank } from "../../types"
 
 enum NotificationType {
     Text = "TEXT",
@@ -36,6 +36,7 @@ const user1: User = {
     gid: 3871,
     rank: "NEW_RECRUIT" as UserRank,
     features: [],
+    role_type: RoleType.player,
 }
 
 const user2 = {
@@ -45,6 +46,7 @@ const user2 = {
     gid: 6519,
     rank: "NEW_RECRUIT" as UserRank,
     features: [],
+    role_type: RoleType.player,
 }
 
 const ability1 = {
