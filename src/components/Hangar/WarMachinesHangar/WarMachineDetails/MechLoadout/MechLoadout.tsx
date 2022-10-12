@@ -242,6 +242,22 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         }
 
         setCurrLoadout((prev) => {
+            // Update weapon skins
+            for (let weaponSlotNumber = 0; weaponSlotNumber < prev.weapon_hardpoints; weaponSlotNumber++) {
+                const w = prev.changed_weapons_map.get(weaponSlotNumber)?.weapon || prev.weapons_map.get(weaponSlotNumber)
+                if (!w) continue
+                if (unityControlsRef.current) {
+                    const ews: LoadoutWeapon = {
+                        slot_number: weaponSlotNumber,
+                        weapon_id: w.id,
+                        weapon: w,
+                        inherit_skin: true,
+                    }
+                    unityControlsRef.current.handleWeaponUpdate(ews)
+                    setIsUnityPendingChange(true)
+                }
+            }
+
             return {
                 ...prev,
                 changed_mech_skin: ems,
@@ -307,7 +323,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                               weapon_id: prevWeapon.id,
                               slot_number: slotNumber,
                               weapon: prevWeapon,
-                              inherit_skin: prevWeapon.inherit_skin
+                              inherit_skin: prevWeapon.inherit_skin,
                           }
                         : {
                               weapon_id: "",

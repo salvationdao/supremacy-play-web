@@ -134,7 +134,7 @@ export const UnityViewer = ({ mechDetailsWithMaps, unity }: MechViewer3DProps) =
                 static_id: powerCore.blueprint_id,
             } as SiloObject
             setIsPendingChange(true)
-            console.log(obj)
+            console.info(obj)
         },
         handleMechSkinUpdate: (msu: LoadoutMechSkin) => {
             if (!msu.mech_skin) return
@@ -143,6 +143,7 @@ export const UnityViewer = ({ mechDetailsWithMaps, unity }: MechViewer3DProps) =
                 ownership_id: msu.mech_skin_id,
                 static_id: msu.mech_skin.blueprint_id,
             } as SiloObject
+            console.info(obj)
             sendMessage("SceneContext", "ChangeMechSkin", JSON.stringify(obj))
             setIsPendingChange(true)
         },
