@@ -1,6 +1,6 @@
-import { Box, Fade, Slide, Stack, Typography } from "@mui/material"
+import { Box, Button, Fade, IconButton, Slide, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgWeapons } from "../../../../../assets"
+import { Svg3DView, SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgWeapons } from "../../../../../assets"
 import { useGlobalNotifications } from "../../../../../containers"
 import { useTheme } from "../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../helpers"
@@ -12,6 +12,7 @@ import { ClipThing } from "../../../../Common/ClipThing"
 import { FancyButton } from "../../../../Common/FancyButton"
 import { MechLoadoutItem } from "../../Common/MechLoadoutItem"
 import { MechViewer } from "../MechViewer/MechViewer"
+import { MechViewer3D } from "../MechViewer/MechViewer3D"
 import { UnityHandle } from "../MechViewer/UnityViewer"
 import { MechLoadoutMechSkinModal } from "../Modals/Loadout/MechLoadoutMechSkinModal"
 import { MechLoadoutPowerCoreModal } from "../Modals/Loadout/MechLoadoutPowerCoreModal"
@@ -26,7 +27,7 @@ interface PlayerAssetMechEquipRequest {
     equip_weapons: EquipWeapon[]
 }
 
-interface MechDetailsWithMaps extends MechDetails {
+export interface MechDetailsWithMaps extends MechDetails {
     weapons_map: Map<number, Weapon | null> // Map<slot_number, Weapon>
     changed_weapons_map: Map<number, LoadoutWeapon>
     utility_map: Map<number, Utility | null> // Map<slot_number, Utility>
@@ -127,6 +128,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     const [isDragging, setIsDragging] = useState(false)
     const [isUnityLoaded, setIsUnityLoaded] = useState(false)
     const [isUnityPendingChange, setIsUnityPendingChange] = useState(false)
+    const [show3DViewer, setShow3DViewer] = useState(true)
 
     const {
         weapons_map,
@@ -497,20 +499,38 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                 backgroundColor={theme.factionTheme.background}
                 sx={{ flex: 1, height: "100%" }}
             >
-                {/* Unity View */}
-                <MechViewer
-                    mechDetails={mechDetails}
-                    unity={{
-                        unityRef: unityControlsRef,
-                        orbitControlsRef: orbitControlsRef,
-                        onUnlock: () => {
-                            setIsUnityPendingChange(false)
-                        },
-                        onReady: () => {
-                            setIsUnityLoaded(true)
-                        },
+                <Stack
+                    direction="row"
+                    sx={{
+                        zIndex: 7,
+                        position: "absolute",
+                        left: 0,
+                        bottom: 0,
                     }}
-                />
+                >
+                    <Button>2D View</Button>
+                    <IconButton onClick={() => setShow3DViewer(true)}>
+                        <Svg3DView />
+                    </IconButton>
+                </Stack>
+                {/* Mech Viewer */}
+                {show3DViewer ? (
+                    <MechViewer3D
+                        mechDetailsWithMaps={currLoadout}
+                        unity={{
+                            unityRef: unityControlsRef,
+                            orbitControlsRef: orbitControlsRef,
+                            onUnlock: () => {
+                                setIsUnityPendingChange(false)
+                            },
+                            onReady: () => {
+                                setIsUnityLoaded(true)
+                            },
+                        }}
+                    />
+                ) : (
+                    <MechViewer mechDetails={mechDetails} />
+                )}
                 {/* Drag and Drop Overlay */}
                 <Fade in={isDragging} unmountOnExit>
                     <Box

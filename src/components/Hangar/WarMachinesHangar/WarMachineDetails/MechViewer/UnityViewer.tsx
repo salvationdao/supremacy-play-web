@@ -7,7 +7,7 @@ import { pulseEffect } from "../../../../../theme/keyframes"
 import { colors, fonts } from "../../../../../theme/theme"
 import { ClipThing } from "../../../../Common/ClipThing"
 import { LoadoutMechSkin, LoadoutPowerCore, LoadoutWeapon } from "../MechLoadout/MechLoadout"
-import { MechViewerProps } from "./MechViewer"
+import { MechViewer3DProps } from "./MechViewer3D"
 
 export type UnityHandle = {
     handleWeaponUpdate: (wu: LoadoutWeapon) => void
@@ -53,11 +53,7 @@ export interface UnityParams {
     onReady: () => void
 }
 
-interface UnityViewerProps extends MechViewerProps {
-    unity: UnityParams
-}
-
-export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
+export const UnityViewer = ({ mechDetailsWithMaps, unity }: MechViewer3DProps) => {
     const theme = useTheme()
     const { unityProvider, sendMessage, addEventListener, removeEventListener, isLoaded, loadingProgression } = useUnityContext({
         loaderUrl: `${baseUrl}WebGL.loader.js`,
@@ -94,10 +90,10 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
                           }
                         : undefined,
                 } as SiloObject
-                if (wu.inherit_skin && mechDetails.chassis_skin?.blueprint_weapon_skin_id) {
+                if (wu.inherit_skin && mechDetailsWithMaps.chassis_skin?.blueprint_weapon_skin_id) {
                     obj.skin = {
                         type: "skin",
-                        static_id: mechDetails.chassis_skin.blueprint_weapon_skin_id,
+                        static_id: mechDetailsWithMaps.chassis_skin.blueprint_weapon_skin_id,
                     }
                 }
                 console.info(obj)
@@ -221,13 +217,13 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
         if (!isLoaded || !siloReady || sent.current) return
 
         const accessories: SiloObject[] = []
-        for (let i = 0; i < mechDetails.weapon_hardpoints; i++) {
+        for (let i = 0; i < mechDetailsWithMaps.weapon_hardpoints; i++) {
             accessories.push({
                 type: "weapon",
             })
         }
-        if (mechDetails.weapons) {
-            mechDetails.weapons.forEach((w) => {
+        if (mechDetailsWithMaps.weapons) {
+            mechDetailsWithMaps.weapons.forEach((w) => {
                 if (w.slot_number == null) return
                 accessories[w.slot_number] = {
                     type: "weapon",
@@ -240,26 +236,26 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
                           }
                         : undefined,
                 }
-                if (w.inherit_skin && mechDetails.chassis_skin?.blueprint_weapon_skin_id) {
+                if (w.inherit_skin && mechDetailsWithMaps.chassis_skin?.blueprint_weapon_skin_id) {
                     accessories[w.slot_number].skin = {
                         type: "skin",
-                        static_id: mechDetails.chassis_skin.blueprint_weapon_skin_id,
+                        static_id: mechDetailsWithMaps.chassis_skin.blueprint_weapon_skin_id,
                     }
                 }
             })
         }
-        // for (let i = 0; i < mechDetails.utility_slots; i++) {
+        // for (let i = 0; i < mechDetailsWithMaps.utility_slots; i++) {
         //     accessories.push({
         //         type: "utility",
         //         ownership_id: "",
         //         static_id: "",
         //     })
         // }
-        // if (mechDetails.utility) {
-        //     mechDetails.utility.forEach((u) => {
+        // if (mechDetailsWithMaps.utility) {
+        //     mechDetailsWithMaps.utility.forEach((u) => {
         //         if (u.slot_number == null) return
 
-        //         accessories[mechDetails.weapon_hardpoints + u.slot_number] = {
+        //         accessories[mechDetailsWithMaps.weapon_hardpoints + u.slot_number] = {
         //             type: "utility",
         //             ownership_id: u.id,
         //             static_id: u.blueprint_id,
@@ -269,30 +265,30 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
         accessories.push({
             type: "power_core",
         })
-        if (mechDetails.power_core) {
+        if (mechDetailsWithMaps.power_core) {
             accessories[accessories.length - 1] = {
                 type: "power_core",
-                ownership_id: mechDetails.power_core.id,
-                static_id: mechDetails.power_core.blueprint_id,
+                ownership_id: mechDetailsWithMaps.power_core.id,
+                static_id: mechDetailsWithMaps.power_core.blueprint_id,
             }
         }
 
         const mech: SiloType = {
             type: "mech",
-            ownership_id: mechDetails.id,
-            static_id: mechDetails.blueprint_id,
-            skin: mechDetails.chassis_skin
+            ownership_id: mechDetailsWithMaps.id,
+            static_id: mechDetailsWithMaps.blueprint_id,
+            skin: mechDetailsWithMaps.chassis_skin
                 ? {
                       type: "skin",
-                      ownership_id: mechDetails.chassis_skin.owner_id,
-                      static_id: mechDetails.chassis_skin.blueprint_id,
+                      ownership_id: mechDetailsWithMaps.chassis_skin.owner_id,
+                      static_id: mechDetailsWithMaps.chassis_skin.blueprint_id,
                   }
                 : undefined,
             accessories,
         }
         console.info(mech)
         const inventory: HangarSilo = {
-            faction: mechDetails.faction_id,
+            faction: mechDetailsWithMaps.faction_id,
         }
         sendMessage("ProjectContext(Clone)", "GetPlayerInventoryFromPage", JSON.stringify(inventory))
         sendMessage("ProjectContext(Clone)", "FittingRoom", JSON.stringify(mech))
@@ -301,16 +297,16 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
         sendMessage,
         isLoaded,
         siloReady,
-        mechDetails.weapons,
-        mechDetails.power_core,
-        mechDetails.faction_id,
-        mechDetails.owner_id,
-        mechDetails.blueprint_id,
-        mechDetails.chassis_skin,
-        mechDetails.weapon_hardpoints,
-        mechDetails.utility,
-        mechDetails.utility_slots,
-        mechDetails.id,
+        mechDetailsWithMaps.weapons,
+        mechDetailsWithMaps.power_core,
+        mechDetailsWithMaps.faction_id,
+        mechDetailsWithMaps.owner_id,
+        mechDetailsWithMaps.blueprint_id,
+        mechDetailsWithMaps.chassis_skin,
+        mechDetailsWithMaps.weapon_hardpoints,
+        mechDetailsWithMaps.utility,
+        mechDetailsWithMaps.utility_slots,
+        mechDetailsWithMaps.id,
     ])
 
     const renderProgress = useCallback(() => {
