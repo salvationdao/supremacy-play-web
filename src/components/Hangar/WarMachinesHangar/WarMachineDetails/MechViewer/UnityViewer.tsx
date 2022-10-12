@@ -1,7 +1,7 @@
 import { Box, Fade, LinearProgress, Typography } from "@mui/material"
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react"
 import { Unity, useUnityContext } from "react-unity-webgl"
-import { DEVELOPMENT_BUILD_NUM, DEV_ONLY, WEBGL_BASE_URL } from "../../../../../constants"
+import { DEV_ONLY, WEBGL_BASE_URL } from "../../../../../constants"
 import { useTheme } from "../../../../../containers/theme"
 import { pulseEffect } from "../../../../../theme/keyframes"
 import { colors, fonts } from "../../../../../theme/theme"
@@ -41,8 +41,8 @@ export interface SiloSkin {
 
 let baseUrl = WEBGL_BASE_URL
 if (DEV_ONLY) {
-    baseUrl += `build-${DEVELOPMENT_BUILD_NUM}/`
-    // baseUrl += `staging/`
+    // baseUrl += `build-${DEVELOPMENT_BUILD_NUM}/`
+    baseUrl += `staging/`
 } else {
     baseUrl += process.env.REACT_APP_ENVIRONMENT + "/"
 }
