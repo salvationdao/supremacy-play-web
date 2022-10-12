@@ -230,28 +230,30 @@ export const UnityViewer = ({ mechDetailsWithMaps, unity }: MechViewer3DProps) =
                 type: "weapon",
             })
         }
-        if (mechDetailsWithMaps.weapons) {
-            mechDetailsWithMaps.weapons.forEach((w) => {
-                if (w.slot_number == null) return
-                accessories[w.slot_number] = {
-                    type: "weapon",
-                    ownership_id: w.id,
-                    static_id: w.blueprint_id,
-                    skin: w.weapon_skin
-                        ? {
-                              type: "skin",
-                              static_id: w.weapon_skin.blueprint_id,
-                          }
-                        : undefined,
+        for (let slot_number = 0; slot_number < mechDetailsWithMaps.weapon_hardpoints; slot_number++) {
+            if (mechDetailsWithMaps.changed_weapons_map.get(slot_number)?.unequip) return
+            const weapon = mechDetailsWithMaps.changed_weapons_map.get(slot_number)?.weapon || mechDetailsWithMaps.weapons_map.get(slot_number)
+            if (!weapon) continue
+
+            accessories[slot_number] = {
+                type: "weapon",
+                ownership_id: weapon.id,
+                static_id: weapon.blueprint_id,
+                skin: weapon.weapon_skin
+                    ? {
+                          type: "skin",
+                          static_id: weapon.weapon_skin.blueprint_id,
+                      }
+                    : undefined,
+            }
+            if (weapon.inherit_skin && mechDetailsWithMaps.chassis_skin?.blueprint_weapon_skin_id) {
+                accessories[slot_number].skin = {
+                    type: "skin",
+                    static_id: mechDetailsWithMaps.chassis_skin.blueprint_weapon_skin_id,
                 }
-                if (w.inherit_skin && mechDetailsWithMaps.chassis_skin?.blueprint_weapon_skin_id) {
-                    accessories[w.slot_number].skin = {
-                        type: "skin",
-                        static_id: mechDetailsWithMaps.chassis_skin.blueprint_weapon_skin_id,
-                    }
-                }
-            })
+            }
         }
+
         // for (let i = 0; i < mechDetailsWithMaps.utility_slots; i++) {
         //     accessories.push({
         //         type: "utility",
@@ -273,11 +275,14 @@ export const UnityViewer = ({ mechDetailsWithMaps, unity }: MechViewer3DProps) =
         accessories.push({
             type: "power_core",
         })
-        if (mechDetailsWithMaps.power_core) {
-            accessories[accessories.length - 1] = {
-                type: "power_core",
-                ownership_id: mechDetailsWithMaps.power_core.id,
-                static_id: mechDetailsWithMaps.power_core.blueprint_id,
+        if (!mechDetailsWithMaps.changed_power_core?.unequip) {
+            const powerCore = mechDetailsWithMaps.changed_power_core?.power_core || mechDetailsWithMaps.power_core
+            if (powerCore) {
+                accessories[accessories.length - 1] = {
+                    type: "power_core",
+                    ownership_id: powerCore.id,
+                    static_id: powerCore.blueprint_id,
+                }
             }
         }
 
@@ -285,14 +290,15 @@ export const UnityViewer = ({ mechDetailsWithMaps, unity }: MechViewer3DProps) =
             type: "mech",
             ownership_id: mechDetailsWithMaps.id,
             static_id: mechDetailsWithMaps.blueprint_id,
-            skin: mechDetailsWithMaps.chassis_skin
-                ? {
-                      type: "skin",
-                      ownership_id: mechDetailsWithMaps.chassis_skin.owner_id,
-                      static_id: mechDetailsWithMaps.chassis_skin.blueprint_id,
-                  }
-                : undefined,
             accessories,
+        }
+        const mechSkin = mechDetailsWithMaps.changed_mech_skin?.mech_skin || mechDetailsWithMaps.chassis_skin
+        if (mechSkin) {
+            mech.skin = {
+                type: "skin",
+                ownership_id: mechSkin.owner_id,
+                static_id: mechSkin.blueprint_id,
+            }
         }
         console.info(mech)
         const inventory: HangarSilo = {
@@ -302,20 +308,21 @@ export const UnityViewer = ({ mechDetailsWithMaps, unity }: MechViewer3DProps) =
         sendMessage("ProjectContext(Clone)", "FittingRoom", JSON.stringify(mech))
         sent.current = true
     }, [
-        sendMessage,
         isLoaded,
-        siloReady,
-        mechDetailsWithMaps.weapons,
-        mechDetailsWithMaps.power_core,
-        mechDetailsWithMaps.faction_id,
-        mechDetailsWithMaps.owner_id,
         mechDetailsWithMaps.blueprint_id,
+        mechDetailsWithMaps.changed_mech_skin?.mech_skin,
+        mechDetailsWithMaps.changed_power_core?.power_core,
+        mechDetailsWithMaps.changed_power_core?.unequip,
+        mechDetailsWithMaps.changed_weapons_map,
         mechDetailsWithMaps.chassis_skin,
-        mechDetailsWithMaps.weapon_hardpoints,
-        mechDetailsWithMaps.utility,
-        mechDetailsWithMaps.utility_slots,
+        mechDetailsWithMaps.faction_id,
         mechDetailsWithMaps.id,
+        mechDetailsWithMaps.power_core,
+        mechDetailsWithMaps.weapon_hardpoints,
+        mechDetailsWithMaps.weapons_map,
+        sendMessage,
         showClickToLoadOverlay,
+        siloReady,
     ])
 
     const renderProgress = useCallback(() => {
