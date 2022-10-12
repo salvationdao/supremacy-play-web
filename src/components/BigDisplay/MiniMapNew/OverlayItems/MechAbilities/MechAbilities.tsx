@@ -72,7 +72,7 @@ const MechAbilitiesInner = React.memo(function MechAbilitiesInner({ warMachine }
 
             const target = payload.find((mech) => mech.participant_id === participantID)
 
-            if (target && target?.health !== undefined) {
+            if (target && target.health !== undefined) {
                 pixiMechAbilities?.updateVisibility(target.health > 0)
             }
         },
