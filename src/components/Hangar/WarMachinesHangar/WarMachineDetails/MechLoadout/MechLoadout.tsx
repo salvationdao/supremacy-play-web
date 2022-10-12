@@ -307,6 +307,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                               weapon_id: prevWeapon.id,
                               slot_number: slotNumber,
                               weapon: prevWeapon,
+                              inherit_skin: prevWeapon.inherit_skin
                           }
                         : {
                               weapon_id: "",
