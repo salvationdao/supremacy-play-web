@@ -4,6 +4,7 @@ import { BattleLobby } from "../../../types/battle_queue"
 import { BattleLobbyItem } from "./BattleLobbyItem"
 import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { RoleType } from "../../../types"
 
 const lobbyPlaceholder: BattleLobby = {
     id: "",
@@ -26,6 +27,7 @@ const lobbyPlaceholder: BattleLobby = {
         gid: 0,
         rank: "NEW_RECRUIT",
         features: [],
+        role_type: RoleType.player,
     },
     is_private: true,
     stage_order: 0,

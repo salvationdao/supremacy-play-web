@@ -6,7 +6,7 @@ import { IS_TESTING_MODE } from "../../../../constants"
 import { useAuth, useWallet } from "../../../../containers"
 import { supFormatterNoFixed } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
-import { usePassportSubscriptionUser } from "../../../../hooks/usePassport"
+import { usePassportSubscriptionAccount } from "../../../../hooks/usePassport"
 import { PassportServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { Transaction, User } from "../../../../types"
@@ -22,7 +22,7 @@ export const WalletInfo = () => {
     const supsSpent = useRef<BigNumber>(new BigNumber(0))
     const supsEarned = useRef<BigNumber>(new BigNumber(0))
 
-    usePassportSubscriptionUser<Transaction[]>(
+    usePassportSubscriptionAccount<Transaction[]>(
         {
             URI: "/transactions",
             key: PassportServerKeys.SubscribeUserTransactions,

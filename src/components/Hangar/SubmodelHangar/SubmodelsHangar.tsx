@@ -39,6 +39,7 @@ export interface GetSubmodelsRequest {
     exclude_market_locked?: boolean
     include_market_listed: boolean
     display_genesis_and_limited?: boolean
+    display_unique?: boolean
     exclude_ids: string[]
     include_ids: string[]
     rarities: string[]

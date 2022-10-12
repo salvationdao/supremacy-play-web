@@ -247,9 +247,13 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
 
     const modifyPowerCore = useCallback((ep: LoadoutPowerCore) => {
         setCurrLoadout((prev) => {
+            let updated: LoadoutPowerCore | undefined = ep
+            if (ep.unequip && !prev.power_core) {
+                updated = undefined
+            }
             return {
                 ...prev,
-                changed_power_core: ep,
+                changed_power_core: updated,
             }
         })
     }, [])
@@ -262,7 +266,11 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
 
         setCurrLoadout((prev) => {
             const updated = new Map(prev.changed_weapons_map)
-            updated.set(ew.slot_number, ew)
+            if (ew.unequip && !prev.weapons_map.get(ew.slot_number)) {
+                updated.delete(ew.slot_number)
+            } else {
+                updated.set(ew.slot_number, ew)
+            }
 
             return {
                 ...prev,
@@ -324,7 +332,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     const mechSkinItemRef = useRef<HTMLDivElement>(null)
     const weaponItemRefs = useRef<Map<number, HTMLDivElement | null>>(new Map()) // Map<slot_number, Element ref>
     const onItemDrag = useCallback<CustomDragEventWithType>(
-        (_el, rect, type) => {
+        (rect, type) => {
             if (loadoutDisabled) return
             switch (type) {
                 case AssetItemType.Weapon:
@@ -367,7 +375,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         [chassis_skin?.locked_to_mech, loadoutDisabled, weapons_map],
     )
     const onItemDragStart = useCallback<DragStartEventWithType>(
-        (el, type) => {
+        (type) => {
             if (loadoutDisabled) return
             setIsDragging(true)
 
@@ -409,7 +417,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         [chassis_skin?.locked_to_mech, loadoutDisabled, weapons_map],
     )
     const onItemDragStop = useCallback<DragStopEventWithType>(
-        (el, rect, type, item) => {
+        (rect, type, item) => {
             if (loadoutDisabled) return
             switch (type) {
                 case AssetItemType.Weapon:
@@ -891,6 +899,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
             <MechLoadoutDraggables
                 draggablesRef={draggablesRef}
                 excludeWeaponIDs={Array.from(changed_weapons_map.values(), (w) => w.weapon_id)}
+                excludeMechSkinIDs={changed_mech_skin?.mech_skin ? [changed_mech_skin.mech_skin.blueprint_id] : chassis_skin ? [chassis_skin.blueprint_id] : []}
                 includeMechSkinIDs={compatible_blueprint_mech_skin_ids}
                 onDrag={onItemDrag}
                 onDragStart={onItemDragStart}

@@ -63,6 +63,11 @@ export const MechLoadoutWeaponModal = ({
         () => (selectedWeapon ? !!weaponsWithSkinInheritance.find((s) => s === selectedWeapon?.blueprint_id) : false),
         [selectedWeapon, weaponsWithSkinInheritance],
     )
+    const [equippedInheritSkin, setEquippedInheritSkin] = useState(!!equipped?.inherit_skin)
+    const equippedSkinInheritable = useMemo(
+        () => (equipped ? !!weaponsWithSkinInheritance.find((s) => s === equipped?.blueprint_id) : false),
+        [equipped, weaponsWithSkinInheritance],
+    )
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
 
@@ -604,7 +609,7 @@ export const MechLoadoutWeaponModal = ({
                         <Stack flex={1} overflow="hidden">
                             {/* After */}
                             <WeaponPreview weapon={selectedWeapon} compareTo={equipped} />
-                            {selectedWeapon && !selectedWeapon.locked_to_mech && (
+                            {selectedWeapon && !selectedWeapon.locked_to_mech ? (
                                 <Slide direction="up" in={!!selectedWeapon} mountOnEnter>
                                     <Stack mt="auto" direction="row" spacing="1rem">
                                         <Box ml="auto" />
@@ -635,7 +640,38 @@ export const MechLoadoutWeaponModal = ({
                                         </FancyButton>
                                     </Stack>
                                 </Slide>
-                            )}
+                            ) : equipped ? (
+                                <Slide direction="up" in={true} mountOnEnter>
+                                    <Stack mt="auto" direction="row" spacing="1rem">
+                                        <Box ml="auto" />
+                                        {equippedSkinInheritable && (
+                                            <Stack direction="row" alignItems="center" justifyContent="space-between">
+                                                <Switch
+                                                    size="small"
+                                                    checked={equippedInheritSkin}
+                                                    onChange={(e, c) => setEquippedInheritSkin(c)}
+                                                    sx={{
+                                                        transform: "scale(.7)",
+                                                        ".Mui-checked": { color: theme.factionTheme.primary },
+                                                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${theme.factionTheme.primary}50` },
+                                                    }}
+                                                />
+                                                <Typography variant="body2" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                                    Inherit Skin
+                                                </Typography>
+                                            </Stack>
+                                        )}
+                                        <FancyButton
+                                            clipThingsProps={{
+                                                backgroundColor: colors.green,
+                                            }}
+                                            onClick={() => onConfirm(equipped, inheritSkin)}
+                                        >
+                                            Equip To Mech
+                                        </FancyButton>
+                                    </Stack>
+                                </Slide>
+                            ) : undefined}
                         </Stack>
                     </Stack>
                 </Box>

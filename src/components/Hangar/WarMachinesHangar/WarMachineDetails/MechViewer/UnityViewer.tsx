@@ -99,6 +99,7 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
                         static_id: mechDetails.chassis_skin.blueprint_weapon_skin_id,
                     }
                 }
+                console.info(obj)
                 sendMessage("SceneContext", "SetSlotIndexToChange", wu.slot_number)
                 sendMessage("SceneContext", "ChangeSlotValue", JSON.stringify(obj))
             }
@@ -168,13 +169,19 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
     }, [addEventListener, removeEventListener])
 
     useEffect(() => {
+        let t: NodeJS.Timeout | null = null
         const onSlotLoaded = () => {
-            console.log("slot unlocked")
-            unity.onUnlock()
-            setIsPendingChange(false)
+            t = setTimeout(() => {
+                console.log("slot unlocked")
+                unity.onUnlock()
+                setIsPendingChange(false)
+            }, 500)
         }
         addEventListener("SlotLoaded", onSlotLoaded)
-        return () => removeEventListener("SlotLoaded", onSlotLoaded)
+        return () => {
+            if (t) clearTimeout(t)
+            removeEventListener("SlotLoaded", onSlotLoaded)
+        }
     }, [addEventListener, removeEventListener, unity])
 
     const isMouseDown = useRef(false)
@@ -260,8 +267,6 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
         // }
         accessories.push({
             type: "power_core",
-            ownership_id: "",
-            static_id: "",
         })
         if (mechDetails.power_core) {
             accessories[accessories.length - 1] = {
@@ -284,7 +289,7 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
                 : undefined,
             accessories,
         }
-        console.log(mech)
+        console.info(mech)
         const inventory: HangarSilo = {
             faction: mechDetails.faction_id,
         }
@@ -367,6 +372,7 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
                             sx={{
                                 fontFamily: fonts.nostromoBlack,
                                 fontSize: "3rem",
+                                animation: `${pulseEffect} 2s infinite`,
                             }}
                         >
                             Loading Mech…
@@ -408,6 +414,7 @@ export const UnityViewer = ({ mechDetails, unity }: UnityViewerProps) => {
                         position: "absolute",
                         left: "5rem",
                         bottom: "5rem",
+                        pointerEvents: "none",
                     }}
                 >
                     <ClipThing
