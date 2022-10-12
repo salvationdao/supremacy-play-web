@@ -1,3 +1,4 @@
+import TwoDView from "!@svgr/webpack!./svg/2DView.svg"
 import ThreeDView from "!@svgr/webpack!./svg/3DView.svg"
 import Ability from "!@svgr/webpack!./svg/Ability.svg"
 import Admin from "!@svgr/webpack!./svg/Admin.svg"
@@ -1413,5 +1414,11 @@ export const SvgFeedback: React.VoidFunctionComponent<SvgWrapperProps> = (props)
 export const Svg3DView: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <ThreeDView />
+    </SvgWrapper>
+)
+
+export const Svg2DView: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <TwoDView />
     </SvgWrapper>
 )
