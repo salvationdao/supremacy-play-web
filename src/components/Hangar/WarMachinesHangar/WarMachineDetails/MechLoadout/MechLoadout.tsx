@@ -1,6 +1,6 @@
-import { Box, Fade, Slide, Stack, Typography } from "@mui/material"
+import { Box, Button, Divider, Fade, Slide, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgWeapons } from "../../../../../assets"
+import { Svg2DView, Svg3DView, SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgWeapons } from "../../../../../assets"
 import { useGlobalNotifications } from "../../../../../containers"
 import { useTheme } from "../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../helpers"
@@ -12,6 +12,7 @@ import { ClipThing } from "../../../../Common/ClipThing"
 import { FancyButton } from "../../../../Common/FancyButton"
 import { MechLoadoutItem } from "../../Common/MechLoadoutItem"
 import { MechViewer } from "../MechViewer/MechViewer"
+import { MechViewer3D } from "../MechViewer/MechViewer3D"
 import { UnityHandle } from "../MechViewer/UnityViewer"
 import { MechLoadoutMechSkinModal } from "../Modals/Loadout/MechLoadoutMechSkinModal"
 import { MechLoadoutPowerCoreModal } from "../Modals/Loadout/MechLoadoutPowerCoreModal"
@@ -26,7 +27,7 @@ interface PlayerAssetMechEquipRequest {
     equip_weapons: EquipWeapon[]
 }
 
-interface MechDetailsWithMaps extends MechDetails {
+export interface MechDetailsWithMaps extends MechDetails {
     weapons_map: Map<number, Weapon | null> // Map<slot_number, Weapon>
     changed_weapons_map: Map<number, LoadoutWeapon>
     utility_map: Map<number, Utility | null> // Map<slot_number, Utility>
@@ -112,6 +113,8 @@ interface MechLoadoutProps {
     onUpdate: (newMechDetails: MechDetails) => void
 }
 
+const LOCAL_STORAGE_KEY_PREFERS_2D_LOADOUT = "prefers2DLoadout"
+
 export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpdate }: MechLoadoutProps) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -127,6 +130,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     const [isDragging, setIsDragging] = useState(false)
     const [isUnityLoaded, setIsUnityLoaded] = useState(false)
     const [isUnityPendingChange, setIsUnityPendingChange] = useState(false)
+    const [enable3DLoadout, setEnable3DLoadout] = useState(localStorage.getItem(LOCAL_STORAGE_KEY_PREFERS_2D_LOADOUT) !== "true")
 
     const {
         weapons_map,
@@ -146,14 +150,13 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     } = currLoadout
     const loadoutDisabled = useMemo(
         () =>
-            isUnityPendingChange ||
-            !isUnityLoaded ||
+            (enable3DLoadout && (isUnityPendingChange || !isUnityLoaded)) ||
             xsyn_locked ||
             locked_to_marketplace ||
             (mechStatus?.battle_lobby_is_locked && mechStatus?.status === MechStatusEnum.Queue) ||
             mechStatus?.status === MechStatusEnum.Battle ||
             mechStatus?.status === MechStatusEnum.Sold,
-        [isUnityLoaded, isUnityPendingChange, locked_to_marketplace, mechStatus?.battle_lobby_is_locked, mechStatus?.status, xsyn_locked],
+        [enable3DLoadout, isUnityLoaded, isUnityPendingChange, locked_to_marketplace, mechStatus?.battle_lobby_is_locked, mechStatus?.status, xsyn_locked],
     )
 
     useEffect(() => {
@@ -231,6 +234,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         send,
     ])
 
+    // EQUIP HANDLERS
     const modifyMechSkin = useCallback((ems: LoadoutMechSkin) => {
         if (unityControlsRef.current) {
             unityControlsRef.current.handleMechSkinUpdate(ems)
@@ -244,7 +248,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
             }
         })
     }, [])
-
     const modifyPowerCore = useCallback((ep: LoadoutPowerCore) => {
         setCurrLoadout((prev) => {
             let updated: LoadoutPowerCore | undefined = ep
@@ -257,7 +260,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
             }
         })
     }, [])
-
     const modifyWeaponSlot = useCallback((ew: LoadoutWeapon) => {
         if (unityControlsRef.current) {
             unityControlsRef.current.handleWeaponUpdate(ew)
@@ -279,6 +281,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         })
     }, [])
 
+    // UNDO HANDLERS
     const undoMechSkinChanges = useCallback(() => {
         if (unityControlsRef.current && currLoadout.chassis_skin) {
             const prevMechSkin = currLoadout.chassis_skin
@@ -291,11 +294,9 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
 
         setCurrLoadout((prev) => ({ ...prev, changed_mech_skin: undefined }))
     }, [currLoadout.chassis_skin])
-
     const undoPowerCoreChanges = useCallback(() => {
         setCurrLoadout((prev) => ({ ...prev, changed_power_core: undefined }))
     }, [])
-
     const undoWeaponChanges = useCallback(
         (slotNumber: number) => {
             if (unityControlsRef.current) {
@@ -329,6 +330,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         [currLoadout.weapons_map],
     )
 
+    // DRAG HANDLERS
     const mechSkinItemRef = useRef<HTMLDivElement>(null)
     const weaponItemRefs = useRef<Map<number, HTMLDivElement | null>>(new Map()) // Map<slot_number, Element ref>
     const onItemDrag = useCallback<CustomDragEventWithType>(
@@ -478,6 +480,18 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         [chassis_skin?.locked_to_mech, loadoutDisabled, modifyMechSkin, modifyWeaponSlot, weapons_map],
     )
 
+    // 2D/3D VIEW SWITCHERS
+    const switchTo2DView = async () => {
+        if (!unityControlsRef.current) return
+        await unityControlsRef.current.handleUnload()
+        setEnable3DLoadout(false)
+        localStorage.setItem(LOCAL_STORAGE_KEY_PREFERS_2D_LOADOUT, "true")
+    }
+    const switchTo3DView = async () => {
+        setEnable3DLoadout(true)
+        localStorage.setItem(LOCAL_STORAGE_KEY_PREFERS_2D_LOADOUT, "false")
+    }
+
     return (
         <Stack
             direction="row"
@@ -497,20 +511,72 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                 backgroundColor={theme.factionTheme.background}
                 sx={{ flex: 1, height: "100%" }}
             >
-                {/* Unity View */}
-                <MechViewer
-                    mechDetails={mechDetails}
-                    unity={{
-                        unityRef: unityControlsRef,
-                        orbitControlsRef: orbitControlsRef,
-                        onUnlock: () => {
-                            setIsUnityPendingChange(false)
-                        },
-                        onReady: () => {
-                            setIsUnityLoaded(true)
-                        },
+                <ClipThing
+                    clipSize="10px"
+                    border={{
+                        borderColor: theme.factionTheme.primary,
+                        borderThickness: ".3rem",
                     }}
-                />
+                    backgroundColor={theme.factionTheme.background}
+                    corners={{
+                        topRight: true,
+                    }}
+                    sx={{
+                        zIndex: 7,
+                        position: "absolute",
+                        left: 0,
+                        bottom: 0,
+                    }}
+                >
+                    <Stack direction="row">
+                        <Box p="1rem">{!enable3DLoadout ? <Svg3DView /> : <Svg2DView />}</Box>
+                        <Divider
+                            orientation="vertical"
+                            color={colors.darkGrey}
+                            sx={{
+                                height: "auto",
+                            }}
+                        />
+                        <Button
+                            sx={{
+                                borderRadius: 0,
+                            }}
+                            onClick={enable3DLoadout ? switchTo2DView : switchTo3DView}
+                        >
+                            <Typography
+                                sx={{
+                                    fontFamily: fonts.nostromoBlack,
+                                    fontSize: "2rem",
+                                }}
+                            >
+                                Switch to {enable3DLoadout ? "2D" : "3D"} View
+                            </Typography>
+                        </Button>
+                    </Stack>
+                </ClipThing>
+                {/* Mech Viewer */}
+                {enable3DLoadout ? (
+                    <MechViewer3D
+                        mechDetailsWithMaps={currLoadout}
+                        unity={{
+                            unityRef: unityControlsRef,
+                            orbitControlsRef: orbitControlsRef,
+                            onUnlock: () => {
+                                setIsUnityPendingChange(false)
+                            },
+                            onReady: () => {
+                                setIsUnityLoaded(true)
+                            },
+                        }}
+                    />
+                ) : (
+                    <MechViewer
+                        mechDetails={{
+                            ...mechDetails,
+                            chassis_skin: changed_mech_skin?.mech_skin || mechDetails.chassis_skin,
+                        }}
+                    />
+                )}
                 {/* Drag and Drop Overlay */}
                 <Fade in={isDragging} unmountOnExit>
                     <Box
