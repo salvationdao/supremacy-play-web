@@ -1,5 +1,5 @@
 import { Stack } from "@mui/material"
-import React, { useMemo, useRef } from "react"
+import React, { useMemo } from "react"
 import { WIDTH_STAT_BAR } from "../.."
 import { useArena } from "../../../containers/arena"
 import { useGameServerSubscription } from "../../../hooks/useGameServer"
@@ -20,36 +20,36 @@ const propsAreEqual = (prevProps: HealthShieldBarsProps, nextProps: HealthShield
 export const HealthShieldBars = React.memo(function HealthShieldBars({ warMachine, setIsAlive }: HealthShieldBarsProps) {
     const { currentArenaID } = useArena()
     const { hash, participantID, maxHealth, maxShield } = warMachine
-    const tickIteration = useRef(0)
 
     // Listen on current war machine changes
-    useGameServerSubscription<WarMachineLiveState | undefined>(
+    useGameServerSubscription<WarMachineLiveState[] | undefined>(
         {
-            URI: `/public/arena/${currentArenaID}/mech/${participantID}`,
+            URI: `/public/arena/${currentArenaID}/mech_stats`,
             key: GameServerKeys.SubMechLiveStats,
             ready: !!participantID && !!currentArenaID,
-            batchURI: `/public/arena/${currentArenaID}/mech`,
         },
         (payload) => {
-            if (!payload || payload.tick_order < tickIteration.current) return
-            tickIteration.current = payload.tick_order
+            if (!payload) return
+
+            const target = payload.find((mech) => mech.participant_id === participantID)
+            if (!target) return
 
             // Direct DOM manipulation is a lot more optimized than re-rendering
-            if (payload?.health !== undefined) {
-                setIsAlive(payload.health > 0)
+            if (target.health !== undefined) {
+                setIsAlive(target.health > 0)
 
                 const healthBarEl = document.getElementById(`war-machine-item-health-bar-${hash}`)
                 if (healthBarEl) {
-                    const percent = Math.min((payload.health / maxHealth) * 100, 100)
+                    const percent = Math.min((target.health / maxHealth) * 100, 100)
                     healthBarEl.style.height = `${percent}%`
                     healthBarEl.style.backgroundColor = percent <= 45 ? colors.red : colors.health
                 }
             }
 
-            if (payload?.shield !== undefined) {
+            if (target.shield !== undefined) {
                 const shieldBarEl = document.getElementById(`war-machine-item-shield-bar-${hash}`)
                 if (shieldBarEl) {
-                    const percent = Math.min((payload.shield / maxShield) * 100, 100)
+                    const percent = Math.min((target.shield / maxShield) * 100, 100)
                     shieldBarEl.style.height = `${percent}%`
                 }
             }
