@@ -128,7 +128,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     const [isDragging, setIsDragging] = useState(false)
     const [isUnityLoaded, setIsUnityLoaded] = useState(false)
     const [isUnityPendingChange, setIsUnityPendingChange] = useState(false)
-    const [show3DViewer, setShow3DViewer] = useState(true)
+    const [enable3DLoadout, setEnable3DLoadout] = useState(true)
 
     const {
         weapons_map,
@@ -148,14 +148,13 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     } = currLoadout
     const loadoutDisabled = useMemo(
         () =>
-            isUnityPendingChange ||
-            !isUnityLoaded ||
+            (enable3DLoadout && (isUnityPendingChange || !isUnityLoaded)) ||
             xsyn_locked ||
             locked_to_marketplace ||
             (mechStatus?.battle_lobby_is_locked && mechStatus?.status === MechStatusEnum.Queue) ||
             mechStatus?.status === MechStatusEnum.Battle ||
             mechStatus?.status === MechStatusEnum.Sold,
-        [isUnityLoaded, isUnityPendingChange, locked_to_marketplace, mechStatus?.battle_lobby_is_locked, mechStatus?.status, xsyn_locked],
+        [enable3DLoadout, isUnityLoaded, isUnityPendingChange, locked_to_marketplace, mechStatus?.battle_lobby_is_locked, mechStatus?.status, xsyn_locked],
     )
 
     useEffect(() => {
@@ -483,10 +482,10 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     const switchTo2DView = async () => {
         if (!unityControlsRef.current) return
         await unityControlsRef.current.handleUnload()
-        setShow3DViewer(false)
+        setEnable3DLoadout(false)
     }
     const switchTo3DView = async () => {
-        setShow3DViewer(true)
+        setEnable3DLoadout(true)
     }
 
     return (
@@ -529,13 +528,13 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                 borderRadius: 0,
                             }}
                             onClick={switchTo2DView}
-                            disabled={!show3DViewer}
+                            disabled={!enable3DLoadout}
                         >
                             <Typography
                                 sx={{
                                     fontFamily: fonts.nostromoBlack,
                                     fontSize: "2rem",
-                                    color: !show3DViewer ? colors.darkGrey : "white",
+                                    color: !enable3DLoadout ? colors.darkGrey : "white",
                                 }}
                             >
                                 2D
@@ -554,14 +553,14 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                 borderRadius: 0,
                             }}
                             onClick={switchTo3DView}
-                            disabled={show3DViewer}
+                            disabled={enable3DLoadout}
                         >
-                            <Svg3DView fill={show3DViewer ? colors.darkGrey : "white"} />
+                            <Svg3DView fill={enable3DLoadout ? colors.darkGrey : "white"} />
                         </IconButton>
                     </Stack>
                 </ClipThing>
                 {/* Mech Viewer */}
-                {show3DViewer ? (
+                {enable3DLoadout ? (
                     <MechViewer3D
                         mechDetailsWithMaps={currLoadout}
                         unity={{
