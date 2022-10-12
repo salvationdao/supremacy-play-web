@@ -37,7 +37,8 @@ export const VoiceChat = () => {
     const { user, factionID, userHasFeature } = useAuth()
     const { currentArenaID } = useArena()
 
-    const [listenStreams, setListenStreams] = useState<VoiceStream[]>()
+    const [voiceStreams, setVoiceStreams] = useState<VoiceStream[]>()
+    const [listeners, setListeners] = useState<User[]>()
     const [hasFactionCommander, setHasFactionCommander] = useState<boolean>(false)
     const [connected, setConnected] = useState(false)
 
@@ -76,7 +77,7 @@ export const VoiceChat = () => {
                 // put faction commander on top
                 const sorted = payload.sort((x, y) => Number(y.is_faction_commander) - Number(x.is_faction_commander))
                 const factionCommander = payload.filter((v) => v.is_faction_commander)
-                setListenStreams(sorted)
+                setVoiceStreams(sorted)
                 setHasFactionCommander(!!(factionCommander && factionCommander.length > 0))
 
                 if (!connected) return
@@ -85,7 +86,48 @@ export const VoiceChat = () => {
         },
     )
 
+    useGameServerSubscriptionSecuredUser<VoiceStream[]>(
+        {
+            URI: `/arena/${currentArenaID}/listeners`,
+            key: GameServerKeys.SubPlayerVoiceStreamListeners,
+            ready: !!(currentArenaID && factionID),
+        },
+        (payload: VoiceStream[]) => {
+            if (payload) {
+                console.log("this be listeners", payload)
+
+                // // put faction commander on top
+                // const sorted = payload.sort((x, y) => Number(y.is_faction_commander) - Number(x.is_faction_commander))
+                // const factionCommander = payload.filter((v) => v.is_faction_commander)
+                // setVoiceStreams(sorted)
+                // setHasFactionCommander(!!(factionCommander && factionCommander.length > 0))
+
+                // if (!connected) return
+                // onConnect(sorted, false)
+            }
+        },
+    )
+
     const leaveFactionCommander = useCallback(async () => {
+        try {
+            const resp = await send<{ success: boolean }>(GameServerKeys.LeaveFactionCommander, {
+                arena_id: currentArenaID,
+            })
+
+            if (!resp) {
+                newSnackbarMessage("Failed to leave as faction commmander", "error")
+                return
+            }
+
+            stopStream()
+            newSnackbarMessage("Successfully left as faction commander", "success")
+        } catch (e) {
+            const message = typeof e === "string" ? e : "Failed to leave as faction commmander"
+            newSnackbarMessage(message, "error")
+        }
+    }, [currentArenaID, newSnackbarMessage, send])
+
+    const joinListeners = useCallback(async () => {
         try {
             const resp = await send<{ success: boolean }>(GameServerKeys.LeaveFactionCommander, {
                 arena_id: currentArenaID,
@@ -233,8 +275,8 @@ export const VoiceChat = () => {
         stopStream()
 
         // remove listen streams
-        if (listenStreams) {
-            listenStreams.map((l) => {
+        if (voiceStreams) {
+            voiceStreams.map((l) => {
                 const player = OvenPlayer.getPlayerByContainerId(l.listen_url)
                 if (player) {
                     player.off("ready")
@@ -313,8 +355,8 @@ export const VoiceChat = () => {
                             onDisconnect={onDisconnect}
                             onMuteMic={onMuteMic}
                             faction={getFaction(user.faction_id)}
-                            listenStreams={listenStreams || []}
-                            onConnect={() => onConnect(listenStreams || [], true)}
+                            voiceStreams={voiceStreams || []}
+                            onConnect={() => onConnect(voiceStreams || [], true)}
                             onJoinFactionCommander={joinFactionCommander}
                             onLeaveFactionCommander={() => {
                                 leaveFactionCommander()
@@ -328,8 +370,8 @@ export const VoiceChat = () => {
             </Popover>
 
             <>
-                {listenStreams &&
-                    listenStreams.map((s) => {
+                {voiceStreams &&
+                    voiceStreams.map((s) => {
                         return (
                             <Box key={s.username + s.user_gid} sx={{ display: "none" }}>
                                 <div id={s.listen_url} key={s.username + s.user_gid} />
@@ -351,7 +393,7 @@ export const VoiceChatInner = ({
     onLeaveFactionCommander,
     onVoteKick,
     connected,
-    listenStreams,
+    voiceStreams,
     // onMuteMic,
 
     hasFactionCommander,
@@ -365,7 +407,7 @@ export const VoiceChatInner = ({
     onMuteMic: () => void
 
     connected: boolean
-    listenStreams: VoiceStream[]
+    voiceStreams: VoiceStream[]
     hasFactionCommander: boolean
 
     user: User
@@ -374,9 +416,9 @@ export const VoiceChatInner = ({
     const theme = useTheme()
     const bannerColor = useMemo(() => shadeColor(theme.factionTheme.primary, -70), [theme.factionTheme.primary])
     const isSpeaker = useMemo(() => {
-        const arr = listenStreams.filter((l) => !!l.send_url && l.user_gid == user.gid)
+        const arr = voiceStreams.filter((l) => !!l.send_url && l.user_gid == user.gid)
         return arr && arr.length > 0
-    }, [listenStreams, user.gid])
+    }, [voiceStreams, user.gid])
 
     return (
         <Stack direction="row" width="100%" height="100%">
@@ -484,9 +526,8 @@ export const VoiceChatInner = ({
 
                     <Box>
                         {!hasFactionCommander && <FactionCommanderJoinButton onJoinFactionCommander={onJoinFactionCommander} />}
-                        {listenStreams &&
-                            listenStreams &&
-                            listenStreams.map((s, idx) => {
+                        {voiceStreams &&
+                            voiceStreams.map((s, idx) => {
                                 return (
                                     <PlayerItem
                                         currentUser={user}
