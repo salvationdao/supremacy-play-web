@@ -12,7 +12,7 @@ export const MechViewer = (props: MechViewerProps) => {
     const theme = useTheme()
     const backgroundColor = theme.factionTheme.background
 
-    const skin = mechDetails.chassis_skin && mechDetails.default_chassis_skin
+    const skin = mechDetails.chassis_skin || mechDetails.default_chassis_skin
     const avatarUrl = skin?.avatar_url || mechDetails.avatar_url
     const imageUrl = skin?.image_url || mechDetails.image_url
     const largeImageUrl = skin?.large_image_url || mechDetails.large_image_url

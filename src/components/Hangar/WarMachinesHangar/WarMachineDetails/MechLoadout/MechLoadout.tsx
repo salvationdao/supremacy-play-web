@@ -575,7 +575,13 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                         }}
                     />
                 ) : (
-                    <MechViewer mechDetails={mechDetails} />
+                    <MechViewer
+                        mechDetails={{
+                            ...mechDetails,
+                            chassis_skin: changed_mech_skin?.mech_skin || mechDetails.chassis_skin,
+                            }
+                        }
+                    />
                 )}
                 {/* Drag and Drop Overlay */}
                 <Fade in={isDragging} unmountOnExit>
