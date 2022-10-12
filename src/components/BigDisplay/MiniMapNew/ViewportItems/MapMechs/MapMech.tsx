@@ -18,6 +18,7 @@ import {
     WarMachineState,
 } from "../../../../../types"
 import { PixiMapMech } from "./pixiMapMech"
+import { useWarMachineStat } from "../../../../../hooks/useWarMachineStat"
 
 interface MapMechProps {
     warMachine: WarMachineState
@@ -307,64 +308,40 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         pixiMapMech.pulseEffect(abilityPulseEffect)
     }, [abilityBorderEffect, abilityShakeEffect, abilityPulseEffect, pixiMapMech])
 
-    // Listen on mech stats
-    useGameServerSubscription<WarMachineLiveState[] | undefined>(
-        {
-            URI: `/public/arena/${currentArenaID}/mech_stats`,
-            key: GameServerKeys.SubMechLiveStats,
-            ready: !!participantID && !!currentArenaID && !!pixiMapMech,
-        },
-        (payload) => {
-            // If window is not in focus, discard the payloads else will crash browser
-            if (!isWindowFocused.current) return
+    const { health, shield, position, rotation, is_hidden } = useWarMachineStat(warMachine)
 
-            if (!payload) return
+    useEffect(() => {
+        // If window is not in focus, discard the payloads else will crash browser
+        if (!isWindowFocused.current || !pixiMapMech) return
 
-            const target = payload.find((mech) => mech.participant_id === participantID)
-            if (!target) return
+        setIsAlive(health > 0)
+        pixiMapMech.updateHpBar((health / maxHealth) * 100)
+        pixiMapMech.updateShieldBar((shield / maxShield) * 100)
 
-            if (target.health !== undefined && pixiMapMech) {
-                setIsAlive(target.health > 0)
-                const percent = (target.health / maxHealth) * 100
-                pixiMapMech.updateHpBar(percent)
-            }
+        // Update position, only when not hidden (else pos will set to like -100, -100 or something)
+        if (!is_hidden) {
+            const newPos = clientPositionToViewportPosition.current(position.x, position.y)
+            pixiMapMech.updatePosition(newPos.x, newPos.y)
+        }
 
-            if (target.shield !== undefined && pixiMapMech) {
-                const percent = (target.shield / maxShield) * 100
-                pixiMapMech.updateShieldBar(percent)
-            }
+        // Update the mech move dash line length and rotation
+        const mCommand = tempMechMoveCommand.current || mechMoveCommand.current
+        if (mCommand?.cell_x && mCommand?.cell_y && !mCommand?.reached_at) {
+            const mapPos = gridCellToViewportPosition.current(mCommand.cell_x, mCommand.cell_y)
+            pixiMapMech.updateMechMovePosition(mapPos.x, mapPos.y)
+        } else {
+            pixiMapMech.hideMechMovePosition()
+        }
 
-            // Update position, only when not hidden (else pos will set to like -100, -100 or something)
-            if (target.position !== undefined && pixiMapMech) {
-                if (!target.is_hidden) {
-                    const newPos = clientPositionToViewportPosition.current(target.position.x, target.position.y)
-                    pixiMapMech.updatePosition(newPos.x, newPos.y)
-                }
+        // Update rotation
+        const newRot = closestAngle(prevRotation.current, rotation || 0)
+        const newRotRad = deg2rad(newRot + 90)
+        pixiMapMech.updateRotation(newRotRad)
+        prevRotation.current = newRot
 
-                // Update the mech move dash line length and rotation
-                const mCommand = tempMechMoveCommand.current || mechMoveCommand.current
-                if (mCommand?.cell_x && mCommand?.cell_y && !mCommand?.reached_at) {
-                    const mapPos = gridCellToViewportPosition.current(mCommand.cell_x, mCommand.cell_y)
-                    pixiMapMech.updateMechMovePosition(mapPos.x, mapPos.y)
-                } else {
-                    pixiMapMech.hideMechMovePosition()
-                }
-            }
-
-            // Update rotation
-            if (target.rotation !== undefined && pixiMapMech) {
-                const newRot = closestAngle(prevRotation.current, target.rotation || 0)
-                const newRotRad = deg2rad(newRot + 90)
-                pixiMapMech.updateRotation(newRotRad)
-                prevRotation.current = newRot
-            }
-
-            // Update visibility
-            if (pixiMapMech) {
-                pixiMapMech.updateVisibility(!target.is_hidden)
-            }
-        },
-    )
+        // Update visibility
+        pixiMapMech.updateVisibility(!is_hidden)
+    }, [health, shield, position, rotation, is_hidden])
 
     // Listen on mech move command positions for this mech
     useGameServerSubscriptionFaction<MechMoveCommand>(

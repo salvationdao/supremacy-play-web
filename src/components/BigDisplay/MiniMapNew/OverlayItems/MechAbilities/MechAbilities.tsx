@@ -5,6 +5,7 @@ import { GameServerKeys } from "../../../../../keys"
 import { AIType, BribeStage, GameAbility, WarMachineLiveState, WarMachineState } from "../../../../../types"
 import { MechAbility } from "./MechAbility"
 import { PixiMechAbilities } from "./pixiMechAbilities"
+import { useWarMachineStat } from "../../../../../hooks/useWarMachineStat"
 
 // Outer component to determine whether to render the mech abilities or not
 export const MechAbilities = React.memo(function MechAbilities() {
@@ -60,23 +61,10 @@ const MechAbilitiesInner = React.memo(function MechAbilitiesInner({ warMachine }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pixiMechAbilities])
 
-    // Listen on current war machine changes
-    useGameServerSubscription<WarMachineLiveState[] | undefined>(
-        {
-            URI: `/public/arena/${currentArenaID}/mech_stats`,
-            key: GameServerKeys.SubMechLiveStats,
-            ready: !!participantID && !!currentArenaID && !!pixiMechAbilities,
-        },
-        (payload) => {
-            if (!payload) return
-
-            const target = payload.find((mech) => mech.participant_id === participantID)
-
-            if (target && target.health !== undefined) {
-                pixiMechAbilities?.updateVisibility(target.health > 0)
-            }
-        },
-    )
+    const { health } = useWarMachineStat(warMachine)
+    useEffect(() => {
+        pixiMechAbilities?.updateVisibility(health > 0)
+    }, [health])
 
     // Subscribe to war machine ability updates
     useGameServerSubscriptionFaction<GameAbility[] | undefined>(

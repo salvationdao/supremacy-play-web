@@ -157,14 +157,13 @@ export interface Battle {
 }
 
 export interface WarMachineLiveState {
-    participant_id?: number
-    position?: Vector2i
-    rotation?: number
-    health?: number
-    shield?: number
+    participant_id: number
+    position: Vector2i
+    rotation: number
+    health: number
+    shield: number
     energy?: number
     is_hidden: boolean
-    tick_order: number
 }
 
 export interface BattleEndDetail {

@@ -1,5 +1,5 @@
 import { Stack } from "@mui/material"
-import React, { useMemo } from "react"
+import React, { useEffect, useMemo } from "react"
 import { WIDTH_STAT_BAR } from "../.."
 import { useArena } from "../../../containers/arena"
 import { useGameServerSubscription } from "../../../hooks/useGameServer"
@@ -7,6 +7,7 @@ import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { WarMachineLiveState, WarMachineState } from "../../../types"
 import { ProgressBar } from "../../Common/ProgressBar"
+import { useWarMachineStat } from "../../../hooks/useWarMachineStat"
 
 interface HealthShieldBarsProps {
     warMachine: WarMachineState
@@ -18,43 +19,25 @@ const propsAreEqual = (prevProps: HealthShieldBarsProps, nextProps: HealthShield
 }
 
 export const HealthShieldBars = React.memo(function HealthShieldBars({ warMachine, setIsAlive }: HealthShieldBarsProps) {
-    const { currentArenaID } = useArena()
-    const { hash, participantID, maxHealth, maxShield } = warMachine
+    const { hash, maxHealth, maxShield } = warMachine
 
-    // Listen on current war machine changes
-    useGameServerSubscription<WarMachineLiveState[] | undefined>(
-        {
-            URI: `/public/arena/${currentArenaID}/mech_stats`,
-            key: GameServerKeys.SubMechLiveStats,
-            ready: !!participantID && !!currentArenaID,
-        },
-        (payload) => {
-            if (!payload) return
+    const { health, shield } = useWarMachineStat(warMachine)
+    useEffect(() => {
+        setIsAlive(health > 0)
 
-            const target = payload.find((mech) => mech.participant_id === participantID)
-            if (!target) return
+        const healthBarEl = document.getElementById(`war-machine-item-health-bar-${hash}`)
+        if (healthBarEl) {
+            const percent = Math.min((health / maxHealth) * 100, 100)
+            healthBarEl.style.height = `${percent}%`
+            healthBarEl.style.backgroundColor = percent <= 45 ? colors.red : colors.health
+        }
 
-            // Direct DOM manipulation is a lot more optimized than re-rendering
-            if (target.health !== undefined) {
-                setIsAlive(target.health > 0)
-
-                const healthBarEl = document.getElementById(`war-machine-item-health-bar-${hash}`)
-                if (healthBarEl) {
-                    const percent = Math.min((target.health / maxHealth) * 100, 100)
-                    healthBarEl.style.height = `${percent}%`
-                    healthBarEl.style.backgroundColor = percent <= 45 ? colors.red : colors.health
-                }
-            }
-
-            if (target.shield !== undefined) {
-                const shieldBarEl = document.getElementById(`war-machine-item-shield-bar-${hash}`)
-                if (shieldBarEl) {
-                    const percent = Math.min((target.shield / maxShield) * 100, 100)
-                    shieldBarEl.style.height = `${percent}%`
-                }
-            }
-        },
-    )
+        const shieldBarEl = document.getElementById(`war-machine-item-shield-bar-${hash}`)
+        if (shieldBarEl) {
+            const percent = Math.min((shield / maxShield) * 100, 100)
+            shieldBarEl.style.height = `${percent}%`
+        }
+    }, [health, shield])
 
     return useMemo(
         () => (
