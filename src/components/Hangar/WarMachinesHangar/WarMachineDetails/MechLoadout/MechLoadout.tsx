@@ -113,6 +113,8 @@ interface MechLoadoutProps {
     onUpdate: (newMechDetails: MechDetails) => void
 }
 
+const LOCAL_STORAGE_KEY_PREFERS_2D_LOADOUT = "prefers2DLoadout"
+
 export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpdate }: MechLoadoutProps) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -128,7 +130,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     const [isDragging, setIsDragging] = useState(false)
     const [isUnityLoaded, setIsUnityLoaded] = useState(false)
     const [isUnityPendingChange, setIsUnityPendingChange] = useState(false)
-    const [enable3DLoadout, setEnable3DLoadout] = useState(true)
+    const [enable3DLoadout, setEnable3DLoadout] = useState(localStorage.getItem(LOCAL_STORAGE_KEY_PREFERS_2D_LOADOUT) !== "true")
 
     const {
         weapons_map,
@@ -483,9 +485,11 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         if (!unityControlsRef.current) return
         await unityControlsRef.current.handleUnload()
         setEnable3DLoadout(false)
+        localStorage.setItem(LOCAL_STORAGE_KEY_PREFERS_2D_LOADOUT, "true")
     }
     const switchTo3DView = async () => {
         setEnable3DLoadout(true)
+        localStorage.setItem(LOCAL_STORAGE_KEY_PREFERS_2D_LOADOUT, "false")
     }
 
     return (
@@ -579,8 +583,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                         mechDetails={{
                             ...mechDetails,
                             chassis_skin: changed_mech_skin?.mech_skin || mechDetails.chassis_skin,
-                            }
-                        }
+                        }}
                     />
                 )}
                 {/* Drag and Drop Overlay */}
