@@ -56,7 +56,7 @@ export interface UnityParams {
 
 export const UnityViewer = ({ mechDetailsWithMaps, unity }: MechViewer3DProps) => {
     const theme = useTheme()
-    const { unityProvider, sendMessage, addEventListener, removeEventListener, isLoaded, loadingProgression, unload } = useUnityContext({
+    const { unityProvider, sendMessage, addEventListener, removeEventListener, isLoaded, loadingProgression, UNSAFE__detachAndUnloadImmediate: unload } = useUnityContext({
         loaderUrl: `${baseUrl}WebGL.loader.js`,
         dataUrl: `${baseUrl}/WebGL.data.br`,
         frameworkUrl: `${baseUrl}/WebGL.framework.js.br`,
@@ -132,6 +132,11 @@ export const UnityViewer = ({ mechDetailsWithMaps, unity }: MechViewer3DProps) =
             setIsPendingChange(true)
         },
     }))
+
+    // Unload everything on unmount
+    useEffect(() => {
+        return  () => { unload()}
+    }, [unload])
 
     // Check if hangar is ready, finished loading, user has clicked etc.
     const isEverythingReady = useMemo(
