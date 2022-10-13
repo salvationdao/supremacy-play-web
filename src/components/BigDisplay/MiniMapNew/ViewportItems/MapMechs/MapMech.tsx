@@ -3,6 +3,8 @@ import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../../../../constants"
 import { MapSelection, useArena, useAuth, useGame, useMiniMapPixi, useSupremacy, WinnerStruct } from "../../../../../containers"
 import { RecordType, useHotkey } from "../../../../../containers/hotkeys"
 import { closestAngle, deg2rad } from "../../../../../helpers"
+import { AbilityEffectParser } from "../../../../../helpers/binaryDataParsers/abilityEffectParser"
+import { WarMachineStatsBinaryParser } from "../../../../../helpers/binaryDataParsers/warMachineStatsParser"
 import { BinaryDataKey, useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors } from "../../../../../theme/theme"
@@ -18,8 +20,6 @@ import {
     WarMachineState,
 } from "../../../../../types"
 import { PixiMapMech } from "./pixiMapMech"
-import { AbilityEffectParser } from "../../../../../helpers/binaryDataParsers/abilityEffectParser"
-import { WarMachineStatsBinaryParser } from "../../../../../helpers/binaryDataParsers/warMachineStatsParser"
 
 interface MapMechProps {
     warMachine: WarMachineState
@@ -314,7 +314,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             URI: `/public/arena/${currentArenaID}/mech_stats`,
             binaryKey: BinaryDataKey.WarMachineStats,
             binaryParser: WarMachineStatsBinaryParser,
-            ready: !!currentArenaID,
+            ready: !!participantID && !!currentArenaID && !!pixiMapMech,
         },
         (payload) => {
             console.log(payload)
@@ -322,7 +322,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             // If window is not in focus, discard the payloads else will crash browser
             if (!payload || !isWindowFocused.current || !pixiMapMech) return
 
-            const target = payload.find((p) => p.participant_id === warMachine.participantID)
+            const target = payload.find((p) => p.participant_id === participantID)
             if (!target) return
 
             const { health, shield, position, rotation, is_hidden } = target
