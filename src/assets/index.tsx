@@ -81,6 +81,7 @@ import Applause from "!react-svg-loader!./svg/Applause.svg"
 import Arrow from "!react-svg-loader!./svg/Arrow.svg"
 import Back from "!react-svg-loader!./svg/Back.svg"
 import Bin from "!react-svg-loader!./svg/Bin.svg"
+import Camera from "!react-svg-loader!./svg/Camera.svg"
 import Cancelled from "!react-svg-loader!./svg/Cancelled.svg"
 import Chat from "!react-svg-loader!./svg/Chat.svg"
 import ChatSplit from "!react-svg-loader!./svg/ChatSplit.svg"
@@ -1420,5 +1421,11 @@ export const Svg3DView: React.VoidFunctionComponent<SvgWrapperProps> = (props) =
 export const Svg2DView: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <TwoDView />
+    </SvgWrapper>
+)
+
+export const SvgCamera: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Camera />
     </SvgWrapper>
 )
