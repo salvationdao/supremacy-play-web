@@ -137,6 +137,7 @@ export const MechLoadoutMechSkinModal = ({
                 display_genesis_and_limited: false,
                 exclude_ids: mechSkinsAlreadyEquippedInOtherSlots,
                 include_ids: compatibleMechSkins,
+                model_id: mech.blueprint_id,
                 rarities: rarities,
                 skin_compatibility: [],
                 equipped_statuses: equippedStatuses,
@@ -152,7 +153,19 @@ export const MechLoadoutMechSkinModal = ({
         } finally {
             setIsLoading(false)
         }
-    }, [sort, send, search, pageSize, page, mechSkinsAlreadyEquippedInOtherSlots, compatibleMechSkins, rarities, equippedStatuses, setTotalItems])
+    }, [
+        sort,
+        send,
+        search,
+        pageSize,
+        page,
+        mechSkinsAlreadyEquippedInOtherSlots,
+        compatibleMechSkins,
+        mech.blueprint_id,
+        rarities,
+        equippedStatuses,
+        setTotalItems,
+    ])
 
     useEffect(() => {
         getSubmodels()
