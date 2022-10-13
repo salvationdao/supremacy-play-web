@@ -11,6 +11,7 @@ import { LoadoutMechSkin, LoadoutPowerCore, LoadoutWeapon } from "../MechLoadout
 import { MechViewer3DProps } from "./MechViewer3D"
 
 export type UnityHandle = {
+    handleScreenshot: () => string | undefined
     handleUnload: () => Promise<void>
     handleWeaponUpdate: (wu: LoadoutWeapon) => void
     handlePowerCoreUpdate: (pcu: LoadoutPowerCore) => void
@@ -60,6 +61,7 @@ export const UnityViewer = ({ mechDetailsWithMaps: mechDetails, unity }: MechVie
     const {
         unityProvider,
         sendMessage,
+        takeScreenshot,
         addEventListener,
         removeEventListener,
         isLoaded,
@@ -71,6 +73,9 @@ export const UnityViewer = ({ mechDetailsWithMaps: mechDetails, unity }: MechVie
         frameworkUrl: `${baseUrl}/WebGL.framework.js.br`,
         codeUrl: `${baseUrl}/WebGL.wasm.br`,
         streamingAssetsUrl: `${baseUrl}/StreamingAssets`,
+        webglContextAttributes: {
+            preserveDrawingBuffer: true,
+        },
     })
     const sent = useRef(false)
     const ready = useRef(false)
@@ -82,6 +87,9 @@ export const UnityViewer = ({ mechDetailsWithMaps: mechDetails, unity }: MechVie
     const pendingMechSkin = useRef<MechSkin>()
 
     useImperativeHandle(unity.unityRef, () => ({
+        handleScreenshot: () => {
+            return takeScreenshot("image/jpg", 0.5)
+        },
         handleUnload: () => {
             if (showClickToLoadOverlay || !isLoaded || !siloReady)
                 return new Promise((resolve) => {
