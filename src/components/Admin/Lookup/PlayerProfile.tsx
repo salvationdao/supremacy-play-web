@@ -25,6 +25,7 @@ export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: 
     const [userData, setUserData] = useState<GetUserResp>()
     const { send } = useGameServerCommandsUser("/user_commander")
     const { user } = useAuth()
+    const theme = useTheme()
     const [isLoading, setIsLoading] = useToggle(false)
     const [loadError, setLoadError] = useState<string>("")
     const { getFaction } = useSupremacy()
@@ -104,10 +105,19 @@ export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: 
 
     if (!userData)
         return (
-            <Box>
-                <Typography variant="body2" sx={{ mt: ".3rem", color: colors.red }}>
-                    {loadError}
-                </Typography>
+            <Box sx={{ height: "100%" }}>
+                {isLoading && loadError === "" && (
+                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                        <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
+                            <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
+                        </Stack>
+                    </Stack>
+                )}
+                {loadError !== "" && (
+                    <Typography variant="body2" sx={{ mt: ".3rem", color: colors.red }}>
+                        {loadError}
+                    </Typography>
+                )}
             </Box>
         )
 
@@ -171,16 +181,6 @@ const PlayerProfileInner = ({
     const theme = useTheme()
 
     const content = useMemo(() => {
-        if (isLoading) {
-            return (
-                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
-                    </Stack>
-                </Stack>
-            )
-        }
-
         if (loadError !== "") {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
