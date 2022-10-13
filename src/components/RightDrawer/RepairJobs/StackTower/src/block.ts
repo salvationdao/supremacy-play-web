@@ -170,6 +170,7 @@ export class Block {
 // Runs a tick, moves back and forth
 export class NormalBlock extends Block {
     private randomSpeedIncrease: number
+
     constructor(prevBlock: PrevBlock, shouldReplace = false) {
         super(prevBlock, shouldReplace)
         this.randomSpeedIncrease = getRandomFloat(1, 2.2)
