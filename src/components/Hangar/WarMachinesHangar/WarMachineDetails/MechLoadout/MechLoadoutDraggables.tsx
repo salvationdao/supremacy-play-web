@@ -36,6 +36,7 @@ export interface MechLoadoutDraggablesProps {
     excludeWeaponIDs: string[]
     excludeMechSkinIDs: string[]
     includeMechSkinIDs: string[]
+    mechModelID: string
 }
 
 export const MechLoadoutDraggables = ({
@@ -46,6 +47,7 @@ export const MechLoadoutDraggables = ({
     excludeWeaponIDs,
     excludeMechSkinIDs,
     includeMechSkinIDs,
+    mechModelID,
 }: MechLoadoutDraggablesProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
 
@@ -118,6 +120,7 @@ export const MechLoadoutDraggables = ({
                 skin_compatibility: [],
                 exclude_ids: excludeMechSkinIDs,
                 include_ids: includeMechSkinIDs,
+                model_id: mechModelID,
                 rarities: [],
                 equipped_statuses: [],
                 search: "",
@@ -133,7 +136,7 @@ export const MechLoadoutDraggables = ({
         } finally {
             setIsMechSkinsLoading(false)
         }
-    }, [excludeMechSkinIDs, includeMechSkinIDs, send])
+    }, [excludeMechSkinIDs, includeMechSkinIDs, mechModelID, send])
 
     useEffect(() => {
         if (sent.current) return
