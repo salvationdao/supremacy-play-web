@@ -1,12 +1,10 @@
-import { decode } from "base64-arraybuffer"
 import React, { useEffect, useRef, useState } from "react"
 import { useArena, useMiniMapPixi } from "../../../../../containers"
 import { BinaryDataKey, useGameServerSubscription } from "../../../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../../../keys"
 import { DisplayedAbility, LocationSelectType, MechDisplayEffectType, MiniMapDisplayEffectType } from "../../../../../types"
 import { HiveStatus } from "../HiveStatus/HiveStatus"
 import { PixiMapAbilities } from "./pixiMapAbilities"
-import { AbilityEffectParser } from "../../../../../helpers/binaryDataParsers/abilityEffectParser"
+import { abilityEffectParser } from "../../../../../helpers/binaryDataParsers/abilityEffectParser"
 
 export enum MapEventType {
     // Airstrike Explosions - The locations of airstrike missile impacts.
@@ -81,9 +79,9 @@ export const MapAbilities = React.memo(function MapAbilities() {
     // Subscribe on basic map abilities like repair, emp etc.
     useGameServerSubscription<DisplayedAbility[]>(
         {
-            URI: `/public/arena/${currentArenaID}/mini_map_ability_display_list`,
+            URI: `/mini_map/arena/${currentArenaID}/public/mini_map_ability_display_list`,
             binaryKey: BinaryDataKey.MiniMapAbilityContents,
-            binaryParser: AbilityEffectParser,
+            binaryParser: abilityEffectParser,
             ready: !!currentArenaID,
         },
         (payload) => {
@@ -100,7 +98,7 @@ export const MapAbilities = React.memo(function MapAbilities() {
     // Other complex map abilities are sent through as byte array to save bandwidth
     useGameServerSubscription<ArrayBuffer>(
         {
-            URI: `/public/arena/${currentArenaID}/minimap_events`,
+            URI: `/mini_map/arena/${currentArenaID}/public/minimap_events`,
             binaryKey: BinaryDataKey.MiniMapEvents,
             binaryParser: (data) => ({
                 uri: "",

@@ -2,7 +2,7 @@ import { Message } from "../../containers/ws"
 import { WarMachineLiveState } from "../../types"
 import { BinaryDataKey } from "../../hooks/useGameServer"
 
-export const WarMachineStatsBinaryParser = (data: ArrayBuffer): Message => {
+export const warMachineStatsBinaryParser = (data: ArrayBuffer): Message => {
     const result: WarMachineLiveState[] = []
 
     const dv = new DataView(data)

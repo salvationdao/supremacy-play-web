@@ -5,7 +5,7 @@ import { GameServerKeys } from "../../../../../keys"
 import { AIType, BribeStage, GameAbility, WarMachineLiveState, WarMachineState } from "../../../../../types"
 import { MechAbility } from "./MechAbility"
 import { PixiMechAbilities } from "./pixiMechAbilities"
-import { WarMachineStatsBinaryParser } from "../../../../../helpers/binaryDataParsers/warMachineStatsParser"
+import { warMachineStatsBinaryParser } from "../../../../../helpers/binaryDataParsers/warMachineStatsParser"
 
 // Outer component to determine whether to render the mech abilities or not
 export const MechAbilities = React.memo(function MechAbilities() {
@@ -63,9 +63,9 @@ const MechAbilitiesInner = React.memo(function MechAbilitiesInner({ warMachine }
 
     useGameServerSubscription<WarMachineLiveState[]>(
         {
-            URI: `/public/arena/${currentArenaID}/mech_stats`,
+            URI: `/mini_map/arena/${currentArenaID}/public/mech_stats`,
             binaryKey: BinaryDataKey.WarMachineStats,
-            binaryParser: WarMachineStatsBinaryParser,
+            binaryParser: warMachineStatsBinaryParser,
             ready: !!currentArenaID,
         },
         (payload) => {

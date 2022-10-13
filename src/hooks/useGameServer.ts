@@ -57,4 +57,6 @@ export enum BinaryDataKey {
     WarMachineStats = 1,
     MiniMapAbilityContents = 2,
     MiniMapEvents = 3,
+    MechCommandIndividual = 4,
+    MechCommandMap = 5,
 }

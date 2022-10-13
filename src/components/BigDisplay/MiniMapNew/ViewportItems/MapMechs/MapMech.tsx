@@ -3,8 +3,8 @@ import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../../../../constants"
 import { MapSelection, useArena, useAuth, useGame, useMiniMapPixi, useSupremacy, WinnerStruct } from "../../../../../containers"
 import { RecordType, useHotkey } from "../../../../../containers/hotkeys"
 import { closestAngle, deg2rad } from "../../../../../helpers"
-import { AbilityEffectParser } from "../../../../../helpers/binaryDataParsers/abilityEffectParser"
-import { WarMachineStatsBinaryParser } from "../../../../../helpers/binaryDataParsers/warMachineStatsParser"
+import { abilityEffectParser } from "../../../../../helpers/binaryDataParsers/abilityEffectParser"
+import { warMachineStatsBinaryParser } from "../../../../../helpers/binaryDataParsers/warMachineStatsParser"
 import { BinaryDataKey, useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors } from "../../../../../theme/theme"
@@ -20,6 +20,7 @@ import {
     WarMachineState,
 } from "../../../../../types"
 import { PixiMapMech } from "./pixiMapMech"
+import { mechMoveCommandParser } from "../../../../../helpers/binaryDataParsers/mechMoveCommandParser"
 
 interface MapMechProps {
     warMachine: WarMachineState
@@ -311,9 +312,9 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
     useGameServerSubscription<WarMachineLiveState[]>(
         {
-            URI: `/public/arena/${currentArenaID}/mech_stats`,
+            URI: `/mini_map/arena/${currentArenaID}/public/mech_stats`,
             binaryKey: BinaryDataKey.WarMachineStats,
-            binaryParser: WarMachineStatsBinaryParser,
+            binaryParser: warMachineStatsBinaryParser,
             ready: !!participantID && !!currentArenaID && !!pixiMapMech,
         },
         (payload) => {
@@ -356,11 +357,12 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     )
 
     // Listen on mech move command positions for this mech
-    useGameServerSubscriptionFaction<MechMoveCommand>(
+    useGameServerSubscription<MechMoveCommand>(
         {
-            URI: `/arena/${currentArenaID}/mech_command/${hash}`,
-            key: GameServerKeys.SubMechMoveCommand,
-            ready: factionID === warMachineFactionID && !!participantID && !!currentArenaID,
+            URI: `/mini_map/arena/${currentArenaID}/faction/${factionID}/mech_command/${hash}`,
+            binaryKey: BinaryDataKey.MechCommandIndividual,
+            binaryParser: mechMoveCommandParser,
+            ready: !!userID && !!factionID && factionID === warMachineFactionID && !!participantID && !!currentArenaID,
         },
         (payload) => {
             if (!payload) {
@@ -375,9 +377,9 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     // Listen on abilities that apply on this mech to display
     useGameServerSubscription<DisplayedAbility[]>(
         {
-            URI: `/public/arena/${currentArenaID}/mini_map_ability_display_list`,
+            URI: `/mini_map/arena/${currentArenaID}/public/mini_map_ability_display_list`,
             binaryKey: BinaryDataKey.MiniMapAbilityContents,
-            binaryParser: AbilityEffectParser,
+            binaryParser: abilityEffectParser,
             ready: !!currentArenaID,
         },
         (payload) => {

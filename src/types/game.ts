@@ -371,6 +371,8 @@ export const MechMoveCommandAbility: PlayerAbility = {
 
 export interface MechMoveCommand {
     id: string
+    arena_id?: string
+    battle_id?: string
     mech_id: string
     triggered_by_id: string
     cell_x: number

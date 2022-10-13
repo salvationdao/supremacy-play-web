@@ -2,7 +2,7 @@ import { Message } from "../../containers/ws"
 import { DisplayedAbility, LocationSelectType, MechDisplayEffectType, MiniMapDisplayEffectType } from "../../types"
 import { BinaryDataKey } from "../../hooks/useGameServer"
 
-export const AbilityEffectParser = (buffer: ArrayBuffer): Message => {
+export const abilityEffectParser = (buffer: ArrayBuffer): Message => {
     const enc = new TextDecoder("utf-8")
     const arr = new Uint8Array(buffer)
     const payload = enc.decode(arr).substring(1)

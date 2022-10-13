@@ -5,7 +5,7 @@ import { BinaryDataKey, useGameServerSubscription } from "../../../hooks/useGame
 import { colors } from "../../../theme/theme"
 import { WarMachineLiveState, WarMachineState } from "../../../types"
 import { ProgressBar } from "../../Common/ProgressBar"
-import { WarMachineStatsBinaryParser } from "../../../helpers/binaryDataParsers/warMachineStatsParser"
+import { warMachineStatsBinaryParser } from "../../../helpers/binaryDataParsers/warMachineStatsParser"
 import { useArena } from "../../../containers"
 
 interface HealthShieldBarsProps {
@@ -23,9 +23,9 @@ export const HealthShieldBars = React.memo(function HealthShieldBars({ warMachin
 
     useGameServerSubscription<WarMachineLiveState[]>(
         {
-            URI: `/public/arena/${currentArenaID}/mech_stats`,
+            URI: `/mini_map/arena/${currentArenaID}/public/mech_stats`,
             binaryKey: BinaryDataKey.WarMachineStats,
-            binaryParser: WarMachineStatsBinaryParser,
+            binaryParser: warMachineStatsBinaryParser,
             ready: !!currentArenaID,
         },
         (payload) => {
