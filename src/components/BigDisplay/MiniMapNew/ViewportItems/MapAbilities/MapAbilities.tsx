@@ -98,18 +98,22 @@ export const MapAbilities = React.memo(function MapAbilities() {
     )
 
     // Other complex map abilities are sent through as byte array to save bandwidth
-    useGameServerSubscription<string>(
+    useGameServerSubscription<ArrayBuffer>(
         {
             URI: `/public/arena/${currentArenaID}/minimap_events`,
-            key: GameServerKeys.MinimapEventsSubscribe,
+            binaryKey: BinaryDataKey.MiniMapEvents,
+            binaryParser: (data) => ({
+                uri: "",
+                key: BinaryDataKey.MiniMapEvents,
+                payload: data,
+                mt: window.performance.now(),
+            }),
             ready: !!currentArenaID,
         },
         (payload) => {
             if (!payload) return
-
-            const buffer = decode(payload)
-            const dv = new DataView(buffer)
-            let offset = 0
+            const dv = new DataView(payload)
+            let offset = 1 // skip the leading byte
 
             const newMapEvents: DisplayedAbility[] = [] // Events to be added
             const pendingMapEvents: PendingMapEvent[] = [] // Events to be added after their individual timeout

@@ -17,11 +17,12 @@ export const AbilityEffectParser = (buffer: ArrayBuffer): Message => {
                     x: parseFloat(values[1]),
                     y: parseFloat(values[2]),
                 },
-                image_url: values[3],
-                colour: values[4],
-                mini_map_display_effect_type: values[5] as MiniMapDisplayEffectType,
-                mech_display_effect_type: values[6] as MechDisplayEffectType,
-                location_select_type: values[7] as LocationSelectType,
+                mech_id: values[3],
+                image_url: values[4],
+                colour: values[5],
+                mini_map_display_effect_type: values[6] as MiniMapDisplayEffectType,
+                mech_display_effect_type: values[7] as MechDisplayEffectType,
+                location_select_type: values[8] as LocationSelectType,
             })
         })
     }
