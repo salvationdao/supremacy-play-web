@@ -218,31 +218,7 @@ const PlayerProfileInner = ({
                     </PlayerProfileCard>
                     <PlayerProfileCard faction={faction} title="Recent Chat History" sx={{ flex: 2 }}>
                         {userData.recent_chat_history ? (
-                            <Box
-                                sx={{
-                                    flex: 1,
-                                    overflowY: "auto",
-                                    overflowX: "hidden",
-                                    direction: "ltr",
-                                    mr: ".4rem",
-                                    my: ".3rem",
-                                    "::-webkit-scrollbar": {
-                                        width: ".4rem",
-                                    },
-                                    "::-webkit-scrollbar-track": {
-                                        background: "#FFFFFF15",
-                                        borderRadius: 3,
-                                    },
-                                    "::-webkit-scrollbar-thumb": {
-                                        background: faction.primary_color,
-                                        borderRadius: 3,
-                                    },
-                                }}
-                            >
-                                <Box sx={{ height: 0 }}>
-                                    <ChatHistory chatHistory={userData.recent_chat_history} faction={faction} user={userData.user} />
-                                </Box>
-                            </Box>
+                            <ChatHistory chatHistory={userData.recent_chat_history} faction={faction} user={userData.user} />
                         ) : (
                             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                                 <Typography>No Recent Chat History</Typography>

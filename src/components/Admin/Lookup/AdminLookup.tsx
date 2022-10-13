@@ -164,35 +164,32 @@ export const AdminLookup = () => {
             }}
             opacity={0.9}
             backgroundColor={theme.factionTheme.background}
-            sx={{ height: "100%" }}
+            sx={{ height: "100%", maxHeight: "75%" }}
         >
-            <Stack sx={{ position: "relative", height: "100%" }}>
-                <Stack sx={{ flex: 1 }}>
-                    <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
-                        <Box
-                            sx={{
-                                flex: 1,
-                                overflowY: "auto",
-                                overflowX: "hidden",
-                                direction: "ltr",
+            <Stack sx={{ px: "1rem", py: "1rem", flex: 1, height: "100%" }}>
+                <Box
+                    sx={{
+                        flex: 1,
+                        overflowY: "auto",
+                        overflowX: "hidden",
+                        direction: "ltr",
+                        maxHeight: "100%",
 
-                                "::-webkit-scrollbar": {
-                                    width: ".4rem",
-                                },
-                                "::-webkit-scrollbar-track": {
-                                    background: "#FFFFFF15",
-                                    borderRadius: 3,
-                                },
-                                "::-webkit-scrollbar-thumb": {
-                                    background: theme.factionTheme.primary,
-                                    borderRadius: 3,
-                                },
-                            }}
-                        >
-                            {content}
-                        </Box>
-                    </Stack>
-                </Stack>
+                        "::-webkit-scrollbar": {
+                            width: ".4rem",
+                        },
+                        "::-webkit-scrollbar-track": {
+                            background: "#FFFFFF15",
+                            borderRadius: 3,
+                        },
+                        "::-webkit-scrollbar-thumb": {
+                            background: theme.factionTheme.primary,
+                            borderRadius: 3,
+                        },
+                    }}
+                >
+                    {content}
+                </Box>
             </Stack>
         </ClipThing>
     )
