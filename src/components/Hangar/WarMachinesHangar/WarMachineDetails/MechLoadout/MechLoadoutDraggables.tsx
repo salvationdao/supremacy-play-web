@@ -79,8 +79,8 @@ export const MechLoadoutDraggables = ({
             const resp = await send<GetWeaponsDetailedResponse, GetWeaponsRequest>(GameServerKeys.GetWeaponsDetailed, {
                 page: 1,
                 page_size: 3,
-                sort_by: "asc",
-                sort_dir: "rarity",
+                sort_by: "date",
+                sort_dir: "desc",
                 include_market_listed: false,
                 display_genesis_and_limited: true,
                 exclude_ids: [],
@@ -93,6 +93,7 @@ export const MechLoadoutDraggables = ({
             if (!resp) return
             setWeaponsError(undefined)
             setWeapons(resp.weapons)
+            console.log(resp.weapons)
             weaponsMemoized.current = resp.weapons
         } catch (e) {
             setWeaponsError(typeof e === "string" ? e : "Failed to get weapons.")
@@ -108,8 +109,8 @@ export const MechLoadoutDraggables = ({
             const resp = await send<GetSubmodelsResponse, GetSubmodelsRequest>(GameServerKeys.GetMechSubmodelsDetailed, {
                 page: 1,
                 page_size: 3,
-                sort_by: "asc",
-                sort_dir: "rarity",
+                sort_by: "date",
+                sort_dir: "desc",
                 include_market_listed: false,
                 display_genesis_and_limited: true,
                 exclude_market_locked: true,
