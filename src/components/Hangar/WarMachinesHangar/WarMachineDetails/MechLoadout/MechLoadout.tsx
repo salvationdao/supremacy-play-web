@@ -486,6 +486,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         if (!unityControlsRef.current) return
         await unityControlsRef.current.handleUnload()
         setEnable3DLoadout(false)
+        setIsUnityLoaded(false)
         localStorage.setItem(LOCAL_STORAGE_KEY_PREFERS_2D_LOADOUT, "true")
     }
     const switchTo3DView = async () => {
