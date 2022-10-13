@@ -3,7 +3,7 @@ import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../../../../constants"
 import { MapSelection, useArena, useAuth, useGame, useMiniMapPixi, useSupremacy, WinnerStruct } from "../../../../../containers"
 import { RecordType, useHotkey } from "../../../../../containers/hotkeys"
 import { closestAngle, deg2rad } from "../../../../../helpers"
-import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
+import { BinaryDataKey, useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors } from "../../../../../theme/theme"
 import {
@@ -18,7 +18,8 @@ import {
     WarMachineState,
 } from "../../../../../types"
 import { PixiMapMech } from "./pixiMapMech"
-import { useWarMachineStat } from "../../../../../hooks/useWarMachineStat"
+import { AbilityEffectParser } from "../../../../../helpers/binaryDataParsers/abilityEffectParser"
+import { WarMachineStatsBinaryParser } from "../../../../../helpers/binaryDataParsers/warMachineStatsParser"
 
 interface MapMechProps {
     warMachine: WarMachineState
@@ -308,40 +309,53 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         pixiMapMech.pulseEffect(abilityPulseEffect)
     }, [abilityBorderEffect, abilityShakeEffect, abilityPulseEffect, pixiMapMech])
 
-    const { health, shield, position, rotation, is_hidden } = useWarMachineStat(warMachine)
+    useGameServerSubscription<WarMachineLiveState[]>(
+        {
+            URI: `/public/arena/${currentArenaID}/mech_stats`,
+            binaryKey: BinaryDataKey.WarMachineStats,
+            binaryParser: WarMachineStatsBinaryParser,
+            ready: !!currentArenaID,
+        },
+        (payload) => {
+            console.log(payload)
 
-    useEffect(() => {
-        // If window is not in focus, discard the payloads else will crash browser
-        if (!isWindowFocused.current || !pixiMapMech) return
+            // If window is not in focus, discard the payloads else will crash browser
+            if (!payload || !isWindowFocused.current || !pixiMapMech) return
 
-        setIsAlive(health > 0)
-        pixiMapMech.updateHpBar((health / maxHealth) * 100)
-        pixiMapMech.updateShieldBar((shield / maxShield) * 100)
+            const target = payload.find((p) => p.participant_id === warMachine.participantID)
+            if (!target) return
 
-        // Update position, only when not hidden (else pos will set to like -100, -100 or something)
-        if (!is_hidden) {
-            const newPos = clientPositionToViewportPosition.current(position.x, position.y)
-            pixiMapMech.updatePosition(newPos.x, newPos.y)
-        }
+            const { health, shield, position, rotation, is_hidden } = target
 
-        // Update the mech move dash line length and rotation
-        const mCommand = tempMechMoveCommand.current || mechMoveCommand.current
-        if (mCommand?.cell_x && mCommand?.cell_y && !mCommand?.reached_at) {
-            const mapPos = gridCellToViewportPosition.current(mCommand.cell_x, mCommand.cell_y)
-            pixiMapMech.updateMechMovePosition(mapPos.x, mapPos.y)
-        } else {
-            pixiMapMech.hideMechMovePosition()
-        }
+            setIsAlive(health > 0)
+            pixiMapMech.updateHpBar((health / maxHealth) * 100)
+            pixiMapMech.updateShieldBar((shield / maxShield) * 100)
 
-        // Update rotation
-        const newRot = closestAngle(prevRotation.current, rotation || 0)
-        const newRotRad = deg2rad(newRot + 90)
-        pixiMapMech.updateRotation(newRotRad)
-        prevRotation.current = newRot
+            // Update position, only when not hidden (else pos will set to like -100, -100 or something)
+            if (!is_hidden) {
+                const newPos = clientPositionToViewportPosition.current(position.x, position.y)
+                pixiMapMech.updatePosition(newPos.x, newPos.y)
+            }
 
-        // Update visibility
-        pixiMapMech.updateVisibility(!is_hidden)
-    }, [health, shield, position, rotation, is_hidden])
+            // Update the mech move dash line length and rotation
+            const mCommand = tempMechMoveCommand.current || mechMoveCommand.current
+            if (mCommand?.cell_x && mCommand?.cell_y && !mCommand?.reached_at) {
+                const mapPos = gridCellToViewportPosition.current(mCommand.cell_x, mCommand.cell_y)
+                pixiMapMech.updateMechMovePosition(mapPos.x, mapPos.y)
+            } else {
+                pixiMapMech.hideMechMovePosition()
+            }
+
+            // Update rotation
+            const newRot = closestAngle(prevRotation.current, rotation || 0)
+            const newRotRad = deg2rad(newRot + 90)
+            pixiMapMech.updateRotation(newRotRad)
+            prevRotation.current = newRot
+
+            // Update visibility
+            pixiMapMech.updateVisibility(!is_hidden)
+        },
+    )
 
     // Listen on mech move command positions for this mech
     useGameServerSubscriptionFaction<MechMoveCommand>(
@@ -364,7 +378,8 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     useGameServerSubscription<DisplayedAbility[]>(
         {
             URI: `/public/arena/${currentArenaID}/mini_map_ability_display_list`,
-            key: GameServerKeys.SubMiniMapAbilityDisplayList,
+            binaryKey: BinaryDataKey.MiniMapAbilityContents,
+            binaryParser: AbilityEffectParser,
             ready: !!currentArenaID,
         },
         (payload) => {

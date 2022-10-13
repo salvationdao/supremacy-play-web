@@ -18,7 +18,6 @@ export enum GameServerKeys {
     SubArenaStatus = "ARENA:STATUS:UPDATED",
     SubBattleArenaList = "BATTLE:ARENA:LIST",
     SubBattleArenaClosed = "BATTLE:ARENA:CLOSED",
-    SubMiniMapAbilityDisplayList = "MINI:MAP:ABILITY:DISPLAY:LIST",
 
     // Voting abilities
     SubBribeStageUpdated = "BRIBE:STAGE:UPDATED:SUBSCRIBE",

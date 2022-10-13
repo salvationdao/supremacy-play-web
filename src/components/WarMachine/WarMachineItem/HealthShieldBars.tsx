@@ -1,13 +1,12 @@
 import { Stack } from "@mui/material"
-import React, { useEffect, useMemo } from "react"
+import React, { useMemo } from "react"
 import { WIDTH_STAT_BAR } from "../.."
-import { useArena } from "../../../containers/arena"
-import { useGameServerSubscription } from "../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../keys"
+import { BinaryDataKey, useGameServerSubscription } from "../../../hooks/useGameServer"
 import { colors } from "../../../theme/theme"
 import { WarMachineLiveState, WarMachineState } from "../../../types"
 import { ProgressBar } from "../../Common/ProgressBar"
-import { useWarMachineStat } from "../../../hooks/useWarMachineStat"
+import { WarMachineStatsBinaryParser } from "../../../helpers/binaryDataParsers/warMachineStatsParser"
+import { useArena } from "../../../containers"
 
 interface HealthShieldBarsProps {
     warMachine: WarMachineState
@@ -19,25 +18,38 @@ const propsAreEqual = (prevProps: HealthShieldBarsProps, nextProps: HealthShield
 }
 
 export const HealthShieldBars = React.memo(function HealthShieldBars({ warMachine, setIsAlive }: HealthShieldBarsProps) {
+    const { currentArenaID } = useArena()
     const { hash, maxHealth, maxShield } = warMachine
 
-    const { health, shield } = useWarMachineStat(warMachine)
-    useEffect(() => {
-        setIsAlive(health > 0)
+    useGameServerSubscription<WarMachineLiveState[]>(
+        {
+            URI: `/public/arena/${currentArenaID}/mech_stats`,
+            binaryKey: BinaryDataKey.WarMachineStats,
+            binaryParser: WarMachineStatsBinaryParser,
+            ready: !!currentArenaID,
+        },
+        (payload) => {
+            if (!payload) return
 
-        const healthBarEl = document.getElementById(`war-machine-item-health-bar-${hash}`)
-        if (healthBarEl) {
-            const percent = Math.min((health / maxHealth) * 100, 100)
-            healthBarEl.style.height = `${percent}%`
-            healthBarEl.style.backgroundColor = percent <= 45 ? colors.red : colors.health
-        }
+            const target = payload.find((p) => p.participant_id === warMachine.participantID)
+            if (!target) return
 
-        const shieldBarEl = document.getElementById(`war-machine-item-shield-bar-${hash}`)
-        if (shieldBarEl) {
-            const percent = Math.min((shield / maxShield) * 100, 100)
-            shieldBarEl.style.height = `${percent}%`
-        }
-    }, [health, shield])
+            setIsAlive(target.health > 0)
+
+            const healthBarEl = document.getElementById(`war-machine-item-health-bar-${hash}`)
+            if (healthBarEl) {
+                const percent = Math.min((target.health / maxHealth) * 100, 100)
+                healthBarEl.style.height = `${percent}%`
+                healthBarEl.style.backgroundColor = percent <= 45 ? colors.red : colors.health
+            }
+
+            const shieldBarEl = document.getElementById(`war-machine-item-shield-bar-${hash}`)
+            if (shieldBarEl) {
+                const percent = Math.min((target.shield / maxShield) * 100, 100)
+                shieldBarEl.style.height = `${percent}%`
+            }
+        },
+    )
 
     return useMemo(
         () => (

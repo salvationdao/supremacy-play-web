@@ -54,5 +54,6 @@ export function useGameServerSubscription<T = DataType>({ URI, key, ready = true
 }
 
 export enum BinaryDataKey {
-    MechStats = 1,
+    WarMachineStats = 1,
+    MiniMapAbilityContents = 2,
 }
