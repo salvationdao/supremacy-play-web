@@ -45,6 +45,8 @@ export interface User {
     mobile_number?: string
     rank: UserRank
     features: Feature[]
+    role_type: RoleType
+    created_at?: Date
 }
 
 export interface FactionStat {
@@ -109,6 +111,12 @@ export enum FeatureName {
     systemMessages = "SYSTEM_MESSAGES",
     chatBan = "CHAT_BAN",
     profileAvatar = "PROFILE_AVATAR",
+}
+
+export enum RoleType {
+    player = "PLAYER",
+    moderator = "MODERATOR",
+    admin = "ADMIN",
 }
 
 export enum SystemMessageDataType {
