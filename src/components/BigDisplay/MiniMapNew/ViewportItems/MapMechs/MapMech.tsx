@@ -317,8 +317,6 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             ready: !!participantID && !!currentArenaID && !!pixiMapMech,
         },
         (payload) => {
-            console.log(payload)
-
             // If window is not in focus, discard the payloads else will crash browser
             if (!payload || !isWindowFocused.current || !pixiMapMech) return
 
