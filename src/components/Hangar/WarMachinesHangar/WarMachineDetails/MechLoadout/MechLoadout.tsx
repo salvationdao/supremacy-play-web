@@ -10,7 +10,7 @@ import { colors, fonts } from "../../../../../theme/theme"
 import { AssetItemType, MechDetails, MechSkin, MechStatus, MechStatusEnum, PowerCore, Utility, Weapon } from "../../../../../types"
 import { ClipThing } from "../../../../Common/ClipThing"
 import { FancyButton } from "../../../../Common/FancyButton"
-import { MechLoadoutItem } from "../../Common/MechLoadoutItem"
+import { LoadoutItem, MechLoadoutItem } from "../../Common/MechLoadoutItem"
 import { MechViewer } from "../MechViewer/MechViewer"
 import { MechViewer3D } from "../MechViewer/MechViewer3D"
 import { UnityHandle } from "../MechViewer/UnityViewer"
@@ -243,20 +243,20 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
 
         setCurrLoadout((prev) => {
             // Update weapon skins
-            for (let weaponSlotNumber = 0; weaponSlotNumber < prev.weapon_hardpoints; weaponSlotNumber++) {
-                const w = prev.changed_weapons_map.get(weaponSlotNumber)?.weapon || prev.weapons_map.get(weaponSlotNumber)
-                if (!w) continue
-                if (unityControlsRef.current) {
-                    const ews: LoadoutWeapon = {
-                        slot_number: weaponSlotNumber,
-                        weapon_id: w.id,
-                        weapon: w,
-                        inherit_skin: true,
-                    }
-                    unityControlsRef.current.handleWeaponUpdate(ews)
-                    setIsUnityPendingChange(true)
-                }
-            }
+            // for (let weaponSlotNumber = 0; weaponSlotNumber < prev.weapon_hardpoints; weaponSlotNumber++) {
+            //     const w = prev.changed_weapons_map.get(weaponSlotNumber)?.weapon || prev.weapons_map.get(weaponSlotNumber)
+            //     if (!w) continue
+            //     if (unityControlsRef.current) {
+            //         const ews: LoadoutWeapon = {
+            //             slot_number: weaponSlotNumber,
+            //             weapon_id: w.id,
+            //             weapon: w,
+            //             inherit_skin: true,
+            //         }
+            //         unityControlsRef.current.handleWeaponUpdate(ews)
+            //         setIsUnityPendingChange(true)
+            //     }
+            // }
 
             return {
                 ...prev,
@@ -706,11 +706,19 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                 />
                             )
 
-                            const prevEquipped = () => {
+                            const prevEquipped = (): LoadoutItem | undefined => {
                                 if (!changed_power_core) return
 
                                 const previouslyEquipped = power_core
-                                if (!previouslyEquipped) return
+                                if (!previouslyEquipped) {
+                                    return {
+                                        label: "POWER CORE",
+                                        primaryColor: colors.powerCore,
+                                        onClick: () => undoPowerCoreChanges(),
+                                        disabled: loadoutDisabled,
+                                        isEmpty: true,
+                                    }
+                                }
 
                                 return {
                                     imageUrl: previouslyEquipped.image_url || previouslyEquipped.avatar_url,
@@ -790,11 +798,20 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                 />
                             )
 
-                            const prevEquipped = () => {
+                            const prevEquipped = (): LoadoutItem | undefined => {
                                 if (!changed_weapons_map.has(slotNumber)) return
 
                                 const previouslyEquipped = weapons_map.get(slotNumber)
-                                if (!previouslyEquipped) return
+                                if (!previouslyEquipped) {
+                                    return {
+                                        slotNumber,
+                                        label: "WEAPON",
+                                        primaryColor: colors.weapons,
+                                        onClick: () => undoWeaponChanges(slotNumber),
+                                        disabled: loadoutDisabled,
+                                        isEmpty: true,
+                                    }
+                                }
 
                                 return {
                                     slotNumber,
