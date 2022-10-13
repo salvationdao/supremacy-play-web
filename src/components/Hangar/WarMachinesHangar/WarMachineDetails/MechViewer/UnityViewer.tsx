@@ -81,43 +81,6 @@ export const UnityViewer = ({ mechDetailsWithMaps: mechDetails, unity }: MechVie
 
     // todo: unload unity viewer when this bug is fixed https://react-unity-webgl.dev/docs/api/unload
 
-    const updateWeapon = (wu: LoadoutWeapon) => {
-        const weapon = wu.weapon
-        if (wu.unequip) {
-            console.log("cleared", wu.slot_number)
-            sendMessage("SceneContext", "ClearSelectedSlots", `[${wu.slot_number}]`)
-        } else if (weapon) {
-            const obj = {
-                type: "weapon",
-                ownership_id: weapon.id,
-                static_id: weapon.blueprint_id,
-                skin: weapon.weapon_skin
-                    ? {
-                          type: "skin",
-                          static_id: weapon.weapon_skin.blueprint_id,
-                      }
-                    : undefined,
-            } as SiloObject
-            if (wu.inherit_skin) {
-                if (mechDetails.changed_mech_skin?.mech_skin.blueprint_weapon_skin_id) {
-                    obj.skin = {
-                        type: "skin",
-                        static_id: mechDetails.changed_mech_skin?.mech_skin.blueprint_weapon_skin_id,
-                    }
-                } else if (mechDetails.chassis_skin?.blueprint_weapon_skin_id) {
-                    obj.skin = {
-                        type: "skin",
-                        static_id: mechDetails.chassis_skin.blueprint_weapon_skin_id,
-                    }
-                }
-            }
-            console.info(obj)
-            sendMessage("SceneContext", "SetSlotIndexToChange", wu.slot_number)
-            sendMessage("SceneContext", "ChangeSlotValue", JSON.stringify(obj))
-        }
-        setIsPendingChange(true)
-    }
-
     useImperativeHandle(unity.unityRef, () => ({
         handleUnload: () => {
             if (showClickToLoadOverlay || !isLoaded || !siloReady)
@@ -126,7 +89,42 @@ export const UnityViewer = ({ mechDetailsWithMaps: mechDetails, unity }: MechVie
                 })
             return unload()
         },
-        handleWeaponUpdate: updateWeapon,
+        handleWeaponUpdate: (wu: LoadoutWeapon) => {
+            const weapon = wu.weapon
+            if (wu.unequip) {
+                console.info("cleared", wu.slot_number)
+                sendMessage("SceneContext", "ClearSelectedSlots", `[${wu.slot_number}]`)
+            } else if (weapon) {
+                const obj = {
+                    type: "weapon",
+                    ownership_id: weapon.id,
+                    static_id: weapon.blueprint_id,
+                    skin: weapon.weapon_skin
+                        ? {
+                              type: "skin",
+                              static_id: weapon.weapon_skin.blueprint_id,
+                          }
+                        : undefined,
+                } as SiloObject
+                if (wu.inherit_skin) {
+                    if (mechDetails.changed_mech_skin?.mech_skin.blueprint_weapon_skin_id) {
+                        obj.skin = {
+                            type: "skin",
+                            static_id: mechDetails.changed_mech_skin?.mech_skin.blueprint_weapon_skin_id,
+                        }
+                    } else if (mechDetails.chassis_skin?.blueprint_weapon_skin_id) {
+                        obj.skin = {
+                            type: "skin",
+                            static_id: mechDetails.chassis_skin.blueprint_weapon_skin_id,
+                        }
+                    }
+                }
+                console.info("update", obj)
+                sendMessage("SceneContext", "SetSlotIndexToChange", wu.slot_number)
+                sendMessage("SceneContext", "ChangeSlotValue", JSON.stringify(obj))
+            }
+            setIsPendingChange(true)
+        },
         handlePowerCoreUpdate: (pcu: LoadoutPowerCore) => {
             if (!pcu.power_core) return
             const powerCore = pcu.power_core
@@ -136,7 +134,7 @@ export const UnityViewer = ({ mechDetailsWithMaps: mechDetails, unity }: MechVie
                 static_id: powerCore.blueprint_id,
             } as SiloObject
             setIsPendingChange(true)
-            console.info(obj)
+            console.info("update", obj)
         },
         handleMechSkinUpdate: (msu: LoadoutMechSkin) => {
             if (!msu.mech_skin) return
@@ -145,21 +143,33 @@ export const UnityViewer = ({ mechDetailsWithMaps: mechDetails, unity }: MechVie
                 ownership_id: msu.mech_skin_id,
                 static_id: msu.mech_skin.blueprint_id,
             } as SiloObject
-            console.info(obj)
+            console.info("update", obj)
             sendMessage("SceneContext", "ChangeMechSkin", JSON.stringify(obj))
-            setIsPendingChange(true)
 
             // Update weapon skins
             for (let weaponSlotNumber = 0; weaponSlotNumber < mechDetails.weapon_hardpoints; weaponSlotNumber++) {
                 const w = mechDetails.changed_weapons_map.get(weaponSlotNumber)?.weapon || mechDetails.weapons_map.get(weaponSlotNumber)
-                if (!w || !w.inherit_skin) continue
-                updateWeapon({
-                    slot_number: weaponSlotNumber,
-                    weapon_id: w.id,
-                    weapon: w,
-                    inherit_skin: true,
-                })
+                if (!w || !w.inherit_skin || !msu.mech_skin.blueprint_weapon_skin_id) continue
+                const obj = {
+                    type: "weapon",
+                    ownership_id: w.id,
+                    static_id: w.blueprint_id,
+                    skin: w.weapon_skin
+                        ? {
+                              type: "skin",
+                              static_id: w.weapon_skin.blueprint_id,
+                          }
+                        : undefined,
+                } as SiloObject
+                obj.skin = {
+                    type: "skin",
+                    static_id: msu.mech_skin.blueprint_weapon_skin_id,
+                }
+                console.info("update skin", obj)
+                sendMessage("SceneContext", "SetSlotIndexToChange", weaponSlotNumber)
+                sendMessage("SceneContext", "ChangeSlotValue", JSON.stringify(obj))
             }
+            setIsPendingChange(true)
         },
     }))
 
