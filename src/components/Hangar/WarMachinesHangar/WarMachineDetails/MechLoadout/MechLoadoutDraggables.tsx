@@ -93,7 +93,6 @@ export const MechLoadoutDraggables = ({
             if (!resp) return
             setWeaponsError(undefined)
             setWeapons(resp.weapons)
-            console.log(resp.weapons)
             weaponsMemoized.current = resp.weapons
         } catch (e) {
             setWeaponsError(typeof e === "string" ? e : "Failed to get weapons.")

@@ -54,7 +54,7 @@ export interface UnityParams {
     onReady: () => void
 }
 
-export const UnityViewer = ({ mechDetailsWithMaps, unity }: MechViewer3DProps) => {
+export const UnityViewer = ({ mechDetailsWithMaps: mechDetails, unity }: MechViewer3DProps) => {
     const theme = useTheme()
     const {
         unityProvider,
@@ -81,6 +81,43 @@ export const UnityViewer = ({ mechDetailsWithMaps, unity }: MechViewer3DProps) =
 
     // todo: unload unity viewer when this bug is fixed https://react-unity-webgl.dev/docs/api/unload
 
+    const updateWeapon = (wu: LoadoutWeapon) => {
+        const weapon = wu.weapon
+        if (wu.unequip) {
+            console.log("cleared", wu.slot_number)
+            sendMessage("SceneContext", "ClearSelectedSlots", `[${wu.slot_number}]`)
+        } else if (weapon) {
+            const obj = {
+                type: "weapon",
+                ownership_id: weapon.id,
+                static_id: weapon.blueprint_id,
+                skin: weapon.weapon_skin
+                    ? {
+                          type: "skin",
+                          static_id: weapon.weapon_skin.blueprint_id,
+                      }
+                    : undefined,
+            } as SiloObject
+            if (wu.inherit_skin) {
+                if (mechDetails.changed_mech_skin?.mech_skin.blueprint_weapon_skin_id) {
+                    obj.skin = {
+                        type: "skin",
+                        static_id: mechDetails.changed_mech_skin?.mech_skin.blueprint_weapon_skin_id,
+                    }
+                } else if (mechDetails.chassis_skin?.blueprint_weapon_skin_id) {
+                    obj.skin = {
+                        type: "skin",
+                        static_id: mechDetails.chassis_skin.blueprint_weapon_skin_id,
+                    }
+                }
+            }
+            console.info(obj)
+            sendMessage("SceneContext", "SetSlotIndexToChange", wu.slot_number)
+            sendMessage("SceneContext", "ChangeSlotValue", JSON.stringify(obj))
+        }
+        setIsPendingChange(true)
+    }
+
     useImperativeHandle(unity.unityRef, () => ({
         handleUnload: () => {
             if (showClickToLoadOverlay || !isLoaded || !siloReady)
@@ -89,42 +126,7 @@ export const UnityViewer = ({ mechDetailsWithMaps, unity }: MechViewer3DProps) =
                 })
             return unload()
         },
-        handleWeaponUpdate: (wu: LoadoutWeapon) => {
-            const weapon = wu.weapon
-            if (wu.unequip) {
-                console.log("cleared", wu.slot_number)
-                sendMessage("SceneContext", "ClearSelectedSlots", `[${wu.slot_number}]`)
-            } else if (weapon) {
-                const obj = {
-                    type: "weapon",
-                    ownership_id: weapon.id,
-                    static_id: weapon.blueprint_id,
-                    skin: weapon.weapon_skin
-                        ? {
-                              type: "skin",
-                              static_id: weapon.weapon_skin.blueprint_id,
-                          }
-                        : undefined,
-                } as SiloObject
-                if (wu.inherit_skin) {
-                    if (mechDetailsWithMaps.changed_mech_skin?.mech_skin.blueprint_weapon_skin_id) {
-                        obj.skin = {
-                            type: "skin",
-                            static_id: mechDetailsWithMaps.changed_mech_skin?.mech_skin.blueprint_weapon_skin_id,
-                        }
-                    } else if (mechDetailsWithMaps.chassis_skin?.blueprint_weapon_skin_id) {
-                        obj.skin = {
-                            type: "skin",
-                            static_id: mechDetailsWithMaps.chassis_skin.blueprint_weapon_skin_id,
-                        }
-                    }
-                }
-                console.info(obj)
-                sendMessage("SceneContext", "SetSlotIndexToChange", wu.slot_number)
-                sendMessage("SceneContext", "ChangeSlotValue", JSON.stringify(obj))
-            }
-            setIsPendingChange(true)
-        },
+        handleWeaponUpdate: updateWeapon,
         handlePowerCoreUpdate: (pcu: LoadoutPowerCore) => {
             if (!pcu.power_core) return
             const powerCore = pcu.power_core
@@ -146,6 +148,18 @@ export const UnityViewer = ({ mechDetailsWithMaps, unity }: MechViewer3DProps) =
             console.info(obj)
             sendMessage("SceneContext", "ChangeMechSkin", JSON.stringify(obj))
             setIsPendingChange(true)
+
+            // Update weapon skins
+            for (let weaponSlotNumber = 0; weaponSlotNumber < mechDetails.weapon_hardpoints; weaponSlotNumber++) {
+                const w = mechDetails.changed_weapons_map.get(weaponSlotNumber)?.weapon || mechDetails.weapons_map.get(weaponSlotNumber)
+                if (!w || !w.inherit_skin) continue
+                updateWeapon({
+                    slot_number: weaponSlotNumber,
+                    weapon_id: w.id,
+                    weapon: w,
+                    inherit_skin: true,
+                })
+            }
         },
     }))
 
@@ -248,14 +262,14 @@ export const UnityViewer = ({ mechDetailsWithMaps, unity }: MechViewer3DProps) =
         if (showClickToLoadOverlay || !isLoaded || !siloReady || sent.current) return
 
         const accessories: SiloObject[] = []
-        for (let i = 0; i < mechDetailsWithMaps.weapon_hardpoints; i++) {
+        for (let i = 0; i < mechDetails.weapon_hardpoints; i++) {
             accessories.push({
                 type: "weapon",
             })
         }
-        for (let slot_number = 0; slot_number < mechDetailsWithMaps.weapon_hardpoints; slot_number++) {
-            if (mechDetailsWithMaps.changed_weapons_map.get(slot_number)?.unequip) return
-            const weapon = mechDetailsWithMaps.changed_weapons_map.get(slot_number)?.weapon || mechDetailsWithMaps.weapons_map.get(slot_number)
+        for (let slot_number = 0; slot_number < mechDetails.weapon_hardpoints; slot_number++) {
+            if (mechDetails.changed_weapons_map.get(slot_number)?.unequip) return
+            const weapon = mechDetails.changed_weapons_map.get(slot_number)?.weapon || mechDetails.weapons_map.get(slot_number)
             if (!weapon) continue
 
             accessories[slot_number] = {
@@ -269,10 +283,10 @@ export const UnityViewer = ({ mechDetailsWithMaps, unity }: MechViewer3DProps) =
                       }
                     : undefined,
             }
-            if (weapon.inherit_skin && mechDetailsWithMaps.chassis_skin?.blueprint_weapon_skin_id) {
+            if (weapon.inherit_skin && mechDetails.chassis_skin?.blueprint_weapon_skin_id) {
                 accessories[slot_number].skin = {
                     type: "skin",
-                    static_id: mechDetailsWithMaps.chassis_skin.blueprint_weapon_skin_id,
+                    static_id: mechDetails.chassis_skin.blueprint_weapon_skin_id,
                 }
             }
         }
@@ -298,8 +312,8 @@ export const UnityViewer = ({ mechDetailsWithMaps, unity }: MechViewer3DProps) =
         accessories.push({
             type: "power_core",
         })
-        if (!mechDetailsWithMaps.changed_power_core?.unequip) {
-            const powerCore = mechDetailsWithMaps.changed_power_core?.power_core || mechDetailsWithMaps.power_core
+        if (!mechDetails.changed_power_core?.unequip) {
+            const powerCore = mechDetails.changed_power_core?.power_core || mechDetails.power_core
             if (powerCore) {
                 accessories[accessories.length - 1] = {
                     type: "power_core",
@@ -311,11 +325,11 @@ export const UnityViewer = ({ mechDetailsWithMaps, unity }: MechViewer3DProps) =
 
         const mech: SiloType = {
             type: "mech",
-            ownership_id: mechDetailsWithMaps.id,
-            static_id: mechDetailsWithMaps.blueprint_id,
+            ownership_id: mechDetails.id,
+            static_id: mechDetails.blueprint_id,
             accessories,
         }
-        const mechSkin = mechDetailsWithMaps.changed_mech_skin?.mech_skin || mechDetailsWithMaps.chassis_skin
+        const mechSkin = mechDetails.changed_mech_skin?.mech_skin || mechDetails.chassis_skin
         if (mechSkin) {
             mech.skin = {
                 type: "skin",
@@ -325,24 +339,24 @@ export const UnityViewer = ({ mechDetailsWithMaps, unity }: MechViewer3DProps) =
         }
         console.info(mech)
         const inventory: HangarSilo = {
-            faction: mechDetailsWithMaps.faction_id,
+            faction: mechDetails.faction_id,
         }
         sendMessage("ProjectContext(Clone)", "GetPlayerInventoryFromPage", JSON.stringify(inventory))
         sendMessage("ProjectContext(Clone)", "FittingRoom", JSON.stringify(mech))
         sent.current = true
     }, [
         isLoaded,
-        mechDetailsWithMaps.blueprint_id,
-        mechDetailsWithMaps.changed_mech_skin?.mech_skin,
-        mechDetailsWithMaps.changed_power_core?.power_core,
-        mechDetailsWithMaps.changed_power_core?.unequip,
-        mechDetailsWithMaps.changed_weapons_map,
-        mechDetailsWithMaps.chassis_skin,
-        mechDetailsWithMaps.faction_id,
-        mechDetailsWithMaps.id,
-        mechDetailsWithMaps.power_core,
-        mechDetailsWithMaps.weapon_hardpoints,
-        mechDetailsWithMaps.weapons_map,
+        mechDetails.blueprint_id,
+        mechDetails.changed_mech_skin?.mech_skin,
+        mechDetails.changed_power_core?.power_core,
+        mechDetails.changed_power_core?.unequip,
+        mechDetails.changed_weapons_map,
+        mechDetails.chassis_skin,
+        mechDetails.faction_id,
+        mechDetails.id,
+        mechDetails.power_core,
+        mechDetails.weapon_hardpoints,
+        mechDetails.weapons_map,
         sendMessage,
         showClickToLoadOverlay,
         siloReady,
