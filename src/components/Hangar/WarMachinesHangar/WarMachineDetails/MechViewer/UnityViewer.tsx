@@ -5,6 +5,7 @@ import { DEV_ONLY, WEBGL_BASE_URL } from "../../../../../constants"
 import { useTheme } from "../../../../../containers/theme"
 import { pulseEffect } from "../../../../../theme/keyframes"
 import { colors, fonts } from "../../../../../theme/theme"
+import { MechSkin } from "../../../../../types"
 import { ClipThing } from "../../../../Common/ClipThing"
 import { LoadoutMechSkin, LoadoutPowerCore, LoadoutWeapon } from "../MechLoadout/MechLoadout"
 import { MechViewer3DProps } from "./MechViewer3D"
@@ -78,8 +79,7 @@ export const UnityViewer = ({ mechDetailsWithMaps: mechDetails, unity }: MechVie
     const [showLoader, setShowLoader] = useState(true)
     const [isPendingChange, setIsPendingChange] = useState(false)
     const [showClickToLoadOverlay, setShowClickToLoadOverlay] = useState(true)
-
-    // todo: unload unity viewer when this bug is fixed https://react-unity-webgl.dev/docs/api/unload
+    const pendingMechSkin = useRef<MechSkin>()
 
     useImperativeHandle(unity.unityRef, () => ({
         handleUnload: () => {
@@ -145,31 +145,10 @@ export const UnityViewer = ({ mechDetailsWithMaps: mechDetails, unity }: MechVie
             } as SiloObject
             console.info("update", obj)
             sendMessage("SceneContext", "ChangeMechSkin", JSON.stringify(obj))
-
-            // Update weapon skins
-            for (let weaponSlotNumber = 0; weaponSlotNumber < mechDetails.weapon_hardpoints; weaponSlotNumber++) {
-                const w = mechDetails.changed_weapons_map.get(weaponSlotNumber)?.weapon || mechDetails.weapons_map.get(weaponSlotNumber)
-                if (!w || !w.inherit_skin || !msu.mech_skin.blueprint_weapon_skin_id) continue
-                const obj = {
-                    type: "weapon",
-                    ownership_id: w.id,
-                    static_id: w.blueprint_id,
-                    skin: w.weapon_skin
-                        ? {
-                              type: "skin",
-                              static_id: w.weapon_skin.blueprint_id,
-                          }
-                        : undefined,
-                } as SiloObject
-                obj.skin = {
-                    type: "skin",
-                    static_id: msu.mech_skin.blueprint_weapon_skin_id,
-                }
-                console.info("update skin", obj)
-                sendMessage("SceneContext", "SetSlotIndexToChange", weaponSlotNumber)
-                sendMessage("SceneContext", "ChangeSlotValue", JSON.stringify(obj))
-            }
             setIsPendingChange(true)
+
+            // Use this to update weapon inherited skins at some point
+            pendingMechSkin.current = msu.mech_skin
         },
     }))
 
@@ -179,6 +158,37 @@ export const UnityViewer = ({ mechDetailsWithMaps: mechDetails, unity }: MechVie
             unload()
         }
     }, [unload])
+
+    // Update weapon inherited skins
+    useEffect(() => {
+        if (isPendingChange || !pendingMechSkin.current) return
+        const mechSkin = pendingMechSkin.current
+        // Update weapon skins
+        for (let weaponSlotNumber = 0; weaponSlotNumber < mechDetails.weapon_hardpoints; weaponSlotNumber++) {
+            const w = mechDetails.changed_weapons_map.get(weaponSlotNumber)?.weapon || mechDetails.weapons_map.get(weaponSlotNumber)
+            if (!w || !w.inherit_skin || !mechSkin.blueprint_weapon_skin_id) continue
+            const obj = {
+                type: "weapon",
+                ownership_id: w.id,
+                static_id: w.blueprint_id,
+                skin: w.weapon_skin
+                    ? {
+                          type: "skin",
+                          static_id: w.weapon_skin.blueprint_id,
+                      }
+                    : undefined,
+            } as SiloObject
+            obj.skin = {
+                type: "skin",
+                static_id: mechSkin.blueprint_weapon_skin_id,
+            }
+            console.info("update skin", obj)
+            sendMessage("SceneContext", "SetSlotIndexToChange", weaponSlotNumber)
+            sendMessage("SceneContext", "ChangeSlotValue", JSON.stringify(obj))
+        }
+        pendingMechSkin.current = undefined
+        setIsPendingChange(true)
+    }, [isPendingChange, mechDetails.changed_weapons_map, mechDetails.weapon_hardpoints, mechDetails.weapons_map, sendMessage])
 
     // Check if hangar is ready, finished loading, user has clicked etc.
     const isEverythingReady = useMemo(
