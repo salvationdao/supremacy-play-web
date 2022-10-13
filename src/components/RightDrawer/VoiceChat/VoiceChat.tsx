@@ -2,7 +2,7 @@ import { Box, IconButton, Popover, Slider, Stack, Typography } from "@mui/materi
 import OvenPlayer from "ovenplayer"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { SvgVoice, SvgVolume, SvgVolumeMute } from "../../../assets"
-import { useArena, useAuth, useGlobalNotifications, useSupremacy } from "../../../containers"
+import { useArena, useAuth, useChat, useGlobalNotifications, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { acronym, shadeColor } from "../../../helpers"
 import { useToggle } from "../../../hooks"
@@ -86,24 +86,18 @@ export const VoiceChat = () => {
         },
     )
 
-    useGameServerSubscriptionSecuredUser<VoiceStream[]>(
+    useGameServerSubscriptionSecuredUser<User[]>(
         {
             URI: `/arena/${currentArenaID}/listeners`,
             key: GameServerKeys.SubPlayerVoiceStreamListeners,
             ready: !!(currentArenaID && factionID),
         },
-        (payload: VoiceStream[]) => {
+        (payload: User[]) => {
+            console.log("this be listeners", payload)
+
             if (payload) {
-                console.log("this be listeners", payload)
-
-                // // put faction commander on top
-                // const sorted = payload.sort((x, y) => Number(y.is_faction_commander) - Number(x.is_faction_commander))
-                // const factionCommander = payload.filter((v) => v.is_faction_commander)
-                // setVoiceStreams(sorted)
-                // setHasFactionCommander(!!(factionCommander && factionCommander.length > 0))
-
-                // if (!connected) return
-                // onConnect(sorted, false)
+                // set listeners
+                setListeners(payload)
             }
         },
     )
@@ -129,19 +123,34 @@ export const VoiceChat = () => {
 
     const joinListeners = useCallback(async () => {
         try {
-            const resp = await send<{ success: boolean }>(GameServerKeys.LeaveFactionCommander, {
+            const resp = await send<{ success: boolean }>(GameServerKeys.VoiceChatConnect, {
                 arena_id: currentArenaID,
             })
 
             if (!resp) {
-                newSnackbarMessage("Failed to leave as faction commmander", "error")
+                newSnackbarMessage("Failed to join listeners", "error")
+                return
+            }
+        } catch (e) {
+            const message = typeof e === "string" ? e : "Failed to join listeners"
+            newSnackbarMessage(message, "error")
+        }
+    }, [currentArenaID, newSnackbarMessage, send])
+
+    const leaveListeners = useCallback(async () => {
+        try {
+            const resp = await send<{ success: boolean }>(GameServerKeys.VoiceChatDisconnect, {
+                arena_id: currentArenaID,
+            })
+
+            if (!resp) {
+                newSnackbarMessage("Failed to leave listeners", "error")
                 return
             }
 
-            stopStream()
-            newSnackbarMessage("Successfully left as faction commander", "success")
+            newSnackbarMessage("Listening", "success")
         } catch (e) {
-            const message = typeof e === "string" ? e : "Failed to leave as faction commmander"
+            const message = typeof e === "string" ? e : "Failed to leave listeners"
             newSnackbarMessage(message, "error")
         }
     }, [currentArenaID, newSnackbarMessage, send])
@@ -268,6 +277,8 @@ export const VoiceChat = () => {
                 playSound(ConnectSound)
             }
             setConnected(true)
+
+            joinListeners()
         },
         [listen, startStream],
     )
@@ -286,6 +297,7 @@ export const VoiceChat = () => {
             })
         }
 
+        leaveListeners()
         // play sound here: disconnect
         playSound(DisconnectSound)
         setConnected(false)
@@ -331,9 +343,7 @@ export const VoiceChat = () => {
             </FancyButton>
 
             <Popover
-                sx={{
-                    zIndex: 400,
-                }}
+                sx={{ zIndex: 400 }}
                 id={"voice-chat"}
                 open={open}
                 onClose={() => setOpen(false)}
@@ -348,24 +358,25 @@ export const VoiceChat = () => {
                 }}
             >
                 <Box sx={{ width: "50rem", height: "55rem" }}>
-                    {
-                        <VoiceChatInner
-                            hasFactionCommander={hasFactionCommander}
-                            connected={connected}
-                            onDisconnect={onDisconnect}
-                            onMuteMic={onMuteMic}
-                            faction={getFaction(user.faction_id)}
-                            voiceStreams={voiceStreams || []}
-                            onConnect={() => onConnect(voiceStreams || [], true)}
-                            onJoinFactionCommander={joinFactionCommander}
-                            onLeaveFactionCommander={() => {
-                                leaveFactionCommander()
-                                onDisconnect()
-                            }}
-                            onVoteKick={voteKick}
-                            user={user}
-                        />
-                    }
+                    <VoiceChatInner
+                        user={user}
+                        faction={getFaction(user.faction_id)}
+                        hasFactionCommander={hasFactionCommander}
+                        voiceStreams={voiceStreams || []}
+                        listeners={listeners || []}
+                        connected={connected}
+                        onConnect={() => onConnect(voiceStreams || [], true)}
+                        onDisconnect={onDisconnect}
+                        onMuteMic={onMuteMic}
+                        joinListeners={joinListeners}
+                        leaveListeners={leaveListeners}
+                        onJoinFactionCommander={joinFactionCommander}
+                        onLeaveFactionCommander={() => {
+                            leaveFactionCommander()
+                            onDisconnect()
+                        }}
+                        onVoteKick={voteKick}
+                    />
                 </Box>
             </Popover>
 
@@ -387,31 +398,35 @@ export const VoiceChat = () => {
 export const VoiceChatInner = ({
     user,
     faction,
+    hasFactionCommander,
+    voiceStreams,
+    listeners,
+    connected,
+
     onConnect,
     onDisconnect,
+    // onMuteMic,
+    joinListeners,
+    leaveListeners,
     onJoinFactionCommander,
     onLeaveFactionCommander,
     onVoteKick,
-    connected,
-    voiceStreams,
-    // onMuteMic,
-
-    hasFactionCommander,
 }: {
+    user: User
+    faction: Faction
+    hasFactionCommander: boolean
+    voiceStreams: VoiceStream[]
+    listeners: User[]
+    connected: boolean
+
     onConnect: () => void
     onDisconnect: () => void
+    onMuteMic: () => void
+    joinListeners: () => void
+    leaveListeners: () => void
     onJoinFactionCommander: () => void
     onLeaveFactionCommander: () => void
     onVoteKick: () => void
-
-    onMuteMic: () => void
-
-    connected: boolean
-    voiceStreams: VoiceStream[]
-    hasFactionCommander: boolean
-
-    user: User
-    faction: Faction
 }) => {
     const theme = useTheme()
     const bannerColor = useMemo(() => shadeColor(theme.factionTheme.primary, -70), [theme.factionTheme.primary])
@@ -419,6 +434,24 @@ export const VoiceChatInner = ({
         const arr = voiceStreams.filter((l) => !!l.send_url && l.user_gid == user.gid)
         return arr && arr.length > 0
     }, [voiceStreams, user.gid])
+
+    const renderListeners = useMemo(() => {
+        const arr: User[] = []
+        const vsIDs = voiceStreams.map((vs) => vs.user_gid)
+
+        listeners.forEach((t) => {
+            if (!vsIDs.includes(t.gid)) {
+                arr.push(t)
+            }
+        })
+
+        return (
+            arr &&
+            arr.map((s, idx) => {
+                return <ListenerItem player={s} faction={faction} key={idx} />
+            })
+        )
+    }, [listeners, voiceStreams])
 
     return (
         <Stack direction="row" width="100%" height="100%">
@@ -524,7 +557,15 @@ export const VoiceChatInner = ({
                         <Box sx={{ left: 0, top: 0, height: "100%", width: "100%", background: "#000", opacity: 0.6, position: "absolute", zIndex: 2 }}></Box>
                     )}
 
-                    <Box>
+                    {/* speakers */}
+                    <Box
+                        sx={{
+                            background: `linear-gradient(${bannerColor} 26%, ${bannerColor}95)`,
+                        }}
+                    >
+                        <Typography fontWeight="bold" p="1.2rem" pb="0" variant="h6">
+                            FACTION COMMANDER & MECH OPERATORS
+                        </Typography>
                         {!hasFactionCommander && <FactionCommanderJoinButton onJoinFactionCommander={onJoinFactionCommander} />}
                         {voiceStreams &&
                             voiceStreams.map((s, idx) => {
@@ -540,6 +581,23 @@ export const VoiceChatInner = ({
                                     />
                                 )
                             })}
+                    </Box>
+
+                    {/* listeners */}
+                    <Box
+                        sx={{
+                            background: `linear-gradient(${bannerColor} 26%, ${bannerColor}95)`,
+                            mt: "2rem",
+                        }}
+                    >
+                        <Typography fontWeight="bold" p="1.2rem" pb="0" variant="h6">
+                            LISTENERS
+                        </Typography>
+                        {/* {listeners &&
+                            listeners.map((s, idx) => {
+                                return <ListenerItem player={s} faction={faction} key={idx} />
+                            })} */}
+                        {renderListeners}
                     </Box>
                 </Box>
 
@@ -777,6 +835,42 @@ const PlayerItem = ({
     )
 }
 
+const ListenerItem = ({ player, faction }: { player: User; faction: Faction }) => {
+    const theme = useTheme()
+    const bannerColor = useMemo(() => shadeColor(theme.factionTheme.primary, -70), [theme.factionTheme.primary])
+
+    return (
+        <>
+            <Box
+                mt="1rem"
+                sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    p: "1.2rem",
+
+                    background: `linear-gradient(${bannerColor} 26%, ${bannerColor}95)`,
+                }}
+            >
+                <Box width="90%" display="flex" alignItems="center">
+                    <StyledImageText
+                        key={player.gid}
+                        text={
+                            <>
+                                {`${player.username}`}
+                                <span style={{ marginLeft: ".2rem", opacity: 0.8 }}>{`#${player.gid}`}</span>
+                            </>
+                        }
+                        color="#FFF"
+                        imageUrl={faction.logo_url}
+                        {...StyledImageText}
+                    />
+                </Box>
+            </Box>
+        </>
+    )
+}
+
 const FactionCommanderJoinButton = ({ onJoinFactionCommander }: { onJoinFactionCommander: () => void }) => {
     const theme = useTheme()
     const bannerColor = useMemo(() => shadeColor(theme.factionTheme.primary, -70), [theme.factionTheme.primary])
@@ -796,7 +890,7 @@ const FactionCommanderJoinButton = ({ onJoinFactionCommander }: { onJoinFactionC
                 }}
             >
                 <Stack width="100%" direction={"row"} justifyContent="space-between" alignItems="center">
-                    <Typography sx={{ textTransfrom: "uppercase" }}>NO FACTION COMMANDER</Typography>
+                    <Typography sx={{ textTransfrom: "uppercase" }}>FACTION COMMANDER VACANT</Typography>
 
                     <FancyButton
                         clipThingsProps={{
