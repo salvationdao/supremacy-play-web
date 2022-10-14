@@ -144,13 +144,11 @@ export const VoiceChat = () => {
             })
 
             if (!resp) {
-                newSnackbarMessage("Failed to leave listeners", "error")
+                newSnackbarMessage("Failed to leave", "error")
                 return
             }
-
-            newSnackbarMessage("Listening", "success")
         } catch (e) {
-            const message = typeof e === "string" ? e : "Failed to leave listeners"
+            const message = typeof e === "string" ? e : "Failed to leave"
             newSnackbarMessage(message, "error")
         }
     }, [currentArenaID, newSnackbarMessage, send])
@@ -440,7 +438,7 @@ export const VoiceChatInner = ({
         const vsIDs = voiceStreams.map((vs) => vs.user_gid)
 
         listeners.forEach((t) => {
-            if (!vsIDs.includes(t.gid)) {
+            if (!vsIDs.includes(t.gid) && t.faction_id == user.faction_id) {
                 arr.push(t)
             }
         })
