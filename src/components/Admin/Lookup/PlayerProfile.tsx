@@ -87,6 +87,7 @@ export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: 
         (newGid: number) => {
             ;(async () => {
                 try {
+                    setIsLoading(true)
                     const resp = await send<GetUserResp, { gid: number }>(GameServerKeys.ModGetUser, {
                         gid: newGid,
                     })
@@ -97,13 +98,15 @@ export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: 
                 } catch (e) {
                     setLoadError(typeof e === "string" ? e : "Failed to get player data.")
                     console.error(e)
+                } finally {
+                    setIsLoading(false)
                 }
             })()
         },
-        [getFaction, send],
+        [getFaction, send, setIsLoading],
     )
 
-    if (!userData)
+    if (isLoading || loadError !== "" || !userData) {
         return (
             <Box sx={{ height: "100%" }}>
                 {isLoading && loadError === "" && (
@@ -120,7 +123,7 @@ export const PlayerProfile = ({ gid, updateQuery }: { gid: number; updateQuery: 
                 )}
             </Box>
         )
-
+    }
     return (
         <PlayerProfileInner
             userData={userData}
@@ -178,10 +181,8 @@ const PlayerProfileInner = ({
     toggleSelected: (playerBan: AdminPlayerBan) => void
     toggleAll: () => void
 }) => {
-    const theme = useTheme()
-
     const content = useMemo(() => {
-        if (loadError !== "") {
+        if (loadError !== "" && !userData) {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack
@@ -267,36 +268,14 @@ const PlayerProfileInner = ({
                         </Stack>
 
                         {userData.active_ban ? (
-                            <Box
-                                sx={{
-                                    flex: 1,
-                                    overflowY: "auto",
-                                    overflowX: "hidden",
-                                    direction: "ltr",
-                                    mr: ".4rem",
-                                    my: ".3rem",
-                                    "::-webkit-scrollbar": {
-                                        width: ".4rem",
-                                    },
-                                    "::-webkit-scrollbar-track": {
-                                        background: "#FFFFFF15",
-                                        borderRadius: 3,
-                                    },
-                                    "::-webkit-scrollbar-thumb": {
-                                        background: faction.primary_color,
-                                        borderRadius: 3,
-                                    },
-                                }}
-                            >
-                                <Stack sx={{ height: 0 }} flexWrap={"wrap"} direction={"row"}>
-                                    <ActiveBanPanel
-                                        faction={faction}
-                                        playerBans={userData.active_ban}
-                                        playerUnBanIDs={playerUnbanIDs}
-                                        toggleSelected={toggleSelected}
-                                    />
-                                </Stack>
-                            </Box>
+                            <Stack sx={{ height: 0 }} flexWrap={"wrap"} direction={"row"}>
+                                <ActiveBanPanel
+                                    faction={faction}
+                                    playerBans={userData.active_ban}
+                                    playerUnBanIDs={playerUnbanIDs}
+                                    toggleSelected={toggleSelected}
+                                />
+                            </Stack>
                         ) : (
                             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                                 <Typography>No Active Bans</Typography>
@@ -306,31 +285,9 @@ const PlayerProfileInner = ({
 
                     <PlayerProfileCard faction={faction} title="Recent Ban History" sx={{ flex: "2" }}>
                         {userData.ban_history ? (
-                            <Box
-                                sx={{
-                                    flex: 1,
-                                    overflowY: "auto",
-                                    overflowX: "hidden",
-                                    direction: "ltr",
-                                    mr: ".4rem",
-                                    my: ".3rem",
-                                    "::-webkit-scrollbar": {
-                                        width: ".4rem",
-                                    },
-                                    "::-webkit-scrollbar-track": {
-                                        background: "#FFFFFF15",
-                                        borderRadius: 3,
-                                    },
-                                    "::-webkit-scrollbar-thumb": {
-                                        background: faction.primary_color,
-                                        borderRadius: 3,
-                                    },
-                                }}
-                            >
-                                <Stack sx={{ height: 0 }} flexWrap={"wrap"} direction={"row"}>
-                                    <BanHistoryPanel faction={faction} playerBans={userData.ban_history} />
-                                </Stack>
-                            </Box>
+                            <Stack sx={{ height: 0 }} flexWrap={"wrap"} direction={"row"}>
+                                <BanHistoryPanel faction={faction} playerBans={userData.ban_history} />
+                            </Stack>
                         ) : (
                             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                                 <Typography>No Recent Ban History</Typography>
@@ -341,7 +298,6 @@ const PlayerProfileInner = ({
             </Stack>
         )
     }, [
-        isLoading,
         loadError,
         faction,
         userData.related_accounts,
@@ -353,7 +309,6 @@ const PlayerProfileInner = ({
         playerUnbanIDs,
         toggleSelected,
         setUnbanModalOpen,
-        theme.factionTheme.primary,
         toggleAll,
     ])
 
@@ -448,7 +403,7 @@ const PlayerProfileInner = ({
                             {userData.user_assets ? (
                                 <AdminUserAsset userAsset={userData.user_assets} faction={faction} />
                             ) : (
-                                <Stack alignItems="center" justifyContent="center" sx={{ height: "50rem" }}>
+                                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                                     <Typography>User Has No Assets</Typography>
                                 </Stack>
                             )}

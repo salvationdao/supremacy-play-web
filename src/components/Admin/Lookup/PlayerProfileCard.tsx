@@ -43,7 +43,7 @@ export const PlayerProfileCard = ({
                 >
                     {title}
                 </Typography>
-                <Stack sx={{ flex: 1 }}>{children}</Stack>
+                <Stack sx={{ height: "100%" }}>{children}</Stack>
             </Stack>
         </ClipThing>
     )
