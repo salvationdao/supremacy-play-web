@@ -56,6 +56,7 @@ export const NavLinksDrawer = () => {
                     </Stack>
 
                     {ROUTES_ARRAY.map((r) => {
+                        if (r.id === "admin") return null
                         if (!r.enable || !r.navLink) return null
                         const { requireAuth, requireFaction } = r
                         const { enable, label } = r.navLink
