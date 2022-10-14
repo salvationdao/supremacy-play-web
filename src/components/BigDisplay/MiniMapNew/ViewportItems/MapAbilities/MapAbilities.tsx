@@ -4,7 +4,7 @@ import { BinaryDataKey, useGameServerSubscription } from "../../../../../hooks/u
 import { DisplayedAbility, LocationSelectType, MechDisplayEffectType, MiniMapDisplayEffectType } from "../../../../../types"
 import { HiveStatus } from "../HiveStatus/HiveStatus"
 import { PixiMapAbilities } from "./pixiMapAbilities"
-import { abilityEffectParser } from "../../../../../helpers/binaryDataParsers/abilityEffectParser"
+import { GameServerKeys } from "../../../../../keys"
 
 export enum MapEventType {
     // Airstrike Explosions - The locations of airstrike missile impacts.
@@ -80,8 +80,7 @@ export const MapAbilities = React.memo(function MapAbilities() {
     useGameServerSubscription<DisplayedAbility[]>(
         {
             URI: `/mini_map/arena/${currentArenaID}/public/mini_map_ability_display_list`,
-            binaryKey: BinaryDataKey.MiniMapAbilityContents,
-            binaryParser: abilityEffectParser,
+            key: GameServerKeys.SubMiniMapAbilityContentSubscribe,
             ready: !!currentArenaID,
         },
         (payload) => {

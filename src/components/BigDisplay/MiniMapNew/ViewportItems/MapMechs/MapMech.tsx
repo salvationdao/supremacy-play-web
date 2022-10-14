@@ -3,9 +3,8 @@ import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../../../../constants"
 import { MapSelection, useArena, useAuth, useGame, useMiniMapPixi, useSupremacy, WinnerStruct } from "../../../../../containers"
 import { RecordType, useHotkey } from "../../../../../containers/hotkeys"
 import { closestAngle, deg2rad } from "../../../../../helpers"
-import { abilityEffectParser } from "../../../../../helpers/binaryDataParsers/abilityEffectParser"
 import { warMachineStatsBinaryParser } from "../../../../../helpers/binaryDataParsers/warMachineStatsParser"
-import { BinaryDataKey, useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
+import { BinaryDataKey, useGameServerSubscription } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors } from "../../../../../theme/theme"
 import {
@@ -20,7 +19,6 @@ import {
     WarMachineState,
 } from "../../../../../types"
 import { PixiMapMech } from "./pixiMapMech"
-import { mechMoveCommandParser } from "../../../../../helpers/binaryDataParsers/mechMoveCommandParser"
 
 interface MapMechProps {
     warMachine: WarMachineState
@@ -360,8 +358,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     useGameServerSubscription<MechMoveCommand>(
         {
             URI: `/mini_map/arena/${currentArenaID}/faction/${factionID}/mech_command/${hash}`,
-            binaryKey: BinaryDataKey.MechCommandIndividual,
-            binaryParser: mechMoveCommandParser,
+            key: GameServerKeys.SubMechCommandUpdateSubscribe,
             ready: !!userID && !!factionID && factionID === warMachineFactionID && !!participantID && !!currentArenaID,
         },
         (payload) => {
@@ -378,8 +375,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     useGameServerSubscription<DisplayedAbility[]>(
         {
             URI: `/mini_map/arena/${currentArenaID}/public/mini_map_ability_display_list`,
-            binaryKey: BinaryDataKey.MiniMapAbilityContents,
-            binaryParser: abilityEffectParser,
+            key: GameServerKeys.SubMiniMapAbilityContentSubscribe,
             ready: !!currentArenaID,
         },
         (payload) => {

@@ -27,7 +27,10 @@ export enum GameServerKeys {
     TriggerWarMachineAbility = "WAR:MACHINE:ABILITY:TRIGGER",
     SubmitAbilityLocationSelect = "ABILITY:LOCATION:SELECT",
 
-    SubMechCommands = "MECH:COMMANDS:SUBSCRIBE",
+    SubMiniMapAbilityContentSubscribe = "MINI:MAP:ABILITY:CONTENT",
+    SubMechCommandUpdateSubscribe = "MECH:COMMAND:UPDATE",
+    SubFactionMechCommandUpdateSubscribe = "FACTION:MECH:COMMANDS:UPDATE",
+    SubMiniMapUpdateSubscribe = "MINI:MAP:UPDATE",
 
     // Game Use
     GameUserOnline = "GAME:ONLINE",

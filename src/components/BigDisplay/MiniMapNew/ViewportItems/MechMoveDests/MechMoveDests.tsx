@@ -1,8 +1,8 @@
 import { useState } from "react"
 import { useArena, useAuth } from "../../../../../containers"
-import { BinaryDataKey, useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
+import { useGameServerSubscription } from "../../../../../hooks/useGameServer"
 import { MechMoveDest } from "./MechMoveDest"
-import { factionMechCommandParser } from "../../../../../helpers/binaryDataParsers/factionMechCommandParser"
+import { GameServerKeys } from "../../../../../keys"
 
 export interface FactionMechCommand {
     id: string
@@ -21,8 +21,7 @@ export const MechMoveDests = () => {
     useGameServerSubscription<FactionMechCommand[]>(
         {
             URI: `/mini_map/arena/${currentArenaID}/faction/${factionID}/mech_commands`,
-            binaryKey: BinaryDataKey.MechCommandMap,
-            binaryParser: factionMechCommandParser,
+            key: GameServerKeys.SubFactionMechCommandUpdateSubscribe,
             ready: !!userID && !!factionID && !!currentArenaID,
         },
         (payload) => {
