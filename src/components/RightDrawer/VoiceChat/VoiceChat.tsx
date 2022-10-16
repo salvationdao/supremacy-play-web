@@ -278,7 +278,7 @@ export const VoiceChat = () => {
 
             joinListeners()
         },
-        [listen, startStream],
+        [listen, startStream, joinListeners],
     )
     const onDisconnect = () => {
         stopStream()
@@ -591,10 +591,6 @@ export const VoiceChatInner = ({
                         <Typography fontWeight="bold" p="1.2rem" pb="0" variant="h6">
                             LISTENERS
                         </Typography>
-                        {/* {listeners &&
-                            listeners.map((s, idx) => {
-                                return <ListenerItem player={s} faction={faction} key={idx} />
-                            })} */}
                         {renderListeners}
                     </Box>
                 </Box>
