@@ -15,6 +15,7 @@ import { FancyButton } from "../../Common/FancyButton"
 import { PageHeader } from "../../Common/PageHeader"
 import { ActiveBanPanel } from "./ActiveBanPanel"
 import { AdminBanModal } from "./AdminBanModal"
+import { LookupSearchBox } from "./AdminLookup"
 import { AdminUnbanModal } from "./AdminUnbanModal"
 import { AdminUserAsset } from "./AdminUserAsset"
 import { BanHistoryPanel } from "./BanHistoryPanel"
@@ -89,7 +90,27 @@ const PreviousUsers = () => {
                 height: "100%",
             }}
         >
-            <Box />
+            <Typography
+                variant="h6"
+                sx={{
+                    fontFamily: fonts.nostromoBlack,
+                    p: "1rem",
+                    width: "100%",
+                    textAlign: "center",
+                    color: theme.factionTheme.secondary,
+                    background: theme.factionTheme.primary,
+                }}
+            >
+                PLAYER LOOKUP
+            </Typography>
+            <Box
+                sx={{
+                    p: "1rem",
+                    borderBottom: `${theme.factionTheme.primary}70 1.5px solid`,
+                }}
+            >
+                <LookupSearchBox />
+            </Box>
         </ClipThing>
     )
 }
@@ -246,7 +267,7 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
                         </FancyButton>
                     </Stack>
                 </PageHeader>
-                <Box sx={{ borderBottom: `${theme.factionTheme.primary}70 1.5px solid` }}>
+                <Box sx={{ borderBottom: `${faction.primary_color}70 1.5px solid` }}>
                     <Tabs
                         value={currentValue}
                         onChange={handleChange}
@@ -254,12 +275,12 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
                         scrollButtons="auto"
                         sx={{
                             flexShrink: 0,
-                            color: theme.factionTheme.primary,
+                            color: faction.primary_color,
                             minHeight: 0,
                             ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "5rem", width: "20rem" },
                             ".Mui-selected": {
-                                color: `${theme.factionTheme.secondary} !important`,
-                                background: `linear-gradient(${theme.factionTheme.primary} 26%, ${theme.factionTheme.primary}BB)`,
+                                color: `${faction.secondary_color} !important`,
+                                background: `linear-gradient(${faction.primary_color} 26%, ${faction.primary_color}BB)`,
                             },
                             ".MuiTabs-indicator": { display: "none" },
                             ".MuiTabScrollButton-root": { display: "none" },
@@ -285,7 +306,7 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
                             background: "#FFFFFF15",
                         },
                         "::-webkit-scrollbar-thumb": {
-                            background: (theme) => theme.factionTheme.primary,
+                            background: "#FFFFFF15",
                         },
                     }}
                 >
@@ -304,7 +325,7 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
                                 {/* RELATED ACCOUNTS */}
                                 <PlayerProfileCard faction={faction} title="Related Accounts">
                                     {userData.related_accounts ? (
-                                        <RelatedAccounts relatedAccounts={userData.related_accounts} fetchPlayer={fetchPlayer} />
+                                        <RelatedAccounts relatedAccounts={userData.related_accounts} />
                                     ) : (
                                         <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                                             <Typography>No Related Accounts</Typography>
