@@ -77,6 +77,8 @@ export const VoiceChat = () => {
             getVoiceStreamListeners()
 
             if (payload) {
+                console.log("this is payload", payload)
+
                 // put faction commander on top
                 const sorted = payload.sort((x, y) => Number(y.is_faction_commander) - Number(x.is_faction_commander))
                 const factionCommander = payload.filter((v) => v.is_faction_commander)
@@ -254,16 +256,18 @@ export const VoiceChat = () => {
             })
 
             newOvenPlayer.on("error", (err: { code: number }) => {
-                if (err.code === 501) {
-                    console.log("501: failed to connnect attempting to recconnect", err)
-                } else {
-                    console.error("voice chat error: ", err)
-                }
-
-                // try reconnect on error
                 setTimeout(() => {
+                    if (!connected) return
+                    if (err.code === 501) {
+                        console.log("501: failed to connnect attempting to recconnect", err)
+                    } else {
+                        console.error("voice chat error: ", err)
+                    }
+
                     listen(stream)
                 }, 5000)
+
+                // try reconnect on error
             })
 
             newOvenPlayer.play()
@@ -277,25 +281,24 @@ export const VoiceChat = () => {
         }
     }, [])
 
-    const onConnect = useCallback(
-        (streams: VoiceStream[], enableSound: boolean) => {
-            streams?.map((l) => {
-                if (l.send_url) {
-                    startStream(l.send_url)
-                }
-                listen(l)
-            })
+    const onConnect = (streams: VoiceStream[], enableSound: boolean) => {
+        console.log("this is streams", streams)
 
-            // play sound: connect
-            if (enableSound) {
-                playSound(ConnectSound)
+        streams?.map((l) => {
+            if (l.send_url) {
+                startStream(l.send_url)
             }
-            setConnected(true)
+            listen(l)
+        })
 
-            joinListeners()
-        },
-        [listen, startStream, joinListeners],
-    )
+        // play sound: connect
+        if (enableSound) {
+            playSound(ConnectSound)
+        }
+        setConnected(true)
+        joinListeners()
+    }
+
     const onDisconnect = () => {
         stopStream()
 
@@ -316,6 +319,11 @@ export const VoiceChat = () => {
         playSound(DisconnectSound)
         setConnected(false)
     }
+
+    useEffect(() => {
+        if (!connected) return
+        onConnect(voiceStreams || [], false)
+    }, [voiceStreams])
 
     const onMuteMic = () => {
         if (ovenLiveKitInstance) {
@@ -574,7 +582,14 @@ export const VoiceChatInner = ({
                         <Typography fontWeight="bold" p="1.2rem" pb="0" variant="h6">
                             FACTION COMMANDER & MECH OPERATORS
                         </Typography>
-                        {!hasFactionCommander && <FactionCommanderJoinButton onJoinFactionCommander={onJoinFactionCommander} />}
+                        {!hasFactionCommander && (
+                            <FactionCommanderJoinButton
+                                onJoinFactionCommander={() => {
+                                    onJoinFactionCommander()
+                                    onConnect()
+                                }}
+                            />
+                        )}
                         {voiceStreams &&
                             voiceStreams.map((s, idx) => {
                                 return (
@@ -598,7 +613,7 @@ export const VoiceChatInner = ({
                             mt: "2rem",
                         }}
                     >
-                        <Typography fontWeight="bold" p="1.2rem" pb="0" variant="h6">
+                        <Typography fontWeight="bold" p="1.2rem" variant="h6">
                             LISTENERS
                         </Typography>
                         {renderListeners}
@@ -770,7 +785,6 @@ const PlayerItem = ({
     return (
         <>
             <Box
-                mt="1rem"
                 sx={{
                     display: "flex",
                     justifyContent: "space-between",
@@ -887,7 +901,7 @@ const FactionCommanderJoinButton = ({ onJoinFactionCommander }: { onJoinFactionC
                     alignItems: "center",
                     p: "1.2rem",
 
-                    background: `linear-gradient(${bannerColor} 26%, ${bannerColor}95)`,
+                    background: bannerColor,
                 }}
             >
                 <Stack width="100%" direction={"row"} justifyContent="space-between" alignItems="center">
