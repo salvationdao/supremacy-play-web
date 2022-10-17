@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react"
 import { useArena, useAuth, useGame, useMiniMapPixi } from "../../../../../containers"
-import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
+import { BinaryDataKey, useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { AIType, BribeStage, GameAbility, WarMachineLiveState, WarMachineState } from "../../../../../types"
 import { MechAbility } from "./MechAbility"
 import { PixiMechAbilities } from "./pixiMechAbilities"
+import { warMachineStatsBinaryParser } from "../../../../../helpers/binaryDataParsers/warMachineStatsParser"
 
 // Outer component to determine whether to render the mech abilities or not
 export const MechAbilities = React.memo(function MechAbilities() {
@@ -60,21 +61,20 @@ const MechAbilitiesInner = React.memo(function MechAbilitiesInner({ warMachine }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pixiMechAbilities])
 
-    // Listen on current war machine changes
-    useGameServerSubscription<WarMachineLiveState[] | undefined>(
+    useGameServerSubscription<WarMachineLiveState[]>(
         {
-            URI: `/public/arena/${currentArenaID}/mech_stats`,
-            key: GameServerKeys.SubMechLiveStats,
-            ready: !!participantID && !!currentArenaID && !!pixiMechAbilities,
+            URI: `/mini_map/arena/${currentArenaID}/public/mech_stats`,
+            binaryKey: BinaryDataKey.WarMachineStats,
+            binaryParser: warMachineStatsBinaryParser,
+            ready: !!currentArenaID,
         },
         (payload) => {
             if (!payload) return
 
-            const target = payload.find((mech) => mech.participant_id === participantID)
+            const target = payload.find((p) => p.participant_id === warMachine.participantID)
+            if (!target) return
 
-            if (target && target.health !== undefined) {
-                pixiMechAbilities?.updateVisibility(target.health > 0)
-            }
+            pixiMechAbilities?.updateVisibility(target.health > 0)
         },
     )
 

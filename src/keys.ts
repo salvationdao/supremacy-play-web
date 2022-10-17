@@ -18,7 +18,6 @@ export enum GameServerKeys {
     SubArenaStatus = "ARENA:STATUS:UPDATED",
     SubBattleArenaList = "BATTLE:ARENA:LIST",
     SubBattleArenaClosed = "BATTLE:ARENA:CLOSED",
-    SubMiniMapAbilityDisplayList = "MINI:MAP:ABILITY:DISPLAY:LIST",
 
     // Voting abilities
     SubBribeStageUpdated = "BRIBE:STAGE:UPDATED:SUBSCRIBE",
@@ -28,9 +27,10 @@ export enum GameServerKeys {
     TriggerWarMachineAbility = "WAR:MACHINE:ABILITY:TRIGGER",
     SubmitAbilityLocationSelect = "ABILITY:LOCATION:SELECT",
 
-    SubMechCommands = "MECH:COMMANDS:SUBSCRIBE",
-    SubMechMoveCommand = "MECH:MOVE:COMMAND:SUBSCRIBE",
-    MechMoveCommandCancel = "MECH:MOVE:COMMAND:CANCEL",
+    SubMiniMapAbilityContentSubscribe = "MINI:MAP:ABILITY:CONTENT",
+    SubMechCommandUpdateSubscribe = "MECH:COMMAND:UPDATE",
+    SubFactionMechCommandUpdateSubscribe = "FACTION:MECH:COMMANDS:UPDATE",
+    SubMiniMapUpdateSubscribe = "MINI:MAP:UPDATE",
 
     // Game Use
     GameUserOnline = "GAME:ONLINE",
