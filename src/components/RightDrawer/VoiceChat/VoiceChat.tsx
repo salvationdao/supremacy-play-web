@@ -777,7 +777,7 @@ const PlayerItem = ({
                     alignItems: "center",
                     p: "1.2rem",
 
-                    background: `linear-gradient(${bannerColor} 26%, ${bannerColor}95)`,
+                    background: bannerColor,
                 }}
             >
                 <Box width="90%" display="flex" alignItems="center">
@@ -791,7 +791,6 @@ const PlayerItem = ({
                         }
                         color={voiceStream.is_faction_commander ? colors.yellow : "#FFF"}
                         imageUrl={faction.logo_url}
-                        {...StyledImageText}
                     />
 
                     {/* TODO: implement oven player "playing" status */}
