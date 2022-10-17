@@ -846,14 +846,13 @@ const ListenerItem = ({ player, faction }: { player: User; faction: Faction }) =
     return (
         <>
             <Box
-                mt="1rem"
                 sx={{
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
                     p: "1.2rem",
 
-                    background: `linear-gradient(${bannerColor} 26%, ${bannerColor}95)`,
+                    background: bannerColor,
                 }}
             >
                 <Box width="90%" display="flex" alignItems="center">
@@ -867,7 +866,6 @@ const ListenerItem = ({ player, faction }: { player: User; faction: Faction }) =
                         }
                         color="#FFF"
                         imageUrl={faction.logo_url}
-                        {...StyledImageText}
                     />
                 </Box>
             </Box>
