@@ -49,7 +49,9 @@ export const AdminLookupResultPage = () => {
                         sx: { position: "relative", alignSelf: "flex-start", opacity: 0.5, ":hover": { opacity: 1 } },
                     }}
                     sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
-                    onClick={() => history.goBack()}
+                    onClick={() => {
+                        history.goBack()
+                    }}
                 >
                     <Stack spacing=".6rem" direction="row" alignItems="center">
                         <SvgBack size="1.4rem" fill={"#FFFFFF"} />
@@ -90,26 +92,85 @@ const PreviousUsers = () => {
                 height: "100%",
             }}
         >
-            <Typography
-                variant="h6"
-                sx={{
-                    fontFamily: fonts.nostromoBlack,
-                    p: "1rem",
-                    width: "100%",
-                    textAlign: "center",
-                    color: theme.factionTheme.secondary,
-                    background: theme.factionTheme.primary,
-                }}
-            >
-                PLAYER LOOKUP
-            </Typography>
-            <Box
-                sx={{
-                    p: "1rem",
-                    borderBottom: `${theme.factionTheme.primary}70 1.5px solid`,
-                }}
-            >
-                <LookupSearchBox />
+            <Box>
+                <Typography
+                    variant="h6"
+                    sx={{
+                        fontFamily: fonts.nostromoBlack,
+                        p: "1rem",
+                        width: "100%",
+                        textAlign: "center",
+                        color: theme.factionTheme.secondary,
+                        background: theme.factionTheme.primary,
+                    }}
+                >
+                    PLAYER LOOKUP
+                </Typography>
+                <Box
+                    sx={{
+                        p: "1rem",
+                    }}
+                >
+                    <LookupSearchBox />
+                </Box>
+            </Box>
+            <Box>
+                <Typography
+                    variant="h6"
+                    sx={{
+                        fontFamily: fonts.nostromoBlack,
+                        p: "1rem",
+                        width: "100%",
+                        textAlign: "center",
+                        color: theme.factionTheme.secondary,
+                        background: theme.factionTheme.primary,
+                    }}
+                >
+                    PLAYER SEARCH HISTORY
+                </Typography>
+                <Box
+                    sx={{
+                        p: "1rem",
+                    }}
+                >
+                    {/* {something.map(() => {
+                        
+                const faction = getFaction(relatedAccount.faction_id)
+
+                return (
+                    <Link key={i} to={`/admin/lookup/${relatedAccount.gid}`}>
+                        <Stack sx={{ width: "100%", p: "1rem" }}>
+                            <Stack justifyContent={"space-between"} direction="row" alignItems="center">
+                                <Stack direction="row">
+                                    <Box
+                                        sx={{
+                                            alignSelf: "flex-start",
+                                            flexShrink: 0,
+                                            width: "2rem",
+                                            height: "2rem",
+                                            background: `url(${faction.logo_url})`,
+                                            backgroundColor: faction.background_color,
+                                            backgroundRepeat: "no-repeat",
+                                            backgroundPosition: "center",
+                                            backgroundSize: "contain",
+                                        }}
+                                    />
+                                    <Typography
+                                        sx={{ ml: "0.3rem", fontWeight: "700", userSelect: "none" }}
+                                    >{`${relatedAccount.username} #${relatedAccount.gid}`}</Typography>
+                                </Stack>
+                                {relatedAccount.created_at && (
+                                    <Typography sx={{ color: colors.lightGrey, userSelect: "none" }}>
+                                        Created on: {relatedAccount.created_at.toLocaleDateString()} {dateFormatter(relatedAccount.created_at)}
+                                    </Typography>
+                                )}
+                            </Stack>
+                        </Stack>
+                    </Link>
+                )
+            
+                    })} */}
+                </Box>
             </Box>
         </ClipThing>
     )
@@ -147,6 +208,9 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
             if (!resp) return
             setUserData(resp)
             setFaction(getFaction(resp.user.faction_id))
+            if (resp.user) {
+                localStorage.setItem("lastLookupPlayer", JSON.stringify(resp.user))
+            }
             setLoadError(undefined)
         } catch (e) {
             setLoadError(typeof e === "string" ? e : "Failed to get player data.")

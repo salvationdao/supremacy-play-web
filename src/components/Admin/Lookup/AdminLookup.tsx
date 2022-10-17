@@ -1,8 +1,8 @@
 import { Autocomplete, Box, CircularProgress, Stack, TextField, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
-import { useHistory } from "react-router-dom"
+import { Link, useHistory } from "react-router-dom"
 import { ClipThing } from "../.."
-import { useGlobalNotifications } from "../../../containers"
+import { useGlobalNotifications, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useDebounce, useToggle } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
@@ -13,6 +13,19 @@ import { Player } from "../../Common/Player"
 
 export const AdminLookup = () => {
     const theme = useTheme()
+    const { getFaction } = useSupremacy()
+    const [lastLookupPlayer, setLastLookupPlayer] = useState<User>()
+
+    useEffect(() => {
+        const toParse = localStorage.getItem("lastLookupPlayer")
+        if (!toParse) return
+        try {
+            const p = JSON.parse(toParse) as User
+            setLastLookupPlayer(p)
+        } catch (e) {
+            console.error(e)
+        }
+    }, [])
 
     return (
         <ClipThing
@@ -43,6 +56,52 @@ export const AdminLookup = () => {
                 }}
             >
                 <LookupSearchBox />
+                {lastLookupPlayer &&
+                    (() => {
+                        const faction = getFaction(lastLookupPlayer.faction_id)
+                        return (
+                            <Stack mt="1rem">
+                                <Typography
+                                    sx={{
+                                        color: colors.grey,
+                                    }}
+                                >
+                                    Previously Viewed:
+                                </Typography>
+                                <Link to={`/admin/lookup/${lastLookupPlayer.gid}`}>
+                                    <Stack
+                                        direction="row"
+                                        alignItems="center"
+                                        justifyContent="space-between"
+                                        p="1rem"
+                                        sx={{
+                                            borderRadius: "2px",
+                                            backgroundColor: `${faction.primary_color}77`,
+                                        }}
+                                    >
+                                        <Stack direction="row">
+                                            <Box
+                                                sx={{
+                                                    alignSelf: "flex-start",
+                                                    flexShrink: 0,
+                                                    width: "2rem",
+                                                    height: "2rem",
+                                                    background: `url(${faction.logo_url})`,
+                                                    backgroundColor: faction.background_color,
+                                                    backgroundRepeat: "no-repeat",
+                                                    backgroundPosition: "center",
+                                                    backgroundSize: "contain",
+                                                }}
+                                            />
+                                            <Typography
+                                                sx={{ ml: "0.3rem", fontWeight: "700", userSelect: "none" }}
+                                            >{`${lastLookupPlayer.username} #${lastLookupPlayer.gid}`}</Typography>
+                                        </Stack>
+                                    </Stack>
+                                </Link>
+                            </Stack>
+                        )
+                    })()}
             </Box>
         </ClipThing>
     )
@@ -102,7 +161,11 @@ export const LookupSearchBox = () => {
                     },
                 }}
                 disablePortal
-                onChange={(_e, value) => (value?.gid ? history.push(`/admin/lookup/${value?.gid}`) : undefined)}
+                onChange={(_e, value) => {
+                    if (!value?.gid) return
+
+                    history.push(`/admin/lookup/${value?.gid}`)
+                }}
                 renderOption={(props, u) => (
                     <Stack component="li" direction="row" spacing=".6rem" alignItems="center" {...props}>
                         <Player player={u} styledImageTextProps={{ textColor: "#FFFFFF" }} />
