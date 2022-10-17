@@ -77,16 +77,10 @@ const PreviousUsers = () => {
     const theme = useTheme()
     return (
         <ClipThing
-            clipSize="5px"
+            clipSize="10px"
             border={{
                 borderColor: theme.factionTheme.primary,
-                borderThickness: ".2rem",
-            }}
-            corners={{
-                topLeft: false,
-                topRight: true,
-                bottomLeft: true,
-                bottomRight: false,
+                borderThickness: ".3rem",
             }}
             backgroundColor={theme.factionTheme.background}
             opacity={0.9}
@@ -175,48 +169,48 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
 
     if (loadError) {
         return (
-            <Stack alignItems="center" justifyContent="center">
-                <Stack
-                    alignItems="center"
-                    justifyContent="center"
-                    sx={{ height: "100%", maxWidth: "100%", width: "75rem", px: "3rem", pt: "1.28rem" }}
-                    spacing="1.5rem"
+            <Stack flex={1} alignItems="center" justifyContent="center">
+                <Typography
+                    sx={{
+                        px: "3rem",
+                        pt: "1.28rem",
+                        color: colors.red,
+                        fontFamily: fonts.nostromoBold,
+                        textAlign: "center",
+                    }}
                 >
-                    <Typography
-                        sx={{
-                            color: colors.red,
-                            fontFamily: fonts.nostromoBold,
-                            textAlign: "center",
-                        }}
-                    >
-                        {loadError}
-                    </Typography>
-                </Stack>
+                    {loadError}
+                </Typography>
             </Stack>
         )
     }
 
     if (isLoading || !userData) {
         return (
-            <Stack alignItems="center" justifyContent="center">
-                <CircularProgress sx={{ color: theme.factionTheme.primary }} />
-            </Stack>
+            <ClipThing
+                clipSize="10px"
+                border={{
+                    borderColor: faction.primary_color,
+                    borderThickness: ".3rem",
+                }}
+                backgroundColor={faction.background_color}
+                opacity={0.9}
+                sx={{ flex: 1, height: "100%" }}
+            >
+                <Stack height="100%" alignItems="center" justifyContent="center">
+                    <CircularProgress sx={{ color: theme.factionTheme.primary }} />
+                </Stack>
+            </ClipThing>
         )
     }
 
     return (
         <>
             <ClipThing
-                clipSize="5px"
+                clipSize="10px"
                 border={{
                     borderColor: faction.primary_color,
-                    borderThickness: ".2rem",
-                }}
-                corners={{
-                    topLeft: false,
-                    topRight: true,
-                    bottomLeft: true,
-                    bottomRight: false,
+                    borderThickness: ".3rem",
                 }}
                 backgroundColor={faction.background_color}
                 opacity={0.9}
@@ -252,14 +246,7 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
                         </FancyButton>
                     </Stack>
                 </PageHeader>
-
-                <Stack
-                    sx={{
-                        flex: 1,
-                        px: "1rem",
-                        py: "1rem",
-                    }}
-                >
+                <Box sx={{ borderBottom: `${theme.factionTheme.primary}70 1.5px solid` }}>
                     <Tabs
                         value={currentValue}
                         onChange={handleChange}
@@ -267,12 +254,12 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
                         scrollButtons="auto"
                         sx={{
                             flexShrink: 0,
-                            color: faction.primary_color,
+                            color: theme.factionTheme.primary,
                             minHeight: 0,
-                            ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "6rem", width: "10rem" },
+                            ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "5rem", width: "20rem" },
                             ".Mui-selected": {
-                                color: `${faction.secondary_color} !important`,
-                                background: `linear-gradient(${faction.primary_color} 26%, ${faction.primary_color}BB)`,
+                                color: `${theme.factionTheme.secondary} !important`,
+                                background: `linear-gradient(${theme.factionTheme.primary} 26%, ${theme.factionTheme.primary}BB)`,
                             },
                             ".MuiTabs-indicator": { display: "none" },
                             ".MuiTabScrollButton-root": { display: "none" },
@@ -282,118 +269,167 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
 
                         {user.role_type === RoleType.admin && <Tab label="USER ASSET" value={"USER-ASSET"} />}
                     </Tabs>
+                </Box>
 
-                    <TabPanel currentValue={currentValue} value={"PLAYER-INFO"}>
-                        <Box
-                            sx={{
-                                flex: 1,
-                                display: "grid",
-                                gridTemplateColumns: "1fr 2fr",
-                                gap: "2rem",
-                                overflowY: "hidden",
-                            }}
-                        >
-                            {/* RELATED ACCOUNTS */}
-                            <PlayerProfileCard faction={faction} title="Related Accounts" sx={{ flex: 1 }}>
-                                {userData.related_accounts ? (
-                                    <RelatedAccounts relatedAccounts={userData.related_accounts} fetchPlayer={fetchPlayer} />
-                                ) : (
-                                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                                        <Typography>No Related Accounts</Typography>
-                                    </Stack>
-                                )}
-                            </PlayerProfileCard>
-                            {/* ACTIVE BANS */}
-                            <PlayerProfileCard faction={faction} title="Active Bans" sx={{ flex: "1" }}>
-                                <Stack sx={{ p: "1rem" }} spacing={"1rem"} direction={"row"}>
-                                    <FancyButton
-                                        clipThingsProps={{
-                                            clipSize: "9px",
-                                            backgroundColor: colors.orange,
-                                            opacity: 1,
-                                            border: { borderColor: colors.orange, borderThickness: "2px" },
-                                            sx: { position: "relative" },
-                                        }}
-                                        sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
-                                        onClick={() => setUnbanModalOpen(true)}
-                                        disabled={!userData.active_ban || playerUnbanIDs.length <= 0}
-                                    >
-                                        <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                            Unban Selected
-                                        </Typography>
-                                    </FancyButton>
-                                    <FancyButton
-                                        clipThingsProps={{
-                                            clipSize: "9px",
-                                            backgroundColor: colors.green,
-                                            opacity: 1,
-                                            border: { borderColor: colors.green, borderThickness: "2px" },
-                                            sx: { position: "relative" },
-                                        }}
-                                        sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
-                                        onClick={() => {
-                                            toggleAll()
-                                            setUnbanModalOpen(true)
-                                        }}
-                                        disabled={!userData.active_ban}
-                                    >
-                                        <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                            Unban All
-                                        </Typography>
-                                    </FancyButton>
-                                </Stack>
+                <Stack
+                    sx={{
+                        flex: 1,
+                        overflowY: "auto",
+                    }}
+                >
+                    <Box height={0}>
+                        <TabPanel currentValue={currentValue} value={"PLAYER-INFO"}>
+                            <Box
+                                sx={{
+                                    flex: 1,
+                                    display: "grid",
+                                    gridTemplateColumns: "1fr 2fr",
+                                    gap: "2rem",
+                                    px: "2rem",
+                                    py: "2rem",
+                                }}
+                            >
+                                <Box
+                                    sx={{
+                                        height: "400px",
+                                        backgroundColor: "blueviolet",
+                                    }}
+                                />
+                                <Box
+                                    sx={{
+                                        height: "400px",
+                                        backgroundColor: "blueviolet",
+                                    }}
+                                />
+                                <Box
+                                    sx={{
+                                        height: "600px",
+                                        backgroundColor: "blueviolet",
+                                    }}
+                                />
+                                <Box
+                                    sx={{
+                                        height: "600px",
+                                        backgroundColor: "blueviolet",
+                                    }}
+                                />
 
-                                {userData.active_ban ? (
-                                    <Stack sx={{ height: 0 }} flexWrap={"wrap"} direction={"row"}>
-                                        <ActiveBanPanel
-                                            faction={faction}
-                                            playerBans={userData.active_ban}
-                                            playerUnBanIDs={playerUnbanIDs}
-                                            toggleSelected={toggleSelected}
-                                        />
-                                    </Stack>
-                                ) : (
-                                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                                        <Typography>No Active Bans</Typography>
-                                    </Stack>
-                                )}
-                            </PlayerProfileCard>
-                            {/* RECENT CHAT HISTORY */}
-                            <PlayerProfileCard faction={faction} title="Recent Chat History" sx={{ flex: 2 }}>
-                                {userData.recent_chat_history ? (
-                                    <ChatHistory chatHistory={userData.recent_chat_history} faction={faction} user={userData.user} />
-                                ) : (
-                                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                                        <Typography>No Recent Chat History</Typography>
-                                    </Stack>
-                                )}
-                            </PlayerProfileCard>
-                            {/* RECENT BAN HISTORY */}
-                            <PlayerProfileCard faction={faction} title="Recent Ban History" sx={{ flex: "2" }}>
-                                {userData.ban_history ? (
-                                    <Stack sx={{ height: 0 }} flexWrap={"wrap"} direction={"row"}>
-                                        <BanHistoryPanel faction={faction} playerBans={userData.ban_history} />
-                                    </Stack>
-                                ) : (
-                                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                                        <Typography>No Recent Ban History</Typography>
-                                    </Stack>
-                                )}
-                            </PlayerProfileCard>
-                        </Box>
-                    </TabPanel>
+                                {"aa" === user.username && (
+                                    <>
+                                        {/* RELATED ACCOUNTS */}
+                                        <PlayerProfileCard faction={faction} title="Related Accounts">
+                                            {userData.related_accounts ? (
+                                                <RelatedAccounts relatedAccounts={userData.related_accounts} fetchPlayer={fetchPlayer} />
+                                            ) : (
+                                                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                                                    <Typography>No Related Accounts</Typography>
+                                                </Stack>
+                                            )}
+                                        </PlayerProfileCard>
 
-                    <TabPanel currentValue={currentValue} value={"USER-ASSET"}>
-                        <PlayerProfileCard faction={faction} title="User Assets" fullWidth={true}>
-                            {userData.user_assets ? (
-                                <AdminUserAsset userAsset={userData.user_assets} faction={faction} />
-                            ) : (
-                                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                                    <Typography>User Has No Assets</Typography>
-                                </Stack>
-                            )}
-                        </PlayerProfileCard>
-                    </TabPanel>
+                                        {/* ACTIVE BANS */}
+                                        <PlayerProfileCard faction={faction} title="Active Bans">
+                                            <Stack sx={{ p: "1rem" }} spacing={"1rem"} direction={"row"}>
+                                                <FancyButton
+                                                    clipThingsProps={{
+                                                        clipSize: "9px",
+                                                        backgroundColor: colors.orange,
+                                                        opacity: 1,
+                                                        border: { borderColor: colors.orange, borderThickness: "2px" },
+                                                        sx: { position: "relative" },
+                                                    }}
+                                                    sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
+                                                    onClick={() => setUnbanModalOpen(true)}
+                                                    disabled={!userData.active_ban || playerUnbanIDs.length <= 0}
+                                                >
+                                                    <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                                        Unban Selected
+                                                    </Typography>
+                                                </FancyButton>
+                                                <FancyButton
+                                                    clipThingsProps={{
+                                                        clipSize: "9px",
+                                                        backgroundColor: colors.green,
+                                                        opacity: 1,
+                                                        border: { borderColor: colors.green, borderThickness: "2px" },
+                                                        sx: { position: "relative" },
+                                                    }}
+                                                    sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
+                                                    onClick={() => {
+                                                        toggleAll()
+                                                        setUnbanModalOpen(true)
+                                                    }}
+                                                    disabled={!userData.active_ban}
+                                                >
+                                                    <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                                        Unban All
+                                                    </Typography>
+                                                </FancyButton>
+                                            </Stack>
+
+                                            {userData.active_ban ? (
+                                                <Stack flexWrap={"wrap"} direction={"row"}>
+                                                    <ActiveBanPanel
+                                                        faction={faction}
+                                                        playerBans={userData.active_ban}
+                                                        playerUnBanIDs={playerUnbanIDs}
+                                                        toggleSelected={toggleSelected}
+                                                    />
+                                                </Stack>
+                                            ) : (
+                                                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                                                    <Typography>No Active Bans</Typography>
+                                                </Stack>
+                                            )}
+                                        </PlayerProfileCard>
+
+                                        {/* RECENT CHAT HISTORY */}
+                                        <PlayerProfileCard faction={faction} title="Recent Chat History">
+                                            {userData.recent_chat_history ? (
+                                                <ChatHistory chatHistory={userData.recent_chat_history} faction={faction} user={userData.user} />
+                                            ) : (
+                                                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                                                    <Typography>No Recent Chat History</Typography>
+                                                </Stack>
+                                            )}
+                                        </PlayerProfileCard>
+
+                                        {/* RECENT BAN HISTORY */}
+                                        <PlayerProfileCard faction={faction} title="Recent Ban History">
+                                            {userData.ban_history ? (
+                                                <Stack flexWrap={"wrap"} direction={"row"}>
+                                                    <BanHistoryPanel faction={faction} playerBans={userData.ban_history} />
+                                                </Stack>
+                                            ) : (
+                                                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                                                    <Typography>No Recent Ban History</Typography>
+                                                </Stack>
+                                            )}
+                                        </PlayerProfileCard>
+                                    </>
+                                )}
+                            </Box>
+                        </TabPanel>
+
+                        <TabPanel currentValue={currentValue} value={"USER-ASSET"}>
+                            <Box
+                                sx={{
+                                    px: "2rem",
+                                    py: "2rem",
+                                }}
+                            >
+                                <PlayerProfileCard faction={faction} title="User Assets" fullWidth={true}>
+                                    {userData.user_assets ? (
+                                        <AdminUserAsset userAsset={userData.user_assets} faction={faction} />
+                                    ) : (
+                                        <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                                            <Typography>User Has No Assets</Typography>
+                                        </Stack>
+                                    )}
+                                </PlayerProfileCard>
+                            </Box>
+                        </TabPanel>
+                    </Box>
                 </Stack>
             </ClipThing>
 

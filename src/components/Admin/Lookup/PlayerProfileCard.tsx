@@ -1,9 +1,9 @@
 import { Stack, Typography } from "@mui/material"
+import { SxProps } from "@mui/system"
 import { ReactNode } from "react"
 import { fonts } from "../../../theme/theme"
 import { Faction } from "../../../types"
 import { ClipThing } from "../../Common/ClipThing"
-import { SxProps } from "@mui/system"
 
 export const PlayerProfileCard = ({
     faction,
@@ -27,23 +27,27 @@ export const PlayerProfileCard = ({
             }}
             opacity={0.9}
             backgroundColor={faction.background_color}
-            sx={{ height: "100%", width: fullWidth ? "100%" : "unset", ...sx }}
+            sx={{ width: fullWidth ? "100%" : "auto", ...sx }}
+            contentSx={{
+                display: "flex",
+                flexDirection: "column",
+            }}
         >
-            <Stack sx={{ height: "100%" }}>
-                <Typography
-                    variant="h6"
-                    sx={{
-                        fontFamily: fonts.nostromoBlack,
-                        p: "1rem",
-                        width: "100%",
-                        textAlign: "center",
-                        color: faction.secondary_color,
-                        background: faction.primary_color,
-                    }}
-                >
-                    {title}
-                </Typography>
-                <Stack sx={{ height: "100%" }}>{children}</Stack>
+            <Typography
+                variant="h6"
+                sx={{
+                    fontFamily: fonts.nostromoBlack,
+                    p: "1rem",
+                    width: "100%",
+                    textAlign: "center",
+                    color: faction.secondary_color,
+                    background: faction.primary_color,
+                }}
+            >
+                {title}
+            </Typography>
+            <Stack flex={1} minHeight="220px">
+                {children}
             </Stack>
         </ClipThing>
     )
