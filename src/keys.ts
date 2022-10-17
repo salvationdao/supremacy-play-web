@@ -63,6 +63,7 @@ export enum GameServerKeys {
     JoinBattleLobby = "BATTLE:LOBBY:JOIN",
     LeaveBattleLobby = "BATTLE:LOBBY:LEAVE",
     JoinBattleLobbySupporter = "BATTLE:LOBBY:SUPPORTER:JOIN",
+    TopUpLobbyReward = "TOP:UP:LOBBY:REWARD",
 
     GetMechs = "PLAYER:ASSET:MECH:LIST",
     PlayerQueueStatus = "PLAYER:QUEUE:STATUS",

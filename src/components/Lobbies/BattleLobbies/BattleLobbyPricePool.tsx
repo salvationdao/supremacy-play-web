@@ -1,17 +1,26 @@
 import { BattleLobby } from "../../../types/battle_queue"
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, IconButton, Popover, Stack, Typography } from "@mui/material"
 import { colors, fonts } from "../../../theme/theme"
-import React, { useCallback } from "react"
-import { TooltipHelper } from "../../Common/TooltipHelper"
+import React, { useCallback, useState } from "react"
 import { supFormatterNoFixed } from "../../../helpers"
 import { SvgChest, SvgSupToken } from "../../../assets"
+import { InputField } from "../Common/InputField"
+import { useTheme } from "../../../containers/theme"
+import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
 
 interface BattleLobbyPricePoolProps {
     battleLobby: BattleLobby
 }
 
 export const BattleLobbyPricePool = ({ battleLobby }: BattleLobbyPricePoolProps) => {
+    const { factionTheme } = useTheme()
     const { first_faction_cut, second_faction_cut, third_faction_cut } = battleLobby
+    const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
+    const [topUpReward, setTopUpReward] = useState("0")
+    const { send } = useGameServerCommandsUser("/user_commander")
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState("")
 
     const distributionValue = useCallback((backgroundColor: string, rank: number, value: string) => {
         return (
@@ -49,6 +58,21 @@ export const BattleLobbyPricePool = ({ battleLobby }: BattleLobbyPricePoolProps)
         )
     }, [])
 
+    const onTopUp = useCallback(async () => {
+        try {
+            setLoading(true)
+            await send<boolean>(GameServerKeys.TopUpLobbyReward, {
+                lobby_id: battleLobby.id,
+                amount: topUpReward,
+            })
+        } catch (e) {
+            console.log(e)
+            if (typeof e === "string") setError(e)
+        } finally {
+            setLoading(false)
+        }
+    }, [battleLobby.id, send, topUpReward])
+
     return (
         <Stack direction="column" spacing={0.6} sx={{ py: ".25rem" }}>
             <Stack direction="row" alignItems="center" spacing=".4rem">
@@ -63,11 +87,66 @@ export const BattleLobbyPricePool = ({ battleLobby }: BattleLobbyPricePoolProps)
                     REWARD POOL:
                 </Typography>
 
-                <TooltipHelper placement="top-start" text="Top up reward">
-                    <Box sx={{ cursor: "pointer" }}>
-                        <SvgChest size="1.5rem" fill={colors.gold} />
-                    </Box>
-                </TooltipHelper>
+                <IconButton
+                    size="small"
+                    sx={{ cursor: "pointer" }}
+                    onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+                        setAnchorEl(event.currentTarget)
+                    }}
+                >
+                    <SvgChest size="1.5rem" fill={colors.gold} />
+                </IconButton>
+                <Popover
+                    id={"top-up-reward-popover"}
+                    open={!!anchorEl}
+                    anchorEl={anchorEl}
+                    onClose={() => setAnchorEl(null)}
+                    anchorOrigin={{
+                        vertical: "center",
+                        horizontal: "right",
+                    }}
+                    transformOrigin={{
+                        vertical: "bottom",
+                        horizontal: "left",
+                    }}
+                    sx={{
+                        ".MuiPaper-root": {
+                            backgroundColor: factionTheme.background,
+                            backgroundImage: "unset",
+                            border: `${factionTheme.primary}99 2px solid`,
+                        },
+                    }}
+                >
+                    <Stack direction="column" sx={{ p: "1rem" }}>
+                        <InputField
+                            variant="outlined"
+                            label="Top Up Reward"
+                            startAdornmentLabel={<SvgSupToken fill={colors.yellow} size="1.9rem" />}
+                            border={`${factionTheme.primary} 2px solid`}
+                            type="number"
+                            value={topUpReward}
+                            onChange={(e) => setTopUpReward(e.target.value)}
+                            endAdornmentLabel={
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        height: "4rem",
+                                        backgroundColor: `${factionTheme.primary}`,
+                                        px: "1rem",
+                                        cursor: "pointer",
+                                    }}
+                                    onClick={onTopUp}
+                                >
+                                    <Typography variant="body2" fontFamily={fonts.nostromoBlack} sx={{ color: factionTheme.secondary }}>
+                                        submit
+                                    </Typography>
+                                </Box>
+                            }
+                        />
+                    </Stack>
+                </Popover>
             </Stack>
 
             <Stack direction="row" alignItems="center" spacing=".4rem">
