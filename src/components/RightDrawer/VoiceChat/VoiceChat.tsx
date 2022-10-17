@@ -382,8 +382,6 @@ export const VoiceChat = () => {
                         onConnect={() => onConnect(voiceStreams || [], true)}
                         onDisconnect={onDisconnect}
                         onMuteMic={onMuteMic}
-                        joinListeners={joinListeners}
-                        leaveListeners={leaveListeners}
                         onJoinFactionCommander={joinFactionCommander}
                         onLeaveFactionCommander={() => {
                             leaveFactionCommander()
@@ -420,8 +418,6 @@ export const VoiceChatInner = ({
     onConnect,
     onDisconnect,
     // onMuteMic,
-    joinListeners,
-    leaveListeners,
     onJoinFactionCommander,
     onLeaveFactionCommander,
     onVoteKick,
@@ -436,8 +432,6 @@ export const VoiceChatInner = ({
     onConnect: () => void
     onDisconnect: () => void
     onMuteMic: () => void
-    joinListeners: () => void
-    leaveListeners: () => void
     onJoinFactionCommander: () => void
     onLeaveFactionCommander: () => void
     onVoteKick: () => void
@@ -465,7 +459,7 @@ export const VoiceChatInner = ({
                 return <ListenerItem player={s} faction={faction} key={idx} />
             })
         )
-    }, [listeners, voiceStreams])
+    }, [listeners, voiceStreams, faction, user.faction_id])
 
     return (
         <Stack direction="row" width="100%" height="100%">
