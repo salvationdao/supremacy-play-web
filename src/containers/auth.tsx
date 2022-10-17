@@ -8,7 +8,7 @@ import { useGameServerCommandsUser, useGameServerSubscriptionSecuredUser } from 
 import { useInactivity } from "../hooks/useInactivity"
 import { GameServerKeys } from "../keys"
 import { colors } from "../theme/theme"
-import { Faction, Feature, FeatureName, PunishListItem, User, UserFromPassport, UserRank, UserStat } from "../types"
+import { Faction, Feature, FeatureName, PunishListItem, RoleType, User, UserFromPassport, UserRank, UserStat } from "../types"
 import { useTheme } from "./theme"
 
 export const FallbackUser: User = {
@@ -18,6 +18,7 @@ export const FallbackUser: User = {
     gid: 0,
     rank: "NEW_RECRUIT",
     features: [],
+    role_type: RoleType.player,
 }
 
 export const FallbackFaction: Faction = {

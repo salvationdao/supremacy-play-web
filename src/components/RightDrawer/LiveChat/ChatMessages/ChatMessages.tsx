@@ -134,7 +134,7 @@ export const ChatMessages = React.memo(function ChatMessages({ faction_id, prima
                                                 fontSize={fontSize}
                                             />
                                         )
-                                    } else if (message.type === ChatMessageType.SystemBan) {
+                                    } else if (message.type === ChatMessageType.SystemBan || message.type === ChatMessageType.ModBan) {
                                         const data = message.data as SystemBanMessageData
                                         return (
                                             <SystemBanMessage
@@ -142,6 +142,7 @@ export const ChatMessages = React.memo(function ChatMessages({ faction_id, prima
                                                 data={data}
                                                 sentAt={message.sent_at}
                                                 fontSize={fontSize}
+                                                messageType={message.type}
                                             />
                                         )
                                     } else if (message.type === ChatMessageType.NewBattle) {
