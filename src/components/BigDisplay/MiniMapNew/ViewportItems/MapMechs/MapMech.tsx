@@ -3,7 +3,8 @@ import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../../../../constants"
 import { MapSelection, useArena, useAuth, useGame, useMiniMapPixi, useSupremacy } from "../../../../../containers"
 import { RecordType, useHotkey } from "../../../../../containers/hotkeys"
 import { closestAngle, deg2rad } from "../../../../../helpers"
-import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
+import { warMachineStatsBinaryParser } from "../../../../../helpers/binaryDataParsers/warMachineStatsParser"
+import { BinaryDataKey, useGameServerSubscription } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors } from "../../../../../theme/theme"
 import {
@@ -55,7 +56,6 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
     const [pixiMapMech, setPixiMapMech] = useState<PixiMapMech>()
 
-    const tickIteration = useRef(0)
     const iconDimension = useRef<Dimension>({ width: 5, height: 5 })
     const prevRotation = useRef(warMachine.rotation)
     const [isAlive, setIsAlive] = useState(warMachine.health > 0)
@@ -304,70 +304,58 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         pixiMapMech.pulseEffect(abilityPulseEffect)
     }, [abilityBorderEffect, abilityShakeEffect, abilityPulseEffect, pixiMapMech])
 
-    // Listen on mech stats
-    useGameServerSubscription<WarMachineLiveState | undefined>(
+    useGameServerSubscription<WarMachineLiveState[]>(
         {
-            URI: `/public/arena/${currentArenaID}/mech/${participantID}`,
-            key: GameServerKeys.SubMechLiveStats,
+            URI: `/mini_map/arena/${currentArenaID}/public/mech_stats`,
+            binaryKey: BinaryDataKey.WarMachineStats,
+            binaryParser: warMachineStatsBinaryParser,
             ready: !!participantID && !!currentArenaID && !!pixiMapMech,
-            batchURI: `/public/arena/${currentArenaID}/mech`,
         },
         (payload) => {
             // If window is not in focus, discard the payloads else will crash browser
-            if (!isWindowFocused.current) return
+            if (!payload || !isWindowFocused.current || !pixiMapMech) return
 
-            if (!payload || payload.tick_order < tickIteration.current) return
-            tickIteration.current = payload.tick_order
+            const target = payload.find((p) => p.participant_id === participantID)
+            if (!target) return
 
-            if (payload?.health !== undefined && pixiMapMech) {
-                setIsAlive(payload.health > 0)
-                const percent = (payload.health / maxHealth) * 100
-                pixiMapMech.updateHpBar(percent)
-            }
+            const { health, shield, position, rotation, is_hidden } = target
 
-            if (payload?.shield !== undefined && pixiMapMech) {
-                const percent = (payload.shield / maxShield) * 100
-                pixiMapMech.updateShieldBar(percent)
-            }
+            setIsAlive(health > 0)
+            pixiMapMech.updateHpBar((health / maxHealth) * 100)
+            pixiMapMech.updateShieldBar((shield / maxShield) * 100)
 
             // Update position, only when not hidden (else pos will set to like -100, -100 or something)
-            if (payload?.position !== undefined && pixiMapMech) {
-                if (!payload?.is_hidden) {
-                    const newPos = clientPositionToViewportPosition.current(payload.position.x, payload.position.y)
-                    pixiMapMech.updatePosition(newPos.x, newPos.y)
-                }
+            if (!is_hidden) {
+                const newPos = clientPositionToViewportPosition.current(position.x, position.y)
+                pixiMapMech.updatePosition(newPos.x, newPos.y)
+            }
 
-                // Update the mech move dash line length and rotation
-                const mCommand = tempMechMoveCommand.current || mechMoveCommand.current
-                if (mCommand?.cell_x && mCommand?.cell_y && !mCommand?.reached_at) {
-                    const mapPos = gridCellToViewportPosition.current(mCommand.cell_x, mCommand.cell_y)
-                    pixiMapMech.updateMechMovePosition(mapPos.x, mapPos.y)
-                } else {
-                    pixiMapMech.hideMechMovePosition()
-                }
+            // Update the mech move dash line length and rotation
+            const mCommand = tempMechMoveCommand.current || mechMoveCommand.current
+            if (mCommand?.cell_x && mCommand?.cell_y && !mCommand?.reached_at) {
+                const mapPos = gridCellToViewportPosition.current(mCommand.cell_x, mCommand.cell_y)
+                pixiMapMech.updateMechMovePosition(mapPos.x, mapPos.y)
+            } else {
+                pixiMapMech.hideMechMovePosition()
             }
 
             // Update rotation
-            if (payload?.rotation !== undefined && pixiMapMech) {
-                const newRot = closestAngle(prevRotation.current, payload.rotation || 0)
-                const newRotRad = deg2rad(newRot + 90)
-                pixiMapMech.updateRotation(newRotRad)
-                prevRotation.current = newRot
-            }
+            const newRot = closestAngle(prevRotation.current, rotation || 0)
+            const newRotRad = deg2rad(newRot + 90)
+            pixiMapMech.updateRotation(newRotRad)
+            prevRotation.current = newRot
 
             // Update visibility
-            if (pixiMapMech) {
-                pixiMapMech.updateVisibility(!payload?.is_hidden)
-            }
+            pixiMapMech.updateVisibility(!is_hidden)
         },
     )
 
     // Listen on mech move command positions for this mech
-    useGameServerSubscriptionFaction<MechMoveCommand>(
+    useGameServerSubscription<MechMoveCommand>(
         {
-            URI: `/arena/${currentArenaID}/mech_command/${hash}`,
-            key: GameServerKeys.SubMechMoveCommand,
-            ready: factionID === warMachineFactionID && !!participantID && !!currentArenaID,
+            URI: `/mini_map/arena/${currentArenaID}/faction/${factionID}/mech_command/${hash}`,
+            key: GameServerKeys.SubMechCommandUpdateSubscribe,
+            ready: !!userID && !!factionID && factionID === warMachineFactionID && !!participantID && !!currentArenaID,
         },
         (payload) => {
             if (!payload) {
@@ -382,8 +370,8 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     // Listen on abilities that apply on this mech to display
     useGameServerSubscription<DisplayedAbility[]>(
         {
-            URI: `/public/arena/${currentArenaID}/mini_map_ability_display_list`,
-            key: GameServerKeys.SubMiniMapAbilityDisplayList,
+            URI: `/mini_map/arena/${currentArenaID}/public/mini_map_ability_display_list`,
+            key: GameServerKeys.SubMiniMapAbilityContentSubscribe,
             ready: !!currentArenaID,
         },
         (payload) => {

@@ -665,7 +665,7 @@ export const MechLoadoutWeaponModal = ({
                                             clipThingsProps={{
                                                 backgroundColor: colors.green,
                                             }}
-                                            onClick={() => onConfirm(equipped, inheritSkin)}
+                                            onClick={() => onConfirm(equipped, equippedInheritSkin)}
                                         >
                                             Equip To Mech
                                         </FancyButton>

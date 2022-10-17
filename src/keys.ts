@@ -33,9 +33,10 @@ export enum GameServerKeys {
     TriggerWarMachineAbility = "WAR:MACHINE:ABILITY:TRIGGER",
     SubmitAbilityLocationSelect = "ABILITY:LOCATION:SELECT",
 
-    SubMechCommands = "MECH:COMMANDS:SUBSCRIBE",
-    SubMechMoveCommand = "MECH:MOVE:COMMAND:SUBSCRIBE",
-    MechMoveCommandCancel = "MECH:MOVE:COMMAND:CANCEL",
+    SubMiniMapAbilityContentSubscribe = "MINI:MAP:ABILITY:CONTENT",
+    SubMechCommandUpdateSubscribe = "MECH:COMMAND:UPDATE",
+    SubFactionMechCommandUpdateSubscribe = "FACTION:MECH:COMMANDS:UPDATE",
+    SubMiniMapUpdateSubscribe = "MINI:MAP:UPDATE",
 
     // Game Use
     GameUserOnline = "GAME:ONLINE",
@@ -254,6 +255,7 @@ export enum GameServerKeys {
     ModGetUser = "MOD:GET:USER",
     ModBanUser = "MOD:BAN:USER",
     ModUnbanUser = "MOD:UNBAN:USER",
+    ModRestartServer = "MOD:RESTART:SERVER",
 
     // Faction Commander
     JoinFactionCommander = "VOICE:JOIN:FACTION:COMMANDER",

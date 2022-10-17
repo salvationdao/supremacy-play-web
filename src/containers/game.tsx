@@ -156,7 +156,7 @@ export const GameContainer = createContainer(() => {
     // Subscribe for spawned AI
     useGameServerSubscription<WarMachineState[] | undefined>(
         {
-            URI: `/public/arena/${currentArenaID}/minimap`,
+            URI: `/mini_map/arena/${currentArenaID}/public/minimap`,
             key: GameServerKeys.SubBattleAISpawned,
             ready: !!currentArenaID,
         },

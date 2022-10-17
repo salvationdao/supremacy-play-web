@@ -2,11 +2,9 @@ import { Box } from "@mui/material"
 import { useTheme } from "../../../../../containers/theme"
 import { MechDetails } from "../../../../../types"
 import { MediaPreview } from "../../../../Common/MediaPreview/MediaPreview"
-import { UnityParams, UnityViewer } from "./UnityViewer"
 
 export interface MechViewerProps {
     mechDetails: MechDetails
-    unity?: UnityParams
 }
 
 export const MechViewer = (props: MechViewerProps) => {
@@ -14,7 +12,7 @@ export const MechViewer = (props: MechViewerProps) => {
     const theme = useTheme()
     const backgroundColor = theme.factionTheme.background
 
-    const skin = mechDetails.chassis_skin && mechDetails.default_chassis_skin
+    const skin = mechDetails.chassis_skin || mechDetails.default_chassis_skin
     const avatarUrl = skin?.avatar_url || mechDetails.avatar_url
     const imageUrl = skin?.image_url || mechDetails.image_url
     const largeImageUrl = skin?.large_image_url || mechDetails.large_image_url
@@ -43,31 +41,21 @@ export const MechViewer = (props: MechViewerProps) => {
                     zIndex: 2,
                 }}
             />
-
-            {props.unity ? (
-                <UnityViewer {...props} unity={props.unity} />
-            ) : (
-                <Box
-                    sx={{
-                        position: "absolute",
-                        zIndex: 3,
-                        aspectRatio: "1.1",
-                        height: "80%",
-                        left: "50%",
-                        top: "50%",
-                        transform: "translate(-50%, -50%)",
-                        overflow: "hidden",
-                    }}
-                >
-                    <FeatherFade color={backgroundColor} />
-                    <MediaPreview
-                        imageUrl={largeImageUrl || imageUrl || avatarUrl}
-                        videoUrls={[animationUrl, cardAnimationUrl]}
-                        objectFit="cover"
-                        blurBackground
-                    />
-                </Box>
-            )}
+            <Box
+                sx={{
+                    position: "absolute",
+                    zIndex: 3,
+                    aspectRatio: "1.1",
+                    height: "80%",
+                    left: "50%",
+                    top: "50%",
+                    transform: "translate(-50%, -50%)",
+                    overflow: "hidden",
+                }}
+            >
+                <FeatherFade color={backgroundColor} />
+                <MediaPreview imageUrl={largeImageUrl || imageUrl || avatarUrl} videoUrls={[animationUrl, cardAnimationUrl]} objectFit="cover" blurBackground />
+            </Box>
         </Box>
     )
 }

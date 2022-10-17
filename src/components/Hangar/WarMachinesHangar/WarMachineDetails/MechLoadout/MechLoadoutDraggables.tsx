@@ -36,6 +36,7 @@ export interface MechLoadoutDraggablesProps {
     excludeWeaponIDs: string[]
     excludeMechSkinIDs: string[]
     includeMechSkinIDs: string[]
+    mechModelID: string
 }
 
 export const MechLoadoutDraggables = ({
@@ -46,6 +47,7 @@ export const MechLoadoutDraggables = ({
     excludeWeaponIDs,
     excludeMechSkinIDs,
     includeMechSkinIDs,
+    mechModelID,
 }: MechLoadoutDraggablesProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
 
@@ -79,8 +81,8 @@ export const MechLoadoutDraggables = ({
             const resp = await send<GetWeaponsDetailedResponse, GetWeaponsRequest>(GameServerKeys.GetWeaponsDetailed, {
                 page: 1,
                 page_size: 3,
-                sort_by: "asc",
-                sort_dir: "rarity",
+                sort_by: "date",
+                sort_dir: "desc",
                 include_market_listed: false,
                 display_genesis_and_limited: true,
                 exclude_ids: [],
@@ -108,8 +110,8 @@ export const MechLoadoutDraggables = ({
             const resp = await send<GetSubmodelsResponse, GetSubmodelsRequest>(GameServerKeys.GetMechSubmodelsDetailed, {
                 page: 1,
                 page_size: 3,
-                sort_by: "asc",
-                sort_dir: "rarity",
+                sort_by: "date",
+                sort_dir: "desc",
                 include_market_listed: false,
                 display_genesis_and_limited: true,
                 exclude_market_locked: true,
@@ -118,6 +120,7 @@ export const MechLoadoutDraggables = ({
                 skin_compatibility: [],
                 exclude_ids: excludeMechSkinIDs,
                 include_ids: includeMechSkinIDs,
+                model_id: mechModelID,
                 rarities: [],
                 equipped_statuses: [],
                 search: "",
@@ -133,7 +136,7 @@ export const MechLoadoutDraggables = ({
         } finally {
             setIsMechSkinsLoading(false)
         }
-    }, [excludeMechSkinIDs, includeMechSkinIDs, send])
+    }, [excludeMechSkinIDs, includeMechSkinIDs, mechModelID, send])
 
     useEffect(() => {
         if (sent.current) return
