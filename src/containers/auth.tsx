@@ -44,6 +44,7 @@ export interface AuthState {
     user: User
     userID: string
     factionID: string
+    roleType: RoleType
     setUser: Dispatch<React.SetStateAction<User>>
     userStat: UserStat
     setUserStat: Dispatch<React.SetStateAction<UserStat>>
@@ -73,6 +74,7 @@ const initialState: AuthState = {
     user: FallbackUser,
     userID: FallbackUser.id,
     factionID: FallbackUser.faction_id,
+    roleType: FallbackUser.role_type,
     setUser: () => {
         return
     },
@@ -111,6 +113,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User>(initialState.user)
     const userID = user.id
     const factionID = user.faction_id
+    const roleType = user.role_type
     const [isActive, setIsActive] = useState(true)
     const [userStat, setUserStat] = useState<UserStat>(initialState.userStat)
     const [userRank, setUserRank] = useState<UserRank>(initialState.userRank)
@@ -261,6 +264,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 user,
                 userID,
                 factionID,
+                roleType,
                 setUser,
                 punishments,
                 setPunishments,
