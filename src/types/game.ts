@@ -141,14 +141,13 @@ export interface Battle {
 }
 
 export interface WarMachineLiveState {
-    participant_id?: number
-    position?: Vector2i
-    rotation?: number
-    health?: number
-    shield?: number
+    participant_id: number
+    position: Vector2i
+    rotation: number
+    health: number
+    shield: number
     energy?: number
     is_hidden: boolean
-    tick_order: number
 }
 
 export interface BattleEndDetail {
@@ -341,6 +340,8 @@ export const MechMoveCommandAbility: AnyAbility = {
 
 export interface MechMoveCommand {
     id: string
+    arena_id?: string
+    battle_id?: string
     mech_id: string
     triggered_by_id: string
     cell_x: number

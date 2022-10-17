@@ -6,7 +6,7 @@ import { useAuth } from "../containers"
 // ******************
 // ** Subscription **
 // ******************
-export function usePassportSubscriptionAccount<T = DataType>({ URI, key, ready = true }: SubProps, callback?: (payload: T) => void) {
+export function usePassportSubscriptionAccount<T = DataType>({ URI, key, ready = true,binaryKey, binaryParser }: SubProps, callback?: (payload: T) => void) {
     const { user } = useAuth()
-    return useSubscription({ URI: `/account/${user.account_id}${URI}`, key, host: PASSPORT_SERVER_HOST, ready: !!user.account_id && ready }, callback)
+    return useSubscription({ URI: `/account/${user.account_id}${URI}`, key, host: PASSPORT_SERVER_HOST, ready: !!user.account_id && ready ,binaryKey, binaryParser}, callback)
 }
