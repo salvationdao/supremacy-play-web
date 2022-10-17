@@ -261,6 +261,7 @@ export enum GameServerKeys {
     // Voice chat
     SubPlayerVoiceStream = "PLAYER:VOICE:STREAM",
     SubPlayerVoiceStreamListeners = "PLAYER:VOICE:STREAM:LISTENERS",
+    GetPlayerVoiceStreamListeners = "VOICE:STREAM:GET:LISTENERS",
     VoiceChatVoteKick = "VOICE:VOTE:KICK",
     VoiceChatConnect = "VOICE:STREAM:CONNECT",
     VoiceChatDisconnect = "VOICE:STREAM:DISCONNECT",

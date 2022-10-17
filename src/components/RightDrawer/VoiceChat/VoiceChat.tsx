@@ -1,8 +1,9 @@
 import { Box, IconButton, Popover, Slider, Stack, Typography } from "@mui/material"
+import OvenLiveKit from "ovenlivekit"
 import OvenPlayer from "ovenplayer"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { SvgVoice, SvgVolume, SvgVolumeMute } from "../../../assets"
-import { useArena, useAuth, useChat, useGlobalNotifications, useSupremacy } from "../../../containers"
+import { useArena, useAuth, useGlobalNotifications, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { acronym, shadeColor } from "../../../helpers"
 import { useToggle } from "../../../hooks"
@@ -11,12 +12,11 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { Faction, FeatureName, User } from "../../../types"
 import { StyledImageText } from "../../Notifications/Common/StyledImageText"
-import OvenLiveKit from "ovenlivekit"
 
 import ConnectSound from "../../../assets/voiceChat/Connect.wav"
 import DisconnectSound from "../../../assets/voiceChat/Disconnect.wav"
-import { FancyButton } from "../../Common/FancyButton"
 import { ConfirmModal } from "../../Common/ConfirmModal"
+import { FancyButton } from "../../Common/FancyButton"
 
 export interface VoiceStream {
     listen_url: string
@@ -73,12 +73,18 @@ export const VoiceChat = () => {
             ready: !!(currentArenaID && factionID),
         },
         (payload: VoiceStream[]) => {
+            console.log("calling ", payload)
+
+            getVoiceStreamListeners()
+
             if (payload) {
                 // put faction commander on top
                 const sorted = payload.sort((x, y) => Number(y.is_faction_commander) - Number(x.is_faction_commander))
                 const factionCommander = payload.filter((v) => v.is_faction_commander)
                 setVoiceStreams(sorted)
                 setHasFactionCommander(!!(factionCommander && factionCommander.length > 0))
+
+                // get new listeners
 
                 if (!connected) return
                 onConnect(sorted, false)
@@ -93,14 +99,27 @@ export const VoiceChat = () => {
             ready: !!(currentArenaID && factionID),
         },
         (payload: User[]) => {
-            console.log("this be listeners", payload)
-
             if (payload) {
-                // set listeners
                 setListeners(payload)
             }
         },
     )
+
+    const getVoiceStreamListeners = useCallback(async () => {
+        try {
+            const resp = await send<User[]>(GameServerKeys.GetPlayerVoiceStreamListeners, {
+                arena_id: currentArenaID,
+            })
+            if (!resp) {
+                return
+            }
+
+            setListeners(resp)
+        } catch (e) {
+            const message = typeof e === "string" ? e : "Failed to get listeners"
+            newSnackbarMessage(message, "error")
+        }
+    }, [currentArenaID, newSnackbarMessage, send])
 
     const leaveFactionCommander = useCallback(async () => {
         try {
@@ -325,8 +344,8 @@ export const VoiceChat = () => {
                 onClick={() => setOpen(!open)}
                 clipThingsProps={{
                     clipSize: "5px",
-                    backgroundColor: theme.factionTheme.primary,
-                    border: { borderColor: theme.factionTheme.primary, borderThickness: "1px" },
+                    backgroundColor: theme.factionTheme.primary === "#FFFFFF" ? "#A4A4A4" : theme.factionTheme.primary,
+                    border: { borderColor: theme.factionTheme.primary === "#FFFFFF" ? "#A4A4A4" : theme.factionTheme.primary, borderThickness: "1px" },
                     sx: { position: "relative" },
                 }}
                 sx={{ px: "1rem", pt: 0, pb: ".1rem", minWidth: "7rem", color: "#FFFFFF" }}
