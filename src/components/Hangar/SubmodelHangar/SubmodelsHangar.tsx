@@ -42,6 +42,7 @@ export interface GetSubmodelsRequest {
     display_unique?: boolean
     exclude_ids: string[]
     include_ids: string[]
+    model_id?: string
     rarities: string[]
     skin_compatibility: string[]
     equipped_statuses: string[]

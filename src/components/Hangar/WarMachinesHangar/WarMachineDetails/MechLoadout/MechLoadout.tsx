@@ -1,6 +1,6 @@
 import { Box, Button, Divider, Fade, Slide, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { Svg2DView, Svg3DView, SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgWeapons } from "../../../../../assets"
+import { Svg2DView, Svg3DView, SvgCamera, SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgWeapons } from "../../../../../assets"
 import { useGlobalNotifications } from "../../../../../containers"
 import { useTheme } from "../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../helpers"
@@ -10,7 +10,7 @@ import { colors, fonts } from "../../../../../theme/theme"
 import { AssetItemType, MechDetails, MechSkin, MechStatus, MechStatusEnum, PowerCore, Utility, Weapon } from "../../../../../types"
 import { ClipThing } from "../../../../Common/ClipThing"
 import { FancyButton } from "../../../../Common/FancyButton"
-import { MechLoadoutItem } from "../../Common/MechLoadoutItem"
+import { LoadoutItem, MechLoadoutItem } from "../../Common/MechLoadoutItem"
 import { MechViewer } from "../MechViewer/MechViewer"
 import { MechViewer3D } from "../MechViewer/MechViewer3D"
 import { UnityHandle } from "../MechViewer/UnityViewer"
@@ -307,6 +307,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                               weapon_id: prevWeapon.id,
                               slot_number: slotNumber,
                               weapon: prevWeapon,
+                              inherit_skin: prevWeapon.inherit_skin,
                           }
                         : {
                               weapon_id: "",
@@ -485,11 +486,20 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         if (!unityControlsRef.current) return
         await unityControlsRef.current.handleUnload()
         setEnable3DLoadout(false)
+        setIsUnityLoaded(false)
         localStorage.setItem(LOCAL_STORAGE_KEY_PREFERS_2D_LOADOUT, "true")
     }
     const switchTo3DView = async () => {
         setEnable3DLoadout(true)
         localStorage.setItem(LOCAL_STORAGE_KEY_PREFERS_2D_LOADOUT, "false")
+    }
+
+    // SCREENSHOT
+    const screenshot3DView = () => {
+        if (!unityControlsRef.current) return
+        const dataUrl = unityControlsRef.current.handleScreenshot()
+        if (!dataUrl) return
+        window.open(dataUrl, "_blank")
     }
 
     return (
@@ -511,16 +521,8 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                 backgroundColor={theme.factionTheme.background}
                 sx={{ flex: 1, height: "100%" }}
             >
-                <ClipThing
-                    clipSize="10px"
-                    border={{
-                        borderColor: theme.factionTheme.primary,
-                        borderThickness: ".3rem",
-                    }}
-                    backgroundColor={theme.factionTheme.background}
-                    corners={{
-                        topRight: true,
-                    }}
+                {/* Viewer Actions */}
+                <Stack
                     sx={{
                         zIndex: 7,
                         position: "absolute",
@@ -528,32 +530,88 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                         bottom: 0,
                     }}
                 >
-                    <Stack direction="row">
-                        <Box p="1rem">{!enable3DLoadout ? <Svg3DView /> : <Svg2DView />}</Box>
-                        <Divider
-                            orientation="vertical"
-                            color={colors.darkGrey}
-                            sx={{
-                                height: "auto",
+                    <Slide in={enable3DLoadout && isUnityLoaded} direction="right">
+                        <ClipThing
+                            clipSize="10px"
+                            border={{
+                                borderColor: theme.factionTheme.primary,
+                                borderThickness: ".3rem",
                             }}
-                        />
-                        <Button
-                            sx={{
-                                borderRadius: 0,
+                            backgroundColor={theme.factionTheme.background}
+                            corners={{
+                                topRight: true,
                             }}
-                            onClick={enable3DLoadout ? switchTo2DView : switchTo3DView}
+                            sx={{
+                                mb: "-.3rem",
+                            }}
                         >
-                            <Typography
+                            <Stack direction="row">
+                                <Box p="1rem">
+                                    <SvgCamera />
+                                </Box>
+                                <Divider
+                                    orientation="vertical"
+                                    color={colors.darkGrey}
+                                    sx={{
+                                        height: "auto",
+                                    }}
+                                />
+                                <Button
+                                    sx={{
+                                        borderRadius: 0,
+                                    }}
+                                    onClick={screenshot3DView}
+                                >
+                                    <Typography
+                                        sx={{
+                                            fontFamily: fonts.nostromoBlack,
+                                            fontSize: "2rem",
+                                        }}
+                                    >
+                                        Take Screenshot
+                                    </Typography>
+                                </Button>
+                            </Stack>
+                        </ClipThing>
+                    </Slide>
+                    <ClipThing
+                        clipSize="10px"
+                        border={{
+                            borderColor: theme.factionTheme.primary,
+                            borderThickness: ".3rem",
+                        }}
+                        backgroundColor={theme.factionTheme.background}
+                        corners={{
+                            topRight: !(enable3DLoadout && isUnityLoaded),
+                        }}
+                    >
+                        <Stack direction="row">
+                            <Box p="1rem">{!enable3DLoadout ? <Svg3DView /> : <Svg2DView />}</Box>
+                            <Divider
+                                orientation="vertical"
+                                color={colors.darkGrey}
                                 sx={{
-                                    fontFamily: fonts.nostromoBlack,
-                                    fontSize: "2rem",
+                                    height: "auto",
                                 }}
+                            />
+                            <Button
+                                sx={{
+                                    borderRadius: 0,
+                                }}
+                                onClick={enable3DLoadout ? switchTo2DView : switchTo3DView}
                             >
-                                Switch to {enable3DLoadout ? "2D" : "3D"} View
-                            </Typography>
-                        </Button>
-                    </Stack>
-                </ClipThing>
+                                <Typography
+                                    sx={{
+                                        fontFamily: fonts.nostromoBlack,
+                                        fontSize: "2rem",
+                                    }}
+                                >
+                                    Switch to {enable3DLoadout ? "2D" : "3D"} View
+                                </Typography>
+                            </Button>
+                        </Stack>
+                    </ClipThing>
+                </Stack>
                 {/* Mech Viewer */}
                 {enable3DLoadout ? (
                     <MechViewer3D
@@ -689,11 +747,19 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                 />
                             )
 
-                            const prevEquipped = () => {
+                            const prevEquipped = (): LoadoutItem | undefined => {
                                 if (!changed_power_core) return
 
                                 const previouslyEquipped = power_core
-                                if (!previouslyEquipped) return
+                                if (!previouslyEquipped) {
+                                    return {
+                                        label: "POWER CORE",
+                                        primaryColor: colors.powerCore,
+                                        onClick: () => undoPowerCoreChanges(),
+                                        disabled: loadoutDisabled,
+                                        isEmpty: true,
+                                    }
+                                }
 
                                 return {
                                     imageUrl: previouslyEquipped.image_url || previouslyEquipped.avatar_url,
@@ -773,11 +839,20 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                 />
                             )
 
-                            const prevEquipped = () => {
+                            const prevEquipped = (): LoadoutItem | undefined => {
                                 if (!changed_weapons_map.has(slotNumber)) return
 
                                 const previouslyEquipped = weapons_map.get(slotNumber)
-                                if (!previouslyEquipped) return
+                                if (!previouslyEquipped) {
+                                    return {
+                                        slotNumber,
+                                        label: "WEAPON",
+                                        primaryColor: colors.weapons,
+                                        onClick: () => undoWeaponChanges(slotNumber),
+                                        disabled: loadoutDisabled,
+                                        isEmpty: true,
+                                    }
+                                }
 
                                 return {
                                     slotNumber,
@@ -967,6 +1042,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                 excludeWeaponIDs={Array.from(changed_weapons_map.values(), (w) => w.weapon_id)}
                 excludeMechSkinIDs={changed_mech_skin?.mech_skin ? [changed_mech_skin.mech_skin.blueprint_id] : chassis_skin ? [chassis_skin.blueprint_id] : []}
                 includeMechSkinIDs={compatible_blueprint_mech_skin_ids}
+                mechModelID={mechDetails.blueprint_id}
                 onDrag={onItemDrag}
                 onDragStart={onItemDragStart}
                 onDragStop={onItemDragStop}
