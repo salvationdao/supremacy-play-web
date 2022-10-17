@@ -19,7 +19,7 @@ export const Blackouts = () => {
 
     useGameServerSubscription<BlackoutEvent[]>(
         {
-            URI: `/public/arena/${currentArenaID}/minimap`,
+            URI: `/mini_map/arena/${currentArenaID}/public/minimap`,
             key: GameServerKeys.MinimapUpdatesSubscribe,
         },
         (payload) => {
