@@ -73,8 +73,7 @@ export const VoiceChat = () => {
             ready: !!(currentArenaID && factionID),
         },
         (payload: VoiceStream[]) => {
-            console.log("calling ", payload)
-
+            // get updated listeners
             getVoiceStreamListeners()
 
             if (payload) {
@@ -83,8 +82,6 @@ export const VoiceChat = () => {
                 const factionCommander = payload.filter((v) => v.is_faction_commander)
                 setVoiceStreams(sorted)
                 setHasFactionCommander(!!(factionCommander && factionCommander.length > 0))
-
-                // get new listeners
 
                 if (!connected) return
                 onConnect(sorted, false)
