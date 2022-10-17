@@ -33,8 +33,6 @@ export const RestartServerModal = ({ modalOpen, setModalOpen }: { modalOpen: boo
             } catch (e) {
                 console.error(e)
                 setReqError(typeof e === "string" ? e : "Failed to unban player")
-            } finally {
-                console.log("success")
             }
         })()
     }, [onClose, send, restartReason])

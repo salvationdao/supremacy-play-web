@@ -55,7 +55,6 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
     const [pixiMapMech, setPixiMapMech] = useState<PixiMapMech>()
 
-    const tickIteration = useRef(0)
     const iconDimension = useRef<Dimension>({ width: 5, height: 5 })
     const prevRotation = useRef(warMachine.rotation)
     const [isAlive, setIsAlive] = useState(warMachine.health > 0)
@@ -309,35 +308,36 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     }, [abilityBorderEffect, abilityShakeEffect, abilityPulseEffect, pixiMapMech])
 
     // Listen on mech stats
-    useGameServerSubscription<WarMachineLiveState | undefined>(
+    useGameServerSubscription<WarMachineLiveState[] | undefined>(
         {
-            URI: `/public/arena/${currentArenaID}/mech/${participantID}`,
+            URI: `/public/arena/${currentArenaID}/mech_stats`,
             key: GameServerKeys.SubMechLiveStats,
             ready: !!participantID && !!currentArenaID && !!pixiMapMech,
-            batchURI: `/public/arena/${currentArenaID}/mech`,
         },
         (payload) => {
             // If window is not in focus, discard the payloads else will crash browser
             if (!isWindowFocused.current) return
 
-            if (!payload || payload.tick_order < tickIteration.current) return
-            tickIteration.current = payload.tick_order
+            if (!payload) return
 
-            if (payload?.health !== undefined && pixiMapMech) {
-                setIsAlive(payload.health > 0)
-                const percent = (payload.health / maxHealth) * 100
+            const target = payload.find((mech) => mech.participant_id === participantID)
+            if (!target) return
+
+            if (target.health !== undefined && pixiMapMech) {
+                setIsAlive(target.health > 0)
+                const percent = (target.health / maxHealth) * 100
                 pixiMapMech.updateHpBar(percent)
             }
 
-            if (payload?.shield !== undefined && pixiMapMech) {
-                const percent = (payload.shield / maxShield) * 100
+            if (target.shield !== undefined && pixiMapMech) {
+                const percent = (target.shield / maxShield) * 100
                 pixiMapMech.updateShieldBar(percent)
             }
 
             // Update position, only when not hidden (else pos will set to like -100, -100 or something)
-            if (payload?.position !== undefined && pixiMapMech) {
-                if (!payload?.is_hidden) {
-                    const newPos = clientPositionToViewportPosition.current(payload.position.x, payload.position.y)
+            if (target.position !== undefined && pixiMapMech) {
+                if (!target.is_hidden) {
+                    const newPos = clientPositionToViewportPosition.current(target.position.x, target.position.y)
                     pixiMapMech.updatePosition(newPos.x, newPos.y)
                 }
 
@@ -352,8 +352,8 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             }
 
             // Update rotation
-            if (payload?.rotation !== undefined && pixiMapMech) {
-                const newRot = closestAngle(prevRotation.current, payload.rotation || 0)
+            if (target.rotation !== undefined && pixiMapMech) {
+                const newRot = closestAngle(prevRotation.current, target.rotation || 0)
                 const newRotRad = deg2rad(newRot + 90)
                 pixiMapMech.updateRotation(newRotRad)
                 prevRotation.current = newRot
@@ -361,7 +361,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
 
             // Update visibility
             if (pixiMapMech) {
-                pixiMapMech.updateVisibility(!payload?.is_hidden)
+                pixiMapMech.updateVisibility(!target.is_hidden)
             }
         },
     )

@@ -51,8 +51,6 @@ export const AdminUnbanModal = ({
             } catch (e) {
                 console.error(e)
                 setReqError(typeof e === "string" ? e : "Failed to unban player")
-            } finally {
-                console.log("success")
             }
         })()
     }, [fetchPlayer, onClose, playerUnbanIDs, send, unbanReason, user.gid])
