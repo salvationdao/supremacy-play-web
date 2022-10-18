@@ -58,6 +58,7 @@ export const LookupHistory = () => {
                     height: "100%",
                     justifyContent: "center",
                     alignItems: "center",
+                    p: "1rem",
                 }}
             >
                 <CircularProgress
@@ -76,6 +77,7 @@ export const LookupHistory = () => {
                     height: "100%",
                     justifyContent: "center",
                     alignItems: "center",
+                    p: "1rem",
                 }}
             >
                 <Typography>No Recent Lookup History</Typography>

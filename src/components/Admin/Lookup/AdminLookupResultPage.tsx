@@ -1,11 +1,10 @@
-import { Box, CircularProgress, Fade, Stack, Tab, Tabs, Typography } from "@mui/material"
+import { Box, Button, CircularProgress, Fade, Stack, Tab, Tabs, Typography } from "@mui/material"
 import React, { SyntheticEvent, useCallback, useEffect, useState } from "react"
 import { useHistory, useParams } from "react-router-dom"
 import { ClipThing } from "../.."
-import { HangarBg, SvgBack } from "../../../assets"
+import { HangarBg, SvgBack, SvgEdit } from "../../../assets"
 import { useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { useToggle } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
@@ -17,6 +16,7 @@ import { ActiveBanPanel } from "./ActiveBanPanel"
 import { AdminBanModal } from "./AdminBanModal"
 import { LookupSearchBox } from "./AdminLookup"
 import { AdminUnbanModal } from "./AdminUnbanModal"
+import { AdminUpdateUsernameModal } from "./AdminUpdateUsernameModal"
 import { AdminUserAsset } from "./AdminUserAsset"
 import { BanHistoryPanel } from "./BanHistoryPanel"
 import { ChatHistory } from "./ChatHistory"
@@ -175,13 +175,16 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
 
     const [userData, setUserData] = useState<GetUserResp>()
-    const [isLoading, setIsLoading] = useToggle(false)
+    const [isLoading, setIsLoading] = useState(false)
     const [loadError, setLoadError] = useState<string>()
     const [faction, setFaction] = useState<Faction>(getFaction(user.faction_id))
+    const [currentTab, setCurrentTab] = useState<string>("PLAYER-INFO")
+
     const [banModalOpen, setBanModalOpen] = useState<boolean>(false)
     const [unbanModalOpen, setUnbanModalOpen] = useState<boolean>(false)
-    const [currentValue, setCurrentValue] = useState<string>("PLAYER-INFO")
     const [playerUnbanIDs, setPlayerUnbanIDs] = useState<string[]>([])
+
+    const [updateUsernameModalOpen, setUpdateUsernameModalOpen] = useState(false)
 
     const fetchPlayer = useCallback(async () => {
         setIsLoading(true)
@@ -206,10 +209,10 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
         } finally {
             setIsLoading(false)
         }
-    }, [getFaction, playerGIDString, send, setIsLoading])
+    }, [getFaction, playerGIDString, send])
 
     const handleChange = useCallback((_e: SyntheticEvent, newValue: string) => {
-        setCurrentValue(newValue)
+        setCurrentTab(newValue)
     }, [])
 
     const toggleSelected = useCallback((playerBan: AdminPlayerBan) => {
@@ -294,7 +297,31 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
                 }}
             >
                 <PageHeader
-                    title={userData.user.username}
+                    title={
+                        <Button
+                            disabled={updateUsernameModalOpen}
+                            onClick={() => setUpdateUsernameModalOpen(true)}
+                            endIcon={<SvgEdit size="2rem" />}
+                            sx={{
+                                ml: "-1rem",
+                            }}
+                        >
+                            <Typography
+                                sx={{
+                                    fontSize: "1.8rem",
+                                    color: "#FFFFFF",
+                                    display: "-webkit-box",
+                                    overflow: "hidden",
+                                    overflowWrap: "anywhere",
+                                    textOverflow: "ellipsis",
+                                    WebkitLineClamp: 1,
+                                    WebkitBoxOrient: "vertical",
+                                }}
+                            >
+                                {userData.user.username}
+                            </Typography>
+                        </Button>
+                    }
                     description={`#${userData.user.gid}`}
                     imageUrl={faction.logo_url}
                     imageHeight={"7rem"}
@@ -321,7 +348,7 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
                 </PageHeader>
                 <Box sx={{ borderBottom: `${faction.primary_color}70 1.5px solid` }}>
                     <Tabs
-                        value={currentValue}
+                        value={currentTab}
                         onChange={handleChange}
                         variant="scrollable"
                         scrollButtons="auto"
@@ -363,7 +390,7 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
                     }}
                 >
                     <Box height={0}>
-                        <TabPanel currentValue={currentValue} value={"PLAYER-INFO"}>
+                        <TabPanel currentValue={currentTab} value={"PLAYER-INFO"}>
                             <Box
                                 sx={{
                                     flex: 1,
@@ -467,7 +494,7 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
                             </Box>
                         </TabPanel>
 
-                        <TabPanel currentValue={currentValue} value={"USER-ASSET"}>
+                        <TabPanel currentValue={currentTab} value={"USER-ASSET"}>
                             <Box
                                 sx={{
                                     px: "2rem",
@@ -488,6 +515,28 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
                     </Box>
                 </Stack>
             </ClipThing>
+
+            {updateUsernameModalOpen && (
+                <AdminUpdateUsernameModal
+                    user={userData.user}
+                    onClose={() => setUpdateUsernameModalOpen(false)}
+                    onSuccess={(newUsername) => {
+                        setUserData((prev) => {
+                            return prev
+                                ? {
+                                      ...prev,
+                                      user: {
+                                          ...prev?.user,
+                                          username: newUsername,
+                                      },
+                                  }
+                                : undefined
+                        })
+                        setUpdateUsernameModalOpen(false)
+                    }}
+                    faction={faction}
+                />
+            )}
 
             {banModalOpen && (
                 <AdminBanModal user={userData.user} modalOpen={banModalOpen} setModalOpen={setBanModalOpen} faction={faction} fetchPlayer={fetchPlayer} />
