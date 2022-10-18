@@ -61,15 +61,17 @@ export const BattleLobbyPricePool = ({ battleLobby }: BattleLobbyPricePoolProps)
     const onTopUp = useCallback(async () => {
         try {
             setLoading(true)
-            await send<boolean>(GameServerKeys.TopUpLobbyReward, {
-                lobby_id: battleLobby.id,
+            await send<boolean>(GameServerKeys.TopUpBattleLobbyReward, {
+                battle_lobby_id: battleLobby.id,
                 amount: topUpReward,
             })
         } catch (e) {
             console.log(e)
             if (typeof e === "string") setError(e)
         } finally {
-            setLoading(false)
+            setTimeout(() => setLoading(false), 500)
+            setTimeout(() => setAnchorEl(null), 650)
+            setTopUpReward("0")
         }
     }, [battleLobby.id, send, topUpReward])
 
@@ -114,10 +116,17 @@ export const BattleLobbyPricePool = ({ battleLobby }: BattleLobbyPricePoolProps)
                             backgroundColor: factionTheme.background,
                             backgroundImage: "unset",
                             border: `${factionTheme.primary}99 2px solid`,
+                            width: "35rem",
                         },
                     }}
                 >
                     <Stack direction="column" sx={{ p: "1rem" }}>
+                        <Typography variant="h6" fontFamily={fonts.nostromoBlack}>
+                            Reminder:
+                        </Typography>
+                        <Typography variant="body1" sx={{ mb: "1rem" }}>
+                            The provided sups will stay in the pool and be distributed after the battle is ended.
+                        </Typography>
                         <InputField
                             variant="outlined"
                             label="Top Up Reward"
@@ -126,6 +135,7 @@ export const BattleLobbyPricePool = ({ battleLobby }: BattleLobbyPricePoolProps)
                             type="number"
                             value={topUpReward}
                             onChange={(e) => setTopUpReward(e.target.value)}
+                            disabled={loading}
                             endAdornmentLabel={
                                 <Box
                                     sx={{
@@ -137,7 +147,7 @@ export const BattleLobbyPricePool = ({ battleLobby }: BattleLobbyPricePoolProps)
                                         px: "1rem",
                                         cursor: "pointer",
                                     }}
-                                    onClick={onTopUp}
+                                    onClick={loading ? undefined : onTopUp}
                                 >
                                     <Typography variant="body2" fontFamily={fonts.nostromoBlack} sx={{ color: factionTheme.secondary }}>
                                         submit
