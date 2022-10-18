@@ -368,7 +368,7 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
                                 sx={{
                                     flex: 1,
                                     display: "grid",
-                                    gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+                                    gridTemplateColumns: "repeat(auto-fill, minmax(500px, 1fr))",
                                     gap: "2rem",
                                     px: "2rem",
                                     py: "2rem",
