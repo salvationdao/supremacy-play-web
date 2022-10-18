@@ -3,7 +3,17 @@ import * as THREE from "three"
 import { clamp } from "three/src/math/MathUtils"
 import { getRandomFloat, hexToRGB } from "../../../../../helpers"
 import { colors } from "../../../../../theme/theme"
-import { baseFrameRate, blockConfig, skins } from "./config"
+import {
+    baseFrameRate,
+    blockConfig,
+    chanceRandomBlockSizeOccur,
+    chanceSpecialFastBlinking,
+    randomBlockSizeFactorMax,
+    randomBlockSizeFactorMin,
+    randomBlockSpeedFactorMax,
+    randomBlockSpeedFactorMin,
+    skins,
+} from "./config"
 import { cover } from "./utils"
 
 export interface Dimension {
@@ -52,7 +62,12 @@ export class Block {
     rightTexture: THREE.Texture
     materials: THREE.MeshBasicMaterial[]
 
+    // Special (smaller size)
+    private randomizeSizeFactor = 1
+
     constructor(prevBlock?: PrevBlock, shouldReplace = false, isFalling = false) {
+        this.randomizeSizeFactor = getRandomFloat(0, 1) < chanceRandomBlockSizeOccur ? getRandomFloat(randomBlockSizeFactorMin, randomBlockSizeFactorMax) : 1
+
         // This is how far away to spawn from the center of the stacks (spawn loc)
         this.MOVE_AMOUNT = 20
         let axis = null
@@ -62,9 +77,9 @@ export class Block {
         let x, y, z
 
         if (prevBlock) {
-            width = prevBlock.dimension.width
-            height = prevBlock.dimension.height
-            depth = prevBlock.dimension.depth
+            width = prevBlock.dimension.width * this.randomizeSizeFactor
+            height = prevBlock.dimension.height * this.randomizeSizeFactor
+            depth = prevBlock.dimension.depth * this.randomizeSizeFactor
 
             x = prevBlock.position.x
             z = prevBlock.position.z
@@ -174,7 +189,7 @@ export class Block {
 export class NormalBlock extends Block {
     private randomizeSpeedFactor: number
 
-    // Special
+    // Special (fast blinking block)
     isSpecialFastBlock = false
     private isBlinked = false
     private blinkFreq = 300 // milliseconds
@@ -184,10 +199,10 @@ export class NormalBlock extends Block {
     constructor(prevBlock: PrevBlock, shouldReplace = false) {
         super(prevBlock, shouldReplace)
 
-        // A small chance that the block is a special fast one
-        this.isSpecialFastBlock = getRandomFloat(0, 1) < 0.12
+        this.randomizeSpeedFactor = this.isSpecialFastBlock ? 2.2 : getRandomFloat(randomBlockSpeedFactorMin, randomBlockSpeedFactorMax)
 
-        this.randomizeSpeedFactor = this.isSpecialFastBlock ? 2.2 : getRandomFloat(1, 1.5)
+        // A small chance that the block is a special fast one
+        this.isSpecialFastBlock = getRandomFloat(0, 1) < chanceSpecialFastBlinking
     }
 
     reverseDirection() {

@@ -118,3 +118,14 @@ export interface Skin {
     front: string
     right: string
 }
+
+// Configs
+export const chanceSpecialFastBlinking = 0.12
+export const chanceSpecialSmallVersion = 0.06
+// Random chance block can be faster
+export const randomBlockSpeedFactorMin = 1
+export const randomBlockSpeedFactorMax = 1.5
+// Random chance block can be smaller
+export const chanceRandomBlockSizeOccur = 0.15
+export const randomBlockSizeFactorMin = 0.7
+export const randomBlockSizeFactorMax = 1
