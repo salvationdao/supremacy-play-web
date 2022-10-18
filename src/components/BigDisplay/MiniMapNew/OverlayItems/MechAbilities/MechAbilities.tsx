@@ -64,7 +64,7 @@ const MechAbilitiesInner = React.memo(function MechAbilitiesInner({ warMachine }
             URI: `/mini_map/arena/${currentArenaID}/public/mech_stats`,
             binaryKey: BinaryDataKey.WarMachineStats,
             binaryParser: warMachineStatsBinaryParser,
-            ready: !!currentArenaID,
+            ready: !!currentArenaID && !!pixiMechAbilities,
         },
         (payload) => {
             if (!payload) return
