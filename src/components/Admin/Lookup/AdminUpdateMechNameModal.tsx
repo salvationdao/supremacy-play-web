@@ -21,7 +21,7 @@ export interface AdminUpdateMechNameModalProps {
 export const AdminUpdateMechNameModal = ({ user, mech, onClose, onSuccess, faction }: AdminUpdateMechNameModalProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
 
-    const [mechName, setMechName] = useState(uniqueNamesGenerator({ dictionaries: [adjectives, animals] }))
+    const [mechName, setMechName] = useState(uniqueNamesGenerator({ dictionaries: [adjectives, animals], separator: " " }))
     const [reason, setReason] = useState("")
     const [isLoading, setIsLoading] = useState(false)
     const [loadError, setLoadError] = useState<string>()
