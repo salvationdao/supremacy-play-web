@@ -352,7 +352,7 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
                     >
                         <Tab label="INFO" value={"PLAYER-INFO"} />
 
-                        {user.role_type === RoleType.admin && <Tab label="USER ASSET" value={"USER-ASSET"} />}
+                        {user.role_type === RoleType.admin && <Tab label="USER ASSETS" value={"USER-ASSET"} />}
                     </Tabs>
                 </Box>
 
