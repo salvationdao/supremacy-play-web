@@ -21,7 +21,7 @@ export const AdminUserAsset = ({ user, faction, userAsset }: AdminUserAssetProps
                         sx={{
                             width: "100%",
                             display: "grid",
-                            gridTemplateColumns: "repeat(4, minmax(26rem, 1fr))",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
                             gap: "2rem",
                             alignItems: "start",
                             justifyContent: "start",
