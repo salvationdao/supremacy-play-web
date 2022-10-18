@@ -73,9 +73,6 @@ export const UnityViewer = ({ mechDetailsWithMaps: mechDetails, unity }: MechVie
         frameworkUrl: `${baseUrl}/WebGL.framework.js.br`,
         codeUrl: `${baseUrl}/WebGL.wasm.br`,
         streamingAssetsUrl: `${baseUrl}/StreamingAssets`,
-        webglContextAttributes: {
-            preserveDrawingBuffer: true,
-        },
     })
     const sent = useRef(false)
     const ready = useRef(false)
