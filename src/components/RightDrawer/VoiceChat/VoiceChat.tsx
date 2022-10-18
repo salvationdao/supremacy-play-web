@@ -77,8 +77,6 @@ export const VoiceChat = () => {
             getVoiceStreamListeners()
 
             if (payload) {
-                console.log("this is payload", payload)
-
                 // put faction commander on top
                 const sorted = payload.sort((x, y) => Number(y.is_faction_commander) - Number(x.is_faction_commander))
                 const factionCommander = payload.filter((v) => v.is_faction_commander)
