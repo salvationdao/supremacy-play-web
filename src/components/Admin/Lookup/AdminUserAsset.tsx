@@ -1,5 +1,6 @@
 import { Box, Button, Stack, Typography } from "@mui/material"
 import { useState } from "react"
+import { Link } from "react-router-dom"
 import { SvgEdit } from "../../../assets"
 import { Faction, MechDetails, User } from "../../../types"
 import { AdminGetUserAsset } from "../../../types/admin"
@@ -58,13 +59,15 @@ const MechEntry = ({ user, faction, mech }: MechEntryProps) => {
     return (
         <>
             <Stack spacing="1rem">
-                <MediaPreview
-                    imageUrl={avatarUrl || imageUrl || largeImageUrl}
-                    objectFit="cover"
-                    sx={{
-                        height: "20rem",
-                    }}
-                />
+                <Link to={`/mech/${mech.id}`}>
+                    <MediaPreview
+                        imageUrl={avatarUrl || imageUrl || largeImageUrl}
+                        objectFit="cover"
+                        sx={{
+                            height: "20rem",
+                        }}
+                    />
+                </Link>
                 <Button
                     disabled={updateMechNameModalOpen}
                     onClick={() => setUpdateMechNameModalOpen(true)}
