@@ -2,7 +2,7 @@ import { Box, IconButton, Popover, Slider, Stack, Typography } from "@mui/materi
 import OvenLiveKit from "ovenlivekit"
 import OvenPlayer from "ovenplayer"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { SvgClose, SvgMicrophone, SvgMicrophoneMute, SvgVoice, SvgVolume, SvgVolumeMute } from "../../../assets"
+import { SvgMicrophone, SvgMicrophoneMute, SvgVoice, SvgVolume, SvgVolumeMute } from "../../../assets"
 import { useArena, useAuth, useGlobalNotifications, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { acronym, shadeColor } from "../../../helpers"
@@ -328,13 +328,9 @@ export const VoiceChat = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [voiceStreams])
 
-    const onMuteMic = () => {
+    const onMuteMic = (mute: boolean) => {
         if (ovenLiveKitInstance) {
-            console.log("current ", ovenLiveKitInstance.current?.stream)
-            console.log("stream ", ovenLiveKitInstance.current)
-
-            const thing = ovenLiveKitInstance.current.stream.getTracks()[0].enabled
-            ovenLiveKitInstance.current.stream.getTracks()[0].enabled = !thing
+            ovenLiveKitInstance.current.stream.getTracks()[0].enabled = mute
         }
     }
 
@@ -438,7 +434,7 @@ export const VoiceChatInner = ({
 
     onConnect: () => void
     onDisconnect: () => void
-    onMuteMic: () => void
+    onMuteMic: (b: boolean) => void
     onJoinFactionCommander: () => void
     onLeaveFactionCommander: () => void
     onVoteKick: () => void
@@ -648,16 +644,8 @@ export const VoiceChatInner = ({
                     <IconButton
                         size="small"
                         onClick={() => {
-                            if (!micMuted) {
-                                setMicMuted(true)
-                                onMuteMic()
-                                return
-                            }
-
-                            if (micMuted) {
-                                setMicMuted(false)
-                                // onConnect()
-                            }
+                            onMuteMic(micMuted)
+                            setMicMuted(!micMuted)
                         }}
                     >
                         {micMuted ? (
