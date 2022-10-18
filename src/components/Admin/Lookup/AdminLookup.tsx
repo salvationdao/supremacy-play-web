@@ -76,7 +76,7 @@ export const AdminLookup = () => {
                                         p="1rem"
                                         sx={{
                                             borderRadius: "2px",
-                                            backgroundColor: `${faction.primary_color}77`,
+                                            backgroundColor: `${faction.primary_color}33`,
                                         }}
                                     >
                                         <Stack direction="row">

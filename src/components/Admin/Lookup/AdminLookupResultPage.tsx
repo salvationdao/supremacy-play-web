@@ -20,6 +20,7 @@ import { AdminUnbanModal } from "./AdminUnbanModal"
 import { AdminUserAsset } from "./AdminUserAsset"
 import { BanHistoryPanel } from "./BanHistoryPanel"
 import { ChatHistory } from "./ChatHistory"
+import { LookupHistory } from "./LookupHistory"
 import { PlayerProfileCard } from "./PlayerProfileCard"
 import { RelatedAccounts } from "./RelatedAccounts"
 
@@ -68,7 +69,7 @@ export const AdminLookupResultPage = () => {
                 </FancyButton>
 
                 <Stack direction="row" spacing="1rem" flex={1}>
-                    <PreviousUsers />
+                    <LookupSidebar />
                     <LookupResult playerGIDString={playerGIDString} />
                 </Stack>
             </Stack>
@@ -76,8 +77,9 @@ export const AdminLookupResultPage = () => {
     )
 }
 
-const PreviousUsers = () => {
+const LookupSidebar = () => {
     const theme = useTheme()
+
     return (
         <ClipThing
             clipSize="10px"
@@ -92,86 +94,72 @@ const PreviousUsers = () => {
                 height: "100%",
             }}
         >
-            <Box>
-                <Typography
-                    variant="h6"
-                    sx={{
-                        fontFamily: fonts.nostromoBlack,
-                        p: "1rem",
-                        width: "100%",
-                        textAlign: "center",
-                        color: theme.factionTheme.secondary,
-                        background: theme.factionTheme.primary,
-                    }}
-                >
-                    PLAYER LOOKUP
-                </Typography>
-                <Box
-                    sx={{
-                        p: "1rem",
-                    }}
-                >
-                    <LookupSearchBox />
+            <Stack height="100%">
+                <Box>
+                    <Typography
+                        variant="h6"
+                        sx={{
+                            fontFamily: fonts.nostromoBlack,
+                            p: "1rem",
+                            width: "100%",
+                            textAlign: "center",
+                            color: theme.factionTheme.secondary,
+                            background: theme.factionTheme.primary,
+                        }}
+                    >
+                        PLAYER LOOKUP
+                    </Typography>
+                    <Box
+                        sx={{
+                            p: "1rem",
+                        }}
+                    >
+                        <LookupSearchBox />
+                    </Box>
                 </Box>
-            </Box>
-            <Box>
-                <Typography
-                    variant="h6"
-                    sx={{
-                        fontFamily: fonts.nostromoBlack,
-                        p: "1rem",
-                        width: "100%",
-                        textAlign: "center",
-                        color: theme.factionTheme.secondary,
-                        background: theme.factionTheme.primary,
-                    }}
-                >
-                    PLAYER SEARCH HISTORY
-                </Typography>
-                <Box
-                    sx={{
-                        p: "1rem",
-                    }}
-                >
-                    {/* {something.map(() => {
-                        
-                const faction = getFaction(relatedAccount.faction_id)
-
-                return (
-                    <Link key={i} to={`/admin/lookup/${relatedAccount.gid}`}>
-                        <Stack sx={{ width: "100%", p: "1rem" }}>
-                            <Stack justifyContent={"space-between"} direction="row" alignItems="center">
-                                <Stack direction="row">
-                                    <Box
-                                        sx={{
-                                            alignSelf: "flex-start",
-                                            flexShrink: 0,
-                                            width: "2rem",
-                                            height: "2rem",
-                                            background: `url(${faction.logo_url})`,
-                                            backgroundColor: faction.background_color,
-                                            backgroundRepeat: "no-repeat",
-                                            backgroundPosition: "center",
-                                            backgroundSize: "contain",
-                                        }}
-                                    />
-                                    <Typography
-                                        sx={{ ml: "0.3rem", fontWeight: "700", userSelect: "none" }}
-                                    >{`${relatedAccount.username} #${relatedAccount.gid}`}</Typography>
-                                </Stack>
-                                {relatedAccount.created_at && (
-                                    <Typography sx={{ color: colors.lightGrey, userSelect: "none" }}>
-                                        Created on: {relatedAccount.created_at.toLocaleDateString()} {dateFormatter(relatedAccount.created_at)}
-                                    </Typography>
-                                )}
-                            </Stack>
-                        </Stack>
-                    </Link>
-                )
-            
-                    })} */}
-                </Box>
-            </Box>
+                <Stack flex={1}>
+                    <Typography
+                        variant="h6"
+                        sx={{
+                            fontFamily: fonts.nostromoBlack,
+                            p: "1rem",
+                            width: "100%",
+                            textAlign: "center",
+                            color: theme.factionTheme.secondary,
+                            background: theme.factionTheme.primary,
+                        }}
+                    >
+                        PLAYER SEARCH HISTORY
+                    </Typography>
+                    <Box
+                        sx={{
+                            flex: 1,
+                            overflowY: "auto",
+                            overflowX: "hidden",
+                            direction: "ltr",
+                            scrollbarWidth: "thin",
+                            "::-webkit-scrollbar": {
+                                width: "1rem",
+                            },
+                            "::-webkit-scrollbar-track": {
+                                background: "#FFFFFF15",
+                            },
+                            "::-webkit-scrollbar-thumb": {
+                                background: "#FFFFFF15",
+                            },
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                height: 0,
+                                p: "1rem",
+                            }}
+                        >
+                            <LookupHistory />
+                        </Box>
+                    </Box>
+                </Stack>
+            </Stack>
         </ClipThing>
     )
 }
@@ -380,7 +368,7 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
                                 sx={{
                                     flex: 1,
                                     display: "grid",
-                                    gridTemplateColumns: "1fr 2fr",
+                                    gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
                                     gap: "2rem",
                                     px: "2rem",
                                     py: "2rem",
