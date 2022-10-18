@@ -1,3 +1,4 @@
+import TWEEN from "@tweenjs/tween.js"
 import { FallingBlock, NormalBlock } from "./block"
 import { blockConfig, cameraConfig } from "./config"
 import { Stage } from "./stage"
@@ -165,6 +166,7 @@ export class Game {
 
         this.stage.render()
         this.animationID = requestAnimationFrame((ts) => {
+            TWEEN.update(ts)
             this.tick(ts - this.timestamp)
             this.timestamp = ts
         })

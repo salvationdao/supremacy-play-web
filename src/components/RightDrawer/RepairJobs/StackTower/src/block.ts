@@ -1,6 +1,8 @@
+import TWEEN from "@tweenjs/tween.js"
 import * as THREE from "three"
 import { clamp } from "three/src/math/MathUtils"
-import { getRandomFloat } from "../../../../../helpers"
+import { getRandomFloat, hexToRGB } from "../../../../../helpers"
+import { colors } from "../../../../../theme/theme"
 import { baseFrameRate, blockConfig, skins } from "./config"
 import { cover } from "./utils"
 
@@ -48,6 +50,7 @@ export class Block {
     topTexture: THREE.Texture
     frontTexture: THREE.Texture
     rightTexture: THREE.Texture
+    materials: THREE.MeshBasicMaterial[]
 
     constructor(prevBlock?: PrevBlock, shouldReplace = false, isFalling = false) {
         // This is how far away to spawn from the center of the stacks (spawn loc)
@@ -133,7 +136,7 @@ export class Block {
         const frontMaterial = new THREE.MeshBasicMaterial({ map: this.frontTexture })
         const rightMaterial = new THREE.MeshBasicMaterial({ map: this.rightTexture })
 
-        const materials = [
+        this.materials = [
             rightMaterial, // Right
             rightMaterial, // Right opposite
             topMaterial, // Top
@@ -142,7 +145,7 @@ export class Block {
             frontMaterial, // Front opposite
         ]
 
-        this.mesh = new THREE.Mesh(geometry, materials)
+        this.mesh = new THREE.Mesh(geometry, this.materials)
         this.mesh.position.set(this.position.x, this.position.y, this.position.z)
     }
 
@@ -171,9 +174,19 @@ export class Block {
 export class NormalBlock extends Block {
     private randomizeSpeedFactor: number
 
+    // Special
+    private isSpecialFastBlock = false
+    private isBlinked = false
+    private blinkFreq = 300 // milliseconds
+    private prevBlinkTime = 0
+    private time = 0
+
     constructor(prevBlock: PrevBlock, shouldReplace = false) {
         super(prevBlock, shouldReplace)
         this.randomizeSpeedFactor = getRandomFloat(1, 1.9)
+
+        // A small chance that the block is a special fast one
+        this.isSpecialFastBlock = getRandomFloat(0, 1) < 0.5
     }
 
     reverseDirection() {
@@ -181,17 +194,45 @@ export class NormalBlock extends Block {
     }
 
     tick(boost = 0, elapsedTime: number) {
+        let speedBoost = 1
+
+        if (this.isSpecialFastBlock) {
+            speedBoost = 2
+            this.handleSpecialFastBlock(elapsedTime)
+        }
+
         const axisPos = this.position[this.axis]
         // If block is reaching the edge, then quickly change direction and give it a little bounce back
         // So it will never get stuck
         if (axisPos > this.MOVE_AMOUNT || axisPos < -this.MOVE_AMOUNT) {
             this.reverseDirection()
-            this.position[this.axis] = clamp(-this.MOVE_AMOUNT + 1, axisPos, this.MOVE_AMOUNT - 1)
+            this.position[this.axis] = clamp(-this.MOVE_AMOUNT + 2, axisPos, this.MOVE_AMOUNT - 2)
         }
 
         // Move the block
-        this.position[this.axis] += this.direction * (1 + boost) * (elapsedTime * (baseFrameRate / 1000)) * this.randomizeSpeedFactor
+        this.position[this.axis] += this.direction * (1 + boost) * (elapsedTime * (baseFrameRate / 1000)) * this.randomizeSpeedFactor * speedBoost
         this.mesh.position[this.axis] = this.position[this.axis]
+    }
+
+    // Make the block blink
+    handleSpecialFastBlock(elapsedTime: number) {
+        this.time += elapsedTime
+
+        if (this.time - this.prevBlinkTime > this.blinkFreq) {
+            const finalColor = this.isBlinked ? hexToRGB("#FFFFFF") : hexToRGB(colors.orange)
+
+            this.materials.forEach((mat) => {
+                new TWEEN.Tween({ r: mat.color.r, g: mat.color.g, b: mat.color.b })
+                    .to({ r: finalColor.r / 255, g: finalColor.g / 255, b: finalColor.b / 255 }, this.blinkFreq * 0.9)
+                    .onUpdate((newColor) => {
+                        mat.color.setRGB(newColor.r, newColor.g, newColor.b)
+                    })
+                    .start()
+            })
+
+            this.isBlinked = !this.isBlinked
+            this.prevBlinkTime = this.time
+        }
     }
 }
 
