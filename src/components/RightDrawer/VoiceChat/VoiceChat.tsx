@@ -2,7 +2,7 @@ import { Box, IconButton, Popover, Slider, Stack, Typography } from "@mui/materi
 import OvenLiveKit from "ovenlivekit"
 import OvenPlayer from "ovenplayer"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { SvgVoice, SvgVolume, SvgVolumeMute } from "../../../assets"
+import { SvgClose, SvgMicrophone, SvgMicrophoneMute, SvgVoice, SvgVolume, SvgVolumeMute } from "../../../assets"
 import { useArena, useAuth, useGlobalNotifications, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { acronym, shadeColor } from "../../../helpers"
@@ -50,8 +50,15 @@ export const VoiceChat = () => {
     const ovenLiveKitInstance = useRef<any>()
 
     const startStream = useCallback((url: string) => {
-        const liveKit = OvenLiveKit.create()
         const constraints = { video: false, audio: true }
+
+        if (ovenLiveKitInstance && ovenLiveKitInstance.current) {
+            ovenLiveKitInstance.current.getUserMedia(constraints).then(() => {
+                ovenLiveKitInstance.current.startStreaming(url)
+            })
+            return
+        }
+        const liveKit = OvenLiveKit.create()
         liveKit.getUserMedia(constraints).then(() => {
             liveKit.startStreaming(url)
         })
@@ -323,15 +330,11 @@ export const VoiceChat = () => {
 
     const onMuteMic = () => {
         if (ovenLiveKitInstance) {
-            ovenLiveKitInstance.current
-                .getUserMedia({
-                    video: false,
-                    audio: true,
-                })
-                .then((d: any) => {
-                    const audio = d.getAudioTracks()[0]
-                    audio.enabled = false
-                })
+            console.log("current ", ovenLiveKitInstance.current?.stream)
+            console.log("stream ", ovenLiveKitInstance.current)
+
+            const thing = ovenLiveKitInstance.current.stream.getTracks()[0].enabled
+            ovenLiveKitInstance.current.stream.getTracks()[0].enabled = !thing
         }
     }
 
@@ -421,7 +424,7 @@ export const VoiceChatInner = ({
 
     onConnect,
     onDisconnect,
-    // onMuteMic,
+    onMuteMic,
     onJoinFactionCommander,
     onLeaveFactionCommander,
     onVoteKick,
@@ -440,6 +443,7 @@ export const VoiceChatInner = ({
     onLeaveFactionCommander: () => void
     onVoteKick: () => void
 }) => {
+    const [micMuted, setMicMuted] = useState(false)
     const theme = useTheme()
     const bannerColor = useMemo(() => shadeColor(theme.factionTheme.primary, -70), [theme.factionTheme.primary])
     const isSpeaker = useMemo(() => {
@@ -641,6 +645,27 @@ export const VoiceChatInner = ({
                         {...StyledImageText}
                     />
                     {/* TODO: implement self mute */}
+                    <IconButton
+                        size="small"
+                        onClick={() => {
+                            if (!micMuted) {
+                                setMicMuted(true)
+                                onMuteMic()
+                                return
+                            }
+
+                            if (micMuted) {
+                                setMicMuted(false)
+                                // onConnect()
+                            }
+                        }}
+                    >
+                        {micMuted ? (
+                            <SvgMicrophoneMute size="2.6rem" sx={{ opacity: 0.8, ":hover": { opacity: 0.6 } }} />
+                        ) : (
+                            <SvgMicrophone size="2.6rem" sx={{ opacity: 0.8, ":hover": { opacity: 0.6 } }} />
+                        )}
+                    </IconButton>
                 </Stack>
             </Stack>
         </Stack>
