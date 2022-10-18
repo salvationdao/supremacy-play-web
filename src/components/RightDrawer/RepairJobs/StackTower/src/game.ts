@@ -93,19 +93,24 @@ export class Game {
     }
 
     // Random picks a button on the keyboard to be the activate button
-    assignRandomPlayButton() {
-        const randomNum = getRandomIntInclusive(1, 3)
-        switch (randomNum) {
-            case 1:
-                this.activePlayButton = PlayButton.MKey
-                break
-            case 2:
-                this.activePlayButton = PlayButton.NKey
-                break
-            case 3:
-                this.activePlayButton = PlayButton.Spacebar
-                break
+    assignRandomPlayButton(specifiedButton?: PlayButton) {
+        if (!specifiedButton) {
+            const randomNum = getRandomIntInclusive(1, 3)
+            switch (randomNum) {
+                case 1:
+                    this.activePlayButton = PlayButton.MKey
+                    break
+                case 2:
+                    this.activePlayButton = PlayButton.NKey
+                    break
+                case 3:
+                    this.activePlayButton = PlayButton.Spacebar
+                    break
+            }
+        } else {
+            this.activePlayButton = specifiedButton
         }
+
         this.setActivePlayButton(this.activePlayButton)
     }
 
@@ -232,6 +237,8 @@ export class Game {
                     stack_at: new Date(),
                     trigger_with: triggeredWith,
                 })
+
+                this.assignRandomPlayButton(PlayButton.Spacebar)
                 return
             }
 
@@ -289,6 +296,8 @@ export class Game {
 
             this.fallingBlocks.push(fallingBlock)
             this.stage.add(fallingBlock.mesh)
+        } else {
+            this.assignRandomPlayButton(PlayButton.Spacebar)
         }
 
         // Score will count from [0, 0, 1, 2 ...etc]
