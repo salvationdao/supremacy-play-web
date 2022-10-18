@@ -169,10 +169,11 @@ export class Block {
 
 // Runs a tick, moves back and forth
 export class NormalBlock extends Block {
-    private randomSpeedIncrease: number
+    private randomizeSpeedFactor: number
+
     constructor(prevBlock: PrevBlock, shouldReplace = false) {
         super(prevBlock, shouldReplace)
-        this.randomSpeedIncrease = getRandomFloat(1, 2.2)
+        this.randomizeSpeedFactor = getRandomFloat(1, 1.9)
     }
 
     reverseDirection() {
@@ -189,7 +190,7 @@ export class NormalBlock extends Block {
         }
 
         // Move the block
-        this.position[this.axis] += this.direction * (1 + boost) * (elapsedTime * (baseFrameRate / 1000)) * this.randomSpeedIncrease
+        this.position[this.axis] += this.direction * (1 + boost) * (elapsedTime * (baseFrameRate / 1000)) * this.randomizeSpeedFactor
         this.mesh.position[this.axis] = this.position[this.axis]
     }
 }
