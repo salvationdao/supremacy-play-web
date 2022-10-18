@@ -95,6 +95,11 @@ export const getRandomFloat = (min: number, max: number): number => {
     return Math.random() * (max - min) + min
 }
 
+// Inclusive of min and max
+export const getRandomIntInclusive = (min: number, max: number) => {
+    return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
 export const numFormatter = (num: number) => {
     if (num >= 1000000000) {
         return (num / 1000000000).toFixed(1) + "B"

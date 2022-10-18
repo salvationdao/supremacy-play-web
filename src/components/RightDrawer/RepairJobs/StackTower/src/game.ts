@@ -1,4 +1,5 @@
 import TWEEN from "@tweenjs/tween.js"
+import { getRandomIntInclusive } from "../../../../../helpers"
 import { FallingBlock, NormalBlock } from "./block"
 import { blockConfig, cameraConfig } from "./config"
 import { Stage } from "./stage"
@@ -26,6 +27,12 @@ export enum GameState {
     Resetting = "RESETTING",
 }
 
+enum PlayButton {
+    Spacebar = "Spacebar",
+    MKey = "M",
+    NKey = "N",
+}
+
 export class Game {
     private container: HTMLElement | null
     private stage: Stage
@@ -33,12 +40,14 @@ export class Game {
     private fallingBlocks: FallingBlock[] = []
     private state: GameState = GameState.Loading
     private score: number = 0
+    private activePlayButton = PlayButton.Spacebar
     private animationID: number | null = null
     private timestamp: number = 0
 
     // External
     private setGameState: React.Dispatch<React.SetStateAction<GameState>>
     private onNewGameScore: React.MutableRefObject<(gameScore: GameScore) => Promise<void>>
+    private setActivePlayButton: React.Dispatch<React.SetStateAction<string | undefined>>
 
     // User events
     private onKeydownBound: (e: KeyboardEvent) => void
@@ -49,6 +58,7 @@ export class Game {
         backgroundColor: string,
         setGameState: React.Dispatch<React.SetStateAction<GameState>>,
         onNewGameScore: React.MutableRefObject<(gameScore: GameScore) => Promise<void>>,
+        setActivePlayButton: React.Dispatch<React.SetStateAction<string | undefined>>,
     ) {
         // DOM setup
         const gameContainer = document.getElementById("tower-stack-game")
@@ -73,6 +83,7 @@ export class Game {
         // Set class variables
         this.setGameState = setGameState
         this.onNewGameScore = onNewGameScore
+        this.setActivePlayButton = setActivePlayButton
         this.stage = new Stage(this.container, backgroundColor)
 
         // Function binds
@@ -81,26 +92,50 @@ export class Game {
         this.onTouchedBound = this.onTouched.bind(this)
     }
 
+    // Random picks a button on the keyboard to be the activate button
+    assignRandomPlayButton() {
+        const randomNum = getRandomIntInclusive(1, 3)
+        switch (randomNum) {
+            case 1:
+                this.activePlayButton = PlayButton.MKey
+                break
+            case 2:
+                this.activePlayButton = PlayButton.NKey
+                break
+            case 3:
+                this.activePlayButton = PlayButton.Spacebar
+                break
+        }
+        this.setActivePlayButton(this.activePlayButton)
+    }
+
     onKeydown(e: KeyboardEvent) {
-        if (e.key === "Spacebar" || e.key === " ") {
+        if (e.key.toLowerCase() === this.activePlayButton.toLowerCase() || (e.key === " " && this.activePlayButton === PlayButton.Spacebar)) {
             this.handleEvent(TriggeredWith.Spacebar)
         }
     }
 
     onClick() {
-        this.handleEvent(TriggeredWith.LeftClick)
+        // Disabled so game is can have randomized keyboard keys to play
+        // this.handleEvent(TriggeredWith.LeftClick)
     }
 
     onTouched() {
-        this.handleEvent(TriggeredWith.Touch)
+        // Disabled so game is can have randomized keyboard keys to play
+        // this.handleEvent(TriggeredWith.Touch)
     }
 
     start() {
+        // Set the key down listener
+        this.setActivePlayButton(this.activePlayButton)
         document.addEventListener("keydown", this.onKeydownBound)
         this.container?.addEventListener("click", this.onClickBound)
         this.container?.addEventListener("touchend", this.onTouchedBound)
 
+        // Add initial block
         this.addBlock(TriggeredWith.None)
+
+        // Start the ticker for the game loop
         this.tick(0)
         setTimeout(() => {
             this.setState(GameState.Ready)
@@ -111,8 +146,6 @@ export class Game {
     destroy() {
         if (this.animationID) cancelAnimationFrame(this.animationID)
         document.removeEventListener("keydown", this.onKeydownBound)
-        this.container?.removeEventListener("click", this.onClickBound)
-        this.container?.removeEventListener("touchend", this.onTouchedBound)
         this.stage.destroy()
         this.container?.remove()
     }
@@ -177,6 +210,9 @@ export class Game {
         const prevBlock = this.blocks[this.blocks.length - 2]
 
         if (curBlock && prevBlock) {
+            // Assign random keyboard button for next block
+            this.assignRandomPlayButton()
+
             const { axis, dimensionAlongAxis } = curBlock.getAxis()
 
             let positionFalling, position

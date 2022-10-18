@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react"
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
+import { pulseEffect } from "../../../../theme/keyframes"
 import { colors, fonts } from "../../../../theme/theme"
 import { RepairAgent } from "../../../../types/jobs"
 import { ProgressBar } from "../../../Common/ProgressBar"
@@ -34,6 +35,7 @@ export const StackTower = React.memo(function StackTower({
     const { send } = useGameServerCommandsUser("/user_commander")
     const [gameState, setGameState] = useState<GameState>(GameState.Loading)
     const [score, setScore] = useState(0)
+    const [activePlayButton, setActivePlayButton] = useState<string>()
     const [cumulativeScore, setCumulativeScore] = useState(0)
 
     // Tells server we gained a point, and tell it the current game pattern
@@ -99,7 +101,7 @@ export const StackTower = React.memo(function StackTower({
 
     // Initialize game
     useEffect(() => {
-        const game = new Game(theme.factionTheme.background, setGameState, onNewGameScore)
+        const game = new Game(theme.factionTheme.background, setGameState, onNewGameScore, setActivePlayButton)
         setTimeout(() => {
             game.start()
         }, 100)
@@ -166,12 +168,12 @@ export const StackTower = React.memo(function StackTower({
                         />
 
                         {/* Absolute positioned items that overlays on top of the game */}
-                        {/* Score */}
+                        {/* Score and button text */}
                         <Stack
                             alignItems="center"
                             sx={{
                                 position: "absolute",
-                                top: "20%",
+                                top: "16%",
                                 left: 0,
                                 right: 0,
                                 transition: "all .4s ease",
@@ -185,19 +187,29 @@ export const StackTower = React.memo(function StackTower({
                                 pointerEvents: "none",
                             }}
                         >
-                            <Box sx={{ p: ".2rem 1.2rem", backgroundColor: "#000000CD" }}>
-                                <Typography
-                                    variant="h2"
-                                    sx={{
-                                        textAlign: "center",
-                                        color: gameState === GameState.Ended ? colors.orange : "#FFFFFF",
-                                        fontFamily: fonts.shareTech,
-                                        fontWeight: "fontWeightBold",
-                                    }}
-                                >
-                                    {score}
-                                </Typography>
-                            </Box>
+                            <Stack spacing=".6rem" alignItems="center">
+                                <Box sx={{ p: ".2rem 1.2rem", backgroundColor: "#000000CD" }}>
+                                    <Typography
+                                        variant="h2"
+                                        sx={{
+                                            textAlign: "center",
+                                            color: gameState === GameState.Ended ? colors.orange : "#FFFFFF",
+                                            fontFamily: fonts.shareTech,
+                                            fontWeight: "fontWeightBold",
+                                        }}
+                                    >
+                                        {score}
+                                    </Typography>
+                                </Box>
+
+                                {gameState !== GameState.Ended && (
+                                    <Box sx={{ p: ".2rem 1.2rem", backgroundColor: "#000000CD", animation: `${pulseEffect} 1.5s infinite` }}>
+                                        <Typography variant="h6" sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack, span: { color: colors.orange } }}>
+                                            <span>[{activePlayButton}]</span>
+                                        </Typography>
+                                    </Box>
+                                )}
+                            </Stack>
                         </Stack>
 
                         {/* Game ready instructions */}
@@ -225,7 +237,7 @@ export const StackTower = React.memo(function StackTower({
                                         span: { color: colors.orange },
                                     }}
                                 >
-                                    <span>Click</span> or <span>Spacebar</span>
+                                    Press <span>Spacebar</span>
                                     <br />
                                     to start repairing
                                 </Typography>
@@ -237,7 +249,7 @@ export const StackTower = React.memo(function StackTower({
                             alignItems="center"
                             sx={{
                                 position: "absolute",
-                                top: "32%",
+                                top: "28%",
                                 left: 0,
                                 right: 0,
                                 transition: "all .2s ease",
