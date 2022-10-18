@@ -1,6 +1,6 @@
 import { Box, Button, Divider, Fade, Slide, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { Svg2DView, Svg3DView, SvgCamera, SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgWeapons } from "../../../../../assets"
+import { Svg2DView, Svg3DView, SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgWeapons } from "../../../../../assets"
 import { useGlobalNotifications } from "../../../../../containers"
 import { useTheme } from "../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../helpers"
@@ -544,14 +544,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         localStorage.setItem(LOCAL_STORAGE_KEY_PREFERS_2D_LOADOUT, "false")
     }
 
-    // SCREENSHOT
-    const screenshot3DView = () => {
-        if (!unityControlsRef.current) return
-        const dataUrl = unityControlsRef.current.handleScreenshot()
-        if (!dataUrl) return
-        window.open(dataUrl, "_blank")
-    }
-
     return (
         <Stack
             direction="row"
@@ -580,50 +572,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                         bottom: 0,
                     }}
                 >
-                    <Slide in={enable3DLoadout && isUnityLoaded} direction="right">
-                        <ClipThing
-                            clipSize="10px"
-                            border={{
-                                borderColor: theme.factionTheme.primary,
-                                borderThickness: ".3rem",
-                            }}
-                            backgroundColor={theme.factionTheme.background}
-                            corners={{
-                                topRight: true,
-                            }}
-                            sx={{
-                                mb: "-.3rem",
-                            }}
-                        >
-                            <Stack direction="row">
-                                <Box p="1rem">
-                                    <SvgCamera />
-                                </Box>
-                                <Divider
-                                    orientation="vertical"
-                                    color={colors.darkGrey}
-                                    sx={{
-                                        height: "auto",
-                                    }}
-                                />
-                                <Button
-                                    sx={{
-                                        borderRadius: 0,
-                                    }}
-                                    onClick={screenshot3DView}
-                                >
-                                    <Typography
-                                        sx={{
-                                            fontFamily: fonts.nostromoBlack,
-                                            fontSize: "2rem",
-                                        }}
-                                    >
-                                        Take Screenshot
-                                    </Typography>
-                                </Button>
-                            </Stack>
-                        </ClipThing>
-                    </Slide>
                     <ClipThing
                         clipSize="10px"
                         border={{
