@@ -1,5 +1,6 @@
 import { Box, IconButton, Modal, Stack, TextField, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
+import { adjectives, animals, uniqueNamesGenerator } from "unique-names-generator"
 import { SvgClose } from "../../../assets"
 import { MAX_BAN_PROPOSAL_REASON_LENGTH } from "../../../constants"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
@@ -20,7 +21,7 @@ export interface AdminUpdateMechNameModalProps {
 export const AdminUpdateMechNameModal = ({ user, mech, onClose, onSuccess, faction }: AdminUpdateMechNameModalProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
 
-    const [mechName, setMechName] = useState(mech.name)
+    const [mechName, setMechName] = useState(uniqueNamesGenerator({ dictionaries: [adjectives, animals] }))
     const [reason, setReason] = useState("")
     const [isLoading, setIsLoading] = useState(false)
     const [loadError, setLoadError] = useState<string>()
