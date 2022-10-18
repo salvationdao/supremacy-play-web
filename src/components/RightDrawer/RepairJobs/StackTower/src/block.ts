@@ -14,6 +14,7 @@ import {
     randomBlockSpeedFactorMax,
     randomBlockSpeedFactorMin,
     skins,
+    specialFastBlockSpeedFactor,
 } from "./config"
 import { cover } from "./utils"
 
@@ -200,7 +201,7 @@ export class NormalBlock extends Block {
     constructor(prevBlock: PrevBlock, shouldReplace = false) {
         super(prevBlock, shouldReplace)
 
-        this.randomizeSpeedFactor = this.isSpecialFastBlock ? 2.2 : getRandomFloat(randomBlockSpeedFactorMin, randomBlockSpeedFactorMax)
+        this.randomizeSpeedFactor = this.isSpecialFastBlock ? specialFastBlockSpeedFactor : getRandomFloat(randomBlockSpeedFactorMin, randomBlockSpeedFactorMax)
 
         // A small chance that the block is a special fast one
         this.isSpecialFastBlock = getRandomFloat(0, 1) < chanceSpecialFastBlinking
