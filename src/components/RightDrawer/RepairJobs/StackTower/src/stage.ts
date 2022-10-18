@@ -80,7 +80,7 @@ export class Stage {
         this.renderer.setSize(width, height)
     }
 
-    setCamera(y: number, speed = 0.3) {
+    setCamera(x: number, y: number, z: number, speed = 0.3) {
         const { height } = this.getContainerDimensions()
         let yOffset = 3
 
@@ -93,7 +93,7 @@ export class Stage {
         } else if (height < 612) {
             yOffset -= 3
         }
-        gsap.to(this.camera.position, { duration: speed, y: y + yOffset, ease: "power1.easeInOut" })
+        gsap.to(this.camera.position, { duration: speed, x, y: y + yOffset, z, ease: "power1.easeInOut" })
         gsap.to(this.camera.lookAt, { duration: speed, y: y, ease: "power1.easeInOut" })
     }
 

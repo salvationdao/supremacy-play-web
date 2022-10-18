@@ -188,7 +188,7 @@ export class Game {
             if (curBlock.dimension[dimensionAlongAxis] - Math.abs(curBlock.position[axis] - prevBlock.position[axis]) <= 0) {
                 this.stage.remove(curBlock.mesh)
                 this.setState(GameState.Ended)
-                this.stage.setCamera(Math.max(this.blocks.length * blockConfig.initHeight - 6, 6) + cameraConfig.offsetY)
+                this.stage.setCamera(0, Math.max(this.blocks.length * blockConfig.initHeight - 6, 6) + cameraConfig.offsetY, 0)
                 this.onNewGameScore.current({
                     score: this.score,
                     is_failed: true,
@@ -275,6 +275,6 @@ export class Game {
         this.stage.add(newBlock.mesh)
 
         // Update camera y position
-        this.stage.setCamera(this.blocks.length * blockConfig.initHeight + cameraConfig.offsetY)
+        this.stage.setCamera(curBlock?.mesh.position.x || 0, this.blocks.length * blockConfig.initHeight + cameraConfig.offsetY, curBlock?.mesh.position.z || 0)
     }
 }

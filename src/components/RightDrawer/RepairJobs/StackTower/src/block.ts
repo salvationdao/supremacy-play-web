@@ -185,7 +185,7 @@ export class NormalBlock extends Block {
         super(prevBlock, shouldReplace)
 
         // A small chance that the block is a special fast one
-        this.isSpecialFastBlock = getRandomFloat(0, 1) < 0.5
+        this.isSpecialFastBlock = getRandomFloat(0, 1) < 0.12
 
         this.randomizeSpeedFactor = this.isSpecialFastBlock ? 2.2 : getRandomFloat(1, 1.5)
     }
