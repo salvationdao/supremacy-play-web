@@ -5,33 +5,35 @@ import { MAX_BAN_PROPOSAL_REASON_LENGTH } from "../../../constants"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
-import { Faction, User } from "../../../types"
+import { Faction, MechDetails, User } from "../../../types"
 import { ClipThing } from "../../Common/ClipThing"
 import { FancyButton } from "../../Common/FancyButton"
 
-export interface AdminUpdateUsernameModalProps {
+export interface AdminUpdateMechNameModalProps {
     user: User
+    mech: MechDetails
     onClose: () => void
-    onSuccess: (newUsername: string) => void
+    onSuccess: (newMechName: string) => void
     faction: Faction
 }
 
-export const AdminUpdateUsernameModal = ({ user, onClose, onSuccess, faction }: AdminUpdateUsernameModalProps) => {
+export const AdminUpdateMechNameModal = ({ user, mech, onClose, onSuccess, faction }: AdminUpdateMechNameModalProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
 
-    const [username, setUsername] = useState(user.username)
+    const [mechName, setMechName] = useState(mech.name)
     const [reason, setReason] = useState("")
     const [isLoading, setIsLoading] = useState(false)
     const [loadError, setLoadError] = useState<string>()
 
-    const updateUsername = useCallback(async () => {
+    const updateMechName = useCallback(async () => {
         setIsLoading(true)
         try {
-            if (user.username === username) throw new Error("New username cannot be the same as old username.")
+            if (mech.name === mechName) throw new Error("New mech name cannot be the same as old mech name.")
 
-            const resp = await send<string, { player_id: string; new_username: string; reason: string }>(GameServerKeys.ModRenamePlayer, {
-                player_id: user.id,
-                new_username: username,
+            const resp = await send<string, { mech_id: string; owner_id: string; new_mech_name: string; reason: string }>(GameServerKeys.ModRenameMech, {
+                mech_id: mech.id,
+                owner_id: user.id,
+                new_mech_name: mechName,
                 reason,
             })
 
@@ -39,7 +41,7 @@ export const AdminUpdateUsernameModal = ({ user, onClose, onSuccess, faction }: 
             setLoadError(undefined)
             onSuccess(resp)
         } catch (e) {
-            let errMsg = "Failed to update player username."
+            let errMsg = "Failed to update mech name."
             if (typeof e === "string") {
                 errMsg = e
             } else if (e instanceof Error) {
@@ -50,7 +52,7 @@ export const AdminUpdateUsernameModal = ({ user, onClose, onSuccess, faction }: 
         } finally {
             setIsLoading(false)
         }
-    }, [onSuccess, reason, send, user.id, user.username, username])
+    }, [mech.id, mech.name, mechName, onSuccess, reason, send, user.id])
 
     return (
         <Modal open onClose={onClose}>
@@ -78,7 +80,7 @@ export const AdminUpdateUsernameModal = ({ user, onClose, onSuccess, faction }: 
                         component="form"
                         onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
                             e.preventDefault()
-                            updateUsername()
+                            updateMechName()
                         }}
                         sx={{
                             px: "2.2rem",
@@ -93,17 +95,15 @@ export const AdminUpdateUsernameModal = ({ user, onClose, onSuccess, faction }: 
                             },
                         }}
                     >
-                        <Typography sx={{ mb: "1.2rem", fontFamily: fonts.nostromoBlack }}>
-                            Change username: {user.username} #{user.gid.toString()}
-                        </Typography>
+                        <Typography sx={{ mb: "1.2rem", fontFamily: fonts.nostromoBlack }}>Change mech name: {mech.name}</Typography>
 
                         <Stack spacing="1.5rem">
                             <Stack spacing=".3rem">
-                                <Typography sx={{ color: faction.primary_color, fontWeight: "fontWeightBold" }}>New Username:</Typography>
+                                <Typography sx={{ color: faction.primary_color, fontWeight: "fontWeightBold" }}>New Mech Name:</Typography>
                                 <TextField
-                                    value={username}
+                                    value={mechName}
                                     onChange={(e) => {
-                                        setUsername(e.target.value)
+                                        setMechName(e.target.value)
                                     }}
                                     type="text"
                                     hiddenLabel

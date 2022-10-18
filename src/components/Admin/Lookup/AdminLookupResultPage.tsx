@@ -503,7 +503,7 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
                             >
                                 <PlayerProfileCard faction={faction} title="Mechs" fullWidth={true}>
                                     {userData.user_assets ? (
-                                        <AdminUserAsset userAsset={userData.user_assets} faction={faction} />
+                                        <AdminUserAsset userAsset={userData.user_assets} faction={faction} user={userData.user} />
                                     ) : (
                                         <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                                             <Typography>User Has No Assets</Typography>
