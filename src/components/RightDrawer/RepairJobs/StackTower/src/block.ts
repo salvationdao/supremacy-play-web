@@ -183,10 +183,11 @@ export class NormalBlock extends Block {
 
     constructor(prevBlock: PrevBlock, shouldReplace = false) {
         super(prevBlock, shouldReplace)
-        this.randomizeSpeedFactor = getRandomFloat(1, 1.9)
 
         // A small chance that the block is a special fast one
         this.isSpecialFastBlock = getRandomFloat(0, 1) < 0.5
+
+        this.randomizeSpeedFactor = this.isSpecialFastBlock ? 2.2 : getRandomFloat(1, 1.5)
     }
 
     reverseDirection() {
@@ -194,13 +195,6 @@ export class NormalBlock extends Block {
     }
 
     tick(boost = 0, elapsedTime: number) {
-        let speedBoost = 1
-
-        if (this.isSpecialFastBlock) {
-            speedBoost = 2
-            this.handleSpecialFastBlock(elapsedTime)
-        }
-
         const axisPos = this.position[this.axis]
         // If block is reaching the edge, then quickly change direction and give it a little bounce back
         // So it will never get stuck
@@ -210,8 +204,12 @@ export class NormalBlock extends Block {
         }
 
         // Move the block
-        this.position[this.axis] += this.direction * (1 + boost) * (elapsedTime * (baseFrameRate / 1000)) * this.randomizeSpeedFactor * speedBoost
+        this.position[this.axis] += this.direction * (1 + boost) * (elapsedTime * (baseFrameRate / 1000)) * this.randomizeSpeedFactor
         this.mesh.position[this.axis] = this.position[this.axis]
+
+        if (this.isSpecialFastBlock) {
+            this.handleSpecialFastBlock(elapsedTime)
+        }
     }
 
     // Make the block blink
