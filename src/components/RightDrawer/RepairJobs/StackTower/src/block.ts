@@ -5,6 +5,7 @@ import { getRandomFloat, hexToRGB } from "../../../../../helpers"
 import { colors } from "../../../../../theme/theme"
 import {
     baseFrameRate,
+    blinkFrequency,
     blockConfig,
     chanceRandomBlockSizeOccur,
     chanceSpecialFastBlinking,
@@ -192,7 +193,6 @@ export class NormalBlock extends Block {
     // Special (fast blinking block)
     isSpecialFastBlock = false
     private isBlinked = false
-    private blinkFreq = 300 // milliseconds
     private prevBlinkTime = 0
     private time = 0
 
@@ -231,12 +231,12 @@ export class NormalBlock extends Block {
     handleSpecialFastBlock(elapsedTime: number) {
         this.time += elapsedTime
 
-        if (this.time - this.prevBlinkTime > this.blinkFreq) {
+        if (this.time - this.prevBlinkTime > blinkFrequency) {
             const finalColor = this.isBlinked ? hexToRGB("#FFFFFF") : hexToRGB(colors.orange)
 
             this.materials.forEach((mat) => {
                 new TWEEN.Tween({ r: mat.color.r, g: mat.color.g, b: mat.color.b })
-                    .to({ r: finalColor.r / 255, g: finalColor.g / 255, b: finalColor.b / 255 }, this.blinkFreq * 0.9)
+                    .to({ r: finalColor.r / 255, g: finalColor.g / 255, b: finalColor.b / 255 }, blinkFrequency * 0.9)
                     .onUpdate((newColor) => {
                         mat.color.setRGB(newColor.r, newColor.g, newColor.b)
                     })
