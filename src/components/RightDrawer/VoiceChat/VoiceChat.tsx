@@ -256,18 +256,16 @@ export const VoiceChat = () => {
             })
 
             newOvenPlayer.on("error", (err: { code: number }) => {
-                setTimeout(() => {
-                    if (!connected) return
-                    if (err.code === 501) {
-                        console.log("501: failed to connnect attempting to recconnect", err)
-                    } else {
-                        console.error("voice chat error: ", err)
-                    }
-
-                    listen(stream)
-                }, 5000)
+                if (err.code === 501) {
+                    console.log("501: failed to connnect attempting to recconnect", err)
+                } else {
+                    console.error("voice chat error: ", err)
+                }
 
                 // try reconnect on error
+                setTimeout(() => {
+                    listen(stream)
+                }, 5000)
             })
 
             newOvenPlayer.play()
@@ -282,8 +280,6 @@ export const VoiceChat = () => {
     }, [])
 
     const onConnect = (streams: VoiceStream[], enableSound: boolean) => {
-        console.log("this is streams", streams)
-
         streams?.map((l) => {
             if (l.send_url) {
                 startStream(l.send_url)
@@ -323,6 +319,8 @@ export const VoiceChat = () => {
     useEffect(() => {
         if (!connected) return
         onConnect(voiceStreams || [], false)
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [voiceStreams])
 
     const onMuteMic = () => {
