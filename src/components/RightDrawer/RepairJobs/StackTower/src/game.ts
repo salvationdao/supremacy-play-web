@@ -180,11 +180,12 @@ export class Game {
             const { axis, dimensionAlongAxis } = curBlock.getAxis()
 
             let positionFalling, position
-            const distance = curBlock.position[axis] - prevBlock.position[axis]
+            // If its a special fast block, dont cut the block
+            const distance = curBlock.isSpecialFastBlock ? 0 : curBlock.position[axis] - prevBlock.position[axis]
             const newLength = curBlock.dimension[dimensionAlongAxis] - Math.abs(distance)
 
             // Game over, don't continue the code
-            if (newLength <= 0) {
+            if (curBlock.dimension[dimensionAlongAxis] - Math.abs(curBlock.position[axis] - prevBlock.position[axis]) <= 0) {
                 this.stage.remove(curBlock.mesh)
                 this.setState(GameState.Ended)
                 this.stage.setCamera(Math.max(this.blocks.length * blockConfig.initHeight - 6, 6) + cameraConfig.offsetY)

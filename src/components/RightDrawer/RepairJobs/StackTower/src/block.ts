@@ -175,7 +175,7 @@ export class NormalBlock extends Block {
     private randomizeSpeedFactor: number
 
     // Special
-    private isSpecialFastBlock = false
+    isSpecialFastBlock = false
     private isBlinked = false
     private blinkFreq = 300 // milliseconds
     private prevBlinkTime = 0
