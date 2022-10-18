@@ -1,12 +1,17 @@
 import { Box, Stack, Typography } from "@mui/material"
+import { colors, fonts } from "../../../theme/theme"
 import { Faction } from "../../../types"
 import { AdminGetUserAsset } from "../../../types/admin"
-import { MechCommonArea } from "../../Hangar/WarMachinesHangar/WarMachineHangarItem"
+import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 
-export const AdminUserAsset = ({ userAsset, faction }: { userAsset: AdminGetUserAsset; faction: Faction }) => {
+interface AdminUserAssetProps {
+    userAsset: AdminGetUserAsset
+    faction: Faction
+}
+
+export const AdminUserAsset = ({ userAsset }: AdminUserAssetProps) => {
     return (
         <Stack sx={{ p: "2rem" }}>
-            <Typography variant={"h5"}>Owned Mechs</Typography>
             {userAsset.mechs ? (
                 <Box
                     sx={{
@@ -20,16 +25,35 @@ export const AdminUserAsset = ({ userAsset, faction }: { userAsset: AdminGetUser
                     }}
                 >
                     {userAsset.mechs.map((mechDetails) => {
+                        const avatarUrl = mechDetails.chassis_skin?.avatar_url || mechDetails.avatar_url || ""
+                        const imageUrl = mechDetails.chassis_skin?.image_url || mechDetails.image_url || ""
+                        const largeImageUrl = mechDetails.chassis_skin?.large_image_url || mechDetails.large_image_url || ""
+                        const name = mechDetails.name || mechDetails.label
+
                         return (
-                            <MechCommonArea
-                                key={mechDetails.id}
-                                isGridView={true}
-                                mech={mechDetails}
-                                mechDetails={mechDetails}
-                                primaryColor={faction.primary_color}
-                                secondaryColor={faction.secondary_color}
-                                hideRepairBlocks
-                            />
+                            <Stack key={mechDetails.id} spacing="1rem">
+                                <MediaPreview
+                                    imageUrl={avatarUrl || imageUrl || largeImageUrl}
+                                    objectFit="cover"
+                                    sx={{
+                                        height: "20rem",
+                                    }}
+                                />
+                                <Typography
+                                    sx={{
+                                        color: mechDetails.name ? colors.offWhite : "#FFFFFF",
+                                        fontFamily: fonts.nostromoBlack,
+                                        display: "-webkit-box",
+                                        overflow: "hidden",
+                                        overflowWrap: "anywhere",
+                                        textOverflow: "ellipsis",
+                                        WebkitLineClamp: 1, // change to max number of lines
+                                        WebkitBoxOrient: "vertical",
+                                    }}
+                                >
+                                    {name}
+                                </Typography>
+                            </Stack>
                         )
                     })}
                 </Box>

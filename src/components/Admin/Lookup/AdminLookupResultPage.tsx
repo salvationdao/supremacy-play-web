@@ -474,7 +474,7 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
                                     py: "2rem",
                                 }}
                             >
-                                <PlayerProfileCard faction={faction} title="User Assets" fullWidth={true}>
+                                <PlayerProfileCard faction={faction} title="Mechs" fullWidth={true}>
                                     {userData.user_assets ? (
                                         <AdminUserAsset userAsset={userData.user_assets} faction={faction} />
                                     ) : (
