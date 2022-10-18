@@ -67,7 +67,8 @@ export class Block {
     private randomizeSizeFactor = 1
 
     constructor(prevBlock?: PrevBlock, shouldReplace = false, isFalling = false) {
-        this.randomizeSizeFactor = getRandomFloat(0, 1) < chanceRandomBlockSizeOccur ? getRandomFloat(randomBlockSizeFactorMin, randomBlockSizeFactorMax) : 1
+        this.randomizeSizeFactor =
+            !shouldReplace && getRandomFloat(0, 1) < chanceRandomBlockSizeOccur ? getRandomFloat(randomBlockSizeFactorMin, randomBlockSizeFactorMax) : 1
 
         // This is how far away to spawn from the center of the stacks (spawn loc)
         this.MOVE_AMOUNT = 20
@@ -232,7 +233,7 @@ export class NormalBlock extends Block {
         this.time += elapsedTime
 
         if (this.time - this.prevBlinkTime > blinkFrequency) {
-            const finalColor = this.isBlinked ? hexToRGB("#FFFFFF") : hexToRGB(colors.orange)
+            const finalColor = this.isBlinked ? hexToRGB("#FFFFFF") : hexToRGB(colors.neonBlue)
 
             this.materials.forEach((mat) => {
                 new TWEEN.Tween({ r: mat.color.r, g: mat.color.g, b: mat.color.b })
