@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react"
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { pulseEffect } from "../../../../theme/keyframes"
+import { opacityEffect } from "../../../../theme/keyframes"
 import { colors, fonts } from "../../../../theme/theme"
 import { RepairAgent } from "../../../../types/jobs"
 import { ProgressBar } from "../../../Common/ProgressBar"
@@ -203,7 +203,10 @@ export const StackTower = React.memo(function StackTower({
                                 </Box>
 
                                 {gameState !== GameState.Ended && (
-                                    <Box sx={{ p: ".2rem 1.2rem", backgroundColor: "#000000CD", animation: `${pulseEffect} 1.5s infinite` }}>
+                                    <Box
+                                        key={`activePlayButton-${activePlayButton}`}
+                                        sx={{ p: ".2rem 1.2rem", backgroundColor: "#000000CD", animation: `${opacityEffect} 1.5s` }}
+                                    >
                                         <Typography variant="h6" sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack, span: { color: colors.orange } }}>
                                             <span>[{activePlayButton}]</span>
                                         </Typography>
