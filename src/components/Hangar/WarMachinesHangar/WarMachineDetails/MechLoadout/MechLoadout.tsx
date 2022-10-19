@@ -196,31 +196,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                     mech_id: mechDetails.id,
                 })
 
-                // const newMechDetails = await send<MechDetails, PlayerAssetMechEquipRequest>(GameServerKeys.EquipMech, {
-                //     mech_id: mechDetails.id,
-                //     equip_mech_skin: currLoadout.changed_mech_skin
-                //         ? {
-                //               mech_skin_id: currLoadout.changed_mech_skin.mech_skin.id,
-                //           }
-                //         : undefined,
-                //     equip_power_core: currLoadout.changed_power_core
-                //         ? {
-                //               power_core_id: currLoadout.changed_power_core.power_core_id,
-                //               unequip: currLoadout.changed_power_core.unequip,
-                //           }
-                //         : undefined,
-                //     equip_utility: Array.from(currLoadout.changed_utility_map, ([slotNumber, u]) => ({
-                //         utility_id: u.utility_id,
-                //         slot_number: slotNumber,
-                //         unequip: u.unequip,
-                //     })),
-                //     equip_weapons: Array.from(currLoadout.changed_weapons_map, ([slotNumber, w]) => ({
-                //         weapon_id: w.weapon_id,
-                //         slot_number: slotNumber,
-                //         inherit_skin: w.inherit_skin,
-                //         unequip: w.unequip,
-                //     })),
-                // })
 
                 newSnackbarMessage(`Successfully saved loadout.`, "success")
                 setError(undefined)
