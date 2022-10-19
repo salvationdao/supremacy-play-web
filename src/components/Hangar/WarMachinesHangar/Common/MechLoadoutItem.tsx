@@ -278,7 +278,6 @@ interface MechLoadoutItemDraggableProps extends LoadoutItem {
     onMouseDown?: React.MouseEventHandler<HTMLDivElement>
     onMouseUp?: React.MouseEventHandler<HTMLDivElement>
     onTouchStart?: React.TouchEventHandler<HTMLDivElement>
-    something?: boolean
 }
 
 const MechLoadoutItemDraggableBase = React.forwardRef<HTMLDivElement, MechLoadoutItemDraggableProps>(function MechLoadoutItemDraggable(

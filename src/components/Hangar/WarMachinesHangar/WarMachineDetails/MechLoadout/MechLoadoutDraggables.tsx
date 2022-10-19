@@ -33,6 +33,7 @@ export interface MechLoadoutDraggablesProps {
     onDrag: CustomDragEventWithType
     onDragStart: DragStartEventWithType
     onDragStop: DragStopEventWithType
+    onMechSkinClick: (mechSkin: MechSkin) => void
     excludeWeaponIDs: string[]
     excludeMechSkinIDs: string[]
     includeMechSkinIDs: string[]
@@ -44,6 +45,7 @@ export const MechLoadoutDraggables = ({
     onDrag,
     onDragStart,
     onDragStop,
+    onMechSkinClick,
     excludeWeaponIDs,
     excludeMechSkinIDs,
     includeMechSkinIDs,
@@ -178,14 +180,16 @@ export const MechLoadoutDraggables = ({
         return weapons.map((w) => (
             <MechLoadoutDraggable
                 key={w.id}
-                onDrag={(rect) => {
-                    onDrag(rect, AssetItemType.Weapon)
-                }}
-                onDragStart={() => {
-                    onDragStart(AssetItemType.Weapon)
-                }}
-                onDragStop={(rect) => {
-                    onDragStop(rect, AssetItemType.Weapon, w)
+                drag={{
+                    onDrag: (rect) => {
+                        onDrag(rect, AssetItemType.Weapon)
+                    },
+                    onDragStart: () => {
+                        onDragStart(AssetItemType.Weapon)
+                    },
+                    onDragStop: (rect) => {
+                        onDragStop(rect, AssetItemType.Weapon, w)
+                    },
                 }}
                 renderDraggable={(ref) => (
                     <MechLoadoutItemDraggable
@@ -234,15 +238,6 @@ export const MechLoadoutDraggables = ({
         return mechSkins.map((ms) => (
             <MechLoadoutDraggable
                 key={ms.id}
-                onDrag={(rect) => {
-                    onDrag(rect, AssetItemType.MechSkin)
-                }}
-                onDragStart={() => {
-                    onDragStart(AssetItemType.MechSkin)
-                }}
-                onDragStop={(rect) => {
-                    onDragStop(rect, AssetItemType.MechSkin, ms)
-                }}
                 renderDraggable={(ref) => (
                     <MechLoadoutItemDraggable
                         ref={ref}
@@ -251,11 +246,12 @@ export const MechLoadoutDraggables = ({
                         primaryColor={colors.chassisSkin}
                         Icon={SvgSkin}
                         rarity={ms.tier ? getRarityDeets(ms.tier) : undefined}
+                        onClick={() => onMechSkinClick(ms)}
                     />
                 )}
             />
         ))
-    }, [isMechSkinsLoading, mechSkins, mechSkinsError, onDrag, onDragStart, onDragStop])
+    }, [isMechSkinsLoading, mechSkins, mechSkinsError, onMechSkinClick])
 
     return (
         <Stack spacing="1rem">
@@ -343,13 +339,41 @@ export const MechLoadoutDraggables = ({
 
 interface MechLoadoutDraggableProps {
     renderDraggable: (ref: React.RefObject<HTMLDivElement>) => JSX.Element
-    onDrag: CustomDragEvent
-    onDragStart: DragStartEvent
-    onDragStop: DragStopEvent
+    drag?: {
+        onDrag: CustomDragEvent
+        onDragStart: DragStartEvent
+        onDragStop: DragStopEvent
+    }
 }
 
-const MechLoadoutDraggable = ({ renderDraggable, onDrag, onDragStart, onDragStop }: MechLoadoutDraggableProps) => {
+const MechLoadoutDraggable = ({ renderDraggable, drag }: MechLoadoutDraggableProps) => {
     const draggableRef = useRef<HTMLDivElement>(null)
+
+    const content = useMemo(() => {
+        if (drag) {
+            const { onDrag, onDragStart, onDragStop } = drag
+            return (
+                <Draggable
+                    position={{ x: 0, y: 0 }}
+                    onDrag={() => {
+                        if (!draggableRef.current) return
+                        onDrag(draggableRef.current.getBoundingClientRect())
+                    }}
+                    onStart={() => {
+                        if (!draggableRef.current) return
+                        onDragStart()
+                    }}
+                    onStop={() => {
+                        if (!draggableRef.current) return
+                        onDragStop(draggableRef.current.getBoundingClientRect())
+                    }}
+                >
+                    {renderDraggable(draggableRef)}
+                </Draggable>
+            )
+        }
+        return renderDraggable(draggableRef)
+    }, [drag, renderDraggable])
 
     return (
         <Box
@@ -366,23 +390,7 @@ const MechLoadoutDraggable = ({ renderDraggable, onDrag, onDragStart, onDragStop
                 },
             }}
         >
-            <Draggable
-                position={{ x: 0, y: 0 }}
-                onDrag={() => {
-                    if (!draggableRef.current) return
-                    onDrag(draggableRef.current.getBoundingClientRect())
-                }}
-                onStart={() => {
-                    if (!draggableRef.current) return
-                    onDragStart()
-                }}
-                onStop={() => {
-                    if (!draggableRef.current) return
-                    onDragStop(draggableRef.current.getBoundingClientRect())
-                }}
-            >
-                {renderDraggable(draggableRef)}
-            </Draggable>
+            {content}
         </Box>
     )
 }

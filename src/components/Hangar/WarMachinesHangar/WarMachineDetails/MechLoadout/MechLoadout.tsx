@@ -1079,6 +1079,13 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                 onDrag={onItemDrag}
                 onDragStart={onItemDragStart}
                 onDragStop={onItemDragStop}
+                onMechSkinClick={(ms) => {
+                    if (loadoutDisabled) return
+                    modifyMechSkin({
+                        mech_skin: ms,
+                        mech_skin_id: ms.id,
+                    })
+                }}
             />
         </Stack>
     )
