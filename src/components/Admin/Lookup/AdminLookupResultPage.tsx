@@ -69,7 +69,7 @@ export const AdminLookupResultPage = () => {
                 </FancyButton>
 
                 <Stack direction="row" spacing="1rem" flex={1}>
-                    <LookupSidebar />
+                    <LookupSidebar playerGID={playerGIDString} />
                     <LookupResult playerGIDString={playerGIDString} />
                 </Stack>
             </Stack>
@@ -77,7 +77,7 @@ export const AdminLookupResultPage = () => {
     )
 }
 
-const LookupSidebar = () => {
+const LookupSidebar = ({ playerGID }: { playerGID: string }) => {
     const theme = useTheme()
 
     return (
@@ -155,7 +155,7 @@ const LookupSidebar = () => {
                                 p: "1rem",
                             }}
                         >
-                            <LookupHistory />
+                            <LookupHistory playerGID={playerGID} />
                         </Box>
                     </Box>
                 </Stack>

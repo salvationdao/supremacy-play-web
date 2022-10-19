@@ -10,7 +10,7 @@ import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { AdminLookupHistoryResp } from "../../../types/admin"
 
-export const LookupHistory = () => {
+export const LookupHistory = ({ playerGID }: { playerGID: string }) => {
     const theme = useTheme()
     const { getFaction } = useSupremacy()
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -37,7 +37,7 @@ export const LookupHistory = () => {
 
     useEffect(() => {
         fetchLookupHistory()
-    }, [fetchLookupHistory])
+    }, [fetchLookupHistory, playerGID])
 
     if (loadError) {
         return (
