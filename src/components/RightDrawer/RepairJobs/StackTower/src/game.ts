@@ -294,7 +294,9 @@ export class Game {
     }
 
     blowOffTopNBlocks(amount: number) {
-        this.blocks.splice(-amount - 1).forEach((block) => {
+        const spliceAmount = Math.min(amount + 1, this.blocks.length - 1)
+
+        this.blocks.splice(-spliceAmount).forEach((block) => {
             this.stage.remove(block.mesh)
         })
     }
