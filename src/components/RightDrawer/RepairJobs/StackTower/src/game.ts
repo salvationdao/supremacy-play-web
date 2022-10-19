@@ -271,6 +271,12 @@ export class Game {
         }
 
         // Update camera y position
-        this.stage.setCamera(curBlock?.mesh.position.x || 0, this.blocks.length * blockConfig.initHeight + cameraConfig.offsetY, curBlock?.mesh.position.z || 0)
+        if (curBlock.blockServer.type !== BlockType.Bomb) {
+            this.stage.setCamera(
+                curBlock?.mesh.position.x || 0,
+                this.blocks.length * blockConfig.initHeight + cameraConfig.offsetY,
+                curBlock?.mesh.position.z || 0,
+            )
+        }
     }
 }
