@@ -160,6 +160,10 @@ export class Game {
         let curBlock = this.blocks[this.blocks.length - 1] // Note this is the current moving block
         const prevBlock = this.blocks[this.blocks.length - 2]
 
+        // If the top most block is a block we already placed, then return
+        // Server shouldve sent a new block
+        if (curBlock.shouldReplace) return
+
         // Return if there isn't a block to place
         if (curBlock && prevBlock) {
             const { axis, dimensionAlongAxis } = curBlock.getAxis()

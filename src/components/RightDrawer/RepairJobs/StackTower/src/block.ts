@@ -134,7 +134,7 @@ export class Block {
 
 // Runs a tick, moves back and forth
 export class MovingBlock extends Block {
-    private shouldReplace: boolean
+    shouldReplace: boolean
 
     // Blinking effect
     private isBlinked = false
