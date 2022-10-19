@@ -195,7 +195,7 @@ export class Game {
             const lengthStickingOut = curBlock.blockServer.type === BlockType.Fast ? 0 : curBlock.position[axis] - prevBlock.position[axis]
             const newLength = curBlock.dimension[dimensionAlongAxis] - Math.abs(lengthStickingOut)
 
-            if (!landedOnStack) {
+            if (landedOnStack) {
                 // The position of the replacement block
                 const positionReplacement = {
                     ...curBlock.position,
