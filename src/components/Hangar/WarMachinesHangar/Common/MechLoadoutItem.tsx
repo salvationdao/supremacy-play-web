@@ -342,7 +342,7 @@ const MechLoadoutItemDraggableBase = React.forwardRef<HTMLDivElement, MechLoadou
                                 right: ".5rem",
                             }}
                         >
-                            <SvgDrag fill={`${primaryColor}aa`} />
+                            {!draggableProps.onClick && <SvgDrag fill={`${primaryColor}aa`} />}
                         </Stack>
 
                         {slotNumber != null && (

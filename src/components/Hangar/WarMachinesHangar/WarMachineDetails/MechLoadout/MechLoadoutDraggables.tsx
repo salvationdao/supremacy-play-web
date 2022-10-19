@@ -381,12 +381,12 @@ const MechLoadoutDraggable = ({ renderDraggable, drag }: MechLoadoutDraggablePro
                 "&:hover": {
                     transition: "transform .1s ease-out",
                     transform: "scale(1.1)",
-                    cursor: "grab",
+                    cursor: drag ? "grab" : "pointer",
                 },
                 "&:active": {
                     transition: "transform .1s ease-in",
                     transform: "scale(1.0)",
-                    cursor: "grabbing",
+                    cursor: drag ? "grabbing" : "pointer",
                 },
             }}
         >
