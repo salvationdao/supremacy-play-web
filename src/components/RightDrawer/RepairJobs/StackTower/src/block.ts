@@ -166,7 +166,7 @@ export class Block {
 }
 
 // Runs a tick, moves back and forth
-export class NormalBlock extends Block {
+export class MovingBlock extends Block {
     // Blinking effect
     private isBlinked = false
     private prevBlinkTime = 0

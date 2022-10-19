@@ -1,5 +1,5 @@
 import TWEEN from "@tweenjs/tween.js"
-import { FallingBlock, NormalBlock } from "./block"
+import { FallingBlock, MovingBlock } from "./block"
 import { blockConfig, cameraConfig } from "./config"
 import { Stage } from "./stage"
 import { BlockServer, BlockType, GameState, NewStackInfo, PlayButton } from "./types"
@@ -7,7 +7,7 @@ import { BlockServer, BlockType, GameState, NewStackInfo, PlayButton } from "./t
 export class Game {
     private container: HTMLElement | null
     private stage: Stage
-    private blocks: NormalBlock[] = []
+    private blocks: MovingBlock[] = []
     private fallingBlocks: FallingBlock[] = []
     private score: number = 0
     private state: GameState = GameState.Loading
@@ -149,7 +149,7 @@ export class Game {
         const curBlock = this.blocks[this.blocks.length - 1] // Note this is the top most block on stack
 
         // Add new block
-        const newBlock = new NormalBlock(blockServer, curBlock)
+        const newBlock = new MovingBlock(blockServer, curBlock)
         this.blocks.push(newBlock)
         this.stage.add(newBlock.mesh)
     }
@@ -199,7 +199,7 @@ export class Game {
         this.blocks.pop()
         this.stage.remove(curBlock.mesh)
 
-        curBlock = new NormalBlock(
+        curBlock = new MovingBlock(
             curBlock.blockServer,
             {
                 dimension: { ...curBlock.dimension, [dimensionAlongAxis]: newLength },
