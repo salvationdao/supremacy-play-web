@@ -1,7 +1,7 @@
 import { Box, Button, Divider, Fade, Slide, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Svg2DView, Svg3DView, SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgWeapons } from "../../../../../assets"
-import { useGlobalNotifications } from "../../../../../containers"
+import { useAuth, useGlobalNotifications } from "../../../../../containers"
 import { useTheme } from "../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../helpers"
 import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
@@ -117,6 +117,7 @@ const LOCAL_STORAGE_KEY_PREFERS_2D_LOADOUT = "prefers2DLoadout"
 
 export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpdate }: MechLoadoutProps) => {
     const theme = useTheme()
+    const { userID } = useAuth()
     const { send } = useGameServerCommandsUser("/user_commander")
     const { newSnackbarMessage } = useGlobalNotifications()
     const unityControlsRef = useRef<UnityHandle>(null)
@@ -133,6 +134,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     const [enable3DLoadout, setEnable3DLoadout] = useState(localStorage.getItem(LOCAL_STORAGE_KEY_PREFERS_2D_LOADOUT) !== "true")
 
     const {
+        owner_id,
         weapons_map,
         changed_weapons_map,
         blueprint_weapon_ids_with_skin_inheritance,
@@ -150,13 +152,24 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     } = currLoadout
     const loadoutDisabled = useMemo(
         () =>
+            userID !== owner_id ||
             (enable3DLoadout && (isUnityPendingChange || !isUnityLoaded)) ||
             xsyn_locked ||
             locked_to_marketplace ||
             (mechStatus?.battle_lobby_is_locked && mechStatus?.status === MechStatusEnum.Queue) ||
             mechStatus?.status === MechStatusEnum.Battle ||
             mechStatus?.status === MechStatusEnum.Sold,
-        [enable3DLoadout, isUnityLoaded, isUnityPendingChange, locked_to_marketplace, mechStatus?.battle_lobby_is_locked, mechStatus?.status, xsyn_locked],
+        [
+            enable3DLoadout,
+            isUnityLoaded,
+            isUnityPendingChange,
+            locked_to_marketplace,
+            mechStatus?.battle_lobby_is_locked,
+            mechStatus?.status,
+            owner_id,
+            userID,
+            xsyn_locked,
+        ],
     )
 
     useEffect(() => {
@@ -249,6 +262,11 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         })
     }, [])
     const modifyPowerCore = useCallback((ep: LoadoutPowerCore) => {
+        if (unityControlsRef.current) {
+            // unityControlsRef.current.handlePowerCoreUpdate(ep)
+            // setIsUnityPendingChange(true)
+        }
+
         setCurrLoadout((prev) => {
             let updated: LoadoutPowerCore | undefined = ep
             if (ep.unequip && !prev.power_core) {
@@ -304,8 +322,17 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         setCurrLoadout((prev) => ({ ...prev, changed_mech_skin: undefined }))
     }, [currLoadout.chassis_skin])
     const undoPowerCoreChanges = useCallback(() => {
+        if (unityControlsRef.current && currLoadout.power_core) {
+            // const prevPowerCore = currLoadout.power_core
+            // unityControlsRef.current.handlePowerCoreUpdate({
+            //     power_core_id: prevPowerCore.id,
+            //     power_core: prevPowerCore,
+            // })
+            // setIsUnityPendingChange(true)
+        }
+
         setCurrLoadout((prev) => ({ ...prev, changed_power_core: undefined }))
-    }, [])
+    }, [currLoadout.power_core])
     const undoWeaponChanges = useCallback(
         (slotNumber: number) => {
             if (unityControlsRef.current) {
@@ -774,7 +801,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                             if (powerCore) {
                                 return (
                                     <MechLoadoutItem
-                                        locked
                                         disabled={loadoutDisabled}
                                         imageUrl={powerCore.image_url || powerCore.avatar_url}
                                         videoUrls={[powerCore.card_animation_url]}
@@ -802,7 +828,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                     renderModal={renderModal}
                                     prevEquipped={prevEquipped()}
                                     isEmpty
-                                    locked
                                 />
                             )
                         })()}

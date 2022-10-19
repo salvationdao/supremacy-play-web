@@ -138,7 +138,7 @@ export const UnityViewer = ({ mechDetailsWithMaps: mechDetails, unity }: MechVie
                 ownership_id: powerCore.owner_id,
                 static_id: powerCore.blueprint_id,
             } as SiloObject
-            setIsPendingChange(true)
+            // setIsPendingChange(true)
             console.info("update", obj)
         },
         handleMechSkinUpdate: (msu: LoadoutMechSkin) => {
