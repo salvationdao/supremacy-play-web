@@ -108,10 +108,8 @@ const generateLoadout = (newMechDetails: MechDetails): MechDetailsWithMaps => {
         ...newMechDetails,
         weapons_map,
         changed_weapons_map: new Map(),
-        original_weapons_map: new Map(),
         utility_map,
         changed_utility_map: new Map(),
-        original_utility_map: new Map(),
     }
 }
 
