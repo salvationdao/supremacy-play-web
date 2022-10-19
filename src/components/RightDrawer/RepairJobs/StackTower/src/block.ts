@@ -33,17 +33,6 @@ export class Block {
         // This is how far away to spawn from the center of the stacks (spawn loc)
         this.MOVE_AMOUNT = 20
 
-        // ***************************
-        // ********** Color **********
-        // ***************************
-        if (this.blockServer.type === BlockType.Fast) {
-            this.color = colors.neonBlue
-        } else if (this.blockServer.type === BlockType.Bomb) {
-            this.color = colors.red
-        }
-
-        if (this.color) this.changeToColor(this.color)
-
         // **************************
         // ********** Axis **********
         // **************************
@@ -126,6 +115,17 @@ export class Block {
 
         this.mesh = new THREE.Mesh(geometry, this.materials)
         this.mesh.position.set(this.position.x, this.position.y, this.position.z)
+
+        // ***************************
+        // ********** Color **********
+        // ***************************
+        if (this.blockServer.type === BlockType.Fast) {
+            this.color = colors.neonBlue
+        } else if (this.blockServer.type === BlockType.Bomb) {
+            this.color = colors.red
+        }
+
+        if (this.color) this.changeToColor(this.color)
     }
 
     basedTick(elapsedTime: number) {
@@ -176,7 +176,7 @@ export class Block {
 
     changeToColor(newColor: string) {
         const finalColor = hexToRGB(newColor)
-        this.materials.forEach((mat) => {
+        this.materials?.forEach((mat) => {
             mat.color.setRGB(finalColor.r / 255, finalColor.g / 255, finalColor.b / 255)
         })
     }
