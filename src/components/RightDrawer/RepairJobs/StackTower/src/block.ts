@@ -57,9 +57,9 @@ export class Block {
         // ***************************************
         // ********** Speed / Direction **********
         // ***************************************
-        let speed = blockConfig.initSpeed + blockConfig.acceleration
-        speed = Math.min(speed, blockConfig.maxSpeed) // Bound to a max speed
-        this.speed = -speed
+        this.speed = blockConfig.initSpeed + blockConfig.acceleration
+        this.speed = Math.min(this.speed, blockConfig.maxSpeed) // Bound to a max speed
+        this.speed = -this.speed
         this.direction = this.speed
 
         // **********************************
