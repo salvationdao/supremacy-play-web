@@ -73,9 +73,6 @@ export const UnityViewer = ({ mechDetailsWithMaps: mechDetails, unity }: MechVie
         frameworkUrl: `${baseUrl}/WebGL.framework.js.br`,
         codeUrl: `${baseUrl}/WebGL.wasm.br`,
         streamingAssetsUrl: `${baseUrl}/StreamingAssets`,
-        webglContextAttributes: {
-            preserveDrawingBuffer: true,
-        },
     })
     const sent = useRef(false)
     const ready = useRef(false)
@@ -141,7 +138,7 @@ export const UnityViewer = ({ mechDetailsWithMaps: mechDetails, unity }: MechVie
                 ownership_id: powerCore.owner_id,
                 static_id: powerCore.blueprint_id,
             } as SiloObject
-            setIsPendingChange(true)
+            // setIsPendingChange(true)
             console.info("update", obj)
         },
         handleMechSkinUpdate: (msu: LoadoutMechSkin) => {
@@ -263,12 +260,14 @@ export const UnityViewer = ({ mechDetailsWithMaps: mechDetails, unity }: MechVie
                 isMouseDown.current = false
                 sendMessage("FittingRoomPlayer", "OnMouseClick")
             }
+            window.removeEventListener("selectstart", (e) => e.preventDefault())
         }
         const handleMouseDown = (event: MouseEvent) => {
             if (event.button == 0) {
                 isMouseDown.current = !isMouseDown.current
                 sendMessage("FittingRoomPlayer", "OnMouseClick")
             }
+            window.addEventListener("selectstart", (e) => e.preventDefault())
         }
         const handleMouseWheel = (event: WheelEvent) => {
             sendMessage("FittingRoomPlayer", "OnZoomChange", event.deltaY / -100)
