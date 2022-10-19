@@ -91,7 +91,7 @@ export const blockConfig = {
     initSpeed: 0.08, // initial moving speed
     acceleration: 0.005, // the acceleration, the box should move faster and faster
     maxSpeed: 3, // the upper bound of the box's speed
-    blinkFrequency: 200, // milliseconds
+    blinkFrequency: 180, // milliseconds
 }
 
 export const cameraConfig = {

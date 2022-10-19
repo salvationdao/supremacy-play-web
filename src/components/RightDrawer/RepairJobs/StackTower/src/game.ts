@@ -272,7 +272,6 @@ export class Game {
 
         // Update camera y position
         if (curBlock?.blockServer.type !== BlockType.Bomb) {
-            console.log(this.blocks.length * blockConfig.initHeight + cameraConfig.offsetY)
             this.stage.setCamera(
                 curBlock?.mesh.position.x || 0,
                 this.blocks.length * blockConfig.initHeight + cameraConfig.offsetY,
