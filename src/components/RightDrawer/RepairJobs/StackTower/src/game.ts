@@ -195,32 +195,34 @@ export class Game {
             const lengthStickingOut = curBlock.blockServer.type === BlockType.Fast ? 0 : curBlock.position[axis] - prevBlock.position[axis]
             const newLength = curBlock.dimension[dimensionAlongAxis] - Math.abs(lengthStickingOut)
 
-            // The position of the replacement block
-            const positionReplacement = {
-                ...curBlock.position,
-                [axis]: lengthStickingOut >= 0 ? curBlock.position[axis] : curBlock.position[axis] + Math.abs(lengthStickingOut),
+            if (!landedOnStack) {
+                // The position of the replacement block
+                const positionReplacement = {
+                    ...curBlock.position,
+                    [axis]: lengthStickingOut >= 0 ? curBlock.position[axis] : curBlock.position[axis] + Math.abs(lengthStickingOut),
+                }
+
+                // Pop the current block out, and replace with a new one that's cropped, and doesn't move
+                this.blocks.pop()
+                this.stage.remove(curBlock.mesh)
+
+                curBlock = new MovingBlock(
+                    curBlock.blockServer,
+                    {
+                        dimension: { ...curBlock.dimension, [dimensionAlongAxis]: newLength },
+                        position: positionReplacement,
+                        direction: curBlock.direction,
+                        axis,
+                        topTexture: curBlock.topTexture,
+                        frontTexture: curBlock.frontTexture,
+                        rightTexture: curBlock.rightTexture,
+                    },
+                    true,
+                )
+
+                this.blocks.push(curBlock)
+                this.stage.add(curBlock.mesh)
             }
-
-            // Pop the current block out, and replace with a new one that's cropped, and doesn't move
-            this.blocks.pop()
-            this.stage.remove(curBlock.mesh)
-
-            curBlock = new MovingBlock(
-                curBlock.blockServer,
-                {
-                    dimension: { ...curBlock.dimension, [dimensionAlongAxis]: newLength },
-                    position: positionReplacement,
-                    direction: curBlock.direction,
-                    axis,
-                    topTexture: curBlock.topTexture,
-                    frontTexture: curBlock.frontTexture,
-                    rightTexture: curBlock.rightTexture,
-                },
-                true,
-            )
-
-            this.blocks.push(curBlock)
-            this.stage.add(curBlock.mesh)
 
             // ***********************************
             // ********** Falling Block **********
