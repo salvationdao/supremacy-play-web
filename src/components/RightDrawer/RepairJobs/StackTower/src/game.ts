@@ -64,6 +64,8 @@ export class Game {
         this.setPlayButton(this.activePlayButton)
         document.addEventListener("keydown", this.onKeydownBound)
 
+        this.stage.setCamera(0, cameraConfig.offsetY, 0)
+
         // Start the ticker for the game loop
         this.tick(0)
         setTimeout(() => {

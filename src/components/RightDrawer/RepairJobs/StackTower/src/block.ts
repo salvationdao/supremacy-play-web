@@ -4,7 +4,7 @@ import { clamp } from "three/src/math/MathUtils"
 import { hexToRGB } from "../../../../../helpers"
 import { colors } from "../../../../../theme/theme"
 import { baseFrameRate, blockConfig, skins } from "./config"
-import { BlockDimension, BlockServer, BlockType, Position, Axis, AxisDimension, PrevBlockBrief } from "./types"
+import { Axis, AxisDimension, BlockDimension, BlockServer, BlockType, Position, PrevBlockBrief } from "./types"
 import { cover } from "./utils"
 
 export class Block {
@@ -156,15 +156,31 @@ export class Block {
             this.prevBlinkTime = this.time
         }
     }
+
+    changeToColor(newColor: string) {
+        const finalColor = hexToRGB(newColor)
+        this.materials.forEach((mat) => {
+            mat.color.setRGB(finalColor.r / 255, finalColor.g / 255, finalColor.b / 255)
+        })
+    }
 }
 
 // Runs a tick, moves back and forth
 export class MovingBlock extends Block {
     shouldReplace: boolean
+    private color: string | undefined
 
     constructor(blockServer: BlockServer, prevBlock?: PrevBlockBrief, shouldReplace = false) {
         super(blockServer, prevBlock, shouldReplace, false)
         this.shouldReplace = shouldReplace
+
+        if (this.blockServer.type === BlockType.Fast) {
+            this.color = colors.neonBlue
+        } else if (this.blockServer.type === BlockType.Bomb) {
+            this.color = colors.red
+        }
+
+        if (this.color) this.changeToColor(this.color)
     }
 
     reverseDirection() {
@@ -186,23 +202,28 @@ export class MovingBlock extends Block {
         this.position[this.axis] += this.direction * (1 + boost) * (elapsedTime * (baseFrameRate / 1000)) * this.blockServer.speed_multiplier
         this.mesh.position[this.axis] = this.position[this.axis]
 
-        if (this.blockServer.type === BlockType.Fast) {
-            this.handleBlinking(elapsedTime, colors.neonBlue)
-        } else if (this.blockServer.type === BlockType.Bomb) {
-            this.handleBlinking(elapsedTime, colors.red)
-        }
+        if (this.color) this.handleBlinking(elapsedTime, this.color)
     }
 }
 
 // Runs a tick
 export class FallingBlock extends Block {
     private lengthStickingOut: number
+    private color: string | undefined
 
     constructor(blockServer: BlockServer, prevBlock: PrevBlockBrief, lengthStickingOut: number) {
         super(blockServer, prevBlock, true, true)
         this.lengthStickingOut = lengthStickingOut
         this.speed *= 1.8 // Make it fall faster
         this.direction = prevBlock.direction
+
+        if (this.blockServer.type === BlockType.Fast) {
+            this.color = colors.neonBlue
+        } else if (this.blockServer.type === BlockType.Bomb) {
+            this.color = colors.red
+        }
+
+        if (this.color) this.changeToColor(this.color)
     }
 
     tick(elapsedTime: number) {
@@ -211,10 +232,6 @@ export class FallingBlock extends Block {
             (this.axis === Axis.x ? -1 : 1) * (this.direction / 6) * (-this.lengthStickingOut / Math.abs(this.lengthStickingOut))
         this.mesh.position.y = this.position.y
 
-        if (this.blockServer.type === BlockType.Fast) {
-            this.handleBlinking(elapsedTime, colors.neonBlue)
-        } else if (this.blockServer.type === BlockType.Bomb) {
-            this.handleBlinking(elapsedTime, colors.red)
-        }
+        if (this.color) this.handleBlinking(elapsedTime, this.color)
     }
 }
