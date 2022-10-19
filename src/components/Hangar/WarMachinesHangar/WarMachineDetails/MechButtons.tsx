@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, Stack, SxProps, Typography } from "@mui/material"
 import { ClipThing, FancyButton, TooltipHelper } from "../../.."
 import { SvgInfoCircular } from "../../../../assets"
 import { IS_TESTING_MODE } from "../../../../constants"
@@ -12,7 +12,6 @@ export const MechButtons = ({
     mechDetails,
     mechStatus,
     setSelectedMechDetails,
-    setDeployMechModalOpen,
     setRentalMechModalOpen,
     setRepairMechModalOpen,
     marketLocked,
@@ -54,8 +53,6 @@ export const MechButtons = ({
                 </Stack>
             )}
             <Box sx={{ p: "1rem", gap: ".8rem", display: "grid", gridTemplateColumns: "repeat(2, 1fr)" }}>
-                {/* Button 1 */}
-
                 {/* Button 2 */}
                 <ReusableButton
                     isFancy
@@ -66,6 +63,9 @@ export const MechButtons = ({
                     onClick={() => {
                         setSelectedMechDetails(mechDetails)
                         setRepairMechModalOpen(true)
+                    }}
+                    sx={{
+                        gridColumn: "1 / 3",
                     }}
                 />
 
@@ -124,6 +124,7 @@ export const ReusableButton = ({
     disabled,
     to,
     href,
+    sx,
 }: {
     isFancy?: boolean
     primaryColor: string
@@ -134,6 +135,7 @@ export const ReusableButton = ({
     disabled?: boolean
     to?: string
     href?: string
+    sx?: SxProps
 }) => {
     return (
         <FancyButton
@@ -146,7 +148,7 @@ export const ReusableButton = ({
                 corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
                 backgroundColor: backgroundColor,
                 border: { isFancy: false, borderColor: primaryColor, borderThickness: "1.5px" },
-                sx: { position: "relative", minWidth: "10rem" },
+                sx: { position: "relative", minWidth: "10rem", ...sx },
             }}
             sx={{ px: "1.3rem", py: ".9rem", color: secondaryColor || primaryColor }}
             onClick={onClick}
