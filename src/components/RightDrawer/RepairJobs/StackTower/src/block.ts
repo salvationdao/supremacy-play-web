@@ -192,11 +192,11 @@ export class MovingBlock extends Block {
 
 // Runs a tick
 export class FallingBlock extends Block {
-    private distance: number
+    private lengthStickingOut: number
 
-    constructor(blockServer: BlockServer, prevBlock: PrevBlockBrief, distance: number) {
+    constructor(blockServer: BlockServer, prevBlock: PrevBlockBrief, lengthStickingOut: number) {
         super(blockServer, prevBlock, true, true)
-        this.distance = distance
+        this.lengthStickingOut = lengthStickingOut
         this.speed *= 1.8 // Make it fall faster
         this.direction = prevBlock.direction
     }
@@ -204,7 +204,7 @@ export class FallingBlock extends Block {
     tick() {
         this.position.y -= Math.abs(this.speed)
         this.mesh.rotation[this.axis === Axis.x ? Axis.z : Axis.x] +=
-            (this.axis === Axis.x ? -1 : 1) * (this.direction / 6) * (-this.distance / Math.abs(this.distance))
+            (this.axis === Axis.x ? -1 : 1) * (this.direction / 6) * (-this.lengthStickingOut / Math.abs(this.lengthStickingOut))
         this.mesh.position.y = this.position.y
     }
 }

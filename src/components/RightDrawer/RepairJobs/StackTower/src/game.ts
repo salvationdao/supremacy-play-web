@@ -163,16 +163,11 @@ export class Game {
 
         const { axis, dimensionAlongAxis } = curBlock.getAxis()
 
-        let positionFalling, position
-        // If its a special fast block, dont cut the block
-        const distance = curBlock.blockServer.type === BlockType.Fast ? 0 : curBlock.position[axis] - prevBlock.position[axis]
-        const newLength = curBlock.dimension[dimensionAlongAxis] - Math.abs(distance)
+        const landedOnStack = curBlock.dimension[dimensionAlongAxis] - Math.abs(curBlock.position[axis] - prevBlock.position[axis]) > 0
 
-        // Game over, don't continue the code
-        if (curBlock.dimension[dimensionAlongAxis] - Math.abs(curBlock.position[axis] - prevBlock.position[axis]) <= 0) {
+        // If moving block misses the stack completely and not bomb, game over
+        if (!landedOnStack && curBlock.blockServer.type !== BlockType.Bomb) {
             this.stage.remove(curBlock.mesh)
-            this.setState(GameState.Ended)
-            this.setPlayButton(PlayButton.Spacebar)
             this.stage.setCamera(0, Math.max(this.blocks.length * blockConfig.initHeight - 6, 6) + cameraConfig.offsetY, 0)
             this.onPlaceBlock.current({
                 id: curBlock.blockServer.id,
@@ -180,19 +175,27 @@ export class Game {
                 is_failed: true,
                 dimension: curBlock.dimension,
             })
+            this.setPlayButton(PlayButton.Spacebar)
+            this.setState(GameState.Ended)
             return
         }
 
-        if (distance >= 0) {
+        // Calculate the dimension of the falling block
+        // If its a special fast block, dont cut the block
+        const lengthStickingOut = curBlock.blockServer.type === BlockType.Fast ? 0 : curBlock.position[axis] - prevBlock.position[axis]
+        const newLength = curBlock.dimension[dimensionAlongAxis] - Math.abs(lengthStickingOut)
+
+        let positionFalling, position
+        if (lengthStickingOut >= 0) {
             position = curBlock.position
             positionFalling = { ...curBlock.position }
             positionFalling[axis] = curBlock.position[axis] + newLength
         } else {
             position = { ...curBlock.position }
-            position[axis] = curBlock.position[axis] + Math.abs(distance)
-
             positionFalling = { ...curBlock.position }
-            positionFalling[axis] = curBlock.position[axis] - Math.abs(distance)
+
+            position[axis] = curBlock.position[axis] + Math.abs(lengthStickingOut)
+            positionFalling[axis] = curBlock.position[axis] - Math.abs(lengthStickingOut)
         }
 
         // Pop the current block out, and replace with a new one that's cropped, and doesn't move
@@ -220,7 +223,7 @@ export class Game {
         const fallingBlock = new FallingBlock(
             curBlock.blockServer,
             {
-                dimension: { ...curBlock.dimension, [dimensionAlongAxis]: Math.abs(distance) },
+                dimension: { ...curBlock.dimension, [dimensionAlongAxis]: Math.abs(lengthStickingOut) },
                 position: positionFalling,
                 direction: curBlock.direction,
                 axis,
@@ -228,7 +231,7 @@ export class Game {
                 frontTexture: curBlock.frontTexture,
                 rightTexture: curBlock.rightTexture,
             },
-            distance,
+            lengthStickingOut,
         )
 
         this.fallingBlocks.push(fallingBlock)
@@ -241,7 +244,7 @@ export class Game {
         this.onPlaceBlock.current({
             id: curBlock.blockServer.id,
             score: this.score,
-            is_failed: false,
+            is_failed: !landedOnStack,
             dimension: curBlock.dimension,
         })
 
