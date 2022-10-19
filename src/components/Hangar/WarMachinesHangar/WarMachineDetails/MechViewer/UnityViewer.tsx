@@ -260,12 +260,14 @@ export const UnityViewer = ({ mechDetailsWithMaps: mechDetails, unity }: MechVie
                 isMouseDown.current = false
                 sendMessage("FittingRoomPlayer", "OnMouseClick")
             }
+            window.removeEventListener("selectstart", (e) => e.preventDefault())
         }
         const handleMouseDown = (event: MouseEvent) => {
             if (event.button == 0) {
                 isMouseDown.current = !isMouseDown.current
                 sendMessage("FittingRoomPlayer", "OnMouseClick")
             }
+            window.addEventListener("selectstart", (e) => e.preventDefault())
         }
         const handleMouseWheel = (event: WheelEvent) => {
             sendMessage("FittingRoomPlayer", "OnZoomChange", event.deltaY / -100)
