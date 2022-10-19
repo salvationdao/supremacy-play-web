@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { ClipThing, FancyButton, TooltipHelper } from "../../.."
 import { SvgInfoCircular } from "../../../../assets"
-import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../../../../constants"
+import { IS_TESTING_MODE } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
 import { MARKETPLACE_TABS } from "../../../../pages"
 import { colors, fonts } from "../../../../theme/theme"
@@ -55,30 +55,6 @@ export const MechButtons = ({
             )}
             <Box sx={{ p: "1rem", gap: ".8rem", display: "grid", gridTemplateColumns: "repeat(2, 1fr)" }}>
                 {/* Button 1 */}
-                {mechState === MechStatusEnum.Battle || mechState === MechStatusEnum.Queue ? (
-                    <ReusableButton
-                        primaryColor="#E0B61B"
-                        secondaryColor="#111111"
-                        backgroundColor="#E0B61B"
-                        label="UNDEPLOY"
-                        disabled={!BATTLE_ARENA_OPEN || !mechState || mechState === MechStatusEnum.Battle}
-                        onClick={() => {
-                            setSelectedMechDetails(mechDetails)
-                        }}
-                    />
-                ) : (
-                    <ReusableButton
-                        isFancy
-                        primaryColor={colors.green}
-                        backgroundColor={colors.green}
-                        label="DEPLOY"
-                        disabled={!BATTLE_ARENA_OPEN || !mechStatus?.can_deploy || !mechDetails.battle_ready}
-                        onClick={() => {
-                            setSelectedMechDetails(mechDetails)
-                            setDeployMechModalOpen(true)
-                        }}
-                    />
-                )}
 
                 {/* Button 2 */}
                 <ReusableButton
