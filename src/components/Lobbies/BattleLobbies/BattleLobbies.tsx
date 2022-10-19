@@ -213,9 +213,8 @@ export const BattleLobbies = ({ lobbyStatus, battleLobbies }: BattleLobbiesProps
                                     clipThingsProps={{
                                         clipSize: "6px",
                                         clipSlantSize: "0px",
-                                        corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
                                         backgroundColor: colors.bronze,
-                                        border: { isFancy: true, borderColor: colors.bronze, borderThickness: "1.5px" },
+                                        border: { borderColor: colors.bronze, borderThickness: "1.5px" },
                                         sx: { position: "relative", minWidth: "10rem" },
                                     }}
                                     sx={{ px: ".6rem", py: ".5rem", color: "#FFFFFF" }}
@@ -230,9 +229,8 @@ export const BattleLobbies = ({ lobbyStatus, battleLobbies }: BattleLobbiesProps
                                     clipThingsProps={{
                                         clipSize: "6px",
                                         clipSlantSize: "0px",
-                                        corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
                                         backgroundColor: colors.bronze,
-                                        border: { isFancy: true, borderColor: colors.bronze, borderThickness: "1.5px" },
+                                        border: { borderColor: colors.bronze, borderThickness: "1.5px" },
                                         sx: { position: "relative", minWidth: "10rem" },
                                     }}
                                     sx={{ px: ".6rem", py: ".5rem", color: "#FFFFFF" }}

@@ -38,7 +38,7 @@ export class Block {
         // Only use prev dimension if we are replacing
         this.dimension = {
             width: shouldReplace && prevBlock ? prevBlock.dimension.width : blockServer.dimension.width,
-            height: shouldReplace && prevBlock ? prevBlock.dimension.height : 2,
+            height: shouldReplace && prevBlock ? prevBlock.dimension.height : blockServer.dimension.height,
             depth: shouldReplace && prevBlock ? prevBlock.dimension.depth : blockServer.dimension.depth,
         }
 

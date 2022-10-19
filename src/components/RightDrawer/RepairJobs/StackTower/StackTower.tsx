@@ -7,6 +7,7 @@ import { opacityEffect } from "../../../../theme/keyframes"
 import { colors, fonts } from "../../../../theme/theme"
 import { RepairAgent } from "../../../../types/jobs"
 import { ProgressBar } from "../../../Common/ProgressBar"
+import { blockConfig } from "./src/config"
 import { Game } from "./src/game"
 import { BlockServer, BlockType, GameState, NewStackInfo, PlayButton } from "./src/types"
 
@@ -84,7 +85,7 @@ export const StackTower = React.memo(function StackTower({ primaryColor, disable
             }}
         >
             {/* Will unmount and unsubscribe when game ends, and re-subscribe for new game what ready again */}
-            {repairAgent?.id && (gameState === GameState.Ready || gameState === GameState.Playing) && (
+            {repairAgent?.id && gameState === GameState.Playing && (
                 <SubscribeNewBlocks key={`tower-new-block-sub-${repairAgent.id}`} repairAgentID={repairAgent?.id} onNewBlock={onNewBlock} />
             )}
 
@@ -290,7 +291,7 @@ const SubscribeNewBlocks = React.memo(function SubscribeNewBlocks({
                 dimension: {
                     width: parseFloat(payload.dimension.width),
                     depth: parseFloat(payload.dimension.depth),
-                    height: 2,
+                    height: blockConfig.initHeight,
                 },
                 speed_multiplier: parseFloat(payload.speed_multiplier),
                 total_score: payload.total_score,

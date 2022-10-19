@@ -69,6 +69,7 @@ export class Game {
         setTimeout(() => {
             this.setState(GameState.Ready)
         }, 500) // This allows the parent to full load because game ready means it needs parent container dimensions
+
         this.stage.resetContainerSize()
     }
 
@@ -250,12 +251,14 @@ export class Game {
         this.score = Math.max(this.blocks.length - 1, 0)
 
         // Send place block update to server
-        this.onPlaceBlock.current({
-            id: curBlock.blockServer.id,
-            score: this.score,
-            is_failed: !landedOnStack,
-            dimension: curBlock.dimension,
-        })
+        if (prevBlock) {
+            this.onPlaceBlock.current({
+                id: curBlock.blockServer.id,
+                score: this.score,
+                is_failed: !landedOnStack,
+                dimension: curBlock.dimension,
+            })
+        }
 
         // Update camera y position
         this.stage.setCamera(curBlock?.mesh.position.x || 0, this.blocks.length * blockConfig.initHeight + cameraConfig.offsetY, curBlock?.mesh.position.z || 0)
