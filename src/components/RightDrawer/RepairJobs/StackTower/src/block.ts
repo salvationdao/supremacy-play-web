@@ -4,48 +4,15 @@ import { clamp } from "three/src/math/MathUtils"
 import { hexToRGB } from "../../../../../helpers"
 import { colors } from "../../../../../theme/theme"
 import { baseFrameRate, blockConfig, skins } from "./config"
-import { BlockServer, BlockType } from "./types"
+import { BlockDimension, BlockServer, BlockType, Position, Axis, AxisDimension, PrevBlockBrief } from "./types"
 import { cover } from "./utils"
-
-export interface Dimension {
-    width: number
-    height: number
-    depth: number
-}
-interface Position {
-    x: number
-    y: number
-    z: number
-}
-
-enum Axis {
-    x = "x",
-    y = "y",
-    z = "z",
-}
-
-enum AxisDimension {
-    width = "width",
-    height = "height",
-    depth = "depth",
-}
-
-export interface PrevBlockBrief {
-    dimension: Dimension
-    position: Position
-    direction: number
-    axis: Axis
-    topTexture: THREE.Texture
-    frontTexture: THREE.Texture
-    rightTexture: THREE.Texture
-}
 
 export class Block {
     blockServer: BlockServer
     MOVE_AMOUNT: number
     direction: number
     speed: number
-    dimension: Dimension
+    dimension: BlockDimension
     position: Position
     axis: Axis
     mesh: THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial[]>

@@ -42,3 +42,31 @@ export interface NewStackInfo {
     dimension: BlockDimension
     is_failed: boolean
 }
+
+export interface Position {
+    x: number
+    y: number
+    z: number
+}
+
+export enum Axis {
+    x = "x",
+    y = "y",
+    z = "z",
+}
+
+export enum AxisDimension {
+    width = "width",
+    height = "height",
+    depth = "depth",
+}
+
+export interface PrevBlockBrief {
+    dimension: BlockDimension
+    position: Position
+    direction: number
+    axis: Axis
+    topTexture: THREE.Texture
+    frontTexture: THREE.Texture
+    rightTexture: THREE.Texture
+}
