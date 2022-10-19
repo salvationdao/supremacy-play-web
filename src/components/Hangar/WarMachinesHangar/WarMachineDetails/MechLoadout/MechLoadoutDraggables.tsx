@@ -12,12 +12,12 @@ import { GetSubmodelsRequest, GetSubmodelsResponse } from "../../../SubmodelHang
 import { GetWeaponsRequest } from "../../../WeaponsHangar/WeaponsHangar"
 import { MechLoadoutItemDraggable, MechLoadoutItemSkeleton } from "../../Common/MechLoadoutItem"
 
-export type CustomDragEvent = (parentRef: HTMLDivElement, clientRect: DOMRect) => void
-export type CustomDragEventWithType = (parentRef: HTMLDivElement, clientRect: DOMRect, type: AssetItemType) => void
-export type DragStartEvent = (parentRef: HTMLDivElement) => void
-export type DragStartEventWithType = (parentRef: HTMLDivElement, type: AssetItemType) => void
-export type DragStopEvent = (parentRef: HTMLDivElement, clientRect: DOMRect) => void
-export type DragStopEventWithType = (parentRef: HTMLDivElement, clientRect: DOMRect, type: AssetItemType, item: Weapon | PowerCore | Utility | MechSkin) => void
+export type CustomDragEvent = (clientRect: DOMRect) => void
+export type CustomDragEventWithType = (clientRect: DOMRect, type: AssetItemType) => void
+export type DragStartEvent = () => void
+export type DragStartEventWithType = (type: AssetItemType) => void
+export type DragStopEvent = (clientRect: DOMRect) => void
+export type DragStopEventWithType = (clientRect: DOMRect, type: AssetItemType, item: Weapon | PowerCore | Utility | MechSkin) => void
 
 export type DraggablesHandle = {
     handleMechLoadoutUpdated: () => void
@@ -34,10 +34,21 @@ export interface MechLoadoutDraggablesProps {
     onDragStart: DragStartEventWithType
     onDragStop: DragStopEventWithType
     excludeWeaponIDs: string[]
+    excludeMechSkinIDs: string[]
     includeMechSkinIDs: string[]
+    mechModelID: string
 }
 
-export const MechLoadoutDraggables = ({ draggablesRef, onDrag, onDragStart, onDragStop, excludeWeaponIDs, includeMechSkinIDs }: MechLoadoutDraggablesProps) => {
+export const MechLoadoutDraggables = ({
+    draggablesRef,
+    onDrag,
+    onDragStart,
+    onDragStop,
+    excludeWeaponIDs,
+    excludeMechSkinIDs,
+    includeMechSkinIDs,
+    mechModelID,
+}: MechLoadoutDraggablesProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
 
     const weaponsMemoized = useRef<Weapon[]>([])
@@ -49,6 +60,8 @@ export const MechLoadoutDraggables = ({ draggablesRef, onDrag, onDragStart, onDr
     const [mechSkins, setMechSkins] = useState<MechSkin[]>([])
     const [isMechSkinsLoading, setIsMechSkinsLoading] = useState(true)
     const [mechSkinsError, setMechSkinsError] = useState<string>()
+
+    const sent = useRef(false)
 
     useImperativeHandle(draggablesRef, () => ({
         handleMechLoadoutUpdated: () => {
@@ -68,8 +81,8 @@ export const MechLoadoutDraggables = ({ draggablesRef, onDrag, onDragStart, onDr
             const resp = await send<GetWeaponsDetailedResponse, GetWeaponsRequest>(GameServerKeys.GetWeaponsDetailed, {
                 page: 1,
                 page_size: 3,
-                sort_by: "asc",
-                sort_dir: "rarity",
+                sort_by: "date",
+                sort_dir: "desc",
                 include_market_listed: false,
                 display_genesis_and_limited: true,
                 exclude_ids: [],
@@ -97,17 +110,19 @@ export const MechLoadoutDraggables = ({ draggablesRef, onDrag, onDragStart, onDr
             const resp = await send<GetSubmodelsResponse, GetSubmodelsRequest>(GameServerKeys.GetMechSubmodelsDetailed, {
                 page: 1,
                 page_size: 3,
-                sort_by: "asc",
-                sort_dir: "rarity",
+                sort_by: "date",
+                sort_dir: "desc",
                 include_market_listed: false,
                 display_genesis_and_limited: true,
                 exclude_market_locked: true,
                 display_xsyn: false,
+                display_unique: true,
                 skin_compatibility: [],
-                exclude_ids: [],
+                exclude_ids: excludeMechSkinIDs,
                 include_ids: includeMechSkinIDs,
+                model_id: mechModelID,
                 rarities: [],
-                equipped_statuses: ["unequipped"],
+                equipped_statuses: [],
                 search: "",
             })
 
@@ -121,11 +136,13 @@ export const MechLoadoutDraggables = ({ draggablesRef, onDrag, onDragStart, onDr
         } finally {
             setIsMechSkinsLoading(false)
         }
-    }, [includeMechSkinIDs, send])
+    }, [excludeMechSkinIDs, includeMechSkinIDs, mechModelID, send])
 
     useEffect(() => {
+        if (sent.current) return
         getWeapons()
         getMechSkins()
+        sent.current = true
     }, [getMechSkins, getWeapons])
 
     const weaponsContent = useMemo(() => {
@@ -140,7 +157,7 @@ export const MechLoadoutDraggables = ({ draggablesRef, onDrag, onDragStart, onDr
             )
         }
         if (weaponsError) {
-            return weaponsError
+            return <Typography>{weaponsError}</Typography>
         }
         if (weapons.length === 0) {
             return (
@@ -161,14 +178,14 @@ export const MechLoadoutDraggables = ({ draggablesRef, onDrag, onDragStart, onDr
         return weapons.map((w) => (
             <MechLoadoutDraggable
                 key={w.id}
-                onDrag={(parentEl, rect) => {
-                    onDrag(parentEl, rect, AssetItemType.Weapon)
+                onDrag={(rect) => {
+                    onDrag(rect, AssetItemType.Weapon)
                 }}
-                onDragStart={(parentEl) => {
-                    onDragStart(parentEl, AssetItemType.Weapon)
+                onDragStart={() => {
+                    onDragStart(AssetItemType.Weapon)
                 }}
-                onDragStop={(parentEl, rect) => {
-                    onDragStop(parentEl, rect, AssetItemType.Weapon, w)
+                onDragStop={(rect) => {
+                    onDragStop(rect, AssetItemType.Weapon, w)
                 }}
                 renderDraggable={(ref) => (
                     <MechLoadoutItemDraggable
@@ -196,7 +213,7 @@ export const MechLoadoutDraggables = ({ draggablesRef, onDrag, onDragStart, onDr
             )
         }
         if (mechSkinsError) {
-            return mechSkinsError
+            return <Typography>{mechSkinsError}</Typography>
         }
         if (mechSkins.length === 0) {
             return (
@@ -217,14 +234,14 @@ export const MechLoadoutDraggables = ({ draggablesRef, onDrag, onDragStart, onDr
         return mechSkins.map((ms) => (
             <MechLoadoutDraggable
                 key={ms.id}
-                onDrag={(parentEl, rect) => {
-                    onDrag(parentEl, rect, AssetItemType.MechSkin)
+                onDrag={(rect) => {
+                    onDrag(rect, AssetItemType.MechSkin)
                 }}
-                onDragStart={(parentEl) => {
-                    onDragStart(parentEl, AssetItemType.MechSkin)
+                onDragStart={() => {
+                    onDragStart(AssetItemType.MechSkin)
                 }}
-                onDragStop={(parentEl, rect) => {
-                    onDragStop(parentEl, rect, AssetItemType.MechSkin, ms)
+                onDragStop={(rect) => {
+                    onDragStop(rect, AssetItemType.MechSkin, ms)
                 }}
                 renderDraggable={(ref) => (
                     <MechLoadoutItemDraggable
@@ -332,12 +349,10 @@ interface MechLoadoutDraggableProps {
 }
 
 const MechLoadoutDraggable = ({ renderDraggable, onDrag, onDragStart, onDragStop }: MechLoadoutDraggableProps) => {
-    const transformableRef = useRef<HTMLDivElement>(null)
     const draggableRef = useRef<HTMLDivElement>(null)
 
     return (
         <Box
-            ref={transformableRef}
             sx={{
                 "&:hover": {
                     transition: "transform .1s ease-out",
@@ -354,16 +369,16 @@ const MechLoadoutDraggable = ({ renderDraggable, onDrag, onDragStart, onDragStop
             <Draggable
                 position={{ x: 0, y: 0 }}
                 onDrag={() => {
-                    if (!draggableRef.current || !transformableRef.current) return
-                    onDrag(transformableRef.current, draggableRef.current.getBoundingClientRect())
+                    if (!draggableRef.current) return
+                    onDrag(draggableRef.current.getBoundingClientRect())
                 }}
                 onStart={() => {
-                    if (!draggableRef.current || !transformableRef.current) return
-                    onDragStart(transformableRef.current)
+                    if (!draggableRef.current) return
+                    onDragStart()
                 }}
                 onStop={() => {
-                    if (!draggableRef.current || !transformableRef.current) return
-                    onDragStop(transformableRef.current, draggableRef.current.getBoundingClientRect())
+                    if (!draggableRef.current) return
+                    onDragStop(draggableRef.current.getBoundingClientRect())
                 }}
             >
                 {renderDraggable(draggableRef)}

@@ -29,7 +29,7 @@ export const PASSPORT_SIGNUP = DEV_ONLY
 
 // Mech loadout
 export const WEBGL_BASE_URL = "https://afiles.ninja-cdn.com/supremacy-hangar/build/"
-export const DEVELOPMENT_BUILD_NUM = 18
+export const DEVELOPMENT_BUILD_NUM = 52
 
 // Battle arena related
 export const BATTLE_ARENA_OPEN_DATE: Date | undefined = new Date("Sep 08 2022 08:00:00 GMT+0800 (AWST)")

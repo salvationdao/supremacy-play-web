@@ -1,10 +1,11 @@
-import React, { useEffect, useMemo, useRef, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { useArena, useAuth, useGame, useMiniMapPixi } from "../../../../../containers"
-import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
+import { BinaryDataKey, useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { AIType, BattleState, AnyAbility, WarMachineLiveState, WarMachineState } from "../../../../../types"
 import { MechAbility } from "./MechAbility"
 import { PixiMechAbilities } from "./pixiMechAbilities"
+import { warMachineStatsBinaryParser } from "../../../../../helpers/binaryDataParsers/warMachineStatsParser"
 
 // Outer component to determine whether to render the mech abilities or not
 export const MechAbilities = React.memo(function MechAbilities() {
@@ -38,7 +39,6 @@ const MechAbilitiesInner = React.memo(function MechAbilitiesInner({ warMachine }
     const { currentArenaID } = useArena()
     const { pixiMiniMapPixi } = useMiniMapPixi()
     const { hash, participantID } = warMachine
-    const tickIteration = useRef(0)
 
     const [pixiMechAbilities, setPixiMechAbilities] = useState<PixiMechAbilities>()
     const [anyAbilities, setAnyAbilities] = useState<AnyAbility[]>([])
@@ -59,21 +59,20 @@ const MechAbilitiesInner = React.memo(function MechAbilitiesInner({ warMachine }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pixiMechAbilities])
 
-    // Listen on current war machine changes
-    useGameServerSubscription<WarMachineLiveState | undefined>(
+    useGameServerSubscription<WarMachineLiveState[]>(
         {
-            URI: `/public/arena/${currentArenaID}/mech/${participantID}`,
-            key: GameServerKeys.SubMechLiveStats,
-            ready: !!participantID && !!currentArenaID && !!pixiMechAbilities,
-            batchURI: `/public/arena/${currentArenaID}/mech`,
+            URI: `/mini_map/arena/${currentArenaID}/public/mech_stats`,
+            binaryKey: BinaryDataKey.WarMachineStats,
+            binaryParser: warMachineStatsBinaryParser,
+            ready: !!currentArenaID && !!pixiMechAbilities,
         },
         (payload) => {
-            if (!payload || payload.tick_order < tickIteration.current) return
-            tickIteration.current = payload.tick_order
+            if (!payload) return
 
-            if (payload?.health !== undefined) {
-                pixiMechAbilities?.updateVisibility(payload.health > 0)
-            }
+            const target = payload.find((p) => p.participant_id === warMachine.participantID)
+            if (!target) return
+
+            pixiMechAbilities?.updateVisibility(target.health > 0)
         },
     )
 

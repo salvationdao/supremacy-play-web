@@ -249,11 +249,11 @@ export class PixiMapMech {
     }
 
     updatePosition(x: number, y: number) {
-        ease.add(this.rootInner, { x, y }, { duration: 275, ease: "linear", removeExisting: true })
+        ease.add(this.rootInner, { x, y }, { duration: 650, ease: "linear", removeExisting: true })
     }
 
     updateRotation(newRotRad: number) {
-        ease.add(this.arrowGraphics, { rotation: newRotRad }, { duration: 275, ease: "linear" })
+        ease.add(this.arrowGraphics, { rotation: newRotRad }, { duration: 650, ease: "linear" })
     }
 
     updateMechMovePosition(x: number, y: number) {

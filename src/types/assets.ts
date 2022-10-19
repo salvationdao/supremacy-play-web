@@ -1,6 +1,6 @@
 import { Battle, Faction, Map, User, Vector2i } from "."
-import { FiatProduct } from "./fiat"
 import { MechWeaponSlot } from "./battle_queue"
+import { FiatProduct } from "./fiat"
 
 export enum RarityEnum {
     Mega = "MEGA",
@@ -601,8 +601,8 @@ export interface StorefrontPackage {
 }
 
 export enum SubmodelStatus {
-    Equipped = "EQUIPPED",
-    Unequipped = "UNEQUIPPED",
+    Equipped = "equipped",
+    Unequipped = "unequipped",
 }
 
 export interface BlueprintWeapon {

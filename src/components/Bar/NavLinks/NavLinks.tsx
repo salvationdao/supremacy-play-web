@@ -24,6 +24,7 @@ export const NavLinks = () => {
     return (
         <Stack direction="row" alignItems="center" sx={{ height: "100%", mx: "2rem" }}>
             {ROUTES_ARRAY.map((r) => {
+                if (r.id === "admin") return null
                 if (!r.enable || !r.navLink || !r.navLink.enable || ((r.requireAuth || r.requireFaction) && !userID)) return null
                 const { id } = r
                 const { label } = r.navLink

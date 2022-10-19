@@ -1,4 +1,7 @@
+import TwoDView from "!@svgr/webpack!./svg/2DView.svg"
+import ThreeDView from "!@svgr/webpack!./svg/3DView.svg"
 import Ability from "!@svgr/webpack!./svg/Ability.svg"
+import Admin from "!@svgr/webpack!./svg/Admin.svg"
 import Ammo from "!@svgr/webpack!./svg/Ammo.svg"
 import Armor from "!@svgr/webpack!./svg/Armor.svg"
 import Assets from "!@svgr/webpack!./svg/Assets.svg"
@@ -18,8 +21,6 @@ import DropdownArrow from "!@svgr/webpack!./svg/DropdownArrow.svg"
 import Emoji from "!@svgr/webpack!./svg/Emoji.svg"
 import EmojiSelector from "!@svgr/webpack!./svg/EmojiSelector.svg"
 import Energy from "!@svgr/webpack!./svg/Energy.svg"
-import Headphone from "!@svgr/webpack!./svg/Headphone.svg"
-import Microphone from "!@svgr/webpack!./svg/Microphone.svg"
 import ExternalLink from "!@svgr/webpack!./svg/ExternalLink.svg"
 import FastRepair from "!@svgr/webpack!./svg/FastRepair.svg"
 import FontCase from "!@svgr/webpack!./svg/FontCase.svg"
@@ -27,12 +28,14 @@ import Global from "!@svgr/webpack!./svg/Global.svg"
 import Graph from "!@svgr/webpack!./svg/Graph.svg"
 import Hamburger from "!@svgr/webpack!./svg/Hamburger.svg"
 import Hammer from "!@svgr/webpack!./svg/Hammer.svg"
+import Headphone from "!@svgr/webpack!./svg/Headphone.svg"
 import Health from "!@svgr/webpack!./svg/Health.svg"
 import IntroAnimation from "!@svgr/webpack!./svg/IntroAnimation.svg"
 import Lock from "!@svgr/webpack!./svg/Lock.svg"
 import Logout from "!@svgr/webpack!./svg/Logout.svg"
 import Mail from "!@svgr/webpack!./svg/Mail.svg"
 import Meteor from "!@svgr/webpack!./svg/Meteor.svg"
+import Microphone from "!@svgr/webpack!./svg/Microphone.svg"
 import Mobility from "!@svgr/webpack!./svg/Mobility.svg"
 import MoreOptions from "!@svgr/webpack!./svg/MoreOptions.svg"
 import NinjaSyndicateLogo from "!@svgr/webpack!./svg/NinjaSyndicateLogo.svg"
@@ -55,7 +58,6 @@ import Remove from "!@svgr/webpack!./svg/Remove.svg"
 import Save from "!@svgr/webpack!./svg/Save.svg"
 import Scrolldown from "!@svgr/webpack!./svg/Scrolldown.svg"
 import Send from "!@svgr/webpack!./svg/Send.svg"
-import VoiceChat from "!@svgr/webpack!./svg/VoiceChat.svg"
 import Shield from "!@svgr/webpack!./svg/Shield.svg"
 import ShieldRegen from "!@svgr/webpack!./svg/ShieldRegen.svg"
 import Shop from "!@svgr/webpack!./svg/Shop.svg"
@@ -68,6 +70,7 @@ import Swap from "!@svgr/webpack!./svg/Swap.svg"
 import Unhide from "!@svgr/webpack!./svg/Unhide.svg"
 import Utilities from "!@svgr/webpack!./svg/Utilities.svg"
 import View from "!@svgr/webpack!./svg/View.svg"
+import VoiceChat from "!@svgr/webpack!./svg/VoiceChat.svg"
 import Wallet from "!@svgr/webpack!./svg/Wallet.svg"
 import Weapons from "!@svgr/webpack!./svg/Weapons.svg"
 import Wrench from "!@svgr/webpack!./svg/Wrench.svg"
@@ -78,6 +81,7 @@ import Applause from "!react-svg-loader!./svg/Applause.svg"
 import Arrow from "!react-svg-loader!./svg/Arrow.svg"
 import Back from "!react-svg-loader!./svg/Back.svg"
 import Bin from "!react-svg-loader!./svg/Bin.svg"
+import Camera from "!react-svg-loader!./svg/Camera.svg"
 import Cancelled from "!react-svg-loader!./svg/Cancelled.svg"
 import Chat from "!react-svg-loader!./svg/Chat.svg"
 import ChatSplit from "!react-svg-loader!./svg/ChatSplit.svg"
@@ -760,6 +764,12 @@ export const SvgProfile: React.VoidFunctionComponent<SvgWrapperProps> = (props) 
     </SvgWrapper>
 )
 
+export const SvgAdmin: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Admin />
+    </SvgWrapper>
+)
+
 export const SvgLogout: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Logout />
@@ -1399,5 +1409,23 @@ export const SvgGrid: React.VoidFunctionComponent<SvgWrapperProps> = (props) => 
 export const SvgFeedback: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Feedback />
+    </SvgWrapper>
+)
+
+export const Svg3DView: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ThreeDView />
+    </SvgWrapper>
+)
+
+export const Svg2DView: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <TwoDView />
+    </SvgWrapper>
+)
+
+export const SvgCamera: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Camera />
     </SvgWrapper>
 )
