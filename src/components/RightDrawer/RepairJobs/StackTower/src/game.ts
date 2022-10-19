@@ -264,6 +264,12 @@ export class Game {
         // **************************
         // ********** Misc **********
         // **************************
+
+        // If its a bomb and it got stacked, blow off some and deduct points
+        if (landedOnStack && curBlock.blockServer.type === BlockType.Bomb) {
+            this.blowOffTopNBlocks(3)
+        }
+
         // Score will count from [0, 0, 1, 2 ...etc]
         this.score = Math.max(this.blocks.length - 1, 0)
 
@@ -285,5 +291,11 @@ export class Game {
                 curBlock?.mesh.position.z || 0,
             )
         }
+    }
+
+    blowOffTopNBlocks(amount: number) {
+        this.blocks.splice(-amount - 1).forEach((block) => {
+            this.stage.remove(block.mesh)
+        })
     }
 }
