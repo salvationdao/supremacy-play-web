@@ -53,10 +53,8 @@ export const VoiceChat = () => {
         const constraints = { video: false, audio: true }
 
         if (ovenLiveKitInstance && ovenLiveKitInstance.current) {
-            ovenLiveKitInstance.current.getUserMedia(constraints).then(() => {
-                ovenLiveKitInstance.current.startStreaming(url)
-            })
-            return
+            ovenLiveKitInstance.current.remove()
+            ovenLiveKitInstance.current = undefined
         }
         const liveKit = OvenLiveKit.create()
         liveKit.getUserMedia(constraints).then(() => {
@@ -69,6 +67,7 @@ export const VoiceChat = () => {
     const stopStream = () => {
         if (ovenLiveKitInstance && ovenLiveKitInstance.current) {
             ovenLiveKitInstance.current.remove()
+            ovenLiveKitInstance.current = undefined
         }
     }
 
