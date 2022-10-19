@@ -1,5 +1,6 @@
 import { Box } from "@mui/system"
 import { SvgChat, SvgDamage1, SvgHistoryClock, SvgRepair, SvgRobot } from "../assets"
+import { AdminLookupResultPage } from "../components/Admin/Lookup/AdminLookupResultPage"
 import { BattleArena } from "../components/LeftDrawer/BattleArena/BattleArena"
 import { BattleEndScreen } from "../components/LeftDrawer/BattleEndScreen/BattleEndScreen"
 import { QuickDeploy } from "../components/LeftDrawer/QuickDeploy/QuickDeploy"
@@ -9,6 +10,7 @@ import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
 import { RepairJobs } from "../components/RightDrawer/RepairJobs/RepairJobs"
 import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../constants"
 import { BattleArenaPage, BillingHistoryPage, ClaimPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
+import { AdminPage } from "../pages/AdminPage"
 import { LeaderboardPage } from "../pages/LeaderboardPage"
 import { MarketplaceItemPage } from "../pages/MarketplaceItemPage"
 import { MarketplaceSellPage } from "../pages/MarketplaceSellPage"
@@ -18,7 +20,6 @@ import { ReplayPage } from "../pages/ReplayPage"
 import { StorefrontPage } from "../pages/StorefrontPage"
 import { WeaponPage } from "../pages/WeaponPage"
 import { colors } from "../theme/theme"
-import { AdminPage } from "../pages/AdminPage"
 
 // ************
 // ** ROUTES **
@@ -29,9 +30,10 @@ interface RouteStruct {
     exact: boolean
     Component?: () => JSX.Element | null
     requireAuth: boolean
+    requireFaction: boolean
+    requireModerator?: boolean
     authTitle?: string // If omitted, it'll have a default title
     authDescription?: string // If omitted, it'll have a default description
-    requireFaction: boolean
     navLink?: {
         enable: boolean
         label: string
@@ -226,20 +228,28 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         pageTitle: "Supremacy - Replays",
     },
 
+    // Admin
     admin: {
         id: "admin",
-        path: "/admin/:type",
+        path: "/admin/:type?",
         exact: true,
         Component: AdminPage,
         requireAuth: true,
         requireFaction: true,
-        navLink: {
-            enable: false,
-            label: "Admin",
-        },
-        matchNavLinkID: "admin",
+        requireModerator: true,
         enable: true,
-        pageTitle: "Supremacy - Admin",
+        pageTitle: "Supremacy - Admin Panel",
+    },
+    admin_player_lookup: {
+        id: "admin_player_lookup",
+        path: "/admin/lookup/:playerGID",
+        exact: true,
+        Component: AdminLookupResultPage,
+        requireAuth: true,
+        requireFaction: true,
+        requireModerator: true,
+        enable: true,
+        pageTitle: "Supremacy - Admin Panel",
     },
 
     // Claim

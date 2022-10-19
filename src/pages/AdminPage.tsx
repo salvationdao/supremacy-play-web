@@ -3,14 +3,14 @@ import { SyntheticEvent, useCallback, useEffect, useState } from "react"
 import { useHistory, useParams } from "react-router-dom"
 import { HangarBg } from "../assets"
 import { ClipThing } from "../components"
+import { DangerZone } from "../components/Admin/Dangerzone/DangerZone"
+import { AdminLookup } from "../components/Admin/Lookup/AdminLookup"
 import { MysteryCrateBanner } from "../components/Common/BannersPromotions/MysteryCrateBanner"
+import { useAuth } from "../containers"
 import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
 import { colors, siteZIndex } from "../theme/theme"
-import { useAuth } from "../containers"
 import { RoleType } from "../types"
-import { AdminLookup } from "../components/Admin/Lookup/AdminLookup"
-import { DangerZone } from "../components/Admin/Dangerzone/DangerZone"
 
 export enum ADMIN_TABS {
     LOOKUP = "lookup",
@@ -60,8 +60,8 @@ export const AdminPage = () => {
                 boxShadow: `inset 0 0 50px 60px #00000090`,
             }}
         >
-            <Stack sx={{ mt: "1.5rem", mb: "2rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "145rem" }}>
-                <Stack direction="row" alignItems="center" flexWrap="wrap" sx={{ mb: "1.1rem", gap: "1.2rem" }}>
+            <Stack sx={{ mt: "1.5rem", mb: "2rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "193rem" }}>
+                <Stack direction="row" alignItems="center" sx={{ mb: "1.1rem", gap: "1.2rem" }}>
                     <ClipThing
                         clipSize="10px"
                         border={{
@@ -129,7 +129,7 @@ const TabPanel = (props: TabPanelProps) => {
 
     if (currentValue === value) {
         return (
-            <Fade in>
+            <Fade in unmountOnExit>
                 <Box id={`admin-tabpanel-${value}`} sx={{ flex: 1 }}>
                     {children}
                 </Box>
