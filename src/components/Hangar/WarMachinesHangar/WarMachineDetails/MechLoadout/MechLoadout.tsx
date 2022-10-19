@@ -37,14 +37,10 @@ interface PlayerAssetMechEquipRequest {
 export interface MechDetailsWithMaps extends MechDetails {
     weapons_map: Map<number, Weapon | null> // Map<slot_number, Weapon>
     changed_weapons_map: Map<number, LoadoutWeapon>
-    original_weapons_map: Map<number, Weapon | null>
     utility_map: Map<number, Utility | null> // Map<slot_number, Utility>
     changed_utility_map: Map<number, LoadoutUtility>
-    original_utility_map: Map<number, Weapon | null>
     changed_power_core?: LoadoutPowerCore
-    original_power_core?: PowerCore
     changed_mech_skin?: LoadoutMechSkin
-    original_mech_skin?: MechSkin
 }
 
 interface EquipMechSkin {
@@ -149,17 +145,14 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         owner_id,
         weapons_map,
         changed_weapons_map,
-        original_weapons_map,
         blueprint_weapon_ids_with_skin_inheritance,
         // utility_map,
         // changed_utility_map,
         // original_utility_map,
         power_core,
         changed_power_core,
-        original_power_core,
         chassis_skin,
         changed_mech_skin,
-        original_mech_skin,
         compatible_blueprint_mech_skin_ids,
         intro_animation,
         outro_animation,
