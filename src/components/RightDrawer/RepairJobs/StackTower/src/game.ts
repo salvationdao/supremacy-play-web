@@ -64,7 +64,7 @@ export class Game {
         this.setPlayButton(this.activePlayButton)
         document.addEventListener("keydown", this.onKeydownBound)
 
-        this.stage.setCamera(0, cameraConfig.offsetY, 0)
+        this.stage.setCamera(0, blockConfig.initHeight + cameraConfig.offsetY, 0)
 
         // Start the ticker for the game loop
         this.tick(0)
@@ -96,7 +96,7 @@ export class Game {
         if (e.key.toLowerCase() === this.activePlayButton.toLowerCase() || (e.key === " " && this.activePlayButton === PlayButton.Spacebar)) {
             switch (this.state) {
                 case GameState.Ready:
-                    this.stage.setCamera(0, cameraConfig.offsetY, 0)
+                    this.stage.setCamera(0, blockConfig.initHeight + cameraConfig.offsetY, 0)
                     this.setState(GameState.Playing)
                     this.placeBlock()
                     break
@@ -109,7 +109,7 @@ export class Game {
                     })
                     this.blocks = []
                     this.score = 0
-                    this.stage.setCamera(0, cameraConfig.offsetY, 0)
+                    this.stage.setCamera(0, blockConfig.initHeight + cameraConfig.offsetY, 0)
                     this.setState(GameState.Ready)
                     this.placeBlock()
                     break
