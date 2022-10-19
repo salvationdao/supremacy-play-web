@@ -275,23 +275,23 @@ export class Game {
         // Score will count from [0, 0, 1, 2 ...etc]
         this.score = Math.max(this.blocks.length - 1, 0)
 
-        curBlock = this.blocks[this.blocks.length - 1]
+        const topBlock = this.blocks[this.blocks.length - 1]
         // Send place block update to server
         if (prevBlock) {
             this.onPlaceBlock.current({
                 id: curBlock.blockServer.id,
                 score: this.score,
                 is_failed: !landedOnStack,
-                dimension: curBlock.dimension,
+                dimension: topBlock.dimension,
             })
         }
 
         // Update camera y position
         if (curBlock?.blockServer.type !== BlockType.Bomb || (landedOnStack && curBlock.blockServer.type === BlockType.Bomb)) {
             this.stage.setCamera(
-                curBlock?.mesh.position.x || 0,
+                topBlock?.mesh.position.x || 0,
                 this.blocks.length * blockConfig.initHeight + cameraConfig.offsetY,
-                curBlock?.mesh.position.z || 0,
+                topBlock?.mesh.position.z || 0,
             )
         }
     }
