@@ -237,7 +237,7 @@ export const StackTower = React.memo(function StackTower({ primaryColor, disable
                                 <Typography variant="h6" sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack, span: { color: colors.orange } }}>
                                     You did great citizen
                                     <br />
-                                    <span>Click</span> to continue
+                                    <span>{activePlayButton}</span> to continue
                                 </Typography>
                             </Stack>
                         </Stack>

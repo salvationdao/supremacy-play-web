@@ -156,93 +156,94 @@ export class Game {
     }
 
     placeBlock() {
+        let landedOnStack = true
         let curBlock = this.blocks[this.blocks.length - 1] // Note this is the current moving block
         const prevBlock = this.blocks[this.blocks.length - 2]
 
         // Return if there isn't a block to place
-        if (!curBlock || !prevBlock) return
+        if (curBlock && prevBlock) {
+            const { axis, dimensionAlongAxis } = curBlock.getAxis()
+            landedOnStack = curBlock.dimension[dimensionAlongAxis] - Math.abs(curBlock.position[axis] - prevBlock.position[axis]) > 0
 
-        const { axis, dimensionAlongAxis } = curBlock.getAxis()
-        const landedOnStack = curBlock.dimension[dimensionAlongAxis] - Math.abs(curBlock.position[axis] - prevBlock.position[axis]) > 0
+            // *******************************
+            // ********** Game Over **********
+            // *******************************
+            // If moving block misses the stack completely and not bomb, game over
+            if (!landedOnStack && curBlock.blockServer.type !== BlockType.Bomb) {
+                this.stage.remove(curBlock.mesh)
+                this.stage.setCamera(0, Math.max(this.blocks.length * blockConfig.initHeight - 6, 6) + cameraConfig.offsetY, 0)
+                this.onPlaceBlock.current({
+                    id: curBlock.blockServer.id,
+                    score: this.score,
+                    is_failed: true,
+                    dimension: curBlock.dimension,
+                })
+                this.setPlayButton(PlayButton.Spacebar)
+                this.setState(GameState.Ended)
+                return
+            }
 
-        // *******************************
-        // ********** Game Over **********
-        // *******************************
-        // If moving block misses the stack completely and not bomb, game over
-        if (!landedOnStack && curBlock.blockServer.type !== BlockType.Bomb) {
+            // ***************************************
+            // ********** Replacement Block **********
+            // ***************************************
+            // Calculate the dimension of the falling block
+            // If its a special fast block, dont cut the block
+            const lengthStickingOut = curBlock.blockServer.type === BlockType.Fast ? 0 : curBlock.position[axis] - prevBlock.position[axis]
+            const newLength = curBlock.dimension[dimensionAlongAxis] - Math.abs(lengthStickingOut)
+
+            // The position of the replacement block
+            const positionReplacement = {
+                ...curBlock.position,
+                [axis]: lengthStickingOut >= 0 ? curBlock.position[axis] : curBlock.position[axis] + Math.abs(lengthStickingOut),
+            }
+
+            // Pop the current block out, and replace with a new one that's cropped, and doesn't move
+            this.blocks.pop()
             this.stage.remove(curBlock.mesh)
-            this.stage.setCamera(0, Math.max(this.blocks.length * blockConfig.initHeight - 6, 6) + cameraConfig.offsetY, 0)
-            this.onPlaceBlock.current({
-                id: curBlock.blockServer.id,
-                score: this.score,
-                is_failed: true,
-                dimension: curBlock.dimension,
-            })
-            this.setPlayButton(PlayButton.Spacebar)
-            this.setState(GameState.Ended)
-            return
+
+            curBlock = new MovingBlock(
+                curBlock.blockServer,
+                {
+                    dimension: { ...curBlock.dimension, [dimensionAlongAxis]: newLength },
+                    position: positionReplacement,
+                    direction: curBlock.direction,
+                    axis,
+                    topTexture: curBlock.topTexture,
+                    frontTexture: curBlock.frontTexture,
+                    rightTexture: curBlock.rightTexture,
+                },
+                true,
+            )
+
+            this.blocks.push(curBlock)
+            this.stage.add(curBlock.mesh)
+
+            // ***********************************
+            // ********** Falling Block **********
+            // ***********************************
+            // The position of the falling block
+            const positionFalling = {
+                ...curBlock.position,
+                [axis]: lengthStickingOut >= 0 ? curBlock.position[axis] + newLength : curBlock.position[axis] - Math.abs(lengthStickingOut),
+            }
+
+            const fallingBlock = new FallingBlock(
+                curBlock.blockServer,
+                {
+                    dimension: { ...curBlock.dimension, [dimensionAlongAxis]: Math.abs(lengthStickingOut) },
+                    position: positionFalling,
+                    direction: curBlock.direction,
+                    axis,
+                    topTexture: curBlock.topTexture,
+                    frontTexture: curBlock.frontTexture,
+                    rightTexture: curBlock.rightTexture,
+                },
+                lengthStickingOut,
+            )
+
+            this.fallingBlocks.push(fallingBlock)
+            this.stage.add(fallingBlock.mesh)
         }
-
-        // ***************************************
-        // ********** Replacement Block **********
-        // ***************************************
-        // Calculate the dimension of the falling block
-        // If its a special fast block, dont cut the block
-        const lengthStickingOut = curBlock.blockServer.type === BlockType.Fast ? 0 : curBlock.position[axis] - prevBlock.position[axis]
-        const newLength = curBlock.dimension[dimensionAlongAxis] - Math.abs(lengthStickingOut)
-
-        // The position of the replacement block
-        const positionReplacement = {
-            ...curBlock.position,
-            [axis]: lengthStickingOut >= 0 ? curBlock.position[axis] : curBlock.position[axis] + Math.abs(lengthStickingOut),
-        }
-
-        // Pop the current block out, and replace with a new one that's cropped, and doesn't move
-        this.blocks.pop()
-        this.stage.remove(curBlock.mesh)
-
-        curBlock = new MovingBlock(
-            curBlock.blockServer,
-            {
-                dimension: { ...curBlock.dimension, [dimensionAlongAxis]: newLength },
-                position: positionReplacement,
-                direction: curBlock.direction,
-                axis,
-                topTexture: curBlock.topTexture,
-                frontTexture: curBlock.frontTexture,
-                rightTexture: curBlock.rightTexture,
-            },
-            true,
-        )
-
-        this.blocks.push(curBlock)
-        this.stage.add(curBlock.mesh)
-
-        // ***********************************
-        // ********** Falling Block **********
-        // ***********************************
-        // The position of the falling block
-        const positionFalling = {
-            ...curBlock.position,
-            [axis]: lengthStickingOut >= 0 ? curBlock.position[axis] + newLength : curBlock.position[axis] - Math.abs(lengthStickingOut),
-        }
-
-        const fallingBlock = new FallingBlock(
-            curBlock.blockServer,
-            {
-                dimension: { ...curBlock.dimension, [dimensionAlongAxis]: Math.abs(lengthStickingOut) },
-                position: positionFalling,
-                direction: curBlock.direction,
-                axis,
-                topTexture: curBlock.topTexture,
-                frontTexture: curBlock.frontTexture,
-                rightTexture: curBlock.rightTexture,
-            },
-            lengthStickingOut,
-        )
-
-        this.fallingBlocks.push(fallingBlock)
-        this.stage.add(fallingBlock.mesh)
 
         // **************************
         // ********** Misc **********

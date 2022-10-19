@@ -134,6 +134,8 @@ export class Block {
 
 // Runs a tick, moves back and forth
 export class MovingBlock extends Block {
+    private shouldReplace: boolean
+
     // Blinking effect
     private isBlinked = false
     private prevBlinkTime = 0
@@ -141,6 +143,7 @@ export class MovingBlock extends Block {
 
     constructor(blockServer: BlockServer, prevBlock?: PrevBlockBrief, shouldReplace = false) {
         super(blockServer, prevBlock, shouldReplace, false)
+        this.shouldReplace = shouldReplace
     }
 
     reverseDirection() {
@@ -148,6 +151,8 @@ export class MovingBlock extends Block {
     }
 
     tick(boost = 0, elapsedTime: number) {
+        if (this.shouldReplace) return
+
         const axisPos = this.position[this.axis]
         // If block is reaching the edge, then quickly change direction and give it a little bounce back
         // So it will never get stuck
