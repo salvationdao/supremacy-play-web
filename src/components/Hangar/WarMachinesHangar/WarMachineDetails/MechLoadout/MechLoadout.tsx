@@ -19,6 +19,13 @@ import { MechLoadoutPowerCoreModal } from "../Modals/Loadout/MechLoadoutPowerCor
 import { MechLoadoutWeaponModal } from "../Modals/Loadout/MechLoadoutWeaponModal"
 import { CustomDragEventWithType, DraggablesHandle, DragStartEventWithType, DragStopEventWithType, MechLoadoutDraggables } from "./MechLoadoutDraggables"
 
+interface SavedSelection {
+    equip_mech_skin?: EquipMechSkin
+    equip_power_core?: EquipPowerCore
+    equip_utility?: EquipUtility[]
+    equip_weapons?: EquipWeapon[]
+}
+
 interface PlayerAssetMechEquipRequest {
     mech_id: string
     equip_mech_skin?: EquipMechSkin
@@ -126,7 +133,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
 
     const [error, setError] = useState<string>()
     const [loading, setLoading] = useState(false)
-    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
     const [currLoadout, setCurrLoadout] = useState<MechDetailsWithMaps>(generateLoadout(mechDetails))
     const [isDragging, setIsDragging] = useState(false)
     const [isUnityLoaded, setIsUnityLoaded] = useState(false)
@@ -140,6 +146,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         blueprint_weapon_ids_with_skin_inheritance,
         // utility_map,
         // changed_utility_map,
+        // original_utility_map,
         power_core,
         changed_power_core,
         chassis_skin,
@@ -176,137 +183,135 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         setCurrLoadout(generateLoadout(mechDetails))
     }, [mechDetails])
 
-    // Track if changes have been made
-    useEffect(() => {
-        const hasUnsaved =
-            currLoadout.changed_weapons_map.size > 0 ||
-            currLoadout.changed_utility_map.size > 0 ||
-            !!currLoadout.changed_power_core ||
-            !!currLoadout.changed_mech_skin
-        setHasUnsavedChanges(hasUnsaved)
-        if (!hasUnsaved) {
-            setError(undefined)
-        }
-    }, [currLoadout.changed_weapons_map.size, currLoadout.changed_utility_map.size, currLoadout.changed_power_core, currLoadout.changed_mech_skin])
-
     // Confirm selection and submit payload to server
-    const saveSelection = useCallback(async () => {
-        try {
-            setLoading(true)
+    const saveSelection = useCallback(
+        async (selection: SavedSelection) => {
+            try {
+                setLoading(true)
 
-            const newMechDetails = await send<MechDetails, PlayerAssetMechEquipRequest>(GameServerKeys.EquipMech, {
-                mech_id: mechDetails.id,
-                equip_mech_skin: currLoadout.changed_mech_skin
-                    ? {
-                          mech_skin_id: currLoadout.changed_mech_skin.mech_skin.id,
-                      }
-                    : undefined,
-                equip_power_core: currLoadout.changed_power_core
-                    ? {
-                          power_core_id: currLoadout.changed_power_core.power_core_id,
-                          unequip: currLoadout.changed_power_core.unequip,
-                      }
-                    : undefined,
-                equip_utility: Array.from(currLoadout.changed_utility_map, ([slotNumber, u]) => ({
-                    utility_id: u.utility_id,
-                    slot_number: slotNumber,
-                    unequip: u.unequip,
-                })),
-                equip_weapons: Array.from(currLoadout.changed_weapons_map, ([slotNumber, w]) => ({
-                    weapon_id: w.weapon_id,
-                    slot_number: slotNumber,
-                    inherit_skin: w.inherit_skin,
-                    unequip: w.unequip,
-                })),
-            })
+                const newMechDetails = await send<MechDetails, PlayerAssetMechEquipRequest>(GameServerKeys.EquipMech, {
+                    ...selection,
+                    equip_weapons: selection.equip_weapons ? selection.equip_weapons : [],
+                    equip_utility: selection.equip_utility ? selection.equip_utility : [],
+                    mech_id: mechDetails.id,
+                })
 
-            newSnackbarMessage(`Successfully saved loadout.`, "success")
-            setError(undefined)
-            onUpdate(newMechDetails)
 
-            if (draggablesRef.current) {
-                draggablesRef.current.handleMechLoadoutUpdated()
+                newSnackbarMessage(`Successfully saved loadout.`, "success")
+                setError(undefined)
+                onUpdate(newMechDetails)
+
+                if (draggablesRef.current) {
+                    draggablesRef.current.handleMechLoadoutUpdated()
+                }
+            } catch (e) {
+                if (e instanceof Error) {
+                    setError(e.message)
+                } else if (typeof e === "string") {
+                    setError(e)
+                }
+            } finally {
+                setLoading(false)
             }
-        } catch (e) {
-            if (e instanceof Error) {
-                setError(e.message)
-            } else if (typeof e === "string") {
-                setError(e)
-            }
-        } finally {
-            setLoading(false)
-        }
-    }, [
-        currLoadout.changed_mech_skin,
-        currLoadout.changed_power_core,
-        currLoadout.changed_utility_map,
-        currLoadout.changed_weapons_map,
-        mechDetails.id,
-        newSnackbarMessage,
-        onUpdate,
-        send,
-    ])
+        },
+        [mechDetails.id, newSnackbarMessage, onUpdate, send],
+    )
 
     // EQUIP HANDLERS
-    const modifyMechSkin = useCallback((ems: LoadoutMechSkin) => {
-        if (unityControlsRef.current) {
-            unityControlsRef.current.handleMechSkinUpdate(ems)
-            setIsUnityPendingChange(true)
-        }
-
-        setCurrLoadout((prev) => {
-            return {
-                ...prev,
-                changed_mech_skin: ems,
-            }
-        })
-    }, [])
-    const modifyPowerCore = useCallback((ep: LoadoutPowerCore) => {
-        if (unityControlsRef.current) {
-            // unityControlsRef.current.handlePowerCoreUpdate(ep)
-            // setIsUnityPendingChange(true)
-        }
-
-        setCurrLoadout((prev) => {
-            let updated: LoadoutPowerCore | undefined = ep
-            if (ep.unequip && !prev.power_core) {
-                updated = undefined
-            }
-            return {
-                ...prev,
-                changed_power_core: updated,
-            }
-        })
-    }, [])
-    const modifyWeaponSlot = useCallback((ew: LoadoutWeapon) => {
-        if (unityControlsRef.current) {
-            unityControlsRef.current.handleWeaponUpdate(ew)
-            setIsUnityPendingChange(true)
-        }
-
-        setCurrLoadout((prev) => {
-            const updated = new Map(prev.changed_weapons_map)
-            if (ew.unequip && !prev.weapons_map.get(ew.slot_number)) {
-                updated.delete(ew.slot_number)
-            } else {
-                updated.set(ew.slot_number, {
-                    ...ew,
-                    weapon:
-                        ew.weapon && typeof ew.inherit_skin !== "undefined"
-                            ? {
-                                  ...ew.weapon,
-                                  inherit_skin: ew.inherit_skin,
-                              }
-                            : undefined,
-                })
+    const modifyMechSkin = useCallback(
+        (ems: LoadoutMechSkin) => {
+            if (unityControlsRef.current) {
+                unityControlsRef.current.handleMechSkinUpdate(ems)
+                setIsUnityPendingChange(true)
             }
 
-            return {
-                ...prev,
-                changed_weapons_map: updated,
+            setCurrLoadout((prev) => {
+                return {
+                    ...prev,
+                    changed_mech_skin: ems,
+                }
+            })
+            saveSelection({
+                equip_mech_skin: ems
+                    ? {
+                          mech_skin_id: ems.mech_skin.id,
+                      }
+                    : undefined,
+            })
+        },
+        [saveSelection],
+    )
+    const modifyPowerCore = useCallback(
+        (ep: LoadoutPowerCore) => {
+            if (unityControlsRef.current) {
+                // unityControlsRef.current.handlePowerCoreUpdate(ep)
+                // setIsUnityPendingChange(true)
             }
-        })
-    }, [])
+
+            setCurrLoadout((prev) => {
+                let updated: LoadoutPowerCore | undefined = ep
+                if (ep.unequip && !prev.power_core) {
+                    updated = undefined
+                }
+                return {
+                    ...prev,
+                    changed_power_core: updated,
+                }
+            })
+            saveSelection({
+                equip_power_core: ep
+                    ? {
+                          power_core_id: ep.power_core_id,
+                          unequip: ep.unequip,
+                      }
+                    : undefined,
+            })
+        },
+        [saveSelection],
+    )
+    const modifyWeaponSlot = useCallback(
+        (ew: LoadoutWeapon) => {
+            if (unityControlsRef.current) {
+                unityControlsRef.current.handleWeaponUpdate(ew)
+                setIsUnityPendingChange(true)
+            }
+
+            setCurrLoadout((prev) => {
+                const updated = new Map(prev.changed_weapons_map)
+                if (ew.unequip && !prev.weapons_map.get(ew.slot_number)) {
+                    updated.delete(ew.slot_number)
+                } else {
+                    updated.set(ew.slot_number, {
+                        ...ew,
+                        weapon:
+                            ew.weapon && typeof ew.inherit_skin !== "undefined"
+                                ? {
+                                      ...ew.weapon,
+                                      inherit_skin: ew.inherit_skin,
+                                  }
+                                : undefined,
+                    })
+                }
+
+                return {
+                    ...prev,
+                    changed_weapons_map: updated,
+                }
+            })
+
+            saveSelection({
+                equip_weapons: [
+                    {
+                        weapon_id: ew.weapon_id,
+                        slot_number: ew.slot_number,
+                        inherit_skin: ew.inherit_skin,
+                        unequip: ew.unequip,
+                    },
+                ],
+            })
+        },
+        [saveSelection],
+    )
 
     // UNDO HANDLERS
     const undoMechSkinChanges = useCallback(() => {
@@ -637,6 +642,51 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                         </Stack>
                     </ClipThing>
                 </Stack>
+                {/* Saving Changes */}
+                <Box
+                    sx={{
+                        zIndex: 7,
+                        position: "absolute",
+                        right: 0,
+                        bottom: 0,
+                    }}
+                >
+                    <Slide direction="up" in={loading || !!error} mountOnEnter unmountOnExit>
+                        <ClipThing
+                            clipSize="10px"
+                            border={{
+                                borderColor: theme.factionTheme.primary,
+                                borderThickness: ".3rem",
+                            }}
+                            backgroundColor={theme.factionTheme.background}
+                            corners={{
+                                topRight: !(enable3DLoadout && isUnityLoaded),
+                            }}
+                        >
+                            <Stack direction="row" alignItems="end">
+                                {
+                                    <Fade in={!!error} mountOnEnter unmountOnExit>
+                                        <Typography
+                                            sx={{
+                                                color: colors.red,
+                                            }}
+                                        >
+                                            {error}
+                                        </Typography>
+                                    </Fade>
+                                }
+                                <Typography
+                                    sx={{
+                                        fontFamily: fonts.nostromoBlack,
+                                        fontSize: "2rem",
+                                    }}
+                                >
+                                    Saving Changes
+                                </Typography>
+                            </Stack>
+                        </ClipThing>
+                    </Slide>
+                </Box>
                 {/* Mech Viewer */}
                 {enable3DLoadout ? (
                     <MechViewer3D
@@ -700,42 +750,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                         zIndex: 6,
                     }}
                 >
-                    {/* Save Changes Button */}
-                    <Box
-                        sx={{
-                            zIndex: 1,
-                            position: "absolute",
-                            right: "6rem",
-                            bottom: "5rem",
-                        }}
-                    >
-                        <Slide direction="up" in={hasUnsavedChanges} mountOnEnter unmountOnExit>
-                            <Stack direction="row" alignItems="end">
-                                {
-                                    <Fade in={!!error} mountOnEnter unmountOnExit>
-                                        <Typography
-                                            sx={{
-                                                color: colors.red,
-                                            }}
-                                        >
-                                            {error}
-                                        </Typography>
-                                    </Fade>
-                                }
-                                <FancyButton
-                                    sx={{ px: "1.6rem", py: ".6rem" }}
-                                    clipThingsProps={{
-                                        backgroundColor: colors.green,
-                                    }}
-                                    onClick={() => saveSelection()}
-                                    loading={loading}
-                                    disabled={isUnityPendingChange}
-                                >
-                                    <Typography variant="h6">Save Changes</Typography>
-                                </FancyButton>
-                            </Stack>
-                        </Slide>
-                    </Box>
                     {/* Left side */}
                     <Stack
                         flexWrap="wrap"
