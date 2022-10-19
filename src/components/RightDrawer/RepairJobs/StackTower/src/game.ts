@@ -230,7 +230,12 @@ export class Game {
             // The position of the falling block
             const positionFalling = {
                 ...curBlock.position,
-                [axis]: lengthStickingOut >= 0 ? curBlock.position[axis] + newLength : curBlock.position[axis] - Math.abs(lengthStickingOut),
+                [axis]:
+                    curBlock.blockServer.type === BlockType.Bomb
+                        ? curBlock.position[axis]
+                        : lengthStickingOut >= 0
+                        ? curBlock.position[axis] + newLength
+                        : curBlock.position[axis] - Math.abs(lengthStickingOut),
             }
 
             const fallingBlock = new FallingBlock(
