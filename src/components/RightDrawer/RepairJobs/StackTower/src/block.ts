@@ -22,6 +22,7 @@ export class Block {
     materials: THREE.MeshBasicMaterial[]
 
     // Blinking effect
+    private color: string | undefined
     private isBlinked = false
     private prevBlinkTime = 0
     private time = 0
@@ -31,6 +32,17 @@ export class Block {
 
         // This is how far away to spawn from the center of the stacks (spawn loc)
         this.MOVE_AMOUNT = 20
+
+        // ***************************
+        // ********** Color **********
+        // ***************************
+        if (this.blockServer.type === BlockType.Fast) {
+            this.color = colors.neonBlue
+        } else if (this.blockServer.type === BlockType.Bomb) {
+            this.color = colors.red
+        }
+
+        if (this.color) this.changeToColor(this.color)
 
         // **************************
         // ********** Axis **********
@@ -116,6 +128,11 @@ export class Block {
         this.mesh.position.set(this.position.x, this.position.y, this.position.z)
     }
 
+    basedTick(elapsedTime: number) {
+        // Blink
+        if (this.color) this.handleBlinking(elapsedTime, this.color)
+    }
+
     getRandomSkin() {
         return skins[Math.floor(Math.random() * skins.length)]
     }
@@ -168,19 +185,10 @@ export class Block {
 // Runs a tick, moves back and forth
 export class MovingBlock extends Block {
     shouldReplace: boolean
-    private color: string | undefined
 
     constructor(blockServer: BlockServer, prevBlock?: PrevBlockBrief, shouldReplace = false) {
         super(blockServer, prevBlock, shouldReplace, false)
         this.shouldReplace = shouldReplace
-
-        if (this.blockServer.type === BlockType.Fast) {
-            this.color = colors.neonBlue
-        } else if (this.blockServer.type === BlockType.Bomb) {
-            this.color = colors.red
-        }
-
-        if (this.color) this.changeToColor(this.color)
     }
 
     reverseDirection() {
@@ -189,6 +197,8 @@ export class MovingBlock extends Block {
 
     tick(boost = 0, elapsedTime: number) {
         if (this.shouldReplace) return
+
+        this.basedTick(elapsedTime)
 
         const axisPos = this.position[this.axis]
         // If block is reaching the edge, then quickly change direction and give it a little bounce back
@@ -201,37 +211,26 @@ export class MovingBlock extends Block {
         // Move the block
         this.position[this.axis] += this.direction * (1 + boost) * (elapsedTime * (baseFrameRate / 1000)) * this.blockServer.speed_multiplier
         this.mesh.position[this.axis] = this.position[this.axis]
-
-        if (this.color) this.handleBlinking(elapsedTime, this.color)
     }
 }
 
 // Runs a tick
 export class FallingBlock extends Block {
     private lengthStickingOut: number
-    private color: string | undefined
 
     constructor(blockServer: BlockServer, prevBlock: PrevBlockBrief, lengthStickingOut: number) {
         super(blockServer, prevBlock, true, true)
         this.lengthStickingOut = lengthStickingOut
         this.speed *= 1.8 // Make it fall faster
         this.direction = prevBlock.direction
-
-        if (this.blockServer.type === BlockType.Fast) {
-            this.color = colors.neonBlue
-        } else if (this.blockServer.type === BlockType.Bomb) {
-            this.color = colors.red
-        }
-
-        if (this.color) this.changeToColor(this.color)
     }
 
     tick(elapsedTime: number) {
+        this.basedTick(elapsedTime)
+
         this.position.y -= Math.abs(this.speed)
         this.mesh.rotation[this.axis === Axis.x ? Axis.z : Axis.x] +=
             (this.axis === Axis.x ? -1 : 1) * (this.direction / 6) * (-this.lengthStickingOut / Math.abs(this.lengthStickingOut))
         this.mesh.position.y = this.position.y
-
-        if (this.color) this.handleBlinking(elapsedTime, this.color)
     }
 }
