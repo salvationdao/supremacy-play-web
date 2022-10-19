@@ -6,13 +6,15 @@ import { ClipThing } from "../components"
 import { MysteryCrateBanner } from "../components/Common/BannersPromotions/MysteryCrateBanner"
 import { useTheme } from "../containers/theme"
 import { ROUTES_MAP } from "../routes"
-import { siteZIndex } from "../theme/theme"
+import { colors, siteZIndex } from "../theme/theme"
 import { useAuth } from "../containers"
 import { RoleType } from "../types"
 import { AdminLookup } from "../components/Admin/Lookup/AdminLookup"
+import { DangerZone } from "../components/Admin/Dangerzone/DangerZone"
 
 export enum ADMIN_TABS {
     LOOKUP = "lookup",
+    DANGERZONE = "dangerzone",
     // BANLIST = "ban-list",
 }
 
@@ -29,13 +31,12 @@ export const AdminPage = () => {
 
     useEffect(() => {
         if (Object.values(ADMIN_TABS).includes(type)) return setCurrentValue(type)
-        history.replace(`${ROUTES_MAP.replays.path.replace(":type", ADMIN_TABS.LOOKUP)}`)
+        history.replace(`${ROUTES_MAP.admin.path.replace(":type", ADMIN_TABS.LOOKUP)}`)
     }, [history, type])
 
     const handleChange = useCallback(
         (event: SyntheticEvent, newValue: ADMIN_TABS) => {
-            setCurrentValue(newValue)
-            history.push(`${ROUTES_MAP.replays.path.replace(":type", newValue)}`)
+            history.push(`${ROUTES_MAP.admin.path.replace(":type", newValue)}`)
         },
         [history],
     )
@@ -81,7 +82,7 @@ export const AdminPage = () => {
                                     flexShrink: 0,
                                     color: primaryColor,
                                     minHeight: 0,
-                                    ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "6rem", width: "10rem" },
+                                    ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "6rem", width: "15rem" },
                                     ".Mui-selected": {
                                         color: `${secondaryColor} !important`,
                                         background: `linear-gradient(${primaryColor} 26%, ${primaryColor}BB)`,
@@ -91,6 +92,11 @@ export const AdminPage = () => {
                                 }}
                             >
                                 <Tab label="LOOKUP" value={ADMIN_TABS.LOOKUP} />
+                                <Tab
+                                    label="DANGERZONE"
+                                    value={ADMIN_TABS.DANGERZONE}
+                                    sx={{ background: `linear-gradient(${colors.darkRed} 26%, ${colors.darkRed}BB)` }}
+                                />
                                 {/*TODO: Add ban list*/}
                                 {/*<Tab label="BAN LIST" value={ADMIN_TABS.BANLIST} />*/}
                             </Tabs>
@@ -102,6 +108,10 @@ export const AdminPage = () => {
 
                 <TabPanel currentValue={currentValue} value={ADMIN_TABS.LOOKUP}>
                     <AdminLookup />
+                </TabPanel>
+
+                <TabPanel currentValue={currentValue} value={ADMIN_TABS.DANGERZONE}>
+                    <DangerZone />
                 </TabPanel>
             </Stack>
         </Stack>

@@ -7,86 +7,62 @@ import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { MAX_BAN_PROPOSAL_REASON_LENGTH } from "../../../constants"
 import { FancyButton } from "../../Common/FancyButton"
 import { SvgClose } from "../../../assets"
-import { Faction, User } from "../../../types"
 
-export const AdminUnbanModal = ({
-    playerUnbanIDs,
-    modalOpen,
-    setModalOpen,
-    user,
-    faction,
-    fetchPlayer,
-}: {
-    playerUnbanIDs: string[]
-    modalOpen: boolean
-    setModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    user: User
-    faction: Faction
-    fetchPlayer: (newGid: number) => void
-}) => {
+export const RestartServerModal = ({ modalOpen, setModalOpen }: { modalOpen: boolean; setModalOpen: React.Dispatch<React.SetStateAction<boolean>> }) => {
     const { send } = useGameServerCommandsUser("/user_commander")
-    const [unbanReason, setUnbanReason] = useState<string>("")
+    const [restartReason, setRestartReason] = useState<string>("")
     const [reqError, setReqError] = useState<string>("")
 
     const onClose = useCallback(() => {
         setModalOpen(false)
     }, [setModalOpen])
 
-    const sendUnbanCommand = useCallback(() => {
+    const sendRestartCommand = useCallback(() => {
         ;(async () => {
             try {
                 await send<
                     boolean,
                     {
-                        player_ban_id: string[]
-                        unban_reason: string
+                        reason: string
                     }
-                >(GameServerKeys.ModUnbanUser, {
-                    player_ban_id: playerUnbanIDs,
-                    unban_reason: unbanReason,
+                >(GameServerKeys.ModRestartServer, {
+                    reason: restartReason,
                 })
 
                 onClose()
-                fetchPlayer(user.gid)
             } catch (e) {
                 console.error(e)
                 setReqError(typeof e === "string" ? e : "Failed to unban player")
             }
         })()
-    }, [fetchPlayer, onClose, playerUnbanIDs, send, unbanReason, user.gid])
+    }, [onClose, send, restartReason])
 
     return (
         <AdminUnbanModalInner
-            sendUnbanCommand={sendUnbanCommand}
-            setUnbanReason={setUnbanReason}
+            sendUnbanCommand={sendRestartCommand}
+            setRestartReason={setRestartReason}
             modalOpen={modalOpen}
             onClose={onClose}
             reqError={reqError}
-            user={user}
-            faction={faction}
-            unbanReason={unbanReason}
+            restartReason={restartReason}
         />
     )
 }
 
 const AdminUnbanModalInner = ({
     sendUnbanCommand,
-    setUnbanReason,
+    setRestartReason,
     modalOpen,
     onClose,
     reqError,
-    unbanReason,
-    user,
-    faction,
+    restartReason,
 }: {
     sendUnbanCommand: () => void
-    setUnbanReason: (value: ((prevState: string) => string) | string) => void
+    setRestartReason: (value: ((prevState: string) => string) | string) => void
     modalOpen: boolean
     onClose: () => void
     reqError: string
-    unbanReason: string
-    user: User
-    faction: Faction
+    restartReason: string
 }) => {
     return (
         <Modal open={modalOpen} onClose={onClose}>
@@ -105,11 +81,11 @@ const AdminUnbanModalInner = ({
                 <ClipThing
                     clipSize="8px"
                     border={{
-                        borderColor: faction.primary_color,
+                        borderColor: colors.red,
                         borderThickness: ".3rem",
                     }}
                     sx={{ position: "relative" }}
-                    backgroundColor={faction.background_color}
+                    backgroundColor={colors.darkGrey}
                 >
                     <Stack
                         sx={{
@@ -125,17 +101,20 @@ const AdminUnbanModalInner = ({
                             },
                         }}
                     >
-                        <Typography sx={{ mb: "1.2rem", fontFamily: fonts.nostromoBlack }}>
-                            Unban user {user.username} #{user.gid.toString()}
+                        <Typography sx={{ mb: "1.2rem", fontFamily: fonts.nostromoBlack }}>RESTART GAMESERVER</Typography>
+
+                        <Typography sx={{ mb: "1.2rem" }}>
+                            WARNING: This action is recorded and reported. Consider messaging #rapid-response-unit before attempting restart. If you are
+                            proceeding please provide a really good reason before considering restarting the server.
                         </Typography>
                         <Stack spacing=".3rem">
-                            <Typography sx={{ color: faction.primary_color, fontWeight: "fontWeightBold" }}>Unban reason:</Typography>
+                            <Typography sx={{ color: colors.red, fontWeight: "fontWeightBold" }}>Restart reason:</Typography>
                             <TextField
-                                value={unbanReason}
-                                placeholder="Type the reason to unban this user..."
+                                value={restartReason}
+                                placeholder="Type the reason to restart server..."
                                 onChange={(e) => {
                                     const m = e.currentTarget.value
-                                    if (m.length <= MAX_BAN_PROPOSAL_REASON_LENGTH) setUnbanReason(e.currentTarget.value)
+                                    if (m.length <= MAX_BAN_PROPOSAL_REASON_LENGTH) setRestartReason(e.currentTarget.value)
                                 }}
                                 type="text"
                                 hiddenLabel
@@ -154,7 +133,7 @@ const AdminUnbanModalInner = ({
                                         color: "#FFFFFF70",
                                     },
                                     ".Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                        borderColor: `${faction.primary_color} !important`,
+                                        borderColor: `${colors.red} !important`,
                                     },
                                     textarea: {
                                         p: 0,
@@ -170,19 +149,19 @@ const AdminUnbanModalInner = ({
                         <FancyButton
                             clipThingsProps={{
                                 clipSize: "9px",
-                                backgroundColor: faction.primary_color,
+                                backgroundColor: colors.red,
                                 opacity: 1,
-                                border: { isFancy: true, borderColor: faction.primary_color, borderThickness: "2px" },
+                                border: { isFancy: true, borderColor: colors.red, borderThickness: "2px" },
                                 sx: { position: "relative", minWidth: 0, mt: "1.8rem" },
                             }}
-                            sx={{ px: "0.5rem", py: ".3rem", color: faction.secondary_color }}
+                            sx={{ px: "0.5rem", py: ".3rem", color: colors.offWhite }}
                             onClick={() => sendUnbanCommand()}
-                            disabled={unbanReason === ""}
+                            disabled={restartReason === ""}
                         >
                             <Typography
                                 variant="caption"
                                 sx={{
-                                    color: faction.secondary_color,
+                                    color: colors.offWhite,
                                     fontFamily: fonts.nostromoBlack,
                                 }}
                             >

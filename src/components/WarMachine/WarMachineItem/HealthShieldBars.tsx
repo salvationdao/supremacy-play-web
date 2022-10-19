@@ -1,12 +1,12 @@
 import { Stack } from "@mui/material"
-import React, { useMemo, useRef } from "react"
+import React, { useMemo } from "react"
 import { WIDTH_STAT_BAR } from "../.."
-import { useArena } from "../../../containers/arena"
-import { useGameServerSubscription } from "../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../keys"
+import { BinaryDataKey, useGameServerSubscription } from "../../../hooks/useGameServer"
 import { colors } from "../../../theme/theme"
 import { WarMachineLiveState, WarMachineState } from "../../../types"
 import { ProgressBar } from "../../Common/ProgressBar"
+import { warMachineStatsBinaryParser } from "../../../helpers/binaryDataParsers/warMachineStatsParser"
+import { useArena } from "../../../containers"
 
 interface HealthShieldBarsProps {
     warMachine: WarMachineState
@@ -19,39 +19,34 @@ const propsAreEqual = (prevProps: HealthShieldBarsProps, nextProps: HealthShield
 
 export const HealthShieldBars = React.memo(function HealthShieldBars({ warMachine, setIsAlive }: HealthShieldBarsProps) {
     const { currentArenaID } = useArena()
-    const { hash, participantID, maxHealth, maxShield } = warMachine
-    const tickIteration = useRef(0)
+    const { hash, maxHealth, maxShield } = warMachine
 
-    // Listen on current war machine changes
-    useGameServerSubscription<WarMachineLiveState | undefined>(
+    useGameServerSubscription<WarMachineLiveState[]>(
         {
-            URI: `/public/arena/${currentArenaID}/mech/${participantID}`,
-            key: GameServerKeys.SubMechLiveStats,
-            ready: !!participantID && !!currentArenaID,
-            batchURI: `/public/arena/${currentArenaID}/mech`,
+            URI: `/mini_map/arena/${currentArenaID}/public/mech_stats`,
+            binaryKey: BinaryDataKey.WarMachineStats,
+            binaryParser: warMachineStatsBinaryParser,
+            ready: !!currentArenaID,
         },
         (payload) => {
-            if (!payload || payload.tick_order < tickIteration.current) return
-            tickIteration.current = payload.tick_order
+            if (!payload) return
 
-            // Direct DOM manipulation is a lot more optimized than re-rendering
-            if (payload?.health !== undefined) {
-                setIsAlive(payload.health > 0)
+            const target = payload.find((p) => p.participant_id === warMachine.participantID)
+            if (!target) return
 
-                const healthBarEl = document.getElementById(`war-machine-item-health-bar-${hash}`)
-                if (healthBarEl) {
-                    const percent = Math.min((payload.health / maxHealth) * 100, 100)
-                    healthBarEl.style.height = `${percent}%`
-                    healthBarEl.style.backgroundColor = percent <= 45 ? colors.red : colors.health
-                }
+            setIsAlive(target.health > 0)
+
+            const healthBarEl = document.getElementById(`war-machine-item-health-bar-${hash}`)
+            if (healthBarEl) {
+                const percent = Math.min((target.health / maxHealth) * 100, 100)
+                healthBarEl.style.height = `${percent}%`
+                healthBarEl.style.backgroundColor = percent <= 45 ? colors.red : colors.health
             }
 
-            if (payload?.shield !== undefined) {
-                const shieldBarEl = document.getElementById(`war-machine-item-shield-bar-${hash}`)
-                if (shieldBarEl) {
-                    const percent = Math.min((payload.shield / maxShield) * 100, 100)
-                    shieldBarEl.style.height = `${percent}%`
-                }
+            const shieldBarEl = document.getElementById(`war-machine-item-shield-bar-${hash}`)
+            if (shieldBarEl) {
+                const percent = Math.min((target.shield / maxShield) * 100, 100)
+                shieldBarEl.style.height = `${percent}%`
             }
         },
     )
