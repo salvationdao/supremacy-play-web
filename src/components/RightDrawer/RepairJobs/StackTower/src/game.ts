@@ -96,6 +96,7 @@ export class Game {
         if (e.key.toLowerCase() === this.activePlayButton.toLowerCase() || (e.key === " " && this.activePlayButton === PlayButton.Spacebar)) {
             switch (this.state) {
                 case GameState.Ready:
+                    this.stage.setCamera(0, cameraConfig.offsetY, 0)
                     this.setState(GameState.Playing)
                     this.placeBlock()
                     break
