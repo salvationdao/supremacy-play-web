@@ -162,7 +162,7 @@ export class Game {
 
         // If the top most block is a block we already placed, then return
         // Server shouldve sent a new block
-        if (curBlock.shouldReplace) return
+        if (curBlock?.shouldReplace) return
 
         // Return if there isn't a block to place
         if (curBlock && prevBlock) {
@@ -272,6 +272,7 @@ export class Game {
 
         // Update camera y position
         if (curBlock.blockServer.type !== BlockType.Bomb) {
+            console.log(this.blocks.length * blockConfig.initHeight + cameraConfig.offsetY)
             this.stage.setCamera(
                 curBlock?.mesh.position.x || 0,
                 this.blocks.length * blockConfig.initHeight + cameraConfig.offsetY,
