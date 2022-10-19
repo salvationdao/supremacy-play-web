@@ -87,6 +87,7 @@ export enum ChatMessageType {
     PunishVote = "PUNISH_VOTE",
     SystemBan = "SYSTEM_BAN",
     NewBattle = "NEW_BATTLE",
+    ModBan = "MOD_BAN",
 }
 
 export interface ChatMessage {

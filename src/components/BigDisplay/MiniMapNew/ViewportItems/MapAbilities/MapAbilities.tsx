@@ -1,11 +1,10 @@
-import { decode } from "base64-arraybuffer"
 import React, { useEffect, useRef, useState } from "react"
 import { useArena, useMiniMapPixi } from "../../../../../containers"
-import { useGameServerSubscription } from "../../../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../../../keys"
+import { BinaryDataKey, useGameServerSubscription } from "../../../../../hooks/useGameServer"
 import { DisplayedAbility, LocationSelectType, MechDisplayEffectType, MiniMapDisplayEffectType } from "../../../../../types"
 import { HiveStatus } from "../HiveStatus/HiveStatus"
 import { PixiMapAbilities } from "./pixiMapAbilities"
+import { GameServerKeys } from "../../../../../keys"
 
 export enum MapEventType {
     // Airstrike Explosions - The locations of airstrike missile impacts.
@@ -80,8 +79,8 @@ export const MapAbilities = React.memo(function MapAbilities() {
     // Subscribe on basic map abilities like repair, emp etc.
     useGameServerSubscription<DisplayedAbility[]>(
         {
-            URI: `/public/arena/${currentArenaID}/mini_map_ability_display_list`,
-            key: GameServerKeys.SubMiniMapAbilityDisplayList,
+            URI: `/mini_map/arena/${currentArenaID}/public/mini_map_ability_display_list`,
+            key: GameServerKeys.SubMiniMapAbilityContentSubscribe,
             ready: !!currentArenaID,
         },
         (payload) => {
@@ -96,18 +95,22 @@ export const MapAbilities = React.memo(function MapAbilities() {
     )
 
     // Other complex map abilities are sent through as byte array to save bandwidth
-    useGameServerSubscription<string>(
+    useGameServerSubscription<ArrayBuffer>(
         {
-            URI: `/public/arena/${currentArenaID}/minimap_events`,
-            key: GameServerKeys.MinimapEventsSubscribe,
+            URI: `/mini_map/arena/${currentArenaID}/public/minimap_events`,
+            binaryKey: BinaryDataKey.MiniMapEvents,
+            binaryParser: (data) => ({
+                uri: "",
+                key: BinaryDataKey.MiniMapEvents,
+                payload: data,
+                mt: window.performance.now(),
+            }),
             ready: !!currentArenaID,
         },
         (payload) => {
             if (!payload) return
-
-            const buffer = decode(payload)
-            const dv = new DataView(buffer)
-            let offset = 0
+            const dv = new DataView(payload)
+            let offset = 1 // skip the leading byte
 
             const newMapEvents: DisplayedAbility[] = [] // Events to be added
             const pendingMapEvents: PendingMapEvent[] = [] // Events to be added after their individual timeout
