@@ -1,13 +1,13 @@
 import { Box, Button, Divider, Fade, Slide, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { Svg2DView, Svg3DView, SvgCamera, SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgWeapons } from "../../../../../assets"
-import { useGlobalNotifications } from "../../../../../containers"
+import { Svg2DView, Svg3DView, SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgWeapons } from "../../../../../assets"
+import { useAuth, useGlobalNotifications } from "../../../../../containers"
 import { useTheme } from "../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../helpers"
 import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
-import { AssetItemType, MechDetails, MechSkin, MechStatus, MechStatusEnum, PowerCore, Utility, Weapon } from "../../../../../types"
+import { AssetItemType, MechDetails, MechSkin, MechStatus, MechStatusEnum, PowerCore, Utility, Weapon, WeaponType } from "../../../../../types"
 import { ClipThing } from "../../../../Common/ClipThing"
 import { FancyButton } from "../../../../Common/FancyButton"
 import { LoadoutItem, MechLoadoutItem } from "../../Common/MechLoadoutItem"
@@ -18,6 +18,13 @@ import { MechLoadoutMechSkinModal } from "../Modals/Loadout/MechLoadoutMechSkinM
 import { MechLoadoutPowerCoreModal } from "../Modals/Loadout/MechLoadoutPowerCoreModal"
 import { MechLoadoutWeaponModal } from "../Modals/Loadout/MechLoadoutWeaponModal"
 import { CustomDragEventWithType, DraggablesHandle, DragStartEventWithType, DragStopEventWithType, MechLoadoutDraggables } from "./MechLoadoutDraggables"
+
+interface SavedSelection {
+    equip_mech_skin?: EquipMechSkin
+    equip_power_core?: EquipPowerCore
+    equip_utility?: EquipUtility[]
+    equip_weapons?: EquipWeapon[]
+}
 
 interface PlayerAssetMechEquipRequest {
     mech_id: string
@@ -117,6 +124,7 @@ const LOCAL_STORAGE_KEY_PREFERS_2D_LOADOUT = "prefers2DLoadout"
 
 export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpdate }: MechLoadoutProps) => {
     const theme = useTheme()
+    const { userID } = useAuth()
     const { send } = useGameServerCommandsUser("/user_commander")
     const { newSnackbarMessage } = useGlobalNotifications()
     const unityControlsRef = useRef<UnityHandle>(null)
@@ -125,7 +133,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
 
     const [error, setError] = useState<string>()
     const [loading, setLoading] = useState(false)
-    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
     const [currLoadout, setCurrLoadout] = useState<MechDetailsWithMaps>(generateLoadout(mechDetails))
     const [isDragging, setIsDragging] = useState(false)
     const [isUnityLoaded, setIsUnityLoaded] = useState(false)
@@ -133,11 +140,13 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     const [enable3DLoadout, setEnable3DLoadout] = useState(localStorage.getItem(LOCAL_STORAGE_KEY_PREFERS_2D_LOADOUT) !== "true")
 
     const {
+        owner_id,
         weapons_map,
         changed_weapons_map,
         blueprint_weapon_ids_with_skin_inheritance,
         // utility_map,
         // changed_utility_map,
+        // original_utility_map,
         power_core,
         changed_power_core,
         chassis_skin,
@@ -150,136 +159,159 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     } = currLoadout
     const loadoutDisabled = useMemo(
         () =>
+            userID !== owner_id ||
             (enable3DLoadout && (isUnityPendingChange || !isUnityLoaded)) ||
             xsyn_locked ||
             locked_to_marketplace ||
             (mechStatus?.battle_lobby_is_locked && mechStatus?.status === MechStatusEnum.Queue) ||
             mechStatus?.status === MechStatusEnum.Battle ||
             mechStatus?.status === MechStatusEnum.Sold,
-        [enable3DLoadout, isUnityLoaded, isUnityPendingChange, locked_to_marketplace, mechStatus?.battle_lobby_is_locked, mechStatus?.status, xsyn_locked],
+        [
+            enable3DLoadout,
+            isUnityLoaded,
+            isUnityPendingChange,
+            locked_to_marketplace,
+            mechStatus?.battle_lobby_is_locked,
+            mechStatus?.status,
+            owner_id,
+            userID,
+            xsyn_locked,
+        ],
     )
 
     useEffect(() => {
         setCurrLoadout(generateLoadout(mechDetails))
     }, [mechDetails])
 
-    // Track if changes have been made
-    useEffect(() => {
-        const hasUnsaved =
-            currLoadout.changed_weapons_map.size > 0 ||
-            currLoadout.changed_utility_map.size > 0 ||
-            !!currLoadout.changed_power_core ||
-            !!currLoadout.changed_mech_skin
-        setHasUnsavedChanges(hasUnsaved)
-        if (!hasUnsaved) {
-            setError(undefined)
-        }
-    }, [currLoadout.changed_weapons_map.size, currLoadout.changed_utility_map.size, currLoadout.changed_power_core, currLoadout.changed_mech_skin])
-
     // Confirm selection and submit payload to server
-    const saveSelection = useCallback(async () => {
-        try {
-            setLoading(true)
+    const saveSelection = useCallback(
+        async (selection: SavedSelection) => {
+            try {
+                setLoading(true)
 
-            const newMechDetails = await send<MechDetails, PlayerAssetMechEquipRequest>(GameServerKeys.EquipMech, {
-                mech_id: mechDetails.id,
-                equip_mech_skin: currLoadout.changed_mech_skin
-                    ? {
-                          mech_skin_id: currLoadout.changed_mech_skin.mech_skin.id,
-                      }
-                    : undefined,
-                equip_power_core: currLoadout.changed_power_core
-                    ? {
-                          power_core_id: currLoadout.changed_power_core.power_core_id,
-                          unequip: currLoadout.changed_power_core.unequip,
-                      }
-                    : undefined,
-                equip_utility: Array.from(currLoadout.changed_utility_map, ([slotNumber, u]) => ({
-                    utility_id: u.utility_id,
-                    slot_number: slotNumber,
-                    unequip: u.unequip,
-                })),
-                equip_weapons: Array.from(currLoadout.changed_weapons_map, ([slotNumber, w]) => ({
-                    weapon_id: w.weapon_id,
-                    slot_number: slotNumber,
-                    inherit_skin: w.inherit_skin,
-                    unequip: w.unequip,
-                })),
-            })
+                const newMechDetails = await send<MechDetails, PlayerAssetMechEquipRequest>(GameServerKeys.EquipMech, {
+                    ...selection,
+                    equip_weapons: selection.equip_weapons ? selection.equip_weapons : [],
+                    equip_utility: selection.equip_utility ? selection.equip_utility : [],
+                    mech_id: mechDetails.id,
+                })
 
-            newSnackbarMessage(`Successfully saved loadout.`, "success")
-            setError(undefined)
-            onUpdate(newMechDetails)
 
-            if (draggablesRef.current) {
-                draggablesRef.current.handleMechLoadoutUpdated()
+                newSnackbarMessage(`Successfully saved loadout.`, "success")
+                setError(undefined)
+                onUpdate(newMechDetails)
+
+                if (draggablesRef.current) {
+                    draggablesRef.current.handleMechLoadoutUpdated()
+                }
+            } catch (e) {
+                if (e instanceof Error) {
+                    setError(e.message)
+                } else if (typeof e === "string") {
+                    setError(e)
+                }
+            } finally {
+                setLoading(false)
             }
-        } catch (e) {
-            if (e instanceof Error) {
-                setError(e.message)
-            } else if (typeof e === "string") {
-                setError(e)
-            }
-        } finally {
-            setLoading(false)
-        }
-    }, [
-        currLoadout.changed_mech_skin,
-        currLoadout.changed_power_core,
-        currLoadout.changed_utility_map,
-        currLoadout.changed_weapons_map,
-        mechDetails.id,
-        newSnackbarMessage,
-        onUpdate,
-        send,
-    ])
+        },
+        [mechDetails.id, newSnackbarMessage, onUpdate, send],
+    )
 
     // EQUIP HANDLERS
-    const modifyMechSkin = useCallback((ems: LoadoutMechSkin) => {
-        if (unityControlsRef.current) {
-            unityControlsRef.current.handleMechSkinUpdate(ems)
-            setIsUnityPendingChange(true)
-        }
-
-        setCurrLoadout((prev) => {
-            return {
-                ...prev,
-                changed_mech_skin: ems,
-            }
-        })
-    }, [])
-    const modifyPowerCore = useCallback((ep: LoadoutPowerCore) => {
-        setCurrLoadout((prev) => {
-            let updated: LoadoutPowerCore | undefined = ep
-            if (ep.unequip && !prev.power_core) {
-                updated = undefined
-            }
-            return {
-                ...prev,
-                changed_power_core: updated,
-            }
-        })
-    }, [])
-    const modifyWeaponSlot = useCallback((ew: LoadoutWeapon) => {
-        if (unityControlsRef.current) {
-            unityControlsRef.current.handleWeaponUpdate(ew)
-            setIsUnityPendingChange(true)
-        }
-
-        setCurrLoadout((prev) => {
-            const updated = new Map(prev.changed_weapons_map)
-            if (ew.unequip && !prev.weapons_map.get(ew.slot_number)) {
-                updated.delete(ew.slot_number)
-            } else {
-                updated.set(ew.slot_number, ew)
+    const modifyMechSkin = useCallback(
+        (ems: LoadoutMechSkin) => {
+            if (unityControlsRef.current) {
+                unityControlsRef.current.handleMechSkinUpdate(ems)
+                setIsUnityPendingChange(true)
             }
 
-            return {
-                ...prev,
-                changed_weapons_map: updated,
+            setCurrLoadout((prev) => {
+                return {
+                    ...prev,
+                    changed_mech_skin: ems,
+                }
+            })
+            saveSelection({
+                equip_mech_skin: ems
+                    ? {
+                          mech_skin_id: ems.mech_skin.id,
+                      }
+                    : undefined,
+            })
+        },
+        [saveSelection],
+    )
+    const modifyPowerCore = useCallback(
+        (ep: LoadoutPowerCore) => {
+            if (unityControlsRef.current) {
+                // unityControlsRef.current.handlePowerCoreUpdate(ep)
+                // setIsUnityPendingChange(true)
             }
-        })
-    }, [])
+
+            setCurrLoadout((prev) => {
+                let updated: LoadoutPowerCore | undefined = ep
+                if (ep.unequip && !prev.power_core) {
+                    updated = undefined
+                }
+                return {
+                    ...prev,
+                    changed_power_core: updated,
+                }
+            })
+            saveSelection({
+                equip_power_core: ep
+                    ? {
+                          power_core_id: ep.power_core_id,
+                          unequip: ep.unequip,
+                      }
+                    : undefined,
+            })
+        },
+        [saveSelection],
+    )
+    const modifyWeaponSlot = useCallback(
+        (ew: LoadoutWeapon) => {
+            if (unityControlsRef.current) {
+                unityControlsRef.current.handleWeaponUpdate(ew)
+                setIsUnityPendingChange(true)
+            }
+
+            setCurrLoadout((prev) => {
+                const updated = new Map(prev.changed_weapons_map)
+                if (ew.unequip && !prev.weapons_map.get(ew.slot_number)) {
+                    updated.delete(ew.slot_number)
+                } else {
+                    updated.set(ew.slot_number, {
+                        ...ew,
+                        weapon:
+                            ew.weapon && typeof ew.inherit_skin !== "undefined"
+                                ? {
+                                      ...ew.weapon,
+                                      inherit_skin: ew.inherit_skin,
+                                  }
+                                : undefined,
+                    })
+                }
+
+                return {
+                    ...prev,
+                    changed_weapons_map: updated,
+                }
+            })
+
+            saveSelection({
+                equip_weapons: [
+                    {
+                        weapon_id: ew.weapon_id,
+                        slot_number: ew.slot_number,
+                        inherit_skin: ew.inherit_skin,
+                        unequip: ew.unequip,
+                    },
+                ],
+            })
+        },
+        [saveSelection],
+    )
 
     // UNDO HANDLERS
     const undoMechSkinChanges = useCallback(() => {
@@ -295,8 +327,17 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         setCurrLoadout((prev) => ({ ...prev, changed_mech_skin: undefined }))
     }, [currLoadout.chassis_skin])
     const undoPowerCoreChanges = useCallback(() => {
+        if (unityControlsRef.current && currLoadout.power_core) {
+            // const prevPowerCore = currLoadout.power_core
+            // unityControlsRef.current.handlePowerCoreUpdate({
+            //     power_core_id: prevPowerCore.id,
+            //     power_core: prevPowerCore,
+            // })
+            // setIsUnityPendingChange(true)
+        }
+
         setCurrLoadout((prev) => ({ ...prev, changed_power_core: undefined }))
-    }, [])
+    }, [currLoadout.power_core])
     const undoWeaponChanges = useCallback(
         (slotNumber: number) => {
             if (unityControlsRef.current) {
@@ -330,6 +371,47 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         },
         [currLoadout.weapons_map],
     )
+
+    // WEAPON INHERIT ALL SKINS
+    const enableInheritAllWeaponSkins = useMemo(() => {
+        for (let weaponSlotNumber = 0; weaponSlotNumber < currLoadout.weapon_hardpoints; weaponSlotNumber++) {
+            const w = currLoadout.changed_weapons_map.get(weaponSlotNumber)?.weapon || currLoadout.weapons_map.get(weaponSlotNumber)
+            if (!w || w.weapon_type === WeaponType.RocketPods) continue
+            if (!blueprint_weapon_ids_with_skin_inheritance.find((s) => s === w?.blueprint_id)) continue
+            if (w.inherit_skin) continue
+
+            return true
+        }
+        return false
+    }, [blueprint_weapon_ids_with_skin_inheritance, currLoadout.changed_weapons_map, currLoadout.weapon_hardpoints, currLoadout.weapons_map])
+    const inheritAllWeaponSkins = useCallback(() => {
+        for (let weaponSlotNumber = 0; weaponSlotNumber < currLoadout.weapon_hardpoints; weaponSlotNumber++) {
+            const w = currLoadout.changed_weapons_map.get(weaponSlotNumber)?.weapon || currLoadout.weapons_map.get(weaponSlotNumber)
+            if (!w || w.inherit_skin || w.weapon_type === WeaponType.RocketPods) continue
+            if (!blueprint_weapon_ids_with_skin_inheritance.find((s) => s === w?.blueprint_id)) continue
+
+            modifyWeaponSlot({
+                inherit_skin: true,
+                slot_number: weaponSlotNumber,
+                weapon_id: w.id,
+                weapon: w,
+            })
+        }
+    }, [blueprint_weapon_ids_with_skin_inheritance, currLoadout.changed_weapons_map, currLoadout.weapon_hardpoints, currLoadout.weapons_map, modifyWeaponSlot])
+    const uninheritAllWeaponSkins = useCallback(() => {
+        for (let weaponSlotNumber = 0; weaponSlotNumber < currLoadout.weapon_hardpoints; weaponSlotNumber++) {
+            const w = currLoadout.changed_weapons_map.get(weaponSlotNumber)?.weapon || currLoadout.weapons_map.get(weaponSlotNumber)
+            if (!w || !w.inherit_skin || w.weapon_type === WeaponType.RocketPods) continue
+            if (!blueprint_weapon_ids_with_skin_inheritance.find((s) => s === w?.blueprint_id)) continue
+
+            modifyWeaponSlot({
+                inherit_skin: false,
+                slot_number: weaponSlotNumber,
+                weapon_id: w.id,
+                weapon: w,
+            })
+        }
+    }, [blueprint_weapon_ids_with_skin_inheritance, currLoadout.changed_weapons_map, currLoadout.weapon_hardpoints, currLoadout.weapons_map, modifyWeaponSlot])
 
     // DRAG HANDLERS
     const mechSkinItemRef = useRef<HTMLDivElement>(null)
@@ -494,14 +576,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         localStorage.setItem(LOCAL_STORAGE_KEY_PREFERS_2D_LOADOUT, "false")
     }
 
-    // SCREENSHOT
-    const screenshot3DView = () => {
-        if (!unityControlsRef.current) return
-        const dataUrl = unityControlsRef.current.handleScreenshot()
-        if (!dataUrl) return
-        window.open(dataUrl, "_blank")
-    }
-
     return (
         <Stack
             direction="row"
@@ -530,50 +604,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                         bottom: 0,
                     }}
                 >
-                    <Slide in={enable3DLoadout && isUnityLoaded} direction="right">
-                        <ClipThing
-                            clipSize="10px"
-                            border={{
-                                borderColor: theme.factionTheme.primary,
-                                borderThickness: ".3rem",
-                            }}
-                            backgroundColor={theme.factionTheme.background}
-                            corners={{
-                                topRight: true,
-                            }}
-                            sx={{
-                                mb: "-.3rem",
-                            }}
-                        >
-                            <Stack direction="row">
-                                <Box p="1rem">
-                                    <SvgCamera />
-                                </Box>
-                                <Divider
-                                    orientation="vertical"
-                                    color={colors.darkGrey}
-                                    sx={{
-                                        height: "auto",
-                                    }}
-                                />
-                                <Button
-                                    sx={{
-                                        borderRadius: 0,
-                                    }}
-                                    onClick={screenshot3DView}
-                                >
-                                    <Typography
-                                        sx={{
-                                            fontFamily: fonts.nostromoBlack,
-                                            fontSize: "2rem",
-                                        }}
-                                    >
-                                        Take Screenshot
-                                    </Typography>
-                                </Button>
-                            </Stack>
-                        </ClipThing>
-                    </Slide>
                     <ClipThing
                         clipSize="10px"
                         border={{
@@ -612,6 +642,51 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                         </Stack>
                     </ClipThing>
                 </Stack>
+                {/* Saving Changes */}
+                <Box
+                    sx={{
+                        zIndex: 7,
+                        position: "absolute",
+                        right: 0,
+                        bottom: 0,
+                    }}
+                >
+                    <Slide direction="up" in={loading || !!error} mountOnEnter unmountOnExit>
+                        <ClipThing
+                            clipSize="10px"
+                            border={{
+                                borderColor: theme.factionTheme.primary,
+                                borderThickness: ".3rem",
+                            }}
+                            backgroundColor={theme.factionTheme.background}
+                            corners={{
+                                topRight: !(enable3DLoadout && isUnityLoaded),
+                            }}
+                        >
+                            <Stack direction="row" alignItems="end">
+                                {
+                                    <Fade in={!!error} mountOnEnter unmountOnExit>
+                                        <Typography
+                                            sx={{
+                                                color: colors.red,
+                                            }}
+                                        >
+                                            {error}
+                                        </Typography>
+                                    </Fade>
+                                }
+                                <Typography
+                                    sx={{
+                                        fontFamily: fonts.nostromoBlack,
+                                        fontSize: "2rem",
+                                    }}
+                                >
+                                    Saving Changes
+                                </Typography>
+                            </Stack>
+                        </ClipThing>
+                    </Slide>
+                </Box>
                 {/* Mech Viewer */}
                 {enable3DLoadout ? (
                     <MechViewer3D
@@ -675,42 +750,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                         zIndex: 6,
                     }}
                 >
-                    {/* Save Changes Button */}
-                    <Box
-                        sx={{
-                            zIndex: 1,
-                            position: "absolute",
-                            right: "6rem",
-                            bottom: "5rem",
-                        }}
-                    >
-                        <Slide direction="up" in={hasUnsavedChanges} mountOnEnter unmountOnExit>
-                            <Stack direction="row" alignItems="end">
-                                {
-                                    <Fade in={!!error} mountOnEnter unmountOnExit>
-                                        <Typography
-                                            sx={{
-                                                color: colors.red,
-                                            }}
-                                        >
-                                            {error}
-                                        </Typography>
-                                    </Fade>
-                                }
-                                <FancyButton
-                                    sx={{ px: "1.6rem", py: ".6rem" }}
-                                    clipThingsProps={{
-                                        backgroundColor: colors.green,
-                                    }}
-                                    onClick={() => saveSelection()}
-                                    loading={loading}
-                                    disabled={isUnityPendingChange}
-                                >
-                                    <Typography variant="h6">Save Changes</Typography>
-                                </FancyButton>
-                            </Stack>
-                        </Slide>
-                    </Box>
                     {/* Left side */}
                     <Stack
                         flexWrap="wrap"
@@ -776,7 +815,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                             if (powerCore) {
                                 return (
                                     <MechLoadoutItem
-                                        locked
                                         disabled={loadoutDisabled}
                                         imageUrl={powerCore.image_url || powerCore.avatar_url}
                                         videoUrls={[powerCore.card_animation_url]}
@@ -804,112 +842,146 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                     renderModal={renderModal}
                                     prevEquipped={prevEquipped()}
                                     isEmpty
-                                    locked
                                 />
                             )
                         })()}
 
-                        {Array.from(weapons_map, ([slotNumber, w]) => {
-                            let weapon = w
-                            const changed = changed_weapons_map.get(slotNumber)
-                            if (changed) {
-                                if (changed.unequip) {
-                                    weapon = null
-                                } else if (changed.weapon) {
-                                    weapon = changed.weapon
-                                }
-                            }
-
-                            const renderModal = (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => (
-                                <MechLoadoutWeaponModal
-                                    containerRef={drawerContainerRef}
-                                    onClose={() => toggleShowLoadoutModal(false)}
-                                    onConfirm={(selectedWeapon, inheritSkin) => {
-                                        modifyWeaponSlot({
-                                            weapon: selectedWeapon,
-                                            weapon_id: selectedWeapon.id,
-                                            slot_number: slotNumber,
-                                            inherit_skin: inheritSkin,
-                                        })
-                                        toggleShowLoadoutModal(false)
-                                    }}
-                                    equipped={weapon || undefined}
-                                    weaponsWithSkinInheritance={blueprint_weapon_ids_with_skin_inheritance}
-                                    weaponsAlreadyEquippedInOtherSlots={Array.from(changed_weapons_map.values(), (w) => w.weapon_id).filter((w) => !!w)}
-                                />
-                            )
-
-                            const prevEquipped = (): LoadoutItem | undefined => {
-                                if (!changed_weapons_map.has(slotNumber)) return
-
-                                const previouslyEquipped = weapons_map.get(slotNumber)
-                                if (!previouslyEquipped) {
-                                    return {
-                                        slotNumber,
-                                        label: "WEAPON",
-                                        primaryColor: colors.weapons,
-                                        onClick: () => undoWeaponChanges(slotNumber),
-                                        disabled: loadoutDisabled,
-                                        isEmpty: true,
+                        <Stack
+                            sx={{
+                                position: "relative",
+                            }}
+                        >
+                            {Array.from(weapons_map, ([slotNumber, w]) => {
+                                let weapon = w
+                                const changed = changed_weapons_map.get(slotNumber)
+                                if (changed) {
+                                    if (changed.unequip) {
+                                        weapon = null
+                                    } else if (changed.weapon) {
+                                        weapon = changed.weapon
                                     }
                                 }
 
-                                return {
-                                    slotNumber,
-                                    imageUrl: previouslyEquipped.image_url || previouslyEquipped.avatar_url,
-                                    videoUrls: [previouslyEquipped.card_animation_url],
-                                    label: previouslyEquipped.label,
-                                    primaryColor: colors.weapons,
-                                    Icon: SvgWeapons,
-                                    rarity: previouslyEquipped.weapon_skin ? getRarityDeets(previouslyEquipped.weapon_skin.tier) : undefined,
-                                    hasSkin: !!previouslyEquipped.weapon_skin,
-                                    onClick: () => undoWeaponChanges(slotNumber),
-                                    disabled: loadoutDisabled,
-                                }
-                            }
+                                const renderModal = (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => (
+                                    <MechLoadoutWeaponModal
+                                        containerRef={drawerContainerRef}
+                                        onClose={() => toggleShowLoadoutModal(false)}
+                                        onConfirm={(selectedWeapon, inheritSkin) => {
+                                            modifyWeaponSlot({
+                                                weapon: selectedWeapon,
+                                                weapon_id: selectedWeapon.id,
+                                                slot_number: slotNumber,
+                                                inherit_skin: inheritSkin,
+                                            })
+                                            toggleShowLoadoutModal(false)
+                                        }}
+                                        equipped={weapon || undefined}
+                                        weaponsWithSkinInheritance={blueprint_weapon_ids_with_skin_inheritance}
+                                        weaponsAlreadyEquippedInOtherSlots={Array.from(changed_weapons_map.values(), (w) => w.weapon_id).filter((w) => !!w)}
+                                    />
+                                )
 
-                            if (weapon) {
+                                const prevEquipped = (): LoadoutItem | undefined => {
+                                    if (!changed_weapons_map.has(slotNumber)) return
+
+                                    const previouslyEquipped = weapons_map.get(slotNumber)
+                                    if (!previouslyEquipped) {
+                                        return {
+                                            slotNumber,
+                                            label: "WEAPON",
+                                            primaryColor: colors.weapons,
+                                            onClick: () => undoWeaponChanges(slotNumber),
+                                            disabled: loadoutDisabled,
+                                            isEmpty: true,
+                                        }
+                                    }
+
+                                    return {
+                                        slotNumber,
+                                        imageUrl: previouslyEquipped.image_url || previouslyEquipped.avatar_url,
+                                        videoUrls: [previouslyEquipped.card_animation_url],
+                                        label: previouslyEquipped.label,
+                                        primaryColor: colors.weapons,
+                                        Icon: SvgWeapons,
+                                        rarity: previouslyEquipped.weapon_skin ? getRarityDeets(previouslyEquipped.weapon_skin.tier) : undefined,
+                                        hasSkin: !!previouslyEquipped.weapon_skin,
+                                        onClick: () => undoWeaponChanges(slotNumber),
+                                        disabled: loadoutDisabled,
+                                    }
+                                }
+
+                                if (weapon) {
+                                    return (
+                                        <MechLoadoutItem
+                                            ref={(r) => weaponItemRefs.current.set(slotNumber, r)}
+                                            disabled={loadoutDisabled}
+                                            key={weapon.id}
+                                            slotNumber={slotNumber}
+                                            imageUrl={weapon.image_url || weapon.avatar_url}
+                                            videoUrls={[weapon.card_animation_url]}
+                                            label={weapon.label}
+                                            primaryColor={colors.weapons}
+                                            Icon={SvgWeapons}
+                                            rarity={weapon.weapon_skin ? getRarityDeets(weapon.weapon_skin.tier) : undefined}
+                                            hasSkin={!!weapon.weapon_skin}
+                                            renderModal={renderModal}
+                                            prevEquipped={prevEquipped()}
+                                            locked={weapon.locked_to_mech}
+                                            onUnequip={() =>
+                                                modifyWeaponSlot({
+                                                    weapon_id: "",
+                                                    slot_number: slotNumber,
+                                                    unequip: true,
+                                                })
+                                            }
+                                        />
+                                    )
+                                }
+
                                 return (
                                     <MechLoadoutItem
                                         ref={(r) => weaponItemRefs.current.set(slotNumber, r)}
                                         disabled={loadoutDisabled}
-                                        key={weapon.id}
+                                        key={slotNumber}
                                         slotNumber={slotNumber}
-                                        imageUrl={weapon.image_url || weapon.avatar_url}
-                                        videoUrls={[weapon.card_animation_url]}
-                                        label={weapon.label}
+                                        label="WEAPON"
                                         primaryColor={colors.weapons}
-                                        Icon={SvgWeapons}
-                                        rarity={weapon.weapon_skin ? getRarityDeets(weapon.weapon_skin.tier) : undefined}
-                                        hasSkin={!!weapon.weapon_skin}
                                         renderModal={renderModal}
                                         prevEquipped={prevEquipped()}
-                                        locked={weapon.locked_to_mech}
-                                        onUnequip={() =>
-                                            modifyWeaponSlot({
-                                                weapon_id: "",
-                                                slot_number: slotNumber,
-                                                unequip: true,
-                                            })
-                                        }
+                                        isEmpty
                                     />
                                 )
-                            }
-
-                            return (
-                                <MechLoadoutItem
-                                    ref={(r) => weaponItemRefs.current.set(slotNumber, r)}
+                            })}
+                            <Box
+                                sx={{
+                                    p: "1rem",
+                                    width: "fit-content",
+                                }}
+                            >
+                                <FancyButton
                                     disabled={loadoutDisabled}
-                                    key={slotNumber}
-                                    slotNumber={slotNumber}
-                                    label="WEAPON"
-                                    primaryColor={colors.weapons}
-                                    renderModal={renderModal}
-                                    prevEquipped={prevEquipped()}
-                                    isEmpty
-                                />
-                            )
-                        })}
+                                    clipThingsProps={{
+                                        clipSize: "6px",
+                                        clipSlantSize: "0px",
+                                        corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
+                                        backgroundColor: colors.weapons,
+                                        border: { isFancy: false, borderColor: colors.weapons, borderThickness: "1.5px" },
+                                        sx: { position: "relative", minWidth: "16rem" },
+                                    }}
+                                    sx={{ px: "1.3rem", py: ".9rem", color: "white" }}
+                                    onClick={enableInheritAllWeaponSkins ? inheritAllWeaponSkins : uninheritAllWeaponSkins}
+                                >
+                                    <Typography
+                                        variant="caption"
+                                        sx={{
+                                            fontFamily: fonts.nostromoBlack,
+                                        }}
+                                    >
+                                        {enableInheritAllWeaponSkins ? "Inherit Skins" : "Uninherit Skins"}
+                                    </Typography>
+                                </FancyButton>
+                            </Box>
+                        </Stack>
                     </Stack>
 
                     {/* Right side */}
@@ -1046,6 +1118,13 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                 onDrag={onItemDrag}
                 onDragStart={onItemDragStart}
                 onDragStop={onItemDragStop}
+                onMechSkinClick={(ms) => {
+                    if (loadoutDisabled) return
+                    modifyMechSkin({
+                        mech_skin: ms,
+                        mech_skin_id: ms.id,
+                    })
+                }}
             />
         </Stack>
     )

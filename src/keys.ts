@@ -255,6 +255,9 @@ export enum GameServerKeys {
     ModBanUser = "MOD:BAN:USER",
     ModUnbanUser = "MOD:UNBAN:USER",
     ModRestartServer = "MOD:RESTART:SERVER",
+    ModLookupHistory = "MOD:LOOKUP:HISTORY",
+    ModRenamePlayer = "MOD:RENAME:PLAYER",
+    ModRenameMech = "MOD:RENAME:MECH",
 
     // Faction Commander
     JoinFactionCommander = "VOICE:JOIN:FACTION:COMMANDER",
@@ -262,7 +265,11 @@ export enum GameServerKeys {
 
     // Voice chat
     SubPlayerVoiceStream = "PLAYER:VOICE:STREAM",
+    SubPlayerVoiceStreamListeners = "PLAYER:VOICE:STREAM:LISTENERS",
+    GetPlayerVoiceStreamListeners = "VOICE:STREAM:GET:LISTENERS",
     VoiceChatVoteKick = "VOICE:VOTE:KICK",
+    VoiceChatConnect = "VOICE:STREAM:CONNECT",
+    VoiceChatDisconnect = "VOICE:STREAM:DISCONNECT",
 }
 
 export enum PassportServerKeys {
