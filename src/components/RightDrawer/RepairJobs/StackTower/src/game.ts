@@ -122,7 +122,7 @@ export class Game {
         }
 
         // Run tick on all falling blocks
-        this.fallingBlocks.forEach((block) => block.tick())
+        this.fallingBlocks.forEach((block) => block.tick(elapsedTime))
 
         // If falling block falls below y = 0, remove from stage
         this.fallingBlocks = this.fallingBlocks.filter((block) => {

@@ -21,6 +21,11 @@ export class Block {
     rightTexture: THREE.Texture
     materials: THREE.MeshBasicMaterial[]
 
+    // Blinking effect
+    private isBlinked = false
+    private prevBlinkTime = 0
+    private time = 0
+
     constructor(blockServer: BlockServer, prevBlock?: PrevBlockBrief, shouldReplace = false, isFalling = false) {
         this.blockServer = blockServer
 
@@ -130,16 +135,32 @@ export class Block {
             dimensionAlongAxis,
         }
     }
+
+    // Make the block blink
+    handleBlinking(elapsedTime: number, color: string) {
+        this.time += elapsedTime
+
+        if (this.time - this.prevBlinkTime > blockConfig.blinkFrequency) {
+            const finalColor = this.isBlinked ? hexToRGB("#FFFFFF") : hexToRGB(color)
+
+            this.materials.forEach((mat) => {
+                new TWEEN.Tween({ r: mat.color.r, g: mat.color.g, b: mat.color.b })
+                    .to({ r: finalColor.r / 255, g: finalColor.g / 255, b: finalColor.b / 255 }, blockConfig.blinkFrequency * 0.9)
+                    .onUpdate((newColor) => {
+                        mat.color.setRGB(newColor.r, newColor.g, newColor.b)
+                    })
+                    .start()
+            })
+
+            this.isBlinked = !this.isBlinked
+            this.prevBlinkTime = this.time
+        }
+    }
 }
 
 // Runs a tick, moves back and forth
 export class MovingBlock extends Block {
     shouldReplace: boolean
-
-    // Blinking effect
-    private isBlinked = false
-    private prevBlinkTime = 0
-    private time = 0
 
     constructor(blockServer: BlockServer, prevBlock?: PrevBlockBrief, shouldReplace = false) {
         super(blockServer, prevBlock, shouldReplace, false)
@@ -171,27 +192,6 @@ export class MovingBlock extends Block {
             this.handleBlinking(elapsedTime, colors.red)
         }
     }
-
-    // Make the block blink
-    handleBlinking(elapsedTime: number, color: string) {
-        this.time += elapsedTime
-
-        if (this.time - this.prevBlinkTime > blockConfig.blinkFrequency) {
-            const finalColor = this.isBlinked ? hexToRGB("#FFFFFF") : hexToRGB(color)
-
-            this.materials.forEach((mat) => {
-                new TWEEN.Tween({ r: mat.color.r, g: mat.color.g, b: mat.color.b })
-                    .to({ r: finalColor.r / 255, g: finalColor.g / 255, b: finalColor.b / 255 }, blockConfig.blinkFrequency * 0.9)
-                    .onUpdate((newColor) => {
-                        mat.color.setRGB(newColor.r, newColor.g, newColor.b)
-                    })
-                    .start()
-            })
-
-            this.isBlinked = !this.isBlinked
-            this.prevBlinkTime = this.time
-        }
-    }
 }
 
 // Runs a tick
@@ -205,10 +205,16 @@ export class FallingBlock extends Block {
         this.direction = prevBlock.direction
     }
 
-    tick() {
+    tick(elapsedTime: number) {
         this.position.y -= Math.abs(this.speed)
         this.mesh.rotation[this.axis === Axis.x ? Axis.z : Axis.x] +=
             (this.axis === Axis.x ? -1 : 1) * (this.direction / 6) * (-this.lengthStickingOut / Math.abs(this.lengthStickingOut))
         this.mesh.position.y = this.position.y
+
+        if (this.blockServer.type === BlockType.Fast) {
+            this.handleBlinking(elapsedTime, colors.neonBlue)
+        } else if (this.blockServer.type === BlockType.Bomb) {
+            this.handleBlinking(elapsedTime, colors.red)
+        }
     }
 }
