@@ -275,6 +275,7 @@ export class Game {
         // Score will count from [0, 0, 1, 2 ...etc]
         this.score = Math.max(this.blocks.length - 1, 0)
 
+        curBlock = this.blocks[this.blocks.length - 1]
         // Send place block update to server
         if (prevBlock) {
             this.onPlaceBlock.current({
