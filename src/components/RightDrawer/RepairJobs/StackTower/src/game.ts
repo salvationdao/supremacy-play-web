@@ -236,7 +236,11 @@ export class Game {
             const fallingBlock = new FallingBlock(
                 curBlock.blockServer,
                 {
-                    dimension: { ...curBlock.dimension, [dimensionAlongAxis]: Math.abs(lengthStickingOut) },
+                    dimension: {
+                        ...curBlock.dimension,
+                        [dimensionAlongAxis]:
+                            curBlock.blockServer.type === BlockType.Bomb ? curBlock.dimension[dimensionAlongAxis] : Math.abs(lengthStickingOut),
+                    },
                     position: positionFalling,
                     direction: curBlock.direction,
                     axis,
@@ -246,7 +250,6 @@ export class Game {
                 },
                 lengthStickingOut,
             )
-
             this.fallingBlocks.push(fallingBlock)
             this.stage.add(fallingBlock.mesh)
         }
