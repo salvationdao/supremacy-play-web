@@ -109,6 +109,7 @@ export class Game {
                     })
                     this.blocks = []
                     this.score = 0
+                    this.stage.setCamera(0, cameraConfig.offsetY, 0)
                     this.setState(GameState.Ready)
                     this.placeBlock()
                     break
