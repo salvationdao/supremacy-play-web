@@ -18,7 +18,7 @@ export const ActiveBanPanel = ({
     playerUnBanIDs: string[]
 }) => {
     return (
-        <Stack sx={{ flex: 2, p: "1rem" }} spacing={"1rem"}>
+        <Stack sx={{ flex: 2, p: "1rem", height: "100%" }} spacing={"1rem"}>
             {playerBans.map((playerBan) => {
                 const isSelected = playerUnBanIDs.includes(playerBan.id)
 
@@ -31,10 +31,10 @@ export const ActiveBanPanel = ({
                         }}
                         backgroundColor={faction.background_color}
                         opacity={0.9}
-                        sx={{ flex: 1 }}
+                        sx={{ height: "100%" }}
                         key={playerBan.id}
                     >
-                        <Stack sx={{ width: "100%", p: "1rem" }}>
+                        <Stack sx={{ width: "100%", p: "1rem", height: "100%" }}>
                             <Stack justifyContent={"space-between"} direction="row" alignItems="center">
                                 <Stack direction="row">
                                     <Checkbox

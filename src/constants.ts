@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js"
-import ReactGA from "react-ga"
+import ReactGA from "react-ga4"
 
 const USE_PROD_DATA = process.env.REACT_APP_PROD_DATA === "true"
 
