@@ -10,7 +10,6 @@ import { supFormatterNoFixed, timeSinceInWords } from "../../../helpers"
 import { useTimer } from "../../../hooks"
 import { useGameServerCommandsUser, useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { heightEffect } from "../../../theme/keyframes"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { RepairAgent, RepairJob, RepairStatus } from "../../../types/jobs"
 import { ClipThing } from "../../Common/ClipThing"
@@ -76,8 +75,6 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
     const [error, setError] = useState<string>()
 
     // Submission
-    const [isSubmitting, setIsSubmitting] = useState(false)
-    const [submitError, setSubmitError] = useState<string>()
     const [submitSuccess, setSubmitSuccess] = useState(false)
 
     const faction = useMemo(() => getFaction(_repairJob?.job_owner.faction_id || ""), [_repairJob?.job_owner.faction_id, getFaction])
@@ -119,7 +116,6 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
 
         setError(undefined)
         setIsRegistering(true)
-        setSubmitError(undefined)
         setSubmitSuccess(false)
 
         try {
@@ -220,51 +216,6 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
             )
         }
 
-        if (submitError) {
-            return (
-                <Stack spacing="2rem" alignItems="center">
-                    <Typography variant="h5" sx={{ textAlign: "center", fontWeight: "fontWeightBold", color: colors.red }}>
-                        {submitError}
-                    </Typography>
-
-                    <FancyButton
-                        clipThingsProps={{
-                            clipSize: "7px",
-                            clipSlantSize: "0px",
-                            corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
-                            backgroundColor: colors.red,
-                            opacity: 1,
-                            border: { borderColor: colors.red, borderThickness: "2px" },
-                            sx: { position: "relative" },
-                        }}
-                        sx={{ px: "1.6rem", py: "1rem", color: "#FFFFFF" }}
-                        onClick={() => registerAgentRepair()}
-                    >
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>DISMISS</Typography>
-                    </FancyButton>
-                </Stack>
-            )
-        }
-
-        if (isSubmitting) {
-            return (
-                <Stack spacing="1.8rem" alignItems="center">
-                    <Stack justifyContent="flex-end" sx={{ width: "3rem", height: "3rem", backgroundColor: colors.red, boxShadow: 3 }}>
-                        <Box sx={{ width: "100%", backgroundColor: colors.green, animation: `${heightEffect()} 4s ease-out infinite` }} />
-                    </Stack>
-
-                    <Typography
-                        variant="h5"
-                        sx={{
-                            fontWeight: "fontWeightBold",
-                        }}
-                    >
-                        SUBMITTING RESULTS...
-                    </Typography>
-                </Stack>
-            )
-        }
-
         if (!repairAgent) {
             return (
                 <Stack spacing="2.3rem" alignItems="center">
@@ -312,8 +263,6 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
         repairStatus,
         remainDamagedBlocks,
         isFinished,
-        submitError,
-        isSubmitting,
         repairAgent,
         onClose,
         registerAgentRepair,
@@ -436,10 +385,8 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
                             <StackTower
                                 key={repairAgentID}
                                 primaryColor={primaryColor}
-                                disableGame={!repairAgent || !!submitError || isSubmitting || isFinished}
+                                disableGame={!repairAgent || isFinished}
                                 repairAgent={repairAgent}
-                                setIsSubmitting={setIsSubmitting}
-                                setSubmitError={setSubmitError}
                                 onSubmitted={onSubmitted}
                             />
                         </Box>

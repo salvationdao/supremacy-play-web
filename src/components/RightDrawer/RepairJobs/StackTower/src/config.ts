@@ -87,12 +87,11 @@ export const skins: Skin[] = [
 export const baseFrameRate = 144
 
 export const blockConfig = {
-    initWidth: 10, // initial width of the box (x axis)
     initHeight: 2, // initial height of the box (y axis)
-    initDepth: 10, // initial depth of the box (z axis)
     initSpeed: 0.08, // initial moving speed
     acceleration: 0.005, // the acceleration, the box should move faster and faster
     maxSpeed: 3, // the upper bound of the box's speed
+    blinkFrequency: 290, // milliseconds
 }
 
 export const cameraConfig = {
@@ -118,15 +117,3 @@ export interface Skin {
     front: string
     right: string
 }
-
-// Configs
-export const chanceSpecialFastBlinking = 0.25
-export const specialFastBlockSpeedFactor = 2.5
-export const blinkFrequency = 290 // milliseconds
-// Random chance block can be faster
-export const randomBlockSpeedFactorMin = 1
-export const randomBlockSpeedFactorMax = 1.5
-// Random chance block can be smaller
-export const chanceRandomBlockSizeOccur = 0.15
-export const randomBlockSizeFactorMin = 0.7
-export const randomBlockSizeFactorMax = 1

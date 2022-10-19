@@ -1,21 +1,10 @@
 import TWEEN from "@tweenjs/tween.js"
 import * as THREE from "three"
 import { clamp } from "three/src/math/MathUtils"
-import { getRandomFloat, hexToRGB } from "../../../../../helpers"
+import { hexToRGB } from "../../../../../helpers"
 import { colors } from "../../../../../theme/theme"
-import {
-    baseFrameRate,
-    blinkFrequency,
-    blockConfig,
-    chanceRandomBlockSizeOccur,
-    chanceSpecialFastBlinking,
-    randomBlockSizeFactorMax,
-    randomBlockSizeFactorMin,
-    randomBlockSpeedFactorMax,
-    randomBlockSpeedFactorMin,
-    skins,
-    specialFastBlockSpeedFactor,
-} from "./config"
+import { baseFrameRate, blockConfig, skins } from "./config"
+import { BlockServer, BlockType } from "./types"
 import { cover } from "./utils"
 
 export interface Dimension {
@@ -41,7 +30,7 @@ enum AxisDimension {
     depth = "depth",
 }
 
-export interface PrevBlock {
+export interface PrevBlockBrief {
     dimension: Dimension
     position: Position
     direction: number
@@ -52,6 +41,7 @@ export interface PrevBlock {
 }
 
 export class Block {
+    blockServer: BlockServer
     MOVE_AMOUNT: number
     direction: number
     speed: number
@@ -64,69 +54,56 @@ export class Block {
     rightTexture: THREE.Texture
     materials: THREE.MeshBasicMaterial[]
 
-    // Special (smaller size)
-    private randomizeSizeFactor = 1
-
-    constructor(prevBlock?: PrevBlock, shouldReplace = false, isFalling = false) {
-        this.randomizeSizeFactor =
-            !shouldReplace && getRandomFloat(0, 1) < chanceRandomBlockSizeOccur ? getRandomFloat(randomBlockSizeFactorMin, randomBlockSizeFactorMax) : 1
+    constructor(blockServer: BlockServer, prevBlock?: PrevBlockBrief, shouldReplace = false, isFalling = false) {
+        this.blockServer = blockServer
 
         // This is how far away to spawn from the center of the stacks (spawn loc)
         this.MOVE_AMOUNT = 20
-        let axis = null
 
-        // Set the dimension and position from the target block, or defaults.
-        let height, width, depth
-        let x, y, z
+        // **************************
+        // ********** Axis **********
+        // **************************
+        this.axis = shouldReplace && prevBlock ? prevBlock.axis : Math.random() > 0.5 ? Axis.x : Axis.z
 
-        if (prevBlock) {
-            width = prevBlock.dimension.width * this.randomizeSizeFactor
-            height = prevBlock.dimension.height * this.randomizeSizeFactor
-            depth = prevBlock.dimension.depth * this.randomizeSizeFactor
-
-            x = prevBlock.position.x
-            z = prevBlock.position.z
-
-            if (shouldReplace === true) {
-                y = prevBlock.position.y
-                axis = prevBlock.axis
-            } else {
-                y = prevBlock.position.y + prevBlock.dimension.height
-            }
-        } else {
-            width = blockConfig.initWidth
-            height = blockConfig.initHeight
-            depth = blockConfig.initDepth
-
-            x = 0
-            y = height
-            z = 0
+        // *******************************
+        // ********** Dimension **********
+        // *******************************
+        // Only use prev dimension if we are replacing
+        this.dimension = {
+            width: shouldReplace && prevBlock ? prevBlock.dimension.width : blockServer.dimension.width,
+            height: shouldReplace && prevBlock ? prevBlock.dimension.height : 2,
+            depth: shouldReplace && prevBlock ? prevBlock.dimension.depth : blockServer.dimension.depth,
         }
 
-        this.dimension = { width, height, depth }
-        this.position = { x, y, z }
-
-        // Set axis (x, y, or z)
-        if (axis === null) {
-            axis = Math.random() > 0.5 ? Axis.x : Axis.z
+        // ******************************
+        // ********** Position **********
+        // ******************************
+        this.position = {
+            x: prevBlock ? prevBlock.position.x : 0,
+            z: prevBlock ? prevBlock.position.z : 0,
+            y: shouldReplace && prevBlock ? prevBlock.position.y : prevBlock ? prevBlock.position.y + prevBlock.dimension.height : this.dimension.height,
         }
-        this.axis = axis
 
         // If there was a previous block AND we aren't replacing it, it will spawn MOVE_AMOUNT from center
-        if (prevBlock && !shouldReplace) {
-            this.position[axis] = (Math.random() > 0.5 ? 1 : -1) * this.MOVE_AMOUNT
-        }
+        if (prevBlock && !shouldReplace) this.position[this.axis] = (Math.random() > 0.5 ? 1 : -1) * this.MOVE_AMOUNT
 
-        // Set direction
+        // ***************************************
+        // ********** Speed / Direction **********
+        // ***************************************
         let speed = blockConfig.initSpeed + blockConfig.acceleration
         speed = Math.min(speed, blockConfig.maxSpeed) // Bound to a max speed
         this.speed = -speed
         this.direction = this.speed
 
-        // Create block
+        // **********************************
+        // ********** Create Block **********
+        // **********************************
         const geometry = new THREE.BoxGeometry(this.dimension.width, this.dimension.height, this.dimension.depth)
         geometry.applyMatrix4(new THREE.Matrix4().makeTranslation(this.dimension.width / 2, this.dimension.height / 2, this.dimension.depth / 2))
 
+        // ************************************
+        // ********** Skin / Texture **********
+        // ************************************
         // Handle skin texture (custom theme)
         if (prevBlock && shouldReplace) {
             // If we are replacing previous block, it will have same dimension, so no need to run cover()
@@ -190,21 +167,13 @@ export class Block {
 
 // Runs a tick, moves back and forth
 export class NormalBlock extends Block {
-    private randomizeSpeedFactor: number
-
-    // Special (fast blinking block)
-    isSpecialFastBlock = false
+    // Blinking effect
     private isBlinked = false
     private prevBlinkTime = 0
     private time = 0
 
-    constructor(prevBlock: PrevBlock, shouldReplace = false) {
-        super(prevBlock, shouldReplace)
-
-        this.randomizeSpeedFactor = this.isSpecialFastBlock ? specialFastBlockSpeedFactor : getRandomFloat(randomBlockSpeedFactorMin, randomBlockSpeedFactorMax)
-
-        // A small chance that the block is a special fast one
-        this.isSpecialFastBlock = getRandomFloat(0, 1) < chanceSpecialFastBlinking
+    constructor(blockServer: BlockServer, prevBlock?: PrevBlockBrief, shouldReplace = false) {
+        super(blockServer, prevBlock, shouldReplace, false)
     }
 
     reverseDirection() {
@@ -221,24 +190,27 @@ export class NormalBlock extends Block {
         }
 
         // Move the block
-        this.position[this.axis] += this.direction * (1 + boost) * (elapsedTime * (baseFrameRate / 1000)) * this.randomizeSpeedFactor
+        const speedMultiplier = parseFloat(this.blockServer.speed_multiplier)
+        this.position[this.axis] += this.direction * (1 + boost) * (elapsedTime * (baseFrameRate / 1000)) * speedMultiplier
         this.mesh.position[this.axis] = this.position[this.axis]
 
-        if (this.isSpecialFastBlock) {
-            this.handleSpecialFastBlock(elapsedTime)
+        if (this.blockServer.type === BlockType.Fast) {
+            this.handleBlinking(elapsedTime, colors.neonBlue)
+        } else if (this.blockServer.type === BlockType.Bomb) {
+            this.handleBlinking(elapsedTime, colors.red)
         }
     }
 
     // Make the block blink
-    handleSpecialFastBlock(elapsedTime: number) {
+    handleBlinking(elapsedTime: number, color: string) {
         this.time += elapsedTime
 
-        if (this.time - this.prevBlinkTime > blinkFrequency) {
-            const finalColor = this.isBlinked ? hexToRGB("#FFFFFF") : hexToRGB(colors.neonBlue)
+        if (this.time - this.prevBlinkTime > blockConfig.blinkFrequency) {
+            const finalColor = this.isBlinked ? hexToRGB("#FFFFFF") : hexToRGB(color)
 
             this.materials.forEach((mat) => {
                 new TWEEN.Tween({ r: mat.color.r, g: mat.color.g, b: mat.color.b })
-                    .to({ r: finalColor.r / 255, g: finalColor.g / 255, b: finalColor.b / 255 }, blinkFrequency * 0.9)
+                    .to({ r: finalColor.r / 255, g: finalColor.g / 255, b: finalColor.b / 255 }, blockConfig.blinkFrequency * 0.9)
                     .onUpdate((newColor) => {
                         mat.color.setRGB(newColor.r, newColor.g, newColor.b)
                     })
@@ -255,10 +227,10 @@ export class NormalBlock extends Block {
 export class FallingBlock extends Block {
     private distance: number
 
-    constructor(prevBlock: PrevBlock, distance: number) {
-        super(prevBlock, true, true)
+    constructor(blockServer: BlockServer, prevBlock: PrevBlockBrief, distance: number) {
+        super(blockServer, prevBlock, true, true)
         this.distance = distance
-        this.speed *= 1.8
+        this.speed *= 1.8 // Make it fall faster
         this.direction = prevBlock.direction
     }
 

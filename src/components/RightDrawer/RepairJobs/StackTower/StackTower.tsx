@@ -1,20 +1,19 @@
 import { Box, Stack, Typography } from "@mui/material"
 import React, { useEffect, useRef, useState } from "react"
 import { useTheme } from "../../../../containers/theme"
-import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
+import { useGameServerCommandsUser, useGameServerSubscriptionSecuredUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { opacityEffect } from "../../../../theme/keyframes"
 import { colors, fonts } from "../../../../theme/theme"
 import { RepairAgent } from "../../../../types/jobs"
 import { ProgressBar } from "../../../Common/ProgressBar"
-import { Game, GameScore, GameState } from "./src/game"
+import { Game } from "./src/game"
+import { BlockType, GameState, BlockServer, NewStackInfo } from "./src/types"
 
 interface StackTowerProps {
     primaryColor: string
     disableGame: boolean
     repairAgent?: RepairAgent
-    setIsSubmitting: React.Dispatch<React.SetStateAction<boolean>>
-    setSubmitError: React.Dispatch<React.SetStateAction<string | undefined>>
     onSubmitted: () => void
 }
 
@@ -23,77 +22,38 @@ const propsAreEqual = (prevProps: StackTowerProps, nextProps: StackTowerProps) =
     return prevProps.disableGame === nextProps.disableGame
 }
 
-export const StackTower = React.memo(function StackTower({
-    primaryColor,
-    disableGame,
-    repairAgent,
-    setIsSubmitting,
-    setSubmitError,
-    onSubmitted,
-}: StackTowerProps) {
+export const StackTower = React.memo(function StackTower({ primaryColor, disableGame, repairAgent, onSubmitted }: StackTowerProps) {
     const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
+    const gameInstance = useRef<Game>()
+    const [cumulativeScore, setCumulativeScore] = useState(0)
     const [gameState, setGameState] = useState<GameState>(GameState.Loading)
     const [score, setScore] = useState(0)
-    const [activePlayButton, setActivePlayButton] = useState<string>()
-    const [cumulativeScore, setCumulativeScore] = useState(0)
+    const [activePlayButton, setActivePlayButton] = useState<string>("Spacebar")
 
-    // Tells server we gained a point, and tell it the current game pattern
-    const updateScore = useRef(async (repairAgentID: string, gameScore: GameScore) => {
-        try {
-            const resp = await send(GameServerKeys.RepairAgentUpdate, {
-                repair_agent_id: repairAgentID,
-                ...gameScore,
-            })
-
-            if (!resp) return Promise.reject(false)
-            return Promise.resolve(true)
-        } catch (err) {
-            return Promise.reject(false)
-        }
-    })
-
-    // Tell server we finished and do validation
-    const completeGame = useRef(async (repairAgentID: string) => {
-        try {
-            setSubmitError(undefined)
-            setIsSubmitting(true)
-            const resp = await send(GameServerKeys.CompleteRepairAgent, {
-                repair_agent_id: repairAgentID,
-            })
-
-            if (!resp) return Promise.reject(false)
+    const onNewBlock = useRef((newBlock: BlockServer) => {
+        // Game ends if the new block type is "END"
+        if (newBlock.type === BlockType.End) {
             onSubmitted()
-            return Promise.resolve(true)
-        } catch (err) {
-            const message = typeof err === "string" ? err : "Failed to submit results."
-            setSubmitError(message)
-            console.error(err)
-            return Promise.reject(false)
-        } finally {
-            setTimeout(() => {
-                setIsSubmitting(false)
-            }, 1500) // Show the loading spinner for at least sometime so it doesnt flash away
+            return
         }
+
+        // Else game continues and we add a new block
+        setCumulativeScore(newBlock.total_score)
+        gameInstance.current?.onNewBlock(newBlock)
     })
 
     // As the player plays the mini game, this will be the game updates
-    const onNewGameScore = useRef(async (gameScore: GameScore) => {
-        setScore(gameScore?.score)
+    const onPlaceBlock = useRef(async (newStackInfo: NewStackInfo) => {
+        setScore(newStackInfo?.score)
 
         if (!repairAgent?.id) return
 
         try {
-            const resp = await updateScore.current(repairAgent.id, gameScore)
-            if (resp) {
-                if (repairAgent.id && gameScore?.score === repairAgent.required_stacks) {
-                    completeGame.current(repairAgent.id)
-                }
-
-                setCumulativeScore((prev) => {
-                    return prev + 1
-                })
-            }
+            await send(GameServerKeys.RepairAgentUpdate, {
+                repair_agent_id: repairAgent.id,
+                ...newStackInfo,
+            })
         } catch (err) {
             console.error(err)
         }
@@ -101,13 +61,16 @@ export const StackTower = React.memo(function StackTower({
 
     // Initialize game
     useEffect(() => {
-        const game = new Game(theme.factionTheme.background, setGameState, onNewGameScore, setActivePlayButton)
+        gameInstance.current = new Game(theme.factionTheme.background, setGameState, onPlaceBlock, setActivePlayButton)
         setTimeout(() => {
-            game.start()
+            gameInstance.current?.start()
         }, 100)
 
-        return () => game.destroy()
-    }, [onNewGameScore, setGameState, theme.factionTheme.background])
+        return () => {
+            const instance = gameInstance.current
+            instance?.destroy()
+        }
+    }, [onPlaceBlock, setGameState, theme.factionTheme.background])
 
     return (
         <Box
@@ -120,6 +83,11 @@ export const StackTower = React.memo(function StackTower({
                 borderRadius: 1.3,
             }}
         >
+            {/* Will unmount and unsubscribe when game ends, and re-subscribe for new game what ready again */}
+            {repairAgent?.id && (gameState === GameState.Ready || gameState === GameState.Playing) && (
+                <SubscribeNewBlocks key={`tower-new-block-sub-${repairAgent.id}`} repairAgentID={repairAgent?.id} onNewBlock={onNewBlock} />
+            )}
+
             <Stack
                 spacing="1rem"
                 sx={{
@@ -240,7 +208,7 @@ export const StackTower = React.memo(function StackTower({
                                         span: { color: colors.orange },
                                     }}
                                 >
-                                    Press <span>Spacebar</span>
+                                    Press <span>{activePlayButton}</span>
                                     <br />
                                     to start repairing
                                 </Typography>
@@ -283,5 +251,28 @@ export const StackTower = React.memo(function StackTower({
             </Stack>
         </Box>
     )
-},
-propsAreEqual)
+}, propsAreEqual)
+
+// A component that subscribes to new blocks from server, having this allows me to unmount and
+//  re-subscribe anytime to restart game.
+const SubscribeNewBlocks = React.memo(function SubscribeNewBlocks({
+    repairAgentID,
+    onNewBlock,
+}: {
+    repairAgentID: string
+    onNewBlock: React.MutableRefObject<(newBlock: BlockServer) => void>
+}) {
+    // Listeners to the server for new blocks
+    useGameServerSubscriptionSecuredUser<BlockServer>(
+        {
+            URI: `/repair_agent/${repairAgentID}/next_block`,
+            key: GameServerKeys.SubRepairTowerNewBlocks,
+        },
+        (payload) => {
+            if (!payload) return
+            onNewBlock.current(payload)
+        },
+    )
+
+    return null
+})
