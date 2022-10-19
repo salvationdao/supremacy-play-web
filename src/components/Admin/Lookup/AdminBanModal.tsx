@@ -27,6 +27,7 @@ export const AdminBanModal = ({
     const [chatBan, setChatBan] = useState<boolean>(false)
     const [locationSelectBan, setLocationSelectBan] = useState<boolean>(false)
     const [supContributeBan, setSupContributeBan] = useState<boolean>(false)
+    const [banMechQueue, setBanMechQueue] = useState<boolean>(false)
     const [banDurationHours, setBanDurationHours] = useState<number>(0)
     const [banDurationDays, setDurationDays] = useState<number>(0)
     const [banReason, setBanReason] = useState<string>("")
@@ -34,7 +35,7 @@ export const AdminBanModal = ({
     const [canSubmit, setCanSubmit] = useState<boolean>(false)
 
     useEffect(() => {
-        if (!supContributeBan || !locationSelectBan || !chatBan) {
+        if (!supContributeBan || !locationSelectBan || !chatBan || !banMechQueue || (supContributeBan && locationSelectBan && chatBan && banMechQueue)) {
             if (banDurationDays > 0 || banDurationHours > 0) {
                 if (banReason != "") {
                     setCanSubmit(true)
@@ -43,7 +44,7 @@ export const AdminBanModal = ({
             }
         }
         setCanSubmit(false)
-    }, [banDurationDays, banDurationHours, banReason, chatBan, locationSelectBan, supContributeBan])
+    }, [banDurationDays, banDurationHours, banMechQueue, banReason, chatBan, locationSelectBan, supContributeBan])
 
     const onClose = useCallback(() => {
         setModalOpen(false)
@@ -61,6 +62,7 @@ export const AdminBanModal = ({
                         sup_contribute_ban: boolean
                         ban_duration_hours: number
                         ban_duration_days: number
+                        ban_mech_queue: boolean
                         ban_reason: string
                         is_shadow_ban: boolean
                     }
@@ -71,6 +73,7 @@ export const AdminBanModal = ({
                     sup_contribute_ban: supContributeBan,
                     ban_duration_hours: banDurationHours,
                     ban_duration_days: banDurationDays,
+                    ban_mech_queue: banMechQueue,
                     ban_reason: banReason,
                     is_shadow_ban: isShadowBan,
                 })
@@ -82,7 +85,20 @@ export const AdminBanModal = ({
                 console.error(e)
             }
         })()
-    }, [banDurationDays, banDurationHours, banReason, chatBan, fetchPlayer, isShadowBan, locationSelectBan, onClose, send, supContributeBan, user.gid])
+    }, [
+        banDurationDays,
+        banDurationHours,
+        banMechQueue,
+        banReason,
+        chatBan,
+        fetchPlayer,
+        isShadowBan,
+        locationSelectBan,
+        onClose,
+        send,
+        supContributeBan,
+        user.gid,
+    ])
 
     return (
         <AdminBanModalInner
@@ -108,6 +124,8 @@ export const AdminBanModal = ({
             setIsShadowBan={setIsShadowBan}
             shadowBan={isShadowBan}
             canSubmit={canSubmit}
+            setBanMechQueue={setBanMechQueue}
+            banMechQueue={banMechQueue}
         />
     )
 }
@@ -134,6 +152,8 @@ const AdminBanModalInner = ({
     reqError,
     faction,
     canSubmit,
+    setBanMechQueue,
+    banMechQueue,
 }: {
     user: User
     modalOpen: boolean
@@ -143,6 +163,7 @@ const AdminBanModalInner = ({
     setLocationSelectBan: React.Dispatch<React.SetStateAction<boolean>>
     setSupContributeBan: React.Dispatch<React.SetStateAction<boolean>>
     setIsShadowBan: React.Dispatch<React.SetStateAction<boolean>>
+    setBanMechQueue: React.Dispatch<React.SetStateAction<boolean>>
     setBanDurationHours: React.Dispatch<React.SetStateAction<number>>
     setDurationDays: React.Dispatch<React.SetStateAction<number>>
     setBanReason: React.Dispatch<React.SetStateAction<string>>
@@ -150,6 +171,7 @@ const AdminBanModalInner = ({
     locationSelectBan: boolean
     supContributeBan: boolean
     shadowBan: boolean
+    banMechQueue: boolean
     banDurationHours: number
     banDurationDays: number
     banReason: string
@@ -213,6 +235,23 @@ const AdminBanModalInner = ({
                             />
 
                             <Typography sx={{ pt: ".4rem", userSelect: "none" }}>Shadowban user</Typography>
+                        </Stack>
+
+                        <Stack spacing="1rem" direction="row" alignItems="center" onClick={() => setBanMechQueue(!banMechQueue)} sx={{ cursor: "pointer" }}>
+                            <Checkbox
+                                size="small"
+                                checked={banMechQueue}
+                                onClick={() => setBanMechQueue(!banMechQueue)}
+                                sx={{
+                                    p: 0,
+                                    color: faction.primary_color,
+                                    "& > .MuiSvgIcon-root": { width: "2.5rem", height: "2.5rem" },
+                                    ".Mui-checked, .MuiSvgIcon-root": { color: `${faction.primary_color} !important` },
+                                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${faction.primary_color}50 !important` },
+                                }}
+                            />
+
+                            <Typography sx={{ pt: ".4rem", userSelect: "none" }}>Ban user from queuing mechs</Typography>
                         </Stack>
 
                         <Stack spacing="1rem" direction="row" alignItems="center" onClick={() => setChatBan(!chatBan)} sx={{ cursor: "pointer" }}>

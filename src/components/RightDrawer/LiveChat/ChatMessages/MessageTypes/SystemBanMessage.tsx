@@ -2,11 +2,21 @@ import { Box, Stack, Typography } from "@mui/material"
 import { SvgAnnouncement, SvgCooldown } from "../../../../../assets"
 import { dateFormatter } from "../../../../../helpers"
 import { colors } from "../../../../../theme/theme"
-import { SystemBanMessageData } from "../../../../../types"
+import { ChatMessageType, SystemBanMessageData } from "../../../../../types"
 import { Player } from "../../../../Common/Player"
 import { LineItem } from "../../BanProposal/BanProposal"
 
-export const SystemBanMessage = ({ data, sentAt, fontSize }: { data?: SystemBanMessageData; sentAt: Date; fontSize: number }) => {
+export const SystemBanMessage = ({
+    data,
+    sentAt,
+    fontSize,
+    messageType,
+}: {
+    data?: SystemBanMessageData
+    sentAt: Date
+    fontSize: number
+    messageType: ChatMessageType
+}) => {
     if (!data) return null
 
     const { banned_user, ban_duration, is_permanent_ban, reason, restrictions } = data
@@ -24,7 +34,7 @@ export const SystemBanMessage = ({ data, sentAt, fontSize }: { data?: SystemBanM
                 >
                     <Stack direction="row" spacing=".8rem" sx={{ opacity: 0.7 }} alignItems="center">
                         <SvgAnnouncement size="1.1rem" sx={{ pb: ".35rem" }} />
-                        <Typography sx={{ fontWeight: "fontWeightBold" }}>SYSTEM BAN</Typography>
+                        <Typography sx={{ fontWeight: "fontWeightBold" }}>{messageType === ChatMessageType.ModBan ? "MOD BAN" : "SYSTEM BAN"}</Typography>
 
                         <Typography
                             variant="caption"
