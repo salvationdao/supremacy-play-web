@@ -162,9 +162,11 @@ export class Game {
         if (!curBlock || !prevBlock) return
 
         const { axis, dimensionAlongAxis } = curBlock.getAxis()
-
         const landedOnStack = curBlock.dimension[dimensionAlongAxis] - Math.abs(curBlock.position[axis] - prevBlock.position[axis]) > 0
 
+        // *******************************
+        // ********** Game Over **********
+        // *******************************
         // If moving block misses the stack completely and not bomb, game over
         if (!landedOnStack && curBlock.blockServer.type !== BlockType.Bomb) {
             this.stage.remove(curBlock.mesh)
@@ -180,22 +182,18 @@ export class Game {
             return
         }
 
+        // ***************************************
+        // ********** Replacement Block **********
+        // ***************************************
         // Calculate the dimension of the falling block
         // If its a special fast block, dont cut the block
         const lengthStickingOut = curBlock.blockServer.type === BlockType.Fast ? 0 : curBlock.position[axis] - prevBlock.position[axis]
         const newLength = curBlock.dimension[dimensionAlongAxis] - Math.abs(lengthStickingOut)
 
-        let positionFalling, position
-        if (lengthStickingOut >= 0) {
-            position = curBlock.position
-            positionFalling = { ...curBlock.position }
-            positionFalling[axis] = curBlock.position[axis] + newLength
-        } else {
-            position = { ...curBlock.position }
-            positionFalling = { ...curBlock.position }
-
-            position[axis] = curBlock.position[axis] + Math.abs(lengthStickingOut)
-            positionFalling[axis] = curBlock.position[axis] - Math.abs(lengthStickingOut)
+        // The position of the replacement block
+        const positionReplacement = {
+            ...curBlock.position,
+            [axis]: lengthStickingOut >= 0 ? curBlock.position[axis] : curBlock.position[axis] + Math.abs(lengthStickingOut),
         }
 
         // Pop the current block out, and replace with a new one that's cropped, and doesn't move
@@ -206,7 +204,7 @@ export class Game {
             curBlock.blockServer,
             {
                 dimension: { ...curBlock.dimension, [dimensionAlongAxis]: newLength },
-                position,
+                position: positionReplacement,
                 direction: curBlock.direction,
                 axis,
                 topTexture: curBlock.topTexture,
@@ -219,7 +217,15 @@ export class Game {
         this.blocks.push(curBlock)
         this.stage.add(curBlock.mesh)
 
-        // Add falling block
+        // ***********************************
+        // ********** Falling Block **********
+        // ***********************************
+        // The position of the falling block
+        const positionFalling = {
+            ...curBlock.position,
+            [axis]: lengthStickingOut >= 0 ? curBlock.position[axis] + newLength : curBlock.position[axis] - Math.abs(lengthStickingOut),
+        }
+
         const fallingBlock = new FallingBlock(
             curBlock.blockServer,
             {
@@ -237,6 +243,9 @@ export class Game {
         this.fallingBlocks.push(fallingBlock)
         this.stage.add(fallingBlock.mesh)
 
+        // **************************
+        // ********** Misc **********
+        // **************************
         // Score will count from [0, 0, 1, 2 ...etc]
         this.score = Math.max(this.blocks.length - 1, 0)
 

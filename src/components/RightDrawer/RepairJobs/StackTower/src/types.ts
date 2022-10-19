@@ -24,7 +24,7 @@ export interface BlockServer {
     type: BlockType
     key: PlayButton
     dimension: BlockDimension
-    speed_multiplier: string
+    speed_multiplier: number
     total_score: number
 }
 

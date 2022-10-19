@@ -8,7 +8,7 @@ import { colors, fonts } from "../../../../theme/theme"
 import { RepairAgent } from "../../../../types/jobs"
 import { ProgressBar } from "../../../Common/ProgressBar"
 import { Game } from "./src/game"
-import { BlockType, GameState, BlockServer, NewStackInfo } from "./src/types"
+import { BlockServer, BlockType, GameState, NewStackInfo, PlayButton } from "./src/types"
 
 interface StackTowerProps {
     primaryColor: string
@@ -253,6 +253,18 @@ export const StackTower = React.memo(function StackTower({ primaryColor, disable
     )
 }, propsAreEqual)
 
+interface BlockServerStruct {
+    id: string
+    type: BlockType
+    key: PlayButton
+    dimension: {
+        width: string
+        depth: string
+    }
+    speed_multiplier: string
+    total_score: number
+}
+
 // A component that subscribes to new blocks from server, having this allows me to unmount and
 //  re-subscribe anytime to restart game.
 const SubscribeNewBlocks = React.memo(function SubscribeNewBlocks({
@@ -263,14 +275,26 @@ const SubscribeNewBlocks = React.memo(function SubscribeNewBlocks({
     onNewBlock: React.MutableRefObject<(newBlock: BlockServer) => void>
 }) {
     // Listeners to the server for new blocks
-    useGameServerSubscriptionSecuredUser<BlockServer>(
+    useGameServerSubscriptionSecuredUser<BlockServerStruct>(
         {
             URI: `/repair_agent/${repairAgentID}/next_block`,
             key: GameServerKeys.SubRepairTowerNewBlocks,
         },
         (payload) => {
             if (!payload) return
-            onNewBlock.current(payload)
+
+            onNewBlock.current({
+                id: payload.id,
+                type: payload.type,
+                key: payload.key,
+                dimension: {
+                    width: parseFloat(payload.dimension.width),
+                    depth: parseFloat(payload.dimension.depth),
+                    height: 2,
+                },
+                speed_multiplier: parseFloat(payload.speed_multiplier),
+                total_score: payload.total_score,
+            })
         },
     )
 

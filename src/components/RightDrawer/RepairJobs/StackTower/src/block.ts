@@ -157,8 +157,7 @@ export class MovingBlock extends Block {
         }
 
         // Move the block
-        const speedMultiplier = parseFloat(this.blockServer.speed_multiplier)
-        this.position[this.axis] += this.direction * (1 + boost) * (elapsedTime * (baseFrameRate / 1000)) * speedMultiplier
+        this.position[this.axis] += this.direction * (1 + boost) * (elapsedTime * (baseFrameRate / 1000)) * this.blockServer.speed_multiplier
         this.mesh.position[this.axis] = this.position[this.axis]
 
         if (this.blockServer.type === BlockType.Fast) {
