@@ -14,6 +14,7 @@ interface WeaponSlotProps {
     size?: string
 }
 export const WeaponSlot = ({ weaponSlot, tooltipPlacement, size }: WeaponSlotProps) => {
+    console.log(weaponSlot.weapon)
     const { factionTheme } = useTheme()
     const weapon = weaponSlot.weapon
 
@@ -46,6 +47,7 @@ export const WeaponSlot = ({ weaponSlot, tooltipPlacement, size }: WeaponSlotPro
                         "&:hover": {
                             border: `${factionTheme.primary} 2px solid`,
                         },
+                        opacity: "0.5",
                     }}
                 >
                     <SvgWeapons />
@@ -64,9 +66,9 @@ export const WeaponSlot = ({ weaponSlot, tooltipPlacement, size }: WeaponSlotPro
                     <Stack direction="column" sx={{ width: "30rem" }}>
                         <Stack direction="row" alignItems="center">
                             <Box
-                                key={weapon.avatar_url}
+                                key={!weapon.avatar_url ? weapon.image_url : weapon.avatar_url}
                                 component="img"
-                                src={weapon.avatar_url}
+                                src={!weapon.avatar_url ? weapon.image_url : weapon.avatar_url}
                                 sx={{
                                     width: "6rem",
                                     height: "6rem",
@@ -115,9 +117,9 @@ export const WeaponSlot = ({ weaponSlot, tooltipPlacement, size }: WeaponSlotPro
                     }}
                 >
                     <Box
-                        key={weapon.avatar_url}
+                        key={!weapon.avatar_url ? weapon.image_url : weapon.avatar_url}
                         component="img"
-                        src={weapon.avatar_url}
+                        src={!weapon.avatar_url ? weapon.image_url : weapon.avatar_url}
                         sx={{
                             width: "100%",
                             height: "100%",

@@ -2,7 +2,7 @@ import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import Marquee from "react-fast-marquee"
 import { BuySupsButton, Logo, ProfileCard, WalletDetails } from ".."
 import { SvgDisconnected } from "../../assets"
-import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, IS_TESTING_MODE, NEXT_RESET_TIME, STAGING_OR_DEV_ONLY } from "../../constants"
+import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, IS_TESTING_MODE, STAGING_OR_DEV_ONLY } from "../../constants"
 import { useAuth, useSupremacy } from "../../containers"
 import { hexToRGB, timeSinceInWords } from "../../helpers"
 import { useTimer } from "../../hooks"
@@ -14,12 +14,6 @@ import { NavLinks } from "./NavLinks/NavLinks"
 import { Quests } from "./Quests/Quests"
 import { ShoppingCart } from "./ShoppingCart/ShoppingCart"
 import { Tutorial } from "./Tutorial"
-
-const Countdown = ({ endTime }: { endTime: Date }) => {
-    const { totalSecRemain } = useTimer(endTime)
-    if (totalSecRemain <= 0) return <>very shortly</>
-    return <>in {timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000))}</>
-}
 
 export const Bar = () => {
     const { userID, user } = useAuth()
@@ -41,8 +35,7 @@ export const Bar = () => {
                     >
                         <Marquee direction="left" gradientColor={[rgb.r, rgb.g, rgb.b]} gradientWidth={50} style={{ overflow: "hidden" }}>
                             <Typography variant="body2" sx={{ pr: "100px", fontFamily: fonts.nostromoBlack, lineHeight: 1 }}>
-                                Welcome to the proving grounds! <span style={{ color: colors.yellow }}>Hundreds of thousands of $SUPS</span> are up for grabs by
-                                helping us play-test incoming mechanisms and features. This round will reset <Countdown endTime={new Date(NEXT_RESET_TIME)} />.
+                                Welcome to the Proving Grounds. Test new features. Report bugs and submit ideas via the feedback form. 🦾🦾
                             </Typography>
                         </Marquee>
                     </Box>
