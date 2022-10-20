@@ -324,7 +324,7 @@ export const MysteryCrateStoreItem = React.memo(function MysteryCrateStoreItem({
                                             clipSize: "5px",
                                             backgroundColor: colors.green,
                                             opacity: 1,
-                                            border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
+                                            border: { isFancy: true, borderColor: colors.green, borderThickness: "1.5px" },
                                             sx: { position: "relative", width: enlargedView ? "50%" : "100%", height: "100%" },
                                         }}
                                         sx={{ px: "1.6rem", py: enlargedView ? "1.1rem" : ".6rem" }}

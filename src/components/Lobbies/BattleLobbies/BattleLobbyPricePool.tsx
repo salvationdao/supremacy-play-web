@@ -20,7 +20,6 @@ export const BattleLobbyPricePool = ({ battleLobby }: BattleLobbyPricePoolProps)
     const [topUpReward, setTopUpReward] = useState("0")
     const { send } = useGameServerCommandsUser("/user_commander")
     const [loading, setLoading] = useState(false)
-    const [error, setError] = useState("")
 
     const distributionValue = useCallback((backgroundColor: string, rank: number, value: string) => {
         return (
@@ -67,7 +66,6 @@ export const BattleLobbyPricePool = ({ battleLobby }: BattleLobbyPricePoolProps)
             })
         } catch (e) {
             console.log(e)
-            if (typeof e === "string") setError(e)
         } finally {
             setTimeout(() => setLoading(false), 500)
             setTimeout(() => setAnchorEl(null), 650)
