@@ -89,16 +89,8 @@ const ImpureUnityViewer = ({ unity, initialMech: mech }: MechViewer3DProps) => {
     const [showClickToLoadOverlay, setShowClickToLoadOverlay] = useState(true)
     const pendingMechSkin = useRef<MechSkin>()
 
-    useEffect(() => {
-        console.log(status)
-    }, [status])
-
     useImperativeHandle(unity.unityRef, () => ({
         handleUnload: () => {
-            if (status < UnityStatus.Loaded)
-                return new Promise((resolve) => {
-                    resolve()
-                })
             return unload()
         },
         handleWeaponUpdate: (wu: LoadoutWeapon) => {
