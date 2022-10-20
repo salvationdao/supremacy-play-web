@@ -702,6 +702,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                     }}
                                     equipped={powerCore}
                                     powerCoresAlreadyEquippedInOtherSlots={powerCore ? [powerCore.id] : []}
+                                    powerCoreSize={currLoadout.power_core_size}
                                 />
                             )
 

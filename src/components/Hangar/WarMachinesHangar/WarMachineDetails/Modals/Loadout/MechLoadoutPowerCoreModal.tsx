@@ -6,12 +6,12 @@ import { EmptyWarMachinesPNG, SvgClose } from "../../../../../../assets"
 import { useAuth } from "../../../../../../containers"
 import { useTheme } from "../../../../../../containers/theme"
 import { GetPowerCoreMaxStats } from "../../../../../../fetching"
-import { getPowerCoreSizeColor, getRarityDeets } from "../../../../../../helpers"
+import { getRarityDeets } from "../../../../../../helpers"
 import { usePagination, useToggle } from "../../../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../../../theme/theme"
-import { PlayerAsset, PowerCore, PowerCoreSize } from "../../../../../../types"
+import { PlayerAsset, PowerCore } from "../../../../../../types"
 import { SortTypeLabel } from "../../../../../../types/marketplace"
 import { ClipThing } from "../../../../../Common/ClipThing"
 import { PageHeader } from "../../../../../Common/PageHeader"
@@ -65,9 +65,16 @@ interface MechLoadoutPowerCoreModalProps {
     onConfirm: OnConfirmPowerCoreSelection
     equipped?: PowerCore
     powerCoresAlreadyEquippedInOtherSlots: string[]
+    powerCoreSize: string
 }
 
-export const MechLoadoutPowerCoreModal = ({ onClose, onConfirm, equipped, powerCoresAlreadyEquippedInOtherSlots }: MechLoadoutPowerCoreModalProps) => {
+export const MechLoadoutPowerCoreModal = ({
+    onClose,
+    onConfirm,
+    equipped,
+    powerCoresAlreadyEquippedInOtherSlots,
+    powerCoreSize,
+}: MechLoadoutPowerCoreModalProps) => {
     const { userID } = useAuth()
     const { send } = useGameServerCommandsUser("/user_commander")
 
@@ -91,7 +98,6 @@ export const MechLoadoutPowerCoreModal = ({ onClose, onConfirm, equipped, powerC
     const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle()
     const filtersContainerEl = useRef<HTMLElement>()
     const [search, setSearch] = useState("")
-    const [powerCoreSizes, setPowerCoreSizes] = useState<string[]>([])
     const [rarities, setRarities] = useState<string[]>([])
     const [equippedStatuses, setEquippedStatuses] = useState<string[]>([])
     const [capacity, setCapacity] = useState<number[] | undefined>()
@@ -99,21 +105,6 @@ export const MechLoadoutPowerCoreModal = ({ onClose, onConfirm, equipped, powerC
     const [rechargeRate, setRechargeRate] = useState<number[] | undefined>()
     const [armour, setArmour] = useState<number[] | undefined>()
     const [maxHitpoints, setMaxHitpoints] = useState<number[] | undefined>()
-
-    const powerCoreSizeFilterSection = useRef<ChipFilter>({
-        label: "POWER CORE SIZE",
-        options: [
-            { value: PowerCoreSize.Small, label: PowerCoreSize.Small, color: getPowerCoreSizeColor(PowerCoreSize.Small) },
-            { value: PowerCoreSize.Medium, label: PowerCoreSize.Medium, color: getPowerCoreSizeColor(PowerCoreSize.Medium) },
-            { value: PowerCoreSize.Large, label: PowerCoreSize.Large, color: getPowerCoreSizeColor(PowerCoreSize.Large) },
-        ],
-        initialSelected: powerCoreSizes,
-        initialExpanded: true,
-        onSetSelected: (value: string[]) => {
-            setPowerCoreSizes(value)
-            changePage(1)
-        },
-    })
 
     const rarityChipFilter = useRef<ChipFilter>({
         label: "RARITY",
@@ -231,7 +222,7 @@ export const MechLoadoutPowerCoreModal = ({ onClose, onConfirm, equipped, powerC
                 page_size: pageSize,
                 equipped_statuses: equippedStatuses,
                 rarities: rarities,
-                sizes: powerCoreSizes,
+                sizes: [powerCoreSize],
                 stat_capacity:
                     capacity && (capacity[0] > 0 || capacity[1] > 0)
                         ? {
@@ -285,7 +276,7 @@ export const MechLoadoutPowerCoreModal = ({ onClose, onConfirm, equipped, powerC
         maxHitpoints,
         page,
         pageSize,
-        powerCoreSizes,
+        powerCoreSize,
         powerCoresAlreadyEquippedInOtherSlots,
         rarities,
         rechargeRate,
@@ -477,7 +468,7 @@ export const MechLoadoutPowerCoreModal = ({ onClose, onConfirm, equipped, powerC
                             key={sortFilterReRender.toString()}
                             initialSearch={search}
                             onSetSearch={setSearch}
-                            chipFilters={[powerCoreSizeFilterSection.current, rarityChipFilter.current, powerCoreEquippedFilterSection.current]}
+                            chipFilters={[rarityChipFilter.current, powerCoreEquippedFilterSection.current]}
                             sliderRangeFilters={[
                                 capacityFilter.current,
                                 maxDrawRateFilter.current,
