@@ -180,7 +180,7 @@ export enum GameServerKeys {
     GetPlayerMysteryCrate = "PLAYER:ASSET:MYSTERY_CRATE:GET",
     OpenCrate = "CRATE:OPEN",
 
-    //submodels
+    // Submodels
     GetMechSubmodelsDetailed = "PLAYER:ASSET:MECH:SUBMODEL:DETAIL:LIST",
     GetWeaponSubmodelsDetailed = "PLAYER:ASSET:WEAPON:SUBMODEL:DETAIL:LIST",
     GetMechBlueprintsDetailed = "PLAYER:MECH:BLUEPRINT:DETAIL:LIST",
@@ -227,7 +227,7 @@ export enum GameServerKeys {
     CancelMechRepair = "MECH:REPAIR:OFFER:CLOSE",
     RegisterRepairAgent = "REPAIR:AGENT:REGISTER",
     RepairAgentUpdate = "REPAIR:AGENT:RECORD",
-    CompleteRepairAgent = "REPAIR:AGENT:COMPLETE",
+    SubRepairTowerNewBlocks = "NEXT:REPAIR:GAME:BLOCK",
     AbandonRepairAgent = "REPAIR:AGENT:ABANDON",
 
     // Repair bay

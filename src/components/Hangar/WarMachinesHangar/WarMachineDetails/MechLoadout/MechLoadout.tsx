@@ -196,7 +196,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                     mech_id: mechDetails.id,
                 })
 
-
                 newSnackbarMessage(`Successfully saved loadout.`, "success")
                 setError(undefined)
                 onUpdate(newMechDetails)

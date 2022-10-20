@@ -194,7 +194,7 @@ export const RepairJobs = () => {
     return (
         <>
             {main}
-            {repairJobModal && <DoRepairModal repairJob={repairJobModal} open={!!repairJobModal} onClose={() => setRepairJobModal(undefined)} />}
+            {repairJobModal && <DoRepairModal repairJob={repairJobModal} onClose={() => setRepairJobModal(undefined)} />}
         </>
     )
 }

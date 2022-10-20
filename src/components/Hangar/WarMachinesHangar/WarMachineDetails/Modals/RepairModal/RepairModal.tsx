@@ -19,7 +19,7 @@ export const RepairModal = ({
     repairMechModalOpen,
     setRepairMechModalOpen,
 }: {
-    defaultOpenSelfRepair?: boolean
+    defaultOpenSelfRepair?: boolean // Immediately opens the self repair game modal
     selectedMechDetails: MechDetails
     repairMechModalOpen: boolean
     setRepairMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -43,7 +43,7 @@ export const RepairModal = ({
         setRepairMechModalOpen(false)
     }, [setRepairMechModalOpen])
 
-    if (!selectedMechDetails || remainDamagedBlocks <= 0) return null
+    if (!selectedMechDetails) return null
 
     return (
         <Modal

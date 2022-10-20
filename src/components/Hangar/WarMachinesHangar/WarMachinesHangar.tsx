@@ -49,7 +49,7 @@ interface GetMechsResponse {
 }
 
 export const WarMachinesHangar = () => {
-    const [query] = useUrlQuery()
+    const [query, updateQuery] = useUrlQuery()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
 
@@ -195,6 +195,15 @@ export const WarMachinesHangar = () => {
                 include_market_listed: true,
             })
 
+            updateQuery({
+                sort,
+                search,
+                rarities: rarities.join("||"),
+                statuses: status.join("||"),
+                page: page.toString(),
+                pageSize: pageSize.toString(),
+            })
+
             if (!resp) return
             setLoadError(undefined)
             setMechs(resp.mechs)
@@ -206,7 +215,7 @@ export const WarMachinesHangar = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [send, page, pageSize, search, rarities, status, sort, setTotalItems])
+    }, [send, page, pageSize, search, rarities, status, sort, setTotalItems, updateQuery])
 
     useEffect(() => {
         getItems()
