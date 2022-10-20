@@ -39,7 +39,7 @@ export const BillingHistoryPage = () => {
                 page_size: pageSize,
             })
 
-            updateQuery.current({
+            updateQuery({
                 page: page.toString(),
                 pageSize: pageSize.toString(),
             })

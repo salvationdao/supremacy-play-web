@@ -64,7 +64,7 @@ export const BattlesReplays = () => {
     })
 
     useEffect(() => {
-        updateQuery.current({
+        updateQuery({
             selectedGID: selectedGID > 0 ? `${selectedGID}` : "",
         })
     }, [selectedGID, updateQuery])

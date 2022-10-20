@@ -46,7 +46,7 @@ export const MysteryCratesStore = () => {
                 page_size: pageSize,
             })
 
-            updateQuery.current({
+            updateQuery({
                 page: page.toString(),
                 pageSize: pageSize.toString(),
             })
