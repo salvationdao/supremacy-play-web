@@ -36,6 +36,7 @@ import Logout from "!@svgr/webpack!./svg/Logout.svg"
 import Mail from "!@svgr/webpack!./svg/Mail.svg"
 import Meteor from "!@svgr/webpack!./svg/Meteor.svg"
 import Microphone from "!@svgr/webpack!./svg/Microphone.svg"
+import MicrophoneMute from "!@svgr/webpack!./svg/MicrophoneMute.svg"
 import Mobility from "!@svgr/webpack!./svg/Mobility.svg"
 import MoreOptions from "!@svgr/webpack!./svg/MoreOptions.svg"
 import NinjaSyndicateLogo from "!@svgr/webpack!./svg/NinjaSyndicateLogo.svg"
@@ -384,6 +385,12 @@ export const SvgHeadphone: React.VoidFunctionComponent<SvgWrapperProps> = (props
 export const SvgMicrophone: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Microphone />
+    </SvgWrapper>
+)
+
+export const SvgMicrophoneMute: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <MicrophoneMute />
     </SvgWrapper>
 )
 

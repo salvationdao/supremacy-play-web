@@ -6,7 +6,7 @@ import { useEffect } from "react"
 import ReactDOM from "react-dom"
 import { ErrorBoundary } from "react-error-boundary"
 import { Action, ClientContextProvider, createClient } from "react-fetching-library"
-import ReactGA from "react-ga"
+import ReactGA from "react-ga4"
 import { Helmet } from "react-helmet"
 import { BrowserRouter, Redirect, Route, Switch, useHistory } from "react-router-dom"
 import { SupremacyPNG } from "./assets"
@@ -70,10 +70,10 @@ const AppInner = () => {
 
     // Record page changes to Google Analytics
     useEffect(() => {
-        ReactGA.pageview(location.pathname + location.search)
+        ReactGA.send({ hitType: "pageview", page: location.pathname + location.search })
         history.listen((location, action) => {
             if (action === "PUSH") {
-                ReactGA.pageview(location.pathname + location.search)
+                ReactGA.send({ hitType: "pageview", page: location.pathname + location.search })
             }
         })
     }, [history])

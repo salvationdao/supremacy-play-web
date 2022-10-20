@@ -12,6 +12,7 @@ export interface ClipThingProps {
         isFancy?: boolean
     }
     sx?: SxProps
+    contentSx?: SxProps
     outerSx?: SxProps
     innerSx?: SxProps
     corners?: {
@@ -35,6 +36,7 @@ export const ClipThing = React.forwardRef(function ClipThing(
         clipSlantSize = "0px",
         border,
         sx,
+        contentSx,
         innerSx,
         outerSx,
         corners = {
@@ -151,7 +153,7 @@ export const ClipThing = React.forwardRef(function ClipThing(
                     }
                 />
             </Box>
-            <Box sx={{ height: "100%", ...innerClipStyles, ...innerSx }}>{children}</Box>
+            <Box sx={{ height: "100%", ...innerClipStyles, ...contentSx }}>{children}</Box>
         </Box>
     )
 })

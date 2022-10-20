@@ -278,7 +278,6 @@ interface MechLoadoutItemDraggableProps extends LoadoutItem {
     onMouseDown?: React.MouseEventHandler<HTMLDivElement>
     onMouseUp?: React.MouseEventHandler<HTMLDivElement>
     onTouchStart?: React.TouchEventHandler<HTMLDivElement>
-    something?: boolean
 }
 
 const MechLoadoutItemDraggableBase = React.forwardRef<HTMLDivElement, MechLoadoutItemDraggableProps>(function MechLoadoutItemDraggable(
@@ -343,7 +342,7 @@ const MechLoadoutItemDraggableBase = React.forwardRef<HTMLDivElement, MechLoadou
                                 right: ".5rem",
                             }}
                         >
-                            <SvgDrag fill={`${primaryColor}aa`} />
+                            {!draggableProps.onClick && <SvgDrag fill={`${primaryColor}aa`} />}
                         </Stack>
 
                         {slotNumber != null && (

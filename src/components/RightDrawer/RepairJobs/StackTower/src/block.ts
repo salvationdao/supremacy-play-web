@@ -1,155 +1,136 @@
+import TWEEN from "@tweenjs/tween.js"
 import * as THREE from "three"
 import { clamp } from "three/src/math/MathUtils"
-import { getRandomColor } from "../../../../../helpers"
+import { hexToRGB } from "../../../../../helpers"
+import { colors } from "../../../../../theme/theme"
 import { baseFrameRate, blockConfig, skins } from "./config"
+import { Axis, AxisDimension, BlockDimension, BlockServer, BlockType, Position, PrevBlockBrief } from "./types"
 import { cover } from "./utils"
 
-export interface Dimension {
-    width: number
-    height: number
-    depth: number
-}
-interface Position {
-    x: number
-    y: number
-    z: number
-}
-
 export class Block {
+    blockServer: BlockServer
     MOVE_AMOUNT: number
     direction: number
     speed: number
-    dimension: Dimension
+    dimension: BlockDimension
     position: Position
-    color: THREE.Color
-    colorOffset: number
-    axis: string | null
+    axis: Axis
     mesh: THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial[]>
     topTexture: THREE.Texture
-    leftTexture: THREE.Texture
-    bottomTexture: THREE.Texture
+    frontTexture: THREE.Texture
+    rightTexture: THREE.Texture
+    materials: THREE.MeshBasicMaterial[]
 
-    constructor(
-        lastBlock?: {
-            dimension: Dimension
-            position: Position
-            color: THREE.Color
-            axis: string | null
-            topTexture: THREE.Texture
-            leftTexture: THREE.Texture
-            bottomTexture: THREE.Texture
-        },
-        shouldReplace = false,
-        isFalling = false,
-    ) {
+    // Blinking effect
+    private color: string | undefined
+    private isBlinked = false
+    private prevBlinkTime = 0
+    private time = 0
+
+    constructor(blockServer: BlockServer, prevBlock?: PrevBlockBrief, shouldReplace = false, isFalling = false) {
+        this.blockServer = blockServer
+
+        // This is how far away to spawn from the center of the stacks (spawn loc)
         this.MOVE_AMOUNT = 20
 
-        this.speed = 0
-        this.direction = 0
-        this.dimension = { width: 0, height: 0, depth: 0 }
-        this.position = { x: 0, y: 0, z: 0 }
-        let color = null
-        let axis = null
+        // **************************
+        // ********** Axis **********
+        // **************************
+        this.axis = shouldReplace && prevBlock ? prevBlock.axis : Math.random() > 0.5 ? Axis.x : Axis.z
 
-        // set the dimensions from the target block, or defaults.
-        let height, width, depth
-        let x, y, z
-
-        if (lastBlock) {
-            width = lastBlock.dimension.width
-            height = lastBlock.dimension.height
-            depth = lastBlock.dimension.depth
-
-            x = lastBlock.position.x
-            z = lastBlock.position.z
-
-            if (shouldReplace === true) {
-                y = lastBlock.position.y
-
-                color = lastBlock.color.getHex()
-                axis = lastBlock.axis
-            } else {
-                y = lastBlock.position.y + blockConfig.initHeight
-            }
-        } else {
-            width = blockConfig.initWidth
-            height = blockConfig.initHeight
-            depth = blockConfig.initDepth
-
-            x = 0
-            y = height
-            z = 0
+        // *******************************
+        // ********** Dimension **********
+        // *******************************
+        // Only use prev dimension if we are replacing
+        this.dimension = {
+            width: shouldReplace && prevBlock ? prevBlock.dimension.width : blockServer.dimension.width,
+            height: shouldReplace && prevBlock ? prevBlock.dimension.height : blockServer.dimension.height,
+            depth: shouldReplace && prevBlock ? prevBlock.dimension.depth : blockServer.dimension.depth,
         }
 
-        this.dimension.width = width
-        this.dimension.height = height
-        this.dimension.depth = depth
-
-        this.position.x = x
-        this.position.y = y
-        this.position.z = z
-
-        if (axis === null) {
-            const random = Math.random()
-            axis = random < 0.5 ? "x" : "z"
-        }
-        this.axis = axis
-
-        if (lastBlock && !shouldReplace) {
-            this.position[axis as keyof typeof this.position] = (Math.random() > 0.5 ? 1 : -1) * this.MOVE_AMOUNT
+        // ******************************
+        // ********** Position **********
+        // ******************************
+        this.position = {
+            x: prevBlock ? prevBlock.position.x : 0,
+            z: prevBlock ? prevBlock.position.z : 0,
+            y: shouldReplace && prevBlock ? prevBlock.position.y : prevBlock ? prevBlock.position.y + prevBlock.dimension.height : this.dimension.height,
         }
 
-        this.colorOffset = Math.round(Math.random() * 100)
+        // If there was a previous block AND we aren't replacing it, it will spawn MOVE_AMOUNT from center
+        if (prevBlock && !shouldReplace) this.position[this.axis] = (Math.random() > 0.5 ? 1 : -1) * this.MOVE_AMOUNT
 
-        // set color
-        this.color = new THREE.Color(color || getRandomColor()) //new THREE.Color(color || Math.random() * 0xffffff )
-
-        // set direction
-        let speed = blockConfig.initSpeed + blockConfig.acceleration
-        speed = Math.min(speed, blockConfig.maxSpeed)
-        this.speed = -speed
+        // ***************************************
+        // ********** Speed / Direction **********
+        // ***************************************
+        this.speed = blockConfig.initSpeed + blockConfig.acceleration
+        this.speed = Math.min(this.speed, blockConfig.maxSpeed) // Bound to a max speed
+        this.speed = -this.speed
         this.direction = this.speed
 
-        // create block
+        // **********************************
+        // ********** Create Block **********
+        // **********************************
         const geometry = new THREE.BoxGeometry(this.dimension.width, this.dimension.height, this.dimension.depth)
         geometry.applyMatrix4(new THREE.Matrix4().makeTranslation(this.dimension.width / 2, this.dimension.height / 2, this.dimension.depth / 2))
 
-        // handle skin
-        if (lastBlock && shouldReplace) {
-            this.topTexture = lastBlock.topTexture
-            this.leftTexture = lastBlock.leftTexture
-            this.bottomTexture = lastBlock.bottomTexture
+        // ************************************
+        // ********** Skin / Texture **********
+        // ************************************
+        // Handle skin texture (custom theme)
+        if (prevBlock && shouldReplace) {
+            // If we are replacing previous block, it will have same dimension, so no need to run cover()
+            this.topTexture = prevBlock.topTexture
+            this.frontTexture = prevBlock.frontTexture
+            this.rightTexture = prevBlock.rightTexture
 
+            // If we are replacing and it's the small falling block, then need to run cover()
             if (!isFalling) {
                 cover(this.topTexture, this.dimension.width / this.dimension.depth)
-                cover(this.leftTexture, this.dimension.width / this.dimension.height)
-                cover(this.bottomTexture, this.dimension.depth / this.dimension.height)
+                cover(this.frontTexture, this.dimension.width / this.dimension.height)
+                cover(this.rightTexture, this.dimension.depth / this.dimension.height)
             }
         } else {
-            // loading the texture from image
+            // Loading the texture from image
             const skin = this.getRandomSkin()
             const textureLoader = new THREE.TextureLoader()
             this.topTexture = textureLoader.load(skin.top, () => cover(this.topTexture, this.dimension.width / this.dimension.depth))
-            this.leftTexture = textureLoader.load(skin.left, () => cover(this.leftTexture, this.dimension.width / this.dimension.height))
-            this.bottomTexture = textureLoader.load(skin.bottom, () => cover(this.bottomTexture, this.dimension.depth / this.dimension.height))
+            this.frontTexture = textureLoader.load(skin.front, () => cover(this.frontTexture, this.dimension.width / this.dimension.height))
+            this.rightTexture = textureLoader.load(skin.right, () => cover(this.rightTexture, this.dimension.depth / this.dimension.height))
         }
 
-        // define materials from texture
+        // Define materials from texture
         const topMaterial = new THREE.MeshBasicMaterial({ map: this.topTexture })
-        const leftMaterial = new THREE.MeshBasicMaterial({ map: this.leftTexture })
-        const bottomMaterial = new THREE.MeshBasicMaterial({ map: this.bottomTexture })
+        const frontMaterial = new THREE.MeshBasicMaterial({ map: this.frontTexture })
+        const rightMaterial = new THREE.MeshBasicMaterial({ map: this.rightTexture })
 
-        const materials = [
-            bottomMaterial, // bottom
-            bottomMaterial, // bottom opposite
-            topMaterial, // top
-            topMaterial, // top opposite
-            leftMaterial, // left
-            leftMaterial, // left opposite
+        this.materials = [
+            rightMaterial, // Right
+            rightMaterial, // Right opposite
+            topMaterial, // Top
+            topMaterial, // Top opposite
+            frontMaterial, // Front
+            frontMaterial, // Front opposite
         ]
 
-        this.mesh = new THREE.Mesh(geometry, materials)
+        this.mesh = new THREE.Mesh(geometry, this.materials)
         this.mesh.position.set(this.position.x, this.position.y, this.position.z)
+
+        // ***************************
+        // ********** Color **********
+        // ***************************
+        if (this.blockServer.type === BlockType.Fast) {
+            this.color = colors.neonBlue
+        } else if (this.blockServer.type === BlockType.Bomb) {
+            this.color = colors.red
+        }
+
+        if (this.color) this.changeToColor(this.color)
+    }
+
+    basedTick(elapsedTime: number) {
+        // Blink
+        if (this.color) this.handleBlinking(elapsedTime, this.color)
     }
 
     getRandomSkin() {
@@ -157,13 +138,13 @@ export class Block {
     }
 
     getAxis() {
-        let dimensionAlongAxis = null
+        let dimensionAlongAxis = AxisDimension.depth
         switch (this.axis) {
-            case "x":
-                dimensionAlongAxis = "width"
+            case Axis.x:
+                dimensionAlongAxis = AxisDimension.width
                 break
-            case "z":
-                dimensionAlongAxis = "depth"
+            case Axis.z:
+                dimensionAlongAxis = AxisDimension.depth
                 break
         }
         return {
@@ -171,58 +152,85 @@ export class Block {
             dimensionAlongAxis,
         }
     }
+
+    // Make the block blink
+    handleBlinking(elapsedTime: number, color: string) {
+        this.time += elapsedTime
+
+        if (this.time - this.prevBlinkTime > blockConfig.blinkFrequency) {
+            const finalColor = this.isBlinked ? hexToRGB("#FFFFFF") : hexToRGB(color)
+
+            this.materials.forEach((mat) => {
+                new TWEEN.Tween({ r: mat.color.r, g: mat.color.g, b: mat.color.b })
+                    .to({ r: finalColor.r / 255, g: finalColor.g / 255, b: finalColor.b / 255 }, blockConfig.blinkFrequency * 0.9)
+                    .onUpdate((newColor) => {
+                        mat.color.setRGB(newColor.r, newColor.g, newColor.b)
+                    })
+                    .start()
+            })
+
+            this.isBlinked = !this.isBlinked
+            this.prevBlinkTime = this.time
+        }
+    }
+
+    changeToColor(newColor: string) {
+        const finalColor = hexToRGB(newColor)
+        this.materials?.forEach((mat) => {
+            mat.color.setRGB(finalColor.r / 255, finalColor.g / 255, finalColor.b / 255)
+        })
+    }
 }
 
-export class NormalBlock extends Block {
-    constructor(
-        lastBlock: {
-            dimension: Dimension
-            position: Position
-            color: THREE.Color
-            axis: string | null
-            topTexture: THREE.Texture
-            leftTexture: THREE.Texture
-            bottomTexture: THREE.Texture
-        },
-        shouldReplace = false,
-    ) {
-        super(lastBlock, shouldReplace)
+// Runs a tick, moves back and forth
+export class MovingBlock extends Block {
+    shouldReplace: boolean
+
+    constructor(blockServer: BlockServer, prevBlock?: PrevBlockBrief, shouldReplace = false) {
+        super(blockServer, prevBlock, shouldReplace, false)
+        this.shouldReplace = shouldReplace
     }
 
     reverseDirection() {
         this.direction = this.direction > 0 ? this.speed : Math.abs(this.speed)
     }
 
-    tick(speed = 0, elapsedTime: number) {
-        const value = this.position[this.axis as keyof typeof this.position]
-        if (value > this.MOVE_AMOUNT || value < -this.MOVE_AMOUNT) {
+    tick(boost = 0, elapsedTime: number) {
+        if (this.shouldReplace) return
+
+        this.basedTick(elapsedTime)
+
+        const axisPos = this.position[this.axis]
+        // If block is reaching the edge, then quickly change direction and give it a little bounce back
+        // So it will never get stuck
+        if (axisPos > this.MOVE_AMOUNT || axisPos < -this.MOVE_AMOUNT) {
             this.reverseDirection()
-            this.position[this.axis as keyof typeof this.position] = clamp(-this.MOVE_AMOUNT + 1, value, this.MOVE_AMOUNT - 1)
+            this.position[this.axis] = clamp(-this.MOVE_AMOUNT + 2, axisPos, this.MOVE_AMOUNT - 2)
         }
 
-        this.position[this.axis as keyof typeof this.position] += (this.direction + this.direction * speed) * (elapsedTime * (baseFrameRate / 1000))
-        this.mesh.position[this.axis as keyof typeof this.position] = this.position[this.axis as keyof typeof this.position]
+        // Move the block
+        this.position[this.axis] += this.direction * (1 + boost) * (elapsedTime * (baseFrameRate / 1000)) * this.blockServer.speed_multiplier
+        this.mesh.position[this.axis] = this.position[this.axis]
     }
 }
 
+// Runs a tick
 export class FallingBlock extends Block {
-    constructor(lastBlock: {
-        dimension: Dimension
-        position: Position
-        color: THREE.Color
-        axis: string | null
-        topTexture: THREE.Texture
-        leftTexture: THREE.Texture
-        bottomTexture: THREE.Texture
-    }) {
-        super(lastBlock, true, true)
-        this.speed *= 2
-        this.direction = this.speed
+    private lengthStickingOut: number
+
+    constructor(blockServer: BlockServer, prevBlock: PrevBlockBrief, lengthStickingOut: number) {
+        super(blockServer, prevBlock, true, true)
+        this.lengthStickingOut = lengthStickingOut
+        this.speed *= 1.8 // Make it fall faster
+        this.direction = prevBlock.direction
     }
 
-    tick() {
-        this.position.y -= Math.abs(this.direction)
-        this.mesh.rotation.z += this.direction / 6
+    tick(elapsedTime: number) {
+        this.basedTick(elapsedTime)
+
+        this.position.y -= Math.abs(this.speed)
+        this.mesh.rotation[this.axis === Axis.x ? Axis.z : Axis.x] +=
+            (this.axis === Axis.x ? -1 : 1) * (this.direction / 6) * (-this.lengthStickingOut / Math.abs(this.lengthStickingOut))
         this.mesh.position.y = this.position.y
     }
 }

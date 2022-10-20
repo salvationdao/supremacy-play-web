@@ -42,9 +42,7 @@ export const SelfRepairCard = ({
                 </FancyButton>
             </Stack>
 
-            {doRepairModalOpen && repairStatus && (
-                <DoRepairModal repairStatus={repairStatus} open={doRepairModalOpen} onClose={() => setDoRepairModalOpen(false)} />
-            )}
+            {doRepairModalOpen && <DoRepairModal repairStatus={repairStatus} onClose={() => setDoRepairModalOpen(false)} />}
         </>
     )
 }

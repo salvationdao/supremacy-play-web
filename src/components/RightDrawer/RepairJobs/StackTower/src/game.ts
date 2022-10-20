@@ -1,237 +1,134 @@
-import { FallingBlock, NormalBlock } from "./block"
+import TWEEN from "@tweenjs/tween.js"
+import { FallingBlock, MovingBlock } from "./block"
 import { blockConfig, cameraConfig } from "./config"
 import { Stage } from "./stage"
-
-enum TriggerWith {
-    Spacebar = "SPACE_BAR",
-    LeftClick = "LEFT_CLICK",
-    Touch = "TOUCH",
-    None = "NONE",
-}
-
-export interface GamePattern {
-    score: number
-    stack_at: Date
-    dimension: { width: number; height: number; depth: number }
-    is_failed: boolean
-    trigger_with: TriggerWith
-}
-
-export enum GameState {
-    Loading = "LOADING",
-    Ready = "READY",
-    Playing = "PLAYING",
-    Ended = "ENDED",
-    Resetting = "RESETTING",
-}
+import { BlockServer, BlockType, GameState, NewStackInfo, PlayButton } from "./types"
 
 export class Game {
-    container: HTMLElement | null
-    stage: Stage
-    state: GameState
-    score: number
-    blocks: NormalBlock[]
-    fallingBlocks: FallingBlock[]
-    setGameState: React.Dispatch<React.SetStateAction<GameState>>
-    oneNewGamePattern: (gamePattern: GamePattern) => void
-    triggerWith: TriggerWith
-    animationID: number | null
-    timestamp: number
+    private container: HTMLElement | null
+    private stage: Stage
+    private blocks: MovingBlock[] = []
+    private fallingBlocks: FallingBlock[] = []
+    private score: number = 0
+    private state: GameState = GameState.Loading
+    private activePlayButton = PlayButton.Spacebar
+    private animationID: number | null = null
+    private timestamp: number = 0
 
-    onKeydownBound: (e: KeyboardEvent) => void
-    onClickBound: () => void
-    onTouchedBound: () => void
+    // External
+    private setGameState: React.Dispatch<React.SetStateAction<GameState>>
+    private onPlaceBlock: React.MutableRefObject<(newStackInfo: NewStackInfo) => Promise<void>>
+    private setActivePlayButton: React.Dispatch<React.SetStateAction<string>>
+
+    // User events
+    private onKeydownBound: (e: KeyboardEvent) => void
 
     constructor(
         backgroundColor: string,
-        _setGameState: React.Dispatch<React.SetStateAction<GameState>>,
-        _oneNewGamePattern: (gamePattern: GamePattern) => void,
+        setGameState: React.Dispatch<React.SetStateAction<GameState>>,
+        onPlaceBlock: React.MutableRefObject<(newStackInfo: NewStackInfo) => Promise<void>>,
+        setActivePlayButton: React.Dispatch<React.SetStateAction<string>>,
     ) {
-        const gameContainer = document.getElementById("game")
-        const container = document.createElement("div")
-        container.style.width = "100%"
-        container.style.height = "100%"
-        container.tabIndex = 0
+        // DOM setup
+        const gameContainer = document.getElementById("tower-stack-game")
+        this.container = document.createElement("div")
+        this.container.style.width = "100%"
+        this.container.style.height = "100%"
+        this.container.tabIndex = 0
 
         if (gameContainer) {
+            // Empty out the parent container
             let child = gameContainer.lastElementChild
             while (child) {
                 gameContainer.removeChild(child)
                 child = gameContainer.lastElementChild
             }
 
-            gameContainer.appendChild(container)
+            // Then append our new container into it
+            gameContainer.appendChild(this.container)
         }
+        this.container.focus()
 
-        container.focus()
-        this.container = container
-
-        this.setGameState = _setGameState
-        this.oneNewGamePattern = _oneNewGamePattern
-        this.triggerWith = TriggerWith.None
-
+        // Set class variables
+        this.setGameState = setGameState
+        this.onPlaceBlock = onPlaceBlock
+        this.setActivePlayButton = setActivePlayButton
         this.stage = new Stage(this.container, backgroundColor)
-        this.blocks = []
-        this.fallingBlocks = []
-        this.state = GameState.Loading
-        this.score = 0
-        this.animationID = null
-        this.timestamp = 0
 
+        // Function binds
         this.onKeydownBound = this.onKeydown.bind(this)
-        this.onClickBound = this.onClick.bind(this)
-        this.onTouchedBound = this.onTouched.bind(this)
-    }
-
-    onKeydown(e: KeyboardEvent) {
-        if (e.key === "Spacebar" || e.key === " ") {
-            this.triggerWith = TriggerWith.Spacebar
-            this.handleEvent()
-        }
-    }
-
-    onClick() {
-        this.triggerWith = TriggerWith.LeftClick
-        this.handleEvent()
-    }
-
-    onTouched() {
-        this.triggerWith = TriggerWith.Touch
-        this.handleEvent()
     }
 
     start() {
+        // Set the key down listener
+        this.setPlayButton(this.activePlayButton)
         document.addEventListener("keydown", this.onKeydownBound)
-        this.container?.addEventListener("click", this.onClickBound)
-        this.container?.addEventListener("touchend", this.onTouchedBound)
 
-        this.addBlock()
+        this.stage.setCamera(0, blockConfig.initHeight + cameraConfig.offsetY, 0)
+
+        // Start the ticker for the game loop
         this.tick(0)
         setTimeout(() => {
             this.setState(GameState.Ready)
         }, 500) // This allows the parent to full load because game ready means it needs parent container dimensions
+
         this.stage.resetContainerSize()
     }
 
-    handleEvent() {
-        switch (this.state) {
-            case GameState.Ready:
-                this.setState(GameState.Playing)
-                this.addBlock()
-                break
-            case GameState.Playing:
-                this.addBlock()
-                break
-            case GameState.Ended:
-                this.blocks.forEach((block) => {
-                    this.stage.remove(block.mesh)
-                })
-                this.blocks = []
-                this.score = 0
-                this.addBlock()
-                this.setState(GameState.Ready)
-                break
-            default:
-                break
-        }
-    }
-
-    addBlock() {
-        let lastBlock = this.blocks[this.blocks.length - 1]
-        const lastToLastBlock = this.blocks[this.blocks.length - 2]
-
-        if (lastBlock && lastToLastBlock) {
-            const { axis, dimensionAlongAxis } = lastBlock.getAxis()
-            const distance = lastBlock.position[axis as keyof typeof lastBlock.position] - lastToLastBlock.position[axis as keyof typeof lastBlock.position]
-            let positionFalling, position
-            const { color, topTexture, leftTexture, bottomTexture } = lastBlock
-            const newLength = lastBlock.dimension[dimensionAlongAxis as keyof typeof lastBlock.dimension] - Math.abs(distance)
-
-            // Game over
-            if (newLength <= 0) {
-                this.stage.remove(lastBlock.mesh)
-                this.setState(GameState.Ended)
-                this.stage.setCamera(Math.max(this.blocks.length * blockConfig.initHeight - 6, 6) + cameraConfig.offsetY)
-                this.oneNewGamePattern({
-                    score: this.score,
-                    is_failed: true,
-                    dimension: lastBlock.dimension,
-                    stack_at: new Date(),
-                    trigger_with: this.triggerWith,
-                })
-                return
-            }
-
-            const dimension = { ...lastBlock.dimension }
-            dimension[dimensionAlongAxis as keyof typeof dimension] = newLength
-            const dimensionFalling = { ...lastBlock.dimension }
-            dimensionFalling[dimensionAlongAxis as keyof typeof lastBlock.dimension] = Math.abs(distance)
-
-            if (distance >= 0) {
-                position = lastBlock.position
-
-                positionFalling = { ...lastBlock.position }
-                positionFalling[axis as keyof typeof positionFalling] = lastBlock.position[axis as keyof typeof lastBlock.position] + newLength
-            } else {
-                position = { ...lastBlock.position }
-                position[axis as keyof typeof position] = lastBlock.position[axis as keyof typeof lastBlock.position] + Math.abs(distance)
-
-                positionFalling = { ...lastBlock.position }
-                positionFalling[axis as keyof typeof positionFalling] = lastBlock.position[axis as keyof typeof lastBlock.position] - Math.abs(distance)
-            }
-
-            this.blocks.pop()
-            this.stage.remove(lastBlock.mesh)
-            lastBlock = new NormalBlock({ dimension, position, color, axis, topTexture, leftTexture, bottomTexture }, true)
-
-            this.blocks.push(lastBlock)
-            this.stage.add(lastBlock.mesh)
-
-            const fallingBlock = new FallingBlock({
-                dimension: dimensionFalling,
-                position: positionFalling,
-                color,
-                axis: null,
-                topTexture,
-                leftTexture,
-                bottomTexture,
-            })
-
-            this.fallingBlocks.push(fallingBlock)
-            this.stage.add(fallingBlock.mesh)
-        }
-
-        this.score = Math.max(this.blocks.length - 1, 0)
-
-        if (lastBlock) {
-            this.oneNewGamePattern({
-                score: this.score,
-                is_failed: false,
-                dimension: lastBlock.dimension,
-                stack_at: new Date(),
-                trigger_with: this.triggerWith,
-            })
-        }
-
-        const newBlock = new NormalBlock(lastBlock)
-        this.stage.add(newBlock.mesh)
-        this.blocks.push(newBlock)
-
-        this.stage.setCamera(this.blocks.length * blockConfig.initHeight + cameraConfig.offsetY)
+    destroy() {
+        if (this.animationID) cancelAnimationFrame(this.animationID)
+        document.removeEventListener("keydown", this.onKeydownBound)
+        this.stage.destroy()
+        this.container?.remove()
     }
 
     setState(state: GameState) {
-        const oldState = this.state
         this.state = state
         this.setGameState(state)
-        return oldState
+    }
+
+    setPlayButton(playButton: PlayButton) {
+        this.activePlayButton = playButton
+        this.setActivePlayButton(this.activePlayButton)
+    }
+
+    onKeydown(e: KeyboardEvent) {
+        if (e.key.toLowerCase() === this.activePlayButton.toLowerCase() || (e.key === " " && this.activePlayButton === PlayButton.Spacebar)) {
+            switch (this.state) {
+                case GameState.Ready:
+                    this.stage.setCamera(0, blockConfig.initHeight + cameraConfig.offsetY, 0)
+                    this.setState(GameState.Playing)
+                    this.placeBlock()
+                    break
+                case GameState.Playing:
+                    this.placeBlock()
+                    break
+                case GameState.Ended:
+                    this.blocks.forEach((block) => {
+                        this.stage.remove(block.mesh)
+                    })
+                    this.blocks = []
+                    this.score = 0
+                    this.stage.setCamera(0, blockConfig.initHeight + cameraConfig.offsetY, 0)
+                    this.setState(GameState.Ready)
+                    this.placeBlock()
+                    break
+                default:
+                    break
+            }
+        }
     }
 
     tick(elapsedTime: number) {
+        // Only the top block (except the initial first one) gets tick running, others are stationary
         if (this.blocks.length > 1) {
             this.blocks[this.blocks.length - 1].tick(this.blocks.length / 10, elapsedTime)
         }
-        this.fallingBlocks.forEach((block) => block.tick())
+
+        // Run tick on all falling blocks
+        this.fallingBlocks.forEach((block) => block.tick(elapsedTime))
+
+        // If falling block falls below y = 0, remove from stage
         this.fallingBlocks = this.fallingBlocks.filter((block) => {
             if (block.position.y > 0) {
                 return true
@@ -240,20 +137,170 @@ export class Game {
                 return false
             }
         })
+
         this.stage.render()
         this.animationID = requestAnimationFrame((ts) => {
+            TWEEN.update(ts)
             this.tick(ts - this.timestamp)
             this.timestamp = ts
         })
     }
 
-    cleanup() {
-        document.removeEventListener("keydown", this.onKeydownBound)
-        this.container?.removeEventListener("click", this.onClickBound)
-        this.container?.removeEventListener("touchend", this.onTouchedBound)
+    // Generate a new block to play
+    onNewBlock(blockServer: BlockServer) {
+        // Set the active keyboard button to play
+        this.setPlayButton(blockServer.key)
 
-        if (this.animationID) {
-            cancelAnimationFrame(this.animationID)
+        const curBlock = this.blocks[this.blocks.length - 1] // Note this is the top most block on stack
+
+        // Add new block
+        const newBlock = new MovingBlock(blockServer, curBlock)
+        this.blocks.push(newBlock)
+        this.stage.add(newBlock.mesh)
+    }
+
+    placeBlock() {
+        let landedOnStack = true
+        let curBlock = this.blocks[this.blocks.length - 1] // Note this is the current moving block
+        const prevBlock = this.blocks[this.blocks.length - 2]
+
+        // If the top most block is a block we already placed, then return
+        // Server shouldve sent a new block
+        if (curBlock?.shouldReplace) return
+
+        // Return if there isn't a block to place
+        if (curBlock && prevBlock) {
+            const { axis, dimensionAlongAxis } = curBlock.getAxis()
+            landedOnStack = curBlock.dimension[dimensionAlongAxis] - Math.abs(curBlock.position[axis] - prevBlock.position[axis]) > 0
+
+            // *******************************
+            // ********** Game Over **********
+            // *******************************
+            // If moving block misses the stack completely and not bomb, game over
+            if (!landedOnStack && curBlock.blockServer.type !== BlockType.Bomb) {
+                this.stage.remove(curBlock.mesh)
+                this.stage.setCamera(0, Math.max(this.blocks.length * blockConfig.initHeight - 6, 6) + cameraConfig.offsetY, 0)
+                this.onPlaceBlock.current({
+                    id: curBlock.blockServer.id,
+                    score: this.score,
+                    is_failed: true,
+                    dimension: curBlock.dimension,
+                })
+                this.setPlayButton(PlayButton.Spacebar)
+                this.setState(GameState.Ended)
+                return
+            }
+
+            // ***************************************
+            // ********** Replacement Block **********
+            // ***************************************
+            // Calculate the dimension of the falling block
+            // If its a special fast block, dont cut the block
+            const lengthStickingOut = curBlock.blockServer.type === BlockType.Fast ? 0 : curBlock.position[axis] - prevBlock.position[axis]
+            const newLength = curBlock.dimension[dimensionAlongAxis] - Math.abs(lengthStickingOut)
+
+            // Pop the current block out, and replace with a new one that's cropped, and doesn't move
+            this.blocks.pop()
+            this.stage.remove(curBlock.mesh)
+
+            if (landedOnStack) {
+                // The position of the replacement block
+                const positionReplacement = {
+                    ...curBlock.position,
+                    [axis]: lengthStickingOut >= 0 ? curBlock.position[axis] : curBlock.position[axis] + Math.abs(lengthStickingOut),
+                }
+
+                curBlock = new MovingBlock(
+                    curBlock.blockServer,
+                    {
+                        dimension: { ...curBlock.dimension, [dimensionAlongAxis]: newLength },
+                        position: positionReplacement,
+                        direction: curBlock.direction,
+                        axis,
+                        topTexture: curBlock.topTexture,
+                        frontTexture: curBlock.frontTexture,
+                        rightTexture: curBlock.rightTexture,
+                    },
+                    true,
+                )
+
+                this.blocks.push(curBlock)
+                this.stage.add(curBlock.mesh)
+            }
+
+            // ***********************************
+            // ********** Falling Block **********
+            // ***********************************
+            // The position of the falling block
+            const positionFalling = {
+                ...curBlock.position,
+                [axis]:
+                    curBlock.blockServer.type === BlockType.Bomb
+                        ? curBlock.position[axis]
+                        : lengthStickingOut >= 0
+                        ? curBlock.position[axis] + newLength
+                        : curBlock.position[axis] - Math.abs(lengthStickingOut),
+            }
+
+            const fallingBlock = new FallingBlock(
+                curBlock.blockServer,
+                {
+                    dimension: {
+                        ...curBlock.dimension,
+                        [dimensionAlongAxis]:
+                            curBlock.blockServer.type === BlockType.Bomb ? curBlock.dimension[dimensionAlongAxis] : Math.abs(lengthStickingOut),
+                    },
+                    position: positionFalling,
+                    direction: curBlock.direction,
+                    axis,
+                    topTexture: curBlock.topTexture,
+                    frontTexture: curBlock.frontTexture,
+                    rightTexture: curBlock.rightTexture,
+                },
+                lengthStickingOut,
+            )
+            this.fallingBlocks.push(fallingBlock)
+            this.stage.add(fallingBlock.mesh)
         }
+
+        // **************************
+        // ********** Misc **********
+        // **************************
+
+        // If its a bomb and it got stacked, blow off some and deduct points
+        if (landedOnStack && curBlock.blockServer.type === BlockType.Bomb) {
+            this.blowOffTopNBlocks(3)
+        }
+
+        // Score will count from [0, 0, 1, 2 ...etc]
+        this.score = Math.max(this.blocks.length - 1, 0)
+
+        const topBlock = this.blocks[this.blocks.length - 1]
+        // Send place block update to server
+        if (prevBlock) {
+            this.onPlaceBlock.current({
+                id: curBlock.blockServer.id,
+                score: this.score,
+                is_failed: !landedOnStack,
+                dimension: topBlock.dimension,
+            })
+        }
+
+        // Update camera y position
+        if (curBlock?.blockServer.type !== BlockType.Bomb || (landedOnStack && curBlock.blockServer.type === BlockType.Bomb)) {
+            this.stage.setCamera(
+                topBlock?.mesh.position.x || 0,
+                this.blocks.length * blockConfig.initHeight + cameraConfig.offsetY,
+                topBlock?.mesh.position.z || 0,
+            )
+        }
+    }
+
+    blowOffTopNBlocks(amount: number) {
+        const spliceAmount = Math.min(amount + 1, this.blocks.length - 1)
+
+        this.blocks.splice(-spliceAmount).forEach((block) => {
+            this.stage.remove(block.mesh)
+        })
     }
 }

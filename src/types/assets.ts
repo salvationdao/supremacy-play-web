@@ -44,6 +44,7 @@ export enum WeaponType {
     Sword = "Sword",
     Minigun = "Minigun",
     MissileLauncher = "Missile Launcher",
+    RocketPods = "Rocket Pods",
     PlasmaGun = "Plasma Gun",
     SniperRifle = "Sniper Rifle",
     GrenadeLauncher = "Grenade Launcher",

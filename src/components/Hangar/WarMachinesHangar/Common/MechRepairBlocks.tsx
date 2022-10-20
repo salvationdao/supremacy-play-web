@@ -19,6 +19,7 @@ export const RepairBlocks = ({
     size?: number
     pulsateEffectPercent?: number // Out of 100
 }) => {
+    const remainDamagedBlocksFix = Math.max(remainDamagedBlocks, 0)
     return (
         <Stack direction="row" alignItems="center" spacing=".5rem" sx={{ width: "100%" }}>
             <Stack
@@ -35,7 +36,7 @@ export const RepairBlocks = ({
                         },
                     },
 
-                    [`& > div:nth-of-type(-n+${defaultBlocks ? defaultBlocks - remainDamagedBlocks : 0})`]: {
+                    [`& > div:nth-of-type(-n+${defaultBlocks ? defaultBlocks - remainDamagedBlocksFix : 0})`]: {
                         ".single-block": {
                             backgroundColor: colors.green,
                         },
@@ -44,7 +45,7 @@ export const RepairBlocks = ({
                     // Pulsate effect
                     ...(pulsateEffectPercent && pulsateEffectPercent > 0
                         ? {
-                              [`& > div:nth-of-type(${defaultBlocks ? Math.max(defaultBlocks - remainDamagedBlocks + 1, 1) : 1})`]: {
+                              [`& > div:nth-of-type(${defaultBlocks ? Math.max(defaultBlocks - remainDamagedBlocksFix + 1, 1) : 1})`]: {
                                   ".single-block": {
                                       animation: `${pulseEffect} 3s infinite`,
 
@@ -63,13 +64,13 @@ export const RepairBlocks = ({
                         : {}),
                 }}
             >
-                {new Array(defaultBlocks || remainDamagedBlocks).fill(0).map((_, index) => (
+                {new Array(defaultBlocks || remainDamagedBlocksFix).fill(0).map((_, index) => (
                     <div key={index}>
                         <div className="single-block" />
                     </div>
                 ))}
 
-                {!hideNumber && defaultBlocks && remainDamagedBlocks > 0 && (
+                {!hideNumber && defaultBlocks && remainDamagedBlocksFix > 0 && (
                     <Typography
                         variant="caption"
                         sx={{
@@ -77,10 +78,10 @@ export const RepairBlocks = ({
                             pt: ".8px",
                             lineHeight: 1,
                             fontFamily: fonts.nostromoBlack,
-                            color: remainDamagedBlocks > 0 ? colors.red : colors.green,
+                            color: remainDamagedBlocksFix > 0 ? colors.red : colors.green,
                         }}
                     >
-                        {remainDamagedBlocks || defaultBlocks}
+                        {remainDamagedBlocksFix || defaultBlocks}
                     </Typography>
                 )}
             </Stack>

@@ -91,8 +91,13 @@ export const shadeColor = (hexColor: string, factor: number) => {
     return "#" + RR + GG + BB
 }
 
-export const getRandomArbitrary = (min: number, max: number): number => {
+export const getRandomFloat = (min: number, max: number): number => {
     return Math.random() * (max - min) + min
+}
+
+// Inclusive of min and max
+export const getRandomIntInclusive = (min: number, max: number) => {
+    return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
 export const numFormatter = (num: number) => {
