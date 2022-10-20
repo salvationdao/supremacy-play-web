@@ -23,9 +23,9 @@ export const ArenaContainer = createContainer(() => {
     // Save the arena in url param when its changed
     useEffect(() => {
         updateQuery({
-            arenaID: currentArenaID,
+            arenaName: currentArena?.name,
         })
-    }, [currentArenaID, updateQuery])
+    }, [currentArena?.name, updateQuery])
 
     return {
         arenaList,
@@ -57,7 +57,7 @@ export const ArenaListener = () => {
             }
 
             // Sets the one specified in the url, else default to first one
-            const arenaInUrl = payload.find((arena) => arena.id === query.get("arenaID"))
+            const arenaInUrl = payload.find((arena) => arena.name === query.get("arenaName"))
             setCurrentArena(arenaInUrl || payload[0])
 
             setArenaList(payload)
