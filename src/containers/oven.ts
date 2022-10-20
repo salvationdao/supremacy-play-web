@@ -99,7 +99,7 @@ export const OvenStreamContainer = createContainer(() => {
     const [volume, setVolume] = useState(0)
     const [isMute, toggleIsMute] = useToggle(true)
 
-    // oven resolution control
+    // Oven resolution control
     const [selectedOvenResolution, setSelectedOvenResolution] = useState<string>()
     const [ovenResolutions, setOvenResolutions] = useState<string[]>([])
 
@@ -135,7 +135,6 @@ export const OvenStreamContainer = createContainer(() => {
     const changeOvenStream = useCallback((s: OvenStream) => {
         if (!s) return
         setCurrentOvenStream(s)
-
         setOvenResolutions(s.available_resolutions)
         localStorage.setItem("selectedOvenStream", JSON.stringify(s))
     }, [])
