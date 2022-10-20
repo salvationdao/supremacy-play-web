@@ -7,11 +7,12 @@ import { PlayerAbilities } from "../components/LeftDrawer/BattleArena/PlayerAbil
 import { QuickPlayerAbilities } from "../components/LeftDrawer/BattleArena/QuickPlayerAbilities/QuickPlayerAbilities"
 import { BattleArenaCountDown } from "../components/Maintenance/BattleArenaCountDown"
 import { BATTLE_ARENA_OPEN } from "../constants"
-import { useAuth, useDimension, useMobile } from "../containers"
+import { useArena, useAuth, useDimension, useMobile } from "../containers"
 import { siteZIndex } from "../theme/theme"
 
 export const BattleArenaPage = () => {
     const { userID } = useAuth()
+    const { currentArenaID } = useArena()
     const [understand, setUnderstand] = useState(true)
 
     useEffect(() => {
@@ -34,7 +35,7 @@ export const BattleArenaPage = () => {
         return <BattleArenaCountDown />
     }
 
-    return <BattleArenaPageInner />
+    return <BattleArenaPageInner key={`arena-${currentArenaID}`} />
 }
 
 const BattleArenaPageInner = React.memo(function BattleArenaPageInner() {
