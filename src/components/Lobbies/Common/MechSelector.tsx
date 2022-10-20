@@ -13,6 +13,10 @@ import { getRarityDeets } from "../../../helpers"
 import FlipMove from "react-flip-move"
 import { BattleLobbyMechQueueCard } from "../BattleLobbyMech/BattleLobbyMechQueueCard"
 import { EmptyWarMachinesPNG } from "../../../assets"
+import { QueueDetails } from "../BattleLobbyMech/QueueDetails"
+import { FancyButton } from "../../Common/FancyButton"
+import { BattleLobby, PlayerQueueStatus } from "../../../types/battle_queue"
+import { useAuth } from "../../../containers"
 
 const sortOptions = [
     { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
@@ -24,12 +28,32 @@ const sortOptions = [
 interface MechSelectorProps {
     selectedMechs: LobbyMech[]
     setSelectedMechs: React.Dispatch<React.SetStateAction<LobbyMech[]>>
+    battleLobby?: BattleLobby
+    keepOnSelect?: boolean
 }
 
-export const MechSelector = ({ selectedMechs, setSelectedMechs }: MechSelectorProps) => {
+export const MechSelector = ({ selectedMechs, setSelectedMechs, battleLobby, keepOnSelect }: MechSelectorProps) => {
     const { factionTheme } = useTheme()
+    const { factionID } = useAuth()
     const [searchValue, setSearchValue, searchValueInstant] = useDebounce("", 300)
     const [list, setList] = useState<LobbyMech[]>([])
+
+    const [showStakedMechs, setShowStakedMechs] = useState(false)
+
+    const [currentPlayerQueue, setCurrentPlayerQueue] = useState<PlayerQueueStatus>({
+        queue_limit: 10,
+        total_queued: 0,
+    })
+    useGameServerSubscriptionSecuredUser<PlayerQueueStatus>(
+        {
+            URI: "/queue_status",
+            key: GameServerKeys.PlayerQueueStatus,
+        },
+        (payload) => {
+            setCurrentPlayerQueue(payload)
+        },
+    )
+
     const { page, changePage, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: 10,
         page: 1,
@@ -98,8 +122,28 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs }: MechSelectorPr
         // pagination
         result = result.slice((page - 1) * pageSize, page * pageSize)
 
+        if (keepOnSelect) {
+            // show selected mechs on the top of the list
+            selectedMechs.forEach((sm) => {
+                result.unshift(sm)
+                result.pop()
+            })
+        }
+
         setList(result)
-    }, [ownedMechs, sort, page, pageSize, setTotalItems, searchValue, selectedMechs])
+    }, [ownedMechs, sort, page, pageSize, setTotalItems, searchValue, selectedMechs, keepOnSelect])
+
+    const selectLimit = useMemo(() => {
+        let queueLimit = 0
+        if (battleLobby) queueLimit = battleLobby.each_faction_mech_amount - battleLobby.battle_lobbies_mechs.filter((m) => m.faction_id === factionID).length
+        const playerQueueRemain = currentPlayerQueue.queue_limit - currentPlayerQueue.total_queued
+
+        let limit = queueLimit
+        if (queueLimit > playerQueueRemain) {
+            limit = playerQueueRemain
+        }
+        return limit
+    }, [currentPlayerQueue.queue_limit, currentPlayerQueue.total_queued, factionID, battleLobby])
 
     const content = useMemo(() => {
         if (list.length > 0) {
@@ -135,8 +179,26 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs }: MechSelectorPr
                                             <BattleLobbyMechQueueCard
                                                 key={mech.id}
                                                 isSelected={selectedMechs.some((sm) => sm.id === mech.id)}
+                                                toggleIsSelected={() => {
+                                                    setSelectedMechs((prev) => {
+                                                        // remove, if exists
+                                                        if (prev.some((sm) => sm.id === mech.id)) {
+                                                            setCurrentPlayerQueue((cpq) => ({ ...cpq, total_queued: cpq.total_queued - 1 }))
+                                                            return prev.filter((sm) => sm.id !== mech.id)
+                                                        }
+
+                                                        // return prev stat, if already reach queue limit
+                                                        if (selectLimit <= prev.length) {
+                                                            return prev
+                                                        }
+
+                                                        setCurrentPlayerQueue((cpq) => ({ ...cpq, total_queued: cpq.total_queued + 1 }))
+
+                                                        // otherwise, append
+                                                        return prev.concat(mech)
+                                                    })
+                                                }}
                                                 mech={mech}
-                                                toggleIsSelected={() => setSelectedMechs((prev) => prev.concat(mech))}
                                             />
                                         </div>
                                     )
@@ -175,15 +237,43 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs }: MechSelectorPr
                 </Typography>
             </Stack>
         )
-    }, [list, selectedMechs, setSelectedMechs])
+    }, [list, selectedMechs, setSelectedMechs, selectLimit])
 
     return (
         <Stack
             flex={1}
-            sx={{
-                border: `${factionTheme.primary}99 2px solid`,
-            }}
+            sx={
+                {
+                    // border: `${factionTheme.primary}99 2px solid`,
+                }
+            }
         >
+            <Stack direction="row" alignItems="center" justifyContent="space-between">
+                <QueueDetails playerQueueStatus={currentPlayerQueue} />
+
+                <FancyButton
+                    clipThingsProps={{
+                        clipSize: "6px",
+                        clipSlantSize: "0px",
+                        corners: {
+                            topLeft: true,
+                            topRight: true,
+                            bottomLeft: true,
+                            bottomRight: true,
+                        },
+                        backgroundColor: showStakedMechs ? factionTheme.primary : factionTheme.background,
+                        opacity: 1,
+                        border: { isFancy: true, borderColor: factionTheme.primary, borderThickness: "2px" },
+                        sx: { position: "relative", px: ".4rem", py: ".5rem", minWidth: "18rem" },
+                    }}
+                    sx={{ color: factionTheme.primary, p: 0, height: "100%" }}
+                    onClick={() => setShowStakedMechs((prev) => !prev)}
+                >
+                    <Typography variant="body2" fontFamily={fonts.nostromoHeavy} color={showStakedMechs ? factionTheme.secondary : factionTheme.primary}>
+                        Staked Mechs
+                    </Typography>
+                </FancyButton>
+            </Stack>
             <TotalAndPageSizeOptions
                 pageSize={pageSize}
                 changePageSize={changePageSize}

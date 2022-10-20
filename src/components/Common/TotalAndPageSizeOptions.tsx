@@ -118,7 +118,7 @@ export const TotalAndPageSizeOptions = React.memo(function TotalAndPageSizeOptio
             {children && (
                 <>
                     <Divider orientation="vertical" sx={{ height: "unset", alignSelf: "stretch", my: ".4rem !important" }} />
-                    {children}{" "}
+                    {children}
                 </>
             )}
 
