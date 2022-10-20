@@ -269,14 +269,7 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs, battleLobby, kee
     }, [list, selectedMechs, setSelectedMechs, selectLimit])
 
     return (
-        <Stack
-            flex={1}
-            sx={
-                {
-                    // border: `${factionTheme.primary}99 2px solid`,
-                }
-            }
-        >
+        <Stack flex={1}>
             <Stack direction="row" alignItems="center" justifyContent="space-between">
                 <QueueDetails playerQueueStatus={currentPlayerQueue} />
 

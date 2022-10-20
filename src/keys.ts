@@ -81,6 +81,7 @@ export enum GameServerKeys {
     GetUtilityDetails = "PLAYER:ASSET:UTILITY:DETAIL",
     TriggerMechStatusUpdate = "PLAYER:ASSET:MECH:STATUS:UPDATE",
     MechRename = "PLAYER:MECH:RENAME",
+    SubMechIsStaked = "MECH:IS:STAKED",
 
     // Player Abilities
     SubPlayerAbilitiesList = "PLAYER:ABILITIES:LIST:SUBSCRIBE",

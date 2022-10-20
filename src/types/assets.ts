@@ -23,7 +23,6 @@ export enum MechStatusEnum {
     Market = "MARKET",
     Sold = "SOLD",
     Damaged = "DAMAGED",
-    Staked = "STAKED",
 }
 
 export enum PowerCoreSize {

@@ -7,6 +7,9 @@ import { MARKETPLACE_TABS } from "../../../../pages"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechDetails, MechStatus, MechStatusEnum } from "../../../../types"
 import { ItemType } from "../../../../types/marketplace"
+import { useGameServerSubscription } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
+import { useState } from "react"
 
 export const MechButtons = ({
     mechDetails,
@@ -26,6 +29,17 @@ export const MechButtons = ({
 }) => {
     const theme = useTheme()
     const mechState = mechStatus?.status
+
+    const { id } = mechDetails
+    const [mechIsStaked, setMechIsStaked] = useState(false)
+
+    useGameServerSubscription<boolean>(
+        {
+            URI: `/public/mech/${id}/is_staked`,
+            key: GameServerKeys.SubMechIsStaked,
+        },
+        setMechIsStaked,
+    )
 
     return (
         <ClipThing
@@ -74,7 +88,7 @@ export const MechButtons = ({
                     isFancy
                     primaryColor={colors.purple}
                     backgroundColor={colors.purple}
-                    label={mechState === MechStatusEnum.Staked ? "UNSTAKE" : "STAKE"}
+                    label={mechIsStaked ? "UNSTAKE" : "STAKE"}
                     onClick={() => {
                         setSelectedMechDetails(mechDetails)
                         setStakeMechModalOpen(true)

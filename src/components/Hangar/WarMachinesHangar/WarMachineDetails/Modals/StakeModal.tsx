@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react"
 import { MechModal } from "../../Common/MechModal"
-import { MechDetails, MechStatus, MechStatusEnum } from "../../../../../types"
-import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../../hooks/useGameServer"
+import { MechDetails } from "../../../../../types"
+import { useGameServerCommandsFaction, useGameServerSubscription } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { Stack, Typography } from "@mui/material"
 import { FancyButton } from "../../../../Common/FancyButton"
@@ -18,19 +18,16 @@ export const StakeModal = ({
 }) => {
     const { id } = selectedMechDetails
     const { send } = useGameServerCommandsFaction("/faction_commander")
-    const [mechStatus, setMechStatus] = useState<MechStatus>()
+    const [mechIsStaked, setMechIsStaked] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState("")
 
-    useGameServerSubscriptionFaction<MechStatus>(
+    useGameServerSubscription<boolean>(
         {
-            URI: `/queue/${id}`,
-            key: GameServerKeys.SubMechQueuePosition,
+            URI: `/public/mech/${id}/is_staked`,
+            key: GameServerKeys.SubMechIsStaked,
         },
-        (payload) => {
-            if (!payload || payload.status === MechStatusEnum.Sold) return
-            setMechStatus(payload)
-        },
+        setMechIsStaked,
     )
 
     const onClose = useCallback(() => {
@@ -78,28 +75,16 @@ export const StakeModal = ({
     }, [id, onClose])
 
     const content = useMemo(() => {
-        if (!mechStatus) return null
-
-        let question = ""
+        let question = "Are you sure you want to stake your mech?"
         let agreedText = "STAKE"
-        let agreedFunc = () => {
-            return
-        }
-        switch (mechStatus.status) {
-            case MechStatusEnum.Market:
-            case MechStatusEnum.Sold:
-                return null
-            case MechStatusEnum.Staked:
-                question = "Are you sure you want to unstake your mech?"
-                agreedText = "UNSTAKE"
-                agreedFunc = unstakeMech
-                break
+        let agreedFunc = stakeMech
 
-            default:
-                question = "Are you sure you want to stake your mech?"
-                agreedFunc = stakeMech
-                break
+        if (mechIsStaked) {
+            question = "Are you sure you want to unstake your mech?"
+            agreedText = "UNSTAKE"
+            agreedFunc = unstakeMech
         }
+
         return (
             <Stack spacing={1.5}>
                 <Typography variant="body1" fontFamily={fonts.nostromoBold}>
@@ -141,7 +126,7 @@ export const StakeModal = ({
                 </Stack>
             </Stack>
         )
-    }, [mechStatus, stakeMech, unstakeMech])
+    }, [mechIsStaked, stakeMech, unstakeMech])
 
     return (
         <MechModal open={rentalMechModalOpen} mechDetails={selectedMechDetails} onClose={onClose}>
