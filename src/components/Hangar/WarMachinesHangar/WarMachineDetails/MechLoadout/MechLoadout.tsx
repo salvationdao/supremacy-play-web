@@ -692,6 +692,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
 
                             const renderModal = (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => (
                                 <MechLoadoutPowerCoreModal
+                                    containerRef={drawerContainerRef}
                                     onClose={() => toggleShowLoadoutModal(false)}
                                     onConfirm={(selectedPowerCore) => {
                                         modifyPowerCore({

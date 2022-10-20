@@ -4,17 +4,16 @@ import { useTheme } from "../../../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../../../helpers"
 import { colors, fonts } from "../../../../../../../theme/theme"
 import { PowerCore } from "../../../../../../../types"
-import { FancyButton } from "../../../../../../Common/FancyButton"
+import { ClipThing } from "../../../../../../Common/ClipThing"
 import { FeatherFade } from "../../../MechViewer/MechViewer"
-import { OnConfirmPowerCoreSelection } from "../MechLoadoutPowerCoreModal"
 
 interface PowerCorePreviewProps {
-    onConfirm: OnConfirmPowerCoreSelection
     powerCore?: PowerCore
-    equipped?: PowerCore
+    compareTo?: PowerCore
+    disableCompare?: boolean
 }
 
-export const PowerCorePreview = ({ onConfirm, powerCore, equipped }: PowerCorePreviewProps) => {
+export const PowerCorePreview = ({ powerCore, compareTo, disableCompare }: PowerCorePreviewProps) => {
     const theme = useTheme()
 
     const renderStatChange = useCallback((label: string, stats: { oldStat?: number; newStat: number; negated?: boolean }) => {
@@ -56,34 +55,34 @@ export const PowerCorePreview = ({ onConfirm, powerCore, equipped }: PowerCorePr
         const stats = [
             typeof powerCore.capacity !== "undefined" &&
                 renderStatChange("DAMAGE", {
-                    oldStat: equipped?.capacity,
+                    oldStat: compareTo?.capacity,
                     newStat: powerCore.capacity,
                 }),
             typeof powerCore.max_draw_rate !== "undefined" &&
                 renderStatChange("DAMAGE FALLOFF", {
-                    oldStat: equipped?.max_draw_rate,
+                    oldStat: compareTo?.max_draw_rate,
                     newStat: powerCore.max_draw_rate,
                 }),
             typeof powerCore.recharge_rate !== "undefined" &&
                 renderStatChange("RADIUS", {
-                    oldStat: equipped?.recharge_rate,
+                    oldStat: compareTo?.recharge_rate,
                     newStat: powerCore.recharge_rate,
                 }),
             typeof powerCore.armour !== "undefined" &&
                 renderStatChange("RADIAL DAMAGE FALLOFF", {
-                    oldStat: equipped?.armour,
+                    oldStat: compareTo?.armour,
                     newStat: powerCore.armour,
                 }),
             typeof powerCore.max_hitpoints !== "undefined" &&
                 renderStatChange("SPREAD", {
-                    oldStat: equipped?.max_hitpoints,
+                    oldStat: compareTo?.max_hitpoints,
                     newStat: powerCore.max_hitpoints,
                     negated: true,
                 }),
         ]
 
         return stats.filter((s) => !!s)
-    }, [powerCore, renderStatChange, equipped?.capacity, equipped?.max_draw_rate, equipped?.recharge_rate, equipped?.armour, equipped?.max_hitpoints])
+    }, [powerCore, renderStatChange, compareTo?.capacity, compareTo?.max_draw_rate, compareTo?.recharge_rate, compareTo?.armour, compareTo?.max_hitpoints])
 
     if (powerCore) {
         const videoUrls = [powerCore?.animation_url, powerCore?.card_animation_url]
@@ -91,13 +90,28 @@ export const PowerCorePreview = ({ onConfirm, powerCore, equipped }: PowerCorePr
         const imageUrl = powerCore?.avatar_url || powerCore?.image_url || powerCore?.large_image_url
 
         return (
-            <Stack p="1rem 2rem" height="100%">
-                <Box
+            <Stack
+                sx={{
+                    width: "300px",
+                }}
+            >
+                <ClipThing
                     sx={{
                         position: "relative",
+                        height: "100px",
+                        width: "100px",
+                    }}
+                    backgroundColor={theme.factionTheme.background}
+                    border={{
+                        borderColor: theme.factionTheme.primary,
+                        borderThickness: ".2rem",
+                    }}
+                    corners={{
+                        topLeft: true,
+                        bottomRight: true,
                     }}
                 >
-                    <FeatherFade color={theme.factionTheme.background} />
+                    <FeatherFade color={`${theme.factionTheme.background}aa`} featherBlur="10px" featherSize="10px" />
                     {(!videoUrlsFilters || videoUrlsFilters.length <= 0) && imageUrl ? (
                         <Box
                             component="img"
@@ -130,33 +144,7 @@ export const PowerCorePreview = ({ onConfirm, powerCore, equipped }: PowerCorePr
                             {videoUrlsFilters.map((videoUrl, i) => videoUrl && <source key={videoUrl + i} src={videoUrl} type="video/mp4" />)}
                         </Box>
                     )}
-                    <Box
-                        sx={{
-                            zIndex: 100,
-                            position: "absolute",
-                            left: 0,
-                            bottom: 0,
-                        }}
-                    >
-                        <Typography
-                            variant="h6"
-                            sx={{
-                                color: getRarityDeets(powerCore.tier).color,
-                                fontFamily: fonts.nostromoBlack,
-                            }}
-                        >
-                            {powerCore.tier}
-                        </Typography>
-                        <Typography
-                            variant="h4"
-                            sx={{
-                                fontFamily: fonts.nostromoBlack,
-                            }}
-                        >
-                            {powerCore.label}
-                        </Typography>
-                    </Box>
-                </Box>
+                </ClipThing>
                 <Stack
                     sx={{
                         zIndex: 100,
@@ -165,6 +153,8 @@ export const PowerCorePreview = ({ onConfirm, powerCore, equipped }: PowerCorePr
                         overflowX: "hidden",
                         direction: "ltr",
                         mt: "1rem",
+                        scrollbarColor: `${theme.factionTheme.primary}55 ${"#FFFFFF15"}`,
+                        scrollbarWidth: "thin",
 
                         "::-webkit-scrollbar": {
                             width: ".4rem",
@@ -179,55 +169,66 @@ export const PowerCorePreview = ({ onConfirm, powerCore, equipped }: PowerCorePr
                         },
                     }}
                 >
-                    {powerCore.equipped_on && (
+                    <Typography
+                        variant="h6"
+                        sx={{
+                            color: getRarityDeets(powerCore.tier).color,
+                            fontFamily: fonts.nostromoBlack,
+                        }}
+                    >
+                        {powerCore.tier}
+                    </Typography>
+                    <Typography
+                        variant="h4"
+                        sx={{
+                            fontFamily: fonts.nostromoBlack,
+                        }}
+                    >
+                        {powerCore.label}
+                    </Typography>
+
+                    {disableCompare ? (
                         <Typography
                             sx={{
-                                color: colors.red,
+                                color: colors.lightGrey,
                             }}
                         >
-                            Currently equipped on another mech.
+                            Currently equipped to this mech.
                         </Typography>
+                    ) : (
+                        powerCore.equipped_on && (
+                            <Typography
+                                sx={{
+                                    color: colors.yellow,
+                                }}
+                            >
+                                Currently equipped on another mech.
+                            </Typography>
+                        )
                     )}
-                    {statChanges.length > 0 ? (
-                        <Stack>
+                    {!disableCompare &&
+                        (statChanges.length > 0 ? (
+                            <Stack>
+                                <Typography
+                                    sx={{
+                                        color: colors.lightGrey,
+                                        textTransform: "uppercase",
+                                    }}
+                                >
+                                    Stat Changes If Equipped:
+                                </Typography>
+                                {statChanges}
+                            </Stack>
+                        ) : (
                             <Typography
                                 sx={{
                                     color: colors.lightGrey,
                                     textTransform: "uppercase",
                                 }}
                             >
-                                Stat Changes If Equipped:
+                                No Stat Changes If Equipped
                             </Typography>
-                            {statChanges}
-                        </Stack>
-                    ) : (
-                        <Typography
-                            sx={{
-                                color: colors.lightGrey,
-                                textTransform: "uppercase",
-                            }}
-                        >
-                            No Stat Changes If Equipped
-                        </Typography>
-                    )}
-                </Stack>
-                <Stack
-                    direction="row"
-                    spacing="1rem"
-                    sx={{
-                        zIndex: 100,
-                        pt: "1rem",
-                    }}
-                >
-                    <Box ml="auto" />
-                    <FancyButton
-                        clipThingsProps={{
-                            backgroundColor: colors.green,
-                        }}
-                        onClick={() => onConfirm(powerCore)}
-                    >
-                        Equip To Mech
-                    </FancyButton>
+                        ))}
                 </Stack>
             </Stack>
         )
