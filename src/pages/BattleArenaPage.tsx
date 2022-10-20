@@ -1,18 +1,17 @@
 import { Box, Stack } from "@mui/material"
 import React, { useEffect, useState } from "react"
 import { SvgAbility, SvgHistoryClock } from "../assets"
-import { SupporterAbilities, BattleEndScreen, BigDisplay, Controls, EarlyAccessWarning, Notifications, WarMachineStats } from "../components"
+import { BattleEndScreen, BigDisplay, Controls, EarlyAccessWarning, Notifications, SupporterAbilities, WarMachineStats } from "../components"
 import { BattleRewardsSkyHighBanner } from "../components/Common/BannersPromotions/BattleRewardsSkyHighBanner"
 import { PlayerAbilities } from "../components/LeftDrawer/BattleArena/PlayerAbilities/PlayerAbilities"
 import { QuickPlayerAbilities } from "../components/LeftDrawer/BattleArena/QuickPlayerAbilities/QuickPlayerAbilities"
 import { BattleArenaCountDown } from "../components/Maintenance/BattleArenaCountDown"
 import { BATTLE_ARENA_OPEN } from "../constants"
-import { useArena, useAuth, useDimension, useMobile } from "../containers"
+import { useAuth, useDimension, useMobile } from "../containers"
 import { siteZIndex } from "../theme/theme"
 
 export const BattleArenaPage = () => {
     const { userID } = useAuth()
-    const { currentArenaID } = useArena()
     const [understand, setUnderstand] = useState(true)
 
     useEffect(() => {
@@ -35,7 +34,7 @@ export const BattleArenaPage = () => {
         return <BattleArenaCountDown />
     }
 
-    return <BattleArenaPageInner key={`arena-${currentArenaID}`} />
+    return <BattleArenaPageInner />
 }
 
 const BattleArenaPageInner = React.memo(function BattleArenaPageInner() {
