@@ -1,12 +1,20 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useGameServerSubscription } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 import { Arena, ArenaStatus } from "../types"
+import { blankOptionOven, useOvenStream } from "./oven"
 
 export const ArenaContainer = createContainer(() => {
     const [arenaList, setArenaList] = useState<Arena[]>([])
     const [currentArena, setCurrentArena] = useState<Arena>()
+    const { changeOvenStream, setCurrentStreamOptions } = useOvenStream()
+
+    useEffect(() => {
+        if (!currentArena) return
+        changeOvenStream(currentArena.oven_stream)
+        setCurrentStreamOptions([blankOptionOven, currentArena.oven_stream])
+    }, [changeOvenStream, currentArena, setCurrentStreamOptions])
 
     const currentArenaID = currentArena?.id || ""
 
