@@ -321,17 +321,13 @@ const ImpureUnityViewer = ({ unity, initialMech: mech }: MechViewer3DProps) => {
     }, [addEventListener, removeEventListener])
 
     useEffect(() => {
-        let t: NodeJS.Timeout | null = null
         const onSlotLoaded = () => {
-            t = setTimeout(() => {
-                console.log("slot unlocked")
-                unity.onUnlock()
-                setIsPendingChange(false)
-            }, 500)
+            console.log("slot unlocked")
+            unity.onUnlock()
+            setIsPendingChange(false)
         }
         addEventListener("SlotLoaded", onSlotLoaded)
         return () => {
-            if (t) clearTimeout(t)
             removeEventListener("SlotLoaded", onSlotLoaded)
         }
     }, [addEventListener, removeEventListener, unity])
