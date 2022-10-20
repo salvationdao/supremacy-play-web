@@ -1,5 +1,6 @@
+import { FactionTheme } from "@mui/material"
 import { red } from "@mui/material/colors"
-import { createTheme, FactionTheme } from "@mui/material/styles"
+import { createTheme } from "@mui/material/styles"
 import "./global.css"
 
 // had to keep the declare in this file for it to work
