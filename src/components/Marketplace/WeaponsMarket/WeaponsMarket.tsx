@@ -437,7 +437,7 @@ export const WeaponsMarket = () => {
                 },
             })
 
-            updateQuery.current({
+            updateQuery({
                 sort,
                 page: page.toString(),
                 pageSize: pageSize.toString(),

@@ -419,7 +419,7 @@ export const WeaponsHangar = () => {
                         : undefined,
             })
 
-            updateQuery.current({
+            updateQuery({
                 page: page.toString(),
                 pageSize: pageSize.toString(),
                 sort,

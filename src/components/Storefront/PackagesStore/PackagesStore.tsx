@@ -46,7 +46,7 @@ export const PackagesStore = () => {
                 product_type: FiatProductType.StarterPackage,
             })
 
-            updateQuery.current({
+            updateQuery({
                 page: page.toString(),
                 pageSize: pageSize.toString(),
             })
