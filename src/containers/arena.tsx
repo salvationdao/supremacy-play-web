@@ -22,7 +22,7 @@ export const ArenaContainer = createContainer(() => {
 
     // Save the arena in url param when its changed
     useEffect(() => {
-        updateQuery({
+        updateQuery.current({
             arenaName: currentArena?.name,
         })
     }, [currentArena?.name, updateQuery])

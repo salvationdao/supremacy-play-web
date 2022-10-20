@@ -175,7 +175,7 @@ const SubmodelsHangarInner = () => {
                 equipped_statuses: equippedStatus,
             })
 
-            updateQuery({
+            updateQuery.current({
                 sort,
                 search,
                 rarities: rarities.join("||"),
