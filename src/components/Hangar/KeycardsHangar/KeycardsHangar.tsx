@@ -49,7 +49,7 @@ export const KeycardsHangar = () => {
                 include_market_listed: true,
             })
 
-            updateQuery({
+            updateQuery.current({
                 page: page.toString(),
                 pageSize: pageSize.toString(),
             })

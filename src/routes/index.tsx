@@ -49,7 +49,7 @@ interface RouteStruct {
 export const ROUTES_MAP: { [name: string]: RouteStruct } = {
     home: {
         id: "home",
-        path: "/:arenaID?",
+        path: "/",
         exact: true,
         Component: BattleArenaPage,
         requireAuth: false,

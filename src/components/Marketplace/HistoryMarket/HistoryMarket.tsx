@@ -89,7 +89,7 @@ export const HistoryMarket = () => {
                 sort_by: sortBy,
             })
 
-            updateQuery({
+            updateQuery.current({
                 sort,
                 page: page.toString(),
                 pageSize: pageSize.toString(),

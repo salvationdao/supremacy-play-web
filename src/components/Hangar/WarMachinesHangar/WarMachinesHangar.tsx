@@ -195,7 +195,7 @@ export const WarMachinesHangar = () => {
                 include_market_listed: true,
             })
 
-            updateQuery({
+            updateQuery.current({
                 sort,
                 search,
                 rarities: rarities.join("||"),
