@@ -68,9 +68,10 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs, battleLobby, kee
             key: GameServerKeys.SubFactionStakedMechs,
         },
         (payload) => {
+            if (!payload) return
             setFactionStakedMechs((fsm) => {
                 if (fsm.length === 0) {
-                    return payload.filter((p) => p.can_deploy)
+                    return payload.filter((p) => p.is_staked && p.can_deploy)
                 }
 
                 // replace current list
@@ -86,7 +87,7 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs, battleLobby, kee
                     list.push(p)
                 })
 
-                return list.filter((p) => p.can_deploy)
+                return list.filter((p) => p.is_staked && p.can_deploy)
             })
         },
     )
@@ -102,7 +103,7 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs, battleLobby, kee
 
             setOwnedMechs((mqs) => {
                 if (mqs.length === 0) {
-                    return payload.filter((p) => p.can_deploy)
+                    return payload.filter((p) => !p.is_staked && p.can_deploy)
                 }
 
                 // replace current list
@@ -118,7 +119,7 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs, battleLobby, kee
                     list.push(p)
                 })
 
-                return list.filter((p) => p.can_deploy)
+                return list.filter((p) => !p.is_staked && p.can_deploy)
             })
         },
     )

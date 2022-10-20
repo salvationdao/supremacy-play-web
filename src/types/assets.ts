@@ -23,6 +23,7 @@ export enum MechStatusEnum {
     Market = "MARKET",
     Sold = "SOLD",
     Damaged = "DAMAGED",
+    Staked = "STAKED",
 }
 
 export enum PowerCoreSize {
@@ -195,6 +196,7 @@ export interface LobbyMech extends MechBasic {
     lobby_number?: number
     is_battle_ready: boolean
     in_market_place: boolean
+    is_staked: boolean
 }
 
 export interface MechDetails extends MechBasic {

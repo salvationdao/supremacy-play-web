@@ -12,7 +12,7 @@ export const MechButtons = ({
     mechDetails,
     mechStatus,
     setSelectedMechDetails,
-    setRentalMechModalOpen,
+    setStakeMechModalOpen,
     setRepairMechModalOpen,
     marketLocked,
 }: {
@@ -20,7 +20,7 @@ export const MechButtons = ({
     mechStatus?: MechStatus
     setSelectedMechDetails: React.Dispatch<React.SetStateAction<MechDetails | undefined>>
     setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setStakeMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setRepairMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     marketLocked: boolean
 }) => {
@@ -74,11 +74,10 @@ export const MechButtons = ({
                     isFancy
                     primaryColor={colors.purple}
                     backgroundColor={colors.purple}
-                    label="RENT"
-                    disabled={true}
+                    label={mechState === MechStatusEnum.Staked ? "UNSTAKE" : "STAKE"}
                     onClick={() => {
                         setSelectedMechDetails(mechDetails)
-                        setRentalMechModalOpen(true)
+                        setStakeMechModalOpen(true)
                     }}
                 />
 
