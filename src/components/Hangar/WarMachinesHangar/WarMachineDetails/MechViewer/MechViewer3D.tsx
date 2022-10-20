@@ -4,11 +4,11 @@ import { MechDetailsWithMaps } from "../MechLoadout/MechLoadout"
 import { UnityParams, UnityViewer } from "./UnityViewer"
 
 export interface MechViewer3DProps {
-    mechDetailsWithMaps: MechDetailsWithMaps
+    initialMech: MechDetailsWithMaps
     unity: UnityParams
 }
 
-export const MechViewer3D = ({ mechDetailsWithMaps, unity }: MechViewer3DProps) => {
+export const MechViewer3D = ({ initialMech, unity }: MechViewer3DProps) => {
     const theme = useTheme()
     const backgroundColor = theme.factionTheme.background
 
@@ -35,7 +35,7 @@ export const MechViewer3D = ({ mechDetailsWithMaps, unity }: MechViewer3DProps) 
                 }}
             />
 
-            <UnityViewer mechDetailsWithMaps={mechDetailsWithMaps} unity={unity} />
+            <UnityViewer initialMech={initialMech} unity={unity} />
         </Box>
     )
 }

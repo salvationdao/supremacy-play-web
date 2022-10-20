@@ -10,7 +10,7 @@ import { colors, fonts } from "../../../../../theme/theme"
 import { AssetItemType, MechDetails, MechSkin, MechStatus, MechStatusEnum, PowerCore, Utility, Weapon, WeaponType } from "../../../../../types"
 import { ClipThing } from "../../../../Common/ClipThing"
 import { FancyButton } from "../../../../Common/FancyButton"
-import { LoadoutItem, MechLoadoutItem } from "../../Common/MechLoadoutItem"
+import { MechLoadoutItem } from "../../Common/MechLoadoutItem"
 import { MechViewer } from "../MechViewer/MechViewer"
 import { MechViewer3D } from "../MechViewer/MechViewer3D"
 import { UnityHandle } from "../MechViewer/UnityViewer"
@@ -36,11 +36,7 @@ interface PlayerAssetMechEquipRequest {
 
 export interface MechDetailsWithMaps extends MechDetails {
     weapons_map: Map<number, Weapon | null> // Map<slot_number, Weapon>
-    changed_weapons_map: Map<number, LoadoutWeapon>
     utility_map: Map<number, Utility | null> // Map<slot_number, Utility>
-    changed_utility_map: Map<number, LoadoutUtility>
-    changed_power_core?: LoadoutPowerCore
-    changed_mech_skin?: LoadoutMechSkin
 }
 
 interface EquipMechSkin {
@@ -107,9 +103,7 @@ const generateLoadout = (newMechDetails: MechDetails): MechDetailsWithMaps => {
     return {
         ...newMechDetails,
         weapons_map,
-        changed_weapons_map: new Map(),
         utility_map,
-        changed_utility_map: new Map(),
     }
 }
 
@@ -127,30 +121,27 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     const { userID } = useAuth()
     const { send } = useGameServerCommandsUser("/user_commander")
     const { newSnackbarMessage } = useGlobalNotifications()
-    const unityControlsRef = useRef<UnityHandle>(null)
-    const orbitControlsRef = useRef<HTMLDivElement>(null)
-    const draggablesRef = useRef<DraggablesHandle>(null)
 
     const [error, setError] = useState<string>()
     const [loading, setLoading] = useState(false)
     const [currLoadout, setCurrLoadout] = useState<MechDetailsWithMaps>(generateLoadout(mechDetails))
+
     const [isDragging, setIsDragging] = useState(false)
+    const draggablesRef = useRef<DraggablesHandle>(null)
+
     const [isUnityLoaded, setIsUnityLoaded] = useState(false)
     const [isUnityPendingChange, setIsUnityPendingChange] = useState(false)
     const [enable3DLoadout, setEnable3DLoadout] = useState(localStorage.getItem(LOCAL_STORAGE_KEY_PREFERS_2D_LOADOUT) !== "true")
+    const unityControlsRef = useRef<UnityHandle>(null)
+    const orbitControlsRef = useRef<HTMLDivElement>(null)
 
     const {
         owner_id,
         weapons_map,
-        changed_weapons_map,
         blueprint_weapon_ids_with_skin_inheritance,
         // utility_map,
-        // changed_utility_map,
-        // original_utility_map,
         power_core,
-        changed_power_core,
         chassis_skin,
-        changed_mech_skin,
         compatible_blueprint_mech_skin_ids,
         intro_animation,
         outro_animation,
@@ -227,7 +218,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
             setCurrLoadout((prev) => {
                 return {
                     ...prev,
-                    changed_mech_skin: ems,
+                    chassis_skin: ems.mech_skin,
                 }
             })
             saveSelection({
@@ -248,13 +239,15 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
             }
 
             setCurrLoadout((prev) => {
-                let updated: LoadoutPowerCore | undefined = ep
-                if (ep.unequip && !prev.power_core) {
+                let updated: PowerCore | undefined = ep.power_core
+                if (ep.unequip) {
                     updated = undefined
+                } else if (ep.power_core) {
+                    updated = ep.power_core
                 }
                 return {
                     ...prev,
-                    changed_power_core: updated,
+                    power_core: updated,
                 }
             })
             saveSelection({
@@ -276,25 +269,19 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
             }
 
             setCurrLoadout((prev) => {
-                const updated = new Map(prev.changed_weapons_map)
-                if (ew.unequip && !prev.weapons_map.get(ew.slot_number)) {
-                    updated.delete(ew.slot_number)
-                } else {
+                const updated = new Map(prev.weapons_map)
+                if (ew.unequip) {
+                    updated.set(ew.slot_number, null)
+                } else if (ew.weapon) {
                     updated.set(ew.slot_number, {
-                        ...ew,
-                        weapon:
-                            ew.weapon && typeof ew.inherit_skin !== "undefined"
-                                ? {
-                                      ...ew.weapon,
-                                      inherit_skin: ew.inherit_skin,
-                                  }
-                                : undefined,
+                        ...ew.weapon,
+                        inherit_skin: !!ew.inherit_skin,
                     })
                 }
 
                 return {
                     ...prev,
-                    changed_weapons_map: updated,
+                    weapons_map: updated,
                 }
             })
 
@@ -312,69 +299,10 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         [saveSelection],
     )
 
-    // UNDO HANDLERS
-    const undoMechSkinChanges = useCallback(() => {
-        if (unityControlsRef.current && currLoadout.chassis_skin) {
-            const prevMechSkin = currLoadout.chassis_skin
-            unityControlsRef.current.handleMechSkinUpdate({
-                mech_skin_id: prevMechSkin.id,
-                mech_skin: prevMechSkin,
-            })
-            setIsUnityPendingChange(true)
-        }
-
-        setCurrLoadout((prev) => ({ ...prev, changed_mech_skin: undefined }))
-    }, [currLoadout.chassis_skin])
-    const undoPowerCoreChanges = useCallback(() => {
-        if (unityControlsRef.current && currLoadout.power_core) {
-            // const prevPowerCore = currLoadout.power_core
-            // unityControlsRef.current.handlePowerCoreUpdate({
-            //     power_core_id: prevPowerCore.id,
-            //     power_core: prevPowerCore,
-            // })
-            // setIsUnityPendingChange(true)
-        }
-
-        setCurrLoadout((prev) => ({ ...prev, changed_power_core: undefined }))
-    }, [currLoadout.power_core])
-    const undoWeaponChanges = useCallback(
-        (slotNumber: number) => {
-            if (unityControlsRef.current) {
-                const prevWeapon = currLoadout.weapons_map.get(slotNumber)
-                unityControlsRef.current.handleWeaponUpdate(
-                    prevWeapon
-                        ? {
-                              weapon_id: prevWeapon.id,
-                              slot_number: slotNumber,
-                              weapon: prevWeapon,
-                              inherit_skin: prevWeapon.inherit_skin,
-                          }
-                        : {
-                              weapon_id: "",
-                              slot_number: slotNumber,
-                              unequip: true,
-                          },
-                )
-                setIsUnityPendingChange(true)
-            }
-
-            setCurrLoadout((prev) => {
-                const updated = prev.changed_weapons_map
-                updated.delete(slotNumber)
-
-                return {
-                    ...prev,
-                    changed_weapons_map: updated,
-                }
-            })
-        },
-        [currLoadout.weapons_map],
-    )
-
     // WEAPON INHERIT ALL SKINS
     const enableInheritAllWeaponSkins = useMemo(() => {
         for (let weaponSlotNumber = 0; weaponSlotNumber < currLoadout.weapon_hardpoints; weaponSlotNumber++) {
-            const w = currLoadout.changed_weapons_map.get(weaponSlotNumber)?.weapon || currLoadout.weapons_map.get(weaponSlotNumber)
+            const w = currLoadout.weapons_map.get(weaponSlotNumber)
             if (!w || w.weapon_type === WeaponType.RocketPods) continue
             if (!blueprint_weapon_ids_with_skin_inheritance.find((s) => s === w?.blueprint_id)) continue
             if (w.inherit_skin) continue
@@ -382,10 +310,10 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
             return true
         }
         return false
-    }, [blueprint_weapon_ids_with_skin_inheritance, currLoadout.changed_weapons_map, currLoadout.weapon_hardpoints, currLoadout.weapons_map])
+    }, [blueprint_weapon_ids_with_skin_inheritance, currLoadout.weapon_hardpoints, currLoadout.weapons_map])
     const inheritAllWeaponSkins = useCallback(() => {
         for (let weaponSlotNumber = 0; weaponSlotNumber < currLoadout.weapon_hardpoints; weaponSlotNumber++) {
-            const w = currLoadout.changed_weapons_map.get(weaponSlotNumber)?.weapon || currLoadout.weapons_map.get(weaponSlotNumber)
+            const w = currLoadout.weapons_map.get(weaponSlotNumber)
             if (!w || w.inherit_skin || w.weapon_type === WeaponType.RocketPods) continue
             if (!blueprint_weapon_ids_with_skin_inheritance.find((s) => s === w?.blueprint_id)) continue
 
@@ -396,10 +324,10 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                 weapon: w,
             })
         }
-    }, [blueprint_weapon_ids_with_skin_inheritance, currLoadout.changed_weapons_map, currLoadout.weapon_hardpoints, currLoadout.weapons_map, modifyWeaponSlot])
+    }, [blueprint_weapon_ids_with_skin_inheritance, currLoadout.weapon_hardpoints, currLoadout.weapons_map, modifyWeaponSlot])
     const uninheritAllWeaponSkins = useCallback(() => {
         for (let weaponSlotNumber = 0; weaponSlotNumber < currLoadout.weapon_hardpoints; weaponSlotNumber++) {
-            const w = currLoadout.changed_weapons_map.get(weaponSlotNumber)?.weapon || currLoadout.weapons_map.get(weaponSlotNumber)
+            const w = currLoadout.weapons_map.get(weaponSlotNumber)
             if (!w || !w.inherit_skin || w.weapon_type === WeaponType.RocketPods) continue
             if (!blueprint_weapon_ids_with_skin_inheritance.find((s) => s === w?.blueprint_id)) continue
 
@@ -410,7 +338,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                 weapon: w,
             })
         }
-    }, [blueprint_weapon_ids_with_skin_inheritance, currLoadout.changed_weapons_map, currLoadout.weapon_hardpoints, currLoadout.weapons_map, modifyWeaponSlot])
+    }, [blueprint_weapon_ids_with_skin_inheritance, currLoadout.weapon_hardpoints, currLoadout.weapons_map, modifyWeaponSlot])
 
     // DRAG HANDLERS
     const mechSkinItemRef = useRef<HTMLDivElement>(null)
@@ -662,7 +590,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                 topRight: !(enable3DLoadout && isUnityLoaded),
                             }}
                         >
-                            <Stack direction="row" alignItems="end">
+                            <Stack direction="row" alignItems="end" p="1rem">
                                 {
                                     <Fade in={!!error} mountOnEnter unmountOnExit>
                                         <Typography
@@ -689,7 +617,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                 {/* Mech Viewer */}
                 {enable3DLoadout ? (
                     <MechViewer3D
-                        mechDetailsWithMaps={currLoadout}
+                        initialMech={currLoadout}
                         unity={{
                             unityRef: unityControlsRef,
                             orbitControlsRef: orbitControlsRef,
@@ -705,7 +633,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                     <MechViewer
                         mechDetails={{
                             ...mechDetails,
-                            chassis_skin: changed_mech_skin?.mech_skin || mechDetails.chassis_skin,
+                            chassis_skin: mechDetails.chassis_skin,
                         }}
                     />
                 )}
@@ -760,15 +688,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                         }}
                     >
                         {(() => {
-                            let powerCore = power_core
-                            const changed = changed_power_core
-                            if (changed) {
-                                if (changed.unequip) {
-                                    powerCore = undefined
-                                } else if (changed.power_core) {
-                                    powerCore = changed.power_core
-                                }
-                            }
+                            const powerCore = power_core
 
                             const renderModal = (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => (
                                 <MechLoadoutPowerCoreModal
@@ -781,35 +701,9 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                         toggleShowLoadoutModal(false)
                                     }}
                                     equipped={powerCore}
-                                    powerCoresAlreadyEquippedInOtherSlots={changed_power_core?.power_core ? [changed_power_core.power_core.id] : []}
+                                    powerCoresAlreadyEquippedInOtherSlots={powerCore ? [powerCore.id] : []}
                                 />
                             )
-
-                            const prevEquipped = (): LoadoutItem | undefined => {
-                                if (!changed_power_core) return
-
-                                const previouslyEquipped = power_core
-                                if (!previouslyEquipped) {
-                                    return {
-                                        label: "POWER CORE",
-                                        primaryColor: colors.powerCore,
-                                        onClick: () => undoPowerCoreChanges(),
-                                        disabled: loadoutDisabled,
-                                        isEmpty: true,
-                                    }
-                                }
-
-                                return {
-                                    imageUrl: previouslyEquipped.image_url || previouslyEquipped.avatar_url,
-                                    videoUrls: [previouslyEquipped.card_animation_url],
-                                    label: previouslyEquipped.label,
-                                    primaryColor: colors.powerCore,
-                                    Icon: SvgPowerCore,
-                                    rarity: getRarityDeets(previouslyEquipped.tier),
-                                    onClick: () => undoPowerCoreChanges(),
-                                    disabled: loadoutDisabled,
-                                }
-                            }
 
                             if (powerCore) {
                                 return (
@@ -822,7 +716,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                         Icon={SvgPowerCore}
                                         rarity={getRarityDeets(powerCore.tier)}
                                         renderModal={renderModal}
-                                        prevEquipped={prevEquipped()}
                                         onUnequip={() =>
                                             modifyPowerCore({
                                                 power_core_id: "",
@@ -839,7 +732,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                     label="POWER CORE"
                                     primaryColor={colors.powerCore}
                                     renderModal={renderModal}
-                                    prevEquipped={prevEquipped()}
                                     isEmpty
                                 />
                             )
@@ -851,15 +743,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                             }}
                         >
                             {Array.from(weapons_map, ([slotNumber, w]) => {
-                                let weapon = w
-                                const changed = changed_weapons_map.get(slotNumber)
-                                if (changed) {
-                                    if (changed.unequip) {
-                                        weapon = null
-                                    } else if (changed.weapon) {
-                                        weapon = changed.weapon
-                                    }
-                                }
+                                const weapon = w
 
                                 const renderModal = (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => (
                                     <MechLoadoutWeaponModal
@@ -876,38 +760,16 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                         }}
                                         equipped={weapon || undefined}
                                         weaponsWithSkinInheritance={blueprint_weapon_ids_with_skin_inheritance}
-                                        weaponsAlreadyEquippedInOtherSlots={Array.from(changed_weapons_map.values(), (w) => w.weapon_id).filter((w) => !!w)}
+                                        weaponsAlreadyEquippedInOtherSlots={(() => {
+                                            const result: string[] = []
+                                            for (const ew of weapons_map.values()) {
+                                                if (!ew) continue
+                                                result.push(ew.id)
+                                            }
+                                            return result
+                                        })()}
                                     />
                                 )
-
-                                const prevEquipped = (): LoadoutItem | undefined => {
-                                    if (!changed_weapons_map.has(slotNumber)) return
-
-                                    const previouslyEquipped = weapons_map.get(slotNumber)
-                                    if (!previouslyEquipped) {
-                                        return {
-                                            slotNumber,
-                                            label: "WEAPON",
-                                            primaryColor: colors.weapons,
-                                            onClick: () => undoWeaponChanges(slotNumber),
-                                            disabled: loadoutDisabled,
-                                            isEmpty: true,
-                                        }
-                                    }
-
-                                    return {
-                                        slotNumber,
-                                        imageUrl: previouslyEquipped.image_url || previouslyEquipped.avatar_url,
-                                        videoUrls: [previouslyEquipped.card_animation_url],
-                                        label: previouslyEquipped.label,
-                                        primaryColor: colors.weapons,
-                                        Icon: SvgWeapons,
-                                        rarity: previouslyEquipped.weapon_skin ? getRarityDeets(previouslyEquipped.weapon_skin.tier) : undefined,
-                                        hasSkin: !!previouslyEquipped.weapon_skin,
-                                        onClick: () => undoWeaponChanges(slotNumber),
-                                        disabled: loadoutDisabled,
-                                    }
-                                }
 
                                 if (weapon) {
                                     return (
@@ -924,7 +786,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                             rarity={weapon.weapon_skin ? getRarityDeets(weapon.weapon_skin.tier) : undefined}
                                             hasSkin={!!weapon.weapon_skin}
                                             renderModal={renderModal}
-                                            prevEquipped={prevEquipped()}
                                             locked={weapon.locked_to_mech}
                                             onUnequip={() =>
                                                 modifyWeaponSlot({
@@ -946,7 +807,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                         label="WEAPON"
                                         primaryColor={colors.weapons}
                                         renderModal={renderModal}
-                                        prevEquipped={prevEquipped()}
                                         isEmpty
                                     />
                                 )
@@ -995,7 +855,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                         alignItems="end"
                     >
                         {(() => {
-                            const mechSkin = changed_mech_skin?.mech_skin || chassis_skin
+                            const mechSkin = chassis_skin
 
                             const renderModal = (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => (
                                 <MechLoadoutMechSkinModal
@@ -1009,9 +869,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                     }}
                                     mech={mechDetails}
                                     equipped={mechSkin}
-                                    mechSkinsAlreadyEquippedInOtherSlots={
-                                        changed_mech_skin?.mech_skin ? [changed_mech_skin.mech_skin.id] : chassis_skin ? [chassis_skin.id] : []
-                                    }
+                                    mechSkinsAlreadyEquippedInOtherSlots={chassis_skin ? [chassis_skin.id] : []}
                                     compatibleMechSkins={compatible_blueprint_mech_skin_ids}
                                 />
                             )
@@ -1031,26 +889,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                         Icon={SvgSkin}
                                         rarity={getRarityDeets(mechSkin.tier)}
                                         renderModal={renderModal}
-                                        prevEquipped={(() => {
-                                            if (!changed_mech_skin) return
-
-                                            const previouslyEquipped = chassis_skin
-                                            if (!previouslyEquipped) return
-
-                                            return {
-                                                imageUrl:
-                                                    previouslyEquipped.swatch_images?.image_url ||
-                                                    previouslyEquipped.swatch_images?.avatar_url ||
-                                                    previouslyEquipped.image_url ||
-                                                    previouslyEquipped.avatar_url,
-                                                label: previouslyEquipped.label,
-                                                primaryColor: colors.powerCore,
-                                                Icon: SvgPowerCore,
-                                                rarity: getRarityDeets(previouslyEquipped.tier),
-                                                onClick: () => undoMechSkinChanges(),
-                                                disabled: loadoutDisabled,
-                                            }
-                                        })()}
                                     />
                                 )
                             }
@@ -1110,8 +948,15 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
             </ClipThing>
             <MechLoadoutDraggables
                 draggablesRef={draggablesRef}
-                excludeWeaponIDs={Array.from(changed_weapons_map.values(), (w) => w.weapon_id)}
-                excludeMechSkinIDs={changed_mech_skin?.mech_skin ? [changed_mech_skin.mech_skin.blueprint_id] : chassis_skin ? [chassis_skin.blueprint_id] : []}
+                excludeWeaponIDs={(() => {
+                    const result: string[] = []
+                    for (const ew of weapons_map.values()) {
+                        if (!ew) continue
+                        result.push(ew.id)
+                    }
+                    return result
+                })()}
+                excludeMechSkinIDs={chassis_skin ? [chassis_skin.blueprint_id] : []}
                 includeMechSkinIDs={compatible_blueprint_mech_skin_ids}
                 mechModelID={mechDetails.blueprint_id}
                 onDrag={onItemDrag}
