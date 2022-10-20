@@ -8,14 +8,14 @@ import { colors, fonts } from "../../../theme/theme"
 import { BattleLobby } from "../../../types/battle_queue"
 import { SortTypeLabel } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
+import { FancyButton } from "../../Common/FancyButton"
 import { PageHeader } from "../../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { SearchBattle } from "../../Replays/BattlesReplays/SearchBattle"
-import { BattleLobbyItem } from "./BattleLobbyItem"
-import { FancyButton } from "../../Common/FancyButton"
-import { BattleLobbyCreateModal } from "./BattleLobbyCreate/BattleLobbyCreateModal"
-import { BattleLobbySingleModal } from "./BattleLobbySingleModal"
 import { BattleLobbyAccessCodeModal } from "./BattleLobbyAccessCodeModal"
+import { BattleLobbyCreateModal } from "./BattleLobbyCreate/BattleLobbyCreateModal"
+import { BattleLobbyItem } from "./BattleLobbyItem"
+import { BattleLobbySingleModal } from "./BattleLobbySingleModal"
 
 const sortOptionsPending: { label: string; value: string }[] = [
     { label: SortTypeLabel.QueuedAmountHighest, value: SortTypeLabel.QueuedAmountHighest },
@@ -214,9 +214,8 @@ export const BattleLobbies = ({ lobbyStatus, battleLobbies }: BattleLobbiesProps
                                         clipThingsProps={{
                                             clipSize: "6px",
                                             clipSlantSize: "0px",
-                                            corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
                                             backgroundColor: colors.bronze,
-                                            border: { isFancy: true, borderColor: colors.bronze, borderThickness: "1.5px" },
+                                            border: { borderColor: colors.bronze, borderThickness: "1.5px" },
                                             sx: { position: "relative", minWidth: "10rem" },
                                         }}
                                         sx={{ px: ".6rem", py: ".5rem", color: "#FFFFFF" }}
@@ -231,9 +230,8 @@ export const BattleLobbies = ({ lobbyStatus, battleLobbies }: BattleLobbiesProps
                                         clipThingsProps={{
                                             clipSize: "6px",
                                             clipSlantSize: "0px",
-                                            corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
                                             backgroundColor: colors.bronze,
-                                            border: { isFancy: true, borderColor: colors.bronze, borderThickness: "1.5px" },
+                                            border: { borderColor: colors.bronze, borderThickness: "1.5px" },
                                             sx: { position: "relative", minWidth: "10rem" },
                                         }}
                                         sx={{ px: ".6rem", py: ".5rem", color: "#FFFFFF" }}

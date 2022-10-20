@@ -74,7 +74,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             enable: true,
             label: "Battle Lobbies",
         },
-        matchNavLinkID: "battle_lobby",
+        matchNavLinkID: "battle_lobbies",
         enable: true,
         pageTitle: "Supremacy - Battle Lobbies",
     },
