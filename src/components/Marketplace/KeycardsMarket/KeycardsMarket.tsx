@@ -127,7 +127,7 @@ export const KeycardsMarket = () => {
                 sold: status.length > 0,
             })
 
-            updateQuery({
+            updateQuery.current({
                 sort,
                 page: page.toString(),
                 pageSize: pageSize.toString(),

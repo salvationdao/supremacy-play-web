@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"
+import { useHistory, useParams } from "react-router-dom"
 import { createContainer } from "unstated-next"
-import { useUrlQuery } from "../hooks"
 import { useGameServerSubscription } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
+import { ROUTES_MAP } from "../routes"
 import { Arena, ArenaStatus } from "../types"
 import { blankOptionOven, useOvenStream } from "./oven"
 
@@ -10,7 +11,7 @@ export const ArenaContainer = createContainer(() => {
     const [arenaList, setArenaList] = useState<Arena[]>([])
     const [currentArena, setCurrentArena] = useState<Arena>()
     const { changeOvenStream, setCurrentStreamOptions } = useOvenStream()
-    const [, updateQuery] = useUrlQuery()
+    const history = useHistory()
 
     const currentArenaID = currentArena?.id || ""
 
@@ -22,10 +23,8 @@ export const ArenaContainer = createContainer(() => {
 
     // Save the arena in url param when its changed
     useEffect(() => {
-        updateQuery({
-            arenaName: currentArena?.name,
-        })
-    }, [currentArena?.name, updateQuery])
+        history.push(`${ROUTES_MAP.home.path.replace(":arenaID", currentArenaID)}`)
+    }, [currentArenaID, history])
 
     return {
         arenaList,
@@ -41,7 +40,7 @@ export const useArena = ArenaContainer.useContainer
 
 export const ArenaListener = () => {
     const { setArenaList, currentArenaID, setCurrentArena } = useArena()
-    const [query] = useUrlQuery()
+    const { arenaID } = useParams<{ arenaID: string }>()
 
     // Subscribe to the list of available arenas and set the current one
     useGameServerSubscription<Arena[]>(
@@ -57,7 +56,7 @@ export const ArenaListener = () => {
             }
 
             // Sets the one specified in the url, else default to first one
-            const arenaInUrl = payload.find((arena) => arena.name === query.get("arenaName"))
+            const arenaInUrl = payload.find((arena) => arena.name === arenaID)
             setCurrentArena(arenaInUrl || payload[0])
 
             setArenaList(payload)
