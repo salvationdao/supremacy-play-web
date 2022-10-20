@@ -139,14 +139,13 @@ export const MechSlot = ({ lobbyMech, canLeave, leftQueue }: MechSlotProps) => {
                 <Box>
                     <FancyButton
                         onClick={leftQueue}
-                        disabled={!!showLeaveButton}
+                        disabled={!showLeaveButton}
                         loading={false}
                         sx={{ height: "fit-content" }}
                         clipThingsProps={{
                             clipSize: "6px",
                             clipSlantSize: "0px",
                             corners: { topLeft: false, topRight: false, bottomLeft: false, bottomRight: false },
-                            backgroundColor: colors.red,
                         }}
                     >
                         <SvgLogout />

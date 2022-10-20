@@ -134,7 +134,7 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs, battleLobby, kee
     }, [ownedMechs, sort, page, pageSize, setTotalItems, searchValue, selectedMechs, keepOnSelect])
 
     const selectLimit = useMemo(() => {
-        let queueLimit = 0
+        let queueLimit = 3
         if (battleLobby) queueLimit = battleLobby.each_faction_mech_amount - battleLobby.battle_lobbies_mechs.filter((m) => m.faction_id === factionID).length
         const playerQueueRemain = currentPlayerQueue.queue_limit - currentPlayerQueue.total_queued
 
