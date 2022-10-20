@@ -24,6 +24,7 @@ export enum GameServerKeys {
     SubMiniMapAbilityDisplayList = "MINI:MAP:ABILITY:DISPLAY:LIST",
     NextBattleDetails = "NEXT:BATTLE:DETAILS",
     BattleState = "BATTLE:STATE",
+    SubFactionStakedMechs = "FACTION:STAKED:MECHS",
 
     // Voting abilities
     SubBribeStageUpdated = "BRIBE:STAGE:UPDATED:SUBSCRIBE",

@@ -7,7 +7,7 @@ import { colors, fonts } from "../../../theme/theme"
 import { SearchBattle } from "../../Replays/BattlesReplays/SearchBattle"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
 import { SortTypeLabel } from "../../../types/marketplace"
-import { useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
+import { useGameServerSubscriptionFaction, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { getRarityDeets } from "../../../helpers"
 import FlipMove from "react-flip-move"
@@ -61,6 +61,36 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs, battleLobby, kee
 
     const [sort, setSort] = useState<string>(SortTypeLabel.RarestDesc)
 
+    const [factionStakedMechs, setFactionStakedMechs] = useState<LobbyMech[]>([])
+    useGameServerSubscriptionFaction<LobbyMech[]>(
+        {
+            URI: "/staked_mechs",
+            key: GameServerKeys.SubFactionStakedMechs,
+        },
+        (payload) => {
+            setFactionStakedMechs((fsm) => {
+                if (fsm.length === 0) {
+                    return payload.filter((p) => p.can_deploy)
+                }
+
+                // replace current list
+                const list = fsm.map((mq) => payload.find((p) => p.id === mq.id) || mq)
+
+                // append new list
+                payload.forEach((p) => {
+                    // if already exists
+                    if (list.some((mq) => mq.id === p.id)) {
+                        return
+                    }
+                    // otherwise, push to the list
+                    list.push(p)
+                })
+
+                return list.filter((p) => p.can_deploy)
+            })
+        },
+    )
+
     const [ownedMechs, setOwnedMechs] = useState<LobbyMech[]>([])
     useGameServerSubscriptionSecuredUser<LobbyMech[]>(
         {
@@ -94,7 +124,12 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs, battleLobby, kee
     )
 
     useEffect(() => {
-        let result = [...ownedMechs].filter((r) => !selectedMechs.some((m) => m.id === r.id))
+        let result = [...ownedMechs]
+        if (showStakedMechs) {
+            result = [...factionStakedMechs]
+        }
+
+        result = result.filter((r) => !selectedMechs.some((m) => m.id === r.id))
 
         // filter
         if (searchValue) {
@@ -124,25 +159,18 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs, battleLobby, kee
 
         if (keepOnSelect) {
             // show selected mechs on the top of the list
-            selectedMechs.forEach((sm) => {
-                result.unshift(sm)
-                result.pop()
-            })
+            result.unshift(...selectedMechs)
         }
 
         setList(result)
-    }, [ownedMechs, sort, page, pageSize, setTotalItems, searchValue, selectedMechs, keepOnSelect])
+    }, [ownedMechs, factionStakedMechs, showStakedMechs, sort, page, pageSize, setTotalItems, searchValue, selectedMechs, keepOnSelect])
 
     const selectLimit = useMemo(() => {
         let queueLimit = 3
         if (battleLobby) queueLimit = battleLobby.each_faction_mech_amount - battleLobby.battle_lobbies_mechs.filter((m) => m.faction_id === factionID).length
         const playerQueueRemain = currentPlayerQueue.queue_limit - currentPlayerQueue.total_queued
 
-        let limit = queueLimit
-        if (queueLimit > playerQueueRemain) {
-            limit = playerQueueRemain
-        }
-        return limit
+        return Math.min(queueLimit, playerQueueRemain)
     }, [currentPlayerQueue.queue_limit, currentPlayerQueue.total_queued, factionID, battleLobby])
 
     const content = useMemo(() => {
@@ -267,7 +295,10 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs, battleLobby, kee
                         sx: { position: "relative", px: ".4rem", py: ".5rem", minWidth: "18rem" },
                     }}
                     sx={{ color: factionTheme.primary, p: 0, height: "100%" }}
-                    onClick={() => setShowStakedMechs((prev) => !prev)}
+                    onClick={() => {
+                        setShowStakedMechs((prev) => !prev)
+                        changePage(1)
+                    }}
                 >
                     <Typography variant="body2" fontFamily={fonts.nostromoHeavy} color={showStakedMechs ? factionTheme.secondary : factionTheme.primary}>
                         Staked Mechs
