@@ -22,6 +22,7 @@ import { StorefrontPage } from "../pages/StorefrontPage"
 import { StorefrontShoppingCartPage } from "../pages/StorefrontShoppingCartPage"
 import { WeaponPage } from "../pages/WeaponPage"
 import { colors } from "../theme/theme"
+import { MyLobbies } from "../components/RightDrawer/MyLobbies/MyLobbies"
 
 // ************
 // ** ROUTES **
@@ -393,6 +394,15 @@ export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         icon: <SvgRepair size="1.1rem" sx={{ pt: ".3rem" }} />,
         label: "Repairs Jobs",
         Component: RepairJobs,
+        requireAuth: true,
+        matchNavLinkIDs: undefined,
+        mountAllTime: false,
+    },
+    my_lobbies: {
+        id: "my_lobbies",
+        icon: <SvgRepair size="1.1rem" sx={{ pt: ".3rem" }} />,
+        label: "My Lobbies",
+        Component: MyLobbies,
         requireAuth: true,
         matchNavLinkIDs: undefined,
         mountAllTime: false,

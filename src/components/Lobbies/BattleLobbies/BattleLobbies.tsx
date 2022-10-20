@@ -14,7 +14,7 @@ import { SearchBattle } from "../../Replays/BattlesReplays/SearchBattle"
 import { BattleLobbyItem } from "./BattleLobbyItem"
 import { FancyButton } from "../../Common/FancyButton"
 import { BattleLobbyCreateModal } from "./BattleLobbyCreate/BattleLobbyCreateModal"
-import { BattleLobbyPrivateAccessModal } from "./BattleLobbyPrivateAccessModal"
+import { BattleLobbySingleModal } from "./BattleLobbySingleModal"
 import { BattleLobbyAccessCodeModal } from "./BattleLobbyAccessCodeModal"
 
 const sortOptionsPending: { label: string; value: string }[] = [
@@ -33,6 +33,11 @@ export enum LobbyStatusEnum {
     Pending = "PENDING",
 }
 
+export enum LobbyType {
+    System = "SYSTEM",
+    Exhibition = "EXHIBITION",
+}
+
 interface BattleLobbiesProps {
     lobbyStatus: LobbyStatusEnum
     battleLobbies: BattleLobby[]
@@ -48,6 +53,8 @@ export const BattleLobbies = ({ lobbyStatus, battleLobbies }: BattleLobbiesProps
     const [openNewLobbyModal, setOpenNewLobbyModal] = useState(false)
     const [openPrivateRoom, setOpenPrivateRoom] = useState(false)
     const [accessCode, setAccessCode] = useState("")
+
+    const [selectedLobbyType, setSelectedLobbyType] = useState(LobbyType.System)
 
     const { page, changePage, changePageSize, totalItems, setTotalItems, totalPages, pageSize } = usePagination({
         pageSize: 10,
@@ -97,6 +104,15 @@ export const BattleLobbies = ({ lobbyStatus, battleLobbies }: BattleLobbiesProps
                 break
         }
 
+        switch (selectedLobbyType) {
+            case LobbyType.System:
+                sorted = sorted.filter((s) => s.generated_by_system)
+                break
+            case LobbyType.Exhibition:
+                sorted = sorted.filter((s) => !s.generated_by_system)
+                break
+        }
+
         // set total after filtered
         setTotalItems(sorted.length)
 
@@ -127,7 +143,7 @@ export const BattleLobbies = ({ lobbyStatus, battleLobbies }: BattleLobbiesProps
         sorted = sorted.slice((page - 1) * pageSize, page * pageSize)
 
         setList(sorted)
-    }, [sort, setList, battleLobbies, searchValue, lobbyStatus, page, pageSize, setTotalItems])
+    }, [sort, setList, battleLobbies, searchValue, lobbyStatus, page, pageSize, setTotalItems, selectedLobbyType])
 
     const content = useMemo(() => {
         return (
@@ -162,8 +178,9 @@ export const BattleLobbies = ({ lobbyStatus, battleLobbies }: BattleLobbiesProps
                 }}
                 corners={{
                     topRight: true,
-                    bottomLeft: true,
+                    topLeft: true,
                     bottomRight: true,
+                    bottomLeft: true,
                 }}
                 opacity={0.9}
                 backgroundColor={theme.factionTheme.background}
@@ -171,15 +188,64 @@ export const BattleLobbies = ({ lobbyStatus, battleLobbies }: BattleLobbiesProps
             >
                 <Stack sx={{ position: "relative", height: "100%" }}>
                     <Stack sx={{ flex: 1 }}>
-                        <PageHeader
-                            title={
-                                <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                    BATTLE LOBBIES
-                                </Typography>
-                            }
-                            description={<Typography sx={{ fontSize: "1.85rem" }}>Join lobby to enter battles.</Typography>}
-                            imageUrl={ThreeMechsJPG}
-                        />
+                        <PageHeader title={null} description={null} imageUrl={ThreeMechsJPG}>
+                            <Stack spacing={1} flex={1} direction="row" alignItems="center" justifyContent="space-between" sx={{ pr: "1rem" }}>
+                                <Stack
+                                    sx={{ cursor: "pointer" }}
+                                    onClick={() =>
+                                        setSelectedLobbyType((prev) => {
+                                            switch (prev) {
+                                                case LobbyType.System:
+                                                    return LobbyType.Exhibition
+                                                case LobbyType.Exhibition:
+                                                    return LobbyType.System
+                                            }
+                                        })
+                                    }
+                                >
+                                    <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                        {selectedLobbyType === LobbyType.System ? "SYSTEM" : "EXHIBITION"} LOBBIES
+                                    </Typography>
+                                    <Typography sx={{ fontSize: "1.85rem" }}>Click to switch between system and exhibition lobbies.</Typography>
+                                </Stack>
+
+                                <Stack spacing={1} direction="row" alignItems="center">
+                                    <FancyButton
+                                        clipThingsProps={{
+                                            clipSize: "6px",
+                                            clipSlantSize: "0px",
+                                            corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
+                                            backgroundColor: colors.bronze,
+                                            border: { isFancy: true, borderColor: colors.bronze, borderThickness: "1.5px" },
+                                            sx: { position: "relative", minWidth: "10rem" },
+                                        }}
+                                        sx={{ px: ".6rem", py: ".5rem", color: "#FFFFFF" }}
+                                        onClick={() => setOpenNewLobbyModal(true)}
+                                    >
+                                        <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                            NEW LOBBY
+                                        </Typography>
+                                    </FancyButton>
+
+                                    <FancyButton
+                                        clipThingsProps={{
+                                            clipSize: "6px",
+                                            clipSlantSize: "0px",
+                                            corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
+                                            backgroundColor: colors.bronze,
+                                            border: { isFancy: true, borderColor: colors.bronze, borderThickness: "1.5px" },
+                                            sx: { position: "relative", minWidth: "10rem" },
+                                        }}
+                                        sx={{ px: ".6rem", py: ".5rem", color: "#FFFFFF" }}
+                                        onClick={() => setOpenPrivateRoom(true)}
+                                    >
+                                        <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                            ACCESS CODE
+                                        </Typography>
+                                    </FancyButton>
+                                </Stack>
+                            </Stack>
+                        </PageHeader>
 
                         <TotalAndPageSizeOptions
                             countItems={list.length}
@@ -206,40 +272,6 @@ export const BattleLobbies = ({ lobbyStatus, battleLobbies }: BattleLobbiesProps
                                     SEARCH:
                                 </Typography>
                                 <SearchBattle placeholder="Lobby Name" searchValueInstant={searchValueInstant} setSearchValue={setSearchValue} />
-                            </Stack>
-
-                            <Stack spacing={1} direction="row" alignItems="center">
-                                <FancyButton
-                                    clipThingsProps={{
-                                        clipSize: "6px",
-                                        clipSlantSize: "0px",
-                                        backgroundColor: colors.bronze,
-                                        border: { borderColor: colors.bronze, borderThickness: "1.5px" },
-                                        sx: { position: "relative", minWidth: "10rem" },
-                                    }}
-                                    sx={{ px: ".6rem", py: ".5rem", color: "#FFFFFF" }}
-                                    onClick={() => setOpenNewLobbyModal(true)}
-                                >
-                                    <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                        NEW BATTLE LOBBY
-                                    </Typography>
-                                </FancyButton>
-
-                                <FancyButton
-                                    clipThingsProps={{
-                                        clipSize: "6px",
-                                        clipSlantSize: "0px",
-                                        backgroundColor: colors.bronze,
-                                        border: { borderColor: colors.bronze, borderThickness: "1.5px" },
-                                        sx: { position: "relative", minWidth: "10rem" },
-                                    }}
-                                    sx={{ px: ".6rem", py: ".5rem", color: "#FFFFFF" }}
-                                    onClick={() => setOpenPrivateRoom(true)}
-                                >
-                                    <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                        ACCESS CODE
-                                    </Typography>
-                                </FancyButton>
                             </Stack>
                         </Stack>
 
@@ -303,7 +335,7 @@ export const BattleLobbies = ({ lobbyStatus, battleLobbies }: BattleLobbiesProps
             </ClipThing>
             {openNewLobbyModal && <BattleLobbyCreateModal setOpen={setOpenNewLobbyModal} />}
             {!accessCode && openPrivateRoom && <BattleLobbyAccessCodeModal setOpen={setOpenPrivateRoom} setAccessCode={setAccessCode} />}
-            {accessCode && <BattleLobbyPrivateAccessModal setAccessCode={setAccessCode} accessCode={accessCode} />}
+            {accessCode && <BattleLobbySingleModal setAccessCode={setAccessCode} accessCode={accessCode} />}
         </>
     )
 }
