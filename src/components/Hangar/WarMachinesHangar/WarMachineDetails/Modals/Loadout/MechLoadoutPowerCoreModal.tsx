@@ -1,19 +1,18 @@
-import { Box, CircularProgress, IconButton, Modal, Pagination, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Divider, Drawer, IconButton, Pagination, Slide, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
 import { FancyButton } from "../../../../.."
-import { EmptyWarMachinesPNG, SvgClose } from "../../../../../../assets"
+import { EmptyWarMachinesPNG, SvgArrowRightAltSharpIcon, SvgClose } from "../../../../../../assets"
 import { useAuth } from "../../../../../../containers"
 import { useTheme } from "../../../../../../containers/theme"
 import { GetPowerCoreMaxStats } from "../../../../../../fetching"
-import { getPowerCoreSizeColor, getRarityDeets } from "../../../../../../helpers"
+import { getRarityDeets } from "../../../../../../helpers"
 import { usePagination, useToggle } from "../../../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../../keys"
-import { colors, fonts, siteZIndex } from "../../../../../../theme/theme"
-import { PlayerAsset, PowerCore, PowerCoreSize } from "../../../../../../types"
+import { colors, fonts } from "../../../../../../theme/theme"
+import { PlayerAsset, PowerCore } from "../../../../../../types"
 import { SortTypeLabel } from "../../../../../../types/marketplace"
-import { ClipThing } from "../../../../../Common/ClipThing"
 import { PageHeader } from "../../../../../Common/PageHeader"
 import { ChipFilter } from "../../../../../Common/SortAndFilters/ChipFilterSection"
 import { SliderRangeFilter } from "../../../../../Common/SortAndFilters/SliderRangeFilterSection"
@@ -61,13 +60,22 @@ interface GetPowerCoresResponse {
 export type OnConfirmPowerCoreSelection = (selectedPowerCore: PowerCore) => void
 
 interface MechLoadoutPowerCoreModalProps {
+    containerRef: React.MutableRefObject<HTMLElement | undefined>
     onClose: () => void
     onConfirm: OnConfirmPowerCoreSelection
     equipped?: PowerCore
     powerCoresAlreadyEquippedInOtherSlots: string[]
+    powerCoreSize: string
 }
 
-export const MechLoadoutPowerCoreModal = ({ onClose, onConfirm, equipped, powerCoresAlreadyEquippedInOtherSlots }: MechLoadoutPowerCoreModalProps) => {
+export const MechLoadoutPowerCoreModal = ({
+    containerRef,
+    onClose,
+    onConfirm,
+    equipped,
+    powerCoresAlreadyEquippedInOtherSlots,
+    powerCoreSize,
+}: MechLoadoutPowerCoreModalProps) => {
     const { userID } = useAuth()
     const { send } = useGameServerCommandsUser("/user_commander")
 
@@ -91,7 +99,6 @@ export const MechLoadoutPowerCoreModal = ({ onClose, onConfirm, equipped, powerC
     const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle()
     const filtersContainerEl = useRef<HTMLElement>()
     const [search, setSearch] = useState("")
-    const [powerCoreSizes, setPowerCoreSizes] = useState<string[]>([])
     const [rarities, setRarities] = useState<string[]>([])
     const [equippedStatuses, setEquippedStatuses] = useState<string[]>([])
     const [capacity, setCapacity] = useState<number[] | undefined>()
@@ -99,21 +106,6 @@ export const MechLoadoutPowerCoreModal = ({ onClose, onConfirm, equipped, powerC
     const [rechargeRate, setRechargeRate] = useState<number[] | undefined>()
     const [armour, setArmour] = useState<number[] | undefined>()
     const [maxHitpoints, setMaxHitpoints] = useState<number[] | undefined>()
-
-    const powerCoreSizeFilterSection = useRef<ChipFilter>({
-        label: "POWER CORE SIZE",
-        options: [
-            { value: PowerCoreSize.Small, label: PowerCoreSize.Small, color: getPowerCoreSizeColor(PowerCoreSize.Small) },
-            { value: PowerCoreSize.Medium, label: PowerCoreSize.Medium, color: getPowerCoreSizeColor(PowerCoreSize.Medium) },
-            { value: PowerCoreSize.Large, label: PowerCoreSize.Large, color: getPowerCoreSizeColor(PowerCoreSize.Large) },
-        ],
-        initialSelected: powerCoreSizes,
-        initialExpanded: true,
-        onSetSelected: (value: string[]) => {
-            setPowerCoreSizes(value)
-            changePage(1)
-        },
-    })
 
     const rarityChipFilter = useRef<ChipFilter>({
         label: "RARITY",
@@ -231,7 +223,7 @@ export const MechLoadoutPowerCoreModal = ({ onClose, onConfirm, equipped, powerC
                 page_size: pageSize,
                 equipped_statuses: equippedStatuses,
                 rarities: rarities,
-                sizes: powerCoreSizes,
+                sizes: [powerCoreSize],
                 stat_capacity:
                     capacity && (capacity[0] > 0 || capacity[1] > 0)
                         ? {
@@ -285,7 +277,7 @@ export const MechLoadoutPowerCoreModal = ({ onClose, onConfirm, equipped, powerC
         maxHitpoints,
         page,
         pageSize,
-        powerCoreSizes,
+        powerCoreSize,
         powerCoresAlreadyEquippedInOtherSlots,
         rarities,
         rechargeRate,
@@ -398,183 +390,206 @@ export const MechLoadoutPowerCoreModal = ({ onClose, onConfirm, equipped, powerC
                             textAlign: "center",
                         }}
                     >
-                        {"There are no weapons found, please try again."}
+                        {"There are no power cores found, please try again."}
                     </Typography>
-
-                    <FancyButton
-                        to={`/marketplace/weapons${location.hash}`}
-                        clipThingsProps={{
-                            clipSize: "9px",
-                            backgroundColor: theme.factionTheme.primary,
-                            border: { isFancy: true, borderColor: theme.factionTheme.primary },
-                            sx: { position: "relative", mt: "2rem" },
-                        }}
-                        sx={{ px: "1.8rem", py: ".8rem", color: theme.factionTheme.secondary }}
-                    >
-                        <Typography
-                            variant="body2"
-                            sx={{
-                                textAlign: "center",
-                                color: theme.factionTheme.secondary,
-                                fontFamily: fonts.nostromoBold,
-                            }}
-                        >
-                            GO TO MARKETPLACE
-                        </Typography>
-                    </FancyButton>
                 </Stack>
             </Stack>
         )
-    }, [equipped, isLoading, loadError, powerCores, selectedPowerCore?.id, theme.factionTheme.primary, theme.factionTheme.secondary])
+    }, [equipped, isLoading, loadError, powerCores, selectedPowerCore?.id, theme.factionTheme.primary])
 
     return (
-        <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
-            <Box
-                sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    width: "100rem",
-                    maxWidth: "90vw",
-                    boxShadow: 6,
-                    outline: "none",
+        <>
+            <Drawer
+                container={containerRef.current}
+                open
+                onClose={onClose}
+                closeAfterTransition
+                ModalProps={{
+                    sx: {
+                        position: "absolute",
+                        m: 0,
+                        "& > *": {
+                            position: "absolute !important",
+                            height: "100%",
+                        },
+                    },
                 }}
             >
-                <ClipThing
-                    ref={filtersContainerEl}
-                    clipSize="10px"
-                    border={{
-                        borderColor: theme.factionTheme.primary,
-                        borderThickness: ".3rem",
-                    }}
-                    backgroundColor={theme.factionTheme.background}
+                <IconButton
+                    size="small"
+                    onClick={onClose}
                     sx={{
-                        position: "relative",
-                        height: "55rem",
-                        maxHeight: "90vh",
+                        zIndex: 100,
+                        position: "absolute",
+                        top: ".5rem",
+                        right: ".5rem",
                     }}
                 >
-                    <IconButton
-                        size="small"
-                        onClick={onClose}
+                    <SvgClose size="3rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                </IconButton>
+                <Stack
+                    ref={filtersContainerEl}
+                    direction="column"
+                    sx={{
+                        height: "100%",
+                    }}
+                >
+                    <PageHeader title="Equip a power core" description="Select a power core to equip on your mech." />
+                    <Box
                         sx={{
-                            zIndex: 100,
-                            position: "absolute",
-                            top: ".5rem",
-                            right: ".5rem",
+                            borderBottom: `${primaryColor}70 1.5px solid`,
+                            backgroundColor: "#00000070",
+                            padding: "1rem 2rem",
                         }}
                     >
-                        <SvgClose size="3rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
-                    </IconButton>
-                    <Stack
-                        direction="row"
-                        sx={{
-                            height: "100%",
-                        }}
-                    >
-                        <SortAndFilters
-                            key={sortFilterReRender.toString()}
-                            initialSearch={search}
-                            onSetSearch={setSearch}
-                            chipFilters={[powerCoreSizeFilterSection.current, rarityChipFilter.current, powerCoreEquippedFilterSection.current]}
-                            sliderRangeFilters={[
-                                capacityFilter.current,
-                                maxDrawRateFilter.current,
-                                rechargeRateFilter.current,
-                                armourFilter.current,
-                                maxHitpointsFilter.current,
-                            ]}
-                            changePage={changePage}
-                            isExpanded={isFiltersExpanded}
-                            width="25rem"
-                            drawer={{
-                                container: filtersContainerEl.current,
-                                onClose: () => toggleIsFiltersExpanded(false),
-                            }}
-                        />
-                        <Stack flex={1}>
-                            <PageHeader title="Equip a weapon" description="Select a weapon to equip on your mech." />
-                            <TotalAndPageSizeOptions
-                                countItems={powerCores?.length}
-                                totalItems={totalItems}
-                                pageSize={pageSize}
-                                changePageSize={changePageSize}
-                                pageSizeOptions={[4, 8]}
-                                changePage={changePage}
-                                manualRefresh={getPowerCores}
-                                sortOptions={sortOptions}
-                                selectedSort={sort}
-                                onSetSort={setSort}
-                                isFiltersExpanded={isFiltersExpanded}
-                                toggleIsFiltersExpanded={toggleIsFiltersExpanded}
-                            />
-                            <Box
-                                sx={{
-                                    ml: "1.9rem",
-                                    mr: ".5rem",
-                                    pr: "1.4rem",
-                                    my: "1rem",
-                                    flex: 1,
-                                    overflowY: "auto",
-                                    overflowX: "hidden",
-                                    direction: "ltr",
-
-                                    "::-webkit-scrollbar": {
-                                        width: ".4rem",
-                                    },
-                                    "::-webkit-scrollbar-track": {
-                                        background: "#FFFFFF15",
-                                        borderRadius: 3,
-                                    },
-                                    "::-webkit-scrollbar-thumb": {
-                                        background: theme.factionTheme.primary,
-                                        borderRadius: 3,
-                                    },
-                                }}
-                            >
-                                {powerCoreList}
-                            </Box>
-                            {totalPages > 1 && (
-                                <Box
-                                    sx={{
-                                        mt: "auto",
-                                        px: "1rem",
-                                        py: ".7rem",
-                                        borderTop: `${primaryColor}70 1.5px solid`,
-                                        borderBottom: `${primaryColor}70 1.5px solid`,
-                                        backgroundColor: "#00000070",
-                                    }}
-                                >
-                                    <Pagination
-                                        size="small"
-                                        count={totalPages}
-                                        page={page}
-                                        sx={{
-                                            ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold, fontSize: "1.2rem" },
-                                            ".Mui-selected": {
-                                                color: secondaryColor,
-                                                backgroundColor: `${primaryColor} !important`,
-                                            },
-                                        }}
-                                        onChange={(e, p) => changePage(p)}
-                                    />
-                                </Box>
-                            )}
-                        </Stack>
                         <Stack
+                            direction="row"
+                            spacing="1rem"
                             sx={{
-                                overflow: "hidden",
-                                flexBasis: "300px",
-                                borderLeft: `${primaryColor}70 1.5px solid`,
-                                backgroundColor: "#00000070",
+                                minHeight: "300px",
                             }}
                         >
-                            <PowerCorePreview powerCore={selectedPowerCore} equipped={equipped} onConfirm={onConfirm} />
+                            <Box flex={1}>
+                                {/* Before */}
+                                <PowerCorePreview powerCore={equipped} disableCompare />
+                            </Box>
+                            <Stack
+                                sx={{
+                                    position: "relative",
+                                    alignSelf: "stretch",
+                                    alignItems: "center",
+                                }}
+                            >
+                                <Divider
+                                    orientation="vertical"
+                                    color="#00000070"
+                                    sx={{
+                                        flex: 1,
+                                        height: "auto",
+                                    }}
+                                />
+                                <SvgArrowRightAltSharpIcon size="3rem" />
+                                <Divider
+                                    orientation="vertical"
+                                    color="#00000070"
+                                    sx={{
+                                        flex: 1,
+                                        height: "auto",
+                                    }}
+                                />
+                            </Stack>
+                            <Stack flex={1} overflow="hidden">
+                                <PowerCorePreview powerCore={selectedPowerCore} compareTo={equipped} />
+                                {selectedPowerCore && (
+                                    <Slide direction="up" in mountOnEnter>
+                                        <Stack mt="auto" direction="row" spacing="1rem">
+                                            <Box ml="auto" />
+                                            <FancyButton
+                                                clipThingsProps={{
+                                                    backgroundColor: colors.green,
+                                                }}
+                                                onClick={() => onConfirm(selectedPowerCore)}
+                                            >
+                                                Equip To Mech
+                                            </FancyButton>
+                                        </Stack>
+                                    </Slide>
+                                )}
+                            </Stack>
                         </Stack>
+                    </Box>
+
+                    <SortAndFilters
+                        key={sortFilterReRender.toString()}
+                        initialSearch={search}
+                        onSetSearch={setSearch}
+                        chipFilters={[rarityChipFilter.current, powerCoreEquippedFilterSection.current]}
+                        sliderRangeFilters={[
+                            capacityFilter.current,
+                            maxDrawRateFilter.current,
+                            rechargeRateFilter.current,
+                            armourFilter.current,
+                            maxHitpointsFilter.current,
+                        ]}
+                        changePage={changePage}
+                        isExpanded={isFiltersExpanded}
+                        width="25rem"
+                        drawer={{
+                            container: filtersContainerEl.current,
+                            onClose: () => toggleIsFiltersExpanded(false),
+                        }}
+                    />
+                    <Stack flex={1} minHeight={0}>
+                        <PageHeader title="Equip a weapon" description="Select a weapon to equip on your mech." />
+                        <TotalAndPageSizeOptions
+                            countItems={powerCores?.length}
+                            totalItems={totalItems}
+                            pageSize={pageSize}
+                            changePageSize={changePageSize}
+                            pageSizeOptions={[4, 8]}
+                            changePage={changePage}
+                            manualRefresh={getPowerCores}
+                            sortOptions={sortOptions}
+                            selectedSort={sort}
+                            onSetSort={setSort}
+                            isFiltersExpanded={isFiltersExpanded}
+                            toggleIsFiltersExpanded={toggleIsFiltersExpanded}
+                        />
+                        <Box
+                            sx={{
+                                ml: "1.9rem",
+                                mr: ".5rem",
+                                pr: "1.4rem",
+                                my: "1rem",
+                                flex: 1,
+                                overflowY: "auto",
+                                overflowX: "hidden",
+                                direction: "ltr",
+
+                                "::-webkit-scrollbar": {
+                                    width: ".4rem",
+                                },
+                                "::-webkit-scrollbar-track": {
+                                    background: "#FFFFFF15",
+                                    borderRadius: 3,
+                                },
+                                "::-webkit-scrollbar-thumb": {
+                                    background: theme.factionTheme.primary,
+                                    borderRadius: 3,
+                                },
+                            }}
+                        >
+                            {powerCoreList}
+                        </Box>
+                        {totalPages > 1 && (
+                            <Box
+                                sx={{
+                                    mt: "auto",
+                                    px: "1rem",
+                                    py: ".7rem",
+                                    borderTop: `${primaryColor}70 1.5px solid`,
+                                    borderBottom: `${primaryColor}70 1.5px solid`,
+                                    backgroundColor: "#00000070",
+                                }}
+                            >
+                                <Pagination
+                                    size="small"
+                                    count={totalPages}
+                                    page={page}
+                                    sx={{
+                                        ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold, fontSize: "1.2rem" },
+                                        ".Mui-selected": {
+                                            color: secondaryColor,
+                                            backgroundColor: `${primaryColor} !important`,
+                                        },
+                                    }}
+                                    onChange={(e, p) => changePage(p)}
+                                />
+                            </Box>
+                        )}
                     </Stack>
-                </ClipThing>
-            </Box>
-        </Modal>
+                </Stack>
+            </Drawer>
+        </>
     )
 }
