@@ -52,7 +52,7 @@ export const StakeModal = ({
         } finally {
             setIsLoading(false)
         }
-    }, [id, onClose])
+    }, [id, onClose, send])
 
     const unstakeMech = useCallback(async () => {
         try {
@@ -72,7 +72,7 @@ export const StakeModal = ({
         } finally {
             setIsLoading(false)
         }
-    }, [id, onClose])
+    }, [id, onClose, send])
 
     const content = useMemo(() => {
         let question = "Are you sure you want to stake your mech?"
@@ -126,7 +126,7 @@ export const StakeModal = ({
                 </Stack>
             </Stack>
         )
-    }, [mechIsStaked, stakeMech, unstakeMech])
+    }, [mechIsStaked, stakeMech, unstakeMech, onClose, isLoading])
 
     return (
         <MechModal open={rentalMechModalOpen} mechDetails={selectedMechDetails} onClose={onClose}>
