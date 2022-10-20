@@ -41,8 +41,7 @@ export const Bar = () => {
                     >
                         <Marquee direction="left" gradientColor={[rgb.r, rgb.g, rgb.b]} gradientWidth={50} style={{ overflow: "hidden" }}>
                             <Typography variant="body2" sx={{ pr: "100px", fontFamily: fonts.nostromoBlack, lineHeight: 1 }}>
-                                Welcome to the proving grounds! <span style={{ color: colors.yellow }}>Hundreds of thousands of $SUPS</span> are up for grabs by
-                                helping us play-test incoming mechanisms and features. This round will reset <Countdown endTime={new Date(NEXT_RESET_TIME)} />.
+                                Welcome to the Proving Grounds. Test new features. Report bugs and ideas via the feedback form. 🦾🦾
                             </Typography>
                         </Marquee>
                     </Box>
