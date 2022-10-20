@@ -3,7 +3,7 @@ import { Box } from "@mui/system"
 import moment from "moment"
 import { useEffect, useRef } from "react"
 import { SectionFactions, SectionWinner } from "../.."
-import { useGame, useUI } from "../../../containers"
+import { useArena, useGame, useUI } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { LEFT_DRAWER_MAP } from "../../../routes"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
@@ -13,9 +13,15 @@ import { SectionMechRewards } from "./Sections/SectionMechRewards"
 export const BattleEndScreen = () => {
     const theme = useTheme()
     const { battleState, battleEndDetail } = useGame()
+    const { currentArenaID } = useArena()
     const { hasModalsOpen, setLeftDrawerActiveTabID } = useUI()
     // When user first loads the web page and gets battle end, we want to prevent changing tabs
     const skippedFirstIteration = useRef(false)
+
+    // When the arena is switched, we skip the first iteration again
+    useEffect(() => {
+        skippedFirstIteration.current = false
+    }, [currentArenaID])
 
     // New game started, so close the panel
     useEffect(() => {
