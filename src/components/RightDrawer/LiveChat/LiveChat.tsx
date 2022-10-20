@@ -55,7 +55,7 @@ export const LiveChat = () => {
                             onClick={() => setIsPoppedout(false)}
                         >
                             <Typography variant="caption" sx={{ fontWeight: "fontWeightBold", color: "#FFFFFF" }}>
-                                CLOSE WINDOW
+                                RESTORE WINDOW
                             </Typography>
                         </FancyButton>
                     </Stack>

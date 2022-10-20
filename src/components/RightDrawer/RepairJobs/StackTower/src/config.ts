@@ -31,15 +31,67 @@ import {
     Stack10cJPG,
 } from "../../../../../assets"
 
+export const skins: Skin[] = [
+    {
+        top: Stack1aJPG,
+        front: Stack1bJPG,
+        right: Stack1cJPG,
+    },
+    {
+        top: Stack2aJPG,
+        front: Stack2bJPG,
+        right: Stack2cJPG,
+    },
+    {
+        top: Stack3aJPG,
+        front: Stack3bJPG,
+        right: Stack3cJPG,
+    },
+    {
+        top: Stack4aJPG,
+        front: Stack4bJPG,
+        right: Stack4cJPG,
+    },
+    {
+        top: Stack5aJPG,
+        front: Stack5bJPG,
+        right: Stack5cJPG,
+    },
+    {
+        top: Stack6aJPG,
+        front: Stack6bJPG,
+        right: Stack6cJPG,
+    },
+    {
+        top: Stack7aJPG,
+        front: Stack7bJPG,
+        right: Stack7cJPG,
+    },
+    {
+        top: Stack8aJPG,
+        front: Stack8bJPG,
+        right: Stack8cJPG,
+    },
+    {
+        top: Stack9aJPG,
+        front: Stack9bJPG,
+        right: Stack9cJPG,
+    },
+    {
+        top: Stack10aJPG,
+        front: Stack10bJPG,
+        right: Stack10cJPG,
+    },
+]
+
 export const baseFrameRate = 144
 
 export const blockConfig = {
-    initWidth: 10, // Initial width of the box (x axis)
-    initHeight: 2, // Initial height of the box (y axis)
-    initDepth: 10, // Initial depth of the box (z axis)
-    initSpeed: 0.08, // Initial moving speed
-    acceleration: 0.005, // The acceleration, the box should move faster and faster
-    maxSpeed: 3, // The upper bound of the box's speed
+    initHeight: 2, // initial height of the box (y axis)
+    initSpeed: 0.08, // initial moving speed
+    acceleration: 0.005, // the acceleration, the box should move faster and faster
+    maxSpeed: 3, // the upper bound of the box's speed
+    blinkFrequency: 180, // milliseconds
 }
 
 export const cameraConfig = {
@@ -62,59 +114,6 @@ export const lightsConfig = [
 
 export interface Skin {
     top: string
-    left: string
-    bottom: string
+    front: string
+    right: string
 }
-
-export const skins: Skin[] = [
-    {
-        top: Stack1aJPG,
-        left: Stack1bJPG,
-        bottom: Stack1cJPG,
-    },
-    {
-        top: Stack2aJPG,
-        left: Stack2bJPG,
-        bottom: Stack2cJPG,
-    },
-    {
-        top: Stack3aJPG,
-        left: Stack3bJPG,
-        bottom: Stack3cJPG,
-    },
-    {
-        top: Stack4aJPG,
-        left: Stack4bJPG,
-        bottom: Stack4cJPG,
-    },
-    {
-        top: Stack5aJPG,
-        left: Stack5bJPG,
-        bottom: Stack5cJPG,
-    },
-    {
-        top: Stack6aJPG,
-        left: Stack6bJPG,
-        bottom: Stack6cJPG,
-    },
-    {
-        top: Stack7aJPG,
-        left: Stack7bJPG,
-        bottom: Stack7cJPG,
-    },
-    {
-        top: Stack8aJPG,
-        left: Stack8bJPG,
-        bottom: Stack8cJPG,
-    },
-    {
-        top: Stack9aJPG,
-        left: Stack9bJPG,
-        bottom: Stack9cJPG,
-    },
-    {
-        top: Stack10aJPG,
-        left: Stack10bJPG,
-        bottom: Stack10cJPG,
-    },
-]

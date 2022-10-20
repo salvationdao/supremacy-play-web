@@ -51,12 +51,10 @@ export const BattleLobbiesPage = () => {
         (payload) => {
             if (!payload) return
             setBattleLobbies((bls) => {
-                if (bls.length === 0) {
-                    return payload
-                }
+                if (bls.length === 0) return payload
 
                 // replace current list
-                let list = bls.map((bl) => payload.find((p) => p.id === bl.id) || bl)
+                const list = bls.map((bl) => payload.find((p) => p.id === bl.id) || bl)
 
                 // append new list
                 payload.forEach((p) => {
@@ -69,9 +67,7 @@ export const BattleLobbiesPage = () => {
                 })
 
                 // remove any finished lobby
-                list = list.filter((bl) => !bl.ended_at && !bl.deleted_at)
-
-                return list
+                return list.filter((bl) => !bl.ended_at && !bl.deleted_at)
             })
         },
     )
@@ -91,7 +87,7 @@ export const BattleLobbiesPage = () => {
                 boxShadow: `inset 0 0 50px 60px #00000090`,
             }}
         >
-            <Stack sx={{ mt: "1.5rem", mb: "2rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "145rem" }}>
+            <Stack sx={{ mt: "1.5rem", mb: "2rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "170rem" }}>
                 <Stack direction="row" alignItems="center" sx={{ mb: "1.1rem", gap: "1.2rem" }}>
                     <ClipThing
                         clipSize="10px"
@@ -131,14 +127,15 @@ export const BattleLobbiesPage = () => {
 
                     <MysteryCrateBanner />
                 </Stack>
+                <Stack direction="row" spacing={1} flex={1}>
+                    <TabPanel currentValue={currentValue} value={BATTLE_LOBBY_TABS.Pending}>
+                        <BattleLobbies battleLobbies={battleLobbies} lobbyStatus={LobbyStatusEnum.Pending} />
+                    </TabPanel>
 
-                <TabPanel currentValue={currentValue} value={BATTLE_LOBBY_TABS.Pending}>
-                    <BattleLobbies battleLobbies={battleLobbies} lobbyStatus={LobbyStatusEnum.Pending} />
-                </TabPanel>
-
-                <TabPanel currentValue={currentValue} value={BATTLE_LOBBY_TABS.Ready}>
-                    <BattleLobbies battleLobbies={battleLobbies} lobbyStatus={LobbyStatusEnum.Ready} />
-                </TabPanel>
+                    <TabPanel currentValue={currentValue} value={BATTLE_LOBBY_TABS.Ready}>
+                        <BattleLobbies battleLobbies={battleLobbies} lobbyStatus={LobbyStatusEnum.Ready} />
+                    </TabPanel>
+                </Stack>
             </Stack>
         </Stack>
     )

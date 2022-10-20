@@ -1,5 +1,6 @@
 import { Box } from "@mui/system"
 import { SvgChat, SvgDamage1, SvgHistoryClock, SvgRepair } from "../assets"
+import { AdminLookupResultPage } from "../components/Admin/Lookup/AdminLookupResultPage"
 import { BattleArena } from "../components/LeftDrawer/BattleArena/BattleArena"
 import { BattleEndScreen } from "../components/LeftDrawer/BattleEndScreen/BattleEndScreen"
 import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
@@ -10,6 +11,7 @@ import { RepairJobs } from "../components/RightDrawer/RepairJobs/RepairJobs"
 import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../constants"
 import { BattleArenaPage, BillingHistoryPage, BillingHistoryItemPage, ClaimPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
 import { BattleLobbiesPage } from "../pages/BattleLobbiesPage"
+import { AdminPage } from "../pages/AdminPage"
 import { LeaderboardPage } from "../pages/LeaderboardPage"
 import { MarketplaceItemPage } from "../pages/MarketplaceItemPage"
 import { MarketplaceSellPage } from "../pages/MarketplaceSellPage"
@@ -20,7 +22,7 @@ import { StorefrontPage } from "../pages/StorefrontPage"
 import { StorefrontShoppingCartPage } from "../pages/StorefrontShoppingCartPage"
 import { WeaponPage } from "../pages/WeaponPage"
 import { colors } from "../theme/theme"
-import { AdminPage } from "../pages/AdminPage"
+import { MyLobbies } from "../components/RightDrawer/MyLobbies/MyLobbies"
 
 // ************
 // ** ROUTES **
@@ -31,9 +33,10 @@ interface RouteStruct {
     exact: boolean
     Component?: () => JSX.Element | null
     requireAuth: boolean
+    requireFaction: boolean
+    requireModerator?: boolean
     authTitle?: string // If omitted, it'll have a default title
     authDescription?: string // If omitted, it'll have a default description
-    requireFaction: boolean
     navLink?: {
         enable: boolean
         label: string
@@ -71,7 +74,7 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
             enable: true,
             label: "Battle Lobbies",
         },
-        matchNavLinkID: "battle_lobby",
+        matchNavLinkID: "battle_lobbies",
         enable: true,
         pageTitle: "Supremacy - Battle Lobbies",
     },
@@ -265,20 +268,28 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
         pageTitle: "Supremacy - Replays",
     },
 
+    // Admin
     admin: {
         id: "admin",
-        path: "/admin/:type",
+        path: "/admin/:type?",
         exact: true,
         Component: AdminPage,
         requireAuth: true,
         requireFaction: true,
-        navLink: {
-            enable: false,
-            label: "Admin",
-        },
-        matchNavLinkID: "admin",
+        requireModerator: true,
         enable: true,
-        pageTitle: "Supremacy - Admin",
+        pageTitle: "Supremacy - Admin Panel",
+    },
+    admin_player_lookup: {
+        id: "admin_player_lookup",
+        path: "/admin/lookup/:playerGID",
+        exact: true,
+        Component: AdminLookupResultPage,
+        requireAuth: true,
+        requireFaction: true,
+        requireModerator: true,
+        enable: true,
+        pageTitle: "Supremacy - Admin Panel",
     },
 
     // Claim
@@ -383,6 +394,15 @@ export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         icon: <SvgRepair size="1.1rem" sx={{ pt: ".3rem" }} />,
         label: "Repairs Jobs",
         Component: RepairJobs,
+        requireAuth: true,
+        matchNavLinkIDs: undefined,
+        mountAllTime: false,
+    },
+    my_lobbies: {
+        id: "my_lobbies",
+        icon: <SvgRepair size="1.1rem" sx={{ pt: ".3rem" }} />,
+        label: "My Lobbies",
+        Component: MyLobbies,
         requireAuth: true,
         matchNavLinkIDs: undefined,
         mountAllTime: false,

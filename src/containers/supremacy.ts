@@ -101,8 +101,8 @@ export const SupremacyContainer = createContainer(() => {
     }, [newSnackbarMessage, isServerDown, queryGetFactionsAll])
 
     const getFaction = useCallback(
-        (factionID: string) => {
-            return factionsAll[factionID] || FallbackFaction
+        (factionID?: string) => {
+            return factionID ? factionsAll[factionID] || FallbackFaction : FallbackFaction
         },
         [factionsAll],
     )

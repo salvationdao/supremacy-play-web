@@ -31,3 +31,10 @@ export interface AdminChatView {
     text: string
     created_at: Date
 }
+
+export interface AdminLookupHistoryResp {
+    username: string
+    gid: number
+    faction_id?: string
+    visited_on: Date
+}

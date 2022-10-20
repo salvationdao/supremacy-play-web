@@ -1,5 +1,4 @@
-import { Stack } from "@mui/material"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { ConfirmModal } from "../../Common/ConfirmModal"
 import { BattleLobby } from "../../../types/battle_queue"
 import { BattleLobbyItem } from "./BattleLobbyItem"
@@ -31,6 +30,10 @@ const lobbyPlaceholder: BattleLobby = {
         role_type: RoleType.player,
     },
     is_private: true,
+    stage_order: 0,
+    access_code: "",
+    sups_pool: "0",
+
     battle_lobbies_mechs: [],
     opted_in_bc_supporters: [],
     opted_in_rm_supporters: [],
@@ -40,34 +43,52 @@ const lobbyPlaceholder: BattleLobby = {
     selected_zai_supporters: [],
 }
 
-interface BattleLobbyPrivateAccessModalProps {
-    setAccessCode: React.Dispatch<React.SetStateAction<string>>
-    accessCode: string
+interface BattleLobbySingleModalProps {
+    setAccessCode?: React.Dispatch<React.SetStateAction<string>>
+    accessCode?: string
+    showingLobby?: BattleLobby
+    setOpen?: React.Dispatch<React.SetStateAction<boolean>>
 }
-export const BattleLobbyPrivateAccessModal = ({ setAccessCode, accessCode }: BattleLobbyPrivateAccessModalProps) => {
-    const [isLoading, setIsLoading] = useState(true)
+export const BattleLobbySingleModal = ({ setAccessCode, accessCode, showingLobby, setOpen }: BattleLobbySingleModalProps) => {
+    const [isLoading, setIsLoading] = useState(!showingLobby)
 
     const [lobby, setLobby] = useState<BattleLobby>(lobbyPlaceholder)
+
+    useEffect(() => {
+        if (!showingLobby) return
+        setLobby(showingLobby)
+    }, [showingLobby])
 
     useGameServerSubscriptionFaction<BattleLobby>(
         {
             URI: `/private_battle_lobby/${accessCode}`,
             key: GameServerKeys.SubPrivateBattleLobby,
+            ready: !!accessCode && !!setAccessCode,
         },
         (payload) => {
             if (!payload) return
-
-            console.log(payload)
             setLobby(payload)
             setIsLoading(false)
         },
     )
 
     return (
-        <ConfirmModal title={`ACCESS PRIVATE LOBBY`} omitButtons onClose={() => setAccessCode("")} isLoading={isLoading} width="150rem" omitCancel>
-            <Stack direction="column">
-                <BattleLobbyItem battleLobby={lobby} omitClip disabled={isLoading} accessCode={accessCode} />
-            </Stack>
+        <ConfirmModal
+            title={accessCode ? "ACCESS PRIVATE LOBBY" : "LOBBY"}
+            omitButtons
+            onClose={() => {
+                if (setAccessCode) setAccessCode("")
+                if (setOpen) setOpen(false)
+            }}
+            isLoading={isLoading}
+            width="160rem"
+            omitHeader
+            innerSx={{
+                px: 0,
+                py: 0,
+            }}
+        >
+            <BattleLobbyItem battleLobby={lobby} omitClip disabled={isLoading} accessCode={accessCode} />
         </ConfirmModal>
     )
 }

@@ -57,11 +57,13 @@ export enum GameServerKeys {
     SubMechQueuePosition = "PLAYER:ASSET:MECH:QUEUE:SUBSCRIBE",
     MechQueueUpdated = "PLAYER:ASSET:MECH:QUEUE:UPDATE",
     SubBattleLobbyListUpdate = "BATTLE:LOBBY:LIST:UPDATE",
+    SubInvolvedBattleLobbiesUpdate = "INVOLVED:BATTLE:LOBBY:LIST:UPDATE",
     CreateBattleLobby = "BATTLE:LOBBY:CREATE",
     SubPrivateBattleLobby = "PRIVATE:BATTLE:LOBBY:UPDATE",
     JoinBattleLobby = "BATTLE:LOBBY:JOIN",
     LeaveBattleLobby = "BATTLE:LOBBY:LEAVE",
     JoinBattleLobbySupporter = "BATTLE:LOBBY:SUPPORTER:JOIN",
+    TopUpBattleLobbyReward = "BATTLE:LOBBY:TOP:UP:REWARD",
 
     GetMechs = "PLAYER:ASSET:MECH:LIST",
     PlayerQueueStatus = "PLAYER:QUEUE:STATUS",
@@ -180,7 +182,7 @@ export enum GameServerKeys {
     GetPlayerMysteryCrate = "PLAYER:ASSET:MYSTERY_CRATE:GET",
     OpenCrate = "CRATE:OPEN",
 
-    //submodels
+    // Submodels
     GetMechSubmodelsDetailed = "PLAYER:ASSET:MECH:SUBMODEL:DETAIL:LIST",
     GetWeaponSubmodelsDetailed = "PLAYER:ASSET:WEAPON:SUBMODEL:DETAIL:LIST",
     GetMechBlueprintsDetailed = "PLAYER:MECH:BLUEPRINT:DETAIL:LIST",
@@ -227,7 +229,7 @@ export enum GameServerKeys {
     CancelMechRepair = "MECH:REPAIR:OFFER:CLOSE",
     RegisterRepairAgent = "REPAIR:AGENT:REGISTER",
     RepairAgentUpdate = "REPAIR:AGENT:RECORD",
-    CompleteRepairAgent = "REPAIR:AGENT:COMPLETE",
+    SubRepairTowerNewBlocks = "NEXT:REPAIR:GAME:BLOCK",
     AbandonRepairAgent = "REPAIR:AGENT:ABANDON",
 
     // Repair bay
@@ -255,6 +257,9 @@ export enum GameServerKeys {
     ModBanUser = "MOD:BAN:USER",
     ModUnbanUser = "MOD:UNBAN:USER",
     ModRestartServer = "MOD:RESTART:SERVER",
+    ModLookupHistory = "MOD:LOOKUP:HISTORY",
+    ModRenamePlayer = "MOD:RENAME:PLAYER",
+    ModRenameMech = "MOD:RENAME:MECH",
 
     // Faction Commander
     JoinFactionCommander = "VOICE:JOIN:FACTION:COMMANDER",
@@ -262,7 +267,11 @@ export enum GameServerKeys {
 
     // Voice chat
     SubPlayerVoiceStream = "PLAYER:VOICE:STREAM",
+    SubPlayerVoiceStreamListeners = "PLAYER:VOICE:STREAM:LISTENERS",
+    GetPlayerVoiceStreamListeners = "VOICE:STREAM:GET:LISTENERS",
     VoiceChatVoteKick = "VOICE:VOTE:KICK",
+    VoiceChatConnect = "VOICE:STREAM:CONNECT",
+    VoiceChatDisconnect = "VOICE:STREAM:DISCONNECT",
 }
 
 export enum PassportServerKeys {

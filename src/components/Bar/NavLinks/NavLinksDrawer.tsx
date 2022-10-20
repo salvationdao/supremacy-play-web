@@ -6,11 +6,12 @@ import { useAuth, useUI } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { ROUTES_ARRAY } from "../../../routes"
 import { fonts, siteZIndex } from "../../../theme/theme"
+import { RoleType } from "../../../types"
 
 const EXPAND_DRAWER_WIDTH = 34 //rem
 
 export const NavLinksDrawer = () => {
-    const { userID } = useAuth()
+    const { userID, roleType } = useAuth()
     const theme = useTheme()
     const history = useHistory()
     const { isNavLinksDrawerOpen, toggleIsNavLinksDrawerOpen } = useUI()
@@ -56,10 +57,11 @@ export const NavLinksDrawer = () => {
                     </Stack>
 
                     {ROUTES_ARRAY.map((r) => {
-                        if (r.id === "admin") return null
                         if (!r.enable || !r.navLink) return null
-                        const { requireAuth, requireFaction } = r
+                        const { requireAuth, requireFaction, requireModerator } = r
                         const { enable, label } = r.navLink
+
+                        if (requireModerator && roleType !== RoleType.moderator && roleType !== RoleType.admin) return null
                         const disable = (requireAuth || requireFaction) && !userID
                         const navigateTo = r.path.split("/:")[0]
                         return (
