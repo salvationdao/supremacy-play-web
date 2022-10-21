@@ -183,11 +183,13 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                         <WeaponSlot key={ws.slot_number} weaponSlot={ws} tooltipPlacement={"top-end"} size="3rem" />
                                     ))}
                                 </Stack>
-                                <Box sx={{ position: "absolute", right: 0, top: 0, transform: "translate(40%, -20%)" }}>
-                                    <IconButton size="small" onClick={() => setLeftMechID(ms?.mech_id || "")}>
-                                        <SvgLogout size="1.5rem" />
-                                    </IconButton>
-                                </Box>
+                                {!isLocked && ms.queued_by?.id === userID && (
+                                    <Box sx={{ position: "absolute", right: 0, top: 0, transform: "translate(40%, -20%)" }}>
+                                        <IconButton size="small" onClick={() => setLeftMechID(ms?.mech_id || "")}>
+                                            <SvgLogout size="1.5rem" />
+                                        </IconButton>
+                                    </Box>
+                                )}
 
                                 <Typography
                                     variant="h6"
@@ -226,7 +228,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                             compact
                             outerSx={{ flex: 1, width: "100%" }}
                         />
-                        {ms.queued_by?.id === userID && leftMechID === ms.mech_id && (
+                        {!isLocked && ms.queued_by?.id === userID && leftMechID === ms.mech_id && (
                             <ConfirmModal title="Confirm Removal" onConfirm={() => leaveLobby(ms.mech_id)} onClose={() => setLeftMechID("")}>
                                 <Typography
                                     variant="h6"
