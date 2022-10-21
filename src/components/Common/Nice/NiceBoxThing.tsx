@@ -65,7 +65,7 @@ export interface NiceBoxThingProps {
     children?: React.ReactNode
 }
 
-export const NiceBoxThing = ({ caret, border, background, sx, children }: NiceBoxThingProps) => {
+export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(function NiceBoxThing({ caret, border, background, sx, children }) {
     const renderCaret = () => {
         if (!caret) return
         const color = caret.color || border?.color
@@ -219,4 +219,4 @@ export const NiceBoxThing = ({ caret, border, background, sx, children }: NiceBo
             {renderCaret()}
         </Box>
     )
-}
+})
