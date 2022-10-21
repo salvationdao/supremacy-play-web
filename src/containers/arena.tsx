@@ -1,14 +1,30 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
+import { useUrlQuery } from "../hooks"
 import { useGameServerSubscription } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 import { Arena, ArenaStatus } from "../types"
+import { blankOptionOven, useOvenStream } from "./oven"
 
 export const ArenaContainer = createContainer(() => {
     const [arenaList, setArenaList] = useState<Arena[]>([])
     const [currentArena, setCurrentArena] = useState<Arena>()
+    const { changeOvenStream, setCurrentStreamOptions } = useOvenStream()
+    const [, updateQuery] = useUrlQuery()
 
     const currentArenaID = currentArena?.id || ""
+
+    useEffect(() => {
+        if (!currentArena) return
+        changeOvenStream(currentArena.oven_stream)
+        setCurrentStreamOptions([blankOptionOven, currentArena.oven_stream])
+    }, [changeOvenStream, currentArena, setCurrentStreamOptions])
+
+    // Save the arena in url param when its changed
+    useEffect(() => {
+        if (!currentArena) return
+        updateQuery.current({ arenaName: currentArena?.name })
+    }, [currentArena, updateQuery])
 
     return {
         arenaList,
@@ -24,7 +40,9 @@ export const useArena = ArenaContainer.useContainer
 
 export const ArenaListener = () => {
     const { setArenaList, currentArenaID, setCurrentArena } = useArena()
+    const [query] = useUrlQuery()
 
+    // Subscribe to the list of available arenas and set the current one
     useGameServerSubscription<Arena[]>(
         {
             URI: "/public/arena_list",
@@ -37,13 +55,15 @@ export const ArenaListener = () => {
                 return
             }
 
-            // default arena to the first one
-            setCurrentArena(payload[0])
+            // Sets the one specified in the url, else default to first one
+            const arenaInUrl = payload.find((arena) => arena.name === query.get("arenaName"))
+            setCurrentArena(arenaInUrl || payload[0])
 
             setArenaList(payload)
         },
     )
 
+    // Subscribe to the status of the arena
     useGameServerSubscription<ArenaStatus>(
         {
             URI: `/public/arena/${currentArenaID}/status`,
@@ -63,6 +83,7 @@ export const ArenaListener = () => {
         },
     )
 
+    // If arena is closed, set it
     useGameServerSubscription<boolean>(
         {
             URI: `/public/arena/${currentArenaID}/closed`,

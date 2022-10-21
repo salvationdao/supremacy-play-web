@@ -2,6 +2,7 @@ import { Faction, WarMachineState } from "."
 import { colors } from "../theme/theme"
 import { FactionIDs } from "./../constants"
 import { User } from "./user"
+import { OvenStream } from "../containers/oven"
 
 export interface FactionsAll {
     [faction_id: string]: Faction
@@ -228,6 +229,7 @@ export interface Arena {
     name: string
     gid: number
     status?: ArenaStatus
+    oven_stream: OvenStream
 }
 
 export interface ArenaStatus {

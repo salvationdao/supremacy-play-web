@@ -57,11 +57,13 @@ export enum GameServerKeys {
     SubMechQueuePosition = "PLAYER:ASSET:MECH:QUEUE:SUBSCRIBE",
     MechQueueUpdated = "PLAYER:ASSET:MECH:QUEUE:UPDATE",
     SubBattleLobbyListUpdate = "BATTLE:LOBBY:LIST:UPDATE",
+    SubInvolvedBattleLobbiesUpdate = "INVOLVED:BATTLE:LOBBY:LIST:UPDATE",
     CreateBattleLobby = "BATTLE:LOBBY:CREATE",
     SubPrivateBattleLobby = "PRIVATE:BATTLE:LOBBY:UPDATE",
     JoinBattleLobby = "BATTLE:LOBBY:JOIN",
     LeaveBattleLobby = "BATTLE:LOBBY:LEAVE",
     JoinBattleLobbySupporter = "BATTLE:LOBBY:SUPPORTER:JOIN",
+    TopUpBattleLobbyReward = "BATTLE:LOBBY:TOP:UP:REWARD",
 
     GetMechs = "PLAYER:ASSET:MECH:LIST",
     PlayerQueueStatus = "PLAYER:QUEUE:STATUS",

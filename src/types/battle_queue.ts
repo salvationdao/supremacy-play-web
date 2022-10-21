@@ -24,6 +24,10 @@ export interface BattleLobby {
     host_by: User
     game_map?: GameMap
     is_private: boolean
+    stage_order: number
+    access_code: string
+    sups_pool: string
+
     battle_lobbies_mechs: BattleLobbiesMech[]
 
     opted_in_rm_supporters: BattleLobbySupporter[]
@@ -67,7 +71,8 @@ export interface MechWeaponSlot {
 
 export interface Weapon {
     label: string
-    avatar_url: string
+    avatar_url: string | undefined
+    image_url: string
     damage: number
     damage_falloff: number
     damage_falloff_rate: number

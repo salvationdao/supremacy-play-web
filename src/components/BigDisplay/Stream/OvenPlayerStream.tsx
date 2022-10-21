@@ -55,7 +55,11 @@ export const OvenplayerStream = () => {
             newOvenPlayer.on("error", (err: Error) => {
                 newSnackbarMessage(err.message, "error")
                 console.error("ovenplayer error: ", err)
-                newOvenPlayer.setCurrentSource(0)
+
+                // When theres an error, try to reconnect to the same source again
+                const prevRes = localStorage.getItem(`${currentOvenStream.name}-resolution`) || "720"
+                const prevSourceIndex = _sources.findIndex((s) => s.label === prevRes)
+                newOvenPlayer.setCurrentSource(prevSourceIndex || 0)
             })
 
             newOvenPlayer.play()

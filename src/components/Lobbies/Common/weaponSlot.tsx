@@ -14,6 +14,7 @@ interface WeaponSlotProps {
     size?: string
 }
 export const WeaponSlot = ({ weaponSlot, tooltipPlacement, size }: WeaponSlotProps) => {
+    console.log(weaponSlot.weapon)
     const { factionTheme } = useTheme()
     const weapon = weaponSlot.weapon
 
@@ -30,8 +31,28 @@ export const WeaponSlot = ({ weaponSlot, tooltipPlacement, size }: WeaponSlotPro
         )
     }, [])
 
-    const content = useMemo(() => {
-        if (!weapon) return <SvgWeapons />
+    return useMemo(() => {
+        if (!weapon)
+            return (
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: size || "4rem",
+                        width: size || "4rem",
+                        border: `${factionTheme.primary}80 2px solid`,
+                        borderRadius: 0.6,
+                        backgroundColor: `${factionTheme.background}`,
+                        "&:hover": {
+                            border: `${factionTheme.primary} 2px solid`,
+                        },
+                        opacity: "0.5",
+                    }}
+                >
+                    <SvgWeapons />
+                </Box>
+            )
 
         const weaponRarity = getRarityDeets(weapon?.tier || "")
         return (
@@ -45,9 +66,9 @@ export const WeaponSlot = ({ weaponSlot, tooltipPlacement, size }: WeaponSlotPro
                     <Stack direction="column" sx={{ width: "30rem" }}>
                         <Stack direction="row" alignItems="center">
                             <Box
-                                key={weapon.avatar_url}
+                                key={!weapon.avatar_url ? weapon.image_url : weapon.avatar_url}
                                 component="img"
-                                src={weapon.avatar_url}
+                                src={!weapon.avatar_url ? weapon.image_url : weapon.avatar_url}
                                 sx={{
                                     width: "6rem",
                                     height: "6rem",
@@ -81,38 +102,34 @@ export const WeaponSlot = ({ weaponSlot, tooltipPlacement, size }: WeaponSlotPro
                 placement={tooltipPlacement}
             >
                 <Box
-                    key={weapon.avatar_url}
-                    component="img"
-                    src={weapon.avatar_url}
                     sx={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: size || "4rem",
+                        width: size || "4rem",
+                        border: `${factionTheme.primary}80 2px solid`,
                         borderRadius: 0.6,
-                        animation: `${scaleUpKeyframes} .5s ease-out`,
+                        backgroundColor: `${factionTheme.background}`,
+                        "&:hover": {
+                            border: `${factionTheme.primary} 2px solid`,
+                        },
                     }}
-                />
+                >
+                    <Box
+                        key={!weapon.avatar_url ? weapon.image_url : weapon.avatar_url}
+                        component="img"
+                        src={!weapon.avatar_url ? weapon.image_url : weapon.avatar_url}
+                        sx={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                            borderRadius: 0.6,
+                            animation: `${scaleUpKeyframes} .5s ease-out`,
+                        }}
+                    />
+                </Box>
             </TooltipHelper>
         )
-    }, [factionTheme.background, factionTheme.primary, tooltipPlacement, weapon, weaponStat])
-
-    return (
-        <Box
-            sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                height: size || "4rem",
-                width: size || "4rem",
-                border: `${factionTheme.primary}80 2px solid`,
-                borderRadius: 0.6,
-                backgroundColor: `${factionTheme.background}`,
-                "&:hover": {
-                    border: `${factionTheme.primary} 2px solid`,
-                },
-            }}
-        >
-            {content}
-        </Box>
-    )
+    }, [factionTheme.background, factionTheme.primary, size, tooltipPlacement, weapon, weaponStat])
 }
