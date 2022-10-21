@@ -50,6 +50,7 @@ export const UpcomingBattle = ({ nextBattle }: { nextBattle: BattleLobby }) => {
                 case FactionIDs.ZHI: {
                     const element = (
                         <CardGroup
+                            key={fact}
                             mechs={zaiMechs}
                             factionID={FactionIDs.ZHI}
                             factionLabel={"Zaibatsu Heavy Industries"}
@@ -66,6 +67,7 @@ export const UpcomingBattle = ({ nextBattle }: { nextBattle: BattleLobby }) => {
                 case FactionIDs.BC: {
                     const element = (
                         <CardGroup
+                            key={fact}
                             mechs={bcMechs}
                             factionID={FactionIDs.BC}
                             factionLabel={"Boston Cybernetics"}
@@ -82,6 +84,7 @@ export const UpcomingBattle = ({ nextBattle }: { nextBattle: BattleLobby }) => {
                 case FactionIDs.RM: {
                     const element = (
                         <CardGroup
+                            key={fact}
                             mechs={rmMechs}
                             factionID={FactionIDs.RM}
                             factionLabel={"Red Mountain Offworld Mining Corporation"}
