@@ -212,7 +212,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         (ems: LoadoutMechSkin) => {
             if (unityControlsRef.current) {
                 unityControlsRef.current.handleMechSkinUpdate(ems)
-                setIsUnityPendingChange(true)
             }
 
             setCurrLoadout((prev) => {
@@ -234,8 +233,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     const modifyPowerCore = useCallback(
         (ep: LoadoutPowerCore) => {
             if (unityControlsRef.current) {
-                // unityControlsRef.current.handlePowerCoreUpdate(ep)
-                // setIsUnityPendingChange(true)
+                unityControlsRef.current.handlePowerCoreUpdate(ep)
             }
 
             setCurrLoadout((prev) => {
@@ -265,7 +263,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         (ew: LoadoutWeapon) => {
             if (unityControlsRef.current) {
                 unityControlsRef.current.handleWeaponUpdate(ew)
-                setIsUnityPendingChange(true)
             }
 
             setCurrLoadout((prev) => {
@@ -623,6 +620,9 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                             orbitControlsRef: orbitControlsRef,
                             onUnlock: () => {
                                 setIsUnityPendingChange(false)
+                            },
+                            onLock: () => {
+                                setIsUnityPendingChange(true)
                             },
                             onReady: () => {
                                 setIsUnityLoaded(true)
