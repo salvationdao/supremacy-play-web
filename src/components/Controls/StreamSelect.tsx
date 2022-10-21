@@ -48,8 +48,8 @@ export const OvenStreamSelect = () => {
                 {ovenStreamOptions.map((x) => {
                     return (
                         <MenuItem
-                            key={x.name}
-                            value={x.name}
+                            key={x?.name}
+                            value={x?.name}
                             onClick={() => {
                                 changeOvenStream(x)
                             }}
@@ -61,7 +61,7 @@ export const OvenStreamSelect = () => {
                                 }}
                                 variant="body2"
                             >
-                                {x.name}
+                                {x?.name}
                             </Typography>
                         </MenuItem>
                     )

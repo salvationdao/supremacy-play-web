@@ -152,7 +152,7 @@ export const BattleLobbyMechList = ({ factionID, battleLobbiesMechs }: BattleLob
 
     const MechBox = useCallback(
         (key: string, blm?: BattleLobbiesMech) => {
-            const isOwned = blm?.owner?.id === userID
+            const isQueuedBy = blm?.queued_by?.id === userID
             const isDestroyed = !!blm?.is_destroyed
 
             return (
@@ -162,7 +162,7 @@ export const BattleLobbyMechList = ({ factionID, battleLobbiesMechs }: BattleLob
                     justifyContent="center"
                     key={key}
                     sx={{
-                        border: `${isOwned ? colors.gold : faction.primary_color} 1px solid`,
+                        border: `${isQueuedBy ? colors.gold : faction.primary_color} 1px solid`,
                         height: "4rem",
                         width: "4rem",
 

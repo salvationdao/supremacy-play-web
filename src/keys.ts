@@ -16,7 +16,7 @@ export enum GameServerKeys {
 
     // Battle Arena
     SubGameMapList = "GAME:MAP:LIST",
-    SubPlayerMechsBrief = "PLAYER:MECHS:BRIEF",
+    SubPlayerQueueableMechs = "PLAYER:QUEUEABLE:MECHS",
     SubArenaStatus = "ARENA:STATUS:UPDATED",
     SunBattleETA = "BATTLE:ETA:UPDATE",
     SubBattleArenaList = "BATTLE:ARENA:LIST",
@@ -24,6 +24,7 @@ export enum GameServerKeys {
     SubMiniMapAbilityDisplayList = "MINI:MAP:ABILITY:DISPLAY:LIST",
     NextBattleDetails = "NEXT:BATTLE:DETAILS",
     BattleState = "BATTLE:STATE",
+    SubFactionStakedMechs = "FACTION:STAKED:MECHS",
 
     // Voting abilities
     SubBribeStageUpdated = "BRIBE:STAGE:UPDATED:SUBSCRIBE",
@@ -64,6 +65,8 @@ export enum GameServerKeys {
     LeaveBattleLobby = "BATTLE:LOBBY:LEAVE",
     JoinBattleLobbySupporter = "BATTLE:LOBBY:SUPPORTER:JOIN",
     TopUpBattleLobbyReward = "BATTLE:LOBBY:TOP:UP:REWARD",
+    StakeMechs = "MECHS:STAKE",
+    UnstakeMechs = "MECHS:UNSTAKE",
 
     GetMechs = "PLAYER:ASSET:MECH:LIST",
     PlayerQueueStatus = "PLAYER:QUEUE:STATUS",
@@ -78,6 +81,7 @@ export enum GameServerKeys {
     GetUtilityDetails = "PLAYER:ASSET:UTILITY:DETAIL",
     TriggerMechStatusUpdate = "PLAYER:ASSET:MECH:STATUS:UPDATE",
     MechRename = "PLAYER:MECH:RENAME",
+    SubMechIsStaked = "MECH:IS:STAKED",
 
     // Player Abilities
     SubPlayerAbilitiesList = "PLAYER:ABILITIES:LIST:SUBSCRIBE",

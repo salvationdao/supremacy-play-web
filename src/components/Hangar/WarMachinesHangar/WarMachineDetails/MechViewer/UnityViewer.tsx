@@ -1,11 +1,10 @@
 import { Box, Fade, LinearProgress, Typography } from "@mui/material"
-import React, { useEffect, useImperativeHandle, useMemo, useRef, useState } from "react"
+import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from "react"
 import { Unity, useUnityContext } from "react-unity-webgl"
 import { DEV_ONLY, WEBGL_BASE_URL } from "../../../../../constants"
 import { useTheme } from "../../../../../containers/theme"
 import { pulseEffect } from "../../../../../theme/keyframes"
 import { colors, fonts } from "../../../../../theme/theme"
-import { MechSkin } from "../../../../../types"
 import { ClipThing } from "../../../../Common/ClipThing"
 import { LoadoutMechSkin, LoadoutPowerCore, LoadoutWeapon } from "../MechLoadout/MechLoadout"
 import { MechViewer3DProps } from "./MechViewer3D"
@@ -59,6 +58,7 @@ export interface UnityParams {
     unityRef: React.ForwardedRef<UnityHandle>
     orbitControlsRef: React.RefObject<HTMLElement>
     onUnlock: () => void
+    onLock: () => void
     onReady: () => void
 }
 
@@ -69,7 +69,6 @@ const ImpureUnityViewer = ({ unity, initialMech: mech }: MechViewer3DProps) => {
         sendMessage,
         addEventListener,
         removeEventListener,
-        isLoaded,
         loadingProgression,
         UNSAFE__detachAndUnloadImmediate: unload,
     } = useUnityContext({
@@ -81,13 +80,12 @@ const ImpureUnityViewer = ({ unity, initialMech: mech }: MechViewer3DProps) => {
     })
     const ready = useRef(false)
     const sent = useRef(false)
+    const powerCoreSlot = useRef<number>()
     const [status, setStatus] = useState(UnityStatus.Loading)
-    const [siloReady, setSiloReady] = useState(false)
     const [progress, setProgress] = useState(0)
     const [showLoader, setShowLoader] = useState(true)
     const [isPendingChange, setIsPendingChange] = useState(false)
     const [showClickToLoadOverlay, setShowClickToLoadOverlay] = useState(true)
-    const pendingMechSkin = useRef<MechSkin>()
 
     useImperativeHandle(unity.unityRef, () => ({
         handleUnload: () => {
@@ -95,6 +93,7 @@ const ImpureUnityViewer = ({ unity, initialMech: mech }: MechViewer3DProps) => {
         },
         handleWeaponUpdate: (wu: LoadoutWeapon) => {
             if (status < UnityStatus.Displaying) return
+            onSlotLockUnlock(true)
             const weapon = wu.weapon
             if (wu.unequip) {
                 console.info("cleared", wu.slot_number)
@@ -123,21 +122,29 @@ const ImpureUnityViewer = ({ unity, initialMech: mech }: MechViewer3DProps) => {
                 sendMessage("SceneContext", "SetSlotIndexToChange", wu.slot_number)
                 sendMessage("SceneContext", "ChangeSlotValue", JSON.stringify(obj))
             }
-            setIsPendingChange(true)
         },
         handlePowerCoreUpdate: (pcu: LoadoutPowerCore) => {
-            if (!pcu.power_core) return
+            if (status < UnityStatus.Displaying) return
+            if (typeof powerCoreSlot.current === "undefined") return
+            onSlotLockUnlock(true)
             const powerCore = pcu.power_core
-            const obj = {
-                type: "power_core",
-                ownership_id: powerCore.owner_id,
-                static_id: powerCore.blueprint_id,
-            } as SiloObject
-            // setIsPendingChange(true)
-            console.info("update", obj)
+            if (pcu.unequip) {
+                console.info("cleared", powerCoreSlot.current)
+                sendMessage("SceneContext", "ClearSelectedSlots", `[${powerCoreSlot.current}]`)
+            } else if (powerCore) {
+                const obj = {
+                    type: "power_core",
+                    ownership_id: powerCore.owner_id,
+                    static_id: powerCore.blueprint_id,
+                } as SiloObject
+                console.info("update", obj)
+                sendMessage("SceneContext", "SetSlotIndexToChange", powerCoreSlot.current)
+                sendMessage("SceneContext", "ChangeSlotValue", JSON.stringify(obj))
+            }
         },
         handleMechSkinUpdate: (msu: LoadoutMechSkin) => {
-            if (!msu.mech_skin) return
+            if (status < UnityStatus.Displaying) return
+            onSlotLockUnlock(true)
             const obj = {
                 type: "skin",
                 ownership_id: msu.mech_skin_id,
@@ -145,12 +152,44 @@ const ImpureUnityViewer = ({ unity, initialMech: mech }: MechViewer3DProps) => {
             } as SiloObject
             console.info("update", obj)
             sendMessage("SceneContext", "ChangeMechSkin", JSON.stringify(obj))
-            setIsPendingChange(true)
 
-            // Use this to update weapon inherited skins at some point
-            pendingMechSkin.current = msu.mech_skin
+            // Update weapon inherited skins
+            onSlotLockUnlock(true)
+            const mechSkin = msu.mech_skin
+            for (let weaponSlotNumber = 0; weaponSlotNumber < mech.weapon_hardpoints; weaponSlotNumber++) {
+                const w = mech.weapons_map.get(weaponSlotNumber)
+                if (!w || !w.inherit_skin || !mechSkin.blueprint_weapon_skin_id) continue
+                const obj = {
+                    type: "weapon",
+                    ownership_id: w.id,
+                    static_id: w.blueprint_id,
+                    skin: {
+                        type: "skin",
+                        static_id: mechSkin.blueprint_weapon_skin_id,
+                    },
+                } as SiloObject
+                console.info("update skin", obj)
+                sendMessage("SceneContext", "SetSlotIndexToChange", weaponSlotNumber)
+                sendMessage("SceneContext", "ChangeSlotValue", JSON.stringify(obj))
+            }
         },
     }))
+
+    // Handle slot lock/unlock
+    const onSlotLockUnlock = useCallback(
+        (locked: boolean) => {
+            if (locked) {
+                console.info("slot lock")
+                unity.onLock()
+                setIsPendingChange(true)
+            } else {
+                console.info("slot unlock")
+                unity.onUnlock()
+                setIsPendingChange(false)
+            }
+        },
+        [unity],
+    )
 
     // Initial mech load. Don't do anything if unity is not ready
     useEffect(() => {
@@ -214,6 +253,7 @@ const ImpureUnityViewer = ({ unity, initialMech: mech }: MechViewer3DProps) => {
                 static_id: powerCore.blueprint_id,
             }
         }
+        powerCoreSlot.current = accessories.length - 1
 
         const loadMech: SiloType = {
             type: "mech",
@@ -245,47 +285,11 @@ const ImpureUnityViewer = ({ unity, initialMech: mech }: MechViewer3DProps) => {
         }
     }, [unload])
 
-    // Update weapon inherited skins
     useEffect(() => {
-        if (isPendingChange || !pendingMechSkin.current) return
-        const mechSkin = pendingMechSkin.current
-        // Update weapon skins
-        for (let weaponSlotNumber = 0; weaponSlotNumber < mech.weapon_hardpoints; weaponSlotNumber++) {
-            const w = mech.weapons_map.get(weaponSlotNumber)
-            if (!w || !w.inherit_skin || !mechSkin.blueprint_weapon_skin_id) continue
-            const obj = {
-                type: "weapon",
-                ownership_id: w.id,
-                static_id: w.blueprint_id,
-                skin: w.weapon_skin
-                    ? {
-                          type: "skin",
-                          static_id: w.weapon_skin.blueprint_id,
-                      }
-                    : undefined,
-            } as SiloObject
-            obj.skin = {
-                type: "skin",
-                static_id: mechSkin.blueprint_weapon_skin_id,
-            }
-            console.info("update skin", obj)
-            sendMessage("SceneContext", "SetSlotIndexToChange", weaponSlotNumber)
-            sendMessage("SceneContext", "ChangeSlotValue", JSON.stringify(obj))
-        }
-        pendingMechSkin.current = undefined
-        setIsPendingChange(true)
-    }, [mech, isPendingChange, sendMessage])
-
-    // Check if hangar is ready, mech is loaded in, user has clicked etc.
-    const isEverythingReady = useMemo(
-        () => !showClickToLoadOverlay && isLoaded && siloReady && progress === 100,
-        [isLoaded, progress, showClickToLoadOverlay, siloReady],
-    )
-    useEffect(() => {
-        if (!isEverythingReady || ready.current) return
+        if (status < UnityStatus.Displaying || ready.current) return
         unity.onReady()
         ready.current = true
-    }, [isEverythingReady, unity])
+    }, [status, unity])
 
     // Update progress based on unity
     useEffect(() => {
@@ -303,7 +307,6 @@ const ImpureUnityViewer = ({ unity, initialMech: mech }: MechViewer3DProps) => {
 
     useEffect(() => {
         const onSiloReady = () => {
-            setSiloReady(true)
             setStatus(UnityStatus.Loaded)
         }
         addEventListener("SiloReady", onSiloReady)
@@ -322,15 +325,13 @@ const ImpureUnityViewer = ({ unity, initialMech: mech }: MechViewer3DProps) => {
 
     useEffect(() => {
         const onSlotLoaded = () => {
-            console.log("slot unlocked")
-            unity.onUnlock()
-            setIsPendingChange(false)
+            onSlotLockUnlock(false)
         }
         addEventListener("SlotLoaded", onSlotLoaded)
         return () => {
             removeEventListener("SlotLoaded", onSlotLoaded)
         }
-    }, [addEventListener, removeEventListener, unity])
+    }, [addEventListener, onSlotLockUnlock, removeEventListener])
 
     // ORBIT CONTROLS
     const isMouseDown = useRef(false)
