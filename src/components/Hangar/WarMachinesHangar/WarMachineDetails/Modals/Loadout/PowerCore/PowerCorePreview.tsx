@@ -251,7 +251,7 @@ export const PowerCorePreview = ({ powerCore, compareTo, disableCompare }: Power
                     textAlign: "center",
                 }}
             >
-                Select a weapon to view its details.
+                Select a power core to view its details.
             </Typography>
         </Stack>
     )

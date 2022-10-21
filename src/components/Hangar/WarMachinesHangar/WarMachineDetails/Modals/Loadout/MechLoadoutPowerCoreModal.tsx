@@ -520,7 +520,7 @@ export const MechLoadoutPowerCoreModal = ({
                         }}
                     />
                     <Stack flex={1} minHeight={0}>
-                        <PageHeader title="Equip a weapon" description="Select a weapon to equip on your mech." />
+                        <PageHeader title="Equip a power core" description="Select a power core to equip on your mech." />
                         <TotalAndPageSizeOptions
                             countItems={powerCores?.length}
                             totalItems={totalItems}
