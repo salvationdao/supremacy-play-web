@@ -33,39 +33,46 @@ export interface NiceBoxThingProps {
     caret?: {
         position: CaretPosition
         /**
-         * The colour of the caret. If no colour is provided, it will default to the specified border colour. An
+         * The colour of the caret. If no colour is provided, it will default to the border colour. An
          * error is thrown when both the caret color and border color is not provided.
          */
-        color?: ResponsiveStyleValue<Property.Color | string[] | undefined>
+        color?: ResponsiveStyleValue<Property.Color | undefined>
         size?: CaretSize
         detached?: boolean
     }
     border?: {
-        color: ResponsiveStyleValue<Property.Color | string[] | undefined>
+        color: ResponsiveStyleValue<Property.Color | undefined>
         thickness?: BorderThickness
     }
     background?: {
         /**
          * Specify the colours used for the gradient background, going from the top left corner and ending at the
          * bottom right corner of the NiceBoxThing. If only one colour is provided, then there is no gradient.
+         *
+         * If no colors are provided, it will default to the border color. An error is thrown when both the background
+         * colors and border color is not provided.
+         *
          * @example Generating a gradient background, where the top left corner is black and the bottom right corner
          * is neon blue:
          * ```
          * ["#000", colors.neonBlue]
          * ```
          */
-        color: ResponsiveStyleValue<Property.Color | undefined>[]
+        color?: ResponsiveStyleValue<Property.Color | undefined>[]
         opacity?: BackgroundOpacity
     }
     sx?: SxProps
-    children: React.ReactNode | null
+    children?: React.ReactNode
 }
 
 export const NiceBoxThing = ({ caret, border, background, sx, children }: NiceBoxThingProps) => {
     const renderCaret = () => {
         if (!caret) return
         const color = caret.color || border?.color
-        if (!color) throw new Error("A caret or border color must be provided for the caret to render.")
+        if (!color) {
+            console.warn("A caret or border color must be provided for the caret to render.")
+            return
+        }
 
         const styles: SxProps = {
             position: "absolute",
@@ -135,10 +142,22 @@ export const NiceBoxThing = ({ caret, border, background, sx, children }: NiceBo
             bottom: 0,
         }
 
-        if (background.color.length === 1) {
-            backgroundStyles.backgroundColor = background.color[0]
+        let colors: ResponsiveStyleValue<Property.Color | undefined>[] = []
+        if (background.color && background.color.length > 0) {
+            colors = background.color
+        } else if (border?.color) {
+            colors = [border.color]
+        }
+
+        if (colors.length === 0) {
+            console.warn("A background or border color must be provided for the background to render.")
+            return
+        }
+
+        if (colors.length === 1) {
+            backgroundStyles.backgroundColor = colors[0]
         } else {
-            backgroundStyles.background = `linear-gradient(to bottom right, ${background.color.join(", ")})`
+            backgroundStyles.background = `linear-gradient(to bottom right, ${colors.join(", ")})`
         }
 
         switch (typeof background.opacity === "undefined" ? BackgroundOpacity.Opaque : background.opacity) {
