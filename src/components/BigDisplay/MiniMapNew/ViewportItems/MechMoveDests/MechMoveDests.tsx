@@ -25,7 +25,6 @@ export const MechMoveDests = () => {
             ready: !!userID && !!factionID && !!currentArenaID,
         },
         (payload) => {
-            console.log(payload)
             setMechMoveCommands((prev) => {
                 if (!prev.length) {
                     return payload.filter((p) => !p.is_ended)
