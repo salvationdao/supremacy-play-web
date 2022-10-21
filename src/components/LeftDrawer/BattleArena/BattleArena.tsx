@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { useArena, useAuth, useGame, useSupremacy, useUI } from "../../../containers"
+import { useAuth, useGame, useSupremacy, useUI } from "../../../containers"
 import { colors, fonts } from "../../../theme/theme"
 import { ArenaSelector } from "./ArenaSelector/ArenaSelector"
 import { UnauthPrompt } from "./Common/UnauthPrompt"
@@ -9,11 +9,6 @@ import { QuickPlayerAbilities } from "./QuickPlayerAbilities/QuickPlayerAbilitie
 import { SupporterAbilities } from "./SupporterAbilities/SupporterAbilities"
 
 export const BattleArena = () => {
-    const { currentArenaID } = useArena()
-    return <BattleArenaInner key={`arena-${currentArenaID}`} />
-}
-
-const BattleArenaInner = () => {
     const { isAIDrivenMatch } = useGame()
     const { setSmallDisplayRef } = useUI()
     const { battleIdentifier } = useSupremacy()
