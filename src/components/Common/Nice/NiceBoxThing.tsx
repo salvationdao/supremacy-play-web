@@ -1,4 +1,4 @@
-import { Box, SxProps } from "@mui/material"
+import { Box, BoxProps, SxProps } from "@mui/material"
 import { ResponsiveStyleValue } from "@mui/system"
 import { Property } from "csstype"
 import React from "react"
@@ -29,7 +29,7 @@ export enum BackgroundOpacity {
     Opaque, // default
 }
 
-export interface NiceBoxThingProps {
+export interface NiceBoxThingProps extends Omit<BoxProps, "border" | "background"> {
     caret?: {
         position: CaretPosition
         /**
@@ -61,11 +61,15 @@ export interface NiceBoxThingProps {
         color?: ResponsiveStyleValue<Property.Color | undefined>[]
         opacity?: BackgroundOpacity
     }
+    enableBoxShadow?: boolean
     sx?: SxProps
     children?: React.ReactNode
 }
 
-export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(function NiceBoxThing({ caret, border, background, sx, children }) {
+export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(function NiceBoxThing(
+    { caret, border, background, enableBoxShadow = true, sx, children, ...props },
+    ref,
+) {
     const renderCaret = () => {
         if (!caret) return
         const color = caret.color || border?.color
@@ -208,11 +212,14 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
 
     return (
         <Box
+            ref={ref}
             sx={{
                 position: "relative",
+                boxShadow: enableBoxShadow ? 0.4 : "none",
                 ...generateBorderStyles(),
                 ...sx,
             }}
+            {...props}
         >
             {renderBackground()}
             {children}

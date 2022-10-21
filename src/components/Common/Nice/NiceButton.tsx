@@ -1,6 +1,6 @@
 import { Box, ButtonBaseProps, CircularProgress, SxProps } from "@mui/material"
 import React, { HTMLAttributeAnchorTarget } from "react"
-import { NiceBoxThing, NiceBoxThingProps } from "./NiceBoxThing"
+import { BackgroundOpacity, NiceBoxThing, NiceBoxThingProps } from "./NiceBoxThing"
 
 type Bruh = ButtonBaseProps & NiceBoxThingProps
 
@@ -43,7 +43,11 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
                     ...sx,
                 } as SxProps
             }
+            background={{
+                opacity: BackgroundOpacity.MoreTransparent,
+            }}
             disabled={buttonDisabled}
+            enableBoxShadow
             {...props}
         >
             {children}
