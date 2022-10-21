@@ -346,8 +346,8 @@ export interface MechMoveCommand {
     battle_id?: string
     mech_id: string
     triggered_by_id: string
-    cell_x: number
-    cell_y: number
+    cell_x: string
+    cell_y: string
     cancelled_at?: string
     reached_at?: string
     is_moving: boolean

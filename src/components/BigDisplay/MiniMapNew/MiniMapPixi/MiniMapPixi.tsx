@@ -1,6 +1,6 @@
 import { Box } from "@mui/material"
 import React, { useEffect, useMemo, useState } from "react"
-import { useGame, useMiniMapPixi } from "../../../../containers"
+import { useArena, useGame, useMiniMapPixi } from "../../../../containers"
 import { Dimension } from "../../../../types"
 import { MapScale } from "../OverlayItems/MapScale/MapScale"
 import { MapTargetSelect } from "../OverlayItems/MapTargetSelect/MapTargetSelect"
@@ -25,7 +25,12 @@ const propsAreEqual = (prevProps: MiniMapPixiProps, nextProps: MiniMapPixiProps)
     )
 }
 
-export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions }: MiniMapPixiProps) {
+export const MiniMapPixi = React.memo(function MiniMapPixi(props: MiniMapPixiProps) {
+    const { currentArenaID } = useArena()
+    return <MiniMapPixiInner key={`arena-${currentArenaID}`} {...props} />
+}, propsAreEqual)
+
+const MiniMapPixiInner = React.memo(function MiniMapPixiInner({ containerDimensions }: MiniMapPixiProps) {
     const { map } = useGame()
     const { pixiMiniMapPixi, setPixiMiniMapPixi, mapMousePosition, anyAbility, gridSizeRef, selection, selectMapPosition, setHighlightedMechParticipantID } =
         useMiniMapPixi()
