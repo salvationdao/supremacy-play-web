@@ -24,7 +24,7 @@ export class PixiMiniMapPixi {
 
         // Append pixi canvas to the DOM
         this.app.stage.sortableChildren = true
-        this.app.view.id = "mini-map-pixi-canvas"
+        this.app.view.id = "minimap-pixi-canvas"
         mapRef.appendChild(this.app.view)
 
         // Create pixi viewport
