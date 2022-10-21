@@ -59,7 +59,7 @@ export class PixiMiniMapPixi {
     }
 
     destroy() {
-        this.viewport.destroy({ children: true, texture: true, baseTexture: true })
+        this.viewport.destroy()
         this.app.destroy(true, true)
     }
 

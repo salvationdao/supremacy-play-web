@@ -71,7 +71,6 @@ const MiniMapPixiInner = React.memo(function MiniMapPixiInner({ containerDimensi
     // When map is changed
     useEffect(() => {
         if (!pixiMiniMapPixi || !map) return
-        console.log({ pixiMiniMapPixi, map })
         pixiMiniMapPixi.onMapChanged(map)
     }, [map, pixiMiniMapPixi])
 
