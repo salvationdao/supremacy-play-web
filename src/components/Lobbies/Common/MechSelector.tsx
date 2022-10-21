@@ -1,7 +1,7 @@
 import { Box, Pagination, Stack, Typography } from "@mui/material"
 import { useTheme } from "../../../containers/theme"
 import { useDebounce, usePagination } from "../../../hooks"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { LobbyMech } from "../../../types"
 import { colors, fonts } from "../../../theme/theme"
 import { SearchBattle } from "../../Replays/BattlesReplays/SearchBattle"
@@ -61,6 +61,24 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs, battleLobby, kee
 
     const [sort, setSort] = useState<string>(SortTypeLabel.RarestDesc)
 
+    // return true, if a mech has equipped a power core and more than one weapon
+    const queueable = useCallback((lb: LobbyMech): boolean => {
+        // check power core
+        if (!lb.power_core) return false
+
+        // check weapon count
+        let hasWeapon = false
+        lb.weapon_slots?.forEach((ws) => {
+            // skip, if already has weapon
+            if (hasWeapon) return
+
+            // check whether the mech has weapon equipped
+            hasWeapon = !!ws.weapon
+        })
+
+        return hasWeapon
+    }, [])
+
     const [factionStakedMechs, setFactionStakedMechs] = useState<LobbyMech[]>([])
     useGameServerSubscriptionFaction<LobbyMech[]>(
         {
@@ -71,7 +89,7 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs, battleLobby, kee
             if (!payload) return
             setFactionStakedMechs((fsm) => {
                 if (fsm.length === 0) {
-                    return payload.filter((p) => p.is_staked && p.can_deploy)
+                    return payload.filter((p) => p.is_staked && p.can_deploy && queueable(p))
                 }
 
                 // replace current list
@@ -87,7 +105,7 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs, battleLobby, kee
                     list.push(p)
                 })
 
-                return list.filter((p) => p.is_staked && p.can_deploy)
+                return list.filter((p) => p.is_staked && p.can_deploy && queueable(p))
             })
         },
     )
@@ -95,15 +113,15 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs, battleLobby, kee
     const [ownedMechs, setOwnedMechs] = useState<LobbyMech[]>([])
     useGameServerSubscriptionSecuredUser<LobbyMech[]>(
         {
-            URI: "/owned_mechs",
-            key: GameServerKeys.SubPlayerMechsBrief,
+            URI: "/owned_queueable_mechs",
+            key: GameServerKeys.SubPlayerQueueableMechs,
         },
         (payload) => {
             if (!payload) return
 
             setOwnedMechs((mqs) => {
                 if (mqs.length === 0) {
-                    return payload.filter((p) => !p.is_staked && p.can_deploy)
+                    return payload.filter((p) => !p.is_staked && p.can_deploy && queueable(p))
                 }
 
                 // replace current list
@@ -119,7 +137,7 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs, battleLobby, kee
                     list.push(p)
                 })
 
-                return list.filter((p) => !p.is_staked && p.can_deploy)
+                return list.filter((p) => !p.is_staked && p.can_deploy && queueable(p))
             })
         },
     )

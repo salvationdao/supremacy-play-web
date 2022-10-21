@@ -9,11 +9,12 @@ import { MechDetails, MechStatus, MechStatusEnum } from "../../../../types"
 import { ItemType } from "../../../../types/marketplace"
 import { useGameServerSubscription } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 
 export const MechButtons = ({
     mechDetails,
     mechStatus,
+    mechIsStaked,
     setSelectedMechDetails,
     setStakeMechModalOpen,
     setRepairMechModalOpen,
@@ -21,6 +22,7 @@ export const MechButtons = ({
 }: {
     mechDetails: MechDetails
     mechStatus?: MechStatus
+    mechIsStaked: boolean
     setSelectedMechDetails: React.Dispatch<React.SetStateAction<MechDetails | undefined>>
     setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setStakeMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -28,18 +30,9 @@ export const MechButtons = ({
     marketLocked: boolean
 }) => {
     const theme = useTheme()
+    const { power_core, weapons } = mechDetails
     const mechState = mechStatus?.status
-
-    const { id } = mechDetails
-    const [mechIsStaked, setMechIsStaked] = useState(false)
-
-    useGameServerSubscription<boolean>(
-        {
-            URI: `/public/mech/${id}/is_staked`,
-            key: GameServerKeys.SubMechIsStaked,
-        },
-        setMechIsStaked,
-    )
+    const canStake = useMemo(() => !!power_core && !!weapons?.length, [power_core, weapons])
 
     return (
         <ClipThing
@@ -88,6 +81,7 @@ export const MechButtons = ({
                     isFancy
                     primaryColor={colors.purple}
                     backgroundColor={colors.purple}
+                    disabled={!canStake}
                     label={mechIsStaked ? "UNSTAKE" : "STAKE"}
                     onClick={() => {
                         setSelectedMechDetails(mechDetails)

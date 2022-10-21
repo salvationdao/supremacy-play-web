@@ -6,7 +6,7 @@ import { BATTLE_ARENA_OPEN } from "../../../../constants"
 import { useAuth } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { getRarityDeets } from "../../../../helpers"
-import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
+import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { pulseEffect } from "../../../../theme/keyframes"
 import { fonts } from "../../../../theme/theme"
@@ -93,6 +93,15 @@ export const WarMachineHangarDetailsInner = ({
     const rarityDeets = useMemo(() => getRarityDeets(mechDetails?.chassis_skin?.tier || mechDetails?.tier || ""), [mechDetails])
 
     const updateMechDetails = (newMechDetails: MechDetails) => setMechDetails(newMechDetails)
+
+    const [mechIsStaked, setMechIsStaked] = useState(false)
+    useGameServerSubscription<boolean>(
+        {
+            URI: `/public/mech/${mechID}/is_staked`,
+            key: GameServerKeys.SubMechIsStaked,
+        },
+        setMechIsStaked,
+    )
 
     useGameServerSubscriptionFaction<MechDetails>(
         {
@@ -262,6 +271,7 @@ export const WarMachineHangarDetailsInner = ({
                         <MechButtons
                             mechDetails={mechDetails}
                             mechStatus={mechStatus}
+                            mechIsStaked={mechIsStaked}
                             setSelectedMechDetails={setSelectedMechDetails}
                             setDeployMechModalOpen={setDeployMechModalOpen}
                             setStakeMechModalOpen={setStakeMechModalOpen}

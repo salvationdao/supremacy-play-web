@@ -16,7 +16,7 @@ export enum GameServerKeys {
 
     // Battle Arena
     SubGameMapList = "GAME:MAP:LIST",
-    SubPlayerMechsBrief = "PLAYER:MECHS:BRIEF",
+    SubPlayerQueueableMechs = "PLAYER:QUEUEABLE:MECHS",
     SubArenaStatus = "ARENA:STATUS:UPDATED",
     SunBattleETA = "BATTLE:ETA:UPDATE",
     SubBattleArenaList = "BATTLE:ARENA:LIST",

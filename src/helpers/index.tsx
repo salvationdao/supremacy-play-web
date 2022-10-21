@@ -16,7 +16,7 @@ import {
     SvgWrapperProps,
 } from "../assets"
 import { colors } from "../theme/theme"
-import { AssetItemType, Dimension, GAME_CLIENT_TILE_SIZE, MysteryCrateType, Rarity, RarityEnum, UserRank } from "../types"
+import { AssetItemType, Dimension, GAME_CLIENT_TILE_SIZE, LobbyMech, MysteryCrateType, Rarity, RarityEnum, UserRank } from "../types"
 import { FiatOrderStatus } from "../types/fiat"
 import moment from "moment"
 
