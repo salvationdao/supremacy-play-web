@@ -24,7 +24,7 @@ export const BattleETA = () => {
             title={"BATTLE ETA: "}
             color={colors.offWhite}
             value={secondsToWords(battleETASeconds)}
-            tooltip="The current queue position of your faction."
+            tooltip="The average duration of a battle."
             disableIcon
         />
     )

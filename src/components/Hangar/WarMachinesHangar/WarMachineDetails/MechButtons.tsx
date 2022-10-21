@@ -7,25 +7,30 @@ import { MARKETPLACE_TABS } from "../../../../pages"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechDetails, MechStatus, MechStatusEnum } from "../../../../types"
 import { ItemType } from "../../../../types/marketplace"
+import { useMemo } from "react"
 
 export const MechButtons = ({
     mechDetails,
     mechStatus,
+    mechIsStaked,
     setSelectedMechDetails,
-    setRentalMechModalOpen,
+    setStakeMechModalOpen,
     setRepairMechModalOpen,
     marketLocked,
 }: {
     mechDetails: MechDetails
     mechStatus?: MechStatus
+    mechIsStaked: boolean
     setSelectedMechDetails: React.Dispatch<React.SetStateAction<MechDetails | undefined>>
     setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setStakeMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setRepairMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     marketLocked: boolean
 }) => {
     const theme = useTheme()
+    const { power_core, weapons } = mechDetails
     const mechState = mechStatus?.status
+    const canStake = useMemo(() => !!power_core && !!weapons?.length, [power_core, weapons])
 
     return (
         <ClipThing
@@ -74,11 +79,11 @@ export const MechButtons = ({
                     isFancy
                     primaryColor={colors.purple}
                     backgroundColor={colors.purple}
-                    label="RENT"
-                    disabled={true}
+                    disabled={!canStake}
+                    label={mechIsStaked ? "UNSTAKE" : "STAKE"}
                     onClick={() => {
                         setSelectedMechDetails(mechDetails)
-                        setRentalMechModalOpen(true)
+                        setStakeMechModalOpen(true)
                     }}
                 />
 
