@@ -7,8 +7,8 @@ import { GameServerKeys } from "../../../../../keys"
 export interface FactionMechCommand {
     id: string
     battle_id: string
-    cell_x: number
-    cell_y: number
+    cell_x: string
+    cell_y: string
     is_ai: boolean
     is_ended: boolean
 }
@@ -25,6 +25,7 @@ export const MechMoveDests = () => {
             ready: !!userID && !!factionID && !!currentArenaID,
         },
         (payload) => {
+            console.log(payload)
             setMechMoveCommands((prev) => {
                 if (!prev.length) {
                     return payload.filter((p) => !p.is_ended)
@@ -37,7 +38,7 @@ export const MechMoveDests = () => {
                     list.push(p)
                 })
 
-                return [...prev].map((l) => payload.find((p) => p.id === l.id) || l).filter((l) => !l.is_ended)
+                return list.filter((l) => !l.is_ended)
             })
         },
     )
