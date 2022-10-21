@@ -155,8 +155,25 @@ const ImpureUnityViewer = ({ unity, initialMech: mech }: MechViewer3DProps) => {
             console.info("update", obj)
             sendMessage("SceneContext", "ChangeMechSkin", JSON.stringify(obj))
 
-            // Use this to update weapon inherited skins at some point
-            pendingMechSkin.current = msu.mech_skin
+            // Update weapon inherited skins
+            onSlotLockUnlock(true)
+            const mechSkin = msu.mech_skin
+            for (let weaponSlotNumber = 0; weaponSlotNumber < mech.weapon_hardpoints; weaponSlotNumber++) {
+                const w = mech.weapons_map.get(weaponSlotNumber)
+                if (!w || !w.inherit_skin || !mechSkin.blueprint_weapon_skin_id) continue
+                const obj = {
+                    type: "weapon",
+                    ownership_id: w.id,
+                    static_id: w.blueprint_id,
+                    skin: {
+                        type: "skin",
+                        static_id: mechSkin.blueprint_weapon_skin_id,
+                    },
+                } as SiloObject
+                console.info("update skin", obj)
+                sendMessage("SceneContext", "SetSlotIndexToChange", weaponSlotNumber)
+                sendMessage("SceneContext", "ChangeSlotValue", JSON.stringify(obj))
+            }
         },
     }))
 
@@ -269,37 +286,6 @@ const ImpureUnityViewer = ({ unity, initialMech: mech }: MechViewer3DProps) => {
             unload()
         }
     }, [unload])
-
-    // Update weapon inherited skins
-    useEffect(() => {
-        if (isPendingChange || !pendingMechSkin.current) return
-        onSlotLockUnlock(true)
-        const mechSkin = pendingMechSkin.current
-        // Update weapon skins
-        for (let weaponSlotNumber = 0; weaponSlotNumber < mech.weapon_hardpoints; weaponSlotNumber++) {
-            const w = mech.weapons_map.get(weaponSlotNumber)
-            if (!w || !w.inherit_skin || !mechSkin.blueprint_weapon_skin_id) continue
-            const obj = {
-                type: "weapon",
-                ownership_id: w.id,
-                static_id: w.blueprint_id,
-                skin: w.weapon_skin
-                    ? {
-                          type: "skin",
-                          static_id: w.weapon_skin.blueprint_id,
-                      }
-                    : undefined,
-            } as SiloObject
-            obj.skin = {
-                type: "skin",
-                static_id: mechSkin.blueprint_weapon_skin_id,
-            }
-            console.info("update skin", obj)
-            sendMessage("SceneContext", "SetSlotIndexToChange", weaponSlotNumber)
-            sendMessage("SceneContext", "ChangeSlotValue", JSON.stringify(obj))
-        }
-        pendingMechSkin.current = undefined
-    }, [isPendingChange, mech.weapon_hardpoints, mech.weapons_map, onSlotLockUnlock, sendMessage])
 
     useEffect(() => {
         if (status < UnityStatus.Displaying || ready.current) return
