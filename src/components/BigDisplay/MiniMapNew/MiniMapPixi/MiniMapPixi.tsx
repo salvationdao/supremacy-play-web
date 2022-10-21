@@ -1,6 +1,6 @@
 import { Box } from "@mui/material"
 import React, { useEffect, useMemo, useState } from "react"
-import { useGame, useMiniMapPixi, useSupremacy } from "../../../../containers"
+import { useGame, useMiniMapPixi } from "../../../../containers"
 import { Dimension } from "../../../../types"
 import { MapScale } from "../OverlayItems/MapScale/MapScale"
 import { MapTargetSelect } from "../OverlayItems/MapTargetSelect/MapTargetSelect"
@@ -27,7 +27,6 @@ const propsAreEqual = (prevProps: MiniMapPixiProps, nextProps: MiniMapPixiProps)
 
 export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions }: MiniMapPixiProps) {
     const { map } = useGame()
-    const { battleIdentifier } = useSupremacy()
     const { pixiMiniMapPixi, setPixiMiniMapPixi, mapMousePosition, anyAbility, gridSizeRef, selection, selectMapPosition, setHighlightedMechParticipantID } =
         useMiniMapPixi()
     const [miniMapPixiRef, setMiniMapPixiRef] = useState<HTMLDivElement | null>(null)
@@ -104,7 +103,7 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
             <Box
                 id="minimap-pixi-container"
                 ref={setMiniMapPixiRef}
-                key={`mini-map-pixi-${battleIdentifier}-${map?.Name}`}
+                // key={`mini-map-pixi-${battleIdentifier}-${map?.Name}`}
                 sx={{
                     position: "relative",
                     width: containerDimensions.width,
@@ -130,5 +129,5 @@ export const MiniMapPixi = React.memo(function MiniMapPixi({ containerDimensions
                 )}
             </Box>
         )
-    }, [battleIdentifier, containerDimensions.height, containerDimensions.width, isReady, map?.Name])
+    }, [containerDimensions.height, containerDimensions.width, isReady])
 }, propsAreEqual)
