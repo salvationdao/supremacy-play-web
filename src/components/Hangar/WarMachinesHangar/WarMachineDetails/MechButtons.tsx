@@ -7,9 +7,7 @@ import { MARKETPLACE_TABS } from "../../../../pages"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechDetails, MechStatus, MechStatusEnum } from "../../../../types"
 import { ItemType } from "../../../../types/marketplace"
-import { useGameServerSubscription } from "../../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../../keys"
-import { useMemo, useState } from "react"
+import { useMemo } from "react"
 
 export const MechButtons = ({
     mechDetails,
