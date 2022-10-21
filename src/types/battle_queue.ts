@@ -48,6 +48,7 @@ export interface BattleLobbiesMech extends MechBasic {
     avatar_url: string
     faction_id: string
     owner?: User
+    queued_by?: User
     is_destroyed: boolean
     weapon_slots: MechWeaponSlot[]
 }

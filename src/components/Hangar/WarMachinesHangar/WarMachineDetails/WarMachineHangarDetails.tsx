@@ -6,7 +6,7 @@ import { BATTLE_ARENA_OPEN } from "../../../../constants"
 import { useAuth } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { getRarityDeets } from "../../../../helpers"
-import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
+import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { pulseEffect } from "../../../../theme/keyframes"
 import { fonts } from "../../../../theme/theme"
@@ -20,7 +20,7 @@ import { MechButtons } from "./MechButtons"
 import { MechLoadout } from "./MechLoadout/MechLoadout"
 import { MechName } from "./MechName"
 import { DeployModal } from "./Modals/DeployModal"
-import { RentalModal } from "./Modals/RentalModal"
+import { StakeModal } from "./Modals/StakeModal"
 import { RepairModal } from "./Modals/RepairModal/RepairModal"
 
 interface WarMachineHangarDetailsProps {
@@ -31,7 +31,7 @@ interface WarMachineHangarDetailsProps {
 export const WarMachineHangarDetails = ({ drawerContainerRef, mechID }: WarMachineHangarDetailsProps) => {
     const [selectedMechDetails, setSelectedMechDetails] = useState<MechDetails>()
     const [deployMechModalOpen, setDeployMechModalOpen] = useState<boolean>(false)
-    const [rentalMechModalOpen, setRentalMechModalOpen] = useState<boolean>(false)
+    const [stakeMechModalOpen, setStakeMechModalOpen] = useState<boolean>(false)
     const [repairMechModalOpen, setRepairMechModalOpen] = useState<boolean>(false)
 
     return (
@@ -41,7 +41,7 @@ export const WarMachineHangarDetails = ({ drawerContainerRef, mechID }: WarMachi
                 mechID={mechID}
                 setSelectedMechDetails={setSelectedMechDetails}
                 setDeployMechModalOpen={setDeployMechModalOpen}
-                setRentalMechModalOpen={setRentalMechModalOpen}
+                setStakeMechModalOpen={setStakeMechModalOpen}
                 setRepairMechModalOpen={setRepairMechModalOpen}
             />
 
@@ -53,12 +53,8 @@ export const WarMachineHangarDetails = ({ drawerContainerRef, mechID }: WarMachi
                 />
             )}
 
-            {selectedMechDetails && rentalMechModalOpen && (
-                <RentalModal
-                    selectedMechDetails={selectedMechDetails}
-                    rentalMechModalOpen={rentalMechModalOpen}
-                    setRentalMechModalOpen={setRentalMechModalOpen}
-                />
+            {selectedMechDetails && stakeMechModalOpen && (
+                <StakeModal selectedMechDetails={selectedMechDetails} rentalMechModalOpen={stakeMechModalOpen} setRentalMechModalOpen={setStakeMechModalOpen} />
             )}
 
             {selectedMechDetails && repairMechModalOpen && (
@@ -77,7 +73,7 @@ interface WarMachineHangarDetailsInnerProps {
     mechID: string
     setSelectedMechDetails: React.Dispatch<React.SetStateAction<MechDetails | undefined>>
     setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    setRentalMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setStakeMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setRepairMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
@@ -86,7 +82,7 @@ export const WarMachineHangarDetailsInner = ({
     mechID,
     setSelectedMechDetails,
     setDeployMechModalOpen,
-    setRentalMechModalOpen,
+    setStakeMechModalOpen,
     setRepairMechModalOpen,
 }: WarMachineHangarDetailsInnerProps) => {
     const theme = useTheme()
@@ -97,6 +93,15 @@ export const WarMachineHangarDetailsInner = ({
     const rarityDeets = useMemo(() => getRarityDeets(mechDetails?.chassis_skin?.tier || mechDetails?.tier || ""), [mechDetails])
 
     const updateMechDetails = (newMechDetails: MechDetails) => setMechDetails(newMechDetails)
+
+    const [mechIsStaked, setMechIsStaked] = useState(false)
+    useGameServerSubscription<boolean>(
+        {
+            URI: `/public/mech/${mechID}/is_staked`,
+            key: GameServerKeys.SubMechIsStaked,
+        },
+        setMechIsStaked,
+    )
 
     useGameServerSubscriptionFaction<MechDetails>(
         {
@@ -266,9 +271,10 @@ export const WarMachineHangarDetailsInner = ({
                         <MechButtons
                             mechDetails={mechDetails}
                             mechStatus={mechStatus}
+                            mechIsStaked={mechIsStaked}
                             setSelectedMechDetails={setSelectedMechDetails}
                             setDeployMechModalOpen={setDeployMechModalOpen}
-                            setRentalMechModalOpen={setRentalMechModalOpen}
+                            setStakeMechModalOpen={setStakeMechModalOpen}
                             setRepairMechModalOpen={setRepairMechModalOpen}
                             marketLocked={mechDetails.market_locked}
                         />

@@ -117,7 +117,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                             height: "30rem",
                             borderRadius: 0,
                             backgroundColor: `${colors.offWhite}20`,
-                            border: ms?.owner?.id === userID ? `${colors.gold}BB 2px solid` : undefined,
+                            border: ms?.queued_by?.id === userID ? `${colors.gold}BB 2px solid` : undefined,
                         }}
                         spacing={0.8}
                     >
@@ -183,11 +183,13 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                         <WeaponSlot key={ws.slot_number} weaponSlot={ws} tooltipPlacement={"top-end"} size="3rem" />
                                     ))}
                                 </Stack>
-                                <Box sx={{ position: "absolute", right: 0, top: 0, transform: "translate(40%, -20%)" }}>
-                                    <IconButton size="small" onClick={() => setLeftMechID(ms?.mech_id || "")}>
-                                        <SvgLogout size="1.5rem" />
-                                    </IconButton>
-                                </Box>
+                                {!isLocked && ms.queued_by?.id === userID && (
+                                    <Box sx={{ position: "absolute", right: 0, top: 0, transform: "translate(40%, -20%)" }}>
+                                        <IconButton size="small" onClick={() => setLeftMechID(ms?.mech_id || "")}>
+                                            <SvgLogout size="1.5rem" />
+                                        </IconButton>
+                                    </Box>
+                                )}
 
                                 <Typography
                                     variant="h6"
@@ -201,7 +203,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                 >
                                     {ms.name || ms.label}
                                 </Typography>
-                                {ms.owner && (
+                                {ms.queued_by && (
                                     <Typography
                                         variant="h6"
                                         sx={{
@@ -210,7 +212,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                             fontStyle: "italic",
                                         }}
                                     >
-                                        {`@${ms.owner.username}#${ms.owner.gid}`}
+                                        {`@${ms.queued_by.username}#${ms.queued_by.gid}`}
                                     </Typography>
                                 )}
                             </Stack>
@@ -226,7 +228,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                             compact
                             outerSx={{ flex: 1, width: "100%" }}
                         />
-                        {ms.owner?.id === userID && leftMechID === ms.mech_id && (
+                        {!isLocked && ms.queued_by?.id === userID && leftMechID === ms.mech_id && (
                             <ConfirmModal title="Confirm Removal" onConfirm={() => leaveLobby(ms.mech_id)} onClose={() => setLeftMechID("")}>
                                 <Typography
                                     variant="h6"

@@ -191,8 +191,8 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
                         id: "move_command",
                         mech_id: id,
                         triggered_by_id: "x",
-                        cell_x: mapPos.position.x,
-                        cell_y: mapPos.position.y,
+                        cell_x: `${mapPos.position.x}`,
+                        cell_y: `${mapPos.position.y}`,
                         is_moving: true,
                         remain_cooldown_seconds: 0,
                         is_mini_mech: false,
@@ -333,7 +333,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
             // Update the mech move dash line length and rotation
             const mCommand = tempMechMoveCommand.current || mechMoveCommand.current
             if (mCommand?.cell_x && mCommand?.cell_y && !mCommand?.reached_at) {
-                const mapPos = gridCellToViewportPosition.current(mCommand.cell_x, mCommand.cell_y)
+                const mapPos = gridCellToViewportPosition.current(parseFloat(mCommand.cell_x), parseFloat(mCommand.cell_y))
                 pixiMapMech.updateMechMovePosition(mapPos.x, mapPos.y)
             } else {
                 pixiMapMech.hideMechMovePosition()

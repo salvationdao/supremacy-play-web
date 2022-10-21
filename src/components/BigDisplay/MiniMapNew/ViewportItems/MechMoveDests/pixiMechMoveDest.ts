@@ -36,7 +36,7 @@ export class PixiMechMoveDest {
             true,
         )
 
-        const pos = gridCellToViewportPosition.current(moveCommand.cell_x, moveCommand.cell_y)
+        const pos = gridCellToViewportPosition.current(parseFloat(moveCommand.cell_x), parseFloat(moveCommand.cell_y))
         this.root.position.set(pos.x, pos.y)
 
         // Add everything to container

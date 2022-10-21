@@ -24,6 +24,7 @@ export class PixiMiniMapPixi {
 
         // Append pixi canvas to the DOM
         this.app.stage.sortableChildren = true
+        this.app.view.id = "minimap-pixi-canvas"
         mapRef.appendChild(this.app.view)
 
         // Create pixi viewport
@@ -58,7 +59,7 @@ export class PixiMiniMapPixi {
     }
 
     destroy() {
-        this.viewport.destroy({ children: true, texture: true, baseTexture: true })
+        this.viewport.destroy()
         this.app.destroy(true, true)
     }
 

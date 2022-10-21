@@ -159,6 +159,7 @@ export const MiniMapPixiContainer = createContainer(() => {
                     ability_id: anyAbility.current.id,
                     blueprint_ability_id: anyAbility.current.id,
                     location_select_type: anyAbility.current.location_select_type,
+                    mech_hash: anyAbility.current.mech_hash,
                 }
 
                 let endpoint = GameServerKeys.PlayerAbilityUse
