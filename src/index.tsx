@@ -1,4 +1,7 @@
 import { Box, LinearProgress, Stack, Typography } from "@mui/material"
+import { LocalizationProvider } from "@mui/x-date-pickers"
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment"
+import type {} from "@mui/x-date-pickers/themeAugmentation"
 import { TourProvider } from "@reactour/tour"
 import * as Sentry from "@sentry/react"
 import { Buffer } from "buffer"
@@ -46,9 +49,6 @@ import { ErrorFallbackPage } from "./pages/ErrorFallbackPage"
 import { LoginRedirect } from "./pages/LoginRedirect"
 import { ROUTES_ARRAY, ROUTES_MAP } from "./routes"
 import { colors, fonts } from "./theme/theme"
-import type {} from "@mui/x-date-pickers/themeAugmentation"
-import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment"
-import { LocalizationProvider } from "@mui/x-date-pickers"
 
 const AppInner = () => {
     const history = useHistory()

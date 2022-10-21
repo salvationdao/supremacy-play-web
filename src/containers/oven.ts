@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-import { useParameterizedQuery } from "react-fetching-library"
 import { createContainer } from "unstated-next"
-import { useGlobalNotifications, useSupremacy } from "."
-import { GetOvenStreamList } from "../fetching"
+import { useSupremacy } from "."
 import { parseString } from "../helpers"
 import { useToggle } from "../hooks"
 
@@ -14,7 +12,7 @@ export interface OvenStream {
     isBlank?: boolean
 }
 
-const blankOptionOven: OvenStream = {
+export const blankOptionOven: OvenStream = {
     name: "No Stream",
     default_resolution: "",
     base_url: "",
@@ -89,22 +87,19 @@ export interface OvenPlayerInstance {
 }
 
 export const OvenStreamContainer = createContainer(() => {
-    const { newSnackbarMessage } = useGlobalNotifications()
     const { hasInteracted } = useSupremacy()
-    const { query: queryOvenGetStreamList } = useParameterizedQuery(GetOvenStreamList)
 
     const ovenPlayer = useRef<OvenPlayerInstance>()
 
     // Stream
-    const [loadedOvenStreams, setLoadedOvenStreams] = useState<OvenStream[]>([])
-    const [ovenStreamOptions, setOvenStreamOptions] = useState<OvenStream[]>([])
-    const [currentOvenStream, setCurrentOvenStream] = useState<OvenStream>()
+    const [currentOvenStream, setCurrentOvenStream] = useState<OvenStream>(blankOptionOven)
+    const [ovenStreamOptions, setCurrentStreamOptions] = useState<OvenStream[]>([])
 
     // Volume control
     const [volume, setVolume] = useState(0)
     const [isMute, toggleIsMute] = useToggle(true)
 
-    // oven resolution control
+    // Oven resolution control
     const [selectedOvenResolution, setSelectedOvenResolution] = useState<string>()
     const [ovenResolutions, setOvenResolutions] = useState<string[]>([])
 
@@ -116,22 +111,6 @@ export const OvenStreamContainer = createContainer(() => {
         setVolume(parseString(localStorage.getItem("streamVolume"), 0.28))
         toggleIsMute(localStorage.getItem("isMute") == "true")
     }, [toggleIsMute, hasInteracted])
-
-    // Fetch stream list
-    useEffect(() => {
-        ;(async () => {
-            try {
-                const resp = await queryOvenGetStreamList({})
-                if (resp.error || !resp.payload) return
-
-                setLoadedOvenStreams([blankOptionOven, ...resp.payload])
-            } catch (err) {
-                const message = typeof err === "string" ? err : "Failed to get the list of oven streams."
-                newSnackbarMessage(message, "error")
-                console.error(message)
-            }
-        })()
-    }, [newSnackbarMessage, queryOvenGetStreamList])
 
     useEffect(() => {
         if (hasInteracted) localStorage.setItem("isMute", isMute ? "true" : "false")
@@ -163,25 +142,6 @@ export const OvenStreamContainer = createContainer(() => {
     useEffect(() => {
         localStorage.setItem("isStreamEnlarged", isEnlarged.toString())
     }, [isEnlarged])
-
-    // Build stream options for the drop down
-    useEffect(() => {
-        if (!loadedOvenStreams || loadedOvenStreams.length <= 0) return
-
-        setOvenStreamOptions(loadedOvenStreams)
-
-        // Load saved stream from local storage
-        const localStream = localStorage.getItem("selectedOvenStream")
-        if (localStream) {
-            const savedStream = JSON.parse(localStream)
-            const exists = loadedOvenStreams.find((os) => os.name === savedStream.name)
-            if (exists) {
-                changeOvenStream(exists)
-                return
-            }
-        }
-        changeOvenStream(loadedOvenStreams[1])
-    }, [changeOvenStream, loadedOvenStreams])
 
     const getSourceIdx = (sources: OvenPlayerSource[], resolution: string) => {
         //  get source with index
@@ -232,6 +192,7 @@ export const OvenStreamContainer = createContainer(() => {
         setOvenResolutions,
 
         ovenStreamOptions,
+        setCurrentStreamOptions,
         currentOvenStream,
 
         changeOvenStream,

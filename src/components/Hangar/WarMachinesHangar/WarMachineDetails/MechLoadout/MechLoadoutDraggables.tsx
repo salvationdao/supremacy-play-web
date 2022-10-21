@@ -130,7 +130,7 @@ export const MechLoadoutDraggables = ({
 
             if (!resp) return
             setMechSkinsError(undefined)
-            setMechSkins(resp.submodels)
+            setMechSkins(resp.submodels || [])
             mechSkinsMemoized.current = resp.submodels
         } catch (e) {
             setMechSkinsError(typeof e === "string" ? e : "Failed to get mech skins.")

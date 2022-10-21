@@ -1,7 +1,7 @@
 import { useMemo, useRef } from "react"
 import { useHistory, useLocation } from "react-router-dom"
 
-export const useUrlQuery = (): [URLSearchParams, (newQuery: { [key: string]: string | undefined }) => void] => {
+export const useUrlQuery = (): [URLSearchParams, React.MutableRefObject<(newQuery: { [key: string]: string | undefined }) => void>] => {
     const history = useHistory()
     const { pathname, search, hash } = useLocation()
 
@@ -14,5 +14,5 @@ export const useUrlQuery = (): [URLSearchParams, (newQuery: { [key: string]: str
         history.replace(`${pathname}?${query.toString()}${hash}`)
     })
 
-    return [query, updateQuery.current]
+    return [query, updateQuery]
 }

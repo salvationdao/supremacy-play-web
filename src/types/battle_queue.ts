@@ -72,7 +72,8 @@ export interface MechWeaponSlot {
 
 export interface Weapon {
     label: string
-    avatar_url: string
+    avatar_url: string | undefined
+    image_url: string
     damage: number
     damage_falloff: number
     damage_falloff_rate: number

@@ -277,7 +277,7 @@ export class Game {
 
         const topBlock = this.blocks[this.blocks.length - 1]
         // Send place block update to server
-        if (prevBlock) {
+        if (curBlock && prevBlock) {
             this.onPlaceBlock.current({
                 id: curBlock.blockServer.id,
                 score: this.score,
@@ -287,7 +287,7 @@ export class Game {
         }
 
         // Update camera y position
-        if (curBlock?.blockServer.type !== BlockType.Bomb || (landedOnStack && curBlock.blockServer.type === BlockType.Bomb)) {
+        if (curBlock?.blockServer.type !== BlockType.Bomb || (landedOnStack && curBlock?.blockServer.type === BlockType.Bomb)) {
             this.stage.setCamera(
                 topBlock?.mesh.position.x || 0,
                 this.blocks.length * blockConfig.initHeight + cameraConfig.offsetY,
