@@ -144,6 +144,7 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
             left: 0,
             right: 0,
             bottom: 0,
+            pointerEvents: "none",
         }
 
         let colors: ResponsiveStyleValue<Property.Color | undefined>[] = []
@@ -214,6 +215,7 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
         <Box
             ref={ref}
             sx={{
+                zIndex: 0,
                 position: "relative",
                 boxShadow: enableBoxShadow ? 0.4 : "none",
                 ...generateBorderStyles(),

@@ -351,6 +351,7 @@ export interface SvgWrapperProps extends BoxProps {
 export const SvgWrapper = React.memo(function SvgWrapper({ fill, stroke, strokeWidth, sx, size, width, height, ...props }: SvgWrapperProps) {
     return (
         <Box
+            component="span"
             sx={{
                 display: "flex",
                 justifyContent: "center",
