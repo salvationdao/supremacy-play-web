@@ -196,6 +196,7 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
                                             sendMessage()
                                             break
                                         }
+                                        case "Tab":
                                         case "ArrowUp": {
                                             e.preventDefault()
                                             document.getElementById(`emoji-index-${faction_id}-0`)?.focus() ||
