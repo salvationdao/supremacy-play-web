@@ -1,19 +1,36 @@
 import { Box, ButtonBaseProps, CircularProgress, SxProps } from "@mui/material"
 import React, { HTMLAttributeAnchorTarget } from "react"
+import { Link } from "react-router-dom"
 import { BackgroundOpacity, NiceBoxThing, NiceBoxThingProps } from "./NiceBoxThing"
 
 type Bruh = ButtonBaseProps & NiceBoxThingProps
 
-export interface NiceButtonProps extends Omit<Bruh, "sx"> {
-    to?: string
-    href?: string
-    target?: HTMLAttributeAnchorTarget | undefined
+interface CommonProps extends Omit<Bruh, "sx"> {
     loading?: boolean
     sx?: SxProps
 }
 
+// Conditional props
+type LinkProps =
+    | {
+          link?: {
+              href: string
+              target: HTMLAttributeAnchorTarget | undefined
+          }
+          route: never
+      }
+    | {
+          link: never
+          route: {
+              to: string
+              target: HTMLAttributeAnchorTarget | undefined
+          }
+      }
+
+type NiceButtonProps = CommonProps & LinkProps
+
 export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(function NiceButton(
-    { to, href, loading, disabled, sx, children, ...props },
+    { link, route, loading, disabled, sx, children, ...props },
     ref,
 ) {
     const buttonDisabled = loading || disabled
@@ -50,7 +67,17 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
             enableBoxShadow
             {...props}
         >
-            {children}
+            {route ? (
+                <Link to={route.to} target={route.target}>
+                    {children}
+                </Link>
+            ) : link ? (
+                <a href={link.href} target={link.target}>
+                    {children}
+                </a>
+            ) : (
+                children
+            )}
             {loading && (
                 <Box
                     sx={{
