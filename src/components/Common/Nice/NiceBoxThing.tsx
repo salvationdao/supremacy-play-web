@@ -1,7 +1,7 @@
 import { Box, BoxProps, SxProps } from "@mui/material"
 import { ResponsiveStyleValue } from "@mui/system"
 import { Property } from "csstype"
-import React from "react"
+import React, { useCallback } from "react"
 
 export enum CaretPosition {
     TopLeft, // default
@@ -70,7 +70,7 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
     { caret, border, background, enableBoxShadow = true, sx, children, ...props },
     ref,
 ) {
-    const renderCaret = () => {
+    const renderCaret = useCallback(() => {
         if (!caret) return
         const color = caret.color || border?.color
         if (!color) {
@@ -132,9 +132,9 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
                 }}
             />
         )
-    }
+    }, [border?.color, caret])
 
-    const renderBackground = () => {
+    const renderBackground = useCallback(() => {
         if (!background) return
 
         const backgroundStyles: SxProps = {
@@ -189,9 +189,9 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
                 }}
             />
         )
-    }
+    }, [background, border?.color])
 
-    const generateBorderStyles = () => {
+    const generateBorderStyles = useCallback(() => {
         if (!border) return {}
         const styles: SxProps = {
             borderColor: border.color,
@@ -208,7 +208,7 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
         }
 
         return styles
-    }
+    }, [border])
 
     return (
         <Box
