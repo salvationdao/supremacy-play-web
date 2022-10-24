@@ -912,10 +912,12 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                         }}
                     >
                         {mech_type === MechTypeEnum.Humanoid && renderWeaponSlot(1)}
-                        {mech_type=== MechTypeEnum.Platform && <>
-                        {renderWeaponSlot(2)}
-                        {renderWeaponSlot(3)}
-                        </>}
+                        {mech_type === MechTypeEnum.Platform && (
+                            <>
+                                {renderWeaponSlot(2)}
+                                {renderWeaponSlot(3)}
+                            </>
+                        )}
                     </Stack>
 
                     {/* Bottom Left Side */}
