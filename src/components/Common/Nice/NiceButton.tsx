@@ -51,10 +51,10 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
                     padding: "1rem",
                     backgroundColor: "transparent",
                     cursor: disabled ? "auto" : "pointer",
-                    "&:hover": {
+                    "&:hover:enabled": {
                         backgroundColor: "rgba(0, 0, 0, 0.3)",
                     },
-                    "&:active": {
+                    "&:active:enabled": {
                         backgroundColor: "rgba(0, 0, 0, 0.7)",
                     },
                     ...sx,
