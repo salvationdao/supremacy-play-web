@@ -5,7 +5,7 @@ import { SvgSkin, SvgWeapons } from "../../../../../assets"
 import { getRarityDeets } from "../../../../../helpers"
 import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
-import { colors, fonts, theme } from "../../../../../theme/theme"
+import { fonts, theme } from "../../../../../theme/theme"
 import { AssetItemType, MechSkin, PowerCore, Utility, Weapon } from "../../../../../types"
 import { ClipThing } from "../../../../Common/ClipThing"
 import { GetSubmodelsRequest, GetSubmodelsResponse } from "../../../SubmodelHangar/SubmodelsHangar"
@@ -196,7 +196,6 @@ export const MechLoadoutDraggables = ({
                         ref={ref}
                         imageUrl={w.image_url || w.avatar_url}
                         label={w.label}
-                        primaryColor={colors.weapons}
                         Icon={SvgWeapons}
                         rarity={w.tier ? getRarityDeets(w.tier) : undefined}
                     />
@@ -243,7 +242,6 @@ export const MechLoadoutDraggables = ({
                         ref={ref}
                         imageUrl={ms.swatch_images?.image_url || ms.swatch_images?.avatar_url || ms.image_url || ms.avatar_url}
                         label={ms.label}
-                        primaryColor={colors.chassisSkin}
                         Icon={SvgSkin}
                         rarity={ms.tier ? getRarityDeets(ms.tier) : undefined}
                         onClick={() => onMechSkinClick(ms)}
@@ -266,7 +264,6 @@ export const MechLoadoutDraggables = ({
                         visibility: "hidden",
                     }}
                     label="OUTRO ANIMATION"
-                    primaryColor={colors.outroAnimation}
                     isEmpty
                 />
                 <ClipThing
@@ -305,7 +302,6 @@ export const MechLoadoutDraggables = ({
                         visibility: "hidden",
                     }}
                     label="OUTRO ANIMATION"
-                    primaryColor={colors.outroAnimation}
                     isEmpty
                 />
                 <ClipThing

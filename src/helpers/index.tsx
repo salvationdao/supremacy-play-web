@@ -1,5 +1,6 @@
 import BigNumber from "bignumber.js"
 import emojiRegex from "emoji-regex"
+import moment from "moment"
 import { VoidFunctionComponent } from "react"
 import {
     SafePNG,
@@ -18,7 +19,6 @@ import {
 import { colors } from "../theme/theme"
 import { AssetItemType, Dimension, GAME_CLIENT_TILE_SIZE, MysteryCrateType, Rarity, RarityEnum, UserRank } from "../types"
 import { FiatOrderStatus } from "../types/fiat"
-import moment from "moment"
 
 // Capitalize convert a string "example" to "Example"
 export const Capitalize = (str: string): string => str[0].toUpperCase() + str.substring(1).toLowerCase()

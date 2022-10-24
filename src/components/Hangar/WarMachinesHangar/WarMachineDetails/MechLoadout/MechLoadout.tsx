@@ -712,9 +712,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                     <MechLoadoutItem
                                         disabled={loadoutDisabled}
                                         imageUrl={powerCore.image_url || powerCore.avatar_url}
-                                        videoUrls={[powerCore.card_animation_url]}
                                         label={powerCore.label}
-                                        primaryColor={colors.powerCore}
                                         Icon={SvgPowerCore}
                                         rarity={getRarityDeets(powerCore.tier)}
                                         renderModal={renderModal}
@@ -728,15 +726,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                 )
                             }
 
-                            return (
-                                <MechLoadoutItem
-                                    disabled={loadoutDisabled}
-                                    label="POWER CORE"
-                                    primaryColor={colors.powerCore}
-                                    renderModal={renderModal}
-                                    isEmpty
-                                />
-                            )
+                            return <MechLoadoutItem disabled={loadoutDisabled} label="POWER CORE" renderModal={renderModal} isEmpty />
                         })()}
 
                         <Stack
@@ -781,12 +771,21 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                             key={weapon.id}
                                             slotNumber={slotNumber}
                                             imageUrl={weapon.image_url || weapon.avatar_url}
-                                            videoUrls={[weapon.card_animation_url]}
                                             label={weapon.label}
-                                            primaryColor={colors.weapons}
+                                            subLabel={weapon.weapon_type}
                                             Icon={SvgWeapons}
+                                            TopRight={
+                                                <Stack>
+                                                    <Typography
+                                                        sx={{
+                                                            fontFamily: fonts.shareTech,
+                                                        }}
+                                                    >
+                                                        {weapon.damage}
+                                                    </Typography>
+                                                </Stack>
+                                            }
                                             rarity={weapon.weapon_skin ? getRarityDeets(weapon.weapon_skin.tier) : undefined}
-                                            hasSkin={!!weapon.weapon_skin}
                                             renderModal={renderModal}
                                             locked={weapon.locked_to_mech}
                                             onUnequip={() =>
@@ -807,7 +806,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                         key={slotNumber}
                                         slotNumber={slotNumber}
                                         label="WEAPON"
-                                        primaryColor={colors.weapons}
                                         renderModal={renderModal}
                                         isEmpty
                                     />
@@ -887,7 +885,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                             mechSkin.swatch_images?.image_url || mechSkin.swatch_images?.avatar_url || mechSkin.image_url || mechSkin.avatar_url
                                         }
                                         label={mechSkin.label}
-                                        primaryColor={colors.chassisSkin}
                                         Icon={SvgSkin}
                                         rarity={getRarityDeets(mechSkin.tier)}
                                         renderModal={renderModal}
@@ -896,54 +893,30 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                             }
 
                             return (
-                                <MechLoadoutItem
-                                    ref={mechSkinItemRef}
-                                    disabled={loadoutDisabled}
-                                    label="SUBMODEL"
-                                    primaryColor={colors.chassisSkin}
-                                    renderModal={renderModal}
-                                    isEmpty
-                                    locked
-                                />
+                                <MechLoadoutItem ref={mechSkinItemRef} disabled={loadoutDisabled} label="SUBMODEL" renderModal={renderModal} isEmpty locked />
                             )
                         })()}
 
                         {intro_animation ? (
                             <MechLoadoutItem
                                 imageUrl={intro_animation.image_url || intro_animation.avatar_url}
-                                videoUrls={[intro_animation.card_animation_url]}
                                 label={intro_animation.label}
-                                primaryColor={colors.introAnimation}
                                 Icon={SvgIntroAnimation}
                                 side="right"
                             />
                         ) : (
-                            <MechLoadoutItem
-                                label="INTRO ANIMATION"
-                                primaryColor={colors.introAnimation}
-                                onClick={() => console.log("AAAAA")}
-                                isEmpty
-                                disabled
-                            />
+                            <MechLoadoutItem label="INTRO ANIMATION" onClick={() => console.log("AAAAA")} isEmpty disabled />
                         )}
 
                         {outro_animation ? (
                             <MechLoadoutItem
                                 imageUrl={outro_animation.image_url || outro_animation.avatar_url}
-                                videoUrls={[outro_animation.card_animation_url]}
                                 label={outro_animation.label}
-                                primaryColor={colors.outroAnimation}
                                 Icon={SvgOutroAnimation}
                                 side="right"
                             />
                         ) : (
-                            <MechLoadoutItem
-                                label="OUTRO ANIMATION"
-                                primaryColor={colors.outroAnimation}
-                                onClick={() => console.log("AAAAA")}
-                                isEmpty
-                                disabled
-                            />
+                            <MechLoadoutItem label="OUTRO ANIMATION" onClick={() => console.log("AAAAA")} isEmpty disabled />
                         )}
                     </Stack>
                 </Box>
