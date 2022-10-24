@@ -1,6 +1,5 @@
 export enum BlockType {
     Normal = "NORMAL",
-    Shrink = "SHRINK",
     Fast = "FAST",
     Bomb = "BOMB",
     End = "END",
