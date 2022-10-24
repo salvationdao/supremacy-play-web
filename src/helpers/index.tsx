@@ -17,7 +17,7 @@ import {
     SvgWrapperProps,
 } from "../assets"
 import { colors } from "../theme/theme"
-import { AssetItemType, Dimension, GAME_CLIENT_TILE_SIZE, MysteryCrateType, Rarity, RarityEnum, UserRank } from "../types"
+import { AssetItemType, Dimension, GAME_CLIENT_TILE_SIZE, MechStatus, MechStatusEnum, MysteryCrateType, Rarity, RarityEnum, UserRank } from "../types"
 import { FiatOrderStatus } from "../types/fiat"
 
 // Capitalize convert a string "example" to "Example"
@@ -262,6 +262,42 @@ export const snakeToTitle = (str: string, lowerCase?: boolean): string => {
 
 export const snakeToSlug = (str: string): string => {
     return str.split("_").join("-").toLowerCase()
+}
+
+export const getMechStatusDeets = (status?: MechStatus) => {
+    let color = colors.darkGrey
+    let label = "UNKNOWN"
+
+    switch (status?.status) {
+        case MechStatusEnum.Idle:
+            label = "IDLE"
+            color = colors.green
+            break
+        case MechStatusEnum.Queue:
+            label = "IN LOBBY"
+            if (status?.battle_lobby_is_locked) {
+                label = "IN QUEUE"
+            }
+            color = colors.yellow
+            break
+        case MechStatusEnum.Battle:
+            label = "BATTLING"
+            color = colors.orange
+            break
+        case MechStatusEnum.Market:
+            label = "LISTED"
+            color = colors.red
+            break
+        case MechStatusEnum.Sold:
+            label = "SOLD"
+            color = colors.lightGrey
+            break
+        case MechStatusEnum.Damaged:
+            label = "DAMAGED"
+            color = colors.bronze
+            break
+    }
+    return { color, label }
 }
 
 export const getUserRankDeets = (rank: UserRank, width: string, height: string): { icon: SvgWrapperProps; title: string; desc: string } => {
