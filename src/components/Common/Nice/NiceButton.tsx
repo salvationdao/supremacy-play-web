@@ -17,11 +17,11 @@ type LinkProps =
               href: string
               target: HTMLAttributeAnchorTarget | undefined
           }
-          route: never
+          route?: never
       }
     | {
-          link: never
-          route: {
+          link?: never
+          route?: {
               to: string
               target: HTMLAttributeAnchorTarget | undefined
           }
