@@ -214,6 +214,12 @@ export interface MechDetails extends MechBasic {
     blueprint_weapon_ids_with_skin_inheritance: string[]
     compatible_blueprint_mech_skin_ids: string[]
     item_sale_id?: string
+    mech_type: MechTypeEnum
+}
+
+export enum MechTypeEnum {
+    Humanoid = "HUMANOID",
+    Platform = "PLATFORM",
 }
 
 export enum BoostStatEnum {

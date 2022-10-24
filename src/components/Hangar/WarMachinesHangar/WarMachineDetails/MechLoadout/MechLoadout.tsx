@@ -7,7 +7,7 @@ import { getRarityDeets } from "../../../../../helpers"
 import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
-import { AssetItemType, MechDetails, MechSkin, MechStatus, MechStatusEnum, PowerCore, Utility, Weapon, WeaponType } from "../../../../../types"
+import { AssetItemType, MechDetails, MechSkin, MechStatus, MechStatusEnum, MechTypeEnum, PowerCore, Utility, Weapon, WeaponType } from "../../../../../types"
 import { ClipThing } from "../../../../Common/ClipThing"
 import { FancyButton } from "../../../../Common/FancyButton"
 import { MechLoadoutItem } from "../../Common/MechLoadoutItem"
@@ -147,7 +147,9 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         outro_animation,
         locked_to_marketplace,
         xsyn_locked,
+        mech_type,
     } = currLoadout
+    console.log(currLoadout)
     const loadoutDisabled = useMemo(
         () =>
             userID !== owner_id ||
@@ -869,7 +871,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                         }}
                     >
                         {renderWeaponSlot(0)}
-                        {renderWeaponSlot(1)}
+                        {mech_type === MechTypeEnum.Platform && renderWeaponSlot(1)}
                         <Box
                             sx={{
                                 p: "1rem",
@@ -909,8 +911,11 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                             right: "3rem",
                         }}
                     >
+                        {mech_type === MechTypeEnum.Humanoid && renderWeaponSlot(1)}
+                        {mech_type=== MechTypeEnum.Platform && <>
                         {renderWeaponSlot(2)}
                         {renderWeaponSlot(3)}
+                        </>}
                     </Stack>
 
                     {/* Bottom Left Side */}
