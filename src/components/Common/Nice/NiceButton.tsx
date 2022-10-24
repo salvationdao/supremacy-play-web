@@ -29,6 +29,8 @@ type LinkProps =
 
 type NiceButtonProps = CommonProps & LinkProps
 
+const OVERLAY_CLASSNAME = "NiceButtonOverlay"
+
 export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(function NiceButton(
     { link, route, loading, disabled, sx, children, ...props },
     ref,
@@ -51,11 +53,11 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
                     padding: "1rem",
                     backgroundColor: "transparent",
                     cursor: disabled ? "auto" : "pointer",
-                    "&:hover:enabled": {
-                        backgroundColor: "rgba(0, 0, 0, 0.3)",
+                    [`&:hover .${OVERLAY_CLASSNAME}`]: {
+                        opacity: 0.3,
                     },
-                    "&:active:enabled": {
-                        backgroundColor: "rgba(0, 0, 0, 0.7)",
+                    [`&:active .${OVERLAY_CLASSNAME}`]: {
+                        opacity: 0.7,
                     },
                     ...sx,
                 } as SxProps
@@ -78,6 +80,19 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
             ) : (
                 children
             )}
+            <Box
+                className={OVERLAY_CLASSNAME}
+                sx={{
+                    zIndex: 1,
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: "black",
+                    opacity: 0,
+                }}
+            />
             {loading && (
                 <Box
                     sx={{
