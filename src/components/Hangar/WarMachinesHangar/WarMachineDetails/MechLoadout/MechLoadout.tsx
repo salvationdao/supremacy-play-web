@@ -9,7 +9,6 @@ import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
 import { AssetItemType, MechDetails, MechSkin, MechStatus, MechStatusEnum, MechTypeEnum, PowerCore, Utility, Weapon, WeaponType } from "../../../../../types"
 import { ClipThing } from "../../../../Common/ClipThing"
-import { FancyButton } from "../../../../Common/FancyButton"
 import { MechLoadoutItem } from "../../Common/MechLoadoutItem"
 import { MechViewer } from "../MechViewer/MechViewer"
 import { MechViewer3D } from "../MechViewer/MechViewer3D"
@@ -32,6 +31,7 @@ interface PlayerAssetMechEquipRequest {
     equip_power_core?: EquipPowerCore
     equip_utility: EquipUtility[]
     equip_weapons: EquipWeapon[]
+    inherit_weapon_skins: boolean
 }
 
 export interface MechDetailsWithMaps extends MechDetails {
@@ -150,7 +150,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, inher
         xsyn_locked,
         mech_type,
     } = currLoadout
-    console.log(currLoadout)
     const loadoutDisabled = useMemo(
         () =>
             userID !== owner_id ||
@@ -188,6 +187,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, inher
                     equip_weapons: selection.equip_weapons ? selection.equip_weapons : [],
                     equip_utility: selection.equip_utility ? selection.equip_utility : [],
                     mech_id: mechDetails.id,
+                    inherit_weapon_skins: inheritWeaponSkins,
                 })
 
                 newSnackbarMessage(`Successfully saved loadout.`, "success")
@@ -207,7 +207,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, inher
                 setLoading(false)
             }
         },
-        [mechDetails.id, newSnackbarMessage, onUpdate, send],
+        [inheritWeaponSkins, mechDetails.id, newSnackbarMessage, onUpdate, send],
     )
 
     // EQUIP HANDLERS
@@ -268,6 +268,11 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, inher
                 unityControlsRef.current.handleWeaponUpdate(ew)
             }
 
+            // Don't inherit weapon skin if incompatible with mech
+            if (ew.inherit_skin && !blueprint_weapon_ids_with_skin_inheritance.find((s) => s === ew.weapon?.blueprint_id)) {
+                ew.inherit_skin = false
+            }
+
             setCurrLoadout((prev) => {
                 const updated = new Map(prev.weapons_map)
                 if (ew.unequip) {
@@ -296,49 +301,84 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, inher
                 ],
             })
         },
-        [saveSelection],
+        [blueprint_weapon_ids_with_skin_inheritance, saveSelection],
     )
 
     // WEAPON INHERIT ALL SKINS
-    const enableInheritAllWeaponSkins = useMemo(() => {
+    const canInheritedSkinsBeUpdated = useMemo(() => {
+        let canInherit = 0
+        let hasInherited = 0
         for (let weaponSlotNumber = 0; weaponSlotNumber < currLoadout.weapon_hardpoints; weaponSlotNumber++) {
-            const w = currLoadout.weapons_map.get(weaponSlotNumber)
+            const w = weapons_map.get(weaponSlotNumber)
             if (!w || w.weapon_type === WeaponType.RocketPods) continue
             if (!blueprint_weapon_ids_with_skin_inheritance.find((s) => s === w?.blueprint_id)) continue
-            if (w.inherit_skin) continue
-
-            return true
+            canInherit++
+            if (!w.inherit_skin) continue
+            hasInherited++
         }
-        return false
-    }, [blueprint_weapon_ids_with_skin_inheritance, currLoadout.weapon_hardpoints, currLoadout.weapons_map])
+        return inheritWeaponSkins !== (canInherit > 0 && canInherit === hasInherited)
+    }, [blueprint_weapon_ids_with_skin_inheritance, currLoadout.weapon_hardpoints, inheritWeaponSkins, weapons_map])
     const inheritAllWeaponSkins = useCallback(() => {
+        const changes: LoadoutWeapon[] = []
         for (let weaponSlotNumber = 0; weaponSlotNumber < currLoadout.weapon_hardpoints; weaponSlotNumber++) {
             const w = currLoadout.weapons_map.get(weaponSlotNumber)
             if (!w || w.inherit_skin || w.weapon_type === WeaponType.RocketPods) continue
             if (!blueprint_weapon_ids_with_skin_inheritance.find((s) => s === w?.blueprint_id)) continue
 
-            modifyWeaponSlot({
+            const change: LoadoutWeapon = {
                 inherit_skin: true,
                 slot_number: weaponSlotNumber,
                 weapon_id: w.id,
                 weapon: w,
+            }
+            changes.push(change)
+            if (unityControlsRef.current) {
+                unityControlsRef.current.handleWeaponUpdate(change)
+            }
+        }
+        if (changes.length > 0) {
+            saveSelection({
+                equip_weapons: changes,
             })
         }
-    }, [blueprint_weapon_ids_with_skin_inheritance, currLoadout.weapon_hardpoints, currLoadout.weapons_map, modifyWeaponSlot])
+    }, [blueprint_weapon_ids_with_skin_inheritance, currLoadout.weapon_hardpoints, currLoadout.weapons_map, saveSelection])
     const uninheritAllWeaponSkins = useCallback(() => {
+        const changes: LoadoutWeapon[] = []
         for (let weaponSlotNumber = 0; weaponSlotNumber < currLoadout.weapon_hardpoints; weaponSlotNumber++) {
             const w = currLoadout.weapons_map.get(weaponSlotNumber)
             if (!w || !w.inherit_skin || w.weapon_type === WeaponType.RocketPods) continue
             if (!blueprint_weapon_ids_with_skin_inheritance.find((s) => s === w?.blueprint_id)) continue
 
-            modifyWeaponSlot({
+            const change: LoadoutWeapon = {
                 inherit_skin: false,
                 slot_number: weaponSlotNumber,
                 weapon_id: w.id,
                 weapon: w,
+            }
+            changes.push(change)
+            if (unityControlsRef.current) {
+                unityControlsRef.current.handleWeaponUpdate({
+                    inherit_skin: false,
+                    slot_number: weaponSlotNumber,
+                    weapon_id: w.id,
+                    weapon: w,
+                })
+            }
+        }
+        if (changes.length > 0) {
+            saveSelection({
+                equip_weapons: changes,
             })
         }
-    }, [blueprint_weapon_ids_with_skin_inheritance, currLoadout.weapon_hardpoints, currLoadout.weapons_map, modifyWeaponSlot])
+    }, [blueprint_weapon_ids_with_skin_inheritance, currLoadout.weapon_hardpoints, currLoadout.weapons_map, saveSelection])
+    useEffect(() => {
+        if (!canInheritedSkinsBeUpdated) return
+        if (inheritWeaponSkins) {
+            inheritAllWeaponSkins()
+        } else {
+            uninheritAllWeaponSkins()
+        }
+    }, [canInheritedSkinsBeUpdated, inheritAllWeaponSkins, inheritWeaponSkins, uninheritAllWeaponSkins])
 
     // DRAG HANDLERS
     const mechSkinItemRef = useRef<HTMLDivElement>(null)
@@ -513,12 +553,12 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, inher
                 <MechLoadoutWeaponModal
                     containerRef={drawerContainerRef}
                     onClose={() => toggleShowLoadoutModal(false)}
-                    onConfirm={(selectedWeapon, inheritSkin) => {
+                    onConfirm={(selectedWeapon) => {
                         modifyWeaponSlot({
                             weapon: selectedWeapon,
                             weapon_id: selectedWeapon.id,
                             slot_number: slotNumber,
-                            inherit_skin: inheritSkin,
+                            inherit_skin: inheritWeaponSkins,
                         })
                         toggleShowLoadoutModal(false)
                     }}
@@ -584,7 +624,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, inher
                 />
             )
         },
-        [blueprint_weapon_ids_with_skin_inheritance, drawerContainerRef, loadoutDisabled, modifyWeaponSlot, weapons_map],
+        [blueprint_weapon_ids_with_skin_inheritance, drawerContainerRef, inheritWeaponSkins, loadoutDisabled, modifyWeaponSlot, weapons_map],
     )
 
     const renderPowerCoreSlot = useCallback(() => {
@@ -873,35 +913,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, inher
                     >
                         {renderWeaponSlot(0)}
                         {mech_type === MechTypeEnum.Platform && renderWeaponSlot(1)}
-                        <Box
-                            sx={{
-                                p: "1rem",
-                                width: "fit-content",
-                            }}
-                        >
-                            <FancyButton
-                                disabled={loadoutDisabled}
-                                clipThingsProps={{
-                                    clipSize: "6px",
-                                    clipSlantSize: "0px",
-                                    corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
-                                    backgroundColor: colors.weapons,
-                                    border: { isFancy: false, borderColor: colors.weapons, borderThickness: "1.5px" },
-                                    sx: { position: "relative", minWidth: "16rem" },
-                                }}
-                                sx={{ px: "1.3rem", py: ".9rem", color: "white" }}
-                                onClick={enableInheritAllWeaponSkins ? inheritAllWeaponSkins : uninheritAllWeaponSkins}
-                            >
-                                <Typography
-                                    variant="caption"
-                                    sx={{
-                                        fontFamily: fonts.nostromoBlack,
-                                    }}
-                                >
-                                    {enableInheritAllWeaponSkins ? "Inherit Skins" : "Uninherit Skins"}
-                                </Typography>
-                            </FancyButton>
-                        </Box>
                     </Stack>
 
                     {/* Top Right Side */}

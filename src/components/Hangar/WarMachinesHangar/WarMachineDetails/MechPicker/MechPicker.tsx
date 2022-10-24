@@ -237,7 +237,7 @@ export const MechPicker = ({ mechDetails, mechStatus, inheritWeaponSkins, onUpda
                 }}
             >
                 <FormControlLabel
-                    control={<NiceSwitch defaultChecked onChange={handleInheritWeaponSkin} value={inheritWeaponSkins} />}
+                    control={<NiceSwitch onChange={handleInheritWeaponSkin} checked={inheritWeaponSkins} />}
                     label={
                         <Typography
                             sx={{

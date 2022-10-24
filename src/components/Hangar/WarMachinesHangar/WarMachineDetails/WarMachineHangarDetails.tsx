@@ -1,12 +1,12 @@
 import { Stack, Typography } from "@mui/material"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ClipThing } from "../../.."
 import { BATTLE_ARENA_OPEN } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { pulseEffect } from "../../../../theme/keyframes"
-import { MechDetails, MechStatus, MechStatusEnum } from "../../../../types"
+import { MechDetails, MechStatus, MechStatusEnum, WeaponType } from "../../../../types"
 import { BorderThickness, NiceBoxThing } from "../../../Common/Nice/NiceBoxThing"
 import { MechLoadout } from "./MechLoadout/MechLoadout"
 import { MechPicker } from "./MechPicker/MechPicker"
@@ -77,9 +77,26 @@ export const WarMachineHangarDetailsInner = ({
     setRepairMechModalOpen,
 }: WarMachineHangarDetailsInnerProps) => {
     const theme = useTheme()
+    const [mechDetails, setMechDetails] = useState<MechDetails>()
     const [inheritWeaponSkins, setInheritWeaponSkins] = useState(false)
 
-    const [mechDetails, setMechDetails] = useState<MechDetails>()
+    useEffect(() => {
+        if (!mechDetails || !mechDetails.weapons) return
+        ;(() => {
+            let canInherit = 0
+            let hasInherited = 0
+            for (let weaponSlotNumber = 0; weaponSlotNumber < mechDetails.weapon_hardpoints; weaponSlotNumber++) {
+                const w = mechDetails.weapons[weaponSlotNumber]
+                if (!w || w.weapon_type === WeaponType.RocketPods) continue
+                if (!mechDetails.blueprint_weapon_ids_with_skin_inheritance.find((s) => s === w?.blueprint_id)) continue
+                canInherit++
+                if (!w.inherit_skin) continue
+                hasInherited++
+            }
+            setInheritWeaponSkins(canInherit > 0 && canInherit === hasInherited)
+        })()
+    }, [mechDetails])
+
     useGameServerSubscriptionFaction<MechDetails>(
         {
             URI: `/mech/${mechID}/details`,
