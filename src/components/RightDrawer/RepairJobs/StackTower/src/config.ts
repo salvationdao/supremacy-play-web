@@ -117,3 +117,5 @@ export interface Skin {
     front: string
     right: string
 }
+
+export const shrinkMultiplier = 0.9

@@ -1,6 +1,6 @@
 import TWEEN from "@tweenjs/tween.js"
 import { FallingBlock, MovingBlock } from "./block"
-import { blockConfig, cameraConfig } from "./config"
+import { blockConfig, cameraConfig, shrinkMultiplier } from "./config"
 import { Stage } from "./stage"
 import { BlockServer, BlockType, GameState, NewStackInfo, PlayButton } from "./types"
 
@@ -116,6 +116,37 @@ export class Game {
                 default:
                     break
             }
+            return
+        }
+
+        // If player pressed the wrong (but valid) button, punish them by shrinking the block
+        if (e.key === " " || Object.values(PlayButton).find((pb) => pb.toLowerCase() === e.key.toLowerCase())) {
+            // Get the top block
+            const topBlock = this.blocks[this.blocks.length - 1]
+            this.blocks.pop()
+            this.stage.remove(topBlock.mesh)
+
+            const newBlock = new MovingBlock(
+                topBlock.blockServer,
+                {
+                    dimension: {
+                        ...topBlock.dimension,
+                        width: Math.max(topBlock.dimension.width * shrinkMultiplier, 0.4),
+                        depth: Math.max(topBlock.dimension.depth * shrinkMultiplier, 0.4),
+                    },
+                    position: topBlock.position,
+                    direction: topBlock.direction,
+                    axis: topBlock.axis,
+                    topTexture: topBlock.topTexture,
+                    frontTexture: topBlock.frontTexture,
+                    rightTexture: topBlock.rightTexture,
+                },
+                true,
+            )
+            newBlock.shouldReplace = false
+            this.blocks.push(newBlock)
+            this.stage.add(newBlock.mesh)
+            return
         }
     }
 
@@ -268,7 +299,7 @@ export class Game {
         // **************************
 
         // If its a bomb and it got stacked, blow off some and deduct points
-        if (landedOnStack && curBlock.blockServer.type === BlockType.Bomb) {
+        if (curBlock && landedOnStack && curBlock.blockServer.type === BlockType.Bomb) {
             this.blowOffTopNBlocks(3)
         }
 
