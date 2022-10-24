@@ -20,6 +20,8 @@ export interface LoadoutItem {
     locked?: boolean
     disabled?: boolean
     isEmpty?: boolean
+    shape?: "square" | "rectangle"
+    size?: "small" | "regular"
 }
 
 export interface MechLoadoutItemProps extends LoadoutItem {
@@ -111,8 +113,14 @@ const MechLoadoutItemButton = ({
     rarity,
     locked,
     disabled,
+    shape = "rectangle",
+    size = "regular",
     isPreviouslyEquipped,
 }: MechLoadoutItemButtonProps) => {
+    const height = size === "regular" ? 120 : 100
+    const width = size === "regular" ? 260 : 200
+    const color = isEmpty ? "#ffffff88" : "white"
+
     return (
         <>
             <NiceButton
@@ -134,8 +142,9 @@ const MechLoadoutItemButton = ({
                     opacity: BackgroundOpacity.Half,
                 }}
                 sx={{
-                    width: 260,
-                    height: 120,
+                    width: shape === "rectangle" ? width : height,
+                    height: height,
+                    padding: 0,
                 }}
             >
                 {isEmpty ? (
@@ -143,7 +152,8 @@ const MechLoadoutItemButton = ({
                         <Typography
                             sx={{
                                 fontFamily: fonts.nostromoBlack,
-                                fontSize: "3rem",
+                                fontSize: size === "regular" ? "2.6rem" : "2rem",
+                                color,
                             }}
                         >
                             EMPTY
@@ -183,33 +193,37 @@ const MechLoadoutItemButton = ({
                         {TopRight}
                     </Box>
                 )}
-                <Stack
-                    sx={{
-                        position: "absolute",
-                        left: ".5rem",
-                        bottom: ".5rem",
-                    }}
-                    alignItems="start"
-                >
-                    <Typography
+                {!isEmpty && (
+                    <Stack
                         sx={{
-                            fontFamily: fonts.nostromoBold,
-                            fontSize: "1.6rem",
+                            position: "absolute",
+                            left: ".5rem",
+                            bottom: ".5rem",
                         }}
+                        alignItems="start"
                     >
-                        {label}
-                    </Typography>
-                    {subLabel && (
                         <Typography
                             sx={{
-                                fontFamily: fonts.shareTech,
-                                fontSize: "1.4rem",
+                                fontFamily: fonts.nostromoBold,
+                                fontSize: size === "regular" ? "1.6rem" : "1.4rem",
+                                color,
                             }}
                         >
-                            {subLabel}
+                            {label}
                         </Typography>
-                    )}
-                </Stack>
+                        {subLabel && (
+                            <Typography
+                                sx={{
+                                    fontFamily: fonts.shareTech,
+                                    fontSize: size === "regular" ? "1.4rem" : "1.2rem",
+                                    color,
+                                }}
+                            >
+                                {subLabel}
+                            </Typography>
+                        )}
+                    </Stack>
+                )}
                 {locked && (
                     <Stack
                         alignItems="center"
