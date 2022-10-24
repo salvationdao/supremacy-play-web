@@ -1,27 +1,18 @@
-import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useMemo, useState } from "react"
+import { Stack, Typography } from "@mui/material"
+import { useState } from "react"
 import { ClipThing } from "../../.."
-import { SvgCubes, SvgSkin, SvgStats } from "../../../../assets"
 import { BATTLE_ARENA_OPEN } from "../../../../constants"
-import { useAuth } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
-import { getRarityDeets } from "../../../../helpers"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { pulseEffect } from "../../../../theme/keyframes"
-import { fonts } from "../../../../theme/theme"
 import { MechDetails, MechStatus, MechStatusEnum } from "../../../../types"
-import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
-import { MechBattleHistoryDetails } from "../../../Marketplace/WarMachinesMarket/WarMachineMarketDetails/MechBattleHistoryDetails"
-import { MechBarStats } from "../Common/MechBarStats"
-import { MechGeneralStatus } from "../Common/MechGeneralStatus"
-import { MechRepairBlocks } from "../Common/MechRepairBlocks"
-import { MechButtons } from "./MechButtons"
+import { BorderThickness, NiceBoxThing } from "../../../Common/Nice/NiceBoxThing"
 import { MechLoadout } from "./MechLoadout/MechLoadout"
-import { MechName } from "./MechName"
+import { MechPicker } from "./MechPicker/MechPicker"
 import { DeployModal } from "./Modals/DeployModal"
-import { StakeModal } from "./Modals/StakeModal"
 import { RepairModal } from "./Modals/RepairModal/RepairModal"
+import { StakeModal } from "./Modals/StakeModal"
 
 interface WarMachineHangarDetailsProps {
     drawerContainerRef: React.MutableRefObject<HTMLElement | undefined>
@@ -86,23 +77,9 @@ export const WarMachineHangarDetailsInner = ({
     setRepairMechModalOpen,
 }: WarMachineHangarDetailsInnerProps) => {
     const theme = useTheme()
-    const { userID } = useAuth()
+    const [inheritWeaponSkins, setInheritWeaponSkins] = useState(false)
+
     const [mechDetails, setMechDetails] = useState<MechDetails>()
-    const [mechStatus, setMechStatus] = useState<MechStatus>()
-
-    const rarityDeets = useMemo(() => getRarityDeets(mechDetails?.chassis_skin?.tier || mechDetails?.tier || ""), [mechDetails])
-
-    const updateMechDetails = (newMechDetails: MechDetails) => setMechDetails(newMechDetails)
-
-    const [mechIsStaked, setMechIsStaked] = useState(false)
-    useGameServerSubscription<boolean>(
-        {
-            URI: `/public/mech/${mechID}/is_staked`,
-            key: GameServerKeys.SubMechIsStaked,
-        },
-        setMechIsStaked,
-    )
-
     useGameServerSubscriptionFaction<MechDetails>(
         {
             URI: `/mech/${mechID}/details`,
@@ -114,6 +91,7 @@ export const WarMachineHangarDetailsInner = ({
         },
     )
 
+    const [mechStatus, setMechStatus] = useState<MechStatus>()
     useGameServerSubscriptionFaction<MechStatus>(
         {
             URI: `/queue/${mechID}`,
@@ -125,166 +103,68 @@ export const WarMachineHangarDetailsInner = ({
         },
     )
 
-    const primaryColor = theme.factionTheme.primary
-    const backgroundColor = theme.factionTheme.background
-    const avatarUrl = mechDetails?.chassis_skin?.avatar_url || mechDetails?.avatar_url
-    const imageUrl = mechDetails?.chassis_skin?.image_url || mechDetails?.image_url
+    const [mechIsStaked, setMechIsStaked] = useState(false)
+    useGameServerSubscription<boolean>(
+        {
+            URI: `/public/mech/${mechID}/is_staked`,
+            key: GameServerKeys.SubMechIsStaked,
+        },
+        setMechIsStaked,
+    )
+
+    const updateMechDetails = (newMechDetails: MechDetails) => setMechDetails(newMechDetails)
 
     return (
         <Stack position="relative" direction="row" spacing="1rem" sx={{ height: "100%" }}>
             {/* Left side */}
-            <ClipThing
-                clipSize="10px"
-                border={{
-                    borderColor: primaryColor,
-                    borderThickness: ".3rem",
-                }}
-                corners={{
-                    topRight: true,
-                    bottomLeft: true,
-                    bottomRight: true,
-                }}
-                opacity={0.7}
-                backgroundColor={backgroundColor}
-                sx={{ flexShrink: 0, height: "100%", width: "39rem" }}
-            >
-                <Stack sx={{ height: "100%" }}>
-                    <ClipThing clipSize="10px" corners={{ topRight: true }} opacity={0.7} sx={{ flexShrink: 0 }}>
-                        <Box sx={{ position: "relative", borderBottom: `${primaryColor}60 2.2px solid` }}>
-                            <MediaPreview imageUrl={avatarUrl || imageUrl} objectFit="cover" sx={{ height: "30rem" }} />
-
-                            <Box
-                                sx={{
-                                    position: "absolute",
-                                    bottom: "1rem",
-                                    left: "1.2rem",
-                                    minWidth: "10rem",
-                                    backgroundColor: `${backgroundColor}DF`,
-                                    zIndex: 2,
-                                }}
-                            >
-                                <MechGeneralStatus mechID={mechID} />
-                            </Box>
-
-                            <Box
-                                sx={{
-                                    position: "absolute",
-                                    top: 0,
-                                    bottom: 0,
-                                    left: 0,
-                                    right: 0,
-                                    background: `linear-gradient(#FFFFFF00 60%, #000000)`,
-                                    zIndex: 1,
-                                }}
-                            />
-                        </Box>
-                    </ClipThing>
-
-                    <Box
+            {mechDetails ? (
+                <MechPicker
+                    mechDetails={mechDetails}
+                    mechStatus={mechStatus}
+                    inheritWeaponSkins={inheritWeaponSkins}
+                    onSelect={(mid) => console.log(mid)}
+                    onUpdate={(newMechDetails) => setMechDetails(newMechDetails)}
+                    onUpdateWeaponSkinInherit={(newInheritSkins) => setInheritWeaponSkins(newInheritSkins)}
+                />
+            ) : (
+                <NiceBoxThing
+                    border={{
+                        color: theme.factionTheme.primary,
+                        thickness: BorderThickness.Thicc,
+                    }}
+                    background={{
+                        color: [theme.factionTheme.background],
+                    }}
+                    sx={{
+                        flexBasis: 310,
+                        alignSelf: "start",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: 500,
+                    }}
+                >
+                    <Typography
+                        variant="h4"
+                        fontWeight="fontWeightBold"
                         sx={{
-                            flex: 1,
-                            overflowY: "auto",
-                            overflowX: "hidden",
-                            ml: "1.9rem",
-                            pr: "1.3rem",
-                            mr: ".6rem",
-                            mt: ".5rem",
-                            mb: "1.5rem",
-                            py: ".5rem",
-                            direction: "ltr",
-                            scrollbarWidth: "none",
-                            "::-webkit-scrollbar": {
-                                width: "1rem",
-                            },
-                            "::-webkit-scrollbar-track": {
-                                background: "#FFFFFF15",
-                            },
-                            "::-webkit-scrollbar-thumb": {
-                                background: (theme) => theme.factionTheme.primary,
-                            },
+                            animation: `${pulseEffect} 2s infinite`,
                         }}
                     >
-                        <Box sx={{ direction: "ltr", height: 0 }}>
-                            {mechDetails ? (
-                                <Stack spacing="1.6rem" sx={{ p: "1rem 1rem" }}>
-                                    {/* Mech avatar, label, name etc */}
-                                    <Stack spacing=".5rem">
-                                        <Stack spacing=".5rem" direction="row" alignItems="center">
-                                            <SvgSkin fill={rarityDeets.color} />
-                                            <Typography variant="body2" sx={{ color: rarityDeets.color, fontFamily: fonts.nostromoHeavy }}>
-                                                {rarityDeets.label}
-                                            </Typography>
-                                        </Stack>
-
-                                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{mechDetails.label}</Typography>
-
-                                        <MechName
-                                            onRename={(newName) => setMechDetails({ ...mechDetails, name: newName })}
-                                            mech={mechDetails}
-                                            allowEdit={userID === mechDetails.owner_id}
-                                        />
-                                    </Stack>
-
-                                    {/* Repair status */}
-                                    <Stack spacing=".5rem">
-                                        <Stack direction="row" spacing=".8rem" alignItems="center">
-                                            <SvgCubes fill={primaryColor} size="1.6rem" />
-                                            <Typography sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>SYSTEM STATUS</Typography>
-                                        </Stack>
-
-                                        <MechRepairBlocks mechID={mechID} defaultBlocks={mechDetails?.repair_blocks} />
-                                    </Stack>
-
-                                    {/* Bar stats */}
-                                    <Stack spacing=".5rem">
-                                        <Stack direction="row" spacing=".8rem" alignItems="center">
-                                            <SvgStats fill={primaryColor} size="1.6rem" />
-                                            <Typography sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>WAR MACHINE STATS</Typography>
-                                        </Stack>
-
-                                        <MechBarStats
-                                            mech={mechDetails}
-                                            mechDetails={mechDetails}
-                                            color={primaryColor}
-                                            fontSize="1.2rem"
-                                            width="100%"
-                                            spacing="1.2rem"
-                                            barHeight=".9rem"
-                                        />
-                                    </Stack>
-
-                                    {/* Mech battle history */}
-                                    <Box sx={{ pt: "2rem" }}>
-                                        <MechBattleHistoryDetails mechDetails={mechDetails} smallSize />
-                                    </Box>
-                                </Stack>
-                            ) : (
-                                <Stack alignItems="center" justifyContent="center" sx={{ height: "20rem" }}>
-                                    <CircularProgress size="3rem" sx={{ color: primaryColor }} />
-                                </Stack>
-                            )}
-                        </Box>
-                    </Box>
-
-                    {/* Status and buttons */}
-                    {mechDetails && (
-                        <MechButtons
-                            mechDetails={mechDetails}
-                            mechStatus={mechStatus}
-                            mechIsStaked={mechIsStaked}
-                            setSelectedMechDetails={setSelectedMechDetails}
-                            setDeployMechModalOpen={setDeployMechModalOpen}
-                            setStakeMechModalOpen={setStakeMechModalOpen}
-                            setRepairMechModalOpen={setRepairMechModalOpen}
-                            marketLocked={mechDetails.market_locked}
-                        />
-                    )}
-                </Stack>
-            </ClipThing>
+                        LOADING MECH...
+                    </Typography>
+                </NiceBoxThing>
+            )}
 
             {/* Right side */}
             {mechDetails ? (
-                <MechLoadout drawerContainerRef={drawerContainerRef} mechDetails={mechDetails} mechStatus={mechStatus} onUpdate={updateMechDetails} />
+                <MechLoadout
+                    drawerContainerRef={drawerContainerRef}
+                    mechDetails={mechDetails}
+                    mechStatus={mechStatus}
+                    inheritWeaponSkins={inheritWeaponSkins}
+                    onUpdate={updateMechDetails}
+                />
             ) : (
                 <ClipThing
                     clipSize="10px"
@@ -303,7 +183,7 @@ export const WarMachineHangarDetailsInner = ({
                                 animation: `${pulseEffect} 2s infinite`,
                             }}
                         >
-                            LOADING MECH...
+                            LOADING LOADOUT...
                         </Typography>
                     </Stack>
                 </ClipThing>

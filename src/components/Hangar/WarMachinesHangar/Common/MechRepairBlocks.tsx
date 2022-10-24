@@ -95,12 +95,14 @@ export const MechRepairBlocks = React.memo(function MechRepairBlocks({
     damagedBlocks,
     hideNumber,
     pulsateEffectPercent,
+    size,
 }: {
     mechID?: string
     defaultBlocks?: number
     damagedBlocks?: number
     hideNumber?: boolean
     pulsateEffectPercent?: number
+    size?: number
 }) {
     const repairStatus = useGameServerSubscriptionSecured<RepairStatus>({
         URI: `/mech/${mechID}/repair_case`,
@@ -124,6 +126,7 @@ export const MechRepairBlocks = React.memo(function MechRepairBlocks({
             remainDamagedBlocks={remainDamagedBlocks}
             hideNumber={hideNumber}
             pulsateEffectPercent={pulsateEffectPercent}
+            size={size}
         />
     )
 })

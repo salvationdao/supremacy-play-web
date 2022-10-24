@@ -111,12 +111,13 @@ interface MechLoadoutProps {
     drawerContainerRef: React.MutableRefObject<HTMLElement | undefined>
     mechDetails: MechDetails
     mechStatus?: MechStatus
+    inheritWeaponSkins: boolean
     onUpdate: (newMechDetails: MechDetails) => void
 }
 
 const LOCAL_STORAGE_KEY_PREFERS_2D_LOADOUT = "prefers2DLoadout"
 
-export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpdate }: MechLoadoutProps) => {
+export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, inheritWeaponSkins, onUpdate }: MechLoadoutProps) => {
     const theme = useTheme()
     const { userID } = useAuth()
     const { send } = useGameServerCommandsUser("/user_commander")
