@@ -1,6 +1,5 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { FancyButton } from "../.."
 import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
@@ -195,24 +194,7 @@ const QuickDeployInner = () => {
                         onSelectAll={onSelectAll}
                         onUnselectedAll={onUnSelectAll}
                         manualRefresh={getItems}
-                    >
-                        <FancyButton
-                            disabled={selectedMechs.length <= 0}
-                            clipThingsProps={{
-                                clipSize: "6px",
-                                backgroundColor: colors.green,
-                                opacity: 1,
-                                border: { borderColor: colors.green, borderThickness: "1px" },
-                                sx: { position: "relative" },
-                            }}
-                            sx={{ px: "1rem", py: 0, color: "#FFFFFF" }}
-                            onClick={() => setBulkDeployConfirmModalOpen(true)}
-                        >
-                            <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                DEPLOY SELECTED
-                            </Typography>
-                        </FancyButton>
-                    </TotalAndPageSizeOptions>
+                    ></TotalAndPageSizeOptions>
 
                     <Box sx={{ px: "1rem", mt: "1.5rem", backgroundColor: "#00000099" }}>
                         <QueueDetails queueFeed={queueFeed} playerQueueStatus={playerQueueStatus} />
