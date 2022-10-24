@@ -7,6 +7,7 @@ import { Dimension, GAME_CLIENT_TILE_SIZE, Position } from "../../../../../types
 import { MAX_COLS, MAX_ROWS } from "../../ViewportItems/Grid/pixiGrid"
 
 const GAP = 8
+const MULTIPLIER = 5 // default width is 20 units, but want to show as 100
 
 export class PixiMapScale {
     root: PIXI.Container<PIXI.DisplayObject>
@@ -27,6 +28,20 @@ export class PixiMapScale {
         this.root = new PIXI.Container()
         this.root.zIndex = pixiStageZIndexes.mapScale
 
+        // Line
+        this.line = new PIXI.Graphics()
+
+        // Label
+        this.label = new PIXI.Text(`${Math.round((MULTIPLIER * GAME_CLIENT_TILE_SIZE) / 100)}m`, {
+            fontFamily: fonts.nostromoBold,
+            fontSize: 10,
+            fill: "#FFFFFF",
+            lineHeight: 1,
+        })
+        this.label.anchor.set(0, 0)
+        this.label.resolution = 4
+        this.label.zIndex = 5
+
         // Co-ordinate text
         this.coordLabel = new PIXI.Text("", {
             fontFamily: fonts.nostromoBold,
@@ -36,20 +51,6 @@ export class PixiMapScale {
         })
         this.coordLabel.resolution = 4
         this.coordLabel.zIndex = 5
-
-        // Line
-        this.line = new PIXI.Graphics()
-
-        // Label
-        this.label = new PIXI.Text(`${Math.round(GAME_CLIENT_TILE_SIZE / 100)}m`, {
-            fontFamily: fonts.nostromoBold,
-            fontSize: 10,
-            fill: "#FFFFFF",
-            lineHeight: 1,
-        })
-        this.label.anchor.set(0, 0)
-        this.label.resolution = 4
-        this.label.zIndex = 5
 
         // Add everything to container
         this.root.addChild(this.coordLabel)
@@ -81,15 +82,16 @@ export class PixiMapScale {
             }
 
             // Rect
-            const width = this.gridSizeRef.current.width * this.viewport.scale.x
+            const width = MULTIPLIER * this.gridSizeRef.current.width * this.viewport.scale.x
             this.line.clear()
             this.line.lineStyle(1, HEXToVBColor("#FFFFFF"))
             this.line.moveTo(0, 0)
             this.line.lineTo(0, 4)
             this.line.lineTo(width, 4)
             this.line.lineTo(width, 0)
-            this.line.position.set(this.coordLabel.width + GAP, 5)
+            this.line.position.set(0, 5)
             this.label.position.set(this.line.x + this.line.width + GAP, 0)
+            this.coordLabel.position.set(this.label.x + this.label.width + GAP, 0)
 
             this.root.pivot.set(this.root.width, this.root.height)
             this.root.x = this.viewport.screenWidth - GAP * 1.4

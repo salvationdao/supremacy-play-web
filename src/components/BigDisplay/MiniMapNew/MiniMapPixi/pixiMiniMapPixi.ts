@@ -81,9 +81,9 @@ export class PixiMiniMapPixi {
 
             // Fit to cover
             if (containerDimensions.width > containerDimensions.height) {
-                this.viewport.fitWidth()
-            } else {
                 this.viewport.fitHeight()
+            } else {
+                this.viewport.fitWidth()
             }
             this.viewport.moveCorner(0, 0)
         }, 0)
