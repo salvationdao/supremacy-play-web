@@ -2,7 +2,7 @@ import { Box, Tabs } from "@mui/material"
 import { useAuth, useUI } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useActiveRouteID } from "../../../hooks/useActiveRouteID"
-import { LEFT_DRAWER_ARRAY } from "../../../routes"
+import { LeftRoutes } from "../../../routes"
 import { colors, siteZIndex } from "../../../theme/theme"
 import { TabButton } from "../../RightDrawer/DrawerButtons"
 
@@ -40,23 +40,23 @@ export const DrawerButtonsBT = () => {
             }}
         >
             <Tabs value={0} orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ flex: 1 }}>
-                {LEFT_DRAWER_ARRAY.map((r) => {
-                    if ((r.requireAuth && !userID) || (r.matchRouteIDs && !r.matchRouteIDs.includes(activeRouteID))) return null
+                {LeftRoutes.map((route) => {
+                    if ((route.requireAuth && !userID) || (route.matchRouteIDs && !route.matchRouteIDs.includes(activeRouteID))) return null
                     return (
                         <TabButton
-                            key={r.id}
-                            label={r.label}
+                            key={route.id}
+                            label={route.label}
                             enable={true}
-                            icon={r.icon}
+                            icon={route.icon}
                             onClick={() => {
                                 setLeftDrawerActiveTabID((prev) => {
-                                    if (r.id === prev) {
+                                    if (route.id === prev) {
                                         return ""
                                     }
-                                    return r.id
+                                    return route.id
                                 })
                             }}
-                            isActive={r.id === leftDrawerActiveTabID}
+                            isActive={route.id === leftDrawerActiveTabID}
                             primaryColor={theme.factionTheme.primary}
                             secondaryColor={theme.factionTheme.secondary}
                         />

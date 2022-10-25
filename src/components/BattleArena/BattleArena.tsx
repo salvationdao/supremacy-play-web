@@ -4,6 +4,7 @@ import { BattleEndScreen, Controls, EarlyAccessWarningModal, Notifications, Supp
 import { SvgAbility, SvgHistoryClock } from "../../assets"
 import { BATTLE_ARENA_OPEN } from "../../constants"
 import { useAuth, useDimension, useMobile } from "../../containers"
+import { LeftRouteID } from "../../routes"
 import { siteZIndex } from "../../theme/theme"
 import { PlayerAbilities } from "../LeftDrawer/BattleArena/PlayerAbilities/PlayerAbilities"
 import { QuickPlayerAbilities } from "../LeftDrawer/BattleArena/QuickPlayerAbilities/QuickPlayerAbilities"
@@ -50,7 +51,7 @@ const BattleArenaPageInner = React.memo(function BattleArenaPageInner() {
 
         const tabs = [
             {
-                id: "battle-arena",
+                id: LeftRouteID.BattleArena,
                 icon: <SvgAbility size="1.2rem" sx={{ pt: ".1rem" }} />,
                 label: "BATTLE ARENA",
                 requireAuth: false,
@@ -103,7 +104,7 @@ const BattleArenaPageInner = React.memo(function BattleArenaPageInner() {
         ]
 
         tabs.push({
-            id: "prev-battle",
+            id: LeftRouteID.PreviousBattle,
             icon: <SvgHistoryClock size="1.2rem" sx={{ pt: ".1rem" }} />,
             label: "PREVIOUS BATTLE",
             requireAuth: false,
