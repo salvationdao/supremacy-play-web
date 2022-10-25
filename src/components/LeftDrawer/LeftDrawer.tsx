@@ -1,7 +1,7 @@
 import { Box, Drawer, Fade } from "@mui/material"
 import { useRouteMatch } from "react-router-dom"
 import { DRAWER_TRANSITION_DURATION } from "../../constants"
-import { useAuth, useMobile, useUI } from "../../containers"
+import { useArena, useAuth, useMobile, useUI } from "../../containers"
 import { LEFT_DRAWER_ARRAY, LEFT_DRAWER_MAP, ROUTES_ARRAY } from "../../routes"
 import { colors, siteZIndex } from "../../theme/theme"
 import { DrawerButtons } from "./DrawerButtons"
@@ -9,7 +9,8 @@ import { DrawerButtons } from "./DrawerButtons"
 export const LEFT_DRAWER_WIDTH = 44 // rem
 
 export const LeftDrawer = () => {
-    const { leftDrawerActiveTabID, showUpcomingBattle } = useUI()
+    const { currentArena } = useArena()
+    const { leftDrawerActiveTabID } = useUI()
     const { isMobile } = useMobile()
     const { userID } = useAuth()
 
@@ -51,7 +52,7 @@ export const LeftDrawer = () => {
             >
                 {LEFT_DRAWER_ARRAY.map((r) => {
                     if ((r.requireAuth && !userID) || (r.matchNavLinkIDs && !r.matchNavLinkIDs.includes(activeRouteID))) return null
-                    if ((showUpcomingBattle && r.id !== "quick_deploy") || (!showUpcomingBattle && r.id === "quick_deploy")) return null
+                    if ((currentArena?.status?.is_idle && r.id !== "quick_deploy") || (!currentArena?.status?.is_idle && r.id === "quick_deploy")) return null
                     const isActive = r.id === leftDrawerActiveTabID
                     if (isActive || r.mountAllTime) {
                         return (
