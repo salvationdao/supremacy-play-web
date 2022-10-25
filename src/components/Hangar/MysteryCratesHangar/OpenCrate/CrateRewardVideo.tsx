@@ -36,6 +36,7 @@ export const CrateRewardVideo = ({ factionID, crateType, onClose }: { factionID:
             if (e.key === "Enter" || e.key === "Escape" || e.key === " ") {
                 onClose()
                 e.stopPropagation()
+                e.preventDefault()
             }
         }
 
@@ -77,7 +78,7 @@ export const CrateRewardVideo = ({ factionID, crateType, onClose }: { factionID:
                     disablePictureInPicture
                     disableRemotePlayback
                     playsInline
-                    onEnded={onClose}
+                    // onEnded={onClose}
                     loop={false}
                     muted={false}
                     autoPlay
