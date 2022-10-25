@@ -30,10 +30,29 @@ export const CrateRewardVideo = ({ factionID, crateType, onClose }: { factionID:
         if (!videoToPlay) onClose()
     }, [onClose, videoToPlay])
 
+    useEffect(() => {
+        const onKeyDown = (e: KeyboardEvent) => {
+            // Skip video on keyboard key press
+            if (e.key === "Enter" || e.key === "Escape" || e.key === " ") {
+                onClose()
+                e.stopPropagation()
+            }
+        }
+
+        const cleanup = () => {
+            document.removeEventListener("keydown", onKeyDown)
+        }
+
+        cleanup()
+        document.addEventListener("keydown", onKeyDown)
+
+        return cleanup
+    }, [onClose])
+
     if (!videoToPlay) return null
 
     return (
-        <Modal open sx={{ zIndex: siteZIndex.Modal * 2 }}>
+        <Modal disableEscapeKeyDown open sx={{ zIndex: siteZIndex.Modal * 2 }}>
             <Stack
                 alignItems="center"
                 justifyContent="center"
