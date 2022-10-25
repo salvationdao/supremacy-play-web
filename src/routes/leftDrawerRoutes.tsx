@@ -1,23 +1,18 @@
 import { SvgDamage1, SvgHistoryClock } from "../assets"
 import { BattleArena } from "../components/LeftDrawer/BattleArena/BattleArena"
 import { BattleEndScreen } from "../components/LeftDrawer/BattleEndScreen/BattleEndScreen"
-
 import { BATTLE_ARENA_OPEN } from "../constants"
+import { SideRouteSingle } from "./rightDrawerRoutes"
 import { RouteSingleID } from "./routes"
 
-export interface SideTabsStruct {
-    id: string
-    Component?: () => JSX.Element | null
-    icon: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
-    label: string
-    matchRouteIDs?: RouteSingleID[] // Leave undefined to have the tab available on all pages, else specify the routes
-    mountAllTime: boolean // Whether to keep component mounted even not on the tab
-    requireAuth: boolean
+export enum LeftRouteID {
+    BattleArena = "BATTLE_ARENA",
+    PreviousBattle = "PREVIOUS_BATTLE",
 }
 
-export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
-    battle_arena: {
-        id: "battle_arena",
+export const LeftRoutes: SideRouteSingle[] = [
+    {
+        id: LeftRouteID.BattleArena,
         icon: <SvgDamage1 size="1.2rem" sx={{ pt: ".3rem" }} />,
         label: "Battle Commands",
         Component: BattleArena,
@@ -25,8 +20,8 @@ export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         matchRouteIDs: BATTLE_ARENA_OPEN ? [RouteSingleID.Home] : [],
         mountAllTime: true,
     },
-    previous_battle: {
-        id: "previous_battle",
+    {
+        id: LeftRouteID.PreviousBattle,
         icon: <SvgHistoryClock size="1.3rem" sx={{ pt: ".3rem" }} />,
         label: "Previous Battle",
         Component: BattleEndScreen,
@@ -34,9 +29,7 @@ export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         matchRouteIDs: BATTLE_ARENA_OPEN ? [RouteSingleID.Home] : [],
         mountAllTime: true,
     },
-}
+]
 
-export const LEFT_DRAWER_ARRAY: SideTabsStruct[] = []
-for (const [, value] of Object.entries(LEFT_DRAWER_MAP)) {
-    LEFT_DRAWER_ARRAY.push(value)
-}
+// LeftRoutes.find((route) => route.id === LeftRouteID.LiveChat)
+// RightRoutes.find((route) => route.id === RightRouteID.LiveChat)

@@ -2,7 +2,7 @@ import { Box, Tab, Tabs } from "@mui/material"
 import { useAuth, useUI } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { useActiveRouteID } from "../../hooks/useActiveRouteID"
-import { RIGHT_DRAWER_ARRAY } from "../../routes"
+import { RightRoutes } from "../../routes"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 
 const BUTTON_WIDTH = 20 //rem
@@ -40,23 +40,23 @@ export const DrawerButtons = () => {
             }}
         >
             <Tabs value={0} orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ flex: 1 }}>
-                {RIGHT_DRAWER_ARRAY.map((r) => {
-                    if ((r.requireAuth && !userID) || (r.matchRouteIDs && !r.matchRouteIDs.includes(activeRouteID))) return null
+                {RightRoutes.map((route) => {
+                    if ((route.requireAuth && !userID) || (route.matchRouteIDs && !route.matchRouteIDs.includes(activeRouteID))) return null
                     return (
                         <TabButton
-                            key={r.id}
-                            label={r.label}
+                            key={route.id}
+                            label={route.label}
                             enable={true}
-                            icon={r.icon}
+                            icon={route.icon}
                             onClick={() => {
                                 setRightDrawerActiveTabID((prev) => {
-                                    if (r.id === prev) {
+                                    if (route.id === prev) {
                                         return ""
                                     }
-                                    return r.id
+                                    return route.id
                                 })
                             }}
-                            isActive={r.id === rightDrawerActiveTabID}
+                            isActive={route.id === rightDrawerActiveTabID}
                             primaryColor={theme.factionTheme.primary}
                             secondaryColor={theme.factionTheme.secondary}
                         />

@@ -2,7 +2,7 @@ import { Box, Fade, Stack, Tab, Tabs, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { useAuth, useMobile } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { RIGHT_DRAWER_MAP } from "../../../routes"
+import { RightRouteID, RightRoutes } from "../../../routes"
 import { fonts } from "../../../theme/theme"
 
 export const BottomNav = () => {
@@ -35,7 +35,11 @@ const BottomNavInner = () => {
     const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
 
-    const tabs = [RIGHT_DRAWER_MAP.live_chat, ...additionalTabs, RIGHT_DRAWER_MAP.active_players]
+    const tabs = [
+        RightRoutes.find((route) => route.id === RightRouteID.LiveChat),
+        ...additionalTabs,
+        RightRoutes.find((route) => route.id === RightRouteID.ActivePlayers),
+    ]
 
     return (
         <Stack
@@ -75,7 +79,7 @@ const BottomNavInner = () => {
                     }}
                 >
                     {tabs.map((item, i) => {
-                        if (item.requireAuth && !userID) return null
+                        if (!item || (item.requireAuth && !userID)) return null
                         return (
                             <Tab
                                 key={i}
@@ -105,7 +109,7 @@ const BottomNavInner = () => {
             {isNavOpen && (
                 <Box sx={{ flex: 1, backgroundColor }}>
                     {tabs.map((item, i) => {
-                        if (item.requireAuth && !userID) return null
+                        if (!item || (item.requireAuth && !userID)) return null
                         return (
                             <TabPanel key={i} currentValue={currentValue} value={i} mountAllTime={item.mountAllTime}>
                                 {item.Component && <item.Component />}

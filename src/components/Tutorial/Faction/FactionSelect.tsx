@@ -7,9 +7,9 @@ import { useCallback, useEffect } from "react"
 import { TRAINING_ASSETS } from "../../../constants"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { LEFT_DRAWER_ARRAY, RIGHT_DRAWER_ARRAY } from "../../../routes"
 import { colors, fonts } from "../../../theme/theme"
 import { FancyButton } from "../../Common/FancyButton"
+import { LeftRoutes, RightRoutes } from "../../../routes"
 
 export enum FactionLabel {
     BostonCybernetics = "Boston Cybernetics",
@@ -136,8 +136,8 @@ const FactionBox = ({ faction }: { faction: Faction }) => {
         try {
             await send<null, { faction_id: string }>(GameServerKeys.EnlistFaction, { faction_id: faction.id })
             newSnackbarMessage("Successfully enlisted into faction.", "success")
-            setLeftDrawerActiveTabID(LEFT_DRAWER_ARRAY[0]?.id)
-            setRightDrawerActiveTabID(RIGHT_DRAWER_ARRAY[0]?.id)
+            setLeftDrawerActiveTabID(LeftRoutes[0]?.id)
+            setRightDrawerActiveTabID(RightRoutes[0]?.id)
         } catch (err) {
             newSnackbarMessage(typeof err === "string" ? err : "Failed to enlist into faction.", "error")
             console.error(err)

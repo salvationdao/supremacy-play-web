@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useWindowDimensions } from "../hooks"
-import { SideTabsStruct } from "../routes"
+import { SideRouteSingle } from "../routes"
 
 const configureViewPort = (width: number) => {
     document.querySelector('meta[name="viewport"]')?.setAttribute("content", "width=" + Math.max(980, width))
@@ -11,7 +11,7 @@ export const MobileContainer = createContainer(() => {
     const { width, height } = useWindowDimensions()
     const [isNavOpen, setIsNavOpen] = useState(false)
     const allowCloseNav = useRef(true)
-    const [additionalTabs, setAdditionalTabs] = useState<SideTabsStruct[]>([])
+    const [additionalTabs, setAdditionalTabs] = useState<SideRouteSingle[]>([])
 
     useEffect(() => {
         configureViewPort(width)

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { createContainer } from "unstated-next"
 import { useToggle } from "../hooks"
-import { LEFT_DRAWER_ARRAY, RIGHT_DRAWER_ARRAY } from "../routes"
+import { LeftRoutes, RightRoutes } from "../routes"
 import { useMobile } from "./mobile"
 
 // Control overlays, side drawers etc
@@ -10,9 +10,9 @@ const uiContainer = createContainer(() => {
     const isTutorial = location.pathname.includes("/tutorial")
     const { pathname } = useLocation()
     const { isMobile } = useMobile()
-    const [leftDrawerActiveTabID, setLeftDrawerActiveTabID] = useState(localStorage.getItem("leftDrawerActiveTabID") || LEFT_DRAWER_ARRAY[0]?.id || "")
+    const [leftDrawerActiveTabID, setLeftDrawerActiveTabID] = useState(localStorage.getItem("leftDrawerActiveTabID") || LeftRoutes[0]?.id || undefined)
     const [rightDrawerActiveTabID, setRightDrawerActiveTabID] = useState(
-        isTutorial ? "" : localStorage.getItem("rightDrawerActiveTabID") || RIGHT_DRAWER_ARRAY[0]?.id || "",
+        isTutorial ? "" : localStorage.getItem("rightDrawerActiveTabID") || RightRoutes[0]?.id || undefined,
     )
     // Big display vs left drawer
     const [smallDisplayRef, setSmallDisplayRef] = useState<HTMLDivElement | null>(null)
@@ -25,11 +25,11 @@ const uiContainer = createContainer(() => {
     const [stopMapRender, setStopMapRender] = useState(false)
 
     useEffect(() => {
-        localStorage.setItem("leftDrawerActiveTabID", leftDrawerActiveTabID)
+        localStorage.setItem("leftDrawerActiveTabID", leftDrawerActiveTabID || "")
     }, [leftDrawerActiveTabID])
 
     useEffect(() => {
-        localStorage.setItem("rightDrawerActiveTabID", rightDrawerActiveTabID)
+        localStorage.setItem("rightDrawerActiveTabID", rightDrawerActiveTabID || "")
     }, [rightDrawerActiveTabID])
 
     useEffect(() => {
