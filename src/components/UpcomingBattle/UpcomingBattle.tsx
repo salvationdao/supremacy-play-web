@@ -25,6 +25,7 @@ export const UpcomingBattle = () => {
 
     useEffect(() => {
         toggleShowUpcomingBattle(true)
+        return () => toggleShowUpcomingBattle(false)
     }, [toggleShowUpcomingBattle])
 
     const { size, spacing } = useMemo(() => {
