@@ -9,7 +9,6 @@ import { zoomEffect } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { SplitOptionType } from "../../../types/chat"
 import { WindowPortal } from "../../Common/WindowPortal/WindowPortal"
-import { ChallengeFundsRemain } from "../../LeftDrawer/QuickDeploy/ChallengeFundsRemain"
 import { ChatMessages } from "./ChatMessages/ChatMessages"
 import { ChatSend } from "./ChatSend/ChatSend"
 
@@ -19,7 +18,6 @@ export const LiveChat = () => {
     const common = useMemo(() => {
         return (
             <Stack sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
-                <ChallengeFundsRemain />
                 {splitOption === SplitOptionType.Split ? <SplitLayout /> : <TabbedLayout />}
                 <AdditionalOptionsButton />
             </Stack>
