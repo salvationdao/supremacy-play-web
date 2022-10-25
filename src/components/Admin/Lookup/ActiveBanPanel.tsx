@@ -34,7 +34,7 @@ export const ActiveBanPanel = ({
                         sx={{ height: "100%" }}
                         key={playerBan.id}
                     >
-                        <Stack sx={{ width: "100%", p: "1rem", height: "100%" }}>
+                        <Stack sx={{ width: "100%", p: "1rem" }}>
                             <Stack justifyContent={"space-between"} direction="row" alignItems="center">
                                 <Stack direction="row">
                                     <Checkbox
