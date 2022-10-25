@@ -1,7 +1,7 @@
-import { Box, SxProps, Typography } from "@mui/material"
+import { Box, Typography } from "@mui/material"
 import { useState } from "react"
 import { ClipThing, FancyButton, TooltipHelper } from "../../.."
-import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../../../../constants"
+import { IS_TESTING_MODE } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -13,7 +13,6 @@ import { ItemType } from "../../../../types/marketplace"
 export const MechButtons = ({
     mechDetails,
     setSelectedMechDetails,
-    setDeployMechModalOpen,
     setRentalMechModalOpen,
     setRepairMechModalOpen,
     marketLocked,
