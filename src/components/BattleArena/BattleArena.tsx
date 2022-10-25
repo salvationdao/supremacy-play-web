@@ -1,14 +1,13 @@
 import { Box, Stack } from "@mui/material"
 import React, { useEffect, useState } from "react"
-import { SvgAbility, SvgHistoryClock } from "../../assets"
 import { BattleEndScreen, Controls, EarlyAccessWarningModal, Notifications, SupporterAbilities, WarMachineStats } from ".."
-import { BattleRewardsSkyHighBanner } from "../BannersPromotions/BattleRewardsSkyHighBanner"
-import { PlayerAbilities } from "../LeftDrawer/BattleArena/PlayerAbilities/PlayerAbilities"
-import { QuickPlayerAbilities } from "../LeftDrawer/BattleArena/QuickPlayerAbilities/QuickPlayerAbilities"
-import { BattleArenaCountDown } from "../Maintenance/BattleArenaCountDown"
+import { SvgAbility, SvgHistoryClock } from "../../assets"
 import { BATTLE_ARENA_OPEN } from "../../constants"
 import { useAuth, useDimension, useMobile } from "../../containers"
 import { siteZIndex } from "../../theme/theme"
+import { PlayerAbilities } from "../LeftDrawer/BattleArena/PlayerAbilities/PlayerAbilities"
+import { QuickPlayerAbilities } from "../LeftDrawer/BattleArena/QuickPlayerAbilities/QuickPlayerAbilities"
+import { BattleArenaCountDown } from "../Maintenance/BattleArenaCountDown"
 import { BigDisplay } from "./BigDisplay/BigDisplay"
 
 export const BattleArena = () => {
@@ -117,20 +116,6 @@ const BattleArenaPageInner = React.memo(function BattleArenaPageInner() {
             ),
         })
 
-        // tabs.push({
-        //     id: "history",
-        //     icon: <SvgHistory size="1.2rem" sx={{ pt: ".1rem" }} />,
-        //     label: "HISTORY",
-        //     requireAuth: false,
-        //     onlyShowOnRoute: "",
-        //     mountAllTime: false,
-        //     Component: () => (
-        //         <Stack sx={{ position: "relative", height: "100%" }}>
-        //             <BattleHistory />
-        //         </Stack>
-        //     ),
-        // })
-
         setAdditionalTabs(tabs)
         setIsNavOpen(true)
 
@@ -145,8 +130,6 @@ const BattleArenaPageInner = React.memo(function BattleArenaPageInner() {
 
     return (
         <Stack id="battle-arena-all" sx={{ width: "100%", height: "100%", zIndex: siteZIndex.RoutePage }}>
-            <BattleRewardsSkyHighBanner />
-
             <Box id="game-ui-container" sx={{ position: "relative", flex: 1, height: 0 }}>
                 <BigDisplay />
 

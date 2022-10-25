@@ -58,7 +58,7 @@ const AppInner = () => {
     const { userID, factionID } = useAuth()
     const [showLoading, toggleShowLoading] = useToggle(true)
 
-    // Makes the loading screen to show for AT LEAST 1 second
+    // Makes the loading screen to show for at least 2 seconds
     useEffect(() => {
         const timeout = setTimeout(() => {
             toggleShowLoading(false)
@@ -77,6 +77,7 @@ const AppInner = () => {
         })
     }, [history])
 
+    // Loading progress bar
     if ((!serverConnectedBefore && !firstConnectTimedOut) || showLoading) {
         return (
             <Stack
@@ -156,6 +157,7 @@ const AppInner = () => {
                     >
                         <Box sx={{ flex: 1, position: "relative", overflow: "hidden" }}>
                             <MarketingModal />
+
                             {isTutorial ? (
                                 <TutorialPage />
                             ) : !isServerDown ? (
