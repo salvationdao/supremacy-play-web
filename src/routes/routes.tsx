@@ -656,7 +656,7 @@ export const Routes: RouteSingle[] = [
             requireModerator: true,
         },
         enable: true,
-        tabTitle: "Admin  - Lookup",
+        tabTitle: "Admin - Lookup",
     },
     {
         id: RouteSingleID.AdminDangerZone,
