@@ -1,6 +1,6 @@
 import { Box, Tabs } from "@mui/material"
 import { useRouteMatch } from "react-router-dom"
-import { useAuth, useUI } from "../../containers"
+import { useArena, useAuth, useUI } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { LEFT_DRAWER_ARRAY, ROUTES_ARRAY } from "../../routes"
 import { colors, siteZIndex } from "../../theme/theme"
@@ -9,7 +9,8 @@ import { TabButton } from "../RightDrawer/DrawerButtons"
 export const LEFT_DRAWER_BAR_WIDTH = 3 // rem
 
 export const DrawerButtons = () => {
-    const { leftDrawerActiveTabID, setLeftDrawerActiveTabID, showUpcomingBattle } = useUI()
+    const { currentArena } = useArena()
+    const { leftDrawerActiveTabID, setLeftDrawerActiveTabID } = useUI()
     const theme = useTheme()
     const { userID } = useAuth()
 
@@ -48,7 +49,7 @@ export const DrawerButtons = () => {
             <Tabs value={0} orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ flex: 1 }}>
                 {LEFT_DRAWER_ARRAY.map((r) => {
                     if ((r.requireAuth && !userID) || (r.matchNavLinkIDs && !r.matchNavLinkIDs.includes(activeRouteID))) return null
-                    if ((showUpcomingBattle && r.id !== "quick_deploy") || (!showUpcomingBattle && r.id === "quick_deploy")) return null
+                    if ((currentArena?.status?.is_idle && r.id !== "quick_deploy") || (!currentArena?.status?.is_idle && r.id === "quick_deploy")) return null
                     return (
                         <TabButton
                             key={r.id}

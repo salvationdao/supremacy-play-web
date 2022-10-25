@@ -1,6 +1,6 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
-import { useDimension, useSupremacy, useUI } from "../../containers"
+import { useMemo, useState } from "react"
+import { useDimension, useSupremacy } from "../../containers"
 import { useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { opacityEffect } from "../../theme/keyframes"
@@ -21,12 +21,6 @@ interface NextBattle {
 export const UpcomingBattle = () => {
     const [nextBattle, setNextBattle] = useState<NextBattle | undefined>()
     const { gameUIDimensions } = useDimension()
-    const { toggleShowUpcomingBattle } = useUI()
-
-    useEffect(() => {
-        toggleShowUpcomingBattle(true)
-        return () => toggleShowUpcomingBattle(false)
-    }, [toggleShowUpcomingBattle])
 
     const { size, spacing } = useMemo(() => {
         let size = "18rem"
@@ -111,7 +105,7 @@ export const UpcomingBattle = () => {
 const CardGroup = ({ factionID, mechIDs }: { factionID: string; mechIDs: string[] }) => {
     const { getFaction } = useSupremacy()
     const faction = getFaction(factionID)
-    console.log(mechIDs)
+
     return (
         <>
             <MechCard mechID={mechIDs[0] || ""} faction={faction} />
