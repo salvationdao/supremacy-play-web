@@ -2,7 +2,6 @@ import { IconButton, Stack, Typography } from "@mui/material"
 import { useState } from "react"
 import { TooltipHelper } from "../.."
 import { SvgNotification, SvgSupToken } from "../../../assets"
-import { supFormatter } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { colors } from "../../../theme/theme"
 import { PreferencesModal } from "../../Bar/ProfileCard/PreferencesModal/PreferencesModal"
@@ -20,8 +19,6 @@ export const QueueDetails = ({ queueFeed, playerQueueStatus }: QueueDetailsProps
     const [addDeviceModalOpen, toggleAddDeviceModalOpen] = useToggle()
     const [telegramShortcode, setTelegramShortcode] = useState<string>("")
 
-    const queueCost = queueFeed?.queue_cost || "0"
-
     return (
         <>
             <Stack spacing="1.5rem" direction="row" width="100%">
@@ -33,15 +30,6 @@ export const QueueDetails = ({ queueFeed, playerQueueStatus }: QueueDetailsProps
                     tooltip="The current queue position of your faction."
                     disableIcon
                 />
-
-                {queueCost && (
-                    <AmountItem
-                        title={"FEE: "}
-                        color={colors.yellow}
-                        value={supFormatter(queueCost, 2)}
-                        tooltip="The cost to place your war machine into the battle queue."
-                    />
-                )}
 
                 {playerQueueStatus && (
                     <AmountItem

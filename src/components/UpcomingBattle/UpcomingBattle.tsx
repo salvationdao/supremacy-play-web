@@ -105,7 +105,7 @@ export const UpcomingBattle = () => {
 const CardGroup = ({ factionID, mechIDs }: { factionID: string; mechIDs: string[] }) => {
     const { getFaction } = useSupremacy()
     const faction = getFaction(factionID)
-
+    console.log(mechIDs)
     return (
         <>
             <MechCard mechID={mechIDs[0] || ""} faction={faction} />

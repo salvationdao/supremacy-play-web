@@ -16,7 +16,6 @@ interface QuickDeployItemProps {
     mech: MechBasic
     isSelected?: boolean
     toggleIsSelected?: () => void
-    onDeploy: () => void
     childrenMechStatus: React.MutableRefObject<{
         [mechID: string]: MechStatus
     }>
@@ -26,7 +25,7 @@ const propsAreEqual = (prevProps: QuickDeployItemProps, nextProps: QuickDeployIt
     return prevProps.isSelected === nextProps.isSelected && prevProps.mech.id === nextProps.mech.id
 }
 
-export const QuickDeployItem = React.memo(function QuickDeployItem({ isSelected, toggleIsSelected, onDeploy, mech, childrenMechStatus }: QuickDeployItemProps) {
+export const QuickDeployItem = React.memo(function QuickDeployItem({ isSelected, toggleIsSelected, mech, childrenMechStatus }: QuickDeployItemProps) {
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [mechDetails, setMechDetails] = useState<MechDetails>()
@@ -56,6 +55,8 @@ export const QuickDeployItem = React.memo(function QuickDeployItem({ isSelected,
             if (!payload || mechStatus?.status === MechStatusEnum.Sold) return
             setMechStatus(payload)
             childrenMechStatus.current[mech.id] = payload
+
+            console.log(payload)
         },
     )
 
@@ -73,7 +74,6 @@ export const QuickDeployItem = React.memo(function QuickDeployItem({ isSelected,
                 if (resp && resp.success) {
                     newSnackbarMessage("Successfully deployed war machine.", "success")
                     setError(undefined)
-                    onDeploy()
                 }
             } catch (e) {
                 setError(typeof e === "string" ? e : "Failed to deploy war machine.")
@@ -83,8 +83,100 @@ export const QuickDeployItem = React.memo(function QuickDeployItem({ isSelected,
                 setIsLoading(false)
             }
         },
-        [send, mech.id, newSnackbarMessage, onDeploy],
+        [send, mech.id, newSnackbarMessage],
     )
+
+    const onLeaveQueue = useCallback(
+        async (e) => {
+            e.stopPropagation()
+            e.preventDefault()
+
+            try {
+                setIsLoading(true)
+                const resp = await send<boolean>(GameServerKeys.LeaveQueue, {
+                    mech_ids: [mech.id],
+                })
+
+                if (resp) {
+                    newSnackbarMessage("Successfully undeploy war machine.", "success")
+                    setError(undefined)
+                }
+            } catch (e) {
+                setError(typeof e === "string" ? e : "Failed to deploy war machine.")
+                console.error(e)
+                return
+            } finally {
+                setIsLoading(false)
+            }
+        },
+        [send, mech.id, newSnackbarMessage],
+    )
+
+    const DeployButton = useMemo(() => {
+        if (error || !mechDetails) return null
+
+        if (mechStatus?.can_deploy) {
+            return (
+                <FancyButton
+                    loading={isLoading}
+                    clipThingsProps={{
+                        clipSize: "2px",
+                        clipSlantSize: "0px",
+                        corners: {
+                            topLeft: true,
+                            topRight: true,
+                            bottomLeft: true,
+                            bottomRight: true,
+                        },
+                        backgroundColor: colors.green,
+                        opacity: 1,
+                        border: {
+                            borderColor: colors.green,
+                            borderThickness: "1px",
+                        },
+                        sx: { mt: "-9px" },
+                    }}
+                    sx={{ px: 0, pt: 0, pb: ".2rem", color: "#FFFFFF" }}
+                    onClick={onDeployQueue}
+                >
+                    <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                        DEPLOY
+                    </Typography>
+                </FancyButton>
+            )
+        }
+
+        if (mechStatus?.status === MechStatusEnum.Queue) {
+            return (
+                <FancyButton
+                    loading={isLoading}
+                    clipThingsProps={{
+                        clipSize: "2px",
+                        clipSlantSize: "0px",
+                        corners: {
+                            topLeft: true,
+                            topRight: true,
+                            bottomLeft: true,
+                            bottomRight: true,
+                        },
+                        backgroundColor: colors.lightRed,
+                        opacity: 1,
+                        border: {
+                            borderColor: colors.lightRed,
+                            borderThickness: "1px",
+                        },
+                        sx: { mt: "-9px" },
+                    }}
+                    sx={{ px: 0, pt: 0, pb: ".2rem", color: "#FFFFFF" }}
+                    onClick={onLeaveQueue}
+                >
+                    <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                        UNDEPLOY
+                    </Typography>
+                </FancyButton>
+            )
+        }
+    }, [onLeaveQueue, onDeployQueue, mechDetails, error, mechStatus, isLoading])
 
     return (
         <Stack
@@ -107,34 +199,7 @@ export const QuickDeployItem = React.memo(function QuickDeployItem({ isSelected,
                     <MechThumbnail mech={mech} mechDetails={mechDetails} smallSize />
                 </Stack>
 
-                {!error && mechDetails && mechStatus?.can_deploy && (
-                    <FancyButton
-                        loading={isLoading}
-                        clipThingsProps={{
-                            clipSize: "2px",
-                            clipSlantSize: "0px",
-                            corners: {
-                                topLeft: true,
-                                topRight: true,
-                                bottomLeft: true,
-                                bottomRight: true,
-                            },
-                            backgroundColor: colors.green,
-                            opacity: 1,
-                            border: {
-                                borderColor: colors.green,
-                                borderThickness: "1px",
-                            },
-                            sx: { mt: "-9px" },
-                        }}
-                        sx={{ px: 0, pt: 0, pb: ".2rem", color: "#FFFFFF" }}
-                        onClick={onDeployQueue}
-                    >
-                        <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBlack }}>
-                            DEPLOY
-                        </Typography>
-                    </FancyButton>
-                )}
+                {DeployButton}
             </Stack>
 
             {/* Right side */}

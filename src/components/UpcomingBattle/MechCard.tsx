@@ -1,9 +1,9 @@
 import { Box, Stack, Typography } from "@mui/material"
-import React, { useState } from "react"
-import { BCBorder, BCDeploy, BCWaiting, RMBorder, RMDeploy, RMWaiting, ZHIBorder, ZHIDeploy, ZHIWaiting } from "../../assets"
+import React, { useCallback, useEffect, useState } from "react"
+import { BCBorder, BCDeploy, BCWaiting, RMBorder, RMDeploy, RMWaiting, SvgClose2, ZHIBorder, ZHIDeploy, ZHIWaiting } from "../../assets"
 import { FactionIDs } from "../../constants"
-import { useAuth, useUI } from "../../containers"
-import { useGameServerSubscription } from "../../hooks/useGameServer"
+import { useAuth, useGlobalNotifications, useUI } from "../../containers"
+import { useGameServerCommandsFaction, useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { LEFT_DRAWER_MAP } from "../../routes"
 import { zoomEffect } from "../../theme/keyframes"
@@ -11,6 +11,7 @@ import { colors } from "../../theme/theme"
 import { Faction } from "../../types"
 import { MechDetails } from "../../types/assets"
 import { ClipThing } from "../Common/ClipThing"
+import { useTheme } from "../../containers/theme"
 
 const getCardStyles = (factionID: string) => {
     if (factionID === FactionIDs.BC) {
@@ -54,11 +55,17 @@ const propsAreEqual = (prevProps: MechCardProps, nextProps: MechCardProps) => {
 }
 
 export const MechCard = React.memo(function MechCard({ mechID, faction }: MechCardProps) {
-    const { factionID } = useAuth()
+    const { factionID, userID } = useAuth()
+    const { factionTheme } = useTheme()
     const { setLeftDrawerActiveTabID } = useUI()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
     const { border, waiting, deploy } = getCardStyles(faction.id)
+    const { send } = useGameServerCommandsFaction("/faction_commander")
+    const { newSnackbarMessage } = useGlobalNotifications()
 
+    useEffect(() => {
+        if (!mechID) setMechDetails(undefined)
+    }, [mechID])
     useGameServerSubscription<MechDetails>(
         {
             URI: `/public/mech/${mechID}/details`,
@@ -70,6 +77,20 @@ export const MechCard = React.memo(function MechCard({ mechID, faction }: MechCa
             setMechDetails(payload)
         },
     )
+
+    const onLeaveQueue = useCallback(async () => {
+        if (!mechID) return
+        try {
+            await send(GameServerKeys.LeaveQueue, {
+                mech_ids: [mechID],
+            })
+
+            newSnackbarMessage("Successfully deployed war machine.", "success")
+        } catch (e) {
+            console.error(e)
+            return
+        }
+    }, [send, mechID, newSnackbarMessage])
 
     const clickToDeploy = faction.id === factionID && !mechID
     const avatarUrl = mechDetails?.chassis_skin?.avatar_url || mechDetails?.avatar_url
@@ -122,6 +143,29 @@ export const MechCard = React.memo(function MechCard({ mechID, faction }: MechCa
                             : {}),
                     }}
                 />
+
+                {mechDetails && mechDetails.owner_id === userID && (
+                    <Stack
+                        direction="row"
+                        alignItems="center"
+                        justifyContent="center"
+                        sx={{
+                            position: "absolute",
+                            top: 0,
+                            right: 0,
+                            width: "3rem",
+                            height: "3rem",
+                            pr: ".3rem",
+                            pt: ".3rem",
+                            backgroundColor: factionTheme.primary,
+                            borderRadius: 0,
+                            cursor: "pointer",
+                        }}
+                        onClick={onLeaveQueue}
+                    >
+                        <SvgClose2 fill={factionTheme.secondary} />
+                    </Stack>
+                )}
             </Box>
 
             {/* Mech name */}
