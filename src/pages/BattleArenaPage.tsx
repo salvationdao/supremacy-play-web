@@ -2,7 +2,6 @@ import { Box, Stack } from "@mui/material"
 import React, { useEffect, useState } from "react"
 import { SvgAbility, SvgHistoryClock } from "../assets"
 import { BattleEndScreen, BigDisplay, Controls, EarlyAccessWarning, Notifications, SupporterAbilities, WarMachineStats } from "../components"
-import { BattleRewardsSkyHighBanner } from "../components/Common/BannersPromotions/BattleRewardsSkyHighBanner"
 import { PlayerAbilities } from "../components/LeftDrawer/BattleArena/PlayerAbilities/PlayerAbilities"
 import { QuickPlayerAbilities } from "../components/LeftDrawer/BattleArena/QuickPlayerAbilities/QuickPlayerAbilities"
 import { BattleArenaCountDown } from "../components/Maintenance/BattleArenaCountDown"
@@ -116,20 +115,6 @@ const BattleArenaPageInner = React.memo(function BattleArenaPageInner() {
             ),
         })
 
-        // tabs.push({
-        //     id: "history",
-        //     icon: <SvgHistory size="1.2rem" sx={{ pt: ".1rem" }} />,
-        //     label: "HISTORY",
-        //     requireAuth: false,
-        //     onlyShowOnRoute: "",
-        //     mountAllTime: false,
-        //     Component: () => (
-        //         <Stack sx={{ position: "relative", height: "100%" }}>
-        //             <BattleHistory />
-        //         </Stack>
-        //     ),
-        // })
-
         setAdditionalTabs(tabs)
         setIsNavOpen(true)
 
@@ -144,8 +129,6 @@ const BattleArenaPageInner = React.memo(function BattleArenaPageInner() {
 
     return (
         <Stack id="battle-arena-all" sx={{ width: "100%", height: "100%", zIndex: siteZIndex.RoutePage }}>
-            <BattleRewardsSkyHighBanner />
-
             <Box id="game-ui-container" sx={{ position: "relative", flex: 1, height: 0 }}>
                 <BigDisplay />
 
