@@ -53,6 +53,26 @@ export const CrateRewardsModal = ({
     const validFutureCrates = futureCratesToOpen.filter((c) => c.id !== openedRewards.id)
     const faction = useMemo(() => getFaction(factionID), [getFaction, factionID])
 
+    useEffect(() => {
+        const onKeyDown = (e: KeyboardEvent) => {
+            // Skip video on keyboard key press
+            if (e.key === "Enter" || e.key === " ") {
+                onClose && onClose()
+                e.stopPropagation()
+                e.preventDefault()
+            }
+        }
+
+        const cleanup = () => {
+            document.removeEventListener("keydown", onKeyDown)
+        }
+
+        cleanup()
+        document.addEventListener("keydown", onKeyDown)
+
+        return cleanup
+    }, [onClose])
+
     const openNextCrate = useCallback(async () => {
         try {
             if (!validFutureCrates || validFutureCrates.length <= 0) return
