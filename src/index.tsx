@@ -47,7 +47,7 @@ import { AuthPage } from "./pages/AuthPage"
 import { EnlistPage } from "./pages/EnlistPage"
 import { ErrorFallbackPage } from "./pages/ErrorFallbackPage"
 import { LoginRedirect } from "./pages/LoginRedirect"
-import { ROUTES_ARRAY, ROUTES_MAP } from "./routes"
+import { ROUTES_ARRAY, ROUTES_MAP } from "./routes/routes"
 import { colors, fonts } from "./theme/theme"
 
 const AppInner = () => {

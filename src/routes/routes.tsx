@@ -1,17 +1,9 @@
-import { Box } from "@mui/system"
-import { SvgChat, SvgDamage1, SvgHistoryClock, SvgRepair } from "../assets"
 import { AdminLookupResultPage } from "../components/Admin/Lookup/AdminLookupResultPage"
-import { BattleArena } from "../components/LeftDrawer/BattleArena/BattleArena"
-import { BattleEndScreen } from "../components/LeftDrawer/BattleEndScreen/BattleEndScreen"
 import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
-import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
-import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
-
-import { RepairJobs } from "../components/RightDrawer/RepairJobs/RepairJobs"
 import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../constants"
-import { BattleArenaPage, BillingHistoryPage, BillingHistoryItemPage, ClaimPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
-import { BattleLobbiesPage } from "../pages/BattleLobbiesPage"
+import { BattleArenaPage, BillingHistoryItemPage, BillingHistoryPage, ClaimPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
 import { AdminPage } from "../pages/AdminPage"
+import { BattleLobbiesPage } from "../pages/BattleLobbiesPage"
 import { LeaderboardPage } from "../pages/LeaderboardPage"
 import { MarketplaceItemPage } from "../pages/MarketplaceItemPage"
 import { MarketplaceSellPage } from "../pages/MarketplaceSellPage"
@@ -21,12 +13,7 @@ import { ReplayPage } from "../pages/ReplayPage"
 import { StorefrontPage } from "../pages/StorefrontPage"
 import { StorefrontShoppingCartPage } from "../pages/StorefrontShoppingCartPage"
 import { WeaponPage } from "../pages/WeaponPage"
-import { colors } from "../theme/theme"
-import { MyLobbies } from "../components/RightDrawer/MyLobbies/MyLobbies"
 
-// ************
-// ** ROUTES **
-// ************
 interface RouteStruct {
     id: string
     path: string
@@ -322,94 +309,4 @@ export const ROUTES_MAP: { [name: string]: RouteStruct } = {
 export const ROUTES_ARRAY: RouteStruct[] = []
 for (const [, value] of Object.entries(ROUTES_MAP)) {
     ROUTES_ARRAY.push(value)
-}
-
-// *****************
-// ** LEFT DRAWER **
-// *****************
-export interface SideTabsStruct {
-    id: string
-    Component?: () => JSX.Element | null
-    icon: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
-    label: string
-    matchNavLinkIDs?: string[] // Leave undefined to have the tab available on all pages, else specify the routes
-    mountAllTime: boolean // Whether to keep component mounted even not on the tab
-    requireAuth: boolean
-}
-
-export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
-    battle_arena: {
-        id: "battle_arena",
-        icon: <SvgDamage1 size="1.2rem" sx={{ pt: ".3rem" }} />,
-        label: "Battle Commands",
-        Component: BattleArena,
-        requireAuth: false,
-        matchNavLinkIDs: BATTLE_ARENA_OPEN ? ["home"] : [],
-        mountAllTime: true,
-    },
-    previous_battle: {
-        id: "previous_battle",
-        icon: <SvgHistoryClock size="1.3rem" sx={{ pt: ".3rem" }} />,
-        label: "Previous Battle",
-        Component: BattleEndScreen,
-        requireAuth: false,
-        matchNavLinkIDs: BATTLE_ARENA_OPEN ? ["home"] : [],
-        mountAllTime: true,
-    },
-}
-
-export const LEFT_DRAWER_ARRAY: SideTabsStruct[] = []
-for (const [, value] of Object.entries(LEFT_DRAWER_MAP)) {
-    LEFT_DRAWER_ARRAY.push(value)
-}
-
-// ******************
-// ** RIGHT DRAWER **
-// ******************
-export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
-    live_chat: {
-        id: "live_chat",
-        icon: <SvgChat size="1.1rem" sx={{ pt: ".3rem" }} />,
-        label: "Live Chat",
-        Component: LiveChat,
-        requireAuth: false,
-        matchNavLinkIDs: undefined,
-        mountAllTime: true,
-    },
-    active_players: {
-        id: "active_players",
-        icon: (
-            <Box sx={{ pb: ".2rem" }}>
-                <Box sx={{ width: ".9rem", height: ".9rem", borderRadius: "50%", backgroundColor: colors.green }} />
-            </Box>
-        ),
-        label: "Active Players",
-        Component: PlayerList,
-        requireAuth: true,
-        matchNavLinkIDs: undefined,
-        mountAllTime: false,
-    },
-    repairs: {
-        id: "repairs",
-        icon: <SvgRepair size="1.1rem" sx={{ pt: ".3rem" }} />,
-        label: "Repairs Jobs",
-        Component: RepairJobs,
-        requireAuth: true,
-        matchNavLinkIDs: undefined,
-        mountAllTime: false,
-    },
-    my_lobbies: {
-        id: "my_lobbies",
-        icon: <SvgRepair size="1.1rem" sx={{ pt: ".3rem" }} />,
-        label: "My Lobbies",
-        Component: MyLobbies,
-        requireAuth: true,
-        matchNavLinkIDs: undefined,
-        mountAllTime: false,
-    },
-}
-
-export const RIGHT_DRAWER_ARRAY: SideTabsStruct[] = []
-for (const [, value] of Object.entries(RIGHT_DRAWER_MAP)) {
-    RIGHT_DRAWER_ARRAY.push(value)
 }
