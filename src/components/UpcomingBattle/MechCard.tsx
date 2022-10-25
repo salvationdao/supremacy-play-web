@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import React, { useCallback, useEffect, useState } from "react"
-import { BCBorder, BCDeploy, BCWaiting, RMBorder, RMDeploy, RMWaiting, SvgCancelled, SvgClose, SvgClose2, ZHIBorder, ZHIDeploy, ZHIWaiting } from "../../assets"
+import { BCBorder, BCDeploy, BCWaiting, RMBorder, RMDeploy, RMWaiting, SvgClose2, ZHIBorder, ZHIDeploy, ZHIWaiting } from "../../assets"
 import { FactionIDs } from "../../constants"
 import { useAuth, useGlobalNotifications, useUI } from "../../containers"
 import { useGameServerCommandsFaction, useGameServerSubscription } from "../../hooks/useGameServer"
@@ -61,8 +61,6 @@ export const MechCard = React.memo(function MechCard({ mechID, faction }: MechCa
     const [mechDetails, setMechDetails] = useState<MechDetails>()
     const { border, waiting, deploy } = getCardStyles(faction.id)
     const { send } = useGameServerCommandsFaction("/faction_commander")
-    const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState<string>()
     const { newSnackbarMessage } = useGlobalNotifications()
 
     useEffect(() => {
@@ -83,19 +81,14 @@ export const MechCard = React.memo(function MechCard({ mechID, faction }: MechCa
     const onLeaveQueue = useCallback(async () => {
         if (!mechID) return
         try {
-            setIsLoading(true)
             await send(GameServerKeys.LeaveQueue, {
                 mech_ids: [mechID],
             })
 
             newSnackbarMessage("Successfully deployed war machine.", "success")
-            setError(undefined)
         } catch (e) {
-            setError(typeof e === "string" ? e : "Failed to deploy war machine.")
             console.error(e)
             return
-        } finally {
-            setIsLoading(false)
         }
     }, [send, mechID, newSnackbarMessage])
 

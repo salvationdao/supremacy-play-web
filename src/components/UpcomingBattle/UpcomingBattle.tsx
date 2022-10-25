@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Drawer, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
 import { useDimension, useSupremacy } from "../../containers"
 import { useGameServerSubscription } from "../../hooks/useGameServer"
