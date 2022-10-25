@@ -12,7 +12,7 @@ import { BattleLobbyJoinModal } from "./BattleLobbyJoinModal"
 import { BattleLobbyFaction, MyFactionLobbySlots } from "../BattleLobbyMech/BattleLobbyMechSlots"
 import { CropMaxLengthText } from "../../../theme/styles"
 import { FactionIDs } from "../../../constants"
-import { OptInButton } from "../../UpcomingBattle/UpcomingBattle"
+import { OptInButton } from "../../BattleArena/UpcomingBattle/UpcomingBattle"
 import { BattleLobbyMechList } from "./PlayerInvolvedLobbyCard"
 import { BattleLobbyPricePool } from "./BattleLobbyPricePool"
 

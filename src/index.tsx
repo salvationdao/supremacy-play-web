@@ -14,10 +14,16 @@ import { Helmet } from "react-helmet"
 import { BrowserRouter, Redirect, Route, Switch, useHistory } from "react-router-dom"
 import { SupremacyPNG } from "./assets"
 import { Bar, GlobalSnackbar, Maintenance, RightDrawer } from "./components"
-import { BottomNav } from "./components/BottomNav/BottomNav"
+import { BottomNav } from "./components/BattleArena/BottomNav/BottomNav"
+import { ErrorFallback } from "./components/ErrorFallback/ErrorFallback"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
-import { MarketingPopup } from "./components/MarketingPopup/MarketingPopup"
+import { LoginRedirect } from "./components/LoginRedirect/LoginRedirect"
+import { MarketingModal } from "./components/MarketingModal/MarketingModal"
+import { NotFoundPage } from "./components/NotFoundPage/NotFoundPage"
+import { AuthPage } from "./components/Signup/AuthPage"
+import { EnlistPage } from "./components/Signup/EnlistPage"
 import { tourStyles } from "./components/Tutorial/SetupTutorial"
+import { TutorialPage } from "./components/Tutorial/TutorialPage"
 import { GAME_SERVER_HOSTNAME, LINK, SENTRY_CONFIG } from "./constants"
 import {
     ChatProvider,
@@ -41,14 +47,8 @@ import { OvenStreamProvider } from "./containers/oven"
 import { ThemeProvider } from "./containers/theme"
 import { ws } from "./containers/ws"
 import { useToggle } from "./hooks"
-import { TutorialPage } from "./components/Tutorial/TutorialPage"
-import { AuthPage } from "./Signup/AuthPage"
-import { EnlistPage } from "./Signup/EnlistPage"
-import { ErrorFallback } from "./components/ErrorFallback/ErrorFallback"
 import { Routes, RouteSingleID } from "./routes"
 import { colors, fonts } from "./theme/theme"
-import { NotFoundPage } from "./components/NotFoundPage/NotFoundPage"
-import { LoginRedirect } from "./components/LoginRedirect/LoginRedirect"
 
 const AppInner = () => {
     const history = useHistory()
@@ -155,7 +155,7 @@ const AppInner = () => {
                         }}
                     >
                         <Box sx={{ flex: 1, position: "relative", overflow: "hidden" }}>
-                            <MarketingPopup />
+                            <MarketingModal />
                             {isTutorial ? (
                                 <TutorialPage />
                             ) : !isServerDown ? (

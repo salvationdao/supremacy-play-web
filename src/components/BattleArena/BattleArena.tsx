@@ -1,14 +1,15 @@
 import { Box, Stack } from "@mui/material"
 import React, { useEffect, useState } from "react"
 import { SvgAbility, SvgHistoryClock } from "../../assets"
-import { BattleEndScreen, BigDisplay, Controls, EarlyAccessWarning, Notifications, SupporterAbilities, WarMachineStats } from ".."
-import { BattleRewardsSkyHighBanner } from "../Common/BannersPromotions/BattleRewardsSkyHighBanner"
+import { BattleEndScreen, Controls, EarlyAccessWarningModal, Notifications, SupporterAbilities, WarMachineStats } from ".."
+import { BattleRewardsSkyHighBanner } from "../BannersPromotions/BattleRewardsSkyHighBanner"
 import { PlayerAbilities } from "../LeftDrawer/BattleArena/PlayerAbilities/PlayerAbilities"
 import { QuickPlayerAbilities } from "../LeftDrawer/BattleArena/QuickPlayerAbilities/QuickPlayerAbilities"
 import { BattleArenaCountDown } from "../Maintenance/BattleArenaCountDown"
 import { BATTLE_ARENA_OPEN } from "../../constants"
 import { useAuth, useDimension, useMobile } from "../../containers"
 import { siteZIndex } from "../../theme/theme"
+import { BigDisplay } from "./BigDisplay/BigDisplay"
 
 export const BattleArena = () => {
     const { userID } = useAuth()
@@ -21,7 +22,7 @@ export const BattleArena = () => {
 
     if (!understand && userID) {
         return (
-            <EarlyAccessWarning
+            <EarlyAccessWarningModal
                 onAcknowledged={() => {
                     localStorage.setItem(`understand1-${userID}`, "true")
                     setUnderstand(true)

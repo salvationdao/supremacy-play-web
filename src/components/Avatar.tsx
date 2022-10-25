@@ -1,4 +1,4 @@
-import { getCardStyles } from "./UpcomingBattle/MechCard"
+import { getCardStyles } from "./BattleArena/UpcomingBattle/MechCard"
 import { Box, Typography } from "@mui/material"
 import React, { useState } from "react"
 import { CustomAvatar } from "./PublicProfile/Avatar/CustomAvatar"

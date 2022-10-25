@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
-import { PixiMiniMapPixi } from "../components/BigDisplay/MiniMapNew/MiniMapPixi/pixiMiniMapPixi"
+import { PixiMiniMapPixi } from "../components/BattleArena/BigDisplay/MiniMapNew/MiniMapPixi/pixiMiniMapPixi"
 import { deepEqual } from "../helpers"
 import { useGameServerCommandsFaction } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"

@@ -6,7 +6,7 @@ import { useToggle } from "../../../hooks"
 import { colors } from "../../../theme/theme"
 import { PreferencesModal } from "../../Bar/ProfileCard/PreferencesModal/PreferencesModal"
 import { TelegramRegisterModal } from "../../Bar/ProfileCard/PreferencesModal/TelegramRegisterModal"
-import { BattleETA } from "../../BattleHistory/BattleETA"
+import { BattleETA } from "../../BattleArena/BattleHistory/BattleETA"
 import { PlayerQueueStatus } from "../../../types/battle_queue"
 
 interface QueueDetailsProps {
