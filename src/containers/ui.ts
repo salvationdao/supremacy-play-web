@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom"
 import { createContainer } from "unstated-next"
 import { useToggle } from "../hooks"
 import { LEFT_DRAWER_ARRAY, RIGHT_DRAWER_ARRAY } from "../routes"
+import { useAuth } from "./auth"
 import { useMobile } from "./mobile"
 
 // Control overlays, side drawers etc
@@ -10,8 +11,11 @@ const uiContainer = createContainer(() => {
     const isTraining = location.pathname.includes("/training")
     const { pathname } = useLocation()
     const { isMobile } = useMobile()
+    const { userID } = useAuth()
     const [isNavLinksDrawerOpen, toggleIsNavLinksDrawerOpen] = useToggle(false)
-    const [leftDrawerActiveTabID, setLeftDrawerActiveTabID] = useState(localStorage.getItem("leftDrawerActiveTabID") || LEFT_DRAWER_ARRAY[0]?.id || "")
+    const [leftDrawerActiveTabID, setLeftDrawerActiveTabID] = useState(
+        !userID ? "" : localStorage.getItem("leftDrawerActiveTabID") || LEFT_DRAWER_ARRAY[0]?.id || "",
+    )
     const [rightDrawerActiveTabID, setRightDrawerActiveTabID] = useState(
         isTraining ? "" : localStorage.getItem("rightDrawerActiveTabID") || RIGHT_DRAWER_ARRAY[0]?.id || "",
     )
@@ -27,13 +31,11 @@ const uiContainer = createContainer(() => {
     const [stopMapRender, setStopMapRender] = useState(false)
 
     useEffect(() => {
-        if (showUpcomingBattle) {
+        if (userID && showUpcomingBattle) {
             setLeftDrawerActiveTabID("quick_deploy")
             return
         }
-
-        setLeftDrawerActiveTabID("battle_arena")
-    }, [showUpcomingBattle, setLeftDrawerActiveTabID])
+    }, [showUpcomingBattle, setLeftDrawerActiveTabID, userID])
 
     useEffect(() => {
         localStorage.setItem("leftDrawerActiveTabID", leftDrawerActiveTabID)
