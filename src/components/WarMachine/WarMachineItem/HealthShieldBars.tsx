@@ -36,14 +36,14 @@ export const HealthShieldBars = React.memo(function HealthShieldBars({ warMachin
 
             setIsAlive(target.health > 0)
 
-            const healthBarEl = document.getElementById(`war-machine-item-health-bar-${hash}`)
+            const healthBarEl = document.getElementById(`mechs-item-health-bar-${hash}`)
             if (healthBarEl) {
                 const percent = Math.min((target.health / maxHealth) * 100, 100)
                 healthBarEl.style.height = `${percent}%`
                 healthBarEl.style.backgroundColor = percent <= 45 ? colors.red : colors.health
             }
 
-            const shieldBarEl = document.getElementById(`war-machine-item-shield-bar-${hash}`)
+            const shieldBarEl = document.getElementById(`mechs-item-shield-bar-${hash}`)
             if (shieldBarEl) {
                 const percent = Math.min((target.shield / maxShield) * 100, 100)
                 shieldBarEl.style.height = `${percent}%`
@@ -55,7 +55,7 @@ export const HealthShieldBars = React.memo(function HealthShieldBars({ warMachin
         () => (
             <Stack direction="row" style={{ height: "100%" }}>
                 <ProgressBar
-                    id={`war-machine-item-shield-bar-${hash}`}
+                    id={`mechs-item-shield-bar-${hash}`}
                     percent={(warMachine.shield / maxHealth) * 100}
                     color={colors.shield}
                     backgroundColor="#FFFFFF06"
@@ -63,7 +63,7 @@ export const HealthShieldBars = React.memo(function HealthShieldBars({ warMachin
                 />
 
                 <ProgressBar
-                    id={`war-machine-item-health-bar-${hash}`}
+                    id={`mechs-item-health-bar-${hash}`}
                     percent={(warMachine.health / maxShield) * 100}
                     color={colors.health}
                     backgroundColor="#FFFFFF06"

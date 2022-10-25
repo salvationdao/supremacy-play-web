@@ -1,26 +1,24 @@
-import moment from "moment"
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useState, useEffect, useMemo } from "react"
-import { useHistory, useParams } from "react-router-dom"
-import { HangarBg, SvgBack } from "../assets"
+import { BlobProvider } from "@react-pdf/renderer"
+import BigNumber from "bignumber.js"
+import moment from "moment"
+import { useEffect, useMemo, useState } from "react"
+import { useParams } from "react-router-dom"
+import { HangarBg, SvgBack, SvgSupremacyLogo } from "../assets"
 import { ClipThing, FancyButton } from "../components"
+import { PDFInvoice } from "../components/BillingHistory/PDFInvoice"
 import { CoolTable } from "../components/Common/CoolTable"
+import { Player } from "../components/Common/Player"
+import { useAuth } from "../containers"
 import { useTheme } from "../containers/theme"
 import { generatePriceText, getOrderStatusDeets } from "../helpers"
 import { useGameServerCommandsUser } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 import { colors, fonts, siteZIndex } from "../theme/theme"
 import { FiatOrder } from "../types/fiat"
-import { SvgSupremacyLogo } from "../assets"
-import BigNumber from "bignumber.js"
-import { useAuth } from "../containers"
-import { Player } from "../components/Common/Player"
-import { BlobProvider } from "@react-pdf/renderer"
-import { PDFInvoice } from "../components/BillingHistory/PDFInvoice"
 
 export const BillingHistoryItemPage = () => {
     const theme = useTheme()
-    const history = useHistory()
     const { user } = useAuth()
     const { id } = useParams<{ id: string }>()
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -289,7 +287,7 @@ export const BillingHistoryItemPage = () => {
                         sx: { position: "relative", alignSelf: "flex-start", opacity: 0.5, ":hover": { opacity: 1 } },
                     }}
                     sx={{ px: "1.6rem", py: ".6rem", color: "#FFFFFF" }}
-                    onClick={() => history.push("/billing-history")}
+                    to="/billing-history"
                 >
                     <Stack spacing=".6rem" direction="row" alignItems="center">
                         <SvgBack size="1.4rem" fill={"#FFFFFF"} />

@@ -317,7 +317,7 @@ const SubmodelsHangarInner = () => {
                     </Typography>
 
                     <FancyButton
-                        to={`/marketplace/war-machines`}
+                        to={`/marketplace/mechs`}
                         clipThingsProps={{
                             clipSize: "9px",
                             backgroundColor: theme.factionTheme.primary,
