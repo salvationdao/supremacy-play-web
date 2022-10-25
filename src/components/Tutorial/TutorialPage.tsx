@@ -2,25 +2,25 @@ import { Box, Button, Modal, Stack, Typography } from "@mui/material"
 import { useTour } from "@reactour/tour"
 import { useEffect, useMemo, useState } from "react"
 import { Helmet } from "react-helmet"
-import { BattleTrainingBG } from "../assets"
-import { ClipThing, FancyButton, LeftDrawerBT, MiniMapBT, TrainingBattleAbility, TrainingMechAbility, TrainingPlayerAbility } from "../components"
-import { FactionIntro } from "../components/Tutorial/Faction/FactionIntro"
-import { Intro } from "../components/Tutorial/Intro"
-import { WarMachineStatsBT } from "../components/Tutorial/WarMachine/WarMachineStatsBT"
-import { LINK, TRAINING_ASSETS } from "../constants"
-import { TrainingProvider, useDimension, useTraining } from "../containers"
-import { useAuth } from "../containers/auth"
-import { useUrlQuery } from "../hooks"
-import { opacityEffect } from "../theme/keyframes"
-import { colors, fonts, siteZIndex } from "../theme/theme"
-import { BattleAbilityStages, CompletedTraining, MechAbilityStages, TrainingLobby } from "../types"
-import { PlayerAbilityStages } from "../types/training"
+import { BattleTrainingBG } from "../../assets"
+import { ClipThing, FancyButton, LeftDrawerBT, MiniMapBT, TrainingBattleAbility, TrainingMechAbility, TrainingPlayerAbility } from ".."
+import { FactionIntro } from "./Faction/FactionIntro"
+import { Intro } from "./Intro"
+import { WarMachineStatsBT } from "./WarMachine/WarMachineStatsBT"
+import { LINK, TRAINING_ASSETS } from "../../constants"
+import { TrainingProvider, useDimension, useTraining } from "../../containers"
+import { useAuth } from "../../containers/auth"
+import { useUrlQuery } from "../../hooks"
+import { opacityEffect } from "../../theme/keyframes"
+import { colors, fonts, siteZIndex } from "../../theme/theme"
+import { BattleAbilityStages, CompletedTraining, MechAbilityStages, TrainingLobby } from "../../types"
+import { PlayerAbilityStages } from "../../types/training"
 
 export const TutorialPage = () => (
     <>
         <Helmet>
-            <title>Battle Training - Supremacy Battle Arena</title>
-            <link rel="canonical" href={`${LINK}/training`} />
+            <title>Tutorial</title>
+            <link rel="canonical" href={`${LINK}/tutorial`} />
         </Helmet>
 
         <TrainingProvider>
@@ -28,6 +28,7 @@ export const TutorialPage = () => (
         </TrainingProvider>
     </>
 )
+
 const TutorialPageInner = () => {
     const { user } = useAuth()
     const [query] = useUrlQuery()

@@ -1,10 +1,10 @@
 import { Stack, Fade, Typography } from "@mui/material"
 import { useCallback } from "react"
 import { useHistory } from "react-router-dom"
-import { HangarBg, SvgBack } from "../assets"
-import { FancyButton } from "../components"
-import { SellItem } from "../components/Marketplace/SellItem/SellItem"
-import { fonts, siteZIndex } from "../theme/theme"
+import { HangarBg, SvgBack } from "../../../assets"
+import { FancyButton } from "../.."
+import { SellItem } from "./SellItem"
+import { fonts, siteZIndex } from "../../../theme/theme"
 
 export const MarketplaceSellPage = () => {
     const history = useHistory()

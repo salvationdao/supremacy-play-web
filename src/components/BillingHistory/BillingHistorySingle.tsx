@@ -4,20 +4,20 @@ import BigNumber from "bignumber.js"
 import moment from "moment"
 import { useEffect, useMemo, useState } from "react"
 import { useParams } from "react-router-dom"
-import { HangarBg, SvgBack, SvgSupremacyLogo } from "../assets"
-import { ClipThing, FancyButton } from "../components"
-import { PDFInvoice } from "../components/BillingHistory/PDFInvoice"
-import { CoolTable } from "../components/Common/CoolTable"
-import { Player } from "../components/Common/Player"
-import { useAuth } from "../containers"
-import { useTheme } from "../containers/theme"
-import { generatePriceText, getOrderStatusDeets } from "../helpers"
-import { useGameServerCommandsUser } from "../hooks/useGameServer"
-import { GameServerKeys } from "../keys"
-import { colors, fonts, siteZIndex } from "../theme/theme"
-import { FiatOrder } from "../types/fiat"
+import { ClipThing, FancyButton } from ".."
+import { HangarBg, SvgBack, SvgSupremacyLogo } from "../../assets"
+import { useAuth } from "../../containers"
+import { useTheme } from "../../containers/theme"
+import { generatePriceText, getOrderStatusDeets } from "../../helpers"
+import { useGameServerCommandsUser } from "../../hooks/useGameServer"
+import { GameServerKeys } from "../../keys"
+import { colors, fonts, siteZIndex } from "../../theme/theme"
+import { FiatOrder } from "../../types/fiat"
+import { CoolTable } from "../Common/CoolTable"
+import { Player } from "../Common/Player"
+import { PDFInvoice } from "./PDFInvoice"
 
-export const BillingHistoryItemPage = () => {
+export const BillingHistorySingle = () => {
     const theme = useTheme()
     const { user } = useAuth()
     const { id } = useParams<{ id: string }>()

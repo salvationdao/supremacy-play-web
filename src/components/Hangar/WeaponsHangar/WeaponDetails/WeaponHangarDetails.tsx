@@ -1,5 +1,6 @@
 import { Box, CircularProgress, Stack, Typography, useTheme } from "@mui/material"
 import { useMemo, useState } from "react"
+import { useParams } from "react-router-dom"
 import { SvgSkin, SvgStats } from "../../../../assets"
 import { getRarityDeets, getWeaponDamageTypeColor, getWeaponTypeColor } from "../../../../helpers"
 import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
@@ -13,8 +14,9 @@ import { WeaponButtons } from "./WeaponHangarButtons"
 import { WeaponLoadout } from "./WeaponLoadout"
 import { WeaponViewer } from "./WeaponViewer"
 
-export const WeaponHangarDetailsInner = ({ weaponID }: { weaponID: string }) => {
+export const WeaponHangarDetails = () => {
     const theme = useTheme()
+    const { weaponID } = useParams<{ weaponID: string }>()
     const [weaponDetails, setWeaponDetails] = useState<Weapon>()
 
     const rarityDeets = useMemo(() => getRarityDeets(weaponDetails?.weapon_skin?.tier || weaponDetails?.tier || ""), [weaponDetails])

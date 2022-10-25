@@ -1,10 +1,10 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { Gabs } from "../assets"
-import { FancyButton } from "../components"
-import { useTheme } from "../containers/theme"
-import { colors, fonts, siteZIndex } from "../theme/theme"
+import { Gabs } from "../../assets"
+import { FancyButton } from ".."
+import { useTheme } from "../../containers/theme"
+import { colors, fonts, siteZIndex } from "../../theme/theme"
 
-export const ErrorFallbackPage = () => {
+export const ErrorFallback = () => {
     const theme = useTheme()
 
     return (

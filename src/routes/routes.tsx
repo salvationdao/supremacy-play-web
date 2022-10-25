@@ -1,6 +1,9 @@
 import { DangerZone } from "../components/Admin/Dangerzone/DangerZone"
 import { AdminLookup } from "../components/Admin/Lookup/AdminLookup"
 import { AdminLookupResultPage } from "../components/Admin/Lookup/AdminLookupResultPage"
+import { BillingHistorySingle } from "../components/BillingHistory/BillingHistorySingle"
+import { BillingHistory } from "../components/BillingHistory/BillingHistory"
+import { Claims } from "../components/Claims/Claims"
 import { KeycardsHangar } from "../components/Hangar/KeycardsHangar/KeycardsHangar"
 import { MysteryCratesHangar } from "../components/Hangar/MysteryCratesHangar/MysteryCratesHangar"
 import { PlayerAbilitiesHangar } from "../components/Hangar/PlayerAbilitiesHangar/PlayerAbilitiesHangar"
@@ -23,15 +26,18 @@ import { MysteryCratesStore } from "../components/Storefront/MysteryCratesStore/
 import { PackagesStore } from "../components/Storefront/PackagesStore/PackagesStore"
 import { PlayerAbilitiesStore } from "../components/Storefront/PlayerAbilitiesStore/PlayerAbilitiesStore"
 import { DEV_ONLY, IS_TESTING_MODE } from "../constants"
-import { BattleArenaPage, BillingHistoryItemPage, BillingHistoryPage, ClaimPage, NotFoundPage } from "../pages"
-import { MarketplaceSellPage } from "../pages/MarketplaceSellPage"
-import { MechPage } from "../pages/MechPage"
-import { ReplayItemPage } from "../pages/ReplayItemPage"
-import { StorefrontShoppingCartPage } from "../pages/StorefrontShoppingCartPage"
-import { WeaponPage } from "../pages/WeaponPage"
+import { MarketplaceSellPage } from "../components/Marketplace/SellItem/MarketplaceSellPage"
+import { MechPage } from "../components/Hangar/WarMachinesHangar/WarMachineDetails/MechPage"
+import { ReplayItemPage } from "../components/Replays/ReplayDetails/ReplayItemPage"
+import { StorefrontShoppingCartPage } from "../components/Storefront/StorefrontShoppingCartPage"
+import { BattleArena } from "../components/BattleArena/BattleArena"
+import { NotFoundPage } from "../components/NotFoundPage/NotFoundPage"
+import { TutorialPage } from "../components/Tutorial/TutorialPage"
+import { WeaponHangarDetails } from "../components/Hangar/WeaponsHangar/WeaponDetails/WeaponHangarDetails"
 
 export enum RouteSingleID {
     Home = "HOME",
+    Tutorial = "TUTORIAL",
     Leaderboard = "LEADERBOARD",
     Mech = "MECH",
     Weapon = "WEAPON",
@@ -136,7 +142,7 @@ export const Routes: RouteSingle[] = [
         id: RouteSingleID.Home,
         path: "/",
         exact: true,
-        Component: BattleArenaPage,
+        Component: BattleArena,
         restrictions: {
             requireAuth: false,
             requireFaction: true,
@@ -148,6 +154,23 @@ export const Routes: RouteSingle[] = [
         },
         enable: true,
         tabTitle: "Battle Arena",
+    },
+    {
+        id: RouteSingleID.Tutorial,
+        path: "/tutorial",
+        exact: true,
+        Component: TutorialPage,
+        restrictions: {
+            requireAuth: false,
+            requireFaction: false,
+            requireModerator: false,
+        },
+        showInMainMenu: {
+            groupID: RouteGroupID.BattleArena,
+            label: "Tutorial",
+        },
+        enable: true,
+        tabTitle: "Tutorial",
     },
 
     // *******************
@@ -191,7 +214,7 @@ export const Routes: RouteSingle[] = [
         id: RouteSingleID.Weapon,
         path: "/weapon/:weaponID?",
         exact: true,
-        Component: WeaponPage,
+        Component: WeaponHangarDetails,
         restrictions: {
             requireAuth: true,
             requireFaction: true,
@@ -549,7 +572,7 @@ export const Routes: RouteSingle[] = [
         id: RouteSingleID.BillingHistoryItem,
         path: "/billing-history/:id",
         exact: true,
-        Component: BillingHistoryItemPage,
+        Component: BillingHistorySingle,
         restrictions: {
             requireAuth: true,
             requireFaction: true,
@@ -562,7 +585,7 @@ export const Routes: RouteSingle[] = [
         id: RouteSingleID.BillingHistory,
         path: "/billing-history",
         exact: true,
-        Component: BillingHistoryPage,
+        Component: BillingHistory,
         restrictions: {
             requireAuth: true,
             requireFaction: true,
@@ -656,7 +679,7 @@ export const Routes: RouteSingle[] = [
         id: RouteSingleID.Claim,
         path: "/claim",
         exact: true,
-        Component: ClaimPage,
+        Component: Claims,
         restrictions: {
             requireAuth: true,
             requireFaction: true,

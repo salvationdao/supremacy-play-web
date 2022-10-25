@@ -1,6 +1,6 @@
 import { Stack, Typography } from "@mui/material"
 import { useEffect } from "react"
-import { colors, fonts } from "../theme/theme"
+import { colors, fonts } from "../../theme/theme"
 
 export const LoginRedirect = () => {
     // Receives token from the url param and passes it to the parent via postMessage

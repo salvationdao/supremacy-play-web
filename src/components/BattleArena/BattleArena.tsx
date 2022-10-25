@@ -1,16 +1,16 @@
 import { Box, Stack } from "@mui/material"
 import React, { useEffect, useState } from "react"
-import { SvgAbility, SvgHistoryClock } from "../assets"
-import { BattleEndScreen, BigDisplay, Controls, EarlyAccessWarning, Notifications, SupporterAbilities, WarMachineStats } from "../components"
-import { BattleRewardsSkyHighBanner } from "../components/Common/BannersPromotions/BattleRewardsSkyHighBanner"
-import { PlayerAbilities } from "../components/LeftDrawer/BattleArena/PlayerAbilities/PlayerAbilities"
-import { QuickPlayerAbilities } from "../components/LeftDrawer/BattleArena/QuickPlayerAbilities/QuickPlayerAbilities"
-import { BattleArenaCountDown } from "../components/Maintenance/BattleArenaCountDown"
-import { BATTLE_ARENA_OPEN } from "../constants"
-import { useAuth, useDimension, useMobile } from "../containers"
-import { siteZIndex } from "../theme/theme"
+import { SvgAbility, SvgHistoryClock } from "../../assets"
+import { BattleEndScreen, BigDisplay, Controls, EarlyAccessWarning, Notifications, SupporterAbilities, WarMachineStats } from ".."
+import { BattleRewardsSkyHighBanner } from "../Common/BannersPromotions/BattleRewardsSkyHighBanner"
+import { PlayerAbilities } from "../LeftDrawer/BattleArena/PlayerAbilities/PlayerAbilities"
+import { QuickPlayerAbilities } from "../LeftDrawer/BattleArena/QuickPlayerAbilities/QuickPlayerAbilities"
+import { BattleArenaCountDown } from "../Maintenance/BattleArenaCountDown"
+import { BATTLE_ARENA_OPEN } from "../../constants"
+import { useAuth, useDimension, useMobile } from "../../containers"
+import { siteZIndex } from "../../theme/theme"
 
-export const BattleArenaPage = () => {
+export const BattleArena = () => {
     const { userID } = useAuth()
     const [understand, setUnderstand] = useState(true)
 

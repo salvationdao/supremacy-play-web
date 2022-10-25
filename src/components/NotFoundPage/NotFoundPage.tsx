@@ -1,12 +1,9 @@
 import { Box, Stack, Typography } from "@mui/material"
-import React from "react"
-import { useHistory } from "react-router-dom"
-import { Gabs } from "../assets"
-import { FancyButton } from "../components"
-import { colors, siteZIndex } from "../theme/theme"
+import { Gabs } from "../../assets"
+import { FancyButton } from ".."
+import { colors, siteZIndex } from "../../theme/theme"
 
 export const NotFoundPage = () => {
-    const history = useHistory()
     return (
         <Stack
             spacing="8rem"
@@ -85,7 +82,7 @@ export const NotFoundPage = () => {
                             fontSize: "5vw",
                         },
                     }}
-                    onClick={() => history.push("/")}
+                    to="/"
                 >
                     Go to the Battle Arena
                 </FancyButton>

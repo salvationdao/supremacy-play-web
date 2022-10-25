@@ -1,10 +1,10 @@
 import { Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useRef } from "react"
 import { useHistory, useParams } from "react-router-dom"
-import { HangarBg, SvgBack } from "../assets"
-import { FancyButton } from "../components"
-import { WarMachineHangarDetails } from "../components/Hangar/WarMachinesHangar/WarMachineDetails/WarMachineHangarDetails"
-import { fonts, siteZIndex } from "../theme/theme"
+import { HangarBg, SvgBack } from "../../../../assets"
+import { FancyButton } from "../../.."
+import { WarMachineHangarDetails } from "./WarMachineHangarDetails"
+import { fonts, siteZIndex } from "../../../../theme/theme"
 
 export const MechPage = () => {
     const history = useHistory()

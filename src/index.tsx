@@ -41,17 +41,18 @@ import { OvenStreamProvider } from "./containers/oven"
 import { ThemeProvider } from "./containers/theme"
 import { ws } from "./containers/ws"
 import { useToggle } from "./hooks"
-import { NotFoundPage, TutorialPage } from "./pages"
-import { AuthPage } from "./pages/AuthPage"
-import { EnlistPage } from "./pages/EnlistPage"
-import { ErrorFallbackPage } from "./pages/ErrorFallbackPage"
-import { LoginRedirect } from "./pages/LoginRedirect"
+import { TutorialPage } from "./components/Tutorial/TutorialPage"
+import { AuthPage } from "./Signup/AuthPage"
+import { EnlistPage } from "./Signup/EnlistPage"
+import { ErrorFallback } from "./components/ErrorFallback/ErrorFallback"
 import { Routes, RouteSingleID } from "./routes"
 import { colors, fonts } from "./theme/theme"
+import { NotFoundPage } from "./components/NotFoundPage/NotFoundPage"
+import { LoginRedirect } from "./components/LoginRedirect/LoginRedirect"
 
 const AppInner = () => {
     const history = useHistory()
-    const isTraining = location.pathname.includes("/training")
+    const isTutorial = location.pathname.includes("/tutorial")
     const { isServerDown, serverConnectedBefore, firstConnectTimedOut } = useSupremacy()
     const { isMobile } = useMobile()
     const { userID, factionID } = useAuth()
@@ -142,7 +143,7 @@ const AppInner = () => {
                         },
                     }}
                 >
-                    {!isTraining && <LeftDrawer />}
+                    {!isTutorial && <LeftDrawer />}
 
                     <Stack
                         sx={{
@@ -155,7 +156,7 @@ const AppInner = () => {
                     >
                         <Box sx={{ flex: 1, position: "relative", overflow: "hidden" }}>
                             <MarketingPopup />
-                            {isTraining ? (
+                            {isTutorial ? (
                                 <TutorialPage />
                             ) : !isServerDown ? (
                                 <Switch>
@@ -255,7 +256,7 @@ const App = () => {
     return (
         <ThemeProvider>
             <LocalizationProvider dateAdapter={AdapterMoment}>
-                <ErrorBoundary FallbackComponent={ErrorFallbackPage}>
+                <ErrorBoundary FallbackComponent={ErrorFallback}>
                     <FingerprintProvider>
                         <GlobalNotificationsProvider>
                             <ClientContextProvider client={client}>

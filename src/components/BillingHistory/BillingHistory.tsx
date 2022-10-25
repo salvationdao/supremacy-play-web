@@ -1,22 +1,22 @@
-import moment from "moment"
 import { Box, Pagination, Stack, Typography } from "@mui/material"
+import BigNumber from "bignumber.js"
+import moment from "moment"
 import { useCallback, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import { HangarBg, SafePNG } from "../assets"
-import { ClipThing } from "../components"
-import { CoolTable } from "../components/Common/CoolTable"
-import { PageHeader } from "../components/Common/PageHeader"
-import { useTheme } from "../containers/theme"
-import { generatePriceText, getOrderStatusDeets, parseString } from "../helpers"
-import { usePagination, useUrlQuery } from "../hooks"
-import { useGameServerCommandsUser } from "../hooks/useGameServer"
-import { GameServerKeys } from "../keys"
-import { fonts, colors, siteZIndex } from "../theme/theme"
-import { FiatOrder } from "../types/fiat"
-import BigNumber from "bignumber.js"
-import { MysteryCrateBanner } from "../components/Common/BannersPromotions/MysteryCrateBanner"
+import { ClipThing } from ".."
+import { HangarBg, SafePNG } from "../../assets"
+import { MysteryCrateBanner } from "../Common/BannersPromotions/MysteryCrateBanner"
+import { useTheme } from "../../containers/theme"
+import { generatePriceText, getOrderStatusDeets, parseString } from "../../helpers"
+import { usePagination, useUrlQuery } from "../../hooks"
+import { useGameServerCommandsUser } from "../../hooks/useGameServer"
+import { GameServerKeys } from "../../keys"
+import { colors, fonts, siteZIndex } from "../../theme/theme"
+import { FiatOrder } from "../../types/fiat"
+import { CoolTable } from "../Common/CoolTable"
+import { PageHeader } from "../Common/PageHeader"
 
-export const BillingHistoryPage = () => {
+export const BillingHistory = () => {
     const theme = useTheme()
     const [query, updateQuery] = useUrlQuery()
     const { send } = useGameServerCommandsUser("/user_commander")

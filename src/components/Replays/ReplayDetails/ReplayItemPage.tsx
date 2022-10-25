@@ -1,12 +1,12 @@
 import { Stack, Typography } from "@mui/material"
 import { useCallback, useEffect } from "react"
 import { useHistory } from "react-router-dom"
-import { HangarBg, SvgBack } from "../assets"
-import { FancyButton } from "../components"
-import { ReplayDetails } from "../components/Replays/ReplayDetails/ReplayDetails"
-import { parseString } from "../helpers"
-import { useUrlQuery } from "../hooks"
-import { fonts, siteZIndex } from "../theme/theme"
+import { HangarBg, SvgBack } from "../../../assets"
+import { FancyButton } from "../.."
+import { ReplayDetails } from "./ReplayDetails"
+import { parseString } from "../../../helpers"
+import { useUrlQuery } from "../../../hooks"
+import { fonts, siteZIndex } from "../../../theme/theme"
 
 export const ReplayItemPage = () => {
     const history = useHistory()
