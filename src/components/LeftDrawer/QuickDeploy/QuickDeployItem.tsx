@@ -176,7 +176,7 @@ export const QuickDeployItem = React.memo(function QuickDeployItem({ isSelected,
                 </FancyButton>
             )
         }
-    }, [onLeaveQueue, onDeployQueue, mech.id, mechDetails, error, mechStatus, isLoading])
+    }, [onLeaveQueue, onDeployQueue, mechDetails, error, mechStatus, isLoading])
 
     return (
         <Stack
