@@ -2,7 +2,6 @@ import { useTheme } from "@mui/material"
 import { useState } from "react"
 import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { MARKETPLACE_TABS } from "../../../pages"
 import { MechDetails } from "../../../types"
 import { MarketplaceBuyAuctionItem } from "../../../types/marketplace"
 import { MechCommonArea } from "../../Hangar/WarMachinesHangar/WarMachineHangarItem"
@@ -36,7 +35,7 @@ export const WarMachineMarketItem = ({ item, isGridView, isExpanded, toggleIsExp
     if (!mech || !collection_item) return null
 
     return (
-        <MarketItem item={item} isGridView={isGridView} linkSubPath={MARKETPLACE_TABS.WarMachines}>
+        <MarketItem item={item} isGridView={isGridView} linkSubPath={"mechs"}>
             <MechCommonArea
                 primaryColor={theme.factionTheme.primary}
                 secondaryColor={theme.factionTheme.secondary}

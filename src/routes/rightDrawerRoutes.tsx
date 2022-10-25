@@ -15,7 +15,7 @@ export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         label: "Live Chat",
         Component: LiveChat,
         requireAuth: false,
-        matchNavLinkIDs: undefined,
+        matchRouteIDs: undefined,
         mountAllTime: true,
     },
     active_players: {
@@ -28,7 +28,7 @@ export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         label: "Active Players",
         Component: PlayerList,
         requireAuth: true,
-        matchNavLinkIDs: undefined,
+        matchRouteIDs: undefined,
         mountAllTime: false,
     },
     repairs: {
@@ -37,7 +37,7 @@ export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         label: "Repairs Jobs",
         Component: RepairJobs,
         requireAuth: true,
-        matchNavLinkIDs: undefined,
+        matchRouteIDs: undefined,
         mountAllTime: false,
     },
     my_lobbies: {
@@ -46,7 +46,7 @@ export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         label: "My Lobbies",
         Component: MyLobbies,
         requireAuth: true,
-        matchNavLinkIDs: undefined,
+        matchRouteIDs: undefined,
         mountAllTime: false,
     },
 }

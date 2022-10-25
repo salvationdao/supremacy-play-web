@@ -14,7 +14,6 @@ import { Helmet } from "react-helmet"
 import { BrowserRouter, Redirect, Route, Switch, useHistory } from "react-router-dom"
 import { SupremacyPNG } from "./assets"
 import { Bar, GlobalSnackbar, Maintenance, RightDrawer } from "./components"
-import { NavLinksDrawer } from "./components/Bar/NavLinks/NavLinksDrawer"
 import { BottomNav } from "./components/BottomNav/BottomNav"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
 import { MarketingPopup } from "./components/MarketingPopup/MarketingPopup"
@@ -47,7 +46,7 @@ import { AuthPage } from "./pages/AuthPage"
 import { EnlistPage } from "./pages/EnlistPage"
 import { ErrorFallbackPage } from "./pages/ErrorFallbackPage"
 import { LoginRedirect } from "./pages/LoginRedirect"
-import { ROUTES_ARRAY, ROUTES_MAP } from "./routes/routes"
+import { Routes, RouteSingleID } from "./routes"
 import { colors, fonts } from "./theme/theme"
 
 const AppInner = () => {
@@ -143,7 +142,6 @@ const AppInner = () => {
                         },
                     }}
                 >
-                    <NavLinksDrawer />
                     {!isTraining && <LeftDrawer />}
 
                     <Stack
@@ -161,28 +159,35 @@ const AppInner = () => {
                                 <TutorialPage />
                             ) : !isServerDown ? (
                                 <Switch>
-                                    {ROUTES_ARRAY.map((r) => {
-                                        const { id, path, exact, Component, requireAuth, requireFaction, authTitle, authDescription, enable, pageTitle } = r
+                                    {Routes.map((route) => {
+                                        const { id, path, exact, Component, restrictions, enable, tabTitle } = route
+
                                         if (!enable) return null
+
                                         let PageComponent = Component
-                                        if (requireAuth && !userID) {
-                                            const Comp = () => <AuthPage authTitle={authTitle} authDescription={authDescription} />
+
+                                        // Apply restrictions on the route (need auth, faction etc.)
+                                        if (restrictions?.requireAuth && !userID) {
+                                            const Comp = () => <AuthPage authTitle={restrictions.authTitle} authDescription={restrictions.authDescription} />
                                             PageComponent = Comp
-                                        } else if (userID && requireFaction && !factionID) {
+                                        } else if (userID && restrictions?.requireFaction && !factionID) {
                                             PageComponent = EnlistPage
                                         }
+
                                         if (!PageComponent) return null
+
                                         return (
                                             <Route key={id} path={path} exact={exact}>
                                                 <Helmet>
-                                                    <title>{pageTitle}</title>
+                                                    <title>{tabTitle}</title>
                                                     <link rel="canonical" href={`${LINK}/${path}`} />
                                                 </Helmet>
                                                 <PageComponent />
                                             </Route>
                                         )
                                     })}
-                                    <Redirect to={ROUTES_MAP.not_found_page.path} />
+
+                                    <Redirect to={Routes.find((route) => route.id === RouteSingleID.NotFound)?.path || "/"} />
                                 </Switch>
                             ) : (
                                 <Maintenance />

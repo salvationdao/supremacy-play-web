@@ -1,8 +1,8 @@
 import { Box, Drawer, Fade } from "@mui/material"
-import { useRouteMatch } from "react-router-dom"
 import { DRAWER_TRANSITION_DURATION } from "../../constants"
 import { useAuth, useMobile, useUI } from "../../containers"
-import { LEFT_DRAWER_ARRAY, LEFT_DRAWER_MAP, ROUTES_ARRAY } from "../../routes"
+import { useActiveRouteID } from "../../hooks/useActiveRouteID"
+import { LEFT_DRAWER_ARRAY, LEFT_DRAWER_MAP } from "../../routes"
 import { colors, siteZIndex } from "../../theme/theme"
 import { DrawerButtons } from "./DrawerButtons"
 
@@ -12,21 +12,14 @@ export const LeftDrawer = () => {
     const { leftDrawerActiveTabID } = useUI()
     const { isMobile } = useMobile()
     const { userID } = useAuth()
-
-    const match = useRouteMatch(ROUTES_ARRAY.filter((r) => r.path !== "/").map((r) => r.path))
-    let activeRouteID = "home"
-    if (match) {
-        const r = ROUTES_ARRAY.find((r) => r.path === match.path)
-        activeRouteID = r?.id || ""
-    }
+    const activeRouteID = useActiveRouteID()
 
     // Hide the drawer if on mobile OR none of the tabs are visible on the page
-    if (isMobile || LEFT_DRAWER_ARRAY.filter((r) => !r.matchNavLinkIDs || r.matchNavLinkIDs.includes(activeRouteID)).length <= 0) return null
+    if (isMobile || LEFT_DRAWER_ARRAY.filter((r) => !r.matchRouteIDs || r.matchRouteIDs.includes(activeRouteID)).length <= 0) return null
 
     const isOpen =
         LEFT_DRAWER_MAP[leftDrawerActiveTabID] &&
-        (LEFT_DRAWER_MAP[leftDrawerActiveTabID].matchNavLinkIDs === undefined ||
-            LEFT_DRAWER_MAP[leftDrawerActiveTabID].matchNavLinkIDs?.includes(activeRouteID))
+        (LEFT_DRAWER_MAP[leftDrawerActiveTabID].matchRouteIDs === undefined || LEFT_DRAWER_MAP[leftDrawerActiveTabID].matchRouteIDs?.includes(activeRouteID))
 
     return (
         <>
@@ -50,7 +43,7 @@ export const LeftDrawer = () => {
                 }}
             >
                 {LEFT_DRAWER_ARRAY.map((r) => {
-                    if ((r.requireAuth && !userID) || (r.matchNavLinkIDs && !r.matchNavLinkIDs.includes(activeRouteID))) return null
+                    if ((r.requireAuth && !userID) || (r.matchRouteIDs && !r.matchRouteIDs.includes(activeRouteID))) return null
                     const isActive = r.id === leftDrawerActiveTabID
                     if (isActive || r.mountAllTime) {
                         return (

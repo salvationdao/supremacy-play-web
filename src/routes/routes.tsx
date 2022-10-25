@@ -1,312 +1,692 @@
+import { DangerZone } from "../components/Admin/Dangerzone/DangerZone"
+import { AdminLookup } from "../components/Admin/Lookup/AdminLookup"
 import { AdminLookupResultPage } from "../components/Admin/Lookup/AdminLookupResultPage"
+import { KeycardsHangar } from "../components/Hangar/KeycardsHangar/KeycardsHangar"
+import { MysteryCratesHangar } from "../components/Hangar/MysteryCratesHangar/MysteryCratesHangar"
+import { PlayerAbilitiesHangar } from "../components/Hangar/PlayerAbilitiesHangar/PlayerAbilitiesHangar"
+import { SubmodelsHangar } from "../components/Hangar/SubmodelHangar/SubmodelsHangar"
+import { WarMachinesHangar } from "../components/Hangar/WarMachinesHangar/WarMachinesHangar"
+import { WeaponsHangar } from "../components/Hangar/WeaponsHangar/WeaponsHangar"
+import { GlobalStats } from "../components/Leaderboard/GlobalStats/GlobalStats"
+import { HistoryMarket } from "../components/Marketplace/HistoryMarket/HistoryMarket"
+import { KeycardMarketDetails } from "../components/Marketplace/KeycardsMarket/KeycardMarketDetails/KeycardMarketDetails"
+import { KeycardsMarket } from "../components/Marketplace/KeycardsMarket/KeycardsMarket"
+import { MysteryCrateMarketDetails } from "../components/Marketplace/MysteryCratesMarket/MysteryCrateMarketDetails/MysteryCrateMarketDetails"
+import { MysteryCratesMarket } from "../components/Marketplace/MysteryCratesMarket/MysteryCratesMarket"
+import { WarMachineMarketDetails } from "../components/Marketplace/WarMachinesMarket/WarMachineMarketDetails/WarMachineMarketDetails"
+import { WarMachinesMarket } from "../components/Marketplace/WarMachinesMarket/WarMachinesMarket"
+import { WeaponMarketDetails } from "../components/Marketplace/WeaponsMarket/WeaponMarketDetails/WeaponMarketDetails"
+import { WeaponsMarket } from "../components/Marketplace/WeaponsMarket/WeaponsMarket"
 import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
-import { BATTLE_ARENA_OPEN, IS_TESTING_MODE } from "../constants"
-import { BattleArenaPage, BillingHistoryItemPage, BillingHistoryPage, ClaimPage, HangarPage, MarketplacePage, NotFoundPage } from "../pages"
-import { AdminPage } from "../pages/AdminPage"
-import { BattleLobbiesPage } from "../pages/BattleLobbiesPage"
-import { LeaderboardPage } from "../pages/LeaderboardPage"
-import { MarketplaceItemPage } from "../pages/MarketplaceItemPage"
+import { BattlesReplays } from "../components/Replays/BattlesReplays/BattlesReplays"
+import { MysteryCratesStore } from "../components/Storefront/MysteryCratesStore/MysteryCratesStore"
+import { PackagesStore } from "../components/Storefront/PackagesStore/PackagesStore"
+import { PlayerAbilitiesStore } from "../components/Storefront/PlayerAbilitiesStore/PlayerAbilitiesStore"
+import { DEV_ONLY, IS_TESTING_MODE } from "../constants"
+import { BattleArenaPage, BillingHistoryItemPage, BillingHistoryPage, ClaimPage, NotFoundPage } from "../pages"
 import { MarketplaceSellPage } from "../pages/MarketplaceSellPage"
 import { MechPage } from "../pages/MechPage"
 import { ReplayItemPage } from "../pages/ReplayItemPage"
-import { ReplayPage } from "../pages/ReplayPage"
-import { StorefrontPage } from "../pages/StorefrontPage"
 import { StorefrontShoppingCartPage } from "../pages/StorefrontShoppingCartPage"
 import { WeaponPage } from "../pages/WeaponPage"
 
-interface RouteStruct {
-    id: string
+export enum RouteSingleID {
+    Home = "HOME",
+    Leaderboard = "LEADERBOARD",
+    Mech = "MECH",
+    Weapon = "WEAPON",
+    FleetMechs = "FLEET",
+    FleetCrates = "FLEET_CRATES",
+    FleetKeycards = "FLEET_KEYCARDS",
+    FleetAbilities = "FLEET_ABILITIES",
+    FleetWeapons = "FLEET_WEAPONS",
+    FleetSubmodels = "FLEET_SUBMODELS",
+    StoreFrontShoppingCart = "STORE_FRONT_SHOPPING_CART",
+    StoreFrontCrates = "STORE_FRONT_CRATES",
+    StoreFrontAbilities = "STORE_FRONT_ABILITIES",
+    StoreFrontPackages = "STORE_FRONT_PACKAGES",
+    MarketplaceSell = "MARKETPLACE_SELL",
+    MarketplaceItemMechs = "MARKETPLACE_ITEM_MECHS",
+    MarketplaceItemWeapons = "MARKETPLACE_ITEM_WEAPONS",
+    MarketplaceItemKeycards = "MARKETPLACE_ITEM_KEYCARDS",
+    MarketplaceItemCrates = "MARKETPLACE_ITEM_CRATES",
+    MarketplaceHistory = "MARKETPLACE_HISTORY",
+    MarketplaceMechs = "MARKETPLACE_MECHS",
+    MarketplaceWeapons = "MARKETPLACE_WEAPONS",
+    MarketplaceKeycards = "MARKETPLACE_KEYCARDS",
+    MarketplaceCrates = "MARKETPLACE_CRATES",
+    Profile = "PROFILE",
+    BillingHistory = "BILLING_HISTORY",
+    BillingHistoryItem = "BILLING_HISTORY_ITEM",
+    ReplayItem = "REPLAY_ITEM",
+    Replays = "REPLAYS",
+    AdminLookup = "ADMIN_LOOKUP",
+    AdminDangerZone = "ADMIN_DANGER_ZONE",
+    AdminPlayerLookup = "ADMIN_PLAYER_LOOKUP",
+    Claim = "CLAIM",
+    NotFound = "NOT_FOUND",
+}
+
+export enum RouteGroupID {
+    BattleArena = "BATTLE_ARENA",
+    Armoury = "ARMOURY",
+    Inventory = "INVENTORY",
+    Store = "STORE",
+    Marketplace = "MARKETPLACE",
+    FactionHQ = "FACTION_HQ",
+}
+
+interface RouteSingle {
+    id: RouteSingleID
     path: string
     exact: boolean
     Component?: () => JSX.Element | null
-    requireAuth: boolean
-    requireFaction: boolean
-    requireModerator?: boolean
-    authTitle?: string // If omitted, it'll have a default title
-    authDescription?: string // If omitted, it'll have a default description
-    navLink?: {
-        enable: boolean
+    restrictions?: {
+        requireAuth: boolean
+        requireFaction: boolean
+        requireModerator: boolean
+        authTitle?: string // If omitted, it'll have a default title
+        authDescription?: string // If omitted, it'll have a default description
+    }
+    showInMainMenu?: {
+        groupID: RouteGroupID
         label: string
     }
-    matchNavLinkID?: string // The /route which will make this button highlighted
     enable: boolean
-    pageTitle: string // Sets the tab title etc. with react helmet
+    tabTitle: string // Sets the tab title etc. with react helmet
 }
 
-export const ROUTES_MAP: { [name: string]: RouteStruct } = {
-    home: {
-        id: "home",
+interface RouteGroup {
+    id: RouteGroupID
+    label: string
+}
+
+export const RouteGroups: RouteGroup[] = [
+    {
+        id: RouteGroupID.BattleArena,
+        label: "Battle Arena",
+    },
+    {
+        id: RouteGroupID.Armoury,
+        label: "Armoury",
+    },
+    {
+        id: RouteGroupID.Inventory,
+        label: "Inventory",
+    },
+    {
+        id: RouteGroupID.Store,
+        label: "Store",
+    },
+    {
+        id: RouteGroupID.Marketplace,
+        label: "Marketplace",
+    },
+    {
+        id: RouteGroupID.FactionHQ,
+        label: "Faction HQ",
+    },
+]
+
+export const Routes: RouteSingle[] = [
+    // ********************
+    // *** Battle Arena ***
+    // ********************
+    {
+        id: RouteSingleID.Home,
         path: "/",
         exact: true,
         Component: BattleArenaPage,
-        requireAuth: false,
-        requireFaction: true,
-        navLink: {
-            enable: BATTLE_ARENA_OPEN,
+        restrictions: {
+            requireAuth: false,
+            requireFaction: true,
+            requireModerator: false,
+        },
+        showInMainMenu: {
+            groupID: RouteGroupID.BattleArena,
             label: "Battle Arena",
         },
-        matchNavLinkID: "home",
         enable: true,
-        pageTitle: "Supremacy - Battle Arena",
+        tabTitle: "Battle Arena",
     },
 
-    battle_lobbies: {
-        id: "battle_lobbies",
-        path: "/battle_lobbies/:status?",
+    // *******************
+    // *** Leaderboard ***
+    // *******************
+    {
+        id: RouteSingleID.Leaderboard,
+        path: "/leaderboard",
         exact: true,
-        Component: BattleLobbiesPage,
-        requireAuth: true,
-        requireFaction: true,
-        navLink: {
-            enable: true,
-            label: "Battle Lobbies",
+        Component: GlobalStats,
+        restrictions: {
+            requireAuth: false,
+            requireFaction: false,
+            requireModerator: false,
         },
-        matchNavLinkID: "battle_lobbies",
-        enable: true,
-        pageTitle: "Supremacy - Battle Lobbies",
-    },
-
-    // Leaderboard
-    leaderboard: {
-        id: "leaderboard",
-        path: "/leaderboard/:type?",
-        exact: true,
-        Component: LeaderboardPage,
-        requireAuth: false,
-        requireFaction: false,
-        navLink: {
-            enable: true,
+        showInMainMenu: {
+            groupID: RouteGroupID.BattleArena,
             label: "Leaderboard",
         },
-        matchNavLinkID: "leaderboard",
         enable: true,
-        pageTitle: "Supremacy - Leaderboard",
+        tabTitle: "Leaderboard",
     },
 
-    // Mech
-    mech: {
-        id: "mech",
+    // ********************
+    // *** Public Asset ***
+    // ********************
+    {
+        id: RouteSingleID.Mech,
         path: "/mech/:mechID?",
         exact: true,
         Component: MechPage,
-        requireAuth: true,
-        requireFaction: true,
-        matchNavLinkID: "fleet",
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+        },
         enable: true,
-        pageTitle: "Supremacy - War Machine",
+        tabTitle: "Mech",
     },
-
-    // Weapon
-    weapon: {
-        id: "weapon",
+    {
+        id: RouteSingleID.Weapon,
         path: "/weapon/:weaponID?",
         exact: true,
         Component: WeaponPage,
-        requireAuth: true,
-        requireFaction: true,
-        matchNavLinkID: "fleet",
-        enable: true,
-        pageTitle: "Supremacy - Weapon",
-    },
-
-    // Fleet
-    fleet: {
-        id: "fleet",
-        path: "/fleet/:type?",
-        exact: true,
-        Component: HangarPage,
-        requireAuth: true,
-        requireFaction: true,
-        navLink: {
-            enable: true,
-            label: "fleet",
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
         },
-        matchNavLinkID: "fleet",
         enable: true,
-        pageTitle: "Supremacy - Fleet",
+        tabTitle: "Weapon",
     },
-
-    // Storefront
-    storefront_shopping_cart: {
-        id: "storefront_shopping_cart",
-        path: "/storefront/shopping-cart",
-        exact: true,
-        Component: StorefrontShoppingCartPage,
-        requireAuth: true,
-        requireFaction: true,
-        matchNavLinkID: "storefront",
-        enable: !IS_TESTING_MODE,
-        pageTitle: "Supremacy - Shopping Cart",
-    },
-    storefront: {
-        id: "storefront",
-        path: "/storefront/:type?",
-        exact: true,
-        Component: StorefrontPage,
-        requireAuth: true,
-        requireFaction: true,
-        navLink: {
-            enable: true,
-            label: "Storefront",
-        },
-        matchNavLinkID: "storefront",
-        enable: true,
-        pageTitle: "Supremacy - Storefront",
-    },
-
-    // Marketplace
-    marketplace_sell: {
-        id: "marketplace_sell",
-        path: "/marketplace/sell",
-        exact: true,
-        Component: MarketplaceSellPage,
-        requireAuth: true,
-        requireFaction: true,
-        matchNavLinkID: "marketplace",
-        enable: !IS_TESTING_MODE,
-        pageTitle: "Supremacy - Sell",
-    },
-    marketplace_item: {
-        id: "marketplace_item",
-        path: "/marketplace/:type/:id",
-        exact: true,
-        Component: MarketplaceItemPage,
-        requireAuth: true,
-        requireFaction: true,
-        matchNavLinkID: "marketplace",
-        enable: !IS_TESTING_MODE,
-        pageTitle: "Supremacy - Marketplace Item",
-    },
-    marketplace: {
-        id: "marketplace",
-        path: "/marketplace/:type?",
-        exact: true,
-        Component: MarketplacePage,
-        requireAuth: true,
-        requireFaction: true,
-        navLink: {
-            enable: true,
-            label: "Marketplace",
-        },
-        matchNavLinkID: "marketplace",
-        enable: !IS_TESTING_MODE,
-        pageTitle: "Supremacy - Marketplace",
-    },
-
-    // Player profile
-    player_profile: {
-        id: "profile",
+    {
+        id: RouteSingleID.Profile,
         path: "/profile/:playerGID",
         exact: true,
         Component: PlayerProfilePage,
-        requireAuth: false,
-        requireFaction: false,
+        restrictions: {
+            requireAuth: false,
+            requireFaction: false,
+            requireModerator: false,
+        },
         enable: true,
-        pageTitle: "Supremacy - Player Profile",
+        tabTitle: "Player Profile",
     },
 
-    // FIAT related
-    billing_history: {
-        id: "billing_history",
-        path: "/billing-history",
+    // *************
+    // *** Fleet ***
+    // *************
+    {
+        id: RouteSingleID.FleetMechs,
+        path: "/fleet/mechs",
         exact: true,
-        Component: BillingHistoryPage,
-        requireAuth: true,
-        requireFaction: true,
+        Component: WarMachinesHangar,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+        },
+        showInMainMenu: {
+            groupID: RouteGroupID.Inventory,
+            label: "Mechs",
+        },
         enable: true,
-        pageTitle: "Supremacy - Billing",
+        tabTitle: "Fleet - Mechs",
     },
-    billing_history_item: {
-        id: "billing_history_item",
+    {
+        id: RouteSingleID.FleetWeapons,
+        path: "/fleet/weapons",
+        exact: true,
+        Component: WeaponsHangar,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+        },
+        showInMainMenu: {
+            groupID: RouteGroupID.Inventory,
+            label: "Weapons",
+        },
+        enable: true,
+        tabTitle: "Fleet - Weapons",
+    },
+    {
+        id: RouteSingleID.FleetSubmodels,
+        path: "/fleet/submodels",
+        exact: true,
+        Component: SubmodelsHangar,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+        },
+        showInMainMenu: {
+            groupID: RouteGroupID.Inventory,
+            label: "Submodels",
+        },
+        enable: DEV_ONLY,
+        tabTitle: "Fleet - Submodels",
+    },
+    {
+        id: RouteSingleID.FleetCrates,
+        path: "/fleet/mystery-crates",
+        exact: true,
+        Component: MysteryCratesHangar,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+        },
+        showInMainMenu: {
+            groupID: RouteGroupID.Inventory,
+            label: "Mystery Crates",
+        },
+        enable: true,
+        tabTitle: "Fleet - Mystery Crates",
+    },
+    {
+        id: RouteSingleID.FleetAbilities,
+        path: "/fleet/abilities",
+        exact: true,
+        Component: PlayerAbilitiesHangar,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+        },
+        showInMainMenu: {
+            groupID: RouteGroupID.Inventory,
+            label: "Abilities",
+        },
+        enable: true,
+        tabTitle: "Fleet - Abilities",
+    },
+    {
+        id: RouteSingleID.FleetKeycards,
+        path: "/fleet/keycards",
+        exact: true,
+        Component: KeycardsHangar,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+        },
+        showInMainMenu: {
+            groupID: RouteGroupID.Inventory,
+            label: "Keycards",
+        },
+        enable: true,
+        tabTitle: "Fleet - Keycards",
+    },
+
+    // ******************
+    // *** Storefront ***
+    // ******************
+    {
+        id: RouteSingleID.StoreFrontShoppingCart,
+        path: "/storefront/shopping-cart",
+        exact: true,
+        Component: StorefrontShoppingCartPage,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+        },
+        enable: !IS_TESTING_MODE,
+        tabTitle: "Shopping Cart",
+    },
+    {
+        id: RouteSingleID.StoreFrontCrates,
+        path: "/storefront/mystery-crates",
+        exact: true,
+        Component: MysteryCratesStore,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+        },
+        showInMainMenu: {
+            groupID: RouteGroupID.Store,
+            label: "Mystery Crates",
+        },
+        enable: true,
+        tabTitle: "Storefront - Mystery Crates",
+    },
+    {
+        id: RouteSingleID.StoreFrontAbilities,
+        path: "/storefront/abilities",
+        exact: true,
+        Component: PlayerAbilitiesStore,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+        },
+        showInMainMenu: {
+            groupID: RouteGroupID.Store,
+            label: "Abilities",
+        },
+        enable: true,
+        tabTitle: "Storefront - Abilities",
+    },
+    {
+        id: RouteSingleID.StoreFrontPackages,
+        path: "/storefront/packages",
+        exact: true,
+        Component: PackagesStore,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+        },
+        showInMainMenu: {
+            groupID: RouteGroupID.Store,
+            label: "Packages",
+        },
+        enable: true,
+        tabTitle: "Storefront - Packages",
+    },
+
+    // *******************
+    // *** Marketplace ***
+    // *******************
+    {
+        id: RouteSingleID.MarketplaceSell,
+        path: "/marketplace/sell",
+        exact: true,
+        Component: MarketplaceSellPage,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+        },
+        enable: !IS_TESTING_MODE,
+        tabTitle: "Sell Item",
+    },
+    {
+        id: RouteSingleID.MarketplaceItemMechs,
+        path: "/marketplace/mechs/:id",
+        exact: true,
+        Component: WarMachineMarketDetails,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+        },
+        enable: !IS_TESTING_MODE,
+        tabTitle: "Marketplace Mech Item",
+    },
+    {
+        id: RouteSingleID.MarketplaceItemWeapons,
+        path: "/marketplace/weapons/:id",
+        exact: true,
+        Component: WeaponMarketDetails,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+        },
+        enable: !IS_TESTING_MODE,
+        tabTitle: "Marketplace Weapon Item",
+    },
+    {
+        id: RouteSingleID.MarketplaceItemKeycards,
+        path: "/marketplace/keycards/:id",
+        exact: true,
+        Component: KeycardMarketDetails,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+        },
+        enable: !IS_TESTING_MODE,
+        tabTitle: "Marketplace Keycard Item",
+    },
+    {
+        id: RouteSingleID.MarketplaceItemCrates,
+        path: "/marketplace/mystery-crates/:id",
+        exact: true,
+        Component: MysteryCrateMarketDetails,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+        },
+        enable: !IS_TESTING_MODE,
+        tabTitle: "Marketplace Mystery Crate Item",
+    },
+    {
+        id: RouteSingleID.MarketplaceHistory,
+        path: "/marketplace/history",
+        exact: true,
+        Component: HistoryMarket,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+        },
+        showInMainMenu: {
+            groupID: RouteGroupID.Marketplace,
+            label: "History",
+        },
+        enable: !IS_TESTING_MODE,
+        tabTitle: "Marketplace - History",
+    },
+    {
+        id: RouteSingleID.MarketplaceMechs,
+        path: "/marketplace/mechs",
+        exact: true,
+        Component: WarMachinesMarket,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+        },
+        showInMainMenu: {
+            groupID: RouteGroupID.Marketplace,
+            label: "Mechs",
+        },
+        enable: !IS_TESTING_MODE,
+        tabTitle: "Marketplace - Mechs",
+    },
+    {
+        id: RouteSingleID.MarketplaceWeapons,
+        path: "/marketplace/weapons",
+        exact: true,
+        Component: WeaponsMarket,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+        },
+        showInMainMenu: {
+            groupID: RouteGroupID.Marketplace,
+            label: "Weapons",
+        },
+        enable: !IS_TESTING_MODE,
+        tabTitle: "Marketplace - Weapons",
+    },
+    {
+        id: RouteSingleID.MarketplaceKeycards,
+        path: "/marketplace/keycards",
+        exact: true,
+        Component: KeycardsMarket,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+        },
+        showInMainMenu: {
+            groupID: RouteGroupID.Marketplace,
+            label: "Keycards",
+        },
+        enable: !IS_TESTING_MODE,
+        tabTitle: "Marketplace - Keycards",
+    },
+    {
+        id: RouteSingleID.MarketplaceCrates,
+        path: "/marketplace/mystery-crates",
+        exact: true,
+        Component: MysteryCratesMarket,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+        },
+        showInMainMenu: {
+            groupID: RouteGroupID.Marketplace,
+            label: "Mystery Crates",
+        },
+        enable: !IS_TESTING_MODE,
+        tabTitle: "Marketplace - Mystery Crates",
+    },
+
+    // ***************
+    // *** Replays ***
+    // ***************
+    {
+        id: RouteSingleID.BillingHistoryItem,
         path: "/billing-history/:id",
         exact: true,
         Component: BillingHistoryItemPage,
-        requireAuth: true,
-        requireFaction: true,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+        },
         enable: true,
-        pageTitle: "Supremacy - Billing",
+        tabTitle: "Billing History Item",
+    },
+    {
+        id: RouteSingleID.BillingHistory,
+        path: "/billing-history",
+        exact: true,
+        Component: BillingHistoryPage,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+        },
+        enable: true,
+        tabTitle: "Billing History",
     },
 
-    // Replays
-    replays_item: {
-        id: "replays_item",
+    // ***************
+    // *** Replays ***
+    // ***************
+    {
+        id: RouteSingleID.ReplayItem,
         path: "/replay",
         exact: true,
         Component: ReplayItemPage,
-        requireAuth: false,
-        requireFaction: false,
-        matchNavLinkID: "replays",
+        restrictions: {
+            requireAuth: false,
+            requireFaction: false,
+            requireModerator: false,
+        },
         enable: true,
-        pageTitle: "Supremacy - Replay Item",
+        tabTitle: "Replay Item",
     },
-    replays: {
-        id: "replays",
-        path: "/replays/:type?",
+    {
+        id: RouteSingleID.Replays,
+        path: "/replays",
         exact: true,
-        Component: ReplayPage,
-        requireAuth: false,
-        requireFaction: false,
-        navLink: {
-            enable: true,
+        Component: BattlesReplays,
+        restrictions: {
+            requireAuth: false,
+            requireFaction: false,
+            requireModerator: false,
+        },
+        showInMainMenu: {
+            groupID: RouteGroupID.BattleArena,
             label: "Replays",
         },
-        matchNavLinkID: "replays",
-        enable: BATTLE_ARENA_OPEN,
-        pageTitle: "Supremacy - Replays",
+        enable: true,
+        tabTitle: "Replays",
     },
 
-    // Admin
-    admin: {
-        id: "admin",
-        path: "/admin/:type?",
-        exact: true,
-        Component: AdminPage,
-        requireAuth: true,
-        requireFaction: true,
-        requireModerator: true,
-        enable: true,
-        pageTitle: "Supremacy - Admin Panel",
-    },
-    admin_player_lookup: {
-        id: "admin_player_lookup",
+    // *************
+    // *** Admin ***
+    // *************
+    {
+        id: RouteSingleID.AdminPlayerLookup,
         path: "/admin/lookup/:playerGID",
         exact: true,
         Component: AdminLookupResultPage,
-        requireAuth: true,
-        requireFaction: true,
-        requireModerator: true,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: true,
+        },
         enable: true,
-        pageTitle: "Supremacy - Admin Panel",
+        tabTitle: "Admin - Player",
+    },
+    {
+        id: RouteSingleID.AdminLookup,
+        path: "/admin/lookup",
+        exact: true,
+        Component: AdminLookup,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: true,
+        },
+        enable: true,
+        tabTitle: "Admin  - Lookup",
+    },
+    {
+        id: RouteSingleID.AdminDangerZone,
+        path: "/admin/dangerzone",
+        exact: true,
+        Component: DangerZone,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: true,
+        },
+        enable: true,
+        tabTitle: "Admin - Danger Zone",
     },
 
-    // Claim
-    claim: {
-        id: "claim",
+    // *************
+    // *** Claim ***
+    // *************
+    {
+        id: RouteSingleID.Claim,
         path: "/claim",
         exact: true,
         Component: ClaimPage,
-        requireAuth: true,
-        requireFaction: true,
-        authTitle: "Connect to XSYN to Claim Your Rewards",
-        authDescription:
-            "You will receive assets that are of Supremacy's next generation collection: Supremacy Nexus, which will allow you to equip your war machines to defeat your enemies in the battle arena.",
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+            authTitle: "Connect to XSYN to Claim Your Rewards",
+            authDescription:
+                "You will receive assets that are of Supremacy's next generation collection: Supremacy Nexus, which will allow you to equip your war machines to defeat your enemies in the battle arena.",
+        },
+        showInMainMenu: {
+            groupID: RouteGroupID.Inventory,
+            label: "Claims",
+        },
         enable: true,
-        pageTitle: "Supremacy - Claim",
+        tabTitle: "Claim Rewards",
     },
 
-    not_found_page: {
-        id: "not_found_page",
+    // ***********
+    // *** 404 ***
+    // ***********
+    {
+        id: RouteSingleID.NotFound,
         path: "/404",
         exact: false,
         Component: NotFoundPage,
-        requireAuth: false,
-        requireFaction: false,
+        restrictions: {
+            requireAuth: false,
+            requireFaction: false,
+            requireModerator: false,
+        },
         enable: true,
-        pageTitle: "Supremacy - 404",
+        tabTitle: "404",
     },
-}
-
-export const ROUTES_ARRAY: RouteStruct[] = []
-for (const [, value] of Object.entries(ROUTES_MAP)) {
-    ROUTES_ARRAY.push(value)
-}
+]

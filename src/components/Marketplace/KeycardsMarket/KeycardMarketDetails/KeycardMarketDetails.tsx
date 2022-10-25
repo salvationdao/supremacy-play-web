@@ -2,6 +2,7 @@ import Masonry from "@mui/lab/Masonry"
 import { Box, CircularProgress, Stack, Typography, useMediaQuery } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { SafePNG } from "../../../../assets"
+import { useParams } from "react-router-dom"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
@@ -17,7 +18,8 @@ import { UserInfo } from "../../Common/MarketDetails/UserInfo"
 import { SoldDetails } from "../../Common/MarketDetails/SoldDetails"
 import { KeycardDetails } from "./KeycardDetails"
 
-export const KeycardMarketDetails = ({ id }: { id: string }) => {
+export const KeycardMarketDetails = () => {
+    const { id } = useParams<{ id: string }>()
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [loadError, setLoadError] = useState<string>()

@@ -10,7 +10,6 @@ const uiContainer = createContainer(() => {
     const isTraining = location.pathname.includes("/training")
     const { pathname } = useLocation()
     const { isMobile } = useMobile()
-    const [isNavLinksDrawerOpen, toggleIsNavLinksDrawerOpen] = useToggle(false)
     const [leftDrawerActiveTabID, setLeftDrawerActiveTabID] = useState(localStorage.getItem("leftDrawerActiveTabID") || LEFT_DRAWER_ARRAY[0]?.id || "")
     const [rightDrawerActiveTabID, setRightDrawerActiveTabID] = useState(
         isTraining ? "" : localStorage.getItem("rightDrawerActiveTabID") || RIGHT_DRAWER_ARRAY[0]?.id || "",
@@ -83,9 +82,6 @@ const uiContainer = createContainer(() => {
         setIsStreamBigDisplay,
         toggleIsStreamBigDisplayMemorized,
         restoreIsStreamBigDisplayMemorized,
-
-        isNavLinksDrawerOpen,
-        toggleIsNavLinksDrawerOpen,
 
         leftDrawerActiveTabID,
         setLeftDrawerActiveTabID,

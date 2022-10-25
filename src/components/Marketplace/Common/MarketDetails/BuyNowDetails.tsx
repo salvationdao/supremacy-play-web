@@ -9,7 +9,6 @@ import { calculateDutchAuctionCurrentPrice, numberCommaFormatter, shadeColor, ti
 import { useInterval, useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { HANGAR_TABS } from "../../../../pages"
 import { colors, fonts } from "../../../../theme/theme"
 import { ItemType, MarketUser } from "../../../../types/marketplace"
 import { ConfirmModal } from "../../../Common/ConfirmModal"
@@ -233,13 +232,13 @@ export const BuyNowDetails = ({
                         let subPath = ""
                         switch (itemType) {
                             case ItemType.WarMachine:
-                                subPath = HANGAR_TABS.WarMachines
+                                subPath = "mechs"
                                 break
                             case ItemType.MysteryCrate:
-                                subPath = HANGAR_TABS.MysteryCrates
+                                subPath = "mystery-crates"
                                 break
                             case ItemType.Keycards:
-                                subPath = HANGAR_TABS.Keycards
+                                subPath = "keycards"
                                 break
                         }
 

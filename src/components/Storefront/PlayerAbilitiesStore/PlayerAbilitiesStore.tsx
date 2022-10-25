@@ -9,7 +9,6 @@ import { GetSaleAbilityAvailability } from "../../../fetching"
 import { secondsToWords } from "../../../helpers"
 import { useGameServerSubscriptionSecured, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { HANGAR_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
 import { PlayerAbility, SaleAbility, SaleAbilityAvailability } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
@@ -252,7 +251,7 @@ export const PlayerAbilitiesStore = () => {
                 >
                     <Box sx={{ flexShrink: 0, pr: "1.5rem", ml: "auto !important" }}>
                         <FancyButton
-                            to={`/fleet/${HANGAR_TABS.Abilities}`}
+                            to={`/fleet/abilities`}
                             clipThingsProps={{
                                 clipSize: "9px",
                                 backgroundColor: theme.factionTheme.primary,

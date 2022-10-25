@@ -9,7 +9,6 @@ import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { User } from "../../types"
 import { BarSocials } from "./BarSocials"
 import { Messages } from "./Messages/Messages"
-import { NavLinks } from "./NavLinks/NavLinks"
 import { Quests } from "./Quests/Quests"
 import { ShoppingCart } from "./ShoppingCart/ShoppingCart"
 import { Tutorial } from "./Tutorial"
@@ -140,7 +139,6 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
     return (
         <>
             <Logo />
-            <NavLinks />
             <Box sx={{ flexGrow: 1 }} />
             <Tutorial />
             {userID && <WalletDetails />}

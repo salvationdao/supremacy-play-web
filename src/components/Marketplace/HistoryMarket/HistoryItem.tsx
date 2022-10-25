@@ -8,7 +8,6 @@ import { numFormatter } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { MARKETPLACE_TABS } from "../../../pages"
 import { colors } from "../../../theme/theme"
 import { MechDetails, Weapon } from "../../../types/assets"
 import { MarketplaceBuyAuctionItem, MarketplaceEvent, MarketplaceEventType } from "../../../types/marketplace"
@@ -24,19 +23,19 @@ export const HistoryItem = ({ eventItem, isGridView }: { eventItem: MarketplaceE
 
     const itemRelatedData = useMemo(() => {
         const item = eventItem.item
-        let linkSubPath = MARKETPLACE_TABS.WarMachines
+        let linkSubPath = "mechs"
         let primaryColor = colors.marketSold
         let statusText = ""
         const formattedAmount = eventItem.amount ? numFormatter(new BigNumber(eventItem.amount).shiftedBy(-18).toNumber()) : ""
 
         if (item.mech && item.collection_item) {
-            linkSubPath = MARKETPLACE_TABS.WarMachines
+            linkSubPath = "mechs"
         } else if (item.mystery_crate && item.collection_item) {
-            linkSubPath = MARKETPLACE_TABS.MysteryCrates
+            linkSubPath = "mystery-crates"
         } else if (item.weapon && item.collection_item) {
-            linkSubPath = MARKETPLACE_TABS.Weapons
+            linkSubPath = "weapons"
         } else if (item.keycard) {
-            linkSubPath = MARKETPLACE_TABS.Keycards
+            linkSubPath = "keycards"
         }
 
         if (eventItem.event_type === MarketplaceEventType.Purchased) {

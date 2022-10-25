@@ -1,4 +1,3 @@
-import { MARKETPLACE_TABS } from "../../../pages"
 import { MarketplaceBuyAuctionItem } from "../../../types/marketplace"
 import { KeycardCommonArea } from "../../Hangar/KeycardsHangar/KeycardHangarItem"
 import { MarketItem } from "../Common/MarketItem/MarketItem"
@@ -16,7 +15,7 @@ export const KeycardMarketItem = ({ item, isGridView }: KeycardMarketItemProps) 
     const { label, image_url, animation_url, card_animation_url, description } = keycard
 
     return (
-        <MarketItem item={item} isGridView={isGridView} linkSubPath={MARKETPLACE_TABS.Keycards}>
+        <MarketItem item={item} isGridView={isGridView} linkSubPath={"keycards"}>
             <KeycardCommonArea
                 isGridView={isGridView}
                 label={label}

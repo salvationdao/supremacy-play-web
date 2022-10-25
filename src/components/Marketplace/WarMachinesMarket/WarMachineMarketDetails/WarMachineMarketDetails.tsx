@@ -1,6 +1,7 @@
 import Masonry from "@mui/lab/Masonry"
 import { Box, CircularProgress, Stack, Typography, useMediaQuery } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
+import { useParams } from "react-router-dom"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
@@ -19,7 +20,8 @@ import { SoldDetails } from "../../Common/MarketDetails/SoldDetails"
 import { UserInfo } from "../../Common/MarketDetails/UserInfo"
 import { MechBattleHistoryDetails } from "./MechBattleHistoryDetails"
 
-export const WarMachineMarketDetails = ({ id }: { id: string }) => {
+export const WarMachineMarketDetails = () => {
+    const { id } = useParams<{ id: string }>()
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [loadError, setLoadError] = useState<string>()

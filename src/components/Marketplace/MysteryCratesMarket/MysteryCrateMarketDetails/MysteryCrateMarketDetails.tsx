@@ -1,6 +1,7 @@
 import Masonry from "@mui/lab/Masonry"
 import { Box, CircularProgress, Stack, Typography, useMediaQuery } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
+import { useParams } from "react-router-dom"
 import { SafePNG } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
@@ -14,11 +15,12 @@ import { BuyNowDetails } from "../../Common/MarketDetails/BuyNowDetails"
 import { Dates } from "../../Common/MarketDetails/Dates"
 import { ImagesPreview } from "../../Common/MarketDetails/ImagesPreview"
 import { ManageListing } from "../../Common/MarketDetails/ManageListing"
-import { UserInfo } from "../../Common/MarketDetails/UserInfo"
 import { SoldDetails } from "../../Common/MarketDetails/SoldDetails"
+import { UserInfo } from "../../Common/MarketDetails/UserInfo"
 import { CrateDetails } from "./CrateDetails"
 
-export const MysteryCrateMarketDetails = ({ id }: { id: string }) => {
+export const MysteryCrateMarketDetails = () => {
+    const { id } = useParams<{ id: string }>()
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [loadError, setLoadError] = useState<string>()

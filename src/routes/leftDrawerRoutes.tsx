@@ -3,13 +3,14 @@ import { BattleArena } from "../components/LeftDrawer/BattleArena/BattleArena"
 import { BattleEndScreen } from "../components/LeftDrawer/BattleEndScreen/BattleEndScreen"
 
 import { BATTLE_ARENA_OPEN } from "../constants"
+import { RouteSingleID } from "./routes"
 
 export interface SideTabsStruct {
     id: string
     Component?: () => JSX.Element | null
     icon: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
     label: string
-    matchNavLinkIDs?: string[] // Leave undefined to have the tab available on all pages, else specify the routes
+    matchRouteIDs?: RouteSingleID[] // Leave undefined to have the tab available on all pages, else specify the routes
     mountAllTime: boolean // Whether to keep component mounted even not on the tab
     requireAuth: boolean
 }
@@ -21,7 +22,7 @@ export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         label: "Battle Commands",
         Component: BattleArena,
         requireAuth: false,
-        matchNavLinkIDs: BATTLE_ARENA_OPEN ? ["home"] : [],
+        matchRouteIDs: BATTLE_ARENA_OPEN ? [RouteSingleID.Home] : [],
         mountAllTime: true,
     },
     previous_battle: {
@@ -30,7 +31,7 @@ export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         label: "Previous Battle",
         Component: BattleEndScreen,
         requireAuth: false,
-        matchNavLinkIDs: BATTLE_ARENA_OPEN ? ["home"] : [],
+        matchRouteIDs: BATTLE_ARENA_OPEN ? [RouteSingleID.Home] : [],
         mountAllTime: true,
     },
 }
