@@ -1,9 +1,9 @@
 import { Box, Stack } from "@mui/material"
 import { useMemo } from "react"
-import { ClipThing, StyledImageText } from "../.."
-import { GenericWarMachinePNG, SvgEmergency } from "../../../assets"
-import { colors } from "../../../theme/theme"
-import { Faction, WarMachineAbilityAlertProps } from "../../../types"
+import { ClipThing, StyledImageText } from "../../.."
+import { GenericWarMachinePNG, SvgEmergency } from "../../../../assets"
+import { colors } from "../../../../theme/theme"
+import { Faction, WarMachineAbilityAlertProps } from "../../../../types"
 
 export const WarMachineAbilityAlert = ({ data, getFaction }: { data: WarMachineAbilityAlertProps; getFaction: (factionID: string) => Faction }) => {
     const { ability, warMachine } = data

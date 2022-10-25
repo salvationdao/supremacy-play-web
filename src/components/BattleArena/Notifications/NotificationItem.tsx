@@ -1,7 +1,7 @@
 import { Box, Slide } from "@mui/material"
 import { ReactElement, useEffect } from "react"
-import { useMobile } from "../../containers"
-import { useToggle } from "../../hooks"
+import { useMobile } from "../../../containers"
+import { useToggle } from "../../../hooks"
 
 export const NotificationItem = ({ duration, children }: { duration: number; children: ReactElement }) => {
     const { isMobile } = useMobile()

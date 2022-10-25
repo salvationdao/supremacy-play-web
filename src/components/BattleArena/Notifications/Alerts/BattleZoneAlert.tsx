@@ -1,9 +1,9 @@
 import { Box, Stack } from "@mui/material"
-import { ClipThing, StyledNormalText } from "../.."
-import { SvgEmergency } from "../../../assets"
-import { colors } from "../../../theme/theme"
-import { BattleZoneStruct } from "../../../types"
-import { useTimer } from "../../../hooks"
+import { ClipThing, StyledNormalText } from "../../.."
+import { SvgEmergency } from "../../../../assets"
+import { colors } from "../../../../theme/theme"
+import { BattleZoneStruct } from "../../../../types"
+import { useTimer } from "../../../../hooks"
 import { useMemo } from "react"
 
 export const BattleZoneAlert = ({ data }: { data: BattleZoneStruct }) => {

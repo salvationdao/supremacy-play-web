@@ -1,4 +1,4 @@
-import { AnyAbility, LocationSelectType, NotificationStruct, User, UserRank, RoleType } from "../../types"
+import { AnyAbility, LocationSelectType, NotificationStruct, User, UserRank, RoleType } from "../../../types"
 
 enum NotificationType {
     Text = "TEXT",

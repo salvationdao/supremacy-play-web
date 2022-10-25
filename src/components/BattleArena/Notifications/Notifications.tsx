@@ -1,14 +1,14 @@
 import { Box, Stack } from "@mui/material"
 import { useCallback, useEffect, useMemo } from "react"
-import { BattleAbilityAlert, FactionAbilityAlert, KillAlert, LocationSelectAlert, NotificationItem, TextAlert, WarMachineAbilityAlert } from ".."
-import { NOTIFICATION_LINGER, NOTIFICATION_TIME } from "../../constants"
-import { useGame, useMobile, useSupremacy } from "../../containers"
-import { useArena } from "../../containers/arena"
-import { makeid } from "../../containers/ws/util"
-import { useArray } from "../../hooks"
-import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
-import { GameServerKeys } from "../../keys"
-import { siteZIndex } from "../../theme/theme"
+import { BattleAbilityAlert, FactionAbilityAlert, KillAlert, LocationSelectAlert, NotificationItem, TextAlert, WarMachineAbilityAlert } from "../.."
+import { NOTIFICATION_LINGER, NOTIFICATION_TIME } from "../../../constants"
+import { useGame, useMobile, useSupremacy } from "../../../containers"
+import { useArena } from "../../../containers/arena"
+import { makeid } from "../../../containers/ws/util"
+import { useArray } from "../../../hooks"
+import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
+import { siteZIndex } from "../../../theme/theme"
 import {
     BattleFactionAbilityAlertProps,
     BattleZoneStruct,
@@ -17,7 +17,7 @@ import {
     NotificationStruct,
     NotificationType,
     WarMachineAbilityAlertProps,
-} from "../../types"
+} from "../../../types"
 import { BattleZoneAlert } from "./Alerts/BattleZoneAlert"
 import {
     battleAbilityNoti,

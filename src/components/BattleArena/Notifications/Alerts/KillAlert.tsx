@@ -1,9 +1,9 @@
 import { Box } from "@mui/material"
-import { ClipThing, StyledImageText, StyledNormalText } from "../.."
-import { SvgDeath, SvgSkull2 } from "../../../assets"
-import { colors } from "../../../theme/theme"
-import { Faction, KillAlertProps } from "../../../types"
-import { Player } from "../../Common/Player"
+import { ClipThing, StyledImageText, StyledNormalText } from "../../.."
+import { SvgDeath, SvgSkull2 } from "../../../../assets"
+import { colors } from "../../../../theme/theme"
+import { Faction, KillAlertProps } from "../../../../types"
+import { Player } from "../../../Common/Player"
 
 export const KillAlert = ({ data, getFaction }: { data: KillAlertProps; getFaction: (factionID: string) => Faction }) => {
     const { destroyed_war_machine, killed_by_war_machine, killed_by, killed_by_user } = data

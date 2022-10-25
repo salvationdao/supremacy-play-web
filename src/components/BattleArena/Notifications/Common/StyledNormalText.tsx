@@ -1,5 +1,5 @@
 import { SxProps, Typography } from "@mui/material"
-import { colors } from "../../../theme/theme"
+import { colors } from "../../../../theme/theme"
 
 export const StyledNormalText = ({ text, sx }: { text: string; sx?: SxProps }) => {
     return (

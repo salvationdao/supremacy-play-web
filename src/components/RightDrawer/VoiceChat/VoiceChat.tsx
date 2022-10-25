@@ -11,7 +11,7 @@ import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } fr
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { Faction, FeatureName, User } from "../../../types"
-import { StyledImageText } from "../../Notifications/Common/StyledImageText"
+import { StyledImageText } from "../../BattleArena/Notifications/Common/StyledImageText"
 
 import ConnectSound from "../../../assets/voiceChat/Connect.wav"
 import DisconnectSound from "../../../assets/voiceChat/Disconnect.wav"

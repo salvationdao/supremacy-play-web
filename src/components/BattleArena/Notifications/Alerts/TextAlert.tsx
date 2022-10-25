@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material"
-import { ClipThing } from "../.."
-import { colors } from "../../../theme/theme"
+import { ClipThing } from "../../.."
+import { colors } from "../../../../theme/theme"
 
 export const TextAlert = ({ data }: { data: string }) => {
     return (

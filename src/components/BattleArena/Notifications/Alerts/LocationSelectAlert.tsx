@@ -1,11 +1,11 @@
 import { Box, Stack } from "@mui/material"
 import { useMemo } from "react"
-import { ClipThing, StyledImageText } from "../.."
-import { SvgLocation } from "../../../assets"
-import { FallbackUser } from "../../../containers"
-import { colors } from "../../../theme/theme"
-import { Faction, LocationSelectAlertProps } from "../../../types"
-import { Player } from "../../Common/Player"
+import { ClipThing, StyledImageText } from "../../.."
+import { SvgLocation } from "../../../../assets"
+import { FallbackUser } from "../../../../containers"
+import { colors } from "../../../../theme/theme"
+import { Faction, LocationSelectAlertProps } from "../../../../types"
+import { Player } from "../../../Common/Player"
 
 export const LocationSelectAlert = ({ data, getFaction }: { data: LocationSelectAlertProps; getFaction: (factionID: string) => Faction }) => {
     const { currentUser, ability } = data

@@ -1,9 +1,9 @@
 import { Box, Stack } from "@mui/material"
-import { ClipThing, StyledImageText } from "../.."
-import { SvgEmergency } from "../../../assets"
-import { acronym } from "../../../helpers"
-import { colors } from "../../../theme/theme"
-import { BattleFactionAbilityAlertProps, Faction } from "../../../types"
+import { ClipThing, StyledImageText } from "../../.."
+import { SvgEmergency } from "../../../../assets"
+import { acronym } from "../../../../helpers"
+import { colors } from "../../../../theme/theme"
+import { BattleFactionAbilityAlertProps, Faction } from "../../../../types"
 
 export const FactionAbilityAlert = ({ data, getFaction }: { data: BattleFactionAbilityAlertProps; getFaction: (factionID: string) => Faction }) => {
     const { user, ability } = data
