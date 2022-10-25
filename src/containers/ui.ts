@@ -27,6 +27,15 @@ const uiContainer = createContainer(() => {
     const [stopMapRender, setStopMapRender] = useState(false)
 
     useEffect(() => {
+        if (showUpcomingBattle) {
+            setLeftDrawerActiveTabID("quick_deploy")
+            return
+        }
+
+        setLeftDrawerActiveTabID("battle_arena")
+    }, [showUpcomingBattle, setLeftDrawerActiveTabID])
+
+    useEffect(() => {
         localStorage.setItem("leftDrawerActiveTabID", leftDrawerActiveTabID)
     }, [leftDrawerActiveTabID])
 

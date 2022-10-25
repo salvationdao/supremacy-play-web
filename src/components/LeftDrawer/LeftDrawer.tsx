@@ -9,7 +9,7 @@ import { DrawerButtons } from "./DrawerButtons"
 export const LEFT_DRAWER_WIDTH = 44 // rem
 
 export const LeftDrawer = () => {
-    const { leftDrawerActiveTabID } = useUI()
+    const { leftDrawerActiveTabID, showUpcomingBattle } = useUI()
     const { isMobile } = useMobile()
     const { userID } = useAuth()
 
@@ -51,6 +51,7 @@ export const LeftDrawer = () => {
             >
                 {LEFT_DRAWER_ARRAY.map((r) => {
                     if ((r.requireAuth && !userID) || (r.matchNavLinkIDs && !r.matchNavLinkIDs.includes(activeRouteID))) return null
+                    if ((showUpcomingBattle && r.id !== "quick_deploy") || (!showUpcomingBattle && r.id === "quick_deploy")) return null
                     const isActive = r.id === leftDrawerActiveTabID
                     if (isActive || r.mountAllTime) {
                         return (

@@ -1,4 +1,4 @@
-import { Box, LinearProgress, Stack, Typography } from "@mui/material"
+import { Box, Drawer, Fade, LinearProgress, Stack, Typography } from "@mui/material"
 import { TourProvider } from "@reactour/tour"
 import * as Sentry from "@sentry/react"
 import { Buffer } from "buffer"
@@ -13,9 +13,9 @@ import { SupremacyPNG } from "./assets"
 import { Bar, GlobalSnackbar, Maintenance, RightDrawer } from "./components"
 import { NavLinksDrawer } from "./components/Bar/NavLinks/NavLinksDrawer"
 import { BottomNav } from "./components/BottomNav/BottomNav"
-import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
+import { LEFT_DRAWER_WIDTH, LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
 import { tourStyles } from "./components/Tutorial/SetupTutorial"
-import { GAME_SERVER_HOSTNAME, LINK, SENTRY_CONFIG } from "./constants"
+import { DRAWER_TRANSITION_DURATION, GAME_SERVER_HOSTNAME, LINK, SENTRY_CONFIG } from "./constants"
 import {
     ChatProvider,
     DimensionProvider,
@@ -42,8 +42,8 @@ import { AuthPage } from "./pages/AuthPage"
 import { EnlistPage } from "./pages/EnlistPage"
 import { ErrorFallbackPage } from "./pages/ErrorFallbackPage"
 import { LoginRedirect } from "./pages/LoginRedirect"
-import { ROUTES_ARRAY, ROUTES_MAP } from "./routes"
-import { colors, fonts } from "./theme/theme"
+import { LEFT_DRAWER_ARRAY, ROUTES_ARRAY, ROUTES_MAP } from "./routes"
+import { colors, fonts, siteZIndex } from "./theme/theme"
 
 const AppInner = () => {
     const history = useHistory()

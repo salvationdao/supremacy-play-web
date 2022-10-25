@@ -307,6 +307,15 @@ export const LEFT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         matchNavLinkIDs: BATTLE_ARENA_OPEN ? ["home"] : [],
         mountAllTime: true,
     },
+    quick_deploy: {
+        id: "quick_deploy",
+        icon: <SvgRobot size="1.3rem" sx={{ pt: ".3rem" }} />,
+        label: "Quick Deploy",
+        Component: QuickDeploy,
+        requireAuth: true,
+        matchNavLinkIDs: BATTLE_ARENA_OPEN ? ["home"] : [],
+        mountAllTime: false,
+    },
     previous_battle: {
         id: "previous_battle",
         icon: <SvgHistoryClock size="1.3rem" sx={{ pt: ".3rem" }} />,

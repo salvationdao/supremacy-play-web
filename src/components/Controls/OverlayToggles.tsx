@@ -16,7 +16,9 @@ export const OverlayToggles = () => {
             <TooltipHelper text="Toggle the upcoming battle screen.">
                 <IconButton
                     size="small"
-                    onClick={() => toggleShowUpcomingBattle()}
+                    onClick={() => {
+                        toggleShowUpcomingBattle()
+                    }}
                     sx={{
                         filter: showUpcomingBattle ? "grayscale(0)" : "grayscale(1)",
                         opacity: showUpcomingBattle ? 1 : 0.4,

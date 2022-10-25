@@ -4,16 +4,12 @@ import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
 import { usePagination } from "../../../hooks"
-import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
+import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { MechBasic, MechBasicWithQueueStatus, MechStatus } from "../../../types"
+import { MechBasicWithQueueStatus, MechStatus } from "../../../types"
 import { SortDir, SortTypeLabel } from "../../../types/marketplace"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
-import { BulkDeployConfirmModal } from "../../Hangar/WarMachinesHangar/Common/BulkDeployConfirmModal"
-import { QueueFeed } from "../../Hangar/WarMachinesHangar/WarMachineDetails/Modals/DeployModal"
-import { ChallengeFundsRemain } from "./ChallengeFundsRemain"
-import { QueueDetails } from "./QueueDetails"
 import { QuickDeployItem } from "./QuickDeployItem"
 
 const sortOptions = [
@@ -54,17 +50,12 @@ const QuickDeployInner = () => {
     const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
 
-    // Player Queue Status
-    const [playerQueueStatus, setPlayerQueueStatus] = useState<PlayerQueueStatus>()
-
     // Mechs
     const [mechs, setMechs] = useState<MechBasicWithQueueStatus[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
 
     // Bulk action
-    const [selectedMechs, setSelectedMechs] = useState<MechBasic[]>([])
-    const [bulkDeployConfirmModalOpen, setBulkDeployConfirmModalOpen] = useState(false)
     const childrenMechStatus = useRef<{ [mechID: string]: MechStatus }>({})
 
     const [sort, setSort] = useState<string>(SortTypeLabel.MechQueueAsc)
@@ -76,48 +67,9 @@ const QuickDeployInner = () => {
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
 
-    // Queuing cost, queue length win reward etc.
-    const queueFeed = useGameServerSubscriptionFaction<QueueFeed>({
-        URI: "/queue",
-        key: GameServerKeys.SubQueueFeed,
-    })
-
     useEffect(() => {
         localStorage.setItem("quickDeployPageSize2", pageSize.toString())
     }, [pageSize])
-
-    const updateTotalDeployed = (amount: number) => {
-        setPlayerQueueStatus((prev) => {
-            if (!prev) return
-
-            return {
-                ...prev,
-                total_queued: prev.total_queued + amount,
-            }
-        })
-    }
-
-    const toggleSelected = useCallback((mech: MechBasic) => {
-        setSelectedMechs((prev) => {
-            const newArray = [...prev]
-            const isAlreadySelected = prev.findIndex((s) => s.id === mech.id)
-            if (isAlreadySelected >= 0) {
-                newArray.splice(isAlreadySelected, 1)
-            } else {
-                newArray.push(mech)
-            }
-
-            return newArray
-        })
-    }, [])
-
-    const onSelectAll = useCallback(() => {
-        setSelectedMechs(mechs)
-    }, [mechs])
-
-    const onUnSelectAll = useCallback(() => {
-        setSelectedMechs([])
-    }, [])
 
     const getItems = useCallback(async () => {
         try {
@@ -134,9 +86,6 @@ const QuickDeployInner = () => {
                 include_market_listed: false,
                 exclude_damaged_mech: true,
             })
-
-            const resp2 = await send<PlayerQueueStatus>(GameServerKeys.PlayerQueueStatus)
-            setPlayerQueueStatus(resp2)
 
             if (!resp) return
             setLoadError(undefined)
@@ -169,13 +118,11 @@ const QuickDeployInner = () => {
                     }}
                 >
                     <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}>
-                        QUICK DEPLOY
+                        DEPLOY
                     </Typography>
                 </Stack>
 
                 <Stack sx={{ flex: 1 }}>
-                    <ChallengeFundsRemain />
-
                     <TotalAndPageSizeOptions
                         countItems={mechs?.length}
                         totalItems={totalItems}
@@ -190,15 +137,8 @@ const QuickDeployInner = () => {
                         changePageSize={changePageSize}
                         changePage={changePage}
                         pageSizeOptions={[10, 20, 40]}
-                        selectedCount={selectedMechs.length}
-                        onSelectAll={onSelectAll}
-                        onUnselectedAll={onUnSelectAll}
                         manualRefresh={getItems}
                     ></TotalAndPageSizeOptions>
-
-                    <Box sx={{ px: "1rem", mt: "1.5rem", backgroundColor: "#00000099" }}>
-                        <QueueDetails queueFeed={queueFeed} playerQueueStatus={playerQueueStatus} />
-                    </Box>
 
                     {loadError && (
                         <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
@@ -242,19 +182,7 @@ const QuickDeployInner = () => {
                             <Box sx={{ direction: "ltr", height: 0 }}>
                                 <Stack spacing=".3rem" sx={{ height: "100%" }}>
                                     {mechs.map((mech) => {
-                                        const isSelected = selectedMechs.findIndex((s) => s.id === mech.id) >= 0
-                                        return (
-                                            <QuickDeployItem
-                                                key={mech.id}
-                                                isSelected={isSelected}
-                                                toggleIsSelected={() => {
-                                                    toggleSelected(mech)
-                                                }}
-                                                onDeploy={() => updateTotalDeployed(1)}
-                                                childrenMechStatus={childrenMechStatus}
-                                                mech={mech}
-                                            />
-                                        )
+                                        return <QuickDeployItem key={mech.id} childrenMechStatus={childrenMechStatus} mech={mech} />
                                     })}
                                 </Stack>
                             </Box>
@@ -307,17 +235,6 @@ const QuickDeployInner = () => {
                     )}
                 </Stack>
             </Stack>
-
-            {bulkDeployConfirmModalOpen && (
-                <BulkDeployConfirmModal
-                    setBulkDeployConfirmModalOpen={setBulkDeployConfirmModalOpen}
-                    selectedMechs={selectedMechs}
-                    setSelectedMechs={setSelectedMechs}
-                    childrenMechStatus={childrenMechStatus}
-                    queueFeed={queueFeed}
-                    onBulkDeploy={(amount) => updateTotalDeployed(amount)}
-                />
-            )}
         </>
     )
 }
