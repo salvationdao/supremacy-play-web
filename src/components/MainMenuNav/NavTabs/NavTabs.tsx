@@ -7,7 +7,13 @@ import { ArrowButton } from "./ArrowButton"
 
 export const TAB_HEIGHT = 3.8 // rems
 
-export const NavTabs = ({ activeTabID, setActiveTabID }: { activeTabID: RouteGroupID; setActiveTabID: React.Dispatch<React.SetStateAction<RouteGroupID>> }) => {
+export const NavTabs = ({
+    activeTabID,
+    setActiveTabID,
+}: {
+    activeTabID?: RouteGroupID
+    setActiveTabID: React.Dispatch<React.SetStateAction<RouteGroupID | undefined>>
+}) => {
     const theme = useTheme()
 
     const prevTab = useCallback(() => {

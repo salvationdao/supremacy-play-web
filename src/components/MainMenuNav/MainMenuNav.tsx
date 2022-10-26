@@ -2,7 +2,8 @@ import { Modal, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { useUI } from "../../containers"
 import { useTheme } from "../../containers/theme"
-import { RouteGroupID } from "../../routes"
+import { useActiveRouteID } from "../../hooks/useActiveRouteID"
+import { RouteGroupID, Routes } from "../../routes"
 import { fonts, siteZIndex } from "../../theme/theme"
 import { NiceButton } from "../Common/Nice/NiceButton"
 import { NavTabs } from "./NavTabs/NavTabs"
@@ -11,7 +12,16 @@ import { TabContent } from "./TabContent/TabContent"
 export const MainMenuNav = () => {
     const theme = useTheme()
     const { showMainMenu, toggleShowMainMenu } = useUI()
-    const [activeTabID, setActiveTabID] = useState<RouteGroupID>(RouteGroupID.BattleArena)
+    const activeRouteID = useActiveRouteID()
+    const [activeTabID, setActiveTabID] = useState<RouteGroupID>()
+
+    useEffect(() => {
+        // no active tab, then we set it based on current page
+        setActiveTabID((prev) => {
+            if (prev) return prev
+            return Routes.find((route) => route.id === activeRouteID)?.showInMainMenu?.groupID || RouteGroupID.BattleArena
+        })
+    }, [activeRouteID])
 
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {

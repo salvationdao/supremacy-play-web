@@ -3,7 +3,7 @@ import { useMemo } from "react"
 import { RouteGroupID, Routes } from "../../../routes"
 import { TabContentItem } from "./TabContentItem"
 
-export const TabContent = ({ activeTabID }: { activeTabID: RouteGroupID }) => {
+export const TabContent = ({ activeTabID }: { activeTabID?: RouteGroupID }) => {
     const routes = useMemo(() => {
         return Routes.filter((route) => route.showInMainMenu?.groupID === activeTabID)
     }, [activeTabID])
