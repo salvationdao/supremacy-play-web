@@ -1,6 +1,7 @@
 import { Modal, Stack } from "@mui/material"
 import { useUI } from "../../containers"
 import { siteZIndex } from "../../theme/theme"
+import { NavTabs } from "./NavTabs/NavTabs"
 
 export const MainMenuNav = () => {
     const { showMainMenu } = useUI()
@@ -23,7 +24,9 @@ export const MainMenuNav = () => {
                     backdropFilter: "blur(5px)",
                 }}
             >
-                <Stack sx={{ width: "calc(100% - 3rem)", maxWidth: "163rem" }}></Stack>
+                <Stack sx={{ width: "calc(100% - 3rem)", maxWidth: "163rem", p: "8rem 3.6rem" }}>
+                    <NavTabs />
+                </Stack>
             </Stack>
         </Modal>
     )
