@@ -204,6 +204,16 @@ import LogoWEBP from "./images/Logo.webp"
 import MaintenancePNG from "./images/Maintenance.png"
 import CircleParticle from "./images/Particles/circle.png"
 import PlayerAbilityPNG from "./images/PlayerAbility.png"
+
+import BattleArenaPNG from "./images/MainMenu/BattleArena.png"
+import ExhibitionPNG from "./images/MainMenu/Exhibition.png"
+import GenericPNG from "./images/MainMenu/Generic.png"
+import HangarPNG from "./images/MainMenu/Hangar.png"
+import MechsPNG from "./images/MainMenu/Mechs.png"
+import RepairBayPNG from "./images/MainMenu/RepairBay.png"
+import StoryPNG from "./images/MainMenu/Story.png"
+import TutorialPNG from "./images/MainMenu/Tutorial.png"
+
 import AboutMeSVG from "./images/profileIcons/AboutMe.svg"
 import BattleHistorySVG from "./images/profileIcons/BattleHistory.svg"
 import StatsSVG from "./images/profileIcons/Stats.svg"
@@ -337,6 +347,14 @@ export {
     DeadSkullPNG,
     AbilityCancelPNG,
     CircleParticle,
+    BattleArenaPNG,
+    ExhibitionPNG,
+    GenericPNG,
+    HangarPNG,
+    MechsPNG,
+    RepairBayPNG,
+    StoryPNG,
+    TutorialPNG,
 }
 export { BCBorder, RMBorder, ZHIBorder, BCWaiting, RMWaiting, ZHIWaiting, BCDeploy, RMDeploy, ZHIDeploy }
 

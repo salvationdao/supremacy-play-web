@@ -1,14 +1,18 @@
+import { BattleArenaPNG, GenericPNG, MechsPNG, TutorialPNG } from "../assets"
 import { DangerZone } from "../components/Admin/Dangerzone/DangerZone"
 import { AdminLookup } from "../components/Admin/Lookup/AdminLookup"
 import { AdminLookupResultPage } from "../components/Admin/Lookup/AdminLookupResultPage"
-import { BillingHistorySingle } from "../components/BillingHistory/BillingHistorySingle"
+import { BattleArena } from "../components/BattleArena/BattleArena"
 import { BillingHistory } from "../components/BillingHistory/BillingHistory"
+import { BillingHistorySingle } from "../components/BillingHistory/BillingHistorySingle"
 import { Claims } from "../components/Claims/Claims"
 import { KeycardsHangar } from "../components/Hangar/KeycardsHangar/KeycardsHangar"
 import { MysteryCratesHangar } from "../components/Hangar/MysteryCratesHangar/MysteryCratesHangar"
 import { PlayerAbilitiesHangar } from "../components/Hangar/PlayerAbilitiesHangar/PlayerAbilitiesHangar"
 import { SubmodelsHangar } from "../components/Hangar/SubmodelHangar/SubmodelsHangar"
+import { MechPage } from "../components/Hangar/WarMachinesHangar/WarMachineDetails/MechPage"
 import { WarMachinesHangar } from "../components/Hangar/WarMachinesHangar/WarMachinesHangar"
+import { WeaponHangarDetails } from "../components/Hangar/WeaponsHangar/WeaponDetails/WeaponHangarDetails"
 import { WeaponsHangar } from "../components/Hangar/WeaponsHangar/WeaponsHangar"
 import { GlobalStats } from "../components/Leaderboard/GlobalStats/GlobalStats"
 import { HistoryMarket } from "../components/Marketplace/HistoryMarket/HistoryMarket"
@@ -16,24 +20,21 @@ import { KeycardMarketDetails } from "../components/Marketplace/KeycardsMarket/K
 import { KeycardsMarket } from "../components/Marketplace/KeycardsMarket/KeycardsMarket"
 import { MysteryCrateMarketDetails } from "../components/Marketplace/MysteryCratesMarket/MysteryCrateMarketDetails/MysteryCrateMarketDetails"
 import { MysteryCratesMarket } from "../components/Marketplace/MysteryCratesMarket/MysteryCratesMarket"
+import { MarketplaceSellPage } from "../components/Marketplace/SellItem/MarketplaceSellPage"
 import { WarMachineMarketDetails } from "../components/Marketplace/WarMachinesMarket/WarMachineMarketDetails/WarMachineMarketDetails"
 import { WarMachinesMarket } from "../components/Marketplace/WarMachinesMarket/WarMachinesMarket"
 import { WeaponMarketDetails } from "../components/Marketplace/WeaponsMarket/WeaponMarketDetails/WeaponMarketDetails"
 import { WeaponsMarket } from "../components/Marketplace/WeaponsMarket/WeaponsMarket"
+import { NotFoundPage } from "../components/NotFoundPage/NotFoundPage"
 import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
 import { BattlesReplays } from "../components/Replays/BattlesReplays/BattlesReplays"
+import { ReplayItemPage } from "../components/Replays/ReplayDetails/ReplayItemPage"
 import { MysteryCratesStore } from "../components/Storefront/MysteryCratesStore/MysteryCratesStore"
 import { PackagesStore } from "../components/Storefront/PackagesStore/PackagesStore"
 import { PlayerAbilitiesStore } from "../components/Storefront/PlayerAbilitiesStore/PlayerAbilitiesStore"
-import { DEV_ONLY, IS_TESTING_MODE } from "../constants"
-import { MarketplaceSellPage } from "../components/Marketplace/SellItem/MarketplaceSellPage"
-import { MechPage } from "../components/Hangar/WarMachinesHangar/WarMachineDetails/MechPage"
-import { ReplayItemPage } from "../components/Replays/ReplayDetails/ReplayItemPage"
 import { StorefrontShoppingCartPage } from "../components/Storefront/StorefrontShoppingCartPage"
-import { BattleArena } from "../components/BattleArena/BattleArena"
-import { NotFoundPage } from "../components/NotFoundPage/NotFoundPage"
 import { TutorialPage } from "../components/Tutorial/TutorialPage"
-import { WeaponHangarDetails } from "../components/Hangar/WeaponsHangar/WeaponDetails/WeaponHangarDetails"
+import { DEV_ONLY, IS_TESTING_MODE } from "../constants"
 
 export enum RouteSingleID {
     Home = "HOME",
@@ -97,6 +98,7 @@ export interface RouteSingle {
     showInMainMenu?: {
         groupID: RouteGroupID
         label: string
+        image: string
     }
     enable: boolean
     tabTitle: string // Sets the tab title etc. with react helmet
@@ -151,6 +153,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.BattleArena,
             label: "Battle Arena",
+            image: BattleArenaPNG,
         },
         enable: true,
         tabTitle: "Battle Arena",
@@ -168,6 +171,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.BattleArena,
             label: "Tutorial",
+            image: TutorialPNG,
         },
         enable: true,
         tabTitle: "Tutorial",
@@ -189,6 +193,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.BattleArena,
             label: "Leaderboard",
+            image: GenericPNG,
         },
         enable: true,
         tabTitle: "Leaderboard",
@@ -253,6 +258,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.Inventory,
             label: "Mechs",
+            image: MechsPNG,
         },
         enable: true,
         tabTitle: "Fleet - Mechs",
@@ -270,6 +276,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.Inventory,
             label: "Weapons",
+            image: GenericPNG,
         },
         enable: true,
         tabTitle: "Fleet - Weapons",
@@ -287,6 +294,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.Inventory,
             label: "Submodels",
+            image: GenericPNG,
         },
         enable: DEV_ONLY,
         tabTitle: "Fleet - Submodels",
@@ -304,6 +312,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.Inventory,
             label: "Mystery Crates",
+            image: GenericPNG,
         },
         enable: true,
         tabTitle: "Fleet - Mystery Crates",
@@ -321,6 +330,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.Inventory,
             label: "Abilities",
+            image: GenericPNG,
         },
         enable: true,
         tabTitle: "Fleet - Abilities",
@@ -338,6 +348,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.Inventory,
             label: "Keycards",
+            image: GenericPNG,
         },
         enable: true,
         tabTitle: "Fleet - Keycards",
@@ -372,6 +383,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.Store,
             label: "Mystery Crates",
+            image: GenericPNG,
         },
         enable: true,
         tabTitle: "Storefront - Mystery Crates",
@@ -389,6 +401,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.Store,
             label: "Abilities",
+            image: GenericPNG,
         },
         enable: true,
         tabTitle: "Storefront - Abilities",
@@ -406,6 +419,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.Store,
             label: "Packages",
+            image: GenericPNG,
         },
         enable: true,
         tabTitle: "Storefront - Packages",
@@ -492,6 +506,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.Marketplace,
             label: "History",
+            image: GenericPNG,
         },
         enable: !IS_TESTING_MODE,
         tabTitle: "Marketplace - History",
@@ -509,6 +524,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.Marketplace,
             label: "Mechs",
+            image: GenericPNG,
         },
         enable: !IS_TESTING_MODE,
         tabTitle: "Marketplace - Mechs",
@@ -526,6 +542,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.Marketplace,
             label: "Weapons",
+            image: GenericPNG,
         },
         enable: !IS_TESTING_MODE,
         tabTitle: "Marketplace - Weapons",
@@ -543,6 +560,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.Marketplace,
             label: "Keycards",
+            image: GenericPNG,
         },
         enable: !IS_TESTING_MODE,
         tabTitle: "Marketplace - Keycards",
@@ -560,6 +578,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.Marketplace,
             label: "Mystery Crates",
+            image: GenericPNG,
         },
         enable: !IS_TESTING_MODE,
         tabTitle: "Marketplace - Mystery Crates",
@@ -624,6 +643,7 @@ export const Routes: RouteSingle[] = [
         showInMainMenu: {
             groupID: RouteGroupID.BattleArena,
             label: "Replays",
+            image: GenericPNG,
         },
         enable: true,
         tabTitle: "Replays",
@@ -689,8 +709,9 @@ export const Routes: RouteSingle[] = [
                 "You will receive assets that are of Supremacy's next generation collection: Supremacy Nexus, which will allow you to equip your war machines to defeat your enemies in the battle arena.",
         },
         showInMainMenu: {
-            groupID: RouteGroupID.Inventory,
+            groupID: RouteGroupID.Store,
             label: "Claims",
+            image: GenericPNG,
         },
         enable: true,
         tabTitle: "Claim Rewards",

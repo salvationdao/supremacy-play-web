@@ -14,14 +14,14 @@ export const TabContent = ({ activeTabID }: { activeTabID: RouteGroupID }) => {
                 flex: 1,
                 display: "grid",
                 gridTemplateColumns: "repeat(4, 1fr)",
-                gridTemplateRows: "repeat(auto-fit, 22rem)",
+                gridTemplateRows: "repeat(auto-fit, 28rem)",
                 gap: "1.8rem",
                 alignItems: "center",
                 justifyContent: "center",
             }}
         >
             {routes.map((route, index) => {
-                return <TabContentItem key={route.id} route={route} index={index} />
+                return <TabContentItem key={route.id} route={route} index={index} totalItems={routes.length} />
             })}
         </Box>
     )
