@@ -1,5 +1,6 @@
 import { Box, Typography } from "@mui/material"
-import React from "react"
+import React, { useEffect, useMemo } from "react"
+import { useHistory } from "react-router-dom"
 import { useUI } from "../../../containers"
 import { RouteSingle } from "../../../routes"
 import { fonts } from "../../../theme/theme"
@@ -7,7 +8,26 @@ import { KeyboardKey } from "../../Common/KeyboardKey"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 
 export const TabContentItem = React.memo(function TabContentItem({ route, index, totalItems }: { route: RouteSingle; index: number; totalItems: number }) {
+    const history = useHistory()
     const { toggleShowMainMenu } = useUI()
+
+    const keyboardKey = useMemo(() => index + 1, [index])
+
+    useEffect(() => {
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.repeat) return
+            if (e.key === `${keyboardKey}`) {
+                history.push(route.path)
+                toggleShowMainMenu(false)
+            }
+        }
+
+        const cleanup = () => document.removeEventListener("keydown", onKeyDown)
+        cleanup()
+        document.addEventListener("keydown", onKeyDown)
+
+        return cleanup
+    }, [history, keyboardKey, route.path, toggleShowMainMenu])
 
     let spanColumn = 1
     if (index === 0) {
@@ -39,7 +59,7 @@ export const TabContentItem = React.memo(function TabContentItem({ route, index,
             }}
         >
             <Typography sx={{ position: "absolute", top: "1.2rem", left: "1.3rem", fontFamily: fonts.nostromoBlack }}>{route.showInMainMenu?.label}</Typography>
-            <KeyboardKey variant="body2" sx={{ position: "absolute", top: "1.1rem", right: "1.3rem" }} label={`${index + 1}`} />
+            <KeyboardKey variant="body2" sx={{ position: "absolute", top: "1.1rem", right: "1.3rem" }} label={`${keyboardKey}`} />
 
             {/* Gradient overlay */}
             <Box
