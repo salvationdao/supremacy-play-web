@@ -11,13 +11,12 @@ export const BarButton = () => {
 
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
+            if (e.repeat) return
             if (e.ctrlKey && e.key === "Escape") toggleShowMainMenu()
+            console.log(e)
         }
 
-        const cleanup = () => {
-            document.removeEventListener("keydown", onKeyDown)
-        }
-
+        const cleanup = () => document.removeEventListener("keydown", onKeyDown)
         cleanup()
         document.addEventListener("keydown", onKeyDown)
 

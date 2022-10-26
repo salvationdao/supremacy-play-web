@@ -1,14 +1,30 @@
-import { Modal, Stack } from "@mui/material"
-import { useState } from "react"
+import { Modal, Stack, Typography } from "@mui/material"
+import { useEffect, useState } from "react"
 import { useUI } from "../../containers"
+import { useTheme } from "../../containers/theme"
 import { RouteGroupID } from "../../routes"
-import { siteZIndex } from "../../theme/theme"
+import { fonts, siteZIndex } from "../../theme/theme"
+import { NiceButton } from "../Common/Nice/NiceButton"
 import { NavTabs } from "./NavTabs/NavTabs"
 import { TabContent } from "./TabContent/TabContent"
 
 export const MainMenuNav = () => {
-    const { showMainMenu } = useUI()
+    const theme = useTheme()
+    const { showMainMenu, toggleShowMainMenu } = useUI()
     const [activeTabID, setActiveTabID] = useState<RouteGroupID>(RouteGroupID.BattleArena)
+
+    useEffect(() => {
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.repeat) return
+            if (!e.ctrlKey && e.key === "Escape") toggleShowMainMenu(false)
+        }
+
+        const cleanup = () => document.removeEventListener("keydown", onKeyDown)
+        cleanup()
+        document.addEventListener("keydown", onKeyDown)
+
+        return cleanup
+    }, [toggleShowMainMenu])
 
     return (
         <Modal disableEscapeKeyDown open={showMainMenu} sx={{ zIndex: siteZIndex.MainMenuModal }}>
@@ -31,6 +47,18 @@ export const MainMenuNav = () => {
                     <NavTabs activeTabID={activeTabID} setActiveTabID={setActiveTabID} />
 
                     <TabContent activeTabID={activeTabID} />
+
+                    <NiceButton
+                        sx={{ alignSelf: "center", px: "3.8rem" }}
+                        onClick={() => toggleShowMainMenu(false)}
+                        border={{ color: theme.factionTheme.primary }}
+                    >
+                        <Stack direction="row" alignItems="center" spacing=".4rem">
+                            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                CLOSE
+                            </Typography>
+                        </Stack>
+                    </NiceButton>
                 </Stack>
             </Stack>
         </Modal>
