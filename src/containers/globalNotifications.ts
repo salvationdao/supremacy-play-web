@@ -13,12 +13,14 @@ export interface SnackBarMessage {
 export const GlobalNotificationsContainer = createContainer(() => {
     // Global snackbar
     const snackBarMessages = useRef<SnackBarMessage[]>([])
-    const snakbarComponentCallback = useRef<undefined | ((snackBarMessages: SnackBarMessage[]) => void)>()
+    const snackBarComponentCallback = useRef<undefined | ((snackBarMessages: SnackBarMessage[]) => void)>()
 
     const newSnackbarMessage = useCallback((message: string, severity: Severity = "info") => {
         snackBarMessages.current = [...snackBarMessages.current, { key: new Date().getTime(), message, severity }]
-        if (!snakbarComponentCallback.current) return
-        snakbarComponentCallback.current(snackBarMessages.current)
+
+        if (snackBarComponentCallback.current) {
+            snackBarComponentCallback.current(snackBarMessages.current)
+        }
     }, [])
 
     // Browser notification
@@ -43,7 +45,7 @@ export const GlobalNotificationsContainer = createContainer(() => {
     })
 
     return {
-        snakbarComponentCallback,
+        snackBarComponentCallback,
         sendBrowserNotification,
         newSnackbarMessage,
     }

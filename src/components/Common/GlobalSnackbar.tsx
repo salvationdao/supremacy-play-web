@@ -8,14 +8,14 @@ import { colors } from "../../theme/theme"
 export const GlobalSnackbar = () => {
     const [open, setOpen] = useState(false)
     const [messageInfo, setMessageInfo] = useState<SnackBarMessage | undefined>(undefined)
-    const { snakbarComponentCallback } = useGlobalNotifications()
+    const { snackBarComponentCallback } = useGlobalNotifications()
     const [messages, setMessages] = useState<SnackBarMessage[]>([])
 
     useEffect(() => {
-        snakbarComponentCallback.current = (snackBarMessages) => {
+        snackBarComponentCallback.current = (snackBarMessages) => {
             setMessages(snackBarMessages)
         }
-    }, [snakbarComponentCallback])
+    }, [snackBarComponentCallback])
 
     useEffect(() => {
         if (messages.length && !messageInfo) {
