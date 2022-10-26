@@ -23,6 +23,7 @@ const uiContainer = createContainer(() => {
     const [showTrailer, toggleShowTrailer] = useToggle()
     const [isBattleHistoryOpen, toggleIsBattleHistoryOpen] = useToggle()
     const [stopMapRender, setStopMapRender] = useState(false)
+    const [showMainMenu, toggleShowMainMenu] = useToggle()
 
     useEffect(() => {
         localStorage.setItem("leftDrawerActiveTabID", leftDrawerActiveTabID || "")
@@ -97,6 +98,8 @@ const uiContainer = createContainer(() => {
         hasModalsOpen,
         stopMapRender,
         setStopMapRender,
+        showMainMenu,
+        toggleShowMainMenu,
     }
 })
 

@@ -7,6 +7,7 @@ import { useAuth, useSupremacy } from "../../containers"
 import { hexToRGB } from "../../helpers"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { User } from "../../types"
+import { BarButton } from "../MainMenuNav/BarButton"
 import { BarSocials } from "./BarSocials"
 import { Messages } from "./Messages/Messages"
 import { Quests } from "./Quests/Quests"
@@ -103,6 +104,7 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
         return (
             <>
                 <Logo />
+                <BarButton />
                 <Box sx={{ flexGrow: 1 }} />
                 <BuySupsButton />
                 <BarSocials />
@@ -120,6 +122,7 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
         return (
             <>
                 <Logo />
+                <BarButton />
                 <Box sx={{ flexGrow: 1 }} />
                 <BuySupsButton />
                 <BarSocials />
@@ -136,6 +139,7 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
     return (
         <>
             <Logo />
+            <BarButton />
             <Box sx={{ flexGrow: 1 }} />
             {userID && <WalletDetails />}
             <BuySupsButton />

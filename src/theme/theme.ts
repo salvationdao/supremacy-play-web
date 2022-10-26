@@ -120,6 +120,7 @@ export const fonts = {
 
 export enum siteZIndex {
     // Shows on top of everything
+    MainMenuModal = 6000,
     Tooltip = 800,
     TopBar = 700,
     Modal = 600,

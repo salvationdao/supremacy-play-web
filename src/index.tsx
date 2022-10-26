@@ -18,6 +18,7 @@ import { BottomNav } from "./components/BattleArena/BottomNav/BottomNav"
 import { ErrorFallback } from "./components/ErrorFallback/ErrorFallback"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
 import { LoginRedirect } from "./components/LoginRedirect/LoginRedirect"
+import { MainMenuNav } from "./components/MainMenuNav/MainMenuNav"
 import { MarketingModal } from "./components/MarketingModal/MarketingModal"
 import { NotFoundPage } from "./components/NotFoundPage/NotFoundPage"
 import { AuthPage } from "./components/Signup/AuthPage"
@@ -129,6 +130,8 @@ const AppInner = () => {
                 }}
             >
                 <Bar />
+
+                <MainMenuNav />
 
                 <Stack
                     direction="row"

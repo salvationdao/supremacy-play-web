@@ -34,6 +34,7 @@ import IntroAnimation from "!@svgr/webpack!./svg/IntroAnimation.svg"
 import Lock from "!@svgr/webpack!./svg/Lock.svg"
 import Logout from "!@svgr/webpack!./svg/Logout.svg"
 import Mail from "!@svgr/webpack!./svg/Mail.svg"
+import MainMenu from "!@svgr/webpack!./svg/MainMenu.svg"
 import Meteor from "!@svgr/webpack!./svg/Meteor.svg"
 import Microphone from "!@svgr/webpack!./svg/Microphone.svg"
 import MicrophoneMute from "!@svgr/webpack!./svg/MicrophoneMute.svg"
@@ -1435,5 +1436,11 @@ export const Svg2DView: React.VoidFunctionComponent<SvgWrapperProps> = (props) =
 export const SvgCamera: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Camera />
+    </SvgWrapper>
+)
+
+export const SvgMainMenu: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <MainMenu />
     </SvgWrapper>
 )
