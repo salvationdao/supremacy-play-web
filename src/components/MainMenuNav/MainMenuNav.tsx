@@ -5,10 +5,10 @@ import { siteZIndex } from "../../theme/theme"
 export const MainMenuNav = () => {
     const { showMainMenu } = useUI()
 
-    if (!showMainMenu) return null
+    console.log(showMainMenu)
 
     return (
-        <Modal disableEscapeKeyDown open sx={{ zIndex: siteZIndex.MainMenuModal }}>
+        <Modal disableEscapeKeyDown open={showMainMenu} sx={{ zIndex: siteZIndex.MainMenuModal }}>
             <Stack
                 alignItems="center"
                 justifyContent="center"
@@ -18,8 +18,8 @@ export const MainMenuNav = () => {
                     height: "100%",
                     top: 0,
                     left: 0,
-                    zIndex: siteZIndex.Modal * 2,
-                    backgroundColor: "#000000",
+                    zIndex: siteZIndex.MainMenuModal,
+                    backgroundColor: "#00000050",
                 }}
             ></Stack>
         </Modal>

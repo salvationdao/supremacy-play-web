@@ -11,10 +11,11 @@ export const BarButton = () => {
 
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
-            if (e.key === "Escape") {
+            if (e.ctrlKey && e.key === "Escape") {
                 e.stopPropagation()
                 e.preventDefault()
                 toggleShowMainMenu()
+                console.log("AAAAAAAAAAAAAAAAAAAAAAAAAA")
             }
         }
 
@@ -29,7 +30,7 @@ export const BarButton = () => {
     }, [toggleShowMainMenu])
 
     return (
-        <NiceButton sx={{ mx: "1.4rem", border: "none" }}>
+        <NiceButton sx={{ mx: "1.4rem", border: "none" }} onClick={() => toggleShowMainMenu()}>
             <Stack direction="row" alignItems="center" spacing=".7rem">
                 <SvgMainMenu fill={colors.neonBlue} size="1.5rem" />
 
