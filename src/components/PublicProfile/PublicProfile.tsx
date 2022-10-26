@@ -89,7 +89,7 @@ const getOnlineStatus = (time: Date): { status: string; colour: string } => {
     return { status: `Online ${days} day(s) ago`, colour: colors.red }
 }
 
-export const PlayerProfilePage = () => {
+export const PublicProfile = () => {
     const { playerGID } = useParams<{ playerGID: string }>()
     const { user, userHasFeature } = useAuth()
     const history = useHistory()

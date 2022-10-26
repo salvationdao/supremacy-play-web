@@ -1,14 +1,14 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
-import { SafePNG } from "../../../assets"
+import { HangarBg, SafePNG } from "../../../assets"
 import { HANGAR_PAGE } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
 import { usePagination, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { colors, fonts } from "../../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { MysteryCrate, MysteryCrateType, OpenCrateResponse, StorefrontMysteryCrate } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
@@ -206,114 +206,127 @@ export const MysteryCratesHangar = () => {
 
     return (
         <>
-            <ClipThing
-                clipSize="10px"
-                border={{
-                    borderColor: theme.factionTheme.primary,
-                    borderThickness: ".3rem",
+            <Box
+                alignItems="center"
+                sx={{
+                    height: "100%",
+                    p: "1rem",
+                    zIndex: siteZIndex.RoutePage,
+                    backgroundImage: `url(${HangarBg})`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    backgroundSize: "cover",
                 }}
-                corners={{
-                    topRight: true,
-                    bottomLeft: true,
-                    bottomRight: true,
-                }}
-                opacity={0.7}
-                backgroundColor={theme.factionTheme.background}
-                sx={{ height: "100%" }}
             >
-                <Stack sx={{ position: "relative", height: "100%" }}>
-                    <Stack sx={{ flex: 1 }}>
-                        <PageHeader title="MYSTERY CRATES" description="The mystery crates that you own are shown here." imageUrl={SafePNG}>
-                            <Box sx={{ ml: "auto !important", pr: "2rem" }}>
-                                <FancyButton
-                                    clipThingsProps={{
-                                        clipSize: "9px",
-                                        backgroundColor: colors.gold,
-                                        opacity: 1,
-                                        border: { borderColor: colors.gold, borderThickness: "2px" },
-                                        sx: { position: "relative" },
-                                    }}
-                                    sx={{ px: "1.6rem", py: ".6rem", color: "#000000" }}
-                                    href={HANGAR_PAGE}
-                                    target="_blank"
-                                >
-                                    <Typography
-                                        variant="caption"
-                                        sx={{
-                                            color: "#000000",
-                                            fontFamily: fonts.nostromoBlack,
+                <ClipThing
+                    clipSize="10px"
+                    border={{
+                        borderColor: theme.factionTheme.primary,
+                        borderThickness: ".3rem",
+                    }}
+                    corners={{
+                        topRight: true,
+                        bottomLeft: true,
+                        bottomRight: true,
+                    }}
+                    opacity={0.7}
+                    backgroundColor={theme.factionTheme.background}
+                    sx={{ height: "100%" }}
+                >
+                    <Stack sx={{ position: "relative", height: "100%" }}>
+                        <Stack sx={{ flex: 1 }}>
+                            <PageHeader title="MYSTERY CRATES" description="The mystery crates that you own are shown here." imageUrl={SafePNG}>
+                                <Box sx={{ ml: "auto !important", pr: "2rem" }}>
+                                    <FancyButton
+                                        clipThingsProps={{
+                                            clipSize: "9px",
+                                            backgroundColor: colors.gold,
+                                            opacity: 1,
+                                            border: { borderColor: colors.gold, borderThickness: "2px" },
+                                            sx: { position: "relative" },
                                         }}
+                                        sx={{ px: "1.6rem", py: ".6rem", color: "#000000" }}
+                                        href={HANGAR_PAGE}
+                                        target="_blank"
                                     >
-                                        WALKABLE HANGAR
-                                    </Typography>
-                                </FancyButton>
-                            </Box>
-                        </PageHeader>
+                                        <Typography
+                                            variant="caption"
+                                            sx={{
+                                                color: "#000000",
+                                                fontFamily: fonts.nostromoBlack,
+                                            }}
+                                        >
+                                            WALKABLE HANGAR
+                                        </Typography>
+                                    </FancyButton>
+                                </Box>
+                            </PageHeader>
 
-                        <TotalAndPageSizeOptions
-                            countItems={crates?.length}
-                            totalItems={totalItems}
-                            pageSize={pageSize}
-                            changePageSize={changePageSize}
-                            changePage={changePage}
-                            manualRefresh={getItems}
-                        />
+                            <TotalAndPageSizeOptions
+                                countItems={crates?.length}
+                                totalItems={totalItems}
+                                pageSize={pageSize}
+                                changePageSize={changePageSize}
+                                changePage={changePage}
+                                manualRefresh={getItems}
+                            />
 
-                        <Stack sx={{ px: "2rem", py: "1rem", flex: 1 }}>
+                            <Stack sx={{ px: "2rem", py: "1rem", flex: 1 }}>
+                                <Box
+                                    sx={{
+                                        ml: "1.9rem",
+                                        pr: "1.9rem",
+                                        my: "1rem",
+                                        flex: 1,
+                                        overflowY: "auto",
+                                        overflowX: "hidden",
+                                        direction: "ltr",
+
+                                        "::-webkit-scrollbar": {
+                                            width: "1rem",
+                                        },
+                                        "::-webkit-scrollbar-track": {
+                                            background: "#FFFFFF15",
+                                        },
+                                        "::-webkit-scrollbar-thumb": {
+                                            background: theme.factionTheme.primary,
+                                        },
+                                    }}
+                                >
+                                    {content}
+                                </Box>
+                            </Stack>
+                        </Stack>
+
+                        {totalPages > 1 && (
                             <Box
                                 sx={{
-                                    ml: "1.9rem",
-                                    pr: "1.9rem",
-                                    my: "1rem",
-                                    flex: 1,
-                                    overflowY: "auto",
-                                    overflowX: "hidden",
-                                    direction: "ltr",
-
-                                    "::-webkit-scrollbar": {
-                                        width: "1rem",
-                                    },
-                                    "::-webkit-scrollbar-track": {
-                                        background: "#FFFFFF15",
-                                    },
-                                    "::-webkit-scrollbar-thumb": {
-                                        background: theme.factionTheme.primary,
-                                    },
+                                    px: "1rem",
+                                    py: ".7rem",
+                                    borderTop: (theme) => `${theme.factionTheme.primary}70 1px solid`,
+                                    backgroundColor: "#00000070",
                                 }}
                             >
-                                {content}
+                                <Pagination
+                                    size="medium"
+                                    count={totalPages}
+                                    page={page}
+                                    sx={{
+                                        ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
+                                        ".Mui-selected": {
+                                            color: (theme) => theme.factionTheme.secondary,
+                                            backgroundColor: `${theme.factionTheme.primary} !important`,
+                                        },
+                                    }}
+                                    onChange={(e, p) => changePage(p)}
+                                    showFirstButton
+                                    showLastButton
+                                />
                             </Box>
-                        </Stack>
+                        )}
                     </Stack>
-
-                    {totalPages > 1 && (
-                        <Box
-                            sx={{
-                                px: "1rem",
-                                py: ".7rem",
-                                borderTop: (theme) => `${theme.factionTheme.primary}70 1px solid`,
-                                backgroundColor: "#00000070",
-                            }}
-                        >
-                            <Pagination
-                                size="medium"
-                                count={totalPages}
-                                page={page}
-                                sx={{
-                                    ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
-                                    ".Mui-selected": {
-                                        color: (theme) => theme.factionTheme.secondary,
-                                        backgroundColor: `${theme.factionTheme.primary} !important`,
-                                    },
-                                }}
-                                onChange={(e, p) => changePage(p)}
-                                showFirstButton
-                                showLastButton
-                            />
-                        </Box>
-                    )}
-                </Stack>
-            </ClipThing>
+                </ClipThing>
+            </Box>
 
             {openingCrate && (
                 <CrateRewardVideo factionID={openingCrate.factionID} crateType={openingCrate.crateType} onClose={() => setOpeningCrate(undefined)} />

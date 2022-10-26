@@ -2,14 +2,14 @@ import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
 import { ClipThing, FancyButton } from "../.."
-import { PlayerAbilityPNG } from "../../../assets"
+import { HangarBg, PlayerAbilityPNG } from "../../../assets"
 import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { GetSaleAbilityAvailability } from "../../../fetching"
 import { secondsToWords } from "../../../helpers"
 import { useGameServerSubscriptionSecured, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { colors, fonts } from "../../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { PlayerAbility, SaleAbility, SaleAbilityAvailability } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
 import { PlayerAbilityStoreItem } from "./PlayerAbilityStoreItem"
@@ -211,116 +211,129 @@ export const PlayerAbilitiesStore = () => {
     }, [isLoaded, saleAbilities, theme.factionTheme.primary, priceMap, ownedAbilities, availability, refetchSaleAvailability])
 
     return (
-        <ClipThing
-            clipSize="10px"
-            border={{
-                borderColor: theme.factionTheme.primary,
-                borderThickness: ".3rem",
+        <Box
+            alignItems="center"
+            sx={{
+                height: "100%",
+                p: "1rem",
+                zIndex: siteZIndex.RoutePage,
+                backgroundImage: `url(${HangarBg})`,
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+                backgroundSize: "cover",
             }}
-            corners={{
-                topRight: true,
-                bottomLeft: true,
-                bottomRight: true,
-            }}
-            opacity={0.7}
-            backgroundColor={theme.factionTheme.background}
-            sx={{ height: "100%" }}
         >
-            <Stack
-                sx={{
-                    flex: 1,
-                    position: "relative",
-                    height: "100%",
+            <ClipThing
+                clipSize="10px"
+                border={{
+                    borderColor: theme.factionTheme.primary,
+                    borderThickness: ".3rem",
                 }}
+                corners={{
+                    topRight: true,
+                    bottomLeft: true,
+                    bottomRight: true,
+                }}
+                opacity={0.7}
+                backgroundColor={theme.factionTheme.background}
+                sx={{ height: "100%" }}
             >
-                <PageHeader
-                    imageUrl={PlayerAbilityPNG}
-                    title="PLAYER ABILITIES"
-                    description={
-                        <Stack>
-                            <Typography sx={{ fontSize: "1.85rem" }}>
-                                Player abilities are abilities that can be claimed and used on the battle arena.
-                            </Typography>
-                            {availabilityError && (
-                                <Typography variant="body2" sx={{ color: colors.red }}>
-                                    {availabilityError}
-                                </Typography>
-                            )}
-                        </Stack>
-                    }
-                >
-                    <Box sx={{ flexShrink: 0, pr: "1.5rem", ml: "auto !important" }}>
-                        <FancyButton
-                            to={`/fleet/abilities`}
-                            clipThingsProps={{
-                                clipSize: "9px",
-                                backgroundColor: theme.factionTheme.primary,
-                                border: { borderColor: theme.factionTheme.primary, borderThickness: "2px" },
-                                sx: { position: "relative" },
-                            }}
-                            sx={{
-                                display: "flex",
-                                flexWrap: "nowrap",
-                                px: "1.6rem",
-                                py: ".6rem",
-                            }}
-                        >
-                            <Typography
-                                variant="caption"
-                                sx={{
-                                    color: theme.factionTheme.secondary,
-                                    whiteSpace: "nowrap",
-                                    fontFamily: fonts.nostromoBlack,
-                                }}
-                            >
-                                VIEW OWNED ABILITIES
-                            </Typography>
-                        </FancyButton>
-                    </Box>
-                </PageHeader>
-
-                <Stack direction="row" spacing=".6rem" alignItems="center" sx={{ ml: "3rem", mt: "2rem", mb: ".6rem" }}>
-                    <Typography sx={{ fontFamily: fonts.nostromoBlack }}>Next refresh in:</Typography>
-                    {timeLeft}
-                </Stack>
-
                 <Stack
                     sx={{
                         flex: 1,
-                        width: "100%",
-                        maxWidth: "1400px",
-                        mx: "auto",
-                        px: "2rem",
-                        justifyContent: "center",
+                        position: "relative",
+                        height: "100%",
                     }}
                 >
-                    <Box
+                    <PageHeader
+                        imageUrl={PlayerAbilityPNG}
+                        title="PLAYER ABILITIES"
+                        description={
+                            <Stack>
+                                <Typography sx={{ fontSize: "1.85rem" }}>
+                                    Player abilities are abilities that can be claimed and used on the battle arena.
+                                </Typography>
+                                {availabilityError && (
+                                    <Typography variant="body2" sx={{ color: colors.red }}>
+                                        {availabilityError}
+                                    </Typography>
+                                )}
+                            </Stack>
+                        }
+                    >
+                        <Box sx={{ flexShrink: 0, pr: "1.5rem", ml: "auto !important" }}>
+                            <FancyButton
+                                to={`/fleet/abilities`}
+                                clipThingsProps={{
+                                    clipSize: "9px",
+                                    backgroundColor: theme.factionTheme.primary,
+                                    border: { borderColor: theme.factionTheme.primary, borderThickness: "2px" },
+                                    sx: { position: "relative" },
+                                }}
+                                sx={{
+                                    display: "flex",
+                                    flexWrap: "nowrap",
+                                    px: "1.6rem",
+                                    py: ".6rem",
+                                }}
+                            >
+                                <Typography
+                                    variant="caption"
+                                    sx={{
+                                        color: theme.factionTheme.secondary,
+                                        whiteSpace: "nowrap",
+                                        fontFamily: fonts.nostromoBlack,
+                                    }}
+                                >
+                                    VIEW OWNED ABILITIES
+                                </Typography>
+                            </FancyButton>
+                        </Box>
+                    </PageHeader>
+
+                    <Stack direction="row" spacing=".6rem" alignItems="center" sx={{ ml: "3rem", mt: "2rem", mb: ".6rem" }}>
+                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>Next refresh in:</Typography>
+                        {timeLeft}
+                    </Stack>
+
+                    <Stack
                         sx={{
                             flex: 1,
-                            ml: "1.9rem",
-                            mr: ".5rem",
-                            pr: "1.4rem",
-                            my: "1rem",
-                            overflowY: "auto",
-                            overflowX: "hidden",
-                            direction: "ltr",
-
-                            "::-webkit-scrollbar": {
-                                width: "1rem",
-                            },
-                            "::-webkit-scrollbar-track": {
-                                background: "#FFFFFF15",
-                            },
-                            "::-webkit-scrollbar-thumb": {
-                                background: theme.factionTheme.primary,
-                            },
+                            width: "100%",
+                            maxWidth: "1400px",
+                            mx: "auto",
+                            px: "2rem",
+                            justifyContent: "center",
                         }}
                     >
-                        <Box sx={{ height: 0 }}>{content}</Box>
-                    </Box>
+                        <Box
+                            sx={{
+                                flex: 1,
+                                ml: "1.9rem",
+                                mr: ".5rem",
+                                pr: "1.4rem",
+                                my: "1rem",
+                                overflowY: "auto",
+                                overflowX: "hidden",
+                                direction: "ltr",
+
+                                "::-webkit-scrollbar": {
+                                    width: "1rem",
+                                },
+                                "::-webkit-scrollbar-track": {
+                                    background: "#FFFFFF15",
+                                },
+                                "::-webkit-scrollbar-thumb": {
+                                    background: theme.factionTheme.primary,
+                                },
+                            }}
+                        >
+                            <Box sx={{ height: 0 }}>{content}</Box>
+                        </Box>
+                    </Stack>
                 </Stack>
-            </Stack>
-        </ClipThing>
+            </ClipThing>
+        </Box>
     )
 }
 

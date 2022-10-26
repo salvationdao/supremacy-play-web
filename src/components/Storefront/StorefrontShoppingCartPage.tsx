@@ -39,7 +39,7 @@ export const StorefrontShoppingCartPage = () => {
                     boxShadow: `inset 0 0 50px 60px #00000090`,
                 }}
             >
-                <Stack spacing=".6rem" sx={{ mt: "1.5rem", mb: "2rem", height: "100%", width: "calc(100% - 3rem)", maxWidth: "132rem" }}>
+                <Stack spacing=".6rem" sx={{ mt: "1.5rem", mb: "2rem", height: "100%", width: "calc(100% - 3rem)" }}>
                     <FancyButton
                         clipThingsProps={{
                             clipSize: "9px",

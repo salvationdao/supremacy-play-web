@@ -1,13 +1,13 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
-import { PlayerAbilityPNG } from "../../../assets"
+import { HangarBg, PlayerAbilityPNG } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { colors, fonts } from "../../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
@@ -181,81 +181,94 @@ export const PlayerAbilitiesHangar = () => {
     }, [isLoaded, shownPlayerAbilities, theme.factionTheme.primary, theme.factionTheme.secondary])
 
     return (
-        <Stack direction="row" sx={{ height: "100%" }}>
-            <SortAndFilters
-                initialSearch={search}
-                onSetSearch={setSearch}
-                chipFilters={[locationSelectTypeFilterSection.current]}
-                changePage={changePage}
-                isExpanded={isFiltersExpanded}
-            />
+        <Box
+            alignItems="center"
+            sx={{
+                height: "100%",
+                p: "1rem",
+                zIndex: siteZIndex.RoutePage,
+                backgroundImage: `url(${HangarBg})`,
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+                backgroundSize: "cover",
+            }}
+        >
+            <Stack direction="row" sx={{ height: "100%" }}>
+                <SortAndFilters
+                    initialSearch={search}
+                    onSetSearch={setSearch}
+                    chipFilters={[locationSelectTypeFilterSection.current]}
+                    changePage={changePage}
+                    isExpanded={isFiltersExpanded}
+                />
 
-            <ClipThing
-                clipSize="10px"
-                border={{
-                    borderColor: theme.factionTheme.primary,
-                    borderThickness: ".3rem",
-                }}
-                corners={{
-                    topRight: true,
-                    bottomLeft: true,
-                    bottomRight: true,
-                }}
-                opacity={0.7}
-                backgroundColor={theme.factionTheme.background}
-                sx={{ height: "100%", flex: 1 }}
-            >
-                <Stack
-                    sx={{
-                        flex: 1,
-                        position: "relative",
-                        height: "100%",
+                <ClipThing
+                    clipSize="10px"
+                    border={{
+                        borderColor: theme.factionTheme.primary,
+                        borderThickness: ".3rem",
                     }}
+                    corners={{
+                        topRight: true,
+                        bottomLeft: true,
+                        bottomRight: true,
+                    }}
+                    opacity={0.7}
+                    backgroundColor={theme.factionTheme.background}
+                    sx={{ height: "100%", flex: 1 }}
                 >
-                    <PageHeader
-                        imageUrl={PlayerAbilityPNG}
-                        title="PLAYER ABILITIES"
-                        description="Player abilities are abilities that can be claimed and used on the battle arena."
-                    />
+                    <Stack
+                        sx={{
+                            flex: 1,
+                            position: "relative",
+                            height: "100%",
+                        }}
+                    >
+                        <PageHeader
+                            imageUrl={PlayerAbilityPNG}
+                            title="PLAYER ABILITIES"
+                            description="Player abilities are abilities that can be claimed and used on the battle arena."
+                        />
 
-                    <TotalAndPageSizeOptions
-                        countItems={shownPlayerAbilities.length}
-                        totalItems={totalItems}
-                        pageSize={pageSize}
-                        changePageSize={changePageSize}
-                        pageSizeOptions={[10, 20, 40]}
-                        changePage={changePage}
-                        isFiltersExpanded={isFiltersExpanded}
-                        toggleIsFiltersExpanded={toggleIsFiltersExpanded}
-                    />
+                        <TotalAndPageSizeOptions
+                            countItems={shownPlayerAbilities.length}
+                            totalItems={totalItems}
+                            pageSize={pageSize}
+                            changePageSize={changePageSize}
+                            pageSizeOptions={[10, 20, 40]}
+                            changePage={changePage}
+                            isFiltersExpanded={isFiltersExpanded}
+                            toggleIsFiltersExpanded={toggleIsFiltersExpanded}
+                        />
 
-                    <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
-                        <Box
-                            sx={{
-                                ml: "1.9rem",
-                                pr: "1.9rem",
-                                my: "1rem",
-                                flex: 1,
-                                overflowY: "auto",
-                                overflowX: "hidden",
-                                direction: "ltr",
+                        <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
+                            <Box
+                                sx={{
+                                    ml: "1.9rem",
+                                    pr: "1.9rem",
+                                    my: "1rem",
+                                    flex: 1,
+                                    overflowY: "auto",
+                                    overflowX: "hidden",
+                                    direction: "ltr",
 
-                                "::-webkit-scrollbar": {
-                                    width: "1rem",
-                                },
-                                "::-webkit-scrollbar-track": {
-                                    background: "#FFFFFF15",
-                                },
-                                "::-webkit-scrollbar-thumb": {
-                                    background: theme.factionTheme.primary,
-                                },
-                            }}
-                        >
-                            {content}
-                        </Box>
+                                    "::-webkit-scrollbar": {
+                                        width: "1rem",
+                                    },
+                                    "::-webkit-scrollbar-track": {
+                                        background: "#FFFFFF15",
+                                    },
+                                    "::-webkit-scrollbar-thumb": {
+                                        background: theme.factionTheme.primary,
+                                    },
+                                }}
+                            >
+                                {content}
+                            </Box>
+                        </Stack>
                     </Stack>
-                </Stack>
-            </ClipThing>
-        </Stack>
+                </ClipThing>
+            </Stack>
+        </Box>
     )
 }

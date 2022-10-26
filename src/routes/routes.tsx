@@ -26,7 +26,7 @@ import { WarMachinesMarket } from "../components/Marketplace/WarMachinesMarket/W
 import { WeaponMarketDetails } from "../components/Marketplace/WeaponsMarket/WeaponMarketDetails/WeaponMarketDetails"
 import { WeaponsMarket } from "../components/Marketplace/WeaponsMarket/WeaponsMarket"
 import { NotFoundPage } from "../components/NotFoundPage/NotFoundPage"
-import { PlayerProfilePage } from "../components/PublicProfile/PlayerProfile"
+import { PublicProfile } from "../components/PublicProfile/PublicProfile"
 import { BattlesReplays } from "../components/Replays/BattlesReplays/BattlesReplays"
 import { ReplayItemPage } from "../components/Replays/ReplayDetails/ReplayItemPage"
 import { MysteryCratesStore } from "../components/Storefront/MysteryCratesStore/MysteryCratesStore"
@@ -239,7 +239,7 @@ export const Routes: RouteSingle[] = [
         id: RouteSingleID.Profile,
         path: "/profile/:playerGID",
         exact: true,
-        Component: PlayerProfilePage,
+        Component: PublicProfile,
         restrictions: {
             requireAuth: false,
             requireFaction: false,
@@ -605,9 +605,9 @@ export const Routes: RouteSingle[] = [
         tabTitle: "Marketplace - Mystery Crates",
     },
 
-    // ***************
-    // *** Replays ***
-    // ***************
+    // ****************
+    // *** Billings ***
+    // ****************
     {
         id: RouteSingleID.BillingHistoryItem,
         path: "/billing-history/:id",

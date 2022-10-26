@@ -1,13 +1,13 @@
 import Masonry from "@mui/lab/Masonry"
 import { Box, CircularProgress, Stack, Typography, useMediaQuery } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
-import { SafePNG } from "../../../../assets"
+import { HangarBg, SafePNG } from "../../../../assets"
 import { useParams } from "react-router-dom"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { colors, fonts } from "../../../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { ItemType, MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
 import { ClipThing } from "../../../Common/ClipThing"
 import { BuyNowDetails } from "../../Common/MarketDetails/BuyNowDetails"
@@ -88,23 +88,36 @@ export const KeycardMarketDetails = () => {
     }, [loadError, marketItem, primaryColor])
 
     return (
-        <ClipThing
-            clipSize="10px"
-            border={{
-                borderColor: primaryColor,
-                borderThickness: ".3rem",
+        <Box
+            alignItems="center"
+            sx={{
+                height: "100%",
+                p: "1rem",
+                zIndex: siteZIndex.RoutePage,
+                backgroundImage: `url(${HangarBg})`,
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+                backgroundSize: "cover",
             }}
-            corners={{
-                topRight: true,
-                bottomLeft: true,
-                bottomRight: true,
-            }}
-            opacity={0.7}
-            backgroundColor={theme.factionTheme.background}
-            sx={{ height: "100%" }}
         >
-            <Stack sx={{ height: "100%" }}>{content}</Stack>
-        </ClipThing>
+            <ClipThing
+                clipSize="10px"
+                border={{
+                    borderColor: primaryColor,
+                    borderThickness: ".3rem",
+                }}
+                corners={{
+                    topRight: true,
+                    bottomLeft: true,
+                    bottomRight: true,
+                }}
+                opacity={0.7}
+                backgroundColor={theme.factionTheme.background}
+                sx={{ height: "100%" }}
+            >
+                <Stack sx={{ height: "100%" }}>{content}</Stack>
+            </ClipThing>
+        </Box>
     )
 }
 
