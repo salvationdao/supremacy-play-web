@@ -50,7 +50,7 @@ export const MainMenuNav = () => {
                     left: 0,
                     zIndex: siteZIndex.MainMenuModal,
                     backgroundColor: "#00000050",
-                    backdropFilter: "blur(5px)",
+                    backdropFilter: "blur(6px)",
                 }}
             >
                 <Stack sx={{ width: "calc(100% - 3rem)", maxWidth: "153rem", height: "100%", p: "8rem 3.6rem" }} spacing="2.6rem">

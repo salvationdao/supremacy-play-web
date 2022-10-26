@@ -1,11 +1,15 @@
 import { Box } from "@mui/material"
 import { useMemo } from "react"
-import { RouteGroupID, Routes } from "../../../routes"
+import { MainMenuExternalLinks, RouteGroupID, Routes } from "../../../routes"
 import { TabContentItem } from "./TabContentItem"
 
 export const TabContent = ({ activeTabID }: { activeTabID?: RouteGroupID }) => {
     const routes = useMemo(() => {
         return Routes.filter((route) => route.showInMainMenu?.groupID === activeTabID)
+    }, [activeTabID])
+
+    const externalLinks = useMemo(() => {
+        return MainMenuExternalLinks.filter((externalLink) => externalLink.groupID === activeTabID)
     }, [activeTabID])
 
     return (
@@ -21,7 +25,14 @@ export const TabContent = ({ activeTabID }: { activeTabID?: RouteGroupID }) => {
             }}
         >
             {routes.map((route, index) => {
-                return <TabContentItem key={route.id} route={route} index={index} totalItems={routes.length} />
+                if (!route.showInMainMenu) return null
+                return <TabContentItem key={route.id} mainMenuStruct={route.showInMainMenu} index={index} totalItems={routes.length + externalLinks.length} />
+            })}
+
+            {externalLinks.map((externalLink, index) => {
+                return (
+                    <TabContentItem key={index} mainMenuStruct={externalLink} index={routes.length + index} totalItems={routes.length + externalLinks.length} />
+                )
             })}
         </Box>
     )

@@ -2,22 +2,36 @@ import { Box, Typography } from "@mui/material"
 import React, { useEffect, useMemo } from "react"
 import { useHistory } from "react-router-dom"
 import { useUI } from "../../../containers"
-import { RouteSingle } from "../../../routes"
+import { isExternalURL } from "../../../helpers"
+import { MainMenuStruct } from "../../../routes"
 import { fonts } from "../../../theme/theme"
 import { KeyboardKey } from "../../Common/KeyboardKey"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 
-export const TabContentItem = React.memo(function TabContentItem({ route, index, totalItems }: { route: RouteSingle; index: number; totalItems: number }) {
+export const TabContentItem = React.memo(function TabContentItem({
+    mainMenuStruct,
+    index,
+    totalItems,
+}: {
+    mainMenuStruct: MainMenuStruct
+    index: number
+    totalItems: number
+}) {
     const history = useHistory()
     const { toggleShowMainMenu } = useUI()
 
+    const isExternal = useMemo(() => isExternalURL(mainMenuStruct.path), [mainMenuStruct.path])
     const keyboardKey = useMemo(() => index + 1, [index])
 
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
             if (e.repeat) return
             if (e.key === `${keyboardKey}`) {
-                history.push(route.path)
+                if (isExternal) {
+                    window.open(mainMenuStruct.path, mainMenuStruct.target)
+                } else {
+                    history.push(mainMenuStruct.path)
+                }
                 toggleShowMainMenu(false)
             }
         }
@@ -27,7 +41,7 @@ export const TabContentItem = React.memo(function TabContentItem({ route, index,
         document.addEventListener("keydown", onKeyDown)
 
         return cleanup
-    }, [history, keyboardKey, route.path, toggleShowMainMenu])
+    }, [history, isExternal, keyboardKey, mainMenuStruct.path, mainMenuStruct.target, toggleShowMainMenu])
 
     let spanColumn = 1
     if (index === 0) {
@@ -41,9 +55,13 @@ export const TabContentItem = React.memo(function TabContentItem({ route, index,
         spanColumn = 2
     }
 
+    const niceButtonProp = isExternal
+        ? { link: { href: mainMenuStruct.path, target: mainMenuStruct.target } }
+        : { route: { to: mainMenuStruct.path, target: mainMenuStruct.target } }
+
     return (
         <NiceButton
-            route={{ to: route.path }}
+            {...niceButtonProp}
             onClick={() => toggleShowMainMenu(false)}
             sx={{
                 position: "relative",
@@ -51,14 +69,14 @@ export const TabContentItem = React.memo(function TabContentItem({ route, index,
                 height: "100%",
                 backgroundColor: "#FFFFFF30",
                 border: "none",
-                background: `url(${route.showInMainMenu?.image})`,
+                background: `url(${mainMenuStruct.image})`,
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "top center",
                 backgroundSize: "cover",
                 gridColumn: `span ${spanColumn}`,
             }}
         >
-            <Typography sx={{ position: "absolute", top: "1.2rem", left: "1.3rem", fontFamily: fonts.nostromoBlack }}>{route.showInMainMenu?.label}</Typography>
+            <Typography sx={{ position: "absolute", top: "1.2rem", left: "1.3rem", fontFamily: fonts.nostromoBlack }}>{mainMenuStruct.label}</Typography>
             <KeyboardKey variant="body2" sx={{ position: "absolute", top: "1.1rem", right: "1.3rem" }} label={`${keyboardKey}`} />
 
             {/* Gradient overlay */}

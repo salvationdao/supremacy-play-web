@@ -2,7 +2,6 @@ import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/mater
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
 import { EmptyWarMachinesPNG, WarMachineIconPNG } from "../../../assets"
-import { HANGAR_PAGE } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, parseString } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
@@ -10,6 +9,7 @@ import { useGameServerCommandsUser, useGameServerSubscriptionSecuredUser } from 
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MechBasic, MechBasicWithQueueStatus, MechStatus, MechStatusEnum } from "../../../types"
+import { PlayerQueueStatus } from "../../../types/battle_queue"
 import { RepairOffer, RepairStatus } from "../../../types/jobs"
 import { SortDir, SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
@@ -20,7 +20,6 @@ import { QueueDetails } from "../../Lobbies/BattleLobbyMech/QueueDetails"
 import { BulkRepairConfirmModal } from "./Common/BulkRepairConfirmModal"
 import { RepairBay } from "./RepairBay/RepairBay"
 import { WarMachineHangarItem } from "./WarMachineHangarItem"
-import { PlayerQueueStatus } from "../../../types/battle_queue"
 
 const sortOptions = [
     { label: SortTypeLabel.MechQueueAsc, value: SortTypeLabel.MechQueueAsc },
@@ -385,29 +384,6 @@ export const WarMachinesHangar = () => {
                                         >
                                             <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
                                                 REPAIR SELECTED
-                                            </Typography>
-                                        </FancyButton>
-
-                                        <FancyButton
-                                            clipThingsProps={{
-                                                clipSize: "9px",
-                                                backgroundColor: colors.gold,
-                                                opacity: 1,
-                                                border: { borderColor: colors.gold, borderThickness: "2px" },
-                                                sx: { position: "relative" },
-                                            }}
-                                            sx={{ px: "1.6rem", py: ".6rem", color: "#000000" }}
-                                            href={HANGAR_PAGE}
-                                            target="_blank"
-                                        >
-                                            <Typography
-                                                variant="caption"
-                                                sx={{
-                                                    color: "#000000",
-                                                    fontFamily: fonts.nostromoBlack,
-                                                }}
-                                            >
-                                                WALKABLE HANGAR
                                             </Typography>
                                         </FancyButton>
                                     </Stack>

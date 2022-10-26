@@ -83,7 +83,7 @@ export const NavTabs = ({
                             label={
                                 <Typography
                                     sx={{
-                                        color: theme.factionTheme.secondary,
+                                        color: routeGroup.id === activeTabID ? theme.factionTheme.secondary : "#FFFFFF",
                                         fontFamily: fonts.nostromoBlack,
                                         display: "-webkit-box",
                                         overflow: "hidden",
