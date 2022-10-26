@@ -15,7 +15,7 @@ type LinkProps =
     | {
           link?: {
               href: string
-              target: HTMLAttributeAnchorTarget | undefined
+              target?: HTMLAttributeAnchorTarget | undefined
           }
           route?: never
       }
@@ -23,7 +23,7 @@ type LinkProps =
           link?: never
           route?: {
               to: string
-              target: HTMLAttributeAnchorTarget | undefined
+              target?: HTMLAttributeAnchorTarget | undefined
           }
       }
 
@@ -54,10 +54,10 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
                     backgroundColor: "transparent",
                     cursor: disabled ? "auto" : "pointer",
                     [`&:hover:enabled .${OVERLAY_CLASSNAME}`]: {
-                        opacity: 0.3,
+                        opacity: 0.15,
                     },
                     [`&:active:enabled .${OVERLAY_CLASSNAME}`]: {
-                        opacity: 0.7,
+                        opacity: 0.5,
                     },
                     ...sx,
                 } as SxProps
@@ -70,11 +70,11 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
             {...props}
         >
             {route ? (
-                <Link to={route.to} target={route.target}>
+                <Link style={{ width: "100%", height: "100%" }} to={route.to} target={route.target}>
                     {children}
                 </Link>
             ) : link ? (
-                <a href={link.href} target={link.target}>
+                <a style={{ width: "100%", height: "100%" }} href={link.href} target={link.target}>
                     {children}
                 </a>
             ) : (
@@ -84,6 +84,7 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
             <Box
                 className={OVERLAY_CLASSNAME}
                 sx={{
+                    pointerEvents: "none",
                     zIndex: 1,
                     position: "absolute",
                     top: 0,
@@ -100,6 +101,7 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
             {loading && (
                 <Box
                     sx={{
+                        pointerEvents: "none",
                         zIndex: 1,
                         position: "absolute",
                         top: 0,

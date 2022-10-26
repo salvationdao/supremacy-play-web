@@ -77,6 +77,7 @@ export const NavTabs = ({ activeTabID, setActiveTabID }: { activeTabID: RouteGro
                             label={
                                 <Typography
                                     sx={{
+                                        color: theme.factionTheme.secondary,
                                         fontFamily: fonts.nostromoBlack,
                                         display: "-webkit-box",
                                         overflow: "hidden",
