@@ -11,12 +11,7 @@ export const BarButton = () => {
 
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
-            if (e.ctrlKey && e.key === "Escape") {
-                e.stopPropagation()
-                e.preventDefault()
-                toggleShowMainMenu()
-                console.log("AAAAAAAAAAAAAAAAAAAAAAAAAA")
-            }
+            if (e.ctrlKey && e.key === "Escape") toggleShowMainMenu()
         }
 
         const cleanup = () => {

@@ -1,5 +1,5 @@
 import { Stack, Tab, Tabs, Typography } from "@mui/material"
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useTheme } from "../../../containers/theme"
 import { RouteGroupID, RouteGroups } from "../../../routes"
 import { fonts } from "../../../theme/theme"
@@ -23,6 +23,22 @@ export const NavTabs = () => {
         const newIndex = (curIndex + 1) % RouteGroups.length
         setActiveTab(RouteGroups[newIndex].id)
     }, [activeTab])
+
+    useEffect(() => {
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.key.toLowerCase() === "q") prevTab()
+            if (e.key.toLowerCase() === "e") nextTab()
+        }
+
+        const cleanup = () => {
+            document.removeEventListener("keydown", onKeyDown)
+        }
+
+        cleanup()
+        document.addEventListener("keydown", onKeyDown)
+
+        return cleanup
+    }, [nextTab, prevTab])
 
     return (
         <Stack direction="row" alignItems="center" spacing=".5rem">

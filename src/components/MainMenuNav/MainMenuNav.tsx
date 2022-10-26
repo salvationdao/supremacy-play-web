@@ -6,8 +6,6 @@ import { NavTabs } from "./NavTabs/NavTabs"
 export const MainMenuNav = () => {
     const { showMainMenu } = useUI()
 
-    console.log(showMainMenu)
-
     return (
         <Modal disableEscapeKeyDown open={showMainMenu} sx={{ zIndex: siteZIndex.MainMenuModal }}>
             <Stack
