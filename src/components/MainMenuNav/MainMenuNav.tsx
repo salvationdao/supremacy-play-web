@@ -11,7 +11,7 @@ export const MainMenuNav = () => {
         <Modal disableEscapeKeyDown open={showMainMenu} sx={{ zIndex: siteZIndex.MainMenuModal }}>
             <Stack
                 alignItems="center"
-                justifyContent="center"
+                justifyContent="flex-start"
                 sx={{
                     position: "fixed",
                     width: "100%",
@@ -20,8 +20,11 @@ export const MainMenuNav = () => {
                     left: 0,
                     zIndex: siteZIndex.MainMenuModal,
                     backgroundColor: "#00000050",
+                    backdropFilter: "blur(5px)",
                 }}
-            ></Stack>
+            >
+                <Stack sx={{ width: "calc(100% - 3rem)", maxWidth: "163rem" }}></Stack>
+            </Stack>
         </Modal>
     )
 }
