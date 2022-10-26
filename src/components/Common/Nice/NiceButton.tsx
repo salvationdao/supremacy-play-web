@@ -50,7 +50,7 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
                     display: "inline-flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    padding: "1rem",
+                    padding: ".8rem 1.2rem",
                     backgroundColor: "transparent",
                     cursor: disabled ? "auto" : "pointer",
                     [`&:hover:enabled .${OVERLAY_CLASSNAME}`]: {
@@ -80,6 +80,7 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
             ) : (
                 children
             )}
+
             <Box
                 className={OVERLAY_CLASSNAME}
                 sx={{
@@ -89,15 +90,18 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    backgroundColor: "black",
+                    backgroundColor: "#000000",
+                    borderRadius: 0.3,
+                    transition: ".2s all",
                     opacity: 0,
                 }}
             />
+
             {loading && (
                 <Box
                     sx={{
                         zIndex: 1,
-                        position: "aboslute",
+                        position: "absolute",
                         top: 0,
                         left: 0,
                         right: 0,
