@@ -82,7 +82,7 @@ export enum RouteGroupID {
     FactionHQ = "FACTION_HQ",
 }
 
-interface RouteSingle {
+export interface RouteSingle {
     id: RouteSingleID
     path: string
     exact: boolean
@@ -102,7 +102,7 @@ interface RouteSingle {
     tabTitle: string // Sets the tab title etc. with react helmet
 }
 
-interface RouteGroup {
+export interface RouteGroup {
     id: RouteGroupID
     label: string
 }

@@ -1,28 +1,26 @@
 import { Stack, Tab, Tabs, Typography } from "@mui/material"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect } from "react"
 import { useTheme } from "../../../containers/theme"
 import { RouteGroupID, RouteGroups } from "../../../routes"
 import { fonts } from "../../../theme/theme"
-import { KeyboardKey } from "../../Common/KeyboardKey"
-import { NiceButton } from "../../Common/Nice/NiceButton"
+import { ArrowButton } from "./ArrowButton"
 
-const HEIGHT = 3.8 // rems
+export const TAB_HEIGHT = 3.8 // rems
 
-export const NavTabs = () => {
+export const NavTabs = ({ activeTabID, setActiveTabID }: { activeTabID: RouteGroupID; setActiveTabID: React.Dispatch<React.SetStateAction<RouteGroupID>> }) => {
     const theme = useTheme()
-    const [activeTab, setActiveTab] = useState<RouteGroupID>(RouteGroupID.BattleArena)
 
     const prevTab = useCallback(() => {
-        const curIndex = RouteGroups.findIndex((routeGroup) => routeGroup.id === activeTab)
+        const curIndex = RouteGroups.findIndex((routeGroup) => routeGroup.id === activeTabID)
         const newIndex = curIndex - 1 < 0 ? RouteGroups.length - 1 : curIndex - 1
-        setActiveTab(RouteGroups[newIndex].id)
-    }, [activeTab])
+        setActiveTabID(RouteGroups[newIndex].id)
+    }, [activeTabID, setActiveTabID])
 
     const nextTab = useCallback(() => {
-        const curIndex = RouteGroups.findIndex((routeGroup) => routeGroup.id === activeTab)
+        const curIndex = RouteGroups.findIndex((routeGroup) => routeGroup.id === activeTabID)
         const newIndex = (curIndex + 1) % RouteGroups.length
-        setActiveTab(RouteGroups[newIndex].id)
-    }, [activeTab])
+        setActiveTabID(RouteGroups[newIndex].id)
+    }, [activeTabID, setActiveTabID])
 
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
@@ -45,19 +43,20 @@ export const NavTabs = () => {
             <ArrowButton keyboardKey="Q" onClick={prevTab} isLeft />
 
             <Tabs
-                value={activeTab}
+                value={activeTabID}
                 variant="fullWidth"
                 sx={{
                     flex: 1,
-                    height: `${HEIGHT}rem`,
+                    height: `${TAB_HEIGHT}rem`,
                     background: "#FFFFFF20",
                     boxShadow: 1,
                     zIndex: 9,
                     minHeight: 0,
                     ".MuiButtonBase-root": {
-                        height: `${HEIGHT}rem`,
-                        pt: `${HEIGHT / 2}rem`,
+                        height: `${TAB_HEIGHT}rem`,
+                        pt: `${TAB_HEIGHT / 2}rem`,
                         minHeight: 0,
+                        py: 0,
                         zIndex: 2,
                     },
                     ".MuiTabs-indicator": {
@@ -67,7 +66,7 @@ export const NavTabs = () => {
                     },
                 }}
                 onChange={(_event, newValue) => {
-                    setActiveTab(newValue)
+                    setActiveTabID(newValue)
                 }}
             >
                 {RouteGroups.map((routeGroup) => {
@@ -75,7 +74,21 @@ export const NavTabs = () => {
                         <Tab
                             key={routeGroup.id}
                             value={routeGroup.id}
-                            label={<Typography sx={{ fontFamily: fonts.nostromoBlack }}>{routeGroup.label}</Typography>}
+                            label={
+                                <Typography
+                                    sx={{
+                                        fontFamily: fonts.nostromoBlack,
+                                        display: "-webkit-box",
+                                        overflow: "hidden",
+                                        overflowWrap: "anywhere",
+                                        textOverflow: "ellipsis",
+                                        WebkitLineClamp: 1, // change to max number of lines
+                                        WebkitBoxOrient: "vertical",
+                                    }}
+                                >
+                                    {routeGroup.label}
+                                </Typography>
+                            }
                         />
                     )
                 })}
@@ -83,17 +96,5 @@ export const NavTabs = () => {
 
             <ArrowButton keyboardKey="E" onClick={nextTab} isRight />
         </Stack>
-    )
-}
-
-const ArrowButton = ({ keyboardKey, onClick, isLeft, isRight }: { keyboardKey: string; onClick: () => void; isLeft?: boolean; isRight?: boolean }) => {
-    return (
-        <NiceButton sx={{ height: `${HEIGHT}rem`, border: "none" }} onClick={onClick} background={{ color: ["#FFFFFF20"] }}>
-            <Stack direction="row" alignItems="center" spacing=".4rem">
-                {isLeft && <Typography>◄</Typography>}
-                <KeyboardKey variant="body2" label={keyboardKey} />
-                {isRight && <Typography>►</Typography>}
-            </Stack>
-        </NiceButton>
     )
 }
