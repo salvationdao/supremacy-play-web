@@ -11,15 +11,17 @@ export const TabContent = ({ activeTabID }: { activeTabID: RouteGroupID }) => {
     return (
         <Box
             sx={{
+                flex: 1,
                 display: "grid",
                 gridTemplateColumns: "repeat(4, 1fr)",
-                gap: "1.2rem",
+                gridTemplateRows: "repeat(auto-fit, 22rem)",
+                gap: "1.8rem",
                 alignItems: "center",
                 justifyContent: "center",
             }}
         >
-            {routes.map((route) => {
-                return <TabContentItem key={route.id} route={route} />
+            {routes.map((route, index) => {
+                return <TabContentItem key={route.id} route={route} index={index} />
             })}
         </Box>
     )

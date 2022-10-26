@@ -27,7 +27,7 @@ export const MainMenuNav = () => {
                     backdropFilter: "blur(5px)",
                 }}
             >
-                <Stack sx={{ width: "calc(100% - 3rem)", maxWidth: "163rem", p: "8rem 3.6rem" }}>
+                <Stack sx={{ width: "calc(100% - 3rem)", maxWidth: "153rem", height: "100%", p: "8rem 3.6rem" }} spacing="2.6rem">
                     <NavTabs activeTabID={activeTabID} setActiveTabID={setActiveTabID} />
 
                     <TabContent activeTabID={activeTabID} />
