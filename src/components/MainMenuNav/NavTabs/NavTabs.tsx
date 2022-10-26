@@ -1,5 +1,5 @@
 import { Stack, Tab, Tabs, Typography } from "@mui/material"
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { useTheme } from "../../../containers/theme"
 import { RouteGroupID, RouteGroups } from "../../../routes"
 import { fonts } from "../../../theme/theme"
@@ -12,9 +12,21 @@ export const NavTabs = () => {
     const theme = useTheme()
     const [activeTab, setActiveTab] = useState<RouteGroupID>(RouteGroupID.BattleArena)
 
+    const prevTab = useCallback(() => {
+        const curIndex = RouteGroups.findIndex((routeGroup) => routeGroup.id === activeTab)
+        const newIndex = curIndex - 1 < 0 ? RouteGroups.length - 1 : curIndex - 1
+        setActiveTab(RouteGroups[newIndex].id)
+    }, [activeTab])
+
+    const nextTab = useCallback(() => {
+        const curIndex = RouteGroups.findIndex((routeGroup) => routeGroup.id === activeTab)
+        const newIndex = (curIndex + 1) % RouteGroups.length
+        setActiveTab(RouteGroups[newIndex].id)
+    }, [activeTab])
+
     return (
         <Stack direction="row" alignItems="center" spacing=".5rem">
-            <ArrowButton keyboardKey="Q" onClick={() => console.log("AAA")} isLeft />
+            <ArrowButton keyboardKey="Q" onClick={prevTab} isLeft />
 
             <Tabs
                 value={activeTab}
@@ -53,7 +65,7 @@ export const NavTabs = () => {
                 })}
             </Tabs>
 
-            <ArrowButton keyboardKey="E" onClick={() => console.log("AAA")} isRight />
+            <ArrowButton keyboardKey="E" onClick={nextTab} isRight />
         </Stack>
     )
 }
