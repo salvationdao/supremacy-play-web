@@ -15,6 +15,7 @@ import { WarMachinesHangar } from "../components/Hangar/WarMachinesHangar/WarMac
 import { WeaponHangarDetails } from "../components/Hangar/WeaponsHangar/WeaponDetails/WeaponHangarDetails"
 import { WeaponsHangar } from "../components/Hangar/WeaponsHangar/WeaponsHangar"
 import { GlobalStats } from "../components/Leaderboard/GlobalStats/GlobalStats"
+import { BattleLobbiesPage } from "../components/Lobbies/BattleLobbiesPage"
 import { HistoryMarket } from "../components/Marketplace/HistoryMarket/HistoryMarket"
 import { KeycardMarketDetails } from "../components/Marketplace/KeycardsMarket/KeycardMarketDetails/KeycardMarketDetails"
 import { KeycardsMarket } from "../components/Marketplace/KeycardsMarket/KeycardsMarket"
@@ -39,6 +40,7 @@ import { DEV_ONLY, HANGAR_PAGE, IS_TESTING_MODE } from "../constants"
 export enum RouteSingleID {
     Home = "HOME",
     Tutorial = "TUTORIAL",
+    Lobbies = "LOBBIES",
     Leaderboard = "LEADERBOARD",
     Mech = "MECH",
     Weapon = "WEAPON",
@@ -162,6 +164,25 @@ export const Routes: RouteSingle[] = [
         },
         enable: true,
         tabTitle: "Battle Arena",
+    },
+    {
+        id: RouteSingleID.Lobbies,
+        path: "/lobbies",
+        exact: true,
+        Component: BattleLobbiesPage,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+        },
+        showInMainMenu: {
+            groupID: RouteGroupID.BattleArena,
+            label: "My Lobbies",
+            image: GenericPNG,
+            path: "/lobbies",
+        },
+        enable: true,
+        tabTitle: "Lobbies",
     },
     {
         id: RouteSingleID.Tutorial,
