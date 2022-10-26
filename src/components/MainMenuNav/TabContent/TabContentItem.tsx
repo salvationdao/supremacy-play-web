@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material"
+import { Box, Typography } from "@mui/material"
 import React from "react"
 import { useUI } from "../../../containers"
 import { RouteSingle } from "../../../routes"
@@ -40,6 +40,19 @@ export const TabContentItem = React.memo(function TabContentItem({ route, index,
         >
             <Typography sx={{ position: "absolute", top: "1.2rem", left: "1.3rem", fontFamily: fonts.nostromoBlack }}>{route.showInMainMenu?.label}</Typography>
             <KeyboardKey variant="body2" sx={{ position: "absolute", top: "1.1rem", right: "1.3rem" }} label={`${index + 1}`} />
+
+            {/* Gradient overlay */}
+            <Box
+                sx={{
+                    position: "absolute",
+                    top: 0,
+                    right: 0,
+                    bottom: 0,
+                    left: 0,
+                    background: `linear-gradient(to top, #00000000 26%, #000000AA)`,
+                    zIndex: -1,
+                }}
+            />
         </NiceButton>
     )
 })
