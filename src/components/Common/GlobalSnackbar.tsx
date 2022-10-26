@@ -1,25 +1,21 @@
 import { Box, IconButton, Snackbar, SnackbarCloseReason, Stack, Typography } from "@mui/material"
-import { ReactNode, SyntheticEvent, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { ReactNode, SyntheticEvent, useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing } from ".."
 import { SvgClose2, SvgInfoCircular, SvgSuccess, SvgWarnTriangle } from "../../assets"
 import { SnackBarMessage, useGlobalNotifications } from "../../containers"
-import { useInterval } from "../../hooks"
 import { colors } from "../../theme/theme"
 
 export const GlobalSnackbar = () => {
     const [open, setOpen] = useState(false)
     const [messageInfo, setMessageInfo] = useState<SnackBarMessage | undefined>(undefined)
-    const { snackBarMessages } = useGlobalNotifications()
-    const prevSnackBarMessages = useRef<SnackBarMessage[]>(snackBarMessages.current)
+    const { snakbarComponentCallback } = useGlobalNotifications()
     const [messages, setMessages] = useState<SnackBarMessage[]>([])
 
-    // Poll for new snackbar messages, using state on the container causes all other components that use it to re-render
-    useInterval(() => {
-        if (prevSnackBarMessages.current !== snackBarMessages.current) {
-            setMessages(snackBarMessages.current)
-            prevSnackBarMessages.current = snackBarMessages.current
+    useEffect(() => {
+        snakbarComponentCallback.current = (snackBarMessages) => {
+            setMessages(snackBarMessages)
         }
-    }, 1000)
+    }, [snakbarComponentCallback])
 
     useEffect(() => {
         if (messages.length && !messageInfo) {
@@ -27,7 +23,6 @@ export const GlobalSnackbar = () => {
             setMessageInfo({ ...messages[0] })
             setMessages((prev) => {
                 const newValue = prev.slice(1)
-                snackBarMessages.current = newValue
                 return newValue
             })
             setOpen(true)
@@ -35,7 +30,7 @@ export const GlobalSnackbar = () => {
             // Close an active snack when a new one is added
             setOpen(false)
         }
-    }, [messages, messageInfo, open, setMessages, snackBarMessages])
+    }, [messages, messageInfo, open, setMessages])
 
     const handleClose = useCallback(
         (_event: Event | SyntheticEvent<unknown, Event>, reason?: SnackbarCloseReason) => {
