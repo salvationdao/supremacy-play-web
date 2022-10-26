@@ -1,11 +1,13 @@
 import Masonry from "@mui/lab/Masonry"
 import { Box, CircularProgress, Stack, Typography, useMediaQuery } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
+import { useParams } from "react-router-dom"
+import { HangarBg } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { colors, fonts } from "../../../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { MechDetails } from "../../../../types"
 import { ItemType, MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
 import { ClipThing } from "../../../Common/ClipThing"
@@ -19,7 +21,8 @@ import { SoldDetails } from "../../Common/MarketDetails/SoldDetails"
 import { UserInfo } from "../../Common/MarketDetails/UserInfo"
 import { MechBattleHistoryDetails } from "./MechBattleHistoryDetails"
 
-export const WarMachineMarketDetails = ({ id }: { id: string }) => {
+export const WarMachineMarketDetails = () => {
+    const { id } = useParams<{ id: string }>()
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [loadError, setLoadError] = useState<string>()
@@ -102,23 +105,36 @@ export const WarMachineMarketDetails = ({ id }: { id: string }) => {
     }, [loadError, marketItem, mechDetails, primaryColor])
 
     return (
-        <ClipThing
-            clipSize="10px"
-            border={{
-                borderColor: primaryColor,
-                borderThickness: ".3rem",
+        <Box
+            alignItems="center"
+            sx={{
+                height: "100%",
+                p: "1rem",
+                zIndex: siteZIndex.RoutePage,
+                backgroundImage: `url(${HangarBg})`,
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+                backgroundSize: "cover",
             }}
-            corners={{
-                topRight: true,
-                bottomLeft: true,
-                bottomRight: true,
-            }}
-            opacity={0.7}
-            backgroundColor={theme.factionTheme.background}
-            sx={{ height: "100%" }}
         >
-            <Stack sx={{ height: "100%" }}>{content}</Stack>
-        </ClipThing>
+            <ClipThing
+                clipSize="10px"
+                border={{
+                    borderColor: primaryColor,
+                    borderThickness: ".3rem",
+                }}
+                corners={{
+                    topRight: true,
+                    bottomLeft: true,
+                    bottomRight: true,
+                }}
+                opacity={0.7}
+                backgroundColor={theme.factionTheme.background}
+                sx={{ height: "100%" }}
+            >
+                <Stack sx={{ height: "100%" }}>{content}</Stack>
+            </ClipThing>
+        </Box>
     )
 }
 

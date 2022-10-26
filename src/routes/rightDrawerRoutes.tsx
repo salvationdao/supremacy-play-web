@@ -6,20 +6,38 @@ import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
 import { MyLobbies } from "../components/RightDrawer/MyLobbies/MyLobbies"
 import { RepairJobs } from "../components/RightDrawer/RepairJobs/RepairJobs"
 import { colors } from "../theme/theme"
-import { SideTabsStruct } from "./leftDrawerRoutes"
+import { LeftRouteID } from "./leftDrawerRoutes"
+import { RouteSingleID } from "./routes"
 
-export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
-    live_chat: {
-        id: "live_chat",
+export enum RightRouteID {
+    LiveChat = "LIVE_CHAT",
+    ActivePlayers = "ACTIVE_PLAYERS",
+    Repairs = "REPAIRS",
+    MyLobbies = "MY_LOBBIES",
+}
+
+export interface SideRouteSingle {
+    id: LeftRouteID | RightRouteID
+    Component?: () => JSX.Element | null
+    icon: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
+    label: string
+    matchRouteIDs?: RouteSingleID[] // Leave undefined to have the tab available on all pages, else specify the routes
+    mountAllTime: boolean // Whether to keep component mounted even not on the tab
+    requireAuth: boolean
+}
+
+export const RightRoutes: SideRouteSingle[] = [
+    {
+        id: RightRouteID.LiveChat,
         icon: <SvgChat size="1.1rem" sx={{ pt: ".3rem" }} />,
         label: "Live Chat",
         Component: LiveChat,
         requireAuth: false,
-        matchNavLinkIDs: undefined,
+        matchRouteIDs: undefined,
         mountAllTime: true,
     },
-    active_players: {
-        id: "active_players",
+    {
+        id: RightRouteID.ActivePlayers,
         icon: (
             <Box sx={{ pb: ".2rem" }}>
                 <Box sx={{ width: ".9rem", height: ".9rem", borderRadius: "50%", backgroundColor: colors.green }} />
@@ -28,30 +46,25 @@ export const RIGHT_DRAWER_MAP: { [name: string]: SideTabsStruct } = {
         label: "Active Players",
         Component: PlayerList,
         requireAuth: true,
-        matchNavLinkIDs: undefined,
+        matchRouteIDs: undefined,
         mountAllTime: false,
     },
-    repairs: {
-        id: "repairs",
+    {
+        id: RightRouteID.Repairs,
         icon: <SvgRepair size="1.1rem" sx={{ pt: ".3rem" }} />,
         label: "Repairs Jobs",
         Component: RepairJobs,
         requireAuth: true,
-        matchNavLinkIDs: undefined,
+        matchRouteIDs: undefined,
         mountAllTime: false,
     },
-    my_lobbies: {
-        id: "my_lobbies",
+    {
+        id: RightRouteID.MyLobbies,
         icon: <SvgRepair size="1.1rem" sx={{ pt: ".3rem" }} />,
         label: "My Lobbies",
         Component: MyLobbies,
         requireAuth: true,
-        matchNavLinkIDs: undefined,
+        matchRouteIDs: undefined,
         mountAllTime: false,
     },
-}
-
-export const RIGHT_DRAWER_ARRAY: SideTabsStruct[] = []
-for (const [, value] of Object.entries(RIGHT_DRAWER_MAP)) {
-    RIGHT_DRAWER_ARRAY.push(value)
-}
+]

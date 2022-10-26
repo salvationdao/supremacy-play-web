@@ -8,7 +8,7 @@ import { FactionsAll } from "../types"
 import { useWS } from "./ws/useWS"
 
 export const SupremacyContainer = createContainer(() => {
-    const isTraining = location.pathname.includes("/training")
+    const isTutorial = location.pathname.includes("/tutorial")
     const { newSnackbarMessage } = useGlobalNotifications()
     const { state, isReconnecting, isServerDown } = useWS({
         URI: "/public/online",
@@ -68,7 +68,7 @@ export const SupremacyContainer = createContainer(() => {
 
     // If it's been X amount of time and we never connected, then server is probs down
     useEffect(() => {
-        if (isTraining) {
+        if (isTutorial) {
             setFirstConnectTimedOut(true)
             return
         }
@@ -77,7 +77,7 @@ export const SupremacyContainer = createContainer(() => {
         }, 20000)
 
         return () => clearTimeout(timeout)
-    }, [serverConnectedBefore, isTraining])
+    }, [serverConnectedBefore, isTutorial])
 
     // Get main color of each factions
     useEffect(() => {

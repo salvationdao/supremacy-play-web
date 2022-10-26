@@ -11,7 +11,7 @@ import { Context, TrainingLobby } from "../../types"
 import { FancyButton } from "../Common/FancyButton"
 import { tourStyles } from "./SetupTutorial"
 import { Congratulations, TrainingAbility } from "./Congratulations"
-import { TOP_BAR_HEIGHT } from "../BigDisplay/MiniMapNew/MiniMapNew"
+import { TOP_BAR_HEIGHT } from "../BattleArena/BigDisplay/MiniMapNew/MiniMapNew"
 
 interface TutorialContainerProps {
     currentAbility: TrainingAbility

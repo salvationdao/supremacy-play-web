@@ -1,7 +1,7 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
-import { KeycardPNG } from "../../../assets"
+import { HangarBg, KeycardPNG } from "../../../assets"
 import { PASSPORT_WEB } from "../../../constants"
 import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -9,7 +9,7 @@ import { parseString } from "../../../helpers"
 import { usePagination, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { colors, fonts } from "../../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { Keycard } from "../../../types"
 import { PageHeader } from "../../Common/PageHeader"
 import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
@@ -183,101 +183,114 @@ export const KeycardsHangar = () => {
     }, [loadError, keycards, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary])
 
     return (
-        <ClipThing
-            clipSize="10px"
-            border={{
-                borderColor: theme.factionTheme.primary,
-                borderThickness: ".3rem",
+        <Box
+            alignItems="center"
+            sx={{
+                height: "100%",
+                p: "1rem",
+                zIndex: siteZIndex.RoutePage,
+                backgroundImage: `url(${HangarBg})`,
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+                backgroundSize: "cover",
             }}
-            corners={{
-                topRight: true,
-                bottomLeft: true,
-                bottomRight: true,
-            }}
-            opacity={0.7}
-            backgroundColor={theme.factionTheme.background}
-            sx={{ height: "100%" }}
         >
-            <Stack sx={{ position: "relative", height: "100%" }}>
-                <Stack sx={{ flex: 1 }}>
-                    <PageHeader
-                        title="KEY CARDS"
-                        description={
-                            <Typography sx={{ fontSize: "1.85rem" }}>
-                                The keycards that you have on Supremacy are shown here. If you don&apos;t see your keycards here, you may need to transfer them
-                                from{" "}
-                                <a rel="noreferrer" target="_blank" href={`${PASSPORT_WEB}profile/${user.username}/achievements`}>
-                                    XSYN
-                                </a>{" "}
-                                to Supremacy.
-                            </Typography>
-                        }
-                        imageUrl={KeycardPNG}
-                    ></PageHeader>
+            <ClipThing
+                clipSize="10px"
+                border={{
+                    borderColor: theme.factionTheme.primary,
+                    borderThickness: ".3rem",
+                }}
+                corners={{
+                    topRight: true,
+                    bottomLeft: true,
+                    bottomRight: true,
+                }}
+                opacity={0.7}
+                backgroundColor={theme.factionTheme.background}
+                sx={{ height: "100%" }}
+            >
+                <Stack sx={{ position: "relative", height: "100%" }}>
+                    <Stack sx={{ flex: 1 }}>
+                        <PageHeader
+                            title="KEY CARDS"
+                            description={
+                                <Typography sx={{ fontSize: "1.85rem" }}>
+                                    The keycards that you have on Supremacy are shown here. If you don&apos;t see your keycards here, you may need to transfer
+                                    them from{" "}
+                                    <a rel="noreferrer" target="_blank" href={`${PASSPORT_WEB}profile/${user.username}/achievements`}>
+                                        XSYN
+                                    </a>{" "}
+                                    to Supremacy.
+                                </Typography>
+                            }
+                            imageUrl={KeycardPNG}
+                        ></PageHeader>
 
-                    <TotalAndPageSizeOptions
-                        countItems={keycards?.length}
-                        totalItems={totalItems}
-                        pageSize={pageSize}
-                        changePageSize={changePageSize}
-                        changePage={changePage}
-                        manualRefresh={getItems}
-                    />
+                        <TotalAndPageSizeOptions
+                            countItems={keycards?.length}
+                            totalItems={totalItems}
+                            pageSize={pageSize}
+                            changePageSize={changePageSize}
+                            changePage={changePage}
+                            manualRefresh={getItems}
+                        />
 
-                    <Stack sx={{ px: "2rem", py: "1rem", flex: 1 }}>
+                        <Stack sx={{ px: "2rem", py: "1rem", flex: 1 }}>
+                            <Box
+                                sx={{
+                                    ml: "1.9rem",
+                                    pr: "1.9rem",
+                                    my: "1rem",
+                                    flex: 1,
+                                    overflowY: "auto",
+                                    overflowX: "hidden",
+                                    direction: "ltr",
+
+                                    "::-webkit-scrollbar": {
+                                        width: "1rem",
+                                    },
+                                    "::-webkit-scrollbar-track": {
+                                        background: "#FFFFFF15",
+                                    },
+                                    "::-webkit-scrollbar-thumb": {
+                                        background: theme.factionTheme.primary,
+                                    },
+                                }}
+                            >
+                                {content}
+                            </Box>
+                        </Stack>
+                    </Stack>
+
+                    {totalPages > 1 && (
                         <Box
                             sx={{
-                                ml: "1.9rem",
-                                pr: "1.9rem",
-                                my: "1rem",
-                                flex: 1,
-                                overflowY: "auto",
-                                overflowX: "hidden",
-                                direction: "ltr",
-
-                                "::-webkit-scrollbar": {
-                                    width: "1rem",
-                                },
-                                "::-webkit-scrollbar-track": {
-                                    background: "#FFFFFF15",
-                                },
-                                "::-webkit-scrollbar-thumb": {
-                                    background: theme.factionTheme.primary,
-                                },
+                                px: "1rem",
+                                py: ".7rem",
+                                borderTop: (theme) => `${theme.factionTheme.primary}70 1px solid`,
+                                backgroundColor: "#00000070",
                             }}
                         >
-                            {content}
+                            <Pagination
+                                size="medium"
+                                count={totalPages}
+                                page={page}
+                                sx={{
+                                    ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
+                                    ".Mui-selected": {
+                                        color: (theme) => theme.factionTheme.secondary,
+                                        backgroundColor: `${theme.factionTheme.primary} !important`,
+                                    },
+                                }}
+                                onChange={(e, p) => changePage(p)}
+                                showFirstButton
+                                showLastButton
+                            />
                         </Box>
-                    </Stack>
+                    )}
                 </Stack>
-
-                {totalPages > 1 && (
-                    <Box
-                        sx={{
-                            px: "1rem",
-                            py: ".7rem",
-                            borderTop: (theme) => `${theme.factionTheme.primary}70 1px solid`,
-                            backgroundColor: "#00000070",
-                        }}
-                    >
-                        <Pagination
-                            size="medium"
-                            count={totalPages}
-                            page={page}
-                            sx={{
-                                ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
-                                ".Mui-selected": {
-                                    color: (theme) => theme.factionTheme.secondary,
-                                    backgroundColor: `${theme.factionTheme.primary} !important`,
-                                },
-                            }}
-                            onChange={(e, p) => changePage(p)}
-                            showFirstButton
-                            showLastButton
-                        />
-                    </Box>
-                )}
-            </Stack>
-        </ClipThing>
+            </ClipThing>
+        </Box>
     )
 }

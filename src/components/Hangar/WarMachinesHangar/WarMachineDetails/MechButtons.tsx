@@ -3,7 +3,6 @@ import { ClipThing, FancyButton, TooltipHelper } from "../../.."
 import { SvgInfoCircular } from "../../../../assets"
 import { IS_TESTING_MODE } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
-import { MARKETPLACE_TABS } from "../../../../pages"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechDetails, MechStatus, MechStatusEnum } from "../../../../types"
 import { ItemType } from "../../../../types/marketplace"
@@ -109,7 +108,7 @@ export const MechButtons = ({
                                 mechDetails.locked_to_marketplace
                                     ? !mechDetails.item_sale_id
                                         ? undefined
-                                        : `/marketplace/${MARKETPLACE_TABS.WarMachines}/${mechDetails.item_sale_id}`
+                                        : `/marketplace/mechs/${mechDetails.item_sale_id}`
                                     : `/marketplace/sell?itemType=${ItemType.WarMachine}&assetID=${mechDetails.id}`
                             }
                         />

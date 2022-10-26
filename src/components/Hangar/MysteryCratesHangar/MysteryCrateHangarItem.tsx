@@ -7,7 +7,6 @@ import { useTheme } from "../../../containers/theme"
 import { useTimer } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { MARKETPLACE_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
 import { MysteryCrate, MysteryCrateType, OpenCrateResponse } from "../../../types"
 import { ItemType } from "../../../types/marketplace"
@@ -155,7 +154,7 @@ export const MysteryCrateHangarItem = React.memo(function MysteryCrateHangarItem
                                             crate.locked_to_marketplace
                                                 ? !crate.item_sale_id
                                                     ? undefined
-                                                    : `/marketplace/${MARKETPLACE_TABS.MysteryCrates}/${crate.item_sale_id}`
+                                                    : `/marketplace/myster-crates/${crate.item_sale_id}`
                                                 : `/marketplace/sell?itemType=${ItemType.MysteryCrate}&assetID=${crate.id}`
                                         }
                                         clipThingsProps={{

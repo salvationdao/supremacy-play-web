@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { createContainer } from "unstated-next"
-import { PixiMiniMapPixi } from "../components/BigDisplay/MiniMapNew/MiniMapPixi/pixiMiniMapPixi"
+import { PixiMiniMapPixi } from "../components/BattleArena/BigDisplay/MiniMapNew/MiniMapPixi/pixiMiniMapPixi"
 import { deepEqual } from "../helpers"
 import { useGameServerCommandsFaction } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
@@ -8,7 +8,16 @@ import { AnyAbility, BattleState, Dimension, GAME_CLIENT_TILE_SIZE, LocationSele
 import { useArena } from "./arena"
 import { useGame } from "./game"
 import { useGlobalNotifications } from "./globalNotifications"
-import { RecordType, useHotkey } from "./hotkeys"
+
+type hotkey = { [key: string]: () => void }
+
+export enum RecordType {
+    MiniMapCtrl = "CTRL_MAP",
+    MiniMap = "MAP",
+}
+
+// Keys reserved for mech abilities
+export const MECH_ABILITY_KEY = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]
 
 export const pixiViewportZIndexes = {
     hiveStatus: 10,
@@ -36,7 +45,6 @@ export interface MapSelection {
 export const MiniMapPixiContainer = createContainer(() => {
     const { map, battleState } = useGame()
     const { currentArenaID } = useArena()
-    const { addToHotkeyRecord } = useHotkey()
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
@@ -88,6 +96,60 @@ export const MiniMapPixiContainer = createContainer(() => {
             y: y / gridSizeRef.current.height,
         }
     })
+
+    // *****************************
+    // ********** Hotkeys **********
+    // *****************************
+    const miniMapHotkeyRecord = useRef<hotkey>({}) // Works when focused on minimap
+    const miniMapControlHotkeyRecord = useRef<hotkey>({}) // Works when focused on minimap with ctrl
+
+    const addToHotkeyRecord = useCallback(
+        (recordType: RecordType, key: string, value: () => void) => {
+            //keys often come from the index, return if it is more than 10
+            const numKey = parseInt(key)
+
+            if (numKey && numKey > 10) {
+                console.error("Cannot create key more than keyboard number value.")
+            }
+
+            if (numKey === 10) {
+                key = "0"
+            }
+
+            let record = miniMapHotkeyRecord
+            switch (recordType) {
+                //if modifying the shortcut with [Ctrl + int] set it to specified CTRL record
+                case RecordType.MiniMapCtrl:
+                    record = miniMapControlHotkeyRecord
+                    break
+                case RecordType.MiniMap:
+                    record = miniMapHotkeyRecord
+                    break
+                default:
+                    break
+            }
+
+            record.current = { ...record.current, [key]: value }
+        },
+        [miniMapHotkeyRecord, miniMapControlHotkeyRecord],
+    )
+
+    const handleMiniMapHotKey = useCallback(
+        (e) => {
+            let handlePress = miniMapHotkeyRecord.current[e.key]
+            if (e.ctrlKey) {
+                handlePress = miniMapControlHotkeyRecord.current[e.key]
+            }
+
+            if (handlePress) {
+                e.stopPropagation()
+                e.preventDefault()
+                handlePress()
+            }
+            handlePress && handlePress()
+        },
+        [miniMapHotkeyRecord, miniMapControlHotkeyRecord],
+    )
 
     // ***************************************
     // ********** Ability use stuff **********
@@ -239,6 +301,12 @@ export const MiniMapPixiContainer = createContainer(() => {
         onAnyAbilityUseCallbacks,
         onSelectMapPositionCallbacks,
         onTargetConfirm,
+
+        // Hotkeys
+        miniMapHotkeyRecord,
+        miniMapControlHotkeyRecord,
+        addToHotkeyRecord,
+        handleMiniMapHotKey,
     }
 })
 

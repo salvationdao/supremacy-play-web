@@ -724,3 +724,11 @@ export const combineDateTime = (date: moment.Moment, time: moment.Moment): momen
 export const isInBetweenInclusive = (num: number, between1: number, between2: number) => {
     return num >= Math.min(between1, between2) && num <= Math.max(between1, between2)
 }
+
+export const isExternalURL = (url: string) => {
+    try {
+        return new URL(url).origin !== location.origin
+    } catch {
+        return false
+    }
+}
