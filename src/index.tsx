@@ -42,7 +42,6 @@ import { ArenaListener, ArenaProvider } from "./containers/arena"
 import { AuthProvider, useAuth, UserUpdater } from "./containers/auth"
 import { FiatProvider } from "./containers/fiat"
 import { FingerprintProvider } from "./containers/fingerprint"
-import { HotkeyProvider } from "./containers/hotkeys"
 import { OvenStreamProvider } from "./containers/oven"
 import { ThemeProvider } from "./containers/theme"
 import { ws } from "./containers/ws"
@@ -275,18 +274,16 @@ const App = () => {
                                                                     <DimensionProvider>
                                                                         <UiProvider>
                                                                             <GameProvider>
-                                                                                <HotkeyProvider>
-                                                                                    <MiniMapPixiProvider>
-                                                                                        <FiatProvider>
-                                                                                            <UserUpdater />
-                                                                                            <Switch>
-                                                                                                <Route path="/404" exact component={NotFoundPage} />
-                                                                                                <Route path="/login-redirect" exact component={LoginRedirect} />
-                                                                                                <Route path="" component={AppInner} />
-                                                                                            </Switch>
-                                                                                        </FiatProvider>
-                                                                                    </MiniMapPixiProvider>
-                                                                                </HotkeyProvider>
+                                                                                <MiniMapPixiProvider>
+                                                                                    <FiatProvider>
+                                                                                        <UserUpdater />
+                                                                                        <Switch>
+                                                                                            <Route path="/404" exact component={NotFoundPage} />
+                                                                                            <Route path="/login-redirect" exact component={LoginRedirect} />
+                                                                                            <Route path="" component={AppInner} />
+                                                                                        </Switch>
+                                                                                    </FiatProvider>
+                                                                                </MiniMapPixiProvider>
                                                                             </GameProvider>
                                                                         </UiProvider>
                                                                     </DimensionProvider>

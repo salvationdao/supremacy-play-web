@@ -2,7 +2,6 @@ import { Box, Fade, Stack, Typography } from "@mui/material"
 import React, { useEffect, useMemo, useRef, useState } from "react"
 import { BattleBgWebP, SvgGrid, SvgSwap } from "../../../../assets"
 import { useDimension, useGame, useMiniMapPixi, useUI } from "../../../../containers"
-import { useHotkey } from "../../../../containers/hotkeys"
 import { fonts } from "../../../../theme/theme"
 import { AnyAbility, BattleState, Map } from "../../../../types"
 import { WindowPortal } from "../../../Common/WindowPortal/WindowPortal"
@@ -143,9 +142,8 @@ const MiniMapInnerNormal = ({ map, isPoppedout, setIsPoppedout }: MiniMapInnerPr
 
 // This inner component takes care of the resizing etc.
 const MiniMapInner = ({ map, isPoppedout, width = 100, height = 100, poppedOutContainerRef }: MiniMapInnerProps) => {
-    const { handleMiniMapHotKey } = useHotkey()
     const { remToPxRatio } = useDimension()
-    const { onAnyAbilityUseCallbacks } = useMiniMapPixi()
+    const { onAnyAbilityUseCallbacks, handleMiniMapHotKey } = useMiniMapPixi()
     const { isStreamBigDisplay, setIsStreamBigDisplay, toggleIsStreamBigDisplayMemorized, restoreIsStreamBigDisplayMemorized, stopMapRender } = useUI()
 
     const mapHeightWidthRatio = useRef(1)

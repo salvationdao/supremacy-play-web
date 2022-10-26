@@ -4,12 +4,11 @@ import { ClipThing, HealthShieldBars, WarMachineDestroyedInfo } from "../../.."
 import { GenericWarMachinePNG, SvgInfoCircular, SvgSkull } from "../../../../assets"
 import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../../../constants"
 import { useAuth, useMiniMapPixi, useMobile, useSupremacy } from "../../../../containers"
-import { useHotkey } from "../../../../containers/hotkeys"
 import { getRarityDeets } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
+import { CropMaxLengthText } from "../../../../theme/styles"
 import { colors, fonts } from "../../../../theme/theme"
 import { AIType, WarMachineState } from "../../../../types"
-import { CropMaxLengthText } from "../../../../theme/styles"
 
 // in rems
 const WIDTH_AVATAR = 8.6
@@ -34,8 +33,7 @@ export const WarMachineItem = ({
     const { isMobile } = useMobile()
     const { userID } = useAuth()
     const { getFaction } = useSupremacy()
-    const { miniMapHotkeyRecord, miniMapControlHotkeyRecord } = useHotkey()
-    const { highlightedMechParticipantID, setHighlightedMechParticipantID } = useMiniMapPixi()
+    const { highlightedMechParticipantID, setHighlightedMechParticipantID, miniMapHotkeyRecord, miniMapControlHotkeyRecord } = useMiniMapPixi()
 
     const { hash, participantID, factionID: wmFactionID, name, imageAvatar, tier, ownedByID, ownerUsername, aiType } = warMachine
     const isMiniMech = aiType === AIType.MiniMech

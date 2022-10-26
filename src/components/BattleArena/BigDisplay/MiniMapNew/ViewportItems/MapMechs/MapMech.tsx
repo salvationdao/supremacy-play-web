@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../../../../../constants"
-import { MapSelection, useArena, useAuth, useGame, useMiniMapPixi, useSupremacy } from "../../../../../../containers"
-import { RecordType, useHotkey } from "../../../../../../containers/hotkeys"
+import { MapSelection, RecordType, useArena, useAuth, useGame, useMiniMapPixi, useSupremacy } from "../../../../../../containers"
 import { closestAngle, deg2rad } from "../../../../../../helpers"
 import { warMachineStatsBinaryParser } from "../../../../../../helpers/binaryDataParsers/warMachineStatsParser"
 import { BinaryDataKey, useGameServerSubscription } from "../../../../../../hooks/useGameServer"
@@ -35,7 +34,6 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     const { userID, factionID } = useAuth()
     const { currentArenaID } = useArena()
     const { getFaction, isWindowFocused } = useSupremacy()
-    const { addToHotkeyRecord } = useHotkey()
     const {
         pixiMiniMapPixi,
         gridSizeRef,
@@ -51,6 +49,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
         onAnyAbilityUseCallbacks,
         onSelectMapPositionCallbacks,
         mapItemMinSize,
+        addToHotkeyRecord,
     } = useMiniMapPixi()
     const { id, hash, participantID, factionID: warMachineFactionID, maxHealth, maxShield, ownedByID } = warMachine
 

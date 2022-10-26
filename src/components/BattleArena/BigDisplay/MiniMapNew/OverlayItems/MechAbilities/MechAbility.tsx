@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react"
-import { useArena } from "../../../../../../containers"
-import { MECH_ABILITY_KEY, RecordType, useHotkey } from "../../../../../../containers/hotkeys"
+import { MECH_ABILITY_KEY, RecordType, useArena, useMiniMapPixi } from "../../../../../../containers"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../../keys"
 import { AnyAbility } from "../../../../../../types"
@@ -22,7 +21,7 @@ export const MechAbility = ({
 }) => {
     const { currentArenaID } = useArena()
     const { send } = useGameServerCommandsFaction("/faction_commander")
-    const { addToHotkeyRecord } = useHotkey()
+    const { addToHotkeyRecord } = useMiniMapPixi()
     const [pixiMechAbility, setPixiMechAbility] = useState<PixiMechAbility>()
 
     // Initial setup for the mech and show on the map
