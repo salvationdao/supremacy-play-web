@@ -23,21 +23,8 @@ export const MainMenuNav = () => {
         })
     }, [activeRouteID])
 
-    useEffect(() => {
-        const onKeyDown = (e: KeyboardEvent) => {
-            if (e.repeat) return
-            if (!e.ctrlKey && e.key === "Escape") toggleShowMainMenu(false)
-        }
-
-        const cleanup = () => document.removeEventListener("keydown", onKeyDown)
-        cleanup()
-        document.addEventListener("keydown", onKeyDown)
-
-        return cleanup
-    }, [toggleShowMainMenu])
-
     return (
-        <Modal disableEscapeKeyDown open={showMainMenu} sx={{ zIndex: siteZIndex.MainMenuModal }}>
+        <Modal open={showMainMenu} onClose={() => toggleShowMainMenu(false)} sx={{ zIndex: siteZIndex.MainMenuModal }}>
             <Stack
                 alignItems="center"
                 justifyContent="flex-start"
