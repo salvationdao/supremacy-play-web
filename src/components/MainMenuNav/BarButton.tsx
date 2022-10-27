@@ -12,7 +12,7 @@ export const BarButton = () => {
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
             if (e.repeat) return
-            if (e.ctrlKey && e.key === "Escape") toggleShowMainMenu()
+            if (e.key.toLowerCase() === "m") toggleShowMainMenu()
         }
 
         const cleanup = () => document.removeEventListener("keydown", onKeyDown)
@@ -31,7 +31,7 @@ export const BarButton = () => {
                     MAIN MENU
                 </Typography>
 
-                <KeyboardKey label="CTRL+ESC" />
+                <KeyboardKey label="M" />
             </Stack>
         </NiceButton>
     )
