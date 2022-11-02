@@ -1,4 +1,4 @@
-import { Box, LinearProgress, Stack, Typography } from "@mui/material"
+import { Box, Stack } from "@mui/material"
 import { TourProvider } from "@reactour/tour"
 import * as Sentry from "@sentry/react"
 import { Buffer } from "buffer"
@@ -6,15 +6,14 @@ import { useEffect } from "react"
 import ReactDOM from "react-dom"
 import { ErrorBoundary } from "react-error-boundary"
 import { Action, ClientContextProvider, createClient } from "react-fetching-library"
-import { Helmet } from "react-helmet"
-import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom"
-import { SupremacyPNG } from "./assets"
-import { Bar, GlobalSnackbar, Maintenance, RightDrawer } from "./components"
+import { BrowserRouter, Route, Switch } from "react-router-dom"
+import { Bar, GlobalSnackbar, Maintenance } from "./components"
 import { NavLinksDrawer } from "./components/Bar/NavLinks/NavLinksDrawer"
 import { BottomNav } from "./components/BottomNav/BottomNav"
+import { SupremacyWorldModal } from "./components/Common/BannersPromotions/SupremacyWorldModal"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
 import { tourStyles } from "./components/Tutorial/SetupTutorial"
-import { GAME_SERVER_HOSTNAME, LINK, SENTRY_CONFIG } from "./constants"
+import { GAME_SERVER_HOSTNAME, SENTRY_CONFIG } from "./constants"
 import {
     ChatProvider,
     DimensionProvider,
@@ -37,12 +36,9 @@ import { ThemeProvider } from "./containers/theme"
 import { ws } from "./containers/ws"
 import { useToggle } from "./hooks"
 import { NotFoundPage, TutorialPage } from "./pages"
-import { AuthPage } from "./pages/AuthPage"
-import { EnlistPage } from "./pages/EnlistPage"
 import { ErrorFallbackPage } from "./pages/ErrorFallbackPage"
 import { LoginRedirect } from "./pages/LoginRedirect"
-import { ROUTES_ARRAY, ROUTES_MAP } from "./routes"
-import { colors, fonts } from "./theme/theme"
+import { colors } from "./theme/theme"
 
 const AppInner = () => {
     const isTraining = location.pathname.includes("/training")
@@ -62,6 +58,7 @@ const AppInner = () => {
 
     return (
         <>
+            <SupremacyWorldModal />
             <Stack
                 sx={{
                     position: "fixed",
