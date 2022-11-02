@@ -2,7 +2,6 @@ import { Box, Grow, Modal } from "@mui/material"
 import { useState } from "react"
 import { SupremacyWorldPNG } from "../../../assets"
 
-const LOCAL_STORAGE_HIDE_SUPREMACY_MODAL_KEY = "hideSupremacyModal"
 
 export const SupremacyWorldModal = () => {
     const [showModal, setShowModal] = useState(true)
