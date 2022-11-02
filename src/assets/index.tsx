@@ -204,6 +204,7 @@ import LogoWEBP from "./images/Logo.webp"
 import MaintenancePNG from "./images/Maintenance.png"
 import CircleParticle from "./images/Particles/circle.png"
 import PlayerAbilityPNG from "./images/PlayerAbility.png"
+import SupremacyWorldPNG from "./images/supremacy_world.png"
 
 import BattleArenaPNG from "./images/MainMenu/BattleArena.png"
 import ExhibitionPNG from "./images/MainMenu/Exhibition.png"
@@ -311,6 +312,7 @@ export {
     BattleRewardsBannerPNG,
     LightningBackgroundPNG,
     LightningBackgroundBluePNG,
+    SupremacyWorldPNG,
     CoinsLeftPNG,
     CoinsRightPNG,
     KeycardPNG,
