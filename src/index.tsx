@@ -13,6 +13,7 @@ import { SupremacyPNG } from "./assets"
 import { Bar, GlobalSnackbar, Maintenance, RightDrawer } from "./components"
 import { NavLinksDrawer } from "./components/Bar/NavLinks/NavLinksDrawer"
 import { BottomNav } from "./components/BottomNav/BottomNav"
+import { SupremacyWorldModal } from "./components/Common/BannersPromotions/SupremacyWorldModal"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
 import { tourStyles } from "./components/Tutorial/SetupTutorial"
 import { GAME_SERVER_HOSTNAME, LINK, SENTRY_CONFIG } from "./constants"
@@ -124,6 +125,7 @@ const AppInner = () => {
                 }}
             >
                 <Bar />
+                <SupremacyWorldModal />
 
                 <Stack
                     direction="row"
