@@ -17,18 +17,18 @@ import { MechName } from "../MechName"
 export interface MechPickerProps {
     mechDetails: MechDetails
     mechStatus?: MechStatus
-    inheritWeaponSkins: boolean
     onSelect: (mechID: MechDetails) => void
     onUpdate: (newMechDetails: MechDetails) => void
     onUpdateWeaponSkinInherit: (newSkinInherit: boolean) => void
 }
 
-export const MechPicker = ({ mechDetails, mechStatus, inheritWeaponSkins, onUpdate, onUpdateWeaponSkinInherit }: MechPickerProps) => {
+export const MechPicker = ({ mechDetails, mechStatus, onUpdate, onUpdateWeaponSkinInherit }: MechPickerProps) => {
     const theme = useTheme()
     const { userID } = useAuth()
     const { send } = useGameServerCommands("/public/commander")
 
     const statusDeets = useMemo(() => getMechStatusDeets(mechStatus), [mechStatus])
+    const [inheritWeaponSkins, setInheritWeaponSkins] = useState(mechDetails.inherit_all_weapon_skins)
 
     const [mechBattleStats, setMechBattleStats] = useState<BattleMechStats>()
     const [statsLoading, setStatsLoading] = useState(false)
@@ -114,6 +114,7 @@ export const MechPicker = ({ mechDetails, mechStatus, inheritWeaponSkins, onUpda
 
     const handleInheritWeaponSkin = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) => {
+            setInheritWeaponSkins(event.target.checked)
             onUpdateWeaponSkinInherit(event.target.checked)
         },
         [onUpdateWeaponSkinInherit],

@@ -6,7 +6,7 @@ import { useTheme } from "../../../../containers/theme"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { pulseEffect } from "../../../../theme/keyframes"
-import { MechDetails, MechStatus, MechStatusEnum, WeaponType } from "../../../../types"
+import { MechDetails, MechStatus, MechStatusEnum } from "../../../../types"
 import { BorderThickness, NiceBoxThing } from "../../../Common/Nice/NiceBoxThing"
 import { MechLoadout } from "./MechLoadout/MechLoadout"
 import { MechPicker } from "./MechPicker/MechPicker"
@@ -81,20 +81,8 @@ export const WarMachineHangarDetailsInner = ({
     const [inheritWeaponSkins, setInheritWeaponSkins] = useState(false)
 
     useEffect(() => {
-        if (!mechDetails || !mechDetails.weapons) return
-        ;(() => {
-            let canInherit = 0
-            let hasInherited = 0
-            for (let weaponSlotNumber = 0; weaponSlotNumber < mechDetails.weapon_hardpoints; weaponSlotNumber++) {
-                const w = mechDetails.weapons[weaponSlotNumber]
-                if (!w || w.weapon_type === WeaponType.RocketPods) continue
-                if (!mechDetails.blueprint_weapon_ids_with_skin_inheritance.find((s) => s === w?.blueprint_id)) continue
-                canInherit++
-                if (!w.inherit_skin) continue
-                hasInherited++
-            }
-            setInheritWeaponSkins(canInherit > 0 && canInherit === hasInherited)
-        })()
+        if (!mechDetails) return
+        setInheritWeaponSkins(mechDetails.inherit_all_weapon_skins)
     }, [mechDetails])
 
     useGameServerSubscriptionFaction<MechDetails>(
@@ -138,7 +126,6 @@ export const WarMachineHangarDetailsInner = ({
                 <MechPicker
                     mechDetails={mechDetails}
                     mechStatus={mechStatus}
-                    inheritWeaponSkins={inheritWeaponSkins}
                     onSelect={(mid) => console.log(mid)}
                     onUpdate={(newMechDetails) => setMechDetails(newMechDetails)}
                     onUpdateWeaponSkinInherit={(newInheritSkins) => setInheritWeaponSkins(newInheritSkins)}

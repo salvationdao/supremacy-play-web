@@ -27,11 +27,11 @@ interface SavedSelection {
 
 interface PlayerAssetMechEquipRequest {
     mech_id: string
+    inherit_all_weapon_skins: boolean
     equip_mech_skin?: EquipMechSkin
     equip_power_core?: EquipPowerCore
     equip_utility: EquipUtility[]
     equip_weapons: EquipWeapon[]
-    inherit_weapon_skins: boolean
 }
 
 export interface MechDetailsWithMaps extends MechDetails {
@@ -187,7 +187,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, inher
                     equip_weapons: selection.equip_weapons ? selection.equip_weapons : [],
                     equip_utility: selection.equip_utility ? selection.equip_utility : [],
                     mech_id: mechDetails.id,
-                    inherit_weapon_skins: inheritWeaponSkins,
+                    inherit_all_weapon_skins: inheritWeaponSkins,
                 })
 
                 newSnackbarMessage(`Successfully saved loadout.`, "success")
