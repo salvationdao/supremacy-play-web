@@ -46,6 +46,8 @@ import { LoginRedirect } from "./pages/LoginRedirect"
 import { ROUTES_ARRAY, ROUTES_MAP } from "./routes"
 import { colors, fonts } from "./theme/theme"
 
+const SUPREMACY_WORLD_SALE_END_DATE = new Date("Nov 04 2022 00:00:00 GMT+0800")
+
 const AppInner = () => {
     const history = useHistory()
     const isTraining = location.pathname.includes("/training")
@@ -125,7 +127,7 @@ const AppInner = () => {
                 }}
             >
                 <Bar />
-                <SupremacyWorldModal />
+                {new Date().getTime() < SUPREMACY_WORLD_SALE_END_DATE.getTime() && <SupremacyWorldModal />}
 
                 <Stack
                     direction="row"
