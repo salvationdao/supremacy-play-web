@@ -15,6 +15,7 @@ import { BrowserRouter, Redirect, Route, Switch, useHistory } from "react-router
 import { SupremacyPNG } from "./assets"
 import { Bar, GlobalSnackbar, Maintenance, RightDrawer } from "./components"
 import { BottomNav } from "./components/BattleArena/BottomNav/BottomNav"
+import { SupremacyWorldModal } from "./components/Common/BannersPromotions/SupremacyWorldModal"
 import { ErrorFallback } from "./components/ErrorFallback/ErrorFallback"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
 import { LoginRedirect } from "./components/LoginRedirect/LoginRedirect"
@@ -49,6 +50,8 @@ import { ws } from "./containers/ws"
 import { useToggle } from "./hooks"
 import { Routes, RouteSingleID } from "./routes"
 import { colors, fonts } from "./theme/theme"
+
+const SUPREMACY_WORLD_SALE_END_DATE = new Date("Nov 04 2022 00:00:00 GMT+0800")
 
 const AppInner = () => {
     const history = useHistory()
@@ -131,6 +134,7 @@ const AppInner = () => {
             >
                 <Bar />
 
+                {new Date().getTime() < SUPREMACY_WORLD_SALE_END_DATE.getTime() && <SupremacyWorldModal />}
                 <MainMenuNav />
 
                 <Stack
