@@ -34,6 +34,7 @@ import IntroAnimation from "!@svgr/webpack!./svg/IntroAnimation.svg"
 import Lock from "!@svgr/webpack!./svg/Lock.svg"
 import Logout from "!@svgr/webpack!./svg/Logout.svg"
 import Mail from "!@svgr/webpack!./svg/Mail.svg"
+import MainMenu from "!@svgr/webpack!./svg/MainMenu.svg"
 import Meteor from "!@svgr/webpack!./svg/Meteor.svg"
 import Microphone from "!@svgr/webpack!./svg/Microphone.svg"
 import MicrophoneMute from "!@svgr/webpack!./svg/MicrophoneMute.svg"
@@ -203,6 +204,17 @@ import LogoWEBP from "./images/Logo.webp"
 import MaintenancePNG from "./images/Maintenance.png"
 import CircleParticle from "./images/Particles/circle.png"
 import PlayerAbilityPNG from "./images/PlayerAbility.png"
+import SupremacyWorldPNG from "./images/supremacy_world.png"
+
+import BattleArenaPNG from "./images/MainMenu/BattleArena.png"
+import ExhibitionPNG from "./images/MainMenu/Exhibition.png"
+import GenericPNG from "./images/MainMenu/Generic.png"
+import HangarPNG from "./images/MainMenu/Hangar.png"
+import MechsPNG from "./images/MainMenu/Mechs.png"
+import RepairBayPNG from "./images/MainMenu/RepairBay.png"
+import StoryPNG from "./images/MainMenu/Story.png"
+import TutorialPNG from "./images/MainMenu/Tutorial.png"
+
 import AboutMeSVG from "./images/profileIcons/AboutMe.svg"
 import BattleHistorySVG from "./images/profileIcons/BattleHistory.svg"
 import StatsSVG from "./images/profileIcons/Stats.svg"
@@ -300,6 +312,7 @@ export {
     BattleRewardsBannerPNG,
     LightningBackgroundPNG,
     LightningBackgroundBluePNG,
+    SupremacyWorldPNG,
     CoinsLeftPNG,
     CoinsRightPNG,
     KeycardPNG,
@@ -336,6 +349,14 @@ export {
     DeadSkullPNG,
     AbilityCancelPNG,
     CircleParticle,
+    BattleArenaPNG,
+    ExhibitionPNG,
+    GenericPNG,
+    HangarPNG,
+    MechsPNG,
+    RepairBayPNG,
+    StoryPNG,
+    TutorialPNG,
 }
 export { BCBorder, RMBorder, ZHIBorder, BCWaiting, RMWaiting, ZHIWaiting, BCDeploy, RMDeploy, ZHIDeploy }
 
@@ -1435,5 +1456,11 @@ export const Svg2DView: React.VoidFunctionComponent<SvgWrapperProps> = (props) =
 export const SvgCamera: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Camera />
+    </SvgWrapper>
+)
+
+export const SvgMainMenu: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <MainMenu />
     </SvgWrapper>
 )

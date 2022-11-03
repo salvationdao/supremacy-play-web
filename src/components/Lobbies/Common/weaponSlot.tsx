@@ -14,7 +14,6 @@ interface WeaponSlotProps {
     size?: string
 }
 export const WeaponSlot = ({ weaponSlot, tooltipPlacement, size }: WeaponSlotProps) => {
-    console.log(weaponSlot.weapon)
     const { factionTheme } = useTheme()
     const weapon = weaponSlot.weapon
 

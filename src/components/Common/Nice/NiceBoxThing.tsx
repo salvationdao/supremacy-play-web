@@ -73,10 +73,6 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
     const renderCaret = useCallback(() => {
         if (!caret) return
         const color = caret.color || border?.color
-        if (!color) {
-            console.warn("A caret or border color must be provided for the caret to render.")
-            return
-        }
 
         const styles: SxProps = {
             position: "absolute",
@@ -152,11 +148,6 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
             colors = background.color
         } else if (border?.color) {
             colors = [border.color]
-        }
-
-        if (colors.length === 0) {
-            console.warn("A background or border color must be provided for the background to render.")
-            return
         }
 
         if (colors.length === 1) {

@@ -8,7 +8,6 @@ import { calculateDutchAuctionEndPrice, numFormatter } from "../../../helpers"
 import { useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { MARKETPLACE_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
 import { Keycard, MechBasic, MysteryCrate, PlayerAsset } from "../../../types"
 import { ItemType, MarketplaceBuyAuctionItem } from "../../../types/marketplace"
@@ -456,16 +455,16 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                         let subPath = ""
                         switch (itemType) {
                             case ItemType.WarMachine:
-                                subPath = MARKETPLACE_TABS.WarMachines
+                                subPath = "mechs"
                                 break
                             case ItemType.MysteryCrate:
-                                subPath = MARKETPLACE_TABS.MysteryCrates
+                                subPath = "mystery-crates"
                                 break
                             case ItemType.Weapon:
-                                subPath = MARKETPLACE_TABS.Weapons
+                                subPath = "weapons"
                                 break
                             case ItemType.Keycards:
-                                subPath = MARKETPLACE_TABS.Keycards
+                                subPath = "keycards"
                                 break
                         }
 

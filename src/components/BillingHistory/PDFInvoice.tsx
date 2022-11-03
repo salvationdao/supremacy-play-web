@@ -1,12 +1,12 @@
+import { Document, Font, G, Page, Path, StyleSheet, Svg, Text, View } from "@react-pdf/renderer"
+import BigNumber from "bignumber.js"
 import moment from "moment"
-import { Page, Text, View, Document, StyleSheet, Font, Svg, G, Path } from "@react-pdf/renderer"
-import { FiatOrder, FiatOrderStatus } from "../../types/fiat"
 import NostromoRegularBlack from "../../assets/fonts/nostromo-regular/NostromoRegular-Black.otf"
 import ShareTech from "../../assets/fonts/share-tech/share-tech.otf"
-import { User } from "../../types/user"
 import { generatePriceText, getOrderStatusDeets } from "../../helpers"
-import BigNumber from "bignumber.js"
 import { colors } from "../../theme/theme"
+import { FiatOrder, FiatOrderStatus } from "../../types/fiat"
+import { User } from "../../types/user"
 
 Font.register({
     family: "Nostromo Regular Black",

@@ -3,7 +3,6 @@ import React from "react"
 import { FancyButton } from "../.."
 import { IS_TESTING_MODE } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
-import { MARKETPLACE_TABS } from "../../../pages"
 import { colors, fonts } from "../../../theme/theme"
 import { Keycard } from "../../../types"
 import { ItemType } from "../../../types/marketplace"
@@ -91,7 +90,7 @@ export const KeycardHangarItemInner = ({ keycard, itemSaleID }: KeycardHangarIte
                                 <FancyButton
                                     to={
                                         itemSaleID
-                                            ? `/marketplace/${MARKETPLACE_TABS.Keycards}/${itemSaleID}`
+                                            ? `/marketplace/keycards/${itemSaleID}`
                                             : `/marketplace/sell?itemType=${ItemType.Keycards}&assetID=${keycard.id}`
                                     }
                                     clipThingsProps={{

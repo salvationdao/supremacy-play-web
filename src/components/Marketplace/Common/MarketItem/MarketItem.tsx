@@ -4,7 +4,6 @@ import React, { ReactNode, useMemo } from "react"
 import { FancyButton } from "../../.."
 import { useTheme } from "../../../../containers/theme"
 import { calculateDutchAuctionCurrentPrice, numFormatter, shadeColor } from "../../../../helpers"
-import { MARKETPLACE_TABS } from "../../../../pages"
 import { colors } from "../../../../theme/theme"
 import { MarketplaceBuyAuctionItem } from "../../../../types/marketplace"
 import { AuctionPrice } from "../../Common/MarketItem/AuctionPrice"
@@ -17,7 +16,7 @@ interface MarketItemProps {
     item: MarketplaceBuyAuctionItem
     isGridView: boolean
     children: ReactNode
-    linkSubPath: MARKETPLACE_TABS
+    linkSubPath: string
 }
 
 const propsAreEqual = (prevProps: MarketItemProps, nextProps: MarketItemProps) => {

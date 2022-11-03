@@ -1,6 +1,7 @@
 import TWEEN from "@tweenjs/tween.js"
+import { isInBetweenInclusive } from "../../../../../helpers"
 import { FallingBlock, MovingBlock } from "./block"
-import { blockConfig, cameraConfig } from "./config"
+import { blockConfig, cameraConfig, shrinkMultiplier } from "./config"
 import { Stage } from "./stage"
 import { BlockServer, BlockType, GameState, NewStackInfo, PlayButton } from "./types"
 
@@ -93,6 +94,9 @@ export class Game {
     }
 
     onKeydown(e: KeyboardEvent) {
+        // Dont execute if key being help down
+        if (e.repeat) return
+
         if (e.key.toLowerCase() === this.activePlayButton.toLowerCase() || (e.key === " " && this.activePlayButton === PlayButton.Spacebar)) {
             switch (this.state) {
                 case GameState.Ready:
@@ -116,6 +120,38 @@ export class Game {
                 default:
                     break
             }
+
+            return
+        }
+
+        // If player pressed the wrong (but valid) button, punish them by shrinking the block
+        if (this.state === GameState.Playing && (e.key === " " || Object.values(PlayButton).find((pb) => pb.toLowerCase() === e.key.toLowerCase()))) {
+            // Get the top block
+            const topBlock = this.blocks[this.blocks.length - 1]
+            this.blocks.pop()
+            this.stage.remove(topBlock.mesh)
+
+            const newBlock = new MovingBlock(
+                topBlock.blockServer,
+                {
+                    dimension: {
+                        ...topBlock.dimension,
+                        width: Math.max(topBlock.dimension.width * shrinkMultiplier, 0.4),
+                        depth: Math.max(topBlock.dimension.depth * shrinkMultiplier, 0.4),
+                    },
+                    position: topBlock.position,
+                    direction: topBlock.direction,
+                    axis: topBlock.axis,
+                    topTexture: topBlock.topTexture,
+                    frontTexture: topBlock.frontTexture,
+                    rightTexture: topBlock.rightTexture,
+                },
+                true,
+            )
+            newBlock.shouldReplace = false
+            this.blocks.push(newBlock)
+            this.stage.add(newBlock.mesh)
+            return
         }
     }
 
@@ -171,7 +207,19 @@ export class Game {
         // Return if there isn't a block to place
         if (curBlock && prevBlock) {
             const { axis, dimensionAlongAxis } = curBlock.getAxis()
-            landedOnStack = curBlock.dimension[dimensionAlongAxis] - Math.abs(curBlock.position[axis] - prevBlock.position[axis]) > 0
+            const isFrontEdgeInside = isInBetweenInclusive(
+                curBlock.position[axis] + curBlock.dimension[dimensionAlongAxis],
+                prevBlock.position[axis],
+                prevBlock.position[axis] + prevBlock.dimension[dimensionAlongAxis],
+            )
+            const isBackEdgeInside = isInBetweenInclusive(
+                curBlock.position[axis],
+                prevBlock.position[axis],
+                prevBlock.position[axis] + prevBlock.dimension[dimensionAlongAxis],
+            )
+
+            // Whether the moving block landed on the stack tower by checking if the front or end edge is between stack tower
+            landedOnStack = isFrontEdgeInside || isBackEdgeInside
 
             // *******************************
             // ********** Game Over **********
@@ -194,9 +242,19 @@ export class Game {
             // ***************************************
             // ********** Replacement Block **********
             // ***************************************
+
             // Calculate the dimension of the falling block
             // If its a special fast block, dont cut the block
-            const lengthStickingOut = curBlock.blockServer.type === BlockType.Fast ? 0 : curBlock.position[axis] - prevBlock.position[axis]
+            let lengthStickingOut = 0
+            if (curBlock.blockServer.type === BlockType.Fast || (isFrontEdgeInside && isBackEdgeInside)) {
+                lengthStickingOut = 0
+            } else if (isFrontEdgeInside) {
+                lengthStickingOut = prevBlock.position[axis] - curBlock.position[axis]
+            } else if (isBackEdgeInside) {
+                lengthStickingOut =
+                    curBlock.position[axis] + curBlock.dimension[dimensionAlongAxis] - (prevBlock.position[axis] + prevBlock.dimension[dimensionAlongAxis])
+            }
+
             const newLength = curBlock.dimension[dimensionAlongAxis] - Math.abs(lengthStickingOut)
 
             // Pop the current block out, and replace with a new one that's cropped, and doesn't move
@@ -207,7 +265,7 @@ export class Game {
                 // The position of the replacement block
                 const positionReplacement = {
                     ...curBlock.position,
-                    [axis]: lengthStickingOut >= 0 ? curBlock.position[axis] : curBlock.position[axis] + Math.abs(lengthStickingOut),
+                    [axis]: isBackEdgeInside ? curBlock.position[axis] : curBlock.position[axis] + Math.abs(lengthStickingOut),
                 }
 
                 curBlock = new MovingBlock(
@@ -237,7 +295,7 @@ export class Game {
                 [axis]:
                     curBlock.blockServer.type === BlockType.Bomb
                         ? curBlock.position[axis]
-                        : lengthStickingOut >= 0
+                        : isBackEdgeInside
                         ? curBlock.position[axis] + newLength
                         : curBlock.position[axis] - Math.abs(lengthStickingOut),
             }
@@ -268,7 +326,7 @@ export class Game {
         // **************************
 
         // If its a bomb and it got stacked, blow off some and deduct points
-        if (landedOnStack && curBlock.blockServer.type === BlockType.Bomb) {
+        if (curBlock && landedOnStack && curBlock.blockServer.type === BlockType.Bomb) {
             this.blowOffTopNBlocks(3)
         }
 

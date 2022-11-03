@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react"
 import { SectionFactions, SectionWinner } from "../.."
 import { useArena, useGame, useUI } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { LEFT_DRAWER_MAP } from "../../../routes"
+import { LeftRouteID, LeftRoutes } from "../../../routes"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { BattleState } from "../../../types"
 import { SectionMechRewards } from "./Sections/SectionMechRewards"
@@ -26,7 +26,8 @@ export const BattleEndScreen = () => {
     // New game started, so close the panel
     useEffect(() => {
         if (hasModalsOpen()) return
-        if (battleState === BattleState.IntroState) setLeftDrawerActiveTabID((prev) => (prev ? LEFT_DRAWER_MAP.battle_arena?.id : prev))
+        if (battleState === BattleState.IntroState)
+            setLeftDrawerActiveTabID((prev) => (prev ? LeftRoutes.find((route) => route.id === LeftRouteID.BattleArena)?.id : prev))
     }, [hasModalsOpen, battleState, setLeftDrawerActiveTabID])
 
     // Game ends, show the panel
@@ -37,8 +38,8 @@ export const BattleEndScreen = () => {
             if (skippedFirstIteration.current) {
                 setLeftDrawerActiveTabID((prev) => {
                     // Only change tabs if we are on the battle arena tab
-                    if (prev === LEFT_DRAWER_MAP.battle_arena?.id) {
-                        return LEFT_DRAWER_MAP.previous_battle?.id
+                    if (prev === LeftRoutes.find((route) => route.id === LeftRouteID.BattleArena)?.id) {
+                        return LeftRoutes.find((route) => route.id === LeftRouteID.PreviousBattle)?.id
                     }
                     return prev
                 })

@@ -1,14 +1,14 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../.."
-import { EmptyWarMachinesPNG, ThreeMechsJPG } from "../../../assets"
+import { EmptyWarMachinesPNG, HangarBg, ThreeMechsJPG } from "../../../assets"
 import { useArena } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
 import { useDebounce, usePagination, useUrlQuery } from "../../../hooks"
 import { useGameServerCommands } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { colors, fonts } from "../../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { Arena, BattleReplay } from "../../../types"
 import { SortDir, SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/PageHeader"
@@ -231,126 +231,139 @@ export const BattlesReplays = () => {
     }, [loadError, battleReplays, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary])
 
     return (
-        <ClipThing
-            clipSize="10px"
-            border={{
-                borderColor: theme.factionTheme.primary,
-                borderThickness: ".3rem",
+        <Box
+            alignItems="center"
+            sx={{
+                height: "100%",
+                p: "1rem",
+                zIndex: siteZIndex.RoutePage,
+                backgroundImage: `url(${HangarBg})`,
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+                backgroundSize: "cover",
             }}
-            corners={{
-                topRight: true,
-                bottomLeft: true,
-                bottomRight: true,
-            }}
-            opacity={0.9}
-            backgroundColor={theme.factionTheme.background}
-            sx={{ height: "100%" }}
         >
-            <Stack sx={{ position: "relative", height: "100%" }}>
-                <Stack sx={{ flex: 1 }}>
-                    <PageHeader
-                        title={
-                            <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                BATTLE REPLAYS
-                            </Typography>
-                        }
-                        description={<Typography sx={{ fontSize: "1.85rem" }}>Share epic moments and learn strategies behind the battles.</Typography>}
-                        imageUrl={ThreeMechsJPG}
-                    ></PageHeader>
+            <ClipThing
+                clipSize="10px"
+                border={{
+                    borderColor: theme.factionTheme.primary,
+                    borderThickness: ".3rem",
+                }}
+                corners={{
+                    topRight: true,
+                    bottomLeft: true,
+                    bottomRight: true,
+                }}
+                opacity={0.9}
+                backgroundColor={theme.factionTheme.background}
+                sx={{ height: "100%" }}
+            >
+                <Stack sx={{ position: "relative", height: "100%" }}>
+                    <Stack sx={{ flex: 1 }}>
+                        <PageHeader
+                            title={
+                                <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                    BATTLE REPLAYS
+                                </Typography>
+                            }
+                            description={<Typography sx={{ fontSize: "1.85rem" }}>Share epic moments and learn strategies behind the battles.</Typography>}
+                            imageUrl={ThreeMechsJPG}
+                        ></PageHeader>
 
-                    <TotalAndPageSizeOptions
-                        countItems={battleReplays?.length}
-                        totalItems={totalItems}
-                        pageSize={pageSize}
-                        changePageSize={changePageSize}
-                        pageSizeOptions={[15, 25, 35]}
-                        changePage={changePage}
-                        manualRefresh={getItems}
-                        sortOptions={sortOptions}
-                        selectedSort={sort}
-                        onSetSort={setSort}
-                    />
+                        <TotalAndPageSizeOptions
+                            countItems={battleReplays?.length}
+                            totalItems={totalItems}
+                            pageSize={pageSize}
+                            changePageSize={changePageSize}
+                            pageSizeOptions={[15, 25, 35]}
+                            changePage={changePage}
+                            manualRefresh={getItems}
+                            sortOptions={sortOptions}
+                            selectedSort={sort}
+                            onSetSort={setSort}
+                        />
 
-                    <Stack
-                        spacing="2.6rem"
-                        direction="row"
-                        alignItems="center"
-                        sx={{ p: ".8rem 1.8rem", borderBottom: (theme) => `${theme.factionTheme.primary}70 1.5px solid` }}
-                    >
-                        <Stack spacing="1rem" direction="row" alignItems="center">
-                            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                SEARCH:
-                            </Typography>
-                            <SearchBattle searchValueInstant={searchValueInstant} setSearchValue={setSearchValue} />
+                        <Stack
+                            spacing="2.6rem"
+                            direction="row"
+                            alignItems="center"
+                            sx={{ p: ".8rem 1.8rem", borderBottom: (theme) => `${theme.factionTheme.primary}70 1.5px solid` }}
+                        >
+                            <Stack spacing="1rem" direction="row" alignItems="center">
+                                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                    SEARCH:
+                                </Typography>
+                                <SearchBattle searchValueInstant={searchValueInstant} setSearchValue={setSearchValue} />
+                            </Stack>
+
+                            <Box sx={{ flex: 1 }} />
+
+                            <Stack spacing="1rem" direction="row" alignItems="center">
+                                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                                    BATTLE MODE:
+                                </Typography>
+                                <ArenaTypeSelect arenaTypeOptions={arenaList} selectedArenaType={selectedArenaType} onChangeArenaType={onChangeArenaType} />
+                            </Stack>
                         </Stack>
 
-                        <Box sx={{ flex: 1 }} />
-
-                        <Stack spacing="1rem" direction="row" alignItems="center">
-                            <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                BATTLE MODE:
-                            </Typography>
-                            <ArenaTypeSelect arenaTypeOptions={arenaList} selectedArenaType={selectedArenaType} onChangeArenaType={onChangeArenaType} />
-                        </Stack>
-                    </Stack>
-
-                    <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
-                        <Box
-                            sx={{
-                                ml: "1.9rem",
-                                mr: ".5rem",
-                                pr: "1.4rem",
-                                my: "1rem",
-                                flex: 1,
-                                overflowY: "auto",
-                                overflowX: "hidden",
-                                direction: "ltr",
-
-                                "::-webkit-scrollbar": {
-                                    width: ".4rem",
-                                },
-                                "::-webkit-scrollbar-track": {
-                                    background: "#FFFFFF15",
-                                    borderRadius: 3,
-                                },
-                                "::-webkit-scrollbar-thumb": {
-                                    background: theme.factionTheme.primary,
-                                    borderRadius: 3,
-                                },
-                            }}
-                        >
-                            {content}
-                        </Box>
-                    </Stack>
-
-                    {totalPages > 1 && (
-                        <Box
-                            sx={{
-                                px: "1rem",
-                                py: ".7rem",
-                                borderTop: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
-                                backgroundColor: "#00000070",
-                            }}
-                        >
-                            <Pagination
-                                size="medium"
-                                count={totalPages}
-                                page={page}
+                        <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
+                            <Box
                                 sx={{
-                                    ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
-                                    ".Mui-selected": {
-                                        color: (theme) => theme.factionTheme.secondary,
-                                        backgroundColor: `${theme.factionTheme.primary} !important`,
+                                    ml: "1.9rem",
+                                    mr: ".5rem",
+                                    pr: "1.4rem",
+                                    my: "1rem",
+                                    flex: 1,
+                                    overflowY: "auto",
+                                    overflowX: "hidden",
+                                    direction: "ltr",
+
+                                    "::-webkit-scrollbar": {
+                                        width: ".4rem",
+                                    },
+                                    "::-webkit-scrollbar-track": {
+                                        background: "#FFFFFF15",
+                                        borderRadius: 3,
+                                    },
+                                    "::-webkit-scrollbar-thumb": {
+                                        background: theme.factionTheme.primary,
+                                        borderRadius: 3,
                                     },
                                 }}
-                                onChange={(e, p) => changePage(p)}
-                                showFirstButton
-                                showLastButton
-                            />
-                        </Box>
-                    )}
+                            >
+                                {content}
+                            </Box>
+                        </Stack>
+
+                        {totalPages > 1 && (
+                            <Box
+                                sx={{
+                                    px: "1rem",
+                                    py: ".7rem",
+                                    borderTop: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
+                                    backgroundColor: "#00000070",
+                                }}
+                            >
+                                <Pagination
+                                    size="medium"
+                                    count={totalPages}
+                                    page={page}
+                                    sx={{
+                                        ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
+                                        ".Mui-selected": {
+                                            color: (theme) => theme.factionTheme.secondary,
+                                            backgroundColor: `${theme.factionTheme.primary} !important`,
+                                        },
+                                    }}
+                                    onChange={(e, p) => changePage(p)}
+                                    showFirstButton
+                                    showLastButton
+                                />
+                            </Box>
+                        )}
+                    </Stack>
                 </Stack>
-            </Stack>
-        </ClipThing>
+            </ClipThing>
+        </Box>
     )
 }

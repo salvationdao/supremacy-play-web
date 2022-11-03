@@ -1,5 +1,4 @@
 import { Box, useTheme } from "@mui/material"
-import { MARKETPLACE_TABS } from "../../../../pages"
 import { colors } from "../../../../theme/theme"
 import { Weapon } from "../../../../types"
 import { ItemType } from "../../../../types/marketplace"
@@ -39,7 +38,7 @@ export const WeaponButtons = ({ weaponDetails }: { weaponDetails: Weapon }) => {
                             label={isInMarketplace ? "VIEW LISTING" : "SELL"}
                             to={
                                 weaponDetails.item_sale_id
-                                    ? `/marketplace/${MARKETPLACE_TABS.Weapons}/${weaponDetails.item_sale_id}`
+                                    ? `/marketplace/weapons/${weaponDetails.item_sale_id}`
                                     : `/marketplace/sell?itemType=${ItemType.Weapon}&assetID=${weaponDetails.id}`
                             }
                         />

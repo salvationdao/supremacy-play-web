@@ -68,23 +68,15 @@ export const SectionMechRewards = ({ battleEndDetail }: { battleEndDetail: Battl
 
                                     <Stack direction="row" alignItems="center">
                                         <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold", color: colors.offWhite }}>REWARD:&nbsp;</Typography>
-                                        <SvgSupToken fill={colors.yellow} size="1.8rem" />
-                                        <Typography sx={{ lineHeight: 1 }}>{supFormatterNoFixed(wm.rewarded_sups, 2)}</Typography>
+                                        {wm.is_afk ? (
+                                            <Typography sx={{ lineHeight: 1, color: colors.red }}>AFK</Typography>
+                                        ) : (
+                                            <>
+                                                <SvgSupToken fill={colors.yellow} size="1.8rem" />
+                                                <Typography sx={{ lineHeight: 1 }}>{supFormatterNoFixed(wm.rewarded_sups, 2)}</Typography>
+                                            </>
+                                        )}
                                     </Stack>
-
-                                    {wm.rewarded_sups_bonus && (
-                                        <Stack direction="row" alignItems="center">
-                                            <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold", color: colors.offWhite }}>BONUS:&nbsp;</Typography>
-                                            {wm.is_afk ? (
-                                                <Typography sx={{ lineHeight: 1, color: colors.red }}>AFK</Typography>
-                                            ) : (
-                                                <>
-                                                    <SvgSupToken fill={colors.yellow} size="1.8rem" />
-                                                    <Typography sx={{ lineHeight: 1 }}>{supFormatterNoFixed(wm.rewarded_sups_bonus, 2)}</Typography>
-                                                </>
-                                            )}
-                                        </Stack>
-                                    )}
                                 </Stack>
                             </Stack>
                         )

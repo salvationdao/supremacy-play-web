@@ -66,7 +66,7 @@ export class Block {
         this.speed = blockConfig.initSpeed + blockConfig.acceleration
         this.speed = Math.min(this.speed, blockConfig.maxSpeed) // Bound to a max speed
         this.speed = -this.speed
-        this.direction = this.speed
+        this.direction = shouldReplace && prevBlock ? prevBlock.direction : this.speed
 
         // **********************************
         // ********** Create Block **********
