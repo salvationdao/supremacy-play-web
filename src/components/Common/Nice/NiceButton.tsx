@@ -53,6 +53,9 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
                     padding: ".8rem 1.2rem",
                     backgroundColor: "transparent",
                     cursor: disabled ? "auto" : "pointer",
+                    [`&:disabled .${OVERLAY_CLASSNAME}`]: {
+                        opacity: 0.5,
+                    },
                     [`&:hover:enabled .${OVERLAY_CLASSNAME}`]: {
                         opacity: 0.15,
                     },
