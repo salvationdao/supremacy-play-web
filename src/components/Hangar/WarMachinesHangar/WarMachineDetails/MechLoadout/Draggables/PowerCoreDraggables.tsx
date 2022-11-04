@@ -1,83 +1,77 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { SvgWeapons } from "../../../../../../assets"
+import { SvgPowerCore } from "../../../../../../assets"
 import { useTheme } from "../../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../../helpers"
 import { useGameServerCommandsUser } from "../../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../../keys"
 import { fonts } from "../../../../../../theme/theme"
-import { AssetItemType, Weapon } from "../../../../../../types"
-import { GetWeaponsRequest } from "../../../../WeaponsHangar/WeaponsHangar"
+import { AssetItemType, PowerCore } from "../../../../../../types"
 import { MechLoadoutItem } from "../../../Common/MechLoadoutItem"
+import { GetPowerCoresRequest } from "../../Modals/Loadout/MechLoadoutPowerCoreModal"
 import { DragWithTypesProps } from "../MechLoadoutDraggables"
 import { LoadoutDraggable } from "./LoadoutDraggable"
 
-export interface GetWeaponsDetailedResponse {
-    weapons: Weapon[]
+export interface GetPowerCoresDetailedResponse {
+    power_cores: PowerCore[]
     total: number
 }
 
-export interface WeaponDraggablesProps {
-    excludeWeaponIDs: string[]
+export interface PowerCoreDraggablesProps {
     drag: DragWithTypesProps
+    powerCoreSize: string
 }
 
-export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesProps) => {
+export const PowerCoreDraggables = ({ drag, powerCoreSize }: PowerCoreDraggablesProps) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
 
-    const weaponsMemoized = useRef<Weapon[]>([])
-    const [weapons, setWeapons] = useState<Weapon[]>([])
-    const [isWeaponsLoading, setIsWeaponsLoading] = useState(true)
-    const [weaponsError, setWeaponsError] = useState<string>()
+    const powerCoresMemoized = useRef<PowerCore[]>([])
+    const [powerCores, setPowerCores] = useState<PowerCore[]>([])
+    const [isPowerCoresLoading, setIsPowerCoresLoading] = useState(true)
+    const [powerCoresError, setPowerCoresError] = useState<string>()
 
     const { onDrag, onDragStart, onDragStop } = drag
 
-    useEffect(() => {
-        const set = new Set(excludeWeaponIDs)
-        setWeapons([...weaponsMemoized.current.filter((w) => !set.has(w.id))])
-    }, [excludeWeaponIDs])
-
-    const getWeapons = useCallback(async () => {
-        setIsWeaponsLoading(true)
+    const getPowerCores = useCallback(async () => {
+        setIsPowerCoresLoading(true)
         try {
-            const resp = await send<GetWeaponsDetailedResponse, GetWeaponsRequest>(GameServerKeys.GetWeaponsDetailed, {
+            const resp = await send<GetPowerCoresDetailedResponse, GetPowerCoresRequest>(GameServerKeys.GetPowerCoresDetailed, {
                 page: 1,
                 page_size: 9,
                 sort_by: "date",
                 sort_dir: "desc",
                 include_market_listed: false,
-                display_genesis_and_limited: true,
                 exclude_ids: [],
-                weapon_types: [],
                 rarities: [],
+                sizes: [powerCoreSize],
                 equipped_statuses: ["unequipped"],
                 search: "",
             })
 
             if (!resp) return
-            setWeaponsError(undefined)
-            setWeapons(resp.weapons)
-            weaponsMemoized.current = resp.weapons
+            setPowerCoresError(undefined)
+            setPowerCores(resp.power_cores)
+            powerCoresMemoized.current = resp.power_cores
         } catch (e) {
-            setWeaponsError(typeof e === "string" ? e : "Failed to get weapons.")
+            setPowerCoresError(typeof e === "string" ? e : "Failed to get power cores.")
             console.error(e)
         } finally {
-            setIsWeaponsLoading(false)
+            setIsPowerCoresLoading(false)
         }
-    }, [send])
+    }, [powerCoreSize, send])
     useEffect(() => {
-        getWeapons()
-    }, [getWeapons])
+        getPowerCores()
+    }, [getPowerCores])
 
-    const weaponsContent = useMemo(() => {
-        if (isWeaponsLoading) {
-            return <Typography>Loading weapons...</Typography>
+    const powerCoresContent = useMemo(() => {
+        if (isPowerCoresLoading) {
+            return <Typography>Loading power cores...</Typography>
         }
-        if (weaponsError) {
-            return <Typography>{weaponsError}</Typography>
+        if (powerCoresError) {
+            return <Typography>{powerCoresError}</Typography>
         }
-        if (weapons.length === 0) {
+        if (powerCores.length === 0) {
             return (
                 <Stack alignItems="center" justifyContent="center" height="100%">
                     <Typography
@@ -87,24 +81,24 @@ export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesPro
                             textTransform: "uppercase",
                         }}
                     >
-                        No Weapons
+                        No Power Cores
                     </Typography>
                 </Stack>
             )
         }
 
-        return weapons.map((w) => (
+        return powerCores.map((w) => (
             <LoadoutDraggable
                 key={w.id}
                 drag={{
                     onDrag: (rect) => {
-                        onDrag(rect, AssetItemType.Weapon)
+                        onDrag(rect, AssetItemType.PowerCore)
                     },
                     onDragStart: () => {
-                        onDragStart(AssetItemType.Weapon)
+                        onDragStart(AssetItemType.PowerCore)
                     },
                     onDragStop: (rect) => {
-                        onDragStop(rect, AssetItemType.Weapon, w)
+                        onDragStop(rect, AssetItemType.PowerCore, w)
                     },
                 }}
                 renderDraggable={(ref) => (
@@ -112,27 +106,15 @@ export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesPro
                         <MechLoadoutItem
                             imageUrl={w.image_url || w.avatar_url}
                             label={w.label}
-                            Icon={SvgWeapons}
+                            Icon={SvgPowerCore}
                             rarity={w.tier ? getRarityDeets(w.tier) : undefined}
-                            subLabel={w.weapon_type}
-                            TopRight={
-                                <Stack>
-                                    <Typography
-                                        sx={{
-                                            fontFamily: fonts.shareTech,
-                                        }}
-                                    >
-                                        {w.damage}
-                                    </Typography>
-                                </Stack>
-                            }
                             shape="square"
                         />
                     </Box>
                 )}
             />
         ))
-    }, [isWeaponsLoading, onDrag, onDragStart, onDragStop, theme.factionTheme.primary, weapons, weaponsError])
+    }, [isPowerCoresLoading, onDrag, onDragStart, onDragStop, theme.factionTheme.primary, powerCores, powerCoresError])
 
     return (
         <Box
@@ -141,7 +123,7 @@ export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesPro
                 gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
             }}
         >
-            {weaponsContent}
+            {powerCoresContent}
         </Box>
     )
 }

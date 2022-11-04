@@ -376,6 +376,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     }, [inheritAllWeaponSkins, inherit_all_weapon_skins, uninheritAllWeaponSkins])
 
     // DRAG HANDLERS
+    const powerCoreItemRef = useRef<HTMLDivElement>(null)
     const mechSkinItemRef = useRef<HTMLDivElement>(null)
     const weaponItemRefs = useRef<Map<number, HTMLDivElement | null>>(new Map()) // Map<slot_number, Element ref>
     const onItemDrag = useCallback<CustomDragEventWithType>(
@@ -417,6 +418,21 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                     }
                     break
                 }
+                case AssetItemType.PowerCore: {
+                    if (!powerCoreItemRef.current) return
+
+                    const slotBoundingRect = powerCoreItemRef.current.getBoundingClientRect()
+                    const overlaps = checkDOMRectOverlap(rect, slotBoundingRect, 70)
+
+                    if (overlaps) {
+                        powerCoreItemRef.current.style.transform = "scale(1.1)"
+                        powerCoreItemRef.current.style.transition = "transform .1s ease-out"
+                    } else {
+                        powerCoreItemRef.current.style.transform = "scale(1.0)"
+                        powerCoreItemRef.current.style.transition = "transform .1s ease-in"
+                    }
+                    break
+                }
             }
         },
         [chassis_skin?.locked_to_mech, loadoutDisabled, weapons_map],
@@ -425,6 +441,29 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         (type) => {
             if (loadoutDisabled) return
             setIsDragging(true)
+
+            const unhighlightOthers = (type: AssetItemType) => {
+                if (type !== AssetItemType.Weapon) {
+                    for (const kv of weaponItemRefs.current.entries()) {
+                        const slotNumber = kv[0]
+                        const element = kv[1]
+                        if (!element) continue
+                        if (weapons_map.get(slotNumber)?.locked_to_mech) continue
+
+                        element.style.filter = `grayscale(80%)`
+                    }
+                }
+                if (type !== AssetItemType.MechSkin) {
+                    if (mechSkinItemRef.current && !chassis_skin?.locked_to_mech) {
+                        mechSkinItemRef.current.style.filter = `grayscale(80%)`
+                    }
+                }
+                if (type !== AssetItemType.PowerCore) {
+                    if (powerCoreItemRef.current) {
+                        powerCoreItemRef.current.style.filter = `grayscale(80%)`
+                    }
+                }
+            }
 
             switch (type) {
                 case AssetItemType.Weapon:
@@ -439,10 +478,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                     }
 
                     // Unhighlight unrelated slots
-                    if (!mechSkinItemRef.current) return
-                    if (chassis_skin?.locked_to_mech) return
-
-                    mechSkinItemRef.current.style.filter = `grayscale(80%)`
+                    unhighlightOthers(AssetItemType.Weapon)
                     break
                 case AssetItemType.MechSkin:
                     if (!mechSkinItemRef.current) return
@@ -450,14 +486,14 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
 
                     mechSkinItemRef.current.style.filter = `drop-shadow(0 0 1rem ${colors.chassisSkin})`
 
-                    for (const kv of weaponItemRefs.current.entries()) {
-                        const slotNumber = kv[0]
-                        const element = kv[1]
-                        if (!element) continue
-                        if (weapons_map.get(slotNumber)?.locked_to_mech) continue
+                    unhighlightOthers(AssetItemType.MechSkin)
+                    break
+                case AssetItemType.PowerCore:
+                    if (!powerCoreItemRef.current) return
 
-                        element.style.filter = `grayscale(80%)`
-                    }
+                    powerCoreItemRef.current.style.filter = `drop-shadow(0 0 1rem ${colors.powerCore})`
+
+                    unhighlightOthers(AssetItemType.PowerCore)
                     break
             }
         },
@@ -505,6 +541,21 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                     }
                     break
                 }
+                case AssetItemType.PowerCore: {
+                    if (!powerCoreItemRef.current) return
+
+                    const slotBoundingRect = powerCoreItemRef.current.getBoundingClientRect()
+                    const overlaps = checkDOMRectOverlap(rect, slotBoundingRect, 70)
+
+                    if (overlaps) {
+                        const powerCore = item as PowerCore
+                        modifyPowerCore({
+                            power_core: powerCore,
+                            power_core_id: powerCore.id,
+                        })
+                    }
+                    break
+                }
             }
 
             for (const kv of weaponItemRefs.current.entries()) {
@@ -516,13 +567,17 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                 element.style.filter = "none"
             }
 
-            if (!mechSkinItemRef.current) return
-            if (chassis_skin?.locked_to_mech) return
-            mechSkinItemRef.current.style.filter = "none"
+            if (mechSkinItemRef.current && !chassis_skin?.locked_to_mech) {
+                mechSkinItemRef.current.style.filter = "none"
+            }
+
+            if (powerCoreItemRef.current) {
+                powerCoreItemRef.current.style.filter = "none"
+            }
 
             setIsDragging(false)
         },
-        [chassis_skin?.locked_to_mech, loadoutDisabled, modifyMechSkin, modifyWeaponSlot, weapons_map],
+        [chassis_skin?.locked_to_mech, loadoutDisabled, modifyMechSkin, modifyPowerCore, modifyWeaponSlot, weapons_map],
     )
 
     // 2D/3D VIEW SWITCHERS
@@ -645,6 +700,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         if (powerCore) {
             return (
                 <MechLoadoutItem
+                    ref={powerCoreItemRef}
                     disabled={loadoutDisabled}
                     imageUrl={powerCore.image_url || powerCore.avatar_url}
                     label={powerCore.label}
@@ -664,7 +720,16 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         }
 
         return (
-            <MechLoadoutItem disabled={loadoutDisabled} label="POWER CORE" renderModal={renderModal} Icon={SvgPowerCore} shape="square" size="small" isEmpty />
+            <MechLoadoutItem
+                ref={powerCoreItemRef}
+                disabled={loadoutDisabled}
+                label="POWER CORE"
+                renderModal={renderModal}
+                Icon={SvgPowerCore}
+                shape="square"
+                size="small"
+                isEmpty
+            />
         )
     }, [currLoadout.power_core_size, drawerContainerRef, loadoutDisabled, modifyPowerCore, power_core])
 
@@ -740,7 +805,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                     color: [theme.factionTheme.background],
                 }}
                 sx={{ flex: 1 }}
-
             >
                 {/* Viewer Actions */}
                 <Stack
@@ -1012,6 +1076,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                 excludeMechSkinIDs={chassis_skin ? [chassis_skin.blueprint_id] : []}
                 includeMechSkinIDs={compatible_blueprint_mech_skin_ids}
                 mechModelID={mechDetails.blueprint_id}
+                powerCoreSize={currLoadout.power_core_size}
                 drag={{
                     onDrag: onItemDrag,
                     onDragStart: onItemDragStart,

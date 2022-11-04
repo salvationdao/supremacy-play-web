@@ -96,7 +96,7 @@ interface MyAccordionDetailsProps extends AccordionDetailsProps {
 const AccordionDetails = styled(({ backgroundColor, sx, ...props }: MyAccordionDetailsProps) => (
     <MuiAccordionDetails
         sx={{
-            padding: "2rem",
+            padding: "1rem",
             backgroundColor,
             borderTop: "1px solid rgba(0, 0, 0, .125)",
             ...sx,
