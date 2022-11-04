@@ -5,7 +5,7 @@ import { fonts } from "../../../../../theme/theme"
 import { NiceAccordion } from "../../../../Common/Nice/NiceAccordion"
 import { CustomDragEventWithType, DragStartEventWithType, DragStopEventWithType } from "./Draggables/LoadoutDraggable"
 import { MechSkinDraggables, MechSkinDraggablesProps } from "./Draggables/MechSkinDraggables"
-import { WeaponDraggables, WeaponDraggablesProps } from "./WeaponDraggables"
+import { WeaponDraggables, WeaponDraggablesProps } from "./Draggables/WeaponDraggables"
 
 export type DraggablesHandle = {
     handleMechLoadoutUpdated: () => void
