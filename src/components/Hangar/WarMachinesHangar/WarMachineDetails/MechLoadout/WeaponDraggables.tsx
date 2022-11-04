@@ -41,7 +41,7 @@ export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesPro
         try {
             const resp = await send<GetWeaponsDetailedResponse, GetWeaponsRequest>(GameServerKeys.GetWeaponsDetailed, {
                 page: 1,
-                page_size: 3,
+                page_size: 9,
                 sort_by: "date",
                 sort_dir: "desc",
                 include_market_listed: false,
@@ -124,6 +124,7 @@ export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesPro
                                     </Typography>
                                 </Stack>
                             }
+                            shape="square"
                         />
                     </Box>
                 )}
@@ -131,5 +132,14 @@ export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesPro
         ))
     }, [isWeaponsLoading, weaponsError, weapons, onDrag, onDragStart, onDragStop])
 
-    return <Box>{weaponsContent}</Box>
+    return (
+        <Box
+            sx={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
+            }}
+        >
+            {weaponsContent}
+        </Box>
+    )
 }

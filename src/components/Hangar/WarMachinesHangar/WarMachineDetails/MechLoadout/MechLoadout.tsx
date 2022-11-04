@@ -9,6 +9,7 @@ import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
 import { AssetItemType, MechDetails, MechSkin, MechStatus, MechStatusEnum, MechTypeEnum, PowerCore, Utility, Weapon, WeaponType } from "../../../../../types"
 import { ClipThing } from "../../../../Common/ClipThing"
+import { BorderThickness, NiceBoxThing } from "../../../../Common/Nice/NiceBoxThing"
 import { MechLoadoutItem } from "../../Common/MechLoadoutItem"
 import { MechViewer } from "../MechViewer/MechViewer"
 import { MechViewer3D } from "../MechViewer/MechViewer3D"
@@ -730,14 +731,16 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                 height: "100%",
             }}
         >
-            <ClipThing
-                clipSize="10px"
+            <NiceBoxThing
                 border={{
-                    borderColor: theme.factionTheme.primary,
-                    borderThickness: ".3rem",
+                    color: theme.factionTheme.primary,
+                    thickness: BorderThickness.Thicc,
                 }}
-                backgroundColor={theme.factionTheme.background}
-                sx={{ flex: 1, height: "100%" }}
+                background={{
+                    color: [theme.factionTheme.background],
+                }}
+                sx={{ flex: 1 }}
+
             >
                 {/* Viewer Actions */}
                 <Stack
@@ -995,7 +998,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                         )}
                     </Stack>
                 </Box>
-            </ClipThing>
+            </NiceBoxThing>
             <MechLoadoutDraggables
                 draggablesRef={draggablesRef}
                 excludeWeaponIDs={(() => {

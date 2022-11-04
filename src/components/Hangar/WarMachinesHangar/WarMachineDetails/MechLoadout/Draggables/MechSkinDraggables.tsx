@@ -33,7 +33,7 @@ export const MechSkinDraggables = ({ excludeMechSkinIDs, includeMechSkinIDs, mec
         try {
             const resp = await send<GetSubmodelsResponse, GetSubmodelsRequest>(GameServerKeys.GetMechSubmodelsDetailed, {
                 page: 1,
-                page_size: 3,
+                page_size: 9,
                 sort_by: "date",
                 sort_dir: "desc",
                 include_market_listed: false,
@@ -103,17 +103,28 @@ export const MechSkinDraggables = ({ excludeMechSkinIDs, includeMechSkinIDs, mec
                     },
                 }}
                 renderDraggable={(ref) => (
-                    <MechLoadoutItem
-                        ref={ref}
-                        imageUrl={ms.swatch_images?.image_url || ms.swatch_images?.avatar_url || ms.image_url || ms.avatar_url}
-                        label={ms.label}
-                        Icon={SvgSkin}
-                        rarity={ms.tier ? getRarityDeets(ms.tier) : undefined}
-                    />
+                    <Box ref={ref}>
+                        <MechLoadoutItem
+                            imageUrl={ms.swatch_images?.image_url || ms.swatch_images?.avatar_url || ms.image_url || ms.avatar_url}
+                            label={ms.label}
+                            Icon={SvgSkin}
+                            rarity={ms.tier ? getRarityDeets(ms.tier) : undefined}
+                            shape="square"
+                        />
+                    </Box>
                 )}
             />
         ))
     }, [isMechSkinsLoading, mechSkins, mechSkinsError, onDrag, onDragStart, onDragStop])
 
-    return <Box>{mechSkinsContent}</Box>
+    return (
+        <Box
+            sx={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
+            }}
+        >
+            {mechSkinsContent}
+        </Box>
+    )
 }
