@@ -1,12 +1,14 @@
 import { Box, Stack, Typography } from "@mui/material"
 import React, { useCallback, useState } from "react"
+import { useTimer } from "use-timer"
 import { SafePNG } from "../../../assets"
 import { IS_TESTING_MODE } from "../../../constants"
 import { useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { useTimer } from "../../../hooks"
+import { msToTime } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { CropMaxLengthText } from "../../../theme/styles"
 import { colors, fonts } from "../../../theme/theme"
 import { MysteryCrate, MysteryCrateType, OpenCrateResponse } from "../../../types"
 import { ItemType } from "../../../types/marketplace"
@@ -14,7 +16,6 @@ import { ClipThing } from "../../Common/ClipThing"
 import { FancyButton } from "../../Common/FancyButton"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { OpeningCrate } from "./MysteryCratesHangar"
-import { CropMaxLengthText } from "../../../theme/styles"
 
 interface MysteryCrateStoreItemProps {
     crate: MysteryCrate
@@ -115,7 +116,7 @@ export const MysteryCrateHangarItem = React.memo(function MysteryCrateHangarItem
                                         borderRadius: 0.5,
                                     }}
                                 >
-                                    <Countdown dateTo={crate.locked_until} />
+                                    <Countdown initialTime={(crate.locked_until.getTime() - new Date().getTime()) / 1000} />
                                 </Stack>
                             )}
                         </Box>
@@ -184,10 +185,17 @@ export const MysteryCrateHangarItem = React.memo(function MysteryCrateHangarItem
 },
 propsAreEqual)
 
-export const Countdown = ({ dateTo }: { dateTo: Date | undefined }) => {
-    const { days, hours, minutes, seconds, totalSecRemain } = useTimer(dateTo)
+export const Countdown = ({ initialTime }: { initialTime: number | undefined }) => {
+    const { time } = useTimer({
+        autostart: true,
+        initialTime: initialTime,
+        endTime: 0,
+        timerType: "DECREMENTAL",
+    })
 
-    if (seconds === undefined || totalSecRemain <= 0) return null
+    if (time <= 0) return null
+
+    const { days, hours, minutes, seconds } = msToTime(time * 1000)
 
     return (
         <Stack direction="row">

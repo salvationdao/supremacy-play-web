@@ -1,10 +1,11 @@
 import { Box, Divider, Grow, Stack, Typography } from "@mui/material"
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
+import { useTimer } from "use-timer"
 import { FancyButton, TooltipHelper } from "../../.."
 import { SvgCooldown, SvgInfoCircular, SvgSupToken } from "../../../../assets"
 import { useAuth, useChat } from "../../../../containers"
 import { getUserRankDeets, snakeToTitle, supFormatterNoFixed } from "../../../../helpers"
-import { useTimer, useToggle } from "../../../../hooks"
+import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
@@ -206,7 +207,7 @@ const BanProposalInner = ({
                     >
                         <Typography sx={{ fontWeight: "fontWeightBold" }}>PUNISHMENT PROPOSAL</Typography>
                         <Typography sx={{ fontWeight: "fontWeightBold", px: "1rem", backgroundColor: "#00000090" }}>
-                            <Countdown endTime={banProposal.ended_at} toggleOutOfTime={toggleOutOfTime} />s
+                            <Countdown initialTime={(banProposal.ended_at.getTime() - new Date().getTime()) / 1000} toggleOutOfTime={toggleOutOfTime} />s
                         </Typography>
                     </Stack>
 
@@ -307,12 +308,14 @@ export const LineItem = ({ title, children, color }: { title: string; children: 
     )
 }
 
-const Countdown = ({ endTime, toggleOutOfTime }: { endTime: Date; toggleOutOfTime: (value?: boolean | undefined) => void }) => {
-    const { totalSecRemain } = useTimer(endTime)
+const Countdown = ({ initialTime, toggleOutOfTime }: { initialTime: number; toggleOutOfTime: (value?: boolean | undefined) => void }) => {
+    const { time } = useTimer({
+        autostart: true,
+        initialTime: initialTime,
+        endTime: 0,
+        timerType: "DECREMENTAL",
+        onTimeOver: () => toggleOutOfTime(true),
+    })
 
-    useEffect(() => {
-        if (totalSecRemain <= 0) toggleOutOfTime(true)
-    }, [toggleOutOfTime, totalSecRemain])
-
-    return <>{totalSecRemain}</>
+    return <>{time}</>
 }

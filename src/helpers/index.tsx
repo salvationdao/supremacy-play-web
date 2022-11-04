@@ -732,3 +732,26 @@ export const isExternalURL = (url: string) => {
         return false
     }
 }
+
+// Converts { 1: "1px 2px", 2: "5px 8px" } top clipPath css string: "polygon(1px 2px, 5px 8px)"
+export const objectToPolygonClipPath = (config: { [seq: number]: string }) => {
+    const sorted = Object.entries(config)
+        .sort((a, b) => (parseInt(a[0]) > parseInt(b[0]) ? 1 : -1))
+        .map((c) => c[1])
+    return `polygon(${sorted.join(", ")})`
+}
+
+// Converts milliseconds to: days, hours, minutes, seconds,  => all sum to total the original milliseconds
+export const msToTime = (ms: number) => {
+    const days = Math.floor(ms / 1000 / 60 / 60 / 24)
+    const hours = Math.floor(ms / 1000 / 60 / 60) - days * 24
+    const minutes = Math.floor(ms / 1000 / 60) - days * 24 * 60 - hours * 60
+    const seconds = Math.floor(ms / 1000) - days * 24 * 60 * 60 - hours * 60 * 60 - minutes * 60
+    return { days, hours, minutes, seconds }
+}
+
+export const truncateAddress = (addr: string): string => {
+    const first = addr.substring(0, 6)
+    const last = addr.substring(addr.length - 5)
+    return `${first}...${last}`
+}

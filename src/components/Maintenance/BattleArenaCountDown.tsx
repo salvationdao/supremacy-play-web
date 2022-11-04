@@ -1,8 +1,8 @@
 import { Stack, Typography, useMediaQuery } from "@mui/material"
-import { useEffect } from "react"
+import { useTimer } from "use-timer"
 import { BattleArenaOpeningWebP } from "../../assets"
 import { BATTLE_ARENA_OPEN_DATE } from "../../constants"
-import { useTimer } from "../../hooks"
+import { msToTime } from "../../helpers"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { ClipThing } from "../Common/ClipThing"
 
@@ -39,17 +39,21 @@ export const BattleArenaCountDown = () => {
 
 const Countdown = () => {
     const below1080 = useMediaQuery("(max-width:1080px)")
-    const { days, hours, minutes, seconds, totalSecRemain } = useTimer(BATTLE_ARENA_OPEN_DATE)
+    // const { days, hours, minutes, seconds, totalSecRemain } = useTimer(BATTLE_ARENA_OPEN_DATE)
 
-    useEffect(() => {
-        if (totalSecRemain <= 0) {
-            location.reload()
-        }
-    }, [totalSecRemain])
+    const { time } = useTimer({
+        autostart: true,
+        initialTime: ((BATTLE_ARENA_OPEN_DATE || new Date()).getTime() - new Date().getTime()) / 1000,
+        endTime: 0,
+        timerType: "DECREMENTAL",
+        onTimeOver: () => location.reload(),
+    })
 
-    if (!BATTLE_ARENA_OPEN_DATE || seconds === undefined || totalSecRemain < 0) {
+    if (!BATTLE_ARENA_OPEN_DATE || time < 0) {
         return null
     }
+
+    const { days, hours, minutes, seconds } = msToTime(time * 1000)
 
     return (
         <Stack alignItems="center" spacing="1.6rem">
