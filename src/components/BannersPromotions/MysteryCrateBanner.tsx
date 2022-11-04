@@ -12,7 +12,7 @@ import { StorefrontMysteryCrate } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
 import { FancyButton } from "../Common/FancyButton"
 
-const LOCKED_UNTIL = "2023-07-22T00:00:00+08:00"
+const LOCKED_UNTIL = "2022-07-22T00:00:00+08:00"
 
 export const MysteryCrateBanner = () => {
     const { isMobile } = useMobile()
