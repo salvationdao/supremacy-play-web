@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material"
 import { useEffect, useMemo } from "react"
 import { useTraining } from "../../../../containers"
-import { useTimer } from "../../../../hooks"
+import { useTimerOld } from "../../../../hooks"
 import { fonts } from "../../../../theme/theme"
 import { LocationSelectType } from "../../../../types"
 
@@ -13,7 +13,7 @@ export const CountdownSubmitBT = () => {
 
 const CountdownSubmitInner = () => {
     const { winner, playerAbility, selection, onTargetConfirm } = useTraining()
-    const { setEndTimeState, totalSecRemain, delay } = useTimer(undefined, 600)
+    const { setEndTimeState, totalSecRemain, delay } = useTimerOld(undefined, 600)
 
     const isInstant = useMemo(() => {
         if (playerAbility?.ability) {

@@ -1,9 +1,9 @@
 import { Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
+import { useTimer } from "use-timer"
 import { FancyButton } from "../../../../.."
 import { useGlobalNotifications } from "../../../../../../containers"
 import { supFormatterNoFixed, timeSinceInWords } from "../../../../../../helpers"
-import { useTimer } from "../../../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../../keys"
 import { colors, fonts } from "../../../../../../theme/theme"
@@ -51,7 +51,7 @@ export const ExistingRepairJobCard = ({ repairOffer, remainDamagedBlocks }: { re
             <Stack>
                 <AmountItem title="BLOCKS TO REPAIR:" value={repairOffer.blocks_total} disableIcon />
                 <AmountItem title="REWARD:" value={supFormatterNoFixed(repairOffer.offered_sups_amount)} />
-                <Countdown endTime={repairOffer.expires_at} />
+                <Countdown initialTime={(repairOffer.expires_at.getTime() - new Date().getTime()) / 1000} />
             </Stack>
 
             <FancyButton
@@ -86,8 +86,13 @@ export const ExistingRepairJobCard = ({ repairOffer, remainDamagedBlocks }: { re
     )
 }
 
-const Countdown = ({ endTime }: { endTime: Date }) => {
-    const { totalSecRemain } = useTimer(endTime)
+const Countdown = ({ initialTime }: { initialTime: number }) => {
+    const { time } = useTimer({
+        autostart: true,
+        initialTime: initialTime,
+        endTime: 0,
+        timerType: "DECREMENTAL",
+    })
 
-    return <AmountItem title="EXPIRES IN:" value={timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000))} disableIcon />
+    return <AmountItem title="EXPIRES IN:" value={timeSinceInWords(new Date(), new Date(new Date().getTime() + time * 1000))} disableIcon />
 }

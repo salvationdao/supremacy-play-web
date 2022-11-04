@@ -2,12 +2,12 @@ import HCaptcha from "@hcaptcha/react-hcaptcha"
 import { Box, IconButton, Modal, Stack, SxProps, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import React, { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
+import { useTimer } from "use-timer"
 import { SvgClose, SvgCubes, SvgSupToken } from "../../../assets"
 import { CAPTCHA_KEY } from "../../../constants"
 import { useSupremacy, useUI } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { supFormatterNoFixed, timeSinceInWords } from "../../../helpers"
-import { useTimer } from "../../../hooks"
 import { useGameServerCommandsUser, useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
@@ -361,7 +361,7 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
                                 </InfoCard>
 
                                 <InfoCard primaryColor={primaryColor} label="TIME REMAINING">
-                                    <Countdown endTime={repairJob.expires_at} />
+                                    <Countdown initialTime={(repairJob.expires_at.getTime() - new Date().getTime()) / 1000} />
                                 </InfoCard>
                             </Stack>
                         )}
@@ -463,16 +463,21 @@ const InfoCard = React.memo(function InfoCard({
     )
 })
 
-const Countdown = React.memo(function Countdown({ endTime }: { endTime: Date }) {
-    const { totalSecRemain } = useTimer(endTime)
+const Countdown = React.memo(function Countdown({ initialTime }: { initialTime: number }) {
+    const { time } = useTimer({
+        autostart: true,
+        initialTime: initialTime,
+        endTime: 0,
+        timerType: "DECREMENTAL",
+    })
 
     let color = "#FFFFFF"
-    if (totalSecRemain < 300) color = colors.orange
-    if (totalSecRemain <= 0) color = colors.lightGrey
+    if (time < 300) color = colors.orange
+    if (time <= 0) color = colors.lightGrey
 
     return (
         <Typography variant="h4" sx={{ fontWeight: "fontWeightBold", color: color }}>
-            {totalSecRemain > 0 ? timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000), true) : "EXPIRED"}
+            {time > 0 ? timeSinceInWords(new Date(), new Date(new Date().getTime() + time * 1000), true) : "EXPIRED"}
         </Typography>
     )
 })

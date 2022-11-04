@@ -1,8 +1,9 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
+import { useTimer } from "use-timer"
 import { useAuth, useMobile, useSupremacy } from "../../containers"
 import { useTheme } from "../../containers/theme"
-import { useTimer } from "../../hooks"
+import { msToTime } from "../../helpers"
 import { useGameServerCommandsFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { zoomEffect } from "../../theme/keyframes"
@@ -11,7 +12,7 @@ import { StorefrontMysteryCrate } from "../../types"
 import { ClipThing } from "../Common/ClipThing"
 import { FancyButton } from "../Common/FancyButton"
 
-const LOCKED_UNTIL = "2022-07-22T00:00:00+08:00"
+const LOCKED_UNTIL = "2023-07-22T00:00:00+08:00"
 
 export const MysteryCrateBanner = () => {
     const { isMobile } = useMobile()
@@ -108,7 +109,7 @@ export const MysteryCrateBanner = () => {
                     ) : (
                         <Stack alignItems="center" spacing="-.5rem">
                             <Typography sx={{ fontFamily: fonts.nostromoBlack }}>MYSTERY CRATE OPENING IN </Typography>
-                            <Countdown dateTo={new Date(LOCKED_UNTIL)} setUnlocked={setUnlocked} />
+                            <Countdown initialTime={(new Date(LOCKED_UNTIL).getTime() - new Date().getTime()) / 1000} setUnlocked={setUnlocked} />
                         </Stack>
                     )}
 
@@ -153,14 +154,18 @@ export const MysteryCrateBanner = () => {
     )
 }
 
-const Countdown = ({ dateTo, setUnlocked }: { dateTo: Date | undefined; setUnlocked: React.Dispatch<React.SetStateAction<boolean>> }) => {
-    const { days, hours, minutes, seconds, totalSecRemain } = useTimer(dateTo)
+const Countdown = ({ initialTime, setUnlocked }: { initialTime: number | undefined; setUnlocked: React.Dispatch<React.SetStateAction<boolean>> }) => {
+    const { time } = useTimer({
+        autostart: true,
+        initialTime: initialTime,
+        endTime: 0,
+        timerType: "DECREMENTAL",
+        onTimeOver: () => setUnlocked(true),
+    })
 
-    useEffect(() => {
-        if (totalSecRemain <= 0) setUnlocked(true)
-    }, [seconds, setUnlocked, totalSecRemain])
+    if (time < 0) return null
 
-    if (seconds === undefined) return null
+    const { days, hours, minutes, seconds } = msToTime(time * 1000)
 
     return (
         <Stack direction="row">

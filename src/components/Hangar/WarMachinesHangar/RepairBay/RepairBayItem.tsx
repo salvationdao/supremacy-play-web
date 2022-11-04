@@ -1,17 +1,18 @@
 import { Box, CircularProgress, IconButton, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useRef, useState } from "react"
+import { useTimer } from "use-timer"
 import { SvgMoreOptions } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { getRarityDeets } from "../../../../helpers"
-import { useTimer, useToggle } from "../../../../hooks"
+import { useToggle } from "../../../../hooks"
 import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
+import { CropMaxLengthText } from "../../../../theme/styles"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechDetails, RepairSlot } from "../../../../types"
 import { ClipThing } from "../../../Common/ClipThing"
 import { MechRepairBlocks } from "../Common/MechRepairBlocks"
 import { RepairBayItemActions } from "./RepairBayItemActions"
-import { CropMaxLengthText } from "../../../../theme/styles"
 
 export const RepairBayItem = ({
     repairSlot,
@@ -176,13 +177,19 @@ export const EmptyRepairBayItem = ({ isLoading, isBigVersion }: { isLoading?: bo
 }
 
 const Blocks = ({ mechID, defaultBlocks, nextRepairTime }: { mechID: string; defaultBlocks?: number; nextRepairTime?: Date }) => {
-    const { totalSecRemain } = useTimer(nextRepairTime)
+    const { time } = useTimer({
+        autostart: true,
+        initialTime: ((nextRepairTime || new Date()).getTime() - new Date().getTime()) / 1000,
+        endTime: 0,
+        timerType: "DECREMENTAL",
+    })
+
     const totalTimeDurationSec = useRef(nextRepairTime ? (nextRepairTime.getTime() - new Date().getTime()) / 1000 : 0)
     const pulsateEffectPercent = useRef(0)
 
     useEffect(() => {
-        pulsateEffectPercent.current = totalTimeDurationSec.current ? 100 - Math.max(0, (100 * totalSecRemain) / totalTimeDurationSec.current) : 0
-    }, [totalSecRemain])
+        pulsateEffectPercent.current = totalTimeDurationSec.current ? 100 - Math.max(0, (100 * time) / totalTimeDurationSec.current) : 0
+    }, [time])
 
     return <MechRepairBlocks mechID={mechID} defaultBlocks={defaultBlocks} pulsateEffectPercent={pulsateEffectPercent.current} />
 }
