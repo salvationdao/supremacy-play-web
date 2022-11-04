@@ -1,48 +1,22 @@
 import { Box, BoxProps, SxProps } from "@mui/material"
 import { ResponsiveStyleValue } from "@mui/system"
 import { Property } from "csstype"
-import React, { useCallback } from "react"
-
-export enum CaretPosition {
-    TopLeft, // default
-    TopRight,
-    BottomLeft,
-    BottomRight,
-}
-
-export enum CaretSize {
-    Small,
-    Regular, // default
-    Large,
-}
-
-export enum BorderThickness {
-    Lean, // default
-    Thicc,
-}
-
-export enum BackgroundOpacity {
-    Transparent,
-    MoreTransparent,
-    Half,
-    MoreOpaque,
-    Opaque, // default
-}
+import React, { useMemo } from "react"
 
 export interface NiceBoxThingProps extends Omit<BoxProps, "border" | "background"> {
     caret?: {
-        position: CaretPosition
+        position: "top-left" | "top-right" | "bottom-left" | "bottom-right"
         /**
          * The colour of the caret. If no colour is provided, it will default to the border colour. An
          * error is thrown when both the caret color and border color is not provided.
          */
         color?: ResponsiveStyleValue<Property.Color | undefined>
-        size?: CaretSize
+        size?: "small" | "regular" | "large"
         detached?: boolean
     }
     border?: {
         color: ResponsiveStyleValue<Property.Color | undefined>
-        thickness?: BorderThickness
+        thickness?: "lean" | "thicc"
     }
     background?: {
         /**
@@ -59,7 +33,7 @@ export interface NiceBoxThingProps extends Omit<BoxProps, "border" | "background
          * ```
          */
         color?: ResponsiveStyleValue<Property.Color | undefined>[]
-        opacity?: BackgroundOpacity
+        opacity?: "transparent" | "more-transparent" | "half" | "more-opaque" | "opaque"
     }
     enableBoxShadow?: boolean
     sx?: SxProps
@@ -70,7 +44,7 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
     { caret, border, background, enableBoxShadow = true, sx, children, ...props },
     ref,
 ) {
-    const renderCaret = useCallback(() => {
+    const renderCaret = useMemo(() => {
         if (!caret) return
         const color = caret.color || border?.color
 
@@ -83,25 +57,25 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
         const offset = caret.detached ? "1px" : "0px"
 
         switch (caret.position) {
-            case CaretPosition.TopLeft:
+            case "top-left":
                 styles.top = offset
                 styles.left = offset
                 styles.borderTopColor = color
                 styles.borderLeftColor = color
                 break
-            case CaretPosition.TopRight:
+            case "top-right":
                 styles.top = offset
                 styles.right = offset
                 styles.borderTopColor = color
                 styles.borderRightColor = color
                 break
-            case CaretPosition.BottomLeft:
+            case "bottom-left":
                 styles.bottom = offset
                 styles.left = offset
                 styles.borderBottomColor = color
                 styles.borderLeftColor = color
                 break
-            case CaretPosition.BottomRight:
+            case "bottom-right":
                 styles.bottom = offset
                 styles.right = offset
                 styles.borderBottomColor = color
@@ -109,14 +83,14 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
                 break
         }
 
-        switch (typeof caret.size === "undefined" ? CaretSize.Regular : caret.size) {
-            case CaretSize.Small:
+        switch (typeof caret.size === "undefined" ? "regular" : caret.size) {
+            case "small":
                 styles.borderWidth = "5px"
                 break
-            case CaretSize.Regular:
+            case "regular":
                 styles.borderWidth = "8px"
                 break
-            case CaretSize.Large:
+            case "large":
                 styles.borderWidth = "12px"
                 break
         }
@@ -130,7 +104,7 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
         )
     }, [border?.color, caret])
 
-    const renderBackground = useCallback(() => {
+    const renderBackground = useMemo(() => {
         if (!background) return
 
         const backgroundStyles: SxProps = {
@@ -156,20 +130,20 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
             backgroundStyles.background = `linear-gradient(to bottom right, ${colors.join(", ")})`
         }
 
-        switch (typeof background.opacity === "undefined" ? BackgroundOpacity.Opaque : background.opacity) {
-            case BackgroundOpacity.Transparent:
+        switch (typeof background.opacity === "undefined" ? "opaque" : background.opacity) {
+            case "transparent":
                 backgroundStyles.opacity = 0
                 break
-            case BackgroundOpacity.MoreTransparent:
+            case "more-transparent":
                 backgroundStyles.opacity = 0.2
                 break
-            case BackgroundOpacity.Half:
+            case "half":
                 backgroundStyles.opacity = 0.5
                 break
-            case BackgroundOpacity.MoreOpaque:
+            case "more-opaque":
                 backgroundStyles.opacity = 0.7
                 break
-            case BackgroundOpacity.Opaque:
+            case "opaque":
                 backgroundStyles.opacity = 1
                 break
         }
@@ -183,18 +157,18 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
         )
     }, [background, border?.color])
 
-    const generateBorderStyles = useCallback(() => {
+    const generateBorderStyles = useMemo(() => {
         if (!border) return {}
         const styles: SxProps = {
             borderColor: border.color,
             borderStyle: "solid",
         }
 
-        switch (typeof border.thickness === "undefined" ? BorderThickness.Lean : border.thickness) {
-            case BorderThickness.Lean:
+        switch (typeof border.thickness === "undefined" ? "lean" : border.thickness) {
+            case "lean":
                 styles.borderWidth = "2px"
                 break
-            case BorderThickness.Thicc:
+            case "thicc":
                 styles.borderWidth = "3px"
                 break
         }
@@ -209,14 +183,14 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
                 zIndex: 0,
                 position: "relative",
                 boxShadow: enableBoxShadow ? 0.4 : "none",
-                ...generateBorderStyles(),
+                ...generateBorderStyles,
                 ...sx,
             }}
             {...props}
         >
-            {renderBackground()}
+            {renderBackground}
             {children}
-            {renderCaret()}
+            {renderCaret}
         </Box>
     )
 })
