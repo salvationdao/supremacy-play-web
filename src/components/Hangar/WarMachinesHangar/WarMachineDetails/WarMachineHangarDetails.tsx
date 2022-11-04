@@ -1,7 +1,6 @@
 import { Stack, Typography } from "@mui/material"
 import { useState } from "react"
 import { ClipThing } from "../../.."
-import { BATTLE_ARENA_OPEN } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -10,9 +9,6 @@ import { MechDetails, MechStatus, MechStatusEnum } from "../../../../types"
 import { BorderThickness, NiceBoxThing } from "../../../Common/Nice/NiceBoxThing"
 import { MechLoadout } from "./MechLoadout/MechLoadout"
 import { MechPicker } from "./MechPicker/MechPicker"
-import { DeployModal } from "./Modals/DeployModal"
-import { RepairModal } from "./Modals/RepairModal/RepairModal"
-import { StakeModal } from "./Modals/StakeModal"
 
 interface WarMachineHangarDetailsProps {
     drawerContainerRef: React.MutableRefObject<HTMLElement | undefined>
@@ -20,41 +16,9 @@ interface WarMachineHangarDetailsProps {
 }
 
 export const WarMachineHangarDetails = ({ drawerContainerRef, mechID }: WarMachineHangarDetailsProps) => {
-    const [selectedMechDetails, setSelectedMechDetails] = useState<MechDetails>()
-    const [deployMechModalOpen, setDeployMechModalOpen] = useState<boolean>(false)
-    const [stakeMechModalOpen, setStakeMechModalOpen] = useState<boolean>(false)
-    const [repairMechModalOpen, setRepairMechModalOpen] = useState<boolean>(false)
-
     return (
         <>
-            <WarMachineHangarDetailsInner
-                drawerContainerRef={drawerContainerRef}
-                mechID={mechID}
-                setSelectedMechDetails={setSelectedMechDetails}
-                setDeployMechModalOpen={setDeployMechModalOpen}
-                setStakeMechModalOpen={setStakeMechModalOpen}
-                setRepairMechModalOpen={setRepairMechModalOpen}
-            />
-
-            {BATTLE_ARENA_OPEN && selectedMechDetails && deployMechModalOpen && (
-                <DeployModal
-                    selectedMechDetails={selectedMechDetails}
-                    deployMechModalOpen={deployMechModalOpen}
-                    setDeployMechModalOpen={setDeployMechModalOpen}
-                />
-            )}
-
-            {selectedMechDetails && stakeMechModalOpen && (
-                <StakeModal selectedMechDetails={selectedMechDetails} rentalMechModalOpen={stakeMechModalOpen} setRentalMechModalOpen={setStakeMechModalOpen} />
-            )}
-
-            {selectedMechDetails && repairMechModalOpen && (
-                <RepairModal
-                    selectedMechDetails={selectedMechDetails}
-                    repairMechModalOpen={repairMechModalOpen}
-                    setRepairMechModalOpen={setRepairMechModalOpen}
-                />
-            )}
+            <WarMachineHangarDetailsInner drawerContainerRef={drawerContainerRef} mechID={mechID} />
         </>
     )
 }
@@ -62,20 +26,9 @@ export const WarMachineHangarDetails = ({ drawerContainerRef, mechID }: WarMachi
 interface WarMachineHangarDetailsInnerProps {
     drawerContainerRef: React.MutableRefObject<HTMLElement | undefined>
     mechID: string
-    setSelectedMechDetails: React.Dispatch<React.SetStateAction<MechDetails | undefined>>
-    setDeployMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    setStakeMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    setRepairMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export const WarMachineHangarDetailsInner = ({
-    drawerContainerRef,
-    mechID,
-    setSelectedMechDetails,
-    setDeployMechModalOpen,
-    setStakeMechModalOpen,
-    setRepairMechModalOpen,
-}: WarMachineHangarDetailsInnerProps) => {
+export const WarMachineHangarDetailsInner = ({ drawerContainerRef, mechID }: WarMachineHangarDetailsInnerProps) => {
     const theme = useTheme()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 
