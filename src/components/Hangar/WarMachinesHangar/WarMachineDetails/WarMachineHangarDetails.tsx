@@ -1,5 +1,5 @@
 import { Stack, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { ClipThing } from "../../.."
 import { BATTLE_ARENA_OPEN } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
@@ -78,12 +78,6 @@ export const WarMachineHangarDetailsInner = ({
 }: WarMachineHangarDetailsInnerProps) => {
     const theme = useTheme()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
-    const [inheritWeaponSkins, setInheritWeaponSkins] = useState(false)
-
-    useEffect(() => {
-        if (!mechDetails) return
-        setInheritWeaponSkins(mechDetails.inherit_all_weapon_skins)
-    }, [mechDetails])
 
     useGameServerSubscriptionFaction<MechDetails>(
         {
@@ -123,13 +117,7 @@ export const WarMachineHangarDetailsInner = ({
         <Stack position="relative" direction="row" spacing="1rem" sx={{ height: "100%" }}>
             {/* Left side */}
             {mechDetails ? (
-                <MechPicker
-                    mechDetails={mechDetails}
-                    mechStatus={mechStatus}
-                    onSelect={(mid) => console.log(mid)}
-                    onUpdate={(newMechDetails) => setMechDetails(newMechDetails)}
-                    onUpdateWeaponSkinInherit={(newInheritSkins) => setInheritWeaponSkins(newInheritSkins)}
-                />
+                <MechPicker mechDetails={mechDetails} mechStatus={mechStatus} onSelect={(mid) => console.log(mid)} onUpdate={updateMechDetails} />
             ) : (
                 <NiceBoxThing
                     border={{
@@ -162,13 +150,7 @@ export const WarMachineHangarDetailsInner = ({
 
             {/* Right side */}
             {mechDetails ? (
-                <MechLoadout
-                    drawerContainerRef={drawerContainerRef}
-                    mechDetails={mechDetails}
-                    mechStatus={mechStatus}
-                    inheritWeaponSkins={inheritWeaponSkins}
-                    onUpdate={updateMechDetails}
-                />
+                <MechLoadout drawerContainerRef={drawerContainerRef} mechDetails={mechDetails} mechStatus={mechStatus} onUpdate={updateMechDetails} />
             ) : (
                 <ClipThing
                     clipSize="10px"

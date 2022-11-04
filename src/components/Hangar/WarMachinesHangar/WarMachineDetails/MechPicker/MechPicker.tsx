@@ -1,10 +1,10 @@
 import { Box, FormControlLabel, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { SvgBin, SvgCrown, SvgDamageCross, SvgSkull, SvgWrapperProps } from "../../../../../assets"
-import { useAuth } from "../../../../../containers"
+import { useAuth, useGlobalNotifications } from "../../../../../containers"
 import { useTheme } from "../../../../../containers/theme"
 import { getMechStatusDeets, getRarityDeets } from "../../../../../helpers"
-import { useGameServerCommands } from "../../../../../hooks/useGameServer"
+import { useGameServerCommands, useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
 import { BattleMechStats, MechDetails, MechStatus } from "../../../../../types"
@@ -12,6 +12,7 @@ import { BorderThickness, CaretPosition, CaretSize, NiceBoxThing } from "../../.
 import { NiceSwitch } from "../../../../Common/Nice/NiceSwitch"
 import { MechBarStats } from "../../Common/MechBarStats"
 import { MechRepairBlocks } from "../../Common/MechRepairBlocks"
+import { PlayerAssetMechEquipRequest } from "../MechLoadout/MechLoadout"
 import { MechName } from "../MechName"
 
 export interface MechPickerProps {
@@ -19,13 +20,14 @@ export interface MechPickerProps {
     mechStatus?: MechStatus
     onSelect: (mechID: MechDetails) => void
     onUpdate: (newMechDetails: MechDetails) => void
-    onUpdateWeaponSkinInherit: (newSkinInherit: boolean) => void
 }
 
-export const MechPicker = ({ mechDetails, mechStatus, onUpdate, onUpdateWeaponSkinInherit }: MechPickerProps) => {
+export const MechPicker = ({ mechDetails, mechStatus, onUpdate }: MechPickerProps) => {
     const theme = useTheme()
     const { userID } = useAuth()
     const { send } = useGameServerCommands("/public/commander")
+    const { send: sendUser } = useGameServerCommandsUser("/user_commander")
+    const { newSnackbarMessage } = useGlobalNotifications()
 
     const statusDeets = useMemo(() => getMechStatusDeets(mechStatus), [mechStatus])
     const [inheritWeaponSkins, setInheritWeaponSkins] = useState(mechDetails.inherit_all_weapon_skins)
@@ -56,6 +58,34 @@ export const MechPicker = ({ mechDetails, mechStatus, onUpdate, onUpdateWeaponSk
             }
         })()
     }, [send, mechDetails.id])
+
+    // Submit payload to server
+    const updateInheritSkin = useCallback(
+        async (value: boolean) => {
+            try {
+                const newMechDetails = await sendUser<MechDetails, PlayerAssetMechEquipRequest>(GameServerKeys.EquipMech, {
+                    inherit_all_weapon_skins: value,
+                    equip_utility: [],
+                    equip_weapons: [],
+                    mech_id: mechDetails.id,
+                })
+
+                newSnackbarMessage(`Successfully saved loadout.`, "success")
+                onUpdate(newMechDetails)
+            } catch (e) {
+                console.error(e)
+            }
+        },
+        [mechDetails.id, newSnackbarMessage, onUpdate, sendUser],
+    )
+
+    const handleInheritWeaponSkin = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            setInheritWeaponSkins(event.target.checked)
+            updateInheritSkin(event.target.checked)
+        },
+        [updateInheritSkin],
+    )
 
     const renderBattleStats = useCallback(() => {
         if (statsError) {
@@ -111,14 +141,6 @@ export const MechPicker = ({ mechDetails, mechStatus, onUpdate, onUpdateWeaponSk
             </Box>
         )
     }, [mechBattleStats, statsError, statsLoading])
-
-    const handleInheritWeaponSkin = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
-            setInheritWeaponSkins(event.target.checked)
-            onUpdateWeaponSkinInherit(event.target.checked)
-        },
-        [onUpdateWeaponSkinInherit],
-    )
 
     const rarity = getRarityDeets(mechDetails.chassis_skin?.tier || mechDetails.tier)
     const avatarUrl = mechDetails?.chassis_skin?.avatar_url || mechDetails?.avatar_url
