@@ -219,12 +219,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                 unityControlsRef.current.handleMechSkinUpdate(ems)
             }
 
-            setCurrLoadout((prev) => {
-                return {
-                    ...prev,
-                    chassis_skin: ems.mech_skin,
-                }
-            })
             saveSelection({
                 equip_mech_skin: ems
                     ? {
@@ -241,18 +235,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                 unityControlsRef.current.handlePowerCoreUpdate(ep)
             }
 
-            setCurrLoadout((prev) => {
-                let updated: PowerCore | undefined = ep.power_core
-                if (ep.unequip) {
-                    updated = undefined
-                } else if (ep.power_core) {
-                    updated = ep.power_core
-                }
-                return {
-                    ...prev,
-                    power_core: updated,
-                }
-            })
             saveSelection({
                 equip_power_core: ep
                     ? {
@@ -274,23 +256,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
             if (ew.inherit_skin && !blueprint_weapon_ids_with_skin_inheritance.find((s) => s === ew.weapon?.blueprint_id)) {
                 ew.inherit_skin = false
             }
-
-            setCurrLoadout((prev) => {
-                const updated = new Map(prev.weapons_map)
-                if (ew.unequip) {
-                    updated.set(ew.slot_number, null)
-                } else if (ew.weapon) {
-                    updated.set(ew.slot_number, {
-                        ...ew.weapon,
-                        inherit_skin: !!ew.inherit_skin,
-                    })
-                }
-
-                return {
-                    ...prev,
-                    weapons_map: updated,
-                }
-            })
 
             saveSelection({
                 equip_weapons: [
@@ -875,25 +840,24 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                             }}
                         >
                             <Stack direction="row" alignItems="end" p="1rem">
-                                {
-                                    <Fade in={!!error} mountOnEnter unmountOnExit>
-                                        <Typography
-                                            sx={{
-                                                color: colors.red,
-                                            }}
-                                        >
-                                            {error}
-                                        </Typography>
-                                    </Fade>
-                                }
-                                <Typography
-                                    sx={{
-                                        fontFamily: fonts.nostromoBlack,
-                                        fontSize: "2rem",
-                                    }}
-                                >
-                                    Saving Changes
-                                </Typography>
+                                {error ? (
+                                    <Typography
+                                        sx={{
+                                            color: colors.red,
+                                        }}
+                                    >
+                                        {error}
+                                    </Typography>
+                                ) : (
+                                    <Typography
+                                        sx={{
+                                            fontFamily: fonts.nostromoBlack,
+                                            fontSize: "2rem",
+                                        }}
+                                    >
+                                        Saving Changes
+                                    </Typography>
+                                )}
                             </Stack>
                         </ClipThing>
                     </Slide>
