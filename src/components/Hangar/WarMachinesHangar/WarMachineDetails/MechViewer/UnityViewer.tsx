@@ -89,6 +89,11 @@ const ImpureUnityViewer = ({ unity, initialMech: mech }: MechViewer3DProps) => {
 
     useImperativeHandle(unity.unityRef, () => ({
         handleUnload: () => {
+            if (status < UnityStatus.Loaded) {
+                return new Promise((resolve) => {
+                    resolve()
+                })
+            }
             return unload()
         },
         handleWeaponUpdate: (wu: LoadoutWeapon) => {
