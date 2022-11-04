@@ -46,6 +46,7 @@ export const MainMenuNav = () => {
                     <TabContent activeTabID={activeTabID} />
 
                     <NiceButton
+                        sheen
                         sx={{ alignSelf: "center", px: "3.8rem" }}
                         onClick={() => toggleShowMainMenu(false)}
                         border={{ color: theme.factionTheme.primary }}

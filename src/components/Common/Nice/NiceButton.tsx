@@ -1,12 +1,19 @@
 import { Box, ButtonBaseProps, CircularProgress, SxProps } from "@mui/material"
-import React, { HTMLAttributeAnchorTarget } from "react"
+import React, { HTMLAttributeAnchorTarget, useMemo } from "react"
 import { Link } from "react-router-dom"
+import { sheenMovement } from "../../../theme/keyframes"
 import { BackgroundOpacity, NiceBoxThing, NiceBoxThingProps } from "./NiceBoxThing"
 
 type Bruh = ButtonBaseProps & NiceBoxThingProps
 
+interface SheenOptions {
+    sheenSpeedFactor?: number
+    autoSheen?: boolean
+}
+
 interface CommonProps extends Omit<Bruh, "sx"> {
     loading?: boolean
+    sheen?: SheenOptions | boolean
     sx?: SxProps
 }
 
@@ -32,13 +39,24 @@ type NiceButtonProps = CommonProps & LinkProps
 const OVERLAY_CLASSNAME = "NiceButtonOverlay"
 
 export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(function NiceButton(
-    { link, route, loading, disabled, sx, children, ...props },
+    { link, route, loading, sheen, disabled, sx, children, ...props },
     ref,
 ) {
     const buttonDisabled = loading || disabled
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const Nice = NiceBoxThing as any
+
+    const sheenOptions = useMemo(() => {
+        if (!sheen || typeof sheen === "boolean") {
+            return {
+                sheenSpeedFactor: 1,
+                autoSheen: false,
+            }
+        } else {
+            return sheen
+        }
+    }, [sheen])
 
     return (
         <Nice
@@ -59,6 +77,48 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
                     [`&:active:enabled .${OVERLAY_CLASSNAME}`]: {
                         opacity: 0.5,
                     },
+
+                    // Sheen effect
+                    ...(sheen
+                        ? {
+                              overflow: "hidden",
+                              ":before, :after": {
+                                  content: "''",
+                                  position: "absolute",
+                                  top: "-110%",
+                                  left: "-230%",
+                                  width: "300%",
+                                  height: "200%",
+                                  opacity: 0,
+                                  transform: "rotate(-70deg)",
+                                  backgroundColor: "rgba(255, 255, 255, 0.2)",
+                                  background: `linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 50%,rgba(128,186,232,0) 99%,rgba(125,185,232,0) 100%)`,
+                                  filter: "blur(20px)",
+                                  zIndex: 99,
+                                  animationFillMode: "forwards",
+                                  animation: sheenOptions.autoSheen
+                                      ? `${sheenMovement("30%", buttonDisabled ? 0 : 0.1, 25)} ${2 * (sheenOptions.sheenSpeedFactor || 1)}s linear infinite`
+                                      : "unset",
+                              },
+
+                              ":before": {
+                                  left: "-150%",
+                                  width: "200%",
+                                  animation: sheenOptions.autoSheen
+                                      ? `${sheenMovement("130%", buttonDisabled ? 0 : 1, 25)} ${2 * (sheenOptions.sheenSpeedFactor || 1)}s linear infinite`
+                                      : "unset",
+                              },
+
+                              ":hover:before": {
+                                  animation: `${sheenMovement("130%", buttonDisabled ? 0 : 1)} ${0.7 * (sheenOptions.sheenSpeedFactor || 1)}s linear`,
+                              },
+
+                              ":hover:after": {
+                                  animation: `${sheenMovement("30%", buttonDisabled ? 0 : 0.1)} ${0.7 * (sheenOptions.sheenSpeedFactor || 1)}s linear`,
+                              },
+                          }
+                        : {}),
+
                     ...sx,
                 } as SxProps
             }
