@@ -2,7 +2,7 @@ import { Box, ButtonBaseProps, CircularProgress, SxProps } from "@mui/material"
 import React, { HTMLAttributeAnchorTarget, useMemo } from "react"
 import { Link } from "react-router-dom"
 import { sheenMovement } from "../../../theme/keyframes"
-import { BackgroundOpacity, NiceBoxThing, NiceBoxThingProps } from "./NiceBoxThing"
+import { NiceBoxThing, NiceBoxThingProps } from "./NiceBoxThing"
 
 type Bruh = ButtonBaseProps & NiceBoxThingProps
 
@@ -58,88 +58,84 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
         }
     }, [sheen])
 
+    const getStyles = useMemo(() => {
+        return {
+            position: "relative",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            p: ".8rem 1.2rem",
+            backgroundColor: "transparent",
+            cursor: buttonDisabled ? "auto" : "pointer",
+            [`&:hover:enabled .${OVERLAY_CLASSNAME}`]: {
+                opacity: 0.15,
+            },
+            [`&:active:enabled .${OVERLAY_CLASSNAME}`]: {
+                opacity: 0.5,
+            },
+
+            // Sheen effect
+            ...(sheen
+                ? {
+                      overflow: "hidden",
+                      ":before, :after": {
+                          content: "''",
+                          position: "absolute",
+                          top: "-110%",
+                          left: "-230%",
+                          width: "300%",
+                          height: "200%",
+                          opacity: 0,
+                          transform: "rotate(-70deg)",
+                          backgroundColor: "rgba(255, 255, 255, 0.2)",
+                          background: `linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 50%,rgba(128,186,232,0) 99%,rgba(125,185,232,0) 100%)`,
+                          filter: "blur(20px)",
+                          zIndex: 99,
+                          animationFillMode: "forwards",
+                          animation: sheenOptions.autoSheen
+                              ? `${sheenMovement("30%", buttonDisabled ? 0 : 0.1, 25)} ${2 * (sheenOptions.sheenSpeedFactor || 1)}s linear infinite`
+                              : "unset",
+                      },
+
+                      ":before": {
+                          left: "-150%",
+                          width: "200%",
+                          animation: sheenOptions.autoSheen
+                              ? `${sheenMovement("130%", buttonDisabled ? 0 : 1, 25)} ${2 * (sheenOptions.sheenSpeedFactor || 1)}s linear infinite`
+                              : "unset",
+                      },
+
+                      ":hover:before": {
+                          animation: `${sheenMovement("130%", buttonDisabled ? 0 : 1)} ${0.7 * (sheenOptions.sheenSpeedFactor || 1)}s linear`,
+                      },
+
+                      ":hover:after": {
+                          animation: `${sheenMovement("30%", buttonDisabled ? 0 : 0.1)} ${0.7 * (sheenOptions.sheenSpeedFactor || 1)}s linear`,
+                      },
+                  }
+                : {}),
+
+            ...sx,
+        }
+    }, [buttonDisabled, sheen, sheenOptions.autoSheen, sheenOptions.sheenSpeedFactor, sx])
+
     return (
         <Nice
             ref={ref}
             component="button"
-            sx={
-                {
-                    position: "relative",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: ".8rem 1.2rem",
-                    backgroundColor: "transparent",
-                    cursor: disabled ? "auto" : "pointer",
-                    [`&:hover:enabled .${OVERLAY_CLASSNAME}`]: {
-                        opacity: 0.15,
-                    },
-                    [`&:active:enabled .${OVERLAY_CLASSNAME}`]: {
-                        opacity: 0.5,
-                    },
-
-                    // Sheen effect
-                    ...(sheen
-                        ? {
-                              overflow: "hidden",
-                              ":before, :after": {
-                                  content: "''",
-                                  position: "absolute",
-                                  top: "-110%",
-                                  left: "-230%",
-                                  width: "300%",
-                                  height: "200%",
-                                  opacity: 0,
-                                  transform: "rotate(-70deg)",
-                                  backgroundColor: "rgba(255, 255, 255, 0.2)",
-                                  background: `linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 50%,rgba(128,186,232,0) 99%,rgba(125,185,232,0) 100%)`,
-                                  filter: "blur(20px)",
-                                  zIndex: 99,
-                                  animationFillMode: "forwards",
-                                  animation: sheenOptions.autoSheen
-                                      ? `${sheenMovement("30%", buttonDisabled ? 0 : 0.1, 25)} ${2 * (sheenOptions.sheenSpeedFactor || 1)}s linear infinite`
-                                      : "unset",
-                              },
-
-                              ":before": {
-                                  left: "-150%",
-                                  width: "200%",
-                                  animation: sheenOptions.autoSheen
-                                      ? `${sheenMovement("130%", buttonDisabled ? 0 : 1, 25)} ${2 * (sheenOptions.sheenSpeedFactor || 1)}s linear infinite`
-                                      : "unset",
-                              },
-
-                              ":hover:before": {
-                                  animation: `${sheenMovement("130%", buttonDisabled ? 0 : 1)} ${0.7 * (sheenOptions.sheenSpeedFactor || 1)}s linear`,
-                              },
-
-                              ":hover:after": {
-                                  animation: `${sheenMovement("30%", buttonDisabled ? 0 : 0.1)} ${0.7 * (sheenOptions.sheenSpeedFactor || 1)}s linear`,
-                              },
-                          }
-                        : {}),
-
-                    ...sx,
-                } as SxProps
-            }
+            sx={getStyles}
             background={{
-                opacity: BackgroundOpacity.MoreTransparent,
+                opacity: "more-transparent",
             }}
             disabled={buttonDisabled}
             enableBoxShadow
             {...props}
         >
-            {route ? (
-                <Link style={{ width: "100%", height: "100%" }} to={route.to} target={route.target}>
-                    {children}
-                </Link>
-            ) : link ? (
-                <a style={{ width: "100%", height: "100%" }} href={link.href} target={link.target}>
-                    {children}
-                </a>
-            ) : (
-                children
-            )}
+            {route && <Link style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: 3 }} to={route.to} target={route.target}></Link>}
+
+            {link && <a style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: 3 }} href={link.href} target={link.target}></a>}
+
+            {children}
 
             <Box
                 className={OVERLAY_CLASSNAME}
@@ -173,7 +169,7 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
                         alignItems: "center",
                     }}
                 >
-                    {loading && <CircularProgress />}
+                    {loading && <CircularProgress size="1.2rem" sx={{ color: props.background?.color ? props.background?.color[0] : "undefined" }} />}
                 </Box>
             )}
         </Nice>

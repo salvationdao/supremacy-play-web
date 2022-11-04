@@ -1,7 +1,7 @@
 import { Box, BoxProps, SxProps } from "@mui/material"
 import { ResponsiveStyleValue } from "@mui/system"
 import { Property } from "csstype"
-import React, { useCallback } from "react"
+import React, { useMemo } from "react"
 
 export interface NiceBoxThingProps extends Omit<BoxProps, "border" | "background"> {
     caret?: {
@@ -44,7 +44,7 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
     { caret, border, background, enableBoxShadow = true, sx, children, ...props },
     ref,
 ) {
-    const renderCaret = useCallback(() => {
+    const renderCaret = useMemo(() => {
         if (!caret) return
         const color = caret.color || border?.color
 
@@ -104,7 +104,7 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
         )
     }, [border?.color, caret])
 
-    const renderBackground = useCallback(() => {
+    const renderBackground = useMemo(() => {
         if (!background) return
 
         const backgroundStyles: SxProps = {
@@ -157,7 +157,7 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
         )
     }, [background, border?.color])
 
-    const generateBorderStyles = useCallback(() => {
+    const generateBorderStyles = useMemo(() => {
         if (!border) return {}
         const styles: SxProps = {
             borderColor: border.color,
@@ -183,14 +183,14 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
                 zIndex: 0,
                 position: "relative",
                 boxShadow: enableBoxShadow ? 0.4 : "none",
-                ...generateBorderStyles(),
+                ...generateBorderStyles,
                 ...sx,
             }}
             {...props}
         >
-            {renderBackground()}
+            {renderBackground}
             {children}
-            {renderCaret()}
+            {renderCaret}
         </Box>
     )
 })
