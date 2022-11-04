@@ -360,7 +360,8 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     }, [blueprint_weapon_ids_with_skin_inheritance, currLoadout.weapon_hardpoints, currLoadout.weapons_map, saveSelection])
     const inheritAllWeaponSkinsMemo = useRef<boolean | undefined>(undefined)
     useEffect(() => {
-        if (typeof inheritAllWeaponSkinsMemo.current !== "undefined" && inherit_all_weapon_skins === inheritAllWeaponSkinsMemo.current) return
+        if (typeof inheritAllWeaponSkinsMemo.current === "undefined") return
+        if (inherit_all_weapon_skins === inheritAllWeaponSkinsMemo.current) return
         if (inherit_all_weapon_skins) {
             inheritAllWeaponSkins()
         } else {
