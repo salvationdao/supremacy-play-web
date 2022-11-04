@@ -855,12 +855,14 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                             ...mechDetails,
                             chassis_skin: mechDetails.chassis_skin,
                         }}
+                        fillContainer
                     />
                 )}
                 {/* Drag and Drop Overlay */}
                 <Fade in={isDragging} unmountOnExit>
                     <Box
                         sx={{
+                            zIndex: 4,
                             position: "absolute",
                             top: 0,
                             left: 0,
