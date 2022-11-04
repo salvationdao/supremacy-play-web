@@ -16,7 +16,8 @@ import { UnityHandle } from "../MechViewer/UnityViewer"
 import { MechLoadoutMechSkinModal } from "../Modals/Loadout/MechLoadoutMechSkinModal"
 import { MechLoadoutPowerCoreModal } from "../Modals/Loadout/MechLoadoutPowerCoreModal"
 import { MechLoadoutWeaponModal } from "../Modals/Loadout/MechLoadoutWeaponModal"
-import { CustomDragEventWithType, DraggablesHandle, DragStartEventWithType, DragStopEventWithType, MechLoadoutDraggables } from "./MechLoadoutDraggables"
+import { CustomDragEventWithType, DragStartEventWithType, DragStopEventWithType } from "./Draggables/LoadoutDraggable"
+import { DraggablesHandle, MechLoadoutDraggables } from "./MechLoadoutDraggables"
 
 export interface SavedSelection {
     inherit_all_weapon_skins?: boolean
@@ -1003,15 +1004,10 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                 excludeMechSkinIDs={chassis_skin ? [chassis_skin.blueprint_id] : []}
                 includeMechSkinIDs={compatible_blueprint_mech_skin_ids}
                 mechModelID={mechDetails.blueprint_id}
-                onDrag={onItemDrag}
-                onDragStart={onItemDragStart}
-                onDragStop={onItemDragStop}
-                onMechSkinClick={(ms) => {
-                    if (loadoutDisabled) return
-                    modifyMechSkin({
-                        mech_skin: ms,
-                        mech_skin_id: ms.id,
-                    })
+                drag={{
+                    onDrag: onItemDrag,
+                    onDragStart: onItemDragStart,
+                    onDragStop: onItemDragStop,
                 }}
             />
         </Stack>

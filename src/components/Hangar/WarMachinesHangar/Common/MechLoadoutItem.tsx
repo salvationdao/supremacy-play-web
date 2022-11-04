@@ -1,7 +1,7 @@
-import { Box, Grow, Skeleton, Stack, Typography } from "@mui/material"
+import { Box, Skeleton, Stack, Typography } from "@mui/material"
 import React, { useEffect, useRef } from "react"
 import { ClipThing } from "../../.."
-import { SvgLock, SvgSwap, SvgWrapperProps } from "../../../../assets"
+import { SvgLock, SvgWrapperProps } from "../../../../assets"
 import { useToggle } from "../../../../hooks"
 import { colors, fonts } from "../../../../theme/theme"
 import { Rarity } from "../../../../types"
@@ -54,52 +54,19 @@ export const MechLoadoutItem = React.forwardRef<HTMLDivElement, MechLoadoutItemP
                 alignItems="center"
                 sx={{ position: "relative", p: ".8rem", width: "fit-content" }}
             >
-                <Box
-                    sx={{
-                        position: "relative",
+                <MechLoadoutItemButton
+                    onClick={() => {
+                        onClick && onClick()
+                        toggleShowLoadoutModal(true)
                     }}
-                >
-                    <MechLoadoutItemButton
-                        onClick={() => {
-                            onClick && onClick()
-                            toggleShowLoadoutModal(true)
-                        }}
-                        {...loadoutItemButtonProps}
-                    />
-
-                    {/* {!props.disabled && !props.locked && onUnequip && (
-                        <IconButton
-                            onClick={() => {
-                                onUnequip()
-                            }}
-                            sx={{
-                                zIndex: 10,
-                                position: "absolute",
-                                top: "1rem",
-                                right: "1rem",
-                            }}
-                        >
-                            <SvgRemove fill={colors.red} />
-                        </IconButton>
-                    )} */}
-                </Box>
-                <Grow in={!!prevEquipped} mountOnEnter unmountOnExit>
-                    <Stack direction={side === "left" ? "row" : "row-reverse"} alignItems="center">
-                        <SvgSwap sx={{ opacity: 0.6 }} />
-                        {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
-                        <MechLoadoutItemButton {...(prevEquipped! || memoizedPrevEquipped.current)} isPreviouslyEquipped />
-                    </Stack>
-                </Grow>
+                    {...loadoutItemButtonProps}
+                />
             </Stack>
 
             {showLoadoutModal && renderModal && renderModal(toggleShowLoadoutModal)}
         </>
     )
 })
-
-interface MechLoadoutItemButtonProps extends LoadoutItem {
-    isPreviouslyEquipped?: boolean
-}
 
 const MechLoadoutItemButton = ({
     TopRight,
@@ -115,8 +82,7 @@ const MechLoadoutItemButton = ({
     disabled,
     shape = "rectangle",
     size = "regular",
-    isPreviouslyEquipped,
-}: MechLoadoutItemButtonProps) => {
+}: LoadoutItem) => {
     const height = size === "regular" ? 120 : 100
     const width = size === "regular" ? 260 : 200
     const color = isEmpty ? "#ffffff88" : "white"
@@ -168,6 +134,7 @@ const MechLoadoutItemButton = ({
                             width: "100%",
                             height: "100%",
                             objectFit: "contain",
+                            pointerEvents: "none",
                         }}
                     />
                 )}
@@ -256,20 +223,3 @@ export const MechLoadoutItemSkeleton = () => {
         </Box>
     )
 }
-
-interface MechLoadoutItemDraggableProps extends LoadoutItem {
-    style?: React.CSSProperties
-    className?: string
-    onMouseDown?: React.MouseEventHandler<HTMLDivElement>
-    onMouseUp?: React.MouseEventHandler<HTMLDivElement>
-    onTouchStart?: React.TouchEventHandler<HTMLDivElement>
-}
-
-const MechLoadoutItemDraggableBase = React.forwardRef<HTMLDivElement, MechLoadoutItemDraggableProps>(function MechLoadoutItemDraggable(
-    { slotNumber, imageUrl, label, subLabel, isEmpty, Icon, rarity, locked, ...draggableProps },
-    ref,
-) {
-    return <Stack ref={ref} position="relative" direction="row" spacing="1rem" alignItems="center" {...draggableProps}></Stack>
-})
-
-export const MechLoadoutItemDraggable = React.memo(MechLoadoutItemDraggableBase)
