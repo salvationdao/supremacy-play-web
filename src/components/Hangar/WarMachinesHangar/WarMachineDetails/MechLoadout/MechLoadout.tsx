@@ -582,7 +582,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
 
     // LOADOUT ITEM RENDERERS
     const renderWeaponSlot = useCallback(
-        (slotNumber: number) => {
+        (slotNumber: number, side?: "left" | "right") => {
             const weapon = weapons_map.get(slotNumber)
             if (typeof weapon === "undefined") return
 
@@ -644,6 +644,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                 unequip: true,
                             })
                         }
+                        side={side}
                     />
                 )
             }
@@ -657,6 +658,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                     label="WEAPON"
                     renderModal={renderModal}
                     Icon={SvgWeapons}
+                    side={side}
                     isEmpty
                 />
             )
@@ -977,11 +979,11 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                 right: "3rem",
                             }}
                         >
-                            {mech_type === MechTypeEnum.Humanoid && renderWeaponSlot(1)}
+                            {mech_type === MechTypeEnum.Humanoid && renderWeaponSlot(1, "right")}
                             {mech_type === MechTypeEnum.Platform && (
                                 <>
-                                    {renderWeaponSlot(3)}
-                                    {renderWeaponSlot(2)}
+                                    {renderWeaponSlot(3, "right")}
+                                    {renderWeaponSlot(2, "right")}
                                 </>
                             )}
                         </Stack>
@@ -1017,6 +1019,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                     Icon={SvgIntroAnimation}
                                     shape="square"
                                     size="small"
+                                    side="right"
                                 />
                             ) : (
                                 <MechLoadoutItem
@@ -1025,6 +1028,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                     Icon={SvgIntroAnimation}
                                     shape="square"
                                     size="small"
+                                    side="right"
                                     isEmpty
                                     disabled
                                 />
@@ -1037,6 +1041,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                     Icon={SvgOutroAnimation}
                                     shape="square"
                                     size="small"
+                                    side="right"
                                 />
                             ) : (
                                 <MechLoadoutItem
@@ -1045,6 +1050,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                     Icon={SvgOutroAnimation}
                                     shape="square"
                                     size="small"
+                                    side="right"
                                     isEmpty
                                     disabled
                                 />

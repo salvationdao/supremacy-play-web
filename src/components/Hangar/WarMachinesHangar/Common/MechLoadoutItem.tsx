@@ -1,7 +1,7 @@
-import { Box, Skeleton, Stack, Typography } from "@mui/material"
+import { Box, Skeleton, Slide, Stack, Typography } from "@mui/material"
 import React, { MouseEventHandler, useEffect, useRef } from "react"
 import { ClipThing } from "../../.."
-import { SvgLock, SvgWrapperProps } from "../../../../assets"
+import { SvgCancelled, SvgLock, SvgWrapperProps } from "../../../../assets"
 import { useToggle } from "../../../../hooks"
 import { colors, fonts } from "../../../../theme/theme"
 import { Rarity } from "../../../../types"
@@ -27,10 +27,11 @@ export interface MechLoadoutItemProps extends LoadoutItem {
     prevEquipped?: LoadoutItem
     onUnequip?: () => void
     renderModal?: (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => React.ReactNode
+    side?: "left" | "right"
 }
 
 export const MechLoadoutItem = React.forwardRef<HTMLDivElement, MechLoadoutItemProps>(function MechLoadoutItem(props, ref) {
-    const { prevEquipped, onUnequip, renderModal, onClick, ...loadoutItemButtonProps } = props
+    const { prevEquipped, onUnequip, renderModal, side = "left", onClick, ...loadoutItemButtonProps } = props
     const [showLoadoutModal, toggleShowLoadoutModal] = useToggle()
     const memoizedPrevEquipped = useRef<LoadoutItem>()
 
@@ -48,7 +49,8 @@ export const MechLoadoutItem = React.forwardRef<HTMLDivElement, MechLoadoutItemP
                 ref={ref}
                 sx={{
                     position: "relative",
-                    alignItems: "center",
+                    flexDirection: side === "right" ? "row-reverse" : "row",
+                    alignItems: "stretch",
                     height: props.size === "full-width" ? "100%" : "auto",
                     width: props.size === "full-width" ? "100%" : "fit-content",
                 }}
@@ -60,6 +62,29 @@ export const MechLoadoutItem = React.forwardRef<HTMLDivElement, MechLoadoutItemP
                     }}
                     {...loadoutItemButtonProps}
                 />
+                <Box overflow="hidden">
+                    <Slide in={!!onUnequip} unmountOnExit>
+                        <NiceButton
+                            onClick={onUnequip}
+                            disabled={props.disabled || props.locked}
+                            border={{
+                                color: colors.red,
+                                thickness: "lean",
+                            }}
+                            sx={
+                                side === "right"
+                                    ? {
+                                          borderRight: "none",
+                                      }
+                                    : {
+                                          borderLeft: "none",
+                                      }
+                            }
+                        >
+                            <SvgCancelled />
+                        </NiceButton>
+                    </Slide>
+                </Box>
             </Stack>
 
             {showLoadoutModal && renderModal && renderModal(toggleShowLoadoutModal)}
