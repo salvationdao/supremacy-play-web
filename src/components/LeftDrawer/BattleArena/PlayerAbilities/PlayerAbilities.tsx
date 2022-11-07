@@ -8,7 +8,7 @@ import { useTheme } from "../../../../containers/theme"
 import { usePagination } from "../../../../hooks"
 import { useGameServerSubscriptionSecuredUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { colors, fonts } from "../../../../theme/theme"
+import { colors } from "../../../../theme/theme"
 import { BattleState, LocationSelectType, PlayerAbility } from "../../../../types"
 import { SectionCollapsible } from "../Common/SectionCollapsible"
 import { PlayerAbilityCard } from "./PlayerAbilityCard"
@@ -35,7 +35,6 @@ export const PlayerAbilities = () => {
 }
 
 const PlayerAbilitiesInner = () => {
-    const theme = useTheme()
     const { userID } = useAuth()
 
     const [playerAbilities, setPlayerAbilities] = useState<PlayerAbility[]>([])
@@ -177,21 +176,7 @@ const PlayerAbilitiesInner = () => {
                         backgroundColor: "#00000070",
                     }}
                 >
-                    <Pagination
-                        size="medium"
-                        count={totalPages}
-                        page={page}
-                        sx={{
-                            ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
-                            ".Mui-selected": {
-                                color: (theme) => theme.factionTheme.secondary,
-                                backgroundColor: `${theme.factionTheme.primary} !important`,
-                            },
-                        }}
-                        onChange={(e, p) => changePage(p)}
-                        showFirstButton
-                        showLastButton
-                    />
+                    <Pagination count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
                 </Box>
             )}
         </Stack>

@@ -94,13 +94,11 @@ export const BattleEndScreen = () => {
                     overflowX: "auto",
                 }}
             >
-                <Box sx={{ height: 0 }}>
-                    <Stack spacing="3.2rem" sx={{ py: "1rem" }}>
-                        <SectionWinner battleEndDetail={battleEndDetail} />
-                        <SectionFactions battleEndDetail={battleEndDetail} />
-                        <SectionMechRewards battleEndDetail={battleEndDetail} />
-                    </Stack>
-                </Box>
+                <Stack spacing="3.2rem" sx={{ py: "1rem" }}>
+                    <SectionWinner battleEndDetail={battleEndDetail} />
+                    <SectionFactions battleEndDetail={battleEndDetail} />
+                    <SectionMechRewards battleEndDetail={battleEndDetail} />
+                </Stack>
             </Stack>
         </Stack>
     )

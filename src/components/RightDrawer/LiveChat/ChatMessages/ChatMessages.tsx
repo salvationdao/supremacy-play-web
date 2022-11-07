@@ -95,64 +95,62 @@ export const ChatMessages = React.memo(function ChatMessages({ faction_id, prima
                         direction: "ltr",
                     }}
                 >
-                    <Box sx={{ height: 0 }}>
-                        <Stack spacing=".6rem" sx={{ mt: ".88rem" }}>
-                            {chatMessages && chatMessages.length > 0 ? (
-                                chatMessages.map((message, i) => {
-                                    if (message.type === ChatMessageType.Text) {
-                                        if (onlyShowSystemMessages) return null
-                                        return (
-                                            <TextMessage
-                                                key={`${message.id}-${message.sent_at.toISOString()}`}
-                                                message={message}
-                                                containerRef={scrollableRef}
-                                                isScrolling={isScrolling}
-                                                isFailed={(message.data as TextMessageData).from_user.id === userID && failedMessages.includes(message.id)}
-                                                previousMessage={chatMessages[i - 1]}
-                                                latestMessage={latestMessage}
-                                                tabFactionID={faction_id}
-                                            />
-                                        )
-                                    } else if (message.type === ChatMessageType.PunishVote) {
-                                        const data = message.data as PunishMessageData
-                                        return (
-                                            <PunishMessage
-                                                key={`${message.id}-${message.sent_at.toISOString()}`}
-                                                data={data}
-                                                sentAt={message.sent_at}
-                                                fontSize={fontSize}
-                                            />
-                                        )
-                                    } else if (message.type === ChatMessageType.SystemBan || message.type === ChatMessageType.ModBan) {
-                                        const data = message.data as SystemBanMessageData
-                                        return (
-                                            <SystemBanMessage
-                                                key={`${message.id}-${message.sent_at.toISOString()}`}
-                                                data={data}
-                                                sentAt={message.sent_at}
-                                                fontSize={fontSize}
-                                                messageType={message.type}
-                                            />
-                                        )
-                                    } else if (message.type === ChatMessageType.NewBattle) {
-                                        const data = message.data as NewBattleMessageData
-                                        return <NewBattleMessage key={`${message.id}-${message.sent_at.toISOString()}`} data={data} sentAt={message.sent_at} />
-                                    }
+                    <Stack spacing=".6rem" sx={{ mt: ".88rem" }}>
+                        {chatMessages && chatMessages.length > 0 ? (
+                            chatMessages.map((message, i) => {
+                                if (message.type === ChatMessageType.Text) {
+                                    if (onlyShowSystemMessages) return null
+                                    return (
+                                        <TextMessage
+                                            key={`${message.id}-${message.sent_at.toISOString()}`}
+                                            message={message}
+                                            containerRef={scrollableRef}
+                                            isScrolling={isScrolling}
+                                            isFailed={(message.data as TextMessageData).from_user.id === userID && failedMessages.includes(message.id)}
+                                            previousMessage={chatMessages[i - 1]}
+                                            latestMessage={latestMessage}
+                                            tabFactionID={faction_id}
+                                        />
+                                    )
+                                } else if (message.type === ChatMessageType.PunishVote) {
+                                    const data = message.data as PunishMessageData
+                                    return (
+                                        <PunishMessage
+                                            key={`${message.id}-${message.sent_at.toISOString()}`}
+                                            data={data}
+                                            sentAt={message.sent_at}
+                                            fontSize={fontSize}
+                                        />
+                                    )
+                                } else if (message.type === ChatMessageType.SystemBan || message.type === ChatMessageType.ModBan) {
+                                    const data = message.data as SystemBanMessageData
+                                    return (
+                                        <SystemBanMessage
+                                            key={`${message.id}-${message.sent_at.toISOString()}`}
+                                            data={data}
+                                            sentAt={message.sent_at}
+                                            fontSize={fontSize}
+                                            messageType={message.type}
+                                        />
+                                    )
+                                } else if (message.type === ChatMessageType.NewBattle) {
+                                    const data = message.data as NewBattleMessageData
+                                    return <NewBattleMessage key={`${message.id}-${message.sent_at.toISOString()}`} data={data} sentAt={message.sent_at} />
+                                }
 
-                                    return null
-                                })
-                            ) : (
-                                <Typography
-                                    sx={{
-                                        color: colors.grey,
-                                        textAlign: "center",
-                                    }}
-                                >
-                                    There are no messages yet.
-                                </Typography>
-                            )}
-                        </Stack>
-                    </Box>
+                                return null
+                            })
+                        ) : (
+                            <Typography
+                                sx={{
+                                    color: colors.grey,
+                                    textAlign: "center",
+                                }}
+                            >
+                                There are no messages yet.
+                            </Typography>
+                        )}
+                    </Stack>
                 </Box>
 
                 <IconButton

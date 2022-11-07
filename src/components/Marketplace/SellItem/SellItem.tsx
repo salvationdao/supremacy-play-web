@@ -240,61 +240,59 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                             direction: "ltr",
                         }}
                     >
-                        <Box sx={{ direction: "ltr", height: 0 }}>
-                            <Stack spacing="4rem" sx={{ px: "3rem", py: "1.8rem" }}>
-                                {/* Item type select */}
-                                <ItemTypeSelect itemType={itemType} setItemType={setItemType} setAssetToSell={setAssetToSell} />
+                        <Stack spacing="4rem" sx={{ px: "3rem", py: "1.8rem" }}>
+                            {/* Item type select */}
+                            <ItemTypeSelect itemType={itemType} setItemType={setItemType} setAssetToSell={setAssetToSell} />
 
-                                {/* Asset to sell */}
-                                <AssetToSell itemType={itemType} assetToSell={assetToSell} setAssetToSell={setAssetToSell} />
+                            {/* Asset to sell */}
+                            <AssetToSell itemType={itemType} assetToSell={assetToSell} setAssetToSell={setAssetToSell} />
 
-                                <ListingDurationSelect listingDurationHours={listingDurationHours} setListingDurationHours={setListingDurationHours} />
-                                {/* Pricing inputs */}
-                                {itemType !== ItemType.Keycards && (
-                                    <PricingInput
-                                        price={startingPrice}
-                                        setPrice={setStartingPrice}
-                                        question="Auction Starting Price"
-                                        description="This will allow buyers to bid on your item as an auction."
-                                        placeholder="Enter auction starting price..."
-                                        isOptional={!!buyoutPrice && !startingPrice}
-                                    />
-                                )}
-
+                            <ListingDurationSelect listingDurationHours={listingDurationHours} setListingDurationHours={setListingDurationHours} />
+                            {/* Pricing inputs */}
+                            {itemType !== ItemType.Keycards && (
                                 <PricingInput
-                                    price={buyoutPrice}
-                                    setPrice={setBuyoutPrice}
-                                    question="Buyout Price"
-                                    description="A buyer can pay this amount to immediately purchase your item."
-                                    placeholder="Enter buyout price..."
-                                    error={checkBuyoutPriceError()}
-                                    isOptional={!!startingPrice && !dropRate}
+                                    price={startingPrice}
+                                    setPrice={setStartingPrice}
+                                    question="Auction Starting Price"
+                                    description="This will allow buyers to bid on your item as an auction."
+                                    placeholder="Enter auction starting price..."
+                                    isOptional={!!buyoutPrice && !startingPrice}
                                 />
+                            )}
 
-                                {itemType !== ItemType.Keycards && (
-                                    <>
-                                        <PricingInput
-                                            price={dropRate}
-                                            setPrice={setDropRate}
-                                            question="Price Drop / min"
-                                            description="The buyout price will reduce by this amount every minute until a buyer purchases the item. If you don't set a reserve price, the item can go down to 1 SUP."
-                                            placeholder="Enter price drop..."
-                                            error={checkPriceDropError()}
-                                            isOptional
-                                        />
-                                        <PricingInput
-                                            price={reservePrice}
-                                            setPrice={setReservePrice}
-                                            question="Reserve Price"
-                                            description="Set a minimum price that you are willing to sell this item. The item will not sell if it's lower than the reserve price."
-                                            placeholder="Enter reserve price..."
-                                            error={checkReservePriceError()}
-                                            isOptional
-                                        />
-                                    </>
-                                )}
-                            </Stack>
-                        </Box>
+                            <PricingInput
+                                price={buyoutPrice}
+                                setPrice={setBuyoutPrice}
+                                question="Buyout Price"
+                                description="A buyer can pay this amount to immediately purchase your item."
+                                placeholder="Enter buyout price..."
+                                error={checkBuyoutPriceError()}
+                                isOptional={!!startingPrice && !dropRate}
+                            />
+
+                            {itemType !== ItemType.Keycards && (
+                                <>
+                                    <PricingInput
+                                        price={dropRate}
+                                        setPrice={setDropRate}
+                                        question="Price Drop / min"
+                                        description="The buyout price will reduce by this amount every minute until a buyer purchases the item. If you don't set a reserve price, the item can go down to 1 SUP."
+                                        placeholder="Enter price drop..."
+                                        error={checkPriceDropError()}
+                                        isOptional
+                                    />
+                                    <PricingInput
+                                        price={reservePrice}
+                                        setPrice={setReservePrice}
+                                        question="Reserve Price"
+                                        description="Set a minimum price that you are willing to sell this item. The item will not sell if it's lower than the reserve price."
+                                        placeholder="Enter reserve price..."
+                                        error={checkReservePriceError()}
+                                        isOptional
+                                    />
+                                </>
+                            )}
+                        </Stack>
                     </Box>
 
                     <Stack

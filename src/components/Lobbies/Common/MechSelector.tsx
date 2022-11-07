@@ -338,19 +338,7 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs, battleLobby, kee
                         backgroundColor: "#00000070",
                     }}
                 >
-                    <Pagination
-                        size="small"
-                        count={totalPages}
-                        page={page}
-                        sx={{
-                            ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold, fontSize: "1.2rem" },
-                            ".Mui-selected": {
-                                color: factionTheme.secondary,
-                                backgroundColor: `${factionTheme.primary} !important`,
-                            },
-                        }}
-                        onChange={(e, p) => changePage(p)}
-                    />
+                    <Pagination count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
                 </Box>
             )}
         </Stack>
