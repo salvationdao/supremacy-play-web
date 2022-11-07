@@ -93,7 +93,7 @@ const MechLoadoutItemButton = ({
                 disabled={disabled || locked}
                 border={{
                     color: rarity ? rarity.color : colors.darkGrey,
-                    thickness: "thicc",
+                    thickness: "lean",
                 }}
                 caret={
                     !isEmpty
