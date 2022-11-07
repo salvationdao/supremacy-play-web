@@ -98,7 +98,7 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
                           zIndex: 99,
                           animationFillMode: "forwards",
                           animation: sheenOptions.autoSheen
-                              ? `${sheenMovement("30%", buttonDisabled ? 0 : 0.1 * (sheenOptions.opacity || 1), 25)} ${
+                              ? `${sheenMovement("30%", buttonDisabled ? 0 : 0.1 * (sheenOptions.opacity || 1), 30)} ${
                                     2 / (sheenOptions.sheenSpeedFactor || 1)
                                 }s linear infinite`
                               : "unset",
@@ -108,7 +108,7 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
                           left: "-150%",
                           width: "200%",
                           animation: sheenOptions.autoSheen
-                              ? `${sheenMovement("130%", buttonDisabled ? 0 : sheenOptions.opacity || 1, 25)} ${
+                              ? `${sheenMovement("130%", buttonDisabled ? 0 : sheenOptions.opacity || 1, 30)} ${
                                     2 / (sheenOptions.sheenSpeedFactor || 1)
                                 }s linear infinite`
                               : "unset",
