@@ -621,7 +621,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                         slotNumber={slotNumber}
                         imageUrl={weapon.image_url || weapon.avatar_url}
                         label={weapon.label}
-                        subLabel={weapon.weapon_type}
+                        subLabel={`${weapon.weapon_type} | ${weapon.default_damage_type}`}
                         Icon={SvgWeapons}
                         TopRight={
                             <Stack>
@@ -782,272 +782,277 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                 height: "100%",
             }}
         >
-            <NiceBoxThing
-                border={{
-                    color: theme.factionTheme.primary,
-                    thickness: "thicc",
-                }}
-                background={{
-                    color: [theme.factionTheme.background],
-                }}
-                sx={{ flex: 1 }}
-            >
+            <Stack flex={1}>
                 {/* Viewer Actions */}
                 <Stack
                     sx={{
-                        zIndex: 7,
-                        position: "absolute",
-                        left: 0,
-                        bottom: 0,
+                        position: "relative",
+                        alignSelf: "end",
                     }}
                 >
-                    <ClipThing
-                        clipSize="10px"
+                    <NiceBoxThing
                         border={{
-                            borderColor: theme.factionTheme.primary,
-                            borderThickness: ".3rem",
+                            color: theme.factionTheme.primary,
+                            thickness: "thicc",
                         }}
-                        backgroundColor={theme.factionTheme.background}
-                        corners={{
-                            topRight: !(enable3DLoadout && isUnityLoaded),
+                        background={{
+                            color: [theme.factionTheme.background],
                         }}
-                    >
-                        <Stack direction="row">
-                            <Box p="1rem">{!enable3DLoadout ? <Svg3DView /> : <Svg2DView />}</Box>
-                            <Divider
-                                orientation="vertical"
-                                color={colors.darkGrey}
-                                sx={{
-                                    height: "auto",
-                                }}
-                            />
-                            <Button
-                                sx={{
-                                    borderRadius: 0,
-                                }}
-                                onClick={enable3DLoadout ? switchTo2DView : switchTo3DView}
-                            >
-                                <Typography
-                                    sx={{
-                                        fontFamily: fonts.nostromoBlack,
-                                        fontSize: "2rem",
-                                    }}
-                                >
-                                    Switch to {enable3DLoadout ? "2D" : "3D"} View
-                                </Typography>
-                            </Button>
-                        </Stack>
-                    </ClipThing>
-                </Stack>
-                {/* Saving Changes */}
-                <Box
-                    sx={{
-                        zIndex: 7,
-                        position: "absolute",
-                        right: 0,
-                        bottom: 0,
-                    }}
-                >
-                    <Slide direction="up" in={loading || !!error} mountOnEnter unmountOnExit>
-                        <ClipThing
-                            clipSize="10px"
-                            border={{
-                                borderColor: theme.factionTheme.primary,
-                                borderThickness: ".3rem",
-                            }}
-                            backgroundColor={theme.factionTheme.background}
-                            corners={{
-                                topRight: !(enable3DLoadout && isUnityLoaded),
-                            }}
-                        >
-                            <Stack direction="row" alignItems="end" p="1rem">
-                                {error ? (
-                                    <Typography
-                                        sx={{
-                                            color: colors.red,
-                                        }}
-                                    >
-                                        {error}
-                                    </Typography>
-                                ) : (
-                                    <Typography
-                                        sx={{
-                                            fontFamily: fonts.nostromoBlack,
-                                            fontSize: "2rem",
-                                        }}
-                                    >
-                                        Saving Changes
-                                    </Typography>
-                                )}
-                            </Stack>
-                        </ClipThing>
-                    </Slide>
-                </Box>
-                {/* Mech Viewer */}
-                {enable3DLoadout ? (
-                    <MechViewer3D
-                        initialMech={currLoadout}
-                        unity={{
-                            unityRef: unityControlsRef,
-                            orbitControlsRef: orbitControlsRef,
-                            onUnlock: () => {
-                                setIsUnityPendingChange(false)
-                            },
-                            onLock: () => {
-                                setIsUnityPendingChange(true)
-                            },
-                            onReady: () => {
-                                setIsUnityLoaded(true)
-                            },
-                        }}
-                    />
-                ) : (
-                    <MechViewer
-                        mechDetails={{
-                            ...mechDetails,
-                            chassis_skin: mechDetails.chassis_skin,
-                        }}
-                        fillContainer
-                    />
-                )}
-                {/* Drag and Drop Overlay */}
-                <Fade in={isDragging} unmountOnExit>
-                    <Box
                         sx={{
-                            zIndex: 4,
                             position: "absolute",
                             top: 0,
-                            left: 0,
                             right: 0,
-                            bottom: 0,
+                            transform: "translateY(-100%)",
                             display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            backgroundColor: `${colors.black2}aa`,
+                            borderBottom: "none",
                         }}
                     >
-                        <Typography
+                        <Box p="1rem">{!enable3DLoadout ? <Svg3DView /> : <Svg2DView />}</Box>
+                        <Divider
+                            orientation="vertical"
+                            color={colors.darkGrey}
                             sx={{
-                                fontFamily: fonts.nostromoBlack,
-                                fontSize: "3rem",
-                                textTransform: "uppercase",
+                                height: "auto",
                             }}
+                        />
+                        <Button
+                            sx={{
+                                borderRadius: 0,
+                                whiteSpace: "nowrap",
+                            }}
+                            onClick={enable3DLoadout ? switchTo2DView : switchTo3DView}
                         >
-                            Drag loadout item to a valid slot
-                        </Typography>
-                    </Box>
-                </Fade>
-
-                {/* Main Loadout */}
-                <Box
-                    ref={orbitControlsRef}
-                    sx={{
-                        position: "absolute",
-                        top: 0,
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        overflow: "hidden",
-                        zIndex: 6,
+                            <Typography
+                                sx={{
+                                    fontFamily: fonts.nostromoBlack,
+                                    fontSize: "1.6rem",
+                                }}
+                            >
+                                Switch to {enable3DLoadout ? "2D" : "3D"} View
+                            </Typography>
+                        </Button>
+                    </NiceBoxThing>
+                </Stack>
+                <NiceBoxThing
+                    flex={1}
+                    border={{
+                        color: theme.factionTheme.primary,
+                        thickness: "thicc",
+                    }}
+                    background={{
+                        color: [theme.factionTheme.background],
                     }}
                 >
-                    {/* Top Left Side */}
-                    <Stack
-                        spacing="2rem"
+                    {/* Saving Changes */}
+                    <Box
                         sx={{
+                            zIndex: 7,
                             position: "absolute",
-                            top: "3rem",
-                            left: "3rem",
+                            right: 0,
+                            bottom: 0,
                         }}
                     >
-                        {renderWeaponSlot(0)}
-                        {mech_type === MechTypeEnum.Platform && renderWeaponSlot(1)}
-                    </Stack>
+                        <Slide direction="up" in={loading || !!error} mountOnEnter unmountOnExit>
+                            <ClipThing
+                                clipSize="10px"
+                                border={{
+                                    borderColor: theme.factionTheme.primary,
+                                    borderThickness: ".3rem",
+                                }}
+                                backgroundColor={theme.factionTheme.background}
+                                corners={{
+                                    topRight: !(enable3DLoadout && isUnityLoaded),
+                                }}
+                            >
+                                <Stack direction="row" alignItems="end" p="1rem">
+                                    {error ? (
+                                        <Typography
+                                            sx={{
+                                                color: colors.red,
+                                            }}
+                                        >
+                                            {error}
+                                        </Typography>
+                                    ) : (
+                                        <Typography
+                                            sx={{
+                                                fontFamily: fonts.nostromoBlack,
+                                                fontSize: "2rem",
+                                            }}
+                                        >
+                                            Saving Changes
+                                        </Typography>
+                                    )}
+                                </Stack>
+                            </ClipThing>
+                        </Slide>
+                    </Box>
+                    {/* Mech Viewer */}
+                    {enable3DLoadout ? (
+                        <MechViewer3D
+                            initialMech={currLoadout}
+                            unity={{
+                                unityRef: unityControlsRef,
+                                orbitControlsRef: orbitControlsRef,
+                                onUnlock: () => {
+                                    setIsUnityPendingChange(false)
+                                },
+                                onLock: () => {
+                                    setIsUnityPendingChange(true)
+                                },
+                                onReady: () => {
+                                    setIsUnityLoaded(true)
+                                },
+                            }}
+                        />
+                    ) : (
+                        <MechViewer
+                            mechDetails={{
+                                ...mechDetails,
+                                chassis_skin: mechDetails.chassis_skin,
+                            }}
+                            fillContainer
+                        />
+                    )}
+                    {/* Drag and Drop Overlay */}
+                    <Fade in={isDragging} unmountOnExit>
+                        <Box
+                            sx={{
+                                zIndex: 4,
+                                position: "absolute",
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                backgroundColor: `${colors.black2}aa`,
+                            }}
+                        >
+                            <Typography
+                                sx={{
+                                    fontFamily: fonts.nostromoBlack,
+                                    fontSize: "3rem",
+                                    textTransform: "uppercase",
+                                }}
+                            >
+                                Drag loadout item to a valid slot
+                            </Typography>
+                        </Box>
+                    </Fade>
 
-                    {/* Top Right Side */}
-                    <Stack
-                        spacing="2rem"
+                    {/* Main Loadout */}
+                    <Box
+                        ref={orbitControlsRef}
                         sx={{
                             position: "absolute",
-                            top: "3rem",
-                            right: "3rem",
+                            top: 0,
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            overflow: "hidden",
+                            zIndex: 6,
                         }}
                     >
-                        {mech_type === MechTypeEnum.Humanoid && renderWeaponSlot(1)}
-                        {mech_type === MechTypeEnum.Platform && (
-                            <>
-                                {renderWeaponSlot(3)}
-                                {renderWeaponSlot(2)}
-                            </>
-                        )}
-                    </Stack>
+                        {/* Top Left Side */}
+                        <Stack
+                            spacing="2rem"
+                            sx={{
+                                position: "absolute",
+                                top: "3rem",
+                                left: "3rem",
+                            }}
+                        >
+                            {renderWeaponSlot(0)}
+                            {mech_type === MechTypeEnum.Platform && renderWeaponSlot(1)}
+                        </Stack>
 
-                    {/* Bottom Left Side */}
-                    <Stack
-                        direction="row"
-                        spacing="2rem"
-                        sx={{
-                            position: "absolute",
-                            bottom: "3rem",
-                            left: "3rem",
-                        }}
-                    >
-                        {renderPowerCoreSlot()}
-                        {renderMechSkinSlot()}
-                    </Stack>
+                        {/* Top Right Side */}
+                        <Stack
+                            spacing="2rem"
+                            sx={{
+                                position: "absolute",
+                                top: "3rem",
+                                right: "3rem",
+                            }}
+                        >
+                            {mech_type === MechTypeEnum.Humanoid && renderWeaponSlot(1)}
+                            {mech_type === MechTypeEnum.Platform && (
+                                <>
+                                    {renderWeaponSlot(3)}
+                                    {renderWeaponSlot(2)}
+                                </>
+                            )}
+                        </Stack>
 
-                    {/* Bottom Right Side */}
-                    <Stack
-                        direction="row"
-                        spacing="2rem"
-                        sx={{
-                            position: "absolute",
-                            bottom: "3rem",
-                            right: "3rem",
-                        }}
-                    >
-                        {intro_animation ? (
-                            <MechLoadoutItem
-                                imageUrl={intro_animation.image_url || intro_animation.avatar_url}
-                                label={intro_animation.label}
-                                Icon={SvgIntroAnimation}
-                                shape="square"
-                                size="small"
-                            />
-                        ) : (
-                            <MechLoadoutItem
-                                label="INTRO ANIMATION"
-                                onClick={() => console.log("AAAAA")}
-                                Icon={SvgIntroAnimation}
-                                shape="square"
-                                size="small"
-                                isEmpty
-                                disabled
-                            />
-                        )}
+                        {/* Bottom Left Side */}
+                        <Stack
+                            direction="row"
+                            spacing="2rem"
+                            sx={{
+                                position: "absolute",
+                                bottom: "3rem",
+                                left: "3rem",
+                            }}
+                        >
+                            {renderPowerCoreSlot()}
+                            {renderMechSkinSlot()}
+                        </Stack>
 
-                        {outro_animation ? (
-                            <MechLoadoutItem
-                                imageUrl={outro_animation.image_url || outro_animation.avatar_url}
-                                label={outro_animation.label}
-                                Icon={SvgOutroAnimation}
-                                shape="square"
-                                size="small"
-                            />
-                        ) : (
-                            <MechLoadoutItem
-                                label="OUTRO ANIMATION"
-                                onClick={() => console.log("AAAAA")}
-                                Icon={SvgOutroAnimation}
-                                shape="square"
-                                size="small"
-                                isEmpty
-                                disabled
-                            />
-                        )}
-                    </Stack>
-                </Box>
-            </NiceBoxThing>
+                        {/* Bottom Right Side */}
+                        <Stack
+                            direction="row"
+                            spacing="2rem"
+                            sx={{
+                                position: "absolute",
+                                bottom: "3rem",
+                                right: "3rem",
+                            }}
+                        >
+                            {intro_animation ? (
+                                <MechLoadoutItem
+                                    imageUrl={intro_animation.image_url || intro_animation.avatar_url}
+                                    label={intro_animation.label}
+                                    Icon={SvgIntroAnimation}
+                                    shape="square"
+                                    size="small"
+                                />
+                            ) : (
+                                <MechLoadoutItem
+                                    label="INTRO ANIMATION"
+                                    onClick={() => console.log("AAAAA")}
+                                    Icon={SvgIntroAnimation}
+                                    shape="square"
+                                    size="small"
+                                    isEmpty
+                                    disabled
+                                />
+                            )}
+
+                            {outro_animation ? (
+                                <MechLoadoutItem
+                                    imageUrl={outro_animation.image_url || outro_animation.avatar_url}
+                                    label={outro_animation.label}
+                                    Icon={SvgOutroAnimation}
+                                    shape="square"
+                                    size="small"
+                                />
+                            ) : (
+                                <MechLoadoutItem
+                                    label="OUTRO ANIMATION"
+                                    onClick={() => console.log("AAAAA")}
+                                    Icon={SvgOutroAnimation}
+                                    shape="square"
+                                    size="small"
+                                    isEmpty
+                                    disabled
+                                />
+                            )}
+                        </Stack>
+                    </Box>
+                </NiceBoxThing>
+            </Stack>
             <MechLoadoutDraggables
                 draggablesRef={draggablesRef}
                 excludeWeaponIDs={(() => {

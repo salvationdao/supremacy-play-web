@@ -172,7 +172,7 @@ export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesPro
                                     label={w.label}
                                     Icon={SvgWeapons}
                                     rarity={w.tier ? getRarityDeets(w.tier) : undefined}
-                                    subLabel={w.weapon_type}
+                                    subLabel={`${w.weapon_type} | ${w.default_damage_type}`}
                                     TopRight={
                                         <Stack>
                                             <Typography
@@ -225,7 +225,7 @@ export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesPro
 export const NiceInputBase = styled(({ sx, ...props }: InputBaseProps) => (
     <InputBase
         sx={(theme) => ({
-            p: ".5rem 2rem",
+            p: ".25rem 2rem",
             border: `1px solid ${colors.darkGrey}aa`,
             backgroundColor: `${theme.factionTheme.primary}22`,
             ".MuiInputBase-input": {
@@ -255,7 +255,7 @@ export const InputLabeller = styled(({ label, name, sx, children, ...props }: In
         <Box
             component="label"
             htmlFor={name}
-            p=".5rem 2rem"
+            p=".25rem 2rem"
             sx={(theme) => ({
                 border: `1px solid ${colors.darkGrey}aa`,
                 borderRight: "none",
