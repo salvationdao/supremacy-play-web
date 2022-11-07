@@ -48,7 +48,6 @@ export const BattleLobbies = ({ lobbyStatus, battleLobbies }: BattleLobbiesProps
 
     const [list, setList] = useState<BattleLobby[]>([])
     const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
 
     const [openNewLobbyModal, setOpenNewLobbyModal] = useState(false)
     const [openPrivateRoom, setOpenPrivateRoom] = useState(false)
@@ -301,19 +300,7 @@ export const BattleLobbies = ({ lobbyStatus, battleLobbies }: BattleLobbiesProps
                                     backgroundColor: "#00000070",
                                 }}
                             >
-                                <Pagination
-                                    size="small"
-                                    count={totalPages}
-                                    page={page}
-                                    sx={{
-                                        ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold, fontSize: "1.2rem" },
-                                        ".Mui-selected": {
-                                            color: secondaryColor,
-                                            backgroundColor: `${primaryColor} !important`,
-                                        },
-                                    }}
-                                    onChange={(e, p) => changePage(p)}
-                                />
+                                <Pagination count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
                             </Box>
                         )}
                     </Stack>

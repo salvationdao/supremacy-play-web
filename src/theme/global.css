@@ -102,13 +102,13 @@ body {
 }
 
 *::-webkit-scrollbar-thumb {
-    background-color: #00ffff50 !important;
+    background: #00ffff50 !important;
     border-radius: 0px !important;
     border: 0.5px ridge #00ffff20 !important;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-    background-color: #00ffff90 !important;
+    background: #00ffff90 !important;
 }
 
 /* Input number arrows */

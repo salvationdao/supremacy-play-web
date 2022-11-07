@@ -277,6 +277,11 @@ export const theme = createTheme({
             },
         },
         MuiPagination: {
+            defaultProps: {
+                size: "medium",
+                showFirstButton: true,
+                showLastButton: true,
+            },
             styleOverrides: {
                 root: {
                     ".MuiPagination-ul": {

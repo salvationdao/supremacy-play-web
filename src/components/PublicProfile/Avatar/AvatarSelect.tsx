@@ -65,7 +65,6 @@ export const ProfileAvatar = ({
     playerID,
     avatarID,
     isCustom,
-    secondaryColor,
 }: ProfileAvatarProps) => {
     const [query] = useUrlQuery()
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -627,21 +626,7 @@ export const ProfileAvatar = ({
                                         backgroundColor: "#00000070",
                                     }}
                                 >
-                                    <Pagination
-                                        size="medium"
-                                        count={totalPages}
-                                        page={page}
-                                        sx={{
-                                            ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
-                                            ".Mui-selected": {
-                                                color: secondaryColor,
-                                                backgroundColor: `${primaryColor} !important`,
-                                            },
-                                        }}
-                                        onChange={(e, p) => changePage(p)}
-                                        showFirstButton
-                                        showLastButton
-                                    />
+                                    <Pagination count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
                                 </Box>
                             )}
                         </Stack>

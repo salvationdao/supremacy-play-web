@@ -50,6 +50,7 @@ import { ws } from "./containers/ws"
 import { useToggle } from "./hooks"
 import { Routes, RouteSingleID } from "./routes"
 import { colors, fonts } from "./theme/theme"
+import { ThemeUpdater } from "./theme/ThemeUpdater"
 
 if (SENTRY_CONFIG) {
     Sentry.init({
@@ -281,12 +282,14 @@ const App = () => {
                                                                             <GameProvider>
                                                                                 <MiniMapPixiProvider>
                                                                                     <FiatProvider>
-                                                                                        <UserUpdater />
-                                                                                        <Switch>
-                                                                                            <Route path="/404" exact component={NotFoundPage} />
-                                                                                            <Route path="/login-redirect" exact component={LoginRedirect} />
-                                                                                            <Route path="" component={AppInner} />
-                                                                                        </Switch>
+                                                                                        <ThemeUpdater>
+                                                                                            <UserUpdater />
+                                                                                            <Switch>
+                                                                                                <Route path="/404" exact component={NotFoundPage} />
+                                                                                                <Route path="/login-redirect" exact component={LoginRedirect} />
+                                                                                                <Route path="" component={AppInner} />
+                                                                                            </Switch>
+                                                                                        </ThemeUpdater>
                                                                                     </FiatProvider>
                                                                                 </MiniMapPixiProvider>
                                                                             </GameProvider>
