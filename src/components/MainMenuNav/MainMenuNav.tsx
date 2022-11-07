@@ -46,9 +46,11 @@ export const MainMenuNav = () => {
                     <TabContent activeTabID={activeTabID} />
 
                     <NiceButton
+                        sheen
                         sx={{ alignSelf: "center", px: "3.8rem" }}
                         onClick={() => toggleShowMainMenu(false)}
                         border={{ color: theme.factionTheme.primary }}
+                        route={{ to: "/fleet/mechs" }}
                     >
                         <Stack direction="row" alignItems="center" spacing=".4rem">
                             <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>

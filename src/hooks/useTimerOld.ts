@@ -2,7 +2,7 @@ import moment from "moment"
 import { useEffect, useRef, useState } from "react"
 import { useInterval } from "."
 
-export const useTimer = (endTime: Date | undefined, speed: number = 1000, stopCountingOnEnd: boolean = true) => {
+export const useTimerOld = (endTime: Date | undefined, speed: number = 1000, stopCountingOnEnd: boolean = true) => {
     const [endTimeState, setEndTimeState] = useState<Date | undefined>(endTime)
     const prevEndTimeState = useRef<Date | undefined>(endTime)
 

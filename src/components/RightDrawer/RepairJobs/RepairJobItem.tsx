@@ -1,16 +1,16 @@
 import { Box, Stack, Typography } from "@mui/material"
 import React, { useEffect, useMemo } from "react"
+import { useTimer } from "use-timer"
 import { SvgCubes, SvgSupToken } from "../../../assets"
 import { useAuth, useSupremacy } from "../../../containers"
 import { supFormatterNoFixed, timeSinceInWords } from "../../../helpers"
-import { useTimer } from "../../../hooks"
+import { CropMaxLengthText } from "../../../theme/styles"
 import { colors, fonts } from "../../../theme/theme"
 import { RepairJob } from "../../../types/jobs"
 import { FancyButton } from "../../Common/FancyButton"
 import { Player } from "../../Common/Player"
 import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
 import { General } from "../../Marketplace/Common/MarketItem/General"
-import { CropMaxLengthText } from "../../../theme/styles"
 
 interface RepairJobItemProps {
     repairJob: RepairJob
@@ -129,7 +129,7 @@ export const RepairJobItem = React.memo(function RepairJobItem({ repairJob, remo
                                 textColor={colors.lightGrey}
                             />
                         ) : (
-                            <CountdownGeneral isGridViewCompact={true} endTime={repairJob.expires_at} />
+                            <CountdownGeneral isGridViewCompact={true} initialTime={(repairJob.expires_at.getTime() - new Date().getTime()) / 1000} />
                         )}
                     </Stack>
 
@@ -151,15 +151,20 @@ export const RepairJobItem = React.memo(function RepairJobItem({ repairJob, remo
     )
 }, propsAreEqual)
 
-const CountdownGeneral = ({ isGridViewCompact, endTime }: { isGridViewCompact?: boolean; endTime: Date }) => {
-    const { totalSecRemain } = useTimer(endTime)
+const CountdownGeneral = ({ isGridViewCompact, initialTime }: { isGridViewCompact?: boolean; initialTime: number }) => {
+    const { time } = useTimer({
+        autostart: true,
+        initialTime: initialTime,
+        endTime: 0,
+        timerType: "DECREMENTAL",
+    })
 
     return (
         <General
             isGridViewCompact={isGridViewCompact}
             title="TIME LEFT"
-            text={timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000))}
-            textColor={totalSecRemain < 300 ? colors.orange : "#FFFFFF"}
+            text={timeSinceInWords(new Date(), new Date(new Date().getTime() + time * 1000))}
+            textColor={time < 300 ? colors.orange : "#FFFFFF"}
         />
     )
 }

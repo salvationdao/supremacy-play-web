@@ -1,10 +1,10 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
+import { useTimer } from "use-timer"
 import { RainingSupsPNG, SafePNG, SvgClose } from "../../assets"
 import { useAuth, useGlobalNotifications, useSupremacy } from "../../containers"
 import { useTheme } from "../../containers/theme"
-import { supFormatter } from "../../helpers"
-import { useTimer } from "../../hooks"
+import { msToTime, supFormatter } from "../../helpers"
 import { useGameServerCommandsFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
@@ -109,7 +109,11 @@ export const ClaimedRewards = ({ rewards, onClose, setOpeningCrate, setOpenedRew
                             backgroundColor={theme.factionTheme.background}
                         >
                             <Box sx={{ py: "2rem", px: "3rem" }}>
-                                <Countdown dateTo={mechRewards[0]?.locked_until || weaponRewards[0]?.locked_until} />
+                                <Countdown
+                                    initialTime={
+                                        (new Date(mechRewards[0]?.locked_until || weaponRewards[0]?.locked_until).getTime() - new Date().getTime()) / 1000
+                                    }
+                                />
                             </Box>
                         </ClipThing>
                     </Stack>
@@ -200,10 +204,17 @@ const CrateItem = ({ label, imageUrl, quantity }: { label: string; imageUrl: str
     )
 }
 
-const Countdown = ({ dateTo }: { dateTo: Date | undefined }) => {
-    const { days, hours, minutes, seconds, totalSecRemain } = useTimer(dateTo)
+const Countdown = ({ initialTime }: { initialTime?: number }) => {
+    const { time } = useTimer({
+        autostart: true,
+        initialTime: initialTime,
+        endTime: 0,
+        timerType: "DECREMENTAL",
+    })
 
-    if (seconds === undefined || totalSecRemain <= 0) return null
+    if (time < 0) return null
+
+    const { days, hours, minutes, seconds } = msToTime(time * 1000)
 
     return (
         <Stack direction="row">

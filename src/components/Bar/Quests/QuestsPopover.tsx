@@ -1,10 +1,11 @@
 import { Accordion, AccordionDetails, AccordionSummary, Box, IconButton, Popover, Stack, Typography } from "@mui/material"
 import { MutableRefObject, useEffect, useMemo } from "react"
+import { useTimer } from "use-timer"
 import { ClipThing } from "../.."
 import { SvgClose, SvgExpandMoreIcon } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { timeSinceInWords } from "../../../helpers"
-import { useTimer, useToggle } from "../../../hooks"
+import { useToggle } from "../../../hooks"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { QuestProgress, QuestStat } from "../../../types"
 import { QuestItem } from "./QuestItem"
@@ -132,7 +133,9 @@ export const QuestsPopover = ({
                                                 </Typography>
 
                                                 <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBold, span: { color: colors.neonBlue } }}>
-                                                    <Countdown endTime={questStatsFiltered[0]?.end_at} />
+                                                    <Countdown
+                                                        initialTime={(new Date(questStatsFiltered[0]?.end_at).getTime() - new Date().getTime()) / 1000}
+                                                    />
                                                 </Typography>
                                             </Stack>
                                         </AccordionSummary>
@@ -166,9 +169,13 @@ export const QuestsPopover = ({
     )
 }
 
-const Countdown = ({ endTime }: { endTime?: Date }) => {
-    const { totalSecRemain } = useTimer(endTime)
-    return (
-        <span>Resets {totalSecRemain > 0 ? "in " + timeSinceInWords(new Date(), new Date(new Date().getTime() + totalSecRemain * 1000), true) : "soon"}</span>
-    )
+const Countdown = ({ initialTime }: { initialTime?: number }) => {
+    const { time } = useTimer({
+        autostart: true,
+        initialTime: initialTime,
+        endTime: 0,
+        timerType: "DECREMENTAL",
+    })
+
+    return <span>Resets {time > 0 ? "in " + timeSinceInWords(new Date(), new Date(new Date().getTime() + time * 1000), true) : "soon"}</span>
 }
