@@ -2,6 +2,7 @@ import { Box, ButtonBaseProps, CircularProgress, SxProps } from "@mui/material"
 import React, { HTMLAttributeAnchorTarget, useMemo } from "react"
 import { Link } from "react-router-dom"
 import { sheenMovement } from "../../../theme/keyframes"
+import { fonts } from "../../../theme/theme"
 import { NiceBoxThing, NiceBoxThingProps } from "./NiceBoxThing"
 
 type Bruh = ButtonBaseProps & NiceBoxThingProps
@@ -69,6 +70,8 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
             p: ".8rem 1.2rem",
             backgroundColor: "transparent",
             cursor: buttonDisabled ? "auto" : "pointer",
+            fontFamily: fonts.nostromoBold,
+            fontSize: "1.5rem",
             [`&:hover:enabled .${OVERLAY_CLASSNAME}`]: {
                 opacity: 0.15,
             },
