@@ -1,6 +1,7 @@
 import { Stack, Typography } from "@mui/material"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ClipThing } from "../../.."
+import { useUI } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -29,6 +30,7 @@ interface WarMachineHangarDetailsInnerProps {
 }
 
 export const WarMachineHangarDetailsInner = ({ drawerContainerRef, mechID }: WarMachineHangarDetailsInnerProps) => {
+    const { setRightDrawerActiveTabID } = useUI()
     const theme = useTheme()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
 
@@ -65,6 +67,10 @@ export const WarMachineHangarDetailsInner = ({ drawerContainerRef, mechID }: War
     )
 
     const updateMechDetails = (newMechDetails: MechDetails) => setMechDetails(newMechDetails)
+
+    useEffect(() => {
+        setRightDrawerActiveTabID("")
+    }, [setRightDrawerActiveTabID])
 
     return (
         <Stack position="relative" direction="row" spacing="1rem" sx={{ height: "100%" }}>
