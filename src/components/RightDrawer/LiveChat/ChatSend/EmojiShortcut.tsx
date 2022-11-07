@@ -108,16 +108,6 @@ export const EmojiShortcut = ({
                 display: "flex",
                 p: ".5rem",
                 overflowX: "scroll",
-                scrollBehavior: "smooth",
-                "::-webkit-scrollbar": {
-                    height: ".6rem",
-                },
-                "::-webkit-scrollbar-track": {
-                    background: "#FFFFFF15",
-                },
-                "::-webkit-scrollbar-thumb": {
-                    background: primaryColor,
-                },
             }}
         >
             {emojis.map((emo, i) => {

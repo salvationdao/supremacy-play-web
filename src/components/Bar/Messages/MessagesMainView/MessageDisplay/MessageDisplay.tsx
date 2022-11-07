@@ -54,16 +54,6 @@ export const MessageDisplay = ({ message, onClose }: MessageDisplayProps) => {
                     p: "1rem 1.4rem",
                     backgroundColor: "#FFFFFF15",
                     direction: "ltr",
-                    scrollbarWidth: "none",
-                    "::-webkit-scrollbar": {
-                        width: "1rem",
-                    },
-                    "::-webkit-scrollbar-track": {
-                        background: "#FFFFFF15",
-                    },
-                    "::-webkit-scrollbar-thumb": {
-                        background: (theme) => theme.factionTheme.primary,
-                    },
                 }}
             >
                 <Box sx={{ direction: "ltr", height: 0 }}>

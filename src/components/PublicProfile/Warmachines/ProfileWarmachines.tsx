@@ -233,16 +233,6 @@ export const ProfileWarmachines = ({ playerID, primaryColour, secondaryColor, ba
                                         overflowY: "auto",
                                         overflowX: "hidden",
                                         direction: "ltr",
-
-                                        "::-webkit-scrollbar": {
-                                            width: "1rem",
-                                        },
-                                        "::-webkit-scrollbar-track": {
-                                            background: "#FFFFFF15",
-                                        },
-                                        "::-webkit-scrollbar-thumb": {
-                                            background: primaryColour,
-                                        },
                                     }}
                                 >
                                     {content}

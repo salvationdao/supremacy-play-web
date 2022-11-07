@@ -37,18 +37,6 @@ export const Controls = () => {
                 zIndex: siteZIndex.Controls,
                 overflowX: "auto",
                 overflowY: "hidden",
-
-                "::-webkit-scrollbar": {
-                    height: ".6rem",
-                },
-                "::-webkit-scrollbar-track": {
-                    background: "#FFFFFF15",
-                    borderRadius: 0,
-                },
-                "::-webkit-scrollbar-thumb": {
-                    background: (theme) => `${theme.factionTheme.primary}50`,
-                    borderRadius: 0,
-                },
             }}
         >
             <Stack direction="row" spacing="1.6rem" sx={{ flexShrink: 0, height: "100%" }}>

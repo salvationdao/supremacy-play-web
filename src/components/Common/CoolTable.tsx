@@ -222,15 +222,6 @@ export const CoolTable = <T,>({
                             scrollbarWidth: "none",
                             pr: ".4rem",
                             mr: ".4rem",
-                            "::-webkit-scrollbar": {
-                                width: "1rem",
-                            },
-                            "::-webkit-scrollbar-track": {
-                                background: "#FFFFFF15",
-                            },
-                            "::-webkit-scrollbar-thumb": {
-                                background: (theme) => theme.factionTheme.primary,
-                            },
                         }}
                     >
                         {tableBody}

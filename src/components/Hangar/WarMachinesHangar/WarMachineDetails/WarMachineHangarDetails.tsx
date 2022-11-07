@@ -193,15 +193,6 @@ export const WarMachineHangarDetailsInner = ({
                             py: ".5rem",
                             direction: "ltr",
                             scrollbarWidth: "none",
-                            "::-webkit-scrollbar": {
-                                width: "1rem",
-                            },
-                            "::-webkit-scrollbar-track": {
-                                background: "#FFFFFF15",
-                            },
-                            "::-webkit-scrollbar-thumb": {
-                                background: (theme) => theme.factionTheme.primary,
-                            },
                         }}
                     >
                         <Box sx={{ direction: "ltr", height: 0 }}>

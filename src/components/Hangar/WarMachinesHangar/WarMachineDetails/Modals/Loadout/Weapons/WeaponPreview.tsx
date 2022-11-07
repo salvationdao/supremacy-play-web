@@ -187,20 +187,6 @@ export const WeaponPreview = ({ weapon, compareTo, disableCompare }: WeaponPrevi
                         overflowX: "hidden",
                         direction: "ltr",
                         mt: "1rem",
-                        scrollbarColor: `${theme.factionTheme.primary}55 ${"#FFFFFF15"}`,
-                        scrollbarWidth: "thin",
-
-                        "::-webkit-scrollbar": {
-                            width: ".4rem",
-                        },
-                        "::-webkit-scrollbar-track": {
-                            background: "#FFFFFF15",
-                            borderRadius: 3,
-                        },
-                        "::-webkit-scrollbar-thumb": {
-                            background: theme.factionTheme.primary,
-                            borderRadius: 3,
-                        },
                     }}
                 >
                     <Typography
