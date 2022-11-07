@@ -8,7 +8,7 @@ import { colors, fonts } from "../../../../../../theme/theme"
 import { SystemMessageMechStruct } from "../../../../../../types"
 import { ClipThing } from "../../../../../Common/ClipThing"
 import { RepairBlocks } from "../../../../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
-import { CropMaxLengthText } from "../../../../../../theme/styles"
+import { TruncateTextLines } from "../../../../../../theme/styles"
 
 export const SystemMessageMech = ({ mech }: { mech: SystemMessageMechStruct }) => {
     const { name, image_url, tier, total_blocks, damaged_blocks, kills, killed } = mech
@@ -89,7 +89,7 @@ export const SystemMessageMech = ({ mech }: { mech: SystemMessageMechStruct }) =
                                 variant="body2"
                                 sx={{
                                     fontSize: "1.8rem",
-                                    ...CropMaxLengthText,
+                                    ...TruncateTextLines(1),
                                 }}
                             >
                                 {name}
@@ -114,8 +114,7 @@ export const SystemMessageMech = ({ mech }: { mech: SystemMessageMechStruct }) =
                                 fontWeight: "fontWeightBold",
                                 color: getFaction(killed.faction_id).primary_color,
                                 lineHeight: 1.2,
-                                ...CropMaxLengthText,
-                                WebkitLineClamp: 2, // change to max number of lines
+                                ...TruncateTextLines(2),
                             }}
                         >
                             {killed.name}
@@ -142,8 +141,7 @@ export const SystemMessageMech = ({ mech }: { mech: SystemMessageMechStruct }) =
                                             color: killedFaction.primary_color,
                                             textDecoration: "line-through",
                                             lineHeight: 1.2,
-                                            ...CropMaxLengthText,
-                                            WebkitLineClamp: 2, // change to max number of lines
+                                            ...TruncateTextLines(2),
                                         }}
                                     >
                                         {kill.name}

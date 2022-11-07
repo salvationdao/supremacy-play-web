@@ -1,4 +1,4 @@
-import { Modal, Box, Stack, Typography } from "@mui/material"
+import { Box, Modal, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import QRCode from "react-qr-code"
 import { FancyButton } from "../../.."
@@ -230,7 +230,6 @@ export const TelegramRegisterModal = ({ onClose, code }: { onClose: () => void; 
                                     <Typography
                                         sx={{
                                             fontFamily: fonts.nostromoBold,
-                                            WebkitBoxOrient: "vertical",
                                             textDecoration: "underline",
                                             ":hover": {
                                                 color: colors.blue,
@@ -284,12 +283,7 @@ export const TelegramRegisterModal = ({ onClose, code }: { onClose: () => void; 
                                     },
                                 }}
                             >
-                                <Typography
-                                    sx={{
-                                        fontFamily: fonts.nostromoBold,
-                                        display: "-webkit-box",
-                                    }}
-                                >
+                                <Typography sx={{ fontFamily: fonts.nostromoBold }}>
                                     4) Enter Shortcode:{" "}
                                     <Typography marginLeft={".5rem"} marginRight={".5rem"} marginTop={"-.5rem"} fontSize={"2rem"}>
                                         {code}

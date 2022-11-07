@@ -8,7 +8,7 @@ import { Keycard } from "../../../types"
 import { ItemType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/ClipThing"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
-import { CropMaxLengthText } from "../../../theme/styles"
+import { TruncateTextLines } from "../../../theme/styles"
 
 interface KeycardHangarItemProps {
     keycard: Keycard
@@ -149,7 +149,7 @@ export const KeycardCommonArea = ({
                     sx={{
                         fontFamily: fonts.nostromoBlack,
                         color: theme.factionTheme.primary,
-                        ...CropMaxLengthText,
+                        ...TruncateTextLines(1),
                     }}
                 >
                     {label}
@@ -157,8 +157,7 @@ export const KeycardCommonArea = ({
 
                 <Typography
                     sx={{
-                        ...CropMaxLengthText,
-                        WebkitLineClamp: 2,
+                        ...TruncateTextLines(2),
                     }}
                 >
                     {description}

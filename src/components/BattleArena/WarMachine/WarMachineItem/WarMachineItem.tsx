@@ -6,7 +6,7 @@ import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../../../constants"
 import { useAuth, useMiniMapPixi, useMobile, useSupremacy } from "../../../../containers"
 import { getRarityDeets } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
-import { CropMaxLengthText } from "../../../../theme/styles"
+import { TruncateTextLines } from "../../../../theme/styles"
 import { colors, fonts } from "../../../../theme/theme"
 import { AIType, WarMachineState } from "../../../../types"
 
@@ -214,7 +214,7 @@ export const WarMachineItem = ({
                                     lineHeight: 1,
                                     fontWeight: "fontWeightBold",
                                     whiteSpace: "normal",
-                                    ...CropMaxLengthText,
+                                    ...TruncateTextLines(1),
                                 }}
                             >
                                 {isMiniMech ? "Support Machine" : name || hash}
@@ -226,7 +226,7 @@ export const WarMachineItem = ({
                                     sx={{
                                         lineHeight: 1,
                                         whiteSpace: "normal",
-                                        ...CropMaxLengthText,
+                                        ...TruncateTextLines(1),
                                     }}
                                 >
                                     @{ownerUsername}

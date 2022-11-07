@@ -7,7 +7,7 @@ import { getRarityDeets } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { CropMaxLengthText } from "../../../../theme/styles"
+import { TruncateTextLines } from "../../../../theme/styles"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechDetails, RepairSlot } from "../../../../types"
 import { ClipThing } from "../../../Common/ClipThing"
@@ -98,7 +98,7 @@ export const RepairBayItem = ({
                                     sx={{
                                         fontSize: "1.8rem",
                                         color: !mechDetails.name ? colors.grey : "#FFFFFF",
-                                        ...CropMaxLengthText,
+                                        ...TruncateTextLines(1),
                                     }}
                                 >
                                     {mechDetails.name || "Unnamed"}
@@ -110,7 +110,7 @@ export const RepairBayItem = ({
                                 sx={{
                                     fontFamily: fonts.nostromoBlack,
                                     fontWeight: "fontWeightBold",
-                                    ...CropMaxLengthText,
+                                    ...TruncateTextLines(1),
                                 }}
                             >
                                 {mechDetails.label}

@@ -2,6 +2,7 @@ import { Box, SxProps, Typography, TypographyPropsVariantOverrides } from "@mui/
 import { Variant } from "@mui/material/styles/createTypography"
 import { OverridableStringUnion } from "@mui/types"
 import { ReactNode, useMemo } from "react"
+import { TruncateTextLines } from "../../../../theme/styles"
 
 export interface StyledImageTextProps {
     imageUrl?: string
@@ -44,12 +45,7 @@ export const StyledImageText = ({
         () =>
             truncateLine
                 ? {
-                      display: "-webkit-inline-box",
-                      overflow: "hidden",
-                      overflowWrap: "anywhere",
-                      textOverflow: "ellipsis",
-                      WebkitLineClamp: 1, // change to max number of lines
-                      WebkitBoxOrient: "vertical",
+                      ...TruncateTextLines(1),
                   }
                 : {},
         [truncateLine],

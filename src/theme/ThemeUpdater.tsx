@@ -1,7 +1,7 @@
 import { Box } from "@mui/material"
 import { ReactNode } from "react"
 import { useTheme } from "../containers/theme"
-import { colors, fonts } from "./theme"
+import { fonts } from "./theme"
 
 export const ThemeUpdater = ({ children }: { children: ReactNode }) => {
     const theme = useTheme()

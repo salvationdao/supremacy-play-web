@@ -6,7 +6,7 @@ import { useTheme } from "../../../containers/theme"
 import { shadeColor } from "../../../helpers"
 import { useGameServerSubscriptionFaction, useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { CropMaxLengthText } from "../../../theme/styles"
+import { TruncateTextLines } from "../../../theme/styles"
 import { colors, fonts } from "../../../theme/theme"
 import { MechBasic, MechDetails, MechStatus } from "../../../types"
 import { RepairOffer, RepairStatus } from "../../../types/jobs"
@@ -267,7 +267,7 @@ export const MechCommonArea = ({
                         sx={{
                             color: mech1?.name ? colors.offWhite : "#FFFFFF",
                             fontFamily: fonts.nostromoBlack,
-                            ...CropMaxLengthText,
+                            ...TruncateTextLines(1),
                         }}
                     >
                         {mech1?.name || mech1?.label || label}

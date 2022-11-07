@@ -8,7 +8,7 @@ import { useTheme } from "../../../containers/theme"
 import { msToTime } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { CropMaxLengthText } from "../../../theme/styles"
+import { TruncateTextLines } from "../../../theme/styles"
 import { colors, fonts } from "../../../theme/theme"
 import { MysteryCrate, MysteryCrateType, OpenCrateResponse } from "../../../types"
 import { ItemType } from "../../../types/marketplace"
@@ -257,7 +257,7 @@ export const CrateCommonArea = ({
                     sx={{
                         fontFamily: fonts.nostromoBlack,
                         color: theme.factionTheme.primary,
-                        ...CropMaxLengthText,
+                        ...TruncateTextLines(1),
                     }}
                 >
                     {label}
@@ -265,8 +265,7 @@ export const CrateCommonArea = ({
 
                 <Typography
                     sx={{
-                        ...CropMaxLengthText,
-                        WebkitLineClamp: 2,
+                        ...TruncateTextLines(2),
                     }}
                 >
                     {description}

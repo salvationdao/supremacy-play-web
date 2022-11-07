@@ -6,7 +6,7 @@ import { colors } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility, PlayerAbilityStages } from "../../../types"
 import { FancyButton } from "../../Common/FancyButton"
 import { TooltipHelper } from "../../Common/TooltipHelper"
-import { CropMaxLengthText } from "../../../theme/styles"
+import { TruncateTextLines } from "../../../theme/styles"
 
 export const PlayerAbilityCardBT = ({ playerAbility }: { playerAbility: PlayerAbility }) => {
     const { setPlayerAbility, setTrainingStage, trainingStage } = useTraining()
@@ -127,8 +127,7 @@ export const PlayerAbilityCardBT = ({ playerAbility }: { playerAbility: PlayerAb
                             variant="body2"
                             sx={{
                                 lineHeight: 1.2,
-                                ...CropMaxLengthText,
-                                WebkitLineClamp: 2,
+                                ...TruncateTextLines(2),
                                 fontWeight: "fontWeightBold",
                             }}
                         >

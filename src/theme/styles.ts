@@ -1,12 +1,10 @@
 import { SxProps } from "@mui/material"
 
-export const CropMaxLengthText: SxProps = {
+export const TruncateTextLines = (numLines = 1): SxProps => ({
     display: "-webkit-box",
     overflow: "hidden",
     overflowWrap: "anywhere",
     textOverflow: "ellipsis",
-    WebkitLineClamp: 1,
+    WebkitLineClamp: numLines,
     WebkitBoxOrient: "vertical",
-}
-
-export const ScrollBar: SxProps = {}
+})
