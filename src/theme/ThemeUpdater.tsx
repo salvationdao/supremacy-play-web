@@ -15,12 +15,14 @@ export const ThemeUpdater = ({ children }: { children: ReactNode }) => {
                     "::-webkit-scrollbar-track": {
                         background: "#FFFFFF15",
                     },
+
                     "::-webkit-scrollbar-thumb": {
-                        background: `${theme.factionTheme.primary}50 !important`,
+                        background: `${theme.factionTheme.primary}70 !important`,
                         border: `0.5px ridge ${theme.factionTheme.primary}20 !important`,
                     },
+
                     "::-webkit-scrollbar-thumb:hover": {
-                        background: `${theme.factionTheme.primary}90 !important`,
+                        background: `${theme.factionTheme.primary}CC !important`,
                     },
                 },
 
