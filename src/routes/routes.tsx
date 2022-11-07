@@ -6,6 +6,7 @@ import { BattleArena } from "../components/BattleArena/BattleArena"
 import { BillingHistory } from "../components/BillingHistory/BillingHistory"
 import { BillingHistorySingle } from "../components/BillingHistory/BillingHistorySingle"
 import { Claims } from "../components/Claims/Claims"
+import { FactionPassBuy } from "../components/FactionPass/FactionPassBuy"
 import { KeycardsHangar } from "../components/Hangar/KeycardsHangar/KeycardsHangar"
 import { MysteryCratesHangar } from "../components/Hangar/MysteryCratesHangar/MysteryCratesHangar"
 import { PlayerAbilitiesHangar } from "../components/Hangar/PlayerAbilitiesHangar/PlayerAbilitiesHangar"
@@ -74,6 +75,7 @@ export enum RouteSingleID {
     AdminPlayerLookup = "ADMIN_PLAYER_LOOKUP",
     Claim = "CLAIM",
     NotFound = "NOT_FOUND",
+    FactionPassBuy = "FACTION_PASS_BUY",
 }
 
 export enum RouteGroupID {
@@ -759,6 +761,29 @@ export const Routes: RouteSingle[] = [
         },
         enable: true,
         tabTitle: "Claim Rewards",
+    },
+
+    // ********************
+    // *** Faction Pass ***
+    // ********************
+    {
+        id: RouteSingleID.FactionPassBuy,
+        path: "/faction-pass/buy",
+        exact: true,
+        Component: FactionPassBuy,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+        },
+        showInMainMenu: {
+            groupID: RouteGroupID.FactionHQ,
+            label: "Get Faction Pass Now",
+            image: GenericPNG,
+            path: "/faction-pass/buy",
+        },
+        enable: true,
+        tabTitle: "Buy Faction Pass",
     },
 
     // ***********
