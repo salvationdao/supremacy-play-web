@@ -112,6 +112,7 @@ const TabbedLayout = () => {
                     height: 0,
                     position: "relative",
                     backgroundColor: (theme) => (tabValue == 1 ? `${theme.factionTheme.primary}06` : `${colors.globalChat}13`),
+                    overflow: "hidden",
                 }}
             >
                 {/* Tabs */}
@@ -258,6 +259,7 @@ const SplitLayout = () => {
                         position: "relative",
                         height: isEnlisted ? "50%" : "100%",
                         backgroundColor: `${colors.globalChat}13`,
+                        overflow: "hidden",
                     }}
                 >
                     <Stack
@@ -292,7 +294,7 @@ const SplitLayout = () => {
                 {isEnlisted && (
                     <Stack
                         className="tutorial-faction-chat"
-                        sx={{ position: "relative", height: "50%", backgroundColor: (theme) => `${theme.factionTheme.primary}06` }}
+                        sx={{ position: "relative", height: "50%", backgroundColor: (theme) => `${theme.factionTheme.primary}06`, overflow: "hidden" }}
                     >
                         <Stack
                             justifyContent="center"
