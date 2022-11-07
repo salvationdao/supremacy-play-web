@@ -137,7 +137,7 @@ export const PowerCoreDraggables = ({ drag, powerCoreSize }: PowerCoreDraggables
                 sx={{
                     display: "grid",
                     gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
-                    gap: "1rem",
+                    gap: "2rem",
                 }}
             >
                 {powerCores.map((w) => (

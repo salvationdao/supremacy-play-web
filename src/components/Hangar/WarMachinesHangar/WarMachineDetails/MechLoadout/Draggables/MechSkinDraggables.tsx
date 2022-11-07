@@ -140,7 +140,7 @@ export const MechSkinDraggables = ({ excludeMechSkinIDs, includeMechSkinIDs, mec
                 sx={{
                     display: "grid",
                     gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
-                    gap: "1rem",
+                    gap: "2rem",
                 }}
             >
                 {mechSkins.map((ms, index) => (
