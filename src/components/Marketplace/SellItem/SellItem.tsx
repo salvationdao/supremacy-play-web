@@ -411,17 +411,9 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                                     I have read and understood the above.
                                 </Typography>
                                 <Checkbox
-                                    size="small"
                                     checked={understantDropRisk}
                                     onChange={(e) => {
                                         toggleUnderstantDropRisk(e.currentTarget.checked)
-                                    }}
-                                    sx={{
-                                        p: 0,
-                                        color: colors.yellow,
-                                        "& > .MuiSvgIcon-root": { width: "2.8rem", height: "2.8rem" },
-                                        ".Mui-checked, .MuiSvgIcon-root": { color: `${colors.yellow} !important` },
-                                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.yellow}50 !important` },
                                     }}
                                 />
                             </Stack>

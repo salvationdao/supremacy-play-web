@@ -206,17 +206,9 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
                             </Typography>
                             <Checkbox
                                 disabled={loading}
-                                size="small"
                                 checked={agreeToBeCharged}
                                 onChange={(e) => {
                                     setAgreeToBeCharged(e.currentTarget.checked)
-                                }}
-                                sx={{
-                                    p: 0,
-                                    color: colors.yellow,
-                                    "& > .MuiSvgIcon-root": { width: "2.8rem", height: "2.8rem" },
-                                    ".Mui-checked, .MuiSvgIcon-root": { color: `${colors.yellow} !important` },
-                                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.yellow}50 !important` },
                                 }}
                             />
                         </Stack>
@@ -274,17 +266,7 @@ export const PreferenceToggle = ({ title, checked, onChangeFunction, disabled }:
             <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold }}>
                 {title}
             </Typography>
-            <Switch
-                disabled={disabled}
-                size="small"
-                checked={checked}
-                onChange={onChangeFunction}
-                sx={{
-                    transform: "scale(.7) translateY(-3px)",
-                    ".Mui-checked": { color: (theme) => theme.factionTheme.primary },
-                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: (theme) => `${theme.factionTheme.primary}50` },
-                }}
-            />
+            <Switch disabled={disabled} checked={checked} onChange={onChangeFunction} />
         </Stack>
     )
 }

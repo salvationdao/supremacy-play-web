@@ -614,16 +614,7 @@ export const MechLoadoutWeaponModal = ({
                                         <Box ml="auto" />
                                         {skinInheritable && (
                                             <Stack direction="row" alignItems="center" justifyContent="space-between">
-                                                <Switch
-                                                    size="small"
-                                                    checked={inheritSkin}
-                                                    onChange={(e, c) => setInheritSkin(c)}
-                                                    sx={{
-                                                        transform: "scale(.7)",
-                                                        ".Mui-checked": { color: theme.factionTheme.primary },
-                                                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${theme.factionTheme.primary}50` },
-                                                    }}
-                                                />
+                                                <Switch checked={inheritSkin} onChange={(e, c) => setInheritSkin(c)} />
                                                 <Typography variant="body2" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
                                                     Inherit Skin
                                                 </Typography>
@@ -645,16 +636,7 @@ export const MechLoadoutWeaponModal = ({
                                         <Box ml="auto" />
                                         {equippedSkinInheritable && (
                                             <Stack direction="row" alignItems="center" justifyContent="space-between">
-                                                <Switch
-                                                    size="small"
-                                                    checked={equippedInheritSkin}
-                                                    onChange={(e, c) => setEquippedInheritSkin(c)}
-                                                    sx={{
-                                                        transform: "scale(.7)",
-                                                        ".Mui-checked": { color: theme.factionTheme.primary },
-                                                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${theme.factionTheme.primary}50` },
-                                                    }}
-                                                />
+                                                <Switch checked={equippedInheritSkin} onChange={(e, c) => setEquippedInheritSkin(c)} />
                                                 <Typography variant="body2" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
                                                     Inherit Skin
                                                 </Typography>
