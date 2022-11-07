@@ -43,7 +43,7 @@ export const WarMachineDestroyedInfoBT = ({
         if (!warMachineDestroyedRecord)
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "20rem" }}>
-                    <CircularProgress size="1.8rem" sx={{ color: theme.factionTheme.primary }} />
+                    <CircularProgress size="1.8rem" />
                 </Stack>
             )
 
@@ -102,7 +102,7 @@ export const WarMachineDestroyedInfoBT = ({
                 </Stack>
             </Stack>
         )
-    }, [getFaction, theme.factionTheme.primary, warMachineDestroyedRecord])
+    }, [getFaction, warMachineDestroyedRecord])
 
     return (
         <Modal open={open} onClose={onClose} sx={{ zIndex: siteZIndex.Modal }} BackdropProps={{ sx: { opacity: "0.1 !important" } }}>

@@ -33,6 +33,10 @@ export const ThemeUpdater = ({ children }: { children: ReactNode }) => {
                         backgroundColor: `${theme.factionTheme.primary} !important`,
                     },
                 },
+
+                ".MuiCircularProgress-root": {
+                    color: theme.factionTheme.primary,
+                },
             }}
         >
             {children}

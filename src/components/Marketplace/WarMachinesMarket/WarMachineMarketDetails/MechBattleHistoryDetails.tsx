@@ -151,7 +151,7 @@ export const MechBattleHistoryDetails = ({ mechDetails, smallSize }: { mechDetai
 
                 {historyLoading && (
                     <Stack alignItems="center" sx={{ height: "10rem" }}>
-                        <CircularProgress size="2.8rem" sx={{ mt: "2rem", color: theme.factionTheme.primary }} />
+                        <CircularProgress />
                     </Stack>
                 )}
 

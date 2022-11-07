@@ -160,7 +160,6 @@ interface LookupResultProps {
 }
 
 const LookupResult = ({ playerGIDString }: LookupResultProps) => {
-    const theme = useTheme()
     const { user } = useAuth()
     const { getFaction } = useSupremacy()
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -265,7 +264,7 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
                 sx={{ flex: 1, height: "100%" }}
             >
                 <Stack height="100%" alignItems="center" justifyContent="center">
-                    <CircularProgress sx={{ color: theme.factionTheme.primary }} />
+                    <CircularProgress />
                 </Stack>
             </ClipThing>
         )

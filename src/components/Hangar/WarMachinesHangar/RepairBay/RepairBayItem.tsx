@@ -165,7 +165,7 @@ export const EmptyRepairBayItem = ({ isLoading, isBigVersion }: { isLoading?: bo
         >
             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                 {isLoading ? (
-                    <CircularProgress size="2rem" sx={{ color: theme.factionTheme.primary }} />
+                    <CircularProgress size="2rem" />
                 ) : (
                     <Typography variant="body2" sx={{ textAlign: "center", color: colors.grey, fontFamily: fonts.nostromoBold }}>
                         Empty slot

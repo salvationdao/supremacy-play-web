@@ -329,6 +329,11 @@ export const theme = createTheme({
                 },
             },
         },
+        MuiCircularProgress: {
+            defaultProps: {
+                size: "3rem",
+            },
+        },
     },
     factionTheme,
 })

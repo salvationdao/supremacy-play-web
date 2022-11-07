@@ -181,7 +181,7 @@ export const KeycardsMarket = () => {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
+                        <CircularProgress />
                     </Stack>
                 </Stack>
             )
@@ -239,7 +239,7 @@ export const KeycardsMarket = () => {
                 </Stack>
             </Stack>
         )
-    }, [loadError, keycardItems, isLoading, theme.factionTheme.primary, isGridView])
+    }, [loadError, keycardItems, isLoading, isGridView])
 
     return (
         <Box

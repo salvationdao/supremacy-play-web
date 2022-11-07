@@ -51,8 +51,6 @@ export const ReplayDetails = ({ gid, battleNumber }: { gid: number; battleNumber
         }
     }, [])
 
-    const primaryColor = theme.factionTheme.primary
-
     const content = useMemo(() => {
         if (loadError) {
             return (
@@ -81,7 +79,7 @@ export const ReplayDetails = ({ gid, battleNumber }: { gid: number; battleNumber
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <CircularProgress size="3rem" sx={{ color: primaryColor }} />
+                        <CircularProgress />
                     </Stack>
                 </Stack>
             )
@@ -118,7 +116,7 @@ export const ReplayDetails = ({ gid, battleNumber }: { gid: number; battleNumber
                 </Box>
             </Box>
         )
-    }, [loadError, primaryColor, replay, seekToSeconds])
+    }, [loadError, replay, seekToSeconds])
 
     return (
         <ClipThing
