@@ -15,7 +15,7 @@ import { BrowserRouter, Redirect, Route, Switch, useHistory } from "react-router
 import { SupremacyPNG } from "./assets"
 import { Bar, GlobalSnackbar, Maintenance, RightDrawer } from "./components"
 import { BottomNav } from "./components/BattleArena/BottomNav/BottomNav"
-import { SupremacyWorldModal } from "./components/Common/BannersPromotions/SupremacyWorldModal"
+import { SupremacyWorldModal } from "./components/BannersPromotions/SupremacyWorldModal"
 import { ErrorFallback } from "./components/ErrorFallback/ErrorFallback"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
 import { LoginRedirect } from "./components/LoginRedirect/LoginRedirect"
@@ -51,7 +51,40 @@ import { useToggle } from "./hooks"
 import { Routes, RouteSingleID } from "./routes"
 import { colors, fonts } from "./theme/theme"
 
-const SUPREMACY_WORLD_SALE_END_DATE = new Date("Nov 04 2022 00:00:00 GMT+0800")
+if (SENTRY_CONFIG) {
+    Sentry.init({
+        dsn: SENTRY_CONFIG.DSN,
+        release: SENTRY_CONFIG.RELEASE,
+        environment: SENTRY_CONFIG.ENVIRONMENT,
+        tracesSampleRate: SENTRY_CONFIG.SAMPLERATE,
+    })
+}
+
+window.Buffer = Buffer
+
+if (window.location.host.includes("localhost")) {
+    alert("Please don't run on localhost.")
+    throw new Error("Please don't run on localhost.")
+}
+
+const prefixURL = (prefix: string) => () => async (action: Action) => {
+    return {
+        ...action,
+        headers: {
+            "X-AUTH-TOKEN": localStorage.getItem("auth-token") || "",
+            ...action.headers,
+        },
+        endpoint: action.endpoint.startsWith("http") ? action.endpoint : `${prefix}${action.endpoint}`,
+    }
+}
+
+const client = createClient({
+    //None of the options is required
+    requestInterceptors: [prefixURL(`${window.location.protocol}//${GAME_SERVER_HOSTNAME}/api`)],
+    responseInterceptors: [],
+})
+
+ws.Initialize({ defaultHost: GAME_SERVER_HOSTNAME })
 
 const AppInner = () => {
     const history = useHistory()
@@ -134,7 +167,7 @@ const AppInner = () => {
             >
                 <Bar />
 
-                {new Date().getTime() < SUPREMACY_WORLD_SALE_END_DATE.getTime() && <SupremacyWorldModal />}
+                <SupremacyWorldModal />
                 <MainMenuNav />
 
                 <Stack
@@ -214,41 +247,6 @@ const AppInner = () => {
         </>
     )
 }
-
-if (SENTRY_CONFIG) {
-    Sentry.init({
-        dsn: SENTRY_CONFIG.DSN,
-        release: SENTRY_CONFIG.RELEASE,
-        environment: SENTRY_CONFIG.ENVIRONMENT,
-        tracesSampleRate: SENTRY_CONFIG.SAMPLERATE,
-    })
-}
-
-window.Buffer = Buffer
-
-if (window.location.host.includes("localhost")) {
-    alert("Please don't run on localhost.")
-    throw new Error("Please don't run on localhost.")
-}
-
-const prefixURL = (prefix: string) => () => async (action: Action) => {
-    return {
-        ...action,
-        headers: {
-            "X-AUTH-TOKEN": localStorage.getItem("auth-token") || "",
-            ...action.headers,
-        },
-        endpoint: action.endpoint.startsWith("http") ? action.endpoint : `${prefix}${action.endpoint}`,
-    }
-}
-
-const client = createClient({
-    //None of the options is required
-    requestInterceptors: [prefixURL(`${window.location.protocol}//${GAME_SERVER_HOSTNAME}/api`)],
-    responseInterceptors: [],
-})
-
-ws.Initialize({ defaultHost: GAME_SERVER_HOSTNAME })
 
 const tourProviderProps = {
     children: <AppInner />,

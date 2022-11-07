@@ -1,13 +1,13 @@
 import { Box, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useRef, useState } from "react"
-import { SvgSupToken } from "../../../assets"
-import { DEV_ONLY, PROD_ONLY } from "../../../constants"
-import { numFormatter } from "../../../helpers"
-import { useGameServerSubscription } from "../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../keys"
-import { colors, fonts } from "../../../theme/theme"
-import { ProgressBar } from "../../Common/ProgressBar"
+import { SvgSupToken } from "../../assets"
+import { DEV_ONLY, PROD_ONLY } from "../../constants"
+import { numFormatter } from "../../helpers"
+import { useGameServerSubscription } from "../../hooks/useGameServer"
+import { GameServerKeys } from "../../keys"
+import { colors, fonts } from "../../theme/theme"
+import { ProgressBar } from "../Common/ProgressBar"
 
 const MAX_FUNDS = 2000000 // 2 million
 
