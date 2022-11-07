@@ -171,16 +171,6 @@ export const CustomAvatar = ({ updateAvatar, playerID, open, setOpen, primaryCol
                                             overflowY: "auto",
                                             overflowX: "hidden",
                                             direction: "ltr",
-
-                                            "::-webkit-scrollbar": {
-                                                width: "1rem",
-                                            },
-                                            "::-webkit-scrollbar-track": {
-                                                background: "#FFFFFF15",
-                                            },
-                                            "::-webkit-scrollbar-thumb": {
-                                                background: primaryColor,
-                                            },
                                         }}
                                     >
                                         {/* Preview */}
@@ -543,16 +533,6 @@ export const LayerList = ({ setLayer, layerType, primaryColor }: LayerListProps)
                                     overflowY: "auto",
                                     overflowX: "hidden",
                                     direction: "ltr",
-
-                                    "::-webkit-scrollbar": {
-                                        width: "1rem",
-                                    },
-                                    "::-webkit-scrollbar-track": {
-                                        background: "#FFFFFF15",
-                                    },
-                                    "::-webkit-scrollbar-thumb": {
-                                        background: primaryColor,
-                                    },
                                 }}
                             >
                                 {content}

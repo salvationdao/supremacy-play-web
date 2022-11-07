@@ -166,15 +166,6 @@ export const RepairBay = ({
                             my: "1.6rem",
                             direction: "ltr",
                             scrollbarWidth: "none",
-                            "::-webkit-scrollbar": {
-                                width: "1rem",
-                            },
-                            "::-webkit-scrollbar-track": {
-                                background: "#FFFFFF15",
-                            },
-                            "::-webkit-scrollbar-thumb": {
-                                background: colors.bronze,
-                            },
                         }}
                     >
                         <Box sx={{ direction: "ltr", height: 0 }}>

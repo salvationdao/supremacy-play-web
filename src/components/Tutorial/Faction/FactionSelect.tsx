@@ -194,18 +194,6 @@ const FactionBox = ({ faction }: { faction: Faction }) => {
                     backgroundImage: `url(${faction.wallpaper_url || wallpaper})`,
                     backgroundPosition: "center",
                     backgroundSize: "cover",
-
-                    "::-webkit-scrollbar": {
-                        width: ".4rem",
-                    },
-                    "::-webkit-scrollbar-track": {
-                        background: "#FFFFFF15",
-                        borderRadius: 3,
-                    },
-                    "::-webkit-scrollbar-thumb": {
-                        background: faction.primary_color,
-                        borderRadius: 3,
-                    },
                     "&:hover, &:active": {
                         flexGrow: mediumScreen ? 5 : 1,
                         overflowY: "auto",

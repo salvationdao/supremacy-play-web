@@ -82,16 +82,6 @@ export const SortAndFilters = React.memo(function SortAndFilters({
                             overflowY: "auto",
                             overflowX: "hidden",
                             direction: "ltr",
-                            scrollbarWidth: "none",
-                            "::-webkit-scrollbar": {
-                                width: "1rem",
-                            },
-                            "::-webkit-scrollbar-track": {
-                                background: "#FFFFFF15",
-                            },
-                            "::-webkit-scrollbar-thumb": {
-                                background: primaryColor,
-                            },
                         }}
                     >
                         <Stack sx={{ position: "relative", height: 0, mt: "-.3rem", mx: "-.3rem" }}>

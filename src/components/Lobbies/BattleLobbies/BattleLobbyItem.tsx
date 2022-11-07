@@ -395,17 +395,6 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                                 alignItems: "stretch",
                                                 overflowY: "auto",
                                                 overflowX: "hidden",
-                                                scrollbarColor: `${theme.factionTheme.primary}55 ${"#FFFFFF15"}`,
-                                                scrollbarWidth: "thin",
-                                                "::-webkit-scrollbar": {
-                                                    width: "1rem",
-                                                },
-                                                "::-webkit-scrollbar-track": {
-                                                    background: "#FFFFFF15",
-                                                },
-                                                "::-webkit-scrollbar-thumb": {
-                                                    background: theme.factionTheme.primary,
-                                                },
                                             }}
                                         >
                                             <Stack

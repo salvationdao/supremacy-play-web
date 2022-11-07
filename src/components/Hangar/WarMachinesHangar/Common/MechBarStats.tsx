@@ -117,16 +117,6 @@ export const MechBarStats = ({
                 pr: ".8rem",
                 py: ".16rem",
                 direction: "ltr",
-
-                "::-webkit-scrollbar": {
-                    width: "1rem",
-                },
-                "::-webkit-scrollbar-track": {
-                    background: "#FFFFFF15",
-                },
-                "::-webkit-scrollbar-thumb": {
-                    background: primaryColor,
-                },
                 ...outerSx,
             }}
         >

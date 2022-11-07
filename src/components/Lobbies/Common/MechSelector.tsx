@@ -206,16 +206,6 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs, battleLobby, kee
                             pr: ".7rem",
                             pl: "1.4rem",
                             direction: "ltr",
-                            scrollbarWidth: "none",
-                            "::-webkit-scrollbar": {
-                                width: ".5rem",
-                            },
-                            "::-webkit-scrollbar-track": {
-                                background: "#FFFFFF15",
-                            },
-                            "::-webkit-scrollbar-thumb": {
-                                background: (theme) => theme.factionTheme.primary,
-                            },
                         }}
                     >
                         <Box sx={{ direction: "ltr", maxHeight: 0 }}>

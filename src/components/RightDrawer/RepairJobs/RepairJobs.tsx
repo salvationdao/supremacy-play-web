@@ -171,16 +171,6 @@ export const RepairJobs = () => {
                             overflowY: "auto",
                             overflowX: "hidden",
                             direction: "ltr",
-
-                            "::-webkit-scrollbar": {
-                                width: "1rem",
-                            },
-                            "::-webkit-scrollbar-track": {
-                                background: "#FFFFFF15",
-                            },
-                            "::-webkit-scrollbar-thumb": {
-                                background: theme.factionTheme.primary,
-                            },
                         }}
                     >
                         {content}

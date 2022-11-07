@@ -64,17 +64,7 @@ export const Bar = () => {
                     color: "#FFFFFF",
                     backgroundColor: (theme) => theme.factionTheme.background,
                     transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
-
                     zIndex: siteZIndex.TopBar,
-                    "::-webkit-scrollbar": {
-                        height: ".6rem",
-                    },
-                    "::-webkit-scrollbar-track": {
-                        background: "#FFFFFF15",
-                    },
-                    "::-webkit-scrollbar-thumb": {
-                        background: "#FFFFFF50",
-                    },
                 }}
             >
                 <BarContent userID={userID} user={user} />

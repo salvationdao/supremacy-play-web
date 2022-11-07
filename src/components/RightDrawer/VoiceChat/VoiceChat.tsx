@@ -551,17 +551,7 @@ export const VoiceChatInner = ({
                         overflowY: "auto",
                         overflowX: "hidden",
                         direction: "ltr",
-                        postion: "relative",
-
-                        "::-webkit-scrollbar": {
-                            width: "1rem",
-                        },
-                        "::-webkit-scrollbar-track": {
-                            background: "#FFFFFF15",
-                        },
-                        "::-webkit-scrollbar-thumb": {
-                            background: (theme: any) => theme.factionTheme.primary,
-                        },
+                        position: "relative",
                     }}
                 >
                     {!connected && (

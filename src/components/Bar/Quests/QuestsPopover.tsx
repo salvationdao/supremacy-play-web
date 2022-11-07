@@ -99,16 +99,6 @@ export const QuestsPopover = ({
                             pr: ".5rem",
                             my: "1rem",
                             direction: "ltr",
-                            scrollbarWidth: "none",
-                            "::-webkit-scrollbar": {
-                                width: "1rem",
-                            },
-                            "::-webkit-scrollbar-track": {
-                                background: "#FFFFFF15",
-                            },
-                            "::-webkit-scrollbar-thumb": {
-                                background: colors.purple,
-                            },
                         }}
                     >
                         {eventNames.length > 0 &&

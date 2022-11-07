@@ -85,18 +85,6 @@ export const MyLobbies = () => {
                             overflowY: "auto",
                             overflowX: "hidden",
                             direction: "ltr",
-
-                            "::-webkit-scrollbar": {
-                                width: ".4rem",
-                            },
-                            "::-webkit-scrollbar-track": {
-                                background: "#FFFFFF15",
-                                borderRadius: 3,
-                            },
-                            "::-webkit-scrollbar-thumb": {
-                                background: factionTheme.primary,
-                                borderRadius: 3,
-                            },
                         }}
                     >
                         {content}

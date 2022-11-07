@@ -602,16 +602,6 @@ export const ProfileAvatar = ({
                                             overflowY: "auto",
                                             overflowX: "hidden",
                                             direction: "ltr",
-
-                                            "::-webkit-scrollbar": {
-                                                width: "1rem",
-                                            },
-                                            "::-webkit-scrollbar-track": {
-                                                background: "#FFFFFF15",
-                                            },
-                                            "::-webkit-scrollbar-thumb": {
-                                                background: primaryColor,
-                                            },
                                         }}
                                     >
                                         {showCustom ? contentCustom : contentDefault}

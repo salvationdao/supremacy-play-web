@@ -140,16 +140,6 @@ const WarMachineStatsInner = () => {
                         mb: ".8rem",
                         px: ".8rem",
                         py: ".8rem",
-
-                        "::-webkit-scrollbar": {
-                            height: ".6em",
-                        },
-                        "::-webkit-scrollbar-track": {
-                            background: "#FFFFFF15",
-                        },
-                        "::-webkit-scrollbar-thumb": {
-                            background: (theme) => `${theme.factionTheme.primary}`,
-                        },
                         transition: "all .2s",
                     }}
                 >
