@@ -5,28 +5,30 @@ import { getRarityDeets } from "../../../../../../helpers"
 import { useGameServerCommandsUser } from "../../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../../keys"
 import { fonts, theme } from "../../../../../../theme/theme"
-import { AssetItemType, MechSkin } from "../../../../../../types"
+import { AssetItemType, MechSkin, PowerCore, Utility, Weapon } from "../../../../../../types"
 import { GetSubmodelsRequest, GetSubmodelsResponse } from "../../../../SubmodelHangar/SubmodelsHangar"
 import { MechLoadoutItem } from "../../../Common/MechLoadoutItem"
-import { DragWithTypesProps } from "../MechLoadoutDraggables"
-import { LoadoutDraggable } from "./LoadoutDraggable"
+
+export type OnClickEventWithType = (
+    e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>,
+    type: AssetItemType,
+    item: Weapon | PowerCore | Utility | MechSkin,
+) => void
 
 export interface MechSkinDraggablesProps {
     excludeMechSkinIDs: string[]
     includeMechSkinIDs: string[]
     mechModelID: string
-    drag: DragWithTypesProps
+    onClick: OnClickEventWithType
 }
 
-export const MechSkinDraggables = ({ excludeMechSkinIDs, includeMechSkinIDs, mechModelID, drag }: MechSkinDraggablesProps) => {
+export const MechSkinDraggables = ({ excludeMechSkinIDs, includeMechSkinIDs, mechModelID, onClick }: MechSkinDraggablesProps) => {
     const { send } = useGameServerCommandsUser("/user_commander")
 
     const mechSkinsMemoized = useRef<MechSkin[]>([])
     const [mechSkins, setMechSkins] = useState<MechSkin[]>([])
     const [isMechSkinsLoading, setIsMechSkinsLoading] = useState(true)
     const [mechSkinsError, setMechSkinsError] = useState<string>()
-
-    const { onDrag, onDragStart, onDragStop } = drag
 
     const getMechSkins = useCallback(async () => {
         setIsMechSkinsLoading(true)
@@ -88,34 +90,18 @@ export const MechSkinDraggables = ({ excludeMechSkinIDs, includeMechSkinIDs, mec
             )
         }
 
-        return mechSkins.map((ms) => (
-            <LoadoutDraggable
-                key={ms.id}
-                drag={{
-                    onDrag: (rect) => {
-                        onDrag(rect, AssetItemType.MechSkin)
-                    },
-                    onDragStart: () => {
-                        onDragStart(AssetItemType.MechSkin)
-                    },
-                    onDragStop: (rect) => {
-                        onDragStop(rect, AssetItemType.MechSkin, ms)
-                    },
-                }}
-                renderDraggable={(ref) => (
-                    <Box ref={ref}>
-                        <MechLoadoutItem
-                            imageUrl={ms.swatch_images?.image_url || ms.swatch_images?.avatar_url || ms.image_url || ms.avatar_url}
-                            label={ms.label}
-                            Icon={SvgSkin}
-                            rarity={ms.tier ? getRarityDeets(ms.tier) : undefined}
-                            shape="square"
-                        />
-                    </Box>
-                )}
+        return mechSkins.map((ms, index) => (
+            <MechLoadoutItem
+                key={index}
+                imageUrl={ms.swatch_images?.image_url || ms.swatch_images?.avatar_url || ms.image_url || ms.avatar_url}
+                label={ms.label}
+                Icon={SvgSkin}
+                rarity={ms.tier ? getRarityDeets(ms.tier) : undefined}
+                onClick={(e) => onClick(e, AssetItemType.MechSkin, ms)}
+                shape="square"
             />
         ))
-    }, [isMechSkinsLoading, mechSkins, mechSkinsError, onDrag, onDragStart, onDragStop])
+    }, [isMechSkinsLoading, mechSkins, mechSkinsError, onClick])
 
     return (
         <Box

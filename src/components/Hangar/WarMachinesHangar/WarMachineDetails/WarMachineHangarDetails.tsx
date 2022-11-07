@@ -6,7 +6,7 @@ import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../
 import { GameServerKeys } from "../../../../keys"
 import { pulseEffect } from "../../../../theme/keyframes"
 import { MechDetails, MechStatus, MechStatusEnum } from "../../../../types"
-import { BorderThickness, NiceBoxThing } from "../../../Common/Nice/NiceBoxThing"
+import { NiceBoxThing } from "../../../Common/Nice/NiceBoxThing"
 import { MechLoadout } from "./MechLoadout/MechLoadout"
 import { MechPicker } from "./MechPicker/MechPicker"
 
@@ -75,7 +75,7 @@ export const WarMachineHangarDetailsInner = ({ drawerContainerRef, mechID }: War
                 <NiceBoxThing
                     border={{
                         color: theme.factionTheme.primary,
-                        thickness: BorderThickness.Thicc,
+                        thickness: "thicc",
                     }}
                     background={{
                         color: [theme.factionTheme.background],

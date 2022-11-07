@@ -9,7 +9,7 @@ import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
 import { AssetItemType, MechDetails, MechSkin, MechStatus, MechStatusEnum, MechTypeEnum, PowerCore, Utility, Weapon, WeaponType } from "../../../../../types"
 import { ClipThing } from "../../../../Common/ClipThing"
-import { BorderThickness, NiceBoxThing } from "../../../../Common/Nice/NiceBoxThing"
+import { NiceBoxThing } from "../../../../Common/Nice/NiceBoxThing"
 import { MechLoadoutItem } from "../../Common/MechLoadoutItem"
 import { MechViewer } from "../MechViewer/MechViewer"
 import { MechViewer3D } from "../MechViewer/MechViewer3D"
@@ -18,6 +18,7 @@ import { MechLoadoutMechSkinModal } from "../Modals/Loadout/MechLoadoutMechSkinM
 import { MechLoadoutPowerCoreModal } from "../Modals/Loadout/MechLoadoutPowerCoreModal"
 import { MechLoadoutWeaponModal } from "../Modals/Loadout/MechLoadoutWeaponModal"
 import { CustomDragEventWithType, DragStartEventWithType, DragStopEventWithType } from "./Draggables/LoadoutDraggable"
+import { OnClickEventWithType } from "./Draggables/MechSkinDraggables"
 import { DraggablesHandle, MechLoadoutDraggables } from "./MechLoadoutDraggables"
 
 export interface SavedSelection {
@@ -544,6 +545,26 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         },
         [chassis_skin?.locked_to_mech, loadoutDisabled, modifyMechSkin, modifyPowerCore, modifyWeaponSlot, weapons_map],
     )
+    // Some items (i.e. mech skin) have an on click event, not a drag event
+    const onItemClick = useCallback<OnClickEventWithType>(
+        (e, type, item) => {
+            if (loadoutDisabled) return
+            switch (type) {
+                case AssetItemType.MechSkin: {
+                    if (!mechSkinItemRef.current) return
+                    if (chassis_skin?.locked_to_mech) return
+
+                    const mechSkin = item as MechSkin
+                    modifyMechSkin({
+                        mech_skin: mechSkin,
+                        mech_skin_id: mechSkin.id,
+                    })
+                    break
+                }
+            }
+        },
+        [chassis_skin?.locked_to_mech, loadoutDisabled, modifyMechSkin],
+    )
 
     // 2D/3D VIEW SWITCHERS
     const switchTo2DView = async () => {
@@ -764,7 +785,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
             <NiceBoxThing
                 border={{
                     color: theme.factionTheme.primary,
-                    thickness: BorderThickness.Thicc,
+                    thickness: "thicc",
                 }}
                 background={{
                     color: [theme.factionTheme.background],
@@ -1046,6 +1067,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                     onDragStart: onItemDragStart,
                     onDragStop: onItemDragStop,
                 }}
+                onClick={onItemClick}
             />
         </Stack>
     )

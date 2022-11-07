@@ -1,11 +1,10 @@
 import { Box, Skeleton, Stack, Typography } from "@mui/material"
-import React, { useEffect, useRef } from "react"
+import React, { MouseEventHandler, useEffect, useRef } from "react"
 import { ClipThing } from "../../.."
 import { SvgLock, SvgWrapperProps } from "../../../../assets"
 import { useToggle } from "../../../../hooks"
 import { colors, fonts } from "../../../../theme/theme"
 import { Rarity } from "../../../../types"
-import { BackgroundOpacity, CaretPosition } from "../../../Common/Nice/NiceBoxThing"
 import { NiceButton } from "../../../Common/Nice/NiceButton"
 
 export interface LoadoutItem {
@@ -15,7 +14,7 @@ export interface LoadoutItem {
     imageUrl?: string
     label: string
     subLabel?: string
-    onClick?: () => void
+    onClick?: MouseEventHandler<HTMLButtonElement | HTMLDivElement>
     rarity?: Rarity
     locked?: boolean
     disabled?: boolean
@@ -55,8 +54,8 @@ export const MechLoadoutItem = React.forwardRef<HTMLDivElement, MechLoadoutItemP
                 sx={{ position: "relative", p: ".8rem", width: "fit-content" }}
             >
                 <MechLoadoutItemButton
-                    onClick={() => {
-                        onClick && onClick()
+                    onClick={(e) => {
+                        onClick && onClick(e)
                         toggleShowLoadoutModal(true)
                     }}
                     {...loadoutItemButtonProps}
@@ -94,18 +93,18 @@ const MechLoadoutItemButton = ({
                 disabled={disabled || locked}
                 border={{
                     color: rarity ? rarity.color : colors.darkGrey,
-                    thickness: 2,
+                    thickness: "thicc",
                 }}
                 caret={
                     !isEmpty
                         ? {
-                              position: CaretPosition.BottomRight,
+                              position: "bottom-right",
                           }
                         : undefined
                 }
                 background={{
                     color: [colors.black2, rarity ? rarity.color : colors.darkGrey],
-                    opacity: BackgroundOpacity.Half,
+                    opacity: "half",
                 }}
                 sx={{
                     width: shape === "rectangle" ? width : height,

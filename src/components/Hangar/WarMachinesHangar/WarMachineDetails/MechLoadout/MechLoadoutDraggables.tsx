@@ -25,6 +25,7 @@ export interface DragWithTypesProps {
 export const MechLoadoutDraggables = ({
     draggablesRef,
     drag,
+    onClick,
     excludeWeaponIDs,
     excludeMechSkinIDs,
     includeMechSkinIDs,
@@ -79,7 +80,7 @@ export const MechLoadoutDraggables = ({
                         ),
                         content: (
                             <MechSkinDraggables
-                                drag={drag}
+                                onClick={onClick}
                                 excludeMechSkinIDs={excludeMechSkinIDs}
                                 includeMechSkinIDs={includeMechSkinIDs}
                                 mechModelID={mechModelID}

@@ -8,7 +8,7 @@ import { useGameServerCommands, useGameServerCommandsUser } from "../../../../..
 import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
 import { BattleMechStats, MechDetails, MechStatus } from "../../../../../types"
-import { BorderThickness, CaretPosition, CaretSize, NiceBoxThing } from "../../../../Common/Nice/NiceBoxThing"
+import { NiceBoxThing } from "../../../../Common/Nice/NiceBoxThing"
 import { NiceSwitch } from "../../../../Common/Nice/NiceSwitch"
 import { MechBarStats } from "../../Common/MechBarStats"
 import { MechRepairBlocks } from "../../Common/MechRepairBlocks"
@@ -148,7 +148,7 @@ export const MechPicker = ({ mechDetails, mechStatus, onUpdate }: MechPickerProp
         <NiceBoxThing
             border={{
                 color: theme.factionTheme.primary,
-                thickness: BorderThickness.Thicc,
+                thickness: "thicc",
             }}
             background={{
                 color: [theme.factionTheme.background],
@@ -176,8 +176,8 @@ export const MechPicker = ({ mechDetails, mechStatus, onUpdate }: MechPickerProp
                         color: rarity ? rarity.color : colors.darkGrey,
                     }}
                     caret={{
-                        position: CaretPosition.BottomRight,
-                        size: CaretSize.Small,
+                        position: "bottom-right",
+                        size: "small",
                     }}
                     sx={{
                         width: 60,
