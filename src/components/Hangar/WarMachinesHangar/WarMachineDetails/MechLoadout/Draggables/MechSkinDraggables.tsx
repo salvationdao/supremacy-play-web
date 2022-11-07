@@ -69,14 +69,22 @@ export const MechSkinDraggables = ({ excludeMechSkinIDs, includeMechSkinIDs, mec
 
     const mechSkinsContent = useMemo(() => {
         if (isMechSkinsLoading) {
-            return <Typography>Loading mech skins...</Typography>
+            return (
+                <Stack alignItems="center" justifyContent="center" flex={1}>
+                    <Typography>Loading mech skins...</Typography>
+                </Stack>
+            )
         }
         if (mechSkinsError) {
-            return <Typography>{mechSkinsError}</Typography>
+            return (
+                <Stack alignItems="center" justifyContent="center" flex={1}>
+                    <Typography>{mechSkinsError}</Typography>
+                </Stack>
+            )
         }
         if (mechSkins.length === 0) {
             return (
-                <Stack alignItems="center" justifyContent="center" height="100%">
+                <Stack alignItems="center" justifyContent="center" flex={1}>
                     <Typography
                         sx={{
                             fontFamily: fonts.nostromoBlack,
@@ -90,27 +98,33 @@ export const MechSkinDraggables = ({ excludeMechSkinIDs, includeMechSkinIDs, mec
             )
         }
 
-        return mechSkins.map((ms, index) => (
-            <MechLoadoutItem
-                key={index}
-                imageUrl={ms.swatch_images?.image_url || ms.swatch_images?.avatar_url || ms.image_url || ms.avatar_url}
-                label={ms.label}
-                Icon={SvgSkin}
-                rarity={ms.tier ? getRarityDeets(ms.tier) : undefined}
-                onClick={(e) => onClick(e, AssetItemType.MechSkin, ms)}
-                shape="square"
-            />
-        ))
+        return (
+            <Box
+                sx={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
+                    gap: "1rem",
+                }}
+            >
+                {mechSkins.map((ms, index) => (
+                    <MechLoadoutItem
+                        key={index}
+                        imageUrl={ms.swatch_images?.image_url || ms.swatch_images?.avatar_url || ms.image_url || ms.avatar_url}
+                        label={ms.label}
+                        Icon={SvgSkin}
+                        rarity={ms.tier ? getRarityDeets(ms.tier) : undefined}
+                        onClick={(e) => onClick(e, AssetItemType.MechSkin, ms)}
+                        shape="square"
+                        size="full-width"
+                    />
+                ))}
+            </Box>
+        )
     }, [isMechSkinsLoading, mechSkins, mechSkinsError, onClick])
 
     return (
-        <Box
-            sx={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
-            }}
-        >
+        <Stack spacing="2rem" minHeight={400}>
             {mechSkinsContent}
-        </Box>
+        </Stack>
     )
 }

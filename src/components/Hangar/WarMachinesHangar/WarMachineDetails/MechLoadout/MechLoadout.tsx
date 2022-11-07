@@ -744,7 +744,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
             return (
                 <MechLoadoutItem
                     ref={mechSkinItemRef}
-                    side="right"
                     locked={chassis_skin?.locked_to_mech}
                     disabled={loadoutDisabled}
                     imageUrl={mechSkin.swatch_images?.image_url || mechSkin.swatch_images?.avatar_url || mechSkin.image_url || mechSkin.avatar_url}
@@ -954,6 +953,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                 >
                     {/* Top Left Side */}
                     <Stack
+                        spacing="2rem"
                         sx={{
                             position: "absolute",
                             top: "3rem",
@@ -966,6 +966,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
 
                     {/* Top Right Side */}
                     <Stack
+                        spacing="2rem"
                         sx={{
                             position: "absolute",
                             top: "3rem",
@@ -975,8 +976,8 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                         {mech_type === MechTypeEnum.Humanoid && renderWeaponSlot(1)}
                         {mech_type === MechTypeEnum.Platform && (
                             <>
-                                {renderWeaponSlot(2)}
                                 {renderWeaponSlot(3)}
+                                {renderWeaponSlot(2)}
                             </>
                         )}
                     </Stack>
@@ -1010,7 +1011,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                 imageUrl={intro_animation.image_url || intro_animation.avatar_url}
                                 label={intro_animation.label}
                                 Icon={SvgIntroAnimation}
-                                side="right"
                                 shape="square"
                                 size="small"
                             />
@@ -1031,7 +1031,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                 imageUrl={outro_animation.image_url || outro_animation.avatar_url}
                                 label={outro_animation.label}
                                 Icon={SvgOutroAnimation}
-                                side="right"
                                 shape="square"
                                 size="small"
                             />

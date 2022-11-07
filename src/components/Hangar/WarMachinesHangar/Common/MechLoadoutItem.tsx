@@ -20,18 +20,17 @@ export interface LoadoutItem {
     disabled?: boolean
     isEmpty?: boolean
     shape?: "square" | "rectangle"
-    size?: "small" | "regular"
+    size?: "small" | "regular" | "full-width"
 }
 
 export interface MechLoadoutItemProps extends LoadoutItem {
-    side?: "left" | "right"
     prevEquipped?: LoadoutItem
     onUnequip?: () => void
     renderModal?: (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => React.ReactNode
 }
 
 export const MechLoadoutItem = React.forwardRef<HTMLDivElement, MechLoadoutItemProps>(function MechLoadoutItem(props, ref) {
-    const { side = "left", prevEquipped, onUnequip, renderModal, onClick, ...loadoutItemButtonProps } = props
+    const { prevEquipped, onUnequip, renderModal, onClick, ...loadoutItemButtonProps } = props
     const [showLoadoutModal, toggleShowLoadoutModal] = useToggle()
     const memoizedPrevEquipped = useRef<LoadoutItem>()
 
@@ -47,11 +46,12 @@ export const MechLoadoutItem = React.forwardRef<HTMLDivElement, MechLoadoutItemP
         <>
             <Stack
                 ref={ref}
-                position="relative"
-                direction={side === "left" ? "row" : "row-reverse"}
-                spacing="1rem"
-                alignItems="center"
-                sx={{ position: "relative", p: ".8rem", width: "fit-content" }}
+                sx={{
+                    position: "relative",
+                    alignItems: "center",
+                    height: props.size === "full-width" ? "100%" : "auto",
+                    width: props.size === "full-width" ? "100%" : "fit-content",
+                }}
             >
                 <MechLoadoutItemButton
                     onClick={(e) => {
@@ -82,8 +82,8 @@ const MechLoadoutItemButton = ({
     shape = "rectangle",
     size = "regular",
 }: LoadoutItem) => {
-    const height = size === "regular" ? 120 : 100
-    const width = size === "regular" ? 260 : 200
+    const height = size === "full-width" ? "100%" : size === "regular" ? 120 : 100
+    const width = size === "full-width" ? "100%" : size === "regular" ? 260 : 200
     const color = isEmpty ? "#ffffff88" : "white"
 
     return (
@@ -112,8 +112,24 @@ const MechLoadoutItemButton = ({
                     padding: 0,
                 }}
             >
+                {/* Maintain square aspect ratio with padding-bottom hack */}
+                {size === "full-width" && shape === "square" && (
+                    <Box
+                        sx={{
+                            pb: "100%",
+                        }}
+                    />
+                )}
                 {isEmpty ? (
-                    <Box>
+                    <Stack
+                        sx={{
+                            alignItems: "center",
+                            justifyContent: "center",
+                            width: "100%",
+                            height: "100%",
+                            pointerEvents: "none",
+                        }}
+                    >
                         <Typography
                             sx={{
                                 fontFamily: fonts.nostromoBlack,
@@ -123,19 +139,21 @@ const MechLoadoutItemButton = ({
                         >
                             EMPTY
                         </Typography>
-                    </Box>
+                    </Stack>
                 ) : (
-                    <Box
-                        component="img"
-                        src={imageUrl}
-                        alt={label}
-                        sx={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "contain",
-                            pointerEvents: "none",
-                        }}
-                    />
+                    <>
+                        <Box
+                            component="img"
+                            src={imageUrl}
+                            alt={label}
+                            sx={{
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "contain",
+                                pointerEvents: "none",
+                            }}
+                        />
+                    </>
                 )}
                 {Icon && (
                     <Icon
@@ -170,6 +188,7 @@ const MechLoadoutItemButton = ({
                     >
                         <Typography
                             sx={{
+                                textAlign: "left",
                                 fontFamily: fonts.nostromoBold,
                                 fontSize: size === "regular" ? "1.6rem" : "1.4rem",
                                 color,
