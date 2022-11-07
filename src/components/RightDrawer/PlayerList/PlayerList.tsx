@@ -83,9 +83,7 @@ const Content = ({ getFaction, user, activePlayers }: { getFaction: (factionID: 
                     direction: "ltr",
                 }}
             >
-                <Box sx={{ height: 0 }}>
-                    <PlayerListContent activePlayers={activePlayers} />
-                </Box>
+                <PlayerListContent activePlayers={activePlayers} />
             </Box>
         </Stack>
     )

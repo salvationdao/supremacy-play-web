@@ -34,14 +34,12 @@ export const BattleArena = () => {
                         direction: "ltr",
                     }}
                 >
-                    <Box sx={{ direction: "ltr", height: 0 }}>
-                        <Stack>
-                            {!userID && <UnauthPrompt />}
-                            <SupporterAbilities />
-                            <PlayerAbilities />
-                            <QuickPlayerAbilities />
-                        </Stack>
-                    </Box>
+                    <Stack>
+                        {!userID && <UnauthPrompt />}
+                        <SupporterAbilities />
+                        <PlayerAbilities />
+                        <QuickPlayerAbilities />
+                    </Stack>
                 </Box>
             </>
         )
