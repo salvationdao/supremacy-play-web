@@ -10,7 +10,7 @@ import { AssetItemType, MechSkin, PowerCore, Utility, Weapon } from "../../../..
 import { SortTypeLabel } from "../../../../../../types/marketplace"
 import { GetSubmodelsRequest, GetSubmodelsResponse } from "../../../../SubmodelHangar/SubmodelsHangar"
 import { MechLoadoutItem } from "../../../Common/MechLoadoutItem"
-import { NiceInputBase } from "./WeaponDraggables"
+import { InputLabeller, NiceInputBase } from "./WeaponDraggables"
 
 export type OnClickEventWithType = (
     e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>,
@@ -33,11 +33,11 @@ export const MechSkinDraggables = ({ excludeMechSkinIDs, includeMechSkinIDs, mec
     const [isMechSkinsLoading, setIsMechSkinsLoading] = useState(true)
     const [mechSkinsError, setMechSkinsError] = useState<string>()
     const [sort, setSort] = useState<string>(SortTypeLabel.DateAddedNewest)
-    const { page, changePage, setTotalItems, totalPages, pageSize, prevPage } = usePagination({
+    const { page, changePage, setTotalItems, totalPages, pageSize } = usePagination({
         pageSize: 9,
         page: 1,
     })
-    
+
     const getMechSkins = useCallback(async () => {
         setIsMechSkinsLoading(true)
         try {
@@ -68,7 +68,7 @@ export const MechSkinDraggables = ({ excludeMechSkinIDs, includeMechSkinIDs, mec
                     sortDir = "desc"
                     break
             }
-            
+
             const resp = await send<GetSubmodelsResponse, GetSubmodelsRequest>(GameServerKeys.GetMechSubmodelsDetailed, {
                 page,
                 page_size: pageSize,
@@ -91,6 +91,7 @@ export const MechSkinDraggables = ({ excludeMechSkinIDs, includeMechSkinIDs, mec
             if (!resp) return
             setMechSkinsError(undefined)
             setMechSkins(resp.submodels || [])
+            setTotalItems(resp.total)
             mechSkinsMemoized.current = resp.submodels
         } catch (e) {
             setMechSkinsError(typeof e === "string" ? e : "Failed to get mech skins.")
@@ -98,7 +99,7 @@ export const MechSkinDraggables = ({ excludeMechSkinIDs, includeMechSkinIDs, mec
         } finally {
             setIsMechSkinsLoading(false)
         }
-    }, [excludeMechSkinIDs, includeMechSkinIDs, mechModelID, page, pageSize, send, sort])
+    }, [excludeMechSkinIDs, includeMechSkinIDs, mechModelID, page, pageSize, send, setTotalItems, sort])
     useEffect(() => {
         getMechSkins()
     }, [getMechSkins])
@@ -160,26 +161,27 @@ export const MechSkinDraggables = ({ excludeMechSkinIDs, includeMechSkinIDs, mec
 
     return (
         <Stack spacing="2rem" minHeight={400}>
-                        {/* Search and sort */}
-                        <Stack direction="row" spacing="1rem">
+            {/* Search and sort */}
+            <Stack direction="row" spacing="1rem">
                 <NiceInputBase placeholder="Search weapons..." endAdornment={<SvgSearch fill={"rgba(255, 255, 255, 0.4)"} />} />
-                <Select value={sort} onChange={(e) => setSort(e.target.value)} input={<NiceInputBase />}>
-                    <MenuItem value={SortTypeLabel.Alphabetical}>{SortTypeLabel.Alphabetical}</MenuItem>
-                    <MenuItem value={SortTypeLabel.AlphabeticalReverse}>{SortTypeLabel.AlphabeticalReverse}</MenuItem>
-                    <MenuItem value={SortTypeLabel.RarestAsc}>{SortTypeLabel.RarestAsc}</MenuItem>
-                    <MenuItem value={SortTypeLabel.RarestDesc}>{SortTypeLabel.RarestDesc}</MenuItem>
-                    <MenuItem value={SortTypeLabel.DateAddedNewest}>Date added: newest</MenuItem>
-                    <MenuItem value={SortTypeLabel.DateAddedOldest}>Date added: oldest</MenuItem>
-                </Select>
+                <InputLabeller flex={1} label="Sort:" name="sort">
+                    <Select name="sort" value={sort} onChange={(e) => setSort(e.target.value)} input={<NiceInputBase />}>
+                        <MenuItem value={SortTypeLabel.Alphabetical}>{SortTypeLabel.Alphabetical}</MenuItem>
+                        <MenuItem value={SortTypeLabel.AlphabeticalReverse}>{SortTypeLabel.AlphabeticalReverse}</MenuItem>
+                        <MenuItem value={SortTypeLabel.RarestAsc}>{SortTypeLabel.RarestAsc}</MenuItem>
+                        <MenuItem value={SortTypeLabel.RarestDesc}>{SortTypeLabel.RarestDesc}</MenuItem>
+                        <MenuItem value={SortTypeLabel.DateAddedNewest}>Date added: newest</MenuItem>
+                        <MenuItem value={SortTypeLabel.DateAddedOldest}>Date added: oldest</MenuItem>
+                    </Select>
+                </InputLabeller>
             </Stack>
-            
+
             {/* Content */}
             {mechSkinsContent}
             <Box flex={1} />
 
-{/* Pagination */}
-<Pagination count={totalPages} page={page} onChange={(_, p) => changePage(p)} />
-
+            {/* Pagination */}
+            <Pagination count={totalPages} page={page} onChange={(_, p) => changePage(p)} />
         </Stack>
     )
 }

@@ -1,4 +1,4 @@
-import { Box, InputBase, InputBaseProps, MenuItem, Pagination, Select, Stack, styled, Typography } from "@mui/material"
+import { Box, InputBase, InputBaseProps, MenuItem, Pagination, Select, Stack, StackProps, styled, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { SvgSearch, SvgWeapons } from "../../../../../../assets"
 import { useTheme } from "../../../../../../containers/theme"
@@ -33,7 +33,7 @@ export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesPro
     const [isWeaponsLoading, setIsWeaponsLoading] = useState(true)
     const [weaponsError, setWeaponsError] = useState<string>()
     const [sort, setSort] = useState<string>(SortTypeLabel.DateAddedNewest)
-    const { page, changePage, setTotalItems, totalPages, pageSize, prevPage } = usePagination({
+    const { page, changePage, setTotalItems, totalPages, pageSize } = usePagination({
         pageSize: 9,
         page: 1,
     })
@@ -200,14 +200,16 @@ export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesPro
             {/* Search and sort */}
             <Stack direction="row" spacing="1rem">
                 <NiceInputBase placeholder="Search weapons..." endAdornment={<SvgSearch fill={"rgba(255, 255, 255, 0.4)"} />} />
-                <Select value={sort} onChange={(e) => setSort(e.target.value)} input={<NiceInputBase />}>
-                    <MenuItem value={SortTypeLabel.Alphabetical}>{SortTypeLabel.Alphabetical}</MenuItem>
-                    <MenuItem value={SortTypeLabel.AlphabeticalReverse}>{SortTypeLabel.AlphabeticalReverse}</MenuItem>
-                    <MenuItem value={SortTypeLabel.RarestAsc}>{SortTypeLabel.RarestAsc}</MenuItem>
-                    <MenuItem value={SortTypeLabel.RarestDesc}>{SortTypeLabel.RarestDesc}</MenuItem>
-                    <MenuItem value={SortTypeLabel.DateAddedNewest}>Date added: newest</MenuItem>
-                    <MenuItem value={SortTypeLabel.DateAddedOldest}>Date added: oldest</MenuItem>
-                </Select>
+                <InputLabeller flex={1} label="Sort:" name="sort">
+                    <Select name="sort" value={sort} onChange={(e) => setSort(e.target.value)} input={<NiceInputBase />}>
+                        <MenuItem value={SortTypeLabel.Alphabetical}>{SortTypeLabel.Alphabetical}</MenuItem>
+                        <MenuItem value={SortTypeLabel.AlphabeticalReverse}>{SortTypeLabel.AlphabeticalReverse}</MenuItem>
+                        <MenuItem value={SortTypeLabel.RarestAsc}>{SortTypeLabel.RarestAsc}</MenuItem>
+                        <MenuItem value={SortTypeLabel.RarestDesc}>{SortTypeLabel.RarestDesc}</MenuItem>
+                        <MenuItem value={SortTypeLabel.DateAddedNewest}>Date added: newest</MenuItem>
+                        <MenuItem value={SortTypeLabel.DateAddedOldest}>Date added: oldest</MenuItem>
+                    </Select>
+                </InputLabeller>
             </Stack>
 
             {/* Content */}
@@ -234,4 +236,34 @@ export const NiceInputBase = styled(({ sx, ...props }: InputBaseProps) => (
         })}
         {...props}
     />
+))({})
+
+interface InputLabeller extends StackProps {
+    label: string
+    name?: string
+}
+
+export const InputLabeller = styled(({ label, name, sx, children, ...props }: InputLabeller) => (
+    <Stack
+        direction="row"
+        sx={{
+            alignItems: "stretch",
+            ...sx,
+        }}
+        {...props}
+    >
+        <Box
+            component="label"
+            htmlFor={name}
+            p=".5rem 2rem"
+            sx={(theme) => ({
+                border: `1px solid ${colors.darkGrey}aa`,
+                borderRight: "none",
+                backgroundColor: `${theme.factionTheme.primary}22`,
+            })}
+        >
+            <Typography>{label}</Typography>
+        </Box>
+        {children}
+    </Stack>
 ))({})

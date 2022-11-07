@@ -1,16 +1,19 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, MenuItem, Pagination, Select, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { SvgPowerCore } from "../../../../../../assets"
+import { SvgPowerCore, SvgSearch } from "../../../../../../assets"
 import { useTheme } from "../../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../../helpers"
+import { usePagination } from "../../../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../../keys"
 import { fonts } from "../../../../../../theme/theme"
 import { AssetItemType, PowerCore } from "../../../../../../types"
+import { SortTypeLabel } from "../../../../../../types/marketplace"
 import { MechLoadoutItem } from "../../../Common/MechLoadoutItem"
 import { GetPowerCoresRequest } from "../../Modals/Loadout/MechLoadoutPowerCoreModal"
 import { DragWithTypesProps } from "../MechLoadoutDraggables"
 import { LoadoutDraggable } from "./LoadoutDraggable"
+import { InputLabeller, NiceInputBase } from "./WeaponDraggables"
 
 export interface GetPowerCoresDetailedResponse {
     power_cores: PowerCore[]
@@ -30,17 +33,50 @@ export const PowerCoreDraggables = ({ drag, powerCoreSize }: PowerCoreDraggables
     const [powerCores, setPowerCores] = useState<PowerCore[]>([])
     const [isPowerCoresLoading, setIsPowerCoresLoading] = useState(true)
     const [powerCoresError, setPowerCoresError] = useState<string>()
+    const [sort, setSort] = useState<string>(SortTypeLabel.DateAddedNewest)
+    const { page, changePage, setTotalItems, totalPages, pageSize } = usePagination({
+        pageSize: 9,
+        page: 1,
+    })
 
     const { onDrag, onDragStart, onDragStop } = drag
 
     const getPowerCores = useCallback(async () => {
         setIsPowerCoresLoading(true)
         try {
+            let sortDir = "asc"
+            let sortBy = ""
+            if (sort === SortTypeLabel.AlphabeticalReverse || sort === SortTypeLabel.RarestDesc) sortDir = "desc"
+
+            switch (sort) {
+                case SortTypeLabel.Alphabetical:
+                    sortBy = "alphabetical"
+                    break
+                case SortTypeLabel.AlphabeticalReverse:
+                    sortBy = "alphabetical"
+                    sortDir = "desc"
+                    break
+                case SortTypeLabel.RarestAsc:
+                    sortBy = "rarity"
+                    break
+                case SortTypeLabel.RarestDesc:
+                    sortBy = "rarity"
+                    sortDir = "desc"
+                    break
+                case SortTypeLabel.DateAddedOldest:
+                    sortBy = "date"
+                    break
+                case SortTypeLabel.DateAddedNewest:
+                    sortBy = "date"
+                    sortDir = "desc"
+                    break
+            }
+
             const resp = await send<GetPowerCoresDetailedResponse, GetPowerCoresRequest>(GameServerKeys.GetPowerCoresDetailed, {
-                page: 1,
-                page_size: 9,
-                sort_by: "date",
-                sort_dir: "desc",
+                page,
+                page_size: pageSize,
+                sort_by: sortBy,
+                sort_dir: sortDir,
                 include_market_listed: false,
                 exclude_ids: [],
                 rarities: [],
@@ -52,6 +88,7 @@ export const PowerCoreDraggables = ({ drag, powerCoreSize }: PowerCoreDraggables
             if (!resp) return
             setPowerCoresError(undefined)
             setPowerCores(resp.power_cores)
+            setTotalItems(resp.total)
             powerCoresMemoized.current = resp.power_cores
         } catch (e) {
             setPowerCoresError(typeof e === "string" ? e : "Failed to get power cores.")
@@ -59,21 +96,29 @@ export const PowerCoreDraggables = ({ drag, powerCoreSize }: PowerCoreDraggables
         } finally {
             setIsPowerCoresLoading(false)
         }
-    }, [powerCoreSize, send])
+    }, [page, pageSize, powerCoreSize, send, setTotalItems, sort])
     useEffect(() => {
         getPowerCores()
     }, [getPowerCores])
 
     const powerCoresContent = useMemo(() => {
         if (isPowerCoresLoading) {
-            return <Typography>Loading power cores...</Typography>
+            return (
+                <Stack alignItems="center" justifyContent="center" flex={1}>
+                    <Typography>Loading power cores...</Typography>
+                </Stack>
+            )
         }
         if (powerCoresError) {
-            return <Typography>{powerCoresError}</Typography>
+            return (
+                <Stack alignItems="center" justifyContent="center" flex={1}>
+                    <Typography>{powerCoresError}</Typography>
+                </Stack>
+            )
         }
         if (powerCores.length === 0) {
             return (
-                <Stack alignItems="center" justifyContent="center" height="100%">
+                <Stack alignItems="center" justifyContent="center" flex={1}>
                     <Typography
                         sx={{
                             fontFamily: fonts.nostromoBlack,
@@ -87,43 +132,74 @@ export const PowerCoreDraggables = ({ drag, powerCoreSize }: PowerCoreDraggables
             )
         }
 
-        return powerCores.map((w) => (
-            <LoadoutDraggable
-                key={w.id}
-                drag={{
-                    onDrag: (rect) => {
-                        onDrag(rect, AssetItemType.PowerCore)
-                    },
-                    onDragStart: () => {
-                        onDragStart(AssetItemType.PowerCore)
-                    },
-                    onDragStop: (rect) => {
-                        onDragStop(rect, AssetItemType.PowerCore, w)
-                    },
+        return (
+            <Box
+                sx={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
+                    gap: "1rem",
                 }}
-                renderDraggable={(ref) => (
-                    <Box ref={ref}>
-                        <MechLoadoutItem
-                            imageUrl={w.image_url || w.avatar_url}
-                            label={w.label}
-                            Icon={SvgPowerCore}
-                            rarity={w.tier ? getRarityDeets(w.tier) : undefined}
-                            shape="square"
-                        />
-                    </Box>
-                )}
-            />
-        ))
+            >
+                {powerCores.map((w) => (
+                    <LoadoutDraggable
+                        key={w.id}
+                        drag={{
+                            onDrag: (rect) => {
+                                onDrag(rect, AssetItemType.PowerCore)
+                            },
+                            onDragStart: () => {
+                                onDragStart(AssetItemType.PowerCore)
+                            },
+                            onDragStop: (rect) => {
+                                onDragStop(rect, AssetItemType.PowerCore, w)
+                            },
+                        }}
+                        renderDraggable={(ref) => (
+                            <Box
+                                ref={ref}
+                                sx={{
+                                    height: "100%",
+                                    width: "100%",
+                                }}
+                            >
+                                <MechLoadoutItem
+                                    imageUrl={w.image_url || w.avatar_url}
+                                    label={w.label}
+                                    Icon={SvgPowerCore}
+                                    rarity={w.tier ? getRarityDeets(w.tier) : undefined}
+                                    shape="square"
+                                    size="full-width"
+                                />
+                            </Box>
+                        )}
+                    />
+                ))}
+            </Box>
+        )
     }, [isPowerCoresLoading, onDrag, onDragStart, onDragStop, theme.factionTheme.primary, powerCores, powerCoresError])
 
     return (
-        <Box
-            sx={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
-            }}
-        >
+        <Stack spacing="2rem" minHeight={400}>
+            {/* Search and sort */}
+            <Stack direction="row" spacing="1rem">
+                <NiceInputBase placeholder="Search weapons..." endAdornment={<SvgSearch fill={"rgba(255, 255, 255, 0.4)"} />} />
+                <InputLabeller flex={1} label="Sort:" name="sort">
+                    <Select name="sort" value={sort} onChange={(e) => setSort(e.target.value)} input={<NiceInputBase />}>
+                        <MenuItem value={SortTypeLabel.Alphabetical}>{SortTypeLabel.Alphabetical}</MenuItem>
+                        <MenuItem value={SortTypeLabel.AlphabeticalReverse}>{SortTypeLabel.AlphabeticalReverse}</MenuItem>
+                        <MenuItem value={SortTypeLabel.RarestAsc}>{SortTypeLabel.RarestAsc}</MenuItem>
+                        <MenuItem value={SortTypeLabel.RarestDesc}>{SortTypeLabel.RarestDesc}</MenuItem>
+                        <MenuItem value={SortTypeLabel.DateAddedNewest}>Date added: newest</MenuItem>
+                        <MenuItem value={SortTypeLabel.DateAddedOldest}>Date added: oldest</MenuItem>
+                    </Select>
+                </InputLabeller>
+            </Stack>
+
+            {/* Content */}
             {powerCoresContent}
-        </Box>
+
+            {/* Pagination */}
+            <Pagination count={totalPages} page={page} onChange={(_, p) => changePage(p)} />
+        </Stack>
     )
 }
