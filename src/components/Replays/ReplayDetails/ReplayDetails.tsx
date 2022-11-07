@@ -98,16 +98,6 @@ export const ReplayDetails = ({ gid, battleNumber }: { gid: number; battleNumber
                     mr: ".6rem",
                     my: "2rem",
                     direction: "ltr",
-                    scrollbarWidth: "none",
-                    "::-webkit-scrollbar": {
-                        width: "1rem",
-                    },
-                    "::-webkit-scrollbar-track": {
-                        background: "#FFFFFF15",
-                    },
-                    "::-webkit-scrollbar-thumb": {
-                        background: primaryColor,
-                    },
                 }}
             >
                 <Box sx={{ direction: "ltr", height: 0 }}>

@@ -166,18 +166,6 @@ export const MechSkinPreview = ({ onConfirm, mech, submodel, equipped }: MechSki
                         overflowX: "hidden",
                         direction: "ltr",
                         mt: "1rem",
-
-                        "::-webkit-scrollbar": {
-                            width: ".4rem",
-                        },
-                        "::-webkit-scrollbar-track": {
-                            background: "#FFFFFF15",
-                            borderRadius: 3,
-                        },
-                        "::-webkit-scrollbar-thumb": {
-                            background: theme.factionTheme.primary,
-                            borderRadius: 3,
-                        },
                     }}
                 >
                     {submodel.equipped_on && (

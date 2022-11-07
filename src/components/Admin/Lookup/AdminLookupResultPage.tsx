@@ -137,16 +137,6 @@ const LookupSidebar = ({ playerGID }: { playerGID: string }) => {
                             overflowY: "auto",
                             overflowX: "hidden",
                             direction: "ltr",
-                            scrollbarWidth: "thin",
-                            "::-webkit-scrollbar": {
-                                width: "1rem",
-                            },
-                            "::-webkit-scrollbar-track": {
-                                background: "#FFFFFF15",
-                            },
-                            "::-webkit-scrollbar-thumb": {
-                                background: "#FFFFFF15",
-                            },
                         }}
                     >
                         <Box
@@ -377,16 +367,6 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
                         overflowY: "auto",
                         overflowX: "hidden",
                         direction: "ltr",
-                        scrollbarWidth: "thin",
-                        "::-webkit-scrollbar": {
-                            width: "1rem",
-                        },
-                        "::-webkit-scrollbar-track": {
-                            background: "#FFFFFF15",
-                        },
-                        "::-webkit-scrollbar-thumb": {
-                            background: "#FFFFFF15",
-                        },
                     }}
                 >
                     <Box height={0}>

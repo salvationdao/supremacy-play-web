@@ -228,18 +228,6 @@ export const UtilityPreview = ({ onConfirm, utility, equipped }: UtilityPreviewP
                         overflowX: "hidden",
                         direction: "ltr",
                         mt: "1rem",
-
-                        "::-webkit-scrollbar": {
-                            width: ".4rem",
-                        },
-                        "::-webkit-scrollbar-track": {
-                            background: "#FFFFFF15",
-                            borderRadius: 3,
-                        },
-                        "::-webkit-scrollbar-thumb": {
-                            background: theme.factionTheme.primary,
-                            borderRadius: 3,
-                        },
                     }}
                 >
                     {utility.equipped_on && (

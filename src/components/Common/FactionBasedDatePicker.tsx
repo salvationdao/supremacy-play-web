@@ -93,16 +93,6 @@ export const FactionBasedDatePicker = ({ value, onChange, enableYear, disabled }
                         },
 
                         ".MuiCalendarPicker-viewTransitionContainer": {
-                            scrollbarWidth: "none",
-                            "::-webkit-scrollbar": {
-                                width: "1rem",
-                            },
-                            "::-webkit-scrollbar-track": {
-                                background: "#FFFFFF15",
-                            },
-                            "::-webkit-scrollbar-thumb": {
-                                background: factionTheme.primary,
-                            },
                             ".MuiYearPicker-root": {
                                 ".PrivatePickersYear-root": {
                                     ".PrivatePickersYear-yearButton": {

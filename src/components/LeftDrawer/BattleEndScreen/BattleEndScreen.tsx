@@ -49,7 +49,6 @@ export const BattleEndScreen = () => {
         }
     }, [battleEndDetail, hasModalsOpen, setLeftDrawerActiveTabID])
 
-    const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
 
     if (!battleEndDetail) {
@@ -93,17 +92,6 @@ export const BattleEndScreen = () => {
                     pr: "1rem",
                     overflowY: "auto",
                     overflowX: "auto",
-
-                    "::-webkit-scrollbar": {
-                        width: "1rem",
-                        height: ".6rem",
-                    },
-                    "::-webkit-scrollbar-track": {
-                        background: "#FFFFFF15",
-                    },
-                    "::-webkit-scrollbar-thumb": {
-                        background: primaryColor,
-                    },
                 }}
             >
                 <Box sx={{ height: 0 }}>

@@ -283,16 +283,6 @@ export const PublicProfile = () => {
                 height: "100%",
                 scrollbarWidth: "none",
                 overflowY: "auto",
-
-                "::-webkit-scrollbar": {
-                    width: "1rem",
-                },
-                "::-webkit-scrollbar-track": {
-                    background: "#FFFFFF15",
-                },
-                "::-webkit-scrollbar-thumb": {
-                    background: primaryColor,
-                },
             }}
         >
             {/* top part */}
@@ -475,16 +465,6 @@ export const PublicProfile = () => {
                             mt: ".4rem",
                             mb: ".8rem",
                             direction: "ltr",
-                            scrollbarWidth: "none",
-                            "::-webkit-scrollbar": {
-                                width: "1rem",
-                            },
-                            "::-webkit-scrollbar-track": {
-                                background: "#FFFFFF15",
-                            },
-                            "::-webkit-scrollbar-thumb": {
-                                background: primaryColor,
-                            },
                         }}
                     >
                         <Box sx={{ direction: "ltr", height: 0, width: "100%" }}>
@@ -565,16 +545,6 @@ export const PublicProfile = () => {
                                                 overflowY: "auto",
                                                 overflowX: "hidden",
                                                 direction: "ltr",
-
-                                                "::-webkit-scrollbar": {
-                                                    width: "1rem",
-                                                },
-                                                "::-webkit-scrollbar-track": {
-                                                    background: "#FFFFFF15",
-                                                },
-                                                "::-webkit-scrollbar-thumb": {
-                                                    background: primaryColor,
-                                                },
                                             }}
                                         >
                                             <StatItem
@@ -630,20 +600,9 @@ export const PublicProfile = () => {
                                                 maxHeight: "40rem",
                                                 px: "1rem",
                                                 flex: 1,
-
                                                 overflowY: "auto",
                                                 overflowX: "hidden",
                                                 direction: "ltr",
-
-                                                "::-webkit-scrollbar": {
-                                                    width: "1rem",
-                                                },
-                                                "::-webkit-scrollbar-track": {
-                                                    background: "#FFFFFF15",
-                                                },
-                                                "::-webkit-scrollbar-thumb": {
-                                                    background: primaryColor,
-                                                },
                                             }}
                                         >
                                             <ProfileMechHistory playerID={profile.player.id} />

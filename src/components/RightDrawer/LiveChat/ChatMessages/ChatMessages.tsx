@@ -93,17 +93,6 @@ export const ChatMessages = React.memo(function ChatMessages({ faction_id, prima
                         overflowY: "auto",
                         overflowX: "hidden",
                         direction: "ltr",
-
-                        scrollBehavior: "smooth",
-                        "::-webkit-scrollbar": {
-                            width: "1rem",
-                        },
-                        "::-webkit-scrollbar-track": {
-                            background: "#FFFFFF15",
-                        },
-                        "::-webkit-scrollbar-thumb": {
-                            background: primaryColor,
-                        },
                     }}
                 >
                     <Box sx={{ height: 0 }}>

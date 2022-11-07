@@ -24,18 +24,6 @@ export const BattleArenaBT = () => {
                         pr: ".8rem",
                         pl: "1rem",
                         direction: "ltr",
-                        scrollbarWidth: "none",
-                        "::-webkit-scrollbar": {
-                            width: ".4rem",
-                        },
-                        "::-webkit-scrollbar-track": {
-                            background: "#FFFFFF15",
-                            borderRadius: 3,
-                        },
-                        "::-webkit-scrollbar-thumb": {
-                            background: (theme) => theme.factionTheme.primary,
-                            borderRadius: 3,
-                        },
                     }}
                 >
                     <Box sx={{ direction: "ltr", height: 0 }}>

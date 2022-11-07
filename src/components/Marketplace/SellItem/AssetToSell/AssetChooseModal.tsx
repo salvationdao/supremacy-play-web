@@ -194,16 +194,6 @@ export const AssetChooseModal = ({
                                     pr: ".5rem",
                                     my: "1rem",
                                     direction: "ltr",
-                                    scrollbarWidth: "none",
-                                    "::-webkit-scrollbar": {
-                                        width: "1rem",
-                                    },
-                                    "::-webkit-scrollbar-track": {
-                                        background: "#FFFFFF15",
-                                    },
-                                    "::-webkit-scrollbar-thumb": {
-                                        background: primaryColor,
-                                    },
                                 }}
                             >
                                 <Box sx={{ direction: "ltr", height: 0 }}>
