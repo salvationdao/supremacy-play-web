@@ -90,65 +90,63 @@ export const WeaponHangarDetails = () => {
                                 direction: "ltr",
                             }}
                         >
-                            <Box sx={{ direction: "ltr", height: 0 }}>
-                                {weaponDetails ? (
-                                    <Stack spacing="1.6rem" sx={{ p: "1rem 1rem" }}>
-                                        {/* Weapon avatar, label, name etc */}
-                                        <Stack spacing=".5rem">
-                                            <Stack spacing=".5rem" direction="row" alignItems="center">
-                                                <SvgSkin fill={rarityDeets.color} />
-                                                <Typography variant="body2" sx={{ color: rarityDeets.color, fontFamily: fonts.nostromoHeavy }}>
-                                                    {rarityDeets.label}
-                                                </Typography>
-                                            </Stack>
-
-                                            <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{weaponDetails.label}</Typography>
-                                        </Stack>
-
-                                        {/* General info */}
-                                        <Stack spacing=".2rem">
-                                            <Typography sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>WEAPON TYPE</Typography>
-                                            <Typography
-                                                variant="body2"
-                                                sx={{ color: getWeaponTypeColor(weaponDetails?.weapon_type), fontFamily: fonts.nostromoBlack }}
-                                            >
-                                                {weaponDetails.weapon_type}
+                            {weaponDetails ? (
+                                <Stack spacing="1.6rem" sx={{ p: "1rem 1rem" }}>
+                                    {/* Weapon avatar, label, name etc */}
+                                    <Stack spacing=".5rem">
+                                        <Stack spacing=".5rem" direction="row" alignItems="center">
+                                            <SvgSkin fill={rarityDeets.color} />
+                                            <Typography variant="body2" sx={{ color: rarityDeets.color, fontFamily: fonts.nostromoHeavy }}>
+                                                {rarityDeets.label}
                                             </Typography>
                                         </Stack>
 
-                                        <Stack spacing=".2rem">
-                                            <Typography sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>DAMAGE TYPE</Typography>
-                                            <Typography
-                                                variant="body2"
-                                                sx={{ color: getWeaponDamageTypeColor(weaponDetails?.default_damage_type), fontFamily: fonts.nostromoBlack }}
-                                            >
-                                                {weaponDetails.default_damage_type}
-                                            </Typography>
+                                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{weaponDetails.label}</Typography>
+                                    </Stack>
+
+                                    {/* General info */}
+                                    <Stack spacing=".2rem">
+                                        <Typography sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>WEAPON TYPE</Typography>
+                                        <Typography
+                                            variant="body2"
+                                            sx={{ color: getWeaponTypeColor(weaponDetails?.weapon_type), fontFamily: fonts.nostromoBlack }}
+                                        >
+                                            {weaponDetails.weapon_type}
+                                        </Typography>
+                                    </Stack>
+
+                                    <Stack spacing=".2rem">
+                                        <Typography sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>DAMAGE TYPE</Typography>
+                                        <Typography
+                                            variant="body2"
+                                            sx={{ color: getWeaponDamageTypeColor(weaponDetails?.default_damage_type), fontFamily: fonts.nostromoBlack }}
+                                        >
+                                            {weaponDetails.default_damage_type}
+                                        </Typography>
+                                    </Stack>
+
+                                    {/* Bar stats */}
+                                    <Stack spacing=".5rem">
+                                        <Stack direction="row" spacing=".8rem" alignItems="center">
+                                            <SvgStats fill={primaryColor} size="1.6rem" />
+                                            <Typography sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>WEAPON STATS</Typography>
                                         </Stack>
 
-                                        {/* Bar stats */}
-                                        <Stack spacing=".5rem">
-                                            <Stack direction="row" spacing=".8rem" alignItems="center">
-                                                <SvgStats fill={primaryColor} size="1.6rem" />
-                                                <Typography sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>WEAPON STATS</Typography>
-                                            </Stack>
-
-                                            <WeaponBarStats
-                                                weapon={weaponDetails}
-                                                color={primaryColor}
-                                                fontSize="1.2rem"
-                                                width="100%"
-                                                spacing="1.2rem"
-                                                barHeight=".9rem"
-                                            />
-                                        </Stack>
+                                        <WeaponBarStats
+                                            weapon={weaponDetails}
+                                            color={primaryColor}
+                                            fontSize="1.2rem"
+                                            width="100%"
+                                            spacing="1.2rem"
+                                            barHeight=".9rem"
+                                        />
                                     </Stack>
-                                ) : (
-                                    <Stack alignItems="center" justifyContent="center" sx={{ height: "20rem" }}>
-                                        <CircularProgress size="3rem" sx={{ color: primaryColor }} />
-                                    </Stack>
-                                )}
-                            </Box>
+                                </Stack>
+                            ) : (
+                                <Stack alignItems="center" justifyContent="center" sx={{ height: "20rem" }}>
+                                    <CircularProgress size="3rem" sx={{ color: primaryColor }} />
+                                </Stack>
+                            )}
                         </Box>
 
                         {/* Status and buttons */}

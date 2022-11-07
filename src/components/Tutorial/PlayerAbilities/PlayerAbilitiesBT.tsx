@@ -5,7 +5,7 @@ import { useTraining } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { usePagination } from "../../../hooks"
 import { glowEffect } from "../../../theme/keyframes"
-import { colors, fonts } from "../../../theme/theme"
+import { colors } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility, PlayerAbilityPrePurchase, PlayerAbilityStages } from "../../../types"
 import { SectionCollapsibleBT } from "../SectionCollapsibleBT"
 import { PlayerAbilityCardBT } from "./PlayerAbilityCardBT"
@@ -178,21 +178,7 @@ const PlayerAbilitiesInner = () => {
                         backgroundColor: "#00000070",
                     }}
                 >
-                    <Pagination
-                        size="medium"
-                        count={totalPages}
-                        page={page}
-                        sx={{
-                            ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
-                            ".Mui-selected": {
-                                color: (theme) => theme.factionTheme.secondary,
-                                backgroundColor: (theme) => `${theme.factionTheme.primary} !important`,
-                            },
-                        }}
-                        onChange={(e, p) => changePage(p)}
-                        showFirstButton
-                        showLastButton
-                    />
+                    <Pagination count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
                 </Box>
             )}
         </Stack>

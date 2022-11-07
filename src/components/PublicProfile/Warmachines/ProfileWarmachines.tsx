@@ -52,7 +52,7 @@ const getIcon = (factionName: FactionName): string => {
     return WarMachineIconPNG
 }
 
-export const ProfileWarmachines = ({ playerID, primaryColour, secondaryColor, backgroundColour, factionName }: ProfileWarmachinesProps) => {
+export const ProfileWarmachines = ({ playerID, primaryColour, backgroundColour, factionName }: ProfileWarmachinesProps) => {
     const [query] = useUrlQuery()
     const { send } = useGameServerCommands("/public/commander")
 
@@ -249,21 +249,7 @@ export const ProfileWarmachines = ({ playerID, primaryColour, secondaryColor, ba
                                     backgroundColor: "#00000070",
                                 }}
                             >
-                                <Pagination
-                                    size="medium"
-                                    count={totalPages}
-                                    page={page}
-                                    sx={{
-                                        ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
-                                        ".Mui-selected": {
-                                            color: secondaryColor,
-                                            backgroundColor: `${primaryColour} !important`,
-                                        },
-                                    }}
-                                    onChange={(e, p) => changePage(p)}
-                                    showFirstButton
-                                    showLastButton
-                                />
+                                <Pagination count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
                             </Box>
                         )}
                     </Stack>

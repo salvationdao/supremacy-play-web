@@ -73,20 +73,18 @@ const BattleArenaPageInner = React.memo(function BattleArenaPageInner() {
                                 direction: "ltr",
                             }}
                         >
-                            <Box sx={{ direction: "ltr", height: 0 }}>
-                                <Stack direction="row">
-                                    <Stack spacing="1.5rem" sx={{ width: "50%", position: "relative", p: ".8rem 1rem" }}>
-                                        {/* <MiniMap /> */}
-                                        <WarMachineStats />
-                                    </Stack>
-
-                                    <Stack spacing="1.5rem" sx={{ width: "50%", position: "relative", p: ".8rem 1rem" }}>
-                                        <SupporterAbilities />
-                                        <PlayerAbilities />
-                                        <QuickPlayerAbilities />
-                                    </Stack>
+                            <Stack direction="row">
+                                <Stack spacing="1.5rem" sx={{ width: "50%", position: "relative", p: ".8rem 1rem" }}>
+                                    {/* <MiniMap /> */}
+                                    <WarMachineStats />
                                 </Stack>
-                            </Box>
+
+                                <Stack spacing="1.5rem" sx={{ width: "50%", position: "relative", p: ".8rem 1rem" }}>
+                                    <SupporterAbilities />
+                                    <PlayerAbilities />
+                                    <QuickPlayerAbilities />
+                                </Stack>
+                            </Stack>
                         </Box>
                     </Stack>
                 ),
@@ -121,7 +119,7 @@ const BattleArenaPageInner = React.memo(function BattleArenaPageInner() {
 
     return (
         <Stack id="battle-arena-all" sx={{ width: "100%", height: "100%", zIndex: siteZIndex.RoutePage }}>
-            <Box id="game-ui-container" sx={{ position: "relative", flex: 1, height: 0 }}>
+            <Box id="game-ui-container" sx={{ position: "relative", flex: 1 }}>
                 <BigDisplay />
 
                 {!isMobile && (

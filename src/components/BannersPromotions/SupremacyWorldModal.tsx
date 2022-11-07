@@ -1,9 +1,10 @@
 import { Box, Grow, Modal } from "@mui/material"
 import { useState } from "react"
-import { SupremacyWorldPNG } from "../../../assets"
+import { SupremacyWorldPNG } from "../../assets"
+import { SUPREMACY_WORLD_SALE_END_DATE } from "../../constants"
 
 export const SupremacyWorldModal = () => {
-    const [showModal, setShowModal] = useState(true)
+    const [showModal, setShowModal] = useState(new Date().getTime() < SUPREMACY_WORLD_SALE_END_DATE.getTime())
 
     return (
         <Modal

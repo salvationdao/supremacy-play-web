@@ -2,6 +2,7 @@ import { Box, ButtonBaseProps, CircularProgress, SxProps } from "@mui/material"
 import React, { HTMLAttributeAnchorTarget, useMemo } from "react"
 import { Link } from "react-router-dom"
 import { sheenMovement } from "../../../theme/keyframes"
+import { fonts } from "../../../theme/theme"
 import { NiceBoxThing, NiceBoxThingProps } from "./NiceBoxThing"
 
 type Bruh = ButtonBaseProps & NiceBoxThingProps
@@ -9,6 +10,7 @@ type Bruh = ButtonBaseProps & NiceBoxThingProps
 interface SheenOptions {
     sheenSpeedFactor?: number
     autoSheen?: boolean
+    opacity?: number
 }
 
 interface CommonProps extends Omit<Bruh, "sx"> {
@@ -52,6 +54,7 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
             return {
                 sheenSpeedFactor: 1,
                 autoSheen: false,
+                opacity: 1,
             }
         } else {
             return sheen
@@ -65,6 +68,8 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
             alignItems: "center",
             justifyContent: "center",
             p: ".8rem 1.2rem",
+            fontFamily: fonts.nostromoBold,
+            fontSize: "1.5rem",
             backgroundColor: "transparent",
             cursor: buttonDisabled ? "auto" : "pointer",
             [`&:disabled .${OVERLAY_CLASSNAME}`]: {
@@ -96,7 +101,9 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
                           zIndex: 99,
                           animationFillMode: "forwards",
                           animation: sheenOptions.autoSheen
-                              ? `${sheenMovement("30%", buttonDisabled ? 0 : 0.1, 25)} ${2 * (sheenOptions.sheenSpeedFactor || 1)}s linear infinite`
+                              ? `${sheenMovement("30%", buttonDisabled ? 0 : 0.1 * (sheenOptions.opacity || 1), 30)} ${
+                                    2 / (sheenOptions.sheenSpeedFactor || 1)
+                                }s linear infinite`
                               : "unset",
                       },
 
@@ -104,23 +111,29 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
                           left: "-150%",
                           width: "200%",
                           animation: sheenOptions.autoSheen
-                              ? `${sheenMovement("130%", buttonDisabled ? 0 : 1, 25)} ${2 * (sheenOptions.sheenSpeedFactor || 1)}s linear infinite`
+                              ? `${sheenMovement("130%", buttonDisabled ? 0 : sheenOptions.opacity || 1, 30)} ${
+                                    2 / (sheenOptions.sheenSpeedFactor || 1)
+                                }s linear infinite`
                               : "unset",
                       },
 
                       ":hover:before": {
-                          animation: `${sheenMovement("130%", buttonDisabled ? 0 : 1)} ${0.7 * (sheenOptions.sheenSpeedFactor || 1)}s linear`,
+                          animation: `${sheenMovement("130%", buttonDisabled ? 0 : sheenOptions.opacity || 1)} ${
+                              0.7 / (sheenOptions.sheenSpeedFactor || 1)
+                          }s linear`,
                       },
 
                       ":hover:after": {
-                          animation: `${sheenMovement("30%", buttonDisabled ? 0 : 0.1)} ${0.7 * (sheenOptions.sheenSpeedFactor || 1)}s linear`,
+                          animation: `${sheenMovement("30%", buttonDisabled ? 0 : 0.1 * (sheenOptions.opacity || 1))} ${
+                              0.7 / (sheenOptions.sheenSpeedFactor || 1)
+                          }s linear`,
                       },
                   }
                 : {}),
 
             ...sx,
         }
-    }, [buttonDisabled, sheen, sheenOptions.autoSheen, sheenOptions.sheenSpeedFactor, sx])
+    }, [buttonDisabled, sheen, sheenOptions.autoSheen, sheenOptions.opacity, sheenOptions.sheenSpeedFactor, sx])
 
     return (
         <Nice

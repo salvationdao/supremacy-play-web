@@ -49,7 +49,6 @@ export const MechLoadoutMechSkinModal = ({
 
     const theme = useTheme()
     const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
 
     const [submodels, setSubmodels] = useState<MechSkin[]>([])
     const [selectedSubmodel, setSelectedSubmodel] = useState<MechSkin>()
@@ -379,19 +378,7 @@ export const MechLoadoutMechSkinModal = ({
                                         backgroundColor: "#00000070",
                                     }}
                                 >
-                                    <Pagination
-                                        size="small"
-                                        count={totalPages}
-                                        page={page}
-                                        sx={{
-                                            ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold, fontSize: "1.2rem" },
-                                            ".Mui-selected": {
-                                                color: secondaryColor,
-                                                backgroundColor: `${primaryColor} !important`,
-                                            },
-                                        }}
-                                        onChange={(e, p) => changePage(p)}
-                                    />
+                                    <Pagination count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
                                 </Box>
                             )}
                         </Stack>

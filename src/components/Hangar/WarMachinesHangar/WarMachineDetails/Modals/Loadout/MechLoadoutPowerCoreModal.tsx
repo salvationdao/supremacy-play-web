@@ -81,7 +81,6 @@ export const MechLoadoutPowerCoreModal = ({
 
     const theme = useTheme()
     const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
 
     const [powerCores, setPowerCores] = useState<PlayerAsset[]>([])
     const [selectedPowerCore, setSelectedPowerCore] = useState<PowerCore>()
@@ -560,19 +559,7 @@ export const MechLoadoutPowerCoreModal = ({
                                     backgroundColor: "#00000070",
                                 }}
                             >
-                                <Pagination
-                                    size="small"
-                                    count={totalPages}
-                                    page={page}
-                                    sx={{
-                                        ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold, fontSize: "1.2rem" },
-                                        ".Mui-selected": {
-                                            color: secondaryColor,
-                                            backgroundColor: `${primaryColor} !important`,
-                                        },
-                                    }}
-                                    onChange={(e, p) => changePage(p)}
-                                />
+                                <Pagination count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
                             </Box>
                         )}
                     </Stack>
