@@ -27,7 +27,11 @@ export const NiceAccordion = ({ items, expandID }: NiceAccordionProps) => {
         <Box>
             {items.map((item) => (
                 <Accordion key={item.id} expanded={item.id === expanded} onChange={() => handleChange(item.id)} borderColor={theme.factionTheme.primary}>
-                    <AccordionSummary aria-controls={`${item.id}-content`} id={`${item.id}-header`} backgroundColor={theme.factionTheme.primary}>
+                    <AccordionSummary
+                        aria-controls={`${item.id}-content`}
+                        id={`${item.id}-header`}
+                        backgroundColor={item.id === expanded ? theme.factionTheme.primary : theme.factionTheme.background}
+                    >
                         {typeof item.header === "string" ? (
                             <Typography
                                 sx={{
@@ -78,6 +82,7 @@ const AccordionSummary = styled(({ backgroundColor, sx, ...props }: MyAccordionS
         expandIcon={<ArrowRight sx={{ fontSize: "4rem" }} />}
         sx={{
             backgroundColor,
+            transition: "background-color .2s ease-out",
             "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
                 transform: "rotate(90deg)",
             },

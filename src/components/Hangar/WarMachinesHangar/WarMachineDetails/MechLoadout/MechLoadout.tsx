@@ -184,6 +184,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     const saveSelection = useCallback(
         async (selection: SavedSelection) => {
             try {
+                console.info("saving loadout")
                 setLoading(true)
 
                 const newMechDetails = await send<MechDetails, PlayerAssetMechEquipRequest>(GameServerKeys.EquipMech, {
