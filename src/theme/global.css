@@ -29,7 +29,9 @@
 
 /* Update `src/containers/dimensions.ts` */
 html {
-    font-size: 57%; /* 62.5% of 16px is 10px */
+    /* By default, 1rem = 16px */
+    /* 62.5% of 16px is 10px, it means now 1rem is 10px */
+    font-size: 57%;
 }
 
 @media only screen and (max-width: 1922px) {
