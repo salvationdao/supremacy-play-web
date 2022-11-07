@@ -4,52 +4,6 @@
 
 [CD Docs](.github/workflows/README.md)
 
-## Common Components (templates)
-
-```ts
-<ClipThing
-	clipSize="10px"
-	border={{
-		isFancy: true,
-		borderColor: "#FF0000",
-		borderThickness: ".3rem",
-	}}
-	corners={{
-		topLeft: true,
-		topRight: true,
-		bottomLeft: true,
-		bottomRight: true,
-	}}
-	opacity={0.7}
-	backgroundColor="#333333"
-	sx={{ height: "100%" }}
->
-	<Stack sx={{ height: "100%" }}>
-		CONTENT
-	</Stack>
-</ClipThing>
-
-
-<FancyButton
-	clipThingsProps={{
-		clipSize: "9px",
-		backgroundColor: "#333333",
-		opacity: 1,
-		border: { isFancy: true, borderColor: "#FF0000", borderThickness: "2px" },
-		sx: { position: "relative" },
-	}}
-	sx={{ px: "1.6rem", py: ".6rem", color: "#FF0000" }} // color is the ripple color!
-	onClick={onClick}
->
-	<Typography
-		variant="body2"
-		sx={{ fontWeight: "fontWeightBold", color: "#FF0000", }}
-	>
-		GO TO ASSET STORE
-	</Typography>
-</FancyButton>
-```
-
 ## Dev Links
 
 -   play-web: `https://play.supremacygame.io`
