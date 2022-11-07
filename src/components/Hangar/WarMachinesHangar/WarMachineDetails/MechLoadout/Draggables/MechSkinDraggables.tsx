@@ -1,13 +1,16 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, MenuItem, Pagination, Select, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { SvgSkin } from "../../../../../../assets"
+import { SvgSearch, SvgSkin } from "../../../../../../assets"
 import { getRarityDeets } from "../../../../../../helpers"
+import { usePagination } from "../../../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../../keys"
 import { fonts, theme } from "../../../../../../theme/theme"
 import { AssetItemType, MechSkin, PowerCore, Utility, Weapon } from "../../../../../../types"
+import { SortTypeLabel } from "../../../../../../types/marketplace"
 import { GetSubmodelsRequest, GetSubmodelsResponse } from "../../../../SubmodelHangar/SubmodelsHangar"
 import { MechLoadoutItem } from "../../../Common/MechLoadoutItem"
+import { NiceInputBase } from "./WeaponDraggables"
 
 export type OnClickEventWithType = (
     e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>,
@@ -29,15 +32,48 @@ export const MechSkinDraggables = ({ excludeMechSkinIDs, includeMechSkinIDs, mec
     const [mechSkins, setMechSkins] = useState<MechSkin[]>([])
     const [isMechSkinsLoading, setIsMechSkinsLoading] = useState(true)
     const [mechSkinsError, setMechSkinsError] = useState<string>()
-
+    const [sort, setSort] = useState<string>(SortTypeLabel.DateAddedNewest)
+    const { page, changePage, setTotalItems, totalPages, pageSize, prevPage } = usePagination({
+        pageSize: 9,
+        page: 1,
+    })
+    
     const getMechSkins = useCallback(async () => {
         setIsMechSkinsLoading(true)
         try {
+            let sortDir = "asc"
+            let sortBy = ""
+            if (sort === SortTypeLabel.AlphabeticalReverse || sort === SortTypeLabel.RarestDesc) sortDir = "desc"
+
+            switch (sort) {
+                case SortTypeLabel.Alphabetical:
+                    sortBy = "alphabetical"
+                    break
+                case SortTypeLabel.AlphabeticalReverse:
+                    sortBy = "alphabetical"
+                    sortDir = "desc"
+                    break
+                case SortTypeLabel.RarestAsc:
+                    sortBy = "rarity"
+                    break
+                case SortTypeLabel.RarestDesc:
+                    sortBy = "rarity"
+                    sortDir = "desc"
+                    break
+                case SortTypeLabel.DateAddedOldest:
+                    sortBy = "date"
+                    break
+                case SortTypeLabel.DateAddedNewest:
+                    sortBy = "date"
+                    sortDir = "desc"
+                    break
+            }
+            
             const resp = await send<GetSubmodelsResponse, GetSubmodelsRequest>(GameServerKeys.GetMechSubmodelsDetailed, {
-                page: 1,
-                page_size: 9,
-                sort_by: "date",
-                sort_dir: "desc",
+                page,
+                page_size: pageSize,
+                sort_by: sortBy,
+                sort_dir: sortDir,
                 include_market_listed: false,
                 display_genesis_and_limited: true,
                 exclude_market_locked: true,
@@ -62,7 +98,7 @@ export const MechSkinDraggables = ({ excludeMechSkinIDs, includeMechSkinIDs, mec
         } finally {
             setIsMechSkinsLoading(false)
         }
-    }, [excludeMechSkinIDs, includeMechSkinIDs, mechModelID, send])
+    }, [excludeMechSkinIDs, includeMechSkinIDs, mechModelID, page, pageSize, send, sort])
     useEffect(() => {
         getMechSkins()
     }, [getMechSkins])
@@ -124,7 +160,26 @@ export const MechSkinDraggables = ({ excludeMechSkinIDs, includeMechSkinIDs, mec
 
     return (
         <Stack spacing="2rem" minHeight={400}>
+                        {/* Search and sort */}
+                        <Stack direction="row" spacing="1rem">
+                <NiceInputBase placeholder="Search weapons..." endAdornment={<SvgSearch fill={"rgba(255, 255, 255, 0.4)"} />} />
+                <Select value={sort} onChange={(e) => setSort(e.target.value)} input={<NiceInputBase />}>
+                    <MenuItem value={SortTypeLabel.Alphabetical}>{SortTypeLabel.Alphabetical}</MenuItem>
+                    <MenuItem value={SortTypeLabel.AlphabeticalReverse}>{SortTypeLabel.AlphabeticalReverse}</MenuItem>
+                    <MenuItem value={SortTypeLabel.RarestAsc}>{SortTypeLabel.RarestAsc}</MenuItem>
+                    <MenuItem value={SortTypeLabel.RarestDesc}>{SortTypeLabel.RarestDesc}</MenuItem>
+                    <MenuItem value={SortTypeLabel.DateAddedNewest}>Date added: newest</MenuItem>
+                    <MenuItem value={SortTypeLabel.DateAddedOldest}>Date added: oldest</MenuItem>
+                </Select>
+            </Stack>
+            
+            {/* Content */}
             {mechSkinsContent}
+            <Box flex={1} />
+
+{/* Pagination */}
+<Pagination count={totalPages} page={page} onChange={(_, p) => changePage(p)} />
+
         </Stack>
     )
 }

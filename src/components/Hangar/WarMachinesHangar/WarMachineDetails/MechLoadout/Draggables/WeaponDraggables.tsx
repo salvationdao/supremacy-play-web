@@ -33,7 +33,7 @@ export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesPro
     const [isWeaponsLoading, setIsWeaponsLoading] = useState(true)
     const [weaponsError, setWeaponsError] = useState<string>()
     const [sort, setSort] = useState<string>(SortTypeLabel.DateAddedNewest)
-    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize, prevPage } = usePagination({
+    const { page, changePage, setTotalItems, totalPages, pageSize, prevPage } = usePagination({
         pageSize: 9,
         page: 1,
     })
@@ -199,8 +199,8 @@ export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesPro
         <Stack spacing="2rem" minHeight={400}>
             {/* Search and sort */}
             <Stack direction="row" spacing="1rem">
-                <MyInputBase placeholder="Search weapons..." endAdornment={<SvgSearch fill={"rgba(255, 255, 255, 0.4)"} />} />
-                <Select value={sort} onChange={(e) => setSort(e.target.value)} input={<MyInputBase />}>
+                <NiceInputBase placeholder="Search weapons..." endAdornment={<SvgSearch fill={"rgba(255, 255, 255, 0.4)"} />} />
+                <Select value={sort} onChange={(e) => setSort(e.target.value)} input={<NiceInputBase />}>
                     <MenuItem value={SortTypeLabel.Alphabetical}>{SortTypeLabel.Alphabetical}</MenuItem>
                     <MenuItem value={SortTypeLabel.AlphabeticalReverse}>{SortTypeLabel.AlphabeticalReverse}</MenuItem>
                     <MenuItem value={SortTypeLabel.RarestAsc}>{SortTypeLabel.RarestAsc}</MenuItem>
@@ -220,12 +220,15 @@ export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesPro
     )
 }
 
-const MyInputBase = styled(({ sx, ...props }: InputBaseProps) => (
+export const NiceInputBase = styled(({ sx, ...props }: InputBaseProps) => (
     <InputBase
         sx={(theme) => ({
-            p: ".5rem 1rem",
+            p: ".5rem 2rem",
             border: `1px solid ${colors.darkGrey}aa`,
             backgroundColor: `${theme.factionTheme.primary}22`,
+            ".MuiInputBase-input": {
+                p: 0,
+            },
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             ...(sx as any),
         })}
