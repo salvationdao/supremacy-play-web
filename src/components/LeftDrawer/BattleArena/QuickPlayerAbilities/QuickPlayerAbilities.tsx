@@ -2,7 +2,6 @@ import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import React, { useCallback, useMemo, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
 import { useAuth } from "../../../../containers"
-import { useTheme } from "../../../../containers/theme"
 import { GetSaleAbilityAvailability } from "../../../../fetching"
 import { useGameServerSubscriptionSecured, useGameServerSubscriptionSecuredUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -19,8 +18,6 @@ export const QuickPlayerAbilities = () => {
 }
 
 const QuickPlayerAbilitiesInner = React.memo(function QuickPlayerAbilitiesInner({ userID }: { userID: string }) {
-    const theme = useTheme()
-
     const { query: queryAvailability } = useParameterizedQuery(GetSaleAbilityAvailability)
     const [availability, setAvailability] = useState<SaleAbilityAvailability>(SaleAbilityAvailability.CanPurchase)
     const [availabilityError, setAvailabilityError] = useState<string>()
@@ -106,8 +103,6 @@ const QuickPlayerAbilitiesInner = React.memo(function QuickPlayerAbilitiesInner(
         },
     )
 
-    const primaryColor = theme.factionTheme.primary
-
     const timeLeft = useMemo(() => {
         if (nextRefreshTime) {
             return (
@@ -148,7 +143,7 @@ const QuickPlayerAbilitiesInner = React.memo(function QuickPlayerAbilitiesInner(
                 {!isLoaded && (
                     <Stack alignItems="center" justifyContent="center" sx={{ flex: 1 }}>
                         <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem" }}>
-                            <CircularProgress size="3rem" sx={{ color: primaryColor }} />
+                            <CircularProgress />
                         </Stack>
                     </Stack>
                 )}

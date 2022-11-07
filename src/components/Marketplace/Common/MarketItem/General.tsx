@@ -1,7 +1,7 @@
 import { Stack, Typography } from "@mui/material"
 import { ReactNode } from "react"
 import { colors, fonts } from "../../../../theme/theme"
-import { CropMaxLengthText } from "../../../../theme/styles"
+import { TruncateTextLines } from "../../../../theme/styles"
 
 export const General = ({
     isGridView,
@@ -35,8 +35,7 @@ export const General = ({
                     sx={{
                         color: textColor || "#FFFFFF",
                         fontWeight: "fontWeightBold",
-                        ...CropMaxLengthText,
-                        WebkitLineClamp: 2,
+                        ...TruncateTextLines(2),
                     }}
                 >
                     {text}

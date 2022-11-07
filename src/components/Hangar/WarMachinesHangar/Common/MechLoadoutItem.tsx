@@ -1,6 +1,5 @@
-import { Box, Skeleton, Slide, Stack, Typography } from "@mui/material"
+import { Box, Slide, Stack, Typography } from "@mui/material"
 import React, { MouseEventHandler, useEffect, useRef } from "react"
-import { ClipThing } from "../../.."
 import { SvgCancelled, SvgLock, SvgWrapperProps } from "../../../../assets"
 import { useToggle } from "../../../../hooks"
 import { colors, fonts } from "../../../../theme/theme"
@@ -254,15 +253,5 @@ const MechLoadoutItemButton = ({
                 )}
             </NiceButton>
         </>
-    )
-}
-
-export const MechLoadoutItemSkeleton = () => {
-    return (
-        <Box>
-            <ClipThing>
-                <Skeleton variant="rectangular" width="100%" height={130} />
-            </ClipThing>
-        </Box>
     )
 }

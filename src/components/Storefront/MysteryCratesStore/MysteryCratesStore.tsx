@@ -96,7 +96,7 @@ export const MysteryCratesStore = () => {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "10rem" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
+                        <CircularProgress />
                     </Stack>
                 </Stack>
             )
@@ -210,7 +210,7 @@ export const MysteryCratesStore = () => {
                 </Stack>
             </Stack>
         )
-    }, [crates, enlargedView, isLoading, loadError, theme.factionTheme.primary])
+    }, [crates, enlargedView, isLoading, loadError])
 
     return (
         <>

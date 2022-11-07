@@ -527,7 +527,7 @@ export const WeaponsMarket = () => {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
+                        <CircularProgress />
                     </Stack>
                 </Stack>
             )
@@ -591,7 +591,7 @@ export const WeaponsMarket = () => {
                 </Stack>
             </Stack>
         )
-    }, [loadError, mechItems, isLoading, theme.factionTheme.primary, isGridView, isExpanded, toggleIsExpanded])
+    }, [loadError, mechItems, isLoading, isGridView, isExpanded, toggleIsExpanded])
 
     return (
         <Box

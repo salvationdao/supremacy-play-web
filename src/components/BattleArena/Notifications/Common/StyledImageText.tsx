@@ -1,7 +1,7 @@
 import { Box, SxProps, Typography, TypographyPropsVariantOverrides } from "@mui/material"
 import { Variant } from "@mui/material/styles/createTypography"
 import { OverridableStringUnion } from "@mui/types"
-import { ReactNode, useMemo } from "react"
+import { ReactNode } from "react"
 
 export interface StyledImageTextProps {
     imageUrl?: string
@@ -40,21 +40,6 @@ export const StyledImageText = ({
     imageBackgroundSize = "cover",
     noImageBackgroundColor,
 }: StyledImageTextProps) => {
-    const truncateStyle: SxProps = useMemo(
-        () =>
-            truncateLine
-                ? {
-                      display: "-webkit-inline-box",
-                      overflow: "hidden",
-                      overflowWrap: "anywhere",
-                      textOverflow: "ellipsis",
-                      WebkitLineClamp: 1, // change to max number of lines
-                      WebkitBoxOrient: "vertical",
-                  }
-                : {},
-        [truncateLine],
-    )
-
     return (
         <span style={{ display: "inline" }}>
             {imageUrl && (
@@ -85,7 +70,16 @@ export const StyledImageText = ({
                     fontWeight,
                     color: textColor || color,
                     wordBreak: "break-all",
-                    ...truncateStyle,
+                    ...(truncateLine
+                        ? {
+                              display: "-webkit-inline-box",
+                              overflow: "hidden",
+                              overflowWrap: "anywhere",
+                              textOverflow: "ellipsis",
+                              WebkitLineClamp: 1,
+                              WebkitBoxOrient: "vertical",
+                          }
+                        : {}),
                     ...textSx,
                 }}
             >

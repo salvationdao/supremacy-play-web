@@ -2,6 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo } from "react"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../../assets"
 import { useMiniMapPixi } from "../../../../containers"
+import { TruncateTextLines } from "../../../../theme/styles"
 import { colors } from "../../../../theme/theme"
 import { LocationSelectType, AnyAbility } from "../../../../types"
 import { FancyButton } from "../../../Common/FancyButton"
@@ -107,12 +108,7 @@ export const SupportAbilityCard = ({ supportAbility }: { supportAbility: AnyAbil
                         variant="body2"
                         sx={{
                             lineHeight: 1.2,
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            overflowWrap: "anywhere",
-                            textOverflow: "ellipsis",
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: "vertical",
+                            ...TruncateTextLines(2),
                             fontWeight: "fontWeightBold",
                         }}
                     >

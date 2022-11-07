@@ -144,17 +144,9 @@ export const TotalAndPageSizeOptions = React.memo(function TotalAndPageSizeOptio
                 {countItems && onSelectAll && onUnselectedAll && (
                     <Stack spacing="1rem" direction="row" alignItems="center">
                         <Checkbox
-                            size="small"
                             checked={(selectedCount || 0) >= countItems}
                             indeterminate={!!(selectedCount && selectedCount > 0 && selectedCount < countItems)}
                             onClick={(selectedCount || 0) >= countItems ? onUnselectedAll : onSelectAll}
-                            sx={{
-                                p: 0,
-                                color: primaryColor,
-                                "& > .MuiSvgIcon-root": { width: "2.5rem", height: "2.5rem" },
-                                ".Mui-checked, .MuiSvgIcon-root": { color: `${primaryColor} !important` },
-                                ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${primaryColor}50 !important` },
-                            }}
                         />
 
                         <Typography variant="caption" sx={{ pt: ".4rem" }}>

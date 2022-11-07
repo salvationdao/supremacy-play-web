@@ -2,6 +2,7 @@ import { Stack, Tab, Tabs, Typography } from "@mui/material"
 import { useCallback, useEffect } from "react"
 import { useTheme } from "../../../containers/theme"
 import { RouteGroupID, RouteGroups } from "../../../routes"
+import { TruncateTextLines } from "../../../theme/styles"
 import { fonts } from "../../../theme/theme"
 import { ArrowButton } from "./ArrowButton"
 
@@ -86,12 +87,7 @@ export const NavTabs = ({
                                     sx={{
                                         color: routeGroup.id === activeTabID ? theme.factionTheme.secondary : "#FFFFFF",
                                         fontFamily: fonts.nostromoBlack,
-                                        display: "-webkit-box",
-                                        overflow: "hidden",
-                                        overflowWrap: "anywhere",
-                                        textOverflow: "ellipsis",
-                                        WebkitLineClamp: 1, // change to max number of lines
-                                        WebkitBoxOrient: "vertical",
+                                        ...TruncateTextLines(1),
                                     }}
                                 >
                                     {routeGroup.label}

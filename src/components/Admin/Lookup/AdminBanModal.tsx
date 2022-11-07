@@ -1,12 +1,12 @@
-import { Faction, User } from "../../../types"
-import React, { useCallback, useEffect, useState } from "react"
-import { GameServerKeys } from "../../../keys"
-import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { Box, Checkbox, IconButton, Modal, Stack, TextField, Typography } from "@mui/material"
-import { ClipThing } from "../../Common/ClipThing"
-import { colors, fonts, siteZIndex } from "../../../theme/theme"
+import React, { useCallback, useEffect, useState } from "react"
 import { SvgClose } from "../../../assets"
 import { MAX_BAN_PROPOSAL_REASON_LENGTH } from "../../../constants"
+import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
+import { Faction, User } from "../../../types"
+import { ClipThing } from "../../Common/ClipThing"
 import { FancyButton } from "../../Common/FancyButton"
 
 export const AdminBanModal = ({
@@ -221,52 +221,19 @@ const AdminBanModalInner = ({
                         </Typography>
 
                         <Stack spacing="1rem" direction="row" alignItems="center" onClick={() => setIsShadowBan(!shadowBan)} sx={{ cursor: "pointer" }}>
-                            <Checkbox
-                                size="small"
-                                checked={shadowBan}
-                                onClick={() => setIsShadowBan(!shadowBan)}
-                                sx={{
-                                    p: 0,
-                                    color: faction.primary_color,
-                                    "& > .MuiSvgIcon-root": { width: "2.5rem", height: "2.5rem" },
-                                    ".Mui-checked, .MuiSvgIcon-root": { color: `${faction.primary_color} !important` },
-                                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${faction.primary_color}50 !important` },
-                                }}
-                            />
+                            <Checkbox checked={shadowBan} onClick={() => setIsShadowBan(!shadowBan)} />
 
                             <Typography sx={{ pt: ".4rem", userSelect: "none" }}>Shadowban user</Typography>
                         </Stack>
 
                         <Stack spacing="1rem" direction="row" alignItems="center" onClick={() => setBanMechQueue(!banMechQueue)} sx={{ cursor: "pointer" }}>
-                            <Checkbox
-                                size="small"
-                                checked={banMechQueue}
-                                onClick={() => setBanMechQueue(!banMechQueue)}
-                                sx={{
-                                    p: 0,
-                                    color: faction.primary_color,
-                                    "& > .MuiSvgIcon-root": { width: "2.5rem", height: "2.5rem" },
-                                    ".Mui-checked, .MuiSvgIcon-root": { color: `${faction.primary_color} !important` },
-                                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${faction.primary_color}50 !important` },
-                                }}
-                            />
+                            <Checkbox checked={banMechQueue} onClick={() => setBanMechQueue(!banMechQueue)} />
 
                             <Typography sx={{ pt: ".4rem", userSelect: "none" }}>Ban user from queuing mechs</Typography>
                         </Stack>
 
                         <Stack spacing="1rem" direction="row" alignItems="center" onClick={() => setChatBan(!chatBan)} sx={{ cursor: "pointer" }}>
-                            <Checkbox
-                                size="small"
-                                checked={chatBan}
-                                onClick={() => setChatBan(!chatBan)}
-                                sx={{
-                                    p: 0,
-                                    color: faction.primary_color,
-                                    "& > .MuiSvgIcon-root": { width: "2.5rem", height: "2.5rem" },
-                                    ".Mui-checked, .MuiSvgIcon-root": { color: `${faction.primary_color} !important` },
-                                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${faction.primary_color}50 !important` },
-                                }}
-                            />
+                            <Checkbox checked={chatBan} onClick={() => setChatBan(!chatBan)} />
 
                             <Typography sx={{ pt: ".4rem", userSelect: "none" }}>Ban user from chat</Typography>
                         </Stack>
@@ -277,18 +244,7 @@ const AdminBanModalInner = ({
                             onClick={() => setSupContributeBan(!supContributeBan)}
                             sx={{ cursor: "pointer" }}
                         >
-                            <Checkbox
-                                size="small"
-                                checked={supContributeBan}
-                                onClick={() => setSupContributeBan(!supContributeBan)}
-                                sx={{
-                                    p: 0,
-                                    color: faction.primary_color,
-                                    "& > .MuiSvgIcon-root": { width: "2.5rem", height: "2.5rem" },
-                                    ".Mui-checked, .MuiSvgIcon-root": { color: `${faction.primary_color} !important` },
-                                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${faction.primary_color}50 !important` },
-                                }}
-                            />
+                            <Checkbox checked={supContributeBan} onClick={() => setSupContributeBan(!supContributeBan)} />
 
                             <Typography sx={{ pt: ".4rem", userSelect: "none" }}>Ban user from location select</Typography>
                         </Stack>
@@ -299,18 +255,7 @@ const AdminBanModalInner = ({
                             onClick={() => setLocationSelectBan(!locationSelectBan)}
                             sx={{ cursor: "pointer" }}
                         >
-                            <Checkbox
-                                size="small"
-                                checked={locationSelectBan}
-                                onClick={() => setLocationSelectBan(!locationSelectBan)}
-                                sx={{
-                                    p: 0,
-                                    color: faction.primary_color,
-                                    "& > .MuiSvgIcon-root": { width: "2.5rem", height: "2.5rem" },
-                                    ".Mui-checked, .MuiSvgIcon-root": { color: `${faction.primary_color} !important` },
-                                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${faction.primary_color}50 !important` },
-                                }}
-                            />
+                            <Checkbox checked={locationSelectBan} onClick={() => setLocationSelectBan(!locationSelectBan)} />
 
                             <Typography sx={{ pt: ".4rem", userSelect: "none" }}>Ban user from contributing sups</Typography>
                         </Stack>

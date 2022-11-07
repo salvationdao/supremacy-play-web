@@ -4,7 +4,7 @@ import { SvgEdit, SvgSave } from "../../../../assets"
 import { useGlobalNotifications } from "../../../../containers"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { CropMaxLengthText } from "../../../../theme/styles"
+import { TruncateTextLines } from "../../../../theme/styles"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechBasic } from "../../../../types"
 
@@ -126,7 +126,7 @@ export const MechName = ({ mech, onRename, allowEdit }: { onRename?: (newName: s
                             fontFamily: fonts.nostromoBlack,
                             fontSize: "1.8rem",
                             color: !name ? colors.grey : "#FFFFFF",
-                            ...CropMaxLengthText,
+                            ...TruncateTextLines(1),
                         }}
                     >
                         {name || "Unnamed"}

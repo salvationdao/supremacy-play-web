@@ -209,7 +209,7 @@ export const MechLoadoutUtilityModal = ({ onClose, onConfirm, equipped, utilitie
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
+                        <CircularProgress />
                     </Stack>
                 </Stack>
             )
@@ -259,7 +259,7 @@ export const MechLoadoutUtilityModal = ({ onClose, onConfirm, equipped, utilitie
                 </Stack>
             </Stack>
         )
-    }, [equipped, isLoading, loadError, selectedUtility?.id, theme.factionTheme.primary, utilities])
+    }, [equipped, isLoading, loadError, selectedUtility?.id, utilities])
 
     return (
         <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>

@@ -13,7 +13,7 @@ import { WarMachineAbilitiesPopoverBT } from "../WarMachineAbilitiesPopover/WarM
 import { WarMachineDestroyedInfoBT } from "../WarMachineDestroyedInfoBT"
 import { HealthShieldBarsBT } from "./HealthShieldBarsBT"
 import { MoveCommandBT } from "./MoveCommandBT"
-import { CropMaxLengthText } from "../../../../theme/styles"
+import { TruncateTextLines } from "../../../../theme/styles"
 
 // in rems
 const WIDTH_AVATAR = 8.6
@@ -235,8 +235,7 @@ export const WarMachineItemBT = ({
                                     lineHeight: 1,
                                     fontWeight: "fontWeightBold",
                                     whiteSpace: "normal",
-                                    ...CropMaxLengthText,
-                                    WebkitLineClamp: 2,
+                                    ...TruncateTextLines(2),
                                 }}
                             >
                                 {name || hash}

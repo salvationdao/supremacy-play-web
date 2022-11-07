@@ -13,7 +13,7 @@ import { FancyButton } from "../../../Common/FancyButton"
 import { PreferenceToggle } from "../../ProfileCard/PreferencesModal/NotificationPreferences"
 import { SystemMessageDisplayable } from "../Messages"
 import { MessageDisplay } from "./MessageDisplay/MessageDisplay"
-import { CropMaxLengthText } from "../../../../theme/styles"
+import { TruncateTextLines } from "../../../../theme/styles"
 
 export interface MessagesMainViewProps {
     lastUpdated: Date
@@ -179,7 +179,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                                             {item.icon}
                                             <Typography
                                                 sx={{
-                                                    ...CropMaxLengthText,
+                                                    ...TruncateTextLines(1),
                                                     width: "100%",
                                                     maxWidth: "100px",
                                                     textAlign: "left",
@@ -192,7 +192,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                                         <Typography
                                             key={1}
                                             sx={{
-                                                ...CropMaxLengthText,
+                                                ...TruncateTextLines(1),
                                                 width: "100%",
                                                 maxWidth: "100px",
                                                 textAlign: "left",
@@ -203,7 +203,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                                         <Typography
                                             key={2}
                                             sx={{
-                                                ...CropMaxLengthText,
+                                                ...TruncateTextLines(1),
                                                 textAlign: "left",
                                                 textTransform: "none",
                                             }}

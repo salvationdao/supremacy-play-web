@@ -7,7 +7,7 @@ import { LocationSelectType, PlayerAbility } from "../../../../types"
 import { FancyButton } from "../../../Common/FancyButton"
 import { TooltipHelper } from "../../../Common/TooltipHelper"
 import { PlayerAbilityCooldownIndicator } from "./PlayerAbilityCooldownIndicator"
-import { CropMaxLengthText } from "../../../../theme/styles"
+import { TruncateTextLines } from "../../../../theme/styles"
 
 interface PlayerAbilityCardProps {
     playerAbility: PlayerAbility
@@ -177,8 +177,7 @@ export const PlayerAbilityCard = React.memo(function PlayerAbilityCard({ playerA
                             variant="body2"
                             sx={{
                                 lineHeight: 1.2,
-                                ...CropMaxLengthText,
-                                WebkitLineClamp: 2,
+                                ...TruncateTextLines(2),
                                 fontWeight: "fontWeightBold",
                             }}
                         >

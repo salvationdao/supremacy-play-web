@@ -8,7 +8,7 @@ import { useTheme } from "../../../../containers/theme"
 import { useGlobalNotifications } from "../../../../containers"
 import { useParameterizedQuery } from "react-fetching-library"
 import { GetMechDestroyedInfo } from "../../../../fetching"
-import { CropMaxLengthText } from "../../../../theme/styles"
+import { TruncateTextLines } from "../../../../theme/styles"
 
 export const WarMachineDestroyedInfo = ({
     warMachine,
@@ -43,7 +43,7 @@ export const WarMachineDestroyedInfo = ({
         if (!warMachineDestroyedRecord)
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "20rem" }}>
-                    <CircularProgress size="1.8rem" sx={{ color: theme.factionTheme.primary }} />
+                    <CircularProgress size="1.8rem" />
                 </Stack>
             )
 
@@ -102,7 +102,7 @@ export const WarMachineDestroyedInfo = ({
                 </Stack>
             </Stack>
         )
-    }, [getFaction, theme.factionTheme.primary, warMachineDestroyedRecord])
+    }, [getFaction, warMachineDestroyedRecord])
 
     return (
         <Modal open={open} onClose={onClose} sx={{ zIndex: siteZIndex.Modal }} BackdropProps={{ sx: { opacity: "0.1 !important" } }}>
@@ -238,8 +238,7 @@ const WarMachineBig = ({
                 sx={{
                     textAlign: "center",
                     fontFamily: fonts.nostromoBlack,
-                    ...CropMaxLengthText,
-                    WebkitLineClamp: 2,
+                    ...TruncateTextLines(2),
                     color,
                 }}
             >
@@ -274,7 +273,7 @@ const WarMachineSmall = ({
                     variant="body2"
                     sx={{
                         fontFamily: fonts.nostromoBlack,
-                        ...CropMaxLengthText,
+                        ...TruncateTextLines(1),
                         color,
                     }}
                 >

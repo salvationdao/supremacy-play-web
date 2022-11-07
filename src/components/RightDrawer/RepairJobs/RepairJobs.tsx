@@ -80,7 +80,7 @@ export const RepairJobs = () => {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <CircularProgress size="2.8rem" sx={{ color: theme.factionTheme.primary }} />
+                        <CircularProgress />
                     </Stack>
                 </Stack>
             )
@@ -139,7 +139,7 @@ export const RepairJobs = () => {
                 </Stack>
             </Stack>
         )
-    }, [removeByID, repairJobModal, repairJobsRender, theme.factionTheme.primary])
+    }, [removeByID, repairJobModal, repairJobsRender])
 
     const main = useMemo(
         () => (

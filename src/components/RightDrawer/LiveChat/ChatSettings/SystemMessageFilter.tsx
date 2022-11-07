@@ -13,16 +13,7 @@ export const SystemMessageFilter = () => {
         >
             <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>Only show system messages:</Typography>
 
-            <Switch
-                size="small"
-                checked={onlyShowSystemMessages}
-                onChange={() => toggleOnlyShowSystemMessages()}
-                sx={{
-                    transform: "scale(.7)",
-                    ".Mui-checked": { color: (theme) => theme.factionTheme.primary },
-                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: (theme) => `${theme.factionTheme.primary}50` },
-                }}
-            />
+            <Switch checked={onlyShowSystemMessages} onChange={() => toggleOnlyShowSystemMessages()} />
         </Stack>
     )
 }

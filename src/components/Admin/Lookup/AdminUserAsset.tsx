@@ -1,6 +1,7 @@
 import { Box, Button, Stack, Typography } from "@mui/material"
 import { useState } from "react"
 import { SvgEdit } from "../../../assets"
+import { TruncateTextLines } from "../../../theme/styles"
 import { Faction, MechDetails, User } from "../../../types"
 import { AdminGetUserAsset } from "../../../types/admin"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
@@ -77,12 +78,7 @@ const MechEntry = ({ user, faction, mech }: MechEntryProps) => {
                         sx={{
                             fontSize: "1.8rem",
                             color: "#FFFFFF",
-                            display: "-webkit-box",
-                            overflow: "hidden",
-                            overflowWrap: "anywhere",
-                            textOverflow: "ellipsis",
-                            WebkitLineClamp: 1,
-                            WebkitBoxOrient: "vertical",
+                            ...TruncateTextLines(1),
                         }}
                     >
                         {name}

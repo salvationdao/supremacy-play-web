@@ -94,7 +94,7 @@ export const MechThumbnail = ({
             >
                 {!imageUrl && (
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                        <CircularProgress size="2.2rem" sx={{ color: primaryColor }} />
+                        <CircularProgress size="2.2rem" />
                     </Stack>
                 )}
             </Box>
