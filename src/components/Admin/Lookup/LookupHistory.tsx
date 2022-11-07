@@ -61,11 +61,7 @@ export const LookupHistory = ({ playerGID }: { playerGID: string }) => {
                     p: "1rem",
                 }}
             >
-                <CircularProgress
-                    sx={{
-                        color: theme.factionTheme.primary,
-                    }}
-                />
+                <CircularProgress />
             </Stack>
         )
     }

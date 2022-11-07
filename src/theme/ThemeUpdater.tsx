@@ -29,9 +29,13 @@ export const ThemeUpdater = ({ children }: { children: ReactNode }) => {
                 ".MuiPagination-root": {
                     ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
                     ".Mui-selected": {
-                        color: (theme) => theme.factionTheme.secondary,
+                        color: theme.factionTheme.secondary,
                         backgroundColor: `${theme.factionTheme.primary} !important`,
                     },
+                },
+
+                ".MuiCircularProgress-root": {
+                    color: theme.factionTheme.primary,
                 },
             }}
         >

@@ -130,7 +130,7 @@ export const WarmachineDetails = ({ mechID, primaryColor, backgroundColor }: { m
                             </Stack>
                         ) : (
                             <Stack alignItems="center" justifyContent="center" sx={{ height: "20rem" }}>
-                                <CircularProgress size="3rem" sx={{ color: primaryColor }} />
+                                <CircularProgress />
                             </Stack>
                         )}
                     </Box>
@@ -153,7 +153,7 @@ export const WarmachineDetails = ({ mechID, primaryColor, backgroundColor }: { m
                     </>
                 ) : (
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                        <CircularProgress size="3rem" sx={{ color: primaryColor }} />
+                        <CircularProgress />
                     </Stack>
                 )}
             </ClipThing>

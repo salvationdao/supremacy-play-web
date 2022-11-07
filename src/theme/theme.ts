@@ -302,6 +302,38 @@ export const theme = createTheme({
                 },
             },
         },
+        MuiCheckbox: {
+            defaultProps: {
+                size: "small",
+            },
+            styleOverrides: {
+                root: {
+                    padding: "0 !important",
+                    color: colors.green,
+                    transform: "scale(.7)",
+                    "& > .MuiSvgIcon-root": { width: "2.8rem", height: "2.8rem" },
+                    ".Mui-checked, .MuiSvgIcon-root": { color: `${colors.green} !important` },
+                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.green}50 !important` },
+                },
+            },
+        },
+        MuiSwitch: {
+            defaultProps: {
+                size: "small",
+            },
+            styleOverrides: {
+                root: {
+                    transform: "scale(.7)",
+                    ".Mui-checked": { color: colors.green },
+                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.green}50` },
+                },
+            },
+        },
+        MuiCircularProgress: {
+            defaultProps: {
+                size: "3rem",
+            },
+        },
     },
     factionTheme,
 })

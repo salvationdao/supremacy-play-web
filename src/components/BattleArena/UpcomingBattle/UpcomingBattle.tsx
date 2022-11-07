@@ -21,7 +21,7 @@ export const UpcomingBattle = ({ nextBattle }: { nextBattle: BattleLobby }) => {
         if (!nextBattle) {
             return (
                 <Stack justifyContent="center" alignItems="center" sx={{ height: "6rem" }}>
-                    <CircularProgress size="3rem" sx={{ color: "#FFFFFF" }} />
+                    <CircularProgress sx={{ color: "#FFFFFF" }} />
                 </Stack>
             )
         }

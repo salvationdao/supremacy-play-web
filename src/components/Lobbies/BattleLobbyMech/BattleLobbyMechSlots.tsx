@@ -12,7 +12,7 @@ import { BattleLobbiesMech, BattleLobbySupporter } from "../../../types/battle_q
 import { ConfirmModal } from "../../Common/ConfirmModal"
 import { WeaponSlot } from "../Common/weaponSlot"
 import { MechBarStats } from "../../Hangar/WarMachinesHangar/Common/MechBarStats"
-import { CropMaxLengthText } from "../../../theme/styles"
+import { TruncateTextLines } from "../../../theme/styles"
 import { useHistory } from "react-router-dom"
 
 export interface BattleLobbyFaction {
@@ -194,7 +194,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                 <Typography
                                     variant="h6"
                                     sx={{
-                                        ...CropMaxLengthText,
+                                        ...TruncateTextLines(1),
                                         textTransform: "uppercase",
                                         fontWeight: "fontWeightBold",
                                         color: `#ffffff`,
@@ -207,7 +207,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                     <Typography
                                         variant="h6"
                                         sx={{
-                                            ...CropMaxLengthText,
+                                            ...TruncateTextLines(1),
                                             color: `${getFaction(ms.faction_id).primary_color}`,
                                             fontStyle: "italic",
                                         }}

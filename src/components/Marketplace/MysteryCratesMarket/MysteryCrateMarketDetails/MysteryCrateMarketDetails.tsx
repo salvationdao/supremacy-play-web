@@ -79,7 +79,7 @@ export const MysteryCrateMarketDetails = () => {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <CircularProgress size="3rem" sx={{ color: primaryColor }} />
+                        <CircularProgress />
                     </Stack>
                 </Stack>
             )

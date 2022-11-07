@@ -5,7 +5,7 @@ import { SvgHealth, SvgPowerCoreCapacity, SvgPowerCoreRegen, SvgShield, SvgShiel
 import { useTheme } from "../../../../containers/theme"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
-import { CropMaxLengthText } from "../../../../theme/styles"
+import { TruncateTextLines } from "../../../../theme/styles"
 
 export const MechBarStats = ({
     mech,
@@ -247,8 +247,7 @@ export const BarStat = ({
                             sx={{
                                 fontSize,
                                 fontFamily: fonts.nostromoMedium,
-                                ...CropMaxLengthText,
-                                WebkitLineClamp: 1,
+                                ...TruncateTextLines(1),
                             }}
                         >
                             {label}
@@ -300,7 +299,7 @@ export const BarStat = ({
                             fontFamily: fonts.nostromoBold,
                             color: parsedBoosted && parsedBoosted != parsedCurrent ? colors.gold : "#FFFFFF",
                             width: "10rem",
-                            ...CropMaxLengthText,
+                            ...TruncateTextLines(1),
                         }}
                     >
                         {parsedBoosted || parsedCurrent}
@@ -328,7 +327,7 @@ export const BarStat = ({
                             sx={{
                                 fontSize,
                                 fontFamily: fonts.nostromoBlack,
-                                ...CropMaxLengthText,
+                                ...TruncateTextLines(1),
                             }}
                         >
                             {label}
@@ -342,7 +341,7 @@ export const BarStat = ({
                             textAlign: "end",
                             fontFamily: fonts.nostromoBold,
                             color: parsedBoosted && parsedBoosted != parsedCurrent ? colors.gold : "#FFFFFF",
-                            ...CropMaxLengthText,
+                            ...TruncateTextLines(1),
                         }}
                     >
                         {parsedBoosted || parsedCurrent}

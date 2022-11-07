@@ -6,6 +6,7 @@ import { useTheme } from "../../../containers/theme"
 import { shadeColor } from "../../../helpers"
 import { useGameServerSubscriptionFaction, useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { TruncateTextLines } from "../../../theme/styles"
 import { colors, fonts } from "../../../theme/theme"
 import { MechBasic, MechDetails, MechStatus } from "../../../types"
 import { RepairOffer, RepairStatus } from "../../../types/jobs"
@@ -15,7 +16,6 @@ import { MechBarStats } from "./Common/MechBarStats"
 import { MechGeneralStatus } from "./Common/MechGeneralStatus"
 import { MechLoadoutIcons } from "./Common/MechLoadoutIcons"
 import { MechRepairBlocks } from "./Common/MechRepairBlocks"
-import { CropMaxLengthText } from "../../../theme/styles"
 
 interface WarMachineHangarItemProps {
     isSelected?: boolean
@@ -170,7 +170,6 @@ export const WarMachineHangarItem = React.memo(function WarMachineHangarItem({
 
                 {toggleIsSelected && mechDetails && (
                     <Checkbox
-                        size="small"
                         checked={isSelected}
                         onClick={toggleIsSelected}
                         sx={{
@@ -178,11 +177,7 @@ export const WarMachineHangarItem = React.memo(function WarMachineHangarItem({
                             bottom: "1rem",
                             right: ".8rem",
                             zIndex: 3,
-                            p: 0,
-                            color: primaryColor,
                             "& > .MuiSvgIcon-root": { width: "3.5rem", height: "3.5rem" },
-                            ".Mui-checked, .MuiSvgIcon-root": { color: `${primaryColor} !important` },
-                            ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${primaryColor}50 !important` },
                         }}
                     />
                 )}
@@ -272,7 +267,7 @@ export const MechCommonArea = ({
                         sx={{
                             color: mech1?.name ? colors.offWhite : "#FFFFFF",
                             fontFamily: fonts.nostromoBlack,
-                            ...CropMaxLengthText,
+                            ...TruncateTextLines(1),
                         }}
                     >
                         {mech1?.name || mech1?.label || label}

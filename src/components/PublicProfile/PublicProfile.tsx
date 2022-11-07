@@ -263,7 +263,7 @@ export const PublicProfile = () => {
     if (loading) {
         return (
             <Stack alignItems="center" justifyContent={"center"} sx={{ width: "100%", height: "100%" }}>
-                <CircularProgress size="3rem" sx={{ color: primaryColor }} />
+                <CircularProgress />
                 <Typography sx={{ fontFamily: fonts.nostromoBlack, mr: "1rem", mt: "3rem" }}>Loading Profile</Typography>
             </Stack>
         )

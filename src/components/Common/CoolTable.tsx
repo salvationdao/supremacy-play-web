@@ -97,7 +97,7 @@ export const CoolTable = <T,>({
                 <TableRow sx={{ height: "100% !important" }}>
                     <TableCell sx={{ flex: 1, justifyContent: "center", borderBottom: "none" }}>
                         <Stack alignItems="center" justifyContent="center" sx={{ height: "8rem" }}>
-                            <CircularProgress size="3rem" sx={{ color: primaryColor }} />
+                            <CircularProgress />
                         </Stack>
                     </TableCell>
                 </TableRow>
@@ -163,7 +163,7 @@ export const CoolTable = <T,>({
                 </TableCell>
             </TableRow>
         )
-    }, [loadError, items, isLoading, primaryColor, cellPadding, renderItem, alignments, widths])
+    }, [loadError, items, isLoading, cellPadding, renderItem, alignments, widths])
 
     return (
         <Box sx={{ position: "relative", height: "100%" }}>

@@ -451,7 +451,7 @@ export const MechLoadoutWeaponModal = ({
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
+                        <CircularProgress />
                     </Stack>
                 </Stack>
             )
@@ -614,16 +614,7 @@ export const MechLoadoutWeaponModal = ({
                                         <Box ml="auto" />
                                         {skinInheritable && (
                                             <Stack direction="row" alignItems="center" justifyContent="space-between">
-                                                <Switch
-                                                    size="small"
-                                                    checked={inheritSkin}
-                                                    onChange={(e, c) => setInheritSkin(c)}
-                                                    sx={{
-                                                        transform: "scale(.7)",
-                                                        ".Mui-checked": { color: theme.factionTheme.primary },
-                                                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${theme.factionTheme.primary}50` },
-                                                    }}
-                                                />
+                                                <Switch checked={inheritSkin} onChange={(e, c) => setInheritSkin(c)} />
                                                 <Typography variant="body2" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
                                                     Inherit Skin
                                                 </Typography>
@@ -645,16 +636,7 @@ export const MechLoadoutWeaponModal = ({
                                         <Box ml="auto" />
                                         {equippedSkinInheritable && (
                                             <Stack direction="row" alignItems="center" justifyContent="space-between">
-                                                <Switch
-                                                    size="small"
-                                                    checked={equippedInheritSkin}
-                                                    onChange={(e, c) => setEquippedInheritSkin(c)}
-                                                    sx={{
-                                                        transform: "scale(.7)",
-                                                        ".Mui-checked": { color: theme.factionTheme.primary },
-                                                        ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${theme.factionTheme.primary}50` },
-                                                    }}
-                                                />
+                                                <Switch checked={equippedInheritSkin} onChange={(e, c) => setEquippedInheritSkin(c)} />
                                                 <Typography variant="body2" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
                                                     Inherit Skin
                                                 </Typography>

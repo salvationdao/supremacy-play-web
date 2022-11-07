@@ -4,7 +4,7 @@ import { ClipThing, FancyButton } from "../../.."
 import { SvgDrag, SvgLock, SvgPlus, SvgRemove, SvgSkin, SvgSwap, SvgWrapperProps } from "../../../../assets"
 import { shadeColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
-import { CropMaxLengthText } from "../../../../theme/styles"
+import { TruncateTextLines } from "../../../../theme/styles"
 import { colors, fonts } from "../../../../theme/theme"
 import { Rarity } from "../../../../types"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
@@ -237,8 +237,7 @@ const MechLoadoutItemButton = ({
                         sx={{
                             color: primaryColor,
                             fontFamily: fonts.nostromoBold,
-                            ...CropMaxLengthText,
-                            WebkitLineClamp: 2,
+                            ...TruncateTextLines(2),
                         }}
                     >
                         {label}
@@ -250,7 +249,7 @@ const MechLoadoutItemButton = ({
                             sx={{
                                 color: primaryColor,
                                 fontFamily: fonts.nostromoBold,
-                                ...CropMaxLengthText,
+                                ...TruncateTextLines(1),
                             }}
                         >
                             {subLabel}
@@ -374,8 +373,7 @@ const MechLoadoutItemDraggableBase = React.forwardRef<HTMLDivElement, MechLoadou
                             sx={{
                                 color: primaryColor,
                                 fontFamily: fonts.nostromoBold,
-                                ...CropMaxLengthText,
-                                WebkitLineClamp: 2,
+                                ...TruncateTextLines(2),
                             }}
                         >
                             {label}
@@ -387,7 +385,7 @@ const MechLoadoutItemDraggableBase = React.forwardRef<HTMLDivElement, MechLoadou
                                 sx={{
                                     color: primaryColor,
                                     fontFamily: fonts.nostromoBold,
-                                    ...CropMaxLengthText,
+                                    ...TruncateTextLines(1),
                                 }}
                             >
                                 {subLabel}

@@ -8,7 +8,7 @@ import { GetMechDestroyedInfo } from "../../../fetching"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { DamageRecord, Faction, WarMachineDestroyedRecord, WarMachineState } from "../../../types"
 import { ClipThing } from "../../Common/ClipThing"
-import { CropMaxLengthText } from "../../../theme/styles"
+import { TruncateTextLines } from "../../../theme/styles"
 
 export const WarMachineDestroyedInfoBT = ({
     warMachine,
@@ -43,7 +43,7 @@ export const WarMachineDestroyedInfoBT = ({
         if (!warMachineDestroyedRecord)
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "20rem" }}>
-                    <CircularProgress size="1.8rem" sx={{ color: theme.factionTheme.primary }} />
+                    <CircularProgress size="1.8rem" />
                 </Stack>
             )
 
@@ -102,7 +102,7 @@ export const WarMachineDestroyedInfoBT = ({
                 </Stack>
             </Stack>
         )
-    }, [getFaction, theme.factionTheme.primary, warMachineDestroyedRecord])
+    }, [getFaction, warMachineDestroyedRecord])
 
     return (
         <Modal open={open} onClose={onClose} sx={{ zIndex: siteZIndex.Modal }} BackdropProps={{ sx: { opacity: "0.1 !important" } }}>
@@ -238,8 +238,7 @@ const WarMachineBig = ({
                 sx={{
                     textAlign: "center",
                     fontFamily: fonts.nostromoBlack,
-                    ...CropMaxLengthText,
-                    WebkitLineClamp: 2,
+                    ...TruncateTextLines(2),
                     color,
                 }}
             >
@@ -274,7 +273,7 @@ const WarMachineSmall = ({
                     variant="body2"
                     sx={{
                         fontFamily: fonts.nostromoBlack,
-                        ...CropMaxLengthText,
+                        ...TruncateTextLines(1),
                         color,
                     }}
                 >

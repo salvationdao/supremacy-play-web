@@ -5,7 +5,7 @@ import { useAuth, useSupremacy } from "../../../../containers"
 import { supFormatterNoFixed } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
 import { BattleEndDetail } from "../../../../types"
-import { CropMaxLengthText } from "../../../../theme/styles"
+import { TruncateTextLines } from "../../../../theme/styles"
 
 export const SectionMechRewards = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
     const { userID } = useAuth()
@@ -57,7 +57,7 @@ export const SectionMechRewards = ({ battleEndDetail }: { battleEndDetail: Battl
                                             lineHeight: 1,
                                             color: faction.primary_color,
                                             fontWeight: "fontWeightBold",
-                                            ...CropMaxLengthText,
+                                            ...TruncateTextLines(1),
 
                                             span: { color: colors.neonBlue },
                                         }}

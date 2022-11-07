@@ -140,7 +140,7 @@ export const PlayerAbilitiesStore = () => {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "10rem" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <CircularProgress size="3rem" sx={{ color: theme.factionTheme.primary }} />
+                        <CircularProgress />
                     </Stack>
                 </Stack>
             )
@@ -208,7 +208,7 @@ export const PlayerAbilitiesStore = () => {
                 </Stack>
             </Stack>
         )
-    }, [isLoaded, saleAbilities, theme.factionTheme.primary, priceMap, ownedAbilities, availability, refetchSaleAvailability])
+    }, [isLoaded, saleAbilities, priceMap, ownedAbilities, availability, refetchSaleAvailability])
 
     return (
         <Box

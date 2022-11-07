@@ -80,16 +80,9 @@ export const MarketingModal = () => {
                                     control={
                                         <Checkbox
                                             disabled={isLoading}
-                                            size="small"
                                             checked={acceptMarketing}
                                             onChange={(e) => {
                                                 setAcceptMarketing(e.currentTarget.checked)
-                                            }}
-                                            sx={{
-                                                color: colors.yellow,
-                                                "& > .MuiSvgIcon-root": { width: "2.8rem", height: "2.8rem" },
-                                                ".Mui-checked, .MuiSvgIcon-root": { color: `${colors.yellow} !important` },
-                                                ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.yellow}50 !important` },
                                             }}
                                         />
                                     }

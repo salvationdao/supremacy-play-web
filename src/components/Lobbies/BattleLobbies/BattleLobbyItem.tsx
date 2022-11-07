@@ -10,7 +10,7 @@ import { BattleLobby } from "../../../types/battle_queue"
 import { ClipThing } from "../../Common/ClipThing"
 import { BattleLobbyJoinModal } from "./BattleLobbyJoinModal"
 import { BattleLobbyFaction, MyFactionLobbySlots } from "../BattleLobbyMech/BattleLobbyMechSlots"
-import { CropMaxLengthText } from "../../../theme/styles"
+import { TruncateTextLines } from "../../../theme/styles"
 import { FactionIDs } from "../../../constants"
 import { OptInButton } from "../../BattleArena/UpcomingBattle/UpcomingBattle"
 import { BattleLobbyMechList } from "./PlayerInvolvedLobbyCard"
@@ -178,7 +178,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                             sx={{
                                                 lineHeight: 1,
                                                 fontFamily: fonts.nostromoBlack,
-                                                ...CropMaxLengthText,
+                                                ...TruncateTextLines(1),
                                             }}
                                         >
                                             {name ? name : `Lobby ${number}`}
@@ -200,7 +200,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                             </Typography>
                                             <Typography
                                                 sx={{
-                                                    ...CropMaxLengthText,
+                                                    ...TruncateTextLines(1),
                                                     fontFamily: fonts.nostromoBold,
                                                 }}
                                             >
@@ -223,7 +223,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                             <Typography
                                                 component="span"
                                                 sx={{
-                                                    ...CropMaxLengthText,
+                                                    ...TruncateTextLines(1),
                                                     fontFamily: fonts.nostromoBold,
                                                 }}
                                             >
@@ -257,7 +257,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                             <Typography
                                                 variant="h6"
                                                 sx={{
-                                                    ...CropMaxLengthText,
+                                                    ...TruncateTextLines(1),
                                                     lineHeight: "unset",
                                                     fontStyle: "italic",
                                                     color: generated_by_system ? colors.offWhite : getFaction(host_by.faction_id).primary_color,
@@ -294,7 +294,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                                 fontFamily: fonts.nostromoBlack,
                                                 color: "white",
                                                 ml: ".45rem",
-                                                ...CropMaxLengthText,
+                                                ...TruncateTextLines(1),
                                             }}
                                         >
                                             Map
@@ -381,7 +381,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                                     fontFamily: fonts.nostromoBlack,
                                                     color: "white",
                                                     ml: ".45rem",
-                                                    ...CropMaxLengthText,
+                                                    ...TruncateTextLines(1),
                                                 }}
                                             >
                                                 {myFactionLobbySlots.faction.label}

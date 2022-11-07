@@ -9,7 +9,7 @@ import { FancyButton } from "../../../Common/FancyButton"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { TooltipHelper } from "../../../Common/TooltipHelper"
 import { ArrayItem } from "./CrateRewardsModal"
-import { CropMaxLengthText } from "../../../../theme/styles"
+import { TruncateTextLines } from "../../../../theme/styles"
 
 interface CrateRewardItemsProps {
     item?: ArrayItem
@@ -129,8 +129,7 @@ export const CrateRewardItemsSmall = ({ item }: CrateRewardItemsProps) => {
                                     textAlign: "start",
                                     color: rarityDeets.color,
                                     fontFamily: fonts.nostromoBlack,
-                                    ...CropMaxLengthText,
-                                    WebkitLineClamp: 2,
+                                    ...TruncateTextLines(2),
                                 }}
                             >
                                 {rarityDeets.label}
