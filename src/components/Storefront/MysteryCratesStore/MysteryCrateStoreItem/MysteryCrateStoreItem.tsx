@@ -1,8 +1,9 @@
 import { Box, Modal, Stack, TextField, Typography } from "@mui/material"
-import React, { useCallback, useMemo, useState } from "react"
 import BigNumber from "bignumber.js"
+import React, { useCallback, useMemo, useState } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SafePNG, SvgArrow, SvgSupToken } from "../../../../assets"
+import { STAGING_OR_DEV_ONLY } from "../../../../constants"
 import { useGlobalNotifications } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { generatePriceText, numberCommaFormatter, supFormatterNoFixed } from "../../../../helpers"
@@ -15,7 +16,6 @@ import { ClaimedRewards } from "../../../Claims/ClaimedRewards"
 import { ConfirmModal } from "../../../Common/ConfirmModal"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { OpeningCrate } from "../../../Hangar/MysteryCratesHangar/MysteryCratesHangar"
-import { STAGING_OR_DEV_ONLY } from "../../../../constants"
 
 interface MysteryCrateStoreItemProps {
     enlargedView?: boolean
