@@ -60,6 +60,7 @@ export const FactionPassBuy = () => {
                         width: "7.4rem",
                         height: "7.4rem",
                         transform: "translate(-50%, -50%)",
+                        backgroundColor: faction.background_color,
                         background: `url(${faction.logo_url})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
