@@ -99,8 +99,8 @@ export const FactionPassOption = React.memo(function FactionPassOption({ days, f
                 }}
             />
 
-            <NiceBoxThing border={{ color: faction.primary_color }}>
-                <Box sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.primary_color}40 1px solid`, backgroundColor: faction.primary_color }}>
+            <NiceBoxThing border={{ color: `${faction.primary_color}50` }}>
+                <Box sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.primary_color}40 1px solid`, backgroundColor: `${faction.primary_color}80` }}>
                     <Typography sx={{ color: faction.secondary_color, fontFamily: fonts.nostromoBlack, textAlign: "center" }}>{priceLabel} PRICE</Typography>
                 </Box>
 
