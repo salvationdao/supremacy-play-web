@@ -37,6 +37,7 @@ export const FactionPassBuy = () => {
             alignItems="center"
             justifyContent="center"
             sx={{
+                padding: "2rem",
                 position: "relative",
                 height: "100%",
                 backgroundColor: "#000000",
@@ -49,7 +50,7 @@ export const FactionPassBuy = () => {
             <NiceBoxThing
                 border={{ color: faction.primary_color }}
                 background={{ color: [colors.darkNavyBlue, faction.background_color, faction.background_color] }}
-                sx={{ position: "relative", m: "2rem", filter: `drop-shadow(0 3px 4px ${faction.primary_color}80)`, zIndex: 2 }}
+                sx={{ position: "relative", filter: `drop-shadow(0 3px 4px ${faction.primary_color}80)`, zIndex: 2 }}
             >
                 {/* Centered faction logo */}
                 <Box

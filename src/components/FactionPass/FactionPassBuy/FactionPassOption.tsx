@@ -107,7 +107,7 @@ export const FactionPassOption = React.memo(function FactionPassOption({ days, f
                 {/* SUPS */}
                 <Stack direction="row" justifyContent="space-between" sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.primary_color}40 1px solid` }}>
                     <Typography fontWeight="fontWeightBold">
-                        SUPS <span style={{ color: colors.red }}>-30% OFF</span>
+                        SUPS <i style={{ color: colors.red }}>-30% OFF</i>
                     </Typography>
                     <Typography>{prices ? supFormatter(prices.sups, 0) : "---"}</Typography>
                 </Stack>
