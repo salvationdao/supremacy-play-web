@@ -895,7 +895,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, mechS
                     {/* Mech Viewer */}
                     {enable3DLoadout ? (
                         <MechViewer3D
-                            initialMech={currLoadout}
+                            mech={currLoadout}
                             unity={{
                                 unityRef: unityControlsRef,
                                 orbitControlsRef: orbitControlsRef,

@@ -62,7 +62,7 @@ export interface UnityParams {
     onReady: () => void
 }
 
-const ImpureUnityViewer = ({ unity, initialMech: mech }: MechViewer3DProps) => {
+const ImpureUnityViewer = ({ unity, mech }: MechViewer3DProps) => {
     const theme = useTheme()
     const {
         unityProvider,
@@ -279,17 +279,19 @@ const ImpureUnityViewer = ({ unity, initialMech: mech }: MechViewer3DProps) => {
         },
         [sendMessage, status],
     )
-    // Initial mech load. Don't do anything if unity is not ready
+    // Load mech. Don't do anything if unity is not ready
     useEffect(() => {
-        if (status < UnityStatus.Loaded || sent.current) return
+        if (status < UnityStatus.Loaded) return
 
-        const inventory: HangarSilo = {
-            faction: mech.faction_id,
+        if (!sent.current) {
+            const inventory: HangarSilo = {
+                faction: mech.faction_id,
+            }
+            sendMessage("ProjectContext(Clone)", "GetPlayerInventoryFromPage", JSON.stringify(inventory))
+            sent.current = true
         }
-        sendMessage("ProjectContext(Clone)", "GetPlayerInventoryFromPage", JSON.stringify(inventory))
 
         buildAndLoadMech(mech)
-        sent.current = true
     }, [buildAndLoadMech, mech, sendMessage, status])
 
     // Unload everything on unmount
@@ -510,12 +512,13 @@ const ImpureUnityViewer = ({ unity, initialMech: mech }: MechViewer3DProps) => {
     )
 }
 
-// We don't care if initialMech updates
+// Rerender if unity props update OR if the mech id updates. We dont care about anything else
 export const UnityViewer = React.memo(
     ImpureUnityViewer,
     (prevProps, nextProps) =>
         prevProps.unity.unityRef === nextProps.unity.unityRef &&
         prevProps.unity.orbitControlsRef === nextProps.unity.orbitControlsRef &&
         prevProps.unity.onUnlock === nextProps.unity.onUnlock &&
-        prevProps.unity.onReady === nextProps.unity.onReady,
+        prevProps.unity.onReady === nextProps.unity.onReady &&
+        prevProps.mech.id === nextProps.mech.id,
 )
