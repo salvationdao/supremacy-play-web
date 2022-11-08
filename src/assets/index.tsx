@@ -106,10 +106,16 @@ import Filter from "!react-svg-loader!./svg/Filter.svg"
 import Fullscreen from "!react-svg-loader!./svg/Fullscreen.svg"
 import GoldBars from "!react-svg-loader!./svg/GoldBars.svg"
 import Grid from "!react-svg-loader!./svg/Grid.svg"
-import AnnualPass from "!react-svg-loader!./svg/FactionPass/AnnualPass.svg"
-import DailyPass from "!react-svg-loader!./svg/FactionPass/DailyPass.svg"
+import BCAnnualPassArrowPNG from "./images/FactionPass/BCAnnualPassArrow.png"
+import BCDailyPassArrowPNG from "./images/FactionPass/BCDailyPassArrow.png"
+import BCMonthlyPassArrowPNG from "./images/FactionPass/BCMonthlyPassArrow.png"
+import RMAnnualPassArrowPNG from "./images/FactionPass/RMAnnualPassArrow.png"
+import RMDailyPassArrowPNG from "./images/FactionPass/RMDailyPassArrow.png"
+import RMMonthlyPassArrowPNG from "./images/FactionPass/RMMonthlyPassArrow.png"
+import ZHIAnnualPassArrowPNG from "./images/FactionPass/ZHIAnnualPassArrow.png"
+import ZHIDailyPassArrowPNG from "./images/FactionPass/ZHIDailyPassArrow.png"
+import ZHIMonthlyPassArrowPNG from "./images/FactionPass/ZHIMonthlyPassArrow.png"
 import FactionPassArrow from "!react-svg-loader!./svg/FactionPass/FactionPassArrow.svg"
-import MonthlyPass from "!react-svg-loader!./svg/FactionPass/MonthlyPass.svg"
 import GridView from "!react-svg-loader!./svg/GridView.svg"
 import Hide from "!react-svg-loader!./svg/Hide.svg"
 import History from "!react-svg-loader!./svg/History.svg"
@@ -354,6 +360,15 @@ export {
     FactionPassBgPNG,
     FactionPassSs1PNG,
     FactionPassSs2PNG,
+    BCAnnualPassArrowPNG,
+    BCDailyPassArrowPNG,
+    BCMonthlyPassArrowPNG,
+    RMAnnualPassArrowPNG,
+    RMDailyPassArrowPNG,
+    RMMonthlyPassArrowPNG,
+    ZHIAnnualPassArrowPNG,
+    ZHIDailyPassArrowPNG,
+    ZHIMonthlyPassArrowPNG,
     ThreeMechsJPG,
     CrossPNG,
     DeadSkullPNG,
@@ -1475,26 +1490,8 @@ export const SvgMainMenu: React.VoidFunctionComponent<SvgWrapperProps> = (props)
     </SvgWrapper>
 )
 
-export const SvgAnnualPass: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
-    <SvgWrapper {...props}>
-        <AnnualPass />
-    </SvgWrapper>
-)
-
-export const SvgDailyPass: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
-    <SvgWrapper {...props}>
-        <DailyPass />
-    </SvgWrapper>
-)
-
 export const SvgFactionPassArrow: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <FactionPassArrow />
-    </SvgWrapper>
-)
-
-export const SvgMonthlyPass: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
-    <SvgWrapper {...props}>
-        <MonthlyPass />
     </SvgWrapper>
 )

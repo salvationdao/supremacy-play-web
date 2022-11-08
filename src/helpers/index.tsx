@@ -113,9 +113,9 @@ export const numFormatter = (num: number) => {
 
 export const supFormatter = (num: string, maxDecimals?: number): string => {
     const supTokens = new BigNumber(num).shiftedBy(-18)
-    if (maxDecimals) {
+    if (maxDecimals !== undefined) {
         const split = supTokens.toString().split(".")
-        if (split[1] ? split[1].length : 0 > maxDecimals) {
+        if (split[1] ? split[1].length : 0 >= maxDecimals) {
             if (supTokens.isZero()) return supTokens.toFixed(maxDecimals)
             return supTokens.toFormat(maxDecimals)
         }
