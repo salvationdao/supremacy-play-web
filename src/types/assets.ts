@@ -171,8 +171,6 @@ export interface MechBasic extends Collection, Images {
 }
 
 export interface MechBasicWithQueueStatus extends MechBasic {
-    in_queue: boolean
-
     status: MechStatusEnum
     can_deploy: boolean
     lobby_locked_at?: Date

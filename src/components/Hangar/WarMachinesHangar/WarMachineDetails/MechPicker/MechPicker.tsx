@@ -1,5 +1,6 @@
 import { Box, FormControlLabel, MenuItem, Pagination, Select, Stack, Typography } from "@mui/material"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
+import { useHistory, useLocation } from "react-router-dom"
 import { SvgBin, SvgCrown, SvgDamageCross, SvgSearch, SvgSkull, SvgWrapperProps } from "../../../../../assets"
 import { useAuth, useGlobalNotifications } from "../../../../../containers"
 import { useTheme } from "../../../../../containers/theme"
@@ -12,6 +13,7 @@ import { BattleMechStats, MechBasicWithQueueStatus, MechDetails, MechStatus } fr
 import { SortDir, SortTypeLabel } from "../../../../../types/marketplace"
 import { NiceAccordion } from "../../../../Common/Nice/NiceAccordion"
 import { NiceBoxThing } from "../../../../Common/Nice/NiceBoxThing"
+import { NiceButton } from "../../../../Common/Nice/NiceButton"
 import { NiceSwitch } from "../../../../Common/Nice/NiceSwitch"
 import { MechBarStats } from "../../Common/MechBarStats"
 import { MechRepairBlocks } from "../../Common/MechRepairBlocks"
@@ -339,6 +341,8 @@ export const MechPicker = ({ mechDetails, mechStatus, mechStaked, onUpdate }: Me
 
 const MechPickerDropdown = React.memo(function MechPickerDropdown() {
     const theme = useTheme()
+    const history = useHistory()
+    const { pathname } = useLocation()
     const { send } = useGameServerCommandsUser("/user_commander")
 
     const [expandPicker, setExpandPicker] = useState(false)
@@ -438,8 +442,9 @@ const MechPickerDropdown = React.memo(function MechPickerDropdown() {
                 }}
             >
                 {mechs.map((m, index) => (
-                    <NiceBoxThing
+                    <NiceButton
                         key={index}
+                        onClick={() => history.push(`/mech/${m.id}`)}
                         border={{
                             thickness: "very-lean",
                             color: `${colors.lightGrey}66`,
@@ -448,8 +453,8 @@ const MechPickerDropdown = React.memo(function MechPickerDropdown() {
                             color: [`${colors.lightGrey}33`],
                         }}
                         sx={{
-                            display: "flex",
                             p: "1rem",
+                            justifyContent: "start",
                         }}
                     >
                         <NiceBoxThing
@@ -487,11 +492,11 @@ const MechPickerDropdown = React.memo(function MechPickerDropdown() {
                             </Typography>
                             <Typography>{m.label}</Typography>
                         </Stack>
-                    </NiceBoxThing>
+                    </NiceButton>
                 ))}
             </Box>
         )
-    }, [isMechsLoading, mechs, mechsError, theme.factionTheme.primary])
+    }, [history, isMechsLoading, mechs, mechsError, theme.factionTheme.primary])
 
     return (
         <NiceAccordion.Base
