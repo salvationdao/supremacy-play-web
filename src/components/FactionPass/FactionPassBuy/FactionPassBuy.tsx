@@ -140,6 +140,7 @@ export const FactionPassBuy = () => {
                         </Box>
                     </Stack>
 
+                    {/* Buy options */}
                     <Stack direction="row" alignItems="center">
                         <FactionPassOption faction={faction} days={1} />
                         <FactionPassOption faction={faction} days={DAYS_IN_A_MONTH} />
