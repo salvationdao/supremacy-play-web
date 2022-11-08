@@ -4,7 +4,7 @@ import { Avatar as SupremacyAvatar } from "../../Avatar"
 import { SvgGlobal, SvgLock, SvgSupToken } from "../../../assets"
 import { useArena, useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { supFormatterNoFixed } from "../../../helpers"
+import { supFormatter } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleLobby } from "../../../types/battle_queue"
 import { ClipThing } from "../../Common/ClipThing"
@@ -114,7 +114,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
 
     const entryFeeDisplay = useMemo(() => {
         const hasFee = entry_fee !== "0"
-        const text = hasFee ? supFormatterNoFixed(entry_fee, 2) : "NONE"
+        const text = hasFee ? supFormatter(entry_fee, 2) : "NONE"
 
         return (
             <Stack direction="row" spacing={0.8}>

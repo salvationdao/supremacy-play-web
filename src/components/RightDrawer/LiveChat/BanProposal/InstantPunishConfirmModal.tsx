@@ -3,7 +3,7 @@ import { useMemo } from "react"
 import { ClipThing, FancyButton } from "../../.."
 import { SvgSupToken } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
-import { getUserRankDeets, supFormatterNoFixed } from "../../../../helpers"
+import { getUserRankDeets, supFormatter } from "../../../../helpers"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 
 export const InstantPunishConfirmModal = ({
@@ -64,7 +64,7 @@ export const InstantPunishConfirmModal = ({
 
                         <Typography>
                             To initiate command override, there needs to be <span> 5x GENERALs </span> to punish a player instantly. Do you wish to spend{" "}
-                            <span>{supFormatterNoFixed(cost, 0)}</span> SUPS to initiate the command override to punish player [{punishPlayer}]?
+                            <span>{supFormatter(cost, 0)}</span> SUPS to initiate the command override to punish player [{punishPlayer}]?
                         </Typography>
 
                         <Stack direction="row" spacing="1rem" sx={{ pt: ".4rem" }}>
@@ -84,7 +84,7 @@ export const InstantPunishConfirmModal = ({
                                     </Typography>
                                     <SvgSupToken size="1.4rem" />
                                     <Typography variant="body2" sx={{ fontWeight: "fontWeightBold" }}>
-                                        {supFormatterNoFixed(cost, 0)})
+                                        {supFormatter(cost, 0)})
                                     </Typography>
                                 </Stack>
                             </FancyButton>

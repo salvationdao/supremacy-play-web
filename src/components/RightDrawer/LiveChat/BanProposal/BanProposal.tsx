@@ -4,7 +4,7 @@ import { useTimer } from "use-timer"
 import { FancyButton, TooltipHelper } from "../../.."
 import { SvgCooldown, SvgInfoCircular, SvgSupToken } from "../../../../assets"
 import { useAuth, useChat } from "../../../../containers"
-import { getUserRankDeets, snakeToTitle, supFormatterNoFixed } from "../../../../helpers"
+import { getUserRankDeets, snakeToTitle, supFormatter } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -269,14 +269,14 @@ const BanProposalInner = ({
                             </Typography>
                             <SvgSupToken size="1.8rem" />
                             <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
-                                {supFormatterNoFixed(banProposal.instant_pass_fee, 0)})
+                                {supFormatter(banProposal.instant_pass_fee, 0)})
                             </Typography>
                         </Stack>
                     }
                 >
                     <Typography variant="h6">
                         As a GENERAL, you have the privilege to issue a command override. With 2 command overrides, the player will be instantly punished. Do
-                        you wish to spend <span>{supFormatterNoFixed(banProposal.instant_pass_fee, 0)}</span> SUPS to issue a command override?
+                        you wish to spend <span>{supFormatter(banProposal.instant_pass_fee, 0)}</span> SUPS to issue a command override?
                     </Typography>
                 </ConfirmModal>
             )}

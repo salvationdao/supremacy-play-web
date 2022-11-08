@@ -6,7 +6,7 @@ import { SafePNG, SvgArrow, SvgSupToken } from "../../../../assets"
 import { STAGING_OR_DEV_ONLY } from "../../../../constants"
 import { useGlobalNotifications } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
-import { generatePriceText, numberCommaFormatter, supFormatterNoFixed } from "../../../../helpers"
+import { generatePriceText, numberCommaFormatter, supFormatter } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -52,8 +52,8 @@ export const MysteryCrateStoreItem = React.memo(function MysteryCrateStoreItem({
     const backgroundColor = theme.factionTheme.background
 
     const priceStr = useMemo(() => (quantity * parseFloat(mysteryCrate.price)).toString(), [quantity, mysteryCrate.price])
-    const formattedPrice = useMemo(() => supFormatterNoFixed(priceStr, 2), [priceStr])
-    const singleCratePrice = useMemo(() => supFormatterNoFixed(mysteryCrate.price, 2), [mysteryCrate.price])
+    const formattedPrice = useMemo(() => supFormatter(priceStr, 2), [priceStr])
+    const singleCratePrice = useMemo(() => supFormatter(mysteryCrate.price, 2), [mysteryCrate.price])
     const singleFiatPrice = useMemo(() => {
         let pricing: string | null = null
         for (const p of crate.fiat_product.pricing) {

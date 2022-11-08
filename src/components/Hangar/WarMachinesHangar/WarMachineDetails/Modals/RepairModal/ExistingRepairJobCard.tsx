@@ -3,7 +3,7 @@ import { useCallback, useState } from "react"
 import { useTimer } from "use-timer"
 import { FancyButton } from "../../../../.."
 import { useGlobalNotifications } from "../../../../../../containers"
-import { supFormatterNoFixed, timeSinceInWords } from "../../../../../../helpers"
+import { supFormatter, timeSinceInWords } from "../../../../../../helpers"
 import { useGameServerCommandsUser } from "../../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../../keys"
 import { colors, fonts } from "../../../../../../theme/theme"
@@ -50,7 +50,7 @@ export const ExistingRepairJobCard = ({ repairOffer, remainDamagedBlocks }: { re
 
             <Stack>
                 <AmountItem title="BLOCKS TO REPAIR:" value={repairOffer.blocks_total} disableIcon />
-                <AmountItem title="REWARD:" value={supFormatterNoFixed(repairOffer.offered_sups_amount)} />
+                <AmountItem title="REWARD:" value={supFormatter(repairOffer.offered_sups_amount)} />
                 <Countdown initialTime={(repairOffer.expires_at.getTime() - new Date().getTime()) / 1000} />
             </Stack>
 

@@ -2,7 +2,7 @@ import { Box, IconButton, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo } from "react"
 import { TooltipHelper } from "../../.."
 import { SvgContentCopyIcon, SvgSupToken } from "../../../../assets"
-import { dateFormatter, supFormatterNoFixed } from "../../../../helpers"
+import { dateFormatter, supFormatter } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { colors } from "../../../../theme/theme"
 import { Transaction } from "../../../../types"
@@ -30,7 +30,7 @@ export const TransactionItem = ({ transaction, userID }: { transaction: Transact
                 <Stack direction="row" alignItems="center" sx={{ mr: ".6rem", flex: 1 }}>
                     <Typography sx={{ lineHeight: 1, color }}>{isCredit ? "+" : "-"}</Typography>
                     <SvgSupToken size="1.3rem" fill={color} />
-                    <Typography sx={{ lineHeight: 1, color }}>{supFormatterNoFixed(transaction.amount, 4)}</Typography>
+                    <Typography sx={{ lineHeight: 1, color }}>{supFormatter(transaction.amount, 4)}</Typography>
                 </Stack>
             </TooltipHelper>
 

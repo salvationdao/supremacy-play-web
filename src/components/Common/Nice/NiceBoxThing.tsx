@@ -183,6 +183,7 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
                 zIndex: 0,
                 position: "relative",
                 boxShadow: enableBoxShadow ? 0.4 : "none",
+                borderRadius: 0.3,
                 ...generateBorderStyles,
                 ...sx,
             }}

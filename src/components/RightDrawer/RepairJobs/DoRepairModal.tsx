@@ -7,7 +7,7 @@ import { SvgClose, SvgCubes, SvgSupToken } from "../../../assets"
 import { CAPTCHA_KEY } from "../../../constants"
 import { useSupremacy, useUI } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { supFormatterNoFixed, timeSinceInWords } from "../../../helpers"
+import { supFormatter, timeSinceInWords } from "../../../helpers"
 import { useGameServerCommandsUser, useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
@@ -164,7 +164,7 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
                             <Stack direction="row" alignItems="center" sx={{ p: ".4rem 1rem" }}>
                                 <SvgSupToken size="4.2rem" fill={colors.yellow} />
                                 <Typography variant="h3" sx={{ fontWeight: "fontWeightBold" }}>
-                                    {supFormatterNoFixed(repairJob.sups_worth_per_block || "0", 2)}
+                                    {supFormatter(repairJob.sups_worth_per_block || "0", 2)}
                                 </Typography>
                             </Stack>
                         </ClipThing>
@@ -343,7 +343,7 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
                                     <Stack direction="row" alignItems="center">
                                         <SvgSupToken size="3rem" fill={colors.yellow} />
                                         <Typography variant="h4" sx={{ fontWeight: "fontWeightBold" }}>
-                                            {supFormatterNoFixed(repairJob.sups_worth_per_block || "0", 2)}
+                                            {supFormatter(repairJob.sups_worth_per_block || "0", 2)}
                                         </Typography>
                                     </Stack>
                                 </InfoCard>
@@ -352,10 +352,7 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
                                     <Stack direction="row" alignItems="center">
                                         <SvgSupToken size="3rem" fill={colors.yellow} />
                                         <Typography variant="h4" sx={{ fontWeight: "fontWeightBold" }}>
-                                            {supFormatterNoFixed(
-                                                new BigNumber(repairJob.sups_worth_per_block || "0").multipliedBy(remainDamagedBlocks).toString(),
-                                                1,
-                                            )}
+                                            {supFormatter(new BigNumber(repairJob.sups_worth_per_block || "0").multipliedBy(remainDamagedBlocks).toString(), 1)}
                                         </Typography>
                                     </Stack>
                                 </InfoCard>

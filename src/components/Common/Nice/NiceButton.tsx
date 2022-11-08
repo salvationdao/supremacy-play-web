@@ -72,6 +72,8 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
             cursor: buttonDisabled ? "auto" : "pointer",
             fontFamily: fonts.nostromoBold,
             fontSize: "1.5rem",
+            flexShrink: 0,
+            whiteSpace: "nowrap",
             [`&:hover:enabled .${OVERLAY_CLASSNAME}`]: {
                 opacity: 0.15,
             },

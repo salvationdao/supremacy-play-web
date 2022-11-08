@@ -106,6 +106,10 @@ import Filter from "!react-svg-loader!./svg/Filter.svg"
 import Fullscreen from "!react-svg-loader!./svg/Fullscreen.svg"
 import GoldBars from "!react-svg-loader!./svg/GoldBars.svg"
 import Grid from "!react-svg-loader!./svg/Grid.svg"
+import AnnualPass from "!react-svg-loader!./svg/FactionPass/AnnualPass.svg"
+import DailyPass from "!react-svg-loader!./svg/FactionPass/DailyPass.svg"
+import FactionPassArrow from "!react-svg-loader!./svg/FactionPass/FactionPassArrow.svg"
+import MonthlyPass from "!react-svg-loader!./svg/FactionPass/MonthlyPass.svg"
 import GridView from "!react-svg-loader!./svg/GridView.svg"
 import Hide from "!react-svg-loader!./svg/Hide.svg"
 import History from "!react-svg-loader!./svg/History.svg"
@@ -195,6 +199,9 @@ import CrossPNG from "./images/Cross.png"
 import Crosshair from "./images/Crosshair.png"
 import DeadSkullPNG from "./images/DeadSkull.png"
 import EmptyWarMachinesPNG from "./images/EmptyWarMachines.png"
+import FactionPassBgPNG from "./images/FactionPass/FactionPassBg.png"
+import FactionPassSs1PNG from "./images/FactionPass/FactionPassSs1.png"
+import FactionPassSs2PNG from "./images/FactionPass/FactionPassSs2.png"
 import FlamesPNG from "./images/Flames.png"
 import Gabs from "./images/Gabs.png"
 import GenericWarMachinePNG from "./images/GenericWarMachine.png"
@@ -344,6 +351,9 @@ export {
     WarMachineZAIPNG,
     BattleBgWebP,
     BattleArenaOpeningWebP,
+    FactionPassBgPNG,
+    FactionPassSs1PNG,
+    FactionPassSs2PNG,
     ThreeMechsJPG,
     CrossPNG,
     DeadSkullPNG,
@@ -1462,5 +1472,29 @@ export const SvgCamera: React.VoidFunctionComponent<SvgWrapperProps> = (props) =
 export const SvgMainMenu: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <MainMenu />
+    </SvgWrapper>
+)
+
+export const SvgAnnualPass: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <AnnualPass />
+    </SvgWrapper>
+)
+
+export const SvgDailyPass: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <DailyPass />
+    </SvgWrapper>
+)
+
+export const SvgFactionPassArrow: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <FactionPassArrow />
+    </SvgWrapper>
+)
+
+export const SvgMonthlyPass: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <MonthlyPass />
     </SvgWrapper>
 )

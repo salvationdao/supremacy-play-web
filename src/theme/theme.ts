@@ -198,19 +198,19 @@ export const theme = createTheme({
         },
         body1: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.65rem",
+            fontSize: "1.7rem",
         },
         body2: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.4rem",
+            fontSize: "1.5rem",
         },
         subtitle1: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.3rem",
+            fontSize: "1.34rem",
         },
         subtitle2: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.15rem",
+            fontSize: "1.18rem",
         },
         caption: {
             fontFamily: fonts.shareTech,

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"  viewBox="0 0 57.081 52.994">
+  <defs>
+    <filter id="Path_99434" x="0" y="0"  filterUnits="userSpaceOnUse">
+      <feOffset input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="1" result="blur"/>
+      <feFlood/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Path_99434-2" x="0" y="0"  filterUnits="userSpaceOnUse">
+      <feOffset input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="2" result="blur-2"/>
+      <feFlood result="color"/>
+      <feComposite operator="out" in="SourceGraphic" in2="blur-2"/>
+      <feComposite operator="in" in="color"/>
+      <feComposite operator="in" in2="SourceGraphic"/>
+    </filter>
+    <filter id="Subtraction_684" x="24.167" y="0.002"  filterUnits="userSpaceOnUse">
+      <feOffset input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="1" result="blur-3"/>
+      <feFlood/>
+      <feComposite operator="in" in2="blur-3"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g id="Group_94627" data-name="Group 94627" transform="translate(-1377.226 -4.925)">
+    <g data-type="innerShadowGroup">
+      <g transform="matrix(1, 0, 0, 1, 1377.23, 4.92)" filter="url(#Path_99434)">
+        <path id="Path_99434-3" data-name="Path 99434" d="M-5918.3-19412.215l24.918,22.949-24.918,24.043h17.98l24.036-24.043-24.036-22.949Z" transform="translate(5921.3 19415.21)" fill="#11111150"/>
+      </g>
+      <g transform="matrix(1, 0, 0, 1, 1377.23, 4.92)" filter="url(#Path_99434-2)">
+        <path id="Path_99434-4" data-name="Path 99434" d="M-5918.3-19412.215l24.918,22.949-24.918,24.043h17.98l24.036-24.043-24.036-22.949Z" transform="translate(5921.3 19415.21)" fill="#fff"/>
+      </g>
+    </g>
+    <path id="Path_99104_-_Outline" data-name="Path 99104 - Outline" d="M-5919.709-19412.766h19.743l.232.223,23.811,22.73-.581.586-23.45,23.453h-19.687l1.431-1.379,23.455-22.629Zm19.1,1.609h-14.99l23.183,21.344-.613.6-22.638,21.84h15.047l22.4-22.406Z" transform="translate(7299.354 19420.684)" />
+    <g transform="matrix(1, 0, 0, 1, 1377.23, 4.92)" filter="url(#Subtraction_684)">
+      <path id="Subtraction_684-2" data-name="Subtraction 684" d="M2.871,46.992H0l8.834-8.805v2.842L2.871,46.99Zm12-12v-2.82l9.252-9.225-9.252-8.8v-2.69L26.914,22.942,14.878,34.984ZM8.834,8.4l0,0L0,0H2.871L8.834,5.69V8.4Z" transform="translate(27.17 3)" />
+    </g>
+  </g>
+</svg>

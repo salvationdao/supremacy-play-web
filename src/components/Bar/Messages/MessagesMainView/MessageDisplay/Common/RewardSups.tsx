@@ -1,6 +1,6 @@
 import { Stack, Typography } from "@mui/material"
 import { SvgSupToken } from "../../../../../../assets"
-import { supFormatterNoFixed } from "../../../../../../helpers"
+import { supFormatter } from "../../../../../../helpers"
 import { colors, fonts } from "../../../../../../theme/theme"
 import { ClipThing } from "../../../../../Common/ClipThing"
 
@@ -20,7 +20,7 @@ export const RewardSups = ({ sups, label }: { sups: string; label?: string }) =>
                 <Stack alignItems="center" justifyContent="center" spacing=".5rem" sx={{ height: "100%", backgroundColor: `${colors.yellow}12` }}>
                     <SvgSupToken size="3rem" fill={colors.yellow} />
                     <Typography variant="h6" sx={{ textAlign: "center", fontWeight: "fontWeightBold" }}>
-                        {supFormatterNoFixed(sups, 2)}
+                        {supFormatter(sups, 2)}
                     </Typography>
                 </Stack>
             </ClipThing>
