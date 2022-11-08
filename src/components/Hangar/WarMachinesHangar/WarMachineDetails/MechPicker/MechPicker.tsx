@@ -1,6 +1,6 @@
 import { Box, FormControlLabel, MenuItem, Pagination, Select, Stack, Typography } from "@mui/material"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
-import { useHistory, useLocation } from "react-router-dom"
+import { useHistory } from "react-router-dom"
 import { SvgBin, SvgCrown, SvgDamageCross, SvgSearch, SvgSkull, SvgWrapperProps } from "../../../../../assets"
 import { useAuth, useGlobalNotifications } from "../../../../../containers"
 import { useTheme } from "../../../../../containers/theme"
@@ -342,7 +342,6 @@ export const MechPicker = ({ mechDetails, mechStatus, mechStaked, onUpdate }: Me
 const MechPickerDropdown = React.memo(function MechPickerDropdown() {
     const theme = useTheme()
     const history = useHistory()
-    const { pathname } = useLocation()
     const { send } = useGameServerCommandsUser("/user_commander")
 
     const [expandPicker, setExpandPicker] = useState(false)
@@ -444,7 +443,10 @@ const MechPickerDropdown = React.memo(function MechPickerDropdown() {
                 {mechs.map((m, index) => (
                     <NiceButton
                         key={index}
-                        onClick={() => history.push(`/mech/${m.id}`)}
+                        onClick={() => {
+                            history.push(`/mech/${m.id}`)
+                            setExpandPicker(false)
+                        }}
                         border={{
                             thickness: "very-lean",
                             color: `${colors.lightGrey}66`,
@@ -454,7 +456,9 @@ const MechPickerDropdown = React.memo(function MechPickerDropdown() {
                         }}
                         sx={{
                             p: "1rem",
+                            alignItems: "start",
                             justifyContent: "start",
+                            textAlign: "left",
                         }}
                     >
                         <NiceBoxThing
