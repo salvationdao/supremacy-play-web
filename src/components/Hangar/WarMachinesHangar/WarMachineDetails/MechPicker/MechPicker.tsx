@@ -1,28 +1,36 @@
-import { Box, FormControlLabel, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
-import { SvgBin, SvgCrown, SvgDamageCross, SvgSkull, SvgWrapperProps } from "../../../../../assets"
+import { Box, FormControlLabel, MenuItem, Pagination, Select, Stack, Typography } from "@mui/material"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
+import { SvgBin, SvgCrown, SvgDamageCross, SvgSearch, SvgSkull, SvgWrapperProps } from "../../../../../assets"
 import { useAuth, useGlobalNotifications } from "../../../../../containers"
 import { useTheme } from "../../../../../containers/theme"
 import { getMechStatusDeets, getRarityDeets } from "../../../../../helpers"
+import { usePagination } from "../../../../../hooks"
 import { useGameServerCommands, useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
-import { BattleMechStats, MechDetails, MechStatus } from "../../../../../types"
+import { BattleMechStats, MechBasicWithQueueStatus, MechDetails, MechStatus } from "../../../../../types"
+import { SortDir, SortTypeLabel } from "../../../../../types/marketplace"
+import { NiceAccordion } from "../../../../Common/Nice/NiceAccordion"
 import { NiceBoxThing } from "../../../../Common/Nice/NiceBoxThing"
 import { NiceSwitch } from "../../../../Common/Nice/NiceSwitch"
 import { MechBarStats } from "../../Common/MechBarStats"
 import { MechRepairBlocks } from "../../Common/MechRepairBlocks"
+import { GetMechsRequest, GetMechsResponse } from "../../WarMachinesHangar"
+import { InputLabeller, NiceInputBase } from "../MechLoadout/Draggables/WeaponDraggables"
 import { PlayerAssetMechEquipRequest } from "../MechLoadout/MechLoadout"
 import { MechName } from "../MechName"
 
 export interface MechPickerProps {
     mechDetails: MechDetails
     mechStatus?: MechStatus
+    mechStaked: boolean
     onSelect: (mechID: MechDetails) => void
     onUpdate: (newMechDetails: MechDetails) => void
 }
 
-export const MechPicker = ({ mechDetails, mechStatus, onUpdate }: MechPickerProps) => {
+const PICKER_BUTTON_HEIGHT = "48px  "
+
+export const MechPicker = ({ mechDetails, mechStatus, mechStaked, onUpdate }: MechPickerProps) => {
     const theme = useTheme()
     const { userID } = useAuth()
     const { send } = useGameServerCommands("/public/commander")
@@ -156,16 +164,31 @@ export const MechPicker = ({ mechDetails, mechStatus, onUpdate }: MechPickerProp
             sx={{
                 flexBasis: 310,
                 alignSelf: "start",
+                position: "relative",
                 display: "flex",
                 flexDirection: "column",
             }}
         >
+            {/* Mech picker dropdown */}
+            <Box
+                sx={{
+                    zIndex: 11,
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                }}
+            >
+                <MechPickerDropdown />
+            </Box>
+
             {/* Mech Profile */}
             <Stack
                 direction="row"
                 spacing="1rem"
                 sx={{
                     width: "100%",
+                    mt: PICKER_BUTTON_HEIGHT,
                     px: "2rem",
                     py: "1rem",
                     background: `linear-gradient(to right, ${colors.black2}, ${theme.factionTheme.background})`,
@@ -220,6 +243,15 @@ export const MechPicker = ({ mechDetails, mechStatus, onUpdate }: MechPickerProp
                             {rarity.label}
                         </Typography>
                     </Stack>
+                    {mechStaked && (
+                        <Typography
+                            sx={{
+                                color: colors.red,
+                            }}
+                        >
+                            STAKED
+                        </Typography>
+                    )}
                 </Stack>
             </Stack>
 
@@ -304,3 +336,217 @@ export const MechPicker = ({ mechDetails, mechStatus, onUpdate }: MechPickerProp
         </NiceBoxThing>
     )
 }
+
+const MechPickerDropdown = React.memo(function MechPickerDropdown() {
+    const theme = useTheme()
+    const { send } = useGameServerCommandsUser("/user_commander")
+
+    const [expandPicker, setExpandPicker] = useState(false)
+
+    const [mechs, setMechs] = useState<MechBasicWithQueueStatus[]>([])
+    const [isMechsLoading, setIsMechsLoading] = useState(true)
+    const [mechsError, setMechsError] = useState<string>()
+    const [search, setSearch] = useState("")
+    const [sort, setSort] = useState<string>(SortTypeLabel.MechQueueAsc)
+    const { page, changePage, setTotalItems, totalPages, pageSize } = usePagination({
+        pageSize: 6,
+        page: 1,
+    })
+    const getMechs = useCallback(async () => {
+        setIsMechsLoading(true)
+        try {
+            let sortDir = SortDir.Asc
+            let sortBy = ""
+            if (sort === SortTypeLabel.MechQueueDesc || sort === SortTypeLabel.AlphabeticalReverse || sort === SortTypeLabel.RarestDesc) sortDir = SortDir.Desc
+
+            switch (sort) {
+                case SortTypeLabel.Alphabetical:
+                case SortTypeLabel.AlphabeticalReverse:
+                    sortBy = "alphabetical"
+                    break
+                case SortTypeLabel.RarestAsc:
+                case SortTypeLabel.RarestDesc:
+                    sortBy = "rarity"
+            }
+
+            const isQueueSort = sort === SortTypeLabel.MechQueueAsc || sort === SortTypeLabel.MechQueueDesc
+
+            const resp = await send<GetMechsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
+                queue_sort: isQueueSort ? sortDir : undefined,
+                sort_by: isQueueSort ? undefined : sortBy,
+                sort_dir: isQueueSort ? undefined : sortDir,
+                search,
+                rarities: [],
+                statuses: [],
+                page,
+                page_size: pageSize,
+                include_market_listed: true,
+            })
+
+            if (!resp) return
+            setMechsError(undefined)
+            setMechs(resp.mechs)
+            setTotalItems(resp.total)
+        } catch (e) {
+            setMechsError(typeof e === "string" ? e : "Failed to get mechs.")
+            console.error(e)
+        } finally {
+            setIsMechsLoading(false)
+        }
+    }, [page, pageSize, search, send, setTotalItems, sort])
+    useEffect(() => {
+        getMechs()
+    }, [getMechs])
+
+    const mechsContent = useMemo(() => {
+        if (isMechsLoading) {
+            return (
+                <Stack alignItems="center" justifyContent="center" flex={1}>
+                    <Typography>Loading mechs...</Typography>
+                </Stack>
+            )
+        }
+        if (mechsError) {
+            return (
+                <Stack alignItems="center" justifyContent="center" flex={1}>
+                    <Typography>{mechsError}</Typography>
+                </Stack>
+            )
+        }
+        if (mechs.length === 0) {
+            return (
+                <Stack alignItems="center" justifyContent="center" flex={1}>
+                    <Typography
+                        sx={{
+                            fontFamily: fonts.nostromoBlack,
+                            color: `${theme.factionTheme.primary}aa`,
+                            textTransform: "uppercase",
+                        }}
+                    >
+                        No Mechs
+                    </Typography>
+                </Stack>
+            )
+        }
+
+        return (
+            <Box
+                sx={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr",
+                    gap: "1rem",
+                }}
+            >
+                {mechs.map((m, index) => (
+                    <NiceBoxThing
+                        key={index}
+                        border={{
+                            thickness: "very-lean",
+                            color: `${colors.lightGrey}66`,
+                        }}
+                        background={{
+                            color: [`${colors.lightGrey}33`],
+                        }}
+                        sx={{
+                            display: "flex",
+                            p: "1rem",
+                        }}
+                    >
+                        <NiceBoxThing
+                            border={{
+                                color: getRarityDeets(m.tier).color,
+                                thickness: "lean",
+                            }}
+                            caret={{
+                                position: "bottom-right",
+                            }}
+                            sx={{
+                                width: 60,
+                                height: 60,
+                            }}
+                        >
+                            <Box
+                                component="img"
+                                src={m.avatar_url || m.image_url}
+                                alt={`${m.label} mech avatar`}
+                                sx={{
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "cover",
+                                }}
+                            />
+                        </NiceBoxThing>
+                        <Stack ml=".5rem">
+                            <Typography
+                                sx={{
+                                    fontFamily: fonts.nostromoBold,
+                                    color: m.name ? "white" : colors.grey,
+                                }}
+                            >
+                                {m.name || "UNNAMED"}
+                            </Typography>
+                            <Typography>{m.label}</Typography>
+                        </Stack>
+                    </NiceBoxThing>
+                ))}
+            </Box>
+        )
+    }, [isMechsLoading, mechs, mechsError, theme.factionTheme.primary])
+
+    return (
+        <NiceAccordion.Base
+            sx={(theme) => ({
+                border: "none",
+                outline: expandPicker ? `3px solid ${theme.factionTheme.primary}` : `0px solid transparent`,
+                transition: "outline .2s ease-out",
+            })}
+            expanded={expandPicker}
+            onChange={() => setExpandPicker((prev) => !prev)}
+        >
+            <NiceAccordion.Summary
+                sx={{
+                    height: PICKER_BUTTON_HEIGHT,
+                }}
+            >
+                Select Mech
+            </NiceAccordion.Summary>
+            <NiceAccordion.Details>
+                <Stack spacing="2rem" minHeight={600}>
+                    <Stack spacing="1rem">
+                        <NiceInputBase
+                            placeholder="Search mechs..."
+                            endAdornment={<SvgSearch fill={"rgba(255, 255, 255, 0.4)"} />}
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+                        <InputLabeller flex={1} label="Sort:" name="sort">
+                            <Select
+                                name="sort"
+                                value={sort}
+                                onChange={(e) => setSort(e.target.value)}
+                                input={<NiceInputBase />}
+                                sx={{
+                                    flex: 1,
+                                }}
+                            >
+                                <MenuItem value={SortTypeLabel.MechQueueAsc}>{SortTypeLabel.MechQueueAsc}</MenuItem>
+                                <MenuItem value={SortTypeLabel.MechQueueDesc}>{SortTypeLabel.MechQueueDesc}</MenuItem>
+                                <MenuItem value={SortTypeLabel.Alphabetical}>{SortTypeLabel.Alphabetical}</MenuItem>
+                                <MenuItem value={SortTypeLabel.AlphabeticalReverse}>{SortTypeLabel.AlphabeticalReverse}</MenuItem>
+                                <MenuItem value={SortTypeLabel.RarestAsc}>{SortTypeLabel.RarestAsc}</MenuItem>
+                                <MenuItem value={SortTypeLabel.RarestDesc}>{SortTypeLabel.RarestDesc}</MenuItem>
+                            </Select>
+                        </InputLabeller>
+                    </Stack>
+
+                    {/* Content */}
+                    {mechsContent}
+                    <Box flex={1} />
+
+                    {/* Pagination */}
+                    <Pagination count={totalPages} page={page} onChange={(_, p) => changePage(p)} />
+                </Stack>
+            </NiceAccordion.Details>
+        </NiceAccordion.Base>
+    )
+})

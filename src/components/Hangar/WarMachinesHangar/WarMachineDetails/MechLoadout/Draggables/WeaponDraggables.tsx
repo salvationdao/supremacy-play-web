@@ -142,7 +142,7 @@ export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesPro
                 sx={{
                     display: "grid",
                     gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
-                    gap: "2rem",
+                    gap: "1rem",
                 }}
             >
                 {weapons.map((w) => (

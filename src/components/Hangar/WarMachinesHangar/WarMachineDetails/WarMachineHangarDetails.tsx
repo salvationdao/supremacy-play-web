@@ -1,6 +1,5 @@
 import { Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
-import { ClipThing } from "../../.."
 import { useUI } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerSubscription, useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
@@ -76,7 +75,13 @@ export const WarMachineHangarDetailsInner = ({ drawerContainerRef, mechID }: War
         <Stack position="relative" direction="row" spacing="1rem" sx={{ height: "100%" }}>
             {/* Left side */}
             {mechDetails ? (
-                <MechPicker mechDetails={mechDetails} mechStatus={mechStatus} onSelect={(mid) => console.log(mid)} onUpdate={updateMechDetails} />
+                <MechPicker
+                    mechDetails={mechDetails}
+                    mechStatus={mechStatus}
+                    mechStaked={mechIsStaked}
+                    onSelect={(mid) => console.log(mid)}
+                    onUpdate={updateMechDetails}
+                />
             ) : (
                 <NiceBoxThing
                     border={{
@@ -109,29 +114,51 @@ export const WarMachineHangarDetailsInner = ({ drawerContainerRef, mechID }: War
 
             {/* Right side */}
             {mechDetails ? (
-                <MechLoadout drawerContainerRef={drawerContainerRef} mechDetails={mechDetails} mechStatus={mechStatus} onUpdate={updateMechDetails} />
+                <MechLoadout
+                    drawerContainerRef={drawerContainerRef}
+                    mechDetails={mechDetails}
+                    mechStatus={mechStatus}
+                    mechStaked={mechIsStaked}
+                    onUpdate={updateMechDetails}
+                />
             ) : (
-                <ClipThing
-                    clipSize="10px"
-                    border={{
-                        borderColor: theme.factionTheme.primary,
-                        borderThickness: ".3rem",
-                    }}
-                    backgroundColor={theme.factionTheme.background}
-                    sx={{ height: "100%", flex: 1 }}
-                >
-                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                        <Typography
-                            variant="h4"
-                            fontWeight="fontWeightBold"
-                            sx={{
-                                animation: `${pulseEffect} 2s infinite`,
-                            }}
-                        >
-                            LOADING LOADOUT...
-                        </Typography>
-                    </Stack>
-                </ClipThing>
+                <>
+                    <NiceBoxThing
+                        border={{
+                            color: theme.factionTheme.primary,
+                            thickness: "thicc",
+                        }}
+                        background={{
+                            color: [theme.factionTheme.background],
+                        }}
+                        sx={{ height: "100%", flex: 1 }}
+                    >
+                        <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                            <Typography
+                                variant="h4"
+                                fontWeight="fontWeightBold"
+                                sx={{
+                                    animation: `${pulseEffect} 2s infinite`,
+                                }}
+                            >
+                                LOADING LOADOUT...
+                            </Typography>
+                        </Stack>
+                    </NiceBoxThing>
+                    <NiceBoxThing
+                        border={{
+                            color: theme.factionTheme.primary,
+                            thickness: "thicc",
+                        }}
+                        background={{
+                            color: [theme.factionTheme.background],
+                        }}
+                        sx={{
+                            height: "100%",
+                            flexBasis: 450,
+                        }}
+                    ></NiceBoxThing>
+                </>
             )}
         </Stack>
     )

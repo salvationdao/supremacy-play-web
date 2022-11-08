@@ -30,7 +30,7 @@ const sortOptions = [
     { label: SortTypeLabel.RarestDesc, value: SortTypeLabel.RarestDesc },
 ]
 
-interface GetMechsRequest {
+export interface GetMechsRequest {
     queue_sort?: string
     sort_by?: string
     sort_dir?: string
@@ -42,7 +42,7 @@ interface GetMechsRequest {
     include_market_listed: boolean
 }
 
-interface GetMechsResponse {
+export interface GetMechsResponse {
     mechs: MechBasicWithQueueStatus[]
     total: number
 }

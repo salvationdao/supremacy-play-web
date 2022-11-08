@@ -115,12 +115,13 @@ interface MechLoadoutProps {
     drawerContainerRef: React.MutableRefObject<HTMLElement | undefined>
     mechDetails: MechDetails
     mechStatus?: MechStatus
+    mechStaked: boolean
     onUpdate: (newMechDetails: MechDetails) => void
 }
 
 const LOCAL_STORAGE_KEY_PREFERS_2D_LOADOUT = "prefers2DLoadout"
 
-export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpdate }: MechLoadoutProps) => {
+export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, mechStaked, onUpdate }: MechLoadoutProps) => {
     const theme = useTheme()
     const { userID } = useAuth()
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -160,6 +161,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
             (enable3DLoadout && (isUnityPendingChange || !isUnityLoaded)) ||
             xsyn_locked ||
             locked_to_marketplace ||
+            mechStaked ||
             (mechStatus?.battle_lobby_is_locked && mechStatus?.status === MechStatusEnum.Queue) ||
             mechStatus?.status === MechStatusEnum.Battle ||
             mechStatus?.status === MechStatusEnum.Sold,
@@ -168,6 +170,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
             isUnityLoaded,
             isUnityPendingChange,
             locked_to_marketplace,
+            mechStaked,
             mechStatus?.battle_lobby_is_locked,
             mechStatus?.status,
             owner_id,
