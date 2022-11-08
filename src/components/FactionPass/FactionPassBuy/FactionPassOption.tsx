@@ -11,13 +11,13 @@ import {
     ZHIAnnualPassArrowPNG,
     ZHIDailyPassArrowPNG,
     ZHIMonthlyPassArrowPNG,
-} from "../../assets"
-import { FactionIDs } from "../../constants"
-import { supFormatter } from "../../helpers"
-import { colors, fonts } from "../../theme/theme"
-import { Faction } from "../../types"
-import { NiceBoxThing } from "../Common/Nice/NiceBoxThing"
-import { NiceButton } from "../Common/Nice/NiceButton"
+} from "../../../assets"
+import { FactionIDs } from "../../../constants"
+import { supFormatter } from "../../../helpers"
+import { colors, fonts } from "../../../theme/theme"
+import { Faction } from "../../../types"
+import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
+import { NiceButton } from "../../Common/Nice/NiceButton"
 import { DAYS_IN_A_MONTH } from "./FactionPassBuy"
 
 interface OptionPrices {
