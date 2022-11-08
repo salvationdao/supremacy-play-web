@@ -7,6 +7,9 @@ import {
     RMAnnualPassArrowPNG,
     RMDailyPassArrowPNG,
     RMMonthlyPassArrowPNG,
+    SvgCreditCard,
+    SvgEthereum,
+    SvgSupToken,
     SvgWallet,
     ZHIAnnualPassArrowPNG,
     ZHIDailyPassArrowPNG,
@@ -89,7 +92,7 @@ export const FactionPassOption = React.memo(function FactionPassOption({ days, f
         <Box sx={{ flex: 1, p: ".7rem" }}>
             <Box
                 sx={{
-                    mb: ".2rem",
+                    mb: ".5rem",
                     width: "100%",
                     height: "4rem",
                     background: `url(${headerArrowImage})`,
@@ -109,19 +112,27 @@ export const FactionPassOption = React.memo(function FactionPassOption({ days, f
                     <Typography fontWeight="fontWeightBold">
                         SUPS <i style={{ color: colors.red }}>-30% OFF</i>
                     </Typography>
-                    <Typography>{prices ? supFormatter(prices.sups, 0) : "---"}</Typography>
+                    <Typography>
+                        <SvgSupToken fill={colors.gold} size="1.8rem" sx={{ display: "inline-flex" }} />
+                        {prices ? supFormatter(prices.sups, 0) : "---"}
+                    </Typography>
                 </Stack>
 
                 {/* ETH */}
                 <Stack direction="row" justifyContent="space-between" sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.primary_color}40 1px solid` }}>
                     <Typography fontWeight="fontWeightBold">ETH</Typography>
-                    <Typography>{prices ? prices.eth : "---"}</Typography>
+                    <Typography>
+                        <SvgEthereum size="1.8rem" sx={{ display: "inline-flex" }} />
+                        {prices ? prices.eth : "---"}
+                    </Typography>
                 </Stack>
 
                 {/* Fiat */}
                 <Stack direction="row" justifyContent="space-between" sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.primary_color}40 1px solid` }}>
-                    <Typography fontWeight="fontWeightBold">FIAT</Typography>
-                    <Typography>{prices ? prices.fiat : "---"}</Typography>
+                    <Typography fontWeight="fontWeightBold">USD</Typography>
+                    <Typography>
+                        <SvgCreditCard fill={colors.blue} size="1.6rem" sx={{ display: "inline-flex" }} /> ${prices ? prices.fiat : "---"}
+                    </Typography>
                 </Stack>
 
                 {/* Buy button */}
