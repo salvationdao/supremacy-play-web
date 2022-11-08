@@ -141,6 +141,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, mechS
     const orbitControlsRef = useRef<HTMLDivElement>(null)
 
     const {
+        id,
         owner_id,
         weapons_map,
         blueprint_weapon_ids_with_skin_inheritance,
@@ -330,20 +331,28 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, mechS
             })
         }
     }, [blueprint_weapon_ids_with_skin_inheritance, currLoadout.weapon_hardpoints, currLoadout.weapons_map, saveSelection])
+    const prevMechID = useRef<string | undefined>(undefined) // we can use these refs to avoid triggering any unecessary work in the unity viewer on rerender
     const inheritAllWeaponSkinsMemo = useRef<boolean | undefined>(undefined)
     useEffect(() => {
+        if (prevMechID.current !== id) {
+            prevMechID.current = id
+            inheritAllWeaponSkinsMemo.current = undefined
+            return
+        }
         if (typeof inheritAllWeaponSkinsMemo.current === "undefined") {
             inheritAllWeaponSkinsMemo.current = inherit_all_weapon_skins
             return
         }
+
         if (inherit_all_weapon_skins === inheritAllWeaponSkinsMemo.current) return
+
         if (inherit_all_weapon_skins) {
             inheritAllWeaponSkins()
         } else {
             uninheritAllWeaponSkins()
         }
         inheritAllWeaponSkinsMemo.current = inherit_all_weapon_skins
-    }, [inheritAllWeaponSkins, inherit_all_weapon_skins, uninheritAllWeaponSkins])
+    }, [id, inheritAllWeaponSkins, inherit_all_weapon_skins, uninheritAllWeaponSkins])
 
     // DRAG HANDLERS
     const powerCoreItemRef = useRef<HTMLDivElement>(null)
