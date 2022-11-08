@@ -26,11 +26,10 @@ export interface MechPickerProps {
     mechDetails: MechDetails
     mechStatus?: MechStatus
     mechStaked: boolean
-    onSelect: (mechID: MechDetails) => void
     onUpdate: (newMechDetails: MechDetails) => void
 }
 
-const PICKER_BUTTON_HEIGHT = "48px  "
+const PICKER_BUTTON_HEIGHT = "48px"
 
 export const MechPicker = ({ mechDetails, mechStatus, mechStaked, onUpdate }: MechPickerProps) => {
     const theme = useTheme()

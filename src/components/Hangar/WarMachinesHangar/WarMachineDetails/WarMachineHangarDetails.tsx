@@ -75,13 +75,7 @@ export const WarMachineHangarDetailsInner = ({ drawerContainerRef, mechID }: War
         <Stack position="relative" direction="row" spacing="1rem" sx={{ height: "100%" }}>
             {/* Left side */}
             {mechDetails ? (
-                <MechPicker
-                    mechDetails={mechDetails}
-                    mechStatus={mechStatus}
-                    mechStaked={mechIsStaked}
-                    onSelect={(mid) => console.log(mid)}
-                    onUpdate={updateMechDetails}
-                />
+                <MechPicker mechDetails={mechDetails} mechStatus={mechStatus} mechStaked={mechIsStaked} onUpdate={updateMechDetails} />
             ) : (
                 <NiceBoxThing
                     border={{
