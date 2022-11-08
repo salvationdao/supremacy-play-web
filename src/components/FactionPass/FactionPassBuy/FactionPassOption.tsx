@@ -102,7 +102,7 @@ export const FactionPassOption = React.memo(function FactionPassOption({ days, f
                 }}
             />
 
-            <NiceBoxThing border={{ color: `${faction.primary_color}50` }}>
+            <NiceBoxThing border={{ color: `${faction.primary_color}50` }} sx={{ boxShadow: 3 }}>
                 <Box sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.primary_color}40 1px solid`, backgroundColor: `${faction.primary_color}80` }}>
                     <Typography sx={{ color: faction.secondary_color, fontFamily: fonts.nostromoBlack, textAlign: "center" }}>{priceLabel} PRICE</Typography>
                 </Box>
@@ -131,7 +131,7 @@ export const FactionPassOption = React.memo(function FactionPassOption({ days, f
                 <Stack direction="row" justifyContent="space-between" sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.primary_color}40 1px solid` }}>
                     <Typography fontWeight="fontWeightBold">USD</Typography>
                     <Typography>
-                        <SvgCreditCard fill={colors.blue} size="1.6rem" sx={{ display: "inline-flex" }} /> ${prices ? prices.fiat : "---"}
+                        <SvgCreditCard fill={colors.blue} size="1.6rem" sx={{ display: "inline-flex" }} /> ${prices ? prices.fiat.toFixed(2) : "---"}
                     </Typography>
                 </Stack>
 
