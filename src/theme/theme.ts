@@ -3,7 +3,7 @@ import { red } from "@mui/material/colors"
 import { createTheme } from "@mui/material/styles"
 import "./global.css"
 
-// had to keep the declare in this file for it to work
+// Had to keep the declare in this file for it to work
 declare module "@mui/material/styles" {
     interface Theme {
         factionTheme: FactionTheme

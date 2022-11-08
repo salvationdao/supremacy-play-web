@@ -31,7 +31,6 @@ export const NavTabs = ({
 
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
-            console.log(e)
             if (e.key.toLowerCase() === "q" || e.key === "ArrowLeft") prevTab()
             if (e.key.toLowerCase() === "e" || e.key === "ArrowRight") nextTab()
         }

@@ -105,7 +105,6 @@ export const BattleLobbiesPage = () => {
                                 }}
                             >
                                 <Tab label="LOBBIES" value={BATTLE_LOBBY_TABS.Pending} />
-
                                 <Tab label="CENTRAL QUEUE" value={BATTLE_LOBBY_TABS.Ready} />
                             </Tabs>
                         </Box>

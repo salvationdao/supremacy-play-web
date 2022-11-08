@@ -7,6 +7,7 @@ import { BillingHistory } from "../components/BillingHistory/BillingHistory"
 import { BillingHistorySingle } from "../components/BillingHistory/BillingHistorySingle"
 import { Claims } from "../components/Claims/Claims"
 import { FactionPassBuy } from "../components/FactionPass/FactionPassBuy/FactionPassBuy"
+import { FactionPassMechPool } from "../components/FactionPass/FactionPassMechPool/FactionPassMechPool"
 import { KeycardsHangar } from "../components/Hangar/KeycardsHangar/KeycardsHangar"
 import { MysteryCratesHangar } from "../components/Hangar/MysteryCratesHangar/MysteryCratesHangar"
 import { PlayerAbilitiesHangar } from "../components/Hangar/PlayerAbilitiesHangar/PlayerAbilitiesHangar"
@@ -76,6 +77,7 @@ export enum RouteSingleID {
     Claim = "CLAIM",
     NotFound = "NOT_FOUND",
     FactionPassBuy = "FACTION_PASS_BUY",
+    FactionPassMechPool = "FACTION_PASS_MECH_POOL",
 }
 
 export enum RouteGroupID {
@@ -784,6 +786,25 @@ export const Routes: RouteSingle[] = [
         },
         enable: true,
         tabTitle: "Buy Faction Pass",
+    },
+    {
+        id: RouteSingleID.FactionPassMechPool,
+        path: "/faction-pass/mech-pool",
+        exact: true,
+        Component: FactionPassMechPool,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+        },
+        showInMainMenu: {
+            groupID: RouteGroupID.FactionHQ,
+            label: "View Faction Mech Pool",
+            image: GenericPNG,
+            path: "/faction-pass/mech-pool",
+        },
+        enable: true,
+        tabTitle: "Mech Pool",
     },
 
     // ***********
