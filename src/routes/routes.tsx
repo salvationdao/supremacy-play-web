@@ -799,12 +799,12 @@ export const Routes: RouteSingle[] = [
         },
         showInMainMenu: {
             groupID: RouteGroupID.FactionHQ,
-            label: "View Faction Mech Pool",
+            label: "Faction Mech Pool",
             image: GenericPNG,
             path: "/faction-pass/mech-pool",
         },
         enable: true,
-        tabTitle: "Mech Pool",
+        tabTitle: "Faction Mech Pool",
     },
 
     // ***********

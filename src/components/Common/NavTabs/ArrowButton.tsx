@@ -1,6 +1,6 @@
 import { Stack, Typography } from "@mui/material"
-import { KeyboardKey } from "../../Common/KeyboardKey"
-import { NiceButton } from "../../Common/Nice/NiceButton"
+import { KeyboardKey } from "../KeyboardKey"
+import { NiceButton } from "../Nice/NiceButton"
 import { TAB_HEIGHT } from "./NavTabs"
 
 export const ArrowButton = ({ keyboardKey, onClick, isLeft, isRight }: { keyboardKey: string; onClick: () => void; isLeft?: boolean; isRight?: boolean }) => {

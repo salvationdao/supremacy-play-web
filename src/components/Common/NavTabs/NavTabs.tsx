@@ -1,38 +1,37 @@
 import { Stack, Tab, Tabs, Typography } from "@mui/material"
-import { useCallback, useEffect } from "react"
+import { useEffect } from "react"
 import { useTheme } from "../../../containers/theme"
-import { RouteGroupID, RouteGroups } from "../../../routes"
 import { TruncateTextLines } from "../../../theme/styles"
 import { fonts } from "../../../theme/theme"
 import { ArrowButton } from "./ArrowButton"
 
 export const TAB_HEIGHT = 3.8 // rems
 
-export const NavTabs = ({
+interface OneTab {
+    id: string
+    label: string
+}
+
+export const NavTabs = <T,>({
     activeTabID,
     setActiveTabID,
+    tabs,
+    prevTab,
+    nextTab,
 }: {
-    activeTabID?: RouteGroupID
-    setActiveTabID: React.Dispatch<React.SetStateAction<RouteGroupID | undefined>>
+    activeTabID?: T
+    setActiveTabID: React.Dispatch<React.SetStateAction<T | undefined>>
+    tabs: OneTab[]
+    prevTab: (activeTabID: T) => void
+    nextTab: (activeTabID: T) => void
 }) => {
     const theme = useTheme()
 
-    const prevTab = useCallback(() => {
-        const curIndex = RouteGroups.findIndex((routeGroup) => routeGroup.id === activeTabID)
-        const newIndex = curIndex - 1 < 0 ? RouteGroups.length - 1 : curIndex - 1
-        setActiveTabID(RouteGroups[newIndex].id)
-    }, [activeTabID, setActiveTabID])
-
-    const nextTab = useCallback(() => {
-        const curIndex = RouteGroups.findIndex((routeGroup) => routeGroup.id === activeTabID)
-        const newIndex = (curIndex + 1) % RouteGroups.length
-        setActiveTabID(RouteGroups[newIndex].id)
-    }, [activeTabID, setActiveTabID])
-
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
-            if (e.key.toLowerCase() === "q" || e.key === "ArrowLeft") prevTab()
-            if (e.key.toLowerCase() === "e" || e.key === "ArrowRight") nextTab()
+            if (!activeTabID) return
+            if (e.key.toLowerCase() === "q" || e.key === "ArrowLeft") prevTab(activeTabID)
+            if (e.key.toLowerCase() === "e" || e.key === "ArrowRight") nextTab(activeTabID)
         }
 
         const cleanup = () => {
@@ -43,11 +42,11 @@ export const NavTabs = ({
         document.addEventListener("keydown", onKeyDown)
 
         return cleanup
-    }, [nextTab, prevTab])
+    }, [activeTabID, nextTab, prevTab])
 
     return (
         <Stack direction="row" alignItems="center" spacing=".5rem">
-            <ArrowButton keyboardKey="Q" onClick={prevTab} isLeft />
+            <ArrowButton keyboardKey="Q" onClick={() => activeTabID && prevTab(activeTabID)} isLeft />
 
             <Tabs
                 value={activeTabID}
@@ -76,20 +75,20 @@ export const NavTabs = ({
                     setActiveTabID(newValue)
                 }}
             >
-                {RouteGroups.map((routeGroup) => {
+                {tabs.map((tab) => {
                     return (
                         <Tab
-                            key={routeGroup.id}
-                            value={routeGroup.id}
+                            key={tab.id}
+                            value={tab.id}
                             label={
                                 <Typography
                                     sx={{
-                                        color: routeGroup.id === activeTabID ? theme.factionTheme.secondary : "#FFFFFF",
+                                        color: tab.id === activeTabID ? theme.factionTheme.secondary : "#FFFFFF",
                                         fontFamily: fonts.nostromoBlack,
                                         ...TruncateTextLines(1),
                                     }}
                                 >
-                                    {routeGroup.label}
+                                    {tab.label}
                                 </Typography>
                             }
                         />
@@ -97,7 +96,7 @@ export const NavTabs = ({
                 })}
             </Tabs>
 
-            <ArrowButton keyboardKey="E" onClick={nextTab} isRight />
+            <ArrowButton keyboardKey="E" onClick={() => activeTabID && nextTab(activeTabID)} isRight />
         </Stack>
     )
 }

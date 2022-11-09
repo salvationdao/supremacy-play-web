@@ -12,13 +12,13 @@ export const RightDrawer = () => {
     const { rightDrawerActiveTabID } = useUI()
     const { isMobile } = useMobile()
     const { userID } = useAuth()
-    const activeRouteID = useActiveRouteID()
+    const activeRoute = useActiveRouteID()
 
     // Hide the drawer if on mobile OR none of the tabs are visible on the page
-    if (isMobile || RightRoutes.filter((r) => !r.matchRouteIDs || r.matchRouteIDs.includes(activeRouteID)).length <= 0) return null
+    if (isMobile || RightRoutes.filter((r) => !r.matchRouteIDs || (activeRoute && r.matchRouteIDs.includes(activeRoute.id))).length <= 0) return null
 
     const match = RightRoutes.find((route) => route.id === rightDrawerActiveTabID)
-    const isOpen = match && (match.matchRouteIDs === undefined || match.matchRouteIDs?.includes(activeRouteID))
+    const isOpen = match && (match.matchRouteIDs === undefined || (activeRoute && match.matchRouteIDs?.includes(activeRoute.id)))
 
     return (
         <>
@@ -43,7 +43,7 @@ export const RightDrawer = () => {
                 }}
             >
                 {RightRoutes.map((route) => {
-                    if ((route.requireAuth && !userID) || (route.matchRouteIDs && !route.matchRouteIDs.includes(activeRouteID))) return null
+                    if ((route.requireAuth && !userID) || (route.matchRouteIDs && activeRoute && !route.matchRouteIDs.includes(activeRoute.id))) return null
                     const isActive = route.id === rightDrawerActiveTabID
                     if (isActive || route.mountAllTime) {
                         return (
