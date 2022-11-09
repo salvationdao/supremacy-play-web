@@ -1,4 +1,4 @@
-import { Box, Slide, Stack, Typography } from "@mui/material"
+import { Box, Slide, Stack, styled, Tooltip, tooltipClasses, TooltipProps, Typography } from "@mui/material"
 import React, { MouseEventHandler, useEffect, useRef } from "react"
 import { SvgCancelled, SvgLock, SvgWrapperProps } from "../../../../assets"
 import { colors, fonts } from "../../../../theme/theme"
@@ -23,11 +23,12 @@ export interface LoadoutItem {
 export interface MechLoadoutItemProps extends LoadoutItem {
     prevEquipped?: LoadoutItem
     onUnequip?: () => void
+    renderTooltip?: () => React.ReactNode
     side?: "left" | "right"
 }
 
 export const MechLoadoutItem = React.forwardRef<HTMLDivElement, MechLoadoutItemProps>(function MechLoadoutItem(props, ref) {
-    const { prevEquipped, onUnequip, side = "left", onClick, ...loadoutItemButtonProps } = props
+    const { prevEquipped, onUnequip, renderTooltip, side = "left", onClick, ...loadoutItemButtonProps } = props
     const memoizedPrevEquipped = useRef<LoadoutItem>()
 
     useEffect(() => {
@@ -38,49 +39,64 @@ export const MechLoadoutItem = React.forwardRef<HTMLDivElement, MechLoadoutItemP
         memoizedPrevEquipped.current = prevEquipped
     }, [prevEquipped])
 
+    const button = (
+        <MechLoadoutItemButton
+            onClick={(e) => {
+                onClick && onClick(e)
+            }}
+            {...loadoutItemButtonProps}
+        />
+    )
+
     return (
-        <>
-            <Stack
-                ref={ref}
-                sx={{
-                    position: "relative",
-                    flexDirection: side === "right" ? "row-reverse" : "row",
-                    alignItems: "stretch",
-                    height: props.size === "full-width" ? "100%" : "auto",
-                    width: props.size === "full-width" ? "100%" : "fit-content",
-                }}
-            >
-                <MechLoadoutItemButton
-                    onClick={(e) => {
-                        onClick && onClick(e)
-                    }}
-                    {...loadoutItemButtonProps}
-                />
-                <Box overflow="hidden">
-                    <Slide in={!!onUnequip} unmountOnExit>
-                        <NiceButton
-                            onClick={onUnequip}
-                            disabled={props.disabled || props.locked}
-                            border={{
-                                color: colors.red,
-                                thickness: "lean",
-                            }}
-                            sx={
-                                side === "right"
-                                    ? {
-                                          borderRight: "none",
-                                      }
-                                    : {
-                                          borderLeft: "none",
-                                      }
-                            }
-                        >
-                            <SvgCancelled />
-                        </NiceButton>
-                    </Slide>
-                </Box>
-            </Stack>
-        </>
+        <Stack
+            ref={ref}
+            sx={{
+                position: "relative",
+                flexDirection: side === "right" ? "row-reverse" : "row",
+                alignItems: "stretch",
+                height: props.size === "full-width" ? "100%" : "auto",
+                width: props.size === "full-width" ? "100%" : "fit-content",
+            }}
+        >
+            {renderTooltip ? (
+                <NiceTooltip title={<>{renderTooltip()}</>} followCursor>
+                    <Box
+                        sx={{
+                            height: props.size === "full-width" ? "100%" : "auto",
+                            width: props.size === "full-width" ? "100%" : "fit-content",
+                        }}
+                    >
+                        {button}
+                    </Box>
+                </NiceTooltip>
+            ) : (
+                button
+            )}
+            <Box overflow="hidden">
+                <Slide in={!!onUnequip} unmountOnExit>
+                    <NiceButton
+                        onClick={onUnequip}
+                        disabled={props.disabled || props.locked}
+                        border={{
+                            color: colors.red,
+                            thickness: "lean",
+                        }}
+                        sx={
+                            side === "right"
+                                ? {
+                                      borderRight: "none",
+                                  }
+                                : {
+                                      borderLeft: "none",
+                                  }
+                        }
+                    >
+                        <SvgCancelled />
+                    </NiceButton>
+                </Slide>
+            </Box>
+        </Stack>
     )
 })
 
@@ -250,3 +266,12 @@ const MechLoadoutItemButton = ({
         </>
     )
 }
+
+const NiceTooltip = styled(({ className, ...props }: TooltipProps) => <Tooltip {...props} classes={{ popper: className }} />)({
+    [`& .${tooltipClasses.tooltip}`]: {
+        maxWidth: 300,
+        padding: "0px !important",
+        backgroundColor: "transparent",
+        borderRadius: 0,
+    },
+})
