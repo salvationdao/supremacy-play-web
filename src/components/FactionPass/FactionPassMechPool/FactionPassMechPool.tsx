@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, Pagination, Stack, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
 import { SvgFilter, SvgGridView, SvgListView, SvgSearch } from "../../../assets"
 import { useAuth, useSupremacy } from "../../../containers"
@@ -138,6 +138,8 @@ export const FactionPassMechPool = () => {
                     sx={{ minWidth: "26rem" }}
                 />
             </Stack>
+
+            {totalPages > 1 && <Pagination sx={{ mt: "auto" }} count={totalPages} page={page} onChange={(e, p) => changePage(p)} />}
         </Stack>
     )
 }
