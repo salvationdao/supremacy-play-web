@@ -1,6 +1,6 @@
 import { Box, CircularProgress, InputBase, InputBaseProps, MenuItem, Pagination, Select, Stack, StackProps, styled, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { SvgLoadoutDamage, SvgLoadoutWeapon, SvgSearch } from "../../../../../../assets"
+import { SvgDrag, SvgLoadoutDamage, SvgLoadoutWeapon, SvgSearch } from "../../../../../../assets"
 import { useTheme } from "../../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../../helpers"
 import { usePagination } from "../../../../../../hooks"
@@ -188,21 +188,24 @@ export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesPro
                                     rarity={w.tier ? getRarityDeets(w.tier) : undefined}
                                     subLabel={`${w.weapon_type} | ${w.default_damage_type}`}
                                     TopRight={
-                                        <Typography
-                                            sx={{
-                                                fontFamily: fonts.shareTech,
-                                            }}
-                                        >
-                                            <SvgLoadoutDamage
+                                        <Stack alignItems="end">
+                                            <Typography
                                                 sx={{
-                                                    display: "inline-block",
-                                                    verticalAlign: "middle",
-                                                    lineHeight: "normal",
-                                                    mr: ".5rem",
+                                                    fontFamily: fonts.shareTech,
                                                 }}
-                                            />
-                                            {w.damage}
-                                        </Typography>
+                                            >
+                                                <SvgLoadoutDamage
+                                                    sx={{
+                                                        display: "inline-block",
+                                                        verticalAlign: "middle",
+                                                        lineHeight: "normal",
+                                                        mr: ".5rem",
+                                                    }}
+                                                />
+                                                {w.damage}
+                                            </Typography>
+                                            <SvgDrag />
+                                        </Stack>
                                     }
                                     shape="rectangle"
                                     size="full-width"

@@ -1,6 +1,6 @@
 import { Box, CircularProgress, MenuItem, Pagination, Select, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { SvgLoadoutPowerCore, SvgSearch } from "../../../../../../assets"
+import { SvgDrag, SvgLoadoutPowerCore, SvgSearch } from "../../../../../../assets"
 import { useTheme } from "../../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../../helpers"
 import { usePagination } from "../../../../../../hooks"
@@ -183,6 +183,7 @@ export const PowerCoreDraggables = ({ drag, powerCoreSize }: PowerCoreDraggables
                                     rarity={w.tier ? getRarityDeets(w.tier) : undefined}
                                     shape="square"
                                     size="full-width"
+                                    TopRight={<SvgDrag />}
                                 />
                             </Box>
                         )}
