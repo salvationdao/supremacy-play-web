@@ -124,9 +124,13 @@ export const supFormatter = (num: string, maxDecimals?: number): string => {
     return supTokens.toFormat()
 }
 
-export const parseString = (val: string | null, defaultVal: number): number => {
-    if (!val) return defaultVal
-    return parseFloat(val)
+export const parseString = (val: number | string | null, defaultVal: number): number => {
+    try {
+        if (!val) return defaultVal
+        return parseFloat(`${val}`)
+    } catch (err) {
+        return defaultVal
+    }
 }
 
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any

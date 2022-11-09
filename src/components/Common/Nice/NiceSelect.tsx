@@ -82,17 +82,15 @@ export const NiceSelect = ({
                     },
                 }}
             >
-                {options.map((x, i) => {
+                {options.map((option, i) => {
                     return (
                         <MenuItem
-                            key={x.value + i}
-                            value={x.value}
-                            onClick={() => {
-                                onSelected(x.value)
-                            }}
+                            key={`${option.value}-${i}`}
+                            value={option.value}
+                            onClick={() => onSelected(option.value)}
                             sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                         >
-                            <Typography>{x.label}</Typography>
+                            <Typography>{option.label}</Typography>
                         </MenuItem>
                     )
                 })}
