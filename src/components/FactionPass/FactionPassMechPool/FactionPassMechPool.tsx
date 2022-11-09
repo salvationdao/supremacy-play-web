@@ -52,10 +52,6 @@ export const FactionPassMechPool = () => {
         return getFaction(factionID)
     }, [factionID, getFaction])
 
-    if (tabs.length <= 0) {
-        return null
-    }
-
     return (
         <Stack
             alignItems="center"
