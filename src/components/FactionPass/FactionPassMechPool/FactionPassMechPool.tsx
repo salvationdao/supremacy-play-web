@@ -59,6 +59,7 @@ export const FactionPassMechPool = () => {
     return (
         <Stack
             alignItems="center"
+            spacing="3rem"
             sx={{
                 p: "4rem 5rem",
                 mx: "auto",
@@ -74,7 +75,7 @@ export const FactionPassMechPool = () => {
         >
             <NavTabs activeTabID={activeTabID} setActiveTabID={setActiveTabID} tabs={tabs} prevTab={prevTab} nextTab={nextTab} />
 
-            <Stack spacing="1rem" direction="row" alignItems="center" sx={{ overflowX: "auto", overflowY: "hidden", width: "100%", mt: "3rem", pb: ".2rem" }}>
+            <Stack spacing="1rem" direction="row" alignItems="center" sx={{ overflowX: "auto", overflowY: "hidden", width: "100%", pb: ".2rem" }}>
                 {/* Filter button */}
                 <NiceButton
                     onClick={() => toggleShowFilters()}
@@ -138,6 +139,8 @@ export const FactionPassMechPool = () => {
                     sx={{ minWidth: "26rem" }}
                 />
             </Stack>
+
+            <Box sx={{ flex: 1, width: "100%" }}></Box>
 
             <Pagination sx={{ mt: "auto" }} count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
         </Stack>
