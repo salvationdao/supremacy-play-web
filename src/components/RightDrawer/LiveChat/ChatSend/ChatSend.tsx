@@ -11,7 +11,7 @@ import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { ChatMessage, ChatMessageType } from "../../../../types"
-import { TooltipHelper } from "../../../Common/TooltipHelper"
+import { NiceTooltip } from "../../../Common/Nice/NiceTooltip"
 import { EmojiShortcut } from "./EmojiShortcut"
 import { TagPlayer } from "./TagPlayer"
 
@@ -242,7 +242,7 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
                                                 </IconButton>
                                             )}
 
-                                            <TooltipHelper placement="top-end" text="Use keyboard shortcut ' : '">
+                                            <NiceTooltip placement="top-end" text="Use keyboard shortcut ' : '">
                                                 <IconButton
                                                     ref={popoverRef}
                                                     onClick={() => toggleIsEmojiOpen()}
@@ -257,7 +257,7 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
                                                 >
                                                     <SvgEmoji size="1.4rem" fill="#FFFFFF" sx={{ pb: 0 }} />
                                                 </IconButton>
-                                            </TooltipHelper>
+                                            </NiceTooltip>
 
                                             <IconButton
                                                 onClick={sendMessage}

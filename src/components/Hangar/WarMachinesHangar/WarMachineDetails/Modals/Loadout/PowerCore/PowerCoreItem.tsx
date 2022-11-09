@@ -7,8 +7,8 @@ import { useGameServerSubscriptionFaction } from "../../../../../../../hooks/use
 import { GameServerKeys } from "../../../../../../../keys"
 import { colors, fonts } from "../../../../../../../theme/theme"
 import { PowerCore } from "../../../../../../../types"
-import { ClipThing } from "../../../../../../Common/ClipThing"
-import { FancyButton } from "../../../../../../Common/FancyButton"
+import { ClipThing } from "../../../../../../Common/Deprecated/ClipThing"
+import { FancyButton } from "../../../../../../Common/Deprecated/FancyButton"
 
 interface PowerCoreItemProps {
     id: string

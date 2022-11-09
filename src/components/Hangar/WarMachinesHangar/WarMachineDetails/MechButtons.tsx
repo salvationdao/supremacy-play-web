@@ -1,5 +1,5 @@
 import { Box, Stack, SxProps, Typography } from "@mui/material"
-import { ClipThing, FancyButton, TooltipHelper } from "../../.."
+import { ClipThing, FancyButton, NiceTooltip } from "../../.."
 import { SvgInfoCircular } from "../../../../assets"
 import { IS_TESTING_MODE } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
@@ -87,7 +87,7 @@ export const MechButtons = ({
                 />
 
                 {/* Button 5 */}
-                <TooltipHelper
+                <NiceTooltip
                     placement={"right"}
                     text={marketLocked ? "Unfortunately assets on the old staking contract cannot be listed on the marketplace." : ""}
                 >
@@ -113,7 +113,7 @@ export const MechButtons = ({
                             }
                         />
                     </Box>
-                </TooltipHelper>
+                </NiceTooltip>
             </Box>
         </ClipThing>
     )

@@ -11,8 +11,8 @@ import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { Keycard } from "../../../types"
-import { PageHeader } from "../../Common/PageHeader"
-import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
+import { PageHeader } from "../../Common/Deprecated/PageHeader"
+import { TotalAndPageSizeOptions } from "../../Common/Deprecated/TotalAndPageSizeOptions"
 import { KeycardHangarItem } from "./KeycardHangarItem"
 
 interface GetPlayerKeycardsRequest {

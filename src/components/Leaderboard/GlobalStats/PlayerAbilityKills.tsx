@@ -8,7 +8,7 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { LeaderboardRound, User } from "../../../types"
 import { CoolTable } from "../../Common/CoolTable"
-import { Player } from "../../Common/Player"
+import { PlayerNameGid } from "../../Common/PlayerNameGid"
 
 interface RankItem {
     player: User
@@ -82,7 +82,7 @@ export const PlayerAbilityKills = ({ selectedRound }: { selectedRound?: Leaderbo
                             {index + 1}
                         </Typography>,
 
-                        <Player key={2} player={item.player} styledImageTextProps={{ variant: "h6", imageSize: 2.4 }} />,
+                        <PlayerNameGid key={2} player={item.player} styledImageTextProps={{ variant: "h6", imageSize: 2.4 }} />,
 
                         <Typography variant="h6" key={3} sx={{ fontWeight: "fontWeightBold", color: faction.primary_color, textTransform: "uppercase" }}>
                             {faction.label}

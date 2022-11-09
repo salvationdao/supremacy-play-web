@@ -12,9 +12,9 @@ import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { FiatProduct, FiatProductType } from "../../../types/fiat"
-import { ClipThing } from "../../Common/ClipThing"
-import { PageHeader } from "../../Common/PageHeader"
-import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
+import { PageHeader } from "../../Common/Deprecated/PageHeader"
+import { TotalAndPageSizeOptions } from "../../Common/Deprecated/TotalAndPageSizeOptions"
 import { PackageStoreItem } from "./PackageStoreItem/PackageStoreItem"
 
 const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY)

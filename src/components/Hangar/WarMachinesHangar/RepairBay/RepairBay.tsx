@@ -6,8 +6,8 @@ import { useGameServerCommandsUser, useGameServerSubscriptionSecuredUser } from 
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechBasic, RepairSlot } from "../../../../types"
-import { ClipThing } from "../../../Common/ClipThing"
-import { FancyButton } from "../../../Common/FancyButton"
+import { ClipThing } from "../../../Common/Deprecated/ClipThing"
+import { FancyButton } from "../../../Common/Deprecated/FancyButton"
 import { EmptyRepairBayItem, RepairBayItem } from "./RepairBayItem"
 
 const REPAIR_BAY_SLOTS_MAX = 5

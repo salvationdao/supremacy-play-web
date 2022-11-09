@@ -4,7 +4,7 @@ import { useEffect } from "react"
 import { GenericWarMachinePNG } from "../../../../assets"
 import { useTraining } from "../../../../containers"
 import { Faction, GameAbility, MechAbilityStages, WarMachineState } from "../../../../types"
-import { ClipThing } from "../../../Common/ClipThing"
+import { ClipThing } from "../../../Common/Deprecated/ClipThing"
 import { WarMachineAbilityItemBT } from "../WarMachineItem/WarMachineAbilityItemBT"
 interface WarMachineAbilitiesPopoverProps {
     popoverRef: React.MutableRefObject<null>

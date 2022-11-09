@@ -4,7 +4,7 @@ import { TRAINING_ASSETS } from "../../constants"
 import { useUrlQuery } from "../../hooks"
 import { opacityEffect } from "../../theme/keyframes"
 import { fonts } from "../../theme/theme"
-import { FancyButton } from "../Common/FancyButton"
+import { FancyButton } from "../Common/Deprecated/FancyButton"
 
 interface Context {
     time: number

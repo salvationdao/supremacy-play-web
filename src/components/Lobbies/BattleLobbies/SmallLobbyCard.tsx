@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { useAuth, useSupremacy } from "../../../containers"
 import { colors, fonts } from "../../../theme/theme"
 import { TruncateTextLines } from "../../../theme/styles"
-import { TooltipHelper } from "../../Common/TooltipHelper"
+import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
 import { SvgGlobal, SvgLock, SvgQuestionMark2, SvgSupToken } from "../../../assets"
 import { supFormatter } from "../../../helpers"
 import { scaleUpKeyframes } from "../../../theme/keyframes"
@@ -30,11 +30,11 @@ export const SmallLobbyCard = ({ battleLobby }: SmallLobbyCardProps) => {
         const tooltipText = isPrivate ? "PRIVATE" : "PUBLIC"
 
         return (
-            <TooltipHelper placement="left-end" text={tooltipText}>
+            <NiceTooltip placement="left-end" text={tooltipText}>
                 <Stack direction="row" alignItems="center" justifyContent="center">
                     {isPrivate ? <SvgLock size="1.5rem" fill={colors.gold} /> : <SvgGlobal size="1.5rem" fill={colors.green} />}
                 </Stack>
-            </TooltipHelper>
+            </NiceTooltip>
         )
     }, [battleLobby.is_private])
 

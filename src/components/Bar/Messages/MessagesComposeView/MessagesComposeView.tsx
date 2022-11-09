@@ -9,7 +9,7 @@ import { GameServerKeys } from "../../../../keys"
 import { scaleUpKeyframes } from "../../../../theme/keyframes"
 import { colors, fonts } from "../../../../theme/theme"
 import { SystemMessageDataType } from "../../../../types"
-import { FancyButton } from "../../../Common/FancyButton"
+import { FancyButton } from "../../../Common/Deprecated/FancyButton"
 import MessageRenderer from "../MessageRenderer"
 
 interface MessageComposeViewProps {

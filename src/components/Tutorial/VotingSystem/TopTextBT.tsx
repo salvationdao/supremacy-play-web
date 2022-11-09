@@ -1,6 +1,6 @@
 import { Stack, Typography } from "@mui/material"
 import { ReactNode } from "react"
-import { TooltipHelper } from "../.."
+import { NiceTooltip } from "../.."
 import { fonts } from "../../../theme/theme"
 
 interface TopTextProps {
@@ -12,7 +12,7 @@ interface TopTextProps {
 }
 
 export const TopTextBT = ({ description, image_url, colour, label, icon }: TopTextProps) => (
-    <TooltipHelper placement="right" text={description}>
+    <NiceTooltip placement="right" text={description}>
         <Stack spacing=".8rem" direction="row" alignItems="center" justifyContent="center">
             <Stack
                 alignItems="center"
@@ -48,5 +48,5 @@ export const TopTextBT = ({ description, image_url, colour, label, icon }: TopTe
                 {label}
             </Typography>
         </Stack>
-    </TooltipHelper>
+    </NiceTooltip>
 )

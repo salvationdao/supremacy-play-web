@@ -5,8 +5,8 @@ import { shadeColor } from "../../../../helpers"
 import { useInterval } from "../../../../hooks"
 import { zoomEffect } from "../../../../theme/keyframes"
 import { GameAbility, MechAbilityStages } from "../../../../types"
-import { ClipThing } from "../../../Common/ClipThing"
-import { FancyButton } from "../../../Common/FancyButton"
+import { ClipThing } from "../../../Common/Deprecated/ClipThing"
+import { FancyButton } from "../../../Common/Deprecated/FancyButton"
 import { TopTextBT } from "../../VotingSystem/TopTextBT"
 
 export interface ContributeFactionUniqueAbilityRequest {

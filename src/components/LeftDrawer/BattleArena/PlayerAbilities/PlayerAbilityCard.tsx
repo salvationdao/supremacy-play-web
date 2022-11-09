@@ -4,8 +4,8 @@ import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "..
 import { useMiniMapPixi } from "../../../../containers"
 import { colors } from "../../../../theme/theme"
 import { LocationSelectType, PlayerAbility } from "../../../../types"
-import { FancyButton } from "../../../Common/FancyButton"
-import { TooltipHelper } from "../../../Common/TooltipHelper"
+import { FancyButton } from "../../../Common/Deprecated/FancyButton"
+import { NiceTooltip } from "../../../Common/Nice/NiceTooltip"
 import { PlayerAbilityCooldownIndicator } from "./PlayerAbilityCooldownIndicator"
 import { TruncateTextLines } from "../../../../theme/styles"
 
@@ -75,7 +75,7 @@ export const PlayerAbilityCard = React.memo(function PlayerAbilityCard({ playerA
 
     return (
         <>
-            <TooltipHelper color={playerAbility.ability.colour} text={playerAbility.ability.description} placement="bottom">
+            <NiceTooltip color={playerAbility.ability.colour} text={playerAbility.ability.description} placement="bottom">
                 <FancyButton
                     clipThingsProps={{
                         clipSize: "6px",
@@ -185,7 +185,7 @@ export const PlayerAbilityCard = React.memo(function PlayerAbilityCard({ playerA
                         </Typography>
                     </Stack>
                 </FancyButton>
-            </TooltipHelper>
+            </NiceTooltip>
         </>
     )
 }, propsAreEqual)

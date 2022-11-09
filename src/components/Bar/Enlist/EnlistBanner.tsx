@@ -1,6 +1,6 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { TooltipHelper } from "../.."
+import { NiceTooltip } from "../.."
 import { SvgAbility, SvgBostonKillIcon, SvgDeath, SvgRedMoutainKillIcon, SvgView, SvgWrapperProps, SvgZaibatsuKillIcon } from "../../../assets"
 import { FactionIDs } from "../../../constants"
 import { useAuth, useSupremacy } from "../../../containers"
@@ -118,7 +118,7 @@ const EnlistBannerInner = ({ userID, user, battleIdentifier, getFaction, userSta
 
 const BannerInfo = ({ title, tooltip, content, PrefixSvg }: { title: string; tooltip: string; content: string; PrefixSvg?: SvgWrapperProps }) => {
     return (
-        <TooltipHelper color={colors.grey} text={tooltip}>
+        <NiceTooltip color={colors.grey} text={tooltip}>
             <Box>
                 <Typography
                     variant="subtitle1"
@@ -140,6 +140,6 @@ const BannerInfo = ({ title, tooltip, content, PrefixSvg }: { title: string; too
                     </Typography>
                 </Stack>
             </Box>
-        </TooltipHelper>
+        </NiceTooltip>
     )
 }

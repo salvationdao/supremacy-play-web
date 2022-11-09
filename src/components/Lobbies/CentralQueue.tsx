@@ -1,6 +1,6 @@
 import { BattleLobby } from "../../types/battle_queue"
 import { useEffect, useMemo, useState } from "react"
-import { ClipThing } from "../Common/ClipThing"
+import { ClipThing } from "../Common/Deprecated/ClipThing"
 import { useTheme } from "../../containers/theme"
 import { colors, fonts } from "../../theme/theme"
 import { Box, Stack, Typography } from "@mui/material"

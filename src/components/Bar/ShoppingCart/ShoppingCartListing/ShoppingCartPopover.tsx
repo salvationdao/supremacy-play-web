@@ -3,7 +3,7 @@ import { Popover, Stack, Box } from "@mui/material"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
 import { siteZIndex } from "../../../../theme/theme"
-import { ClipThing } from "../../../Common/ClipThing"
+import { ClipThing } from "../../../Common/Deprecated/ClipThing"
 import { ShoppingCart } from "../../../../types/fiat"
 import { ShoppingCartTable } from "./ShoppingCartTable"
 

@@ -5,7 +5,7 @@ import { useTheme } from "../../../../containers/theme"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { MechBasic, MechStatus, MechStatusEnum } from "../../../../types"
 import { RepairOffer, RepairStatus } from "../../../../types/jobs"
-import { ClipThing } from "../../../Common/ClipThing"
+import { ClipThing } from "../../../Common/Deprecated/ClipThing"
 import { HireContractorsCard } from "../WarMachineDetails/Modals/RepairModal/HireContractorsCard"
 import { RepairBlocks } from "./MechRepairBlocks"
 

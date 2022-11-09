@@ -6,6 +6,9 @@ import { BattleArena } from "../components/BattleArena/BattleArena"
 import { BillingHistory } from "../components/BillingHistory/BillingHistory"
 import { BillingHistorySingle } from "../components/BillingHistory/BillingHistorySingle"
 import { Claims } from "../components/Claims/Claims"
+import { FactionPassBuy } from "../components/FactionPass/FactionPassBuy/FactionPassBuy"
+import { FactionPassDashboard } from "../components/FactionPass/FactionPassDashboard/FactionPassDashboard"
+import { FactionPassMechPool } from "../components/FactionPass/FactionPassMechPool/FactionPassMechPool"
 import { KeycardsHangar } from "../components/Hangar/KeycardsHangar/KeycardsHangar"
 import { MysteryCratesHangar } from "../components/Hangar/MysteryCratesHangar/MysteryCratesHangar"
 import { PlayerAbilitiesHangar } from "../components/Hangar/PlayerAbilitiesHangar/PlayerAbilitiesHangar"
@@ -74,6 +77,9 @@ export enum RouteSingleID {
     AdminPlayerLookup = "ADMIN_PLAYER_LOOKUP",
     Claim = "CLAIM",
     NotFound = "NOT_FOUND",
+    FactionPassBuy = "FACTION_PASS_BUY",
+    FactionPassMechPool = "FACTION_PASS_MECH_POOL",
+    FactionPassDashboard = "FACTION_PASS_DASHBOARD",
 }
 
 export enum RouteGroupID {
@@ -759,6 +765,61 @@ export const Routes: RouteSingle[] = [
         },
         enable: true,
         tabTitle: "Claim Rewards",
+    },
+
+    // ********************
+    // *** Faction Pass ***
+    // ********************
+    {
+        id: RouteSingleID.FactionPassBuy,
+        path: "/faction-pass/buy",
+        exact: true,
+        Component: FactionPassBuy,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+        },
+        enable: DEV_ONLY,
+        tabTitle: "Buy Faction Pass",
+    },
+    {
+        id: RouteSingleID.FactionPassDashboard,
+        path: "/faction-pass/dashboard",
+        exact: true,
+        Component: FactionPassDashboard,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+        },
+        showInMainMenu: {
+            groupID: RouteGroupID.FactionHQ,
+            label: "Dashboard",
+            image: GenericPNG,
+            path: "/faction-pass/dashboard",
+        },
+        enable: DEV_ONLY,
+        tabTitle: "Faction Dashboard",
+    },
+    {
+        id: RouteSingleID.FactionPassMechPool,
+        path: "/faction-pass/mech-pool",
+        exact: true,
+        Component: FactionPassMechPool,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+        },
+        showInMainMenu: {
+            groupID: RouteGroupID.FactionHQ,
+            label: "Mech Pool",
+            image: GenericPNG,
+            path: "/faction-pass/mech-pool",
+        },
+        enable: DEV_ONLY,
+        tabTitle: "Faction Mech Pool",
     },
 
     // ***********

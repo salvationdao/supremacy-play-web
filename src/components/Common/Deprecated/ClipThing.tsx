@@ -1,7 +1,7 @@
 import { Box, SxProps } from "@mui/system"
 import React, { useMemo } from "react"
-import { shadeColor } from "../../helpers"
-import { colors } from "../../theme/theme"
+import { shadeColor } from "../../../helpers"
+import { colors } from "../../../theme/theme"
 
 export interface ClipThingProps {
     clipSize?: string

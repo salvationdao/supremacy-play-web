@@ -127,7 +127,7 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
         if (colors.length === 1) {
             backgroundStyles.backgroundColor = colors[0]
         } else {
-            backgroundStyles.background = `linear-gradient(to bottom right, ${colors.join(", ")})`
+            backgroundStyles.background = `linear-gradient(150deg, ${colors.join(", ")})`
         }
 
         switch (typeof background.opacity === "undefined" ? "opaque" : background.opacity) {
@@ -183,6 +183,7 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
                 zIndex: 0,
                 position: "relative",
                 boxShadow: enableBoxShadow ? 0.4 : "none",
+                borderRadius: 0.3,
                 ...generateBorderStyles,
                 ...sx,
             }}

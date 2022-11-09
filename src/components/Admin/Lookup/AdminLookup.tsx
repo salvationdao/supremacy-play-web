@@ -10,7 +10,7 @@ import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { User } from "../../../types"
-import { Player } from "../../Common/Player"
+import { PlayerNameGid } from "../../Common/PlayerNameGid"
 
 export const AdminLookup = () => {
     const theme = useTheme()
@@ -182,7 +182,7 @@ export const LookupSearchBox = () => {
                 }}
                 renderOption={(props, u) => (
                     <Stack component="li" direction="row" spacing=".6rem" alignItems="center" {...props}>
-                        <Player player={u} styledImageTextProps={{ textColor: "#FFFFFF" }} />
+                        <PlayerNameGid player={u} styledImageTextProps={{ textColor: "#FFFFFF" }} />
                     </Stack>
                 )}
                 getOptionLabel={(u) => `${u.username}#${u.gid}`}

@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { dateFormatter } from "../../../helpers"
 import { Faction } from "../../../types"
 import { AdminPlayerBan } from "../../../types/admin"
-import { ClipThing } from "../../Common/ClipThing"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
 import { colors } from "../../../theme/theme"
 import React from "react"
 

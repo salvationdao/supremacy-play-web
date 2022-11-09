@@ -5,7 +5,7 @@ import { ClipThing, TransactionItem } from "../../.."
 import { SvgClose, SvgExternalLink, SvgSupToken } from "../../../../assets"
 import { IS_TESTING_MODE, PASSPORT_WEB } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
-import { supFormatterNoFixed } from "../../../../helpers"
+import { supFormatter } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { Transaction } from "../../../../types"
@@ -97,7 +97,7 @@ export const WalletPopover = ({
                                         color: colors.supsCredit,
                                     }}
                                 >
-                                    {supFormatterNoFixed(supsEarned.current.toString(), 4)}
+                                    {supFormatter(supsEarned.current.toString(), 4)}
                                 </Typography>
                             </Stack>
                         </Stack>
@@ -110,7 +110,7 @@ export const WalletPopover = ({
 
                         <Stack direction="row" alignItems="center">
                             <SvgSupToken size="1.4rem" fill={IS_TESTING_MODE ? colors.red : colors.yellow} sx={{ pb: ".1rem" }} />
-                            <Typography sx={{ lineHeight: 1 }}>{sups ? supFormatterNoFixed(sups, 18) : "0.00"}</Typography>
+                            <Typography sx={{ lineHeight: 1 }}>{sups ? supFormatter(sups, 18) : "0.00"}</Typography>
                         </Stack>
                     </Box>
 

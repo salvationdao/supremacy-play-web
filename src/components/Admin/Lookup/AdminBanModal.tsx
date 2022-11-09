@@ -6,8 +6,8 @@ import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { Faction, User } from "../../../types"
-import { ClipThing } from "../../Common/ClipThing"
-import { FancyButton } from "../../Common/FancyButton"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
+import { FancyButton } from "../../Common/Deprecated/FancyButton"
 
 export const AdminBanModal = ({
     user,

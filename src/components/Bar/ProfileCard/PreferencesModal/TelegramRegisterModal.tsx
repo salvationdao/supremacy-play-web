@@ -9,7 +9,7 @@ import { useToggle } from "../../../../hooks"
 import { useGameServerSubscriptionSecuredUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
-import { ClipThing } from "../../../Common/ClipThing"
+import { ClipThing } from "../../../Common/Deprecated/ClipThing"
 
 export const TelegramRegisterModal = ({ onClose, code }: { onClose: () => void; code: string }) => {
     const theme = useTheme()

@@ -1,9 +1,9 @@
 import { Box, IconButton, Snackbar, SnackbarCloseReason, Stack, Typography } from "@mui/material"
 import { ReactNode, SyntheticEvent, useCallback, useEffect, useMemo, useState } from "react"
-import { ClipThing } from ".."
 import { SvgClose2, SvgInfoCircular, SvgSuccess, SvgWarnTriangle } from "../../assets"
 import { SnackBarMessage, useGlobalNotifications } from "../../containers"
 import { colors } from "../../theme/theme"
+import { NiceBoxThing } from "./Nice/NiceBoxThing"
 
 export const GlobalSnackbar = () => {
     const [open, setOpen] = useState(false)
@@ -79,31 +79,22 @@ export const GlobalSnackbar = () => {
                 TransitionProps={{ onExited: handleExited }}
             >
                 <Box>
-                    <ClipThing
-                        clipSize="9px"
-                        border={{
-                            borderThickness: ".25rem",
-                            borderColor: "#FFFFFF",
-                        }}
-                        corners={{
-                            topRight: true,
-                            bottomLeft: true,
-                        }}
+                    <NiceBoxThing
+                        border={{ color: severityDeets.color }}
+                        background={{ color: [`${severityDeets.color}60`, `${severityDeets.color}90`] }}
                         sx={{
                             mb: "-1rem",
                             ml: "-1rem",
                         }}
-                        backgroundColor={severityDeets.color}
-                        opacity={0.99}
                     >
                         <Stack
                             direction="row"
                             alignItems="center"
                             spacing=".9rem"
                             sx={{
-                                px: "1.4rem",
-                                pt: ".6rem",
-                                pb: ".5rem",
+                                px: "1.6rem",
+                                pt: ".7rem",
+                                pb: ".4rem",
                                 pr: ".9rem",
                                 borderRadius: 0.4,
                                 boxShadow: 23,
@@ -111,7 +102,7 @@ export const GlobalSnackbar = () => {
                         >
                             {severityDeets.icon}
 
-                            <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
                                 {messageInfo ? messageInfo.message : undefined}
                             </Typography>
 
@@ -119,7 +110,7 @@ export const GlobalSnackbar = () => {
                                 <SvgClose2 size="1.4rem" sx={{ opacity: 0.8, ":hover": { opacity: 1 } }} />
                             </IconButton>
                         </Stack>
-                    </ClipThing>
+                    </NiceBoxThing>
                 </Box>
             </Snackbar>
         ),

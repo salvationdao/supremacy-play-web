@@ -4,7 +4,7 @@ import React, { useState } from "react"
 import { CustomAvatar } from "./PublicProfile/Avatar/CustomAvatar"
 import { useGameServerSubscription } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { TooltipHelper } from "./Common/TooltipHelper"
+import { NiceTooltip } from "./Common/Nice/NiceTooltip"
 
 export const Avatar = ({
     zIndexAdded,
@@ -24,7 +24,7 @@ export const Avatar = ({
     const { border } = getCardStyles(factionID)
 
     return (
-        <TooltipHelper text={username}>
+        <NiceTooltip text={username}>
             <Box
                 sx={{
                     position: "relative",
@@ -95,7 +95,7 @@ export const Avatar = ({
                     />
                 )}
             </Box>
-        </TooltipHelper>
+        </NiceTooltip>
     )
 }
 

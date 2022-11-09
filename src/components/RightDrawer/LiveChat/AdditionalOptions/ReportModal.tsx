@@ -7,9 +7,9 @@ import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { TextMessageData, User } from "../../../../types"
-import { ClipThing } from "../../../Common/ClipThing"
-import { FancyButton } from "../../../Common/FancyButton"
-import { Player } from "../../../Common/Player"
+import { ClipThing } from "../../../Common/Deprecated/ClipThing"
+import { FancyButton } from "../../../Common/Deprecated/FancyButton"
+import { PlayerNameGid } from "../../../Common/PlayerNameGid"
 
 interface ReportSend {
     message_id: string
@@ -101,7 +101,7 @@ export const ReportModal = ({ fromUser, message, reportModalOpen, setReportModal
 
                         <Stack direction="row" alignItems="flex-start">
                             <Typography sx={{ width: "10rem", fontWeight: "fontWeightBold" }}>User:</Typography>
-                            <Player player={fromUser} />
+                            <PlayerNameGid player={fromUser} />
                         </Stack>
 
                         <Stack direction="row" alignItems="flex-start">

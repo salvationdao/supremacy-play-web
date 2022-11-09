@@ -5,7 +5,7 @@ import { SvgLocation } from "../../../../assets"
 import { FallbackUser } from "../../../../containers"
 import { colors } from "../../../../theme/theme"
 import { Faction, LocationSelectAlertProps } from "../../../../types"
-import { Player } from "../../../Common/Player"
+import { PlayerNameGid } from "../../../Common/PlayerNameGid"
 
 export const LocationSelectAlert = ({ data, getFaction }: { data: LocationSelectAlertProps; getFaction: (factionID: string) => Faction }) => {
     const { currentUser, ability } = data
@@ -28,7 +28,7 @@ export const LocationSelectAlert = ({ data, getFaction }: { data: LocationSelect
         >
             <Stack spacing=".5rem" sx={{ px: "1.44rem", pt: "1.2rem", pb: ".8rem" }}>
                 <Box>
-                    <Player player={currentUser || FallbackUser} />
+                    <PlayerNameGid player={currentUser || FallbackUser} />
                     <SvgLocation fill="#FFFFFF" size="1.3rem" sx={{ display: "inline", mx: ".4rem" }} />
                     <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} />
                 </Box>

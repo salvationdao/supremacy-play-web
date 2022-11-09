@@ -2,7 +2,7 @@ import { BattleLobby } from "../../../types/battle_queue"
 import { Box, IconButton, Popover, Stack, Typography } from "@mui/material"
 import { colors, fonts } from "../../../theme/theme"
 import React, { useCallback, useState } from "react"
-import { supFormatterNoFixed } from "../../../helpers"
+import { supFormatter } from "../../../helpers"
 import { SvgChest, SvgSupToken } from "../../../assets"
 import { InputField } from "../Common/InputField"
 import { useTheme } from "../../../containers/theme"
@@ -160,7 +160,7 @@ export const BattleLobbyPricePool = ({ battleLobby }: BattleLobbyPricePoolProps)
             <Stack direction="row" alignItems="center" spacing=".4rem">
                 <SvgSupToken size="1.5rem" fill={colors.gold} />
                 <Typography variant="body2" fontFamily={fonts.nostromoHeavy} sx={{ lineHeight: "unset" }}>
-                    {supFormatterNoFixed(battleLobby.sups_pool, 2)}
+                    {supFormatter(battleLobby.sups_pool, 2)}
                 </Typography>
             </Stack>
 

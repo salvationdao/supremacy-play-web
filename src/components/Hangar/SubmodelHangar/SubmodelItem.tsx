@@ -5,7 +5,7 @@ import { useTheme } from "../../../containers/theme"
 import { getRarityDeets } from "../../../helpers"
 import { fonts } from "../../../theme/theme"
 import { MechSkin } from "../../../types"
-import { ClipThing } from "../../Common/ClipThing"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { TruncateTextLines } from "../../../theme/styles"
 

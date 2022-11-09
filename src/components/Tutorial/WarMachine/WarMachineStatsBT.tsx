@@ -3,7 +3,7 @@ import { ReactElement, useEffect, useMemo, useRef } from "react"
 import { useMobile, useTraining } from "../../../containers"
 import { siteZIndex } from "../../../theme/theme"
 import { MechAbilityStages } from "../../../types"
-import { ClipThing } from "../../Common/ClipThing"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
 import { WarMachineItemBT } from "./WarMachineItem/WarMachineItemBT"
 
 export const WarMachineStatsBT = () => {

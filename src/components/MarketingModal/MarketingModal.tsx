@@ -5,8 +5,8 @@ import { useAuth, useGlobalNotifications } from "../../containers"
 import { useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
-import { ClipThing } from "../Common/ClipThing"
-import { FancyButton } from "../Common/FancyButton"
+import { ClipThing } from "../Common/Deprecated/ClipThing"
+import { FancyButton } from "../Common/Deprecated/FancyButton"
 
 export const MarketingModal = () => {
     const { user, userFromPassport } = useAuth()

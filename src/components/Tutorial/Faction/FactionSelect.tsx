@@ -8,7 +8,7 @@ import { TRAINING_ASSETS } from "../../../constants"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { FancyButton } from "../../Common/FancyButton"
+import { FancyButton } from "../../Common/Deprecated/FancyButton"
 import { LeftRoutes, RightRoutes } from "../../../routes"
 
 export enum FactionLabel {

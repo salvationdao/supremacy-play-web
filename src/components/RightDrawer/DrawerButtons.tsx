@@ -12,7 +12,7 @@ export const DrawerButtons = () => {
     const { rightDrawerActiveTabID, setRightDrawerActiveTabID } = useUI()
     const theme = useTheme()
     const { userID } = useAuth()
-    const activeRouteID = useActiveRouteID()
+    const activeRoute = useActiveRouteID()
 
     return (
         <Box
@@ -41,7 +41,7 @@ export const DrawerButtons = () => {
         >
             <Tabs value={0} orientation="vertical" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ flex: 1 }}>
                 {RightRoutes.map((route) => {
-                    if ((route.requireAuth && !userID) || (route.matchRouteIDs && !route.matchRouteIDs.includes(activeRouteID))) return null
+                    if ((route.requireAuth && !userID) || (route.matchRouteIDs && activeRoute && !route.matchRouteIDs.includes(activeRoute.id))) return null
                     return (
                         <TabButton
                             key={route.id}

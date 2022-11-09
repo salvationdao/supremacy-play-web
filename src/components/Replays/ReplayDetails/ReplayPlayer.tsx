@@ -7,7 +7,7 @@ import { parseString } from "../../../helpers"
 import { useInterval } from "../../../hooks"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleReplay } from "../../../types"
-import { FancyButton } from "../../Common/FancyButton"
+import { FancyButton } from "../../Common/Deprecated/FancyButton"
 
 export const ReplayPlayer = ({
     battleReplay,

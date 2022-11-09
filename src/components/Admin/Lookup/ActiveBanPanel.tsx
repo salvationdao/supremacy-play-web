@@ -3,7 +3,7 @@ import { dateFormatter } from "../../../helpers"
 import { colors } from "../../../theme/theme"
 import { Faction } from "../../../types"
 import { AdminPlayerBan } from "../../../types/admin"
-import { ClipThing } from "../../Common/ClipThing"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
 
 export const ActiveBanPanel = ({
     faction,

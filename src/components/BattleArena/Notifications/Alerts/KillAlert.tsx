@@ -3,7 +3,7 @@ import { ClipThing, StyledImageText, StyledNormalText } from "../../.."
 import { SvgDeath, SvgSkull2 } from "../../../../assets"
 import { colors } from "../../../../theme/theme"
 import { Faction, KillAlertProps } from "../../../../types"
-import { Player } from "../../../Common/Player"
+import { PlayerNameGid } from "../../../Common/PlayerNameGid"
 
 export const KillAlert = ({ data, getFaction }: { data: KillAlertProps; getFaction: (factionID: string) => Faction }) => {
     const { destroyed_war_machine, killed_by_war_machine, killed_by, killed_by_user } = data
@@ -22,7 +22,7 @@ export const KillAlert = ({ data, getFaction }: { data: KillAlertProps; getFacti
             />
         )
     } else if (killed_by_user) {
-        killedBy = <Player player={killed_by_user} />
+        killedBy = <PlayerNameGid player={killed_by_user} />
     } else {
         killedBy = <StyledNormalText sx={{ fontWeight: "fontWeightBold" }} text={killed_by || "UNKNOWN"} />
     }

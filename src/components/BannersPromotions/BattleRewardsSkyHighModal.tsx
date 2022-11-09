@@ -2,7 +2,7 @@ import { Box, Grow, Modal, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { BattleRewardsBannerPNG } from "../../assets"
 import { colors, fonts } from "../../theme/theme"
-import { FancyButton } from "../Common/FancyButton"
+import { FancyButton } from "../Common/Deprecated/FancyButton"
 
 export const BattleRewardsSkyHighModal = () => {
     const [dismissedSkyHighModal, setDismissedSkyHighModal] = useState(localStorage.getItem("dismissedSkyHighModal") === "true")

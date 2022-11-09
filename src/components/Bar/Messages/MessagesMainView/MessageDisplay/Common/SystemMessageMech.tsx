@@ -6,7 +6,7 @@ import { useTheme } from "../../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../../helpers"
 import { colors, fonts } from "../../../../../../theme/theme"
 import { SystemMessageMechStruct } from "../../../../../../types"
-import { ClipThing } from "../../../../../Common/ClipThing"
+import { ClipThing } from "../../../../../Common/Deprecated/ClipThing"
 import { RepairBlocks } from "../../../../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
 import { TruncateTextLines } from "../../../../../../theme/styles"
 

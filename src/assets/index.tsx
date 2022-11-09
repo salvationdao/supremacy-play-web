@@ -102,6 +102,7 @@ import Drag from "!react-svg-loader!./svg/Drag.svg"
 import Edit from "!react-svg-loader!./svg/Edit.svg"
 import Emergency from "!react-svg-loader!./svg/Emergency.svg"
 import Facebook from "!react-svg-loader!./svg/Facebook.svg"
+import FactionPassArrow from "!react-svg-loader!./svg/FactionPass/FactionPassArrow.svg"
 import Feedback from "!react-svg-loader!./svg/Feedback.svg"
 import Filter from "!react-svg-loader!./svg/Filter.svg"
 import Fullscreen from "!react-svg-loader!./svg/Fullscreen.svg"
@@ -159,6 +160,8 @@ import Volume from "!react-svg-loader!./svg/Volume.svg"
 import VolumeMute from "!react-svg-loader!./svg/VolumeMute.svg"
 import WarnTriangle from "!react-svg-loader!./svg/WarnTriangle.svg"
 import YouTube from "!react-svg-loader!./svg/YouTube.svg"
+import Ethereum from "!react-svg-loader!./svg/Ethereum.svg"
+import CreditCard from "!react-svg-loader!./svg/CreditCard.svg"
 import { Cake } from "@mui/icons-material"
 import AccessTimeSharpIcon from "@mui/icons-material/AccessTimeSharp"
 import AppsIcon from "@mui/icons-material/Apps"
@@ -196,6 +199,18 @@ import CrossPNG from "./images/Cross.png"
 import Crosshair from "./images/Crosshair.png"
 import DeadSkullPNG from "./images/DeadSkull.png"
 import EmptyWarMachinesPNG from "./images/EmptyWarMachines.png"
+import BCAnnualPassArrowPNG from "./images/FactionPass/BCAnnualPassArrow.png"
+import BCDailyPassArrowPNG from "./images/FactionPass/BCDailyPassArrow.png"
+import BCMonthlyPassArrowPNG from "./images/FactionPass/BCMonthlyPassArrow.png"
+import FactionPassBgPNG from "./images/FactionPass/FactionPassBg.png"
+import FactionPassSs1PNG from "./images/FactionPass/FactionPassSs1.png"
+import FactionPassSs2PNG from "./images/FactionPass/FactionPassSs2.png"
+import RMAnnualPassArrowPNG from "./images/FactionPass/RMAnnualPassArrow.png"
+import RMDailyPassArrowPNG from "./images/FactionPass/RMDailyPassArrow.png"
+import RMMonthlyPassArrowPNG from "./images/FactionPass/RMMonthlyPassArrow.png"
+import ZHIAnnualPassArrowPNG from "./images/FactionPass/ZHIAnnualPassArrow.png"
+import ZHIDailyPassArrowPNG from "./images/FactionPass/ZHIDailyPassArrow.png"
+import ZHIMonthlyPassArrowPNG from "./images/FactionPass/ZHIMonthlyPassArrow.png"
 import FlamesPNG from "./images/Flames.png"
 import Gabs from "./images/Gabs.png"
 import GenericWarMachinePNG from "./images/GenericWarMachine.png"
@@ -345,6 +360,18 @@ export {
     WarMachineZAIPNG,
     BattleBgWebP,
     BattleArenaOpeningWebP,
+    FactionPassBgPNG,
+    FactionPassSs1PNG,
+    FactionPassSs2PNG,
+    BCAnnualPassArrowPNG,
+    BCDailyPassArrowPNG,
+    BCMonthlyPassArrowPNG,
+    RMAnnualPassArrowPNG,
+    RMDailyPassArrowPNG,
+    RMMonthlyPassArrowPNG,
+    ZHIAnnualPassArrowPNG,
+    ZHIDailyPassArrowPNG,
+    ZHIMonthlyPassArrowPNG,
     ThreeMechsJPG,
     CrossPNG,
     DeadSkullPNG,
@@ -379,12 +406,14 @@ export const SvgWrapper = React.memo(function SvgWrapper({ fill, stroke, strokeW
                 justifyContent: "center",
                 alignItems: "center",
                 pb: 0.3,
+                verticalAlign: "middle",
                 "& > svg": {
                     width: width || size || "2rem",
                     height: height || size || "2rem",
                     fill: fill || colors.text,
                     stroke: stroke || "unset",
                     strokeWidth: strokeWidth || "1",
+                    verticalAlign: "middle",
                 },
                 ...sx,
             }}
@@ -1463,6 +1492,24 @@ export const SvgCamera: React.VoidFunctionComponent<SvgWrapperProps> = (props) =
 export const SvgMainMenu: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <MainMenu />
+    </SvgWrapper>
+)
+
+export const SvgFactionPassArrow: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <FactionPassArrow />
+    </SvgWrapper>
+)
+
+export const SvgEthereum: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Ethereum />
+    </SvgWrapper>
+)
+
+export const SvgCreditCard: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <CreditCard />
     </SvgWrapper>
 )
 

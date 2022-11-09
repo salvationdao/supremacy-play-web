@@ -5,7 +5,7 @@ import { SvgInfoCircular } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { colors, fonts } from "../../../../theme/theme"
-import { TooltipHelper } from "../../../Common/TooltipHelper"
+import { NiceTooltip } from "../../../Common/Nice/NiceTooltip"
 import { GameServerKeys } from "../../../../keys"
 
 interface DevicePreferencesProps {
@@ -46,7 +46,7 @@ export const DevicePreferences = ({ toggleAddDeviceModal }: DevicePreferencesPro
                 </Typography>
 
                 {/* Connected devices' helper information */}
-                <TooltipHelper
+                <NiceTooltip
                     placement="right-start"
                     renderNode={
                         <Box>
@@ -64,7 +64,7 @@ export const DevicePreferences = ({ toggleAddDeviceModal }: DevicePreferencesPro
                             }}
                         />
                     </Box>
-                </TooltipHelper>
+                </NiceTooltip>
             </Stack>
 
             {/* List of  connected devices */}
