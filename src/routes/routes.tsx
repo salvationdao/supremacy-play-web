@@ -7,6 +7,7 @@ import { BillingHistory } from "../components/BillingHistory/BillingHistory"
 import { BillingHistorySingle } from "../components/BillingHistory/BillingHistorySingle"
 import { Claims } from "../components/Claims/Claims"
 import { FactionPassBuy } from "../components/FactionPass/FactionPassBuy/FactionPassBuy"
+import { FactionPassDashboard } from "../components/FactionPass/FactionPassDashboard/FactionPassDashboard"
 import { FactionPassMechPool } from "../components/FactionPass/FactionPassMechPool/FactionPassMechPool"
 import { KeycardsHangar } from "../components/Hangar/KeycardsHangar/KeycardsHangar"
 import { MysteryCratesHangar } from "../components/Hangar/MysteryCratesHangar/MysteryCratesHangar"
@@ -78,6 +79,7 @@ export enum RouteSingleID {
     NotFound = "NOT_FOUND",
     FactionPassBuy = "FACTION_PASS_BUY",
     FactionPassMechPool = "FACTION_PASS_MECH_POOL",
+    FactionPassDashboard = "FACTION_PASS_DASHBOARD",
 }
 
 export enum RouteGroupID {
@@ -778,14 +780,27 @@ export const Routes: RouteSingle[] = [
             requireFaction: true,
             requireModerator: false,
         },
+        enable: DEV_ONLY,
+        tabTitle: "Buy Faction Pass",
+    },
+    {
+        id: RouteSingleID.FactionPassDashboard,
+        path: "/faction-pass/dashboard",
+        exact: true,
+        Component: FactionPassDashboard,
+        restrictions: {
+            requireAuth: true,
+            requireFaction: true,
+            requireModerator: false,
+        },
         showInMainMenu: {
             groupID: RouteGroupID.FactionHQ,
-            label: "Get Faction Pass Now",
+            label: "Dashboard",
             image: GenericPNG,
-            path: "/faction-pass/buy",
+            path: "/faction-pass/dashboard",
         },
-        enable: true,
-        tabTitle: "Buy Faction Pass",
+        enable: DEV_ONLY,
+        tabTitle: "Faction Dashboard",
     },
     {
         id: RouteSingleID.FactionPassMechPool,
@@ -803,7 +818,7 @@ export const Routes: RouteSingle[] = [
             image: GenericPNG,
             path: "/faction-pass/mech-pool",
         },
-        enable: true,
+        enable: DEV_ONLY,
         tabTitle: "Faction Mech Pool",
     },
 

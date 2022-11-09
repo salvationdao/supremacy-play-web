@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
+import { useHistory } from "react-router-dom"
 import { useActiveRouteID } from "../hooks/useActiveRouteID"
 import { Routes, RouteSingleID } from "../routes"
 
 // This hook does all the hard work for you when implementing a nav tab
 // inside page to nav between other pages in the same route group
 export const usePageTabs = () => {
+    const history = useHistory()
     const activeRoute = useActiveRouteID()
     const [activeTabID, setActiveTabID] = useState<RouteSingleID>()
 
@@ -48,6 +50,14 @@ export const usePageTabs = () => {
         },
         [tabs],
     )
+
+    // Actually update the page url
+    useEffect(() => {
+        const route = Routes.find((route) => route.id === activeTabID)
+        if (route) {
+            history.replace(route.path)
+        }
+    }, [activeTabID, history])
 
     return {
         tabs,

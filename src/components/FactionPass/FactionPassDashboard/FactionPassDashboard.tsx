@@ -4,7 +4,7 @@ import { useAuth, useSupremacy } from "../../../containers"
 import { usePageTabs } from "../../../hooks/usePageTabs"
 import { NavTabs } from "../../Common/NavTabs/NavTabs"
 
-export const FactionPassMechPool = () => {
+export const FactionPassDashboard = () => {
     const { factionID } = useAuth()
     const { getFaction } = useSupremacy()
     const { tabs, activeTabID, setActiveTabID, prevTab, nextTab } = usePageTabs()
