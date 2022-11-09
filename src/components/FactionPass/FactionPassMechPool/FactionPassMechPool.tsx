@@ -178,7 +178,7 @@ export const FactionPassMechPool = () => {
                 <Stack direction="row" alignItems="center">
                     {/* Show Total */}
                     <Box sx={{ height: "100%", backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", px: "1rem", borderRight: "none" }}>
-                        <Typography variant="h6" sx={{ lineHeight: 1.5, whiteSpace: "nowrap" }}>
+                        <Typography variant="h6" sx={{ whiteSpace: "nowrap" }}>
                             {mechs?.length || 0} of {totalItems}
                         </Typography>
                     </Box>
