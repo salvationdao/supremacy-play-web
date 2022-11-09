@@ -1,12 +1,13 @@
 import { ArrowRight } from "@mui/icons-material"
-import { Box, styled, Typography, useTheme } from "@mui/material"
+import { styled, Typography, useTheme } from "@mui/material"
 import MuiAccordion, { AccordionProps } from "@mui/material/Accordion"
 import MuiAccordionDetails, { AccordionDetailsProps } from "@mui/material/AccordionDetails"
 import MuiAccordionSummary, { AccordionSummaryProps } from "@mui/material/AccordionSummary"
 import { useState } from "react"
 import { fonts } from "../../../theme/theme"
+import { NiceBoxThing, NiceBoxThingProps } from "./NiceBoxThing"
 
-export interface NiceAccordionProps {
+export interface NiceAccordionProps extends Omit<NiceBoxThingProps, "children"> {
     items: {
         id: string | number
         header: string | React.ReactNode
@@ -15,12 +16,21 @@ export interface NiceAccordionProps {
     expandID?: string | number
 }
 
-export const NiceAccordion = ({ items, expandID }: NiceAccordionProps) => {
+export const NiceAccordion = ({ items, expandID, ...props }: NiceAccordionProps) => {
     const [expanded, setExpanded] = useState(expandID)
     const theme = useTheme()
 
     return (
-        <Box>
+        <NiceBoxThing
+            border={{
+                color: theme.factionTheme.primary,
+                thickness: "thicc",
+            }}
+            background={{
+                color: [theme.factionTheme.background],
+            }}
+            {...props}
+        >
             {items.map((item) => (
                 <Accordion key={item.id} expanded={item.id === expanded} onChange={() => setExpanded(item.id)}>
                     <AccordionSummary
@@ -33,7 +43,7 @@ export const NiceAccordion = ({ items, expandID }: NiceAccordionProps) => {
                     <AccordionDetails>{item.content}</AccordionDetails>
                 </Accordion>
             ))}
-        </Box>
+        </NiceBoxThing>
     )
 }
 
@@ -50,9 +60,8 @@ const Accordion = styled(({ borderColor, sx, ...props }: MyAccordionProps) => {
             elevation={0}
             square
             sx={{
-                border: borderColor ? `2px solid ${borderColor}` : `2px solid ${theme.factionTheme.primary}`,
                 "&:not(:last-child)": {
-                    borderBottom: 0,
+                    borderBottom: borderColor ? `2px solid ${borderColor}` : `2px solid ${theme.factionTheme.primary}`,
                 },
                 "&:before": {
                     display: "none",

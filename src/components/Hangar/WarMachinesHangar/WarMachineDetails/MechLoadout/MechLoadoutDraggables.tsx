@@ -1,4 +1,4 @@
-import { Stack, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { useImperativeHandle } from "react"
 import { SvgLoadoutPowerCore, SvgLoadoutSkin, SvgLoadoutWeapon } from "../../../../../assets"
 import { fonts } from "../../../../../theme/theme"
@@ -39,8 +39,7 @@ export const MechLoadoutDraggables = ({
     }))
 
     return (
-        <Stack
-            spacing="1rem"
+        <Box
             sx={{
                 flexBasis: 450,
             }}
@@ -105,6 +104,6 @@ export const MechLoadoutDraggables = ({
                     },
                 ]}
             />
-        </Stack>
+        </Box>
     )
 }
