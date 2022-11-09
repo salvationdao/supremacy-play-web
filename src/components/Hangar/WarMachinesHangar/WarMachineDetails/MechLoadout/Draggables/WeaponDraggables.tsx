@@ -34,7 +34,7 @@ export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesPro
     const [weaponsError, setWeaponsError] = useState<string>()
     const [sort, setSort] = useState<string>(SortTypeLabel.DateAddedNewest)
     const { page, changePage, setTotalItems, totalPages, pageSize } = usePagination({
-        pageSize: 9,
+        pageSize: 8,
         page: 1,
     })
 
@@ -155,7 +155,7 @@ export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesPro
             <Box
                 sx={{
                     display: "grid",
-                    gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
+                    gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
                     gap: "1rem",
                 }}
             >
@@ -204,7 +204,7 @@ export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesPro
                                             {w.damage}
                                         </Typography>
                                     }
-                                    shape="square"
+                                    shape="rectangle"
                                     size="full-width"
                                 />
                             </Box>

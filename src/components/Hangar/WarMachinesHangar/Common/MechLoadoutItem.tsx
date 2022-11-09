@@ -50,7 +50,7 @@ export const MechLoadoutItem = React.forwardRef<HTMLDivElement, MechLoadoutItemP
                     position: "relative",
                     flexDirection: side === "right" ? "row-reverse" : "row",
                     alignItems: "stretch",
-                    height: props.size === "full-width" ? "100%" : "auto",
+                    height: "auto",
                     width: props.size === "full-width" ? "100%" : "fit-content",
                 }}
             >
@@ -106,7 +106,7 @@ const MechLoadoutItemButton = ({
     shape = "rectangle",
     size = "regular",
 }: LoadoutItem) => {
-    const height = size === "full-width" ? "100%" : size === "regular" ? 120 : 100
+    const height = size === "full-width" ? "auto" : size === "regular" ? 120 : 100
     const width = size === "full-width" ? "100%" : size === "regular" ? 260 : 200
     const color = isEmpty ? "#ffffff88" : "white"
 
@@ -136,11 +136,11 @@ const MechLoadoutItemButton = ({
                     padding: 0,
                 }}
             >
-                {/* Maintain square aspect ratio with padding-bottom hack */}
-                {size === "full-width" && shape === "square" && (
+                {/* Maintain aspect ratio with padding-bottom hack */}
+                {size === "full-width" && (
                     <Box
                         sx={{
-                            pb: "100%",
+                            pb: shape === "square" ? "100%" : "56.25%",
                         }}
                     />
                 )}
@@ -173,6 +173,7 @@ const MechLoadoutItemButton = ({
                             sx={{
                                 width: "100%",
                                 height: "100%",
+                                maxHeight: size === "full-width" && shape === "rectangle" ? 100 : undefined,
                                 objectFit: "contain",
                                 pointerEvents: "none",
                             }}
