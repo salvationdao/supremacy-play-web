@@ -44,6 +44,10 @@ export const NavTabs = <T,>({
         return cleanup
     }, [activeTabID, nextTab, prevTab])
 
+    if (!activeTabID) {
+        return null
+    }
+
     return (
         <Stack direction="row" alignItems="center" spacing=".5rem">
             <ArrowButton keyboardKey="Q" onClick={() => activeTabID && prevTab(activeTabID)} isLeft />
