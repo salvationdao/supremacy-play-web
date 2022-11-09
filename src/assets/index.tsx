@@ -412,14 +412,15 @@ export interface SvgWrapperProps extends BoxProps {
     width?: string
     stroke?: string
     strokeWidth?: string
+    inline?: boolean
 }
 
-export const SvgWrapper = React.memo(function SvgWrapper({ fill, stroke, strokeWidth, sx, size, width, height, ...props }: SvgWrapperProps) {
+export const SvgWrapper = React.memo(function SvgWrapper({ fill, stroke, strokeWidth, sx, size, width, height, inline, ...props }: SvgWrapperProps) {
     return (
         <Box
             component="span"
             sx={{
-                display: "flex",
+                display: inline ? "inline-flex" : "flex",
                 justifyContent: "center",
                 alignItems: "center",
                 pb: 0.3,

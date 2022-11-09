@@ -113,7 +113,7 @@ export const FactionPassOption = React.memo(function FactionPassOption({ days, f
                         SUPS <i style={{ color: colors.red }}>-30% OFF</i>
                     </Typography>
                     <Typography>
-                        <SvgSupToken fill={colors.gold} size="1.8rem" sx={{ display: "inline-flex" }} />
+                        <SvgSupToken fill={colors.gold} size="1.8rem" inline />
                         {prices ? supFormatter(prices.sups, 0) : "---"}
                     </Typography>
                 </Stack>
@@ -122,7 +122,7 @@ export const FactionPassOption = React.memo(function FactionPassOption({ days, f
                 <Stack direction="row" justifyContent="space-between" sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.primary_color}40 1px solid` }}>
                     <Typography fontWeight="fontWeightBold">ETH</Typography>
                     <Typography>
-                        <SvgEthereum size="1.8rem" sx={{ display: "inline-flex" }} />
+                        <SvgEthereum size="1.8rem" inline />
                         {prices ? prices.eth : "---"}
                     </Typography>
                 </Stack>
@@ -131,7 +131,7 @@ export const FactionPassOption = React.memo(function FactionPassOption({ days, f
                 <Stack direction="row" justifyContent="space-between" sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.primary_color}40 1px solid` }}>
                     <Typography fontWeight="fontWeightBold">USD</Typography>
                     <Typography>
-                        <SvgCreditCard fill={colors.blue} size="1.6rem" sx={{ display: "inline-flex" }} /> ${prices ? prices.fiat.toFixed(2) : "---"}
+                        <SvgCreditCard fill={colors.blue} size="1.6rem" inline /> ${prices ? prices.fiat.toFixed(2) : "---"}
                     </Typography>
                 </Stack>
 
