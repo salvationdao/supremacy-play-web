@@ -1,7 +1,6 @@
 import { Box, Slide, Stack, Typography } from "@mui/material"
 import React, { MouseEventHandler, useEffect, useRef } from "react"
 import { SvgCancelled, SvgLock, SvgWrapperProps } from "../../../../assets"
-import { useToggle } from "../../../../hooks"
 import { colors, fonts } from "../../../../theme/theme"
 import { Rarity } from "../../../../types"
 import { NiceButton } from "../../../Common/Nice/NiceButton"
@@ -9,7 +8,6 @@ import { NiceButton } from "../../../Common/Nice/NiceButton"
 export interface LoadoutItem {
     TopRight?: React.ReactNode
     Icon?: React.VoidFunctionComponent<SvgWrapperProps>
-    slotNumber?: number
     imageUrl?: string
     label: string
     subLabel?: string
@@ -25,13 +23,11 @@ export interface LoadoutItem {
 export interface MechLoadoutItemProps extends LoadoutItem {
     prevEquipped?: LoadoutItem
     onUnequip?: () => void
-    renderModal?: (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => React.ReactNode
     side?: "left" | "right"
 }
 
 export const MechLoadoutItem = React.forwardRef<HTMLDivElement, MechLoadoutItemProps>(function MechLoadoutItem(props, ref) {
-    const { prevEquipped, onUnequip, renderModal, side = "left", onClick, ...loadoutItemButtonProps } = props
-    const [showLoadoutModal, toggleShowLoadoutModal] = useToggle()
+    const { prevEquipped, onUnequip, side = "left", onClick, ...loadoutItemButtonProps } = props
     const memoizedPrevEquipped = useRef<LoadoutItem>()
 
     useEffect(() => {
@@ -57,7 +53,6 @@ export const MechLoadoutItem = React.forwardRef<HTMLDivElement, MechLoadoutItemP
                 <MechLoadoutItemButton
                     onClick={(e) => {
                         onClick && onClick(e)
-                        toggleShowLoadoutModal(true)
                     }}
                     {...loadoutItemButtonProps}
                 />
@@ -85,8 +80,6 @@ export const MechLoadoutItem = React.forwardRef<HTMLDivElement, MechLoadoutItemP
                     </Slide>
                 </Box>
             </Stack>
-
-            {showLoadoutModal && renderModal && renderModal(toggleShowLoadoutModal)}
         </>
     )
 })
@@ -94,7 +87,6 @@ export const MechLoadoutItem = React.forwardRef<HTMLDivElement, MechLoadoutItemP
 const MechLoadoutItemButton = ({
     TopRight,
     Icon,
-    slotNumber,
     imageUrl,
     label,
     subLabel,

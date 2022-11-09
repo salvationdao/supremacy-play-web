@@ -14,9 +14,6 @@ import { MechLoadoutItem } from "../../Common/MechLoadoutItem"
 import { MechViewer } from "../MechViewer/MechViewer"
 import { MechViewer3D } from "../MechViewer/MechViewer3D"
 import { UnityHandle } from "../MechViewer/UnityViewer"
-import { MechLoadoutMechSkinModal } from "../Modals/Loadout/MechLoadoutMechSkinModal"
-import { MechLoadoutPowerCoreModal } from "../Modals/Loadout/MechLoadoutPowerCoreModal"
-import { MechLoadoutWeaponModal } from "../Modals/Loadout/MechLoadoutWeaponModal"
 import { CustomDragEventWithType, DragStartEventWithType, DragStopEventWithType } from "./Draggables/LoadoutDraggable"
 import { OnClickEventWithType } from "./Draggables/MechSkinDraggables"
 import { DraggablesHandle, MechLoadoutDraggables } from "./MechLoadoutDraggables"
@@ -112,7 +109,6 @@ const generateLoadout = (newMechDetails: MechDetails): MechDetailsWithMaps => {
 }
 
 interface MechLoadoutProps {
-    drawerContainerRef: React.MutableRefObject<HTMLElement | undefined>
     mechDetails: MechDetails
     mechStatus?: MechStatus
     mechStaked: boolean
@@ -121,7 +117,7 @@ interface MechLoadoutProps {
 
 const LOCAL_STORAGE_KEY_PREFERS_2D_LOADOUT = "prefers2DLoadout"
 
-export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, mechStaked, onUpdate }: MechLoadoutProps) => {
+export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: MechLoadoutProps) => {
     const theme = useTheme()
     const { userID } = useAuth()
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -598,39 +594,12 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, mechS
             const weapon = weapons_map.get(slotNumber)
             if (typeof weapon === "undefined") return
 
-            const renderModal = (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => (
-                <MechLoadoutWeaponModal
-                    containerRef={drawerContainerRef}
-                    onClose={() => toggleShowLoadoutModal(false)}
-                    onConfirm={(selectedWeapon) => {
-                        modifyWeaponSlot({
-                            weapon: selectedWeapon,
-                            weapon_id: selectedWeapon.id,
-                            slot_number: slotNumber,
-                            inherit_skin: inherit_all_weapon_skins,
-                        })
-                        toggleShowLoadoutModal(false)
-                    }}
-                    equipped={weapon || undefined}
-                    weaponsWithSkinInheritance={blueprint_weapon_ids_with_skin_inheritance}
-                    weaponsAlreadyEquippedInOtherSlots={(() => {
-                        const result: string[] = []
-                        for (const ew of weapons_map.values()) {
-                            if (!ew) continue
-                            result.push(ew.id)
-                        }
-                        return result
-                    })()}
-                />
-            )
-
             if (weapon) {
                 return (
                     <MechLoadoutItem
                         ref={(r) => weaponItemRefs.current.set(slotNumber, r)}
                         disabled={loadoutDisabled}
                         key={weapon.id}
-                        slotNumber={slotNumber}
                         imageUrl={weapon.image_url || weapon.avatar_url}
                         label={weapon.label}
                         subLabel={`${weapon.weapon_type} | ${weapon.default_damage_type}`}
@@ -653,7 +622,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, mechS
                             </Typography>
                         }
                         rarity={weapon.weapon_skin ? getRarityDeets(weapon.weapon_skin.tier) : undefined}
-                        renderModal={renderModal}
                         locked={weapon.locked_to_mech}
                         onUnequip={() =>
                             modifyWeaponSlot({
@@ -672,37 +640,18 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, mechS
                     ref={(r) => weaponItemRefs.current.set(slotNumber, r)}
                     disabled={loadoutDisabled}
                     key={slotNumber}
-                    slotNumber={slotNumber}
                     label="WEAPON"
-                    renderModal={renderModal}
                     Icon={SvgLoadoutWeapon}
                     side={side}
                     isEmpty
                 />
             )
         },
-        [blueprint_weapon_ids_with_skin_inheritance, drawerContainerRef, inherit_all_weapon_skins, loadoutDisabled, modifyWeaponSlot, weapons_map],
+        [loadoutDisabled, modifyWeaponSlot, weapons_map],
     )
 
     const renderPowerCoreSlot = useCallback(() => {
         const powerCore = power_core
-
-        const renderModal = (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => (
-            <MechLoadoutPowerCoreModal
-                containerRef={drawerContainerRef}
-                onClose={() => toggleShowLoadoutModal(false)}
-                onConfirm={(selectedPowerCore) => {
-                    modifyPowerCore({
-                        power_core: selectedPowerCore,
-                        power_core_id: selectedPowerCore.id,
-                    })
-                    toggleShowLoadoutModal(false)
-                }}
-                equipped={powerCore}
-                powerCoresAlreadyEquippedInOtherSlots={powerCore ? [powerCore.id] : []}
-                powerCoreSize={currLoadout.power_core_size}
-            />
-        )
 
         if (powerCore) {
             return (
@@ -713,7 +662,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, mechS
                     label={powerCore.label}
                     Icon={SvgLoadoutPowerCore}
                     rarity={getRarityDeets(powerCore.tier)}
-                    renderModal={renderModal}
                     onUnequip={() =>
                         modifyPowerCore({
                             power_core_id: "",
@@ -731,34 +679,16 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, mechS
                 ref={powerCoreItemRef}
                 disabled={loadoutDisabled}
                 label="POWER CORE"
-                renderModal={renderModal}
                 Icon={SvgLoadoutPowerCore}
                 shape="square"
                 size="small"
                 isEmpty
             />
         )
-    }, [currLoadout.power_core_size, drawerContainerRef, loadoutDisabled, modifyPowerCore, power_core])
+    }, [loadoutDisabled, modifyPowerCore, power_core])
 
     const renderMechSkinSlot = useCallback(() => {
         const mechSkin = chassis_skin
-
-        const renderModal = (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => (
-            <MechLoadoutMechSkinModal
-                onClose={() => toggleShowLoadoutModal(false)}
-                onConfirm={(selectedMechSkin) => {
-                    modifyMechSkin({
-                        mech_skin: selectedMechSkin,
-                        mech_skin_id: selectedMechSkin.id,
-                    })
-                    toggleShowLoadoutModal(false)
-                }}
-                mech={mechDetails}
-                equipped={mechSkin}
-                mechSkinsAlreadyEquippedInOtherSlots={chassis_skin ? [chassis_skin.id] : []}
-                compatibleMechSkins={compatible_blueprint_mech_skin_ids}
-            />
-        )
 
         if (mechSkin) {
             return (
@@ -770,7 +700,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, mechS
                     label={mechSkin.label}
                     Icon={SvgLoadoutSkin}
                     rarity={getRarityDeets(mechSkin.tier)}
-                    renderModal={renderModal}
                     shape="square"
                     size="small"
                 />
@@ -782,7 +711,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, mechS
                 ref={mechSkinItemRef}
                 disabled={loadoutDisabled}
                 label="SUBMODEL"
-                renderModal={renderModal}
                 Icon={SvgLoadoutSkin}
                 shape="square"
                 size="small"
@@ -790,7 +718,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, mechS
                 locked
             />
         )
-    }, [chassis_skin, compatible_blueprint_mech_skin_ids, loadoutDisabled, mechDetails, modifyMechSkin])
+    }, [chassis_skin, loadoutDisabled])
 
     return (
         <Stack

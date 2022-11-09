@@ -11,24 +11,22 @@ import { MechLoadout } from "./MechLoadout/MechLoadout"
 import { MechPicker } from "./MechPicker/MechPicker"
 
 interface WarMachineHangarDetailsProps {
-    drawerContainerRef: React.MutableRefObject<HTMLElement | undefined>
     mechID: string
 }
 
-export const WarMachineHangarDetails = ({ drawerContainerRef, mechID }: WarMachineHangarDetailsProps) => {
+export const WarMachineHangarDetails = ({ mechID }: WarMachineHangarDetailsProps) => {
     return (
         <>
-            <WarMachineHangarDetailsInner drawerContainerRef={drawerContainerRef} mechID={mechID} />
+            <WarMachineHangarDetailsInner mechID={mechID} />
         </>
     )
 }
 
 interface WarMachineHangarDetailsInnerProps {
-    drawerContainerRef: React.MutableRefObject<HTMLElement | undefined>
     mechID: string
 }
 
-export const WarMachineHangarDetailsInner = ({ drawerContainerRef, mechID }: WarMachineHangarDetailsInnerProps) => {
+export const WarMachineHangarDetailsInner = ({ mechID }: WarMachineHangarDetailsInnerProps) => {
     const { setRightDrawerActiveTabID } = useUI()
     const theme = useTheme()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
@@ -109,7 +107,6 @@ export const WarMachineHangarDetailsInner = ({ drawerContainerRef, mechID }: War
             {/* Right side */}
             {mechDetails ? (
                 <MechLoadout
-                    drawerContainerRef={drawerContainerRef}
                     mechDetails={mechDetails}
                     mechStatus={mechStatus}
                     mechStaked={mechIsStaked}
