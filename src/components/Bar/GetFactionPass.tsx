@@ -1,8 +1,13 @@
 import { Box } from "@mui/material"
 import { Link } from "react-router-dom"
 import { BCDailyPassArrowPNG } from "../../assets"
+import { DEV_ONLY } from "../../constants"
 
 export const GetFactionPass = () => {
+    if (!DEV_ONLY) {
+        return null
+    }
+
     return (
         <Link style={{ marginRight: "1rem", height: "100%", paddingBottom: ".2rem" }} to="/faction-pass/buy">
             <Box
