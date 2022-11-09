@@ -18,23 +18,25 @@ export interface NiceBoxThingProps extends Omit<BoxProps, "border" | "background
         color: ResponsiveStyleValue<Property.Color | undefined>
         thickness?: "lean" | "thicc"
     }
-    background?: {
-        /**
-         * Specify the colours used for the gradient background, going from the top left corner and ending at the
-         * bottom right corner of the NiceBoxThing. If only one colour is provided, then there is no gradient.
-         *
-         * If no colors are provided, it will default to the border color. An error is thrown when both the background
-         * colors and border color is not provided.
-         *
-         * @example Generating a gradient background, where the top left corner is black and the bottom right corner
-         * is neon blue:
-         * ```
-         * ["#000", colors.neonBlue]
-         * ```
-         */
-        color?: ResponsiveStyleValue<Property.Color | undefined>[]
-        opacity?: "transparent" | "more-transparent" | "half" | "more-opaque" | "opaque"
-    }
+    background?:
+        | boolean
+        | {
+              /**
+               * Specify the colours used for the gradient background, going from the top left corner and ending at the
+               * bottom right corner of the NiceBoxThing. If only one colour is provided, then there is no gradient.
+               *
+               * If no colors are provided, it will default to the border color. An error is thrown when both the background
+               * colors and border color is not provided.
+               *
+               * @example Generating a gradient background, where the top left corner is black and the bottom right corner
+               * is neon blue:
+               * ```
+               * ["#000", colors.neonBlue]
+               * ```
+               */
+              color?: ResponsiveStyleValue<Property.Color | undefined>[]
+              opacity?: "transparent" | "more-transparent" | "half" | "more-opaque" | "opaque"
+          }
     enableBoxShadow?: boolean
     sx?: SxProps
     children?: React.ReactNode
@@ -105,7 +107,7 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
     }, [border?.color, caret])
 
     const renderBackground = useMemo(() => {
-        if (!background) return
+        if (!background) return null
 
         const backgroundStyles: SxProps = {
             zIndex: -1,
@@ -118,7 +120,7 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
         }
 
         let colors: ResponsiveStyleValue<Property.Color | undefined>[] = []
-        if (background.color && background.color.length > 0) {
+        if (typeof background !== "boolean" && background.color && background.color.length > 0) {
             colors = background.color
         } else if (border?.color) {
             colors = [border.color]
@@ -130,7 +132,7 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
             backgroundStyles.background = `linear-gradient(150deg, ${colors.join(", ")})`
         }
 
-        switch (typeof background.opacity === "undefined" ? "opaque" : background.opacity) {
+        switch (typeof background === "boolean" || typeof background.opacity === "undefined" ? "opaque" : background.opacity) {
             case "transparent":
                 backgroundStyles.opacity = 0
                 break

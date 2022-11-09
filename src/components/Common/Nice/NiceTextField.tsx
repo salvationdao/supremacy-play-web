@@ -1,6 +1,6 @@
-import { Box, Stack, TextField } from "@mui/material"
+import { Box, OutlinedInputProps, Stack, SxProps, TextField } from "@mui/material"
 import { SvgArrow } from "../../../assets"
-import { colors, fonts } from "../../../theme/theme"
+import { fonts } from "../../../theme/theme"
 
 export const NiceTextField = ({
     primaryColor,
@@ -9,6 +9,8 @@ export const NiceTextField = ({
     fieldType = "text",
     errorMessage,
     placeholder,
+    sx,
+    InputProps,
 }: {
     primaryColor?: string
     value: string | number
@@ -17,27 +19,29 @@ export const NiceTextField = ({
     fieldType?: React.InputHTMLAttributes<unknown>["type"]
     errorMessage?: string
     placeholder?: string
+    sx?: SxProps
+    InputProps?: Partial<OutlinedInputProps> | undefined
 }) => {
     return (
         <Box
             position="relative"
             tabIndex={0}
             sx={{
+                height: "3.3rem",
+                boxShadow: 0.5,
+
                 ".MuiInputBase-root": {
-                    backgroundColor: "#00000090",
+                    backgroundColor: "#FFFFFF15",
                 },
                 ":hover, :active, :focus, :focus-within": {
                     ".MuiInputBase-root": {
-                        color: `${colors.gold}`,
-                        backgroundColor: `${colors.gold}08`,
-                    },
-                    "*": {
-                        fill: `${colors.gold}90`,
+                        backgroundColor: `${primaryColor}15`,
                     },
                     ".MuiOutlinedInput-notchedOutline": {
-                        borderColor: `${colors.gold}90 !important`,
+                        border: `${primaryColor} 2px solid !important`,
                     },
                 },
+                ...sx,
             }}
         >
             <TextField
@@ -51,8 +55,8 @@ export const NiceTextField = ({
                 sx={{
                     width: "100%",
                     ".MuiOutlinedInput-input": {
-                        p: ".3rem 1rem",
-                        fontSize: "1.65rem",
+                        p: ".46rem 1.6rem",
+                        fontSize: "1.7rem",
                         fontFamily: fonts.shareTech,
                         "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
                             WebkitAppearance: "none",
@@ -60,14 +64,16 @@ export const NiceTextField = ({
                         appearance: "textfield",
                     },
                     ".MuiOutlinedInput-notchedOutline": {
-                        border: `${primaryColor || "#FFFFFF"}40 1px solid`,
-                        borderRightWidth: ".4rem",
-                        borderRadius: 0.3,
+                        border: `${"#FFFFFF"}50 1px solid`,
+                        borderRadius: 0,
                     },
                 }}
                 type={fieldType}
                 value={value}
                 onChange={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+
                     if (fieldType === "number") {
                         const num = parseInt(e.target.value)
                         if (num <= 0) return
@@ -76,6 +82,7 @@ export const NiceTextField = ({
                         onChange(e.target.value)
                     }
                 }}
+                InputProps={InputProps}
             />
 
             {fieldType === "number" && typeof value === "number" && (

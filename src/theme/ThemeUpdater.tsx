@@ -1,7 +1,6 @@
 import { Box } from "@mui/material"
 import { ReactNode } from "react"
 import { useTheme } from "../containers/theme"
-import { fonts } from "./theme"
 
 export const ThemeUpdater = ({ children }: { children: ReactNode }) => {
     const theme = useTheme()
@@ -27,7 +26,6 @@ export const ThemeUpdater = ({ children }: { children: ReactNode }) => {
                 },
 
                 ".MuiPagination-root": {
-                    ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
                     ".Mui-selected": {
                         color: theme.factionTheme.secondary,
                         backgroundColor: `${theme.factionTheme.primary} !important`,

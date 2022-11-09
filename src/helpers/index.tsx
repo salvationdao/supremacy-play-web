@@ -1,5 +1,6 @@
 import BigNumber from "bignumber.js"
 import emojiRegex from "emoji-regex"
+import moment from "moment"
 import { VoidFunctionComponent } from "react"
 import {
     SafePNG,
@@ -18,7 +19,6 @@ import {
 import { colors } from "../theme/theme"
 import { AssetItemType, Dimension, GAME_CLIENT_TILE_SIZE, MysteryCrateType, Rarity, RarityEnum, UserRank } from "../types"
 import { FiatOrderStatus } from "../types/fiat"
-import moment from "moment"
 
 // Capitalize convert a string "example" to "Example"
 export const Capitalize = (str: string): string => str[0].toUpperCase() + str.substring(1).toLowerCase()
@@ -124,9 +124,13 @@ export const supFormatter = (num: string, maxDecimals?: number): string => {
     return supTokens.toFormat()
 }
 
-export const parseString = (val: string | null, defaultVal: number): number => {
-    if (!val) return defaultVal
-    return parseFloat(val)
+export const parseString = (val: number | string | null, defaultVal: number): number => {
+    try {
+        if (!val) return defaultVal
+        return parseFloat(`${val}`)
+    } catch (err) {
+        return defaultVal
+    }
 }
 
 // eslint-disable-next-line  @typescript-eslint/no-explicit-any
@@ -747,3 +751,9 @@ export const truncateAddress = (addr: string): string => {
     const last = addr.substring(addr.length - 5)
     return `${first}...${last}`
 }
+
+export const noop = () => {
+    return
+}
+
+export const isBrowser = typeof window !== "undefined"
