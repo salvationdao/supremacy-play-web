@@ -75,6 +75,7 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
             flexShrink: 0,
             color: "#FFFFFF",
             whiteSpace: "nowrap",
+            boxShadow: 0.5,
             [`&:hover:enabled .${OVERLAY_CLASSNAME}`]: {
                 opacity: 0.15,
             },

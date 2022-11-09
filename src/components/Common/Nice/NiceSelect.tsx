@@ -25,7 +25,7 @@ export const NiceSelect = ({
     const secondaryColor = _secondaryColor || "#000000"
 
     return (
-        <Stack direction="row" alignItems="center" sx={{ backgroundColor: "#FFFFFF15", ...sx }}>
+        <Stack direction="row" alignItems="center" sx={{ backgroundColor: "#FFFFFF15", boxShadow: 0.5, ...sx }}>
             {label && (
                 <Typography sx={{ lineHeight: 1.75, height: "3.3rem", border: `${"#FFFFFF"}50 1px solid`, borderRight: "none", px: "1rem" }}>
                     {label}
