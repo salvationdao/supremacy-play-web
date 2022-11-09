@@ -26,7 +26,7 @@ export const TabContent = ({ activeTabID }: { activeTabID?: RouteGroupID }) => {
                 }}
             >
                 {routes.map((route, index) => {
-                    if (!route.showInMainMenu) return null
+                    if (!route.showInMainMenu || !route.enable) return null
                     return (
                         <TabContentItem key={route.id} mainMenuStruct={route.showInMainMenu} index={index} totalItems={routes.length + externalLinks.length} />
                     )
