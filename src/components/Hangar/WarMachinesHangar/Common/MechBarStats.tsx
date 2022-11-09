@@ -1,6 +1,5 @@
 import { Box, Stack, SxProps, Typography } from "@mui/material"
 import React, { useMemo } from "react"
-import { NiceTooltip } from "../../.."
 import {
     SvgLoadoutArmour,
     SvgLoadoutPowerCoreCapacity,
@@ -15,6 +14,7 @@ import { useTheme } from "../../../../containers/theme"
 import { TruncateTextLines } from "../../../../theme/styles"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
+import { NiceTooltip } from "../../../Common/Nice/NiceTooltip"
 
 export const MechBarStats = ({
     mech,
