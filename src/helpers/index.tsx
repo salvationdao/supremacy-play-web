@@ -787,3 +787,9 @@ export const truncateAddress = (addr: string): string => {
     const last = addr.substring(addr.length - 5)
     return `${first}...${last}`
 }
+
+export const noop = () => {
+    return
+}
+
+export const isBrowser = typeof window !== "undefined"

@@ -24,6 +24,10 @@ export const GetFactionPass = () => {
                     ":hover": {
                         transform: "scale(1.05)",
                     },
+
+                    ":active": {
+                        transform: "scale(.95)",
+                    },
                 }}
             />
         </Link>

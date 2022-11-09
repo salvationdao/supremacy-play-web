@@ -9,7 +9,7 @@ export const useArray = <T>(initial: T[], idKeyName = "id") => {
 
     const removeByID = useCallback(
         (id: string) => {
-            if (!isMounted.current) return
+            if (!isMounted()) return
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             setValue((arr) => arr.filter((v) => v && (v as any)[idKeyName] !== id))
         },
@@ -18,7 +18,7 @@ export const useArray = <T>(initial: T[], idKeyName = "id") => {
 
     const removeIndex = useCallback(
         (index) => {
-            if (!isMounted.current) return
+            if (!isMounted()) return
             setValue((v) => {
                 v.splice(index, 1)
                 return v

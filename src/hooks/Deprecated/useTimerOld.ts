@@ -1,6 +1,6 @@
 import moment from "moment"
 import { useEffect, useRef, useState } from "react"
-import { useInterval } from "."
+import { useInterval } from ".."
 
 export const useTimerOld = (endTime: Date | undefined, speed: number = 1000, stopCountingOnEnd: boolean = true) => {
     const [endTimeState, setEndTimeState] = useState<Date | undefined>(endTime)

@@ -180,10 +180,22 @@ export interface MechBasicWithQueueStatus extends MechBasic {
     in_market_place: boolean
 }
 
+export interface MechUtilitySlot {
+    mech_id: string
+    utility_id: string
+    slot_number: number
+    utility?: Utility
+}
+
 export interface LobbyMech extends MechBasic {
-    owner_id: string
+    owner: User
     power_core?: PowerCore
     weapon_slots?: MechWeaponSlot[]
+    utilities?: MechUtilitySlot[]
+    skin_image_url?: string
+    skin_label: string
+
+    stats: BattleMechStats
 
     in_queue: boolean
     status: MechStatusEnum
