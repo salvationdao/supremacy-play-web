@@ -1,6 +1,6 @@
 import { Box, CircularProgress, InputBase, InputBaseProps, MenuItem, Pagination, Select, Stack, StackProps, styled, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { SvgLoadoutWeapon, SvgSearch } from "../../../../../../assets"
+import { SvgLoadoutDamage, SvgLoadoutWeapon, SvgSearch } from "../../../../../../assets"
 import { useTheme } from "../../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../../helpers"
 import { usePagination } from "../../../../../../hooks"
@@ -188,15 +188,21 @@ export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesPro
                                     rarity={w.tier ? getRarityDeets(w.tier) : undefined}
                                     subLabel={`${w.weapon_type} | ${w.default_damage_type}`}
                                     TopRight={
-                                        <Stack>
-                                            <Typography
+                                        <Typography
+                                            sx={{
+                                                fontFamily: fonts.shareTech,
+                                            }}
+                                        >
+                                            <SvgLoadoutDamage
                                                 sx={{
-                                                    fontFamily: fonts.shareTech,
+                                                    display: "inline-block",
+                                                    verticalAlign: "middle",
+                                                    lineHeight: "normal",
+                                                    mr: ".5rem",
                                                 }}
-                                            >
-                                                {w.damage}
-                                            </Typography>
-                                        </Stack>
+                                            />
+                                            {w.damage}
+                                        </Typography>
                                     }
                                     shape="square"
                                     size="full-width"

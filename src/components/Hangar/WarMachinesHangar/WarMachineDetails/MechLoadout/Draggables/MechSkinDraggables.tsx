@@ -104,7 +104,7 @@ export const MechSkinDraggables = ({ excludeMechSkinIDs, includeMechSkinIDs, mec
 
             if (!resp) return
             setMechSkinsError(undefined)
-            setMechSkins(resp.submodels || [])
+            setMechSkins(resp.submodels)
             setTotalItems(resp.total)
             mechSkinsMemoized.current = resp.submodels
         } catch (e) {
