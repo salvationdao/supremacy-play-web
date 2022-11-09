@@ -56,8 +56,7 @@ export const NiceSelect = ({
 
                     "&:hover": {
                         backgroundColor: `${primaryColor}10`,
-                        borderColor: `${primaryColor} !important`,
-                        borderWidth: "2px",
+                        border: `${primaryColor} 2px solid !important`,
                     },
                 }}
                 value={selected}
