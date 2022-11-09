@@ -17,6 +17,7 @@ import { UnityHandle } from "../MechViewer/UnityViewer"
 import { CustomDragEventWithType, DragStartEventWithType, DragStopEventWithType } from "./Draggables/LoadoutDraggable"
 import { OnClickEventWithType } from "./Draggables/MechSkinDraggables"
 import { DraggablesHandle, MechLoadoutDraggables } from "./MechLoadoutDraggables"
+import { WeaponTooltip } from "./Tooltips/WeaponTooltip"
 
 export interface SavedSelection {
     inherit_all_weapon_skins?: boolean
@@ -621,6 +622,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                                 {weapon.damage}
                             </Typography>
                         }
+                        renderTooltip={() => <WeaponTooltip id={weapon.id} />}
                         rarity={weapon.weapon_skin ? getRarityDeets(weapon.weapon_skin.tier) : undefined}
                         locked={weapon.locked_to_mech}
                         onUnequip={() =>

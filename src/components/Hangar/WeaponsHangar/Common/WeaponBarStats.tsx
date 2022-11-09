@@ -1,5 +1,5 @@
 import { Box, Stack, useTheme } from "@mui/material"
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
 import {
     SvgAmmo,
@@ -13,9 +13,9 @@ import {
     SvgRateOfFire,
     SvgSpread,
 } from "../../../../assets"
+import { GetWeaponMaxStats } from "../../../../fetching"
 import { Weapon, WeaponMaxStats } from "../../../../types"
 import { BarStat, IconStat } from "../../WarMachinesHangar/Common/MechBarStats"
-import { GetWeaponMaxStats } from "../../../../fetching"
 
 export const WeaponBarStats = ({
     weapon,
