@@ -73,12 +73,13 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
             fontFamily: fonts.nostromoBold,
             fontSize: "1.5rem",
             flexShrink: 0,
+            color: "#FFFFFF",
             whiteSpace: "nowrap",
             [`&:hover:enabled .${OVERLAY_CLASSNAME}`]: {
                 opacity: 0.15,
             },
             [`&:active:enabled .${OVERLAY_CLASSNAME}`]: {
-                opacity: 0.5,
+                opacity: 0.4,
             },
 
             // Sheen effect
@@ -184,7 +185,12 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
                         alignItems: "center",
                     }}
                 >
-                    {loading && <CircularProgress size="1.2rem" sx={{ color: props.background?.color ? props.background?.color[0] : "undefined" }} />}
+                    {loading && (
+                        <CircularProgress
+                            size="1.2rem"
+                            sx={{ color: typeof props.background !== "boolean" && props.background?.color ? props.background?.color[0] : "undefined" }}
+                        />
+                    )}
                 </Box>
             )}
         </Nice>
