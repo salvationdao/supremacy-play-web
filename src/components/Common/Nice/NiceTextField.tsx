@@ -27,6 +27,8 @@ export const NiceTextField = ({
             position="relative"
             tabIndex={0}
             sx={{
+                height: "3.3rem",
+
                 ".MuiInputBase-root": {
                     backgroundColor: "#00000010",
                 },
@@ -53,7 +55,7 @@ export const NiceTextField = ({
                 sx={{
                     width: "100%",
                     ".MuiOutlinedInput-input": {
-                        p: ".5rem 1.6rem",
+                        p: ".46rem 1.6rem",
                         fontSize: "1.7rem",
                         fontFamily: fonts.shareTech,
                         "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
@@ -63,7 +65,7 @@ export const NiceTextField = ({
                     },
                     ".MuiOutlinedInput-notchedOutline": {
                         border: `${"#FFFFFF"}50 1px solid`,
-                        borderRadius: 0.3,
+                        borderRadius: 0,
                     },
                 }}
                 type={fieldType}
