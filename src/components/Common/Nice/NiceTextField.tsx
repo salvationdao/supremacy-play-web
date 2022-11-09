@@ -32,7 +32,7 @@ export const NiceTextField = ({
                 },
                 ":hover, :active, :focus, :focus-within": {
                     ".MuiInputBase-root": {
-                        backgroundColor: `${primaryColor}08`,
+                        backgroundColor: `${primaryColor}10`,
                     },
                     ".MuiOutlinedInput-notchedOutline": {
                         borderColor: `${primaryColor} !important`,
