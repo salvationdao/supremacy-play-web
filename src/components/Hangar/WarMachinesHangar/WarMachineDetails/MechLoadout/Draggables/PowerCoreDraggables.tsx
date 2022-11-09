@@ -150,7 +150,7 @@ export const PowerCoreDraggables = ({ drag, powerCoreSize }: PowerCoreDraggables
             <Box
                 sx={{
                     display: "grid",
-                    gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
+                    gridTemplateColumns: "repeat(3, minmax(100px, 1fr))",
                     gap: "1rem",
                 }}
             >

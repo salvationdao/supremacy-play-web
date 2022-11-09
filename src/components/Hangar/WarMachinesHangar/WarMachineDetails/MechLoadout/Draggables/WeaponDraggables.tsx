@@ -156,7 +156,7 @@ export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesPro
             <Box
                 sx={{
                     display: "grid",
-                    gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+                    gridTemplateColumns: "repeat(2, minmax(120px, 1fr))",
                     gap: "1rem",
                 }}
             >

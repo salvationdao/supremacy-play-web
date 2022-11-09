@@ -41,7 +41,7 @@ export const MechLoadoutDraggables = ({
     return (
         <Box
             sx={{
-                flexBasis: 450,
+                flexBasis: 400,
             }}
         >
             <NiceAccordion
