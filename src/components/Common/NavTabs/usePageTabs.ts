@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useHistory } from "react-router-dom"
-import { useActiveRouteID } from "../hooks/useActiveRouteID"
-import { Routes, RouteSingleID } from "../routes"
+import { useActiveRouteID } from "../../../hooks/useActiveRouteID"
+import { Routes, RouteSingleID } from "../../../routes"
 
 // This hook does all the hard work for you when implementing a nav tab
 // inside page to nav between other pages in the same route group
