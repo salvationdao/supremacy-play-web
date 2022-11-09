@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, Pagination, Stack, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
 import { SvgFilter, SvgGridView, SvgListView, SvgSearch } from "../../../assets"
 import { useAuth, useSupremacy } from "../../../containers"
@@ -74,7 +74,7 @@ export const FactionPassMechPool = () => {
         >
             <NavTabs activeTabID={activeTabID} setActiveTabID={setActiveTabID} tabs={tabs} prevTab={prevTab} nextTab={nextTab} />
 
-            <Stack spacing="1rem" direction="row" alignItems="center" sx={{ overflowX: "auto", overflowY: "hidden", width: "100%", mt: "3rem" }}>
+            <Stack spacing="1rem" direction="row" alignItems="center" sx={{ overflowX: "auto", overflowY: "hidden", width: "100%", mt: "3rem", pb: ".2rem" }}>
                 {/* Filter button */}
                 <NiceButton
                     onClick={() => toggleShowFilters()}
@@ -89,14 +89,23 @@ export const FactionPassMechPool = () => {
 
                 <Box flex={1} />
 
-                {/* Page size options */}
-                <NiceButtonGroup
-                    primaryColor={faction.primary_color}
-                    secondaryColor={faction.secondary_color}
-                    options={pageSizeOptions}
-                    selected={pageSize}
-                    onSelected={(value) => changePageSize(parseString(value, 1))}
-                />
+                <Stack direction="row" alignItems="center">
+                    {/* Show Total */}
+                    <Box sx={{ height: "100%", backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", px: "1rem", borderRight: "none" }}>
+                        <Typography variant="h6" sx={{ lineHeight: 1.5, whiteSpace: "nowrap" }}>
+                            {20} of {318}
+                        </Typography>
+                    </Box>
+
+                    {/* Page size options */}
+                    <NiceButtonGroup
+                        primaryColor={faction.primary_color}
+                        secondaryColor={faction.secondary_color}
+                        options={pageSizeOptions}
+                        selected={pageSize}
+                        onSelected={(value) => changePageSize(parseString(value, 1))}
+                    />
+                </Stack>
 
                 {/* Page layout options */}
                 <NiceButtonGroup
@@ -129,6 +138,8 @@ export const FactionPassMechPool = () => {
                     sx={{ minWidth: "26rem" }}
                 />
             </Stack>
+
+            <Pagination sx={{ mt: "auto" }} count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
         </Stack>
     )
 }

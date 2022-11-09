@@ -293,8 +293,13 @@ export const theme = createTheme({
                         justifyContent: "center",
                     },
                     ".MuiButtonBase-root": {
+                        borderRadius: 0.1,
+                        fontFamily: fonts.nostromoBold,
                         minWidth: "25px",
                         height: "25px",
+                    },
+                    ".MuiSvgIcon-root": {
+                        fontSize: "1.8rem",
                     },
                 },
             },
