@@ -139,7 +139,7 @@ export const FactionPassMechPool = () => {
                 />
             </Stack>
 
-            {totalPages > 1 && <Pagination sx={{ mt: "auto" }} count={totalPages} page={page} onChange={(e, p) => changePage(p)} />}
+            <Pagination sx={{ mt: "auto" }} count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
         </Stack>
     )
 }
