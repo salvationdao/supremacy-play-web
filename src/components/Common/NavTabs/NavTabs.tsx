@@ -30,15 +30,8 @@ export const NavTabs = <T,>({
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
             if (!activeTabID) return
-            e.stopPropagation()
-            e.preventDefault()
-
-            if (e.key.toLowerCase() === "q" || e.key === "ArrowLeft") {
-                prevTab(activeTabID)
-            }
-            if (e.key.toLowerCase() === "e" || e.key === "ArrowRight") {
-                nextTab(activeTabID)
-            }
+            if (e.key.toLowerCase() === "q" || e.key === "ArrowLeft") prevTab(activeTabID)
+            if (e.key.toLowerCase() === "e" || e.key === "ArrowRight") nextTab(activeTabID)
         }
 
         const cleanup = () => {
