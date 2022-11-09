@@ -814,7 +814,7 @@ export const Routes: RouteSingle[] = [
         },
         showInMainMenu: {
             groupID: RouteGroupID.FactionHQ,
-            label: "Faction Mech Pool",
+            label: "Mech Pool",
             image: GenericPNG,
             path: "/faction-pass/mech-pool",
         },
