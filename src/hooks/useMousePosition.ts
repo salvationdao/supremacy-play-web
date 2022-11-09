@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 
+// Warning: this causes a lot of state changes, so use carefully!
 export const useMousePosition = () => {
     const [position, setPosition] = useState({ x: 0, y: 0 })
 
