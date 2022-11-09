@@ -379,6 +379,20 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
                 return
             }
             setAbilityEffects(payload.filter((da) => da.mech_id === id) || [])
+
+            setAbilityEffects((prev) => {
+                if (prev.length === 0) {
+                    return payload.filter((da) => !da.is_removed && da.mech_id === id)
+                }
+
+                prev = prev.map((pa) => payload.find((p) => p.offering_id === pa.offering_id) || pa)
+                payload.forEach((p) => {
+                    if (prev.some((pa) => pa.offering_id === p.offering_id)) return
+                    prev.push(p)
+                })
+
+                return prev.filter((da) => !da.is_removed && da.mech_id === id)
+            })
         },
     )
 
