@@ -45,7 +45,7 @@ export const MainMenuNav = () => {
     )
 
     return (
-        <Modal open={showMainMenu} onClose={() => toggleShowMainMenu(false)} sx={{ zIndex: siteZIndex.MainMenuModal }}>
+        <Modal id="main-menu-modal" open={showMainMenu} onClose={() => toggleShowMainMenu(false)} sx={{ zIndex: siteZIndex.MainMenuModal }}>
             <Stack
                 alignItems="center"
                 justifyContent="flex-start"

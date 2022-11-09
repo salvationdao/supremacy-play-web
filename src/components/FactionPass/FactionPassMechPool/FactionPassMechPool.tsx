@@ -36,6 +36,8 @@ export const FactionPassMechPool = () => {
 
     const prevTab = useCallback(
         (_activeTabID: RouteSingleID) => {
+            // If main menu modal is open, then ignore key events
+            if (document.getElementById("main-menu-modal")) return
             const curIndex = tabs.findIndex((tab) => tab.id === _activeTabID)
             const newIndex = curIndex - 1 < 0 ? tabs.length - 1 : curIndex - 1
             setActiveTabID(tabs[newIndex].id)
@@ -45,6 +47,8 @@ export const FactionPassMechPool = () => {
 
     const nextTab = useCallback(
         (_activeTabID: RouteSingleID) => {
+            // If main menu modal is open, then ignore key events
+            if (document.getElementById("main-menu-modal")) return
             const curIndex = tabs.findIndex((tab) => tab.id === _activeTabID)
             const newIndex = (curIndex + 1) % tabs.length
             setActiveTabID(tabs[newIndex].id)
