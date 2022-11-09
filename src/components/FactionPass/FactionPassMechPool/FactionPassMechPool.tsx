@@ -1,4 +1,4 @@
-import { InputAdornment, Stack, Typography } from "@mui/material"
+import { Stack, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
 import { SvgFilter, SvgSearch } from "../../../assets"
 import { useAuth, useSupremacy } from "../../../containers"
