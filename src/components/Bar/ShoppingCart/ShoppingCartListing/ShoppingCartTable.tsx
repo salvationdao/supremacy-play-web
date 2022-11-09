@@ -2,13 +2,13 @@ import { useState, useEffect, useCallback, useMemo } from "react"
 import { Box, Stack, Typography, TextField, CircularProgress, Button } from "@mui/material"
 import { SvgArrow, SvgSupToken, SvgBin } from "../../../../assets"
 import { IS_TESTING_MODE } from "../../../../constants"
-import { snakeToTitle, generatePriceText, supFormatterNoFixed } from "../../../../helpers"
+import { snakeToTitle, generatePriceText, supFormatter } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { ShoppingCart, ShoppingCartItem } from "../../../../types/fiat"
-import { ClipThing } from "../../../Common/ClipThing"
+import { ClipThing } from "../../../Common/Deprecated/ClipThing"
 import { GameServerKeys } from "../../../../keys"
-import { FancyButton } from "../../../Common/FancyButton"
+import { FancyButton } from "../../../Common/Deprecated/FancyButton"
 import BigNumber from "bignumber.js"
 
 interface Props {
@@ -104,7 +104,7 @@ export const ShoppingCartTable = ({ shoppingCart, loading, primaryColor, backgro
                             >
                                 <SvgSupToken size="1.9rem" fill={IS_TESTING_MODE ? colors.red : colors.yellow} sx={{ mr: ".2rem", pb: 0 }} />
                                 <Typography sx={{ fontFamily: fonts.nostromoBold, lineHeight: 1, whiteSpace: "nowrap" }}>
-                                    {supFormatterNoFixed(totalSUPS.toString(), 2) || "0.00"}
+                                    {supFormatter(totalSUPS.toString(), 2) || "0.00"}
                                 </Typography>
                             </Stack>
                         )}
@@ -214,7 +214,7 @@ const ShoppingCartRow = ({ item, primaryColor, backgroundColor }: ShoppingCartRo
         for (const p of item.product.pricing) {
             if (p.currency_code === "SUPS") {
                 const amount = new BigNumber(p.amount).multipliedBy(item.quantity)
-                pricing = supFormatterNoFixed(amount.toString(), 2) || "0.00"
+                pricing = supFormatter(amount.toString(), 2) || "0.00"
                 break
             }
         }

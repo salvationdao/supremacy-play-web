@@ -3,7 +3,7 @@ import { red } from "@mui/material/colors"
 import { createTheme } from "@mui/material/styles"
 import "./global.css"
 
-// had to keep the declare in this file for it to work
+// Had to keep the declare in this file for it to work
 declare module "@mui/material/styles" {
     interface Theme {
         factionTheme: FactionTheme
@@ -198,19 +198,19 @@ export const theme = createTheme({
         },
         body1: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.65rem",
+            fontSize: "1.7rem",
         },
         body2: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.4rem",
+            fontSize: "1.5rem",
         },
         subtitle1: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.3rem",
+            fontSize: "1.34rem",
         },
         subtitle2: {
             fontFamily: fonts.shareTech,
-            fontSize: "1.15rem",
+            fontSize: "1.18rem",
         },
         caption: {
             fontFamily: fonts.shareTech,
@@ -257,6 +257,11 @@ export const theme = createTheme({
         MuiPopover: {
             defaultProps: {
                 disablePortal: false,
+            },
+            styleOverrides: {
+                root: {
+                    zIndex: siteZIndex.Drawer,
+                },
             },
         },
         MuiLink: {
@@ -332,6 +337,27 @@ export const theme = createTheme({
         MuiCircularProgress: {
             defaultProps: {
                 size: "3rem",
+            },
+        },
+        MuiModal: {
+            styleOverrides: {
+                root: {
+                    zIndex: siteZIndex.Modal,
+                },
+            },
+        },
+        MuiDrawer: {
+            styleOverrides: {
+                root: {
+                    zIndex: siteZIndex.Drawer,
+                },
+            },
+        },
+        MuiTooltip: {
+            styleOverrides: {
+                popper: {
+                    zIndex: siteZIndex.Tooltip,
+                },
             },
         },
     },

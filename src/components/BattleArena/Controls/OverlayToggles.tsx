@@ -1,5 +1,5 @@
 import { IconButton, Stack, Typography } from "@mui/material"
-import { TooltipHelper } from "../.."
+import { NiceTooltip } from "../.."
 import { SvgTrailer } from "../../../assets"
 import { useUI } from "../../../containers"
 
@@ -28,7 +28,7 @@ export const OverlayToggles = () => {
                 </IconButton>
             </TooltipHelper> */}
             {/* Watch trailer */}
-            <TooltipHelper text="Watch the Supremacy trailer video.">
+            <NiceTooltip text="Watch the Supremacy trailer video.">
                 <IconButton
                     size="small"
                     onClick={() => toggleShowTrailer()}
@@ -42,7 +42,7 @@ export const OverlayToggles = () => {
                 >
                     <SvgTrailer size="1.7rem" fill="#E8BB3F" />
                 </IconButton>
-            </TooltipHelper>
+            </NiceTooltip>
         </Stack>
     )
 }

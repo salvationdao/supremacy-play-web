@@ -5,8 +5,8 @@ import { useGlobalNotifications, useTraining } from "../../../containers"
 import { scaleUpKeyframes } from "../../../theme/keyframes"
 import { colors } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbilityPrePurchase, PlayerAbilityStages, SaleAbility } from "../../../types"
-import { FancyButton } from "../../Common/FancyButton"
-import { TooltipHelper } from "../../Common/TooltipHelper"
+import { FancyButton } from "../../Common/Deprecated/FancyButton"
+import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
 import { TruncateTextLines } from "../../../theme/styles"
 
 export interface QuickPlayerAbilitiesItemProps {
@@ -83,7 +83,7 @@ export const QuickPlayerAbilitiesItemBT = ({ saleAbility, amount = 0, setError, 
                         saleAbility.ability.label !== "EMP"
                     }
                 >
-                    <TooltipHelper text={saleAbility.ability.description} placement="bottom">
+                    <NiceTooltip text={saleAbility.ability.description} placement="bottom">
                         <Box
                             sx={{
                                 position: "relative",
@@ -225,7 +225,7 @@ export const QuickPlayerAbilitiesItemBT = ({ saleAbility, amount = 0, setError, 
                                 </Typography>
                             </Stack>
                         </Box>
-                    </TooltipHelper>
+                    </NiceTooltip>
                 </FancyButton>
             </Fade>
         </>

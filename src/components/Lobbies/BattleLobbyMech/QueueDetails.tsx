@@ -1,6 +1,6 @@
 import { IconButton, Stack, Typography } from "@mui/material"
 import { useState } from "react"
-import { TooltipHelper } from "../../index"
+import { NiceTooltip } from "../../index"
 import { SvgNotification, SvgSupToken } from "../../../assets"
 import { useToggle } from "../../../hooks"
 import { colors } from "../../../theme/theme"
@@ -66,7 +66,7 @@ const AmountItem = ({
     disableIcon?: boolean
 }) => {
     return (
-        <TooltipHelper placement="bottom-start" text={tooltip}>
+        <NiceTooltip placement="bottom-start" text={tooltip}>
             <Stack direction="row" alignItems="center" sx={{ flexShrink: 0 }}>
                 <Typography sx={{ mr: ".4rem", fontWeight: "fontWeightBold" }}>{title}</Typography>
 
@@ -74,6 +74,6 @@ const AmountItem = ({
 
                 <Typography sx={{ color: color, fontWeight: "fontWeightBold" }}>{value || "---"}</Typography>
             </Stack>
-        </TooltipHelper>
+        </NiceTooltip>
     )
 }

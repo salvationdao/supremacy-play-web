@@ -3,7 +3,7 @@ import { ReactNode, useEffect } from "react"
 import { SvgDropdownArrow } from "../../../assets"
 import { useToggle } from "../../../hooks"
 import { fonts } from "../../../theme/theme"
-import { FancyButton } from "../FancyButton"
+import { FancyButton } from "../Deprecated/FancyButton"
 
 export const Section = ({
     label,

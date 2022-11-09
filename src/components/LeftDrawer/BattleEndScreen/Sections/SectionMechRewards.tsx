@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { BattleEndTooltip } from "../../.."
 import { GenericWarMachinePNG, SvgSupToken } from "../../../../assets"
 import { useAuth, useSupremacy } from "../../../../containers"
-import { supFormatterNoFixed } from "../../../../helpers"
+import { supFormatter } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
 import { BattleEndDetail } from "../../../../types"
 import { TruncateTextLines } from "../../../../theme/styles"
@@ -73,7 +73,7 @@ export const SectionMechRewards = ({ battleEndDetail }: { battleEndDetail: Battl
                                         ) : (
                                             <>
                                                 <SvgSupToken fill={colors.yellow} size="1.8rem" />
-                                                <Typography sx={{ lineHeight: 1 }}>{supFormatterNoFixed(wm.rewarded_sups, 2)}</Typography>
+                                                <Typography sx={{ lineHeight: 1 }}>{supFormatter(wm.rewarded_sups, 2)}</Typography>
                                             </>
                                         )}
                                     </Stack>

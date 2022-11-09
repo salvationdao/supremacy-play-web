@@ -12,11 +12,10 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { Faction, FeatureName, User } from "../../../types"
 import { StyledImageText } from "../../BattleArena/Notifications/Common/StyledImageText"
-
 import ConnectSound from "../../../assets/voiceChat/Connect.wav"
 import DisconnectSound from "../../../assets/voiceChat/Disconnect.wav"
 import { ConfirmModal } from "../../Common/ConfirmModal"
-import { FancyButton } from "../../Common/FancyButton"
+import { FancyButton } from "../../Common/Deprecated/FancyButton"
 
 export interface VoiceStream {
     listen_url: string

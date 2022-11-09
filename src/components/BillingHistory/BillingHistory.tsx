@@ -14,7 +14,7 @@ import { GameServerKeys } from "../../keys"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { FiatOrder } from "../../types/fiat"
 import { CoolTable } from "../Common/CoolTable"
-import { PageHeader } from "../Common/PageHeader"
+import { PageHeader } from "../Common/Deprecated/PageHeader"
 
 export const BillingHistory = () => {
     const theme = useTheme()

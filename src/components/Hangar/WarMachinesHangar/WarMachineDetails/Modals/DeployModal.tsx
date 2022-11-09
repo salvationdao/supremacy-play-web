@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
-import { FancyButton, TooltipHelper } from "../../../.."
+import { FancyButton, NiceTooltip } from "../../../.."
 import { SvgInfoCircular, SvgSupToken } from "../../../../../assets"
 import { useGlobalNotifications } from "../../../../../containers"
 import { supFormatter } from "../../../../../helpers"
@@ -172,11 +172,11 @@ export const AmountItem = ({
             </Typography>
 
             {tooltip && (
-                <TooltipHelper placement="right-start" text={tooltip}>
+                <NiceTooltip placement="right-start" text={tooltip}>
                     <Box sx={{ ml: "auto" }}>
                         <SvgInfoCircular size="1.2rem" sx={{ opacity: 0.4, ":hover": { opacity: 1 } }} />
                     </Box>
-                </TooltipHelper>
+                </NiceTooltip>
             )}
         </Stack>
     )

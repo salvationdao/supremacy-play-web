@@ -8,7 +8,7 @@ import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
-import { TooltipHelper } from "../../../Common/TooltipHelper"
+import { NiceTooltip } from "../../../Common/Nice/NiceTooltip"
 
 interface PreferencesResponse {
     shortcode: string
@@ -121,7 +121,7 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
                     NOTIFICATIONS
                 </Typography>
 
-                <TooltipHelper
+                <NiceTooltip
                     placement="right-start"
                     renderNode={
                         <Box>
@@ -145,7 +145,7 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
                             }}
                         />
                     </Box>
-                </TooltipHelper>
+                </NiceTooltip>
             </Stack>
 
             <Stack>

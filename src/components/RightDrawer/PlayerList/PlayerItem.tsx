@@ -5,7 +5,7 @@ import { useTheme } from "../../../containers/theme"
 import { useToggle } from "../../../hooks"
 import { colors, fonts } from "../../../theme/theme"
 import { User } from "../../../types"
-import { Player } from "../../Common/Player"
+import { PlayerNameGid } from "../../Common/PlayerNameGid"
 
 interface PlayerItemProps {
     player: User
@@ -35,7 +35,7 @@ export const PlayerItem = React.memo(function PlayerItem({ player, isActive }: P
                 <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: isActive ? colors.green : colors.yellow }} />
 
                 <Box sx={{ pt: ".3rem", ml: "1.1rem" }}>
-                    <Player player={player} />
+                    <PlayerNameGid player={player} />
                 </Box>
 
                 <FancyButton

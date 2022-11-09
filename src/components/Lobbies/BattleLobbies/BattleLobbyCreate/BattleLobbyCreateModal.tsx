@@ -11,7 +11,7 @@ import { FactionBasedDatePicker } from "../../../Common/FactionBasedDatePicker"
 import moment from "moment"
 import { FactionBasedTimePicker } from "../../../Common/FactionBasedTimePicker"
 import { MechSelector } from "../../Common/MechSelector"
-import { FancyButton } from "../../../Common/FancyButton"
+import { FancyButton } from "../../../Common/Deprecated/FancyButton"
 import { SelectedMechSlots } from "../../Common/SelectedMechSlots"
 import { InputField } from "../../Common/InputField"
 import { SelectField } from "../../Common/SelectField"
@@ -99,8 +99,6 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
     const disableTimePicker = useMemo(() => !lobbyForm.wont_start_until_date || !lobbyForm.wont_start_until_date.isValid(), [lobbyForm.wont_start_until_date])
 
     const onCreate = useCallback(async () => {
-        console.log(lobbyForm)
-
         let wontStartUntil: Date | undefined = undefined
 
         if (lobbyForm.scheduling_type === Scheduling.SetTime) {

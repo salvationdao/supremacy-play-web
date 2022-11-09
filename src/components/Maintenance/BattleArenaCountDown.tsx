@@ -4,7 +4,7 @@ import { BattleArenaOpeningWebP } from "../../assets"
 import { BATTLE_ARENA_OPEN_DATE } from "../../constants"
 import { msToTime } from "../../helpers"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
-import { ClipThing } from "../Common/ClipThing"
+import { ClipThing } from "../Common/Deprecated/ClipThing"
 
 export const BattleArenaCountDown = () => {
     const below1080 = useMediaQuery("(max-width:1080px)")

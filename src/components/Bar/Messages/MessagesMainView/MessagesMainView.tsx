@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { SvgAbility, SvgAnnouncement, SvgDamage1, SvgHistoryClock, SvgNotification, SvgSyndicateFlag } from "../../../../assets"
+import { SvgAbility, SvgAnnouncement, SvgDamage1, SvgEmptySet, SvgHistoryClock, SvgNotification, SvgSyndicateFlag } from "../../../../assets"
 import { useAuth } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { usePagination } from "../../../../hooks"
@@ -9,7 +9,7 @@ import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { FeatureName, SystemMessage, SystemMessageDataType } from "../../../../types"
 import { CoolTable } from "../../../Common/CoolTable"
-import { FancyButton } from "../../../Common/FancyButton"
+import { FancyButton } from "../../../Common/Deprecated/FancyButton"
 import { PreferenceToggle } from "../../ProfileCard/PreferencesModal/NotificationPreferences"
 import { SystemMessageDisplayable } from "../Messages"
 import { MessageDisplay } from "./MessageDisplay/MessageDisplay"
@@ -75,6 +75,9 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                         break
                     case SystemMessageDataType.PlayerAbilityRefunded:
                         icon = <SvgAbility fill={colors.orange} size="1.6rem" />
+                        break
+                    case SystemMessageDataType.ExpiredBattleLobby:
+                        icon = <SvgEmptySet fill={colors.red} size="1.6rem" />
                         break
                 }
 

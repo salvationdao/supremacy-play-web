@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { LobbyMech } from "../../../types"
 import { colors, fonts } from "../../../theme/theme"
 import { SearchBattle } from "../../Replays/BattlesReplays/SearchBattle"
-import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
+import { TotalAndPageSizeOptions } from "../../Common/Deprecated/TotalAndPageSizeOptions"
 import { SortTypeLabel } from "../../../types/marketplace"
 import { useGameServerSubscriptionFaction, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -14,7 +14,7 @@ import FlipMove from "react-flip-move"
 import { BattleLobbyMechQueueCard } from "../BattleLobbyMech/BattleLobbyMechQueueCard"
 import { EmptyWarMachinesPNG } from "../../../assets"
 import { QueueDetails } from "../BattleLobbyMech/QueueDetails"
-import { FancyButton } from "../../Common/FancyButton"
+import { FancyButton } from "../../Common/Deprecated/FancyButton"
 import { BattleLobby, PlayerQueueStatus } from "../../../types/battle_queue"
 import { useAuth } from "../../../containers"
 
@@ -34,7 +34,7 @@ interface MechSelectorProps {
 
 export const MechSelector = ({ selectedMechs, setSelectedMechs, battleLobby, keepOnSelect }: MechSelectorProps) => {
     const { factionTheme } = useTheme()
-    const { factionID } = useAuth()
+    const { userID, factionID } = useAuth()
     const [searchValue, setSearchValue, searchValueInstant] = useDebounce("", 300)
     const [list, setList] = useState<LobbyMech[]>([])
 
@@ -184,13 +184,21 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs, battleLobby, kee
         setList(result)
     }, [ownedMechs, factionStakedMechs, showStakedMechs, sort, page, pageSize, setTotalItems, searchValue, selectedMechs, keepOnSelect])
 
-    const selectLimit = useMemo(() => {
-        let queueLimit = 3
-        if (battleLobby) queueLimit = battleLobby.each_faction_mech_amount - battleLobby.battle_lobbies_mechs.filter((m) => m.faction_id === factionID).length
+    const [playerQueueLimit, setPlayerQueueLimit] = useState({
+        queue_limit: 3,
+        total_queued: 0,
+    })
+    useEffect(() => {
+        let slotLeft = 3 // slot left on each faction
+        let queueLimit = 3 // max amount of mechs a player can deploy in the lobby
+        if (battleLobby) {
+            slotLeft = battleLobby.each_faction_mech_amount - battleLobby.battle_lobbies_mechs.filter((m) => m.faction_id === factionID).length
+            queueLimit = battleLobby.max_deploy_per_player - battleLobby.battle_lobbies_mechs.filter((m) => m.queued_by?.id === userID).length
+        }
         const playerQueueRemain = currentPlayerQueue.queue_limit - currentPlayerQueue.total_queued
 
-        return Math.min(queueLimit, playerQueueRemain)
-    }, [currentPlayerQueue.queue_limit, currentPlayerQueue.total_queued, factionID, battleLobby])
+        setPlayerQueueLimit((prev) => ({ ...prev, queue_limit: Math.min(slotLeft, queueLimit, playerQueueRemain) }))
+    }, [battleLobby, currentPlayerQueue, userID, factionID])
 
     const content = useMemo(() => {
         if (list.length > 0) {
@@ -220,16 +228,16 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs, battleLobby, kee
                                                     setSelectedMechs((prev) => {
                                                         // remove, if exists
                                                         if (prev.some((sm) => sm.id === mech.id)) {
-                                                            setCurrentPlayerQueue((cpq) => ({ ...cpq, total_queued: cpq.total_queued - 1 }))
+                                                            setPlayerQueueLimit((cpq) => ({ ...cpq, total_queued: cpq.total_queued - 1 }))
                                                             return prev.filter((sm) => sm.id !== mech.id)
                                                         }
 
                                                         // return prev stat, if already reach queue limit
-                                                        if (selectLimit <= prev.length) {
+                                                        if (playerQueueLimit.queue_limit <= prev.length) {
                                                             return prev
                                                         }
 
-                                                        setCurrentPlayerQueue((cpq) => ({ ...cpq, total_queued: cpq.total_queued + 1 }))
+                                                        setPlayerQueueLimit((cpq) => ({ ...cpq, total_queued: cpq.total_queued + 1 }))
 
                                                         // otherwise, append
                                                         return prev.concat(mech)
@@ -274,12 +282,12 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs, battleLobby, kee
                 </Typography>
             </Stack>
         )
-    }, [list, selectedMechs, setSelectedMechs, selectLimit])
+    }, [list, selectedMechs, setSelectedMechs, playerQueueLimit])
 
     return (
         <Stack flex={1}>
             <Stack direction="row" alignItems="center" justifyContent="space-between">
-                <QueueDetails playerQueueStatus={currentPlayerQueue} />
+                <QueueDetails playerQueueStatus={playerQueueLimit} />
 
                 <FancyButton
                     clipThingsProps={{

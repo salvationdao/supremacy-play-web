@@ -1,4 +1,4 @@
-import { Box } from "@mui/material"
+import { Box, Fade } from "@mui/material"
 import { useMemo } from "react"
 import { MainMenuExternalLinks, RouteGroupID, Routes } from "../../../routes"
 import { TabContentItem } from "./TabContentItem"
@@ -13,27 +13,36 @@ export const TabContent = ({ activeTabID }: { activeTabID?: RouteGroupID }) => {
     }, [activeTabID])
 
     return (
-        <Box
-            sx={{
-                flex: 1,
-                display: "grid",
-                gridTemplateColumns: "repeat(4, 1fr)",
-                gridTemplateRows: "repeat(auto-fit, 28rem)",
-                gap: "1.8rem",
-                alignItems: "center",
-                justifyContent: "center",
-            }}
-        >
-            {routes.map((route, index) => {
-                if (!route.showInMainMenu) return null
-                return <TabContentItem key={route.id} mainMenuStruct={route.showInMainMenu} index={index} totalItems={routes.length + externalLinks.length} />
-            })}
+        <Fade key={activeTabID} in>
+            <Box
+                sx={{
+                    flex: 1,
+                    display: "grid",
+                    gridTemplateColumns: "repeat(4, 1fr)",
+                    gridTemplateRows: "repeat(auto-fit, 28rem)",
+                    gap: "1.8rem",
+                    alignItems: "center",
+                    justifyContent: "center",
+                }}
+            >
+                {routes.map((route, index) => {
+                    if (!route.showInMainMenu) return null
+                    return (
+                        <TabContentItem key={route.id} mainMenuStruct={route.showInMainMenu} index={index} totalItems={routes.length + externalLinks.length} />
+                    )
+                })}
 
-            {externalLinks.map((externalLink, index) => {
-                return (
-                    <TabContentItem key={index} mainMenuStruct={externalLink} index={routes.length + index} totalItems={routes.length + externalLinks.length} />
-                )
-            })}
-        </Box>
+                {externalLinks.map((externalLink, index) => {
+                    return (
+                        <TabContentItem
+                            key={index}
+                            mainMenuStruct={externalLink}
+                            index={routes.length + index}
+                            totalItems={routes.length + externalLinks.length}
+                        />
+                    )
+                })}
+            </Box>
+        </Fade>
     )
 }

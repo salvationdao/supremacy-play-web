@@ -1,8 +1,8 @@
 import { Box, Button, Checkbox, Divider, IconButton, MenuItem, Select, Stack, Typography } from "@mui/material"
 import React, { ReactNode } from "react"
-import { SvgFilter, SvgGridView, SvgListView, SvgRefresh } from "../../assets"
-import { useTheme } from "../../containers/theme"
-import { colors, fonts } from "../../theme/theme"
+import { SvgFilter, SvgGridView, SvgListView, SvgRefresh } from "../../../assets"
+import { useTheme } from "../../../containers/theme"
+import { colors, fonts } from "../../../theme/theme"
 
 interface TotalAndPageSizeOptionsProps {
     countItems?: number

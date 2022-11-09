@@ -5,7 +5,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { fonts } from "../../../theme/theme"
 import { SvgWeapons } from "../../../assets"
 import { getRarityDeets } from "../../../helpers"
-import { TooltipHelper, TooltipPlacement } from "../../Common/TooltipHelper"
+import { NiceTooltip, TooltipPlacement } from "../../Common/Nice/NiceTooltip"
 import { scaleUpKeyframes } from "../../../theme/keyframes"
 
 interface WeaponSlotProps {
@@ -55,12 +55,11 @@ export const WeaponSlot = ({ weaponSlot, tooltipPlacement, size }: WeaponSlotPro
 
         const weaponRarity = getRarityDeets(weapon?.tier || "")
         return (
-            <TooltipHelper
+            <NiceTooltip
                 tooltipSx={{
                     maxWidth: "50rem",
                 }}
-                color={factionTheme.background}
-                clipThingColor={factionTheme.primary}
+                color={factionTheme.primary}
                 renderNode={
                     <Stack direction="column" sx={{ width: "30rem" }}>
                         <Stack direction="row" alignItems="center">
@@ -128,7 +127,7 @@ export const WeaponSlot = ({ weaponSlot, tooltipPlacement, size }: WeaponSlotPro
                         }}
                     />
                 </Box>
-            </TooltipHelper>
+            </NiceTooltip>
         )
     }, [factionTheme.background, factionTheme.primary, size, tooltipPlacement, weapon, weaponStat])
 }

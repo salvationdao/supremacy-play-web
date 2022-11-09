@@ -6,7 +6,7 @@ import { FactionIDs } from "../../../constants"
 import { useAuth } from "../../../containers"
 import { zoomEffect } from "../../../theme/keyframes"
 import { Faction } from "../../../types"
-import { ClipThing } from "../../Common/ClipThing"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
 
 export const getCardStyles = (factionID: string) => {
     if (factionID === FactionIDs.BC) {

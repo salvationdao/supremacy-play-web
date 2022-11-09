@@ -5,7 +5,7 @@ import { DEV_ONLY, WEBGL_BASE_URL } from "../../../../../constants"
 import { useTheme } from "../../../../../containers/theme"
 import { pulseEffect } from "../../../../../theme/keyframes"
 import { colors, fonts } from "../../../../../theme/theme"
-import { ClipThing } from "../../../../Common/ClipThing"
+import { ClipThing } from "../../../../Common/Deprecated/ClipThing"
 import { LoadoutMechSkin, LoadoutPowerCore, LoadoutWeapon, MechDetailsWithMaps } from "../MechLoadout/MechLoadout"
 import { MechViewer3DProps } from "./MechViewer3D"
 

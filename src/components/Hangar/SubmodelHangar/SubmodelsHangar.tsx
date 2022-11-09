@@ -11,10 +11,10 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { BlueprintMech, BlueprintWeapon, MechSkin, SubmodelStatus } from "../../../types"
 import { SortDir, SortTypeLabel } from "../../../types/marketplace"
-import { PageHeader } from "../../Common/PageHeader"
+import { PageHeader } from "../../Common/Deprecated/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
-import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
+import { TotalAndPageSizeOptions } from "../../Common/Deprecated/TotalAndPageSizeOptions"
 import { SubmodelItem } from "./SubmodelItem"
 
 const sortOptions = [

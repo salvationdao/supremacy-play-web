@@ -1,6 +1,6 @@
 import { Box, Stack, SxProps, Typography } from "@mui/material"
 import React, { useMemo } from "react"
-import { TooltipHelper } from "../../.."
+import { NiceTooltip } from "../../.."
 import {
     SvgLoadoutArmour,
     SvgLoadoutPowerCoreCapacity,
@@ -248,7 +248,7 @@ export const BarStat = ({
     if (compact)
         return (
             <Stack direction="row" alignItems="center" justifyContent="space-between" spacing=".6rem">
-                <TooltipHelper
+                <NiceTooltip
                     placement="left-end"
                     renderNode={
                         <Typography
@@ -266,7 +266,7 @@ export const BarStat = ({
                     <Box>
                         <Icon size={`calc(${fontSize} + 1rem)`} sx={{ pb: "3px", height: "unset" }} />
                     </Box>
-                </TooltipHelper>
+                </NiceTooltip>
 
                 <Box flex={1} sx={{ height: barHeight || ".7rem", backgroundColor: "#FFFFFF25", position: "relative" }}>
                     <Box
@@ -292,7 +292,7 @@ export const BarStat = ({
                         />
                     )}
                 </Box>
-                <TooltipHelper
+                <NiceTooltip
                     placement="right"
                     text={
                         parsedBoosted && parsedBoosted != parsedCurrent
@@ -314,13 +314,13 @@ export const BarStat = ({
                         {parsedBoosted || parsedCurrent}
                         {unit}
                     </Typography>
-                </TooltipHelper>
+                </NiceTooltip>
             </Stack>
         )
 
     return (
         <Box>
-            <TooltipHelper
+            <NiceTooltip
                 placement="right"
                 text={
                     parsedBoosted && parsedBoosted != parsedCurrent
@@ -357,7 +357,7 @@ export const BarStat = ({
                         {unit}
                     </Typography>
                 </Stack>
-            </TooltipHelper>
+            </NiceTooltip>
 
             <Box sx={{ height: barHeight || ".7rem", backgroundColor: "#FFFFFF25", position: "relative" }}>
                 <Box
@@ -410,7 +410,7 @@ export const IconStat = ({
         if (!parsedCurrent && !parsedBoosted) return null
 
         return (
-            <TooltipHelper text={`${label}: ${boostedTo || current}`} placement="bottom">
+            <NiceTooltip text={`${label}: ${boostedTo || current}`} placement="bottom">
                 <Stack
                     direction="row"
                     alignItems="center"
@@ -427,7 +427,7 @@ export const IconStat = ({
                     <Icon size={`calc(${fontSize} + 1rem)`} sx={{ pb: "3px" }} />
                     <Typography sx={{ lineHeight: 1, fontSize }}>{parsedBoosted || parsedCurrent}</Typography>
                 </Stack>
-            </TooltipHelper>
+            </NiceTooltip>
         )
     }, [Icon, current, fontSize, label, primaryColor, boostedTo])
 }

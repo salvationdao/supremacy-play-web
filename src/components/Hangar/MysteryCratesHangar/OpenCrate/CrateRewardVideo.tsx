@@ -4,7 +4,7 @@ import { FactionIDs } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
 import { fonts, siteZIndex } from "../../../../theme/theme"
 import { MysteryCrateType } from "../../../../types"
-import { FancyButton } from "../../../Common/FancyButton"
+import { FancyButton } from "../../../Common/Deprecated/FancyButton"
 
 const CRATE_OPENING_VIDEOS_MECH: { [factionID: string]: string } = {
     [FactionIDs.ZHI]: "https://afiles.ninja-cdn.com/passport/nexus/lootbox/opening/mech/X3_Crate_OpeningVideo.mp4",

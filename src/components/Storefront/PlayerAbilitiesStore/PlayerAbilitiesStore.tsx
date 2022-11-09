@@ -11,7 +11,7 @@ import { useGameServerSubscriptionSecured, useGameServerSubscriptionSecuredUser 
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { PlayerAbility, SaleAbility, SaleAbilityAvailability } from "../../../types"
-import { PageHeader } from "../../Common/PageHeader"
+import { PageHeader } from "../../Common/Deprecated/PageHeader"
 import { PlayerAbilityStoreItem } from "./PlayerAbilityStoreItem"
 
 export const PlayerAbilitiesStore = () => {
@@ -329,9 +329,10 @@ export const PlayerAbilitiesStore = () => {
 
 interface TimeLeftProps {
     dateTo: Date
+    timeUpMessage?: string
 }
 
-export const TimeLeft = ({ dateTo }: TimeLeftProps) => {
+export const TimeLeft = ({ dateTo, timeUpMessage }: TimeLeftProps) => {
     const secondsLeftRef = useRef(Math.round((dateTo.getTime() - new Date().getTime()) / 1000))
     const containerRef = useRef<HTMLDivElement>()
 
@@ -341,15 +342,15 @@ export const TimeLeft = ({ dateTo }: TimeLeftProps) => {
             secondsLeftRef.current -= 1
 
             if (!containerRef.current) return
-            containerRef.current.innerText = secondsLeftRef.current > 0 ? secondsToWords(secondsLeftRef.current) : "REFRESHING"
+            containerRef.current.innerText = secondsLeftRef.current > 0 ? secondsToWords(secondsLeftRef.current) : timeUpMessage || "REFRESHING"
         }, 1000)
 
         return () => clearInterval(t)
-    }, [dateTo])
+    }, [dateTo, timeUpMessage])
 
     return (
         <Box ref={containerRef} component="span">
-            {secondsLeftRef.current > 0 ? secondsToWords(secondsLeftRef.current) : "REFRESHING"}
+            {secondsLeftRef.current > 0 ? secondsToWords(secondsLeftRef.current) : timeUpMessage || "REFRESHING"}
         </Box>
     )
 }

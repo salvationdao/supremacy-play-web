@@ -11,7 +11,7 @@ import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { BanOption, BanUser } from "../../../../types/chat"
-import { Player } from "../../../Common/Player"
+import { PlayerNameGid } from "../../../Common/PlayerNameGid"
 import { RoleType } from "../../../../types"
 
 interface SubmitRequest {
@@ -23,7 +23,7 @@ interface SubmitRequest {
 const UserItem = ({ banUser, sx }: { banUser: BanUser; sx?: SxProps }) => {
     return (
         <Stack direction="row" spacing=".6rem" alignItems="center" sx={sx}>
-            <Player
+            <PlayerNameGid
                 player={{
                     id: banUser.id,
                     username: banUser.username,

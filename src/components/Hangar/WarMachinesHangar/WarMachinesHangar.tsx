@@ -12,10 +12,10 @@ import { MechBasic, MechBasicWithQueueStatus, MechStatus, MechStatusEnum } from 
 import { PlayerQueueStatus } from "../../../types/battle_queue"
 import { RepairOffer, RepairStatus } from "../../../types/jobs"
 import { SortDir, SortTypeLabel } from "../../../types/marketplace"
-import { PageHeader } from "../../Common/PageHeader"
+import { PageHeader } from "../../Common/Deprecated/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
-import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
+import { TotalAndPageSizeOptions } from "../../Common/Deprecated/TotalAndPageSizeOptions"
 import { QueueDetails } from "../../Lobbies/BattleLobbyMech/QueueDetails"
 import { BulkRepairConfirmModal } from "./Common/BulkRepairConfirmModal"
 import { RepairBay } from "./RepairBay/RepairBay"
@@ -129,7 +129,8 @@ export const WarMachinesHangar = () => {
             { value: MechStatusEnum.Idle, label: "IDLE", color: colors.green },
             { value: MechStatusEnum.Queue, label: "IN QUEUE", color: colors.yellow },
             { value: MechStatusEnum.Battle, label: "IN BATTLE", color: colors.orange },
-            { value: MechStatusEnum.Market, label: "MARKETPLACE", color: colors.red },
+            { value: MechStatusEnum.Market, label: "MARKETPLACE", color: colors.bronze },
+            { value: MechStatusEnum.Damaged, label: "DAMAGED", color: colors.red },
         ],
         initialSelected: status,
         initialExpanded: true,

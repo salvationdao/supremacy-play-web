@@ -3,7 +3,7 @@ import { useSupremacy } from "../../containers"
 import { User } from "../../types"
 import { StyledImageText, StyledImageTextProps } from "../BattleArena/Notifications/Common/StyledImageText"
 
-export const Player = ({ player, styledImageTextProps }: { player: User; styledImageTextProps?: StyledImageTextProps }) => {
+export const PlayerNameGid = ({ player, styledImageTextProps }: { player: User; styledImageTextProps?: StyledImageTextProps }) => {
     const { getFaction } = useSupremacy()
     const { username, gid, faction_id } = player
 

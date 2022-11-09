@@ -14,11 +14,11 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { PlayerAsset, WeaponType } from "../../../types"
 import { SortDir, SortTypeLabel } from "../../../types/marketplace"
-import { PageHeader } from "../../Common/PageHeader"
+import { PageHeader } from "../../Common/Deprecated/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { SliderRangeFilter } from "../../Common/SortAndFilters/SliderRangeFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
-import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
+import { TotalAndPageSizeOptions } from "../../Common/Deprecated/TotalAndPageSizeOptions"
 import { WeaponHangarItem } from "./WeaponHangarItem"
 
 const sortOptions = [

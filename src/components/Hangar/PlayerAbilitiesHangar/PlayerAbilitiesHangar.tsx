@@ -9,10 +9,10 @@ import { useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServ
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility } from "../../../types"
-import { PageHeader } from "../../Common/PageHeader"
+import { PageHeader } from "../../Common/Deprecated/PageHeader"
 import { ChipFilter } from "../../Common/SortAndFilters/ChipFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
-import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
+import { TotalAndPageSizeOptions } from "../../Common/Deprecated/TotalAndPageSizeOptions"
 import { PlayerAbilityHangarItem } from "./PlayerAbilityHangarItem"
 
 export const PlayerAbilitiesHangar = () => {

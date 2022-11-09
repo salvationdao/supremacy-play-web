@@ -5,8 +5,8 @@ import { useTheme } from "../../../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../../../helpers"
 import { colors, fonts } from "../../../../../../../theme/theme"
 import { MechSkin } from "../../../../../../../types"
-import { ClipThing } from "../../../../../../Common/ClipThing"
-import { FancyButton } from "../../../../../../Common/FancyButton"
+import { ClipThing } from "../../../../../../Common/Deprecated/ClipThing"
+import { FancyButton } from "../../../../../../Common/Deprecated/FancyButton"
 
 interface MechSkinItemProps {
     levelDifference: number

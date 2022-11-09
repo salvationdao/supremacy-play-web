@@ -6,7 +6,7 @@ import { useTheme } from "../../../containers/theme"
 import { colors, fonts } from "../../../theme/theme"
 import { Keycard } from "../../../types"
 import { ItemType } from "../../../types/marketplace"
-import { ClipThing } from "../../Common/ClipThing"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { TruncateTextLines } from "../../../theme/styles"
 

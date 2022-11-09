@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import React, { ReactNode, useMemo } from "react"
-import { fonts } from "../../theme/theme"
+import { fonts } from "../../../theme/theme"
 
 interface PageHeaderProps {
     title?: ReactNode

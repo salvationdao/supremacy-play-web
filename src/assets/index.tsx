@@ -20,6 +20,7 @@ import Death from "!@svgr/webpack!./svg/Death.svg"
 import DropdownArrow from "!@svgr/webpack!./svg/DropdownArrow.svg"
 import Emoji from "!@svgr/webpack!./svg/Emoji.svg"
 import EmojiSelector from "!@svgr/webpack!./svg/EmojiSelector.svg"
+import EmptySet from "!@svgr/webpack!./svg/EmptySet.svg"
 import Energy from "!@svgr/webpack!./svg/Energy.svg"
 import ExternalLink from "!@svgr/webpack!./svg/ExternalLink.svg"
 import FastRepair from "!@svgr/webpack!./svg/FastRepair.svg"
@@ -107,6 +108,7 @@ import ChatSplit from "!react-svg-loader!./svg/ChatSplit.svg"
 import ChatTabbed from "!react-svg-loader!./svg/ChatTabbed.svg"
 import ChevronDown from "!react-svg-loader!./svg/ChevronDown.svg"
 import ChevronUp from "!react-svg-loader!./svg/ChevronUp.svg"
+import CreditCard from "!react-svg-loader!./svg/CreditCard.svg"
 import Damage from "!react-svg-loader!./svg/Damage.svg"
 import Delete from "!react-svg-loader!./svg/Delete.svg"
 import Disconnected from "!react-svg-loader!./svg/Disconnected.svg"
@@ -117,7 +119,9 @@ import DownArrow from "!react-svg-loader!./svg/DownArrow.svg"
 import Drag from "!react-svg-loader!./svg/Drag.svg"
 import Edit from "!react-svg-loader!./svg/Edit.svg"
 import Emergency from "!react-svg-loader!./svg/Emergency.svg"
+import Ethereum from "!react-svg-loader!./svg/Ethereum.svg"
 import Facebook from "!react-svg-loader!./svg/Facebook.svg"
+import FactionPassArrow from "!react-svg-loader!./svg/FactionPass/FactionPassArrow.svg"
 import Feedback from "!react-svg-loader!./svg/Feedback.svg"
 import Filter from "!react-svg-loader!./svg/Filter.svg"
 import Fullscreen from "!react-svg-loader!./svg/Fullscreen.svg"
@@ -212,6 +216,18 @@ import CrossPNG from "./images/Cross.png"
 import Crosshair from "./images/Crosshair.png"
 import DeadSkullPNG from "./images/DeadSkull.png"
 import EmptyWarMachinesPNG from "./images/EmptyWarMachines.png"
+import BCAnnualPassArrowPNG from "./images/FactionPass/BCAnnualPassArrow.png"
+import BCDailyPassArrowPNG from "./images/FactionPass/BCDailyPassArrow.png"
+import BCMonthlyPassArrowPNG from "./images/FactionPass/BCMonthlyPassArrow.png"
+import FactionPassBgPNG from "./images/FactionPass/FactionPassBg.png"
+import FactionPassSs1PNG from "./images/FactionPass/FactionPassSs1.png"
+import FactionPassSs2PNG from "./images/FactionPass/FactionPassSs2.png"
+import RMAnnualPassArrowPNG from "./images/FactionPass/RMAnnualPassArrow.png"
+import RMDailyPassArrowPNG from "./images/FactionPass/RMDailyPassArrow.png"
+import RMMonthlyPassArrowPNG from "./images/FactionPass/RMMonthlyPassArrow.png"
+import ZHIAnnualPassArrowPNG from "./images/FactionPass/ZHIAnnualPassArrow.png"
+import ZHIDailyPassArrowPNG from "./images/FactionPass/ZHIDailyPassArrow.png"
+import ZHIMonthlyPassArrowPNG from "./images/FactionPass/ZHIMonthlyPassArrow.png"
 import FlamesPNG from "./images/Flames.png"
 import Gabs from "./images/Gabs.png"
 import GenericWarMachinePNG from "./images/GenericWarMachine.png"
@@ -361,6 +377,18 @@ export {
     WarMachineZAIPNG,
     BattleBgWebP,
     BattleArenaOpeningWebP,
+    FactionPassBgPNG,
+    FactionPassSs1PNG,
+    FactionPassSs2PNG,
+    BCAnnualPassArrowPNG,
+    BCDailyPassArrowPNG,
+    BCMonthlyPassArrowPNG,
+    RMAnnualPassArrowPNG,
+    RMDailyPassArrowPNG,
+    RMMonthlyPassArrowPNG,
+    ZHIAnnualPassArrowPNG,
+    ZHIDailyPassArrowPNG,
+    ZHIMonthlyPassArrowPNG,
     ThreeMechsJPG,
     CrossPNG,
     DeadSkullPNG,
@@ -395,12 +423,14 @@ export const SvgWrapper = React.memo(function SvgWrapper({ fill, stroke, strokeW
                 justifyContent: "center",
                 alignItems: "center",
                 pb: 0.3,
+                verticalAlign: "middle",
                 "& > svg": {
                     width: width || size || "2rem",
                     height: height || size || "2rem",
                     fill: fill || colors.text,
                     stroke: stroke || "unset",
                     strokeWidth: strokeWidth || "1",
+                    verticalAlign: "middle",
                 },
                 ...sx,
             }}
@@ -1487,41 +1517,49 @@ export const SvgLoadoutArmour: React.VoidFunctionComponent<SvgWrapperProps> = (p
         <LoadoutArmour />
     </SvgWrapper>
 )
+
 export const SvgLoadoutDamage: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <LoadoutDamage />
     </SvgWrapper>
 )
+
 export const SvgLoadoutDeaths: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <LoadoutDeaths />
     </SvgWrapper>
 )
+
 export const SvgLoadoutEmote: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <LoadoutEmote />
     </SvgWrapper>
 )
+
 export const SvgLoadoutKills: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <LoadoutKills />
     </SvgWrapper>
 )
+
 export const SvgLoadoutLosses: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <LoadoutLosses />
     </SvgWrapper>
 )
+
 export const SvgLoadoutPowerCore: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <LoadoutPowerCore />
     </SvgWrapper>
 )
+
 export const SvgLoadoutPowerCoreCapacity: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <LoadoutPowerCoreCapacity />
     </SvgWrapper>
 )
+
 export const SvgLoadoutPowerCoreRegen: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <LoadoutPowerCoreRegen />
@@ -1532,38 +1570,69 @@ export const SvgLoadoutShield: React.VoidFunctionComponent<SvgWrapperProps> = (p
         <LoadoutShield />
     </SvgWrapper>
 )
+
 export const SvgLoadoutShieldPowerCost: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <LoadoutShieldPowerCost />
     </SvgWrapper>
 )
+
 export const SvgLoadoutShieldRegen: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <LoadoutShieldRegen />
     </SvgWrapper>
 )
+
 export const SvgLoadoutSkin: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <LoadoutSkin />
     </SvgWrapper>
 )
+
 export const SvgLoadoutSpeed: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <LoadoutSpeed />
     </SvgWrapper>
 )
+
 export const SvgLoadoutUtility: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <LoadoutUtility />
     </SvgWrapper>
 )
+
 export const SvgLoadoutWeapon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <LoadoutWeapon />
     </SvgWrapper>
 )
+
 export const SvgLoadoutWins: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <LoadoutWins />
+    </SvgWrapper>
+)
+
+export const SvgFactionPassArrow: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <FactionPassArrow />
+    </SvgWrapper>
+)
+
+export const SvgEthereum: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Ethereum />
+    </SvgWrapper>
+)
+
+export const SvgCreditCard: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <CreditCard />
+    </SvgWrapper>
+)
+
+export const SvgEmptySet: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <EmptySet />
     </SvgWrapper>
 )

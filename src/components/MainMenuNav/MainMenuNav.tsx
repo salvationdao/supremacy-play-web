@@ -1,30 +1,51 @@
 import { Modal, Stack, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useUI } from "../../containers"
 import { useTheme } from "../../containers/theme"
 import { useActiveRouteID } from "../../hooks/useActiveRouteID"
-import { RouteGroupID, Routes } from "../../routes"
+import { RouteGroupID, RouteGroups } from "../../routes"
 import { fonts, siteZIndex } from "../../theme/theme"
+import { NavTabs } from "../Common/NavTabs/NavTabs"
 import { NiceButton } from "../Common/Nice/NiceButton"
-import { NavTabs } from "./NavTabs/NavTabs"
 import { TabContent } from "./TabContent/TabContent"
 
 export const MainMenuNav = () => {
     const theme = useTheme()
     const { showMainMenu, toggleShowMainMenu } = useUI()
-    const activeRouteID = useActiveRouteID()
+    const activeRoute = useActiveRouteID()
     const [activeTabID, setActiveTabID] = useState<RouteGroupID>()
 
+    // Set the current active tab based on the current active route
     useEffect(() => {
-        // no active tab, then we set it based on current page
         setActiveTabID((prev) => {
             if (prev) return prev
-            return Routes.find((route) => route.id === activeRouteID)?.showInMainMenu?.groupID || RouteGroupID.BattleArena
+            // If no active tab, then we set it based on current page
+            return activeRoute?.showInMainMenu?.groupID || RouteGroupID.BattleArena
         })
-    }, [activeRouteID])
+    }, [activeRoute])
+
+    const tabs = useMemo(() => RouteGroups.map((routeGroup) => ({ id: routeGroup.id, label: routeGroup.label })), [])
+
+    const prevTab = useCallback(
+        (_activeTabID: RouteGroupID) => {
+            const curIndex = tabs.findIndex((tab) => tab.id === _activeTabID)
+            const newIndex = curIndex - 1 < 0 ? tabs.length - 1 : curIndex - 1
+            setActiveTabID(tabs[newIndex].id)
+        },
+        [tabs],
+    )
+
+    const nextTab = useCallback(
+        (_activeTabID: RouteGroupID) => {
+            const curIndex = tabs.findIndex((routeGroup) => routeGroup.id === _activeTabID)
+            const newIndex = (curIndex + 1) % tabs.length
+            setActiveTabID(tabs[newIndex].id)
+        },
+        [tabs],
+    )
 
     return (
-        <Modal open={showMainMenu} onClose={() => toggleShowMainMenu(false)} sx={{ zIndex: siteZIndex.MainMenuModal }}>
+        <Modal id="main-menu-modal" open={showMainMenu} onClose={() => toggleShowMainMenu(false)} sx={{ zIndex: siteZIndex.MainMenuModal }}>
             <Stack
                 alignItems="center"
                 justifyContent="flex-start"
@@ -41,7 +62,7 @@ export const MainMenuNav = () => {
                 }}
             >
                 <Stack sx={{ width: "calc(100% - 3rem)", maxWidth: "153rem", height: "100%", p: "8rem 3.6rem" }} spacing="2.6rem">
-                    <NavTabs activeTabID={activeTabID} setActiveTabID={setActiveTabID} />
+                    <NavTabs activeTabID={activeTabID} setActiveTabID={setActiveTabID} tabs={tabs} prevTab={prevTab} nextTab={nextTab} />
 
                     <TabContent activeTabID={activeTabID} />
 

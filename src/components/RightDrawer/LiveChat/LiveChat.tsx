@@ -1,6 +1,6 @@
 import { Badge, Box, Stack, Tab, Tabs, Typography } from "@mui/material"
 import React, { ReactNode, useMemo } from "react"
-import { AdditionalOptionsButton, FancyButton, TooltipHelper } from "../.."
+import { AdditionalOptionsButton, FancyButton, NiceTooltip } from "../.."
 import { SvgGlobal, SvgInfoCircular } from "../../../assets"
 import { useAuth, useChat, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -188,11 +188,11 @@ const TabbedLayout = () => {
                                         />
                                     </UnreadBadge>
                                     {banProposal && (
-                                        <TooltipHelper color={colors.orange} placement="bottom" text="Punish proposal ongoing">
+                                        <NiceTooltip color={colors.orange} placement="bottom" text="Punish proposal ongoing">
                                             <Box sx={{ ml: "-.2rem", mr: ".4rem", animation: `${zoomEffect(1.1)} 1s infinite` }}>
                                                 <SvgInfoCircular size="1rem" fill={colors.orange} sx={{ pb: ".2rem" }} />
                                             </Box>
-                                        </TooltipHelper>
+                                        </NiceTooltip>
                                     )}
                                     <Typography variant="caption" sx={{ lineHeight: 1, fontFamily: fonts.nostromoBlack, textAlign: "start" }}>
                                         {factionTabLabel}
@@ -329,11 +329,11 @@ const SplitLayout = () => {
                                     }}
                                 />
                                 {banProposal && (
-                                    <TooltipHelper color={colors.orange} placement="bottom" text="Punish proposal ongoing">
+                                    <NiceTooltip color={colors.orange} placement="bottom" text="Punish proposal ongoing">
                                         <Box sx={{ ml: "-.2rem", mr: ".4rem", animation: `${zoomEffect(1.1)} 1s infinite` }}>
                                             <SvgInfoCircular size="1rem" fill={colors.orange} sx={{ pb: ".2rem" }} />
                                         </Box>
-                                    </TooltipHelper>
+                                    </NiceTooltip>
                                 )}
                                 <Typography variant="caption" sx={{ lineHeight: 1, fontFamily: fonts.nostromoBlack, textAlign: "start" }}>
                                     {factionTabLabel}

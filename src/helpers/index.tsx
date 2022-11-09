@@ -111,19 +111,11 @@ export const numFormatter = (num: number) => {
     return num + ""
 }
 
-export const supFormatter = (num: string, fixedAmount: number | undefined = 0): string => {
-    const supTokens = new BigNumber(num)
-    if (supTokens.isZero()) return supTokens.toFixed(fixedAmount)
-
-    const a = !fixedAmount || fixedAmount == 0 ? 1 : fixedAmount * 10
-    return (Math.floor(supTokens.dividedBy(new BigNumber("1000000000000000000")).toNumber() * a) / a).toFixed(fixedAmount)
-}
-
-export const supFormatterNoFixed = (num: string, maxDecimals?: number): string => {
+export const supFormatter = (num: string, maxDecimals?: number): string => {
     const supTokens = new BigNumber(num).shiftedBy(-18)
-    if (maxDecimals) {
+    if (maxDecimals !== undefined) {
         const split = supTokens.toString().split(".")
-        if (split[1] ? split[1].length : 0 > maxDecimals) {
+        if (split[1] ? split[1].length : 0 >= maxDecimals) {
             if (supTokens.isZero()) return supTokens.toFixed(maxDecimals)
             return supTokens.toFormat(maxDecimals)
         }

@@ -124,7 +124,11 @@ export const SortAndFilters = React.memo(function SortAndFilters({
                                                         ".MuiOutlinedInput-notchedOutline": { border: "unset" },
                                                     }}
                                                     value={searchValue}
-                                                    onChange={(e) => setSearchValue(e.target.value)}
+                                                    onChange={(e) => {
+                                                        e.stopPropagation()
+                                                        e.preventDefault()
+                                                        setSearchValue(e.target.value)
+                                                    }}
                                                     onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
                                                         e.stopPropagation()
                                                         switch (e.key) {

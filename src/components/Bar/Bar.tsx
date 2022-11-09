@@ -9,6 +9,7 @@ import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { User } from "../../types"
 import { BarButton } from "../MainMenuNav/BarButton"
 import { BarSocials } from "./BarSocials"
+import { GetFactionPass } from "./GetFactionPass"
 import { Messages } from "./Messages/Messages"
 import { Quests } from "./Quests/Quests"
 import { ShoppingCart } from "./ShoppingCart/ShoppingCart"
@@ -65,6 +66,8 @@ export const Bar = () => {
                     backgroundColor: (theme) => theme.factionTheme.background,
                     transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
                     zIndex: siteZIndex.TopBar,
+                    overflowX: "auto",
+                    overflowY: "hidden",
                 }}
             >
                 <BarContent userID={userID} user={user} />
@@ -131,6 +134,7 @@ const BarContent = ({ userID, user }: { userID?: string; user: User }) => {
             <Logo />
             <BarButton />
             <Box sx={{ flexGrow: 1 }} />
+            <GetFactionPass />
             {userID && <WalletDetails />}
             <BuySupsButton />
             {userID && <Quests />}

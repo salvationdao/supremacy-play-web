@@ -4,7 +4,7 @@ import { MechDetails } from "../../../../../types"
 import { useGameServerCommandsFaction, useGameServerSubscription } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { Stack, Typography } from "@mui/material"
-import { FancyButton } from "../../../../Common/FancyButton"
+import { FancyButton } from "../../../../Common/Deprecated/FancyButton"
 import { colors, fonts } from "../../../../../theme/theme"
 
 export const StakeModal = ({

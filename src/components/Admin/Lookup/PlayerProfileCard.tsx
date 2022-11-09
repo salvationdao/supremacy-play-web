@@ -3,7 +3,7 @@ import { SxProps } from "@mui/system"
 import { ReactNode } from "react"
 import { fonts } from "../../../theme/theme"
 import { Faction } from "../../../types"
-import { ClipThing } from "../../Common/ClipThing"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
 
 export const PlayerProfileCard = ({
     faction,

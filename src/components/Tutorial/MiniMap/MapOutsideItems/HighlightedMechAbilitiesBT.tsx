@@ -13,7 +13,7 @@ import {
     TrainingLocationSelects,
     WarMachineState,
 } from "../../../../types"
-import { ClipThing } from "../../../Common/ClipThing"
+import { ClipThing } from "../../../Common/Deprecated/ClipThing"
 import { MoveCommandBT } from "../../WarMachine/WarMachineItem/MoveCommandBT"
 import { TruncateTextLines } from "../../../../theme/styles"
 

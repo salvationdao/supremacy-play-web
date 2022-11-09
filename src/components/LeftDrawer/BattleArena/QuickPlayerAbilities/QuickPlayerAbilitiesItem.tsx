@@ -7,13 +7,13 @@ import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { scaleUpKeyframes } from "../../../../theme/keyframes"
+import { TruncateTextLines } from "../../../../theme/styles"
 import { colors } from "../../../../theme/theme"
 import { LocationSelectType, SaleAbility, SaleAbilityAvailability } from "../../../../types"
 import { PreferenceToggle } from "../../../Bar/ProfileCard/PreferencesModal/NotificationPreferences"
 import { ConfirmModal } from "../../../Common/ConfirmModal"
-import { FancyButton } from "../../../Common/FancyButton"
-import { TooltipHelper } from "../../../Common/TooltipHelper"
-import { TruncateTextLines } from "../../../../theme/styles"
+import { FancyButton } from "../../../Common/Deprecated/FancyButton"
+import { NiceTooltip } from "../../../Common/Nice/NiceTooltip"
 
 export interface QuickPlayerAbilitiesItemProps {
     saleAbility: SaleAbility
@@ -147,7 +147,7 @@ export const QuickPlayerAbilitiesItem = React.memo(function QuickPlayerAbilities
                     loading={loading}
                     disabled={disabled}
                 >
-                    <TooltipHelper color={saleAbility.ability.colour} text={saleAbility.ability.description} placement="bottom">
+                    <NiceTooltip color={saleAbility.ability.colour} text={saleAbility.ability.description} placement="bottom">
                         <Box
                             sx={{
                                 position: "relative",
@@ -275,7 +275,7 @@ export const QuickPlayerAbilitiesItem = React.memo(function QuickPlayerAbilities
                                 </Typography>
                             </Stack>
                         </Box>
-                    </TooltipHelper>
+                    </NiceTooltip>
                 </FancyButton>
             </Fade>
             {showPurchaseModal && (
