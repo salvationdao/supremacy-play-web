@@ -28,7 +28,7 @@ export const NiceTextField = ({
             tabIndex={0}
             sx={{
                 ".MuiInputBase-root": {
-                    backgroundColor: "#00000090",
+                    backgroundColor: "#00000010",
                 },
                 ":hover, :active, :focus, :focus-within": {
                     ".MuiInputBase-root": {
