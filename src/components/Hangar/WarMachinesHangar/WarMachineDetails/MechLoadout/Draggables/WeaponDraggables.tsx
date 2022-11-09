@@ -12,6 +12,7 @@ import { SortTypeLabel } from "../../../../../../types/marketplace"
 import { GetWeaponsRequest } from "../../../../WeaponsHangar/WeaponsHangar"
 import { MechLoadoutItem } from "../../../Common/MechLoadoutItem"
 import { DragWithTypesProps } from "../MechLoadoutDraggables"
+import { WeaponTooltip } from "../Tooltips/WeaponTooltip"
 import { LoadoutDraggable } from "./LoadoutDraggable"
 
 export interface GetWeaponsDetailedResponse {
@@ -207,6 +208,7 @@ export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesPro
                                             <SvgDrag />
                                         </Stack>
                                     }
+                                    renderTooltip={() => <WeaponTooltip id={w.id} />}
                                     shape="rectangle"
                                     size="full-width"
                                 />

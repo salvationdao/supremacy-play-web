@@ -60,7 +60,7 @@ export const MechLoadoutItem = React.forwardRef<HTMLDivElement, MechLoadoutItemP
             }}
         >
             {renderTooltip ? (
-                <NiceTooltip title={<>{renderTooltip()}</>} followCursor>
+                <MaybeTooltip title={<>{renderTooltip()}</>} followCursor>
                     <Box
                         sx={{
                             height: props.size === "full-width" ? "100%" : "auto",
@@ -69,7 +69,7 @@ export const MechLoadoutItem = React.forwardRef<HTMLDivElement, MechLoadoutItemP
                     >
                         {button}
                     </Box>
-                </NiceTooltip>
+                </MaybeTooltip>
             ) : (
                 button
             )}
@@ -267,7 +267,7 @@ const MechLoadoutItemButton = ({
     )
 }
 
-const NiceTooltip = styled(({ className, ...props }: TooltipProps) => <Tooltip {...props} classes={{ popper: className }} />)({
+const MaybeTooltip = styled(({ className, ...props }: TooltipProps) => <Tooltip {...props} classes={{ popper: className }} />)({
     [`& .${tooltipClasses.tooltip}`]: {
         maxWidth: 300,
         padding: "0px !important",
