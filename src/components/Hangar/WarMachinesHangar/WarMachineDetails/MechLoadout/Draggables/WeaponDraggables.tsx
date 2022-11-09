@@ -1,4 +1,4 @@
-import { Box, InputBase, InputBaseProps, MenuItem, Pagination, Select, Stack, StackProps, styled, Typography } from "@mui/material"
+import { Box, CircularProgress, InputBase, InputBaseProps, MenuItem, Pagination, Select, Stack, StackProps, styled, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { SvgLoadoutWeapon, SvgSearch } from "../../../../../../assets"
 import { useTheme } from "../../../../../../containers/theme"
@@ -39,6 +39,20 @@ export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesPro
     })
 
     const { onDrag, onDragStart, onDragStop } = drag
+
+    const [search, setSearch] = useState("")
+    const [searchLoading, setSearchLoading] = useState(false)
+    const debounceTimeoutRef = useRef<NodeJS.Timeout>()
+    const debouncedSetSearch = (newValue: string) => {
+        setSearchLoading(true)
+        if (debounceTimeoutRef.current) {
+            clearTimeout(debounceTimeoutRef.current)
+        }
+        debounceTimeoutRef.current = setTimeout(() => {
+            setSearch(newValue)
+            setSearchLoading(false)
+        }, 1000)
+    }
 
     useEffect(() => {
         const set = new Set(excludeWeaponIDs)
@@ -87,7 +101,7 @@ export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesPro
                 weapon_types: [],
                 rarities: [],
                 equipped_statuses: ["unequipped"],
-                search: "",
+                search,
             })
 
             if (!resp) return
@@ -101,7 +115,7 @@ export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesPro
         } finally {
             setIsWeaponsLoading(false)
         }
-    }, [page, pageSize, send, setTotalItems, sort])
+    }, [page, pageSize, search, send, setTotalItems, sort])
     useEffect(() => {
         getWeapons()
     }, [getWeapons])
@@ -141,7 +155,7 @@ export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesPro
             <Box
                 sx={{
                     display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
+                    gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
                     gap: "1rem",
                 }}
             >
@@ -199,7 +213,11 @@ export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesPro
         <Stack spacing="2rem" minHeight={400}>
             {/* Search and sort */}
             <Stack direction="row" spacing="1rem">
-                <NiceInputBase placeholder="Search weapons..." endAdornment={<SvgSearch fill={"rgba(255, 255, 255, 0.4)"} />} />
+                <NiceInputBase
+                    onChange={(e) => debouncedSetSearch(e.target.value)}
+                    placeholder="Search weapons..."
+                    endAdornment={searchLoading ? <CircularProgress size="1rem" /> : <SvgSearch size="1.6rem" fill={"rgba(255, 255, 255, 0.4)"} />}
+                />
                 <InputLabeller flex={1} label="Sort:" name="sort">
                     <Select name="sort" value={sort} onChange={(e) => setSort(e.target.value)} input={<NiceInputBase />}>
                         <MenuItem value={SortTypeLabel.Alphabetical}>{SortTypeLabel.Alphabetical}</MenuItem>

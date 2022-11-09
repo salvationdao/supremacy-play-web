@@ -1,4 +1,4 @@
-import { Box, MenuItem, Pagination, Select, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, MenuItem, Pagination, Select, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { SvgLoadoutSkin, SvgSearch } from "../../../../../../assets"
 import { getRarityDeets } from "../../../../../../helpers"
@@ -37,6 +37,20 @@ export const MechSkinDraggables = ({ excludeMechSkinIDs, includeMechSkinIDs, mec
         pageSize: 9,
         page: 1,
     })
+
+    const [search, setSearch] = useState("")
+    const [searchLoading, setSearchLoading] = useState(false)
+    const debounceTimeoutRef = useRef<NodeJS.Timeout>()
+    const debouncedSetSearch = (newValue: string) => {
+        setSearchLoading(true)
+        if (debounceTimeoutRef.current) {
+            clearTimeout(debounceTimeoutRef.current)
+        }
+        debounceTimeoutRef.current = setTimeout(() => {
+            setSearch(newValue)
+            setSearchLoading(false)
+        }, 1000)
+    }
 
     const getMechSkins = useCallback(async () => {
         setIsMechSkinsLoading(true)
@@ -85,7 +99,7 @@ export const MechSkinDraggables = ({ excludeMechSkinIDs, includeMechSkinIDs, mec
                 model_id: mechModelID,
                 rarities: [],
                 equipped_statuses: [],
-                search: "",
+                search,
             })
 
             if (!resp) return
@@ -99,7 +113,7 @@ export const MechSkinDraggables = ({ excludeMechSkinIDs, includeMechSkinIDs, mec
         } finally {
             setIsMechSkinsLoading(false)
         }
-    }, [excludeMechSkinIDs, includeMechSkinIDs, mechModelID, page, pageSize, send, setTotalItems, sort])
+    }, [excludeMechSkinIDs, includeMechSkinIDs, mechModelID, page, pageSize, search, send, setTotalItems, sort])
     useEffect(() => {
         getMechSkins()
     }, [getMechSkins])
@@ -139,7 +153,7 @@ export const MechSkinDraggables = ({ excludeMechSkinIDs, includeMechSkinIDs, mec
             <Box
                 sx={{
                     display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
+                    gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
                     gap: "1rem",
                 }}
             >
@@ -163,7 +177,11 @@ export const MechSkinDraggables = ({ excludeMechSkinIDs, includeMechSkinIDs, mec
         <Stack spacing="2rem" minHeight={400}>
             {/* Search and sort */}
             <Stack direction="row" spacing="1rem">
-                <NiceInputBase placeholder="Search weapons..." endAdornment={<SvgSearch fill={"rgba(255, 255, 255, 0.4)"} />} />
+                <NiceInputBase
+                    onChange={(e) => debouncedSetSearch(e.target.value)}
+                    placeholder="Search mech skins..."
+                    endAdornment={searchLoading ? <CircularProgress size="1rem" /> : <SvgSearch size="1.6rem" fill={"rgba(255, 255, 255, 0.4)"} />}
+                />
                 <InputLabeller flex={1} label="Sort:" name="sort">
                     <Select name="sort" value={sort} onChange={(e) => setSort(e.target.value)} input={<NiceInputBase />}>
                         <MenuItem value={SortTypeLabel.Alphabetical}>{SortTypeLabel.Alphabetical}</MenuItem>
