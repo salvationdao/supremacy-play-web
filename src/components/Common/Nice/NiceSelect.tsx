@@ -27,7 +27,7 @@ export const NiceSelect = ({
             sx={{
                 p: ".1rem .8rem",
                 border: `${"#FFFFFF"}50 1px solid`,
-                borderRadius: 0.2,
+                borderRadius: 0,
                 height: "3.3rem",
 
                 ".MuiSvgIcon-root": {
@@ -65,7 +65,7 @@ export const NiceSelect = ({
                 PaperProps: {
                     sx: {
                         backgroundColor: colors.darkNavy,
-                        borderRadius: 0.2,
+                        borderRadius: 0,
                     },
                 },
             }}
