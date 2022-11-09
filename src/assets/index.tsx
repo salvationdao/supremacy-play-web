@@ -20,6 +20,7 @@ import Death from "!@svgr/webpack!./svg/Death.svg"
 import DropdownArrow from "!@svgr/webpack!./svg/DropdownArrow.svg"
 import Emoji from "!@svgr/webpack!./svg/Emoji.svg"
 import EmojiSelector from "!@svgr/webpack!./svg/EmojiSelector.svg"
+import EmptySet from "!@svgr/webpack!./svg/EmptySet.svg"
 import Energy from "!@svgr/webpack!./svg/Energy.svg"
 import ExternalLink from "!@svgr/webpack!./svg/ExternalLink.svg"
 import FastRepair from "!@svgr/webpack!./svg/FastRepair.svg"
@@ -1462,5 +1463,11 @@ export const SvgCamera: React.VoidFunctionComponent<SvgWrapperProps> = (props) =
 export const SvgMainMenu: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <MainMenu />
+    </SvgWrapper>
+)
+
+export const SvgEmptySet: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <EmptySet />
     </SvgWrapper>
 )

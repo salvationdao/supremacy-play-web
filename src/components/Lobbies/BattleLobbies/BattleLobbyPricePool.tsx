@@ -74,7 +74,7 @@ export const BattleLobbyPricePool = ({ battleLobby }: BattleLobbyPricePoolProps)
     }, [battleLobby.id, send, topUpReward])
 
     return (
-        <Stack direction="column" spacing={0.6} sx={{ py: ".25rem" }}>
+        <Stack direction="column" sx={{ py: ".25rem" }}>
             <Stack direction="row" alignItems="center" spacing=".4rem">
                 <Typography
                     variant="body2"

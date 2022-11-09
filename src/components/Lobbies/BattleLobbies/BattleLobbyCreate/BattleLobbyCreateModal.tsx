@@ -99,8 +99,6 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
     const disableTimePicker = useMemo(() => !lobbyForm.wont_start_until_date || !lobbyForm.wont_start_until_date.isValid(), [lobbyForm.wont_start_until_date])
 
     const onCreate = useCallback(async () => {
-        console.log(lobbyForm)
-
         let wontStartUntil: Date | undefined = undefined
 
         if (lobbyForm.scheduling_type === Scheduling.SetTime) {

@@ -2,13 +2,14 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { colors } from "../../../../../theme/theme"
-import { SystemMessageDataMechBattleBegin, SystemMessageDataMechBattleComplete, SystemMessageDataType } from "../../../../../types"
+import { SystemMessageDataMechBattleBegin, SystemMessageDataMechBattleComplete, SystemMessageDataType, SystemMessageMechStruct } from "../../../../../types"
 import { FancyButton } from "../../../../Common/FancyButton"
 import MessageRenderer from "../../MessageRenderer"
 import { SystemMessageDisplayable } from "../../Messages"
 import { MechBattleCompleteDetails } from "./MechBattleCompleteDetails"
 import { PlayerAbilityRefundedData, PlayerAbilityRefundedMessage } from "./PlayerAbilityRefundedMessage"
 import { MechBattleBeginDetails } from "./MechBattleBeginDetails"
+import { ExpiredBattleLobby } from "./ExpiredBattleLobby"
 
 export interface MessageDisplayProps {
     message: SystemMessageDisplayable
@@ -24,6 +25,8 @@ export const MessageDisplay = ({ message, onClose }: MessageDisplayProps) => {
                 return <MechBattleBeginDetails message={message.message} data={message.data as SystemMessageDataMechBattleBegin} />
             case SystemMessageDataType.PlayerAbilityRefunded:
                 return <PlayerAbilityRefundedMessage message={message.message} data={message.data as PlayerAbilityRefundedData[]} />
+            case SystemMessageDataType.ExpiredBattleLobby:
+                return <ExpiredBattleLobby message={message.message} data={message.data as SystemMessageMechStruct[]} />
         }
 
         return <MessageRenderer markdown={message.message} />

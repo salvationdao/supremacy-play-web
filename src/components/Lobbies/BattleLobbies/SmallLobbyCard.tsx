@@ -11,11 +11,11 @@ import { supFormatter } from "../../../helpers"
 import { scaleUpKeyframes } from "../../../theme/keyframes"
 import { BattleLobbySingleModal } from "./BattleLobbySingleModal"
 
-interface PlayerInvolvedLobbyCardProps {
+interface SmallLobbyCardProps {
     battleLobby: BattleLobby
 }
 
-export const PlayerInvolvedLobbyCard = ({ battleLobby }: PlayerInvolvedLobbyCardProps) => {
+export const SmallLobbyCard = ({ battleLobby }: SmallLobbyCardProps) => {
     const { factionID } = useAuth()
     const { factionsAll } = useSupremacy()
     const { factionTheme } = useTheme()

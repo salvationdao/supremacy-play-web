@@ -6,7 +6,7 @@ import { GameServerKeys } from "../../../keys"
 import { BattleLobby } from "../../../types/battle_queue"
 import { useMemo, useState } from "react"
 import FlipMove from "react-flip-move"
-import { PlayerInvolvedLobbyCard } from "../../Lobbies/BattleLobbies/PlayerInvolvedLobbyCard"
+import { SmallLobbyCard } from "../../Lobbies/BattleLobbies/SmallLobbyCard"
 
 export const MyLobbies = () => {
     const { factionTheme } = useTheme()
@@ -51,7 +51,7 @@ export const MyLobbies = () => {
                                     },
                                 }}
                             >
-                                <PlayerInvolvedLobbyCard battleLobby={battleLobby} />
+                                <SmallLobbyCard battleLobby={battleLobby} />
                             </Box>
                         )
                     })}

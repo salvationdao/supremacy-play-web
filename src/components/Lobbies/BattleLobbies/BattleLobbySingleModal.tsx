@@ -16,6 +16,7 @@ const lobbyPlaceholder: BattleLobby = {
     second_faction_cut: "0.25",
     third_faction_cut: "0",
     each_faction_mech_amount: 3,
+    max_deploy_per_player: 3,
     generated_by_system: true,
     created_at: new Date(),
     ready_at: new Date(),
