@@ -7,7 +7,7 @@ import { getAssetItemDeets, getRarityDeets } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
 import { FancyButton } from "../../../Common/FancyButton"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
-import { TooltipHelper } from "../../../Common/TooltipHelper"
+import { NiceTooltip } from "../../../Common/Nice/NiceTooltip"
 import { ArrayItem } from "./CrateRewardsModal"
 import { TruncateTextLines } from "../../../../theme/styles"
 
@@ -48,11 +48,11 @@ export const CrateRewardItemsLarge = ({ item, largerVersion }: CrateRewardItemsP
                     <Box sx={{ position: "relative", width: "100%", height: largerVersion ? "30rem" : "22rem", mb: "1rem" }}>
                         <MediaPreview imageUrl={imageUrl} videoUrls={[animationUrl, cardAnimationUrl]} objectFit="cover" />
 
-                        <TooltipHelper color={assetItemDeets.color} placement="right" text={assetItemDeets.label}>
+                        <NiceTooltip color={assetItemDeets.color} placement="right" text={assetItemDeets.label}>
                             <Box sx={{ position: "absolute", top: ".1rem", left: ".1rem" }}>
                                 {assetItemDeets.icon && <assetItemDeets.icon size="2rem" fill={assetItemDeets.color} />}
                             </Box>
-                        </TooltipHelper>
+                        </NiceTooltip>
                     </Box>
 
                     {rarityDeets && (item?.skin || item?.type === "mech_skin" || item?.type === "weapon_skin") && (
@@ -114,11 +114,11 @@ export const CrateRewardItemsSmall = ({ item }: CrateRewardItemsProps) => {
                     >
                         <MediaPreview imageUrl={imageUrl} videoUrls={[animationUrl, cardAnimationUrl]} showBorder />
 
-                        <TooltipHelper color={assetItemDeets.color} placement="right" text={assetItemDeets.label}>
+                        <NiceTooltip color={assetItemDeets.color} placement="right" text={assetItemDeets.label}>
                             <Box sx={{ position: "absolute", top: ".1rem", left: ".1rem" }}>
                                 {assetItemDeets.icon && <assetItemDeets.icon size="1.4rem" fill={assetItemDeets.color} />}
                             </Box>
-                        </TooltipHelper>
+                        </NiceTooltip>
                     </Box>
 
                     <Stack sx={{ maxWidth: "28rem" }}>

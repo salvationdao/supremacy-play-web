@@ -5,7 +5,7 @@ import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
 import { fonts } from "../../../../theme/theme"
 import { FancyButton } from "../../../Common/FancyButton"
-import { TooltipHelper } from "../../../Common/TooltipHelper"
+import { NiceTooltip } from "../../../Common/Nice/NiceTooltip"
 
 export const SectionCollapsible = ({
     label,
@@ -62,7 +62,7 @@ export const SectionCollapsible = ({
                     </Typography>
 
                     {tooltip && (
-                        <TooltipHelper text={tooltip} placement="right">
+                        <NiceTooltip text={tooltip} placement="right">
                             <Box
                                 sx={{
                                     ml: "auto",
@@ -72,7 +72,7 @@ export const SectionCollapsible = ({
                             >
                                 <SvgInfoCircular fill={theme.factionTheme.secondary} size="1.5rem" />
                             </Box>
-                        </TooltipHelper>
+                        </NiceTooltip>
                     )}
                 </Stack>
             </FancyButton>

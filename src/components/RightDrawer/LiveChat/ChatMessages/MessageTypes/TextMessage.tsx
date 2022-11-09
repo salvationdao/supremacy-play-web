@@ -11,7 +11,7 @@ import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
 import { ChatMessage, ChatMessageType, RoleType, TextMessageData, User } from "../../../../../types"
-import { TooltipHelper } from "../../../../Common/TooltipHelper"
+import { NiceTooltip } from "../../../../Common/Nice/NiceTooltip"
 import { Reactions } from "../../AdditionalOptions/Reactions"
 import { ReportModal } from "../../AdditionalOptions/ReportModal"
 import { UserDetailsPopover } from "./UserDetailsPopover"
@@ -331,7 +331,7 @@ export const TextMessage = React.memo(function TextMessage({
                                         />
                                     )}
                                     {user_rank && rankDeets && (
-                                        <TooltipHelper
+                                        <NiceTooltip
                                             placement="top"
                                             renderNode={
                                                 <Typography
@@ -350,7 +350,7 @@ export const TextMessage = React.memo(function TextMessage({
                                             }
                                         >
                                             <Box>{rankDeets.icon}</Box>
-                                        </TooltipHelper>
+                                        </NiceTooltip>
                                     )}
                                 </Stack>
 

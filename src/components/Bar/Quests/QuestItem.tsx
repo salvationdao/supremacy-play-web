@@ -5,7 +5,7 @@ import { SvgChest, SvgInfoCircular } from "../../../assets"
 import { colors, fonts } from "../../../theme/theme"
 import { QuestProgress, QuestStat } from "../../../types"
 import { ProgressBar } from "../../Common/ProgressBar"
-import { TooltipHelper } from "../../Common/TooltipHelper"
+import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
 import { TruncateTextLines } from "../../../theme/styles"
 
 interface QuestItemProps {
@@ -65,11 +65,11 @@ export const QuestItem = React.memo(function QuestItem({ questStat, progress, sh
                 />
             )}
 
-            <TooltipHelper color={colors.purple} placement="top-end" text={questStat.description}>
+            <NiceTooltip color={colors.purple} placement="top-end" text={questStat.description}>
                 <Box sx={{ position: "absolute", top: ".4rem", right: ".4rem", opacity: 0.4, ":hover": { opacity: 1 } }}>
                     <SvgInfoCircular size="1.3rem" />
                 </Box>
-            </TooltipHelper>
+            </NiceTooltip>
 
             <Stack spacing=".8rem" sx={{ flex: 1 }}>
                 <Stack spacing=".8rem" direction="row" alignItems="center" justifyContent="space-between">

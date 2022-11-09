@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { TooltipHelper } from "../../.."
+import { NiceTooltip } from "../../.."
 import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
 import { getRarityDeets } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
@@ -55,66 +55,66 @@ export const MechLoadoutIcons = ({ mech, mechDetails }: { mech?: MechBasic; mech
             )}
 
             {!hasSkin && (
-                <TooltipHelper color={colors.chassisSkin} text="Submodel" placement="bottom">
+                <NiceTooltip color={colors.chassisSkin} text="Submodel" placement="bottom">
                     <Box>
                         <SvgSkin fill={hasSkin ? colors.chassisSkin : `${colors.darkGrey}80`} size="1.7rem" />
                     </Box>
-                </TooltipHelper>
+                </NiceTooltip>
             )}
 
-            <TooltipHelper color={colors.powerCore} text="Power core" placement="bottom">
+            <NiceTooltip color={colors.powerCore} text="Power core" placement="bottom">
                 <Box>
                     <SvgPowerCore fill={hasPowerCore ? colors.powerCore : `${colors.darkGrey}80`} size="1.7rem" />
                 </Box>
-            </TooltipHelper>
+            </NiceTooltip>
 
             {weaponCount > 0 &&
                 new Array(weaponCount).fill(0).map((_, index) => (
-                    <TooltipHelper color={colors.weapons} key={`mech-info-${index}`} text="Weapon" placement="bottom">
+                    <NiceTooltip color={colors.weapons} key={`mech-info-${index}`} text="Weapon" placement="bottom">
                         <Box>
                             <SvgWeapons fill={colors.weapons} size="1.7rem" />
                         </Box>
-                    </TooltipHelper>
+                    </NiceTooltip>
                 ))}
 
             {weaponSlots - weaponCount > 0 &&
                 new Array(weaponSlots - weaponCount).fill(0).map((_, index) => (
-                    <TooltipHelper color={colors.weapons} key={`mech-info-${index}`} text="Weapon" placement="bottom">
+                    <NiceTooltip color={colors.weapons} key={`mech-info-${index}`} text="Weapon" placement="bottom">
                         <Box>
                             <SvgWeapons fill={`${colors.darkGrey}80`} size="1.7rem" />
                         </Box>
-                    </TooltipHelper>
+                    </NiceTooltip>
                 ))}
 
             {utilityCount > 0 &&
                 new Array(utilityCount).fill(0).map((_, index) => (
-                    <TooltipHelper color={colors.utilities} key={`mech-info-${index}`} text="Utility" placement="bottom">
+                    <NiceTooltip color={colors.utilities} key={`mech-info-${index}`} text="Utility" placement="bottom">
                         <Box>
                             <SvgUtilities fill={colors.utilities} size="1.7rem" />
                         </Box>
-                    </TooltipHelper>
+                    </NiceTooltip>
                 ))}
 
             {utilitySlots - utilityCount > 0 &&
                 new Array(utilitySlots - utilityCount).fill(0).map((_, index) => (
-                    <TooltipHelper color={colors.utilities} key={`mech-info-${index}`} text="Utility" placement="bottom">
+                    <NiceTooltip color={colors.utilities} key={`mech-info-${index}`} text="Utility" placement="bottom">
                         <Box>
                             <SvgUtilities fill={`${colors.darkGrey}80`} size="1.7rem" />
                         </Box>
-                    </TooltipHelper>
+                    </NiceTooltip>
                 ))}
 
-            <TooltipHelper color={colors.introAnimation} text="Outro animation" placement="bottom">
+            <NiceTooltip color={colors.introAnimation} text="Outro animation" placement="bottom">
                 <Box>
                     <SvgIntroAnimation fill={hasIntroAnimation ? colors.introAnimation : `${colors.darkGrey}80`} size="1.7rem" />
                 </Box>
-            </TooltipHelper>
+            </NiceTooltip>
 
-            <TooltipHelper color={colors.outroAnimation} text="Intro animation" placement="bottom">
+            <NiceTooltip color={colors.outroAnimation} text="Intro animation" placement="bottom">
                 <Box>
                     <SvgOutroAnimation fill={hasOutroAnimation ? colors.outroAnimation : `${colors.darkGrey}80`} size="1.7rem" />
                 </Box>
-            </TooltipHelper>
+            </NiceTooltip>
         </Stack>
     )
 }

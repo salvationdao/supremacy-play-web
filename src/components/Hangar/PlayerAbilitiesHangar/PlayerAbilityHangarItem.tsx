@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import React, { useMemo } from "react"
-import { ClipThing, TooltipHelper } from "../.."
+import { ClipThing, NiceTooltip } from "../.."
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { fonts } from "../../../theme/theme"
@@ -67,7 +67,7 @@ export const PlayerAbilityHangarItem = React.memo(function PlayerAbilityHangarIt
                         {playerAbility.count} in inventory
                     </Typography>
 
-                    <TooltipHelper text={abilityTypeDescription} placement="bottom-start">
+                    <NiceTooltip text={abilityTypeDescription} placement="bottom-start">
                         <Stack
                             justifyContent="center"
                             alignItems="center"
@@ -84,7 +84,7 @@ export const PlayerAbilityHangarItem = React.memo(function PlayerAbilityHangarIt
                         >
                             {abilityTypeIcon}
                         </Stack>
-                    </TooltipHelper>
+                    </NiceTooltip>
                 </Box>
 
                 <Stack spacing="1rem" sx={{ flex: 1, px: ".4rem", py: ".3rem" }}>

@@ -3,7 +3,7 @@ import { useEffect } from "react"
 import { SvgContentCopyIcon, SvgFacebook, SvgTwitter } from "../../../assets"
 import { useToggle } from "../../../hooks"
 import { fonts } from "../../../theme/theme"
-import { TooltipHelper } from "../../Common/TooltipHelper"
+import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
 
 export const SocialsShare = () => {
     const [copySuccess, toggleCopySuccess] = useToggle()
@@ -40,7 +40,7 @@ export const SocialsShare = () => {
                 <SvgTwitter size="2.5rem" fill="#1DA1F2" />
             </IconButton>
 
-            <TooltipHelper open={copySuccess} placement="right" text="Copied!">
+            <NiceTooltip open={copySuccess} placement="right" text="Copied!">
                 <Box>
                     <IconButton
                         size="small"
@@ -55,7 +55,7 @@ export const SocialsShare = () => {
                         <SvgContentCopyIcon size="2rem" />
                     </IconButton>
                 </Box>
-            </TooltipHelper>
+            </NiceTooltip>
         </Stack>
     )
 }

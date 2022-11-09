@@ -5,7 +5,7 @@ import { useTraining } from "../../../containers/training"
 import { colors } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility, PlayerAbilityStages } from "../../../types"
 import { FancyButton } from "../../Common/FancyButton"
-import { TooltipHelper } from "../../Common/TooltipHelper"
+import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
 import { TruncateTextLines } from "../../../theme/styles"
 
 export const PlayerAbilityCardBT = ({ playerAbility }: { playerAbility: PlayerAbility }) => {
@@ -33,7 +33,7 @@ export const PlayerAbilityCardBT = ({ playerAbility }: { playerAbility: PlayerAb
 
     return (
         <>
-            <TooltipHelper text={playerAbility.ability.description} placement="bottom">
+            <NiceTooltip text={playerAbility.ability.description} placement="bottom">
                 <FancyButton
                     clipThingsProps={{
                         clipSize: "6px",
@@ -135,7 +135,7 @@ export const PlayerAbilityCardBT = ({ playerAbility }: { playerAbility: PlayerAb
                         </Typography>
                     </Stack>
                 </FancyButton>
-            </TooltipHelper>
+            </NiceTooltip>
         </>
     )
 }

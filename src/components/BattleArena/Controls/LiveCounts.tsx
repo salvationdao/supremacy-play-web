@@ -1,5 +1,5 @@
 import { Stack, Typography } from "@mui/material"
-import { TooltipHelper } from "../.."
+import { NiceTooltip } from "../.."
 import { SvgUser } from "../../../assets"
 import { useGameServerSubscription } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -35,10 +35,10 @@ export const LiveCountsInner = ({ viewerCount }: InnerProps) => {
 
 const ReUsedText = ({ text, color, textColor, tooltip }: { text: string; color?: string; textColor?: string; tooltip: string }) => {
     return (
-        <TooltipHelper color={color} textColor={textColor} text={tooltip} isCentered>
+        <NiceTooltip color={color} textColor={textColor} text={tooltip} isCentered>
             <Typography variant="body2" sx={{ color: color || colors.text, lineHeight: 1 }}>
                 {text}
             </Typography>
-        </TooltipHelper>
+        </NiceTooltip>
     )
 }

@@ -3,7 +3,7 @@ import { colors } from "../../../../theme/theme"
 import { Weapon } from "../../../../types"
 import { ItemType } from "../../../../types/marketplace"
 import { ClipThing } from "../../../Common/ClipThing"
-import { TooltipHelper } from "../../../Common/TooltipHelper"
+import { NiceTooltip } from "../../../Common/Nice/NiceTooltip"
 import { ReusableButton } from "../../WarMachinesHangar/WarMachineDetails/MechButtons"
 
 export const WeaponButtons = ({ weaponDetails }: { weaponDetails: Weapon }) => {
@@ -24,7 +24,7 @@ export const WeaponButtons = ({ weaponDetails }: { weaponDetails: Weapon }) => {
             sx={{ m: "-.3rem" }}
         >
             <Box sx={{ p: "1rem", gap: ".8rem", display: "grid", gridTemplateColumns: "repeat(1, 1fr)" }}>
-                <TooltipHelper
+                <NiceTooltip
                     placement={"right"}
                     text={marketLocked ? "Unfortunately assets on the old staking contract cannot be listed on the marketplace." : ""}
                 >
@@ -43,7 +43,7 @@ export const WeaponButtons = ({ weaponDetails }: { weaponDetails: Weapon }) => {
                             }
                         />
                     </Box>
-                </TooltipHelper>
+                </NiceTooltip>
             </Box>
         </ClipThing>
     )

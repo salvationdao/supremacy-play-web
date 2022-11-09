@@ -1,8 +1,8 @@
 import { Stack, SxProps, Tooltip, Typography } from "@mui/material"
 import { ReactElement } from "react"
-import { ClipThing } from ".."
-import { autoTextColor } from "../../helpers"
-import { fonts, siteZIndex } from "../../theme/theme"
+import { autoTextColor } from "../../../helpers"
+import { fonts, siteZIndex } from "../../../theme/theme"
+import { NiceBoxThing } from "./NiceBoxThing"
 
 export type TooltipPlacement =
     | "bottom-end"
@@ -18,7 +18,7 @@ export type TooltipPlacement =
     | "top-start"
     | "top"
 
-export const TooltipHelper = ({
+export const NiceTooltip = ({
     text,
     renderNode,
     children,
@@ -28,7 +28,6 @@ export const TooltipHelper = ({
     color,
     textColor: tColor,
     tooltipSx,
-    clipThingColor,
 }: {
     text?: string
     renderNode?: React.ReactNode
@@ -39,7 +38,6 @@ export const TooltipHelper = ({
     color?: string
     textColor?: string
     tooltipSx?: SxProps
-    clipThingColor?: string
 }) => {
     if (!text && !renderNode) return <>{children}</>
 
@@ -58,22 +56,8 @@ export const TooltipHelper = ({
                 },
             }}
             title={
-                <ClipThing
-                    clipSize="6px"
-                    clipSlantSize="3px"
-                    border={{
-                        borderColor: clipThingColor || primaryColor,
-                        borderThickness: "1.2px",
-                    }}
-                    corners={{
-                        topRight: true,
-                        bottomLeft: true,
-                    }}
-                    opacity={0.99}
-                    backgroundColor={primaryColor}
-                    sx={{ height: "100%" }}
-                >
-                    <Stack sx={{ height: "100%", px: "1.1rem", py: ".6rem" }}>
+                <NiceBoxThing border={{ color: primaryColor }} background={{ color: [primaryColor] }} sx={{ height: "100%" }}>
+                    <Stack sx={{ height: "100%", p: ".5rem 1.2rem" }}>
                         {renderNode || (
                             <Typography
                                 variant="body1"
@@ -83,7 +67,7 @@ export const TooltipHelper = ({
                             </Typography>
                         )}
                     </Stack>
-                </ClipThing>
+                </NiceBoxThing>
             }
             componentsProps={{
                 popper: {

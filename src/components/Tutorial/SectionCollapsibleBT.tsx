@@ -4,7 +4,7 @@ import { SvgDropdownArrow, SvgInfoCircular } from "../../assets"
 import { useToggle } from "../../hooks"
 import { fonts } from "../../theme/theme"
 import { FancyButton } from "../Common/FancyButton"
-import { TooltipHelper } from "../Common/TooltipHelper"
+import { NiceTooltip } from "../Common/Nice/NiceTooltip"
 
 export const SectionCollapsibleBT = ({
     label,
@@ -57,7 +57,7 @@ export const SectionCollapsibleBT = ({
                     </Typography>
 
                     {tooltip && (
-                        <TooltipHelper text={tooltip} placement="right">
+                        <NiceTooltip text={tooltip} placement="right">
                             <Box
                                 sx={{
                                     ml: "auto",
@@ -67,7 +67,7 @@ export const SectionCollapsibleBT = ({
                             >
                                 <SvgInfoCircular fill={isExpanded ? secondaryColor : "#FFFFFF"} size="1.5rem" />
                             </Box>
-                        </TooltipHelper>
+                        </NiceTooltip>
                     )}
                 </Stack>
             </FancyButton>

@@ -6,7 +6,7 @@ import { TruncateTextLines } from "../../../../theme/styles"
 import { colors } from "../../../../theme/theme"
 import { LocationSelectType, AnyAbility } from "../../../../types"
 import { FancyButton } from "../../../Common/FancyButton"
-import { TooltipHelper } from "../../../Common/TooltipHelper"
+import { NiceTooltip } from "../../../Common/Nice/NiceTooltip"
 
 export const SupportAbilityCard = ({ supportAbility }: { supportAbility: AnyAbility }) => {
     const { useAnyAbility } = useMiniMapPixi()
@@ -34,7 +34,7 @@ export const SupportAbilityCard = ({ supportAbility }: { supportAbility: AnyAbil
     }, [supportAbility, useAnyAbility])
 
     return (
-        <TooltipHelper color={supportAbility.colour} text={supportAbility.description} placement="bottom">
+        <NiceTooltip color={supportAbility.colour} text={supportAbility.description} placement="bottom">
             <FancyButton
                 clipThingsProps={{
                     clipSize: "6px",
@@ -116,6 +116,6 @@ export const SupportAbilityCard = ({ supportAbility }: { supportAbility: AnyAbil
                     </Typography>
                 </Stack>
             </FancyButton>
-        </TooltipHelper>
+        </NiceTooltip>
     )
 }

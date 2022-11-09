@@ -4,7 +4,7 @@ import { useActiveRouteID } from "../../../hooks/useActiveRouteID"
 import { Routes, RouteSingleID } from "../../../routes"
 
 // This hook does all the hard work for you when implementing a nav tab
-// inside page to nav between other pages in the same route group
+// inside a page to nav between other pages in the same route group
 export const usePageTabs = () => {
     const history = useHistory()
     const activeRoute = useActiveRouteID()

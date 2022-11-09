@@ -1,7 +1,7 @@
 import { Box, Divider, Grow, Stack, Typography } from "@mui/material"
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 import { useTimer } from "use-timer"
-import { FancyButton, TooltipHelper } from "../../.."
+import { FancyButton, NiceTooltip } from "../../.."
 import { SvgCooldown, SvgInfoCircular, SvgSupToken } from "../../../../assets"
 import { useAuth, useChat } from "../../../../containers"
 import { getUserRankDeets, snakeToTitle, supFormatter } from "../../../../helpers"
@@ -135,7 +135,7 @@ const BanProposalInner = ({
                 <Typography>Do you agree with this proposal?</Typography>
 
                 <Stack direction="row" spacing=".6rem">
-                    <TooltipHelper placement="bottom" text="GENERALS can skip the voting process and instantly punish a player.">
+                    <NiceTooltip placement="bottom" text="GENERALS can skip the voting process and instantly punish a player.">
                         <FancyButton
                             clipThingsProps={{
                                 clipSize: "5px",
@@ -154,7 +154,7 @@ const BanProposalInner = ({
                                 </Typography>
                             </Stack>
                         </FancyButton>
-                    </TooltipHelper>
+                    </NiceTooltip>
 
                     <FancyButton
                         clipThingsProps={{
@@ -229,11 +229,11 @@ const BanProposalInner = ({
 
                             <LineItem title="PUNISH">
                                 <Typography sx={{ lineHeight: 1 }}>{snakeToTitle(banProposal.punish_option.key)}</Typography>
-                                <TooltipHelper placement="bottom" text={banProposal.punish_option.description}>
+                                <NiceTooltip placement="bottom" text={banProposal.punish_option.description}>
                                     <Box>
                                         <SvgInfoCircular size="1.1rem" sx={{ pt: 0, pb: 0, opacity: 0.4, ":hover": { opacity: 1 } }} />
                                     </Box>
-                                </TooltipHelper>
+                                </NiceTooltip>
                             </LineItem>
 
                             <LineItem title="DURATION">

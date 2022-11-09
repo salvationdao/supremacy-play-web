@@ -1,8 +1,8 @@
 import { Stack } from "@mui/material"
 import { useMemo } from "react"
 import { useAuth, useSupremacy } from "../../../containers"
-import { usePageTabs } from "../../../hooks/usePageTabs"
 import { NavTabs } from "../../Common/NavTabs/NavTabs"
+import { usePageTabs } from "../../Common/NavTabs/usePageTabs"
 
 export const FactionPassDashboard = () => {
     const { factionID } = useAuth()

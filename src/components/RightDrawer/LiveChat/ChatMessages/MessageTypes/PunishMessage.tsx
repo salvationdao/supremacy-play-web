@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { LineItem, TooltipHelper } from "../../../.."
+import { LineItem, NiceTooltip } from "../../../.."
 import { SvgAnnouncement, SvgCooldown, SvgFastRepair, SvgInfoCircular } from "../../../../../assets"
 import { dateFormatter, getUserRankDeets, snakeToTitle } from "../../../../../helpers"
 import { useToggle } from "../../../../../hooks"
@@ -94,9 +94,9 @@ export const PunishMessage = ({ data, sentAt, fontSize }: { data?: PunishMessage
                         <Player player={reported_user} />
                         <Typography>&nbsp;{is_passed ? "was" : "was not"} punished with&nbsp;</Typography>
 
-                        <TooltipHelper placement="left" text={punish_option.description}>
+                        <NiceTooltip placement="left" text={punish_option.description}>
                             <Typography sx={{ color: colors.lightNeonBlue, ":hover": { opacity: 0.8 } }}>{snakeToTitle(punish_option.key, true)}</Typography>
-                        </TooltipHelper>
+                        </NiceTooltip>
 
                         {is_passed && (
                             <>
@@ -150,11 +150,11 @@ export const PunishMessage = ({ data, sentAt, fontSize }: { data?: PunishMessage
 
                         <LineItem title="PUNISH">
                             <Typography>{snakeToTitle(punish_option.key)}</Typography>
-                            <TooltipHelper placement="bottom" text={punish_option.description}>
+                            <NiceTooltip placement="bottom" text={punish_option.description}>
                                 <Box>
                                     <SvgInfoCircular size="1.1rem" sx={{ pt: 0, pb: 0, opacity: 0.4, ":hover": { opacity: 1 } }} />
                                 </Box>
-                            </TooltipHelper>
+                            </NiceTooltip>
                         </LineItem>
 
                         <LineItem title="DURATION">

@@ -1,6 +1,6 @@
 import { Box, Fade, Stack, Typography } from "@mui/material"
 import React, { useCallback, useMemo, useState } from "react"
-import { FancyButton, TooltipHelper } from "../.."
+import { FancyButton, NiceTooltip } from "../.."
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../assets"
 import { useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -141,7 +141,7 @@ export const PlayerAbilityStoreItem = React.memo(function PlayerAbilityStoreItem
                                 }}
                             />
 
-                            <TooltipHelper text={abilityTypeDescription} placement="bottom">
+                            <NiceTooltip text={abilityTypeDescription} placement="bottom">
                                 <Stack
                                     justifyContent="center"
                                     alignItems="center"
@@ -158,7 +158,7 @@ export const PlayerAbilityStoreItem = React.memo(function PlayerAbilityStoreItem
                                 >
                                     {abilityTypeIcon}
                                 </Stack>
-                            </TooltipHelper>
+                            </NiceTooltip>
 
                             <Box
                                 sx={{
