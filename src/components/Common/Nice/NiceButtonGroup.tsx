@@ -1,7 +1,8 @@
 import { IconButton, Stack, SxProps, Typography } from "@mui/material"
+import { ReactNode } from "react"
 import { fonts } from "../../../theme/theme"
 
-export const NiceButtonGroup = ({
+export const NiceButtonGroup = <T,>({
     primaryColor: _primaryColor,
     secondaryColor: _secondaryColor,
     selected,
@@ -11,18 +12,13 @@ export const NiceButtonGroup = ({
 }: {
     primaryColor?: string
     secondaryColor?: string
-    selected: string | number
-    onSelected: (value: string | number) => void
-    options: (
-        | {
-              label: string
-              value: string
-          }
-        | {
-              label: number
-              value: number
-          }
-    )[]
+    selected: T
+    onSelected: (value: T) => void
+    options: {
+        label: string
+        value: T
+        svg?: ReactNode
+    }[]
     sx?: SxProps
 }) => {
     const primaryColor = _primaryColor || "#FFFFFF"
@@ -50,11 +46,16 @@ export const NiceButtonGroup = ({
                             borderRadius: 0,
                             color: isActive ? `${secondaryColor} !important` : "#FFFFFF !important",
                             backgroundColor: isActive ? `${primaryColor} !important` : "#FFFFFF15",
+
+                            "*": {
+                                fill: isActive ? `${secondaryColor} !important` : "#FFFFFF !important",
+                            },
                         }}
                         size="small"
                         onClick={() => onSelected(option.value)}
                     >
                         <Typography variant="subtitle1" sx={{ lineHeight: 1.5, color: "inherit", fontFamily: fonts.nostromoBold }}>
+                            {option.svg}
                             {option.label}
                         </Typography>
                     </IconButton>

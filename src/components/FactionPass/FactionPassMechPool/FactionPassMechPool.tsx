@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
-import { SvgFilter, SvgSearch } from "../../../assets"
+import { SvgFilter, SvgGridView, SvgListView, SvgSearch } from "../../../assets"
 import { useAuth, useSupremacy } from "../../../containers"
 import { parseString } from "../../../helpers"
 import { usePagination, useToggle } from "../../../hooks"
@@ -23,9 +23,14 @@ const sortOptions = [
 ]
 
 const pageSizeOptions = [
-    { label: 10, value: 10 },
-    { label: 20, value: 20 },
-    { label: 40, value: 40 },
+    { label: "10", value: 10 },
+    { label: "20", value: 20 },
+    { label: "40", value: 40 },
+]
+
+const layoutOptions = [
+    { label: "", value: true, svg: <SvgGridView size="1.5rem" /> },
+    { label: "", value: false, svg: <SvgListView size="1.5rem" /> },
 ]
 
 export const FactionPassMechPool = () => {
@@ -37,6 +42,7 @@ export const FactionPassMechPool = () => {
     const [showFilters, toggleShowFilters] = useToggle()
     const [search, setSearch] = useState("")
     const [sort, setSort] = useState<string>(SortTypeLabel.MechQueueAsc)
+    const [isGridView, toggleIsGridView] = useToggle(true)
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: 10,
         page: 1,
@@ -90,6 +96,15 @@ export const FactionPassMechPool = () => {
                     options={pageSizeOptions}
                     selected={pageSize}
                     onSelected={(value) => changePageSize(parseString(value, 1))}
+                />
+
+                {/* Page layout options */}
+                <NiceButtonGroup
+                    primaryColor={faction.primary_color}
+                    secondaryColor={faction.secondary_color}
+                    options={layoutOptions}
+                    selected={isGridView}
+                    onSelected={(value) => toggleIsGridView(value)}
                 />
 
                 {/* Search bar */}

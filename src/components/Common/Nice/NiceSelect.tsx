@@ -13,18 +13,12 @@ export const NiceSelect = ({
     label?: string
     primaryColor?: string
     secondaryColor?: string
-    selected: string | number
-    onSelected: (value: string | number) => void
-    options: (
-        | {
-              label: string
-              value: string
-          }
-        | {
-              label: number
-              value: number
-          }
-    )[]
+    selected: string
+    onSelected: (value: string) => void
+    options: {
+        label: string
+        value: string
+    }[]
     sx?: SxProps
 }) => {
     const primaryColor = _primaryColor || "#FFFFFF"
