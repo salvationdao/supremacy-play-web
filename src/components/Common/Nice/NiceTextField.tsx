@@ -37,8 +37,7 @@ export const NiceTextField = ({
                         backgroundColor: `${primaryColor}10`,
                     },
                     ".MuiOutlinedInput-notchedOutline": {
-                        borderColor: `${primaryColor} !important`,
-                        borderWidth: "2px",
+                        border: `${primaryColor} 2px solid !important`,
                     },
                 },
                 ...sx,

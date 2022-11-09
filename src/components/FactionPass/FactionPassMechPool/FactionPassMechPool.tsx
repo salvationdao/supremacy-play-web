@@ -4,11 +4,21 @@ import { SvgFilter, SvgSearch } from "../../../assets"
 import { useAuth, useSupremacy } from "../../../containers"
 import { useToggle } from "../../../hooks"
 import { fonts } from "../../../theme/theme"
+import { SortTypeLabel } from "../../../types/marketplace"
 import { NavTabs } from "../../Common/NavTabs/NavTabs"
 import { usePageTabs } from "../../Common/NavTabs/usePageTabs"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 import { NiceSelect } from "../../Common/Nice/NiceSelect"
 import { NiceTextField } from "../../Common/Nice/NiceTextField"
+
+const sortOptions = [
+    { label: SortTypeLabel.MechQueueAsc, value: SortTypeLabel.MechQueueAsc },
+    { label: SortTypeLabel.MechQueueDesc, value: SortTypeLabel.MechQueueDesc },
+    { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
+    { label: SortTypeLabel.AlphabeticalReverse, value: SortTypeLabel.AlphabeticalReverse },
+    { label: SortTypeLabel.RarestAsc, value: SortTypeLabel.RarestAsc },
+    { label: SortTypeLabel.RarestDesc, value: SortTypeLabel.RarestDesc },
+]
 
 export const FactionPassMechPool = () => {
     const { factionID } = useAuth()
@@ -18,6 +28,7 @@ export const FactionPassMechPool = () => {
     // Filter, search, pagination
     const [showFilters, toggleShowFilters] = useToggle()
     const [search, setSearch] = useState("")
+    const [sort, setSort] = useState<string>(SortTypeLabel.MechQueueAsc)
 
     const faction = useMemo(() => {
         return getFaction(factionID)
@@ -76,13 +87,10 @@ export const FactionPassMechPool = () => {
                     label="Sort:"
                     primaryColor={faction.primary_color}
                     secondaryColor={faction.secondary_color}
-                    options={[
-                        { label: "test", value: "test" },
-                        { label: "test2", value: "test2" },
-                    ]}
-                    selected="test"
-                    onSelected={(value) => console.log(value)}
-                    sx={{ minWidth: "22rem" }}
+                    options={sortOptions}
+                    selected={sort}
+                    onSelected={(value) => setSort(value)}
+                    sx={{ minWidth: "26rem" }}
                 />
             </Stack>
         </Stack>
