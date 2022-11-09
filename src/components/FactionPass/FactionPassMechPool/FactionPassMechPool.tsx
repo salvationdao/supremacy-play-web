@@ -20,7 +20,7 @@ export const FactionPassMechPool = () => {
         () =>
             Routes.filter((route) => route.showInMainMenu?.groupID === activeRoute?.showInMainMenu?.groupID).map((route) => ({
                 id: route.id,
-                label: route.showInMainMenu?.label,
+                label: route.showInMainMenu?.label || "---",
             })),
         [activeRoute?.showInMainMenu?.groupID],
     )

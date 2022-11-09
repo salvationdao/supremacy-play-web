@@ -7,8 +7,8 @@ import { ArrowButton } from "./ArrowButton"
 
 export const TAB_HEIGHT = 3.8 // rems
 
-interface OneTab {
-    id: string
+interface OneTab<T> {
+    id: T
     label: string
 }
 
@@ -21,7 +21,7 @@ export const NavTabs = <T,>({
 }: {
     activeTabID?: T
     setActiveTabID: React.Dispatch<React.SetStateAction<T | undefined>>
-    tabs: OneTab[]
+    tabs: OneTab<T>[]
     prevTab: (activeTabID: T) => void
     nextTab: (activeTabID: T) => void
 }) => {
@@ -75,10 +75,10 @@ export const NavTabs = <T,>({
                     setActiveTabID(newValue)
                 }}
             >
-                {tabs.map((tab) => {
+                {tabs.map((tab, i) => {
                     return (
                         <Tab
-                            key={tab.id}
+                            key={i}
                             value={tab.id}
                             label={
                                 <Typography
