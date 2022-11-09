@@ -1,12 +1,12 @@
 import { useGlobalNotifications, useSupremacy } from "../../containers"
 import { Faction } from "../../types"
-import { ClipThing } from "./ClipThing"
+import { ClipThing } from "./Deprecated/ClipThing"
 import { fonts } from "../../theme/theme"
 import { Box, Fade, Stack, Typography, useMediaQuery } from "@mui/material"
 import { useCallback, useState } from "react"
 import { GameServerKeys } from "../../keys"
 import { useGameServerCommandsUser } from "../../hooks/useGameServer"
-import { FancyButton } from "./FancyButton"
+import { FancyButton } from "./Deprecated/FancyButton"
 
 export const SelectFaction = () => {
     const { factionsAll } = useSupremacy()

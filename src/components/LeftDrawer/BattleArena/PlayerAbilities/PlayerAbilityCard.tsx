@@ -4,7 +4,7 @@ import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "..
 import { useMiniMapPixi } from "../../../../containers"
 import { colors } from "../../../../theme/theme"
 import { LocationSelectType, PlayerAbility } from "../../../../types"
-import { FancyButton } from "../../../Common/FancyButton"
+import { FancyButton } from "../../../Common/Deprecated/FancyButton"
 import { NiceTooltip } from "../../../Common/Nice/NiceTooltip"
 import { PlayerAbilityCooldownIndicator } from "./PlayerAbilityCooldownIndicator"
 import { TruncateTextLines } from "../../../../theme/styles"

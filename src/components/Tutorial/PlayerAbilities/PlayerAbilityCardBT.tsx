@@ -4,7 +4,7 @@ import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "..
 import { useTraining } from "../../../containers/training"
 import { colors } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbility, PlayerAbilityStages } from "../../../types"
-import { FancyButton } from "../../Common/FancyButton"
+import { FancyButton } from "../../Common/Deprecated/FancyButton"
 import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
 import { TruncateTextLines } from "../../../theme/styles"
 

@@ -6,7 +6,7 @@ import { dateFormatter, getUserRankDeets, snakeToTitle } from "../../../../../he
 import { useToggle } from "../../../../../hooks"
 import { colors } from "../../../../../theme/theme"
 import { PunishMessageData } from "../../../../../types/chat"
-import { Player } from "../../../../Common/Player"
+import { PlayerNameGid } from "../../../../Common/PlayerNameGid"
 
 export const PunishMessage = ({ data, sentAt, fontSize }: { data?: PunishMessageData; sentAt: Date; fontSize: number }) => {
     const [isExpanded, toggleIsExpanded] = useToggle()
@@ -91,7 +91,7 @@ export const PunishMessage = ({ data, sentAt, fontSize }: { data?: PunishMessage
                             },
                         }}
                     >
-                        <Player player={reported_user} />
+                        <PlayerNameGid player={reported_user} />
                         <Typography>&nbsp;{is_passed ? "was" : "was not"} punished with&nbsp;</Typography>
 
                         <NiceTooltip placement="left" text={punish_option.description}>
@@ -141,11 +141,11 @@ export const PunishMessage = ({ data, sentAt, fontSize }: { data?: PunishMessage
                         }}
                     >
                         <LineItem title="INITIATOR" color={colors.green}>
-                            <Player player={issued_by_user} />
+                            <PlayerNameGid player={issued_by_user} />
                         </LineItem>
 
                         <LineItem title="AGAINST">
-                            <Player player={reported_user} />
+                            <PlayerNameGid player={reported_user} />
                         </LineItem>
 
                         <LineItem title="PUNISH">

@@ -11,7 +11,7 @@ import { GameServerKeys } from "../../../keys"
 import { scaleUpKeyframes } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { LocationSelectType, SaleAbility, SaleAbilityAvailability } from "../../../types"
-import { ClipThing } from "../../Common/ClipThing"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
 import { ConfirmModal } from "../../Common/ConfirmModal"
 
 export interface PlayerAbilityStoreItemProps {

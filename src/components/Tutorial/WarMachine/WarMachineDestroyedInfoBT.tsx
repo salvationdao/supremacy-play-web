@@ -7,7 +7,7 @@ import { useTheme } from "../../../containers/theme"
 import { GetMechDestroyedInfo } from "../../../fetching"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { DamageRecord, Faction, WarMachineDestroyedRecord, WarMachineState } from "../../../types"
-import { ClipThing } from "../../Common/ClipThing"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
 import { TruncateTextLines } from "../../../theme/styles"
 
 export const WarMachineDestroyedInfoBT = ({

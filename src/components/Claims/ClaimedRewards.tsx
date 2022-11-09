@@ -9,8 +9,8 @@ import { useGameServerCommandsFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
 import { MysteryCrateType, OpenCrateResponse, RewardResponse } from "../../types"
-import { ClipThing } from "../Common/ClipThing"
-import { FancyButton } from "../Common/FancyButton"
+import { ClipThing } from "../Common/Deprecated/ClipThing"
+import { FancyButton } from "../Common/Deprecated/FancyButton"
 import { OpeningCrate } from "../Hangar/MysteryCratesHangar/MysteryCratesHangar"
 
 interface ClaimedRewardsProps {

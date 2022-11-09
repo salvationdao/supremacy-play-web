@@ -10,7 +10,7 @@ import { GameServerKeys } from "../../../../keys"
 import { TruncateTextLines } from "../../../../theme/styles"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechDetails, RepairSlot } from "../../../../types"
-import { ClipThing } from "../../../Common/ClipThing"
+import { ClipThing } from "../../../Common/Deprecated/ClipThing"
 import { MechRepairBlocks } from "../Common/MechRepairBlocks"
 import { RepairBayItemActions } from "./RepairBayItemActions"
 

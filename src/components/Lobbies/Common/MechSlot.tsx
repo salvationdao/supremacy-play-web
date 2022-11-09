@@ -10,7 +10,7 @@ import { MechBarStats } from "../../Hangar/WarMachinesHangar/Common/MechBarStats
 import { WeaponSlot } from "./weaponSlot"
 import { MechRepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
 import { useAuth } from "../../../containers"
-import { FancyButton } from "../../Common/FancyButton"
+import { FancyButton } from "../../Common/Deprecated/FancyButton"
 import { TruncateTextLines } from "../../../theme/styles"
 
 interface MechSlotProps {

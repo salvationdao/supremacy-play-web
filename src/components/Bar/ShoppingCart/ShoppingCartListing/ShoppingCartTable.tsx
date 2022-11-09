@@ -6,9 +6,9 @@ import { snakeToTitle, generatePriceText, supFormatter } from "../../../../helpe
 import { colors, fonts } from "../../../../theme/theme"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { ShoppingCart, ShoppingCartItem } from "../../../../types/fiat"
-import { ClipThing } from "../../../Common/ClipThing"
+import { ClipThing } from "../../../Common/Deprecated/ClipThing"
 import { GameServerKeys } from "../../../../keys"
-import { FancyButton } from "../../../Common/FancyButton"
+import { FancyButton } from "../../../Common/Deprecated/FancyButton"
 import BigNumber from "bignumber.js"
 
 interface Props {

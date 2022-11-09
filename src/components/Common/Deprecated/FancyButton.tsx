@@ -2,8 +2,8 @@ import LoadingButton, { LoadingButtonProps } from "@mui/lab/LoadingButton"
 import { Box, SxProps } from "@mui/system"
 import React, { HTMLAttributeAnchorTarget } from "react"
 import { Link } from "react-router-dom"
-import { mergeDeep } from "../../helpers"
-import { colors, fonts } from "../../theme/theme"
+import { mergeDeep } from "../../../helpers"
+import { colors, fonts } from "../../../theme/theme"
 import { ClipThing, ClipThingProps } from "./ClipThing"
 interface FancyButtonProps extends LoadingButtonProps {
     sx?: SxProps

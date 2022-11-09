@@ -3,7 +3,7 @@ import { SvgAnnouncement, SvgCooldown } from "../../../../../assets"
 import { dateFormatter } from "../../../../../helpers"
 import { colors } from "../../../../../theme/theme"
 import { ChatMessageType, SystemBanMessageData } from "../../../../../types"
-import { Player } from "../../../../Common/Player"
+import { PlayerNameGid } from "../../../../Common/PlayerNameGid"
 import { LineItem } from "../../BanProposal/BanProposal"
 
 export const SystemBanMessage = ({
@@ -66,7 +66,7 @@ export const SystemBanMessage = ({
                         </LineItem>
 
                         <LineItem title="AGAINST">
-                            <Player player={banned_user} />
+                            <PlayerNameGid player={banned_user} />
                         </LineItem>
 
                         <LineItem title="RESTRICTED">

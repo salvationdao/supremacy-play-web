@@ -7,7 +7,7 @@ import { useGameServerCommandsUser, useGameServerSubscriptionSecuredUser } from 
 import { GameServerKeys } from "../../../keys"
 import { siteZIndex } from "../../../theme/theme"
 import { SystemMessage, SystemMessageDataType } from "../../../types"
-import { ClipThing } from "../../Common/ClipThing"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
 import { MessagesComposeView } from "./MessagesComposeView/MessagesComposeView"
 import { MessagesMainView } from "./MessagesMainView/MessagesMainView"
 

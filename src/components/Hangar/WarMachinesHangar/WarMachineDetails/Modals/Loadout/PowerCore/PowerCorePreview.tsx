@@ -4,7 +4,7 @@ import { useTheme } from "../../../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../../../helpers"
 import { colors, fonts } from "../../../../../../../theme/theme"
 import { PowerCore } from "../../../../../../../types"
-import { ClipThing } from "../../../../../../Common/ClipThing"
+import { ClipThing } from "../../../../../../Common/Deprecated/ClipThing"
 import { FeatherFade } from "../../../MechViewer/MechViewer"
 
 interface PowerCorePreviewProps {

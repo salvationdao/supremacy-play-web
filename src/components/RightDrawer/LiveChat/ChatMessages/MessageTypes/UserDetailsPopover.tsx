@@ -9,7 +9,7 @@ import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../../theme/theme"
 import { FeatureName, User, UserStat } from "../../../../../types"
 import { ConfirmModal } from "../../../../Common/ConfirmModal"
-import { Player } from "../../../../Common/Player"
+import { PlayerNameGid } from "../../../../Common/PlayerNameGid"
 
 enum DurationOptions {
     TwentyFourHours = "24 Hours",
@@ -133,7 +133,7 @@ export const UserDetailsPopover = ({
                 >
                     <Stack sx={{ minWidth: "20rem", px: "1.5rem", py: "1.2rem" }}>
                         <Box sx={{ mt: ".3rem", mb: ".7rem" }}>
-                            <Player player={fromUser} />
+                            <PlayerNameGid player={fromUser} />
                         </Box>
 
                         <Stack spacing=".3rem" sx={{ ml: ".2rem" }}>

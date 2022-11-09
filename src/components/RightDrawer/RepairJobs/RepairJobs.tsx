@@ -10,7 +10,7 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { RepairJob } from "../../../types/jobs"
 import { SortTypeLabel } from "../../../types/marketplace"
-import { TotalAndPageSizeOptions } from "../../Common/TotalAndPageSizeOptions"
+import { TotalAndPageSizeOptions } from "../../Common/Deprecated/TotalAndPageSizeOptions"
 import { DoRepairModal } from "./DoRepairModal"
 import { RepairJobItem } from "./RepairJobItem"
 

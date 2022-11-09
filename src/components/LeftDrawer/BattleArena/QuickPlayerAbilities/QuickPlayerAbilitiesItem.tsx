@@ -12,7 +12,7 @@ import { colors } from "../../../../theme/theme"
 import { LocationSelectType, SaleAbility, SaleAbilityAvailability } from "../../../../types"
 import { PreferenceToggle } from "../../../Bar/ProfileCard/PreferencesModal/NotificationPreferences"
 import { ConfirmModal } from "../../../Common/ConfirmModal"
-import { FancyButton } from "../../../Common/FancyButton"
+import { FancyButton } from "../../../Common/Deprecated/FancyButton"
 import { NiceTooltip } from "../../../Common/Nice/NiceTooltip"
 
 export interface QuickPlayerAbilitiesItemProps {

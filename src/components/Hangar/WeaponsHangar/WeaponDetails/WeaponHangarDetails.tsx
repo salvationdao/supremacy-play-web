@@ -7,7 +7,7 @@ import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServe
 import { GameServerKeys } from "../../../../keys"
 import { fonts, siteZIndex } from "../../../../theme/theme"
 import { Weapon } from "../../../../types"
-import { ClipThing } from "../../../Common/ClipThing"
+import { ClipThing } from "../../../Common/Deprecated/ClipThing"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { WeaponBarStats } from "../Common/WeaponBarStats"
 import { WeaponButtons } from "./WeaponHangarButtons"

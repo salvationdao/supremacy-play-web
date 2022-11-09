@@ -9,10 +9,10 @@ import { useGameServerCommandsUser, useGameServerSubscription } from "../../../h
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { SortDir } from "../../../types/marketplace"
-import { ClipThing } from "../../Common/ClipThing"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
 import { ConfirmModal } from "../../Common/ConfirmModal"
-import { FancyButton } from "../../Common/FancyButton"
-import { PageHeader } from "../../Common/PageHeader"
+import { FancyButton } from "../../Common/Deprecated/FancyButton"
+import { PageHeader } from "../../Common/Deprecated/PageHeader"
 
 interface CustomAvatarProps {
     playerID: string

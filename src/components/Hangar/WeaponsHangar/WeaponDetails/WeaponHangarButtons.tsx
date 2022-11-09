@@ -2,7 +2,7 @@ import { Box, useTheme } from "@mui/material"
 import { colors } from "../../../../theme/theme"
 import { Weapon } from "../../../../types"
 import { ItemType } from "../../../../types/marketplace"
-import { ClipThing } from "../../../Common/ClipThing"
+import { ClipThing } from "../../../Common/Deprecated/ClipThing"
 import { NiceTooltip } from "../../../Common/Nice/NiceTooltip"
 import { ReusableButton } from "../../WarMachinesHangar/WarMachineDetails/MechButtons"
 

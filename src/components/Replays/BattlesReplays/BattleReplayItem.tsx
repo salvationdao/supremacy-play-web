@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useTheme } from "../../../containers/theme"
 import { fonts } from "../../../theme/theme"
 import { BattleReplay } from "../../../types"
-import { FancyButton } from "../../Common/FancyButton"
+import { FancyButton } from "../../Common/Deprecated/FancyButton"
 
 export const BattleReplayItem = ({ battleReplay, noBackgroundColor }: { battleReplay: BattleReplay; noBackgroundColor?: boolean }) => {
     const theme = useTheme()

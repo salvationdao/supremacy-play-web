@@ -5,7 +5,7 @@ import { useGameServerSubscription } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { fonts } from "../../theme/theme"
 import { MechBasic, MechDetails } from "../../types"
-import { FancyButton } from "../Common/FancyButton"
+import { FancyButton } from "../Common/Deprecated/FancyButton"
 import { MediaPreview } from "../Common/MediaPreview/MediaPreview"
 
 export const ProfileWarmachineItem = ({

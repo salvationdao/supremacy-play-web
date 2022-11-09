@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { CoinsLeftPNG, CoinsRightPNG, LightningBackgroundPNG } from "../../../../assets"
 import { colors, fonts } from "../../../../theme/theme"
 import { ConnectButton } from "../../../Bar/ProfileCard/ConnectButton"
-import { ClipThing } from "../../../Common/ClipThing"
+import { ClipThing } from "../../../Common/Deprecated/ClipThing"
 
 export const UnauthPrompt = () => {
     return (

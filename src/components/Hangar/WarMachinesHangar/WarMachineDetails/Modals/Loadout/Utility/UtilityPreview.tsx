@@ -4,7 +4,7 @@ import { useTheme } from "../../../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../../../helpers"
 import { colors, fonts } from "../../../../../../../theme/theme"
 import { Utility } from "../../../../../../../types"
-import { FancyButton } from "../../../../../../Common/FancyButton"
+import { FancyButton } from "../../../../../../Common/Deprecated/FancyButton"
 import { FeatherFade } from "../../../MechViewer/MechViewer"
 import { OnConfirmUtilitySelection } from "../MechLoadoutUtilityModal"
 

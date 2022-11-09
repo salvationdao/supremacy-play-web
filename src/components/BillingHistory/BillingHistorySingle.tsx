@@ -14,7 +14,7 @@ import { GameServerKeys } from "../../keys"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { FiatOrder } from "../../types/fiat"
 import { CoolTable } from "../Common/CoolTable"
-import { Player } from "../Common/Player"
+import { PlayerNameGid } from "../Common/PlayerNameGid"
 import { PDFInvoice } from "./PDFInvoice"
 
 export const BillingHistorySingle = () => {
@@ -123,7 +123,7 @@ export const BillingHistorySingle = () => {
                                 <Box component={"td"} sx={{ pr: "4rem" }}>
                                     <Typography>Buyer:</Typography>
                                 </Box>
-                                <td>{user && <Player player={user} />}</td>
+                                <td>{user && <PlayerNameGid player={user} />}</td>
                             </tr>
                             <tr>
                                 <Box component={"td"} sx={{ pr: "4rem" }}>

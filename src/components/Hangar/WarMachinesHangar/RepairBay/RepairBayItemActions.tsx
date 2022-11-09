@@ -4,7 +4,7 @@ import { SvgDelete, SvgDownArrow, SvgUpArrow } from "../../../../assets"
 import { useToggle } from "../../../../hooks"
 import { colors, siteZIndex } from "../../../../theme/theme"
 import { RepairSlot } from "../../../../types"
-import { ClipThing } from "../../../Common/ClipThing"
+import { ClipThing } from "../../../Common/Deprecated/ClipThing"
 
 export const RepairBayItemActions = ({
     open,

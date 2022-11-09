@@ -2,7 +2,7 @@ import { Stack, Typography } from "@mui/material"
 import { SvgSupToken } from "../../../../../../assets"
 import { supFormatter } from "../../../../../../helpers"
 import { colors, fonts } from "../../../../../../theme/theme"
-import { ClipThing } from "../../../../../Common/ClipThing"
+import { ClipThing } from "../../../../../Common/Deprecated/ClipThing"
 
 export const RewardSups = ({ sups, label }: { sups: string; label?: string }) => {
     return (

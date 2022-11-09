@@ -7,8 +7,8 @@ import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { Faction, MechDetails, User } from "../../../types"
-import { ClipThing } from "../../Common/ClipThing"
-import { FancyButton } from "../../Common/FancyButton"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
+import { FancyButton } from "../../Common/Deprecated/FancyButton"
 
 export interface AdminUpdateMechNameModalProps {
     user: User

@@ -2,7 +2,7 @@ import { MenuItem, Select, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { useTheme } from "../../../containers/theme"
 import { colors } from "../../../theme/theme"
-import { ClipThing } from "../../Common/ClipThing"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
 import { QuestionSection } from "./QuestionSection"
 
 //these values are in terms of hours

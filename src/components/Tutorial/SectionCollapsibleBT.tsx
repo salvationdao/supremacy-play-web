@@ -3,7 +3,7 @@ import { ReactNode } from "react"
 import { SvgDropdownArrow, SvgInfoCircular } from "../../assets"
 import { useToggle } from "../../hooks"
 import { fonts } from "../../theme/theme"
-import { FancyButton } from "../Common/FancyButton"
+import { FancyButton } from "../Common/Deprecated/FancyButton"
 import { NiceTooltip } from "../Common/Nice/NiceTooltip"
 
 export const SectionCollapsibleBT = ({

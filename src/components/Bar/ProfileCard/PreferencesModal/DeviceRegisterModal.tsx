@@ -2,12 +2,12 @@ import { Box, IconButton, Modal, Skeleton, Stack, Typography } from "@mui/materi
 import { SvgClose } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { colors, fonts } from "../../../../theme/theme"
-import { ClipThing } from "../../../Common/ClipThing"
+import { ClipThing } from "../../../Common/Deprecated/ClipThing"
 import QRCode from "react-qr-code"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { useEffect, useState } from "react"
 import { GameServerKeys } from "../../../../keys"
-import { FancyButton } from "../../../Common/FancyButton"
+import { FancyButton } from "../../../Common/Deprecated/FancyButton"
 
 const QR_CODE_SIZE = 180
 

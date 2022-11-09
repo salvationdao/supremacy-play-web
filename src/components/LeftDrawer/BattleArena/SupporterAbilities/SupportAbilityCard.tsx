@@ -5,7 +5,7 @@ import { useMiniMapPixi } from "../../../../containers"
 import { TruncateTextLines } from "../../../../theme/styles"
 import { colors } from "../../../../theme/theme"
 import { LocationSelectType, AnyAbility } from "../../../../types"
-import { FancyButton } from "../../../Common/FancyButton"
+import { FancyButton } from "../../../Common/Deprecated/FancyButton"
 import { NiceTooltip } from "../../../Common/Nice/NiceTooltip"
 
 export const SupportAbilityCard = ({ supportAbility }: { supportAbility: AnyAbility }) => {

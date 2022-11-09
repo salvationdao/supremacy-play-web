@@ -258,6 +258,11 @@ export const theme = createTheme({
             defaultProps: {
                 disablePortal: false,
             },
+            styleOverrides: {
+                root: {
+                    zIndex: siteZIndex.Drawer,
+                },
+            },
         },
         MuiLink: {
             defaultProps: {
@@ -332,6 +337,27 @@ export const theme = createTheme({
         MuiCircularProgress: {
             defaultProps: {
                 size: "3rem",
+            },
+        },
+        MuiModal: {
+            styleOverrides: {
+                root: {
+                    zIndex: siteZIndex.Modal,
+                },
+            },
+        },
+        MuiDrawer: {
+            styleOverrides: {
+                root: {
+                    zIndex: siteZIndex.Drawer,
+                },
+            },
+        },
+        MuiTooltip: {
+            styleOverrides: {
+                popper: {
+                    zIndex: siteZIndex.Tooltip,
+                },
             },
         },
     },

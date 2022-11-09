@@ -7,7 +7,7 @@ import { GameServerKeys } from "../../keys"
 import { siteZIndex } from "../../theme/theme"
 import { BattleLobby } from "../../types/battle_queue"
 import { MysteryCrateBanner } from "../BannersPromotions/MysteryCrateBanner"
-import { ClipThing } from "../Common/ClipThing"
+import { ClipThing } from "../Common/Deprecated/ClipThing"
 import { BattleLobbies, LobbyStatusEnum } from "./BattleLobbies/BattleLobbies"
 
 export enum BATTLE_LOBBY_TABS {

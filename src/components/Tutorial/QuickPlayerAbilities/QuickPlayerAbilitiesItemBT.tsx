@@ -5,7 +5,7 @@ import { useGlobalNotifications, useTraining } from "../../../containers"
 import { scaleUpKeyframes } from "../../../theme/keyframes"
 import { colors } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbilityPrePurchase, PlayerAbilityStages, SaleAbility } from "../../../types"
-import { FancyButton } from "../../Common/FancyButton"
+import { FancyButton } from "../../Common/Deprecated/FancyButton"
 import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
 import { TruncateTextLines } from "../../../theme/styles"
 

@@ -7,8 +7,8 @@ import { supFormatter, timeSinceInWords } from "../../../helpers"
 import { TruncateTextLines } from "../../../theme/styles"
 import { colors, fonts } from "../../../theme/theme"
 import { RepairJob } from "../../../types/jobs"
-import { FancyButton } from "../../Common/FancyButton"
-import { Player } from "../../Common/Player"
+import { FancyButton } from "../../Common/Deprecated/FancyButton"
+import { PlayerNameGid } from "../../Common/PlayerNameGid"
 import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
 import { General } from "../../Marketplace/Common/MarketItem/General"
 
@@ -114,7 +114,7 @@ export const RepairJobItem = React.memo(function RepairJobItem({ repairJob, remo
 
                         <General isGridViewCompact={true} title="JOB OWNER">
                             <Box>
-                                <Player player={repairJob.job_owner} />
+                                <PlayerNameGid player={repairJob.job_owner} />
                                 {repairJob.offered_by_id === userID && <Typography sx={{ display: "inline", color: colors.neonBlue }}>&nbsp;(YOU)</Typography>}
                             </Box>
                         </General>
