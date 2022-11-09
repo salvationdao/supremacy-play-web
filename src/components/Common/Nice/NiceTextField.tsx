@@ -65,7 +65,7 @@ export const NiceTextField = ({
                     },
                     ".MuiOutlinedInput-notchedOutline": {
                         border: `${"#FFFFFF"}50 1px solid`,
-                        borderRadius: 0.3,
+                        borderRadius: 0,
                     },
                 }}
                 type={fieldType}

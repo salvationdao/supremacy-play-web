@@ -1,4 +1,4 @@
-import { Stack, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
 import { SvgFilter, SvgSearch } from "../../../assets"
 import { useAuth, useSupremacy } from "../../../containers"
@@ -47,16 +47,18 @@ export const FactionPassMechPool = () => {
 
             <Stack spacing="1rem" direction="row" alignItems="center" sx={{ overflowX: "auto", overflowY: "hidden", width: "100%", mt: "3rem" }}>
                 {/* Filter button */}
-                <NiceButton border={{ color: faction.primary_color }} sx={{ p: ".2rem 1rem", pt: ".4rem" }} background={showFilters}>
-                    <Typography
-                        variant="subtitle1"
-                        fontFamily={fonts.nostromoBold}
-                        onClick={() => toggleShowFilters()}
-                        color={showFilters ? faction.secondary_color : "#FFFFFF"}
-                    >
+                <NiceButton
+                    onClick={() => toggleShowFilters()}
+                    border={{ color: faction.primary_color }}
+                    sx={{ p: ".2rem 1rem", pt: ".4rem" }}
+                    background={showFilters}
+                >
+                    <Typography variant="subtitle1" fontFamily={fonts.nostromoBold} color={showFilters ? faction.secondary_color : "#FFFFFF"}>
                         <SvgFilter inline size="1.5rem" /> FILTER
                     </Typography>
                 </NiceButton>
+
+                <Box flex={1} />
 
                 {/* Search bar */}
                 <NiceTextField
@@ -71,6 +73,7 @@ export const FactionPassMechPool = () => {
 
                 {/* Sort */}
                 <NiceSelect
+                    label="Sort:"
                     primaryColor={faction.primary_color}
                     secondaryColor={faction.secondary_color}
                     options={[
@@ -79,7 +82,7 @@ export const FactionPassMechPool = () => {
                     ]}
                     selected="test"
                     onSelected={(value) => console.log(value)}
-                    sx={{ minWidth: "15rem" }}
+                    sx={{ minWidth: "22rem" }}
                 />
             </Stack>
         </Stack>
