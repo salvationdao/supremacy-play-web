@@ -28,6 +28,7 @@ export const NiceTextField = ({
             tabIndex={0}
             sx={{
                 height: "3.3rem",
+                boxShadow: 0.5,
 
                 ".MuiInputBase-root": {
                     backgroundColor: "#FFFFFF15",
