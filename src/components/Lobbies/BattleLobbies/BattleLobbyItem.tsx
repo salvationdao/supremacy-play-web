@@ -1,5 +1,5 @@
-import { Avatar, Box, Stack, Typography } from "@mui/material"
-import React, { useMemo, useState } from "react"
+import { Avatar, Box, Stack, SxProps, Typography } from "@mui/material"
+import React, { ReactNode, useMemo, useState } from "react"
 import { Avatar as SupremacyAvatar } from "../../Avatar"
 import { SvgGlobal, SvgLock, SvgSupToken } from "../../../assets"
 import { useArena, useAuth, useSupremacy } from "../../../containers"
@@ -13,8 +13,9 @@ import { BattleLobbyFaction, MyFactionLobbySlots } from "../BattleLobbyMech/Batt
 import { TruncateTextLines } from "../../../theme/styles"
 import { FactionIDs } from "../../../constants"
 import { OptInButton } from "../../BattleArena/UpcomingBattle/UpcomingBattle"
-import { BattleLobbyMechList } from "./PlayerInvolvedLobbyCard"
+import { BattleLobbyMechList } from "./SmallLobbyCard"
 import { BattleLobbyPricePool } from "./BattleLobbyPricePool"
+import { TimeLeft } from "../../Storefront/PlayerAbilitiesStore/PlayerAbilitiesStore"
 
 interface BattleLobbyItemProps {
     battleLobby: BattleLobby
@@ -33,6 +34,8 @@ const propsAreEqual = (prevProps: BattleLobbyItemProps, nextProps: BattleLobbyIt
         prevProps.battleLobby.deleted_at === nextProps.battleLobby.deleted_at &&
         prevProps.battleLobby.assigned_to_battle_id === nextProps.battleLobby.assigned_to_battle_id &&
         prevProps.battleLobby.assigned_to_arena_id === nextProps.battleLobby.assigned_to_arena_id &&
+        prevProps.battleLobby.fill_at === nextProps.battleLobby.fill_at &&
+        prevProps.battleLobby.expires_at === nextProps.battleLobby.expires_at &&
         prevProps.battleLobby.battle_lobbies_mechs === nextProps.battleLobby.battle_lobbies_mechs
     )
 }
@@ -56,6 +59,8 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
         selected_zai_supporters,
         selected_rm_supporters,
         selected_bc_supporters,
+        fill_at,
+        expires_at,
     } = battleLobby
     const primaryColor = theme.factionTheme.primary
     const backgroundColor = theme.factionTheme.background
@@ -188,49 +193,44 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                     {entryFeeDisplay}
 
                                     {displayedAccessCode && userID === battleLobby.host_by_id && (
-                                        <Stack direction="column">
-                                            <Typography
-                                                variant="body2"
-                                                fontFamily={fonts.nostromoHeavy}
-                                                sx={{
-                                                    color: colors.grey,
-                                                }}
-                                            >
-                                                ACCESS CODE:
-                                            </Typography>
-                                            <Typography
-                                                sx={{
-                                                    ...TruncateTextLines(1),
-                                                    fontFamily: fonts.nostromoBold,
-                                                }}
-                                            >
-                                                {displayedAccessCode}
-                                            </Typography>
-                                        </Stack>
+                                        <LobbyInfoField title="ACCESS CODE:" value={displayedAccessCode} />
                                     )}
 
-                                    {assignedToArenaName && (
-                                        <Stack direction="column">
-                                            <Typography
-                                                variant="body2"
-                                                fontFamily={fonts.nostromoHeavy}
-                                                sx={{
-                                                    color: colors.grey,
-                                                }}
-                                            >
-                                                Arena:
-                                            </Typography>
-                                            <Typography
-                                                component="span"
-                                                sx={{
-                                                    ...TruncateTextLines(1),
-                                                    fontFamily: fonts.nostromoBold,
-                                                }}
-                                            >
-                                                {assignedToArenaName}
-                                            </Typography>
-                                        </Stack>
+                                    {assignedToArenaName && <LobbyInfoField title="Arena:" value={assignedToArenaName} />}
+
+                                    {fill_at && (
+                                        <LobbyInfoField
+                                            title="Ready In"
+                                            value={<TimeLeft dateTo={fill_at} timeUpMessage="Filling AI Mechs" />}
+                                            valueSxProp={{
+                                                fontFamily: fonts.nostromoMedium,
+                                                fontStyle: "italic",
+                                                fontSize: "1.2rem",
+                                            }}
+                                        />
                                     )}
+
+                                    {expires_at && (
+                                        <LobbyInfoField
+                                            title="Expires In"
+                                            value={<TimeLeft dateTo={expires_at} timeUpMessage="Closing Lobby" />}
+                                            valueSxProp={{
+                                                fontFamily: fonts.nostromoMedium,
+                                                fontStyle: "italic",
+                                                fontSize: "1.2rem",
+                                            }}
+                                        />
+                                    )}
+
+                                    <LobbyInfoField
+                                        title="Max deploy"
+                                        value={battleLobby.max_deploy_per_player}
+                                        valueSxProp={{
+                                            fontFamily: fonts.nostromoMedium,
+                                            fontStyle: "italic",
+                                            fontSize: "1.2rem",
+                                        }}
+                                    />
 
                                     <Stack direction="column">
                                         <Typography
@@ -478,3 +478,42 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
         </>
     )
 }, propsAreEqual)
+
+interface LobbyInfoFieldProps {
+    title: string
+    value: ReactNode
+
+    titleSxProp?: SxProps
+    valueSxProp?: SxProps
+}
+
+const LobbyInfoField = ({ title, value, titleSxProp, valueSxProp }: LobbyInfoFieldProps) => {
+    return (
+        <Stack direction="column">
+            <Typography
+                variant="body2"
+                sx={{
+                    fontFamily: fonts.nostromoHeavy,
+                    color: colors.grey,
+                    ...titleSxProp,
+                }}
+            >
+                {title}
+            </Typography>
+            <Typography
+                sx={{
+                    fontFamily: fonts.nostromoBold,
+                    display: "-webkit-box",
+                    overflow: "hidden",
+                    overflowWrap: "anywhere",
+                    textOverflow: "ellipsis",
+                    WebkitLineClamp: 1,
+                    WebkitBoxOrient: "vertical",
+                    ...valueSxProp,
+                }}
+            >
+                {value}
+            </Typography>
+        </Stack>
+    )
+}

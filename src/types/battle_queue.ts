@@ -12,6 +12,7 @@ export interface BattleLobby {
     second_faction_cut: string
     third_faction_cut: string
     each_faction_mech_amount: number
+    max_deploy_per_player: number
     game_map_id?: string
     generated_by_system: boolean
     ready_at?: Date
@@ -20,6 +21,9 @@ export interface BattleLobby {
     ended_at?: Date
     created_at: Date
     deleted_at?: Date
+
+    expires_at?: Date
+    fill_at?: Date
 
     host_by: User
     game_map?: GameMap
