@@ -182,12 +182,13 @@ const MechLoadoutItemButton = ({
                 {Icon && (
                     <Icon
                         fill="white"
-                        size="3rem"
                         sx={{
                             position: "absolute",
                             top: ".5rem",
                             left: ".5rem",
                         }}
+                        width={size === "small" ? "2.6rem" : "4rem"}
+                        height="auto"
                     />
                 )}
                 {TopRight && (

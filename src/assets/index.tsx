@@ -31,6 +31,23 @@ import Hammer from "!@svgr/webpack!./svg/Hammer.svg"
 import Headphone from "!@svgr/webpack!./svg/Headphone.svg"
 import Health from "!@svgr/webpack!./svg/Health.svg"
 import IntroAnimation from "!@svgr/webpack!./svg/IntroAnimation.svg"
+import LoadoutArmour from "!@svgr/webpack!./svg/Loadout/Armour.svg"
+import LoadoutDamage from "!@svgr/webpack!./svg/Loadout/Damage.svg"
+import LoadoutDeaths from "!@svgr/webpack!./svg/Loadout/Deaths.svg"
+import LoadoutEmote from "!@svgr/webpack!./svg/Loadout/Emote.svg"
+import LoadoutKills from "!@svgr/webpack!./svg/Loadout/Kills.svg"
+import LoadoutLosses from "!@svgr/webpack!./svg/Loadout/Losses.svg"
+import LoadoutPowerCore from "!@svgr/webpack!./svg/Loadout/PowerCore.svg"
+import LoadoutPowerCoreCapacity from "!@svgr/webpack!./svg/Loadout/PowerCoreCapacity.svg"
+import LoadoutPowerCoreRegen from "!@svgr/webpack!./svg/Loadout/PowerCoreRegen.svg"
+import LoadoutShield from "!@svgr/webpack!./svg/Loadout/Shield.svg"
+import LoadoutShieldPowerCost from "!@svgr/webpack!./svg/Loadout/ShieldPowerCost.svg"
+import LoadoutShieldRegen from "!@svgr/webpack!./svg/Loadout/ShieldRegen.svg"
+import LoadoutSkin from "!@svgr/webpack!./svg/Loadout/Skin.svg"
+import LoadoutSpeed from "!@svgr/webpack!./svg/Loadout/Speed.svg"
+import LoadoutUtility from "!@svgr/webpack!./svg/Loadout/Utility.svg"
+import LoadoutWeapon from "!@svgr/webpack!./svg/Loadout/Weapon.svg"
+import LoadoutWins from "!@svgr/webpack!./svg/Loadout/Wins.svg"
 import Lock from "!@svgr/webpack!./svg/Lock.svg"
 import Logout from "!@svgr/webpack!./svg/Logout.svg"
 import Mail from "!@svgr/webpack!./svg/Mail.svg"
@@ -1462,5 +1479,91 @@ export const SvgCamera: React.VoidFunctionComponent<SvgWrapperProps> = (props) =
 export const SvgMainMenu: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <MainMenu />
+    </SvgWrapper>
+)
+
+export const SvgLoadoutArmour: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <LoadoutArmour />
+    </SvgWrapper>
+)
+export const SvgLoadoutDamage: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <LoadoutDamage />
+    </SvgWrapper>
+)
+export const SvgLoadoutDeaths: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <LoadoutDeaths />
+    </SvgWrapper>
+)
+export const SvgLoadoutEmote: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <LoadoutEmote />
+    </SvgWrapper>
+)
+export const SvgLoadoutKills: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <LoadoutKills />
+    </SvgWrapper>
+)
+export const SvgLoadoutLosses: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <LoadoutLosses />
+    </SvgWrapper>
+)
+export const SvgLoadoutPowerCore: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <LoadoutPowerCore />
+    </SvgWrapper>
+)
+export const SvgLoadoutPowerCoreCapacity: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <LoadoutPowerCoreCapacity />
+    </SvgWrapper>
+)
+export const SvgLoadoutPowerCoreRegen: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <LoadoutPowerCoreRegen />
+    </SvgWrapper>
+)
+export const SvgLoadoutShield: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <LoadoutShield />
+    </SvgWrapper>
+)
+export const SvgLoadoutShieldPowerCost: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <LoadoutShieldPowerCost />
+    </SvgWrapper>
+)
+export const SvgLoadoutShieldRegen: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <LoadoutShieldRegen />
+    </SvgWrapper>
+)
+export const SvgLoadoutSkin: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <LoadoutSkin />
+    </SvgWrapper>
+)
+export const SvgLoadoutSpeed: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <LoadoutSpeed />
+    </SvgWrapper>
+)
+export const SvgLoadoutUtility: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <LoadoutUtility />
+    </SvgWrapper>
+)
+export const SvgLoadoutWeapon: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <LoadoutWeapon />
+    </SvgWrapper>
+)
+export const SvgLoadoutWins: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <LoadoutWins />
     </SvgWrapper>
 )

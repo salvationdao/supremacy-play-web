@@ -75,6 +75,7 @@ const AccordionSummary = styled(({ backgroundColor, sx, children, ...props }: My
         <MuiAccordionSummary
             expandIcon={<ArrowRight sx={{ fontSize: "4rem" }} />}
             sx={{
+                px: "0",
                 backgroundColor: backgroundColor || theme.factionTheme.primary,
                 transition: "background-color .2s ease-out",
                 "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {

@@ -1,6 +1,6 @@
 import { Box, MenuItem, Pagination, Select, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { SvgSearch, SvgSkin } from "../../../../../../assets"
+import { SvgLoadoutSkin, SvgSearch } from "../../../../../../assets"
 import { getRarityDeets } from "../../../../../../helpers"
 import { usePagination } from "../../../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../../../hooks/useGameServer"
@@ -148,7 +148,7 @@ export const MechSkinDraggables = ({ excludeMechSkinIDs, includeMechSkinIDs, mec
                         key={index}
                         imageUrl={ms.swatch_images?.image_url || ms.swatch_images?.avatar_url || ms.image_url || ms.avatar_url}
                         label={ms.label}
-                        Icon={SvgSkin}
+                        Icon={SvgLoadoutSkin}
                         rarity={ms.tier ? getRarityDeets(ms.tier) : undefined}
                         onClick={(e) => onClick(e, AssetItemType.MechSkin, ms)}
                         shape="square"

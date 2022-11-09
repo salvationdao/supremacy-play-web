@@ -1,7 +1,7 @@
 import { Box, FormControlLabel, MenuItem, Pagination, Select, Stack, Typography } from "@mui/material"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { useHistory } from "react-router-dom"
-import { SvgBin, SvgCrown, SvgDamageCross, SvgSearch, SvgSkull, SvgWrapperProps } from "../../../../../assets"
+import { SvgLoadoutDeaths, SvgLoadoutKills, SvgLoadoutLosses, SvgLoadoutWins, SvgSearch, SvgWrapperProps } from "../../../../../assets"
 import { useAuth, useGlobalNotifications } from "../../../../../containers"
 import { useTheme } from "../../../../../containers/theme"
 import { getMechStatusDeets, getRarityDeets } from "../../../../../helpers"
@@ -121,7 +121,13 @@ export const MechPicker = ({ mechDetails, mechStatus, mechStaked, onUpdate }: Me
                 >
                     <Stack direction="row" alignItems="center">
                         <Icon mr="1rem" fill="white" size="2.6rem" />
-                        <Typography>{stat || 0}</Typography>
+                        <Typography
+                            sx={{
+                                fontSize: "2rem",
+                            }}
+                        >
+                            {stat || 0}
+                        </Typography>
                     </Stack>
                     <Typography
                         sx={{
@@ -143,10 +149,10 @@ export const MechPicker = ({ mechDetails, mechStatus, mechStaked, onUpdate }: Me
                     gap: "1rem",
                 }}
             >
-                {renderStat("KILLS", SvgDamageCross, mechBattleStats?.total_kills)}
-                {renderStat("DEATHS", SvgSkull, mechBattleStats?.total_deaths)}
-                {renderStat("WINS", SvgCrown, mechBattleStats?.total_wins)}
-                {renderStat("LOSSES", SvgBin, mechBattleStats?.total_losses)}
+                {renderStat("KILLS", SvgLoadoutKills, mechBattleStats?.total_kills)}
+                {renderStat("DEATHS", SvgLoadoutDeaths, mechBattleStats?.total_deaths)}
+                {renderStat("WINS", SvgLoadoutWins, mechBattleStats?.total_wins)}
+                {renderStat("LOSSES", SvgLoadoutLosses, mechBattleStats?.total_losses)}
             </Box>
         )
     }, [mechBattleStats, statsError, statsLoading])

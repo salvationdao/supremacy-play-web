@@ -1,6 +1,6 @@
 import { Box, Button, Divider, Fade, Slide, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { Svg2DView, Svg3DView, SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgWeapons } from "../../../../../assets"
+import { Svg2DView, Svg3DView, SvgLoadoutDamage, SvgLoadoutEmote, SvgLoadoutPowerCore, SvgLoadoutSkin, SvgLoadoutWeapon } from "../../../../../assets"
 import { useAuth, useGlobalNotifications } from "../../../../../containers"
 import { useTheme } from "../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../helpers"
@@ -634,17 +634,23 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, mechS
                         imageUrl={weapon.image_url || weapon.avatar_url}
                         label={weapon.label}
                         subLabel={`${weapon.weapon_type} | ${weapon.default_damage_type}`}
-                        Icon={SvgWeapons}
+                        Icon={SvgLoadoutWeapon}
                         TopRight={
-                            <Stack>
-                                <Typography
+                            <Typography
+                                sx={{
+                                    fontFamily: fonts.shareTech,
+                                }}
+                            >
+                                <SvgLoadoutDamage
                                     sx={{
-                                        fontFamily: fonts.shareTech,
+                                        display: "inline-block",
+                                        verticalAlign: "middle",
+                                        lineHeight: "normal",
+                                        mr: ".5rem",
                                     }}
-                                >
-                                    {weapon.damage}
-                                </Typography>
-                            </Stack>
+                                />
+                                {weapon.damage}
+                            </Typography>
                         }
                         rarity={weapon.weapon_skin ? getRarityDeets(weapon.weapon_skin.tier) : undefined}
                         renderModal={renderModal}
@@ -669,7 +675,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, mechS
                     slotNumber={slotNumber}
                     label="WEAPON"
                     renderModal={renderModal}
-                    Icon={SvgWeapons}
+                    Icon={SvgLoadoutWeapon}
                     side={side}
                     isEmpty
                 />
@@ -705,7 +711,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, mechS
                     disabled={loadoutDisabled}
                     imageUrl={powerCore.image_url || powerCore.avatar_url}
                     label={powerCore.label}
-                    Icon={SvgPowerCore}
+                    Icon={SvgLoadoutPowerCore}
                     rarity={getRarityDeets(powerCore.tier)}
                     renderModal={renderModal}
                     onUnequip={() =>
@@ -726,7 +732,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, mechS
                 disabled={loadoutDisabled}
                 label="POWER CORE"
                 renderModal={renderModal}
-                Icon={SvgPowerCore}
+                Icon={SvgLoadoutPowerCore}
                 shape="square"
                 size="small"
                 isEmpty
@@ -762,7 +768,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, mechS
                     disabled={loadoutDisabled}
                     imageUrl={mechSkin.swatch_images?.image_url || mechSkin.swatch_images?.avatar_url || mechSkin.image_url || mechSkin.avatar_url}
                     label={mechSkin.label}
-                    Icon={SvgSkin}
+                    Icon={SvgLoadoutSkin}
                     rarity={getRarityDeets(mechSkin.tier)}
                     renderModal={renderModal}
                     shape="square"
@@ -777,7 +783,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, mechS
                 disabled={loadoutDisabled}
                 label="SUBMODEL"
                 renderModal={renderModal}
-                Icon={SvgSkin}
+                Icon={SvgLoadoutSkin}
                 shape="square"
                 size="small"
                 isEmpty
@@ -1028,7 +1034,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, mechS
                                 <MechLoadoutItem
                                     imageUrl={intro_animation.image_url || intro_animation.avatar_url}
                                     label={intro_animation.label}
-                                    Icon={SvgIntroAnimation}
+                                    Icon={SvgLoadoutEmote}
                                     shape="square"
                                     size="small"
                                     side="right"
@@ -1037,7 +1043,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, mechS
                                 <MechLoadoutItem
                                     label="INTRO ANIMATION"
                                     onClick={() => console.log("AAAAA")}
-                                    Icon={SvgIntroAnimation}
+                                    Icon={SvgLoadoutEmote}
                                     shape="square"
                                     size="small"
                                     side="right"
@@ -1050,7 +1056,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, mechS
                                 <MechLoadoutItem
                                     imageUrl={outro_animation.image_url || outro_animation.avatar_url}
                                     label={outro_animation.label}
-                                    Icon={SvgOutroAnimation}
+                                    Icon={SvgLoadoutEmote}
                                     shape="square"
                                     size="small"
                                     side="right"
@@ -1059,7 +1065,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, mechS
                                 <MechLoadoutItem
                                     label="OUTRO ANIMATION"
                                     onClick={() => console.log("AAAAA")}
-                                    Icon={SvgOutroAnimation}
+                                    Icon={SvgLoadoutEmote}
                                     shape="square"
                                     size="small"
                                     side="right"

@@ -1,6 +1,6 @@
 import { Box, MenuItem, Pagination, Select, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { SvgPowerCore, SvgSearch } from "../../../../../../assets"
+import { SvgLoadoutPowerCore, SvgSearch } from "../../../../../../assets"
 import { useTheme } from "../../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../../helpers"
 import { usePagination } from "../../../../../../hooks"
@@ -165,7 +165,7 @@ export const PowerCoreDraggables = ({ drag, powerCoreSize }: PowerCoreDraggables
                                 <MechLoadoutItem
                                     imageUrl={w.image_url || w.avatar_url}
                                     label={w.label}
-                                    Icon={SvgPowerCore}
+                                    Icon={SvgLoadoutPowerCore}
                                     rarity={w.tier ? getRarityDeets(w.tier) : undefined}
                                     shape="square"
                                     size="full-width"

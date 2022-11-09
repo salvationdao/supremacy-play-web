@@ -1,6 +1,6 @@
 import { Stack, Typography } from "@mui/material"
 import { useImperativeHandle } from "react"
-import { SvgPowerCore, SvgSkin, SvgWeapons } from "../../../../../assets"
+import { SvgLoadoutPowerCore, SvgLoadoutSkin, SvgLoadoutWeapon } from "../../../../../assets"
 import { fonts } from "../../../../../theme/theme"
 import { NiceAccordion } from "../../../../Common/Nice/NiceAccordion"
 import { CustomDragEventWithType, DragStartEventWithType, DragStopEventWithType } from "./Draggables/LoadoutDraggable"
@@ -51,8 +51,8 @@ export const MechLoadoutDraggables = ({
                     {
                         id: "weapons",
                         header: (
-                            <Stack direction="row" spacing=".5rem" alignItems="center">
-                                <SvgWeapons size="2.6rem" />
+                            <Stack direction="row" spacing="1rem" alignItems="center">
+                                <SvgLoadoutWeapon width="5rem" height="auto" />
                                 <Typography
                                     sx={{
                                         fontFamily: fonts.nostromoBlack,
@@ -67,8 +67,8 @@ export const MechLoadoutDraggables = ({
                     {
                         id: "mech skins",
                         header: (
-                            <Stack direction="row" spacing=".5rem" alignItems="center">
-                                <SvgSkin />
+                            <Stack direction="row" spacing="1rem" alignItems="center">
+                                <SvgLoadoutSkin ml=".5rem" height="3rem" width="auto" />
                                 <Typography
                                     sx={{
                                         fontFamily: fonts.nostromoBlack,
@@ -90,8 +90,8 @@ export const MechLoadoutDraggables = ({
                     {
                         id: "power cores",
                         header: (
-                            <Stack direction="row" spacing=".5rem" alignItems="center">
-                                <SvgPowerCore size="2.6rem" />
+                            <Stack direction="row" spacing="1rem" alignItems="center">
+                                <SvgLoadoutPowerCore width="4rem" height="auto" />
                                 <Typography
                                     sx={{
                                         fontFamily: fonts.nostromoBlack,

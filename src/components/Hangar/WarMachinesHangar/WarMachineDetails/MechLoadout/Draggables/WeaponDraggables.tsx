@@ -1,6 +1,6 @@
 import { Box, InputBase, InputBaseProps, MenuItem, Pagination, Select, Stack, StackProps, styled, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { SvgSearch, SvgWeapons } from "../../../../../../assets"
+import { SvgLoadoutWeapon, SvgSearch } from "../../../../../../assets"
 import { useTheme } from "../../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../../helpers"
 import { usePagination } from "../../../../../../hooks"
@@ -170,7 +170,7 @@ export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesPro
                                 <MechLoadoutItem
                                     imageUrl={w.image_url || w.avatar_url}
                                     label={w.label}
-                                    Icon={SvgWeapons}
+                                    Icon={SvgLoadoutWeapon}
                                     rarity={w.tier ? getRarityDeets(w.tier) : undefined}
                                     subLabel={`${w.weapon_type} | ${w.default_damage_type}`}
                                     TopRight={

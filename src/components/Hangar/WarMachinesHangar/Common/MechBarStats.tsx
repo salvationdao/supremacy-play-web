@@ -1,11 +1,20 @@
 import { Box, Stack, SxProps, Typography } from "@mui/material"
 import React, { useMemo } from "react"
 import { TooltipHelper } from "../../.."
-import { SvgHealth, SvgPowerCoreCapacity, SvgPowerCoreRegen, SvgShield, SvgShieldRegen, SvgSpeed, SvgWrapperProps } from "../../../../assets"
+import {
+    SvgLoadoutArmour,
+    SvgLoadoutPowerCoreCapacity,
+    SvgLoadoutPowerCoreRegen,
+    SvgLoadoutShield,
+    SvgLoadoutShieldPowerCost,
+    SvgLoadoutShieldRegen,
+    SvgLoadoutSpeed,
+    SvgWrapperProps,
+} from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
+import { TruncateTextLines } from "../../../../theme/styles"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
-import { TruncateTextLines } from "../../../../theme/styles"
 
 export const MechBarStats = ({
     mech,
@@ -56,9 +65,9 @@ export const MechBarStats = ({
                     current={health}
                     boostedTo={boostedHealth}
                     total={3000}
-                    Icon={SvgHealth}
+                    Icon={SvgLoadoutArmour}
                 />
-                <IconStat primaryColor={primaryColor} fontSize={fontSize} label="SHIELD" current={totalShield} total={3000} Icon={SvgShield} />
+                <IconStat primaryColor={primaryColor} fontSize={fontSize} label="SHIELD" current={totalShield} total={3000} Icon={SvgLoadoutShield} />
                 <IconStat
                     primaryColor={primaryColor}
                     fontSize={fontSize}
@@ -66,7 +75,7 @@ export const MechBarStats = ({
                     current={totalShieldRechargeRate}
                     boostedTo={boostedTotalShieldRechargeRate}
                     total={1000}
-                    Icon={SvgShieldRegen}
+                    Icon={SvgLoadoutShieldRegen}
                 />
                 <IconStat
                     primaryColor={primaryColor}
@@ -75,7 +84,7 @@ export const MechBarStats = ({
                     current={totalShieldRechargePowerCost}
                     total={100}
                     unit="/S"
-                    Icon={SvgPowerCoreRegen}
+                    Icon={SvgLoadoutShieldPowerCost}
                 />
                 <IconStat
                     primaryColor={primaryColor}
@@ -85,7 +94,7 @@ export const MechBarStats = ({
                     boostedTo={boostedSpeed}
                     total={5000}
                     unit="CM/S"
-                    Icon={SvgSpeed}
+                    Icon={SvgLoadoutSpeed}
                 />
                 <IconStat
                     primaryColor={primaryColor}
@@ -93,7 +102,7 @@ export const MechBarStats = ({
                     label="Power Core CAPACITY"
                     current={powerCoreCapacity}
                     total={3000}
-                    Icon={SvgPowerCoreCapacity}
+                    Icon={SvgLoadoutPowerCoreCapacity}
                 />
                 <IconStat
                     primaryColor={primaryColor}
@@ -102,7 +111,7 @@ export const MechBarStats = ({
                     current={powerCoreRechargeRate}
                     total={500}
                     unit="/S"
-                    Icon={SvgPowerCoreRegen}
+                    Icon={SvgLoadoutPowerCoreRegen}
                 />
             </Stack>
         )
@@ -136,7 +145,7 @@ export const MechBarStats = ({
                     current={health}
                     boostedTo={boostedHealth}
                     total={15000}
-                    Icon={SvgHealth}
+                    Icon={SvgLoadoutArmour}
                     compact={compact}
                 />
                 <BarStat
@@ -146,7 +155,7 @@ export const MechBarStats = ({
                     label="SHIELD"
                     current={totalShield}
                     total={4000}
-                    Icon={SvgShield}
+                    Icon={SvgLoadoutShield}
                     compact={compact}
                 />
                 <BarStat
@@ -157,7 +166,7 @@ export const MechBarStats = ({
                     current={totalShieldRechargeRate}
                     boostedTo={boostedTotalShieldRechargeRate}
                     total={500}
-                    Icon={SvgShieldRegen}
+                    Icon={SvgLoadoutShieldRegen}
                     compact={compact}
                 />
                 <BarStat
@@ -168,7 +177,7 @@ export const MechBarStats = ({
                     current={totalShieldRechargePowerCost}
                     total={100}
                     unit="/S"
-                    Icon={SvgPowerCoreRegen}
+                    Icon={SvgLoadoutShieldPowerCost}
                     compact={compact}
                 />
                 <BarStat
@@ -180,7 +189,7 @@ export const MechBarStats = ({
                     boostedTo={boostedSpeed}
                     total={5000}
                     unit="CM/S"
-                    Icon={SvgSpeed}
+                    Icon={SvgLoadoutSpeed}
                     compact={compact}
                 />
                 <BarStat
@@ -190,7 +199,7 @@ export const MechBarStats = ({
                     label="Power Core CAPACITY"
                     current={powerCoreCapacity}
                     total={3000}
-                    Icon={SvgPowerCoreCapacity}
+                    Icon={SvgLoadoutPowerCoreCapacity}
                     compact={compact}
                 />
                 <BarStat
@@ -201,7 +210,7 @@ export const MechBarStats = ({
                     current={powerCoreRechargeRate}
                     total={500}
                     unit="/S"
-                    Icon={SvgPowerCoreRegen}
+                    Icon={SvgLoadoutPowerCoreRegen}
                     compact={compact}
                 />
             </Stack>
@@ -255,7 +264,7 @@ export const BarStat = ({
                     }
                 >
                     <Box>
-                        <Icon size={fontSize} sx={{ pb: "3px", height: "unset" }} />
+                        <Icon size={`calc(${fontSize} + 1rem)`} sx={{ pb: "3px", height: "unset" }} />
                     </Box>
                 </TooltipHelper>
 
@@ -415,7 +424,7 @@ export const IconStat = ({
                         borderRadius: 0.4,
                     }}
                 >
-                    <Icon size={`calc(${fontSize} * 0.9)`} sx={{ pb: "3px" }} />
+                    <Icon size={`calc(${fontSize} + 1rem)`} sx={{ pb: "3px" }} />
                     <Typography sx={{ lineHeight: 1, fontSize }}>{parsedBoosted || parsedCurrent}</Typography>
                 </Stack>
             </TooltipHelper>
