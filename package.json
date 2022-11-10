@@ -35,6 +35,7 @@
         "howler": "^2.2.3",
         "jsonwebtoken": "^8.5.1",
         "jwt-decode": "^3.1.2",
+        "lottie-react": "^2.3.1",
         "moment": "^2.29.4",
         "ovenlivekit": "^1.0.2",
         "ovenplayer": "^0.10.21",

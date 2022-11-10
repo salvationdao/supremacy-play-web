@@ -1,6 +1,6 @@
 import { Box, Checkbox, Stack, Typography } from "@mui/material"
 import React, { useMemo } from "react"
-import { SvgDeath, SvgUserDiamond } from "../../assets"
+import { SvgMechDeaths, SvgMechKills, SvgMechLosses, SvgMechWins, SvgUserDiamond } from "../../assets"
 import { useSupremacy } from "../../containers"
 import { getMechStatusDeets, getRarityDeets } from "../../helpers"
 import { TruncateTextLines } from "../../theme/styles"
@@ -24,7 +24,7 @@ export const MechCard = React.memo(function MechCard({ mech, isGridView, isSelec
     const statusDeets = useMemo(() => getMechStatusDeets(mech.status), [mech.status])
 
     return (
-        <NiceBoxThing border={{ color: "#FFFFFF30", thickness: "very-lean" }} background={{ color: ["#FFFFFF10", "#FFFFFF20"] }} sx={{ p: "1rem 1.5rem" }}>
+        <NiceBoxThing border={{ color: "#FFFFFF38", thickness: "very-lean" }} background={{ color: ["#FFFFFF10", "#FFFFFF20"] }} sx={{ p: "1rem 1.5rem" }}>
             <Stack spacing="1.2rem">
                 {/* Mech name */}
                 <Stack direction="row" alignItems="center" justifyContent="space-between" spacing=".5rem">
@@ -38,7 +38,7 @@ export const MechCard = React.memo(function MechCard({ mech, isGridView, isSelec
                 </Typography>
 
                 {/* Mech image */}
-                <NiceBoxThing border={{ color: `${rarityDeets.color}80` }} caret={{ position: "bottom-right" }}>
+                <NiceBoxThing border={{ color: `${rarityDeets.color}80` }} caret={{ position: "bottom-right" }} sx={{ boxShadow: 0.4 }}>
                     <Box component="img" src={mech.avatar_url} sx={{ height: "20rem", width: "100%", objectFit: "cover", objectPosition: "center" }} />
                 </NiceBoxThing>
 
@@ -52,16 +52,16 @@ export const MechCard = React.memo(function MechCard({ mech, isGridView, isSelec
                     }}
                 >
                     <Typography>
-                        <SvgDeath inline size="1.8rem" /> {mech.stats.total_kills}
+                        <SvgMechKills inline size="1.8rem" /> {mech.stats.total_kills}
                     </Typography>
                     <Typography>
-                        <SvgDeath inline size="1.8rem" /> {mech.stats.total_deaths}
+                        <SvgMechDeaths inline size="1.8rem" /> {mech.stats.total_deaths}
                     </Typography>
                     <Typography>
-                        <SvgDeath inline size="1.8rem" /> {mech.stats.total_wins}
+                        <SvgMechWins inline size="1.8rem" /> {mech.stats.total_wins}
                     </Typography>
                     <Typography>
-                        <SvgDeath inline size="1.8rem" /> {mech.stats.total_losses}
+                        <SvgMechLosses inline size="1.8rem" /> {mech.stats.total_losses}
                     </Typography>
                 </Stack>
 

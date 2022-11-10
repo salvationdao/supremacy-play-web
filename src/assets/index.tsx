@@ -18,6 +18,10 @@ import DamageFalloff from "!@svgr/webpack!./svg/DamageFalloff.svg"
 import DamageFalloffRate from "!@svgr/webpack!./svg/DamageFalloffRate.svg"
 import Death from "!@svgr/webpack!./svg/Death.svg"
 import DropdownArrow from "!@svgr/webpack!./svg/DropdownArrow.svg"
+import MechDeaths from "!@svgr/webpack!./svg/MechDeaths.svg"
+import MechKills from "!@svgr/webpack!./svg/MechKills.svg"
+import MechLosses from "!@svgr/webpack!./svg/MechLosses.svg"
+import MechWins from "!@svgr/webpack!./svg/MechWins.svg"
 import Emoji from "!@svgr/webpack!./svg/Emoji.svg"
 import EmojiSelector from "!@svgr/webpack!./svg/EmojiSelector.svg"
 import EmptySet from "!@svgr/webpack!./svg/EmptySet.svg"
@@ -1524,5 +1528,29 @@ export const SvgEmptySet: React.VoidFunctionComponent<SvgWrapperProps> = (props)
 export const SvgUserDiamond: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <UserDiamond />
+    </SvgWrapper>
+)
+
+export const SvgMechDeaths: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <MechDeaths />
+    </SvgWrapper>
+)
+
+export const SvgMechKills: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <MechKills />
+    </SvgWrapper>
+)
+
+export const SvgMechLosses: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <MechLosses />
+    </SvgWrapper>
+)
+
+export const SvgMechWins: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <MechWins />
     </SvgWrapper>
 )
