@@ -1,5 +1,5 @@
 import { Box, Stack, styled, Typography } from "@mui/material"
-import { useDimension, useGlobalNotifications, useSupremacy, useUI } from "../../../containers"
+import { GAME_UI_ID, useDimension, useGlobalNotifications, useSupremacy, useUI } from "../../../containers"
 import { Faction } from "../../../types"
 
 import { ArrowForward } from "@mui/icons-material"
@@ -7,9 +7,9 @@ import { useCallback, useEffect } from "react"
 import { TRAINING_ASSETS } from "../../../constants"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { LeftRoutes, RightRoutes } from "../../../routes"
 import { colors, fonts } from "../../../theme/theme"
 import { FancyButton } from "../../Common/Deprecated/FancyButton"
-import { LeftRoutes, RightRoutes } from "../../../routes"
 
 export enum FactionLabel {
     BostonCybernetics = "Boston Cybernetics",
@@ -26,7 +26,7 @@ export const FactionSelect = () => {
     }, [triggerReset])
 
     return (
-        <Stack id="game-ui-container" sx={{ width: "100%", height: "100%", userSelect: "none" }}>
+        <Stack id={GAME_UI_ID} sx={{ width: "100%", height: "100%", userSelect: "none" }}>
             <Typography variant="h1" textAlign="center" sx={{ fontSize: "4rem", my: "4rem" }}>
                 Select Your Faction
             </Typography>
