@@ -107,6 +107,7 @@ export const FactionPassBuy = () => {
                                 src={FactionPassSs1PNG}
                                 sx={{
                                     position: "absolute",
+                                    maxHeight: "28rem",
                                     height: "auto",
                                     width: "100%",
                                     objectFit: "contain",
@@ -125,6 +126,7 @@ export const FactionPassBuy = () => {
                                 src={FactionPassSs2PNG}
                                 sx={{
                                     position: "absolute",
+                                    maxHeight: "28rem",
                                     height: "auto",
                                     width: "100%",
                                     objectFit: "contain",

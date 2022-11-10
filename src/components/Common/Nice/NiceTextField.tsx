@@ -65,8 +65,8 @@ export const NiceTextField = ({
                 sx={{
                     width: "100%",
                     ".MuiOutlinedInput-input": {
-                        p: ".32rem 1.6rem",
-                        pt: ".6rem",
+                        p: ".37rem 1.6rem",
+                        pt: ".55rem",
                         fontSize: "1.7rem",
                         fontFamily: fonts.shareTech,
                         "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
