@@ -1,15 +1,15 @@
 import { Box, Pagination, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { SvgFilter, SvgGridView, SvgListView, SvgSearch } from "../../../assets"
 import { useAuth, useSupremacy } from "../../../containers"
-import { parseString } from "../../../helpers"
+import { getRarityDeets, parseString } from "../../../helpers"
 import { useDebounce, usePagination, useUrlQuery } from "../../../hooks"
-import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
+import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { useLocalStorage } from "../../../hooks/useLocalStorage"
 import { GameServerKeys } from "../../../keys"
 import { fonts } from "../../../theme/theme"
-import { MechBasicWithQueueStatus } from "../../../types"
-import { SortDir, SortTypeLabel } from "../../../types/marketplace"
+import { LobbyMech, MechBasicWithQueueStatus } from "../../../types"
+import { SortTypeLabel } from "../../../types/marketplace"
 import { NavTabs } from "../../Common/NavTabs/NavTabs"
 import { usePageTabs } from "../../Common/NavTabs/usePageTabs"
 import { NiceButton } from "../../Common/Nice/NiceButton"
@@ -55,7 +55,6 @@ interface GetMechsResponse {
 }
 
 export const FactionPassMechPool = () => {
-    const { send } = useGameServerCommandsUser("/user_commander")
     const [query, updateQuery] = useUrlQuery()
     const { factionID } = useAuth()
     const { getFaction } = useSupremacy()
@@ -74,72 +73,103 @@ export const FactionPassMechPool = () => {
     })
 
     // Items
+    const [displayMechs, setDisplayMechs] = useState<LobbyMech[]>([])
+    const [mechs, setMechs] = useState<LobbyMech[]>([])
     const [isLoading, setIsLoading] = useState(true)
-    const [loadError, setLoadError] = useState<string>()
-    const [mechs, setMechs] = useState<MechBasicWithQueueStatus[]>([])
-
-    console.log({ isLoading, loadError, setStatus, setRarities })
 
     const faction = useMemo(() => {
         return getFaction(factionID)
     }, [factionID, getFaction])
 
-    const getItems = useCallback(async () => {
-        try {
-            setIsLoading(true)
-
-            let sortDir = SortDir.Asc
-            let sortBy = ""
-            if (sort === SortTypeLabel.MechQueueDesc || sort === SortTypeLabel.AlphabeticalReverse || sort === SortTypeLabel.RarestDesc) sortDir = SortDir.Desc
-
-            switch (sort) {
-                case SortTypeLabel.Alphabetical:
-                case SortTypeLabel.AlphabeticalReverse:
-                    sortBy = "alphabetical"
-                    break
-                case SortTypeLabel.RarestAsc:
-                case SortTypeLabel.RarestDesc:
-                    sortBy = "rarity"
-            }
-
-            const isQueueSort = sort === SortTypeLabel.MechQueueAsc || sort === SortTypeLabel.MechQueueDesc
-
-            const resp = await send<GetMechsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
-                queue_sort: isQueueSort ? sortDir : undefined,
-                sort_by: isQueueSort ? undefined : sortBy,
-                sort_dir: isQueueSort ? undefined : sortDir,
-                search,
-                rarities,
-                statuses: status,
-                page,
-                page_size: pageSize,
-                include_market_listed: true,
-            })
-
-            updateQuery.current({
-                sort,
-                search,
-                rarities: rarities.join("||"),
-                statuses: status.join("||"),
-                page: page.toString(),
-                pageSize: pageSize.toString(),
-            })
-
-            if (!resp) return
-            setLoadError(undefined)
-            setMechs(resp.mechs)
-            setTotalItems(resp.total)
-        } catch (e) {
-            setLoadError(typeof e === "string" ? e : "Failed to get war machines.")
-            console.error(e)
-        } finally {
+    useGameServerSubscriptionFaction<LobbyMech[]>(
+        {
+            URI: "/staked_mechs",
+            key: GameServerKeys.SubFactionStakedMechs,
+        },
+        (payload) => {
             setIsLoading(false)
-        }
-    }, [page, pageSize, rarities, search, send, setTotalItems, sort, status, updateQuery])
+            if (!payload) return
 
+            setMechs((prev) => {
+                if (prev.length === 0) {
+                    return payload
+                }
+
+                // Replace current list
+                const list = prev.map((mech) => payload.find((p) => p.id === mech.id) || mech)
+
+                // Append new list
+                payload.forEach((p) => {
+                    // If already exists
+                    if (list.some((mech) => mech.id === p.id)) {
+                        return
+                    }
+                    // Otherwise, push to the list
+                    list.push(p)
+                })
+
+                return list
+            })
+        },
+    )
+
+    // Apply sort, search, and filters
     useEffect(() => {
-        getItems()
-    }, [getItems])
+        let result = [...mechs]
+
+        // Apply search
+        if (search) {
+            result = result.filter((mech) => `${mech.label.toLowerCase()} ${mech.name.toLowerCase()}`.includes(search.toLowerCase()))
+        }
+
+        // Apply status filter
+        if (status) {
+            result = result.filter((mech) => status.includes(mech.status))
+        }
+
+        // Apply rarity filter
+        if (rarities) {
+            result = result.filter((mech) => rarities.includes(mech.tier))
+        }
+
+        // Apply sort
+        switch (sort) {
+            case SortTypeLabel.Alphabetical:
+                result = result.sort((a, b) => `${a.name}${a.label}`.localeCompare(`${b.name}${b.label}`))
+                break
+            case SortTypeLabel.AlphabeticalReverse:
+                result = result.sort((a, b) => `${b.name}${b.label}`.localeCompare(`${a.name}${a.label}`))
+                break
+            case SortTypeLabel.RarestAsc:
+                result = result.sort((a, b) => (getRarityDeets(a.tier.toUpperCase()).rank > getRarityDeets(b.tier.toUpperCase()).rank ? 1 : -1))
+                break
+            case SortTypeLabel.RarestDesc:
+                result = result.sort((a, b) => (getRarityDeets(a.tier.toUpperCase()).rank < getRarityDeets(b.tier.toUpperCase()).rank ? 1 : -1))
+                break
+            case SortTypeLabel.MechQueueAsc:
+                result = result.sort((a, b) => (a.queue_position && b.queue_position && a.queue_position > b.queue_position ? 1 : -1))
+                break
+            case SortTypeLabel.MechQueueDesc:
+                result = result.sort((a, b) => (a.queue_position && b.queue_position && a.queue_position < b.queue_position ? 1 : -1))
+                break
+        }
+
+        // Save the configs to url query
+        updateQuery.current({
+            sort,
+            search,
+            rarities: rarities.join("||"),
+            statuses: status.join("||"),
+            page: page.toString(),
+            pageSize: pageSize.toString(),
+        })
+
+        // Pagination
+        result = result.slice((page - 1) * pageSize, page * pageSize)
+        setTotalItems(result.length)
+
+        setDisplayMechs(result)
+    }, [mechs, page, pageSize, rarities, search, setTotalItems, sort, status, updateQuery])
 
     return (
         <Stack
