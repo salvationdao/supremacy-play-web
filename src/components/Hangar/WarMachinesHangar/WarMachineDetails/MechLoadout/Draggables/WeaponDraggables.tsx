@@ -1,6 +1,7 @@
 import { Box, CircularProgress, InputBase, InputBaseProps, MenuItem, Pagination, Select, Stack, StackProps, styled, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { SvgDrag, SvgLoadoutDamage, SvgLoadoutWeapon, SvgSearch } from "../../../../../../assets"
+import { useDimension } from "../../../../../../containers"
 import { useTheme } from "../../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../../helpers"
 import { usePagination } from "../../../../../../hooks"
@@ -28,6 +29,7 @@ export interface WeaponDraggablesProps {
 
 export const WeaponDraggables = ({ compareToWeapon, excludeWeaponIDs, drag }: WeaponDraggablesProps) => {
     const theme = useTheme()
+    const { mainContentDimensions, triggerReset } = useDimension()
     const { send } = useGameServerCommandsUser("/user_commander")
 
     const weaponsMemoized = useRef<Weapon[]>([])
@@ -35,8 +37,8 @@ export const WeaponDraggables = ({ compareToWeapon, excludeWeaponIDs, drag }: We
     const [isWeaponsLoading, setIsWeaponsLoading] = useState(true)
     const [weaponsError, setWeaponsError] = useState<string>()
     const [sort, setSort] = useState<string>(SortTypeLabel.DateAddedNewest)
-    const { page, changePage, setTotalItems, totalPages, pageSize } = usePagination({
-        pageSize: 8,
+    const { page, changePage, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
+        pageSize: mainContentDimensions.height > 900 ? 8 : 6,
         page: 1,
     })
 
@@ -55,6 +57,10 @@ export const WeaponDraggables = ({ compareToWeapon, excludeWeaponIDs, drag }: We
             setSearchLoading(false)
         }, 1000)
     }
+
+    useEffect(() => {
+        triggerReset()
+    }, [triggerReset])
 
     useEffect(() => {
         const set = new Set(excludeWeaponIDs)
@@ -121,6 +127,16 @@ export const WeaponDraggables = ({ compareToWeapon, excludeWeaponIDs, drag }: We
     useEffect(() => {
         getWeapons()
     }, [getWeapons])
+    useEffect(() => {
+        if (mainContentDimensions.height > 900) {
+            changePageSize(8)
+        } else if (mainContentDimensions.height > 700) {
+            changePageSize(6)
+        } else {
+            changePageSize(4)
+        }
+        console.log(mainContentDimensions.height)
+    }, [changePageSize, mainContentDimensions.height])
 
     const weaponsContent = useMemo(() => {
         if (isWeaponsLoading) {
@@ -222,7 +238,7 @@ export const WeaponDraggables = ({ compareToWeapon, excludeWeaponIDs, drag }: We
     }, [compareToWeapon, isWeaponsLoading, onDrag, onDragStart, onDragStop, theme.factionTheme.primary, weapons, weaponsError])
 
     return (
-        <Stack spacing="2rem" minHeight={400}>
+        <Stack spacing="2rem" minHeight={200}>
             {/* Search and sort */}
             <Stack direction="row" spacing="1rem">
                 <NiceInputBase
