@@ -16,7 +16,7 @@ export interface NiceBoxThingProps extends Omit<BoxProps, "border" | "background
     }
     border?: {
         color: ResponsiveStyleValue<Property.Color | undefined>
-        thickness?: "lean" | "normal" | "thicc"
+        thickness?: "very-lean" | "lean" | "thicc"
     }
     background?:
         | boolean
@@ -166,11 +166,11 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
             borderStyle: "solid",
         }
 
-        switch (typeof border.thickness === "undefined" ? "normal" : border.thickness) {
-            case "lean":
+        switch (typeof border.thickness === "undefined" ? "lean" : border.thickness) {
+            case "very-lean":
                 styles.borderWidth = "1px"
                 break
-            case "normal":
+            case "lean":
                 styles.borderWidth = "2px"
                 break
             case "thicc":

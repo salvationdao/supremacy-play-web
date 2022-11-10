@@ -23,7 +23,7 @@ export const MechCard = React.memo(function MechCard({ mech, isGridView, isSelec
     const rarityDeets = useMemo(() => getRarityDeets(mech.tier), [mech.tier])
 
     return (
-        <NiceBoxThing border={{ color: "#FFFFFF30", thickness: "lean" }} background={{ color: ["#FFFFFF10", "#FFFFFF20"] }} sx={{ p: "1rem 1.5rem" }}>
+        <NiceBoxThing border={{ color: "#FFFFFF30", thickness: "very-lean" }} background={{ color: ["#FFFFFF10", "#FFFFFF20"] }} sx={{ p: "1rem 1.5rem" }}>
             {/* Mech name */}
             <Stack direction="row" alignItems="center" justifyContent="space-between" spacing=".5rem">
                 <Typography sx={{ fontFamily: fonts.nostromoBlack, ...TruncateTextLines(1) }}>{name || label}</Typography>
