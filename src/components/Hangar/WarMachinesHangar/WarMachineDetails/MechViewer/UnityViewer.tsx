@@ -413,19 +413,7 @@ const ImpureUnityViewer = ({ unity, mech }: MechViewer3DProps) => {
                         backgroundColor: theme.factionTheme.background,
                     }}
                 >
-                    <ClipThing
-                        border={{
-                            borderColor: theme.factionTheme.primary,
-                        }}
-                        corners={{
-                            topLeft: true,
-                            bottomRight: true,
-                        }}
-                        backgroundColor={theme.factionTheme.background}
-                        sx={{
-                            padding: "1rem",
-                        }}
-                    >
+                    <Box>
                         <Typography
                             sx={{
                                 fontFamily: fonts.nostromoBlack,
@@ -444,7 +432,7 @@ const ImpureUnityViewer = ({ unity, mech }: MechViewer3DProps) => {
                             variant="determinate"
                             value={progress}
                         />
-                    </ClipThing>
+                    </Box>
                 </Box>
             </Fade>
             {showClickToLoadOverlay && (
