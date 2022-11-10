@@ -38,7 +38,7 @@ export const MechPicker = ({ mechDetails, mechStatus, mechStaked, onUpdate }: Me
     const { send: sendUser } = useGameServerCommandsUser("/user_commander")
     const { newSnackbarMessage } = useGlobalNotifications()
 
-    const statusDeets = useMemo(() => getMechStatusDeets(mechStatus), [mechStatus])
+    const statusDeets = useMemo(() => getMechStatusDeets(mechStatus?.status), [mechStatus])
     const [inheritWeaponSkins, setInheritWeaponSkins] = useState(mechDetails.inherit_all_weapon_skins)
 
     const [mechBattleStats, setMechBattleStats] = useState<BattleMechStats>()

@@ -71,7 +71,7 @@ export const KeycardHangarItemInner = ({ keycard, itemSaleID }: KeycardHangarIte
 
                         {!itemSaleID && (
                             <Box sx={{ position: "absolute", top: ".6rem", right: ".8rem" }}>
-                                <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                                     {keycard.count}x
                                 </Typography>
                             </Box>

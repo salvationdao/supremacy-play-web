@@ -34,7 +34,7 @@ export const SystemBanMessage = ({
                 >
                     <Stack direction="row" spacing=".8rem" sx={{ opacity: 0.7 }} alignItems="center">
                         <SvgAnnouncement size="1.1rem" sx={{ pb: ".35rem" }} />
-                        <Typography sx={{ fontWeight: "fontWeightBold" }}>{messageType === ChatMessageType.ModBan ? "MOD BAN" : "SYSTEM BAN"}</Typography>
+                        <Typography sx={{ fontWeight: "bold" }}>{messageType === ChatMessageType.ModBan ? "MOD BAN" : "SYSTEM BAN"}</Typography>
 
                         <Typography
                             variant="caption"

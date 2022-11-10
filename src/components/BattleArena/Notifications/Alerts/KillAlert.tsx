@@ -24,7 +24,7 @@ export const KillAlert = ({ data, getFaction }: { data: KillAlertProps; getFacti
     } else if (killed_by_user) {
         killedBy = <PlayerNameGid player={killed_by_user} />
     } else {
-        killedBy = <StyledNormalText sx={{ fontWeight: "fontWeightBold" }} text={killed_by || "UNKNOWN"} />
+        killedBy = <StyledNormalText sx={{ fontWeight: "bold" }} text={killed_by || "UNKNOWN"} />
     }
 
     return (

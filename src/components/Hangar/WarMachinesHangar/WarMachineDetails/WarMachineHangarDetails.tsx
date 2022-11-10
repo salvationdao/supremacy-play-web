@@ -94,7 +94,7 @@ export const WarMachineHangarDetailsInner = ({ mechID }: WarMachineHangarDetails
                 >
                     <Typography
                         variant="h4"
-                        fontWeight="fontWeightBold"
+                        fontWeight="bold"
                         sx={{
                             animation: `${pulseEffect} 2s infinite`,
                         }}
@@ -106,12 +106,7 @@ export const WarMachineHangarDetailsInner = ({ mechID }: WarMachineHangarDetails
 
             {/* Right side */}
             {mechDetails ? (
-                <MechLoadout
-                    mechDetails={mechDetails}
-                    mechStatus={mechStatus}
-                    mechStaked={mechIsStaked}
-                    onUpdate={updateMechDetails}
-                />
+                <MechLoadout mechDetails={mechDetails} mechStatus={mechStatus} mechStaked={mechIsStaked} onUpdate={updateMechDetails} />
             ) : (
                 <>
                     <NiceBoxThing
@@ -127,7 +122,7 @@ export const WarMachineHangarDetailsInner = ({ mechID }: WarMachineHangarDetails
                         <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                             <Typography
                                 variant="h4"
-                                fontWeight="fontWeightBold"
+                                fontWeight="bold"
                                 sx={{
                                     animation: `${pulseEffect} 2s infinite`,
                                 }}

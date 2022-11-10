@@ -268,7 +268,7 @@ export const QuickPlayerAbilitiesItem = React.memo(function QuickPlayerAbilities
                                     sx={{
                                         lineHeight: 1.2,
                                         ...TruncateTextLines(2),
-                                        fontWeight: "fontWeightBold",
+                                        fontWeight: "bold",
                                     }}
                                 >
                                     {saleAbility.ability.label}

@@ -104,7 +104,7 @@ export const MechAbilityButtonBT = ({ gameAbility }: { gameAbility: GameAbility 
                     variant="body2"
                     sx={{
                         lineHeight: 1,
-                        fontWeight: "fontWeightBold",
+                        fontWeight: "bold",
                         whiteSpace: "nowrap",
                         textTransform: "none",
                         color: remainSeconds > 0 || !text_colour ? "#FFFFFF" : text_colour,

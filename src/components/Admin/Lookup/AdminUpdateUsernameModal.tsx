@@ -99,7 +99,7 @@ export const AdminUpdateUsernameModal = ({ user, onClose, onSuccess, faction }: 
 
                         <Stack spacing="1.5rem">
                             <Stack spacing=".3rem">
-                                <Typography sx={{ color: faction.primary_color, fontWeight: "fontWeightBold" }}>New Username:</Typography>
+                                <Typography sx={{ color: faction.primary_color, fontWeight: "bold" }}>New Username:</Typography>
                                 <TextField
                                     value={username}
                                     onChange={(e) => {
@@ -133,7 +133,7 @@ export const AdminUpdateUsernameModal = ({ user, onClose, onSuccess, faction }: 
                             </Stack>
 
                             <Stack spacing=".3rem">
-                                <Typography sx={{ color: faction.primary_color, fontWeight: "fontWeightBold" }}>Reason:</Typography>
+                                <Typography sx={{ color: faction.primary_color, fontWeight: "bold" }}>Reason:</Typography>
                                 <TextField
                                     required
                                     value={reason}

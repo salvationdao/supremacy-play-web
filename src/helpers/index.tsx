@@ -17,7 +17,7 @@ import {
     SvgWrapperProps,
 } from "../assets"
 import { colors } from "../theme/theme"
-import { AssetItemType, Dimension, GAME_CLIENT_TILE_SIZE, MechStatus, MechStatusEnum, MysteryCrateType, Rarity, RarityEnum, UserRank } from "../types"
+import { AssetItemType, Dimension, GAME_CLIENT_TILE_SIZE, MechStatusEnum, MysteryCrateType, Rarity, RarityEnum, UserRank } from "../types"
 import { FiatOrderStatus } from "../types/fiat"
 
 // Capitalize convert a string "example" to "Example"
@@ -260,20 +260,17 @@ export const snakeToSlug = (str: string): string => {
     return str.split("_").join("-").toLowerCase()
 }
 
-export const getMechStatusDeets = (status?: MechStatus) => {
+export const getMechStatusDeets = (status?: MechStatusEnum) => {
     let color = colors.darkGrey
     let label = "UNKNOWN"
 
-    switch (status?.status) {
+    switch (status) {
         case MechStatusEnum.Idle:
             label = "IDLE"
             color = colors.green
             break
         case MechStatusEnum.Queue:
             label = "IN LOBBY"
-            if (status?.battle_lobby_is_locked) {
-                label = "IN QUEUE"
-            }
             color = colors.yellow
             break
         case MechStatusEnum.Battle:

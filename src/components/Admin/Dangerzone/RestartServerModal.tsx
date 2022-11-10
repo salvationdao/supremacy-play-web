@@ -108,7 +108,7 @@ const AdminUnbanModalInner = ({
                             proceeding please provide a really good reason before considering restarting the server.
                         </Typography>
                         <Stack spacing=".3rem">
-                            <Typography sx={{ color: colors.red, fontWeight: "fontWeightBold" }}>Restart reason:</Typography>
+                            <Typography sx={{ color: colors.red, fontWeight: "bold" }}>Restart reason:</Typography>
                             <TextField
                                 value={restartReason}
                                 placeholder="Type the reason to restart server..."

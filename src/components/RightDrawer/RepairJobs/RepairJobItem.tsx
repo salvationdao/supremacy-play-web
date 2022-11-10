@@ -103,7 +103,7 @@ export const RepairJobItem = React.memo(function RepairJobItem({ repairJob, remo
                                 <SvgSupToken size="1.8rem" fill={colors.yellow} />
                                 <Typography
                                     sx={{
-                                        fontWeight: "fontWeightBold",
+                                        fontWeight: "bold",
                                         ...TruncateTextLines(2),
                                     }}
                                 >

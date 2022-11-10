@@ -109,7 +109,7 @@ export const SupportAbilityCard = ({ supportAbility }: { supportAbility: AnyAbil
                         sx={{
                             lineHeight: 1.2,
                             ...TruncateTextLines(2),
-                            fontWeight: "fontWeightBold",
+                            fontWeight: "bold",
                         }}
                     >
                         {supportAbility.label}

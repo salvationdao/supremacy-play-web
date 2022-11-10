@@ -103,7 +103,7 @@ export const Reactions = ({ fontSize, data, hoverOnly = false }: ReactionsProps)
                 onClick={() => handleDislike()}
             />
 
-            <Typography fontSize={`${fontSize * 0.9}rem`} sx={{ color: netLikes < 0 ? colors.red : colors.green, fontWeight: "fontWeightBold" }}>
+            <Typography fontSize={`${fontSize * 0.9}rem`} sx={{ color: netLikes < 0 ? colors.red : colors.green, fontWeight: "bold" }}>
                 {netLikes}
             </Typography>
 

@@ -165,7 +165,7 @@ const AbilityItem = ({ ability }: { hash: string; participantID: number; ability
                 sx={{
                     pt: ".4rem",
                     lineHeight: 1,
-                    fontWeight: "fontWeightBold",
+                    fontWeight: "bold",
                     ...TruncateTextLines(1),
                 }}
             >

@@ -212,7 +212,7 @@ export const WarMachineItem = ({
                                 sx={{
                                     mb: ".3rem",
                                     lineHeight: 1,
-                                    fontWeight: "fontWeightBold",
+                                    fontWeight: "bold",
                                     whiteSpace: "normal",
                                     ...TruncateTextLines(1),
                                 }}

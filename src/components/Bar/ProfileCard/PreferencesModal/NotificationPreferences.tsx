@@ -190,7 +190,7 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
                 {settingsChanged && hadNotificationsTurnedOff && hasAnyNotifications && (
                     <Stack spacing=".8rem" sx={{ mt: ".8rem", px: "1.7rem", py: ".8rem", backgroundColor: `${colors.orange}20` }}>
                         <Stack direction="row" alignItems="center">
-                            <Typography sx={{ fontWeight: "fontWeightBold" }}>NOTIFICATION FEE:&nbsp;</Typography>
+                            <Typography sx={{ fontWeight: "bold" }}>NOTIFICATION FEE:&nbsp;</Typography>
                             <SvgSupToken size="1.5rem" fill={colors.yellow} />
                             <Typography>5</Typography>
                         </Stack>
@@ -201,7 +201,7 @@ export const NotificationPreferencesInner = ({ notificationPreferences, setNotif
                         </Typography>
 
                         <Stack spacing="1rem" direction="row" alignItems="center">
-                            <Typography sx={{ fontWeight: "fontWeightBold", span: { color: colors.yellow } }}>
+                            <Typography sx={{ fontWeight: "bold", span: { color: colors.yellow } }}>
                                 I have read and agree to be charge <span>5</span> SUPS per notification.
                             </Typography>
                             <Checkbox

@@ -75,13 +75,11 @@ export const DeviceRegisterModal = ({ onClose }: DeviceRegisterModalProps) => {
                                 COMPLETE THE FOLLOWING STEPS TO CONFIGURE YOUR MOBILE APP:
                             </Typography>
 
-                            <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold", paddingLeft: 2 }}>
+                            <Typography sx={{ lineHeight: 1, fontWeight: "bold", paddingLeft: 2 }}>
                                 1. Install the Supremacy companion app for Android or iOS.
                             </Typography>
-                            <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold", paddingLeft: 2 }}>
-                                {`2. In the app, click the "Scan QR" button.`}
-                            </Typography>
-                            <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold", paddingLeft: 2 }}>3. Scan the image below.</Typography>
+                            <Typography sx={{ lineHeight: 1, fontWeight: "bold", paddingLeft: 2 }}>{`2. In the app, click the "Scan QR" button.`}</Typography>
+                            <Typography sx={{ lineHeight: 1, fontWeight: "bold", paddingLeft: 2 }}>3. Scan the image below.</Typography>
 
                             {/* QR Code - displays skeleton while it is loading */}
                             <Box sx={{ ml: "2rem !important" }}>

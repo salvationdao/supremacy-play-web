@@ -97,7 +97,7 @@ const OptInButton = ({ isOptedIn }: { disable: boolean; isOptedIn: boolean }) =>
                     sx={{
                         lineHeight: 1,
                         letterSpacing: ".6px",
-                        fontWeight: "fontWeightBold",
+                        fontWeight: "bold",
                         whiteSpace: "nowrap",
                         textTransform: "none",
                         color: "#FFFFFF",

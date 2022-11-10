@@ -51,7 +51,7 @@ export const InstantPunishConfirmModal = ({
                             py: "2.4rem",
                             span: {
                                 color: colors.neonBlue,
-                                fontWeight: "fontWeightBold",
+                                fontWeight: "bold",
                             },
                         }}
                     >
@@ -79,11 +79,11 @@ export const InstantPunishConfirmModal = ({
                                 onClick={submitInstantPunish}
                             >
                                 <Stack direction="row" justifyContent="center">
-                                    <Typography variant="body2" sx={{ fontWeight: "fontWeightBold" }}>
+                                    <Typography variant="body2" sx={{ fontWeight: "bold" }}>
                                         CONFIRM (
                                     </Typography>
                                     <SvgSupToken size="1.4rem" />
-                                    <Typography variant="body2" sx={{ fontWeight: "fontWeightBold" }}>
+                                    <Typography variant="body2" sx={{ fontWeight: "bold" }}>
                                         {supFormatter(cost, 0)})
                                     </Typography>
                                 </Stack>
@@ -99,7 +99,7 @@ export const InstantPunishConfirmModal = ({
                                 sx={{ pt: ".2rem", pb: 0, minWidth: "5rem" }}
                                 onClick={onClose}
                             >
-                                <Typography variant="body2" sx={{ fontWeight: "fontWeightBold" }}>
+                                <Typography variant="body2" sx={{ fontWeight: "bold" }}>
                                     CANCEL
                                 </Typography>
                             </FancyButton>

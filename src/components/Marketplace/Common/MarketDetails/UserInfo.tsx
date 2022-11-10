@@ -37,7 +37,7 @@ export const UserInfo = ({ marketUser, title, primaryColor }: { marketUser?: Mar
                         }}
                     />
                 )}
-                <Typography variant="h5" sx={{ color: primaryColor || ownerFactionDeets.primary_color, fontWeight: "fontWeightBold" }}>
+                <Typography variant="h5" sx={{ color: primaryColor || ownerFactionDeets.primary_color, fontWeight: "bold" }}>
                     {username}
                     <span style={{ marginLeft: ".2rem", opacity: 0.8 }}>{`#${gid}`}</span>
                     <span style={{ color: colors.neonBlue }}>{isSelfItem ? " (YOU)" : ""}</span>

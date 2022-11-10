@@ -149,7 +149,7 @@ const BanProposalInner = ({
                         >
                             <Stack direction="row" justifyContent="center">
                                 {rankDeets?.icon}
-                                <Typography variant="body2" sx={{ ml: ".5rem", fontWeight: "fontWeightBold" }}>
+                                <Typography variant="body2" sx={{ ml: ".5rem", fontWeight: "bold" }}>
                                     COMMAND OVERRIDE
                                 </Typography>
                             </Stack>
@@ -205,8 +205,8 @@ const BanProposalInner = ({
                         direction="row"
                         justifyContent="space-between"
                     >
-                        <Typography sx={{ fontWeight: "fontWeightBold" }}>PUNISHMENT PROPOSAL</Typography>
-                        <Typography sx={{ fontWeight: "fontWeightBold", px: "1rem", backgroundColor: "#00000090" }}>
+                        <Typography sx={{ fontWeight: "bold" }}>PUNISHMENT PROPOSAL</Typography>
+                        <Typography sx={{ fontWeight: "bold", px: "1rem", backgroundColor: "#00000090" }}>
                             <Countdown initialTime={(banProposal.ended_at.getTime() - new Date().getTime()) / 1000} toggleOutOfTime={toggleOutOfTime} />s
                         </Typography>
                     </Stack>
@@ -264,11 +264,11 @@ const BanProposalInner = ({
                     error={error}
                     confirmSuffix={
                         <Stack direction="row" sx={{ ml: ".4rem" }}>
-                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                                 (
                             </Typography>
                             <SvgSupToken size="1.8rem" />
-                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                                 {supFormatter(banProposal.instant_pass_fee, 0)})
                             </Typography>
                         </Stack>

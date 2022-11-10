@@ -72,7 +72,7 @@ export const DevicePreferences = ({ toggleAddDeviceModal }: DevicePreferencesPro
                 <Stack>
                     {devices.map((device) => {
                         return (
-                            <Typography key={device.name} sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                            <Typography key={device.name} sx={{ lineHeight: 1, fontWeight: "bold" }}>
                                 {device.name}
                             </Typography>
                         )

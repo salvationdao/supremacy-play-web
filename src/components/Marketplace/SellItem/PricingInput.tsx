@@ -85,7 +85,7 @@ export const PricingInput = ({
                             ml: ".3rem",
                             mt: ".5rem",
                             color: colors.red,
-                            fontWeight: "fontWeightBold",
+                            fontWeight: "bold",
                         }}
                     >
                         {error}

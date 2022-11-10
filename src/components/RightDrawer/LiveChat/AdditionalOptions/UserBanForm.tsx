@@ -237,7 +237,7 @@ export const UserBanForm = ({ open, onClose, prefillUser }: { open: boolean; onC
 
                         <Stack spacing="1.5rem" sx={{ mt: "1.6rem" }}>
                             <Stack spacing=".1rem">
-                                <Typography sx={{ color: primaryColor, fontWeight: "fontWeightBold" }}>USER:</Typography>
+                                <Typography sx={{ color: primaryColor, fontWeight: "bold" }}>USER:</Typography>
                                 {selectedUser ? (
                                     <UserItem banUser={selectedUser} sx={{ pl: ".2rem" }} />
                                 ) : (
@@ -256,7 +256,7 @@ export const UserBanForm = ({ open, onClose, prefillUser }: { open: boolean; onC
                                     },
                                 }}
                             >
-                                <Typography sx={{ color: primaryColor, fontWeight: "fontWeightBold" }}>BAN OPTION:</Typography>
+                                <Typography sx={{ color: primaryColor, fontWeight: "bold" }}>BAN OPTION:</Typography>
                                 <Select
                                     displayEmpty
                                     sx={{
@@ -308,7 +308,7 @@ export const UserBanForm = ({ open, onClose, prefillUser }: { open: boolean; onC
                             </Stack>
 
                             <Stack spacing=".3rem">
-                                <Typography sx={{ color: primaryColor, fontWeight: "fontWeightBold" }}>REASON:</Typography>
+                                <Typography sx={{ color: primaryColor, fontWeight: "bold" }}>REASON:</Typography>
                                 <TextField
                                     value={reason}
                                     placeholder="Type the reason to punish the user..."
@@ -345,7 +345,7 @@ export const UserBanForm = ({ open, onClose, prefillUser }: { open: boolean; onC
                             </Stack>
 
                             <Stack direction="row" spacing=".4rem">
-                                <Typography sx={{ color: primaryColor, fontWeight: "fontWeightBold" }}>FEE:</Typography>
+                                <Typography sx={{ color: primaryColor, fontWeight: "bold" }}>FEE:</Typography>
                                 <Stack direction="row" alignItems="center">
                                     <SvgSupToken size="1.4rem" fill={colors.yellow} />
                                     <Typography sx={{ lineHeight: 1 }}>{fee || "---"}</Typography>

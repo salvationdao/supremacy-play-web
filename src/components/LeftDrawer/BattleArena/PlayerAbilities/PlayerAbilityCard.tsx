@@ -178,7 +178,7 @@ export const PlayerAbilityCard = React.memo(function PlayerAbilityCard({ playerA
                             sx={{
                                 lineHeight: 1.2,
                                 ...TruncateTextLines(2),
-                                fontWeight: "fontWeightBold",
+                                fontWeight: "bold",
                             }}
                         >
                             {playerAbility.ability.label}
