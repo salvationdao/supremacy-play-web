@@ -4,7 +4,7 @@ import { SvgMail } from "../../assets"
 import { useAuth, useGlobalNotifications } from "../../containers"
 import { useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
-import { colors } from "../../theme/theme"
+import { colors, fonts } from "../../theme/theme"
 import { NiceBoxThing } from "../Common/Nice/NiceBoxThing"
 import { NiceButton } from "../Common/Nice/NiceButton"
 import { NiceTextField } from "../Common/Nice/NiceTextField"
@@ -60,7 +60,11 @@ export const MarketingModal = () => {
                         padding: "2rem",
                     }}
                 >
-                    <Typography variant="body1">
+                    <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack, mb: "1.2rem" }}>
+                        Subscribe to our newsletter
+                    </Typography>
+
+                    <Typography>
                         Please check the box below if you would like to receive updates, special offers and newsletters from Supremacy. All promotional content
                         will be sent to your registered email on XSYN.
                     </Typography>
@@ -107,22 +111,6 @@ export const MarketingModal = () => {
                             <NiceButton type="submit" sheen={{ sheenSpeedFactor: 0.8 }} border={{ color: colors.yellow }}>
                                 UPDATE
                             </NiceButton>
-
-                            {/* <FancyButton
-                                clipThingsProps={{
-                                    clipSize: "9px",
-                                    backgroundColor: colors.yellow,
-                                    opacity: 1,
-                                    border: { borderColor: colors.yellow, borderThickness: "2.5px" },
-                                    sx: {},
-                                }}
-                                sx={{ px: "2rem", py: ".6rem", color: "#000000" }}
-                                type="submit"
-                            >
-                                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoHeavy, color: "#000000" }}>
-                                    UPDATE
-                                </Typography>
-                            </FancyButton> */}
                         </Stack>
                     </form>
                 </Stack>
