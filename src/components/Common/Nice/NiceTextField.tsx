@@ -62,9 +62,6 @@ export const NiceTextField = ({ primaryColor, value, onChange, errorMessage, pla
                 }}
                 value={value}
                 onChange={(e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
-
                     if (props.type === "number") {
                         const num = parseInt(e.target.value)
                         if (num <= 0) return
@@ -72,6 +69,11 @@ export const NiceTextField = ({ primaryColor, value, onChange, errorMessage, pla
                     } else {
                         onChange(e.target.value)
                     }
+                    e.preventDefault()
+                    e.stopPropagation()
+                }}
+                onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
+                    e.stopPropagation()
                 }}
                 InputProps={InputProps}
                 {...props}
