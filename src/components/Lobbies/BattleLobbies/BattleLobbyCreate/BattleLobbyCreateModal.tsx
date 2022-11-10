@@ -1,4 +1,4 @@
-import { ConfirmModal } from "../../../Common/ConfirmModal"
+import { ConfirmModal } from "../../../Common/Deprecated/ConfirmModal"
 import React, { useCallback, useMemo, useState } from "react"
 import { Box, Stack, Typography } from "@mui/material"
 import { colors, fonts } from "../../../../theme/theme"

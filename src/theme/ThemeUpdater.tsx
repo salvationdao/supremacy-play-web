@@ -29,6 +29,7 @@ export const ThemeUpdater = ({ children }: { children: ReactNode }) => {
                     ".Mui-selected": {
                         color: theme.factionTheme.secondary,
                         backgroundColor: `${theme.factionTheme.primary} !important`,
+                        boxShadow: 1,
                     },
                 },
 

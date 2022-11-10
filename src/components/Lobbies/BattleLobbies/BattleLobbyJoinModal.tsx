@@ -4,7 +4,7 @@ import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { LobbyMech } from "../../../types"
 import { BattleLobby } from "../../../types/battle_queue"
-import { ConfirmModal } from "../../Common/ConfirmModal"
+import { ConfirmModal } from "../../Common/Deprecated/ConfirmModal"
 import { MechSelector } from "../Common/MechSelector"
 
 interface BattleLobbyJoinModalProps {

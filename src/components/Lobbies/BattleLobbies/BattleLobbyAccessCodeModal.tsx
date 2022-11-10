@@ -1,4 +1,4 @@
-import { ConfirmModal } from "../../Common/ConfirmModal"
+import { ConfirmModal } from "../../Common/Deprecated/ConfirmModal"
 import { Box, Stack, Typography } from "@mui/material"
 import { InputField } from "../Common/InputField"
 import { fonts } from "../../../theme/theme"

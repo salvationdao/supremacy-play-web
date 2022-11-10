@@ -1,8 +1,8 @@
 import { Box, Zoom, Modal, Stack, Typography } from "@mui/material"
 import { ReactNode } from "react"
-import { ClipThing, FancyButton } from ".."
-import { useTheme } from "../../containers/theme"
-import { colors, fonts, siteZIndex } from "../../theme/theme"
+import { ClipThing, FancyButton } from "../.."
+import { useTheme } from "../../../containers/theme"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
 
 interface SuccessModalProps {
     title: string

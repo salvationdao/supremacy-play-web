@@ -10,7 +10,7 @@ import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
 import { BanProposalStruct } from "../../../../types/chat"
-import { ConfirmModal } from "../../../Common/ConfirmModal"
+import { ConfirmModal } from "../../../Common/Deprecated/ConfirmModal"
 
 export const BanProposal = () => {
     const { banProposal } = useChat()

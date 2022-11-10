@@ -11,8 +11,8 @@ import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { ItemType, MarketUser } from "../../../../types/marketplace"
-import { ConfirmModal } from "../../../Common/ConfirmModal"
-import { SuccessModal } from "../../../Common/SuccessModal"
+import { ConfirmModal } from "../../../Common/Deprecated/ConfirmModal"
+import { SuccessModal } from "../../../Common/Deprecated/SuccessModal"
 
 interface BuyNowDetailsProps {
     id: string

@@ -12,7 +12,7 @@ import { scaleUpKeyframes } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { LocationSelectType, SaleAbility, SaleAbilityAvailability } from "../../../types"
 import { ClipThing } from "../../Common/Deprecated/ClipThing"
-import { ConfirmModal } from "../../Common/ConfirmModal"
+import { ConfirmModal } from "../../Common/Deprecated/ConfirmModal"
 
 export interface PlayerAbilityStoreItemProps {
     saleAbility: SaleAbility

@@ -1,9 +1,9 @@
-import { Box, IconButton, Snackbar, SnackbarCloseReason, Stack, Typography } from "@mui/material"
+import { SnackbarCloseReason } from "@mui/material"
 import { ReactNode, SyntheticEvent, useCallback, useEffect, useMemo, useState } from "react"
-import { SvgClose2, SvgInfoCircular, SvgSuccess, SvgWarnTriangle } from "../../assets"
+import { SvgInfoCircular, SvgSuccess, SvgWarnTriangle } from "../../assets"
 import { SnackBarMessage, useGlobalNotifications } from "../../containers"
 import { colors } from "../../theme/theme"
-import { NiceBoxThing } from "./Nice/NiceBoxThing"
+import { NiceSnackBar } from "./Nice/NiceSnackbar"
 
 export const GlobalSnackbar = () => {
     const [open, setOpen] = useState(false)
@@ -68,50 +68,17 @@ export const GlobalSnackbar = () => {
         return { color, icon }
     }, [messageInfo])
 
-    return useMemo(
-        () => (
-            <Snackbar
-                key={messageInfo ? `global-snackbar-${messageInfo.key}` : undefined}
-                open={open}
-                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-                autoHideDuration={4000}
-                onClose={handleClose}
-                TransitionProps={{ onExited: handleExited }}
-            >
-                <Box>
-                    <NiceBoxThing
-                        border={{ color: severityDeets.color }}
-                        background={{ color: [`${severityDeets.color}60`, `${severityDeets.color}90`] }}
-                        sx={{
-                            mb: "-1rem",
-                            ml: "-1rem",
-                        }}
-                    >
-                        <Stack
-                            direction="row"
-                            alignItems="center"
-                            spacing=".9rem"
-                            sx={{
-                                px: "1.6rem",
-                                pt: ".7rem",
-                                pb: ".4rem",
-                                pr: ".9rem",
-                                borderRadius: 0.4,
-                                boxShadow: 23,
-                            }}
-                        >
-                            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                                {severityDeets.icon} {messageInfo ? messageInfo.message : undefined}
-                            </Typography>
-
-                            <IconButton size="small" onClick={handleClose}>
-                                <SvgClose2 size="1.4rem" sx={{ opacity: 0.8, ":hover": { opacity: 1 } }} />
-                            </IconButton>
-                        </Stack>
-                    </NiceBoxThing>
-                </Box>
-            </Snackbar>
-        ),
-        [handleClose, handleExited, messageInfo, open, severityDeets.color, severityDeets.icon],
+    return (
+        <NiceSnackBar
+            key={messageInfo ? `global-snackbar-${messageInfo.key}` : undefined}
+            open={open}
+            anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+            autoHideDuration={4000}
+            onClose={handleClose}
+            TransitionProps={{ onExited: handleExited }}
+            icon={severityDeets.icon}
+            message={messageInfo?.message}
+            color={severityDeets.color}
+        />
     )
 }

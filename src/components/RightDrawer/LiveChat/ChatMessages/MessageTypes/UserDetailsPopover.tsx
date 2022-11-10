@@ -8,7 +8,7 @@ import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../../theme/theme"
 import { FeatureName, User, UserStat } from "../../../../../types"
-import { ConfirmModal } from "../../../../Common/ConfirmModal"
+import { ConfirmModal } from "../../../../Common/Deprecated/ConfirmModal"
 import { PlayerNameGid } from "../../../../Common/PlayerNameGid"
 
 enum DurationOptions {
