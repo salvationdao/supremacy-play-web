@@ -1,12 +1,13 @@
-import { Box, Checkbox, Collapse, FormControlLabel, InputAdornment, Modal, Stack, TextField, Typography } from "@mui/material"
+import { Checkbox, Collapse, FormControlLabel, Modal, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { SvgMail } from "../../assets"
 import { useAuth, useGlobalNotifications } from "../../containers"
 import { useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
-import { ClipThing } from "../Common/Deprecated/ClipThing"
-import { FancyButton } from "../Common/Deprecated/FancyButton"
+import { NiceBoxThing } from "../Common/Nice/NiceBoxThing"
+import { NiceButton } from "../Common/Nice/NiceButton"
+import { NiceTextField } from "../Common/Nice/NiceTextField"
 
 export const MarketingModal = () => {
     const { user, userFromPassport } = useAuth()
@@ -38,7 +39,9 @@ export const MarketingModal = () => {
 
     return (
         <Modal open={showMarketingPopup}>
-            <Box
+            <NiceBoxThing
+                border={{ color: "#FFFFFF" }}
+                background={{ color: [colors.darkNavy] }}
                 sx={{
                     position: "absolute",
                     top: "50%",
@@ -49,85 +52,69 @@ export const MarketingModal = () => {
                     outline: "none",
                 }}
             >
-                <ClipThing
-                    clipSize="8px"
-                    border={{
-                        borderColor: "#FFFFFF",
-                        borderThickness: ".3rem",
+                <Stack
+                    sx={{
+                        position: "relative",
+                        width: "100%",
+                        height: "100%",
+                        padding: "2rem",
                     }}
-                    backgroundColor={colors.darkNavyBlue}
                 >
-                    <Stack
-                        sx={{
-                            position: "relative",
-                            width: "100%",
-                            height: "100%",
-                            padding: "2rem",
+                    <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack, mb: "1.2rem" }}>
+                        Subscribe to our newsletter
+                    </Typography>
+
+                    <Typography>
+                        Please check the box below if you would like to receive updates, special offers and newsletters from Supremacy. All promotional content
+                        will be sent to your registered email on XSYN.
+                    </Typography>
+
+                    <form
+                        onSubmit={(e) => {
+                            e.preventDefault()
+                            updateMarketingPreferences()
                         }}
                     >
-                        <Typography variant="body1">
-                            Please check the box below if you would like to receive updates, special offers and newsletters from Supremacy. All promotional
-                            content will be sent to your registered email on XSYN.
-                        </Typography>
-                        <form
-                            onSubmit={(e) => {
-                                e.preventDefault()
-                                updateMarketingPreferences()
-                            }}
-                        >
-                            <Stack>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            disabled={isLoading}
-                                            checked={acceptMarketing}
-                                            onChange={(e) => {
-                                                setAcceptMarketing(e.currentTarget.checked)
-                                            }}
-                                        />
-                                    }
-                                    label="Subscribe to Supremacy news and updates"
-                                />
-                                <Collapse in={!userFromPassport?.email && acceptMarketing} unmountOnExit>
-                                    <TextField
-                                        variant="outlined"
-                                        placeholder="Your email"
-                                        InputProps={{
-                                            startAdornment: (
-                                                <InputAdornment position="start">
-                                                    <SvgMail fill={colors.yellow} size="2.4rem" />
-                                                </InputAdornment>
-                                            ),
-                                        }}
-                                        sx={{
-                                            mb: "1rem",
-                                        }}
-                                        type="email"
-                                        value={newEmail || ""}
-                                        onChange={(e) => setNewEmail(e.target.value)}
+                        <Stack>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
                                         disabled={isLoading}
-                                        required
-                                        fullWidth
+                                        checked={acceptMarketing}
+                                        onChange={(e) => {
+                                            setAcceptMarketing(e.currentTarget.checked)
+                                        }}
+                                        sx={{ ml: ".8rem", my: "1rem" }}
                                     />
-                                </Collapse>
-                                <FancyButton
-                                    clipThingsProps={{
-                                        clipSize: "9px",
-                                        backgroundColor: colors.yellow,
-                                        opacity: 1,
-                                        border: { borderColor: colors.yellow, borderThickness: "2.5px" },
-                                        sx: {},
+                                }
+                                label="Subscribe to Supremacy news and updates"
+                            />
+
+                            <Collapse in={!userFromPassport?.email && acceptMarketing} unmountOnExit>
+                                <NiceTextField
+                                    required
+                                    disabled={isLoading}
+                                    primaryColor={colors.yellow}
+                                    value={newEmail || ""}
+                                    onChange={(value) => setNewEmail(value)}
+                                    placeholder="Your email..."
+                                    type="email"
+                                    InputProps={{
+                                        startAdornment: <SvgMail size="1.5rem" sx={{ opacity: 0.5 }} />,
                                     }}
-                                    sx={{ px: "2rem", py: ".6rem", color: "#000000" }}
-                                    type="submit"
-                                >
-                                    <Typography sx={{ fontFamily: fonts.nostromoHeavy, color: "#000000" }}>UPDATE MARKETING PREFERENCES</Typography>
-                                </FancyButton>
-                            </Stack>
-                        </form>
-                    </Stack>
-                </ClipThing>
-            </Box>
+                                    sx={{
+                                        mb: "2rem",
+                                    }}
+                                />
+                            </Collapse>
+
+                            <NiceButton type="submit" sheen={{ sheenSpeedFactor: 0.8 }} border={{ color: colors.yellow }}>
+                                UPDATE
+                            </NiceButton>
+                        </Stack>
+                    </form>
+                </Stack>
+            </NiceBoxThing>
         </Modal>
     )
 }
