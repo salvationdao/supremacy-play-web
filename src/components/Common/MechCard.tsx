@@ -24,7 +24,7 @@ export const MechCard = React.memo(function MechCard({ mech, isGridView, isSelec
     const statusDeets = useMemo(() => getMechStatusDeets(mech.status), [mech.status])
 
     return (
-        <NiceBoxThing border={{ color: "#FFFFFF30", thickness: "very-lean" }} background={{ color: ["#FFFFFF10", "#FFFFFF20"] }} sx={{ p: "1rem 1.5rem" }}>
+        <NiceBoxThing border={{ color: "#FFFFFF38", thickness: "very-lean" }} background={{ color: ["#FFFFFF10", "#FFFFFF20"] }} sx={{ p: "1rem 1.5rem" }}>
             <Stack spacing="1.2rem">
                 {/* Mech name */}
                 <Stack direction="row" alignItems="center" justifyContent="space-between" spacing=".5rem">

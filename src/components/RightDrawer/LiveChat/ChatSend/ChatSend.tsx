@@ -1,7 +1,7 @@
-import { IconButton, InputAdornment, Stack, TextField, Typography } from "@mui/material"
+import { IconButton, InputAdornment, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { v4 as uuidv4 } from "uuid"
-import { ChatSettings, ClipThing, EmojiPopover } from "../../.."
+import { ChatSettings, EmojiPopover } from "../../.."
 import { SvgEmoji, SvgExternalLink, SvgSend } from "../../../../assets"
 import { MAX_CHAT_MESSAGE_LENGTH } from "../../../../constants"
 import { useAuth, useChat, useGlobalNotifications, useMobile } from "../../../../containers"
@@ -9,8 +9,9 @@ import { getRandomColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { colors, fonts } from "../../../../theme/theme"
+import { colors } from "../../../../theme/theme"
 import { ChatMessage, ChatMessageType } from "../../../../types"
+import { NiceTextField } from "../../../Common/Nice/NiceTextField"
 import { NiceTooltip } from "../../../Common/Nice/NiceTooltip"
 import { EmojiShortcut } from "./EmojiShortcut"
 import { TagPlayer } from "./TagPlayer"
@@ -159,120 +160,86 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
 
                     <TagPlayer faction_id={faction_id} message={message} setMessageWithCheck={setMessageWithCheck} caretStartPosition={caretStartPosition} />
 
-                    <ClipThing
-                        clipSize="8px"
-                        border={{
-                            borderColor: primaryColor,
-                            borderThickness: ".25rem",
+                    <NiceTextField
+                        id={`message-textfield-${faction_id}`}
+                        primaryColor={primaryColor}
+                        value={message}
+                        placeholder="Send a message..."
+                        inputRef={textfieldRef}
+                        onChange={(msg, e) => {
+                            setMessageWithCheck(msg)
+                            if (e) caretStartPosition.current = e.target.selectionStart
                         }}
-                        opacity={0.6}
-                        backgroundColor="#494949"
-                    >
-                        <Stack sx={{ height: "100%" }}>
-                            <TextField
-                                id={`message-textfield-${faction_id}`}
-                                value={message}
-                                placeholder="Send a message..."
-                                inputRef={textfieldRef}
-                                onChange={(e) => {
-                                    const msg = e.currentTarget.value
-                                    setMessageWithCheck(msg)
-                                    caretStartPosition.current = e.target.selectionStart
-                                }}
-                                onFocus={(e) => {
+                        onFocus={(e) => {
+                            e.preventDefault()
+                            focusCaretTextField()
+                        }}
+                        onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
+                            e.stopPropagation()
+                            switch (e.key) {
+                                case "Enter": {
                                     e.preventDefault()
-                                    focusCaretTextField()
-                                }}
-                                type="text"
-                                multiline
-                                maxRows={4}
-                                hiddenLabel
-                                size="small"
-                                onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
-                                    e.stopPropagation()
-                                    switch (e.key) {
-                                        case "Enter": {
-                                            e.preventDefault()
-                                            sendMessage()
-                                            break
-                                        }
-                                        case "Tab":
-                                        case "ArrowUp": {
-                                            e.preventDefault()
-                                            document.getElementById(`emoji-index-${faction_id}-0`)?.focus() ||
-                                                document.getElementById(`search-player-results-0`)?.focus()
-                                            break
-                                        }
-                                    }
-                                }}
-                                sx={{
-                                    borderRadius: 0,
-                                    "& .MuiInputBase-root": {
-                                        fontFamily: fonts.shareTech,
-                                        pt: "1rem",
-                                        pb: ".8rem",
-                                        borderRadius: 0,
-                                    },
-                                    ".Mui-disabled": {
-                                        WebkitTextFillColor: "unset",
-                                        color: "#FFFFFF70",
-                                    },
-                                    ".MuiOutlinedInput-notchedOutline": {
-                                        outline: "none !important",
-                                        border: `none !important`,
-                                    },
-                                    textarea: {
-                                        color: "#FFFFFF",
-                                        overflow: "hidden",
-                                    },
-                                }}
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <ChatSettings primaryColor={primaryColor} />
+                                    sendMessage()
+                                    break
+                                }
+                                case "Tab":
+                                case "ArrowUp": {
+                                    e.preventDefault()
+                                    document.getElementById(`emoji-index-${faction_id}-0`)?.focus() ||
+                                        document.getElementById(`search-player-results-0`)?.focus()
+                                    break
+                                }
+                            }
+                        }}
+                        type="text"
+                        multiline
+                        maxRows={4}
+                        hiddenLabel
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <ChatSettings primaryColor={primaryColor} />
 
-                                            {!isPoppedout && !isMobile && (
-                                                <IconButton
-                                                    onClick={() => setIsPoppedout(true)}
-                                                    edge="end"
-                                                    size="small"
-                                                    sx={{ opacity: 0.5, ":hover": { opacity: 1 }, transition: "all .1s" }}
-                                                >
-                                                    <SvgExternalLink size="1.4rem" fill="#FFFFFF" sx={{ pb: 0 }} />
-                                                </IconButton>
-                                            )}
+                                    {!isPoppedout && !isMobile && (
+                                        <IconButton
+                                            onClick={() => setIsPoppedout(true)}
+                                            edge="end"
+                                            size="small"
+                                            sx={{ opacity: 0.5, ":hover": { opacity: 1 }, transition: "all .1s" }}
+                                        >
+                                            <SvgExternalLink size="1.4rem" fill="#FFFFFF" sx={{ pb: 0 }} />
+                                        </IconButton>
+                                    )}
 
-                                            <NiceTooltip placement="top-end" text="Use keyboard shortcut ' : '">
-                                                <IconButton
-                                                    ref={popoverRef}
-                                                    onClick={() => toggleIsEmojiOpen()}
-                                                    edge="end"
-                                                    size="small"
-                                                    sx={{
-                                                        mr: 0,
-                                                        opacity: isEmojiOpen ? 1 : 0.5,
-                                                        ":hover": { opacity: 1 },
-                                                        transition: "all .1s",
-                                                    }}
-                                                >
-                                                    <SvgEmoji size="1.4rem" fill="#FFFFFF" sx={{ pb: 0 }} />
-                                                </IconButton>
-                                            </NiceTooltip>
+                                    <NiceTooltip placement="top-end" text="Use keyboard shortcut ' : '">
+                                        <IconButton
+                                            ref={popoverRef}
+                                            onClick={() => toggleIsEmojiOpen()}
+                                            edge="end"
+                                            size="small"
+                                            sx={{
+                                                mr: 0,
+                                                opacity: isEmojiOpen ? 1 : 0.5,
+                                                ":hover": { opacity: 1 },
+                                                transition: "all .1s",
+                                            }}
+                                        >
+                                            <SvgEmoji size="1.4rem" fill="#FFFFFF" sx={{ pb: 0 }} />
+                                        </IconButton>
+                                    </NiceTooltip>
 
-                                            <IconButton
-                                                onClick={sendMessage}
-                                                edge="end"
-                                                size="small"
-                                                sx={{ opacity: 0.5, ":hover": { opacity: 1 }, transition: "all .1s" }}
-                                            >
-                                                <SvgSend size="1.4rem" fill="#FFFFFF" sx={{ pb: 0 }} />
-                                            </IconButton>
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                        </Stack>
-                    </ClipThing>
+                                    <IconButton
+                                        onClick={sendMessage}
+                                        edge="end"
+                                        size="small"
+                                        sx={{ opacity: 0.5, ":hover": { opacity: 1 }, transition: "all .1s" }}
+                                    >
+                                        <SvgSend size="1.4rem" fill="#FFFFFF" sx={{ pb: 0 }} />
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
 
                     {showCharCount && (
                         <Typography

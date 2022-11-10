@@ -6,21 +6,38 @@ interface NiceTextFieldProps extends BaseTextFieldProps {
     primaryColor?: string
     value: string | number
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onChange: (...event: any[]) => void
+    onChange: (value: any, e?: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+    onKeyDown?: React.KeyboardEventHandler<HTMLDivElement> | undefined
     errorMessage?: string
     sx?: SxProps
     InputProps?: Partial<OutlinedInputProps> | undefined
 }
 
 // Please use the MUI classnames to style the textfield itself in the sx prop
-export const NiceTextField = ({ primaryColor, value, onChange, errorMessage, placeholder, InputProps, sx, ...props }: NiceTextFieldProps) => {
+export const NiceTextField = ({
+    primaryColor,
+    value,
+    onChange,
+    onKeyDown,
+    errorMessage,
+    placeholder,
+    InputProps,
+    sx,
+    multiline,
+    ...props
+}: NiceTextFieldProps) => {
     return (
         <Box
             position="relative"
             tabIndex={0}
             sx={{
-                height: "3.3rem",
+                height: multiline ? "unset" : "3.3rem",
                 boxShadow: 0.5,
+
+                ".MuiOutlinedInput-root": {
+                    py: 0,
+                    pl: 0,
+                },
 
                 ".MuiInputBase-root": {
                     backgroundColor: "#FFFFFF15",
@@ -44,6 +61,7 @@ export const NiceTextField = ({ primaryColor, value, onChange, errorMessage, pla
                 error={!!errorMessage}
                 helperText={errorMessage}
                 onWheel={(e) => e.target instanceof HTMLElement && e.target.blur()} // Prevents scroll number change
+                multiline={multiline}
                 sx={{
                     width: "100%",
                     ".MuiOutlinedInput-input": {
@@ -65,14 +83,15 @@ export const NiceTextField = ({ primaryColor, value, onChange, errorMessage, pla
                     if (props.type === "number") {
                         const num = parseInt(e.target.value)
                         if (num <= 0) return
-                        onChange(num)
+                        onChange(num, e)
                     } else {
-                        onChange(e.target.value)
+                        onChange(e.target.value, e)
                     }
                     e.preventDefault()
                     e.stopPropagation()
                 }}
                 onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
+                    onKeyDown && onKeyDown(e)
                     e.stopPropagation()
                 }}
                 InputProps={InputProps}

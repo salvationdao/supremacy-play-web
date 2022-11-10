@@ -333,6 +333,7 @@ export const theme = createTheme({
                     color: "#FFFFFF90",
                     borderRadius: 0,
                     "& > .MuiSvgIcon-root": { width: "2.8rem", height: "2.8rem" },
+                    ".MuiSvgIcon-root": { transform: "scale(1.1)", transformOrigin: "left" },
                     ".Mui-checked, .MuiSvgIcon-root": { color: `${"#FFFFFF90"} !important` },
                     ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${"#FFFFFF90"}50 !important` },
                 },
