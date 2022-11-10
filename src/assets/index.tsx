@@ -175,6 +175,7 @@ import Unknown from "!react-svg-loader!./svg/Unknown.svg"
 import UpArrow from "!react-svg-loader!./svg/UpArrow.svg"
 import UpcomingBattle from "!react-svg-loader!./svg/UpcomingBattle.svg"
 import User from "!react-svg-loader!./svg/User.svg"
+import UserDiamond from "!react-svg-loader!./svg/UserDiamond.svg"
 import Volume from "!react-svg-loader!./svg/Volume.svg"
 import VolumeMute from "!react-svg-loader!./svg/VolumeMute.svg"
 import WarnTriangle from "!react-svg-loader!./svg/WarnTriangle.svg"
@@ -1635,5 +1636,11 @@ export const SvgCreditCard: React.VoidFunctionComponent<SvgWrapperProps> = (prop
 export const SvgEmptySet: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <EmptySet />
+    </SvgWrapper>
+)
+
+export const SvgUserDiamond: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <UserDiamond />
     </SvgWrapper>
 )
