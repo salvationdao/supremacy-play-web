@@ -41,7 +41,7 @@ type NiceButtonProps = CommonProps & LinkProps
 const OVERLAY_CLASSNAME = "NiceButtonOverlay"
 
 export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(function NiceButton(
-    { link, route, loading, sheen, disabled, sx, children, ...props },
+    { link, route, loading, sheen, disabled, sx, children, color, ...props },
     ref,
 ) {
     const buttonDisabled = loading || disabled
@@ -73,7 +73,7 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
             backgroundColor: "transparent",
             cursor: buttonDisabled ? "auto" : "pointer",
             flexShrink: 0,
-            color: "#FFFFFF",
+            color: color || "#FFFFFF",
             whiteSpace: "nowrap",
             boxShadow: 0.5,
             [`&:disabled .${OVERLAY_CLASSNAME}`]: {
@@ -137,7 +137,7 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
 
             ...sx,
         }
-    }, [buttonDisabled, sheen, sheenOptions.autoSheen, sheenOptions.opacity, sheenOptions.sheenSpeedFactor, sx])
+    }, [buttonDisabled, color, sheen, sheenOptions.autoSheen, sheenOptions.opacity, sheenOptions.sheenSpeedFactor, sx])
 
     return (
         <Nice
@@ -149,6 +149,7 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
             }}
             disabled={buttonDisabled}
             enableBoxShadow
+            color={color}
             {...props}
         >
             {route && <Link style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: 3 }} to={route.to} target={route.target}></Link>}
