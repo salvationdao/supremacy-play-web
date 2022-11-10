@@ -21,7 +21,7 @@ export const SectionMechRewards = ({ battleEndDetail }: { battleEndDetail: Battl
                     sx={{
                         position: "relative",
                         fontFamily: fonts.nostromoBlack,
-                        fontWeight: "fontWeightBold",
+                        fontWeight: "bold",
                     }}
                 >
                     MECH OWNER REWARDS
@@ -56,7 +56,7 @@ export const SectionMechRewards = ({ battleEndDetail }: { battleEndDetail: Battl
                                         sx={{
                                             lineHeight: 1,
                                             color: faction.primary_color,
-                                            fontWeight: "fontWeightBold",
+                                            fontWeight: "bold",
                                             ...TruncateTextLines(1),
 
                                             span: { color: colors.neonBlue },
@@ -67,7 +67,7 @@ export const SectionMechRewards = ({ battleEndDetail }: { battleEndDetail: Battl
                                     </Typography>
 
                                     <Stack direction="row" alignItems="center">
-                                        <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold", color: colors.offWhite }}>REWARD:&nbsp;</Typography>
+                                        <Typography sx={{ lineHeight: 1, fontWeight: "bold", color: colors.offWhite }}>REWARD:&nbsp;</Typography>
                                         {wm.is_afk ? (
                                             <Typography sx={{ lineHeight: 1, color: colors.red }}>AFK</Typography>
                                         ) : (

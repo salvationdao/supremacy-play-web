@@ -196,7 +196,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                     sx={{
                                         ...TruncateTextLines(1),
                                         textTransform: "uppercase",
-                                        fontWeight: "fontWeightBold",
+                                        fontWeight: "bold",
                                         color: `#ffffff`,
                                         letterSpacing: 1.1,
                                     }}
@@ -234,7 +234,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                     variant="h6"
                                     sx={{
                                         "& span": {
-                                            fontWeight: "fontWeightBold",
+                                            fontWeight: "bold",
                                         },
                                     }}
                                 >

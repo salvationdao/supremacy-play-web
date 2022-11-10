@@ -118,9 +118,7 @@ export const HistoryItem = ({ eventItem, isGridView }: { eventItem: MarketplaceE
                     <General title="AMOUNT" isGridView={isGridView}>
                         <Stack direction="row" alignItems="center" flexWrap="wrap">
                             {itemRelatedData.formattedAmount && <SvgSupToken size="1.7rem" fill={itemRelatedData.primaryColor} />}
-                            <Typography
-                                sx={{ color: itemRelatedData.formattedAmount ? itemRelatedData.primaryColor : colors.lightGrey, fontWeight: "fontWeightBold" }}
-                            >
+                            <Typography sx={{ color: itemRelatedData.formattedAmount ? itemRelatedData.primaryColor : colors.lightGrey, fontWeight: "bold" }}>
                                 {itemRelatedData.formattedAmount || "---"}
                             </Typography>
                         </Stack>

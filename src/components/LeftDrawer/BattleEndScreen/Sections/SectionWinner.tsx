@@ -20,7 +20,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                     sx={{
                         position: "relative",
                         fontFamily: fonts.nostromoBlack,
-                        fontWeight: "fontWeightBold",
+                        fontWeight: "bold",
                     }}
                 >
                     The Winner
@@ -41,7 +41,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                         imageBorderThickness="0px"
                         imageBackgroundSize="contain"
                         truncateLine
-                        textSx={{ fontWeight: "fontWeightBold" }}
+                        textSx={{ fontWeight: "bold" }}
                     />
                 </Box>
 

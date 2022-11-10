@@ -67,7 +67,7 @@ export const PunishMessage = ({ data, sentAt, fontSize }: { data?: PunishMessage
                 >
                     <Stack direction="row" spacing=".8rem" sx={{ mb: ".5rem", opacity: 0.7 }} alignItems="center">
                         <SvgAnnouncement size="1.1rem" sx={{ pb: ".35rem" }} />
-                        <Typography sx={{ fontWeight: "fontWeightBold" }}>PLAYER BAN</Typography>
+                        <Typography sx={{ fontWeight: "bold" }}>PLAYER BAN</Typography>
 
                         <Typography
                             variant="caption"

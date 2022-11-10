@@ -73,14 +73,14 @@ export const ArenaTypeSelect = ({
                 }}
                 renderValue={() => {
                     return (
-                        <Typography textTransform="uppercase" sx={{ fontWeight: "fontWeightBold" }}>
+                        <Typography textTransform="uppercase" sx={{ fontWeight: "bold" }}>
                             {label || "ALL TIME"}
                         </Typography>
                     )
                 }}
             >
                 <MenuItem value="" onClick={() => onChangeArenaType(undefined)}>
-                    <Typography textTransform="uppercase" sx={{ fontWeight: "fontWeightBold" }}>
+                    <Typography textTransform="uppercase" sx={{ fontWeight: "bold" }}>
                         ANY
                     </Typography>
                 </MenuItem>
@@ -94,7 +94,7 @@ export const ArenaTypeSelect = ({
                             }}
                             sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                         >
-                            <Typography textTransform="uppercase" sx={{ fontWeight: "fontWeightBold" }}>
+                            <Typography textTransform="uppercase" sx={{ fontWeight: "bold" }}>
                                 {x.name}
                             </Typography>
                         </MenuItem>

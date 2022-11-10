@@ -102,7 +102,7 @@ export const StakeModal = ({
                         onClick={onClose}
                         loading={isLoading}
                     >
-                        <Typography variant="h6" sx={{ color: "#FFFFFF", fontWeight: "fontWeightBold" }}>
+                        <Typography variant="h6" sx={{ color: "#FFFFFF", fontWeight: "bold" }}>
                             CANCEL
                         </Typography>
                     </FancyButton>
@@ -118,7 +118,7 @@ export const StakeModal = ({
                         onClick={agreedFunc}
                     >
                         <Stack direction="row" justifyContent="center">
-                            <Typography variant="h6" sx={{ color: "#FFFFFF", fontWeight: "fontWeightBold" }}>
+                            <Typography variant="h6" sx={{ color: "#FFFFFF", fontWeight: "bold" }}>
                                 {agreedText}
                             </Typography>
                         </Stack>

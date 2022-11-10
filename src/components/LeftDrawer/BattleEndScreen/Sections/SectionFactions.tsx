@@ -18,7 +18,7 @@ export const SectionFactions = ({ battleEndDetail }: { battleEndDetail: BattleEn
                     sx={{
                         position: "relative",
                         fontFamily: fonts.nostromoBlack,
-                        fontWeight: "fontWeightBold",
+                        fontWeight: "bold",
                     }}
                 >
                     FACTION RANKING
@@ -46,7 +46,7 @@ export const SectionFactions = ({ battleEndDetail }: { battleEndDetail: BattleEn
 
                         return (
                             <Stack key={index} direction="row" spacing="1.04rem" alignItems="center">
-                                <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "fontWeightBold", color }}>
+                                <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "bold", color }}>
                                     {index + 1}.
                                 </Typography>
                                 <StyledImageText
@@ -58,7 +58,7 @@ export const SectionFactions = ({ battleEndDetail }: { battleEndDetail: BattleEn
                                     imageBorderThickness=".2rem"
                                     fontWeight="normal"
                                     truncateLine
-                                    textSx={{ fontWeight: "fontWeightBold" }}
+                                    textSx={{ fontWeight: "bold" }}
                                 />
                             </Stack>
                         )

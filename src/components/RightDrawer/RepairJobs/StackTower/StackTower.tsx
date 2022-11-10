@@ -100,7 +100,7 @@ export const StackTower = React.memo(function StackTower({ primaryColor, disable
                 }}
             >
                 <Stack spacing=".7rem" sx={{ pb: ".4rem" }}>
-                    <Typography variant="h5" sx={{ fontWeight: "fontWeightBold", span: { color: colors.neonBlue } }}>
+                    <Typography variant="h5" sx={{ fontWeight: "bold", span: { color: colors.neonBlue } }}>
                         YOU NEED A TOTAL OF <span>{repairAgent?.required_stacks || "XXX"}</span> STACKS TO REPAIR A SINGLE BLOCK!
                     </Typography>
 
@@ -115,7 +115,7 @@ export const StackTower = React.memo(function StackTower({ primaryColor, disable
                             />
                         </Stack>
 
-                        <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                        <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "bold" }}>
                             {cumulativeScore}/{repairAgent?.required_stacks || "XXX"}
                         </Typography>
                     </Stack>
@@ -164,7 +164,7 @@ export const StackTower = React.memo(function StackTower({ primaryColor, disable
                                             textAlign: "center",
                                             color: gameState === GameState.Ended ? colors.orange : "#FFFFFF",
                                             fontFamily: fonts.shareTech,
-                                            fontWeight: "fontWeightBold",
+                                            fontWeight: "bold",
                                         }}
                                     >
                                         {score}

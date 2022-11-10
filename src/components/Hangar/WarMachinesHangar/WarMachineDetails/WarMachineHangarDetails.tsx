@@ -289,7 +289,7 @@ export const WarMachineHangarDetailsInner = ({
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                         <Typography
                             variant="h4"
-                            fontWeight="fontWeightBold"
+                            fontWeight="bold"
                             sx={{
                                 animation: `${pulseEffect} 2s infinite`,
                             }}

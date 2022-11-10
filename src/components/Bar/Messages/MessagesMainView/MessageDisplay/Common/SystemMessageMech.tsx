@@ -111,7 +111,7 @@ export const SystemMessageMech = ({ mech }: { mech: SystemMessageMechStruct }) =
                         <SvgSkull2 size="1.4rem" />
                         <Typography
                             sx={{
-                                fontWeight: "fontWeightBold",
+                                fontWeight: "bold",
                                 color: getFaction(killed.faction_id).primary_color,
                                 lineHeight: 1.2,
                                 ...TruncateTextLines(2),
@@ -137,7 +137,7 @@ export const SystemMessageMech = ({ mech }: { mech: SystemMessageMechStruct }) =
                                     <SvgDeath size="1.4rem" />
                                     <Typography
                                         sx={{
-                                            fontWeight: "fontWeightBold",
+                                            fontWeight: "bold",
                                             color: killedFaction.primary_color,
                                             textDecoration: "line-through",
                                             lineHeight: 1.2,

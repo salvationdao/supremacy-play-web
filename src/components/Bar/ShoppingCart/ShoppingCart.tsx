@@ -32,7 +32,7 @@ export const ShoppingCart = () => {
                                 height: 14,
                                 minWidth: 14,
                                 fontSize: "1.5rem",
-                                fontWeight: "fontWeightBold",
+                                fontWeight: "bold",
                             },
                         }}
                     >

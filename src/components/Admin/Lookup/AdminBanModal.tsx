@@ -262,7 +262,7 @@ const AdminBanModalInner = ({
 
                         <Stack spacing="1.5rem" sx={{ mt: "1.6rem" }}>
                             <Stack spacing=".3rem">
-                                <Typography sx={{ color: faction.primary_color, fontWeight: "fontWeightBold" }}>Ban Duration (Hours):</Typography>
+                                <Typography sx={{ color: faction.primary_color, fontWeight: "bold" }}>Ban Duration (Hours):</Typography>
                                 <TextField
                                     value={banDurationHours === 0 ? "" : banDurationHours.toString()}
                                     placeholder="Ban duration in hours"
@@ -303,7 +303,7 @@ const AdminBanModalInner = ({
                             </Stack>
 
                             <Stack spacing=".3rem">
-                                <Typography sx={{ color: faction.primary_color, fontWeight: "fontWeightBold" }}>Ban Duration (Days):</Typography>
+                                <Typography sx={{ color: faction.primary_color, fontWeight: "bold" }}>Ban Duration (Days):</Typography>
                                 <TextField
                                     value={banDurationDays === 0 ? "" : banDurationDays.toString()}
                                     placeholder="Ban duration in days"
@@ -344,7 +344,7 @@ const AdminBanModalInner = ({
                             </Stack>
 
                             <Stack spacing=".3rem">
-                                <Typography sx={{ color: faction.primary_color, fontWeight: "fontWeightBold" }}>Ban reason:</Typography>
+                                <Typography sx={{ color: faction.primary_color, fontWeight: "bold" }}>Ban reason:</Typography>
                                 <TextField
                                     value={banReason}
                                     placeholder="Type the reason to punish the user..."

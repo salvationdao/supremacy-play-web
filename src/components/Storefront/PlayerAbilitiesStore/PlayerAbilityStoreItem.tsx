@@ -240,7 +240,7 @@ export const PlayerAbilityStoreItem = React.memo(function PlayerAbilityStoreItem
                     isLoading={loading}
                     error={error}
                     confirmSuffix={
-                        <Typography variant="h6" sx={{ fontWeight: "fontWeightBold", ml: ".4rem" }}>
+                        <Typography variant="h6" sx={{ fontWeight: "bold", ml: ".4rem" }}>
                             {availability === SaleAbilityAvailability.CanPurchase ? (
                                 <>
                                     <Box

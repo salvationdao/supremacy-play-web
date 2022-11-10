@@ -19,7 +19,7 @@ export const RewardSups = ({ sups, label }: { sups: string; label?: string }) =>
             >
                 <Stack alignItems="center" justifyContent="center" spacing=".5rem" sx={{ height: "100%", backgroundColor: `${colors.yellow}12` }}>
                     <SvgSupToken size="3rem" fill={colors.yellow} />
-                    <Typography variant="h6" sx={{ textAlign: "center", fontWeight: "fontWeightBold" }}>
+                    <Typography variant="h6" sx={{ textAlign: "center", fontWeight: "bold" }}>
                         {supFormatter(sups, 2)}
                     </Typography>
                 </Stack>

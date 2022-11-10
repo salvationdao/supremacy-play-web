@@ -34,7 +34,7 @@ export const General = ({
                 <Typography
                     sx={{
                         color: textColor || "#FFFFFF",
-                        fontWeight: "fontWeightBold",
+                        fontWeight: "bold",
                         ...TruncateTextLines(2),
                     }}
                 >

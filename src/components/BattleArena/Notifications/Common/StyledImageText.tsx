@@ -32,7 +32,7 @@ export const StyledImageText = ({
     textSx,
 
     fontFamily,
-    fontWeight = "fontWeightBold",
+    fontWeight = "bold",
     imageSize = 1.6,
     imageBorderColor,
     imageBackgroundColor,

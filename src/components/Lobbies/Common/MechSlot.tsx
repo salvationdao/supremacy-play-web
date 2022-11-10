@@ -120,7 +120,7 @@ export const MechSlot = ({ lobbyMech, canLeave, leftQueue }: MechSlotProps) => {
                         sx={{
                             ...TruncateTextLines(1),
                             textTransform: "uppercase",
-                            fontWeight: "fontWeightBold",
+                            fontWeight: "bold",
                             color: `#ffffff`,
                             letterSpacing: 1.1,
                         }}

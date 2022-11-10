@@ -55,7 +55,7 @@ export const FancyButton = React.forwardRef(function FancyButton(
                 sx={{
                     borderRadius: 0,
                     fontFamily: fonts.shareTech,
-                    fontWeight: "fontWeightBold",
+                    fontWeight: "bold",
                     color: "#FFFFFF",
                     textTransform: "uppercase",
                     minWidth: 1,

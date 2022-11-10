@@ -187,7 +187,7 @@ export const MechGeneralStatus = ({
                                     }}
                                 >
                                     <SvgRepair size="1.1rem" />
-                                    <Typography variant="subtitle1" sx={{ whiteSpace: "nowrap", lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                    <Typography variant="subtitle1" sx={{ whiteSpace: "nowrap", lineHeight: 1, fontWeight: "bold" }}>
                                         REPAIR
                                     </Typography>
                                 </Stack>
@@ -221,7 +221,7 @@ export const MechGeneralStatus = ({
                                             color: repairOffer ? colors.blue2 : "#FFFFFF",
                                             whiteSpace: "nowrap",
                                             lineHeight: 1,
-                                            fontWeight: "fontWeightBold",
+                                            fontWeight: "bold",
                                         }}
                                     >
                                         {repairOffer ? "JOB POSTED" : "POST JOB"}
@@ -256,7 +256,7 @@ export const MechGeneralStatus = ({
                                             color: isInRepairBay ? colors.bronze : "#FFFFFF",
                                             whiteSpace: "nowrap",
                                             lineHeight: 1,
-                                            fontWeight: "fontWeightBold",
+                                            fontWeight: "bold",
                                         }}
                                     >
                                         REPAIR BAY

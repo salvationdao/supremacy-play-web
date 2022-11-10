@@ -76,19 +76,19 @@ export const PlayerBattlesSpectated = ({ selectedRound }: { selectedRound?: Lead
                         <Typography
                             key={1}
                             variant="h6"
-                            sx={{ textAlign: "center", fontWeight: "fontWeightBold", color, fontFamily: rank <= 3 ? fonts.nostromoBlack : "inherit" }}
+                            sx={{ textAlign: "center", fontWeight: "bold", color, fontFamily: rank <= 3 ? fonts.nostromoBlack : "inherit" }}
                         >
                             {index + 1}
                         </Typography>,
 
                         <PlayerNameGid key={2} player={item.player} styledImageTextProps={{ variant: "h6", imageSize: 2.4 }} />,
 
-                        <Typography variant="h6" key={3} sx={{ fontWeight: "fontWeightBold", color: faction.primary_color, textTransform: "uppercase" }}>
+                        <Typography variant="h6" key={3} sx={{ fontWeight: "bold", color: faction.primary_color, textTransform: "uppercase" }}>
                             {faction.label}
                         </Typography>,
 
                         <Stack key={4} direction="row" spacing=".4rem" alignItems="center" justifyContent="center">
-                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                                 {item.view_battle_count}
                             </Typography>
                         </Stack>,

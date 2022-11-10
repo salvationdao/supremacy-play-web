@@ -109,7 +109,7 @@ export const RepairBayItem = ({
                                 variant="body2"
                                 sx={{
                                     fontFamily: fonts.nostromoBlack,
-                                    fontWeight: "fontWeightBold",
+                                    fontWeight: "bold",
                                     ...TruncateTextLines(1),
                                 }}
                             >

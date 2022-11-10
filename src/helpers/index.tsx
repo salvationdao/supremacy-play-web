@@ -17,7 +17,7 @@ import {
     SvgWrapperProps,
 } from "../assets"
 import { colors } from "../theme/theme"
-import { AssetItemType, Dimension, GAME_CLIENT_TILE_SIZE, MysteryCrateType, Rarity, RarityEnum, UserRank } from "../types"
+import { AssetItemType, Dimension, GAME_CLIENT_TILE_SIZE, MechStatusEnum, MysteryCrateType, Rarity, RarityEnum, UserRank } from "../types"
 import { FiatOrderStatus } from "../types/fiat"
 
 // Capitalize convert a string "example" to "Example"
@@ -757,3 +757,40 @@ export const noop = () => {
 }
 
 export const isBrowser = typeof window !== "undefined"
+
+export const getMechStatusDeets = (status: MechStatusEnum) => {
+    let label = "---"
+    let color = "#FFFFFF"
+
+    switch (status) {
+        case MechStatusEnum.Idle:
+            label = "IDLE"
+            color = colors.green
+            break
+        case MechStatusEnum.Queue:
+            label = "In Lobby"
+            color = colors.yellow
+            break
+        case MechStatusEnum.Battle:
+            label = "BATTLING"
+            color = colors.orange
+            break
+        case MechStatusEnum.Market:
+            label = "LISTED"
+            color = colors.red
+            break
+        case MechStatusEnum.Sold:
+            label = "SOLD"
+            color = colors.lightGrey
+            break
+        case MechStatusEnum.Damaged:
+            label = "DAMAGED"
+            color = colors.bronze
+            break
+        default:
+            label = status
+            color = colors.lightGrey
+    }
+
+    return { label, color }
+}

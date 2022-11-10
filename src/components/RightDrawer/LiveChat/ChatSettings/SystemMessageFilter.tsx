@@ -11,7 +11,7 @@ export const SystemMessageFilter = () => {
             justifyContent="space-between"
             sx={{ px: "1.2rem", py: ".6rem", backgroundColor: "#FFFFFF05", borderRadius: 1 }}
         >
-            <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>Only show system messages:</Typography>
+            <Typography sx={{ lineHeight: 1, fontWeight: "bold" }}>Only show system messages:</Typography>
 
             <Switch checked={onlyShowSystemMessages} onChange={() => toggleOnlyShowSystemMessages()} />
         </Stack>

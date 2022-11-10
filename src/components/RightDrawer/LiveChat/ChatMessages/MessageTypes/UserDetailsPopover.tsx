@@ -272,7 +272,7 @@ export const UserDetailsPopover = ({
                     isLoading={loading}
                     error={error}
                     confirmSuffix={
-                        <Typography variant="h6" sx={{ fontWeight: "fontWeightBold", ml: ".4rem" }}>
+                        <Typography variant="h6" sx={{ fontWeight: "bold", ml: ".4rem" }}>
                             BAN
                         </Typography>
                     }
@@ -293,7 +293,7 @@ export const UserDetailsPopover = ({
                                     <Typography
                                         variant="h6"
                                         sx={{
-                                            fontWeight: "fontWeightBold",
+                                            fontWeight: "bold",
                                         }}
                                     >
                                         Reason

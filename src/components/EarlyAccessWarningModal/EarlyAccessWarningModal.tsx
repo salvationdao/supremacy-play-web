@@ -92,7 +92,7 @@ const ProdMessage = () => {
                     ".MuiAlert-message": {
                         pt: "1.12rem",
                         fontSize: "1.3rem",
-                        fontWeight: "fontWeightBold",
+                        fontWeight: "bold",
                         fontFamily: fonts.nostromoBold,
                     },
                 }}

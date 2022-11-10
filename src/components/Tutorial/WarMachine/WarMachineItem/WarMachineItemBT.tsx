@@ -233,7 +233,7 @@ export const WarMachineItemBT = ({
                                 variant="h5"
                                 sx={{
                                     lineHeight: 1,
-                                    fontWeight: "fontWeightBold",
+                                    fontWeight: "bold",
                                     whiteSpace: "normal",
                                     ...TruncateTextLines(2),
                                 }}
@@ -286,7 +286,7 @@ export const WarMachineItemBT = ({
                                         id="warMachineSkillsText"
                                         variant="body1"
                                         sx={{
-                                            fontWeight: "fontWeightBold",
+                                            fontWeight: "bold",
                                             color: (theme) => theme.factionTheme.secondary,
                                             letterSpacing: 1,
                                             transition: "all .2s",

@@ -129,7 +129,7 @@ const AdminUnbanModalInner = ({
                             Unban user {user.username} #{user.gid.toString()}
                         </Typography>
                         <Stack spacing=".3rem">
-                            <Typography sx={{ color: faction.primary_color, fontWeight: "fontWeightBold" }}>Unban reason:</Typography>
+                            <Typography sx={{ color: faction.primary_color, fontWeight: "bold" }}>Unban reason:</Typography>
                             <TextField
                                 value={unbanReason}
                                 placeholder="Type the reason to unban this user..."
