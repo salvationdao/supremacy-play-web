@@ -1,5 +1,6 @@
 import { Divider, Stack } from "@mui/material"
 import { useCallback } from "react"
+import { SvgSupToken } from "../../../assets"
 import { IS_TESTING_MODE, PASSPORT_WEB, TOKEN_SALE_PAGE } from "../../../constants"
 import { useAuth } from "../../../containers"
 import { colors } from "../../../theme/theme"
@@ -31,12 +32,11 @@ export const BuySupsButton = () => {
         >
             <NiceButton
                 sheen={{ autoSheen: true, sheenSpeedFactor: 0.7 }}
-                sx={{ px: "1.2rem", py: ".4rem" }}
-                color={colors.neonBlue}
+                sx={{ px: "1.2rem", py: ".4rem", color: colors.gold }}
                 onClick={openBuySupsPage}
-                border={{ color: colors.neonBlue }}
+                border={{ color: colors.gold }}
             >
-                GET SUPS
+                <SvgSupToken inline fill={colors.gold} /> GET SUPS
             </NiceButton>
 
             <Divider
