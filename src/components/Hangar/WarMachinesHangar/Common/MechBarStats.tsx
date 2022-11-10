@@ -368,6 +368,17 @@ export const BarStat = ({
                             ...TruncateTextLines(1),
                         }}
                     >
+                        {compareDifference ? (
+                            <Box
+                                component="span"
+                                sx={{
+                                    color: compareDifference > 0 ? colors.green : colors.red,
+                                    mr: ".5rem",
+                                }}
+                            >
+                                {`(${compareDifference > 0 ? "+" : ""}${compareDifference})`}
+                            </Box>
+                        ) : undefined}
                         {parsedBoosted || parsedCurrent}
                         {unit}
                     </Typography>

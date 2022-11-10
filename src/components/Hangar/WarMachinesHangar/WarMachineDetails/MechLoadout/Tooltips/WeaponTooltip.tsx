@@ -48,7 +48,6 @@ export const WeaponTooltip = ({ id, compareTo }: WeaponTooltipProps) => {
         return (
             <>
                 <Stack
-                    spacing="1rem"
                     sx={{
                         p: "2rem",
                         background: `linear-gradient(to right, ${theme.factionTheme.background}, ${rarity.color}22)`,
@@ -117,7 +116,7 @@ export const WeaponTooltip = ({ id, compareTo }: WeaponTooltipProps) => {
             sx={{
                 display: "flex",
                 flexDirection: "column",
-                minHeight: 300,
+                minHeight: 250,
                 width: 280,
             }}
         >
