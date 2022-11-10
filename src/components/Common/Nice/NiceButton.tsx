@@ -36,7 +36,7 @@ type LinkProps =
           }
       }
 
-type NiceButtonProps = CommonProps & LinkProps
+export type NiceButtonProps = CommonProps & LinkProps
 
 const OVERLAY_CLASSNAME = "NiceButtonOverlay"
 

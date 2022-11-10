@@ -1,9 +1,9 @@
 import { Box, Slide, Stack, styled, Tooltip, tooltipClasses, TooltipProps, Typography } from "@mui/material"
-import React, { MouseEventHandler, useEffect, useRef } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { SvgCancelled, SvgLock, SvgWrapperProps } from "../../../../assets"
 import { colors, fonts } from "../../../../theme/theme"
 import { Rarity } from "../../../../types"
-import { NiceButton } from "../../../Common/Nice/NiceButton"
+import { NiceButton, NiceButtonProps } from "../../../Common/Nice/NiceButton"
 
 export interface LoadoutItem {
     TopRight?: React.ReactNode
@@ -12,13 +12,13 @@ export interface LoadoutItem {
     imageUrl?: string
     label: string
     subLabel?: string
-    onClick?: MouseEventHandler<HTMLButtonElement | HTMLDivElement>
     rarity?: Rarity
-    locked?: boolean
     disabled?: boolean
+    locked?: boolean
     isEmpty?: boolean
     shape?: "square" | "rectangle"
     size?: "small" | "regular" | "full-width"
+    onClick?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent> | React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 }
 
 export interface MechLoadoutItemProps extends LoadoutItem {
@@ -31,6 +31,7 @@ export interface MechLoadoutItemProps extends LoadoutItem {
 export const MechLoadoutItem = React.forwardRef<HTMLDivElement, MechLoadoutItemProps>(function MechLoadoutItem(props, ref) {
     const { prevEquipped, onUnequip, renderTooltip, side = "left", onClick, ...loadoutItemButtonProps } = props
     const memoizedPrevEquipped = useRef<LoadoutItem>()
+    const [hideTooltip, setHideTooltip] = useState(false)
 
     useEffect(() => {
         if (!prevEquipped) return
@@ -43,8 +44,12 @@ export const MechLoadoutItem = React.forwardRef<HTMLDivElement, MechLoadoutItemP
     const button = (
         <MechLoadoutItemButton
             onClick={(e) => {
-                onClick && onClick(e)
+                if (onClick) {
+                    onClick(e)
+                }
             }}
+            onMouseDown={() => setHideTooltip(true)}
+            onMouseUp={() => setHideTooltip(false)}
             {...loadoutItemButtonProps}
         />
     )
@@ -61,7 +66,14 @@ export const MechLoadoutItem = React.forwardRef<HTMLDivElement, MechLoadoutItemP
             }}
         >
             {renderTooltip ? (
-                <MaybeTooltip title={<>{renderTooltip()}</>} followCursor>
+                <MaybeTooltip
+                    sx={{
+                        opacity: hideTooltip ? 0 : 1,
+                        transition: "opacity .2s ease-out",
+                    }}
+                    title={<>{renderTooltip()}</>}
+                    followCursor
+                >
                     <Box
                         sx={{
                             height: props.size === "full-width" ? "100%" : "auto",
@@ -101,6 +113,8 @@ export const MechLoadoutItem = React.forwardRef<HTMLDivElement, MechLoadoutItemP
     )
 })
 
+type MechLoadoutItemButtonProps = LoadoutItem & NiceButtonProps
+
 const MechLoadoutItemButton = ({
     TopRight,
     BottomRight,
@@ -108,14 +122,14 @@ const MechLoadoutItemButton = ({
     imageUrl,
     label,
     subLabel,
-    onClick,
     isEmpty,
     rarity,
     locked,
     disabled,
     shape = "rectangle",
     size = "regular",
-}: LoadoutItem) => {
+    ...props
+}: MechLoadoutItemButtonProps) => {
     const height = size === "full-width" ? "100%" : size === "regular" ? 120 : 100
     const width = size === "full-width" ? "100%" : size === "regular" ? 260 : 200
     const color = isEmpty ? "#ffffff88" : "white"
@@ -123,7 +137,6 @@ const MechLoadoutItemButton = ({
     return (
         <>
             <NiceButton
-                onClick={onClick}
                 disabled={disabled || locked}
                 border={{
                     color: rarity ? rarity.color : colors.darkGrey,
@@ -145,6 +158,7 @@ const MechLoadoutItemButton = ({
                     height: height,
                     padding: 0,
                 }}
+                {...props}
             >
                 {/* Maintain aspect ratio with padding-bottom hack */}
                 {size === "full-width" && (
