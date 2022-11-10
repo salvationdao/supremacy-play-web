@@ -175,46 +175,57 @@ export const theme = createTheme({
         h1: {
             fontFamily: fonts.nostromoBlack,
             fontSize: "8.18rem",
+            lineHeight: 1.5,
         },
         h2: {
             fontFamily: fonts.nostromoBold,
             fontSize: "5.15rem",
+            lineHeight: 1.5,
         },
         h3: {
             fontFamily: fonts.shareTech,
             fontSize: "4.13rem",
+            lineHeight: 1.5,
         },
         h4: {
             fontFamily: fonts.shareTech,
             fontSize: "2.96rem",
+            lineHeight: 1.5,
         },
         h5: {
             fontFamily: fonts.shareTech,
             fontSize: "2.13rem",
+            lineHeight: 1.5,
         },
         h6: {
             fontFamily: fonts.shareTech,
             fontSize: "1.82rem",
+            lineHeight: 1.5,
         },
         body1: {
             fontFamily: fonts.shareTech,
             fontSize: "1.7rem",
+            lineHeight: 1.5,
         },
         body2: {
             fontFamily: fonts.shareTech,
             fontSize: "1.5rem",
+            lineHeight: 1.5,
         },
         subtitle1: {
             fontFamily: fonts.shareTech,
             fontSize: "1.34rem",
+            lineHeight: 1.5,
         },
         subtitle2: {
             fontFamily: fonts.shareTech,
             fontSize: "1.18rem",
+            lineHeight: 1.5,
         },
         caption: {
             fontFamily: fonts.shareTech,
             fontSize: "1.25rem",
+            lineHeight: 1.5,
         },
     },
     components: {
@@ -319,12 +330,11 @@ export const theme = createTheme({
             styleOverrides: {
                 root: {
                     padding: "0 !important",
-                    color: colors.green,
+                    color: "#FFFFFF90",
                     borderRadius: 0,
-                    transform: "scale(.7)",
-                    "& > .MuiSvgIcon-root": { width: "4rem", height: "4rem" },
-                    ".Mui-checked, .MuiSvgIcon-root": { color: `${colors.green} !important` },
-                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.green}50 !important` },
+                    "& > .MuiSvgIcon-root": { width: "2.8rem", height: "2.8rem" },
+                    ".Mui-checked, .MuiSvgIcon-root": { color: `${"#FFFFFF90"} !important` },
+                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${"#FFFFFF90"}50 !important` },
                 },
             },
         },

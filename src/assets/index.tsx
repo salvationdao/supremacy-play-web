@@ -91,6 +91,7 @@ import ChatSplit from "!react-svg-loader!./svg/ChatSplit.svg"
 import ChatTabbed from "!react-svg-loader!./svg/ChatTabbed.svg"
 import ChevronDown from "!react-svg-loader!./svg/ChevronDown.svg"
 import ChevronUp from "!react-svg-loader!./svg/ChevronUp.svg"
+import CreditCard from "!react-svg-loader!./svg/CreditCard.svg"
 import Damage from "!react-svg-loader!./svg/Damage.svg"
 import Delete from "!react-svg-loader!./svg/Delete.svg"
 import Disconnected from "!react-svg-loader!./svg/Disconnected.svg"
@@ -101,6 +102,7 @@ import DownArrow from "!react-svg-loader!./svg/DownArrow.svg"
 import Drag from "!react-svg-loader!./svg/Drag.svg"
 import Edit from "!react-svg-loader!./svg/Edit.svg"
 import Emergency from "!react-svg-loader!./svg/Emergency.svg"
+import Ethereum from "!react-svg-loader!./svg/Ethereum.svg"
 import Facebook from "!react-svg-loader!./svg/Facebook.svg"
 import FactionPassArrow from "!react-svg-loader!./svg/FactionPass/FactionPassArrow.svg"
 import Feedback from "!react-svg-loader!./svg/Feedback.svg"
@@ -156,12 +158,11 @@ import Unknown from "!react-svg-loader!./svg/Unknown.svg"
 import UpArrow from "!react-svg-loader!./svg/UpArrow.svg"
 import UpcomingBattle from "!react-svg-loader!./svg/UpcomingBattle.svg"
 import User from "!react-svg-loader!./svg/User.svg"
+import UserDiamond from "!react-svg-loader!./svg/UserDiamond.svg"
 import Volume from "!react-svg-loader!./svg/Volume.svg"
 import VolumeMute from "!react-svg-loader!./svg/VolumeMute.svg"
 import WarnTriangle from "!react-svg-loader!./svg/WarnTriangle.svg"
 import YouTube from "!react-svg-loader!./svg/YouTube.svg"
-import Ethereum from "!react-svg-loader!./svg/Ethereum.svg"
-import CreditCard from "!react-svg-loader!./svg/CreditCard.svg"
 import { Cake } from "@mui/icons-material"
 import AccessTimeSharpIcon from "@mui/icons-material/AccessTimeSharp"
 import AppsIcon from "@mui/icons-material/Apps"
@@ -1517,5 +1518,11 @@ export const SvgCreditCard: React.VoidFunctionComponent<SvgWrapperProps> = (prop
 export const SvgEmptySet: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <EmptySet />
+    </SvgWrapper>
+)
+
+export const SvgUserDiamond: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <UserDiamond />
     </SvgWrapper>
 )
