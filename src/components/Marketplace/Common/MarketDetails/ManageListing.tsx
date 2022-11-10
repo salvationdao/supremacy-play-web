@@ -8,8 +8,8 @@ import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { MarketUser } from "../../../../types/marketplace"
-import { ConfirmModal } from "../../../Common/ConfirmModal"
-import { SuccessModal } from "../../../Common/SuccessModal"
+import { ConfirmModal } from "../../../Common/Deprecated/ConfirmModal"
+import { SuccessModal } from "../../../Common/Deprecated/SuccessModal"
 
 export const ManageListing = ({ id, owner, isKeycard, isTimeEnded }: { id: string; owner?: MarketUser; isKeycard?: boolean; isTimeEnded: boolean }) => {
     const { userID } = useAuth()

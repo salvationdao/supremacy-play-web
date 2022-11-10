@@ -13,7 +13,7 @@ import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { MysteryCrate, OpenCrateResponse, RewardResponse, StorefrontMysteryCrate } from "../../../../types"
 import { ClaimedRewards } from "../../../Claims/ClaimedRewards"
-import { ConfirmModal } from "../../../Common/ConfirmModal"
+import { ConfirmModal } from "../../../Common/Deprecated/ConfirmModal"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { OpeningCrate } from "../../../Hangar/MysteryCratesHangar/MysteryCratesHangar"
 

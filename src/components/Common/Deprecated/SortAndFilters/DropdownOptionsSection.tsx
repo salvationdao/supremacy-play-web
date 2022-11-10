@@ -1,7 +1,7 @@
 import { MenuItem, Select, Stack, Typography } from "@mui/material"
 import { useState } from "react"
-import { ClipThing } from "../.."
-import { colors } from "../../../theme/theme"
+import { ClipThing } from "../../.."
+import { colors } from "../../../../theme/theme"
 import { Section } from "./Section"
 
 export interface DropdownOptions {

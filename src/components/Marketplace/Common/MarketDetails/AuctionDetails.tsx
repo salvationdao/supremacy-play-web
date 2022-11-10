@@ -10,7 +10,7 @@ import { useGameServerCommandsFaction, useGameServerSubscriptionFaction } from "
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { ItemType, MarketUser } from "../../../../types/marketplace"
-import { ConfirmModal } from "../../../Common/ConfirmModal"
+import { ConfirmModal } from "../../../Common/Deprecated/ConfirmModal"
 
 interface AuctionDetailsProps {
     id: string

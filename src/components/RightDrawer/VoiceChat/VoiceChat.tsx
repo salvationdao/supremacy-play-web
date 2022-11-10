@@ -14,7 +14,7 @@ import { Faction, FeatureName, User } from "../../../types"
 import { StyledImageText } from "../../BattleArena/Notifications/Common/StyledImageText"
 import ConnectSound from "../../../assets/voiceChat/Connect.wav"
 import DisconnectSound from "../../../assets/voiceChat/Disconnect.wav"
-import { ConfirmModal } from "../../Common/ConfirmModal"
+import { ConfirmModal } from "../../Common/Deprecated/ConfirmModal"
 import { FancyButton } from "../../Common/Deprecated/FancyButton"
 
 export interface VoiceStream {

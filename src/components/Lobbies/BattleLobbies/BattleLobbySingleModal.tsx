@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { ConfirmModal } from "../../Common/ConfirmModal"
+import { ConfirmModal } from "../../Common/Deprecated/ConfirmModal"
 import { BattleLobby } from "../../../types/battle_queue"
 import { BattleLobbyItem } from "./BattleLobbyItem"
 import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
