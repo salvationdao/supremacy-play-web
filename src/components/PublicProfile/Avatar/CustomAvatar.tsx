@@ -10,7 +10,7 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { SortDir } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/Deprecated/ClipThing"
-import { ConfirmModal } from "../../Common/ConfirmModal"
+import { ConfirmModal } from "../../Common/Deprecated/ConfirmModal"
 import { FancyButton } from "../../Common/Deprecated/FancyButton"
 import { PageHeader } from "../../Common/Deprecated/PageHeader"
 

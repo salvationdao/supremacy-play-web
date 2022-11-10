@@ -11,7 +11,7 @@ import { TruncateTextLines } from "../../../../theme/styles"
 import { colors } from "../../../../theme/theme"
 import { LocationSelectType, SaleAbility, SaleAbilityAvailability } from "../../../../types"
 import { PreferenceToggle } from "../../../Bar/ProfileCard/PreferencesModal/NotificationPreferences"
-import { ConfirmModal } from "../../../Common/ConfirmModal"
+import { ConfirmModal } from "../../../Common/Deprecated/ConfirmModal"
 import { FancyButton } from "../../../Common/Deprecated/FancyButton"
 import { NiceTooltip } from "../../../Common/Nice/NiceTooltip"
 

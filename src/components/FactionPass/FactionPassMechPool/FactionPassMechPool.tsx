@@ -297,7 +297,9 @@ export const FactionPassMechPool = () => {
                 />
             </Stack>
 
-            <Box sx={{ flex: 1, width: "100%", overflowY: "auto" }}>{content}</Box>
+            <Stack direction="row" spacing="1.2rem" sx={{ flex: 1, width: "100%" }}>
+                <Box sx={{ flex: 1, height: "100%", overflowY: "auto", pr: ".8rem" }}>{content}</Box>
+            </Stack>
 
             <Pagination sx={{ mt: "auto" }} count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
         </Stack>

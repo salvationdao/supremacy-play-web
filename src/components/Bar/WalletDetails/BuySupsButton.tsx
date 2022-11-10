@@ -33,9 +33,9 @@ export const BuySupsButton = () => {
             <NiceButton
                 sheen={{ autoSheen: true, sheenSpeedFactor: 0.7 }}
                 color={colors.gold}
-                sx={{ px: "1.2rem", py: ".4rem" }}
+                sx={{ px: "1rem", py: ".4rem" }}
                 onClick={openBuySupsPage}
-                border={{ color: colors.gold }}
+                border={{ color: colors.gold, thickness: "very-lean" }}
             >
                 <SvgSupToken inline fill={colors.gold} /> GET SUPS
             </NiceButton>
