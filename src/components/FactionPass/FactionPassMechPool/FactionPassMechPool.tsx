@@ -94,7 +94,8 @@ export const FactionPassMechPool = () => {
 
     // Apply sort, search, and filters
     useEffect(() => {
-        console.log({ mechs, search, sort, status, rarities })
+        if (isLoading) return
+
         let result = [...mechs]
 
         // Apply search
@@ -149,7 +150,7 @@ export const FactionPassMechPool = () => {
         setTotalItems(result.length)
 
         setDisplayMechs(result)
-    }, [mechs, page, pageSize, rarities, search, setTotalItems, sort, status, updateQuery])
+    }, [isLoading, mechs, page, pageSize, rarities, search, setTotalItems, sort, status, updateQuery])
 
     const content = useMemo(() => {
         if (isLoading) {
