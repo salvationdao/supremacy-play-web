@@ -68,11 +68,11 @@ const AmountItem = ({
     return (
         <NiceTooltip placement="bottom-start" text={tooltip}>
             <Stack direction="row" alignItems="center" sx={{ flexShrink: 0 }}>
-                <Typography sx={{ mr: ".4rem", fontWeight: "fontWeightBold" }}>{title}</Typography>
+                <Typography sx={{ mr: ".4rem", fontWeight: "bold" }}>{title}</Typography>
 
                 {!disableIcon && <SvgSupToken size="1.7rem" fill={color} sx={{ mr: ".1rem", pb: ".2rem" }} />}
 
-                <Typography sx={{ color: color, fontWeight: "fontWeightBold" }}>{value || "---"}</Typography>
+                <Typography sx={{ color: color, fontWeight: "bold" }}>{value || "---"}</Typography>
             </Stack>
         </NiceTooltip>
     )

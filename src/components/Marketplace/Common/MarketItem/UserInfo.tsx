@@ -15,7 +15,7 @@ export const UserInfo = ({ isGridView, marketUser, title }: { isGridView?: boole
         <General isGridView={isGridView} title={title || "USER"}>
             <Typography
                 sx={{
-                    fontWeight: "fontWeightBold",
+                    fontWeight: "bold",
                     ...TruncateTextLines(2),
                 }}
             >

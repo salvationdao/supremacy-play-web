@@ -57,7 +57,7 @@ export const RangeFilterSection = ({ filter, primaryColor, secondaryColor }: { f
                     variant="body2"
                     sx={{
                         color: secondaryColor,
-                        fontWeight: "fontWeightBold",
+                        fontWeight: "bold",
                         opacity: 0.7,
                     }}
                 >

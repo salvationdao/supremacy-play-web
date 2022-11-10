@@ -100,17 +100,17 @@ export const ReportModal = ({ fromUser, message, reportModalOpen, setReportModal
                         <Typography sx={{ fontFamily: fonts.nostromoBlack }}>MESSAGE REPORTING</Typography>
 
                         <Stack direction="row" alignItems="flex-start">
-                            <Typography sx={{ width: "10rem", fontWeight: "fontWeightBold" }}>User:</Typography>
+                            <Typography sx={{ width: "10rem", fontWeight: "bold" }}>User:</Typography>
                             <PlayerNameGid player={fromUser} />
                         </Stack>
 
                         <Stack direction="row" alignItems="flex-start">
-                            <Typography sx={{ width: "10rem", fontWeight: "fontWeightBold" }}>Message:</Typography>
+                            <Typography sx={{ width: "10rem", fontWeight: "bold" }}>Message:</Typography>
                             <Typography>{message.message}</Typography>
                         </Stack>
 
                         <Stack direction="row" alignItems="flex-start">
-                            <Typography sx={{ width: "10rem", fontWeight: "fontWeightBold" }}>Reason:</Typography>
+                            <Typography sx={{ width: "10rem", fontWeight: "bold" }}>Reason:</Typography>
 
                             <Select
                                 sx={{
@@ -165,7 +165,7 @@ export const ReportModal = ({ fromUser, message, reportModalOpen, setReportModal
                                             }}
                                             sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                                         >
-                                            <Typography textTransform="uppercase" sx={{ fontWeight: "fontWeightBold" }}>
+                                            <Typography textTransform="uppercase" sx={{ fontWeight: "bold" }}>
                                                 {x}
                                             </Typography>
                                         </MenuItem>
@@ -176,7 +176,7 @@ export const ReportModal = ({ fromUser, message, reportModalOpen, setReportModal
 
                         {reason === reasons.Other && (
                             <Stack direction="row" alignItems="flex-start">
-                                <Typography sx={{ width: "10rem", fontWeight: "fontWeightBold" }}>Description:</Typography>
+                                <Typography sx={{ width: "10rem", fontWeight: "bold" }}>Description:</Typography>
 
                                 <TextField
                                     required={reason === reasons.Other}
@@ -196,7 +196,7 @@ export const ReportModal = ({ fromUser, message, reportModalOpen, setReportModal
                         )}
 
                         <Stack direction="row" alignItems="flex-start">
-                            <Typography sx={{ width: "10rem", fontWeight: "fontWeightBold" }}>Comments:</Typography>
+                            <Typography sx={{ width: "10rem", fontWeight: "bold" }}>Comments:</Typography>
 
                             <TextField
                                 multiline

@@ -76,7 +76,7 @@ export const QuestItem = React.memo(function QuestItem({ questStat, progress, sh
                     <Typography
                         sx={{
                             lineHeight: 1,
-                            fontWeight: "fontWeightBold",
+                            fontWeight: "bold",
                             ...TruncateTextLines(1),
                         }}
                     >
@@ -99,7 +99,7 @@ export const QuestItem = React.memo(function QuestItem({ questStat, progress, sh
                             sx={{
                                 color: progressPercent < 100 ? colors.red : colors.green,
                                 lineHeight: 1,
-                                fontWeight: "fontWeightBold",
+                                fontWeight: "bold",
                             }}
                         >
                             {cappedCurrent}/{progress.goal}

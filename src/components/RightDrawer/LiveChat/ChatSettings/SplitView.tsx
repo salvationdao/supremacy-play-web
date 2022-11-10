@@ -21,7 +21,7 @@ export const SplitView = () => {
             justifyContent="space-between"
             sx={{ px: "1.2rem", py: ".6rem", backgroundColor: "#FFFFFF05", borderRadius: 1 }}
         >
-            <Typography sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>Layout:</Typography>
+            <Typography sx={{ lineHeight: 1, fontWeight: "bold" }}>Layout:</Typography>
             <ToggleButtonGroup size="small" value={splitOption} exclusive onChange={onChange} sx={{ ".MuiToggleButton-root": { p: ".5rem" } }}>
                 <ToggleButton value={SplitOptionType.Tabbed}>
                     <SvgChatTabbed size="1.7rem" />

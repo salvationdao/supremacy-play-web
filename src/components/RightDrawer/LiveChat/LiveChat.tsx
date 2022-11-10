@@ -52,7 +52,7 @@ export const LiveChat = () => {
                             sx={{ px: "2rem", py: ".2rem", color: "#FFFFFF" }}
                             onClick={() => setIsPoppedout(false)}
                         >
-                            <Typography variant="caption" sx={{ fontWeight: "fontWeightBold", color: "#FFFFFF" }}>
+                            <Typography variant="caption" sx={{ fontWeight: "bold", color: "#FFFFFF" }}>
                                 RESTORE WINDOW
                             </Typography>
                         </FancyButton>
@@ -407,7 +407,7 @@ const UnreadBadge = ({ tabValue: forTabValue, children }: { tabValue: number; ch
                 ".MuiBadge-badge": {
                     fontSize: "1.2rem",
                     fontFamily: fonts.shareTech,
-                    fontWeight: "fontWeightBold",
+                    fontWeight: "bold",
                     lineHeight: 0,
                     color: "#FFFFFF",
                     backgroundColor: colors.red,

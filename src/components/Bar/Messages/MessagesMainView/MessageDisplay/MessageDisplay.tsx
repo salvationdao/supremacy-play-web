@@ -35,7 +35,7 @@ export const MessageDisplay = ({ message, onClose }: MessageDisplayProps) => {
     return (
         <Stack sx={{ height: "100%", p: "1.4rem" }}>
             <Stack direction="row" alignItems="center">
-                <Typography variant="h4" sx={{ fontWeight: "fontWeightBold" }}>
+                <Typography variant="h4" sx={{ fontWeight: "bold" }}>
                     {message.title}
                 </Typography>
                 <Typography sx={{ ml: "auto", color: colors.grey }}>
@@ -77,7 +77,7 @@ export const MessageDisplay = ({ message, onClose }: MessageDisplayProps) => {
                     sx={{ px: "1.6rem", py: ".2rem", color: "#FFFFFF" }}
                     onClick={onClose}
                 >
-                    <Typography variant="body2" sx={{ fontWeight: "fontWeightBold", color: "#FFFFFF" }}>
+                    <Typography variant="body2" sx={{ fontWeight: "bold", color: "#FFFFFF" }}>
                         CLOSE
                     </Typography>
                 </FancyButton>

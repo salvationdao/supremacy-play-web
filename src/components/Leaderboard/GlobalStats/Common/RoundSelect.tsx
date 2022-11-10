@@ -73,14 +73,14 @@ export const RoundSelect = ({
                 }}
                 renderValue={() => {
                     return (
-                        <Typography textTransform="uppercase" sx={{ fontWeight: "fontWeightBold" }}>
+                        <Typography textTransform="uppercase" sx={{ fontWeight: "bold" }}>
                             {label || "ALL TIME"}
                         </Typography>
                     )
                 }}
             >
                 <MenuItem value="" onClick={() => setSelectedRound(undefined)}>
-                    <Typography textTransform="uppercase" sx={{ fontWeight: "fontWeightBold" }}>
+                    <Typography textTransform="uppercase" sx={{ fontWeight: "bold" }}>
                         ALL TIME
                     </Typography>
                 </MenuItem>
@@ -94,7 +94,7 @@ export const RoundSelect = ({
                             }}
                             sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                         >
-                            <Typography textTransform="uppercase" sx={{ fontWeight: "fontWeightBold" }}>
+                            <Typography textTransform="uppercase" sx={{ fontWeight: "bold" }}>
                                 {x.name}
                             </Typography>
                         </MenuItem>

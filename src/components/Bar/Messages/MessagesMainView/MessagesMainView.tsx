@@ -163,7 +163,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                                         sx: {
                                             ".MuiTableCell-root": {
                                                 opacity: !item.read_at || focusedMessage?.id === item.id ? 1 : 0.5,
-                                                "*": { fontWeight: !item.read_at ? "fontWeightBold" : "unset" },
+                                                "*": { fontWeight: !item.read_at ? "bold" : "unset" },
                                             },
                                             backgroundColor: focusedMessage?.id === item.id ? "#FFFFFF40 !important" : "unset",
                                             outline: focusedMessage?.id === item.id ? "#FFFFFF38 solid 1px" : "unset",
@@ -262,7 +262,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                             sx={{ px: "1.6rem", py: ".6rem", color: theme.factionTheme.secondary }}
                             onClick={() => onCompose(SystemMessageDataType.Global)}
                         >
-                            <Typography sx={{ fontWeight: "fontWeightBold", color: theme.factionTheme.secondary }}>Compose Global Message</Typography>
+                            <Typography sx={{ fontWeight: "bold", color: theme.factionTheme.secondary }}>Compose Global Message</Typography>
                         </FancyButton>
 
                         <FancyButton
@@ -277,7 +277,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                             sx={{ px: "1.6rem", py: ".6rem", color: theme.factionTheme.secondary }}
                             onClick={() => onCompose(SystemMessageDataType.Faction)}
                         >
-                            <Typography sx={{ fontWeight: "fontWeightBold", color: theme.factionTheme.secondary }}>Compose Faction Message</Typography>
+                            <Typography sx={{ fontWeight: "bold", color: theme.factionTheme.secondary }}>Compose Faction Message</Typography>
                         </FancyButton>
                     </Stack>
                 </Stack>

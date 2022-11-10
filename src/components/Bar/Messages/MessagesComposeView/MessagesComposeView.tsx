@@ -87,7 +87,7 @@ export const MessagesComposeView = ({ onBack, type }: MessageComposeViewProps) =
                     InputProps={{
                         startAdornment: (
                             <InputAdornment position="start">
-                                <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "bold" }}>
                                     TO:
                                 </Typography>
                             </InputAdornment>
@@ -119,7 +119,7 @@ export const MessagesComposeView = ({ onBack, type }: MessageComposeViewProps) =
                     InputProps={{
                         startAdornment: (
                             <InputAdornment position="start">
-                                <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                <Typography variant="h6" sx={{ lineHeight: 1, fontWeight: "bold" }}>
                                     SUBJECT:
                                 </Typography>
                             </InputAdornment>
@@ -213,7 +213,7 @@ export const MessagesComposeView = ({ onBack, type }: MessageComposeViewProps) =
                     sx={{ px: "1.6rem", py: ".4rem", color: "#FFFFFF" }}
                     onClick={() => onBack()}
                 >
-                    <Typography sx={{ fontWeight: "fontWeightBold", color: "#FFFFFF" }}>Discard / Back</Typography>
+                    <Typography sx={{ fontWeight: "bold", color: "#FFFFFF" }}>Discard / Back</Typography>
                 </FancyButton>
 
                 <Box flex={1} />
@@ -244,7 +244,7 @@ export const MessagesComposeView = ({ onBack, type }: MessageComposeViewProps) =
                     disabled={!message || loading}
                     loading={loading}
                 >
-                    <Typography sx={{ fontWeight: "fontWeightBold", color: "#FFFFFF" }}>Submit Message</Typography>
+                    <Typography sx={{ fontWeight: "bold", color: "#FFFFFF" }}>Submit Message</Typography>
                 </FancyButton>
             </Stack>
         </Stack>

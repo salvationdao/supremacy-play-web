@@ -89,7 +89,7 @@ export const WeaponHangarItem = React.memo(function WeaponHangarItem({ weapon, i
                     />
 
                     <General title="DAMAGE TYPE" isGridView={isGridView}>
-                        <Typography variant="h6" sx={{ color: getWeaponDamageTypeColor(weaponDetails?.default_damage_type), fontWeight: "fontWeightBold" }}>
+                        <Typography variant="h6" sx={{ color: getWeaponDamageTypeColor(weaponDetails?.default_damage_type), fontWeight: "bold" }}>
                             {weaponDetails?.default_damage_type}
                         </Typography>
                     </General>
@@ -245,10 +245,7 @@ export const WeaponCommonArea = ({
                         >
                             <Stack direction="row" spacing="4rem" sx={{ p: "1.5rem 2.1rem", height: "100%" }}>
                                 <General title="DAMAGE TYPE" isGridView={isGridView}>
-                                    <Typography
-                                        variant="h6"
-                                        sx={{ color: getWeaponDamageTypeColor(weaponDetails?.default_damage_type), fontWeight: "fontWeightBold" }}
-                                    >
+                                    <Typography variant="h6" sx={{ color: getWeaponDamageTypeColor(weaponDetails?.default_damage_type), fontWeight: "bold" }}>
                                         {weaponDetails?.default_damage_type}
                                     </Typography>
                                 </General>

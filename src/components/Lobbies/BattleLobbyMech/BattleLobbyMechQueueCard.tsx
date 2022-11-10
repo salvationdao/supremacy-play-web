@@ -70,7 +70,7 @@ export const BattleLobbyMechQueueCard = React.memo(function QuickDeployItem({ is
                         variant="body2"
                         sx={{
                             fontFamily: fonts.nostromoBlack,
-                            fontWeight: "fontWeightBold",
+                            fontWeight: "bold",
                             ...TruncateTextLines(1),
                         }}
                     >

@@ -139,7 +139,7 @@ const MoveCommandInner = ({ isAlive, isMoving, hash, smallVersion }: MoveCommand
                     sx={{
                         pt: ".2rem",
                         lineHeight: 1,
-                        fontWeight: "fontWeightBold",
+                        fontWeight: "bold",
                         ...TruncateTextLines(1),
                     }}
                 >
@@ -174,7 +174,7 @@ const MoveCommandInner = ({ isAlive, isMoving, hash, smallVersion }: MoveCommand
                     id="warMachineSkillsText"
                     variant="body1"
                     sx={{
-                        fontWeight: "fontWeightBold",
+                        fontWeight: "bold",
                         color: isMoving ? "#000000" : secondaryColor,
                         letterSpacing: 1,
                         transition: "all .2s",

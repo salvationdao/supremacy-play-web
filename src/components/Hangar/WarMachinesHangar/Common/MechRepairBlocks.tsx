@@ -1,4 +1,4 @@
-import { Stack, Typography } from "@mui/material"
+import { Stack, SxProps, Typography } from "@mui/material"
 import React, { useMemo } from "react"
 import { useGameServerSubscriptionSecured } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -10,24 +10,26 @@ export const RepairBlocks = ({
     defaultBlocks,
     remainDamagedBlocks,
     hideNumber,
-    size = 8,
+    size = 8.4,
     pulsateEffectPercent,
+    sx,
 }: {
     defaultBlocks?: number
     remainDamagedBlocks: number
     hideNumber?: boolean
     size?: number
     pulsateEffectPercent?: number // Out of 100
+    sx?: SxProps
 }) => {
     const remainDamagedBlocksFix = Math.max(remainDamagedBlocks, 0)
     return (
-        <Stack direction="row" alignItems="center" spacing=".5rem" sx={{ width: "100%" }}>
+        <Stack direction="row" alignItems="center" spacing=".5rem" sx={{ width: "100%", ...sx }}>
             <Stack
                 direction="row"
                 flexWrap="wrap"
                 sx={{
                     "& > div": {
-                        p: `${size * 0.1875}px`,
+                        p: `${size * 0.36}px`,
                         ".single-block": {
                             position: "relative",
                             height: `${size}px`,

@@ -355,11 +355,11 @@ export const MysteryCrateStoreItem = React.memo(function MysteryCrateStoreItem({
                     error={buyError}
                     confirmSuffix={
                         <Stack direction="row" sx={{ ml: ".4rem" }}>
-                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                                 (
                             </Typography>
                             <SvgSupToken size="1.8rem" />
-                            <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                                 {formattedPrice})
                             </Typography>
                         </Stack>

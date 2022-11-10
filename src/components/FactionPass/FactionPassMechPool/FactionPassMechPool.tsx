@@ -1,15 +1,16 @@
-import { Box, Pagination, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
-import { SvgFilter, SvgGridView, SvgListView, SvgSearch } from "../../../assets"
-import { useAuth, useSupremacy } from "../../../containers"
-import { parseString } from "../../../helpers"
+import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
+import { useEffect, useMemo, useState } from "react"
+import { EmptyWarMachinesPNG, SvgFilter, SvgGridView, SvgListView, SvgSearch } from "../../../assets"
+import { useTheme } from "../../../containers/theme"
+import { getRarityDeets, parseString } from "../../../helpers"
 import { useDebounce, usePagination, useUrlQuery } from "../../../hooks"
-import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
-import useLocalStorage from "../../../hooks/useLocalStorage"
+import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
+import { useLocalStorage } from "../../../hooks/useLocalStorage"
 import { GameServerKeys } from "../../../keys"
-import { fonts } from "../../../theme/theme"
-import { MechBasicWithQueueStatus } from "../../../types"
-import { SortDir, SortTypeLabel } from "../../../types/marketplace"
+import { colors, fonts } from "../../../theme/theme"
+import { LobbyMech } from "../../../types"
+import { SortTypeLabel } from "../../../types/marketplace"
+import { MechCard } from "../../Common/MechCard"
 import { NavTabs } from "../../Common/NavTabs/NavTabs"
 import { usePageTabs } from "../../Common/NavTabs/usePageTabs"
 import { NiceButton } from "../../Common/Nice/NiceButton"
@@ -37,35 +38,16 @@ const layoutOptions = [
     { label: "", value: false, svg: <SvgListView size="1.5rem" /> },
 ]
 
-interface GetMechsRequest {
-    queue_sort?: string
-    sort_by?: string
-    sort_dir?: string
-    search: string
-    page: number
-    page_size: number
-    rarities: string[]
-    statuses: string[]
-    include_market_listed: boolean
-}
-
-interface GetMechsResponse {
-    mechs: MechBasicWithQueueStatus[]
-    total: number
-}
-
 export const FactionPassMechPool = () => {
-    const { send } = useGameServerCommandsUser("/user_commander")
     const [query, updateQuery] = useUrlQuery()
-    const { factionID } = useAuth()
-    const { getFaction } = useSupremacy()
+    const theme = useTheme()
     const { tabs, activeTabID, setActiveTabID, prevTab, nextTab } = usePageTabs()
 
     // Filter, search, pagination
-    const [showFilters, setShowFilters] = useLocalStorage("factionPassMechPoolFilters", false)
+    const [showFilters, setShowFilters] = useLocalStorage<boolean>("factionPassMechPoolFilters", false)
     const [search, setSearch, searchInstant] = useDebounce("", 300)
     const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.MechQueueAsc)
-    const [isGridView, setIsGridView] = useLocalStorage("factionPassMechPoolGrid", true)
+    const [isGridView, setIsGridView] = useLocalStorage<boolean>("factionPassMechPoolGrid", true)
     const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
     const [rarities, setRarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
@@ -74,72 +56,162 @@ export const FactionPassMechPool = () => {
     })
 
     // Items
+    const [displayMechs, setDisplayMechs] = useState<LobbyMech[]>([])
+    const [mechs, setMechs] = useState<LobbyMech[]>([])
     const [isLoading, setIsLoading] = useState(true)
-    const [loadError, setLoadError] = useState<string>()
-    const [mechs, setMechs] = useState<MechBasicWithQueueStatus[]>([])
 
-    console.log({ isLoading, loadError, setStatus, setRarities })
-
-    const faction = useMemo(() => {
-        return getFaction(factionID)
-    }, [factionID, getFaction])
-
-    const getItems = useCallback(async () => {
-        try {
-            setIsLoading(true)
-
-            let sortDir = SortDir.Asc
-            let sortBy = ""
-            if (sort === SortTypeLabel.MechQueueDesc || sort === SortTypeLabel.AlphabeticalReverse || sort === SortTypeLabel.RarestDesc) sortDir = SortDir.Desc
-
-            switch (sort) {
-                case SortTypeLabel.Alphabetical:
-                case SortTypeLabel.AlphabeticalReverse:
-                    sortBy = "alphabetical"
-                    break
-                case SortTypeLabel.RarestAsc:
-                case SortTypeLabel.RarestDesc:
-                    sortBy = "rarity"
-            }
-
-            const isQueueSort = sort === SortTypeLabel.MechQueueAsc || sort === SortTypeLabel.MechQueueDesc
-
-            const resp = await send<GetMechsResponse, GetMechsRequest>(GameServerKeys.GetMechs, {
-                queue_sort: isQueueSort ? sortDir : undefined,
-                sort_by: isQueueSort ? undefined : sortBy,
-                sort_dir: isQueueSort ? undefined : sortDir,
-                search,
-                rarities,
-                statuses: status,
-                page,
-                page_size: pageSize,
-                include_market_listed: true,
-            })
-
-            updateQuery.current({
-                sort,
-                search,
-                rarities: rarities.join("||"),
-                statuses: status.join("||"),
-                page: page.toString(),
-                pageSize: pageSize.toString(),
-            })
-
-            if (!resp) return
-            setLoadError(undefined)
-            setMechs(resp.mechs)
-            setTotalItems(resp.total)
-        } catch (e) {
-            setLoadError(typeof e === "string" ? e : "Failed to get war machines.")
-            console.error(e)
-        } finally {
+    useGameServerSubscriptionFaction<LobbyMech[]>(
+        {
+            URI: "/staked_mechs",
+            key: GameServerKeys.SubFactionStakedMechs,
+        },
+        (payload) => {
             setIsLoading(false)
-        }
-    }, [page, pageSize, rarities, search, send, setTotalItems, sort, status, updateQuery])
+            if (!payload) return
 
+            setMechs((prev) => {
+                if (prev.length === 0) {
+                    return payload
+                }
+
+                // Replace current list
+                const list = prev.map((mech) => payload.find((p) => p.id === mech.id) || mech)
+
+                // Append new list
+                payload.forEach((p) => {
+                    // If already exists
+                    if (list.some((mech) => mech.id === p.id)) {
+                        return
+                    }
+                    // Otherwise, push to the list
+                    list.push(p)
+                })
+
+                return list
+            })
+        },
+    )
+
+    // Apply sort, search, and filters
     useEffect(() => {
-        getItems()
-    }, [getItems])
+        if (isLoading) return
+
+        let result = [...mechs]
+
+        // Apply search
+        if (search) {
+            result = result.filter((mech) => `${mech.label.toLowerCase()} ${mech.name.toLowerCase()}`.includes(search.toLowerCase()))
+        }
+
+        // Apply status filter
+        if (status && status.length) {
+            result = result.filter((mech) => status.includes(mech.status))
+        }
+
+        // Apply rarity filter
+        if (rarities && rarities.length) {
+            result = result.filter((mech) => rarities.includes(mech.tier))
+        }
+
+        // Apply sort
+        switch (sort) {
+            case SortTypeLabel.Alphabetical:
+                result = result.sort((a, b) => `${a.name}${a.label}`.localeCompare(`${b.name}${b.label}`))
+                break
+            case SortTypeLabel.AlphabeticalReverse:
+                result = result.sort((a, b) => `${b.name}${b.label}`.localeCompare(`${a.name}${a.label}`))
+                break
+            case SortTypeLabel.RarestAsc:
+                result = result.sort((a, b) => (getRarityDeets(a.tier.toUpperCase()).rank > getRarityDeets(b.tier.toUpperCase()).rank ? 1 : -1))
+                break
+            case SortTypeLabel.RarestDesc:
+                result = result.sort((a, b) => (getRarityDeets(a.tier.toUpperCase()).rank < getRarityDeets(b.tier.toUpperCase()).rank ? 1 : -1))
+                break
+            case SortTypeLabel.MechQueueAsc:
+                result = result.sort((a, b) => (a.queue_position && b.queue_position && a.queue_position > b.queue_position ? 1 : -1))
+                break
+            case SortTypeLabel.MechQueueDesc:
+                result = result.sort((a, b) => (a.queue_position && b.queue_position && a.queue_position < b.queue_position ? 1 : -1))
+                break
+        }
+
+        // Save the configs to url query
+        updateQuery.current({
+            sort,
+            search,
+            rarities: rarities.join("||"),
+            statuses: status.join("||"),
+            page: page.toString(),
+            pageSize: pageSize.toString(),
+        })
+
+        // Pagination
+        result = result.slice((page - 1) * pageSize, page * pageSize)
+        setTotalItems(result.length)
+
+        setDisplayMechs(result)
+    }, [isLoading, mechs, page, pageSize, rarities, search, setTotalItems, sort, status, updateQuery])
+
+    const content = useMemo(() => {
+        if (isLoading) {
+            return (
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <CircularProgress />
+                </Stack>
+            )
+        }
+
+        if (displayMechs && displayMechs.length > 0) {
+            return (
+                <Box
+                    sx={{
+                        display: "grid",
+                        gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(30rem, 1fr))" : "100%",
+                        gap: "1.5rem",
+                        alignItems: "center",
+                        justifyContent: "center",
+                    }}
+                >
+                    {displayMechs.map((mech) => {
+                        return <MechCard key={`mech-${mech.id}`} mech={mech} isGridView={isGridView} />
+                    })}
+                </Box>
+            )
+        }
+
+        return (
+            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                <Box
+                    sx={{
+                        width: "20rem",
+                        height: "20rem",
+                        opacity: 0.7,
+                        filter: "grayscale(100%)",
+                        background: `url(${EmptyWarMachinesPNG})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "bottom center",
+                        backgroundSize: "contain",
+                    }}
+                />
+                <Typography
+                    sx={{
+                        px: "1.28rem",
+                        pt: "1.28rem",
+                        mb: "1.5rem",
+                        color: colors.grey,
+                        fontFamily: fonts.nostromoBold,
+                        textAlign: "center",
+                    }}
+                >
+                    {"No results..."}
+                </Typography>
+
+                <NiceButton route={{ to: `/marketplace/mechs` }} border={{ color: theme.factionTheme.primary }}>
+                    GO TO MARKETPLACE
+                </NiceButton>
+            </Stack>
+        )
+    }, [displayMechs, isGridView, isLoading, theme.factionTheme.primary])
 
     return (
         <Stack
@@ -150,7 +222,7 @@ export const FactionPassMechPool = () => {
                 mx: "auto",
                 position: "relative",
                 height: "100%",
-                backgroundColor: faction.background_color,
+                backgroundColor: theme.factionTheme.background,
                 background: `url()`,
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
@@ -164,11 +236,11 @@ export const FactionPassMechPool = () => {
                 {/* Filter button */}
                 <NiceButton
                     onClick={() => setShowFilters((prev) => !prev)}
-                    border={{ color: faction.primary_color }}
+                    border={{ color: theme.factionTheme.primary }}
                     sx={{ p: ".2rem 1rem", pt: ".4rem" }}
                     background={showFilters}
                 >
-                    <Typography variant="subtitle1" fontFamily={fonts.nostromoBold} color={showFilters ? faction.secondary_color : "#FFFFFF"}>
+                    <Typography variant="subtitle1" fontFamily={fonts.nostromoBold} color={showFilters ? theme.factionTheme.secondary : "#FFFFFF"}>
                         <SvgFilter inline size="1.5rem" /> FILTER
                     </Typography>
                 </NiceButton>
@@ -179,14 +251,14 @@ export const FactionPassMechPool = () => {
                     {/* Show Total */}
                     <Box sx={{ height: "100%", backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", px: "1rem", borderRight: "none" }}>
                         <Typography variant="h6" sx={{ whiteSpace: "nowrap" }}>
-                            {mechs?.length || 0} of {totalItems}
+                            {displayMechs?.length || 0} of {totalItems}
                         </Typography>
                     </Box>
 
                     {/* Page size options */}
                     <NiceButtonGroup
-                        primaryColor={faction.primary_color}
-                        secondaryColor={faction.secondary_color}
+                        primaryColor={theme.factionTheme.primary}
+                        secondaryColor={theme.factionTheme.secondary}
                         options={pageSizeOptions}
                         selected={pageSize}
                         onSelected={(value) => changePageSize(parseString(value, 1))}
@@ -195,8 +267,8 @@ export const FactionPassMechPool = () => {
 
                 {/* Page layout options */}
                 <NiceButtonGroup
-                    primaryColor={faction.primary_color}
-                    secondaryColor={faction.secondary_color}
+                    primaryColor={theme.factionTheme.primary}
+                    secondaryColor={theme.factionTheme.secondary}
                     options={layoutOptions}
                     selected={isGridView}
                     onSelected={(value) => setIsGridView(value)}
@@ -204,7 +276,7 @@ export const FactionPassMechPool = () => {
 
                 {/* Search bar */}
                 <NiceTextField
-                    primaryColor={faction.primary_color}
+                    primaryColor={theme.factionTheme.primary}
                     value={searchInstant}
                     onChange={(value) => setSearch(value)}
                     placeholder="Search..."
@@ -216,8 +288,8 @@ export const FactionPassMechPool = () => {
                 {/* Sort */}
                 <NiceSelect
                     label="Sort:"
-                    primaryColor={faction.primary_color}
-                    secondaryColor={faction.secondary_color}
+                    primaryColor={theme.factionTheme.primary}
+                    secondaryColor={theme.factionTheme.secondary}
                     options={sortOptions}
                     selected={sort}
                     onSelected={(value) => setSort(`${value}`)}
@@ -225,7 +297,7 @@ export const FactionPassMechPool = () => {
                 />
             </Stack>
 
-            <Box sx={{ flex: 1, width: "100%" }}></Box>
+            <Box sx={{ flex: 1, width: "100%", overflowY: "auto" }}>{content}</Box>
 
             <Pagination sx={{ mt: "auto" }} count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
         </Stack>

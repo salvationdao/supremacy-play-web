@@ -34,7 +34,7 @@ export const SoldDetails = ({ soldFor }: { soldFor: string }) => {
                 >
                     <Stack direction="row" alignItems="center" spacing=".2rem" sx={{ pl: "1.5rem", pr: "1.6rem", py: ".5rem" }}>
                         <SvgSupToken size="2.2rem" fill={colors.yellow} sx={{ mt: ".1rem" }} />
-                        <Typography variant="h5" sx={{ fontWeight: "fontWeightBold" }}>
+                        <Typography variant="h5" sx={{ fontWeight: "bold" }}>
                             {formattedCommaPrice}
                         </Typography>
                     </Stack>

@@ -615,7 +615,7 @@ export const MechLoadoutWeaponModal = ({
                                         {skinInheritable && (
                                             <Stack direction="row" alignItems="center" justifyContent="space-between">
                                                 <Switch checked={inheritSkin} onChange={(e, c) => setInheritSkin(c)} />
-                                                <Typography variant="body2" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                                <Typography variant="body2" sx={{ lineHeight: 1, fontWeight: "bold" }}>
                                                     Inherit Skin
                                                 </Typography>
                                             </Stack>
@@ -637,7 +637,7 @@ export const MechLoadoutWeaponModal = ({
                                         {equippedSkinInheritable && (
                                             <Stack direction="row" alignItems="center" justifyContent="space-between">
                                                 <Switch checked={equippedInheritSkin} onChange={(e, c) => setEquippedInheritSkin(c)} />
-                                                <Typography variant="body2" sx={{ lineHeight: 1, fontWeight: "fontWeightBold" }}>
+                                                <Typography variant="body2" sx={{ lineHeight: 1, fontWeight: "bold" }}>
                                                     Inherit Skin
                                                 </Typography>
                                             </Stack>

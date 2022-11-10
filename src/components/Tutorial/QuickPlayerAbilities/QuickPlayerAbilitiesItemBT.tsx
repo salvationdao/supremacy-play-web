@@ -218,7 +218,7 @@ export const QuickPlayerAbilitiesItemBT = ({ saleAbility, amount = 0, setError, 
                                     sx={{
                                         lineHeight: 1.2,
                                         ...TruncateTextLines(2),
-                                        fontWeight: "fontWeightBold",
+                                        fontWeight: "bold",
                                     }}
                                 >
                                     {saleAbility.ability.label}

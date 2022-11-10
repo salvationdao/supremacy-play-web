@@ -100,7 +100,7 @@ export const AdminUpdateMechNameModal = ({ user, mech, onClose, onSuccess, facti
 
                         <Stack spacing="1.5rem">
                             <Stack spacing=".3rem">
-                                <Typography sx={{ color: faction.primary_color, fontWeight: "fontWeightBold" }}>New Mech Name:</Typography>
+                                <Typography sx={{ color: faction.primary_color, fontWeight: "bold" }}>New Mech Name:</Typography>
                                 <TextField
                                     value={mechName}
                                     onChange={(e) => {
@@ -134,7 +134,7 @@ export const AdminUpdateMechNameModal = ({ user, mech, onClose, onSuccess, facti
                             </Stack>
 
                             <Stack spacing=".3rem">
-                                <Typography sx={{ color: faction.primary_color, fontWeight: "fontWeightBold" }}>Reason:</Typography>
+                                <Typography sx={{ color: faction.primary_color, fontWeight: "bold" }}>Reason:</Typography>
                                 <TextField
                                     required
                                     value={reason}

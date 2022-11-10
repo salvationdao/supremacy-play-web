@@ -95,7 +95,7 @@ export const LeaderboardSelect = ({
                             }}
                             sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                         >
-                            <Typography textTransform="uppercase" sx={{ fontWeight: "fontWeightBold" }}>
+                            <Typography textTransform="uppercase" sx={{ fontWeight: "bold" }}>
                                 {x.label}
                             </Typography>
                         </MenuItem>

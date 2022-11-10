@@ -358,11 +358,11 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                     confirmSuffix={
                         listingFee > 0 ? (
                             <Stack direction="row" sx={{ ml: ".4rem" }}>
-                                <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                                     (
                                 </Typography>
                                 <SvgSupToken size="1.8rem" />
-                                <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                                     {numFormatter(listingFee)})
                                 </Typography>
                             </Stack>
@@ -407,7 +407,7 @@ export const SellItemInner = ({ toggleReset }: { toggleReset: () => void }) => {
                             </Typography>
 
                             <Stack spacing="1rem" direction="row" alignItems="center">
-                                <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                                     I have read and understood the above.
                                 </Typography>
                                 <Checkbox

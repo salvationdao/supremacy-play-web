@@ -87,7 +87,7 @@ export const WarMachineAbilitiesPopoverBT = ({
                                     borderRadius: 0.5,
                                 }}
                             />
-                            <Typography sx={{ lineHeight: 1, color: faction.primary_color, fontWeight: "fontWeightBold" }}>
+                            <Typography sx={{ lineHeight: 1, color: faction.primary_color, fontWeight: "bold" }}>
                                 WAR MACHINE UNIQUE SKILL{gameAbilities.length > 1 ? "S" : ""}
                             </Typography>
                         </Stack>

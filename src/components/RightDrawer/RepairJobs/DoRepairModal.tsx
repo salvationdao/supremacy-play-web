@@ -163,7 +163,7 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
                         >
                             <Stack direction="row" alignItems="center" sx={{ p: ".4rem 1rem" }}>
                                 <SvgSupToken size="4.2rem" fill={colors.yellow} />
-                                <Typography variant="h3" sx={{ fontWeight: "fontWeightBold" }}>
+                                <Typography variant="h3" sx={{ fontWeight: "bold" }}>
                                     {supFormatter(repairJob.sups_worth_per_block || "0", 2)}
                                 </Typography>
                             </Stack>
@@ -331,7 +331,7 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
                                     <Typography
                                         variant="h4"
                                         sx={{
-                                            fontWeight: "fontWeightBold",
+                                            fontWeight: "bold",
                                             color: repairJob.working_agent_count <= remainDamagedBlocks ? colors.green : colors.orange,
                                         }}
                                     >
@@ -342,7 +342,7 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
                                 <InfoCard primaryColor={primaryColor} label="REWARD PER BLOCK">
                                     <Stack direction="row" alignItems="center">
                                         <SvgSupToken size="3rem" fill={colors.yellow} />
-                                        <Typography variant="h4" sx={{ fontWeight: "fontWeightBold" }}>
+                                        <Typography variant="h4" sx={{ fontWeight: "bold" }}>
                                             {supFormatter(repairJob.sups_worth_per_block || "0", 2)}
                                         </Typography>
                                     </Stack>
@@ -351,7 +351,7 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
                                 <InfoCard primaryColor={primaryColor} label="REMAINING REWARDS">
                                     <Stack direction="row" alignItems="center">
                                         <SvgSupToken size="3rem" fill={colors.yellow} />
-                                        <Typography variant="h4" sx={{ fontWeight: "fontWeightBold" }}>
+                                        <Typography variant="h4" sx={{ fontWeight: "bold" }}>
                                             {supFormatter(new BigNumber(repairJob.sups_worth_per_block || "0").multipliedBy(remainDamagedBlocks).toString(), 1)}
                                         </Typography>
                                     </Stack>
@@ -473,7 +473,7 @@ const Countdown = React.memo(function Countdown({ initialTime }: { initialTime: 
     if (time <= 0) color = colors.lightGrey
 
     return (
-        <Typography variant="h4" sx={{ fontWeight: "fontWeightBold", color: color }}>
+        <Typography variant="h4" sx={{ fontWeight: "bold", color: color }}>
             {time > 0 ? timeSinceInWords(new Date(), new Date(new Date().getTime() + time * 1000), true) : "EXPIRED"}
         </Typography>
     )

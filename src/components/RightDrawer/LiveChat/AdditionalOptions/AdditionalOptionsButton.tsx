@@ -107,7 +107,7 @@ const OptionsPopover = ({
                     }}
                     sx={{ pt: "1.1rem", pb: ".8rem", backgroundColor: "#00000050", borderRadius: 0.1 }}
                 >
-                    <Typography variant="body2" sx={{ fontWeight: "fontWeightBold" }}>
+                    <Typography variant="body2" sx={{ fontWeight: "bold" }}>
                         PROPOSE TO PUNISH A PLAYER
                     </Typography>
                 </Button>

@@ -76,7 +76,7 @@ export const ConfirmModal = ({
             >
                 <Stack direction="row" justifyContent="center">
                     {confirmPrefix}
-                    <Typography variant="h6" sx={{ color: confirmColor || "#FFFFFF", fontWeight: "fontWeightBold" }}>
+                    <Typography variant="h6" sx={{ color: confirmColor || "#FFFFFF", fontWeight: "bold" }}>
                         {confirmLabel || "CONFIRM"}
                     </Typography>
                     {confirmSuffix}
@@ -115,7 +115,7 @@ export const ConfirmModal = ({
                             py: "2.4rem",
                             ".MuiTypography-root span": {
                                 color: colors.neonBlue,
-                                fontWeight: "fontWeightBold",
+                                fontWeight: "bold",
                             },
                             ...innerSx,
                         }}
@@ -155,7 +155,7 @@ export const ConfirmModal = ({
                                     sx={{ pt: 0, pb: 0, minWidth: "5rem", visibility: omitCancel ? "hidden" : undefined }}
                                     onClick={!omitCancel ? onClose : undefined}
                                 >
-                                    <Typography variant="h6" sx={{ color: cancelColor || "#FFFFFF", fontWeight: "fontWeightBold" }}>
+                                    <Typography variant="h6" sx={{ color: cancelColor || "#FFFFFF", fontWeight: "bold" }}>
                                         {cancelLabel || "CANCEL"}
                                     </Typography>
                                 </FancyButton>

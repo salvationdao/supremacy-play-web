@@ -58,7 +58,7 @@ export const ChipFilterSection = ({ filter, primaryColor, secondaryColor }: { fi
                     variant="body2"
                     sx={{
                         color: secondaryColor,
-                        fontWeight: "fontWeightBold",
+                        fontWeight: "bold",
                         opacity: 0.7,
                     }}
                 >

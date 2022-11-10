@@ -63,7 +63,7 @@ export const SuccessModal = ({
                                     py: "2.4rem",
                                     span: {
                                         color: colors.neonBlue,
-                                        fontWeight: "fontWeightBold",
+                                        fontWeight: "bold",
                                     },
                                 }}
                             >
@@ -84,7 +84,7 @@ export const SuccessModal = ({
                                         sx={{ pt: 0, pb: 0, minWidth: "5rem", color: "#FFFFFF" }}
                                         onClick={onLeftButton}
                                     >
-                                        <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                                        <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                                             {leftLabel}
                                         </Typography>
                                     </FancyButton>
@@ -99,7 +99,7 @@ export const SuccessModal = ({
                                         sx={{ pt: 0, pb: 0, minWidth: "5rem", color: "#FFFFFF" }}
                                         onClick={onRightButton}
                                     >
-                                        <Typography variant="h6" sx={{ fontWeight: "fontWeightBold" }}>
+                                        <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                                             {rightLabel}
                                         </Typography>
                                     </FancyButton>
