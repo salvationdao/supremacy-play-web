@@ -5,7 +5,7 @@ import { useAuth, useSupremacy } from "../../../containers"
 import { parseString } from "../../../helpers"
 import { useDebounce, usePagination, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
-import useLocalStorage from "../../../hooks/useLocalStorage"
+import { useLocalStorage } from "../../../hooks/useLocalStorage"
 import { GameServerKeys } from "../../../keys"
 import { fonts } from "../../../theme/theme"
 import { MechBasicWithQueueStatus } from "../../../types"
@@ -62,10 +62,10 @@ export const FactionPassMechPool = () => {
     const { tabs, activeTabID, setActiveTabID, prevTab, nextTab } = usePageTabs()
 
     // Filter, search, pagination
-    const [showFilters, setShowFilters] = useLocalStorage("factionPassMechPoolFilters", false)
+    const [showFilters, setShowFilters] = useLocalStorage<boolean>("factionPassMechPoolFilters", false)
     const [search, setSearch, searchInstant] = useDebounce("", 300)
     const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.MechQueueAsc)
-    const [isGridView, setIsGridView] = useLocalStorage("factionPassMechPoolGrid", true)
+    const [isGridView, setIsGridView] = useLocalStorage<boolean>("factionPassMechPoolGrid", true)
     const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
     const [rarities, setRarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
