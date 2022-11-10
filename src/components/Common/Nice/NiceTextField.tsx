@@ -1,27 +1,18 @@
-import { Box, OutlinedInputProps, Stack, SxProps, TextField } from "@mui/material"
+import { BaseTextFieldProps, Box, OutlinedInputProps, Stack, SxProps, TextField } from "@mui/material"
 import { SvgArrow } from "../../../assets"
 import { fonts } from "../../../theme/theme"
 
-export const NiceTextField = ({
-    primaryColor,
-    value,
-    onChange,
-    fieldType = "text",
-    errorMessage,
-    placeholder,
-    sx,
-    InputProps,
-}: {
+interface NiceTextFieldProps extends BaseTextFieldProps {
     primaryColor?: string
     value: string | number
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onChange: (...event: any[]) => void
-    fieldType?: React.InputHTMLAttributes<unknown>["type"]
     errorMessage?: string
-    placeholder?: string
     sx?: SxProps
     InputProps?: Partial<OutlinedInputProps> | undefined
-}) => {
+}
+
+export const NiceTextField = ({ primaryColor, value, onChange, errorMessage, placeholder, InputProps, sx, ...props }: NiceTextFieldProps) => {
     return (
         <Box
             position="relative"
@@ -68,13 +59,12 @@ export const NiceTextField = ({
                         borderRadius: 0,
                     },
                 }}
-                type={fieldType}
                 value={value}
                 onChange={(e) => {
                     e.preventDefault()
                     e.stopPropagation()
 
-                    if (fieldType === "number") {
+                    if (props.type === "number") {
                         const num = parseInt(e.target.value)
                         if (num <= 0) return
                         onChange(num)
@@ -83,9 +73,10 @@ export const NiceTextField = ({
                     }
                 }}
                 InputProps={InputProps}
+                {...props}
             />
 
-            {fieldType === "number" && typeof value === "number" && (
+            {props.type === "number" && typeof value === "number" && (
                 <Stack
                     spacing="-.3rem"
                     sx={{
