@@ -320,8 +320,9 @@ export const theme = createTheme({
                 root: {
                     padding: "0 !important",
                     color: colors.green,
+                    borderRadius: 0,
                     transform: "scale(.7)",
-                    "& > .MuiSvgIcon-root": { width: "2.8rem", height: "2.8rem" },
+                    "& > .MuiSvgIcon-root": { width: "4rem", height: "4rem" },
                     ".Mui-checked, .MuiSvgIcon-root": { color: `${colors.green} !important` },
                     ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.green}50 !important` },
                 },
