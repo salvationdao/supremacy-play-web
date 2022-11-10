@@ -342,6 +342,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
 
         if (inherit_all_weapon_skins === inheritAllWeaponSkinsMemo.current) return
 
+        console.log("inheriting", inherit_all_weapon_skins)
         if (inherit_all_weapon_skins) {
             inheritAllWeaponSkins()
         } else {
@@ -494,7 +495,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                                 weapon: weapon,
                                 weapon_id: weapon.id,
                                 slot_number: kv[0],
-                                inherit_skin: false,
+                                inherit_skin: inherit_all_weapon_skins,
                             })
                             break
                         }
@@ -552,7 +553,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
 
             setIsDragging(false)
         },
-        [chassis_skin?.locked_to_mech, loadoutDisabled, modifyMechSkin, modifyPowerCore, modifyWeaponSlot, weapons_map],
+        [chassis_skin?.locked_to_mech, inherit_all_weapon_skins, loadoutDisabled, modifyMechSkin, modifyPowerCore, modifyWeaponSlot, weapons_map],
     )
     // Some items (i.e. mech skin) have an on click event, not a drag event
     const onItemClick = useCallback<OnClickEventWithType>(
