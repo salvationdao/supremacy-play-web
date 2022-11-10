@@ -14,10 +14,10 @@ import { colors, fonts } from "../../../../../../theme/theme"
 import { PlayerAsset, Weapon, WeaponType } from "../../../../../../types"
 import { SortTypeLabel } from "../../../../../../types/marketplace"
 import { PageHeader } from "../../../../../Common/Deprecated/PageHeader"
+import { TotalAndPageSizeOptions } from "../../../../../Common/Deprecated/TotalAndPageSizeOptions"
 import { ChipFilter } from "../../../../../Common/SortAndFilters/ChipFilterSection"
 import { SliderRangeFilter } from "../../../../../Common/SortAndFilters/SliderRangeFilterSection"
 import { SortAndFilters } from "../../../../../Common/SortAndFilters/SortAndFilters"
-import { TotalAndPageSizeOptions } from "../../../../../Common/Deprecated/TotalAndPageSizeOptions"
 import { GetWeaponsRequest, GetWeaponsResponse } from "../../../../WeaponsHangar/WeaponsHangar"
 import { WeaponItem } from "./Weapons/WeaponItem"
 import { WeaponPreview } from "./Weapons/WeaponPreview"
@@ -36,18 +36,10 @@ interface MechLoadoutWeaponModalProps {
     onClose: () => void
     onConfirm: OnConfirmWeaponSelection
     equipped?: Weapon
-    weaponsWithSkinInheritance: string[]
     weaponsAlreadyEquippedInOtherSlots: string[]
 }
 
-export const MechLoadoutWeaponModal = ({
-    containerRef,
-    onClose,
-    onConfirm,
-    equipped,
-    weaponsWithSkinInheritance,
-    weaponsAlreadyEquippedInOtherSlots,
-}: MechLoadoutWeaponModalProps) => {
+export const MechLoadoutWeaponModal = ({ containerRef, onClose, onConfirm, equipped, weaponsAlreadyEquippedInOtherSlots }: MechLoadoutWeaponModalProps) => {
     const { userID } = useAuth()
     const { send } = useGameServerCommandsUser("/user_commander")
 
