@@ -2,6 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useImperativeHandle } from "react"
 import { SvgLoadoutPowerCore, SvgLoadoutSkin, SvgLoadoutWeapon } from "../../../../../assets"
 import { fonts } from "../../../../../theme/theme"
+import { AssetItemType, MechSkin, PowerCore, Utility, Weapon } from "../../../../../types"
 import { NiceAccordion } from "../../../../Common/Nice/NiceAccordion"
 import { CustomDragEventWithType, DragStartEventWithType, DragStopEventWithType } from "./Draggables/LoadoutDraggable"
 import { MechSkinDraggables, MechSkinDraggablesProps } from "./Draggables/MechSkinDraggables"
@@ -15,6 +16,12 @@ export type DraggablesHandle = {
 export interface MechLoadoutDraggablesProps extends WeaponDraggablesProps, MechSkinDraggablesProps, PowerCoreDraggablesProps {
     draggablesRef: React.ForwardedRef<DraggablesHandle>
 }
+
+export type OnClickEventWithType = (
+    e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>,
+    type: AssetItemType,
+    item: Weapon | PowerCore | Utility | MechSkin,
+) => void
 
 export interface DragWithTypesProps {
     onDrag: CustomDragEventWithType
@@ -100,7 +107,7 @@ export const MechLoadoutDraggables = ({
                                 </Typography>
                             </Stack>
                         ),
-                        content: <PowerCoreDraggables drag={drag} powerCoreSize={powerCoreSize} />,
+                        content: <PowerCoreDraggables powerCoreSize={powerCoreSize} onClick={onClick} />,
                     },
                 ]}
             />

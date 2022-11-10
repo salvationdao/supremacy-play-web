@@ -1,6 +1,6 @@
 import { Box, CircularProgress, MenuItem, Pagination, Select, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { SvgDrag, SvgLoadoutPowerCore, SvgSearch } from "../../../../../../assets"
+import { SvgLoadoutPowerCore, SvgSearch } from "../../../../../../assets"
 import { useTheme } from "../../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../../helpers"
 import { usePagination } from "../../../../../../hooks"
@@ -10,9 +10,8 @@ import { fonts } from "../../../../../../theme/theme"
 import { AssetItemType, PowerCore } from "../../../../../../types"
 import { SortTypeLabel } from "../../../../../../types/marketplace"
 import { MechLoadoutItem } from "../../../Common/MechLoadoutItem"
-import { DragWithTypesProps } from "../MechLoadoutDraggables"
+import { OnClickEventWithType } from "../MechLoadoutDraggables"
 import { GetPowerCoresRequest } from "../Modals/MechLoadoutPowerCoreModal"
-import { LoadoutDraggable } from "./LoadoutDraggable"
 import { InputLabeller, NiceInputBase } from "./WeaponDraggables"
 
 export interface GetPowerCoresDetailedResponse {
@@ -21,11 +20,11 @@ export interface GetPowerCoresDetailedResponse {
 }
 
 export interface PowerCoreDraggablesProps {
-    drag: DragWithTypesProps
     powerCoreSize: string
+    onClick: OnClickEventWithType
 }
 
-export const PowerCoreDraggables = ({ drag, powerCoreSize }: PowerCoreDraggablesProps) => {
+export const PowerCoreDraggables = ({ powerCoreSize, onClick }: PowerCoreDraggablesProps) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
 
@@ -38,8 +37,6 @@ export const PowerCoreDraggables = ({ drag, powerCoreSize }: PowerCoreDraggables
         pageSize: 9,
         page: 1,
     })
-
-    const { onDrag, onDragStart, onDragStop } = drag
 
     const [search, setSearch] = useState("")
     const [searchLoading, setSearchLoading] = useState(false)
@@ -154,44 +151,21 @@ export const PowerCoreDraggables = ({ drag, powerCoreSize }: PowerCoreDraggables
                     gap: "1rem",
                 }}
             >
-                {powerCores.map((w) => (
-                    <LoadoutDraggable
-                        key={w.id}
-                        drag={{
-                            onDrag: (rect) => {
-                                onDrag(rect, AssetItemType.PowerCore)
-                            },
-                            onDragStart: () => {
-                                onDragStart(AssetItemType.PowerCore)
-                            },
-                            onDragStop: (rect) => {
-                                onDragStop(rect, AssetItemType.PowerCore, w)
-                            },
-                        }}
-                        renderDraggable={(ref) => (
-                            <Box
-                                ref={ref}
-                                sx={{
-                                    height: "100%",
-                                    width: "100%",
-                                }}
-                            >
-                                <MechLoadoutItem
-                                    imageUrl={w.image_url || w.avatar_url}
-                                    label={w.label}
-                                    Icon={SvgLoadoutPowerCore}
-                                    rarity={w.tier ? getRarityDeets(w.tier) : undefined}
-                                    shape="square"
-                                    size="full-width"
-                                    TopRight={<SvgDrag />}
-                                />
-                            </Box>
-                        )}
+                {powerCores.map((pc, index) => (
+                    <MechLoadoutItem
+                        key={index}
+                        imageUrl={pc.image_url || pc.avatar_url}
+                        label={pc.label}
+                        Icon={SvgLoadoutPowerCore}
+                        rarity={pc.tier ? getRarityDeets(pc.tier) : undefined}
+                        shape="square"
+                        size="full-width"
+                        onClick={(e) => onClick(e, AssetItemType.PowerCore, pc)}
                     />
                 ))}
             </Box>
         )
-    }, [isPowerCoresLoading, onDrag, onDragStart, onDragStop, theme.factionTheme.primary, powerCores, powerCoresError])
+    }, [isPowerCoresLoading, onClick, powerCores, powerCoresError, theme.factionTheme.primary])
 
     return (
         <Stack spacing="2rem" minHeight={400}>

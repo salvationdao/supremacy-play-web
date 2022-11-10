@@ -6,17 +6,12 @@ import { usePagination } from "../../../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../../keys"
 import { fonts, theme } from "../../../../../../theme/theme"
-import { AssetItemType, MechSkin, PowerCore, Utility, Weapon } from "../../../../../../types"
+import { AssetItemType, MechSkin } from "../../../../../../types"
 import { SortTypeLabel } from "../../../../../../types/marketplace"
 import { GetSubmodelsRequest, GetSubmodelsResponse } from "../../../../SubmodelHangar/SubmodelsHangar"
 import { MechLoadoutItem } from "../../../Common/MechLoadoutItem"
+import { OnClickEventWithType } from "../MechLoadoutDraggables"
 import { InputLabeller, NiceInputBase } from "./WeaponDraggables"
-
-export type OnClickEventWithType = (
-    e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>,
-    type: AssetItemType,
-    item: Weapon | PowerCore | Utility | MechSkin,
-) => void
 
 export interface MechSkinDraggablesProps {
     excludeMechSkinIDs: string[]

@@ -15,8 +15,7 @@ import { MechViewer } from "../MechViewer/MechViewer"
 import { MechViewer3D } from "../MechViewer/MechViewer3D"
 import { UnityHandle } from "../MechViewer/UnityViewer"
 import { CustomDragEventWithType, DragStartEventWithType, DragStopEventWithType } from "./Draggables/LoadoutDraggable"
-import { OnClickEventWithType } from "./Draggables/MechSkinDraggables"
-import { DraggablesHandle, MechLoadoutDraggables } from "./MechLoadoutDraggables"
+import { DraggablesHandle, MechLoadoutDraggables, OnClickEventWithType } from "./MechLoadoutDraggables"
 import { WeaponTooltip } from "./Tooltips/WeaponTooltip"
 
 export interface SavedSelection {
@@ -571,9 +570,18 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                     })
                     break
                 }
+                case AssetItemType.PowerCore: {
+                    if (!powerCoreItemRef.current) return
+                    const powerCore = item as PowerCore
+                    modifyPowerCore({
+                        power_core: powerCore,
+                        power_core_id: powerCore.id,
+                    })
+                    break
+                }
             }
         },
-        [chassis_skin?.locked_to_mech, loadoutDisabled, modifyMechSkin],
+        [chassis_skin?.locked_to_mech, loadoutDisabled, modifyMechSkin, modifyPowerCore],
     )
 
     // 2D/3D VIEW SWITCHERS
