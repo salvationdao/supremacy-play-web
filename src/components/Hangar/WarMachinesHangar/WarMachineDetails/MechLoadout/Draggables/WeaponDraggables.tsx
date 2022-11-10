@@ -21,11 +21,12 @@ export interface GetWeaponsDetailedResponse {
 }
 
 export interface WeaponDraggablesProps {
+    compareToWeapon?: Weapon
     excludeWeaponIDs: string[]
     drag: DragWithTypesProps
 }
 
-export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesProps) => {
+export const WeaponDraggables = ({ compareToWeapon, excludeWeaponIDs, drag }: WeaponDraggablesProps) => {
     const theme = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
 
@@ -208,7 +209,7 @@ export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesPro
                                             <SvgDrag />
                                         </Stack>
                                     }
-                                    renderTooltip={() => <WeaponTooltip id={w.id} />}
+                                    renderTooltip={() => <WeaponTooltip id={w.id} compareTo={compareToWeapon} />}
                                     shape="rectangle"
                                     size="full-width"
                                 />
@@ -218,7 +219,7 @@ export const WeaponDraggables = ({ excludeWeaponIDs, drag }: WeaponDraggablesPro
                 ))}
             </Box>
         )
-    }, [isWeaponsLoading, onDrag, onDragStart, onDragStop, theme.factionTheme.primary, weapons, weaponsError])
+    }, [compareToWeapon, isWeaponsLoading, onDrag, onDragStart, onDragStop, theme.factionTheme.primary, weapons, weaponsError])
 
     return (
         <Stack spacing="2rem" minHeight={400}>

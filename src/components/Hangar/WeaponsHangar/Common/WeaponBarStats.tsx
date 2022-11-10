@@ -17,23 +17,18 @@ import { GetWeaponMaxStats } from "../../../../fetching"
 import { Weapon, WeaponMaxStats } from "../../../../types"
 import { BarStat, IconStat } from "../../WarMachinesHangar/Common/MechBarStats"
 
-export const WeaponBarStats = ({
-    weapon,
-    color,
-    fontSize: fs,
-    width,
-    spacing,
-    barHeight,
-    iconVersion,
-}: {
+interface WeaponBarStatsProps {
     weapon: Weapon
+    compareTo?: Weapon
     color?: string
     fontSize?: string
     width?: string
     spacing?: string
     barHeight?: string
     iconVersion?: boolean
-}) => {
+}
+
+export const WeaponBarStats = ({ weapon, compareTo, color, fontSize: fs, width, spacing, barHeight, iconVersion }: WeaponBarStatsProps) => {
     const theme = useTheme()
 
     const primaryColor = color || theme.factionTheme.primary
@@ -65,6 +60,22 @@ export const WeaponBarStats = ({
     const energyCost = weapon.energy_cost || 0
     const projectileSpeed = weapon.projectile_speed || 0
     const spread = weapon.spread || 0
+
+    const compareToObj = compareTo
+        ? {
+              ammo: compareTo.max_ammo || 0,
+              damage: compareTo.damage,
+              damageFalloff: compareTo.damage_falloff || 0,
+              damageFalloffRate: compareTo.damage_falloff_rate || 0,
+              radius: compareTo.radius || 0,
+              radiusDamageFalloff: compareTo.radius_damage_falloff || 0,
+              rateOfFire: compareTo.rate_of_fire || 0,
+              energyCost: compareTo.energy_cost || 0,
+              projectileSpeed: compareTo.projectile_speed || 0,
+              spread: compareTo.spread || 0,
+          }
+        : undefined
+    console.log(compareToObj)
 
     if (iconVersion) {
         return (
@@ -165,14 +176,33 @@ export const WeaponBarStats = ({
                     flexShrink: 0,
                 }}
             >
-                <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="AMMO" current={ammo} total={3000} Icon={SvgAmmo} />
-                <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="DAMAGE" current={damage} total={1000} Icon={SvgDamage1} />
+                <BarStat
+                    primaryColor={primaryColor}
+                    fontSize={fontSize}
+                    barHeight={barHeight}
+                    label="AMMO"
+                    current={ammo}
+                    compareTo={compareToObj?.ammo}
+                    total={3000}
+                    Icon={SvgAmmo}
+                />
+                <BarStat
+                    primaryColor={primaryColor}
+                    fontSize={fontSize}
+                    barHeight={barHeight}
+                    label="DAMAGE"
+                    current={damage}
+                    compareTo={compareToObj?.damage}
+                    total={1000}
+                    Icon={SvgDamage1}
+                />
                 <BarStat
                     primaryColor={primaryColor}
                     fontSize={fontSize}
                     barHeight={barHeight}
                     label="DAMAGE FALLOFF"
                     current={damageFalloff}
+                    compareTo={compareToObj?.damageFalloff}
                     total={1000}
                     Icon={SvgDamageFalloff}
                 />
@@ -182,16 +212,27 @@ export const WeaponBarStats = ({
                     barHeight={barHeight}
                     label="DAMAGE FALLOFF RATE"
                     current={damageFalloffRate}
+                    compareTo={compareToObj?.damageFalloffRate}
                     total={1000}
                     Icon={SvgDamageFalloffRate}
                 />
-                <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="RADIUS" current={radius} total={2000} Icon={SvgRadius} />
+                <BarStat
+                    primaryColor={primaryColor}
+                    fontSize={fontSize}
+                    barHeight={barHeight}
+                    label="RADIUS"
+                    current={radius}
+                    compareTo={compareToObj?.radius}
+                    total={2000}
+                    Icon={SvgRadius}
+                />
                 <BarStat
                     primaryColor={primaryColor}
                     fontSize={fontSize}
                     barHeight={barHeight}
                     label="RADIUS DAMAGE FALLOFF"
                     current={radiusDamageFalloff}
+                    compareTo={compareToObj?.radiusDamageFalloff}
                     total={2000}
                     Icon={SvgRadiusDamageFalloffRate}
                 />
@@ -201,6 +242,7 @@ export const WeaponBarStats = ({
                     barHeight={barHeight}
                     label="RATE OF FIRE"
                     current={rateOfFire}
+                    compareTo={compareToObj?.rateOfFire}
                     total={1000}
                     Icon={SvgRateOfFire}
                 />
@@ -210,6 +252,7 @@ export const WeaponBarStats = ({
                     barHeight={barHeight}
                     label="ENERGY COST"
                     current={energyCost}
+                    compareTo={compareToObj?.energyCost}
                     total={100}
                     Icon={SvgEnergy}
                 />
@@ -219,10 +262,20 @@ export const WeaponBarStats = ({
                     barHeight={barHeight}
                     label="PROJECTILE SPEED"
                     current={projectileSpeed}
+                    compareTo={compareToObj?.projectileSpeed}
                     total={200000}
                     Icon={SvgProjectileSpeed}
                 />
-                <BarStat primaryColor={primaryColor} fontSize={fontSize} barHeight={barHeight} label="SPREAD" current={spread} total={100} Icon={SvgSpread} />
+                <BarStat
+                    primaryColor={primaryColor}
+                    fontSize={fontSize}
+                    barHeight={barHeight}
+                    label="SPREAD"
+                    current={spread}
+                    compareTo={compareToObj?.spread}
+                    total={100}
+                    Icon={SvgSpread}
+                />
             </Stack>
         </Box>
     )

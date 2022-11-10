@@ -598,6 +598,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
     }
 
     // LOADOUT ITEM RENDERERS
+    const [compareToWeapon, setCompareToWeapon] = useState<LoadoutWeapon>()
     const renderWeaponSlot = useCallback(
         (slotNumber: number, side?: "left" | "right") => {
             const weapon = weapons_map.get(slotNumber)
@@ -630,9 +631,27 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                                 {weapon.damage}
                             </Typography>
                         }
+                        BottomRight={
+                            compareToWeapon?.weapon_id === weapon.id && (
+                                <Typography
+                                    color={{
+                                        color: colors.neonBlue,
+                                    }}
+                                >
+                                    Selected for comparison
+                                </Typography>
+                            )
+                        }
                         renderTooltip={() => <WeaponTooltip id={weapon.id} />}
                         rarity={weapon.weapon_skin ? getRarityDeets(weapon.weapon_skin.tier) : undefined}
                         locked={weapon.locked_to_mech}
+                        onClick={() =>
+                            setCompareToWeapon({
+                                slot_number: slotNumber,
+                                weapon_id: weapon.id,
+                                weapon: weapon,
+                            })
+                        }
                         onUnequip={() =>
                             modifyWeaponSlot({
                                 weapon_id: "",
@@ -657,7 +676,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                 />
             )
         },
-        [loadoutDisabled, modifyWeaponSlot, weapons_map],
+        [loadoutDisabled, modifyWeaponSlot, compareToWeapon?.weapon_id, weapons_map],
     )
 
     const renderPowerCoreSlot = useCallback(() => {
@@ -1017,6 +1036,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
             </Stack>
             <MechLoadoutDraggables
                 draggablesRef={draggablesRef}
+                compareToWeapon={compareToWeapon?.weapon}
                 excludeWeaponIDs={(() => {
                     const result: string[] = []
                     for (const ew of weapons_map.values()) {
