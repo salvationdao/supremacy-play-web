@@ -12,6 +12,7 @@ interface NiceTextFieldProps extends BaseTextFieldProps {
     InputProps?: Partial<OutlinedInputProps> | undefined
 }
 
+// Please use the MUI classnames to style the textfield itself in the sx prop
 export const NiceTextField = ({ primaryColor, value, onChange, errorMessage, placeholder, InputProps, sx, ...props }: NiceTextFieldProps) => {
     return (
         <Box
