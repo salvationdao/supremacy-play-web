@@ -38,7 +38,7 @@ export const MechCard = React.memo(function MechCard({ mech, isGridView, isSelec
                 </Typography>
 
                 {/* Mech image */}
-                <NiceBoxThing border={{ color: rarityDeets.color }} caret={{ position: "bottom-right" }}>
+                <NiceBoxThing border={{ color: `${rarityDeets.color}80` }} caret={{ position: "bottom-right" }}>
                     <Box component="img" src={mech.avatar_url} sx={{ height: "20rem", width: "100%", objectFit: "cover", objectPosition: "center" }} />
                 </NiceBoxThing>
 
