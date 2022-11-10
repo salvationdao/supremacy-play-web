@@ -75,7 +75,6 @@ export const WeaponBarStats = ({ weapon, compareTo, color, fontSize: fs, width, 
               spread: compareTo.spread || 0,
           }
         : undefined
-    console.log(compareToObj)
 
     if (iconVersion) {
         return (

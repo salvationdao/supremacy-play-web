@@ -274,12 +274,13 @@ const ImpureUnityViewer = ({ unity, mech }: MechViewer3DProps) => {
                     static_id: mechSkin.blueprint_id,
                 }
             }
-            console.info(loadMech)
+            console.info("load", loadMech)
             sendMessage("ProjectContext(Clone)", "FittingRoom", JSON.stringify(loadMech))
         },
         [sendMessage, status],
     )
     // Load mech. Don't do anything if unity is not ready
+    const prevMechID = useRef<string>()
     useEffect(() => {
         if (status < UnityStatus.Loaded) return
 
@@ -290,8 +291,10 @@ const ImpureUnityViewer = ({ unity, mech }: MechViewer3DProps) => {
             sendMessage("ProjectContext(Clone)", "GetPlayerInventoryFromPage", JSON.stringify(inventory))
             sent.current = true
         }
-
-        buildAndLoadMech(mech)
+        if (prevMechID.current !== mech.id) {
+            buildAndLoadMech(mech)
+            prevMechID.current = mech.id
+        }
     }, [buildAndLoadMech, mech, sendMessage, status])
 
     // Unload everything on unmount
