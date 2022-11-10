@@ -1,15 +1,16 @@
-import { Box, Pagination, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
-import { SvgFilter, SvgGridView, SvgListView, SvgSearch } from "../../../assets"
-import { useAuth, useSupremacy } from "../../../containers"
+import { EmptyWarMachinesPNG, SvgFilter, SvgGridView, SvgListView, SvgSearch } from "../../../assets"
+import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, parseString } from "../../../helpers"
 import { useDebounce, usePagination, useUrlQuery } from "../../../hooks"
 import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { useLocalStorage } from "../../../hooks/useLocalStorage"
 import { GameServerKeys } from "../../../keys"
-import { fonts } from "../../../theme/theme"
-import { LobbyMech, MechBasicWithQueueStatus } from "../../../types"
+import { colors, fonts } from "../../../theme/theme"
+import { LobbyMech } from "../../../types"
 import { SortTypeLabel } from "../../../types/marketplace"
+import { MechCard } from "../../Common/MechCard"
 import { NavTabs } from "../../Common/NavTabs/NavTabs"
 import { usePageTabs } from "../../Common/NavTabs/usePageTabs"
 import { NiceButton } from "../../Common/Nice/NiceButton"
@@ -37,27 +38,9 @@ const layoutOptions = [
     { label: "", value: false, svg: <SvgListView size="1.5rem" /> },
 ]
 
-interface GetMechsRequest {
-    queue_sort?: string
-    sort_by?: string
-    sort_dir?: string
-    search: string
-    page: number
-    page_size: number
-    rarities: string[]
-    statuses: string[]
-    include_market_listed: boolean
-}
-
-interface GetMechsResponse {
-    mechs: MechBasicWithQueueStatus[]
-    total: number
-}
-
 export const FactionPassMechPool = () => {
     const [query, updateQuery] = useUrlQuery()
-    const { factionID } = useAuth()
-    const { getFaction } = useSupremacy()
+    const theme = useTheme()
     const { tabs, activeTabID, setActiveTabID, prevTab, nextTab } = usePageTabs()
 
     // Filter, search, pagination
@@ -76,10 +59,6 @@ export const FactionPassMechPool = () => {
     const [displayMechs, setDisplayMechs] = useState<LobbyMech[]>([])
     const [mechs, setMechs] = useState<LobbyMech[]>([])
     const [isLoading, setIsLoading] = useState(true)
-
-    const faction = useMemo(() => {
-        return getFaction(factionID)
-    }, [factionID, getFaction])
 
     useGameServerSubscriptionFaction<LobbyMech[]>(
         {
@@ -115,6 +94,7 @@ export const FactionPassMechPool = () => {
 
     // Apply sort, search, and filters
     useEffect(() => {
+        console.log({ mechs, search, sort, status, rarities })
         let result = [...mechs]
 
         // Apply search
@@ -123,12 +103,12 @@ export const FactionPassMechPool = () => {
         }
 
         // Apply status filter
-        if (status) {
+        if (status && status.length) {
             result = result.filter((mech) => status.includes(mech.status))
         }
 
         // Apply rarity filter
-        if (rarities) {
+        if (rarities && rarities.length) {
             result = result.filter((mech) => rarities.includes(mech.tier))
         }
 
@@ -171,6 +151,67 @@ export const FactionPassMechPool = () => {
         setDisplayMechs(result)
     }, [mechs, page, pageSize, rarities, search, setTotalItems, sort, status, updateQuery])
 
+    const content = useMemo(() => {
+        if (isLoading) {
+            return (
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <CircularProgress />
+                </Stack>
+            )
+        }
+
+        if (displayMechs && displayMechs.length > 0) {
+            return (
+                <Box
+                    sx={{
+                        display: "grid",
+                        gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(30rem, 1fr))" : "100%",
+                        gap: "1.5rem",
+                        alignItems: "center",
+                        justifyContent: "center",
+                    }}
+                >
+                    {displayMechs.map((mech) => {
+                        return <MechCard key={`mech-${mech.id}`} mech={mech} isGridView={isGridView} />
+                    })}
+                </Box>
+            )
+        }
+
+        return (
+            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                <Box
+                    sx={{
+                        width: "20rem",
+                        height: "20rem",
+                        opacity: 0.7,
+                        filter: "grayscale(100%)",
+                        background: `url(${EmptyWarMachinesPNG})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "bottom center",
+                        backgroundSize: "contain",
+                    }}
+                />
+                <Typography
+                    sx={{
+                        px: "1.28rem",
+                        pt: "1.28rem",
+                        mb: "1.5rem",
+                        color: colors.grey,
+                        fontFamily: fonts.nostromoBold,
+                        textAlign: "center",
+                    }}
+                >
+                    {"No results..."}
+                </Typography>
+
+                <NiceButton route={{ to: `/marketplace/mechs` }} border={{ color: theme.factionTheme.primary }}>
+                    GO TO MARKETPLACE
+                </NiceButton>
+            </Stack>
+        )
+    }, [displayMechs, isGridView, isLoading, theme.factionTheme.primary])
+
     return (
         <Stack
             alignItems="center"
@@ -180,7 +221,7 @@ export const FactionPassMechPool = () => {
                 mx: "auto",
                 position: "relative",
                 height: "100%",
-                backgroundColor: faction.background_color,
+                backgroundColor: theme.factionTheme.background,
                 background: `url()`,
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
@@ -194,11 +235,11 @@ export const FactionPassMechPool = () => {
                 {/* Filter button */}
                 <NiceButton
                     onClick={() => setShowFilters((prev) => !prev)}
-                    border={{ color: faction.primary_color }}
+                    border={{ color: theme.factionTheme.primary }}
                     sx={{ p: ".2rem 1rem", pt: ".4rem" }}
                     background={showFilters}
                 >
-                    <Typography variant="subtitle1" fontFamily={fonts.nostromoBold} color={showFilters ? faction.secondary_color : "#FFFFFF"}>
+                    <Typography variant="subtitle1" fontFamily={fonts.nostromoBold} color={showFilters ? theme.factionTheme.secondary : "#FFFFFF"}>
                         <SvgFilter inline size="1.5rem" /> FILTER
                     </Typography>
                 </NiceButton>
@@ -209,14 +250,14 @@ export const FactionPassMechPool = () => {
                     {/* Show Total */}
                     <Box sx={{ height: "100%", backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", px: "1rem", borderRight: "none" }}>
                         <Typography variant="h6" sx={{ whiteSpace: "nowrap" }}>
-                            {mechs?.length || 0} of {totalItems}
+                            {displayMechs?.length || 0} of {totalItems}
                         </Typography>
                     </Box>
 
                     {/* Page size options */}
                     <NiceButtonGroup
-                        primaryColor={faction.primary_color}
-                        secondaryColor={faction.secondary_color}
+                        primaryColor={theme.factionTheme.primary}
+                        secondaryColor={theme.factionTheme.secondary}
                         options={pageSizeOptions}
                         selected={pageSize}
                         onSelected={(value) => changePageSize(parseString(value, 1))}
@@ -225,8 +266,8 @@ export const FactionPassMechPool = () => {
 
                 {/* Page layout options */}
                 <NiceButtonGroup
-                    primaryColor={faction.primary_color}
-                    secondaryColor={faction.secondary_color}
+                    primaryColor={theme.factionTheme.primary}
+                    secondaryColor={theme.factionTheme.secondary}
                     options={layoutOptions}
                     selected={isGridView}
                     onSelected={(value) => setIsGridView(value)}
@@ -234,7 +275,7 @@ export const FactionPassMechPool = () => {
 
                 {/* Search bar */}
                 <NiceTextField
-                    primaryColor={faction.primary_color}
+                    primaryColor={theme.factionTheme.primary}
                     value={searchInstant}
                     onChange={(value) => setSearch(value)}
                     placeholder="Search..."
@@ -246,8 +287,8 @@ export const FactionPassMechPool = () => {
                 {/* Sort */}
                 <NiceSelect
                     label="Sort:"
-                    primaryColor={faction.primary_color}
-                    secondaryColor={faction.secondary_color}
+                    primaryColor={theme.factionTheme.primary}
+                    secondaryColor={theme.factionTheme.secondary}
                     options={sortOptions}
                     selected={sort}
                     onSelected={(value) => setSort(`${value}`)}
@@ -255,7 +296,7 @@ export const FactionPassMechPool = () => {
                 />
             </Stack>
 
-            <Box sx={{ flex: 1, width: "100%" }}></Box>
+            <Box sx={{ flex: 1, width: "100%", overflowY: "auto" }}>{content}</Box>
 
             <Pagination sx={{ mt: "auto" }} count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
         </Stack>
