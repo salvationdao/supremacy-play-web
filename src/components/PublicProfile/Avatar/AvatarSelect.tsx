@@ -12,7 +12,7 @@ import { ClipThing } from "../../Common/Deprecated/ClipThing"
 import { ConfirmModal } from "../../Common/ConfirmModal"
 import { FancyButton } from "../../Common/Deprecated/FancyButton"
 import { PageHeader } from "../../Common/Deprecated/PageHeader"
-import { ChipFilter, ChipFilterSection } from "../../Common/SortAndFilters/ChipFilterSection"
+import { ChipFilter, ChipFilterSection } from "../../Common/Deprecated/SortAndFilters/ChipFilterSection"
 import { TotalAndPageSizeOptions } from "../../Common/Deprecated/TotalAndPageSizeOptions"
 import { CustomAvatar, CustomAvatarItem } from "./CustomAvatar"
 

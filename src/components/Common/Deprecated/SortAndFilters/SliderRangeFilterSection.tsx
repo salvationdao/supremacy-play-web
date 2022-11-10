@@ -1,7 +1,7 @@
 import { Box, Slider, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useRef } from "react"
-import { FancyButton } from "../.."
-import { useDebounce } from "../../../hooks"
+import { FancyButton } from "../../.."
+import { useDebounce } from "../../../../hooks"
 import { Section } from "./Section"
 
 export interface SliderRangeFilter {

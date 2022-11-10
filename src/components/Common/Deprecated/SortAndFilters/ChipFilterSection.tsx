@@ -1,8 +1,8 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef } from "react"
-import { FancyButton } from "../.."
-import { useDebounce } from "../../../hooks"
-import { fonts } from "../../../theme/theme"
+import { FancyButton } from "../../.."
+import { useDebounce } from "../../../../hooks"
+import { fonts } from "../../../../theme/theme"
 import { Section } from "./Section"
 
 export interface ChipFilter {
