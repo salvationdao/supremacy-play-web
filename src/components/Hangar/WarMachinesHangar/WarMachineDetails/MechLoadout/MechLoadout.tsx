@@ -269,6 +269,8 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                     },
                 ],
             })
+
+            setCompareToWeapon(undefined)
         },
         [blueprint_weapon_ids_with_skin_inheritance, saveSelection],
     )
