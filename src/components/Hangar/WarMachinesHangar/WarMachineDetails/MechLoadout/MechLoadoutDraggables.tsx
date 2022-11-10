@@ -38,6 +38,7 @@ export const MechLoadoutDraggables = ({
     includeMechSkinIDs,
     mechModelID,
     powerCoreSize,
+    compareToWeapon,
 }: MechLoadoutDraggablesProps) => {
     useImperativeHandle(draggablesRef, () => ({
         handleMechLoadoutUpdated: () => {
@@ -68,7 +69,7 @@ export const MechLoadoutDraggables = ({
                                 </Typography>
                             </Stack>
                         ),
-                        content: <WeaponDraggables drag={drag} excludeWeaponIDs={excludeWeaponIDs} />,
+                        content: <WeaponDraggables drag={drag} excludeWeaponIDs={excludeWeaponIDs} compareToWeapon={compareToWeapon} />,
                     },
                     {
                         id: "mech skins",

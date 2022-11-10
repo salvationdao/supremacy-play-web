@@ -224,6 +224,7 @@ export const BarStat = ({
     label,
     current,
     boostedTo,
+    compareTo,
     total,
     unit,
     barHeight,
@@ -235,6 +236,7 @@ export const BarStat = ({
     label: string
     current: number | string
     boostedTo?: number | string
+    compareTo?: number | string
     total: number
     unit?: string
     barHeight?: string
@@ -243,6 +245,10 @@ export const BarStat = ({
 }) => {
     const parsedCurrent = useMemo(() => (typeof current === "string" ? parseFloat(current) : current), [current])
     const parsedBoosted = useMemo(() => (typeof boostedTo === "string" ? parseFloat(boostedTo) : boostedTo), [boostedTo])
+    const compareDifference = useMemo(
+        () => (compareTo ? parsedCurrent - (typeof compareTo === "string" ? parseFloat(compareTo) : compareTo) : undefined),
+        [compareTo, parsedCurrent],
+    )
     if (!parsedCurrent && !parsedBoosted) return null
 
     if (compact)
@@ -268,30 +274,39 @@ export const BarStat = ({
                     </Box>
                 </NiceTooltip>
 
-                <Box flex={1} sx={{ height: barHeight || ".7rem", backgroundColor: "#FFFFFF25", position: "relative" }}>
-                    <Box
-                        sx={{
-                            width: `${(100 * parsedCurrent) / total}%`,
-                            height: "100%",
-                            backgroundColor: primaryColor,
-                            transition: "all .15s",
-                            zIndex: 10,
-                            position: "absolute",
-                        }}
-                    />
+                <Stack flex={1} direction="row" sx={{ height: barHeight || ".7rem", backgroundColor: "#FFFFFF25", position: "relative" }}>
                     {parsedBoosted && (
                         <Box
                             sx={{
+                                position: "absolute",
                                 width: `${(100 * parsedBoosted) / total}%`,
                                 height: "100%",
                                 backgroundColor: colors.gold,
                                 transition: "all .15s",
-                                zIndex: 9,
-                                position: "absolute",
                             }}
                         />
                     )}
-                </Box>
+                    <Box
+                        sx={{
+                            zIndex: 1,
+                            position: "relative",
+                            width: `${(100 * parsedCurrent) / total}%`,
+                            height: "100%",
+                            backgroundColor: primaryColor,
+                            transition: "all .15s",
+                        }}
+                    />
+                    {compareDifference && (
+                        <Box
+                            sx={{
+                                width: `${(100 * Math.abs(compareDifference)) / total}%`,
+                                height: "100%",
+                                backgroundColor: compareDifference > 0 ? colors.green : `${primaryColor}44`,
+                                transition: "all .15s",
+                            }}
+                        />
+                    )}
+                </Stack>
                 <NiceTooltip
                     placement="right"
                     text={
@@ -353,36 +368,56 @@ export const BarStat = ({
                             ...TruncateTextLines(1),
                         }}
                     >
+                        {compareDifference ? (
+                            <Box
+                                component="span"
+                                sx={{
+                                    color: compareDifference > 0 ? colors.green : colors.red,
+                                    mr: ".5rem",
+                                }}
+                            >
+                                {`(${compareDifference > 0 ? "+" : ""}${compareDifference})`}
+                            </Box>
+                        ) : undefined}
                         {parsedBoosted || parsedCurrent}
                         {unit}
                     </Typography>
                 </Stack>
             </NiceTooltip>
 
-            <Box sx={{ height: barHeight || ".7rem", backgroundColor: "#FFFFFF25", position: "relative" }}>
-                <Box
-                    sx={{
-                        width: `${(100 * parsedCurrent) / total}%`,
-                        height: "100%",
-                        backgroundColor: primaryColor,
-                        transition: "all .15s",
-                        zIndex: 10,
-                        position: "absolute",
-                    }}
-                />
+            <Stack direction="row" sx={{ height: barHeight || ".7rem", backgroundColor: "#FFFFFF25", position: "relative" }}>
                 {parsedBoosted && (
                     <Box
                         sx={{
+                            position: "absolute",
                             width: `${(100 * parsedBoosted) / total}%`,
                             height: "100%",
                             backgroundColor: colors.gold,
                             transition: "all .15s",
-                            zIndex: 9,
-                            position: "absolute",
                         }}
                     />
                 )}
-            </Box>
+                <Box
+                    sx={{
+                        zIndex: 1,
+                        position: "relative",
+                        width: `${(100 * parsedCurrent) / total}%`,
+                        height: "100%",
+                        backgroundColor: primaryColor,
+                        transition: "all .15s",
+                    }}
+                />
+                {typeof compareDifference !== "undefined" && (
+                    <Box
+                        sx={{
+                            width: `${(100 * Math.abs(compareDifference)) / total}%`,
+                            height: "100%",
+                            backgroundColor: compareDifference > 0 ? colors.green : `${primaryColor}44`,
+                            transition: "all .15s",
+                        }}
+                    />
+                )}
+            </Stack>
         </Box>
     )
 }

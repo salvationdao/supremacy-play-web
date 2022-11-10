@@ -7,6 +7,7 @@ import { NiceButton } from "../../../Common/Nice/NiceButton"
 
 export interface LoadoutItem {
     TopRight?: React.ReactNode
+    BottomRight?: React.ReactNode
     Icon?: React.VoidFunctionComponent<SvgWrapperProps>
     imageUrl?: string
     label: string
@@ -102,6 +103,7 @@ export const MechLoadoutItem = React.forwardRef<HTMLDivElement, MechLoadoutItemP
 
 const MechLoadoutItemButton = ({
     TopRight,
+    BottomRight,
     Icon,
     imageUrl,
     label,
@@ -209,6 +211,17 @@ const MechLoadoutItemButton = ({
                         }}
                     >
                         {TopRight}
+                    </Box>
+                )}
+                {BottomRight && (
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            bottom: ".5rem",
+                            right: ".5rem",
+                        }}
+                    >
+                        {BottomRight}
                     </Box>
                 )}
                 {!isEmpty && (

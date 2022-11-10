@@ -11,9 +11,10 @@ import { WeaponBarStats } from "../../../../WeaponsHangar/Common/WeaponBarStats"
 
 export interface WeaponTooltipProps {
     id: string
+    compareTo?: Weapon
 }
 
-export const WeaponTooltip = ({ id }: WeaponTooltipProps) => {
+export const WeaponTooltip = ({ id, compareTo }: WeaponTooltipProps) => {
     const theme = useTheme()
     const [weapon, setWeapon] = useState<Weapon>()
 
@@ -47,7 +48,6 @@ export const WeaponTooltip = ({ id }: WeaponTooltipProps) => {
         return (
             <>
                 <Stack
-                    spacing="1rem"
                     sx={{
                         p: "2rem",
                         background: `linear-gradient(to right, ${theme.factionTheme.background}, ${rarity.color}22)`,
@@ -90,11 +90,19 @@ export const WeaponTooltip = ({ id }: WeaponTooltipProps) => {
                     }}
                 />
                 <Box p="2rem">
-                    <WeaponBarStats weapon={weapon} color={theme.factionTheme.primary} fontSize="1.2rem" width="100%" spacing="1.2rem" barHeight=".9rem" />
+                    <WeaponBarStats
+                        weapon={weapon}
+                        compareTo={compareTo}
+                        color={theme.factionTheme.primary}
+                        fontSize="1.2rem"
+                        width="100%"
+                        spacing="1.2rem"
+                        barHeight=".9rem"
+                    />
                 </Box>
             </>
         )
-    }, [theme.factionTheme.background, theme.factionTheme.primary, weapon])
+    }, [compareTo, theme.factionTheme.background, theme.factionTheme.primary, weapon])
 
     return (
         <NiceBoxThing
@@ -108,7 +116,7 @@ export const WeaponTooltip = ({ id }: WeaponTooltipProps) => {
             sx={{
                 display: "flex",
                 flexDirection: "column",
-                minHeight: 300,
+                minHeight: 250,
                 width: 280,
             }}
         >
