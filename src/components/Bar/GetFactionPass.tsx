@@ -19,7 +19,9 @@ export const GetFactionPass = () => {
                     lottieRef.current?.setSpeed(1.3)
                     lottieRef.current?.playSegments([0, 23], true)
                 }}
-                onMouseLeave={() => lottieRef.current?.goToAndStop(0, true)}
+                onMouseLeave={() => {
+                    lottieRef.current?.playSegments([23, 0], true)
+                }}
                 sx={{
                     position: "relative",
                     cursor: "pointer",

@@ -17,6 +17,7 @@ import { NiceButton } from "../../Common/Nice/NiceButton"
 import { NiceButtonGroup } from "../../Common/Nice/NiceButtonGroup"
 import { NiceSelect } from "../../Common/Nice/NiceSelect"
 import { NiceTextField } from "../../Common/Nice/NiceTextField"
+import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 
 const sortOptions = [
     { label: SortTypeLabel.MechQueueAsc, value: SortTypeLabel.MechQueueAsc },
@@ -232,76 +233,81 @@ export const FactionPassMechPool = () => {
         >
             <NavTabs activeTabID={activeTabID} setActiveTabID={setActiveTabID} tabs={tabs} prevTab={prevTab} nextTab={nextTab} />
 
-            <Stack spacing="1rem" direction="row" alignItems="center" sx={{ overflowX: "auto", overflowY: "hidden", width: "100%", pb: ".2rem" }}>
-                {/* Filter button */}
-                <NiceButton
-                    onClick={() => setShowFilters((prev) => !prev)}
-                    border={{ color: theme.factionTheme.primary }}
-                    sx={{ p: ".2rem 1rem", pt: ".4rem" }}
-                    background={showFilters}
-                >
-                    <Typography variant="subtitle1" fontFamily={fonts.nostromoBold} color={showFilters ? theme.factionTheme.secondary : "#FFFFFF"}>
-                        <SvgFilter inline size="1.5rem" /> FILTER
-                    </Typography>
-                </NiceButton>
+            <Stack direction="row" sx={{ flex: 1, width: "100%" }}>
+                <SortAndFilters open={showFilters} />
 
-                <Box flex={1} />
+                {/* Search, sort, grid view, and other top buttons */}
+                <Stack spacing="3rem" alignItems="stretch" flex={1}>
+                    <Stack spacing="1rem" direction="row" alignItems="center" sx={{ overflowX: "auto", overflowY: "hidden", width: "100%", pb: ".2rem" }}>
+                        {/* Filter button */}
+                        <NiceButton
+                            onClick={() => setShowFilters((prev) => !prev)}
+                            border={{ color: theme.factionTheme.primary }}
+                            sx={{ p: ".2rem 1rem", pt: ".4rem" }}
+                            background={showFilters}
+                        >
+                            <Typography variant="subtitle1" fontFamily={fonts.nostromoBold} color={showFilters ? theme.factionTheme.secondary : "#FFFFFF"}>
+                                <SvgFilter inline size="1.5rem" /> FILTER
+                            </Typography>
+                        </NiceButton>
 
-                <Stack direction="row" alignItems="center">
-                    {/* Show Total */}
-                    <Box sx={{ height: "100%", backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", px: "1rem", borderRight: "none" }}>
-                        <Typography variant="h6" sx={{ whiteSpace: "nowrap" }}>
-                            {displayMechs?.length || 0} of {totalItems}
-                        </Typography>
-                    </Box>
+                        <Box flex={1} />
 
-                    {/* Page size options */}
-                    <NiceButtonGroup
-                        primaryColor={theme.factionTheme.primary}
-                        secondaryColor={theme.factionTheme.secondary}
-                        options={pageSizeOptions}
-                        selected={pageSize}
-                        onSelected={(value) => changePageSize(parseString(value, 1))}
-                    />
+                        <Stack direction="row" alignItems="center">
+                            {/* Show Total */}
+                            <Box sx={{ height: "100%", backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", px: "1rem", borderRight: "none" }}>
+                                <Typography variant="h6" sx={{ whiteSpace: "nowrap" }}>
+                                    {displayMechs?.length || 0} of {totalItems}
+                                </Typography>
+                            </Box>
+
+                            {/* Page size options */}
+                            <NiceButtonGroup
+                                primaryColor={theme.factionTheme.primary}
+                                secondaryColor={theme.factionTheme.secondary}
+                                options={pageSizeOptions}
+                                selected={pageSize}
+                                onSelected={(value) => changePageSize(parseString(value, 1))}
+                            />
+                        </Stack>
+
+                        {/* Page layout options */}
+                        <NiceButtonGroup
+                            primaryColor={theme.factionTheme.primary}
+                            secondaryColor={theme.factionTheme.secondary}
+                            options={layoutOptions}
+                            selected={isGridView}
+                            onSelected={(value) => setIsGridView(value)}
+                        />
+
+                        {/* Search bar */}
+                        <NiceTextField
+                            primaryColor={theme.factionTheme.primary}
+                            value={searchInstant}
+                            onChange={(value) => setSearch(value)}
+                            placeholder="Search..."
+                            InputProps={{
+                                endAdornment: <SvgSearch size="1.5rem" sx={{ opacity: 0.5 }} />,
+                            }}
+                        />
+
+                        {/* Sort */}
+                        <NiceSelect
+                            label="Sort:"
+                            primaryColor={theme.factionTheme.primary}
+                            secondaryColor={theme.factionTheme.secondary}
+                            options={sortOptions}
+                            selected={sort}
+                            onSelected={(value) => setSort(`${value}`)}
+                            sx={{ minWidth: "26rem" }}
+                        />
+                    </Stack>
+
+                    <Box sx={{ flex: 1, height: "100%", overflowY: "auto", pr: ".8rem" }}>{content}</Box>
+
+                    <Pagination sx={{ mt: "auto" }} count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
                 </Stack>
-
-                {/* Page layout options */}
-                <NiceButtonGroup
-                    primaryColor={theme.factionTheme.primary}
-                    secondaryColor={theme.factionTheme.secondary}
-                    options={layoutOptions}
-                    selected={isGridView}
-                    onSelected={(value) => setIsGridView(value)}
-                />
-
-                {/* Search bar */}
-                <NiceTextField
-                    primaryColor={theme.factionTheme.primary}
-                    value={searchInstant}
-                    onChange={(value) => setSearch(value)}
-                    placeholder="Search..."
-                    InputProps={{
-                        endAdornment: <SvgSearch size="1.5rem" sx={{ opacity: 0.5 }} />,
-                    }}
-                />
-
-                {/* Sort */}
-                <NiceSelect
-                    label="Sort:"
-                    primaryColor={theme.factionTheme.primary}
-                    secondaryColor={theme.factionTheme.secondary}
-                    options={sortOptions}
-                    selected={sort}
-                    onSelected={(value) => setSort(`${value}`)}
-                    sx={{ minWidth: "26rem" }}
-                />
             </Stack>
-
-            <Stack direction="row" spacing="1.2rem" sx={{ flex: 1, width: "100%" }}>
-                <Box sx={{ flex: 1, height: "100%", overflowY: "auto", pr: ".8rem" }}>{content}</Box>
-            </Stack>
-
-            <Pagination sx={{ mt: "auto" }} count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
         </Stack>
     )
 }
