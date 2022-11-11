@@ -33,7 +33,7 @@ export const SortAndFilters = React.memo(function SortAndFilters({ open, chipFil
                 ...sx,
             }}
         >
-            <Stack divider={<Divider />}>
+            <Stack divider={<Divider />} sx={{ overflow: "hidden", height: "100%" }}>
                 {/* Heading */}
                 <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ p: "1.2rem 2rem", pr: "1rem" }}>
                     <Typography fontFamily={fonts.nostromoBlack}>FILTERS</Typography>
@@ -48,9 +48,11 @@ export const SortAndFilters = React.memo(function SortAndFilters({ open, chipFil
                     </NiceButton>
                 </Stack>
 
-                {!!chipFilters && chipFilters.length > 0 && chipFilters.map((f, i) => <ChipFilterSection key={i} {...f} />)}
+                <Stack divider={<Divider />} sx={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
+                    {!!chipFilters && chipFilters.length > 0 && chipFilters.map((f, i) => <ChipFilterSection key={i} {...f} />)}
 
-                {!!rangeFilters && rangeFilters.length > 0 && rangeFilters.map((f, i) => <RangeFilterSection key={i} {...f} />)}
+                    {!!rangeFilters && rangeFilters.length > 0 && rangeFilters.map((f, i) => <RangeFilterSection key={i} {...f} />)}
+                </Stack>
             </Stack>
         </NiceBoxThing>
     )
