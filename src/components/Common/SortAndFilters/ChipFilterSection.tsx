@@ -17,14 +17,13 @@ type Option =
 
 export interface ChipFilterProps {
     label: string
-    options: Option[]
     initialExpanded?: boolean
+    options: Option[]
     selected: string[]
     setSelected: React.Dispatch<React.SetStateAction<string[]>>
 }
 
 export const ChipFilterSection = React.memo(function ChipFilterSection({ label, options, selected, setSelected, initialExpanded }: ChipFilterProps) {
-    console.log(selected)
     return (
         <Section label={label} initialExpanded={initialExpanded}>
             <Stack direction="row" flexWrap="wrap" sx={{ px: "1.6rem", pb: ".8rem" }}>

@@ -6,14 +6,16 @@ import { fonts } from "../../../theme/theme"
 import { NiceBoxThing } from "../Nice/NiceBoxThing"
 import { NiceButton } from "../Nice/NiceButton"
 import { ChipFilterProps, ChipFilterSection } from "./ChipFilterSection"
+import { RangeFilterProps, RangeFilterSection } from "./RangeFilterSection"
 
 interface SortAndFiltersProps {
     open: boolean
     sx?: SxProps
     chipFilters?: ChipFilterProps[]
+    rangeFilters?: RangeFilterProps[]
 }
 
-export const SortAndFilters = React.memo(function SortAndFilters({ open, chipFilters, sx }: SortAndFiltersProps) {
+export const SortAndFilters = React.memo(function SortAndFilters({ open, chipFilters, rangeFilters, sx }: SortAndFiltersProps) {
     const theme = useTheme()
 
     return (
@@ -24,7 +26,7 @@ export const SortAndFilters = React.memo(function SortAndFilters({ open, chipFil
                 visibility: open ? "visible" : "hidden",
                 width: open ? "38rem" : 0,
                 opacity: open ? 1 : 0,
-                mr: open ? "2rem" : 0,
+                mr: open ? "2.5rem" : 0,
                 overflowY: "hidden",
                 transition: "all .3s",
                 flexShrink: 0,
@@ -47,6 +49,8 @@ export const SortAndFilters = React.memo(function SortAndFilters({ open, chipFil
                 </Stack>
 
                 {!!chipFilters && chipFilters.length > 0 && chipFilters.map((f, i) => <ChipFilterSection key={i} {...f} />)}
+
+                {!!rangeFilters && rangeFilters.length > 0 && rangeFilters.map((f, i) => <RangeFilterSection key={i} {...f} />)}
             </Stack>
         </NiceBoxThing>
     )

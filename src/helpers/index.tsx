@@ -124,7 +124,7 @@ export const supFormatter = (num: string, maxDecimals?: number): string => {
     return supTokens.toFormat()
 }
 
-export const parseString = (val: number | string | null, defaultVal: number): number => {
+export const parseString = (val: number | string | null | undefined, defaultVal: number): number => {
     try {
         if (!val) return defaultVal
         return parseFloat(`${val}`)
