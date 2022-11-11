@@ -1,4 +1,4 @@
-import { Box, FormControlLabel, MenuItem, Pagination, Select, Stack, Typography } from "@mui/material"
+import { Box, FormControlLabel, Pagination, Stack, Switch, Typography } from "@mui/material"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { useHistory } from "react-router-dom"
 import { SvgLoadoutDeaths, SvgLoadoutKills, SvgLoadoutLosses, SvgLoadoutWins, SvgSearch, SvgWrapperProps } from "../../../../../assets"
@@ -14,11 +14,11 @@ import { SortDir, SortTypeLabel } from "../../../../../types/marketplace"
 import { NiceAccordion } from "../../../../Common/Nice/NiceAccordion"
 import { NiceBoxThing } from "../../../../Common/Nice/NiceBoxThing"
 import { NiceButton } from "../../../../Common/Nice/NiceButton"
-import { NiceSwitch } from "../../../../Common/Nice/NiceSwitch"
+import { NiceSelect } from "../../../../Common/Nice/NiceSelect"
 import { MechBarStats } from "../../Common/MechBarStats"
 import { MechRepairBlocks } from "../../Common/MechRepairBlocks"
 import { GetMechsRequest, GetMechsResponse } from "../../WarMachinesHangar"
-import { InputLabeller, NiceInputBase } from "../MechLoadout/Draggables/WeaponDraggables"
+import { NiceInputBase } from "../MechLoadout/Draggables/WeaponDraggables"
 import { PlayerAssetMechEquipRequest } from "../MechLoadout/MechLoadout"
 import { MechName } from "../MechName"
 
@@ -299,7 +299,7 @@ export const MechPicker = ({ mechDetails, mechStatus, mechStaked, onUpdate }: Me
                 }}
             >
                 <FormControlLabel
-                    control={<NiceSwitch onChange={handleInheritWeaponSkin} checked={inheritWeaponSkins} />}
+                    control={<Switch onChange={handleInheritWeaponSkin} checked={inheritWeaponSkins} />}
                     label={
                         <Typography
                             sx={{
@@ -533,24 +533,21 @@ const MechPickerDropdown = React.memo(function MechPickerDropdown() {
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                         />
-                        <InputLabeller flex={1} label="Sort:" name="sort">
-                            <Select
-                                name="sort"
-                                value={sort}
-                                onChange={(e) => setSort(e.target.value)}
-                                input={<NiceInputBase />}
-                                sx={{
-                                    flex: 1,
-                                }}
-                            >
-                                <MenuItem value={SortTypeLabel.MechQueueAsc}>{SortTypeLabel.MechQueueAsc}</MenuItem>
-                                <MenuItem value={SortTypeLabel.MechQueueDesc}>{SortTypeLabel.MechQueueDesc}</MenuItem>
-                                <MenuItem value={SortTypeLabel.Alphabetical}>{SortTypeLabel.Alphabetical}</MenuItem>
-                                <MenuItem value={SortTypeLabel.AlphabeticalReverse}>{SortTypeLabel.AlphabeticalReverse}</MenuItem>
-                                <MenuItem value={SortTypeLabel.RarestAsc}>{SortTypeLabel.RarestAsc}</MenuItem>
-                                <MenuItem value={SortTypeLabel.RarestDesc}>{SortTypeLabel.RarestDesc}</MenuItem>
-                            </Select>
-                        </InputLabeller>
+                        <NiceSelect
+                            label="Sort:"
+                            primaryColor={theme.factionTheme.primary}
+                            secondaryColor={theme.factionTheme.secondary}
+                            options={[
+                                { value: SortTypeLabel.MechQueueAsc, label: SortTypeLabel.MechQueueAsc },
+                                { value: SortTypeLabel.MechQueueDesc, label: SortTypeLabel.MechQueueDesc },
+                                { value: SortTypeLabel.Alphabetical, label: SortTypeLabel.Alphabetical },
+                                { value: SortTypeLabel.AlphabeticalReverse, label: SortTypeLabel.AlphabeticalReverse },
+                                { value: SortTypeLabel.RarestAsc, label: SortTypeLabel.RarestAsc },
+                                { value: SortTypeLabel.RarestDesc, label: SortTypeLabel.RarestDesc },
+                            ]}
+                            selected={sort}
+                            onSelected={(value) => setSort(value)}
+                        />
                     </Stack>
 
                     {/* Content */}

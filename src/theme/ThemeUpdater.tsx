@@ -37,6 +37,23 @@ export const ThemeUpdater = ({ children }: { children: ReactNode }) => {
                 ".MuiCircularProgress-root": {
                     color: theme.factionTheme.primary,
                 },
+
+                ".MuiSwitch-root": {
+                    ".MuiSwitch-switchBase": {
+                        "&.Mui-checked": {
+                            color: theme.factionTheme.primary,
+                            "& + .MuiSwitch-track": {
+                                backgroundColor: `${theme.factionTheme.primary}44`,
+                            },
+                        },
+                        "&.Mui-focusVisible .MuiSwitch-thumb": {
+                            color: theme.factionTheme.primary,
+                        },
+                        "&.Mui-disabled .MuiSwitch-thumb": {
+                            color: `${theme.factionTheme.primary}66`,
+                        },
+                    },
+                },
             }}
         >
             {children}
