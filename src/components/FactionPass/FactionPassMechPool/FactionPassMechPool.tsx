@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { EmptyWarMachinesPNG, SvgFilter, SvgGridView, SvgListView, SvgSearch } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, parseString } from "../../../helpers"
@@ -8,7 +8,7 @@ import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { useLocalStorage } from "../../../hooks/useLocalStorage"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { LobbyMech } from "../../../types"
+import { LobbyMech, MechStatusEnum } from "../../../types"
 import { SortTypeLabel } from "../../../types/marketplace"
 import { MechCard } from "../../Common/MechCard"
 import { NavTabs } from "../../Common/NavTabs/NavTabs"
@@ -17,6 +17,7 @@ import { NiceButton } from "../../Common/Nice/NiceButton"
 import { NiceButtonGroup } from "../../Common/Nice/NiceButtonGroup"
 import { NiceSelect } from "../../Common/Nice/NiceSelect"
 import { NiceTextField } from "../../Common/Nice/NiceTextField"
+import { ChipFilterProps } from "../../Common/SortAndFilters/ChipFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 
 const sortOptions = [
@@ -49,7 +50,7 @@ export const FactionPassMechPool = () => {
     const [search, setSearch, searchInstant] = useDebounce("", 300)
     const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.MechQueueAsc)
     const [isGridView, setIsGridView] = useLocalStorage<boolean>("factionPassMechPoolGrid", true)
-    const [status] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
+    const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
     const [rarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
@@ -60,6 +61,21 @@ export const FactionPassMechPool = () => {
     const [displayMechs, setDisplayMechs] = useState<LobbyMech[]>([])
     const [mechs, setMechs] = useState<LobbyMech[]>([])
     const [isLoading, setIsLoading] = useState(true)
+
+    // Use ref filters
+    const statusFilters = useRef<ChipFilterProps>({
+        label: "STATUS",
+        options: [
+            { value: MechStatusEnum.Idle, render: { label: "IDLE", color: colors.green } },
+            { value: MechStatusEnum.Queue, render: { label: "IN QUEUE", color: colors.yellow } },
+            { value: MechStatusEnum.Battle, render: { label: "IN BATTLE", color: colors.orange } },
+            { value: MechStatusEnum.Market, render: { label: "MARKETPLACE", color: colors.bronze } },
+            { value: MechStatusEnum.Damaged, render: { label: "DAMAGED", color: colors.red } },
+        ],
+        initialSelected: status,
+        initialExpanded: true,
+        onSetSelected: (value: string[]) => setStatus(value),
+    })
 
     useGameServerSubscriptionFaction<LobbyMech[]>(
         {
@@ -148,10 +164,11 @@ export const FactionPassMechPool = () => {
 
         // Pagination
         result = result.slice((page - 1) * pageSize, page * pageSize)
+        changePage(1)
         setTotalItems(result.length)
 
         setDisplayMechs(result)
-    }, [isLoading, mechs, page, pageSize, rarities, search, setTotalItems, sort, status, updateQuery])
+    }, [changePage, isLoading, mechs, page, pageSize, rarities, search, setTotalItems, sort, status, updateQuery])
 
     const content = useMemo(() => {
         if (isLoading) {
@@ -233,11 +250,11 @@ export const FactionPassMechPool = () => {
         >
             <NavTabs activeTabID={activeTabID} setActiveTabID={setActiveTabID} tabs={tabs} prevTab={prevTab} nextTab={nextTab} />
 
-            <Stack direction="row" sx={{ flex: 1, width: "100%" }}>
-                <SortAndFilters open={showFilters} />
+            <Stack direction="row" alignItems="stretch" sx={{ flex: 1, width: "100%", overflow: "hidden" }}>
+                <SortAndFilters open={showFilters} chipFilters={[statusFilters.current]} />
 
                 {/* Search, sort, grid view, and other top buttons */}
-                <Stack spacing="3rem" alignItems="stretch" flex={1}>
+                <Stack spacing="3rem" alignItems="stretch" flex={1} sx={{ overflow: "hidden" }}>
                     <Stack spacing="1rem" direction="row" alignItems="center" sx={{ overflowX: "auto", overflowY: "hidden", width: "100%", pb: ".2rem" }}>
                         {/* Filter button */}
                         <NiceButton
