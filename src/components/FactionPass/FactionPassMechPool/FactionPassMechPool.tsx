@@ -335,7 +335,16 @@ export const FactionPassMechPool = () => {
                 maxWidth: "190rem",
             }}
         >
-            <NavTabs activeTabID={activeTabID} setActiveTabID={setActiveTabID} tabs={tabs} prevTab={prevTab} nextTab={nextTab} />
+            <NavTabs
+                activeTabID={activeTabID}
+                setActiveTabID={setActiveTabID}
+                tabs={tabs}
+                prevTab={prevTab}
+                nextTab={nextTab}
+                sx={{
+                    ".MuiTab-root": { minWidth: "21rem" },
+                }}
+            />
 
             <Stack direction="row" alignItems="stretch" sx={{ flex: 1, width: "100%", overflow: "hidden" }}>
                 <SortAndFilters
