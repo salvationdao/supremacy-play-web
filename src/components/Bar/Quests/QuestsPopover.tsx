@@ -1,13 +1,13 @@
 import { Accordion, AccordionDetails, AccordionSummary, Box, IconButton, Popover, Stack, Typography } from "@mui/material"
 import { MutableRefObject, useEffect, useMemo } from "react"
 import { useTimer } from "use-timer"
-import { ClipThing } from "../.."
 import { SvgClose, SvgExpandMoreIcon } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { timeSinceInWords } from "../../../helpers"
 import { useToggle } from "../../../hooks"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { QuestProgress, QuestStat } from "../../../types"
+import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { QuestItem } from "./QuestItem"
 
 export const QuestsPopover = ({
@@ -66,15 +66,7 @@ export const QuestsPopover = ({
                 },
             }}
         >
-            <ClipThing
-                clipSize="10px"
-                border={{
-                    borderColor: colors.purple,
-                    borderThickness: ".2rem",
-                }}
-                backgroundColor={theme.factionTheme.background}
-                sx={{ height: "100%" }}
-            >
+            <NiceBoxThing border={{ color: colors.purple }} background={{ color: [theme.factionTheme.background] }} sx={{ height: "100%" }}>
                 <Stack sx={{ position: "relative", width: "38rem", maxHeight: "90vh", pb: "1.1rem" }}>
                     <Stack
                         direction="row"
@@ -154,7 +146,7 @@ export const QuestsPopover = ({
                         <SvgClose size="2.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                     </IconButton>
                 </Stack>
-            </ClipThing>
+            </NiceBoxThing>
         </Popover>
     )
 }
