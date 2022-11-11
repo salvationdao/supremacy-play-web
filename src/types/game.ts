@@ -222,6 +222,7 @@ export interface DisplayedAbility {
     location_in_pixels?: boolean
     grid_size_multiplier?: number // defaults to 1.5
     noAnim?: boolean
+    is_removed?: boolean
 }
 
 export interface Arena {

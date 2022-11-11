@@ -89,8 +89,19 @@ export const MapAbilities = React.memo(function MapAbilities() {
                 return
             }
 
-            // Only show the ones that are not on a mech
-            basicAbilities.current = payload.filter((da) => !da.mech_id)
+            if (basicAbilities.current.length === 0) {
+                basicAbilities.current = payload.filter((p) => !p.is_removed && !p.mech_id)
+                return
+            }
+
+            const list = [...basicAbilities.current].map((pa) => payload.find((p) => p.offering_id === pa.offering_id) || pa)
+            payload.forEach((p) => {
+                if (list.some((pa) => pa.offering_id === p.offering_id)) return
+                list.push(p)
+            })
+
+            // Only show the ones that are not on a mech and is not removed
+            basicAbilities.current = list.filter((pa) => !pa.is_removed && !pa.mech_id)
         },
     )
 
