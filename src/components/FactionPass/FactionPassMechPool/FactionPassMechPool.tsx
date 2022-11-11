@@ -271,7 +271,7 @@ export const FactionPassMechPool = () => {
                     ]}
                     rangeFilters={[
                         {
-                            label: "Ranges",
+                            label: "Kills",
                             initialExpanded: true,
                             minMax: [0, 80],
                             values: kills,
