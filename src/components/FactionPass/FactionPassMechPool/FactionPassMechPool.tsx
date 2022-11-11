@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { EmptyWarMachinesPNG, SvgFilter, SvgGridView, SvgListView, SvgSearch } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, parseString } from "../../../helpers"
@@ -79,8 +79,24 @@ export const FactionPassMechPool = () => {
 
     // Items
     const [displayMechs, setDisplayMechs] = useState<LobbyMech[]>([])
+    const [selectedMechs, setSelectedMechs] = useState<LobbyMech[]>([])
     const [mechs, setMechs] = useState<LobbyMech[]>([])
     const [isLoading, setIsLoading] = useState(true)
+
+    // For bulk selecting mechs
+    const toggleSelected = useCallback((mech: LobbyMech) => {
+        setSelectedMechs((prev) => {
+            const newArray = [...prev]
+            const isAlreadySelected = prev.findIndex((s) => s.id === mech.id)
+            if (isAlreadySelected >= 0) {
+                newArray.splice(isAlreadySelected, 1)
+            } else {
+                newArray.push(mech)
+            }
+
+            return newArray
+        })
+    }, [])
 
     useGameServerSubscriptionFaction<LobbyMech[]>(
         {
@@ -287,7 +303,8 @@ export const FactionPassMechPool = () => {
                     }}
                 >
                     {displayMechs.map((mech) => {
-                        return <MechCard key={`mech-${mech.id}`} mech={mech} isGridView={isGridView} />
+                        const isSelected = !!selectedMechs.find((m) => m.id === mech.id)
+                        return <MechCard key={`mech-${mech.id}`} mech={mech} isGridView={isGridView} isSelected={isSelected} toggleSelected={toggleSelected} />
                     })}
                 </Box>
             )
@@ -325,7 +342,7 @@ export const FactionPassMechPool = () => {
                 </NiceButton>
             </Stack>
         )
-    }, [displayMechs, isGridView, isLoading, theme.factionTheme.primary])
+    }, [displayMechs, isGridView, isLoading, selectedMechs, theme.factionTheme.primary, toggleSelected])
 
     return (
         <Stack
