@@ -137,7 +137,6 @@ export const WeaponDraggables = ({ compareToWeapon, excludeWeaponIDs, drag }: We
         } else {
             changePageSize(4)
         }
-        console.log(mainContentDimensions.height)
     }, [changePageSize, mainContentDimensions.height])
 
     const weaponsContent = useMemo(() => {
