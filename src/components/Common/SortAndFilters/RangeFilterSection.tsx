@@ -1,4 +1,4 @@
-import { Box, Slider, Stack, Typography } from "@mui/material"
+import { Slider, Stack, Typography } from "@mui/material"
 import React, { useEffect, useRef } from "react"
 import { useTheme } from "../../../containers/theme"
 import { useDebounce } from "../../../hooks"
@@ -113,9 +113,9 @@ const HistogramGraph = React.memo(function HistogramGraph({
         <Stack direction="row" alignItems="flex-end" sx={{ mb: "-1.6rem", height: "3rem", zIndex: -1 }}>
             {new Array(Math.max(range, 0)).fill(0).map((_, index) => {
                 return (
-                    <Box
+                    <div
                         key={index}
-                        sx={{
+                        style={{
                             flex: 1,
                             height: `${Math.min(100, (100 * freqGraph.freq[index + 1]) / freqGraph.count || 0)}%`,
                             background: `linear-gradient(90deg, ${primaryColor}BB, ${primaryColor})`,
