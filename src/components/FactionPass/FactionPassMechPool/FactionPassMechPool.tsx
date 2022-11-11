@@ -10,7 +10,7 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { LobbyMech, MechStatusEnum } from "../../../types"
 import { SortTypeLabel } from "../../../types/marketplace"
-import { MechCard } from "../../Common/MechCard"
+import { MechCard } from "../../Common/Mech/MechCard"
 import { NavTabs } from "../../Common/NavTabs/NavTabs"
 import { usePageTabs } from "../../Common/NavTabs/usePageTabs"
 import { NiceButton } from "../../Common/Nice/NiceButton"
@@ -207,8 +207,9 @@ export const FactionPassMechPool = () => {
             if (totalKills > max) max = totalKills
             freq[totalKills] = (freq[totalKills] || 0) + 1
         })
+        const maxFreq = Object.values(freq).reduce((acc, f) => (f > acc ? f : acc), 0)
 
-        return { min, max, freq, count: mechs.length }
+        return { min, max, freq, maxFreq }
     }, [mechs])
 
     const deathsGraph: FreqGraphProps = useMemo(() => {
@@ -221,8 +222,9 @@ export const FactionPassMechPool = () => {
             if (totalDeaths > max) max = totalDeaths
             freq[totalDeaths] = (freq[totalDeaths] || 0) + 1
         })
+        const maxFreq = Object.values(freq).reduce((acc, f) => (f > acc ? f : acc), 0)
 
-        return { min, max, freq, count: mechs.length }
+        return { min, max, freq, maxFreq }
     }, [mechs])
 
     const winsGraph: FreqGraphProps = useMemo(() => {
@@ -235,8 +237,9 @@ export const FactionPassMechPool = () => {
             if (totalWins > max) max = totalWins
             freq[totalWins] = (freq[totalWins] || 0) + 1
         })
+        const maxFreq = Object.values(freq).reduce((acc, f) => (f > acc ? f : acc), 0)
 
-        return { min, max, freq, count: mechs.length }
+        return { min, max, freq, maxFreq }
     }, [mechs])
 
     const lossesGraph: FreqGraphProps = useMemo(() => {
@@ -249,8 +252,9 @@ export const FactionPassMechPool = () => {
             if (totalLosses > max) max = totalLosses
             freq[totalLosses] = (freq[totalLosses] || 0) + 1
         })
+        const maxFreq = Object.values(freq).reduce((acc, f) => (f > acc ? f : acc), 0)
 
-        return { min, max, freq, count: mechs.length }
+        return { min, max, freq, maxFreq }
     }, [mechs])
 
     const content = useMemo(() => {
@@ -388,7 +392,7 @@ export const FactionPassMechPool = () => {
                 />
 
                 {/* Search, sort, grid view, and other top buttons */}
-                <Stack spacing="3rem" alignItems="stretch" flex={1} sx={{ overflow: "hidden" }}>
+                <Stack spacing="2rem" alignItems="stretch" flex={1} sx={{ overflow: "hidden" }}>
                     <Stack spacing="1rem" direction="row" alignItems="center" sx={{ overflowX: "auto", overflowY: "hidden", width: "100%", pb: ".2rem" }}>
                         {/* Filter button */}
                         <NiceButton
