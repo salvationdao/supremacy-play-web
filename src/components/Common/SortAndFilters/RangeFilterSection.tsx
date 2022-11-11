@@ -1,5 +1,5 @@
 import { Box, Slider, Stack, Typography } from "@mui/material"
-import React, { useEffect } from "react"
+import React, { useEffect, useRef } from "react"
 import { useTheme } from "../../../containers/theme"
 import { useDebounce } from "../../../hooks"
 import { colors, fonts } from "../../../theme/theme"
@@ -22,13 +22,33 @@ export interface RangeFilterProps {
     freqGraph: FreqGraphProps
 }
 
-export const RangeFilterSection = React.memo(function RangeFilterSection({ label, minMax, values, setValues, initialExpanded, freqGraph }: RangeFilterProps) {
+export const RangeFilterSection = React.memo(function RangeFilterSection(props: RangeFilterProps) {
+    if (props.freqGraph.count <= 0) return null
+    return <RangeFilterSectionInner {...props} />
+})
+
+const RangeFilterSectionInner = React.memo(function RangeFilterSectionInner({
+    label,
+    minMax,
+    values,
+    setValues,
+    initialExpanded,
+    freqGraph,
+}: RangeFilterProps) {
     const theme = useTheme()
     const [value, setValue, valueInstant] = useDebounce<number[] | undefined>(values || minMax, 300)
+    const calledCallback = useRef(true)
 
     useEffect(() => {
+        if (calledCallback.current) return
         setValues(value)
+        calledCallback.current = true
     }, [setValues, value])
+
+    const handleChange = (_: Event, newValue: number | number[]) => {
+        setValue(newValue as number[])
+        calledCallback.current = false
+    }
 
     return (
         <Section label={label} initialExpanded={initialExpanded}>
@@ -37,8 +57,9 @@ export const RangeFilterSection = React.memo(function RangeFilterSection({ label
                     <HistogramGraph range={minMax[1] - minMax[0]} primaryColor={theme.factionTheme.primary} freqGraph={freqGraph} values={values} />
 
                     <Slider
+                        defaultValue={minMax}
                         value={valueInstant || minMax}
-                        onChange={(_, newValues: number | number[]) => setValue(newValues as number[])}
+                        onChange={handleChange}
                         valueLabelDisplay="auto"
                         min={minMax[0]}
                         max={minMax[1]}
