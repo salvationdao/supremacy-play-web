@@ -20,7 +20,7 @@ export const SortAndFilters = React.memo(function SortAndFilters({ open, chipFil
 
     const isFilterApplied = useMemo(() => {
         const chipApplied = chipFilters?.some((f) => f.selected?.length > 0)
-        const rangeApplied = rangeFilters?.some((f) => !f.values || f.values[0] !== f.minMax[0] || f.values[1] !== f.minMax[1])
+        const rangeApplied = rangeFilters?.some((f) => f.values && (f.values[0] !== f.minMax[0] || f.values[1] !== f.minMax[1]))
         return chipApplied || rangeApplied
     }, [chipFilters, rangeFilters])
 
