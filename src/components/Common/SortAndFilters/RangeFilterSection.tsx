@@ -59,7 +59,7 @@ const RangeFilterSectionInner = React.memo(function RangeFilterSectionInner({
 
     return (
         <Section label={label} initialExpanded={initialExpanded}>
-            <Stack sx={{ px: "1.6rem", pb: "1.5rem" }} spacing=".6rem">
+            <Stack sx={{ px: "1.6rem", pb: "1.8rem" }} spacing=".6rem">
                 <Stack sx={{ px: ".8rem" }}>
                     <HistogramGraph range={minMax[1] - minMax[0]} primaryColor={theme.factionTheme.primary} freqGraph={freqGraph} values={values} />
 
