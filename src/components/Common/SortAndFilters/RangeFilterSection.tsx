@@ -110,7 +110,7 @@ const HistogramGraph = React.memo(function HistogramGraph({
     values: number[] | undefined
 }) {
     return (
-        <Stack direction="row" alignItems="flex-end" sx={{ mb: "-1.6rem", height: "3rem", zIndex: -1 }}>
+        <Stack direction="row" alignItems="flex-end" sx={{ mb: "-1.6rem", height: "3rem", px: "1px", zIndex: -1 }}>
             {new Array(Math.max(range, 0)).fill(0).map((_, index) => {
                 return (
                     <div
@@ -118,7 +118,9 @@ const HistogramGraph = React.memo(function HistogramGraph({
                         style={{
                             flex: 1,
                             height: `${Math.min(100, (100 * freqGraph.freq[index + 1]) / freqGraph.count || 0)}%`,
-                            background: `linear-gradient(90deg, ${primaryColor}BB, ${primaryColor})`,
+                            // background: `linear-gradient(90deg, ${primaryColor}BB, ${primaryColor})`,
+                            backgroundColor: primaryColor,
+                            boxShadow: "inset 1px 1px 2px #00000080",
                             opacity: !values || (values[0] <= index && index <= values[1]) ? 1 : 0.4,
                         }}
                     />
