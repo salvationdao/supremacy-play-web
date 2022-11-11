@@ -1,13 +1,13 @@
 import { Box, Checkbox, Stack, Typography } from "@mui/material"
 import React, { useMemo } from "react"
-import { SvgMechDeaths, SvgMechKills, SvgMechLosses, SvgMechWins, SvgUserDiamond } from "../../assets"
-import { useSupremacy } from "../../containers"
-import { getMechStatusDeets, getRarityDeets } from "../../helpers"
-import { TruncateTextLines } from "../../theme/styles"
-import { fonts } from "../../theme/theme"
-import { LobbyMech } from "../../types"
-import { RepairBlocks } from "../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
-import { NiceBoxThing } from "./Nice/NiceBoxThing"
+import { SvgMechDeaths, SvgMechKills, SvgMechLosses, SvgMechWins, SvgUserDiamond } from "../../../assets"
+import { useSupremacy } from "../../../containers"
+import { getMechStatusDeets, getRarityDeets } from "../../../helpers"
+import { TruncateTextLines } from "../../../theme/styles"
+import { fonts } from "../../../theme/theme"
+import { LobbyMech } from "../../../types"
+import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
+import { NiceBoxThing } from "../Nice/NiceBoxThing"
 
 interface MechCardProps {
     mech: LobbyMech
