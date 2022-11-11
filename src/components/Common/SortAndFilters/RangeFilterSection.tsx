@@ -120,7 +120,7 @@ const HistogramGraph = React.memo(function HistogramGraph({
                             height: `${Math.min(100, (100 * freqGraph.freq[index + 1]) / freqGraph.maxFreq || 0)}%`,
                             backgroundColor: primaryColor,
                             boxShadow: "inset 1px 1px 2px #00000080",
-                            opacity: !values || (values[0] <= index && index <= values[1]) ? 1 : 0.4,
+                            opacity: !values || (values[0] <= index && index <= values[1]) ? 1 : 0.3,
                         }}
                     />
                 )
