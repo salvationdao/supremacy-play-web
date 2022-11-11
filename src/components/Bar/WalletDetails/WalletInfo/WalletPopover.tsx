@@ -1,7 +1,7 @@
 import { Box, IconButton, Popover, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { MutableRefObject, useEffect } from "react"
-import { ClipThing, TransactionItem } from "../../.."
+import { TransactionItem } from "../../.."
 import { SvgClose, SvgExternalLink, SvgSupToken } from "../../../../assets"
 import { IS_TESTING_MODE, PASSPORT_WEB } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
@@ -9,6 +9,7 @@ import { supFormatter } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { Transaction } from "../../../../types"
+import { NiceBoxThing } from "../../../Common/Nice/NiceBoxThing"
 import { TimeElapsed } from "./TimeElapsed"
 
 export const WalletPopover = ({
@@ -67,15 +68,7 @@ export const WalletPopover = ({
                 },
             }}
         >
-            <ClipThing
-                clipSize="10px"
-                border={{
-                    borderColor: theme.factionTheme.primary,
-                    borderThickness: ".2rem",
-                }}
-                backgroundColor={theme.factionTheme.background}
-                sx={{ height: "100%" }}
-            >
+            <NiceBoxThing border={{ color: theme.factionTheme.primary }} background={{ color: [theme.factionTheme.background] }} sx={{ height: "100%" }}>
                 <Stack spacing="2rem" sx={{ position: "relative", minWidth: "35rem", maxHeight: "90vh", px: "2rem", pt: "1.6rem", pb: "2rem" }}>
                     <Box>
                         <Typography sx={{ mb: "1rem", fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>CURRENT SESSION</Typography>
@@ -136,7 +129,7 @@ export const WalletPopover = ({
                         <SvgClose size="2.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                     </IconButton>
                 </Stack>
-            </ClipThing>
+            </NiceBoxThing>
         </Popover>
     )
 }

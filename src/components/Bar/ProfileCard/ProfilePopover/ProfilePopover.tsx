@@ -1,12 +1,12 @@
 import { Popover, Stack } from "@mui/material"
 import { MutableRefObject, useEffect, useState } from "react"
-import { ClipThing } from "../../.."
 import { SvgAdmin, SvgAssets, SvgFeedback, SvgProfile, SvgSettings, SvgSupport } from "../../../../assets"
 import { DEV_ONLY, FEEDBACK_FORM_URL, PASSPORT_WEB, STAGING_OR_DEV_ONLY } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
 import { siteZIndex } from "../../../../theme/theme"
 import { RoleType, User } from "../../../../types"
+import { NiceBoxThing } from "../../../Common/Nice/NiceBoxThing"
 import { DeviceRegisterModal } from "../PreferencesModal/DeviceRegisterModal"
 import { PreferencesModal } from "../PreferencesModal/PreferencesModal"
 import { TelegramRegisterModal } from "../PreferencesModal/TelegramRegisterModal"
@@ -55,15 +55,7 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
                     },
                 }}
             >
-                <ClipThing
-                    clipSize="10px"
-                    border={{
-                        borderColor: theme.factionTheme.primary,
-                        borderThickness: ".2rem",
-                    }}
-                    backgroundColor={theme.factionTheme.background}
-                    sx={{ height: "100%" }}
-                >
+                <NiceBoxThing border={{ color: theme.factionTheme.primary }} background={{ color: [theme.factionTheme.background] }} sx={{ height: "100%" }}>
                     <Stack spacing=".32rem" sx={{ p: ".8rem" }}>
                         <NavButton href={`${PASSPORT_WEB}profile`} startIcon={<SvgAssets sx={{ pb: ".5rem" }} size="1.6rem" />} text="My Inventory" />
 
@@ -97,7 +89,7 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
 
                         <LogoutButton />
                     </Stack>
-                </ClipThing>
+                </NiceBoxThing>
             </Popover>
 
             {/* preferences modal */}

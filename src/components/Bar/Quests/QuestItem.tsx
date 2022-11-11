@@ -2,11 +2,12 @@ import { Box, Stack, Typography } from "@mui/material"
 import React, { useState } from "react"
 import Confetti from "react-confetti"
 import { SvgChest, SvgInfoCircular } from "../../../assets"
+import { TruncateTextLines } from "../../../theme/styles"
 import { colors, fonts } from "../../../theme/theme"
 import { QuestProgress, QuestStat } from "../../../types"
-import { ProgressBar } from "../../Common/ProgressBar"
+import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
-import { TruncateTextLines } from "../../../theme/styles"
+import { ProgressBar } from "../../Common/ProgressBar"
 
 interface QuestItemProps {
     questStat: QuestStat
@@ -29,20 +30,15 @@ export const QuestItem = React.memo(function QuestItem({ questStat, progress, sh
     const [completed, setCompleted] = useState(questStat.obtained)
 
     return (
-        <Stack
-            direction="row"
-            alignItems="center"
-            spacing="1rem"
+        <NiceBoxThing
+            border={{ color: `${colors.purple}80`, thickness: "very-lean" }}
+            background={{ color: [colors.purple], opacity: "more-transparent" }}
             sx={{
                 position: "relative",
+                px: "1.4rem",
                 py: "1.2rem",
-                pl: ".5rem",
-                pr: "1.4rem",
-                borderRadius: 1,
-                backgroundColor: `${colors.purple}16`,
-                userSelect: "none",
                 opacity: completed && !showShowConfetti ? 0.4 : 1,
-                border: completed && !showShowConfetti ? "none" : `${colors.purple}50 1px solid`,
+                userSelect: "none",
                 overflow: "hidden",
             }}
         >
@@ -119,6 +115,6 @@ export const QuestItem = React.memo(function QuestItem({ questStat, progress, sh
                     </Typography>
                 </Stack>
             </Stack>
-        </Stack>
+        </NiceBoxThing>
     )
 }, propsAreEqual)
