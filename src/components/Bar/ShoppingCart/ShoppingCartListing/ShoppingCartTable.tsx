@@ -37,9 +37,7 @@ export const ShoppingCartTable = ({ shoppingCart, loading, primaryColor, backgro
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <Typography variant="caption" sx={{ fontFamily: fonts.shareTech }}>
-                            YOUR CART IS EMPTY
-                        </Typography>
+                        <Typography sx={{ fontFamily: fonts.shareTech }}>YOUR CART IS EMPTY</Typography>
                     </Stack>
                 </Stack>
             )

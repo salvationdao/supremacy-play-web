@@ -1,4 +1,4 @@
-import { Stack, Tab, Tabs, Typography } from "@mui/material"
+import { Stack, SxProps, Tab, Tabs, Typography } from "@mui/material"
 import { useEffect } from "react"
 import { useTheme } from "../../../containers/theme"
 import { TruncateTextLines } from "../../../theme/styles"
@@ -18,12 +18,14 @@ export const NavTabs = <T,>({
     tabs,
     prevTab,
     nextTab,
+    sx,
 }: {
     activeTabID?: T
     setActiveTabID: React.Dispatch<React.SetStateAction<T | undefined>>
     tabs: OneTab<T>[]
     prevTab: (activeTabID: T) => void
     nextTab: (activeTabID: T) => void
+    sx?: SxProps
 }) => {
     const theme = useTheme()
 
@@ -49,7 +51,7 @@ export const NavTabs = <T,>({
     }
 
     return (
-        <Stack direction="row" alignItems="center" spacing=".5rem">
+        <Stack direction="row" alignItems="center" spacing=".5rem" sx={sx}>
             <ArrowButton keyboardKey="Q" onClick={() => activeTabID && prevTab(activeTabID)} isLeft />
 
             <Tabs

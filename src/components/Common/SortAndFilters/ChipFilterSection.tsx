@@ -26,24 +26,24 @@ export interface ChipFilterProps {
 export const ChipFilterSection = React.memo(function ChipFilterSection({ label, options, selected, setSelected, initialExpanded }: ChipFilterProps) {
     return (
         <Section label={label} initialExpanded={initialExpanded}>
-            <Stack direction="row" flexWrap="wrap" sx={{ px: "1.6rem", pb: ".8rem" }}>
+            <Stack direction="row" flexWrap="wrap" sx={{ px: "1.6rem", pb: "1.5rem" }}>
                 {options.map((o, i) => {
                     const { value, render, renderNode } = o
                     const isSelected = selected.includes(value)
                     return (
                         <Box key={i} sx={{ p: ".6rem" }}>
-                            {renderNode ||
-                                (render ? (
-                                    <NiceButton
-                                        onClick={() => setSelected((prev) => (prev.includes(value) ? prev.filter((r) => r !== value) : prev.concat(value)))}
-                                        border={{ color: render.color, thickness: "very-lean" }}
-                                        sx={{ opacity: isSelected ? 1 : 0.4, p: ".2rem .8rem" }}
-                                    >
+                            <NiceButton
+                                onClick={() => setSelected((prev) => (prev.includes(value) ? prev.filter((r) => r !== value) : prev.concat(value)))}
+                                border={{ color: render?.color, thickness: "very-lean" }}
+                                sx={{ opacity: isSelected ? 1 : 0.4, p: ".2rem .8rem" }}
+                            >
+                                {renderNode ||
+                                    (render ? (
                                         <Typography variant="body2" sx={{ fontWeight: "bold", color: render.color }}>
                                             {render.label}
                                         </Typography>
-                                    </NiceButton>
-                                ) : null)}
+                                    ) : null)}
+                            </NiceButton>
                         </Box>
                     )
                 })}
