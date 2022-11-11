@@ -1,6 +1,5 @@
 import { Box, CircularProgress, FormControlLabel, Pagination, Stack, Switch, Typography } from "@mui/material"
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { useHistory } from "react-router-dom"
 import { SvgLoadoutDeaths, SvgLoadoutKills, SvgLoadoutLosses, SvgLoadoutWins, SvgSearch, SvgWrapperProps } from "../../../../../assets"
 import { useAuth, useGlobalNotifications } from "../../../../../containers"
 import { useTheme } from "../../../../../containers/theme"
@@ -13,7 +12,6 @@ import { BattleMechStats, MechBasicWithQueueStatus, MechDetails, MechStatus } fr
 import { SortDir, SortTypeLabel } from "../../../../../types/marketplace"
 import { NiceAccordion } from "../../../../Common/Nice/NiceAccordion"
 import { NiceBoxThing } from "../../../../Common/Nice/NiceBoxThing"
-import { NiceButton } from "../../../../Common/Nice/NiceButton"
 import { NiceSelect } from "../../../../Common/Nice/NiceSelect"
 import { NiceTextField } from "../../../../Common/Nice/NiceTextField"
 import { MechBarStats } from "../../Common/MechBarStats"
@@ -21,6 +19,7 @@ import { MechRepairBlocks } from "../../Common/MechRepairBlocks"
 import { GetMechsRequest, GetMechsResponse } from "../../WarMachinesHangar"
 import { PlayerAssetMechEquipRequest } from "../MechLoadout/MechLoadout"
 import { MechName } from "../MechName"
+import { MechPickerItem } from "./MechPickerItem"
 
 export interface MechPickerProps {
     mechDetails: MechDetails
@@ -346,7 +345,6 @@ export const MechPicker = ({ mechDetails, mechStatus, mechStaked, onUpdate }: Me
 
 const MechPickerDropdown = React.memo(function MechPickerDropdown() {
     const theme = useTheme()
-    const history = useHistory()
     const { send } = useGameServerCommandsUser("/user_commander")
 
     const [expandPicker, setExpandPicker] = useState(false)
@@ -460,66 +458,11 @@ const MechPickerDropdown = React.memo(function MechPickerDropdown() {
                 }}
             >
                 {mechs.map((m, index) => (
-                    <NiceButton
-                        key={index}
-                        onClick={() => {
-                            history.push(`/mech/${m.id}`)
-                            setExpandPicker(false)
-                        }}
-                        border={{
-                            thickness: "very-lean",
-                            color: `${colors.lightGrey}66`,
-                        }}
-                        background={{
-                            color: [`${colors.lightGrey}33`],
-                        }}
-                        sx={{
-                            p: "1rem",
-                            alignItems: "start",
-                            justifyContent: "start",
-                            textAlign: "left",
-                        }}
-                    >
-                        <NiceBoxThing
-                            border={{
-                                color: getRarityDeets(m.tier).color,
-                                thickness: "lean",
-                            }}
-                            caret={{
-                                position: "bottom-right",
-                            }}
-                            sx={{
-                                width: 60,
-                                height: 60,
-                            }}
-                        >
-                            <Box
-                                component="img"
-                                src={m.avatar_url || m.image_url}
-                                alt={`${m.label} mech avatar`}
-                                sx={{
-                                    width: "100%",
-                                    height: "100%",
-                                    objectFit: "cover",
-                                }}
-                            />
-                        </NiceBoxThing>
-                        <Stack ml=".5rem">
-                            <Typography
-                                sx={{
-                                    fontFamily: fonts.nostromoBold,
-                                    color: m.name ? "white" : colors.grey,
-                                }}
-                            >
-                                {m.name || "UNNAMED"}
-                            </Typography>
-                            <Typography>{m.label}</Typography>
-                        </Stack>
-                    </NiceButton>
+                    <MechPickerItem key={index} initialData={m} onPick={() => setExpandPicker(false)} />
                 ))}
             </Box>
         )
-    }, [history, isMechsLoading, mechs, mechsError, theme.factionTheme.primary])
+    }, [isMechsLoading, mechs, mechsError, theme.factionTheme.primary])
 
     return (
         <NiceAccordion.Base

@@ -955,6 +955,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                                 position: "absolute",
                                 top: "3rem",
                                 right: "3rem",
+                                alignItems: "end",
                             }}
                         >
                             {mech_type === MechTypeEnum.Humanoid && renderWeaponSlot(1, "right")}
