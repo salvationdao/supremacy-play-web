@@ -419,6 +419,7 @@ export const theme = createTheme({
         MuiSlider: {
             styleOverrides: {
                 root: {
+                    height: "1px",
                     borderRadius: 0,
                     ".MuiSlider-thumb": {
                         width: "15px",
