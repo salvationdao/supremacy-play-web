@@ -15,7 +15,7 @@ interface MechCardProps {
     isSelected?: boolean
 }
 
-export const MechCard = React.memo(function MechCard({ mech, isGridView, isSelected }: MechCardProps) {
+export const MechCard = React.memo(function MechCard({ mech }: MechCardProps) {
     const { getFaction } = useSupremacy()
     const { name, label } = mech
 

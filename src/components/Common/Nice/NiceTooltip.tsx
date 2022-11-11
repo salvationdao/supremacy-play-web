@@ -52,12 +52,13 @@ export const NiceTooltip = ({
             sx={{
                 zIndex: `${siteZIndex.Tooltip} !important`,
                 ".MuiTooltip-popper": {
+                    backgroundColor: primaryColor,
                     zIndex: `${siteZIndex.Tooltip} !important`,
                 },
             }}
             title={
                 <NiceBoxThing border={{ color: primaryColor }} background={{ color: [primaryColor] }} sx={{ height: "100%" }}>
-                    <Stack sx={{ height: "100%", p: ".5rem 1.2rem" }}>
+                    <Stack sx={{ height: "100%", p: ".5rem 1.2rem", backgroundColor: "#00000038" }}>
                         {renderNode || (
                             <Typography
                                 variant="body1"

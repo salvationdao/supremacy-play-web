@@ -27,6 +27,7 @@ export const ThemeUpdater = ({ children }: { children: ReactNode }) => {
 
                 ".MuiPagination-root": {
                     ".Mui-selected": {
+                        borderRadius: 0,
                         color: theme.factionTheme.secondary,
                         backgroundColor: `${theme.factionTheme.primary} !important`,
                         boxShadow: 1,
