@@ -9,10 +9,10 @@ import { fonts, theme } from "../../../../../../theme/theme"
 import { AssetItemType, MechSkin } from "../../../../../../types"
 import { SortTypeLabel } from "../../../../../../types/marketplace"
 import { NiceSelect } from "../../../../../Common/Nice/NiceSelect"
+import { NiceTextField } from "../../../../../Common/Nice/NiceTextField"
 import { GetSubmodelsRequest, GetSubmodelsResponse } from "../../../../SubmodelHangar/SubmodelsHangar"
 import { MechLoadoutItem } from "../../../Common/MechLoadoutItem"
 import { OnClickEventWithType } from "../MechLoadoutDraggables"
-import { NiceInputBase } from "./WeaponDraggables"
 
 export interface MechSkinDraggablesProps {
     excludeMechSkinIDs: string[]
@@ -173,10 +173,13 @@ export const MechSkinDraggables = ({ excludeMechSkinIDs, includeMechSkinIDs, mec
         <Stack spacing="2rem" minHeight={400}>
             {/* Search and sort */}
             <Stack direction="row" spacing="1rem">
-                <NiceInputBase
-                    onChange={(e) => debouncedSetSearch(e.target.value)}
-                    placeholder="Search mech skins..."
-                    endAdornment={searchLoading ? <CircularProgress size="1rem" /> : <SvgSearch size="1.6rem" fill={"rgba(255, 255, 255, 0.4)"} />}
+                <NiceTextField
+                    primaryColor={theme.factionTheme.primary}
+                    onChange={(value) => debouncedSetSearch(value)}
+                    placeholder="Search..."
+                    InputProps={{
+                        endAdornment: searchLoading ? <CircularProgress size="1.6rem" /> : <SvgSearch size="1.6rem" fill={"rgba(255, 255, 255, 0.4)"} />,
+                    }}
                 />
                 <NiceSelect
                     label="Sort:"

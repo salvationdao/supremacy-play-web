@@ -1,4 +1,4 @@
-import { Box, CircularProgress, InputBase, InputBaseProps, Pagination, Stack, StackProps, styled, Typography } from "@mui/material"
+import { Box, CircularProgress, InputBase, InputBaseProps, Pagination, Stack, styled, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { SvgDrag, SvgLoadoutDamage, SvgLoadoutWeapon, SvgSearch } from "../../../../../../assets"
 import { useDimension } from "../../../../../../containers"
@@ -11,6 +11,7 @@ import { colors, fonts } from "../../../../../../theme/theme"
 import { AssetItemType, Weapon } from "../../../../../../types"
 import { SortTypeLabel } from "../../../../../../types/marketplace"
 import { NiceSelect } from "../../../../../Common/Nice/NiceSelect"
+import { NiceTextField } from "../../../../../Common/Nice/NiceTextField"
 import { GetWeaponsRequest } from "../../../../WeaponsHangar/WeaponsHangar"
 import { MechLoadoutItem } from "../../../Common/MechLoadoutItem"
 import { DragWithTypesProps } from "../MechLoadoutDraggables"
@@ -242,10 +243,13 @@ export const WeaponDraggables = ({ compareToWeapon, excludeWeaponIDs, drag }: We
         <Stack spacing="2rem" minHeight={200}>
             {/* Search and sort */}
             <Stack direction="row" spacing="1rem">
-                <NiceInputBase
-                    onChange={(e) => debouncedSetSearch(e.target.value)}
-                    placeholder="Search weapons..."
-                    endAdornment={searchLoading ? <CircularProgress size="1rem" /> : <SvgSearch size="1.6rem" fill={"rgba(255, 255, 255, 0.4)"} />}
+                <NiceTextField
+                    primaryColor={theme.factionTheme.primary}
+                    onChange={(value) => debouncedSetSearch(value)}
+                    placeholder="Search..."
+                    InputProps={{
+                        endAdornment: searchLoading ? <CircularProgress size="1.6rem" /> : <SvgSearch size="1.6rem" fill={"rgba(255, 255, 255, 0.4)"} />,
+                    }}
                 />
                 <NiceSelect
                     label="Sort:"
@@ -306,34 +310,4 @@ export const NiceInputBase = styled(({ sx, ...props }: InputBaseProps) => (
         })}
         {...props}
     />
-))({})
-
-interface InputLabeller extends StackProps {
-    label: string
-    name?: string
-}
-
-export const InputLabeller = styled(({ label, name, sx, children, ...props }: InputLabeller) => (
-    <Stack
-        direction="row"
-        sx={{
-            alignItems: "stretch",
-            ...sx,
-        }}
-        {...props}
-    >
-        <Box
-            component="label"
-            htmlFor={name}
-            p=".25rem 2rem"
-            sx={(theme) => ({
-                border: `1px solid ${colors.darkGrey}aa`,
-                borderRight: "none",
-                backgroundColor: `${theme.factionTheme.primary}22`,
-            })}
-        >
-            <Typography>{label}</Typography>
-        </Box>
-        {children}
-    </Stack>
 ))({})

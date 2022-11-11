@@ -1,5 +1,5 @@
-import { Box, FormControlLabel, Pagination, Stack, Switch, Typography } from "@mui/material"
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import { Box, CircularProgress, FormControlLabel, Pagination, Stack, Switch, Typography } from "@mui/material"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useHistory } from "react-router-dom"
 import { SvgLoadoutDeaths, SvgLoadoutKills, SvgLoadoutLosses, SvgLoadoutWins, SvgSearch, SvgWrapperProps } from "../../../../../assets"
 import { useAuth, useGlobalNotifications } from "../../../../../containers"
@@ -15,10 +15,10 @@ import { NiceAccordion } from "../../../../Common/Nice/NiceAccordion"
 import { NiceBoxThing } from "../../../../Common/Nice/NiceBoxThing"
 import { NiceButton } from "../../../../Common/Nice/NiceButton"
 import { NiceSelect } from "../../../../Common/Nice/NiceSelect"
+import { NiceTextField } from "../../../../Common/Nice/NiceTextField"
 import { MechBarStats } from "../../Common/MechBarStats"
 import { MechRepairBlocks } from "../../Common/MechRepairBlocks"
 import { GetMechsRequest, GetMechsResponse } from "../../WarMachinesHangar"
-import { NiceInputBase } from "../MechLoadout/Draggables/WeaponDraggables"
 import { PlayerAssetMechEquipRequest } from "../MechLoadout/MechLoadout"
 import { MechName } from "../MechName"
 
@@ -354,12 +354,26 @@ const MechPickerDropdown = React.memo(function MechPickerDropdown() {
     const [mechs, setMechs] = useState<MechBasicWithQueueStatus[]>([])
     const [isMechsLoading, setIsMechsLoading] = useState(true)
     const [mechsError, setMechsError] = useState<string>()
-    const [search, setSearch] = useState("")
     const [sort, setSort] = useState<string>(SortTypeLabel.MechQueueAsc)
     const { page, changePage, setTotalItems, totalPages, pageSize } = usePagination({
         pageSize: 6,
         page: 1,
     })
+
+    const [search, setSearch] = useState("")
+    const [searchLoading, setSearchLoading] = useState(false)
+    const debounceTimeoutRef = useRef<NodeJS.Timeout>()
+    const debouncedSetSearch = (newValue: string) => {
+        setSearchLoading(true)
+        if (debounceTimeoutRef.current) {
+            clearTimeout(debounceTimeoutRef.current)
+        }
+        debounceTimeoutRef.current = setTimeout(() => {
+            setSearch(newValue)
+            setSearchLoading(false)
+        }, 1000)
+    }
+
     const getMechs = useCallback(async () => {
         setIsMechsLoading(true)
         try {
@@ -527,11 +541,17 @@ const MechPickerDropdown = React.memo(function MechPickerDropdown() {
             <NiceAccordion.Details>
                 <Stack spacing="2rem" minHeight={600}>
                     <Stack spacing="1rem">
-                        <NiceInputBase
-                            placeholder="Search mechs..."
-                            endAdornment={<SvgSearch fill={"rgba(255, 255, 255, 0.4)"} />}
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
+                        <NiceTextField
+                            primaryColor={theme.factionTheme.primary}
+                            onChange={(value) => debouncedSetSearch(value)}
+                            placeholder="Search..."
+                            InputProps={{
+                                endAdornment: searchLoading ? (
+                                    <CircularProgress size="1.6rem" />
+                                ) : (
+                                    <SvgSearch size="1.6rem" fill={"rgba(255, 255, 255, 0.4)"} />
+                                ),
+                            }}
                         />
                         <NiceSelect
                             label="Sort:"

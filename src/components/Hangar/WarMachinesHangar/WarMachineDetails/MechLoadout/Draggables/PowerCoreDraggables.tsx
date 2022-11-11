@@ -10,10 +10,10 @@ import { fonts } from "../../../../../../theme/theme"
 import { AssetItemType, PowerCore } from "../../../../../../types"
 import { SortTypeLabel } from "../../../../../../types/marketplace"
 import { NiceSelect } from "../../../../../Common/Nice/NiceSelect"
+import { NiceTextField } from "../../../../../Common/Nice/NiceTextField"
 import { MechLoadoutItem } from "../../../Common/MechLoadoutItem"
 import { OnClickEventWithType } from "../MechLoadoutDraggables"
 import { GetPowerCoresRequest } from "../Modals/MechLoadoutPowerCoreModal"
-import { NiceInputBase } from "./WeaponDraggables"
 
 export interface GetPowerCoresDetailedResponse {
     power_cores: PowerCore[]
@@ -172,10 +172,13 @@ export const PowerCoreDraggables = ({ powerCoreSize, onClick }: PowerCoreDraggab
         <Stack spacing="2rem" minHeight={400}>
             {/* Search and sort */}
             <Stack direction="row" spacing="1rem">
-                <NiceInputBase
-                    onChange={(e) => debouncedSetSearch(e.target.value)}
-                    placeholder="Search power cores..."
-                    endAdornment={searchLoading ? <CircularProgress size="1rem" /> : <SvgSearch size="1.6rem" fill={"rgba(255, 255, 255, 0.4)"} />}
+                <NiceTextField
+                    primaryColor={theme.factionTheme.primary}
+                    onChange={(value) => debouncedSetSearch(value)}
+                    placeholder="Search..."
+                    InputProps={{
+                        endAdornment: searchLoading ? <CircularProgress size="1.6rem" /> : <SvgSearch size="1.6rem" fill={"rgba(255, 255, 255, 0.4)"} />,
+                    }}
                 />
                 <NiceSelect
                     label="Sort:"
