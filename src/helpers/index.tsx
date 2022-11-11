@@ -124,7 +124,7 @@ export const supFormatter = (num: string, maxDecimals?: number): string => {
     return supTokens.toFormat()
 }
 
-export const parseString = (val: number | string | null, defaultVal: number): number => {
+export const parseString = (val: number | string | null | undefined, defaultVal: number): number => {
     try {
         if (!val) return defaultVal
         return parseFloat(`${val}`)
@@ -258,6 +258,39 @@ export const snakeToTitle = (str: string, lowerCase?: boolean): string => {
 
 export const snakeToSlug = (str: string): string => {
     return str.split("_").join("-").toLowerCase()
+}
+
+export const getMechStatusDeets = (status?: MechStatusEnum) => {
+    let color = colors.darkGrey
+    let label = "UNKNOWN"
+
+    switch (status) {
+        case MechStatusEnum.Idle:
+            label = "IDLE"
+            color = colors.green
+            break
+        case MechStatusEnum.Queue:
+            label = "IN LOBBY"
+            color = colors.yellow
+            break
+        case MechStatusEnum.Battle:
+            label = "BATTLING"
+            color = colors.orange
+            break
+        case MechStatusEnum.Market:
+            label = "LISTED"
+            color = colors.red
+            break
+        case MechStatusEnum.Sold:
+            label = "SOLD"
+            color = colors.lightGrey
+            break
+        case MechStatusEnum.Damaged:
+            label = "DAMAGED"
+            color = colors.bronze
+            break
+    }
+    return { color, label }
 }
 
 export const getUserRankDeets = (rank: UserRank, width: string, height: string): { icon: SvgWrapperProps; title: string; desc: string } => {
@@ -757,40 +790,3 @@ export const noop = () => {
 }
 
 export const isBrowser = typeof window !== "undefined"
-
-export const getMechStatusDeets = (status: MechStatusEnum) => {
-    let label = "---"
-    let color = "#FFFFFF"
-
-    switch (status) {
-        case MechStatusEnum.Idle:
-            label = "IDLE"
-            color = colors.green
-            break
-        case MechStatusEnum.Queue:
-            label = "In Lobby"
-            color = colors.yellow
-            break
-        case MechStatusEnum.Battle:
-            label = "BATTLING"
-            color = colors.orange
-            break
-        case MechStatusEnum.Market:
-            label = "LISTED"
-            color = colors.red
-            break
-        case MechStatusEnum.Sold:
-            label = "SOLD"
-            color = colors.lightGrey
-            break
-        case MechStatusEnum.Damaged:
-            label = "DAMAGED"
-            color = colors.bronze
-            break
-        default:
-            label = status
-            color = colors.lightGrey
-    }
-
-    return { label, color }
-}

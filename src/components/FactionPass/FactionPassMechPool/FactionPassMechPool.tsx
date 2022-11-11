@@ -8,7 +8,7 @@ import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { useLocalStorage } from "../../../hooks/useLocalStorage"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { LobbyMech } from "../../../types"
+import { LobbyMech, MechStatusEnum } from "../../../types"
 import { SortTypeLabel } from "../../../types/marketplace"
 import { MechCard } from "../../Common/MechCard"
 import { NavTabs } from "../../Common/NavTabs/NavTabs"
@@ -17,6 +17,21 @@ import { NiceButton } from "../../Common/Nice/NiceButton"
 import { NiceButtonGroup } from "../../Common/Nice/NiceButtonGroup"
 import { NiceSelect } from "../../Common/Nice/NiceSelect"
 import { NiceTextField } from "../../Common/Nice/NiceTextField"
+import { FreqGraphProps } from "../../Common/SortAndFilters/RangeFilterSection"
+import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
+
+enum UrlQueryParams {
+    Sort = "sort",
+    Search = "search",
+    Statuses = "statuses",
+    Rarities = "rarities",
+    Kills = "kills",
+    Deaths = "deaths",
+    Wins = "wins",
+    Losses = "losses",
+    PageSize = "pageSize",
+    Page = "page",
+}
 
 const sortOptions = [
     { label: SortTypeLabel.MechQueueAsc, value: SortTypeLabel.MechQueueAsc },
@@ -45,14 +60,18 @@ export const FactionPassMechPool = () => {
 
     // Filter, search, pagination
     const [showFilters, setShowFilters] = useLocalStorage<boolean>("factionPassMechPoolFilters", false)
-    const [search, setSearch, searchInstant] = useDebounce("", 300)
-    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.MechQueueAsc)
+    const [search, setSearch, searchInstant] = useDebounce(query.get(UrlQueryParams.Search) || "", 300)
+    const [sort, setSort] = useState<string>(query.get(UrlQueryParams.Sort) || SortTypeLabel.MechQueueAsc)
     const [isGridView, setIsGridView] = useLocalStorage<boolean>("factionPassMechPoolGrid", true)
-    const [status, setStatus] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
-    const [rarities, setRarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
+    const [status, setStatus] = useState<string[]>((query.get(UrlQueryParams.Statuses) || undefined)?.split("||") || [])
+    const [rarities] = useState<string[]>((query.get(UrlQueryParams.Rarities) || undefined)?.split("||") || [])
+    const [kills, setKills] = useState<number[] | undefined>((query.get(UrlQueryParams.Kills) || undefined)?.split("||").map((a) => parseString(a, 0)))
+    const [deaths, setDeaths] = useState<number[] | undefined>((query.get(UrlQueryParams.Deaths) || undefined)?.split("||").map((a) => parseString(a, 0)))
+    const [wins, setWins] = useState<number[] | undefined>((query.get(UrlQueryParams.Wins) || undefined)?.split("||").map((a) => parseString(a, 0)))
+    const [losses, setLosses] = useState<number[] | undefined>((query.get(UrlQueryParams.Losses) || undefined)?.split("||").map((a) => parseString(a, 0)))
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
-        pageSize: parseString(query.get("pageSize"), 10),
-        page: parseString(query.get("page"), 1),
+        pageSize: parseString(query.get(UrlQueryParams.PageSize), 10),
+        page: parseString(query.get(UrlQueryParams.Page), 1),
     })
 
     // Items
@@ -113,6 +132,26 @@ export const FactionPassMechPool = () => {
             result = result.filter((mech) => rarities.includes(mech.tier))
         }
 
+        // Apply kills filter
+        if (kills && kills.length) {
+            result = result.filter((mech) => mech.stats.total_kills >= kills[0] && mech.stats.total_kills <= kills[1])
+        }
+
+        // Apply deaths filter
+        if (deaths && deaths.length) {
+            result = result.filter((mech) => mech.stats.total_deaths >= deaths[0] && mech.stats.total_deaths <= deaths[1])
+        }
+
+        // Apply wins filter
+        if (wins && wins.length) {
+            result = result.filter((mech) => mech.stats.total_wins >= wins[0] && mech.stats.total_wins <= wins[1])
+        }
+
+        // Apply losses filter
+        if (losses && losses.length) {
+            result = result.filter((mech) => mech.stats.total_losses >= losses[0] && mech.stats.total_losses <= losses[1])
+        }
+
         // Apply sort
         switch (sort) {
             case SortTypeLabel.Alphabetical:
@@ -137,20 +176,82 @@ export const FactionPassMechPool = () => {
 
         // Save the configs to url query
         updateQuery.current({
-            sort,
-            search,
-            rarities: rarities.join("||"),
-            statuses: status.join("||"),
-            page: page.toString(),
-            pageSize: pageSize.toString(),
+            [UrlQueryParams.Sort]: sort,
+            [UrlQueryParams.Search]: search,
+            [UrlQueryParams.Rarities]: rarities.join("||"),
+            [UrlQueryParams.Statuses]: status.join("||"),
+            [UrlQueryParams.Kills]: kills?.join("||"),
+            [UrlQueryParams.Deaths]: deaths?.join("||"),
+            [UrlQueryParams.Wins]: wins?.join("||"),
+            [UrlQueryParams.Losses]: losses?.join("||"),
+            [UrlQueryParams.Page]: page.toString(),
+            [UrlQueryParams.PageSize]: pageSize.toString(),
         })
 
         // Pagination
         result = result.slice((page - 1) * pageSize, page * pageSize)
+        changePage(1)
         setTotalItems(result.length)
 
         setDisplayMechs(result)
-    }, [isLoading, mechs, page, pageSize, rarities, search, setTotalItems, sort, status, updateQuery])
+    }, [changePage, deaths, isLoading, kills, losses, mechs, page, pageSize, rarities, search, setTotalItems, sort, status, updateQuery, wins])
+
+    // For graphing the bar graphs in the range filter
+    const killsGraph: FreqGraphProps = useMemo(() => {
+        let min = 0
+        let max = 0
+        const freq: { [value: number]: number } = {}
+        mechs.forEach((mech) => {
+            const totalKills = mech.stats.total_kills
+            if (totalKills < min) min = totalKills
+            if (totalKills > max) max = totalKills
+            freq[totalKills] = (freq[totalKills] || 0) + 1
+        })
+
+        return { min, max, freq, count: mechs.length }
+    }, [mechs])
+
+    const deathsGraph: FreqGraphProps = useMemo(() => {
+        let min = 0
+        let max = 0
+        const freq: { [value: number]: number } = {}
+        mechs.forEach((mech) => {
+            const totalDeaths = mech.stats.total_deaths
+            if (totalDeaths < min) min = totalDeaths
+            if (totalDeaths > max) max = totalDeaths
+            freq[totalDeaths] = (freq[totalDeaths] || 0) + 1
+        })
+
+        return { min, max, freq, count: mechs.length }
+    }, [mechs])
+
+    const winsGraph: FreqGraphProps = useMemo(() => {
+        let min = 0
+        let max = 0
+        const freq: { [value: number]: number } = {}
+        mechs.forEach((mech) => {
+            const totalWins = mech.stats.total_wins
+            if (totalWins < min) min = totalWins
+            if (totalWins > max) max = totalWins
+            freq[totalWins] = (freq[totalWins] || 0) + 1
+        })
+
+        return { min, max, freq, count: mechs.length }
+    }, [mechs])
+
+    const lossesGraph: FreqGraphProps = useMemo(() => {
+        let min = 0
+        let max = 0
+        const freq: { [value: number]: number } = {}
+        mechs.forEach((mech) => {
+            const totalLosses = mech.stats.total_losses
+            if (totalLosses < min) min = totalLosses
+            if (totalLosses > max) max = totalLosses
+            freq[totalLosses] = (freq[totalLosses] || 0) + 1
+        })
+
+        return { min, max, freq, count: mechs.length }
+    }, [mechs])
 
     const content = useMemo(() => {
         if (isLoading) {
@@ -232,76 +333,132 @@ export const FactionPassMechPool = () => {
         >
             <NavTabs activeTabID={activeTabID} setActiveTabID={setActiveTabID} tabs={tabs} prevTab={prevTab} nextTab={nextTab} />
 
-            <Stack spacing="1rem" direction="row" alignItems="center" sx={{ overflowX: "auto", overflowY: "hidden", width: "100%", pb: ".2rem" }}>
-                {/* Filter button */}
-                <NiceButton
-                    onClick={() => setShowFilters((prev) => !prev)}
-                    border={{ color: theme.factionTheme.primary }}
-                    sx={{ p: ".2rem 1rem", pt: ".4rem" }}
-                    background={showFilters}
-                >
-                    <Typography variant="subtitle1" fontFamily={fonts.nostromoBold} color={showFilters ? theme.factionTheme.secondary : "#FFFFFF"}>
-                        <SvgFilter inline size="1.5rem" /> FILTER
-                    </Typography>
-                </NiceButton>
+            <Stack direction="row" alignItems="stretch" sx={{ flex: 1, width: "100%", overflow: "hidden" }}>
+                <SortAndFilters
+                    open={showFilters}
+                    chipFilters={[
+                        {
+                            label: "STATUS",
+                            options: [
+                                { value: MechStatusEnum.Idle, render: { label: "IDLE", color: colors.green } },
+                                { value: MechStatusEnum.Queue, render: { label: "IN QUEUE", color: colors.yellow } },
+                                { value: MechStatusEnum.Battle, render: { label: "IN BATTLE", color: colors.orange } },
+                                { value: MechStatusEnum.Market, render: { label: "MARKETPLACE", color: colors.bronze } },
+                                { value: MechStatusEnum.Damaged, render: { label: "DAMAGED", color: colors.red } },
+                            ],
+                            initialExpanded: true,
+                            selected: status,
+                            setSelected: setStatus,
+                        },
+                    ]}
+                    rangeFilters={[
+                        {
+                            label: "Kills",
+                            initialExpanded: true,
+                            minMax: [killsGraph.min, killsGraph.max],
+                            values: kills,
+                            setValues: setKills,
+                            freqGraph: killsGraph,
+                        },
+                        {
+                            label: "Deaths",
+                            initialExpanded: true,
+                            minMax: [deathsGraph.min, deathsGraph.max],
+                            values: deaths,
+                            setValues: setDeaths,
+                            freqGraph: deathsGraph,
+                        },
+                        {
+                            label: "Wins",
+                            initialExpanded: true,
+                            minMax: [winsGraph.min, winsGraph.max],
+                            values: wins,
+                            setValues: setWins,
+                            freqGraph: winsGraph,
+                        },
+                        {
+                            label: "Losses",
+                            initialExpanded: true,
+                            minMax: [lossesGraph.min, lossesGraph.max],
+                            values: losses,
+                            setValues: setLosses,
+                            freqGraph: lossesGraph,
+                        },
+                    ]}
+                />
 
-                <Box flex={1} />
+                {/* Search, sort, grid view, and other top buttons */}
+                <Stack spacing="3rem" alignItems="stretch" flex={1} sx={{ overflow: "hidden" }}>
+                    <Stack spacing="1rem" direction="row" alignItems="center" sx={{ overflowX: "auto", overflowY: "hidden", width: "100%", pb: ".2rem" }}>
+                        {/* Filter button */}
+                        <NiceButton
+                            onClick={() => setShowFilters((prev) => !prev)}
+                            border={{ color: theme.factionTheme.primary }}
+                            sx={{ p: ".2rem 1rem", pt: ".4rem" }}
+                            background={showFilters}
+                        >
+                            <Typography variant="subtitle1" fontFamily={fonts.nostromoBold} color={showFilters ? theme.factionTheme.secondary : "#FFFFFF"}>
+                                <SvgFilter inline size="1.5rem" /> FILTER
+                            </Typography>
+                        </NiceButton>
 
-                <Stack direction="row" alignItems="center">
-                    {/* Show Total */}
-                    <Box sx={{ height: "100%", backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", px: "1rem", borderRight: "none" }}>
-                        <Typography variant="h6" sx={{ whiteSpace: "nowrap" }}>
-                            {displayMechs?.length || 0} of {totalItems}
-                        </Typography>
-                    </Box>
+                        <Box flex={1} />
 
-                    {/* Page size options */}
-                    <NiceButtonGroup
-                        primaryColor={theme.factionTheme.primary}
-                        secondaryColor={theme.factionTheme.secondary}
-                        options={pageSizeOptions}
-                        selected={pageSize}
-                        onSelected={(value) => changePageSize(parseString(value, 1))}
-                    />
+                        <Stack direction="row" alignItems="center">
+                            {/* Show Total */}
+                            <Box sx={{ height: "100%", backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", px: "1rem", borderRight: "none" }}>
+                                <Typography variant="h6" sx={{ whiteSpace: "nowrap" }}>
+                                    {displayMechs?.length || 0} of {totalItems}
+                                </Typography>
+                            </Box>
+
+                            {/* Page size options */}
+                            <NiceButtonGroup
+                                primaryColor={theme.factionTheme.primary}
+                                secondaryColor={theme.factionTheme.secondary}
+                                options={pageSizeOptions}
+                                selected={pageSize}
+                                onSelected={(value) => changePageSize(parseString(value, 1))}
+                            />
+                        </Stack>
+
+                        {/* Page layout options */}
+                        <NiceButtonGroup
+                            primaryColor={theme.factionTheme.primary}
+                            secondaryColor={theme.factionTheme.secondary}
+                            options={layoutOptions}
+                            selected={isGridView}
+                            onSelected={(value) => setIsGridView(value)}
+                        />
+
+                        {/* Search bar */}
+                        <NiceTextField
+                            primaryColor={theme.factionTheme.primary}
+                            value={searchInstant}
+                            onChange={(value) => setSearch(value)}
+                            placeholder="Search..."
+                            InputProps={{
+                                endAdornment: <SvgSearch size="1.5rem" sx={{ opacity: 0.5 }} />,
+                            }}
+                        />
+
+                        {/* Sort */}
+                        <NiceSelect
+                            label="Sort:"
+                            primaryColor={theme.factionTheme.primary}
+                            secondaryColor={theme.factionTheme.secondary}
+                            options={sortOptions}
+                            selected={sort}
+                            onSelected={(value) => setSort(`${value}`)}
+                            sx={{ minWidth: "26rem" }}
+                        />
+                    </Stack>
+
+                    <Box sx={{ flex: 1, height: "100%", overflowY: "auto", pr: ".8rem" }}>{content}</Box>
+
+                    <Pagination sx={{ mt: "auto" }} count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
                 </Stack>
-
-                {/* Page layout options */}
-                <NiceButtonGroup
-                    primaryColor={theme.factionTheme.primary}
-                    secondaryColor={theme.factionTheme.secondary}
-                    options={layoutOptions}
-                    selected={isGridView}
-                    onSelected={(value) => setIsGridView(value)}
-                />
-
-                {/* Search bar */}
-                <NiceTextField
-                    primaryColor={theme.factionTheme.primary}
-                    value={searchInstant}
-                    onChange={(value) => setSearch(value)}
-                    placeholder="Search..."
-                    InputProps={{
-                        endAdornment: <SvgSearch size="1.5rem" sx={{ opacity: 0.5 }} />,
-                    }}
-                />
-
-                {/* Sort */}
-                <NiceSelect
-                    label="Sort:"
-                    primaryColor={theme.factionTheme.primary}
-                    secondaryColor={theme.factionTheme.secondary}
-                    options={sortOptions}
-                    selected={sort}
-                    onSelected={(value) => setSort(`${value}`)}
-                    sx={{ minWidth: "26rem" }}
-                />
             </Stack>
-
-            <Stack direction="row" spacing="1.2rem" sx={{ flex: 1, width: "100%" }}>
-                <Box sx={{ flex: 1, height: "100%", overflowY: "auto", pr: ".8rem" }}>{content}</Box>
-            </Stack>
-
-            <Pagination sx={{ mt: "auto" }} count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
         </Stack>
     )
 }

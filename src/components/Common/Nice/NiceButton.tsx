@@ -36,7 +36,7 @@ type LinkProps =
           }
       }
 
-type NiceButtonProps = CommonProps & LinkProps
+export type NiceButtonProps = CommonProps & LinkProps
 
 const OVERLAY_CLASSNAME = "NiceButtonOverlay"
 
@@ -68,14 +68,15 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
             alignItems: "center",
             justifyContent: "center",
             p: ".8rem 1.2rem",
-            fontFamily: fonts.nostromoBold,
-            fontSize: "1.5rem",
+            fontFamily: fonts.nostromoBlack,
+            fontSize: "1.4rem",
             backgroundColor: "transparent",
             cursor: buttonDisabled ? "auto" : "pointer",
             flexShrink: 0,
             color: color || "#FFFFFF",
             whiteSpace: "nowrap",
             boxShadow: 0.5,
+
             [`&:disabled .${OVERLAY_CLASSNAME}`]: {
                 opacity: 0.5,
             },
@@ -169,7 +170,7 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
                     right: 0,
                     bottom: 0,
                     backgroundColor: "#000000",
-                    borderRadius: 0.3,
+                    borderRadius: 0.1,
                     transition: ".2s all",
                     opacity: 0,
                 }}

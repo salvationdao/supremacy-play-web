@@ -27,7 +27,7 @@ const sortOptions = [
     { label: SortTypeLabel.RarestAsc, value: SortTypeLabel.RarestAsc },
     { label: SortTypeLabel.RarestDesc, value: SortTypeLabel.RarestDesc },
 ]
-interface GetPowerCoresRequest {
+export interface GetPowerCoresRequest {
     search: string
     sort_by: string
     sort_dir: string

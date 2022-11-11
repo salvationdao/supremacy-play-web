@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Divider, Drawer, IconButton, Pagination, Slide, Stack, Switch, Typography } from "@mui/material"
+import { Box, CircularProgress, Divider, Drawer, IconButton, Pagination, Slide, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
 import { FancyButton } from "../../../../.."
@@ -29,25 +29,17 @@ const sortOptions = [
     { label: SortTypeLabel.RarestDesc, value: SortTypeLabel.RarestDesc },
 ]
 
-export type OnConfirmWeaponSelection = (selectedWeapon: Weapon, inheritSkin: boolean) => void
+export type OnConfirmWeaponSelection = (selectedWeapon: Weapon) => void
 
 interface MechLoadoutWeaponModalProps {
     containerRef: React.MutableRefObject<HTMLElement | undefined>
     onClose: () => void
     onConfirm: OnConfirmWeaponSelection
     equipped?: Weapon
-    weaponsWithSkinInheritance: string[]
     weaponsAlreadyEquippedInOtherSlots: string[]
 }
 
-export const MechLoadoutWeaponModal = ({
-    containerRef,
-    onClose,
-    onConfirm,
-    equipped,
-    weaponsWithSkinInheritance,
-    weaponsAlreadyEquippedInOtherSlots,
-}: MechLoadoutWeaponModalProps) => {
+export const MechLoadoutWeaponModal = ({ containerRef, onClose, onConfirm, equipped, weaponsAlreadyEquippedInOtherSlots }: MechLoadoutWeaponModalProps) => {
     const { userID } = useAuth()
     const { send } = useGameServerCommandsUser("/user_commander")
 
@@ -57,16 +49,6 @@ export const MechLoadoutWeaponModal = ({
     // Weapon selection
     const [weapons, setWeapons] = useState<PlayerAsset[]>([])
     const [selectedWeapon, setSelectedWeapon] = useState<Weapon>()
-    const [inheritSkin, setInheritSkin] = useState(false)
-    const skinInheritable = useMemo(
-        () => (selectedWeapon ? !!weaponsWithSkinInheritance.find((s) => s === selectedWeapon?.blueprint_id) : false),
-        [selectedWeapon, weaponsWithSkinInheritance],
-    )
-    const [equippedInheritSkin, setEquippedInheritSkin] = useState(!!equipped?.inherit_skin)
-    const equippedSkinInheritable = useMemo(
-        () => (equipped ? !!weaponsWithSkinInheritance.find((s) => s === equipped?.blueprint_id) : false),
-        [equipped, weaponsWithSkinInheritance],
-    )
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
 
@@ -608,51 +590,21 @@ export const MechLoadoutWeaponModal = ({
                         <Stack flex={1} overflow="hidden">
                             {/* After */}
                             <WeaponPreview weapon={selectedWeapon} compareTo={equipped} />
-                            {selectedWeapon && !selectedWeapon.locked_to_mech ? (
+                            {selectedWeapon && !selectedWeapon.locked_to_mech && (
                                 <Slide direction="up" in={!!selectedWeapon} mountOnEnter>
                                     <Stack mt="auto" direction="row" spacing="1rem">
                                         <Box ml="auto" />
-                                        {skinInheritable && (
-                                            <Stack direction="row" alignItems="center" justifyContent="space-between">
-                                                <Switch checked={inheritSkin} onChange={(e, c) => setInheritSkin(c)} />
-                                                <Typography variant="body2" sx={{ lineHeight: 1, fontWeight: "bold" }}>
-                                                    Inherit Skin
-                                                </Typography>
-                                            </Stack>
-                                        )}
                                         <FancyButton
                                             clipThingsProps={{
                                                 backgroundColor: colors.green,
                                             }}
-                                            onClick={() => onConfirm(selectedWeapon, inheritSkin)}
+                                            onClick={() => onConfirm(selectedWeapon)}
                                         >
                                             Equip To Mech
                                         </FancyButton>
                                     </Stack>
                                 </Slide>
-                            ) : equipped ? (
-                                <Slide direction="up" in={true} mountOnEnter>
-                                    <Stack mt="auto" direction="row" spacing="1rem">
-                                        <Box ml="auto" />
-                                        {equippedSkinInheritable && (
-                                            <Stack direction="row" alignItems="center" justifyContent="space-between">
-                                                <Switch checked={equippedInheritSkin} onChange={(e, c) => setEquippedInheritSkin(c)} />
-                                                <Typography variant="body2" sx={{ lineHeight: 1, fontWeight: "bold" }}>
-                                                    Inherit Skin
-                                                </Typography>
-                                            </Stack>
-                                        )}
-                                        <FancyButton
-                                            clipThingsProps={{
-                                                backgroundColor: colors.green,
-                                            }}
-                                            onClick={() => onConfirm(equipped, equippedInheritSkin)}
-                                        >
-                                            Equip To Mech
-                                        </FancyButton>
-                                    </Stack>
-                                </Slide>
-                            ) : undefined}
+                            )}
                         </Stack>
                     </Stack>
                 </Box>

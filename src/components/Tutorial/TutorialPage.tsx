@@ -2,19 +2,19 @@ import { Box, Button, Modal, Stack, Typography } from "@mui/material"
 import { useTour } from "@reactour/tour"
 import { useEffect, useMemo, useState } from "react"
 import { Helmet } from "react-helmet"
-import { BattleTrainingBG } from "../../assets"
 import { ClipThing, FancyButton, LeftDrawerBT, MiniMapBT, TrainingBattleAbility, TrainingMechAbility, TrainingPlayerAbility } from ".."
-import { FactionIntro } from "./Faction/FactionIntro"
-import { Intro } from "./Intro"
-import { WarMachineStatsBT } from "./WarMachine/WarMachineStatsBT"
+import { BattleTrainingBG } from "../../assets"
 import { LINK, TRAINING_ASSETS } from "../../constants"
-import { TrainingProvider, useDimension, useTraining } from "../../containers"
+import { GAME_UI_ID, TrainingProvider, useDimension, useTraining } from "../../containers"
 import { useAuth } from "../../containers/auth"
 import { useUrlQuery } from "../../hooks"
 import { opacityEffect } from "../../theme/keyframes"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { BattleAbilityStages, CompletedTraining, MechAbilityStages, TrainingLobby } from "../../types"
 import { PlayerAbilityStages } from "../../types/training"
+import { FactionIntro } from "./Faction/FactionIntro"
+import { Intro } from "./Intro"
+import { WarMachineStatsBT } from "./WarMachine/WarMachineStatsBT"
 
 export const TutorialPage = () => (
     <>
@@ -62,7 +62,7 @@ const TutorialPageInner = () => {
                 <>
                     <LeftDrawerBT />
                     <Stack id="battle-arena-all" sx={{ width: "100%", height: "100%", zIndex: siteZIndex.RoutePage }}>
-                        <Box id="game-ui-container" sx={{ position: "relative", flex: 1 }}>
+                        <Box id={GAME_UI_ID} sx={{ position: "relative", flex: 1 }}>
                             <MiniMapBT />
                             {(trainingStage in MechAbilityStages || trainingStage === TrainingLobby.MechAbility) && <WarMachineStatsBT />}
                             <Modal

@@ -1,33 +1,34 @@
 import { Box, Button, Divider, Fade, Slide, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { Svg2DView, Svg3DView, SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgWeapons } from "../../../../../assets"
+import { Svg2DView, Svg3DView, SvgLoadoutDamage, SvgLoadoutEmote, SvgLoadoutPowerCore, SvgLoadoutSkin, SvgLoadoutWeapon } from "../../../../../assets"
 import { useAuth, useGlobalNotifications } from "../../../../../containers"
 import { useTheme } from "../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../helpers"
 import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
-import { AssetItemType, MechDetails, MechSkin, MechStatus, MechStatusEnum, PowerCore, Utility, Weapon, WeaponType } from "../../../../../types"
+import { AssetItemType, MechDetails, MechSkin, MechStatus, MechStatusEnum, MechTypeEnum, PowerCore, Utility, Weapon, WeaponType } from "../../../../../types"
 import { ClipThing } from "../../../../Common/Deprecated/ClipThing"
-import { FancyButton } from "../../../../Common/Deprecated/FancyButton"
+import { NiceBoxThing } from "../../../../Common/Nice/NiceBoxThing"
 import { MechLoadoutItem } from "../../Common/MechLoadoutItem"
 import { MechViewer } from "../MechViewer/MechViewer"
 import { MechViewer3D } from "../MechViewer/MechViewer3D"
 import { UnityHandle } from "../MechViewer/UnityViewer"
-import { MechLoadoutMechSkinModal } from "../Modals/Loadout/MechLoadoutMechSkinModal"
-import { MechLoadoutPowerCoreModal } from "../Modals/Loadout/MechLoadoutPowerCoreModal"
-import { MechLoadoutWeaponModal } from "../Modals/Loadout/MechLoadoutWeaponModal"
-import { CustomDragEventWithType, DraggablesHandle, DragStartEventWithType, DragStopEventWithType, MechLoadoutDraggables } from "./MechLoadoutDraggables"
+import { CustomDragEventWithType, DragStartEventWithType, DragStopEventWithType } from "./Draggables/LoadoutDraggable"
+import { DraggablesHandle, MechLoadoutDraggables, OnClickEventWithType } from "./MechLoadoutDraggables"
+import { WeaponTooltip } from "./Tooltips/WeaponTooltip"
 
-interface SavedSelection {
+export interface SavedSelection {
+    inherit_all_weapon_skins?: boolean
     equip_mech_skin?: EquipMechSkin
     equip_power_core?: EquipPowerCore
     equip_utility?: EquipUtility[]
     equip_weapons?: EquipWeapon[]
 }
 
-interface PlayerAssetMechEquipRequest {
+export interface PlayerAssetMechEquipRequest {
     mech_id: string
+    inherit_all_weapon_skins?: boolean
     equip_mech_skin?: EquipMechSkin
     equip_power_core?: EquipPowerCore
     equip_utility: EquipUtility[]
@@ -108,15 +109,15 @@ const generateLoadout = (newMechDetails: MechDetails): MechDetailsWithMaps => {
 }
 
 interface MechLoadoutProps {
-    drawerContainerRef: React.MutableRefObject<HTMLElement | undefined>
     mechDetails: MechDetails
     mechStatus?: MechStatus
+    mechStaked: boolean
     onUpdate: (newMechDetails: MechDetails) => void
 }
 
 const LOCAL_STORAGE_KEY_PREFERS_2D_LOADOUT = "prefers2DLoadout"
 
-export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpdate }: MechLoadoutProps) => {
+export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: MechLoadoutProps) => {
     const theme = useTheme()
     const { userID } = useAuth()
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -136,6 +137,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     const orbitControlsRef = useRef<HTMLDivElement>(null)
 
     const {
+        id,
         owner_id,
         weapons_map,
         blueprint_weapon_ids_with_skin_inheritance,
@@ -147,6 +149,8 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         outro_animation,
         locked_to_marketplace,
         xsyn_locked,
+        mech_type,
+        inherit_all_weapon_skins,
     } = currLoadout
     const loadoutDisabled = useMemo(
         () =>
@@ -154,6 +158,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
             (enable3DLoadout && (isUnityPendingChange || !isUnityLoaded)) ||
             xsyn_locked ||
             locked_to_marketplace ||
+            mechStaked ||
             (mechStatus?.battle_lobby_is_locked && mechStatus?.status === MechStatusEnum.Queue) ||
             mechStatus?.status === MechStatusEnum.Battle ||
             mechStatus?.status === MechStatusEnum.Sold,
@@ -162,6 +167,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
             isUnityLoaded,
             isUnityPendingChange,
             locked_to_marketplace,
+            mechStaked,
             mechStatus?.battle_lobby_is_locked,
             mechStatus?.status,
             owner_id,
@@ -178,6 +184,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
     const saveSelection = useCallback(
         async (selection: SavedSelection) => {
             try {
+                console.info("saving loadout")
                 setLoading(true)
 
                 const newMechDetails = await send<MechDetails, PlayerAssetMechEquipRequest>(GameServerKeys.EquipMech, {
@@ -214,12 +221,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                 unityControlsRef.current.handleMechSkinUpdate(ems)
             }
 
-            setCurrLoadout((prev) => {
-                return {
-                    ...prev,
-                    chassis_skin: ems.mech_skin,
-                }
-            })
             saveSelection({
                 equip_mech_skin: ems
                     ? {
@@ -236,18 +237,6 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                 unityControlsRef.current.handlePowerCoreUpdate(ep)
             }
 
-            setCurrLoadout((prev) => {
-                let updated: PowerCore | undefined = ep.power_core
-                if (ep.unequip) {
-                    updated = undefined
-                } else if (ep.power_core) {
-                    updated = ep.power_core
-                }
-                return {
-                    ...prev,
-                    power_core: updated,
-                }
-            })
             saveSelection({
                 equip_power_core: ep
                     ? {
@@ -265,22 +254,10 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                 unityControlsRef.current.handleWeaponUpdate(ew)
             }
 
-            setCurrLoadout((prev) => {
-                const updated = new Map(prev.weapons_map)
-                if (ew.unequip) {
-                    updated.set(ew.slot_number, null)
-                } else if (ew.weapon) {
-                    updated.set(ew.slot_number, {
-                        ...ew.weapon,
-                        inherit_skin: !!ew.inherit_skin,
-                    })
-                }
-
-                return {
-                    ...prev,
-                    weapons_map: updated,
-                }
-            })
+            // Don't inherit weapon skin if incompatible with mech
+            if (ew.inherit_skin && !blueprint_weapon_ids_with_skin_inheritance.find((s) => s === ew.weapon?.blueprint_id)) {
+                ew.inherit_skin = false
+            }
 
             saveSelection({
                 equip_weapons: [
@@ -292,52 +269,92 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                     },
                 ],
             })
+
+            setCompareToWeapon(undefined)
         },
-        [saveSelection],
+        [blueprint_weapon_ids_with_skin_inheritance, saveSelection],
     )
 
-    // WEAPON INHERIT ALL SKINS
-    const enableInheritAllWeaponSkins = useMemo(() => {
+    // WEAPON INHERIT SKIN INHERITANCE
+    const inheritAllWeaponSkins = useCallback(() => {
+        const changes: LoadoutWeapon[] = []
         for (let weaponSlotNumber = 0; weaponSlotNumber < currLoadout.weapon_hardpoints; weaponSlotNumber++) {
             const w = currLoadout.weapons_map.get(weaponSlotNumber)
             if (!w || w.weapon_type === WeaponType.RocketPods) continue
             if (!blueprint_weapon_ids_with_skin_inheritance.find((s) => s === w?.blueprint_id)) continue
-            if (w.inherit_skin) continue
 
-            return true
-        }
-        return false
-    }, [blueprint_weapon_ids_with_skin_inheritance, currLoadout.weapon_hardpoints, currLoadout.weapons_map])
-    const inheritAllWeaponSkins = useCallback(() => {
-        for (let weaponSlotNumber = 0; weaponSlotNumber < currLoadout.weapon_hardpoints; weaponSlotNumber++) {
-            const w = currLoadout.weapons_map.get(weaponSlotNumber)
-            if (!w || w.inherit_skin || w.weapon_type === WeaponType.RocketPods) continue
-            if (!blueprint_weapon_ids_with_skin_inheritance.find((s) => s === w?.blueprint_id)) continue
-
-            modifyWeaponSlot({
+            const change: LoadoutWeapon = {
                 inherit_skin: true,
                 slot_number: weaponSlotNumber,
                 weapon_id: w.id,
                 weapon: w,
+            }
+            changes.push(change)
+            if (unityControlsRef.current) {
+                unityControlsRef.current.handleWeaponUpdate(change)
+            }
+        }
+        if (changes.length > 0) {
+            saveSelection({
+                equip_weapons: changes,
             })
         }
-    }, [blueprint_weapon_ids_with_skin_inheritance, currLoadout.weapon_hardpoints, currLoadout.weapons_map, modifyWeaponSlot])
+    }, [blueprint_weapon_ids_with_skin_inheritance, currLoadout.weapon_hardpoints, currLoadout.weapons_map, saveSelection])
     const uninheritAllWeaponSkins = useCallback(() => {
+        const changes: LoadoutWeapon[] = []
         for (let weaponSlotNumber = 0; weaponSlotNumber < currLoadout.weapon_hardpoints; weaponSlotNumber++) {
             const w = currLoadout.weapons_map.get(weaponSlotNumber)
-            if (!w || !w.inherit_skin || w.weapon_type === WeaponType.RocketPods) continue
+            if (!w || w.weapon_type === WeaponType.RocketPods) continue
             if (!blueprint_weapon_ids_with_skin_inheritance.find((s) => s === w?.blueprint_id)) continue
 
-            modifyWeaponSlot({
+            const change: LoadoutWeapon = {
                 inherit_skin: false,
                 slot_number: weaponSlotNumber,
                 weapon_id: w.id,
                 weapon: w,
+            }
+            changes.push(change)
+            if (unityControlsRef.current) {
+                unityControlsRef.current.handleWeaponUpdate({
+                    inherit_skin: false,
+                    slot_number: weaponSlotNumber,
+                    weapon_id: w.id,
+                    weapon: w,
+                })
+            }
+        }
+        if (changes.length > 0) {
+            saveSelection({
+                equip_weapons: changes,
             })
         }
-    }, [blueprint_weapon_ids_with_skin_inheritance, currLoadout.weapon_hardpoints, currLoadout.weapons_map, modifyWeaponSlot])
+    }, [blueprint_weapon_ids_with_skin_inheritance, currLoadout.weapon_hardpoints, currLoadout.weapons_map, saveSelection])
+    const prevMechID = useRef<string | undefined>(undefined) // we can use these refs to avoid triggering any unecessary work in the unity viewer on rerender
+    const inheritAllWeaponSkinsMemo = useRef<boolean | undefined>(undefined)
+    useEffect(() => {
+        if (prevMechID.current !== id) {
+            prevMechID.current = id
+            inheritAllWeaponSkinsMemo.current = undefined
+            return
+        }
+        if (typeof inheritAllWeaponSkinsMemo.current === "undefined") {
+            inheritAllWeaponSkinsMemo.current = inherit_all_weapon_skins
+            return
+        }
+
+        if (inherit_all_weapon_skins === inheritAllWeaponSkinsMemo.current) return
+
+        console.log("inheriting", inherit_all_weapon_skins)
+        if (inherit_all_weapon_skins) {
+            inheritAllWeaponSkins()
+        } else {
+            uninheritAllWeaponSkins()
+        }
+        inheritAllWeaponSkinsMemo.current = inherit_all_weapon_skins
+    }, [id, inheritAllWeaponSkins, inherit_all_weapon_skins, uninheritAllWeaponSkins])
 
     // DRAG HANDLERS
+    const powerCoreItemRef = useRef<HTMLDivElement>(null)
     const mechSkinItemRef = useRef<HTMLDivElement>(null)
     const weaponItemRefs = useRef<Map<number, HTMLDivElement | null>>(new Map()) // Map<slot_number, Element ref>
     const onItemDrag = useCallback<CustomDragEventWithType>(
@@ -379,6 +396,21 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                     }
                     break
                 }
+                case AssetItemType.PowerCore: {
+                    if (!powerCoreItemRef.current) return
+
+                    const slotBoundingRect = powerCoreItemRef.current.getBoundingClientRect()
+                    const overlaps = checkDOMRectOverlap(rect, slotBoundingRect, 70)
+
+                    if (overlaps) {
+                        powerCoreItemRef.current.style.transform = "scale(1.1)"
+                        powerCoreItemRef.current.style.transition = "transform .1s ease-out"
+                    } else {
+                        powerCoreItemRef.current.style.transform = "scale(1.0)"
+                        powerCoreItemRef.current.style.transition = "transform .1s ease-in"
+                    }
+                    break
+                }
             }
         },
         [chassis_skin?.locked_to_mech, loadoutDisabled, weapons_map],
@@ -387,6 +419,29 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         (type) => {
             if (loadoutDisabled) return
             setIsDragging(true)
+
+            const unhighlightOthers = (type: AssetItemType) => {
+                if (type !== AssetItemType.Weapon) {
+                    for (const kv of weaponItemRefs.current.entries()) {
+                        const slotNumber = kv[0]
+                        const element = kv[1]
+                        if (!element) continue
+                        if (weapons_map.get(slotNumber)?.locked_to_mech) continue
+
+                        element.style.filter = `grayscale(80%)`
+                    }
+                }
+                if (type !== AssetItemType.MechSkin) {
+                    if (mechSkinItemRef.current && !chassis_skin?.locked_to_mech) {
+                        mechSkinItemRef.current.style.filter = `grayscale(80%)`
+                    }
+                }
+                if (type !== AssetItemType.PowerCore) {
+                    if (powerCoreItemRef.current) {
+                        powerCoreItemRef.current.style.filter = `grayscale(80%)`
+                    }
+                }
+            }
 
             switch (type) {
                 case AssetItemType.Weapon:
@@ -401,10 +456,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                     }
 
                     // Unhighlight unrelated slots
-                    if (!mechSkinItemRef.current) return
-                    if (chassis_skin?.locked_to_mech) return
-
-                    mechSkinItemRef.current.style.filter = `grayscale(80%)`
+                    unhighlightOthers(AssetItemType.Weapon)
                     break
                 case AssetItemType.MechSkin:
                     if (!mechSkinItemRef.current) return
@@ -412,14 +464,14 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
 
                     mechSkinItemRef.current.style.filter = `drop-shadow(0 0 1rem ${colors.chassisSkin})`
 
-                    for (const kv of weaponItemRefs.current.entries()) {
-                        const slotNumber = kv[0]
-                        const element = kv[1]
-                        if (!element) continue
-                        if (weapons_map.get(slotNumber)?.locked_to_mech) continue
+                    unhighlightOthers(AssetItemType.MechSkin)
+                    break
+                case AssetItemType.PowerCore:
+                    if (!powerCoreItemRef.current) return
 
-                        element.style.filter = `grayscale(80%)`
-                    }
+                    powerCoreItemRef.current.style.filter = `drop-shadow(0 0 1rem ${colors.powerCore})`
+
+                    unhighlightOthers(AssetItemType.PowerCore)
                     break
             }
         },
@@ -445,7 +497,7 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                 weapon: weapon,
                                 weapon_id: weapon.id,
                                 slot_number: kv[0],
-                                inherit_skin: false,
+                                inherit_skin: inherit_all_weapon_skins,
                             })
                             break
                         }
@@ -467,6 +519,21 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                     }
                     break
                 }
+                case AssetItemType.PowerCore: {
+                    if (!powerCoreItemRef.current) return
+
+                    const slotBoundingRect = powerCoreItemRef.current.getBoundingClientRect()
+                    const overlaps = checkDOMRectOverlap(rect, slotBoundingRect, 70)
+
+                    if (overlaps) {
+                        const powerCore = item as PowerCore
+                        modifyPowerCore({
+                            power_core: powerCore,
+                            power_core_id: powerCore.id,
+                        })
+                    }
+                    break
+                }
             }
 
             for (const kv of weaponItemRefs.current.entries()) {
@@ -478,13 +545,46 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                 element.style.filter = "none"
             }
 
-            if (!mechSkinItemRef.current) return
-            if (chassis_skin?.locked_to_mech) return
-            mechSkinItemRef.current.style.filter = "none"
+            if (mechSkinItemRef.current && !chassis_skin?.locked_to_mech) {
+                mechSkinItemRef.current.style.filter = "none"
+            }
+
+            if (powerCoreItemRef.current) {
+                powerCoreItemRef.current.style.filter = "none"
+            }
 
             setIsDragging(false)
         },
-        [chassis_skin?.locked_to_mech, loadoutDisabled, modifyMechSkin, modifyWeaponSlot, weapons_map],
+        [chassis_skin?.locked_to_mech, inherit_all_weapon_skins, loadoutDisabled, modifyMechSkin, modifyPowerCore, modifyWeaponSlot, weapons_map],
+    )
+    // Some items (i.e. mech skin) have an on click event, not a drag event
+    const onItemClick = useCallback<OnClickEventWithType>(
+        (e, type, item) => {
+            if (loadoutDisabled) return
+            switch (type) {
+                case AssetItemType.MechSkin: {
+                    if (!mechSkinItemRef.current) return
+                    if (chassis_skin?.locked_to_mech) return
+
+                    const mechSkin = item as MechSkin
+                    modifyMechSkin({
+                        mech_skin: mechSkin,
+                        mech_skin_id: mechSkin.id,
+                    })
+                    break
+                }
+                case AssetItemType.PowerCore: {
+                    if (!powerCoreItemRef.current) return
+                    const powerCore = item as PowerCore
+                    modifyPowerCore({
+                        power_core: powerCore,
+                        power_core_id: powerCore.id,
+                    })
+                    break
+                }
+            }
+        },
+        [chassis_skin?.locked_to_mech, loadoutDisabled, modifyMechSkin, modifyPowerCore],
     )
 
     // 2D/3D VIEW SWITCHERS
@@ -500,6 +600,158 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
         localStorage.setItem(LOCAL_STORAGE_KEY_PREFERS_2D_LOADOUT, "false")
     }
 
+    // LOADOUT ITEM RENDERERS
+    const [compareToWeapon, setCompareToWeapon] = useState<LoadoutWeapon>()
+    const renderWeaponSlot = useCallback(
+        (slotNumber: number, side?: "left" | "right") => {
+            const weapon = weapons_map.get(slotNumber)
+            if (typeof weapon === "undefined") return
+
+            if (weapon) {
+                return (
+                    <MechLoadoutItem
+                        ref={(r) => weaponItemRefs.current.set(slotNumber, r)}
+                        disabled={loadoutDisabled}
+                        key={weapon.id}
+                        imageUrl={weapon.image_url || weapon.avatar_url}
+                        label={weapon.label}
+                        subLabel={`${weapon.weapon_type} | ${weapon.default_damage_type}`}
+                        Icon={SvgLoadoutWeapon}
+                        TopRight={
+                            <Typography
+                                sx={{
+                                    fontFamily: fonts.shareTech,
+                                }}
+                            >
+                                <SvgLoadoutDamage
+                                    sx={{
+                                        display: "inline-block",
+                                        verticalAlign: "middle",
+                                        lineHeight: "normal",
+                                        mr: ".5rem",
+                                    }}
+                                />
+                                {weapon.damage}
+                            </Typography>
+                        }
+                        BottomRight={
+                            compareToWeapon?.weapon_id === weapon.id && (
+                                <Typography
+                                    color={{
+                                        color: colors.neonBlue,
+                                    }}
+                                >
+                                    Selected for comparison
+                                </Typography>
+                            )
+                        }
+                        renderTooltip={() => <WeaponTooltip id={weapon.id} />}
+                        rarity={weapon.weapon_skin ? getRarityDeets(weapon.weapon_skin.tier) : undefined}
+                        locked={weapon.locked_to_mech}
+                        onClick={() =>
+                            setCompareToWeapon({
+                                slot_number: slotNumber,
+                                weapon_id: weapon.id,
+                                weapon: weapon,
+                            })
+                        }
+                        onUnequip={() =>
+                            modifyWeaponSlot({
+                                weapon_id: "",
+                                slot_number: slotNumber,
+                                unequip: true,
+                            })
+                        }
+                        side={side}
+                    />
+                )
+            }
+
+            return (
+                <MechLoadoutItem
+                    ref={(r) => weaponItemRefs.current.set(slotNumber, r)}
+                    disabled={loadoutDisabled}
+                    key={slotNumber}
+                    label="WEAPON"
+                    Icon={SvgLoadoutWeapon}
+                    side={side}
+                    isEmpty
+                />
+            )
+        },
+        [loadoutDisabled, modifyWeaponSlot, compareToWeapon?.weapon_id, weapons_map],
+    )
+
+    const renderPowerCoreSlot = useCallback(() => {
+        const powerCore = power_core
+
+        if (powerCore) {
+            return (
+                <MechLoadoutItem
+                    ref={powerCoreItemRef}
+                    disabled={loadoutDisabled}
+                    imageUrl={powerCore.image_url || powerCore.avatar_url}
+                    label={powerCore.label}
+                    Icon={SvgLoadoutPowerCore}
+                    rarity={getRarityDeets(powerCore.tier)}
+                    onUnequip={() =>
+                        modifyPowerCore({
+                            power_core_id: "",
+                            unequip: true,
+                        })
+                    }
+                    shape="square"
+                    size="small"
+                />
+            )
+        }
+
+        return (
+            <MechLoadoutItem
+                ref={powerCoreItemRef}
+                disabled={loadoutDisabled}
+                label="POWER CORE"
+                Icon={SvgLoadoutPowerCore}
+                shape="square"
+                size="small"
+                isEmpty
+            />
+        )
+    }, [loadoutDisabled, modifyPowerCore, power_core])
+
+    const renderMechSkinSlot = useCallback(() => {
+        const mechSkin = chassis_skin
+
+        if (mechSkin) {
+            return (
+                <MechLoadoutItem
+                    ref={mechSkinItemRef}
+                    locked={chassis_skin?.locked_to_mech}
+                    disabled={loadoutDisabled}
+                    imageUrl={mechSkin.swatch_images?.image_url || mechSkin.swatch_images?.avatar_url || mechSkin.image_url || mechSkin.avatar_url}
+                    label={mechSkin.label}
+                    Icon={SvgLoadoutSkin}
+                    rarity={getRarityDeets(mechSkin.tier)}
+                    shape="square"
+                    size="small"
+                />
+            )
+        }
+
+        return (
+            <MechLoadoutItem
+                ref={mechSkinItemRef}
+                disabled={loadoutDisabled}
+                label="SUBMODEL"
+                Icon={SvgLoadoutSkin}
+                shape="square"
+                size="small"
+                isEmpty
+                locked
+            />
+        )
+    }, [chassis_skin, loadoutDisabled])
+
     return (
         <Stack
             direction="row"
@@ -510,86 +762,90 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                 height: "100%",
             }}
         >
-            <ClipThing
-                clipSize="10px"
-                border={{
-                    borderColor: theme.factionTheme.primary,
-                    borderThickness: ".3rem",
-                }}
-                backgroundColor={theme.factionTheme.background}
-                sx={{ flex: 1, height: "100%" }}
-            >
+            <Stack flex={1}>
                 {/* Viewer Actions */}
                 <Stack
                     sx={{
-                        zIndex: 7,
-                        position: "absolute",
-                        left: 0,
-                        bottom: 0,
+                        position: "relative",
+                        alignSelf: "end",
                     }}
                 >
-                    <ClipThing
-                        clipSize="10px"
+                    <NiceBoxThing
                         border={{
-                            borderColor: theme.factionTheme.primary,
-                            borderThickness: ".3rem",
+                            color: theme.factionTheme.primary,
+                            thickness: "thicc",
                         }}
-                        backgroundColor={theme.factionTheme.background}
-                        corners={{
-                            topRight: !(enable3DLoadout && isUnityLoaded),
+                        background={{
+                            color: [theme.factionTheme.background],
+                        }}
+                        sx={{
+                            position: "absolute",
+                            top: 0,
+                            right: 0,
+                            transform: "translateY(-100%)",
+                            display: "flex",
+                            borderBottom: "none",
                         }}
                     >
-                        <Stack direction="row">
-                            <Box p="1rem">{!enable3DLoadout ? <Svg3DView /> : <Svg2DView />}</Box>
-                            <Divider
-                                orientation="vertical"
-                                color={colors.darkGrey}
+                        <Box p="1rem">{!enable3DLoadout ? <Svg3DView /> : <Svg2DView />}</Box>
+                        <Divider
+                            orientation="vertical"
+                            color={colors.darkGrey}
+                            sx={{
+                                height: "auto",
+                            }}
+                        />
+                        <Button
+                            sx={{
+                                borderRadius: 0,
+                                whiteSpace: "nowrap",
+                            }}
+                            onClick={enable3DLoadout ? switchTo2DView : switchTo3DView}
+                        >
+                            <Typography
                                 sx={{
-                                    height: "auto",
+                                    fontFamily: fonts.nostromoBlack,
+                                    fontSize: "1.6rem",
                                 }}
-                            />
-                            <Button
-                                sx={{
-                                    borderRadius: 0,
-                                }}
-                                onClick={enable3DLoadout ? switchTo2DView : switchTo3DView}
                             >
-                                <Typography
-                                    sx={{
-                                        fontFamily: fonts.nostromoBlack,
-                                        fontSize: "2rem",
-                                    }}
-                                >
-                                    Switch to {enable3DLoadout ? "2D" : "3D"} View
-                                </Typography>
-                            </Button>
-                        </Stack>
-                    </ClipThing>
+                                Switch to {enable3DLoadout ? "2D" : "3D"} View
+                            </Typography>
+                        </Button>
+                    </NiceBoxThing>
                 </Stack>
-                {/* Saving Changes */}
-                <Box
-                    sx={{
-                        zIndex: 7,
-                        position: "absolute",
-                        right: 0,
-                        bottom: 0,
+                <NiceBoxThing
+                    flex={1}
+                    border={{
+                        color: theme.factionTheme.primary,
+                        thickness: "thicc",
+                    }}
+                    background={{
+                        color: [theme.factionTheme.background],
                     }}
                 >
-                    <Slide direction="up" in={loading || !!error} mountOnEnter unmountOnExit>
-                        <ClipThing
-                            clipSize="10px"
-                            border={{
-                                borderColor: theme.factionTheme.primary,
-                                borderThickness: ".3rem",
-                            }}
-                            backgroundColor={theme.factionTheme.background}
-                            corners={{
-                                topRight: !(enable3DLoadout && isUnityLoaded),
-                            }}
-                        >
-                            <Stack direction="row" alignItems="end" p="1rem">
-                                {
-                                    <Fade in={!!error} mountOnEnter unmountOnExit>
+                    {/* Saving Changes */}
+                    <Box
+                        sx={{
+                            zIndex: 7,
+                            position: "absolute",
+                            right: 0,
+                            bottom: 0,
+                        }}
+                    >
+                        <Slide direction="up" in={loading || !!error} mountOnEnter unmountOnExit>
+                            <ClipThing
+                                clipSize="10px"
+                                border={{
+                                    borderColor: theme.factionTheme.primary,
+                                    borderThickness: ".3rem",
+                                }}
+                                backgroundColor={theme.factionTheme.background}
+                                corners={{
+                                    topRight: !(enable3DLoadout && isUnityLoaded),
+                                }}
+                            >
+                                <Stack direction="row" alignItems="end" p="1rem">
+                                    {error ? (
                                         <Typography
                                             sx={{
                                                 color: colors.red,
@@ -597,359 +853,194 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                                         >
                                             {error}
                                         </Typography>
-                                    </Fade>
-                                }
-                                <Typography
-                                    sx={{
-                                        fontFamily: fonts.nostromoBlack,
-                                        fontSize: "2rem",
-                                    }}
-                                >
-                                    Saving Changes
-                                </Typography>
-                            </Stack>
-                        </ClipThing>
-                    </Slide>
-                </Box>
-                {/* Mech Viewer */}
-                {enable3DLoadout ? (
-                    <MechViewer3D
-                        initialMech={currLoadout}
-                        unity={{
-                            unityRef: unityControlsRef,
-                            orbitControlsRef: orbitControlsRef,
-                            onUnlock: () => {
-                                setIsUnityPendingChange(false)
-                            },
-                            onLock: () => {
-                                setIsUnityPendingChange(true)
-                            },
-                            onReady: () => {
-                                setIsUnityLoaded(true)
-                            },
-                        }}
-                    />
-                ) : (
-                    <MechViewer
-                        mechDetails={{
-                            ...mechDetails,
-                            chassis_skin: mechDetails.chassis_skin,
-                        }}
-                    />
-                )}
-                {/* Drag and Drop Overlay */}
-                <Fade in={isDragging} unmountOnExit>
+                                    ) : (
+                                        <Typography
+                                            sx={{
+                                                fontFamily: fonts.nostromoBlack,
+                                                fontSize: "2rem",
+                                            }}
+                                        >
+                                            Saving Changes
+                                        </Typography>
+                                    )}
+                                </Stack>
+                            </ClipThing>
+                        </Slide>
+                    </Box>
+                    {/* Mech Viewer */}
+                    {enable3DLoadout ? (
+                        <MechViewer3D
+                            mech={currLoadout}
+                            unity={{
+                                unityRef: unityControlsRef,
+                                orbitControlsRef: orbitControlsRef,
+                                onUnlock: () => {
+                                    setIsUnityPendingChange(false)
+                                },
+                                onLock: () => {
+                                    setIsUnityPendingChange(true)
+                                },
+                                onReady: () => {
+                                    setIsUnityLoaded(true)
+                                },
+                            }}
+                        />
+                    ) : (
+                        <MechViewer
+                            mechDetails={{
+                                ...mechDetails,
+                                chassis_skin: mechDetails.chassis_skin,
+                            }}
+                            fillContainer
+                        />
+                    )}
+                    {/* Drag and Drop Overlay */}
+                    <Fade in={isDragging} unmountOnExit>
+                        <Box
+                            sx={{
+                                zIndex: 4,
+                                position: "absolute",
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                backgroundColor: `${colors.black2}aa`,
+                            }}
+                        >
+                            <Typography
+                                sx={{
+                                    fontFamily: fonts.nostromoBlack,
+                                    fontSize: "3rem",
+                                    textTransform: "uppercase",
+                                }}
+                            >
+                                Drag loadout item to a valid slot
+                            </Typography>
+                        </Box>
+                    </Fade>
+
+                    {/* Main Loadout */}
                     <Box
+                        ref={orbitControlsRef}
                         sx={{
                             position: "absolute",
                             top: 0,
+                            bottom: 0,
                             left: 0,
                             right: 0,
-                            bottom: 0,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            backgroundColor: `${colors.black2}aa`,
+                            overflow: "hidden",
+                            zIndex: 6,
                         }}
                     >
-                        <Typography
-                            sx={{
-                                fontFamily: fonts.nostromoBlack,
-                                fontSize: "3rem",
-                                textTransform: "uppercase",
-                            }}
-                        >
-                            Drag loadout item to a valid slot
-                        </Typography>
-                    </Box>
-                </Fade>
-
-                {/* Main Loadout */}
-                <Box
-                    ref={orbitControlsRef}
-                    sx={{
-                        position: "absolute",
-                        top: 0,
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        overflow: "hidden",
-                        zIndex: 6,
-                    }}
-                >
-                    {/* Left side */}
-                    <Stack
-                        flexWrap="wrap"
-                        sx={{
-                            position: "absolute",
-                            top: "5rem",
-                            bottom: "5rem",
-                            left: "6rem",
-                        }}
-                    >
-                        {(() => {
-                            const powerCore = power_core
-
-                            const renderModal = (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => (
-                                <MechLoadoutPowerCoreModal
-                                    containerRef={drawerContainerRef}
-                                    onClose={() => toggleShowLoadoutModal(false)}
-                                    onConfirm={(selectedPowerCore) => {
-                                        modifyPowerCore({
-                                            power_core: selectedPowerCore,
-                                            power_core_id: selectedPowerCore.id,
-                                        })
-                                        toggleShowLoadoutModal(false)
-                                    }}
-                                    equipped={powerCore}
-                                    powerCoresAlreadyEquippedInOtherSlots={powerCore ? [powerCore.id] : []}
-                                    powerCoreSize={currLoadout.power_core_size}
-                                />
-                            )
-
-                            if (powerCore) {
-                                return (
-                                    <MechLoadoutItem
-                                        disabled={loadoutDisabled}
-                                        imageUrl={powerCore.image_url || powerCore.avatar_url}
-                                        videoUrls={[powerCore.card_animation_url]}
-                                        label={powerCore.label}
-                                        primaryColor={colors.powerCore}
-                                        Icon={SvgPowerCore}
-                                        rarity={getRarityDeets(powerCore.tier)}
-                                        renderModal={renderModal}
-                                        onUnequip={() =>
-                                            modifyPowerCore({
-                                                power_core_id: "",
-                                                unequip: true,
-                                            })
-                                        }
-                                    />
-                                )
-                            }
-
-                            return (
-                                <MechLoadoutItem
-                                    disabled={loadoutDisabled}
-                                    label="POWER CORE"
-                                    primaryColor={colors.powerCore}
-                                    renderModal={renderModal}
-                                    isEmpty
-                                />
-                            )
-                        })()}
-
+                        {/* Top Left Side */}
                         <Stack
+                            spacing="2rem"
                             sx={{
-                                position: "relative",
+                                position: "absolute",
+                                top: "3rem",
+                                left: "3rem",
                             }}
                         >
-                            {Array.from(weapons_map, ([slotNumber, w]) => {
-                                const weapon = w
-
-                                const renderModal = (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => (
-                                    <MechLoadoutWeaponModal
-                                        containerRef={drawerContainerRef}
-                                        onClose={() => toggleShowLoadoutModal(false)}
-                                        onConfirm={(selectedWeapon, inheritSkin) => {
-                                            modifyWeaponSlot({
-                                                weapon: selectedWeapon,
-                                                weapon_id: selectedWeapon.id,
-                                                slot_number: slotNumber,
-                                                inherit_skin: inheritSkin,
-                                            })
-                                            toggleShowLoadoutModal(false)
-                                        }}
-                                        equipped={weapon || undefined}
-                                        weaponsWithSkinInheritance={blueprint_weapon_ids_with_skin_inheritance}
-                                        weaponsAlreadyEquippedInOtherSlots={(() => {
-                                            const result: string[] = []
-                                            for (const ew of weapons_map.values()) {
-                                                if (!ew) continue
-                                                result.push(ew.id)
-                                            }
-                                            return result
-                                        })()}
-                                    />
-                                )
-
-                                if (weapon) {
-                                    return (
-                                        <MechLoadoutItem
-                                            ref={(r) => weaponItemRefs.current.set(slotNumber, r)}
-                                            disabled={loadoutDisabled}
-                                            key={weapon.id}
-                                            slotNumber={slotNumber}
-                                            imageUrl={weapon.image_url || weapon.avatar_url}
-                                            videoUrls={[weapon.card_animation_url]}
-                                            label={weapon.label}
-                                            primaryColor={colors.weapons}
-                                            Icon={SvgWeapons}
-                                            rarity={weapon.weapon_skin ? getRarityDeets(weapon.weapon_skin.tier) : undefined}
-                                            hasSkin={!!weapon.weapon_skin}
-                                            renderModal={renderModal}
-                                            locked={weapon.locked_to_mech}
-                                            onUnequip={() =>
-                                                modifyWeaponSlot({
-                                                    weapon_id: "",
-                                                    slot_number: slotNumber,
-                                                    unequip: true,
-                                                })
-                                            }
-                                        />
-                                    )
-                                }
-
-                                return (
-                                    <MechLoadoutItem
-                                        ref={(r) => weaponItemRefs.current.set(slotNumber, r)}
-                                        disabled={loadoutDisabled}
-                                        key={slotNumber}
-                                        slotNumber={slotNumber}
-                                        label="WEAPON"
-                                        primaryColor={colors.weapons}
-                                        renderModal={renderModal}
-                                        isEmpty
-                                    />
-                                )
-                            })}
-                            <Box
-                                sx={{
-                                    p: "1rem",
-                                    width: "fit-content",
-                                }}
-                            >
-                                <FancyButton
-                                    disabled={loadoutDisabled}
-                                    clipThingsProps={{
-                                        clipSize: "6px",
-                                        clipSlantSize: "0px",
-                                        corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
-                                        backgroundColor: colors.weapons,
-                                        border: { isFancy: false, borderColor: colors.weapons, borderThickness: "1.5px" },
-                                        sx: { position: "relative", minWidth: "16rem" },
-                                    }}
-                                    sx={{ px: "1.3rem", py: ".9rem", color: "white" }}
-                                    onClick={enableInheritAllWeaponSkins ? inheritAllWeaponSkins : uninheritAllWeaponSkins}
-                                >
-                                    <Typography
-                                        variant="caption"
-                                        sx={{
-                                            fontFamily: fonts.nostromoBlack,
-                                        }}
-                                    >
-                                        {enableInheritAllWeaponSkins ? "Inherit Skins" : "Uninherit Skins"}
-                                    </Typography>
-                                </FancyButton>
-                            </Box>
+                            {renderWeaponSlot(0)}
+                            {mech_type === MechTypeEnum.Platform && renderWeaponSlot(1)}
                         </Stack>
-                    </Stack>
 
-                    {/* Right side */}
-                    <Stack
-                        flexWrap="wrap"
-                        sx={{
-                            position: "absolute",
-                            top: "5rem",
-                            bottom: "5rem",
-                            right: "6rem",
-                        }}
-                        alignItems="end"
-                    >
-                        {(() => {
-                            const mechSkin = chassis_skin
+                        {/* Top Right Side */}
+                        <Stack
+                            spacing="2rem"
+                            sx={{
+                                position: "absolute",
+                                top: "3rem",
+                                right: "3rem",
+                                alignItems: "end",
+                            }}
+                        >
+                            {mech_type === MechTypeEnum.Humanoid && renderWeaponSlot(1, "right")}
+                            {mech_type === MechTypeEnum.Platform && (
+                                <>
+                                    {renderWeaponSlot(3, "right")}
+                                    {renderWeaponSlot(2, "right")}
+                                </>
+                            )}
+                        </Stack>
 
-                            const renderModal = (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => (
-                                <MechLoadoutMechSkinModal
-                                    onClose={() => toggleShowLoadoutModal(false)}
-                                    onConfirm={(selectedMechSkin) => {
-                                        modifyMechSkin({
-                                            mech_skin: selectedMechSkin,
-                                            mech_skin_id: selectedMechSkin.id,
-                                        })
-                                        toggleShowLoadoutModal(false)
-                                    }}
-                                    mech={mechDetails}
-                                    equipped={mechSkin}
-                                    mechSkinsAlreadyEquippedInOtherSlots={chassis_skin ? [chassis_skin.id] : []}
-                                    compatibleMechSkins={compatible_blueprint_mech_skin_ids}
-                                />
-                            )
+                        {/* Bottom Left Side */}
+                        <Stack
+                            direction="row"
+                            spacing="2rem"
+                            sx={{
+                                position: "absolute",
+                                bottom: "3rem",
+                                left: "3rem",
+                            }}
+                        >
+                            {renderPowerCoreSlot()}
+                            {renderMechSkinSlot()}
+                        </Stack>
 
-                            if (mechSkin) {
-                                return (
-                                    <MechLoadoutItem
-                                        ref={mechSkinItemRef}
-                                        side="right"
-                                        locked={chassis_skin?.locked_to_mech}
-                                        disabled={loadoutDisabled}
-                                        imageUrl={
-                                            mechSkin.swatch_images?.image_url || mechSkin.swatch_images?.avatar_url || mechSkin.image_url || mechSkin.avatar_url
-                                        }
-                                        label={mechSkin.label}
-                                        primaryColor={colors.chassisSkin}
-                                        Icon={SvgSkin}
-                                        rarity={getRarityDeets(mechSkin.tier)}
-                                        renderModal={renderModal}
-                                    />
-                                )
-                            }
-
-                            return (
+                        {/* Bottom Right Side */}
+                        <Stack
+                            direction="row"
+                            spacing="2rem"
+                            sx={{
+                                position: "absolute",
+                                bottom: "3rem",
+                                right: "3rem",
+                            }}
+                        >
+                            {intro_animation ? (
                                 <MechLoadoutItem
-                                    ref={mechSkinItemRef}
-                                    disabled={loadoutDisabled}
-                                    label="SUBMODEL"
-                                    primaryColor={colors.chassisSkin}
-                                    renderModal={renderModal}
-                                    isEmpty
-                                    locked
+                                    imageUrl={intro_animation.image_url || intro_animation.avatar_url}
+                                    label={intro_animation.label}
+                                    Icon={SvgLoadoutEmote}
+                                    shape="square"
+                                    size="small"
+                                    side="right"
                                 />
-                            )
-                        })()}
+                            ) : (
+                                <MechLoadoutItem
+                                    label="INTRO ANIMATION"
+                                    onClick={() => console.log("AAAAA")}
+                                    Icon={SvgLoadoutEmote}
+                                    shape="square"
+                                    size="small"
+                                    side="right"
+                                    isEmpty
+                                    disabled
+                                />
+                            )}
 
-                        {intro_animation ? (
-                            <MechLoadoutItem
-                                imageUrl={intro_animation.image_url || intro_animation.avatar_url}
-                                videoUrls={[intro_animation.card_animation_url]}
-                                label={intro_animation.label}
-                                primaryColor={colors.introAnimation}
-                                Icon={SvgIntroAnimation}
-                                side="right"
-                            />
-                        ) : (
-                            <MechLoadoutItem
-                                label="INTRO ANIMATION"
-                                primaryColor={colors.introAnimation}
-                                onClick={() => console.log("AAAAA")}
-                                isEmpty
-                                disabled
-                            />
-                        )}
-
-                        {outro_animation ? (
-                            <MechLoadoutItem
-                                imageUrl={outro_animation.image_url || outro_animation.avatar_url}
-                                videoUrls={[outro_animation.card_animation_url]}
-                                label={outro_animation.label}
-                                primaryColor={colors.outroAnimation}
-                                Icon={SvgOutroAnimation}
-                                side="right"
-                            />
-                        ) : (
-                            <MechLoadoutItem
-                                label="OUTRO ANIMATION"
-                                primaryColor={colors.outroAnimation}
-                                onClick={() => console.log("AAAAA")}
-                                isEmpty
-                                disabled
-                            />
-                        )}
-                    </Stack>
-                </Box>
-            </ClipThing>
+                            {outro_animation ? (
+                                <MechLoadoutItem
+                                    imageUrl={outro_animation.image_url || outro_animation.avatar_url}
+                                    label={outro_animation.label}
+                                    Icon={SvgLoadoutEmote}
+                                    shape="square"
+                                    size="small"
+                                    side="right"
+                                />
+                            ) : (
+                                <MechLoadoutItem
+                                    label="OUTRO ANIMATION"
+                                    onClick={() => console.log("AAAAA")}
+                                    Icon={SvgLoadoutEmote}
+                                    shape="square"
+                                    size="small"
+                                    side="right"
+                                    isEmpty
+                                    disabled
+                                />
+                            )}
+                        </Stack>
+                    </Box>
+                </NiceBoxThing>
+            </Stack>
             <MechLoadoutDraggables
                 draggablesRef={draggablesRef}
+                compareToWeapon={compareToWeapon?.weapon}
                 excludeWeaponIDs={(() => {
                     const result: string[] = []
                     for (const ew of weapons_map.values()) {
@@ -961,16 +1052,13 @@ export const MechLoadout = ({ drawerContainerRef, mechDetails, mechStatus, onUpd
                 excludeMechSkinIDs={chassis_skin ? [chassis_skin.blueprint_id] : []}
                 includeMechSkinIDs={compatible_blueprint_mech_skin_ids}
                 mechModelID={mechDetails.blueprint_id}
-                onDrag={onItemDrag}
-                onDragStart={onItemDragStart}
-                onDragStop={onItemDragStop}
-                onMechSkinClick={(ms) => {
-                    if (loadoutDisabled) return
-                    modifyMechSkin({
-                        mech_skin: ms,
-                        mech_skin_id: ms.id,
-                    })
+                powerCoreSize={currLoadout.power_core_size}
+                drag={{
+                    onDrag: onItemDrag,
+                    onDragStart: onItemDragStart,
+                    onDragStop: onItemDragStop,
                 }}
+                onClick={onItemClick}
             />
         </Stack>
     )

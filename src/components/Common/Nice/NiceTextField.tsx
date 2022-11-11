@@ -4,9 +4,9 @@ import { fonts } from "../../../theme/theme"
 
 interface NiceTextFieldProps extends BaseTextFieldProps {
     primaryColor?: string
-    value: string | number
+    value?: string | number
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onChange: (value: any, e?: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+    onChange?: (value: any, e?: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
     onKeyDown?: React.KeyboardEventHandler<HTMLDivElement> | undefined
     errorMessage?: string
     sx?: SxProps
@@ -81,6 +81,10 @@ export const NiceTextField = ({
                 }}
                 value={value}
                 onChange={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+
+                    if (!onChange) return
                     if (props.type === "number") {
                         const num = parseInt(e.target.value)
                         if (num <= 0) return
@@ -88,8 +92,6 @@ export const NiceTextField = ({
                     } else {
                         onChange(e.target.value, e)
                     }
-                    e.preventDefault()
-                    e.stopPropagation()
                 }}
                 onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
                     onKeyDown && onKeyDown(e)
@@ -125,6 +127,7 @@ export const NiceTextField = ({
                             },
                         }}
                         onClick={() => {
+                            if (!onChange) return
                             onChange(value + 1)
                         }}
                     >
@@ -142,6 +145,7 @@ export const NiceTextField = ({
                             },
                         }}
                         onClick={() => {
+                            if (!onChange) return
                             if (value > 1) onChange(value - 1)
                         }}
                     >

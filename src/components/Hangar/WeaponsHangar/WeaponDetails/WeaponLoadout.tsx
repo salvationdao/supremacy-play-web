@@ -1,7 +1,6 @@
 import { Box, Stack } from "@mui/material"
 import { SvgSkin } from "../../../../assets"
 import { getRarityDeets } from "../../../../helpers"
-import { colors } from "../../../../theme/theme"
 import { Weapon } from "../../../../types"
 import { MechLoadoutItem } from "../../WarMachinesHangar/Common/MechLoadoutItem"
 
@@ -31,16 +30,9 @@ export const WeaponLoadout = ({ weaponDetails }: { weaponDetails: Weapon }) => {
                 }}
             >
                 {skin ? (
-                    <MechLoadoutItem
-                        imageUrl={skin.image_url || skin.avatar_url}
-                        videoUrls={[skin.card_animation_url]}
-                        label={skin.label}
-                        primaryColor={colors.chassisSkin}
-                        Icon={SvgSkin}
-                        rarity={getRarityDeets(skin.tier)}
-                    />
+                    <MechLoadoutItem imageUrl={skin.image_url || skin.avatar_url} label={skin.label} Icon={SvgSkin} rarity={getRarityDeets(skin.tier)} />
                 ) : (
-                    <MechLoadoutItem label="SUBMODEL" primaryColor={colors.chassisSkin} onClick={() => console.log("AAAAA")} isEmpty disabled />
+                    <MechLoadoutItem label="SUBMODEL" onClick={() => console.log("AAAAA")} isEmpty disabled />
                 )}
             </Stack>
         </Box>

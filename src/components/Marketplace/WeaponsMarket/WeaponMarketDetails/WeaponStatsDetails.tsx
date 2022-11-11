@@ -1,11 +1,11 @@
-import { useTheme } from "../../../../containers/theme"
 import { Stack, Typography } from "@mui/material"
 import { SvgSkin, SvgStats, SvgWeapons } from "../../../../assets"
+import { useTheme } from "../../../../containers/theme"
+import { getRarityDeets, getWeaponTypeColor } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
 import { Weapon } from "../../../../types"
-import { WeaponBarStats } from "../../../Hangar/WeaponsHangar/Common/WeaponBarStats"
 import { MechLoadoutItem } from "../../../Hangar/WarMachinesHangar/Common/MechLoadoutItem"
-import { getRarityDeets, getWeaponTypeColor } from "../../../../helpers"
+import { WeaponBarStats } from "../../../Hangar/WeaponsHangar/Common/WeaponBarStats"
 
 interface Props {
     weaponDetails?: Weapon
@@ -54,14 +54,7 @@ export const WeaponStatsDetails = ({ weaponDetails }: Props) => {
                 </Stack>
 
                 {skin ? (
-                    <MechLoadoutItem
-                        imageUrl={skin.image_url || skin.avatar_url}
-                        videoUrls={[skin.card_animation_url]}
-                        label={skin.label}
-                        primaryColor={colors.chassisSkin}
-                        Icon={SvgSkin}
-                        rarity={getRarityDeets(skin.tier)}
-                    />
+                    <MechLoadoutItem imageUrl={skin.image_url || skin.avatar_url} label={skin.label} Icon={SvgSkin} rarity={getRarityDeets(skin.tier)} />
                 ) : (
                     <Typography sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>NOT EQUIPPED</Typography>
                 )}

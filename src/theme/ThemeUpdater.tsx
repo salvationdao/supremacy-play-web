@@ -27,6 +27,7 @@ export const ThemeUpdater = ({ children }: { children: ReactNode }) => {
 
                 ".MuiPagination-root": {
                     ".Mui-selected": {
+                        borderRadius: 0,
                         color: theme.factionTheme.secondary,
                         backgroundColor: `${theme.factionTheme.primary} !important`,
                         boxShadow: 1,
@@ -35,6 +36,27 @@ export const ThemeUpdater = ({ children }: { children: ReactNode }) => {
 
                 ".MuiCircularProgress-root": {
                     color: theme.factionTheme.primary,
+                },
+
+                ".MuiSlider-root": {
+                    color: theme.factionTheme.primary,
+                    ".MuiSlider-thumb": { boxShadow: 1 },
+                },
+                ".MuiSwitch-root": {
+                    ".MuiSwitch-switchBase": {
+                        "&.Mui-checked": {
+                            color: theme.factionTheme.primary,
+                            "& + .MuiSwitch-track": {
+                                backgroundColor: `${theme.factionTheme.primary}44`,
+                            },
+                        },
+                        "&.Mui-focusVisible .MuiSwitch-thumb": {
+                            color: theme.factionTheme.primary,
+                        },
+                        "&.Mui-disabled .MuiSwitch-thumb": {
+                            color: `${theme.factionTheme.primary}66`,
+                        },
+                    },
                 },
             }}
         >
