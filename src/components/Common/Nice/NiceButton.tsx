@@ -169,7 +169,7 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
                     right: 0,
                     bottom: 0,
                     backgroundColor: "#000000",
-                    borderRadius: 0.3,
+                    borderRadius: 0.1,
                     transition: ".2s all",
                     opacity: 0,
                 }}
