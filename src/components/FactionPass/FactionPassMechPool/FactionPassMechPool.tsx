@@ -388,7 +388,7 @@ export const FactionPassMechPool = () => {
                 />
 
                 {/* Search, sort, grid view, and other top buttons */}
-                <Stack spacing="3rem" alignItems="stretch" flex={1} sx={{ overflow: "hidden" }}>
+                <Stack spacing="2rem" alignItems="stretch" flex={1} sx={{ overflow: "hidden" }}>
                     <Stack spacing="1rem" direction="row" alignItems="center" sx={{ overflowX: "auto", overflowY: "hidden", width: "100%", pb: ".2rem" }}>
                         {/* Filter button */}
                         <NiceButton
