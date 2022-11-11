@@ -1,4 +1,4 @@
-import { Box, CircularProgress, MenuItem, Pagination, Select, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { SvgLoadoutPowerCore, SvgSearch } from "../../../../../../assets"
 import { useTheme } from "../../../../../../containers/theme"
@@ -9,10 +9,11 @@ import { GameServerKeys } from "../../../../../../keys"
 import { fonts } from "../../../../../../theme/theme"
 import { AssetItemType, PowerCore } from "../../../../../../types"
 import { SortTypeLabel } from "../../../../../../types/marketplace"
+import { NiceSelect } from "../../../../../Common/Nice/NiceSelect"
 import { MechLoadoutItem } from "../../../Common/MechLoadoutItem"
 import { OnClickEventWithType } from "../MechLoadoutDraggables"
 import { GetPowerCoresRequest } from "../Modals/MechLoadoutPowerCoreModal"
-import { InputLabeller, NiceInputBase } from "./WeaponDraggables"
+import { NiceInputBase } from "./WeaponDraggables"
 
 export interface GetPowerCoresDetailedResponse {
     power_cores: PowerCore[]
@@ -176,16 +177,39 @@ export const PowerCoreDraggables = ({ powerCoreSize, onClick }: PowerCoreDraggab
                     placeholder="Search power cores..."
                     endAdornment={searchLoading ? <CircularProgress size="1rem" /> : <SvgSearch size="1.6rem" fill={"rgba(255, 255, 255, 0.4)"} />}
                 />
-                <InputLabeller flex={1} label="Sort:" name="sort">
-                    <Select name="sort" value={sort} onChange={(e) => setSort(e.target.value)} input={<NiceInputBase />}>
-                        <MenuItem value={SortTypeLabel.Alphabetical}>{SortTypeLabel.Alphabetical}</MenuItem>
-                        <MenuItem value={SortTypeLabel.AlphabeticalReverse}>{SortTypeLabel.AlphabeticalReverse}</MenuItem>
-                        <MenuItem value={SortTypeLabel.RarestAsc}>{SortTypeLabel.RarestAsc}</MenuItem>
-                        <MenuItem value={SortTypeLabel.RarestDesc}>{SortTypeLabel.RarestDesc}</MenuItem>
-                        <MenuItem value={SortTypeLabel.DateAddedNewest}>Date added: newest</MenuItem>
-                        <MenuItem value={SortTypeLabel.DateAddedOldest}>Date added: oldest</MenuItem>
-                    </Select>
-                </InputLabeller>
+                <NiceSelect
+                    label="Sort:"
+                    primaryColor={theme.factionTheme.primary}
+                    secondaryColor={theme.factionTheme.secondary}
+                    options={[
+                        {
+                            value: SortTypeLabel.Alphabetical,
+                            label: SortTypeLabel.Alphabetical,
+                        },
+                        {
+                            value: SortTypeLabel.AlphabeticalReverse,
+                            label: SortTypeLabel.AlphabeticalReverse,
+                        },
+                        {
+                            value: SortTypeLabel.RarestAsc,
+                            label: SortTypeLabel.RarestAsc,
+                        },
+                        {
+                            value: SortTypeLabel.RarestDesc,
+                            label: SortTypeLabel.RarestDesc,
+                        },
+                        {
+                            value: SortTypeLabel.DateAddedNewest,
+                            label: "Date added: newest",
+                        },
+                        {
+                            value: SortTypeLabel.DateAddedOldest,
+                            label: "Date added: oldest",
+                        },
+                    ]}
+                    selected={sort}
+                    onSelected={(value) => setSort(value)}
+                />
             </Stack>
 
             {/* Content */}
