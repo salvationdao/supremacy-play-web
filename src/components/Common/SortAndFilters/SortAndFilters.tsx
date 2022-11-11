@@ -1,5 +1,5 @@
 import { Divider, Stack, SxProps, Typography } from "@mui/material"
-import React from "react"
+import React, { useCallback, useMemo } from "react"
 import { SvgClose2 } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { fonts } from "../../../theme/theme"
@@ -17,6 +17,17 @@ interface SortAndFiltersProps {
 
 export const SortAndFilters = React.memo(function SortAndFilters({ open, chipFilters, rangeFilters, sx }: SortAndFiltersProps) {
     const theme = useTheme()
+
+    const isFilterApplied = useMemo(() => {
+        const chipApplied = chipFilters?.some((f) => f.selected?.length > 0)
+        const rangeApplied = rangeFilters?.some((f) => !f.values || f.values[0] !== f.minMax[0] || f.values[1] !== f.minMax[1])
+        return chipApplied || rangeApplied
+    }, [chipFilters, rangeFilters])
+
+    const clearAllFilters = useCallback(() => {
+        chipFilters?.forEach((f) => f.setSelected([]))
+        rangeFilters?.forEach((f) => f.setValues(undefined))
+    }, [chipFilters, rangeFilters])
 
     return (
         <NiceBoxThing
@@ -37,11 +48,14 @@ export const SortAndFilters = React.memo(function SortAndFilters({ open, chipFil
                 {/* Heading */}
                 <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ p: "1.2rem 2rem", pr: "1rem" }}>
                     <Typography fontFamily={fonts.nostromoBlack}>FILTERS</Typography>
+
                     <NiceButton
-                        border={{ color: theme.factionTheme.primary }}
+                        disabled={!isFilterApplied}
+                        border={{ color: theme.factionTheme.primary, thickness: "very-lean" }}
                         background={{ color: [theme.factionTheme.primary] }}
+                        onClick={clearAllFilters}
                         sx={{
-                            p: ".4rem 1rem",
+                            p: ".3rem 1rem",
                         }}
                     >
                         <SvgClose2 inline /> Clear Filters
