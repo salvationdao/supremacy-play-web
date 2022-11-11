@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { EmptyWarMachinesPNG, SvgFilter, SvgGridView, SvgListView, SvgSearch } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, parseString } from "../../../helpers"
@@ -17,7 +17,6 @@ import { NiceButton } from "../../Common/Nice/NiceButton"
 import { NiceButtonGroup } from "../../Common/Nice/NiceButtonGroup"
 import { NiceSelect } from "../../Common/Nice/NiceSelect"
 import { NiceTextField } from "../../Common/Nice/NiceTextField"
-import { ChipFilterProps } from "../../Common/SortAndFilters/ChipFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 
 const sortOptions = [
@@ -61,21 +60,6 @@ export const FactionPassMechPool = () => {
     const [displayMechs, setDisplayMechs] = useState<LobbyMech[]>([])
     const [mechs, setMechs] = useState<LobbyMech[]>([])
     const [isLoading, setIsLoading] = useState(true)
-
-    // Use ref filters
-    const statusFilters = useRef<ChipFilterProps>({
-        label: "STATUS",
-        options: [
-            { value: MechStatusEnum.Idle, render: { label: "IDLE", color: colors.green } },
-            { value: MechStatusEnum.Queue, render: { label: "IN QUEUE", color: colors.yellow } },
-            { value: MechStatusEnum.Battle, render: { label: "IN BATTLE", color: colors.orange } },
-            { value: MechStatusEnum.Market, render: { label: "MARKETPLACE", color: colors.bronze } },
-            { value: MechStatusEnum.Damaged, render: { label: "DAMAGED", color: colors.red } },
-        ],
-        initialSelected: status,
-        initialExpanded: true,
-        onSetSelected: (value: string[]) => setStatus(value),
-    })
 
     useGameServerSubscriptionFaction<LobbyMech[]>(
         {
@@ -251,7 +235,24 @@ export const FactionPassMechPool = () => {
             <NavTabs activeTabID={activeTabID} setActiveTabID={setActiveTabID} tabs={tabs} prevTab={prevTab} nextTab={nextTab} />
 
             <Stack direction="row" alignItems="stretch" sx={{ flex: 1, width: "100%", overflow: "hidden" }}>
-                <SortAndFilters open={showFilters} chipFilters={[statusFilters.current]} />
+                <SortAndFilters
+                    open={showFilters}
+                    chipFilters={[
+                        {
+                            label: "STATUS",
+                            options: [
+                                { value: MechStatusEnum.Idle, render: { label: "IDLE", color: colors.green } },
+                                { value: MechStatusEnum.Queue, render: { label: "IN QUEUE", color: colors.yellow } },
+                                { value: MechStatusEnum.Battle, render: { label: "IN BATTLE", color: colors.orange } },
+                                { value: MechStatusEnum.Market, render: { label: "MARKETPLACE", color: colors.bronze } },
+                                { value: MechStatusEnum.Damaged, render: { label: "DAMAGED", color: colors.red } },
+                            ],
+                            initialExpanded: true,
+                            selected: status,
+                            setSelected: setStatus,
+                        },
+                    ]}
+                />
 
                 {/* Search, sort, grid view, and other top buttons */}
                 <Stack spacing="3rem" alignItems="stretch" flex={1} sx={{ overflow: "hidden" }}>
