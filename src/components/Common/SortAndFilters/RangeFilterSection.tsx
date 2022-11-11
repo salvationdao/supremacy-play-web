@@ -1,7 +1,7 @@
 import { Slider, Stack, Typography } from "@mui/material"
-import React, { useCallback } from "react"
-import { debounce } from "ts-debounce"
+import React, { useEffect } from "react"
 import { useTheme } from "../../../containers/theme"
+import { useDebounce } from "../../../hooks"
 import { colors, fonts } from "../../../theme/theme"
 import { NiceTextField } from "../Nice/NiceTextField"
 import { Section } from "./Section"
@@ -16,22 +16,18 @@ export interface RangeFilterProps {
 
 export const RangeFilterSection = React.memo(function RangeFilterSection({ label, minMax, values, setValues, initialExpanded }: RangeFilterProps) {
     const theme = useTheme()
+    const [value, setValue, valueInstant] = useDebounce<number[] | undefined>(values || minMax, 300)
 
-    // Debounce it
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const setParentValues = useCallback(
-        debounce((newValues: number[]) => {
-            setValues(newValues as number[])
-        }, 300),
-        [],
-    )
+    useEffect(() => {
+        setValues(value)
+    }, [setValues, value])
 
     return (
         <Section label={label} initialExpanded={initialExpanded}>
             <Stack sx={{ px: "1.6rem", pb: ".8rem" }} spacing=".8rem">
                 <Slider
-                    defaultValue={values || minMax}
-                    onChange={(_, newValues: number | number[]) => setParentValues(newValues as number[])}
+                    value={valueInstant || minMax}
+                    onChange={(_, newValues: number | number[]) => setValue(newValues as number[])}
                     valueLabelDisplay="auto"
                     min={minMax[0]}
                     max={minMax[1]}
@@ -41,9 +37,9 @@ export const RangeFilterSection = React.memo(function RangeFilterSection({ label
                 <Stack direction="row" alignItems="center" spacing="1rem">
                     <NiceTextField
                         primaryColor={theme.factionTheme.primary}
-                        value={values ? values[0] : minMax[0]}
+                        value={valueInstant ? valueInstant[0] : minMax[0]}
                         onChange={(value) => {
-                            setParentValues([value, values ? values[1] : minMax[1]])
+                            setValue([value, valueInstant ? valueInstant[1] : minMax[1]])
                         }}
                         placeholder="Min"
                         sx={{ ".MuiInputBase-root": { backgroundColor: colors.darkNavy } }}
@@ -56,11 +52,12 @@ export const RangeFilterSection = React.memo(function RangeFilterSection({ label
 
                     <NiceTextField
                         primaryColor={theme.factionTheme.primary}
-                        value={values ? values[1] : minMax[1]}
+                        value={valueInstant ? valueInstant[1] : minMax[1]}
                         onChange={(value) => {
-                            setParentValues([values ? values[0] : minMax[0], value])
+                            setValue([valueInstant ? valueInstant[0] : minMax[0], value])
                         }}
                         placeholder="Max"
+                        sx={{ ".MuiInputBase-root": { backgroundColor: colors.darkNavy } }}
                     />
                 </Stack>
             </Stack>
