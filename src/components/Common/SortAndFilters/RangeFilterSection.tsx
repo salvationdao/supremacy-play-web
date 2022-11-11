@@ -9,7 +9,7 @@ import { Section } from "./Section"
 export interface FreqGraphProps {
     min: number
     max: number
-    count: number
+    maxFreq: number
     freq: { [value: number]: number }
 }
 
@@ -23,7 +23,7 @@ export interface RangeFilterProps {
 }
 
 export const RangeFilterSection = React.memo(function RangeFilterSection(props: RangeFilterProps) {
-    if (props.freqGraph.count <= 0) return null
+    if (props.freqGraph.max - props.freqGraph.min <= 0) return null
     return <RangeFilterSectionInner {...props} />
 })
 
@@ -117,8 +117,7 @@ const HistogramGraph = React.memo(function HistogramGraph({
                         key={index}
                         style={{
                             flex: 1,
-                            height: `${Math.min(100, (100 * freqGraph.freq[index + 1]) / freqGraph.count || 0)}%`,
-                            // background: `linear-gradient(90deg, ${primaryColor}BB, ${primaryColor})`,
+                            height: `${Math.min(100, (100 * freqGraph.freq[index + 1]) / freqGraph.maxFreq || 0)}%`,
                             backgroundColor: primaryColor,
                             boxShadow: "inset 1px 1px 2px #00000080",
                             opacity: !values || (values[0] <= index && index <= values[1]) ? 1 : 0.4,
