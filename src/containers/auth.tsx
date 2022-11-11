@@ -1,5 +1,5 @@
 import { createContext, Dispatch, ReactNode, useCallback, useContext, useEffect, useRef, useState } from "react"
-import { useQuery } from "react-fetching-library"
+import { useMutation, useQuery } from "react-fetching-library"
 import { useFingerprint, useSupremacy } from "."
 import { PASSPORT_WEB } from "../constants"
 import { GameServerLoginCheck, GetGlobalFeatures, PassportLoginCheck } from "../fetching"
@@ -124,9 +124,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const { query: getGlobalFeatures } = useQuery(GetGlobalFeatures())
     const [globalFeatures, setGlobalFeatures] = useState<Feature[]>([])
-
-    const { query: passportLoginCheck } = useQuery(PassportLoginCheck(), false)
     const { query: gameserverLoginCheck } = useQuery(GameServerLoginCheck(fingerprint), false)
+    const { mutate: passportLoginCheck } = useMutation(PassportLoginCheck)
 
     const handleVisibilityChange = useCallback(() => {
         if (document["hidden"]) {
@@ -149,12 +148,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const authCheckCallback = useCallback(
         async (event?: MessageEvent) => {
-            if (event && !("token" in event.data)) return
-
+            if (event && !("issue_token" in event.data)) return
+            const issueToken = event?.data.issue_token as string
             // Check passport server login
             if (!userFromPassport) {
                 try {
-                    const resp = await passportLoginCheck()
+                    const resp = await passportLoginCheck(issueToken)
                     if (resp.error || !resp.payload) {
                         setUserFromPassport(undefined)
                         return
@@ -170,11 +169,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     useEffect(() => {
         if (isServerDown) return
-
-        if (!userFromPassport) {
-            setIsLoggingIn(false)
-            return
-        }
 
         gameserverLoginCheck()
             .then((resp) => {
@@ -237,7 +231,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const onLogInClick = useCallback(async () => {
         if (isLoggingIn) return
         setIsLoggingIn(true)
-        const href = `${PASSPORT_WEB}external/login?tenant=supremacy&redirectURL=${encodeURIComponent(`${window.location.origin}/login-redirect`)}`
+        const href = `${PASSPORT_WEB}external/login?origin=${window.location.origin}`
         const popup = window.open(href, "_blank")
 
         setPassportPopup(popup)
