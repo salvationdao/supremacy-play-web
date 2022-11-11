@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react"
 import { BattleEndScreen, Controls, EarlyAccessWarningModal, Notifications, SupporterAbilities, WarMachineStats } from ".."
 import { SvgAbility, SvgHistoryClock } from "../../assets"
 import { BATTLE_ARENA_OPEN } from "../../constants"
-import { useAuth, useDimension, useMobile } from "../../containers"
+import { GAME_UI_ID, useAuth, useDimension, useMobile } from "../../containers"
 import { LeftRouteID } from "../../routes"
 import { siteZIndex } from "../../theme/theme"
 import { PlayerAbilities } from "../LeftDrawer/BattleArena/PlayerAbilities/PlayerAbilities"
@@ -119,7 +119,7 @@ const BattleArenaPageInner = React.memo(function BattleArenaPageInner() {
 
     return (
         <Stack id="battle-arena-all" sx={{ width: "100%", height: "100%", zIndex: siteZIndex.RoutePage }}>
-            <Box id="game-ui-container" sx={{ position: "relative", flex: 1 }}>
+            <Box id={GAME_UI_ID} sx={{ position: "relative", flex: 1 }}>
                 <BigDisplay />
 
                 {!isMobile && (

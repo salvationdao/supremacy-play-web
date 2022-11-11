@@ -14,8 +14,8 @@ import { Helmet } from "react-helmet"
 import { BrowserRouter, Redirect, Route, Switch, useHistory } from "react-router-dom"
 import { SupremacyPNG } from "./assets"
 import { Bar, GlobalSnackbar, Maintenance, RightDrawer } from "./components"
-import { BottomNav } from "./components/BattleArena/BottomNav/BottomNav"
 import { SupremacyWorldModal } from "./components/BannersPromotions/SupremacyWorldModal"
+import { BottomNav } from "./components/BattleArena/BottomNav/BottomNav"
 import { ErrorFallback } from "./components/ErrorFallback/ErrorFallback"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
 import { LoginRedirect } from "./components/LoginRedirect/LoginRedirect"
@@ -32,6 +32,7 @@ import {
     DimensionProvider,
     GameProvider,
     GlobalNotificationsProvider,
+    MAIN_CONTENT_ID,
     MiniMapPixiProvider,
     MobileProvider,
     SupremacyProvider,
@@ -195,7 +196,7 @@ const AppInner = () => {
                             overflow: "hidden",
                         }}
                     >
-                        <Box sx={{ flex: 1, position: "relative", overflow: "hidden" }}>
+                        <Box id={MAIN_CONTENT_ID} sx={{ flex: 1, position: "relative", overflow: "hidden" }}>
                             <MarketingModal />
 
                             {isTutorial ? (

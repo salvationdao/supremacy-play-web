@@ -1,44 +1,37 @@
-import { Box, Grow, IconButton, Skeleton, Stack, Typography } from "@mui/material"
-import React, { useEffect, useMemo, useRef } from "react"
-import { ClipThing, FancyButton } from "../../.."
-import { SvgDrag, SvgLock, SvgPlus, SvgRemove, SvgSkin, SvgSwap, SvgWrapperProps } from "../../../../assets"
-import { shadeColor } from "../../../../helpers"
-import { useToggle } from "../../../../hooks"
-import { TruncateTextLines } from "../../../../theme/styles"
+import { Box, Slide, Stack, styled, Tooltip, tooltipClasses, TooltipProps, Typography } from "@mui/material"
+import React, { useEffect, useRef, useState } from "react"
+import { SvgCancelled, SvgLock, SvgWrapperProps } from "../../../../assets"
 import { colors, fonts } from "../../../../theme/theme"
 import { Rarity } from "../../../../types"
-import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
-import { MediaPreviewModal } from "../../../Common/MediaPreview/MediaPreviewModal"
+import { NiceButton, NiceButtonProps } from "../../../Common/Nice/NiceButton"
 
 export interface LoadoutItem {
-    slotNumber?: number
+    TopRight?: React.ReactNode
+    BottomRight?: React.ReactNode
+    Icon?: React.VoidFunctionComponent<SvgWrapperProps>
     imageUrl?: string
-    videoUrls?: (string | undefined)[] | undefined
     label: string
     subLabel?: string
-    onClick?: () => void
     rarity?: Rarity
-    hasSkin?: boolean
-    primaryColor: string
-    imageTransform?: string
-    Icon?: React.VoidFunctionComponent<SvgWrapperProps>
-    locked?: boolean
     disabled?: boolean
+    locked?: boolean
     isEmpty?: boolean
+    shape?: "square" | "rectangle"
+    size?: "small" | "regular" | "full-width"
+    onClick?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent> | React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 }
 
 export interface MechLoadoutItemProps extends LoadoutItem {
-    side?: "left" | "right"
     prevEquipped?: LoadoutItem
     onUnequip?: () => void
-    renderModal?: (toggleShowLoadoutModal: (value?: boolean | undefined) => void) => React.ReactNode
+    renderTooltip?: () => React.ReactNode
+    side?: "left" | "right"
 }
 
 export const MechLoadoutItem = React.forwardRef<HTMLDivElement, MechLoadoutItemProps>(function MechLoadoutItem(props, ref) {
-    const { imageUrl, videoUrls } = props
-    const { side = "left", prevEquipped, onUnequip, renderModal, onClick, ...loadoutItemButtonProps } = props
-    const [showLoadoutModal, toggleShowLoadoutModal] = useToggle()
+    const { prevEquipped, onUnequip, renderTooltip, side = "left", onClick, ...loadoutItemButtonProps } = props
     const memoizedPrevEquipped = useRef<LoadoutItem>()
+    const [hideTooltip, setHideTooltip] = useState(false)
 
     useEffect(() => {
         if (!prevEquipped) return
@@ -48,354 +41,264 @@ export const MechLoadoutItem = React.forwardRef<HTMLDivElement, MechLoadoutItemP
         memoizedPrevEquipped.current = prevEquipped
     }, [prevEquipped])
 
-    return (
-        <>
-            <Stack
-                ref={ref}
-                position="relative"
-                direction={side === "left" ? "row" : "row-reverse"}
-                spacing="1rem"
-                alignItems="center"
-                sx={{ position: "relative", p: ".8rem", width: "fit-content" }}
-            >
-                <Box
-                    sx={{
-                        position: "relative",
-                    }}
-                >
-                    <MechLoadoutItemButton
-                        onClick={() => {
-                            onClick && onClick()
-                            toggleShowLoadoutModal(true)
-                        }}
-                        {...loadoutItemButtonProps}
-                    />
-                    {!props.disabled && !props.locked && onUnequip && (
-                        <IconButton
-                            onClick={() => {
-                                onUnequip()
-                            }}
-                            sx={{
-                                zIndex: 10,
-                                position: "absolute",
-                                top: "1rem",
-                                right: "1rem",
-                            }}
-                        >
-                            <SvgRemove fill={colors.red} />
-                        </IconButton>
-                    )}
-                </Box>
-                <Grow in={!!prevEquipped} mountOnEnter unmountOnExit>
-                    <Stack direction={side === "left" ? "row" : "row-reverse"} alignItems="center">
-                        <SvgSwap sx={{ opacity: 0.6 }} />
-                        {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
-                        <MechLoadoutItemButton {...(prevEquipped! || memoizedPrevEquipped.current)} isPreviouslyEquipped />
-                    </Stack>
-                </Grow>
-            </Stack>
+    const button = (
+        <MechLoadoutItemButton
+            onClick={(e) => {
+                if (onClick) {
+                    onClick(e)
+                }
+            }}
+            onMouseDown={() => setHideTooltip(true)}
+            onMouseUp={() => setHideTooltip(false)}
+            {...loadoutItemButtonProps}
+        />
+    )
 
-            {showLoadoutModal &&
-                (renderModal ? (
-                    renderModal(toggleShowLoadoutModal)
-                ) : (
-                    <MediaPreviewModal imageUrl={imageUrl} videoUrls={videoUrls} onClose={() => toggleShowLoadoutModal(false)} />
-                ))}
-        </>
+    return (
+        <Stack
+            ref={ref}
+            sx={{
+                position: "relative",
+                flexDirection: side === "right" ? "row-reverse" : "row",
+                alignItems: "stretch",
+                height: props.size === "full-width" ? "100%" : "auto",
+                width: props.size === "full-width" ? "100%" : "fit-content",
+            }}
+        >
+            {renderTooltip ? (
+                <MaybeTooltip
+                    sx={{
+                        opacity: hideTooltip ? 0 : 1,
+                        transition: "opacity .2s ease-out",
+                    }}
+                    title={<>{renderTooltip()}</>}
+                    followCursor
+                >
+                    <Box
+                        sx={{
+                            height: props.size === "full-width" ? "100%" : "auto",
+                            width: props.size === "full-width" ? "100%" : "fit-content",
+                        }}
+                    >
+                        {button}
+                    </Box>
+                </MaybeTooltip>
+            ) : (
+                button
+            )}
+            <Box overflow="hidden">
+                <Slide in={!!onUnequip} unmountOnExit>
+                    <NiceButton
+                        onClick={onUnequip}
+                        disabled={props.disabled || props.locked}
+                        border={{
+                            color: colors.red,
+                            thickness: "lean",
+                        }}
+                        sx={
+                            side === "right"
+                                ? {
+                                      borderRight: "none",
+                                  }
+                                : {
+                                      borderLeft: "none",
+                                  }
+                        }
+                    >
+                        <SvgCancelled />
+                    </NiceButton>
+                </Slide>
+            </Box>
+        </Stack>
     )
 })
 
-interface MechLoadoutItemButtonProps extends LoadoutItem {
-    isPreviouslyEquipped?: boolean
-}
+type MechLoadoutItemButtonProps = LoadoutItem & NiceButtonProps
 
 const MechLoadoutItemButton = ({
-    slotNumber,
+    TopRight,
+    BottomRight,
+    Icon,
     imageUrl,
-    videoUrls,
     label,
     subLabel,
-    primaryColor,
-    onClick,
     isEmpty,
-    Icon,
     rarity,
-    hasSkin,
-    imageTransform,
     locked,
     disabled,
-    isPreviouslyEquipped,
+    shape = "rectangle",
+    size = "regular",
+    ...props
 }: MechLoadoutItemButtonProps) => {
-    const backgroundColor = useMemo(() => shadeColor(primaryColor, -90), [primaryColor])
+    const height = size === "full-width" ? "100%" : size === "regular" ? 120 : 100
+    const width = size === "full-width" ? "100%" : size === "regular" ? 260 : 200
+    const color = isEmpty ? "#ffffff88" : "white"
 
     return (
-        <FancyButton
-            disabled={disabled || locked}
-            clipThingsProps={{
-                clipSize: "10px",
-                clipSlantSize: "0px",
-                corners: { topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
-                backgroundColor,
-                opacity: 0.9,
-                border: { isFancy: false, borderColor: primaryColor, borderThickness: ".3rem" },
-                sx: {
-                    position: "relative",
-                    ...(isPreviouslyEquipped
+        <>
+            <NiceButton
+                disabled={disabled || locked}
+                border={{
+                    color: rarity ? rarity.color : colors.darkGrey,
+                    thickness: "lean",
+                }}
+                caret={
+                    !isEmpty
                         ? {
-                              transform: "scale(0.8)",
-                              ml: "-.5rem !important",
+                              position: "bottom-right",
                           }
-                        : {}),
-                },
-            }}
-            sx={{ p: 0, color: primaryColor }}
-            onClick={() => {
-                onClick && onClick()
-            }}
-        >
-            {locked && (
-                <Stack
-                    alignItems="center"
-                    justifyContent="center"
-                    sx={{
-                        zIndex: 1,
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        backgroundColor: colors.black2,
-                        opacity: 0.6,
-                    }}
-                >
-                    <SvgLock />
-                </Stack>
-            )}
-            {isPreviouslyEquipped && (
-                <Stack
-                    alignItems="center"
-                    justifyContent="center"
-                    sx={{
-                        zIndex: 1,
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        backgroundColor: colors.black2,
-                        opacity: 0.6,
-                    }}
-                >
-                    <Typography>Reset Selection</Typography>
-                </Stack>
-            )}
-            <Stack spacing="1rem" alignItems="center" sx={{ height: "16rem", width: "16rem", p: "1rem", textAlign: "center" }}>
-                <Stack justifyContent="center" sx={{ position: "relative", height: "9rem", alignSelf: "stretch", backgroundColor: "#00000060" }}>
-                    {isEmpty ? (
-                        <SvgPlus fill={`${primaryColor}80`} size="2rem" />
-                    ) : (
-                        <MediaPreview
-                            imageUrl={imageUrl}
-                            videoUrls={videoUrls}
-                            objectFit="contain"
-                            sx={{ p: ".5rem", pointerEvents: "none" }}
-                            imageTransform={imageTransform}
-                        />
-                    )}
-
-                    <Stack spacing=".3rem" direction="row" alignItems="center" sx={{ position: "absolute", top: ".1rem", left: ".5rem" }}>
-                        {Icon && <Icon fill={primaryColor} size="1.8rem" />}
-                        {hasSkin && <SvgSkin fill={colors.chassisSkin} size="1.4rem" />}
-                    </Stack>
-
-                    {slotNumber != null && (
-                        <Typography
-                            sx={{
-                                position: "absolute",
-                                top: ".1rem",
-                                right: ".5rem",
-                                opacity: 0.6,
-                            }}
-                        >
-                            SLOT {slotNumber}
-                        </Typography>
-                    )}
-
-                    {rarity && (
-                        <Typography
-                            variant="caption"
-                            sx={{ position: "absolute", bottom: ".3rem", left: 0, right: 0, color: rarity.color, fontFamily: fonts.nostromoBlack }}
-                        >
-                            {rarity.label}
-                        </Typography>
-                    )}
-                </Stack>
-
-                <Box>
-                    <Typography
-                        variant="body2"
+                        : undefined
+                }
+                background={{
+                    color: [colors.black2, rarity ? rarity.color : colors.darkGrey],
+                    opacity: "half",
+                }}
+                sx={{
+                    width: shape === "rectangle" ? width : height,
+                    height: height,
+                    padding: 0,
+                }}
+                {...props}
+            >
+                {/* Maintain aspect ratio with padding-bottom hack */}
+                {size === "full-width" && (
+                    <Box
                         sx={{
-                            color: primaryColor,
-                            fontFamily: fonts.nostromoBold,
-                            ...TruncateTextLines(2),
+                            pb: shape === "square" ? "100%" : "56.25%",
+                        }}
+                    />
+                )}
+                {isEmpty ? (
+                    <Stack
+                        sx={{
+                            alignItems: "center",
+                            justifyContent: "center",
+                            width: "100%",
+                            height: "100%",
+                            pointerEvents: "none",
                         }}
                     >
-                        {label}
-                    </Typography>
-
-                    {subLabel && (
                         <Typography
-                            variant="body2"
                             sx={{
-                                color: primaryColor,
-                                fontFamily: fonts.nostromoBold,
-                                ...TruncateTextLines(1),
+                                fontFamily: fonts.nostromoBlack,
+                                fontSize: size === "regular" ? "2.6rem" : "2rem",
+                                color,
                             }}
                         >
-                            {subLabel}
+                            EMPTY
                         </Typography>
-                    )}
-                </Box>
-            </Stack>
-        </FancyButton>
-    )
-}
-
-export const MechLoadoutItemSkeleton = () => {
-    return (
-        <Box>
-            <ClipThing>
-                <Skeleton variant="rectangular" width="100%" height={130} />
-            </ClipThing>
-        </Box>
-    )
-}
-
-interface MechLoadoutItemDraggableProps extends LoadoutItem {
-    style?: React.CSSProperties
-    className?: string
-    onMouseDown?: React.MouseEventHandler<HTMLDivElement>
-    onMouseUp?: React.MouseEventHandler<HTMLDivElement>
-    onTouchStart?: React.TouchEventHandler<HTMLDivElement>
-}
-
-const MechLoadoutItemDraggableBase = React.forwardRef<HTMLDivElement, MechLoadoutItemDraggableProps>(function MechLoadoutItemDraggable(
-    { slotNumber, imageUrl, videoUrls, label, subLabel, primaryColor, isEmpty, Icon, rarity, hasSkin, imageTransform, locked, ...draggableProps },
-    ref,
-) {
-    const backgroundColor = useMemo(() => shadeColor(primaryColor, -90), [primaryColor])
-
-    return (
-        <Stack ref={ref} position="relative" direction="row" spacing="1rem" alignItems="center" {...draggableProps}>
-            {locked && (
-                <Stack
-                    alignItems="center"
-                    justifyContent="center"
-                    sx={{
-                        zIndex: 1,
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        backgroundColor: colors.black2,
-                        opacity: 0.6,
-                    }}
-                >
-                    <SvgLock />
-                </Stack>
-            )}
-            <ClipThing
-                clipSize={"10px"}
-                clipSlantSize={"0px"}
-                corners={{ topLeft: true, topRight: true, bottomLeft: true, bottomRight: true }}
-                backgroundColor={backgroundColor}
-                opacity={0.9}
-                border={{ isFancy: false, borderColor: primaryColor, borderThickness: ".3rem" }}
-                sx={{
-                    width: "100%",
-                }}
-            >
-                <Stack spacing="1rem" alignItems="center" sx={{ width: "100%", maxWidth: "16rem", p: "1rem", textAlign: "center" }}>
-                    <Stack justifyContent="center" sx={{ position: "relative", height: "9rem", alignSelf: "stretch", backgroundColor: "#00000060" }}>
-                        {isEmpty ? (
-                            <SvgPlus fill={`${primaryColor}80`} size="2rem" />
-                        ) : (
-                            <MediaPreview
-                                imageUrl={imageUrl}
-                                videoUrls={videoUrls}
-                                objectFit="contain"
-                                sx={{ p: ".5rem", pointerEvents: "none" }}
-                                imageTransform={imageTransform}
-                            />
-                        )}
-
-                        <Stack spacing=".3rem" direction="row" alignItems="center" sx={{ position: "absolute", top: ".1rem", left: ".5rem" }}>
-                            {Icon && <Icon fill={primaryColor} size="1.8rem" />}
-                            {hasSkin && <SvgSkin fill={colors.chassisSkin} size="1.4rem" />}
-                        </Stack>
-                        <Stack
-                            sx={{
-                                position: "absolute",
-                                top: ".1rem",
-                                right: ".5rem",
-                            }}
-                        >
-                            {!draggableProps.onClick && <SvgDrag fill={`${primaryColor}aa`} />}
-                        </Stack>
-
-                        {slotNumber != null && (
-                            <Typography
-                                sx={{
-                                    position: "absolute",
-                                    top: ".1rem",
-                                    right: ".5rem",
-                                    opacity: 0.6,
-                                }}
-                            >
-                                SLOT {slotNumber}
-                            </Typography>
-                        )}
-
-                        {rarity && (
-                            <Typography
-                                variant="caption"
-                                sx={{ position: "absolute", bottom: ".3rem", left: 0, right: 0, color: rarity.color, fontFamily: fonts.nostromoBlack }}
-                            >
-                                {rarity.label}
-                            </Typography>
-                        )}
                     </Stack>
-
-                    <Box>
-                        <Typography
-                            variant="body2"
+                ) : (
+                    <>
+                        <Box
+                            component="img"
+                            src={imageUrl}
+                            alt={label}
                             sx={{
-                                color: primaryColor,
+                                width: "100%",
+                                height: "100%",
+                                maxHeight: size === "full-width" && shape === "rectangle" ? 100 : undefined,
+                                objectFit: "contain",
+                                pointerEvents: "none",
+                            }}
+                        />
+                    </>
+                )}
+                {Icon && (
+                    <Icon
+                        fill="white"
+                        sx={{
+                            position: "absolute",
+                            top: ".5rem",
+                            left: ".5rem",
+                        }}
+                        width={size === "small" ? "2.6rem" : "4rem"}
+                        height="auto"
+                    />
+                )}
+                {TopRight && (
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            top: ".5rem",
+                            right: ".5rem",
+                        }}
+                    >
+                        {TopRight}
+                    </Box>
+                )}
+                {BottomRight && (
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            bottom: ".5rem",
+                            right: ".5rem",
+                        }}
+                    >
+                        {BottomRight}
+                    </Box>
+                )}
+                {!isEmpty && (
+                    <Stack
+                        sx={{
+                            position: "absolute",
+                            left: ".5rem",
+                            bottom: ".5rem",
+                            whiteSpace: "normal",
+                        }}
+                        alignItems="start"
+                    >
+                        <Typography
+                            sx={{
+                                textAlign: "left",
                                 fontFamily: fonts.nostromoBold,
-                                ...TruncateTextLines(2),
+                                fontSize: size === "regular" ? "1.6rem" : "1.4rem",
+                                color,
                             }}
                         >
                             {label}
                         </Typography>
-
                         {subLabel && (
                             <Typography
-                                variant="body2"
                                 sx={{
-                                    color: primaryColor,
-                                    fontFamily: fonts.nostromoBold,
-                                    ...TruncateTextLines(1),
+                                    fontFamily: fonts.shareTech,
+                                    fontSize: size === "regular" ? "1.4rem" : "1.2rem",
+                                    color,
                                 }}
                             >
                                 {subLabel}
                             </Typography>
                         )}
-                    </Box>
-                </Stack>
-            </ClipThing>
-        </Stack>
+                    </Stack>
+                )}
+                {locked && (
+                    <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        sx={{
+                            zIndex: 1,
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            backgroundColor: colors.black2,
+                            opacity: 0.6,
+                        }}
+                    >
+                        <SvgLock />
+                    </Stack>
+                )}
+            </NiceButton>
+        </>
     )
-})
+}
 
-export const MechLoadoutItemDraggable = React.memo(MechLoadoutItemDraggableBase)
+const MaybeTooltip = styled(({ className, ...props }: TooltipProps) => <Tooltip {...props} classes={{ popper: className }} />)({
+    [`& .${tooltipClasses.tooltip}`]: {
+        maxWidth: 300,
+        padding: "0px !important",
+        backgroundColor: "transparent",
+        borderRadius: 0,
+    },
+})

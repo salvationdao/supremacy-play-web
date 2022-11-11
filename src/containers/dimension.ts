@@ -5,6 +5,9 @@ import { useDebounce } from "../hooks"
 import { Dimension } from "../types"
 import { useMobile } from "./mobile"
 
+export const MAIN_CONTENT_ID = "main-content-container"
+export const GAME_UI_ID = "game-ui-container"
+
 // Contains dimensions for the overall layout of the divs, iframe etc.
 export const DimensionContainer = createContainer(() => {
     const { isNavOpen } = useMobile()
@@ -16,6 +19,7 @@ export const DimensionContainer = createContainer(() => {
     const below1922 = useMediaQuery("(max-width:1922px)")
 
     const gameUIContainer = useRef<HTMLElement | null>(null)
+    const mainContentContainer = useRef<HTMLElement | null>(null)
     const resizeObserver = useRef<ResizeObserver>()
 
     const [gameUIDimensions, setGameUIDimensions] = useDebounce<Dimension>(
@@ -24,6 +28,13 @@ export const DimensionContainer = createContainer(() => {
             height: 0,
         },
         300,
+    )
+    const [mainContentDimensions, setMainContentDimensions] = useDebounce<Dimension>(
+        {
+            width: 0,
+            height: 0,
+        },
+        3000,
     )
 
     // Please refer to `src/theme/global.css`
@@ -36,22 +47,44 @@ export const DimensionContainer = createContainer(() => {
         setRemToPxRatio(0.57 * 16)
     }, [below1922, below1500, below900, below600, below1300])
 
-    const setupResizeObserver = useCallback(() => {
-        gameUIContainer.current = document.getElementById("game-ui-container")
-        if (!gameUIContainer.current) return
-
-        resizeObserver.current = new ResizeObserver((entries) => {
-            const rect = entries[0].contentRect
-            setGameUIDimensions({
-                width: rect.width,
-                height: rect.height,
+    const setupResizeObserver = useCallback(async () => {
+        if (!resizeObserver.current) {
+            resizeObserver.current = new ResizeObserver((entries) => {
+                for (const e of entries) {
+                    switch (e.target.id) {
+                        case MAIN_CONTENT_ID:
+                            setMainContentDimensions({
+                                width: e.contentRect.width,
+                                height: e.contentRect.height,
+                            })
+                            break
+                        case GAME_UI_ID:
+                            setGameUIDimensions({
+                                width: e.contentRect.width,
+                                height: e.contentRect.height,
+                            })
+                            break
+                    }
+                }
             })
-        })
-        resizeObserver.current.observe(gameUIContainer.current)
-    }, [setGameUIDimensions])
+        }
+
+        gameUIContainer.current = document.getElementById(GAME_UI_ID)
+        if (gameUIContainer.current) {
+            resizeObserver.current.observe(gameUIContainer.current)
+        }
+        mainContentContainer.current = document.getElementById(MAIN_CONTENT_ID)
+        if (mainContentContainer.current) {
+            setMainContentDimensions({
+                width: mainContentContainer.current.getBoundingClientRect().width,
+                height: mainContentContainer.current.getBoundingClientRect().height,
+            })
+            resizeObserver.current.observe(mainContentContainer.current)
+        }
+    }, [setGameUIDimensions, setMainContentDimensions])
 
     const recalculateDimensions = useCallback(() => {
-        gameUIContainer.current = document.getElementById("game-ui-container")
+        gameUIContainer.current = document.getElementById(GAME_UI_ID)
         if (!gameUIContainer.current) {
             setGameUIDimensions({ width: 0, height: 0 })
             return
@@ -75,13 +108,21 @@ export const DimensionContainer = createContainer(() => {
 
     useEffect(() => {
         return () => {
-            resizeObserver.current && gameUIContainer.current && resizeObserver.current.unobserve(gameUIContainer.current)
+            if (resizeObserver.current) {
+                if (gameUIContainer.current) {
+                    resizeObserver.current.unobserve(gameUIContainer.current)
+                }
+                if (mainContentContainer.current) {
+                    resizeObserver.current.unobserve(mainContentContainer.current)
+                }
+            }
         }
     }, [])
 
     return {
         remToPxRatio,
         gameUIDimensions,
+        mainContentDimensions,
         triggerReset,
     }
 })

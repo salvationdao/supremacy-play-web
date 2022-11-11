@@ -5,10 +5,10 @@ import { MediaPreview } from "../../../../Common/MediaPreview/MediaPreview"
 
 export interface MechViewerProps {
     mechDetails: MechDetails
+    fillContainer?: boolean
 }
 
-export const MechViewer = (props: MechViewerProps) => {
-    const { mechDetails } = props
+export const MechViewer = ({ mechDetails, fillContainer }: MechViewerProps) => {
     const theme = useTheme()
     const backgroundColor = theme.factionTheme.background
 
@@ -46,7 +46,7 @@ export const MechViewer = (props: MechViewerProps) => {
                     position: "absolute",
                     zIndex: 3,
                     aspectRatio: "1.1",
-                    height: "80%",
+                    height: fillContainer ? "100%" : "80%",
                     left: "50%",
                     top: "50%",
                     transform: "translate(-50%, -50%)",

@@ -341,12 +341,52 @@ export const theme = createTheme({
         MuiSwitch: {
             defaultProps: {
                 size: "small",
+                focusVisibleClassName: ".Mui-focusVisible",
+                disableRipple: true,
             },
             styleOverrides: {
                 root: {
-                    transform: "scale(.7)",
-                    ".Mui-checked": { color: colors.green },
-                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.green}50` },
+                    width: 44,
+                    height: 22,
+                    padding: 0,
+                    "& .MuiSwitch-switchBase": {
+                        padding: 0,
+                        margin: "2px",
+                        transitionDuration: "300ms",
+                        "&.Mui-checked": {
+                            transform: "translateX(22px)",
+                            color: colors.neonBlue,
+                            "& + .MuiSwitch-track": {
+                                backgroundColor: `${colors.neonBlue}44`,
+                                opacity: 1,
+                                border: 0,
+                            },
+                            "&.Mui-disabled + .MuiSwitch-track": {
+                                opacity: 0.5,
+                            },
+                        },
+                        "&.Mui-focusVisible .MuiSwitch-thumb": {
+                            color: colors.neonBlue,
+                            border: "6px solid #fff",
+                        },
+                        "&.Mui-disabled .MuiSwitch-thumb": {
+                            color: colors.lightGrey,
+                        },
+                        "&.Mui-disabled + .MuiSwitch-track": {
+                            opacity: 0.7,
+                        },
+                    },
+                    "& .MuiSwitch-thumb": {
+                        boxSizing: "border-box",
+                        width: 18,
+                        height: 18,
+                    },
+                    "& .MuiSwitch-track": {
+                        borderRadius: 22 / 2,
+                        backgroundColor: colors.grey,
+                        opacity: 1,
+                        transition: `all .5s`,
+                    },
                 },
             },
         },

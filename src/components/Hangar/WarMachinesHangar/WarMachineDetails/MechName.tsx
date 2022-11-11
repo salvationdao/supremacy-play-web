@@ -4,9 +4,9 @@ import { SvgEdit, SvgSave } from "../../../../assets"
 import { useGlobalNotifications } from "../../../../containers"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { colors } from "../../../../theme/theme"
-import { MechBasic } from "../../../../types"
 import { TruncateTextLines } from "../../../../theme/styles"
+import { colors, fonts } from "../../../../theme/theme"
+import { MechBasic } from "../../../../types"
 
 export const MechName = ({ mech, onRename, allowEdit }: { onRename?: (newName: string) => void; mech: MechBasic; allowEdit: boolean }) => {
     const { newSnackbarMessage } = useGlobalNotifications()
@@ -61,12 +61,12 @@ export const MechName = ({ mech, onRename, allowEdit }: { onRename?: (newName: s
                 e.stopPropagation()
             }}
         >
-            <Stack direction="row" alignItems="center" sx={{ cursor: "text" }}>
+            <Stack direction="row" alignItems="center" width="100%" sx={{ cursor: "text" }}>
                 <TextField
                     inputRef={renamingRef}
                     variant="standard"
                     sx={{
-                        flex: 1,
+                        flex: editing ? 1 : 0,
                         m: 0,
                         py: ".2rem",
                         opacity: editing ? "unset" : 0,
@@ -122,6 +122,8 @@ export const MechName = ({ mech, onRename, allowEdit }: { onRename?: (newName: s
                 {!editing && (
                     <Typography
                         sx={{
+                            mr: "auto",
+                            fontFamily: fonts.nostromoBlack,
                             fontSize: "1.8rem",
                             color: !name ? colors.grey : "#FFFFFF",
                             ...TruncateTextLines(1),

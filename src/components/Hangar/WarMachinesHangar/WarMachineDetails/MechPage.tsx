@@ -1,15 +1,14 @@
 import { Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useRef } from "react"
+import { useCallback, useEffect } from "react"
 import { useHistory, useParams } from "react-router-dom"
-import { HangarBg, SvgBack } from "../../../../assets"
 import { FancyButton } from "../../.."
-import { WarMachineHangarDetails } from "./WarMachineHangarDetails"
+import { HangarBg, SvgBack } from "../../../../assets"
 import { fonts, siteZIndex } from "../../../../theme/theme"
+import { WarMachineHangarDetails } from "./WarMachineHangarDetails"
 
 export const MechPage = () => {
     const history = useHistory()
     const { mechID } = useParams<{ mechID: string }>()
-    const drawerContainerRef = useRef<HTMLElement>()
 
     const goBack = useCallback(() => {
         history.goBack()
@@ -22,7 +21,6 @@ export const MechPage = () => {
 
     return (
         <Stack
-            ref={drawerContainerRef}
             alignItems="center"
             sx={{
                 height: "100%",
@@ -59,7 +57,7 @@ export const MechPage = () => {
                     </Stack>
                 </FancyButton>
 
-                <WarMachineHangarDetails drawerContainerRef={drawerContainerRef} mechID={mechID} />
+                <WarMachineHangarDetails mechID={mechID} />
             </Stack>
         </Stack>
     )
