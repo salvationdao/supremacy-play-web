@@ -36,14 +36,21 @@ const RangeFilterSectionInner = React.memo(function RangeFilterSectionInner({
     freqGraph,
 }: RangeFilterProps) {
     const theme = useTheme()
-    const [value, setValue, valueInstant] = useDebounce<number[] | undefined>(values || minMax, 300)
+    const [value, setValue, valueInstant, setValueInstant] = useDebounce<number[] | undefined>(values || minMax, 300)
     const calledCallback = useRef(true)
 
+    // Update parent
     useEffect(() => {
         if (calledCallback.current) return
         setValues(value)
         calledCallback.current = true
     }, [setValues, value])
+
+    // Parent can update us
+    useEffect(() => {
+        setValue(values)
+        setValueInstant(values)
+    }, [setValue, setValueInstant, values])
 
     const handleChange = (_: Event, newValue: number | number[]) => {
         setValue(newValue as number[])
