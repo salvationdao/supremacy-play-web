@@ -48,8 +48,8 @@ export const FactionPassMechPool = () => {
     const [search, setSearch, searchInstant] = useDebounce("", 300)
     const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.MechQueueAsc)
     const [isGridView, setIsGridView] = useLocalStorage<boolean>("factionPassMechPoolGrid", true)
-    const [status, ] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
-    const [rarities, ] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
+    const [status] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
+    const [rarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
