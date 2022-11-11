@@ -38,6 +38,10 @@ export const ThemeUpdater = ({ children }: { children: ReactNode }) => {
                     color: theme.factionTheme.primary,
                 },
 
+                ".MuiSlider-root": {
+                    color: theme.factionTheme.primary,
+                    ".MuiSlider-thumb": { boxShadow: 1 },
+                },
                 ".MuiSwitch-root": {
                     ".MuiSwitch-switchBase": {
                         "&.Mui-checked": {

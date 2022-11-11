@@ -416,6 +416,22 @@ export const theme = createTheme({
                 },
             },
         },
+        MuiSlider: {
+            styleOverrides: {
+                root: {
+                    borderRadius: 0,
+                    ".MuiSlider-thumb": {
+                        width: "17px",
+                        height: "18px",
+                        ":after": {
+                            width: "100%",
+                            height: "100%",
+                        },
+                        borderRadius: 0,
+                    },
+                },
+            },
+        },
     },
     factionTheme,
 })

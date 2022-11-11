@@ -8,7 +8,7 @@ import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { useLocalStorage } from "../../../hooks/useLocalStorage"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { LobbyMech } from "../../../types"
+import { LobbyMech, MechStatusEnum } from "../../../types"
 import { SortTypeLabel } from "../../../types/marketplace"
 import { MechCard } from "../../Common/MechCard"
 import { NavTabs } from "../../Common/NavTabs/NavTabs"
@@ -18,6 +18,16 @@ import { NiceButtonGroup } from "../../Common/Nice/NiceButtonGroup"
 import { NiceSelect } from "../../Common/Nice/NiceSelect"
 import { NiceTextField } from "../../Common/Nice/NiceTextField"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
+
+enum UrlQueryParams {
+    Sort = "sort",
+    Search = "search",
+    Statuses = "statuses",
+    Rarities = "rarities",
+    Kills = "kills",
+    PageSize = "pageSize",
+    Page = "page",
+}
 
 const sortOptions = [
     { label: SortTypeLabel.MechQueueAsc, value: SortTypeLabel.MechQueueAsc },
@@ -46,14 +56,15 @@ export const FactionPassMechPool = () => {
 
     // Filter, search, pagination
     const [showFilters, setShowFilters] = useLocalStorage<boolean>("factionPassMechPoolFilters", false)
-    const [search, setSearch, searchInstant] = useDebounce("", 300)
-    const [sort, setSort] = useState<string>(query.get("sort") || SortTypeLabel.MechQueueAsc)
+    const [search, setSearch, searchInstant] = useDebounce(query.get(UrlQueryParams.Search) || "", 300)
+    const [sort, setSort] = useState<string>(query.get(UrlQueryParams.Sort) || SortTypeLabel.MechQueueAsc)
     const [isGridView, setIsGridView] = useLocalStorage<boolean>("factionPassMechPoolGrid", true)
-    const [status] = useState<string[]>((query.get("statuses") || undefined)?.split("||") || [])
-    const [rarities] = useState<string[]>((query.get("rarities") || undefined)?.split("||") || [])
+    const [status, setStatus] = useState<string[]>((query.get(UrlQueryParams.Statuses) || undefined)?.split("||") || [])
+    const [rarities] = useState<string[]>((query.get(UrlQueryParams.Rarities) || undefined)?.split("||") || [])
+    const [kills, setKills] = useState<number[] | undefined>((query.get(UrlQueryParams.Kills) || undefined)?.split("||").map((a) => parseString(a, 0)))
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
-        pageSize: parseString(query.get("pageSize"), 10),
-        page: parseString(query.get("page"), 1),
+        pageSize: parseString(query.get(UrlQueryParams.PageSize), 10),
+        page: parseString(query.get(UrlQueryParams.Page), 1),
     })
 
     // Items
@@ -114,6 +125,11 @@ export const FactionPassMechPool = () => {
             result = result.filter((mech) => rarities.includes(mech.tier))
         }
 
+        // Apply kills filter
+        if (kills && kills.length) {
+            result = result.filter((mech) => mech.stats.total_kills >= kills[0] && mech.stats.total_kills <= kills[1])
+        }
+
         // Apply sort
         switch (sort) {
             case SortTypeLabel.Alphabetical:
@@ -138,20 +154,22 @@ export const FactionPassMechPool = () => {
 
         // Save the configs to url query
         updateQuery.current({
-            sort,
-            search,
-            rarities: rarities.join("||"),
-            statuses: status.join("||"),
-            page: page.toString(),
-            pageSize: pageSize.toString(),
+            [UrlQueryParams.Sort]: sort,
+            [UrlQueryParams.Search]: search,
+            [UrlQueryParams.Rarities]: rarities.join("||"),
+            [UrlQueryParams.Statuses]: status.join("||"),
+            [UrlQueryParams.Kills]: kills?.join("||"),
+            [UrlQueryParams.Page]: page.toString(),
+            [UrlQueryParams.PageSize]: pageSize.toString(),
         })
 
         // Pagination
         result = result.slice((page - 1) * pageSize, page * pageSize)
+        changePage(1)
         setTotalItems(result.length)
 
         setDisplayMechs(result)
-    }, [isLoading, mechs, page, pageSize, rarities, search, setTotalItems, sort, status, updateQuery])
+    }, [changePage, isLoading, kills, mechs, page, pageSize, rarities, search, setTotalItems, sort, status, updateQuery])
 
     const content = useMemo(() => {
         if (isLoading) {
@@ -233,11 +251,37 @@ export const FactionPassMechPool = () => {
         >
             <NavTabs activeTabID={activeTabID} setActiveTabID={setActiveTabID} tabs={tabs} prevTab={prevTab} nextTab={nextTab} />
 
-            <Stack direction="row" sx={{ flex: 1, width: "100%" }}>
-                <SortAndFilters open={showFilters} />
+            <Stack direction="row" alignItems="stretch" sx={{ flex: 1, width: "100%", overflow: "hidden" }}>
+                <SortAndFilters
+                    open={showFilters}
+                    chipFilters={[
+                        {
+                            label: "STATUS",
+                            options: [
+                                { value: MechStatusEnum.Idle, render: { label: "IDLE", color: colors.green } },
+                                { value: MechStatusEnum.Queue, render: { label: "IN QUEUE", color: colors.yellow } },
+                                { value: MechStatusEnum.Battle, render: { label: "IN BATTLE", color: colors.orange } },
+                                { value: MechStatusEnum.Market, render: { label: "MARKETPLACE", color: colors.bronze } },
+                                { value: MechStatusEnum.Damaged, render: { label: "DAMAGED", color: colors.red } },
+                            ],
+                            initialExpanded: true,
+                            selected: status,
+                            setSelected: setStatus,
+                        },
+                    ]}
+                    rangeFilters={[
+                        {
+                            label: "Kills",
+                            initialExpanded: true,
+                            minMax: [0, 80],
+                            values: kills,
+                            setValues: setKills,
+                        },
+                    ]}
+                />
 
                 {/* Search, sort, grid view, and other top buttons */}
-                <Stack spacing="3rem" alignItems="stretch" flex={1}>
+                <Stack spacing="3rem" alignItems="stretch" flex={1} sx={{ overflow: "hidden" }}>
                     <Stack spacing="1rem" direction="row" alignItems="center" sx={{ overflowX: "auto", overflowY: "hidden", width: "100%", pb: ".2rem" }}>
                         {/* Filter button */}
                         <NiceButton
