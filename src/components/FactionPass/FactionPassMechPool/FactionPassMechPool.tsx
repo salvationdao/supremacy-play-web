@@ -17,6 +17,7 @@ import { NiceButton } from "../../Common/Nice/NiceButton"
 import { NiceButtonGroup } from "../../Common/Nice/NiceButtonGroup"
 import { NiceSelect } from "../../Common/Nice/NiceSelect"
 import { NiceTextField } from "../../Common/Nice/NiceTextField"
+import { FreqGraphProps } from "../../Common/SortAndFilters/RangeFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 
 enum UrlQueryParams {
@@ -25,6 +26,9 @@ enum UrlQueryParams {
     Statuses = "statuses",
     Rarities = "rarities",
     Kills = "kills",
+    Deaths = "deaths",
+    Wins = "wins",
+    Losses = "losses",
     PageSize = "pageSize",
     Page = "page",
 }
@@ -62,6 +66,9 @@ export const FactionPassMechPool = () => {
     const [status, setStatus] = useState<string[]>((query.get(UrlQueryParams.Statuses) || undefined)?.split("||") || [])
     const [rarities] = useState<string[]>((query.get(UrlQueryParams.Rarities) || undefined)?.split("||") || [])
     const [kills, setKills] = useState<number[] | undefined>((query.get(UrlQueryParams.Kills) || undefined)?.split("||").map((a) => parseString(a, 0)))
+    const [deaths, setDeaths] = useState<number[] | undefined>((query.get(UrlQueryParams.Deaths) || undefined)?.split("||").map((a) => parseString(a, 0)))
+    const [wins, setWins] = useState<number[] | undefined>((query.get(UrlQueryParams.Wins) || undefined)?.split("||").map((a) => parseString(a, 0)))
+    const [losses, setLosses] = useState<number[] | undefined>((query.get(UrlQueryParams.Losses) || undefined)?.split("||").map((a) => parseString(a, 0)))
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: parseString(query.get(UrlQueryParams.PageSize), 10),
         page: parseString(query.get(UrlQueryParams.Page), 1),
@@ -130,6 +137,21 @@ export const FactionPassMechPool = () => {
             result = result.filter((mech) => mech.stats.total_kills >= kills[0] && mech.stats.total_kills <= kills[1])
         }
 
+        // Apply deaths filter
+        if (deaths && deaths.length) {
+            result = result.filter((mech) => mech.stats.total_deaths >= deaths[0] && mech.stats.total_deaths <= deaths[1])
+        }
+
+        // Apply wins filter
+        if (wins && wins.length) {
+            result = result.filter((mech) => mech.stats.total_wins >= wins[0] && mech.stats.total_wins <= wins[1])
+        }
+
+        // Apply losses filter
+        if (losses && losses.length) {
+            result = result.filter((mech) => mech.stats.total_losses >= losses[0] && mech.stats.total_losses <= losses[1])
+        }
+
         // Apply sort
         switch (sort) {
             case SortTypeLabel.Alphabetical:
@@ -159,6 +181,9 @@ export const FactionPassMechPool = () => {
             [UrlQueryParams.Rarities]: rarities.join("||"),
             [UrlQueryParams.Statuses]: status.join("||"),
             [UrlQueryParams.Kills]: kills?.join("||"),
+            [UrlQueryParams.Deaths]: deaths?.join("||"),
+            [UrlQueryParams.Wins]: wins?.join("||"),
+            [UrlQueryParams.Losses]: losses?.join("||"),
             [UrlQueryParams.Page]: page.toString(),
             [UrlQueryParams.PageSize]: pageSize.toString(),
         })
@@ -169,7 +194,64 @@ export const FactionPassMechPool = () => {
         setTotalItems(result.length)
 
         setDisplayMechs(result)
-    }, [changePage, isLoading, kills, mechs, page, pageSize, rarities, search, setTotalItems, sort, status, updateQuery])
+    }, [changePage, deaths, isLoading, kills, losses, mechs, page, pageSize, rarities, search, setTotalItems, sort, status, updateQuery, wins])
+
+    // For graphing the bar graphs in the range filter
+    const killsGraph: FreqGraphProps = useMemo(() => {
+        let min = 0
+        let max = 0
+        const freq: { [value: number]: number } = {}
+        mechs.forEach((mech) => {
+            const totalKills = mech.stats.total_kills
+            if (totalKills < min) min = totalKills
+            if (totalKills > max) max = totalKills
+            freq[totalKills] = (freq[totalKills] || 0) + 1
+        })
+
+        return { min, max, freq, count: mechs.length }
+    }, [mechs])
+
+    const deathsGraph: FreqGraphProps = useMemo(() => {
+        let min = 0
+        let max = 0
+        const freq: { [value: number]: number } = {}
+        mechs.forEach((mech) => {
+            const totalDeaths = mech.stats.total_deaths
+            if (totalDeaths < min) min = totalDeaths
+            if (totalDeaths > max) max = totalDeaths
+            freq[totalDeaths] = (freq[totalDeaths] || 0) + 1
+        })
+
+        return { min, max, freq, count: mechs.length }
+    }, [mechs])
+
+    const winsGraph: FreqGraphProps = useMemo(() => {
+        let min = 0
+        let max = 0
+        const freq: { [value: number]: number } = {}
+        mechs.forEach((mech) => {
+            const totalWins = mech.stats.total_wins
+            if (totalWins < min) min = totalWins
+            if (totalWins > max) max = totalWins
+            freq[totalWins] = (freq[totalWins] || 0) + 1
+        })
+
+        return { min, max, freq, count: mechs.length }
+    }, [mechs])
+
+    const lossesGraph: FreqGraphProps = useMemo(() => {
+        let min = 0
+        let max = 0
+        const freq: { [value: number]: number } = {}
+        mechs.forEach((mech) => {
+            const totalLosses = mech.stats.total_losses
+            if (totalLosses < min) min = totalLosses
+            if (totalLosses > max) max = totalLosses
+            freq[totalLosses] = (freq[totalLosses] || 0) + 1
+        })
+
+        return { min, max, freq, count: mechs.length }
+    }, [mechs])
 
     const content = useMemo(() => {
         if (isLoading) {
@@ -273,9 +355,34 @@ export const FactionPassMechPool = () => {
                         {
                             label: "Kills",
                             initialExpanded: true,
-                            minMax: [0, 80],
+                            minMax: [killsGraph.min, killsGraph.max],
                             values: kills,
                             setValues: setKills,
+                            freqGraph: killsGraph,
+                        },
+                        {
+                            label: "Deaths",
+                            initialExpanded: true,
+                            minMax: [deathsGraph.min, deathsGraph.max],
+                            values: deaths,
+                            setValues: setDeaths,
+                            freqGraph: deathsGraph,
+                        },
+                        {
+                            label: "Wins",
+                            initialExpanded: true,
+                            minMax: [winsGraph.min, winsGraph.max],
+                            values: wins,
+                            setValues: setWins,
+                            freqGraph: winsGraph,
+                        },
+                        {
+                            label: "Losses",
+                            initialExpanded: true,
+                            minMax: [lossesGraph.min, lossesGraph.max],
+                            values: losses,
+                            setValues: setLosses,
+                            freqGraph: lossesGraph,
                         },
                     ]}
                 />
