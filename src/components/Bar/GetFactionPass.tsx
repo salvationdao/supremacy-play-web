@@ -13,7 +13,7 @@ export const GetFactionPass = () => {
     }
 
     return (
-        <Link style={{ marginRight: "1rem", height: "100%" }} to="/faction-pass/buy">
+        <Link style={{ marginRight: "-1rem", height: "100%" }} to="/faction-pass/buy">
             <Box
                 onMouseEnter={() => {
                     lottieRef.current?.setSpeed(1.3)
