@@ -23,14 +23,14 @@ export interface LobbyForm {
     extra_reward: string
 }
 
-enum Accessibility {
+export enum Accessibility {
     Public = "PUBLIC",
     Private = "PRIVATE",
 }
 
-enum Scheduling {
-    OnReady = "ON LOBBY FULL",
-    SetTime = "WON'T START UNTIL",
+export enum Scheduling {
+    SetTime = "SCHEDULED TIME & DATE",
+    OnReady = "ON FULL LOBBY",
 }
 
 export const CreateLobby = () => {
@@ -46,8 +46,8 @@ export const CreateLobby = () => {
             third_faction_cut: "0",
             game_map_id: "",
             scheduling_type: Scheduling.OnReady,
-            wont_start_until_date: null,
-            wont_start_until_time: null,
+            wont_start_until_date: moment(),
+            wont_start_until_time: moment(),
             accessibility: Accessibility.Public,
             max_deploy_number: 3,
             extra_reward: "0",

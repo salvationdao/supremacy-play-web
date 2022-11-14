@@ -118,7 +118,7 @@ export const FactionBasedDatePicker = ({ value, onChange, enableYear, disabled }
                     sx={{
                         ".MuiOutlinedInput-root": {
                             pr: 0,
-                            border: `${factionTheme.primary}99 2px dashed`,
+                            border: `${factionTheme.primary}99 2px solid`,
                         },
                         ".MuiOutlinedInput-input": {
                             pl: "1.5rem",
