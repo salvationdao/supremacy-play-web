@@ -1,6 +1,7 @@
 import { Box, ButtonBaseProps, CircularProgress, SxProps } from "@mui/material"
 import React, { HTMLAttributeAnchorTarget, useMemo } from "react"
 import { Link } from "react-router-dom"
+import { SvgButtonCorner } from "../../../assets"
 import { autoTextColor } from "../../../helpers"
 import { sheenMovement } from "../../../theme/keyframes"
 import { fonts } from "../../../theme/theme"
@@ -19,6 +20,7 @@ interface CommonProps extends Omit<Bruh, "sx" | "border" | "background"> {
     sx?: SxProps
     loading?: boolean
     sheen?: SheenOptions | boolean // Shiny sheen effect
+    corners?: boolean
     fill?: boolean // Whether the color will look solid and have filled background
     buttonColor?: string // Sets the main button color, use this!
     disableAutoColor?: boolean // Button automatically determines a contrasting text color on hover and fill etc.
@@ -46,8 +48,10 @@ export type NiceButtonProps = CommonProps & LinkProps
 
 const OVERLAY_CLASSNAME = "NiceButtonOverlay"
 
+const CORNER_CLASSNAME = "NiceButtonCorner"
+
 export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(function NiceButton(
-    { link, route, loading, sheen, disabled, sx, children, buttonColor, fill, disableAutoColor = false, ...props },
+    { link, route, loading, sheen, corners, disabled, sx, children, buttonColor, fill, disableAutoColor = false, ...props },
     ref,
 ) {
     const buttonDisabled = loading || disabled
@@ -89,7 +93,7 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
             ...(buttonColor ? {} : { border: "none" }),
 
             ":hover": {
-                "&, *": !disableAutoColor
+                [`&, *`]: !disableAutoColor
                     ? {
                           color: `${contrastTextColor} !important`,
                           fill: `${contrastTextColor} !important`,
@@ -100,7 +104,7 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
             [`&:disabled .${OVERLAY_CLASSNAME}`]: {
                 opacity: 0.6,
                 backgroundColor: "#000000",
-                zIndex: 3,
+                zIndex: 6,
             },
             [`&:hover:enabled .${OVERLAY_CLASSNAME}`]: {
                 opacity: 1,
@@ -108,11 +112,39 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
             [`&:active:enabled .${OVERLAY_CLASSNAME}`]: {
                 opacity: 0.4,
             },
+            [`&:hover:enabled .${CORNER_CLASSNAME}`]: {
+                opacity: 0,
+            },
 
+            ...sx,
+
+            // Please use the props to set button colors
+            background: "unset",
+            backgroundColor: "unset",
+            ...(fill && !disableAutoColor
+                ? {
+                      [`&, *`]: {
+                          color: `${contrastTextColor} !important`,
+                          fill: `${contrastTextColor} !important`,
+                      },
+                  }
+                : {}),
+        }
+    }, [disableAutoColor, buttonColor, buttonDisabled, contrastTextColor, fill, sx])
+
+    const sheenStyles = useMemo(
+        () => ({
             // Sheen effect
             ...(sheen
                 ? {
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
                       overflow: "hidden",
+                      pointerEvents: "none",
+                      zIndex: 5,
                       ":before, :after": {
                           content: "''",
                           position: "absolute",
@@ -157,33 +189,9 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
                       },
                   }
                 : {}),
-
-            ...sx,
-
-            // Please use the props to set button colors
-            background: "unset",
-            backgroundColor: "unset",
-            ...(fill && !disableAutoColor
-                ? {
-                      "&, *": {
-                          color: `${contrastTextColor} !important`,
-                          fill: `${contrastTextColor} !important`,
-                      },
-                  }
-                : {}),
-        }
-    }, [
-        disableAutoColor,
-        buttonColor,
-        buttonDisabled,
-        contrastTextColor,
-        fill,
-        sheen,
-        sheenOptions.autoSheen,
-        sheenOptions.opacity,
-        sheenOptions.sheenSpeedFactor,
-        sx,
-    ])
+        }),
+        [buttonDisabled, sheen, sheenOptions.autoSheen, sheenOptions.opacity, sheenOptions.sheenSpeedFactor],
+    )
 
     // Override the nice box thing border
     const niceBoxBorder = useMemo(() => {
@@ -201,11 +209,69 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
 
         return {
             colors,
-            opacity: fill ? 1 : 0.15,
+            opacity: fill ? 1 : 0.4,
             linearGradientDegrees: 180,
-            insetPx: fill ? 0 : 2,
         }
     }, [buttonColor, fill, fillColor])
+
+    const fourCorners = useMemo(() => {
+        if (fill || !corners) return null
+        return (
+            <>
+                <SvgButtonCorner
+                    className={CORNER_CLASSNAME}
+                    size="9px"
+                    fill={`${buttonColor || "#FFFFFF"} !important`}
+                    sx={{
+                        pointerEvents: "none",
+                        position: "absolute",
+                        top: "-2px",
+                        left: "-2px",
+                        transform: "scaleX(-1)",
+                        zIndex: 3,
+                    }}
+                />
+                <SvgButtonCorner
+                    className={CORNER_CLASSNAME}
+                    size="9px"
+                    fill={`${buttonColor || "#FFFFFF"} !important`}
+                    sx={{
+                        pointerEvents: "none",
+                        position: "absolute",
+                        top: "-2px",
+                        right: "-2px",
+                        zIndex: 3,
+                    }}
+                />
+                <SvgButtonCorner
+                    className={CORNER_CLASSNAME}
+                    size="9px"
+                    fill={`${buttonColor || "#FFFFFF"} !important`}
+                    sx={{
+                        pointerEvents: "none",
+                        position: "absolute",
+                        bottom: "-2px",
+                        right: "-2px",
+                        transform: "scaleY(-1)",
+                        zIndex: 3,
+                    }}
+                />
+                <SvgButtonCorner
+                    className={CORNER_CLASSNAME}
+                    size="9px"
+                    fill={`${buttonColor || "#FFFFFF"} !important`}
+                    sx={{
+                        pointerEvents: "none",
+                        position: "absolute",
+                        bottom: "-2px",
+                        left: "-2px",
+                        transform: "scale(-1)",
+                        zIndex: 3,
+                    }}
+                />
+            </>
+        )
+    }, [buttonColor, corners, fill])
 
     return (
         <Nice
@@ -225,15 +291,18 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
 
             {children}
 
+            {/* Sheen effect */}
+            <Box sx={sheenStyles} />
+
             <Box
                 className={OVERLAY_CLASSNAME}
                 sx={{
                     pointerEvents: "none",
                     position: "absolute",
-                    top: "-1px",
-                    left: "-1px",
-                    right: "-1px",
-                    bottom: "-1px",
+                    top: "-2px",
+                    left: "-2px",
+                    right: "-2px",
+                    bottom: "-2px",
                     backgroundColor: fillColor,
                     opacity: 0,
                     zIndex: -1,
@@ -259,6 +328,9 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
                     {loading && <CircularProgress size="1.2rem" sx={{ color: buttonColor }} />}
                 </Box>
             )}
+
+            {/* Button border 4 corners */}
+            {fourCorners}
         </Nice>
     )
 })
