@@ -3,7 +3,6 @@ import { GameMap } from "../../../types"
 import { GameServerKeys } from "../../../keys"
 import React, { useMemo, useRef, useState } from "react"
 import { useFormContext } from "react-hook-form"
-import { NiceButton } from "../../Common/Nice/NiceButton"
 import { useTheme } from "../../../containers/theme"
 import { Box, Popover, Typography } from "@mui/material"
 import { fonts } from "../../../theme/theme"
@@ -66,16 +65,13 @@ export const GameMapSelector = () => {
     )
     return (
         <>
-            <NiceButton
+            <Box
                 ref={popoverRef}
-                border={{
-                    color: factionTheme.primary,
-                }}
-                background={{
-                    opacity: "transparent",
-                }}
                 sx={{
-                    height: "8rem",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "10rem",
                     width: "70rem",
                     backgroundColor: factionTheme.background,
                     backgroundImage: selectedGameMap ? `url(${selectedGameMap.background_url})` : undefined,
@@ -83,6 +79,8 @@ export const GameMapSelector = () => {
                     backgroundPosition: "center",
                     backgroundSize: "cover",
                     position: "relative",
+                    border: `${factionTheme.primary} 2px solid`,
+                    cursor: "pointer",
                 }}
                 onClick={() => setOpenMapSelector(true)}
             >
@@ -104,7 +102,7 @@ export const GameMapSelector = () => {
                         }}
                     />
                 )}
-            </NiceButton>
+            </Box>
             {openMapSelector && (
                 <Popover
                     id={"map-popover"}
@@ -133,7 +131,7 @@ export const GameMapSelector = () => {
                                 sx={{
                                     position: "relative",
                                     width: "50%",
-                                    height: "8rem",
+                                    height: "10rem",
                                     cursor: "pointer",
                                     backgroundRepeat: "no-repeat",
                                     backgroundPosition: "center",
@@ -173,7 +171,7 @@ export const GameMapSelector = () => {
                                 alignItems: "center",
                                 justifyContent: "center",
                                 width: "100%",
-                                height: "8rem",
+                                height: "10rem",
                                 cursor: "pointer",
                                 position: "relative",
                                 border: `${factionTheme.primary}${!selectedGameMap ? "" : "30"} 2px solid`,

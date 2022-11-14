@@ -1,6 +1,5 @@
 import { Stack, Typography } from "@mui/material"
 import { fonts } from "../../../theme/theme"
-import { NiceButton } from "../../Common/Nice/NiceButton"
 import React, { useMemo } from "react"
 import { useTheme } from "../../../containers/theme"
 
@@ -35,11 +34,14 @@ const FormTab = ({ currentProcess, formNumber, label, onClick }: FormTabProps) =
     const { factionTheme } = useTheme()
     const shouldHighlight = useMemo(() => currentProcess === formNumber, [currentProcess, formNumber])
     return (
-        <NiceButton
+        <Stack
+            direction="row"
             onClick={onClick}
             sx={{
-                flexDirection: "row",
+                alignItems: "center",
+                px: ".5rem",
                 flex: 1,
+                cursor: "pointer",
                 background: `${factionTheme.primary}${shouldHighlight ? "90" : "20"}`,
                 borderTop: shouldHighlight ? `${factionTheme.primary} 2px solid` : "none",
                 borderRight: shouldHighlight ? `${factionTheme.primary} 2px solid` : "none",
@@ -53,6 +55,6 @@ const FormTab = ({ currentProcess, formNumber, label, onClick }: FormTabProps) =
                     <Typography fontFamily={fonts.nostromoBold}>{label}</Typography>
                 </Stack>
             </Stack>
-        </NiceButton>
+        </Stack>
     )
 }

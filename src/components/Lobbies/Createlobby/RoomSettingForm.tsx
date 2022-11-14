@@ -10,7 +10,11 @@ import { GameMapSelector } from "./GameMapSelector"
 import { FactionBasedDatePicker } from "../../Common/FactionBasedDatePicker"
 import { FactionBasedTimePicker } from "../../Common/FactionBasedTimePicker"
 
-export const RoomSettingForm = () => {
+interface RoomSettingFormProps {
+    nextPage: () => void
+}
+
+export const RoomSettingForm = ({ nextPage }: RoomSettingFormProps) => {
     const { factionTheme } = useTheme()
     const { control, formState, watch, setValue, trigger } = useFormContext()
     const { errors } = formState
@@ -24,10 +28,12 @@ export const RoomSettingForm = () => {
     const nextForm = useCallback(async () => {
         const valid = await trigger(["name"])
         if (!valid) return
-    }, [trigger])
+
+        nextPage()
+    }, [trigger, nextPage])
 
     return (
-        <Stack direction="column" flex={1} sx={{ px: "15rem", py: "4rem" }}>
+        <Stack direction="column" flex={1} sx={{ px: "25rem", py: "4rem" }}>
             <Stack direction="column" flex={1} spacing="5rem">
                 <Stack spacing="2rem">
                     <Section
@@ -42,16 +48,17 @@ export const RoomSettingForm = () => {
                         {Object.values(Accessibility).map((a) => (
                             <NiceButton
                                 key={a}
-                                border={{
-                                    color: `${factionTheme.primary}${a === accessibility ? "" : "AA"}`,
-                                    style: "dashed",
-                                }}
+                                buttonColor={`${factionTheme.primary}${a === accessibility ? "" : "AA"}`}
                                 sx={{
                                     opacity: a === accessibility ? 1 : 0.5,
+                                    px: "3rem",
+                                    py: "1rem",
                                 }}
                                 onClick={() => setValue("accessibility", a as Accessibility)}
                             >
-                                <Typography fontFamily={fonts.nostromoBold}>{a}</Typography>
+                                <Typography variant="h6" fontFamily={fonts.nostromoBold}>
+                                    {a}
+                                </Typography>
                             </NiceButton>
                         ))}
                     </Stack>
@@ -84,7 +91,7 @@ export const RoomSettingForm = () => {
                                     value={field.value}
                                     onChange={(e) => {
                                         if (e.length > 20) return
-                                        field.onChange(e)
+                                        field.onChange(e.toUpperCase())
                                     }}
                                     placeholder="Lobby Name..."
                                     primaryColor={factionTheme.primary}
@@ -109,16 +116,17 @@ export const RoomSettingForm = () => {
                         {[1, 2, 3].map((i) => (
                             <NiceButton
                                 key={i}
-                                border={{
-                                    color: `${factionTheme.primary}${i === maxDeployNumber ? "" : "AA"}`,
-                                    style: "dashed",
-                                }}
+                                buttonColor={`${factionTheme.primary}${i === maxDeployNumber ? "" : "AA"}`}
                                 sx={{
                                     opacity: i === maxDeployNumber ? 1 : 0.5,
+                                    width: "7rem",
+                                    height: "7rem",
                                 }}
                                 onClick={() => setValue("max_deploy_number", i)}
                             >
-                                <Typography fontFamily={fonts.nostromoBlack}>{i}</Typography>
+                                <Typography variant="h5" fontFamily={fonts.nostromoBlack}>
+                                    {i}
+                                </Typography>
                             </NiceButton>
                         ))}
                     </Stack>
@@ -131,16 +139,17 @@ export const RoomSettingForm = () => {
                             {Object.values(Scheduling).map((s) => (
                                 <NiceButton
                                     key={s}
-                                    border={{
-                                        color: `${factionTheme.primary}${s === schedulingType ? "" : "AA"}`,
-                                        style: "dashed",
-                                    }}
+                                    buttonColor={`${factionTheme.primary}${s === schedulingType ? "" : "AA"}`}
                                     sx={{
                                         opacity: s === schedulingType ? 1 : 0.5,
+                                        px: "3rem",
+                                        py: "1rem",
                                     }}
                                     onClick={() => setValue("scheduling_type", s as Scheduling)}
                                 >
-                                    <Typography fontFamily={fonts.nostromoBold}>{s}</Typography>
+                                    <Typography variant="h6" fontFamily={fonts.nostromoBold}>
+                                        {s}
+                                    </Typography>
                                 </NiceButton>
                             ))}
                         </Stack>
@@ -159,8 +168,26 @@ export const RoomSettingForm = () => {
             </Stack>
 
             <Stack direction="row" alignItems="center" justifyContent="space-between">
-                <NiceButton disabled={true}>BACK</NiceButton>
-                <NiceButton onClick={() => nextForm()}>next</NiceButton>
+                <NiceButton
+                    buttonColor={factionTheme.primary}
+                    disabled={true}
+                    sx={{
+                        px: "4rem",
+                        py: "1.5rem",
+                    }}
+                >
+                    BACK
+                </NiceButton>
+                <NiceButton
+                    buttonColor={factionTheme.primary}
+                    onClick={() => nextForm()}
+                    sx={{
+                        px: "4rem",
+                        py: "1.5rem",
+                    }}
+                >
+                    next
+                </NiceButton>
             </Stack>
         </Stack>
     )
@@ -171,7 +198,7 @@ interface SectionProps {
     title: string
     description?: string
 }
-const Section = ({ orderLabel, title, description }: SectionProps) => {
+export const Section = ({ orderLabel, title, description }: SectionProps) => {
     const { factionTheme } = useTheme()
     return (
         <Stack direction="row" spacing="1rem" alignItems="center">

@@ -6,6 +6,8 @@ import { useForm, FormProvider } from "react-hook-form"
 import moment from "moment"
 import { RoomSettingForm } from "./RoomSettingForm"
 import { LobbyFormOverview } from "./LobbyFormOverview"
+import { FeeRewardForm } from "./FeeRewardForm"
+import { WarMachineForm } from "./WarMachineForm"
 
 export interface LobbyForm {
     name: string
@@ -57,13 +59,15 @@ export const CreateLobby = () => {
     const content = useMemo(() => {
         switch (currentProcess) {
             case 1:
-                return <RoomSettingForm />
+                return <RoomSettingForm nextPage={() => setCurrentProcess(2)} />
             case 2:
+                return <FeeRewardForm prevPage={() => setCurrentProcess(1)} nextPage={() => setCurrentProcess(3)} />
             case 3:
+                return <WarMachineForm prevPage={() => setCurrentProcess(2)} />
             default:
                 return null
         }
-    }, [currentProcess])
+    }, [currentProcess, setCurrentProcess])
 
     return (
         <FormProvider {...useFormMethods}>
