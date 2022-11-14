@@ -1,21 +1,21 @@
 import { Avatar, Box, Stack, SxProps, Typography } from "@mui/material"
 import React, { ReactNode, useMemo, useState } from "react"
-import { Avatar as SupremacyAvatar } from "../../Avatar"
-import { SvgGlobal, SvgLock, SvgSupToken } from "../../../assets"
+import { SvgGlobal, SvgLock, SvgQuestionMark2, SvgSupToken } from "../../../assets"
+import { FactionIDs } from "../../../constants"
 import { useArena, useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { supFormatter } from "../../../helpers"
+import { TruncateTextLines } from "../../../theme/styles"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleLobby } from "../../../types/battle_queue"
-import { ClipThing } from "../../Common/Deprecated/ClipThing"
-import { BattleLobbyJoinModal } from "./BattleLobbyJoinModal"
-import { BattleLobbyFaction, MyFactionLobbySlots } from "../BattleLobbyMech/BattleLobbyMechSlots"
-import { TruncateTextLines } from "../../../theme/styles"
-import { FactionIDs } from "../../../constants"
+import { Avatar as SupremacyAvatar } from "../../Avatar"
 import { OptInButton } from "../../BattleArena/UpcomingBattle/UpcomingBattle"
-import { BattleLobbyMechList } from "./SmallLobbyCard"
-import { BattleLobbyPricePool } from "./BattleLobbyPricePool"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
 import { TimeLeft } from "../../Storefront/PlayerAbilitiesStore/PlayerAbilitiesStore"
+import { BattleLobbyFaction, MyFactionLobbySlots } from "../BattleLobbyMech/BattleLobbyMechSlots"
+import { BattleLobbyJoinModal } from "./BattleLobbyJoinModal"
+import { BattleLobbyPricePool } from "./BattleLobbyPricePool"
+import { BattleLobbyMechList } from "./SmallLobbyCard"
 
 interface BattleLobbyItemProps {
     battleLobby: BattleLobby
@@ -331,8 +331,8 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                             </Box>
                                         ) : (
                                             <Stack
-                                                direction="row"
-                                                alignItems="end"
+                                                spacing="1rem"
+                                                alignItems="center"
                                                 justifyContent="center"
                                                 sx={{
                                                     width: "30rem",
@@ -341,7 +341,8 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                                     backgroundColor: `${colors.offWhite}10`,
                                                 }}
                                             >
-                                                <Typography variant="h5" fontFamily={fonts.nostromoBlack} sx={{ pb: "5rem", opacity: 0.4 }}>
+                                                <SvgQuestionMark2 size="7rem" fill={`${colors.grey}aa`} />
+                                                <Typography variant="h5" fontFamily={fonts.nostromoBlack} sx={{ color: `${colors.grey}aa` }}>
                                                     RANDOM
                                                 </Typography>
                                             </Stack>
