@@ -31,7 +31,7 @@ export const UnauthPrompt = () => {
                     <Typography fontFamily={fonts.nostromoBold} variant="body2" textAlign={"center"} sx={{ mb: "1.6rem", fontSize: "1.4rem" }}>
                         log in for full access to the battle arena: claim and use abilities, visit the marketplace and deploy mechs!
                     </Typography>
-                    <ConnectButton clipBorderColor={colors.yellow} clipBackgroundColor={colors.yellow} sx={{ minWidth: "18rem" }} />
+                    <ConnectButton changeColor={colors.yellow} sx={{ minWidth: "18rem" }} />
                 </Stack>
 
                 {/* Coin left decorations */}

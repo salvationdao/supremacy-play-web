@@ -1,43 +1,36 @@
 import { SxProps, Typography } from "@mui/material"
-import { colors, fonts } from "../../../theme/theme"
 import { useAuth } from "../../../containers"
-import { FancyButton } from "../.."
+import { colors, fonts } from "../../../theme/theme"
+import { NiceButton } from "../../Common/Nice/NiceButton"
 
 interface ConnectWalletProps {
-    width?: string
     label?: string
     loadingLabel?: string
     sx?: SxProps
     typeSx?: SxProps
-    clipBorderColor?: string
-    clipBackgroundColor?: string
+    changeColor?: string
 }
 
-export const ConnectButton = ({ width, label, loadingLabel, sx, typeSx, clipBorderColor, clipBackgroundColor }: ConnectWalletProps) => {
+export const ConnectButton = ({ label, loadingLabel, sx, typeSx, changeColor }: ConnectWalletProps) => {
     const { isLoggingIn, onLogInClick } = useAuth()
 
     return (
         <>
             {!isLoggingIn ? (
-                <FancyButton
-                    clipThingsProps={{
-                        clipSize: "7px",
-                        backgroundColor: clipBackgroundColor || colors.neonBlue,
-                        sx: { position: "relative", width },
-                        border: { borderColor: clipBorderColor || colors.neonBlue },
-                    }}
+                <NiceButton
+                    sheen={{ autoSheen: true, sheenSpeedFactor: 0.8 }}
+                    border={{ color: changeColor || colors.neonBlue }}
+                    background={{ color: [changeColor || colors.neonBlue] }}
                     sx={{
                         px: "2rem",
                         py: ".3rem",
                         color: colors.darkestNeonBlue,
                         ...sx,
                     }}
-                    onClick={() => {
-                        onLogInClick()
-                    }}
+                    onClick={onLogInClick}
                 >
                     <Typography
-                        variant="caption"
+                        variant="subtitle1"
                         sx={{
                             color: colors.darkestNeonBlue,
                             fontFamily: fonts.nostromoBlack,
@@ -47,10 +40,10 @@ export const ConnectButton = ({ width, label, loadingLabel, sx, typeSx, clipBord
                     >
                         {label || "LOG IN"}
                     </Typography>
-                </FancyButton>
+                </NiceButton>
             ) : (
-                <Typography sx={{ ml: "2.1rem", mr: "1.6rem", fontFamily: fonts.nostromoBold, ...typeSx }} variant="caption">
-                    {loadingLabel || "Logging in..."}
+                <Typography sx={{ ml: "2.1rem", mr: "1.6rem", fontFamily: fonts.nostromoBold, ...typeSx }} variant="subtitle1">
+                    <i>{loadingLabel || "Logging in..."}</i>
                 </Typography>
             )}
         </>
