@@ -459,7 +459,7 @@ export const FactionPassMechPool = () => {
                         {/* Filter button */}
                         <NiceButton
                             onClick={() => setShowFilters((prev) => !prev)}
-                            border={{ color: theme.factionTheme.primary }}
+                            border={{ color: theme.factionTheme.primary, thickness: "very-lean" }}
                             sx={{ p: ".2rem 1rem", pt: ".4rem" }}
                             background={showFilters}
                         >
@@ -473,7 +473,7 @@ export const FactionPassMechPool = () => {
                         {/* Bulk actions */}
                         <NiceButton
                             ref={bulkPopoverRef}
-                            border={{ color: theme.factionTheme.primary }}
+                            border={{ color: theme.factionTheme.primary, thickness: "very-lean" }}
                             background={{ color: [theme.factionTheme.primary] }}
                             sx={{ p: ".2rem 1rem", pt: ".4rem" }}
                             disabled={selectedMechs.length <= 0}

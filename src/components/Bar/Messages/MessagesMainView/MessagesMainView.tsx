@@ -289,7 +289,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                         YOUR INBOX
                     </Typography>
 
-                    <Stack direction="row" alignItems="center" spacing=".4rem">
+                    <Stack direction="row" alignItems="center" spacing=".5rem">
                         <SvgHistoryClock size="1.2rem" />
                         <Typography>Last updated: {lastUpdated.toISOString()}</Typography>
 

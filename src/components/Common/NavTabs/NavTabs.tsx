@@ -74,7 +74,7 @@ export const NavTabs = <T,>({
                     },
                     ".MuiTabs-indicator": {
                         height: "100%",
-                        background: `linear-gradient(${theme.factionTheme.primary} 26%, ${theme.factionTheme.primary}95)`,
+                        background: `linear-gradient(${theme.factionTheme.primary} 30%, ${theme.factionTheme.primary}BA)`,
                         zIndex: 1,
                         transition: "none",
                     },

@@ -348,15 +348,15 @@ export const theme = createTheme({
             },
             styleOverrides: {
                 root: {
-                    width: 44,
-                    height: 22,
+                    width: 36,
+                    height: 18,
                     padding: 0,
                     "& .MuiSwitch-switchBase": {
                         padding: 0,
                         margin: "2px",
                         transitionDuration: "300ms",
                         "&.Mui-checked": {
-                            transform: "translateX(22px)",
+                            transform: "translateX(18px)",
                             color: colors.neonBlue,
                             "& + .MuiSwitch-track": {
                                 backgroundColor: `${colors.neonBlue}44`,
@@ -380,11 +380,11 @@ export const theme = createTheme({
                     },
                     "& .MuiSwitch-thumb": {
                         boxSizing: "border-box",
-                        width: 18,
-                        height: 18,
+                        width: 14,
+                        height: 14,
                     },
                     "& .MuiSwitch-track": {
-                        borderRadius: 22 / 2,
+                        borderRadius: 18 / 2,
                         backgroundColor: colors.grey,
                         opacity: 1,
                         transition: `all .5s`,
