@@ -1,15 +1,16 @@
 import { Action } from "react-fetching-library"
-import { GAME_SERVER_HOSTNAME, PASSPORT_SERVER_HOST } from "../constants"
+import { GAME_SERVER_HOSTNAME } from "../constants"
 import { Fingerprint } from "../containers"
 import { OvenStream } from "../containers/oven"
 import { Faction, Feature, PowerCoreMaxStats, SaleAbilityAvailability, User, UserFromPassport, WarMachineDestroyedRecord, WeaponMaxStats } from "../types"
 
-export const PassportLoginCheck = (): Action<UserFromPassport> => {
+export const PassportLoginCheck = (issue_token?: string): Action<UserFromPassport> => {
     return {
-        method: "GET",
-        endpoint: `${window.location.protocol}//${PASSPORT_SERVER_HOST}/api/auth/check`,
+        method: "POST",
+        endpoint: `${window.location.protocol}//${GAME_SERVER_HOSTNAME}/api/auth/xsyn`,
         credentials: "include",
         responseType: "json",
+        body: { issue_token },
     }
 }
 

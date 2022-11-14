@@ -229,24 +229,6 @@ const ImpureUnityViewer = ({ unity, mech }: MechViewer3DProps) => {
                 }
             }
 
-            // for (let i = 0; i < mechDetailsWithMaps.utility_slots; i++) {
-            //     accessories.push({
-            //         type: "utility",
-            //         ownership_id: "",
-            //         static_id: "",
-            //     })
-            // }
-            // if (mechDetailsWithMaps.utility) {
-            //     mechDetailsWithMaps.utility.forEach((u) => {
-            //         if (u.slot_number == null) return
-
-            //         accessories[mechDetailsWithMaps.weapon_hardpoints + u.slot_number] = {
-            //             type: "utility",
-            //             ownership_id: u.id,
-            //             static_id: u.blueprint_id,
-            //         }
-            //     })
-            // }
             accessories.push({
                 type: "power_core",
             })
