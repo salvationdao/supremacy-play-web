@@ -776,7 +776,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                             thickness: "thicc",
                         }}
                         background={{
-                            color: [theme.factionTheme.background],
+                            colors: [theme.factionTheme.background],
                         }}
                         sx={{
                             position: "absolute",
@@ -820,7 +820,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                         thickness: "thicc",
                     }}
                     background={{
-                        color: [theme.factionTheme.background],
+                        colors: [theme.factionTheme.background],
                     }}
                 >
                     {/* Saving Changes */}

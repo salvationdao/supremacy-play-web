@@ -32,7 +32,7 @@ export const QuestItem = React.memo(function QuestItem({ questStat, progress, sh
     return (
         <NiceBoxThing
             border={{ color: `${colors.purple}80`, thickness: "very-lean" }}
-            background={{ color: [colors.purple], opacity: "more-transparent" }}
+            background={{ colors: [colors.purple], opacity: 0.1 }}
             sx={{
                 position: "relative",
                 px: "1.4rem",

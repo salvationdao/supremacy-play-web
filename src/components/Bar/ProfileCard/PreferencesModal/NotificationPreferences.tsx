@@ -262,7 +262,7 @@ interface PreferenceToggleProps {
 
 export const PreferenceToggle = ({ title, checked, onChangeFunction, disabled }: PreferenceToggleProps) => {
     return (
-        <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing="1.2rem">
             <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold }}>
                 {title}
             </Typography>

@@ -1,7 +1,8 @@
 import { Stack, Typography } from "@mui/material"
-import { HangarBg, SvgSupremacyLogo } from "../../assets"
-import { ClipThing, ConnectButton } from "../../components"
+import { ClaimsBg, SvgSupremacyLogo } from "../../assets"
+import { ConnectButton } from "../../components"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
+import { NiceBoxThing } from "../Common/Nice/NiceBoxThing"
 
 export const AuthPage = ({ authTitle, authDescription }: { authTitle?: string; authDescription?: string }) => {
     return (
@@ -10,27 +11,22 @@ export const AuthPage = ({ authTitle, authDescription }: { authTitle?: string; a
             sx={{
                 height: "100%",
                 zIndex: siteZIndex.RoutePage,
-                backgroundImage: `url(${HangarBg})`,
+                backgroundImage: `url(${ClaimsBg})`,
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
                 backgroundSize: "cover",
                 boxShadow: `inset 0 0 50px 60px #00000090`,
             }}
         >
-            <ClipThing
-                clipSize="10px"
-                border={{
-                    borderColor: colors.neonBlue,
-                    borderThickness: ".3rem",
-                }}
+            <NiceBoxThing
+                border={{ color: colors.neonBlue }}
+                background={{ colors: [colors.darkerNavy], opacity: 0.7 }}
                 sx={{ position: "relative", maxWidth: "70rem", my: "auto", mx: "2.6rem" }}
-                backgroundColor={colors.darkerNavy}
-                opacity={0.7}
             >
-                <Stack spacing="1.8rem" alignItems="center" sx={{ px: "3.6rem", py: "2.8rem", textAlign: "center" }}>
+                <Stack spacing="1.8rem" alignItems="center" sx={{ px: "3.6rem", py: "3.6rem", textAlign: "center" }}>
                     <SvgSupremacyLogo width="100%" height="3rem" />
 
-                    <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
+                    <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBold }}>
                         {authTitle || "PLEASE CONNECT TO XSYN TO CONTINUE"}
                     </Typography>
 
@@ -38,7 +34,7 @@ export const AuthPage = ({ authTitle, authDescription }: { authTitle?: string; a
 
                     <ConnectButton label="LOG IN" loadingLabel="LOGGING IN..." sx={{ px: "6rem", py: ".8rem" }} />
                 </Stack>
-            </ClipThing>
+            </NiceBoxThing>
         </Stack>
     )
 }

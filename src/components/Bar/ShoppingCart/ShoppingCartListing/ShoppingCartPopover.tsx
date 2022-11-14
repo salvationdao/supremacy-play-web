@@ -57,7 +57,7 @@ export const ShoppingCartPopover = ({ open, loading, shoppingCart, popoverRef, o
                 },
             }}
         >
-            <NiceBoxThing border={{ color: theme.factionTheme.primary }} background={{ color: [theme.factionTheme.background] }} sx={{ height: "100%" }}>
+            <NiceBoxThing border={{ color: theme.factionTheme.primary }} background={{ colors: [theme.factionTheme.background] }} sx={{ height: "100%" }}>
                 <Stack spacing="2rem" sx={{ position: "relative", minWidth: "35rem", maxHeight: "90vh", px: "2rem", pt: "1.6rem", pb: "2rem" }}>
                     <Box sx={{ minWidth: "500px" }}>
                         <ShoppingCartTable
