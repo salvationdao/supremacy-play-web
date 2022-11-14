@@ -329,6 +329,7 @@ export const theme = createTheme({
             },
             styleOverrides: {
                 root: {
+                    width: "fit-content",
                     padding: "0 !important",
                     color: "#FFFFFF90",
                     borderRadius: 0,
