@@ -41,7 +41,7 @@ export const MarketingModal = () => {
         <Modal open={showMarketingPopup}>
             <NiceBoxThing
                 border={{ color: "#FFFFFF" }}
-                background={{ color: [colors.darkNavy] }}
+                background={{ colors: [colors.darkNavy] }}
                 sx={{
                     position: "absolute",
                     top: "50%",
@@ -108,7 +108,7 @@ export const MarketingModal = () => {
                                 />
                             </Collapse>
 
-                            <NiceButton type="submit" sheen={{ sheenSpeedFactor: 0.8 }} border={{ color: colors.yellow }}>
+                            <NiceButton type="submit" sheen={{ sheenSpeedFactor: 0.8 }} buttonColor={colors.yellow}>
                                 UPDATE
                             </NiceButton>
                         </Stack>

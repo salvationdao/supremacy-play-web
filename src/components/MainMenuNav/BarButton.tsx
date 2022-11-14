@@ -23,7 +23,7 @@ export const BarButton = () => {
     }, [toggleShowMainMenu])
 
     return (
-        <NiceButton sx={{ mx: "1.4rem", border: "none" }} onClick={() => toggleShowMainMenu()}>
+        <NiceButton sx={{ mx: "1.4rem", border: "none" }} onClick={() => toggleShowMainMenu()} disableAutoColor>
             <Stack direction="row" alignItems="center" spacing=".7rem">
                 <SvgMainMenu fill={colors.neonBlue} size="1.5rem" />
 

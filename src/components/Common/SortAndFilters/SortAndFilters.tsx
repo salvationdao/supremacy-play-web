@@ -32,7 +32,7 @@ export const SortAndFilters = React.memo(function SortAndFilters({ open, chipFil
     return (
         <NiceBoxThing
             border={{ color: "#FFFFFF38", thickness: "very-lean" }}
-            background={{ color: ["#FFFFFF10", "#FFFFFF20"] }}
+            background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.08 }}
             sx={{
                 visibility: open ? "visible" : "hidden",
                 width: open ? "38rem" : 0,
@@ -51,8 +51,7 @@ export const SortAndFilters = React.memo(function SortAndFilters({ open, chipFil
 
                     <NiceButton
                         disabled={!isFilterApplied}
-                        border={{ color: theme.factionTheme.primary, thickness: "very-lean" }}
-                        background={{ color: [theme.factionTheme.primary] }}
+                        buttonColor={theme.factionTheme.primary}
                         onClick={clearAllFilters}
                         sx={{
                             p: ".3rem 1rem",

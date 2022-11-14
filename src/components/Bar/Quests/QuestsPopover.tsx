@@ -66,7 +66,7 @@ export const QuestsPopover = ({
                 },
             }}
         >
-            <NiceBoxThing border={{ color: colors.purple }} background={{ color: [theme.factionTheme.background] }} sx={{ height: "100%" }}>
+            <NiceBoxThing border={{ color: colors.purple }} background={{ colors: [theme.factionTheme.background] }} sx={{ height: "100%" }}>
                 <Stack sx={{ position: "relative", width: "38rem", maxHeight: "90vh", pb: "1.1rem" }}>
                     <Stack
                         direction="row"

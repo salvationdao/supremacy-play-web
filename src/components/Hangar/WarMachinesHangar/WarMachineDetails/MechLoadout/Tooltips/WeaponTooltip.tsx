@@ -111,7 +111,7 @@ export const WeaponTooltip = ({ id, compareTo }: WeaponTooltipProps) => {
                 thickness: "lean",
             }}
             background={{
-                color: [theme.factionTheme.background],
+                colors: [theme.factionTheme.background],
             }}
             sx={{
                 display: "flex",

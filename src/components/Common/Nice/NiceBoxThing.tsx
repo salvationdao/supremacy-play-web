@@ -35,8 +35,10 @@ export interface NiceBoxThingProps extends Omit<BoxProps, "border" | "background
                * ["#000", colors.neonBlue]
                * ```
                */
-              color?: ResponsiveStyleValue<Property.Color | undefined>[]
-              opacity?: "transparent" | "more-transparent" | "half" | "more-opaque" | "opaque"
+              colors?: ResponsiveStyleValue<Property.Color | undefined>[]
+              opacity?: number
+              linearGradientDegrees?: number
+              insetPx?: number
           }
     enableBoxShadow?: boolean
     sx?: SxProps
@@ -113,16 +115,16 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
         const backgroundStyles: SxProps = {
             zIndex: -1,
             position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
+            top: typeof background !== "boolean" ? `${background.insetPx || 0}px` : 0,
+            left: typeof background !== "boolean" ? `${background.insetPx || 0}px` : 0,
+            right: typeof background !== "boolean" ? `${background.insetPx || 0}px` : 0,
+            bottom: typeof background !== "boolean" ? `${background.insetPx || 0}px` : 0,
             pointerEvents: "none",
         }
 
         let colors: ResponsiveStyleValue<Property.Color | undefined>[] = []
-        if (typeof background !== "boolean" && background.color && background.color.length > 0) {
-            colors = background.color
+        if (typeof background !== "boolean" && background.colors && background.colors.length > 0) {
+            colors = background.colors
         } else if (border?.color) {
             colors = [border.color]
         }
@@ -130,26 +132,12 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
         if (colors.length === 1) {
             backgroundStyles.backgroundColor = colors[0]
         } else {
-            backgroundStyles.background = `linear-gradient(150deg, ${colors.join(", ")})`
+            backgroundStyles.background = `linear-gradient(${typeof background === "boolean" ? 150 : background.linearGradientDegrees || 150}deg, ${colors.join(
+                ", ",
+            )})`
         }
 
-        switch (typeof background === "boolean" || typeof background.opacity === "undefined" ? "opaque" : background.opacity) {
-            case "transparent":
-                backgroundStyles.opacity = 0
-                break
-            case "more-transparent":
-                backgroundStyles.opacity = 0.2
-                break
-            case "half":
-                backgroundStyles.opacity = 0.5
-                break
-            case "more-opaque":
-                backgroundStyles.opacity = 0.7
-                break
-            case "opaque":
-                backgroundStyles.opacity = 1
-                break
-        }
+        backgroundStyles.opacity = typeof background === "boolean" ? 1 : background.opacity || 1
 
         return (
             <Box

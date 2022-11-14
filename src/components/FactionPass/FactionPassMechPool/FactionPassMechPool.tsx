@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { EmptyWarMachinesPNG, SvgFilter, SvgGridView, SvgListView, SvgSearch } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, parseString } from "../../../helpers"
@@ -10,6 +10,7 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { LobbyMech, MechStatusEnum, RarityEnum } from "../../../types"
 import { SortTypeLabel } from "../../../types/marketplace"
+import { BulkActionPopover } from "../../Common/Mech/BulkActionPopover"
 import { MechCard } from "../../Common/Mech/MechCard"
 import { NavTabs } from "../../Common/NavTabs/NavTabs"
 import { usePageTabs } from "../../Common/NavTabs/usePageTabs"
@@ -79,11 +80,13 @@ export const FactionPassMechPool = () => {
 
     // Items
     const [displayMechs, setDisplayMechs] = useState<LobbyMech[]>([])
-    const [selectedMechs, setSelectedMechs] = useState<LobbyMech[]>([])
     const [mechs, setMechs] = useState<LobbyMech[]>([])
     const [isLoading, setIsLoading] = useState(true)
 
     // For bulk selecting mechs
+    const [selectedMechs, setSelectedMechs] = useState<LobbyMech[]>([])
+    const [bulkPopover, setBulkPopover] = useState(false)
+    const bulkPopoverRef = useRef(null)
     const toggleSelected = useCallback((mech: LobbyMech) => {
         setSelectedMechs((prev) => {
             const newArray = [...prev]
@@ -337,7 +340,7 @@ export const FactionPassMechPool = () => {
                     {"No results..."}
                 </Typography>
 
-                <NiceButton route={{ to: `/marketplace/mechs` }} border={{ color: theme.factionTheme.primary }}>
+                <NiceButton route={{ to: `/marketplace/mechs` }} buttonColor={theme.factionTheme.primary}>
                     GO TO MARKETPLACE
                 </NiceButton>
             </Stack>
@@ -361,16 +364,7 @@ export const FactionPassMechPool = () => {
                 maxWidth: "190rem",
             }}
         >
-            <NavTabs
-                activeTabID={activeTabID}
-                setActiveTabID={setActiveTabID}
-                tabs={tabs}
-                prevTab={prevTab}
-                nextTab={nextTab}
-                sx={{
-                    ".MuiTab-root": { minWidth: "21rem" },
-                }}
-            />
+            <NavTabs activeTabID={activeTabID} setActiveTabID={setActiveTabID} tabs={tabs} prevTab={prevTab} nextTab={nextTab} />
 
             <Stack direction="row" alignItems="stretch" sx={{ flex: 1, width: "100%", overflow: "hidden" }}>
                 <SortAndFilters
@@ -465,9 +459,9 @@ export const FactionPassMechPool = () => {
                         {/* Filter button */}
                         <NiceButton
                             onClick={() => setShowFilters((prev) => !prev)}
-                            border={{ color: theme.factionTheme.primary }}
+                            fill={showFilters}
+                            buttonColor={theme.factionTheme.primary}
                             sx={{ p: ".2rem 1rem", pt: ".4rem" }}
-                            background={showFilters}
                         >
                             <Typography variant="subtitle1" fontFamily={fonts.nostromoBold} color={showFilters ? theme.factionTheme.secondary : "#FFFFFF"}>
                                 <SvgFilter inline size="1.5rem" /> FILTER
@@ -475,6 +469,20 @@ export const FactionPassMechPool = () => {
                         </NiceButton>
 
                         <Box flex={1} />
+
+                        {/* Bulk actions */}
+                        <NiceButton
+                            ref={bulkPopoverRef}
+                            buttonColor={theme.factionTheme.primary}
+                            sx={{ p: ".2rem 1rem", pt: ".4rem" }}
+                            disabled={selectedMechs.length <= 0}
+                            onClick={() => setBulkPopover(true)}
+                        >
+                            <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
+                                Actions ({selectedMechs.length})
+                            </Typography>
+                        </NiceButton>
+                        <BulkActionPopover open={bulkPopover} onClose={() => setBulkPopover(false)} popoverRef={bulkPopoverRef} />
 
                         <Stack direction="row" alignItems="center">
                             {/* Show Total */}

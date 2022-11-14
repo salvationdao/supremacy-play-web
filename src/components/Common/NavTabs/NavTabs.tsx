@@ -64,6 +64,7 @@ export const NavTabs = <T,>({
                     boxShadow: 1,
                     zIndex: 9,
                     minHeight: 0,
+                    ".MuiTab-root": { minWidth: "21rem" },
                     ".MuiButtonBase-root": {
                         height: `${TAB_HEIGHT}rem`,
                         pt: `${TAB_HEIGHT / 2}rem`,
@@ -73,7 +74,7 @@ export const NavTabs = <T,>({
                     },
                     ".MuiTabs-indicator": {
                         height: "100%",
-                        background: `linear-gradient(${theme.factionTheme.primary} 26%, ${theme.factionTheme.primary}95)`,
+                        background: `linear-gradient(${theme.factionTheme.primary} 30%, ${theme.factionTheme.primary}BA)`,
                         zIndex: 1,
                         transition: "none",
                     },
