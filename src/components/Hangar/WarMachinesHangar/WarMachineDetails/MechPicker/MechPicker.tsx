@@ -8,7 +8,7 @@ import { usePagination } from "../../../../../hooks"
 import { useGameServerCommands, useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
-import { BattleMechStats, MechBasicWithQueueStatus, MechDetails, MechStatus } from "../../../../../types"
+import { BattleMechStats, MechBasicWithQueueStatus, MechDetails, MechStatus, MechStatusEnum } from "../../../../../types"
 import { SortDir, SortTypeLabel } from "../../../../../types/marketplace"
 import { NiceAccordion } from "../../../../Common/Nice/NiceAccordion"
 import { NiceBoxThing } from "../../../../Common/Nice/NiceBoxThing"
@@ -39,6 +39,28 @@ export const MechPicker = ({ mechDetails, mechStatus, mechStaked, onUpdate }: Me
 
     const statusDeets = useMemo(() => getMechStatusDeets(mechStatus?.status), [mechStatus])
     const [inheritWeaponSkins, setInheritWeaponSkins] = useState(mechDetails.inherit_all_weapon_skins)
+
+    const loadoutDisabled = useMemo(
+        () =>
+            userID !== mechDetails.owner_id ||
+            mechDetails.market_locked ||
+            mechDetails.xsyn_locked ||
+            mechDetails.locked_to_marketplace ||
+            mechStaked ||
+            (mechStatus?.battle_lobby_is_locked && mechStatus?.status === MechStatusEnum.Queue) ||
+            mechStatus?.status === MechStatusEnum.Battle ||
+            mechStatus?.status === MechStatusEnum.Sold,
+        [
+            mechDetails.locked_to_marketplace,
+            mechDetails.market_locked,
+            mechDetails.owner_id,
+            mechDetails.xsyn_locked,
+            mechStaked,
+            mechStatus?.battle_lobby_is_locked,
+            mechStatus?.status,
+            userID,
+        ],
+    )
 
     const [mechBattleStats, setMechBattleStats] = useState<BattleMechStats>()
     const [statsLoading, setStatsLoading] = useState(false)
@@ -164,9 +186,7 @@ export const MechPicker = ({ mechDetails, mechStatus, mechStaked, onUpdate }: Me
                 color: theme.factionTheme.primary,
                 thickness: "thicc",
             }}
-            background={{
-                colors: [theme.factionTheme.background],
-            }}
+            bgcolor={theme.factionTheme.background}
             sx={{
                 flexBasis: 310,
                 alignSelf: "start",
@@ -176,17 +196,19 @@ export const MechPicker = ({ mechDetails, mechStatus, mechStaked, onUpdate }: Me
             }}
         >
             {/* Mech picker dropdown */}
-            <Box
-                sx={{
-                    zIndex: 11,
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                }}
-            >
-                <MechPickerDropdown />
-            </Box>
+            {userID === mechDetails.owner_id && (
+                <Box
+                    sx={{
+                        zIndex: 11,
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                    }}
+                >
+                    <MechPickerDropdown />
+                </Box>
+            )}
 
             {/* Mech Profile */}
             <Stack
@@ -194,7 +216,7 @@ export const MechPicker = ({ mechDetails, mechStatus, mechStaked, onUpdate }: Me
                 spacing="1rem"
                 sx={{
                     width: "100%",
-                    mt: PICKER_BUTTON_HEIGHT,
+                    mt: userID === mechDetails.owner_id ? PICKER_BUTTON_HEIGHT : 0,
                     px: "2rem",
                     py: "1rem",
                     background: `linear-gradient(to right, ${colors.black2}, ${theme.factionTheme.background})`,
@@ -298,7 +320,7 @@ export const MechPicker = ({ mechDetails, mechStatus, mechStaked, onUpdate }: Me
                 }}
             >
                 <FormControlLabel
-                    control={<Switch onChange={handleInheritWeaponSkin} checked={inheritWeaponSkins} />}
+                    control={<Switch onChange={handleInheritWeaponSkin} checked={inheritWeaponSkins} disabled={loadoutDisabled} />}
                     label={
                         <Typography
                             sx={{

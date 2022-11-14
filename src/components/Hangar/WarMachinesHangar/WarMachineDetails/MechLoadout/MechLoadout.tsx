@@ -149,6 +149,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
         outro_animation,
         locked_to_marketplace,
         xsyn_locked,
+        market_locked,
         mech_type,
         inherit_all_weapon_skins,
     } = currLoadout
@@ -158,22 +159,12 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
             (enable3DLoadout && (isUnityPendingChange || !isUnityLoaded)) ||
             xsyn_locked ||
             locked_to_marketplace ||
+            market_locked ||
             mechStaked ||
             (mechStatus?.battle_lobby_is_locked && mechStatus?.status === MechStatusEnum.Queue) ||
             mechStatus?.status === MechStatusEnum.Battle ||
             mechStatus?.status === MechStatusEnum.Sold,
-        [
-            enable3DLoadout,
-            isUnityLoaded,
-            isUnityPendingChange,
-            locked_to_marketplace,
-            mechStaked,
-            mechStatus?.battle_lobby_is_locked,
-            mechStatus?.status,
-            owner_id,
-            userID,
-            xsyn_locked,
-        ],
+        [enable3DLoadout, isUnityLoaded, isUnityPendingChange, locked_to_marketplace, market_locked, mechStaked, mechStatus?.battle_lobby_is_locked, mechStatus?.status, owner_id, userID, xsyn_locked],
     )
 
     useEffect(() => {
@@ -1038,7 +1029,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                     </Box>
                 </NiceBoxThing>
             </Stack>
-            <MechLoadoutDraggables
+            {userID === owner_id && <MechLoadoutDraggables
                 draggablesRef={draggablesRef}
                 compareToWeapon={compareToWeapon?.weapon}
                 excludeWeaponIDs={(() => {
@@ -1059,7 +1050,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                     onDragStop: onItemDragStop,
                 }}
                 onClick={onItemClick}
-            />
+            />}
         </Stack>
     )
 }

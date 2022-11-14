@@ -80,9 +80,7 @@ export const WarMachineHangarDetailsInner = ({ mechID }: WarMachineHangarDetails
                         color: theme.factionTheme.primary,
                         thickness: "thicc",
                     }}
-                    background={{
-                        colors: [theme.factionTheme.background],
-                    }}
+                    bgcolor={theme.factionTheme.background}
                     sx={{
                         flexBasis: 310,
                         alignSelf: "start",
