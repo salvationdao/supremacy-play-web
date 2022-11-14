@@ -4,7 +4,7 @@ import { SvgMechDeaths, SvgMechKills, SvgMechLosses, SvgMechWins, SvgUserDiamond
 import { useSupremacy } from "../../../containers"
 import { getMechStatusDeets, getRarityDeets } from "../../../helpers"
 import { TruncateTextLines } from "../../../theme/styles"
-import { fonts } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { LobbyMech } from "../../../types"
 import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
 import { NiceBoxThing } from "../Nice/NiceBoxThing"
@@ -27,8 +27,8 @@ export const MechCard = React.memo(function MechCard({ mech, isSelected, toggleS
     return (
         <NiceBoxThing
             border={{
-                color: "#FFFFFF38",
-                thickness: "very-lean",
+                color: isSelected ? `${colors.neonBlue}80` : "#FFFFFF38",
+                thickness: isSelected ? "lean" : "very-lean",
             }}
             background={{ color: ["#FFFFFF10", "#FFFFFF20"] }}
             sx={{ p: "1rem 1.5rem" }}
@@ -37,7 +37,16 @@ export const MechCard = React.memo(function MechCard({ mech, isSelected, toggleS
                 {/* Mech name and checkbox */}
                 <Stack direction="row" alignItems="center" justifyContent="space-between" spacing=".5rem">
                     <Typography sx={{ fontFamily: fonts.nostromoBlack, ...TruncateTextLines(1) }}>{name || label}</Typography>
-                    {toggleSelected && <Checkbox checked={isSelected} onClick={() => toggleSelected(mech)} />}
+                    {toggleSelected && (
+                        <Checkbox
+                            checked={isSelected}
+                            onClick={() => toggleSelected(mech)}
+                            sx={{
+                                "&.Mui-checked > .MuiSvgIcon-root": { fill: `${colors.neonBlue} !important` },
+                                ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.neonBlue}50 !important` },
+                            }}
+                        />
+                    )}
                 </Stack>
 
                 {/* Owner name */}
