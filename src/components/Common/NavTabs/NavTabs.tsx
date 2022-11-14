@@ -64,6 +64,7 @@ export const NavTabs = <T,>({
                     boxShadow: 1,
                     zIndex: 9,
                     minHeight: 0,
+                    ".MuiTab-root": { minWidth: "21rem" },
                     ".MuiButtonBase-root": {
                         height: `${TAB_HEIGHT}rem`,
                         pt: `${TAB_HEIGHT / 2}rem`,
