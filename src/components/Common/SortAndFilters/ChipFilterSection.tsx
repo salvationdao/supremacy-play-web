@@ -35,7 +35,11 @@ export const ChipFilterSection = React.memo(function ChipFilterSection({ label, 
                             <NiceButton
                                 onClick={() => setSelected((prev) => (prev.includes(value) ? prev.filter((r) => r !== value) : prev.concat(value)))}
                                 border={{ color: render?.color, thickness: "very-lean" }}
-                                sx={{ opacity: isSelected ? 1 : 0.4, p: ".2rem .8rem" }}
+                                sx={{
+                                    opacity: isSelected ? 1 : 0.4,
+                                    p: ".2rem .8rem",
+                                    filter: isSelected ? `drop-shadow(0 0 3px ${render?.color}BB)` : "unset",
+                                }}
                             >
                                 {renderNode ||
                                     (render ? (
