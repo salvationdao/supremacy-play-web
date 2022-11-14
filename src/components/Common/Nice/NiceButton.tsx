@@ -124,6 +124,7 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
             ...(fill && !disableAutoColor
                 ? {
                       [`&, *`]: {
+                          transition: "all .2s",
                           color: `${contrastTextColor} !important`,
                           fill: `${contrastTextColor} !important`,
                       },
