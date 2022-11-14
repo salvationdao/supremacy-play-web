@@ -18,10 +18,6 @@ import DamageFalloff from "!@svgr/webpack!./svg/DamageFalloff.svg"
 import DamageFalloffRate from "!@svgr/webpack!./svg/DamageFalloffRate.svg"
 import Death from "!@svgr/webpack!./svg/Death.svg"
 import DropdownArrow from "!@svgr/webpack!./svg/DropdownArrow.svg"
-import MechDeaths from "!@svgr/webpack!./svg/MechDeaths.svg"
-import MechKills from "!@svgr/webpack!./svg/MechKills.svg"
-import MechLosses from "!@svgr/webpack!./svg/MechLosses.svg"
-import MechWins from "!@svgr/webpack!./svg/MechWins.svg"
 import Emoji from "!@svgr/webpack!./svg/Emoji.svg"
 import EmojiSelector from "!@svgr/webpack!./svg/EmojiSelector.svg"
 import EmptySet from "!@svgr/webpack!./svg/EmptySet.svg"
@@ -57,6 +53,10 @@ import Lock from "!@svgr/webpack!./svg/Lock.svg"
 import Logout from "!@svgr/webpack!./svg/Logout.svg"
 import Mail from "!@svgr/webpack!./svg/Mail.svg"
 import MainMenu from "!@svgr/webpack!./svg/MainMenu.svg"
+import MechDeaths from "!@svgr/webpack!./svg/MechDeaths.svg"
+import MechKills from "!@svgr/webpack!./svg/MechKills.svg"
+import MechLosses from "!@svgr/webpack!./svg/MechLosses.svg"
+import MechWins from "!@svgr/webpack!./svg/MechWins.svg"
 import Meteor from "!@svgr/webpack!./svg/Meteor.svg"
 import Microphone from "!@svgr/webpack!./svg/Microphone.svg"
 import MicrophoneMute from "!@svgr/webpack!./svg/MicrophoneMute.svg"
@@ -105,6 +105,7 @@ import Applause from "!react-svg-loader!./svg/Applause.svg"
 import Arrow from "!react-svg-loader!./svg/Arrow.svg"
 import Back from "!react-svg-loader!./svg/Back.svg"
 import Bin from "!react-svg-loader!./svg/Bin.svg"
+import ButtonCorner from "!react-svg-loader!./svg/ButtonCorner.svg"
 import Camera from "!react-svg-loader!./svg/Camera.svg"
 import Cancelled from "!react-svg-loader!./svg/Cancelled.svg"
 import Chat from "!react-svg-loader!./svg/Chat.svg"
@@ -411,6 +412,7 @@ export {
 export { BCBorder, RMBorder, ZHIBorder, BCWaiting, RMWaiting, ZHIWaiting, BCDeploy, RMDeploy, ZHIDeploy }
 
 export interface SvgWrapperProps extends BoxProps {
+    className?: string
     size?: string
     fill?: string
     height?: string
@@ -420,9 +422,10 @@ export interface SvgWrapperProps extends BoxProps {
     inline?: boolean
 }
 
-export const SvgWrapper = React.memo(function SvgWrapper({ fill, stroke, strokeWidth, sx, size, width, height, inline, ...props }: SvgWrapperProps) {
+export const SvgWrapper = React.memo(function SvgWrapper({ className, fill, stroke, strokeWidth, sx, size, width, height, inline, ...props }: SvgWrapperProps) {
     return (
         <Box
+            className={className}
             component="span"
             sx={{
                 display: inline ? "inline-flex" : "flex",
@@ -1670,5 +1673,11 @@ export const SvgMechLosses: React.VoidFunctionComponent<SvgWrapperProps> = (prop
 export const SvgMechWins: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <MechWins />
+    </SvgWrapper>
+)
+
+export const SvgButtonCorner: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ButtonCorner />
     </SvgWrapper>
 )

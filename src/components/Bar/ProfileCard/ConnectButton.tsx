@@ -18,6 +18,7 @@ export const ConnectButton = ({ label, loadingLabel, sx, typeSx, changeColor }: 
         <>
             {!isLoggingIn ? (
                 <NiceButton
+                    corners
                     buttonColor={changeColor || colors.neonBlue}
                     sx={{
                         px: "2rem",

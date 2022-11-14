@@ -31,6 +31,7 @@ export const BuySupsButton = () => {
             }}
         >
             <NiceButton
+                corners
                 sheen={{ autoSheen: true, sheenSpeedFactor: 0.7 }}
                 sx={{ px: "1rem", py: ".4rem", color: colors.gold }}
                 onClick={openBuySupsPage}
