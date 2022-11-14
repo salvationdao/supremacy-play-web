@@ -340,7 +340,7 @@ export const FactionPassMechPool = () => {
                     {"No results..."}
                 </Typography>
 
-                <NiceButton route={{ to: `/marketplace/mechs` }} border={{ color: theme.factionTheme.primary }}>
+                <NiceButton route={{ to: `/marketplace/mechs` }} buttonColor={theme.factionTheme.primary}>
                     GO TO MARKETPLACE
                 </NiceButton>
             </Stack>
@@ -459,9 +459,9 @@ export const FactionPassMechPool = () => {
                         {/* Filter button */}
                         <NiceButton
                             onClick={() => setShowFilters((prev) => !prev)}
-                            border={{ color: theme.factionTheme.primary, thickness: "very-lean" }}
+                            fill={showFilters}
+                            buttonColor={theme.factionTheme.primary}
                             sx={{ p: ".2rem 1rem", pt: ".4rem" }}
-                            background={showFilters}
                         >
                             <Typography variant="subtitle1" fontFamily={fonts.nostromoBold} color={showFilters ? theme.factionTheme.secondary : "#FFFFFF"}>
                                 <SvgFilter inline size="1.5rem" /> FILTER
@@ -473,8 +473,7 @@ export const FactionPassMechPool = () => {
                         {/* Bulk actions */}
                         <NiceButton
                             ref={bulkPopoverRef}
-                            border={{ color: theme.factionTheme.primary, thickness: "very-lean" }}
-                            background={{ colors: [theme.factionTheme.primary] }}
+                            buttonColor={theme.factionTheme.primary}
                             sx={{ p: ".2rem 1rem", pt: ".4rem" }}
                             disabled={selectedMechs.length <= 0}
                             onClick={() => setBulkPopover(true)}

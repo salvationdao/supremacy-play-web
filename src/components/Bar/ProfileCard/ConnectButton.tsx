@@ -18,13 +18,11 @@ export const ConnectButton = ({ label, loadingLabel, sx, typeSx, changeColor }: 
         <>
             {!isLoggingIn ? (
                 <NiceButton
-                    sheen={{ autoSheen: true, sheenSpeedFactor: 0.8 }}
-                    border={{ color: changeColor || colors.neonBlue }}
-                    background={{ colors: [changeColor || colors.neonBlue] }}
+                    buttonColor={changeColor || colors.neonBlue}
                     sx={{
                         px: "2rem",
-                        py: ".3rem",
-                        color: colors.darkestNeonBlue,
+                        py: ".4rem",
+                        mx: "1.2rem",
                         ...sx,
                     }}
                     onClick={onLogInClick}
@@ -32,7 +30,6 @@ export const ConnectButton = ({ label, loadingLabel, sx, typeSx, changeColor }: 
                     <Typography
                         variant="subtitle1"
                         sx={{
-                            color: colors.darkestNeonBlue,
                             fontFamily: fonts.nostromoBlack,
                             whiteSpace: "nowrap",
                             ...typeSx,
@@ -42,7 +39,7 @@ export const ConnectButton = ({ label, loadingLabel, sx, typeSx, changeColor }: 
                     </Typography>
                 </NiceButton>
             ) : (
-                <Typography sx={{ ml: "2.1rem", mr: "1.6rem", fontFamily: fonts.nostromoBold, ...typeSx }} variant="subtitle1">
+                <Typography sx={{ mx: "1.2rem", fontFamily: fonts.nostromoBold, ...typeSx }} variant="subtitle1">
                     <i>{loadingLabel || "Logging in..."}</i>
                 </Typography>
             )}

@@ -89,12 +89,10 @@ export const MechLoadoutItem = React.forwardRef<HTMLDivElement, MechLoadoutItemP
             <Box overflow="hidden">
                 <Slide in={!!onUnequip} unmountOnExit>
                     <NiceButton
+                        fill
+                        buttonColor={colors.red}
                         onClick={onUnequip}
                         disabled={props.disabled || props.locked}
-                        border={{
-                            color: colors.red,
-                            thickness: "lean",
-                        }}
                         sx={
                             side === "right"
                                 ? {
@@ -138,10 +136,8 @@ const MechLoadoutItemButton = ({
         <>
             <NiceButton
                 disabled={disabled || locked}
-                border={{
-                    color: rarity ? rarity.color : colors.darkGrey,
-                    thickness: "lean",
-                }}
+                fill
+                buttonColor={rarity ? rarity.color : colors.darkGrey}
                 caret={
                     !isEmpty
                         ? {
@@ -149,10 +145,6 @@ const MechLoadoutItemButton = ({
                           }
                         : undefined
                 }
-                background={{
-                    colors: [colors.black2, rarity ? rarity.color : colors.darkGrey],
-                    opacity: 0.5,
-                }}
                 sx={{
                     width: shape === "rectangle" ? width : height,
                     height: height,

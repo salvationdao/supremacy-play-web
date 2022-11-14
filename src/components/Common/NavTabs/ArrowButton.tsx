@@ -5,7 +5,7 @@ import { TAB_HEIGHT } from "./NavTabs"
 
 export const ArrowButton = ({ keyboardKey, onClick, isLeft, isRight }: { keyboardKey: string; onClick: () => void; isLeft?: boolean; isRight?: boolean }) => {
     return (
-        <NiceButton sx={{ height: `${TAB_HEIGHT}rem`, border: "none" }} onClick={onClick} background={{ colors: ["#FFFFFF"], opacity: 0.1 }}>
+        <NiceButton sx={{ height: `${TAB_HEIGHT}rem` }} onClick={onClick}>
             <Stack direction="row" alignItems="center" spacing=".4rem">
                 {isLeft && <Typography>◄</Typography>}
                 <KeyboardKey variant="body2" label={keyboardKey} />

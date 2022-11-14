@@ -62,22 +62,33 @@ export const TabContentItem = React.memo(function TabContentItem({
     return (
         <NiceButton
             {...niceButtonProp}
+            disableAutoColor
             onClick={() => toggleShowMainMenu(false)}
             sx={{
                 position: "relative",
                 width: "100%",
                 height: "100%",
-                backgroundColor: "#FFFFFF30",
-                border: "none",
-                background: `url(${mainMenuStruct.image})`,
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "top center",
-                backgroundSize: "cover",
                 gridColumn: `span ${spanColumn}`,
             }}
         >
             <Typography sx={{ position: "absolute", top: "1.2rem", left: "1.3rem", fontFamily: fonts.nostromoBlack }}>{mainMenuStruct.label}</Typography>
             <KeyboardKey variant="body2" sx={{ position: "absolute", top: "1.1rem", right: "1.3rem" }} label={`${keyboardKey}`} />
+
+            {/* Background image */}
+            <Box
+                sx={{
+                    position: "absolute",
+                    top: 0,
+                    right: 0,
+                    bottom: 0,
+                    left: 0,
+                    background: `url(${mainMenuStruct.image})`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "top center",
+                    backgroundSize: "cover",
+                    zIndex: -2,
+                }}
+            />
 
             {/* Gradient overlay */}
             <Box

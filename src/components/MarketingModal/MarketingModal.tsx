@@ -108,7 +108,7 @@ export const MarketingModal = () => {
                                 />
                             </Collapse>
 
-                            <NiceButton type="submit" sheen={{ sheenSpeedFactor: 0.8 }} border={{ color: colors.yellow }}>
+                            <NiceButton type="submit" sheen={{ sheenSpeedFactor: 0.8 }} buttonColor={colors.yellow}>
                                 UPDATE
                             </NiceButton>
                         </Stack>

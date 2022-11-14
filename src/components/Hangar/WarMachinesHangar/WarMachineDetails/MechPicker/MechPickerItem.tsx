@@ -60,14 +60,8 @@ export const MechPickerItem = ({ initialData, onPick }: MechPickerItemProps) => 
                 onPick()
                 history.push(`/mech/${mech?.id || initialData.id}`)
             }}
-            border={{
-                thickness: "very-lean",
-                color: `${colors.lightGrey}66`,
-            }}
-            background={{
-                colors: [colors.lightGrey],
-                opacity: 0.4,
-            }}
+            fill
+            buttonColor={colors.lightGrey}
             sx={{
                 p: "1rem",
                 alignItems: "start",

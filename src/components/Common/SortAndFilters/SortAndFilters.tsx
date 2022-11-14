@@ -51,8 +51,7 @@ export const SortAndFilters = React.memo(function SortAndFilters({ open, chipFil
 
                     <NiceButton
                         disabled={!isFilterApplied}
-                        border={{ color: theme.factionTheme.primary, thickness: "very-lean" }}
-                        background={{ colors: [theme.factionTheme.primary] }}
+                        buttonColor={theme.factionTheme.primary}
                         onClick={clearAllFilters}
                         sx={{
                             p: ".3rem 1rem",

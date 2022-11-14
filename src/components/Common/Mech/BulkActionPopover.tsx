@@ -32,7 +32,6 @@ export const BulkActionPopover = React.memo(function BulkActionPopover({
             <NiceBoxThing border={{ color: theme.factionTheme.primary }} background={{ colors: [theme.factionTheme.background] }} sx={{ height: "100%" }}>
                 <Stack spacing=".32rem" sx={{ p: ".8rem" }}>
                     <NiceButton sx={{ justifyContent: "flex-start" }}>STAKE SELECTED</NiceButton>
-
                     <NiceButton sx={{ justifyContent: "flex-start" }}>REPAIR SELECTED</NiceButton>
                 </Stack>
             </NiceBoxThing>
