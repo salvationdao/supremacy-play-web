@@ -186,7 +186,9 @@ export const MechPicker = ({ mechDetails, mechStatus, mechStaked, onUpdate }: Me
                 color: theme.factionTheme.primary,
                 thickness: "thicc",
             }}
-            bgcolor={theme.factionTheme.background}
+            background={{
+                colors: [theme.factionTheme.background],
+            }}
             sx={{
                 flexBasis: 310,
                 alignSelf: "start",

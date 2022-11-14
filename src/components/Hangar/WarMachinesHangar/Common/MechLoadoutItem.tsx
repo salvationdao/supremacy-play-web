@@ -89,7 +89,6 @@ export const MechLoadoutItem = React.forwardRef<HTMLDivElement, MechLoadoutItemP
             <Box overflow="hidden">
                 <Slide in={!!onUnequip} unmountOnExit>
                     <NiceButton
-                        fill
                         buttonColor={colors.red}
                         onClick={onUnequip}
                         disabled={props.disabled || props.locked}
@@ -136,7 +135,6 @@ const MechLoadoutItemButton = ({
         <>
             <NiceButton
                 disabled={disabled || locked}
-                fill
                 buttonColor={rarity ? rarity.color : colors.darkGrey}
                 caret={
                     !isEmpty
