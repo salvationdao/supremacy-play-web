@@ -148,7 +148,7 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
             component="button"
             sx={getStyles}
             background={{
-                opacity: "more-transparent",
+                opacity: "0.2",
             }}
             disabled={buttonDisabled}
             enableBoxShadow

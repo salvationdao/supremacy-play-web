@@ -35,7 +35,7 @@ export interface NiceBoxThingProps extends Omit<BoxProps, "border" | "background
                * ```
                */
               color?: ResponsiveStyleValue<Property.Color | undefined>[]
-              opacity?: "transparent" | "more-transparent" | "half" | "more-opaque" | "opaque"
+              opacity?: "0" | "0.2" | "0.5" | "0.7" | "1"
           }
     enableBoxShadow?: boolean
     sx?: SxProps
@@ -133,19 +133,19 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
         }
 
         switch (typeof background === "boolean" || typeof background.opacity === "undefined" ? "opaque" : background.opacity) {
-            case "transparent":
+            case "0":
                 backgroundStyles.opacity = 0
                 break
-            case "more-transparent":
+            case "0.2":
                 backgroundStyles.opacity = 0.2
                 break
-            case "half":
+            case "0.5":
                 backgroundStyles.opacity = 0.5
                 break
-            case "more-opaque":
+            case "0.7":
                 backgroundStyles.opacity = 0.7
                 break
-            case "opaque":
+            case "1":
                 backgroundStyles.opacity = 1
                 break
         }

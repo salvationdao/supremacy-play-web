@@ -151,7 +151,7 @@ const MechLoadoutItemButton = ({
                 }
                 background={{
                     color: [colors.black2, rarity ? rarity.color : colors.darkGrey],
-                    opacity: "half",
+                    opacity: "0.5",
                 }}
                 sx={{
                     width: shape === "rectangle" ? width : height,
