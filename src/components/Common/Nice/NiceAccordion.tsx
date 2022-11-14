@@ -27,7 +27,7 @@ export const NiceAccordion = ({ items, expandID, ...props }: NiceAccordionProps)
                 thickness: "thicc",
             }}
             background={{
-                color: [theme.factionTheme.background],
+                colors: [theme.factionTheme.background],
             }}
             {...props}
         >

@@ -140,7 +140,7 @@ export const FactionPassOption = React.memo(function FactionPassOption({ days, f
                     <NiceButton
                         onClick={() => buyFactionPass(days)}
                         border={{ color: colors.green }}
-                        background={{ color: [`${colors.green}CD`] }}
+                        background={{ colors: [colors.green], opacity: 0.9 }}
                         sx={{ width: "100%", p: ".4rem 1rem" }}
                     >
                         <Stack spacing=".8rem" direction="row" alignItems="center">

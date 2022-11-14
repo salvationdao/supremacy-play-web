@@ -474,7 +474,7 @@ export const FactionPassMechPool = () => {
                         <NiceButton
                             ref={bulkPopoverRef}
                             border={{ color: theme.factionTheme.primary, thickness: "very-lean" }}
-                            background={{ color: [theme.factionTheme.primary] }}
+                            background={{ colors: [theme.factionTheme.primary] }}
                             sx={{ p: ".2rem 1rem", pt: ".4rem" }}
                             disabled={selectedMechs.length <= 0}
                             onClick={() => setBulkPopover(true)}

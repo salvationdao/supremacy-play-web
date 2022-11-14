@@ -20,7 +20,7 @@ export const ConnectButton = ({ label, loadingLabel, sx, typeSx, changeColor }: 
                 <NiceButton
                     sheen={{ autoSheen: true, sheenSpeedFactor: 0.8 }}
                     border={{ color: changeColor || colors.neonBlue }}
-                    background={{ color: [changeColor || colors.neonBlue] }}
+                    background={{ colors: [changeColor || colors.neonBlue] }}
                     sx={{
                         px: "2rem",
                         py: ".3rem",

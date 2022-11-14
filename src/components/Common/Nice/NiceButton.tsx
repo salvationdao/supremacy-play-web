@@ -196,7 +196,7 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
                     {loading && (
                         <CircularProgress
                             size="1.2rem"
-                            sx={{ color: typeof props.background !== "boolean" && props.background?.color ? props.background?.color[0] : "undefined" }}
+                            sx={{ color: typeof props.background !== "boolean" && props.background?.colors ? props.background?.colors[0] : "undefined" }}
                         />
                     )}
                 </Box>

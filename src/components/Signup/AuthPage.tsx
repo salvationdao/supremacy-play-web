@@ -20,7 +20,7 @@ export const AuthPage = ({ authTitle, authDescription }: { authTitle?: string; a
         >
             <NiceBoxThing
                 border={{ color: colors.neonBlue }}
-                background={{ color: [colors.darkerNavy], opacity: "0.7" }}
+                background={{ colors: [colors.darkerNavy], opacity: 0.7 }}
                 sx={{ position: "relative", maxWidth: "70rem", my: "auto", mx: "2.6rem" }}
             >
                 <Stack spacing="1.8rem" alignItems="center" sx={{ px: "3.6rem", py: "3.6rem", textAlign: "center" }}>

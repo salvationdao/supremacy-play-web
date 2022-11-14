@@ -34,8 +34,8 @@ export interface NiceBoxThingProps extends Omit<BoxProps, "border" | "background
                * ["#000", colors.neonBlue]
                * ```
                */
-              color?: ResponsiveStyleValue<Property.Color | undefined>[]
-              opacity?: "0" | "0.2" | "0.5" | "0.7" | "1"
+              colors?: ResponsiveStyleValue<Property.Color | undefined>[]
+              opacity?: number
           }
     enableBoxShadow?: boolean
     sx?: SxProps
@@ -120,8 +120,8 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
         }
 
         let colors: ResponsiveStyleValue<Property.Color | undefined>[] = []
-        if (typeof background !== "boolean" && background.color && background.color.length > 0) {
-            colors = background.color
+        if (typeof background !== "boolean" && background.colors && background.colors.length > 0) {
+            colors = background.colors
         } else if (border?.color) {
             colors = [border.color]
         }
@@ -132,23 +132,7 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
             backgroundStyles.background = `linear-gradient(150deg, ${colors.join(", ")})`
         }
 
-        switch (typeof background === "boolean" || typeof background.opacity === "undefined" ? "opaque" : background.opacity) {
-            case "0":
-                backgroundStyles.opacity = 0
-                break
-            case "0.2":
-                backgroundStyles.opacity = 0.2
-                break
-            case "0.5":
-                backgroundStyles.opacity = 0.5
-                break
-            case "0.7":
-                backgroundStyles.opacity = 0.7
-                break
-            case "1":
-                backgroundStyles.opacity = 1
-                break
-        }
+        backgroundStyles.opacity = typeof background === "boolean" ? 1 : background.opacity || 1
 
         return (
             <Box

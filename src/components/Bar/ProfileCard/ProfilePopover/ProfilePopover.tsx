@@ -55,7 +55,7 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
                     },
                 }}
             >
-                <NiceBoxThing border={{ color: theme.factionTheme.primary }} background={{ color: [theme.factionTheme.background] }} sx={{ height: "100%" }}>
+                <NiceBoxThing border={{ color: theme.factionTheme.primary }} background={{ colors: [theme.factionTheme.background] }} sx={{ height: "100%" }}>
                     <Stack spacing=".32rem" sx={{ p: ".8rem" }}>
                         <NavButton
                             linkProps={{

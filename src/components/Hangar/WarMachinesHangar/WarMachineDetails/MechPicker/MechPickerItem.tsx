@@ -65,7 +65,8 @@ export const MechPickerItem = ({ initialData, onPick }: MechPickerItemProps) => 
                 color: `${colors.lightGrey}66`,
             }}
             background={{
-                color: [`${colors.lightGrey}33`],
+                colors: [colors.lightGrey],
+                opacity: 0.4,
             }}
             sx={{
                 p: "1rem",
