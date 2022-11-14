@@ -1,10 +1,9 @@
 import { useCallback } from "react"
+import { useQuery } from "react-fetching-library"
 import { SvgLogout } from "../../../../assets"
 import { PASSPORT_SERVER_HOST } from "../../../../constants"
 import { useAuth } from "../../../../containers/auth"
-import { colors } from "../../../../theme/theme"
 import { NavButton } from "./NavButton"
-import { useQuery } from "react-fetching-library"
 
 export const LogoutButton = () => {
     const { userID } = useAuth()
@@ -36,5 +35,5 @@ export const LogoutButton = () => {
 
     if (!userID) return null
 
-    return <NavButton onClick={onClick} startIcon={<SvgLogout sx={{ pb: ".5rem" }} size="1.6rem" />} text="Logout" hoverBackgroundColor={colors.red} />
+    return <NavButton onClick={onClick} startIcon={<SvgLogout inline sx={{ pb: ".5rem" }} size="1.6rem" />} text="Logout" />
 }

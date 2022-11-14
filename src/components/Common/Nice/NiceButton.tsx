@@ -20,7 +20,7 @@ interface CommonProps extends Omit<Bruh, "sx"> {
 }
 
 // Conditional props
-type LinkProps =
+export type LinkProps =
     | {
           link?: {
               href: string
@@ -68,7 +68,7 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
             alignItems: "center",
             justifyContent: "center",
             p: ".8rem 1.2rem",
-            fontFamily: fonts.nostromoBlack,
+            fontFamily: fonts.nostromoBold,
             fontSize: "1.4rem",
             backgroundColor: "transparent",
             cursor: buttonDisabled ? "auto" : "pointer",
@@ -76,6 +76,8 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
             color: color || "#FFFFFF",
             whiteSpace: "nowrap",
             boxShadow: 0.5,
+
+            ...(props.border ? {} : { border: "none" }),
 
             [`&:disabled .${OVERLAY_CLASSNAME}`]: {
                 opacity: 0.5,
@@ -138,7 +140,7 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
 
             ...sx,
         }
-    }, [buttonDisabled, color, sheen, sheenOptions.autoSheen, sheenOptions.opacity, sheenOptions.sheenSpeedFactor, sx])
+    }, [buttonDisabled, color, props.border, sheen, sheenOptions.autoSheen, sheenOptions.opacity, sheenOptions.sheenSpeedFactor, sx])
 
     return (
         <Nice

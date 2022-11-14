@@ -271,7 +271,8 @@ export const theme = createTheme({
             },
             styleOverrides: {
                 root: {
-                    zIndex: siteZIndex.Drawer,
+                    marginTop: ".8rem",
+                    zIndex: siteZIndex.Popover,
                 },
             },
         },
