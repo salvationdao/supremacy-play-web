@@ -32,7 +32,7 @@ export const MechCard = React.memo(function MechCard({ mech, isSelected, toggleS
                     color: isSelected ? `${colors.neonBlue}80` : "#FFFFFF38",
                     thickness: isSelected ? "lean" : "very-lean",
                 }}
-                background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.1 }}
+                background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.08 }}
                 sx={{
                     overflow: "hidden",
                 }}
