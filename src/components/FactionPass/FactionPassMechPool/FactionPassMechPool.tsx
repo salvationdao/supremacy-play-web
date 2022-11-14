@@ -480,7 +480,7 @@ export const FactionPassMechPool = () => {
                             onClick={() => setBulkPopover(true)}
                         >
                             <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
-                                Actions
+                                Actions ({selectedMechs.length})
                             </Typography>
                         </NiceButton>
                         <BulkActionPopover open={bulkPopover} onClose={() => setBulkPopover(false)} popoverRef={bulkPopoverRef} />
