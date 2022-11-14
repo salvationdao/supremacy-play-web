@@ -134,15 +134,9 @@ const MechLoadoutItemButton = ({
     return (
         <>
             <NiceButton
+                corners
                 disabled={disabled || locked}
                 buttonColor={rarity ? rarity.color : colors.darkGrey}
-                caret={
-                    !isEmpty
-                        ? {
-                              position: "bottom-right",
-                          }
-                        : undefined
-                }
                 sx={{
                     width: shape === "rectangle" ? width : height,
                     height: height,
