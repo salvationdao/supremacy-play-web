@@ -1,10 +1,10 @@
-import { useEffect, useCallback, MutableRefObject } from "react"
-import { Popover, Stack, Box } from "@mui/material"
+import { Box, Popover, Stack } from "@mui/material"
+import { MutableRefObject, useCallback, useEffect } from "react"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
 import { siteZIndex } from "../../../../theme/theme"
-import { ClipThing } from "../../../Common/Deprecated/ClipThing"
 import { ShoppingCart } from "../../../../types/fiat"
+import { NiceBoxThing } from "../../../Common/Nice/NiceBoxThing"
 import { ShoppingCartTable } from "./ShoppingCartTable"
 
 interface Props {
@@ -57,15 +57,7 @@ export const ShoppingCartPopover = ({ open, loading, shoppingCart, popoverRef, o
                 },
             }}
         >
-            <ClipThing
-                clipSize="10px"
-                border={{
-                    borderColor: theme.factionTheme.primary,
-                    borderThickness: ".2rem",
-                }}
-                backgroundColor={theme.factionTheme.background}
-                sx={{ height: "100%" }}
-            >
+            <NiceBoxThing border={{ color: theme.factionTheme.primary }} background={{ color: [theme.factionTheme.background] }} sx={{ height: "100%" }}>
                 <Stack spacing="2rem" sx={{ position: "relative", minWidth: "35rem", maxHeight: "90vh", px: "2rem", pt: "1.6rem", pb: "2rem" }}>
                     <Box sx={{ minWidth: "500px" }}>
                         <ShoppingCartTable
@@ -77,7 +69,7 @@ export const ShoppingCartPopover = ({ open, loading, shoppingCart, popoverRef, o
                         />
                     </Box>
                 </Stack>
-            </ClipThing>
+            </NiceBoxThing>
         </Popover>
     )
 }

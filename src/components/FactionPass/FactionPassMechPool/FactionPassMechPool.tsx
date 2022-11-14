@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { EmptyWarMachinesPNG, SvgFilter, SvgGridView, SvgListView, SvgSearch } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, parseString } from "../../../helpers"
@@ -8,7 +8,7 @@ import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { useLocalStorage } from "../../../hooks/useLocalStorage"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { LobbyMech, MechStatusEnum } from "../../../types"
+import { LobbyMech, MechStatusEnum, RarityEnum } from "../../../types"
 import { SortTypeLabel } from "../../../types/marketplace"
 import { MechCard } from "../../Common/Mech/MechCard"
 import { NavTabs } from "../../Common/NavTabs/NavTabs"
@@ -19,6 +19,7 @@ import { NiceSelect } from "../../Common/Nice/NiceSelect"
 import { NiceTextField } from "../../Common/Nice/NiceTextField"
 import { FreqGraphProps } from "../../Common/SortAndFilters/RangeFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
+import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
 
 enum UrlQueryParams {
     Sort = "sort",
@@ -29,6 +30,7 @@ enum UrlQueryParams {
     Deaths = "deaths",
     Wins = "wins",
     Losses = "losses",
+    RepairBlocks = "repairBlocks",
     PageSize = "pageSize",
     Page = "page",
 }
@@ -64,7 +66,8 @@ export const FactionPassMechPool = () => {
     const [sort, setSort] = useState<string>(query.get(UrlQueryParams.Sort) || SortTypeLabel.MechQueueAsc)
     const [isGridView, setIsGridView] = useLocalStorage<boolean>("factionPassMechPoolGrid", true)
     const [status, setStatus] = useState<string[]>((query.get(UrlQueryParams.Statuses) || undefined)?.split("||") || [])
-    const [rarities] = useState<string[]>((query.get(UrlQueryParams.Rarities) || undefined)?.split("||") || [])
+    const [rarities, setRarities] = useState<string[]>((query.get(UrlQueryParams.Rarities) || undefined)?.split("||") || [])
+    const [repairBlocks, setRepairBlocks] = useState<string[]>((query.get(UrlQueryParams.RepairBlocks) || undefined)?.split("||") || [])
     const [kills, setKills] = useState<number[] | undefined>((query.get(UrlQueryParams.Kills) || undefined)?.split("||").map((a) => parseString(a, 0)))
     const [deaths, setDeaths] = useState<number[] | undefined>((query.get(UrlQueryParams.Deaths) || undefined)?.split("||").map((a) => parseString(a, 0)))
     const [wins, setWins] = useState<number[] | undefined>((query.get(UrlQueryParams.Wins) || undefined)?.split("||").map((a) => parseString(a, 0)))
@@ -76,8 +79,24 @@ export const FactionPassMechPool = () => {
 
     // Items
     const [displayMechs, setDisplayMechs] = useState<LobbyMech[]>([])
+    const [selectedMechs, setSelectedMechs] = useState<LobbyMech[]>([])
     const [mechs, setMechs] = useState<LobbyMech[]>([])
     const [isLoading, setIsLoading] = useState(true)
+
+    // For bulk selecting mechs
+    const toggleSelected = useCallback((mech: LobbyMech) => {
+        setSelectedMechs((prev) => {
+            const newArray = [...prev]
+            const isAlreadySelected = prev.findIndex((s) => s.id === mech.id)
+            if (isAlreadySelected >= 0) {
+                newArray.splice(isAlreadySelected, 1)
+            } else {
+                newArray.push(mech)
+            }
+
+            return newArray
+        })
+    }, [])
 
     useGameServerSubscriptionFaction<LobbyMech[]>(
         {
@@ -152,6 +171,11 @@ export const FactionPassMechPool = () => {
             result = result.filter((mech) => mech.stats.total_losses >= losses[0] && mech.stats.total_losses <= losses[1])
         }
 
+        // Apply repair blocks filter
+        if (repairBlocks && repairBlocks.length) {
+            result = result.filter((mech) => repairBlocks.includes(`${mech.damaged_blocks}`))
+        }
+
         // Apply sort
         switch (sort) {
             case SortTypeLabel.Alphabetical:
@@ -184,6 +208,7 @@ export const FactionPassMechPool = () => {
             [UrlQueryParams.Deaths]: deaths?.join("||"),
             [UrlQueryParams.Wins]: wins?.join("||"),
             [UrlQueryParams.Losses]: losses?.join("||"),
+            [UrlQueryParams.RepairBlocks]: repairBlocks?.join("||"),
             [UrlQueryParams.Page]: page.toString(),
             [UrlQueryParams.PageSize]: pageSize.toString(),
         })
@@ -194,7 +219,7 @@ export const FactionPassMechPool = () => {
         setTotalItems(result.length)
 
         setDisplayMechs(result)
-    }, [changePage, deaths, isLoading, kills, losses, mechs, page, pageSize, rarities, search, setTotalItems, sort, status, updateQuery, wins])
+    }, [changePage, deaths, isLoading, kills, losses, mechs, page, pageSize, rarities, repairBlocks, search, setTotalItems, sort, status, updateQuery, wins])
 
     // For graphing the bar graphs in the range filter
     const killsGraph: FreqGraphProps = useMemo(() => {
@@ -278,7 +303,8 @@ export const FactionPassMechPool = () => {
                     }}
                 >
                     {displayMechs.map((mech) => {
-                        return <MechCard key={`mech-${mech.id}`} mech={mech} isGridView={isGridView} />
+                        const isSelected = !!selectedMechs.find((m) => m.id === mech.id)
+                        return <MechCard key={`mech-${mech.id}`} mech={mech} isGridView={isGridView} isSelected={isSelected} toggleSelected={toggleSelected} />
                     })}
                 </Box>
             )
@@ -316,7 +342,7 @@ export const FactionPassMechPool = () => {
                 </NiceButton>
             </Stack>
         )
-    }, [displayMechs, isGridView, isLoading, theme.factionTheme.primary])
+    }, [displayMechs, isGridView, isLoading, selectedMechs, theme.factionTheme.primary, toggleSelected])
 
     return (
         <Stack
@@ -335,14 +361,23 @@ export const FactionPassMechPool = () => {
                 maxWidth: "190rem",
             }}
         >
-            <NavTabs activeTabID={activeTabID} setActiveTabID={setActiveTabID} tabs={tabs} prevTab={prevTab} nextTab={nextTab} />
+            <NavTabs
+                activeTabID={activeTabID}
+                setActiveTabID={setActiveTabID}
+                tabs={tabs}
+                prevTab={prevTab}
+                nextTab={nextTab}
+                sx={{
+                    ".MuiTab-root": { minWidth: "21rem" },
+                }}
+            />
 
             <Stack direction="row" alignItems="stretch" sx={{ flex: 1, width: "100%", overflow: "hidden" }}>
                 <SortAndFilters
                     open={showFilters}
                     chipFilters={[
                         {
-                            label: "STATUS",
+                            label: "Status",
                             options: [
                                 { value: MechStatusEnum.Idle, render: { label: "IDLE", color: colors.green } },
                                 { value: MechStatusEnum.Queue, render: { label: "IN QUEUE", color: colors.yellow } },
@@ -353,6 +388,39 @@ export const FactionPassMechPool = () => {
                             initialExpanded: true,
                             selected: status,
                             setSelected: setStatus,
+                        },
+                        {
+                            label: "Rarity",
+                            options: [
+                                { value: RarityEnum.Mega, render: { ...getRarityDeets("MEGA") } },
+                                { value: RarityEnum.Colossal, render: { ...getRarityDeets("COLOSSAL") } },
+                                { value: RarityEnum.Rare, render: { ...getRarityDeets("RARE") } },
+                                { value: RarityEnum.Legendary, render: { ...getRarityDeets("LEGENDARY") } },
+                                { value: RarityEnum.EliteLegendary, render: { ...getRarityDeets("ELITE_LEGENDARY") } },
+                                { value: RarityEnum.UltraRare, render: { ...getRarityDeets("ULTRA_RARE") } },
+                                { value: RarityEnum.Exotic, render: { ...getRarityDeets("EXOTIC") } },
+                                { value: RarityEnum.Guardian, render: { ...getRarityDeets("GUARDIAN") } },
+                                { value: RarityEnum.Mythic, render: { ...getRarityDeets("MYTHIC") } },
+                                { value: RarityEnum.DeusEx, render: { ...getRarityDeets("DEUS_EX") } },
+                                { value: RarityEnum.Titan, render: { ...getRarityDeets("TITAN") } },
+                            ],
+                            initialExpanded: true,
+                            selected: rarities,
+                            setSelected: setRarities,
+                        },
+                        {
+                            label: "Repair Progress",
+                            options: [
+                                { value: "0", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={0} hideNumber size={7} /> },
+                                { value: "1", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={1} hideNumber size={7} /> },
+                                { value: "2", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={2} hideNumber size={7} /> },
+                                { value: "3", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={3} hideNumber size={7} /> },
+                                { value: "4", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={4} hideNumber size={7} /> },
+                                { value: "5", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={5} hideNumber size={7} /> },
+                            ],
+                            initialExpanded: true,
+                            selected: repairBlocks,
+                            setSelected: setRepairBlocks,
                         },
                     ]}
                     rangeFilters={[

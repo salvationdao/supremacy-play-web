@@ -13,9 +13,10 @@ interface MechCardProps {
     mech: LobbyMech
     isGridView: boolean
     isSelected?: boolean
+    toggleSelected?: (mech: LobbyMech) => void
 }
 
-export const MechCard = React.memo(function MechCard({ mech }: MechCardProps) {
+export const MechCard = React.memo(function MechCard({ mech, isSelected, toggleSelected }: MechCardProps) {
     const { getFaction } = useSupremacy()
     const { name, label } = mech
 
@@ -33,10 +34,10 @@ export const MechCard = React.memo(function MechCard({ mech }: MechCardProps) {
             sx={{ p: "1rem 1.5rem" }}
         >
             <Stack spacing="1.2rem">
-                {/* Mech name */}
+                {/* Mech name and checkbox */}
                 <Stack direction="row" alignItems="center" justifyContent="space-between" spacing=".5rem">
                     <Typography sx={{ fontFamily: fonts.nostromoBlack, ...TruncateTextLines(1) }}>{name || label}</Typography>
-                    <Checkbox />
+                    {toggleSelected && <Checkbox checked={isSelected} onClick={() => toggleSelected(mech)} />}
                 </Stack>
 
                 {/* Owner name */}
