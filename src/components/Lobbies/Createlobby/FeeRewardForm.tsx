@@ -1,4 +1,4 @@
-import { InputAdornment, Stack } from "@mui/material"
+import { InputAdornment, Stack, Typography } from "@mui/material"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 import React from "react"
 import { useTheme } from "../../../containers/theme"
@@ -31,15 +31,39 @@ export const FeeRewardForm = ({ nextPage, prevPage }: FeeRewardFormProps) => {
                 </Stack>
                 <Stack direction="column" spacing={1}>
                     <Section orderLabel="B" title="WINNING FACTION CUT" description="Set a winning percentage." />
-                    <NiceTextField />
+                    <NiceTextField
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position={"start"}>
+                                    <Typography>%</Typography>
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
                 </Stack>
                 <Stack direction="column" spacing={1}>
                     <Section orderLabel="C" title="SECOND PLACE FACTION CUT" description="Set a Second place percentage." />
-                    <NiceTextField />
+                    <NiceTextField
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position={"start"}>
+                                    <Typography>%</Typography>
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
                 </Stack>
                 <Stack direction="column" spacing={1}>
                     <Section orderLabel="D" title="EXTRA REWARD" description="Set extra rewards to be shared for all the players." />
-                    <NiceTextField />
+                    <NiceTextField
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position={"start"}>
+                                    <SvgSupToken size="1.5rem" sx={{ opacity: 0.5 }} fill={colors.gold} />
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
                 </Stack>
             </Stack>
             <Stack direction="row" alignItems="center" justifyContent="space-between">
