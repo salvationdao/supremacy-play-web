@@ -1,10 +1,9 @@
 import { useCallback } from "react"
+import { useQuery } from "react-fetching-library"
 import { SvgLogout } from "../../../../assets"
-import { PASSPORT_SERVER_HOST } from "../../../../constants"
 import { useAuth } from "../../../../containers/auth"
 import { colors } from "../../../../theme/theme"
 import { NavButton } from "./NavButton"
-import { useQuery } from "react-fetching-library"
 
 export const LogoutButton = () => {
     const { userID } = useAuth()
@@ -18,21 +17,10 @@ export const LogoutButton = () => {
         false,
     )
 
-    const { query: passportLogout } = useQuery(
-        {
-            method: "GET",
-            endpoint: `${window.location.protocol}//${PASSPORT_SERVER_HOST}/api/auth/logout`,
-            responseType: "json",
-            credentials: "include",
-        },
-        false,
-    )
-
     const onClick = useCallback(async () => {
-        await passportLogout()
         await gameserverLogout()
         window.location.reload()
-    }, [passportLogout, gameserverLogout])
+    }, [gameserverLogout])
 
     if (!userID) return null
 
