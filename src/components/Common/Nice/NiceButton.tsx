@@ -24,7 +24,8 @@ interface CommonProps extends Omit<Bruh, "sx" | "border" | "background"> {
     disableAutoColor?: boolean // Button automatically determines a contrasting text color on hover and fill etc.
 }
 
-// Conditional props
+// Conditional props for routing and linking to other pages
+// Link takes you to external pages, use route for internal pages
 export type LinkProps =
     | {
           link?: {
