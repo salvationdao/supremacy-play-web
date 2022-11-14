@@ -164,7 +164,19 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
             (mechStatus?.battle_lobby_is_locked && mechStatus?.status === MechStatusEnum.Queue) ||
             mechStatus?.status === MechStatusEnum.Battle ||
             mechStatus?.status === MechStatusEnum.Sold,
-        [enable3DLoadout, isUnityLoaded, isUnityPendingChange, locked_to_marketplace, market_locked, mechStaked, mechStatus?.battle_lobby_is_locked, mechStatus?.status, owner_id, userID, xsyn_locked],
+        [
+            enable3DLoadout,
+            isUnityLoaded,
+            isUnityPendingChange,
+            locked_to_marketplace,
+            market_locked,
+            mechStaked,
+            mechStatus?.battle_lobby_is_locked,
+            mechStatus?.status,
+            owner_id,
+            userID,
+            xsyn_locked,
+        ],
     )
 
     useEffect(() => {
@@ -1029,28 +1041,30 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                     </Box>
                 </NiceBoxThing>
             </Stack>
-            {userID === owner_id && <MechLoadoutDraggables
-                draggablesRef={draggablesRef}
-                compareToWeapon={compareToWeapon?.weapon}
-                excludeWeaponIDs={(() => {
-                    const result: string[] = []
-                    for (const ew of weapons_map.values()) {
-                        if (!ew) continue
-                        result.push(ew.id)
-                    }
-                    return result
-                })()}
-                excludeMechSkinIDs={chassis_skin ? [chassis_skin.blueprint_id] : []}
-                includeMechSkinIDs={compatible_blueprint_mech_skin_ids}
-                mechModelID={mechDetails.blueprint_id}
-                powerCoreSize={currLoadout.power_core_size}
-                drag={{
-                    onDrag: onItemDrag,
-                    onDragStart: onItemDragStart,
-                    onDragStop: onItemDragStop,
-                }}
-                onClick={onItemClick}
-            />}
+            {userID === owner_id && (
+                <MechLoadoutDraggables
+                    draggablesRef={draggablesRef}
+                    compareToWeapon={compareToWeapon?.weapon}
+                    excludeWeaponIDs={(() => {
+                        const result: string[] = []
+                        for (const ew of weapons_map.values()) {
+                            if (!ew) continue
+                            result.push(ew.id)
+                        }
+                        return result
+                    })()}
+                    excludeMechSkinIDs={chassis_skin ? [chassis_skin.blueprint_id] : []}
+                    includeMechSkinIDs={compatible_blueprint_mech_skin_ids}
+                    mechModelID={mechDetails.blueprint_id}
+                    powerCoreSize={currLoadout.power_core_size}
+                    drag={{
+                        onDrag: onItemDrag,
+                        onDragStart: onItemDragStart,
+                        onDragStop: onItemDragStop,
+                    }}
+                    onClick={onItemClick}
+                />
+            )}
         </Stack>
     )
 }
