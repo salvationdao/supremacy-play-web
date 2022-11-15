@@ -623,7 +623,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                         TopRight={
                             <Typography
                                 sx={{
-                                    fontFamily: fonts.shareTech,
+                                    fontFamily: fonts.rajdhaniMedium,
                                 }}
                             >
                                 <SvgLoadoutDamage

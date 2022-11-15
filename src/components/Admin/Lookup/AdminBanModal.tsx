@@ -281,7 +281,7 @@ const AdminBanModalInner = ({
                                     sx={{
                                         borderRadius: 1,
                                         "& .MuiInputBase-root": {
-                                            fontFamily: fonts.shareTech,
+                                            fontFamily: fonts.rajdhaniMedium,
                                             px: "1.1em",
                                             pt: ".9rem",
                                             pb: ".7rem",
@@ -322,7 +322,7 @@ const AdminBanModalInner = ({
                                     sx={{
                                         borderRadius: 1,
                                         "& .MuiInputBase-root": {
-                                            fontFamily: fonts.shareTech,
+                                            fontFamily: fonts.rajdhaniMedium,
                                             px: "1.1em",
                                             pt: ".9rem",
                                             pb: ".7rem",
@@ -359,7 +359,7 @@ const AdminBanModalInner = ({
                                     sx={{
                                         borderRadius: 1,
                                         "& .MuiInputBase-root": {
-                                            fontFamily: fonts.shareTech,
+                                            fontFamily: fonts.rajdhaniMedium,
                                             px: "1.1em",
                                             pt: ".9rem",
                                             pb: ".7rem",

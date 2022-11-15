@@ -205,7 +205,7 @@ export const LookupSearchBox = () => {
                             borderRadius: 1,
                             "& .MuiInputBase-root": {
                                 py: 0,
-                                fontFamily: fonts.shareTech,
+                                fontFamily: fonts.rajdhaniMedium,
                             },
                             ".Mui-disabled": {
                                 WebkitTextFillColor: "unset",

@@ -1,22 +1,22 @@
-import { ConfirmModal } from "../../../Common/Deprecated/ConfirmModal"
-import React, { useCallback, useMemo, useState } from "react"
 import { Box, Stack, Typography } from "@mui/material"
-import { colors, fonts } from "../../../../theme/theme"
+import moment from "moment"
+import React, { useCallback, useMemo, useState } from "react"
 import { SvgSupToken } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
+import { combineDateTime, shortCodeGenerator } from "../../../../helpers"
 import { useGameServerCommandsFaction, useGameServerSubscriptionSecured } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
+import { colors, fonts } from "../../../../theme/theme"
 import { GameMap, LobbyMech } from "../../../../types"
-import { FactionBasedDatePicker } from "../../../Common/FactionBasedDatePicker"
-import moment from "moment"
-import { FactionBasedTimePicker } from "../../../Common/FactionBasedTimePicker"
-import { MechSelector } from "../../Common/MechSelector"
+import { ConfirmModal } from "../../../Common/Deprecated/ConfirmModal"
 import { FancyButton } from "../../../Common/Deprecated/FancyButton"
-import { SelectedMechSlots } from "../../Common/SelectedMechSlots"
+import { FactionBasedDatePicker } from "../../../Common/FactionBasedDatePicker"
+import { FactionBasedTimePicker } from "../../../Common/FactionBasedTimePicker"
 import { InputField } from "../../Common/InputField"
-import { SelectField } from "../../Common/SelectField"
+import { MechSelector } from "../../Common/MechSelector"
 import { RadioGroupField } from "../../Common/RadioGroupField"
-import { combineDateTime, shortCodeGenerator } from "../../../../helpers"
+import { SelectedMechSlots } from "../../Common/SelectedMechSlots"
+import { SelectField } from "../../Common/SelectField"
 import { SliderField } from "../../Common/SliderField"
 
 interface BattleLobbyCreateModalProps {
@@ -370,7 +370,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                                 type="number"
                                 startAdornmentLabel={<SvgSupToken fill={colors.yellow} size="1.9rem" />}
                                 endAdornmentLabel={
-                                    <Typography variant="body2" fontWeight="bold" fontFamily={fonts.shareTech}>
+                                    <Typography variant="body2" fontWeight="bold" fontFamily={fonts.rajdhaniMedium}>
                                         PER MECH
                                     </Typography>
                                 }
@@ -382,7 +382,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                                 label="Winning Faction Cut"
                                 type="number"
                                 endAdornmentLabel={
-                                    <Typography variant="body2" fontWeight="bold" fontFamily={fonts.shareTech}>
+                                    <Typography variant="body2" fontWeight="bold" fontFamily={fonts.rajdhaniMedium}>
                                         %
                                     </Typography>
                                 }
@@ -399,7 +399,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                                 label="Second Faction Cut"
                                 type="number"
                                 endAdornmentLabel={
-                                    <Typography variant="body2" fontWeight="bold" fontFamily={fonts.shareTech}>
+                                    <Typography variant="body2" fontWeight="bold" fontFamily={fonts.rajdhaniMedium}>
                                         %
                                     </Typography>
                                 }
@@ -416,7 +416,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                                 label="Loosing Faction Cut"
                                 type="number"
                                 endAdornmentLabel={
-                                    <Typography variant="body2" fontWeight="bold" fontFamily={fonts.shareTech}>
+                                    <Typography variant="body2" fontWeight="bold" fontFamily={fonts.rajdhaniMedium}>
                                         %
                                     </Typography>
                                 }

@@ -334,7 +334,7 @@ export const TextMessage = React.memo(function TextMessage({
                                                     variant="body1"
                                                     sx={{
                                                         color: "#FFFFFF",
-                                                        fontFamily: fonts.shareTech,
+                                                        fontFamily: fonts.rajdhaniMedium,
                                                         textAlign: "start",
                                                     }}
                                                 >
@@ -432,7 +432,7 @@ export const TextMessage = React.memo(function TextMessage({
                                 )}
                                 <Box
                                     sx={{
-                                        fontFamily: fonts.shareTech,
+                                        fontFamily: fonts.rajdhaniMedium,
                                         lineHeight: 1.2,
                                         color: "#FFFFFF",
                                         fontSize: isEmoji ? fontSizes.emoji : fontSizes.normal,
@@ -481,7 +481,43 @@ export const TextMessage = React.memo(function TextMessage({
                 )}
             </>
         ),
-        [abilityKillColor, avatar_id, banModalOpen, chatMessage, data, factionColor, factionLogoUrl, factionSecondaryColor, fontSize, fontSizes.emoji, fontSizes.large, fontSizes.normal, from_user, from_user_stat, isAlreadyReported, isEmoji, isFailed, isHovered, isPopoverOpen, isPreviousMessager, message.received_at, message.sent_at, metadata?.likes.net, newSnackbarMessage, previousMessage, rankDeets, reportModalOpen, setClickedOnUser, setReportModalOpen, tabFactionID, toggleBanModalOpen, toggleIsPopoverOpen, user, userID, user_rank],
+        [
+            abilityKillColor,
+            avatar_id,
+            banModalOpen,
+            chatMessage,
+            data,
+            factionColor,
+            factionLogoUrl,
+            factionSecondaryColor,
+            fontSize,
+            fontSizes.emoji,
+            fontSizes.large,
+            fontSizes.normal,
+            from_user,
+            from_user_stat,
+            isAlreadyReported,
+            isEmoji,
+            isFailed,
+            isHovered,
+            isPopoverOpen,
+            isPreviousMessager,
+            message.received_at,
+            message.sent_at,
+            metadata?.likes.net,
+            newSnackbarMessage,
+            previousMessage,
+            rankDeets,
+            reportModalOpen,
+            setClickedOnUser,
+            setReportModalOpen,
+            tabFactionID,
+            toggleBanModalOpen,
+            toggleIsPopoverOpen,
+            user,
+            userID,
+            user_rank,
+        ],
     )
 },
 propsAreEqual)

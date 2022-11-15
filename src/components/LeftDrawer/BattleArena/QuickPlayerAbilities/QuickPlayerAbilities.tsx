@@ -106,13 +106,13 @@ const QuickPlayerAbilitiesInner = React.memo(function QuickPlayerAbilitiesInner(
     const timeLeft = useMemo(() => {
         if (nextRefreshTime) {
             return (
-                <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.shareTech, textTransform: "uppercase" }}>
+                <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.rajdhaniMedium, textTransform: "uppercase" }}>
                     <TimeLeft key={nextRefreshTime.getTime()} dateTo={nextRefreshTime} />
                 </Typography>
             )
         }
 
-        return <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.shareTech, textTransform: "uppercase" }}>Less than an hour</Typography>
+        return <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.rajdhaniMedium, textTransform: "uppercase" }}>Less than an hour</Typography>
     }, [nextRefreshTime])
 
     return (

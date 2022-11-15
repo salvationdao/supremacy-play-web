@@ -26,6 +26,26 @@
     font-family: "Nostromo Regular Heavy";
     src: url("../assets/fonts/nostromo-regular/NostromoRegular-Heavy.otf");
 }
+@font-face {
+    font-family: "Rajdhani Light";
+    src: url("../assets/fonts/rajdhani/Rajdhani-Light.ttf");
+}
+@font-face {
+    font-family: "Rajdhani Regular";
+    src: url("../assets/fonts/rajdhani/Rajdhani-Regular.ttf");
+}
+@font-face {
+    font-family: "Rajdhani Medium";
+    src: url("../assets/fonts/rajdhani/Rajdhani-Medium.ttf");
+}
+@font-face {
+    font-family: "Rajdhani Semibold";
+    src: url("../assets/fonts/rajdhani/Rajdhani-SemiBold.ttf");
+}
+@font-face {
+    font-family: "Rajdhani Bold";
+    src: url("../assets/fonts/rajdhani/Rajdhani-Bold.ttf");
+}
 
 /* Update `src/containers/dimensions.ts` */
 html {

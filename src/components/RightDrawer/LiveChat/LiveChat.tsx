@@ -2,7 +2,7 @@ import { Badge, Box, Stack, Tab, Tabs, Typography } from "@mui/material"
 import React, { ReactNode, useMemo, useRef, useState } from "react"
 import { AdditionalOptionsButton, FancyButton, NiceTooltip } from "../.."
 import { SvgChat, SvgChatGlobal, SvgExternalLink, SvgGlobal, SvgInfoCircular, SvgSettings } from "../../../assets"
-import { useAuth, useChat, useSupremacy } from "../../../containers"
+import { useAuth, useChat, useMobile, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { acronym, shadeColor } from "../../../helpers"
 import { zoomEffect } from "../../../theme/keyframes"
@@ -16,9 +16,11 @@ import { SettingsPopover } from "./ChatSettings/SettingsPopover"
 
 export const LiveChat = () => {
     const theme = useTheme()
+    const { isMobile } = useMobile()
+    const { splitOption, isPoppedout, setIsPoppedout } = useChat()
+
     const popoverRef = useRef(null)
     const [showSettings, setShowSettings] = useState(false)
-    const { splitOption, isPoppedout, setIsPoppedout } = useChat()
 
     const common = useMemo(() => {
         return (
@@ -52,16 +54,19 @@ export const LiveChat = () => {
                     </Typography>
                     <Box flex={1} />
                     {/* Pop-out */}
-                    <NiceButton
-                        corners
-                        buttonColor={theme.factionTheme.primary}
-                        sx={{
-                            p: ".5rem",
-                            pb: ".3rem",
-                        }}
-                    >
-                        <SvgExternalLink height="2rem" />
-                    </NiceButton>
+                    {!isPoppedout && !isMobile && (
+                        <NiceButton
+                            corners
+                            buttonColor={theme.factionTheme.primary}
+                            onClick={() => setIsPoppedout(true)}
+                            sx={{
+                                p: ".5rem",
+                                pb: ".3rem",
+                            }}
+                        >
+                            <SvgExternalLink height="2rem" />
+                        </NiceButton>
+                    )}
                     {/* Settings */}
                     <NiceButton
                         ref={popoverRef}
@@ -88,7 +93,7 @@ export const LiveChat = () => {
                 <AdditionalOptionsButton />
             </Stack>
         )
-    }, [showSettings, splitOption, theme.factionTheme.primary])
+    }, [isMobile, isPoppedout, setIsPoppedout, showSettings, splitOption, theme.factionTheme.primary])
 
     return useMemo(() => {
         if (isPoppedout) {
@@ -466,7 +471,7 @@ const UnreadBadge = ({ tabValue: forTabValue, children }: { tabValue: number; ch
             sx={{
                 ".MuiBadge-badge": {
                     fontSize: "1.2rem",
-                    fontFamily: fonts.shareTech,
+                    fontFamily: fonts.rajdhaniMedium,
                     fontWeight: "bold",
                     lineHeight: 0,
                     color: "#FFFFFF",

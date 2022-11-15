@@ -10,9 +10,9 @@ import { useDebounce, useToggle } from "../../../../hooks"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
+import { RoleType } from "../../../../types"
 import { BanOption, BanUser } from "../../../../types/chat"
 import { PlayerNameGid } from "../../../Common/PlayerNameGid"
-import { RoleType } from "../../../../types"
 
 interface SubmitRequest {
     intend_to_punish_player_id: string
@@ -208,7 +208,7 @@ export const UserBanForm = ({ open, onClose, prefillUser }: { open: boolean; onC
                                         borderRadius: 1,
                                         "& .MuiInputBase-root": {
                                             py: 0,
-                                            fontFamily: fonts.shareTech,
+                                            fontFamily: fonts.rajdhaniMedium,
                                         },
                                         ".Mui-disabled": {
                                             WebkitTextFillColor: "unset",
@@ -323,7 +323,7 @@ export const UserBanForm = ({ open, onClose, prefillUser }: { open: boolean; onC
                                     sx={{
                                         borderRadius: 1,
                                         "& .MuiInputBase-root": {
-                                            fontFamily: fonts.shareTech,
+                                            fontFamily: fonts.rajdhaniMedium,
                                             px: "1.1em",
                                             pt: ".9rem",
                                             pb: ".7rem",

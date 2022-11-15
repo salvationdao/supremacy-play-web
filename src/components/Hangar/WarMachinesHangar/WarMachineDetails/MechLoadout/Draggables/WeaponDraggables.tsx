@@ -210,7 +210,7 @@ export const WeaponDraggables = ({ compareToWeapon, excludeWeaponIDs, drag }: We
                                         <Stack alignItems="end">
                                             <Typography
                                                 sx={{
-                                                    fontFamily: fonts.shareTech,
+                                                    fontFamily: fonts.rajdhaniMedium,
                                                 }}
                                             >
                                                 <SvgLoadoutDamage

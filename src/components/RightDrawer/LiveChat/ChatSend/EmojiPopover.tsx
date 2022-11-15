@@ -78,7 +78,7 @@ export const EmojiPopover = ({ primaryColor, setMessage, popoverRef, isEmojiOpen
                                 border: "none",
                             },
                             "#emoji-mart-search-8": {
-                                fontFamily: fonts.shareTech,
+                                fontFamily: fonts.rajdhaniMedium,
                             },
                             "#emoji-mart-search-30": {
                                 pb: "3.6px",

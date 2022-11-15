@@ -257,7 +257,7 @@ export const MechPicker = ({ mechDetails, mechStatus, mechStaked, onUpdate }: Me
                     <Stack direction="row" justifyContent="space-between">
                         <Typography
                             sx={{
-                                fontFamily: fonts.shareTech,
+                                fontFamily: fonts.rajdhaniMedium,
                                 fontSize: "1.6rem",
                             }}
                         >
@@ -265,7 +265,7 @@ export const MechPicker = ({ mechDetails, mechStatus, mechStaked, onUpdate }: Me
                         </Typography>
                         <Typography
                             sx={{
-                                fontFamily: fonts.shareTech,
+                                fontFamily: fonts.rajdhaniMedium,
                                 fontSize: "1.6rem",
                                 color: rarity.color,
                             }}

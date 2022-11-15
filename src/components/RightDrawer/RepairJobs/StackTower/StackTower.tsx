@@ -163,7 +163,7 @@ export const StackTower = React.memo(function StackTower({ primaryColor, disable
                                         sx={{
                                             textAlign: "center",
                                             color: gameState === GameState.Ended ? colors.orange : "#FFFFFF",
-                                            fontFamily: fonts.shareTech,
+                                            fontFamily: fonts.rajdhaniMedium,
                                             fontWeight: "bold",
                                         }}
                                     >
