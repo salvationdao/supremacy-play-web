@@ -3,7 +3,7 @@ import { MutableRefObject, useEffect, useMemo } from "react"
 import { ClipThing, SplitView, SystemMessageFilter } from "../../.."
 import { shadeColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
-import { fonts, siteZIndex } from "../../../../theme/theme"
+import { fonts } from "../../../../theme/theme"
 import { ChatFontSize } from "./ChatFontSize"
 
 interface SettingsPopoverProps {
@@ -38,8 +38,6 @@ export const SettingsPopover = ({ open, popoverRef, onClose, primaryColor }: Set
                 horizontal: "left",
             }}
             sx={{
-                mt: ".8rem",
-                zIndex: siteZIndex.Popover,
                 ".MuiPaper-root": {
                     mt: "-3rem",
                     background: "none",

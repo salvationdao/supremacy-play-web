@@ -2,7 +2,7 @@ import { Stack, SxProps, Tab, Tabs, Typography } from "@mui/material"
 import { useEffect } from "react"
 import { useTheme } from "../../../containers/theme"
 import { TruncateTextLines } from "../../../theme/styles"
-import { fonts } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { ArrowButton } from "./ArrowButton"
 
 export const TAB_HEIGHT = 3.8 // rems
@@ -71,12 +71,28 @@ export const NavTabs = <T,>({
                         minHeight: 0,
                         py: 0,
                         zIndex: 2,
+
+                        ":hover": {
+                            backgroundColor: `${theme.factionTheme.primary}25`,
+                        },
                     },
                     ".MuiTabs-indicator": {
                         height: "100%",
-                        background: `linear-gradient(${theme.factionTheme.primary} 30%, ${theme.factionTheme.primary}BA)`,
+                        backgroundColor: colors.darkNavy,
                         zIndex: 1,
                         transition: "none",
+
+                        "::after": {
+                            position: "absolute",
+                            content: '""',
+                            left: 0,
+                            right: 0,
+                            top: 0,
+                            bottom: 0,
+                            border: `${theme.factionTheme.primary} 1.5px solid`,
+                            background: `linear-gradient(180deg, ${theme.factionTheme.primary}90, ${theme.factionTheme.primary}30)`,
+                            zIndex: -1,
+                        },
                     },
                 }}
                 onChange={(_event, newValue) => {

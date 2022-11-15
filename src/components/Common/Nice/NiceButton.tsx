@@ -21,6 +21,7 @@ interface CommonProps extends Omit<Bruh, "sx" | "border" | "background"> {
     loading?: boolean
     sheen?: SheenOptions | boolean // Shiny sheen effect
     corners?: boolean
+    flat?: boolean // Whether to have gradient or not
     fill?: boolean // Whether the color will look solid and have filled background
     buttonColor?: string // Sets the main button color, use this!
     disableAutoColor?: boolean // Button automatically determines a contrasting text color on hover and fill etc.
@@ -51,7 +52,7 @@ const OVERLAY_CLASSNAME = "NiceButtonOverlay"
 const CORNER_CLASSNAME = "NiceButtonCorner"
 
 export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(function NiceButton(
-    { link, route, loading, sheen, corners, disabled, sx, children, buttonColor, fill, disableAutoColor = false, ...props },
+    { link, route, loading, sheen, corners, disabled, sx, children, buttonColor, flat, fill, disableAutoColor = false, ...props },
     ref,
 ) {
     const buttonDisabled = loading || disabled
@@ -89,6 +90,10 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
             whiteSpace: "nowrap",
             borderRadius: 0,
             transition: "all .1s",
+            mt: "1px",
+            mb: "1px",
+            ml: "1px",
+            mr: "1px",
 
             ...(buttonColor ? {} : { border: "none" }),
 
@@ -205,15 +210,16 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
         let colors: string[] = []
 
         if (buttonColor) {
-            colors = fillColor ? [fillColor, `${fillColor}${fill ? "BB" : "20"}`] : [buttonColor, `${buttonColor}00`]
+            colors = fillColor ? [fillColor, `${fillColor}${fill ? "BB" : "30"}`] : [buttonColor, `${buttonColor}20`]
+            if (flat) colors = [colors[0]]
         }
 
         return {
             colors,
-            opacity: fill ? 1 : 0.4,
+            opacity: fill ? 1 : flat ? 0.2 : 0.4,
             linearGradientDegrees: 180,
         }
-    }, [buttonColor, fill, fillColor])
+    }, [buttonColor, flat, fill, fillColor])
 
     const fourCorners = useMemo(() => {
         if (fill || !corners) return null

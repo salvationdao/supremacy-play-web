@@ -4,7 +4,6 @@ import { SvgAdmin, SvgAssets, SvgFeedback, SvgProfile, SvgSettings, SvgSupport }
 import { DEV_ONLY, FEEDBACK_FORM_URL, PASSPORT_WEB, STAGING_OR_DEV_ONLY } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
-import { siteZIndex } from "../../../../theme/theme"
 import { RoleType, User } from "../../../../types"
 import { NiceBoxThing } from "../../../Common/Nice/NiceBoxThing"
 import { DeviceRegisterModal } from "../PreferencesModal/DeviceRegisterModal"
@@ -47,12 +46,7 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
                     horizontal: "right",
                 }}
                 sx={{
-                    mt: ".5rem",
-                    zIndex: siteZIndex.Popover,
-                    ".MuiPaper-root": {
-                        background: "none",
-                        boxShadow: 0,
-                    },
+                    mt: "-.2rem",
                 }}
             >
                 <NiceBoxThing border={{ color: theme.factionTheme.primary }} background={{ colors: [theme.factionTheme.background] }} sx={{ height: "100%" }}>

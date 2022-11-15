@@ -4,19 +4,22 @@ import MuiAccordion, { AccordionProps } from "@mui/material/Accordion"
 import MuiAccordionDetails, { AccordionDetailsProps } from "@mui/material/AccordionDetails"
 import MuiAccordionSummary, { AccordionSummaryProps } from "@mui/material/AccordionSummary"
 import { useState } from "react"
+import { SvgWrapperProps } from "../../../assets"
 import { fonts } from "../../../theme/theme"
 import { NiceBoxThing, NiceBoxThingProps } from "./NiceBoxThing"
 
-export interface NiceAccordionProps extends Omit<NiceBoxThingProps, "children"> {
+export interface NiceAccordionProps extends Omit<NiceBoxThingProps, "children" | "onExpand"> {
     items: {
         id: string | number
         header: string | React.ReactNode
+        icon?: React.VoidFunctionComponent<SvgWrapperProps>
         content: React.ReactNode
     }[]
     expandID?: string | number
+    onExpand?: (expandID: string | number) => void
 }
 
-export const NiceAccordion = ({ items, expandID, ...props }: NiceAccordionProps) => {
+export const NiceAccordion = ({ items, expandID, onExpand, ...props }: NiceAccordionProps) => {
     const [expanded, setExpanded] = useState(expandID)
     const theme = useTheme()
 
@@ -32,11 +35,28 @@ export const NiceAccordion = ({ items, expandID, ...props }: NiceAccordionProps)
             {...props}
         >
             {items.map((item) => (
-                <Accordion key={item.id} expanded={item.id === expanded} onChange={() => setExpanded(item.id)}>
+                <Accordion
+                    key={item.id}
+                    expanded={item.id === expanded}
+                    onChange={() => {
+                        setExpanded(item.id)
+                        if (onExpand) {
+                            onExpand(item.id)
+                        }
+                    }}
+                >
                     <AccordionSummary
                         aria-controls={`${item.id}-content`}
                         id={`${item.id}-header`}
-                        backgroundColor={item.id === expanded ? theme.factionTheme.primary : theme.factionTheme.background}
+                        sx={{
+                            backgroundColor: item.id === expanded ? theme.factionTheme.primary : theme.factionTheme.background,
+                            color: item.id === expanded ? theme.factionTheme.background : theme.factionTheme.primary,
+                            "& .MuiAccordionSummary-expandIconWrapper": {
+                                svg: {
+                                    fill: item.id === expanded ? theme.factionTheme.background : theme.factionTheme.primary,
+                                },
+                            },
+                        }}
                     >
                         {item.header}
                     </AccordionSummary>
@@ -74,10 +94,7 @@ const Accordion = styled(({ borderColor, sx, ...props }: MyAccordionProps) => {
 })({})
 NiceAccordion.Base = Accordion
 
-interface MyAccordionSummaryProps extends AccordionSummaryProps {
-    backgroundColor?: string
-}
-const AccordionSummary = styled(({ backgroundColor, sx, children, ...props }: MyAccordionSummaryProps) => {
+const AccordionSummary = styled(({ sx, children, ...props }: AccordionSummaryProps) => {
     const theme = useTheme()
 
     return (
@@ -85,10 +102,16 @@ const AccordionSummary = styled(({ backgroundColor, sx, children, ...props }: My
             expandIcon={<ArrowRight sx={{ fontSize: "4rem" }} />}
             sx={{
                 px: "0",
-                backgroundColor: backgroundColor || theme.factionTheme.primary,
+                backgroundColor: theme.factionTheme.primary,
+                color: theme.factionTheme.secondary,
                 transition: "background-color .2s ease-out",
                 "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
                     transform: "rotate(90deg)",
+                },
+                "& .MuiAccordionSummary-expandIconWrapper": {
+                    svg: {
+                        fill: theme.factionTheme.background,
+                    },
                 },
                 "& .MuiAccordionSummary-content": {
                     marginLeft: "1rem",
@@ -101,6 +124,7 @@ const AccordionSummary = styled(({ backgroundColor, sx, children, ...props }: My
                 <Typography
                     sx={{
                         fontFamily: fonts.nostromoBlack,
+                        color: "inherit",
                     }}
                 >
                     {children}

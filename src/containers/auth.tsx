@@ -153,7 +153,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             // Check passport server login
             if (!userFromPassport) {
                 try {
-                    const resp = await passportLoginCheck(issueToken)
+                    const resp = await passportLoginCheck({
+                        issue_token: issueToken,
+                        fingerprint,
+                    })
                     if (resp.error || !resp.payload) {
                         setUserFromPassport(undefined)
                         return
@@ -164,7 +167,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 }
             }
         },
-        [passportLoginCheck, userFromPassport],
+        [fingerprint, passportLoginCheck, userFromPassport],
     )
 
     useEffect(() => {

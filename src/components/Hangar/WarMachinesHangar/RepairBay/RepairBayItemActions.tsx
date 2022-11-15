@@ -2,7 +2,7 @@ import { IconButton, Popover, Stack } from "@mui/material"
 import { MutableRefObject, useEffect } from "react"
 import { SvgDelete, SvgDownArrow, SvgUpArrow } from "../../../../assets"
 import { useToggle } from "../../../../hooks"
-import { colors, siteZIndex } from "../../../../theme/theme"
+import { colors } from "../../../../theme/theme"
 import { RepairSlot } from "../../../../types"
 import { ClipThing } from "../../../Common/Deprecated/ClipThing"
 
@@ -51,14 +51,6 @@ export const RepairBayItemActions = ({
             transformOrigin={{
                 vertical: "top",
                 horizontal: "right",
-            }}
-            sx={{
-                mt: ".5rem",
-                zIndex: siteZIndex.Popover,
-                ".MuiPaper-root": {
-                    background: "none",
-                    boxShadow: 0,
-                },
             }}
         >
             <ClipThing

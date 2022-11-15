@@ -28,8 +28,8 @@ export const NiceButtonGroup = <T,>({
         <Stack
             direction="row"
             alignItems="center"
+            spacing="-1px"
             sx={{
-                border: `${"#FFFFFF"}50 1px solid`,
                 height: "3.3rem",
                 ...sx,
             }}
@@ -45,11 +45,23 @@ export const NiceButtonGroup = <T,>({
                             minWidth: "3rem",
                             borderRadius: 0,
                             color: isActive ? `${secondaryColor} !important` : "#FFFFFF !important",
-                            backgroundColor: isActive ? `${primaryColor} !important` : "#FFFFFF15",
+                            border: isActive ? `${primaryColor} 1px solid` : `${"#FFFFFF"}50 1px solid`,
+                            background: isActive ? `linear-gradient(180deg, ${primaryColor}90, ${primaryColor}30)` : "#FFFFFF15",
+                            zIndex: isActive ? 2 : 1,
+
+                            ...(isActive
+                                ? {}
+                                : {
+                                      ":not(:last-child)": {
+                                          borderRight: "none",
+                                      },
+                                  }),
 
                             "*": {
                                 fill: isActive ? `${secondaryColor} !important` : "#FFFFFF !important",
                             },
+
+                            ":hover": { backgroundColor: `${primaryColor}15` },
                         }}
                         size="small"
                         onClick={() => onSelected(option.value)}
