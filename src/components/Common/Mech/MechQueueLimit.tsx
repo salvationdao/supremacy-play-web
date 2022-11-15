@@ -6,7 +6,7 @@ export const MechQueueLimit = ({ playerQueueStatus }: { playerQueueStatus: Playe
     return (
         <Stack direction="row" alignItems="center">
             <Box sx={{ height: "3rem", p: ".2rem 1rem", border: "#FFFFFF50 1px solid" }}>
-                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold }}>
+                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold, whiteSpace: "nowrap" }}>
                     <strong>QUEUE LIMIT:</strong>{" "}
                     <span style={{ color: playerQueueStatus.total_queued >= playerQueueStatus.queue_limit ? colors.red : "#FFFFFF" }}>
                         {playerQueueStatus.total_queued}
