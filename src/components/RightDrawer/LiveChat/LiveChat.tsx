@@ -1,7 +1,7 @@
 import { Badge, Box, Stack, Tab, Tabs, Typography } from "@mui/material"
 import React, { ReactNode, useMemo, useRef, useState } from "react"
 import { AdditionalOptionsButton, FancyButton, NiceTooltip } from "../.."
-import { SvgChat, SvgChatGlobal, SvgExternalLink, SvgGlobal, SvgInfoCircular, SvgSettings } from "../../../assets"
+import { SvgChat, SvgChatGlobal, SvgExternalLink, SvgInfoCircular, SvgSettings } from "../../../assets"
 import { useAuth, useChat, useMobile, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { acronym, shadeColor } from "../../../helpers"
@@ -144,7 +144,7 @@ const TabbedLayout = () => {
 
     const faction = useMemo(() => getFaction(factionID), [factionID, getFaction])
 
-    const { isEnlisted, faction_id, primaryColor, secondaryColor, bannerBackgroundColor, factionTabLabel } = useMemo(() => {
+    const { isEnlisted, faction_id, primaryColor, secondaryColor, factionTabLabel } = useMemo(() => {
         const isEnlisted = !!factionID
         let faction_id = null
         let primaryColor = colors.globalChat
@@ -182,7 +182,7 @@ const TabbedLayout = () => {
                     flex: 1,
                     height: 0,
                     position: "relative",
-                    backgroundColor: (theme) => `#0D0415`,
+                    backgroundColor: `#0D0415`,
                     overflow: "hidden",
                 }}
             >
@@ -294,11 +294,9 @@ const SplitLayout = () => {
 
     const faction = getFaction(factionID)
 
-    const { isEnlisted, factionTabLabel, globalChatBannerColor, factionChatBannerColor } = useMemo(() => {
+    const { isEnlisted, factionTabLabel } = useMemo(() => {
         const isEnlisted = !!factionID
         let factionTabLabel = ""
-        const globalChatBannerColor = shadeColor(colors.globalChat, -30)
-        const factionChatBannerColor = shadeColor(theme.factionTheme.primary, -60)
 
         if (isEnlisted) {
             factionTabLabel = faction.label
@@ -309,10 +307,8 @@ const SplitLayout = () => {
         return {
             isEnlisted,
             factionTabLabel,
-            globalChatBannerColor,
-            factionChatBannerColor,
         }
-    }, [faction.label, factionID, theme.factionTheme.primary])
+    }, [faction.label, factionID])
 
     return useMemo(() => {
         return (
@@ -323,7 +319,7 @@ const SplitLayout = () => {
                     sx={{
                         position: "relative",
                         height: isEnlisted ? "50%" : "100%",
-                        backgroundColor: `${colors.globalChat}13`,
+                        backgroundColor: `#0D0415`,
                         overflow: "hidden",
                     }}
                 >
@@ -332,14 +328,15 @@ const SplitLayout = () => {
                         alignItems="center"
                         spacing=".8rem"
                         sx={{
+                            zIndex: 9,
                             height: `${5}rem`,
                             px: "1.8rem",
-                            background: `linear-gradient(${globalChatBannerColor} 26%, ${globalChatBannerColor}95)`,
+                            background: "#2D0311",
+                            borderTop: `1px solid #9F0410`,
                             boxShadow: 1,
-                            zIndex: 9,
                         }}
                     >
-                        <SvgGlobal size="2rem" />
+                        <SvgChatGlobal size="3rem" />
                         <Typography
                             variant="caption"
                             sx={{
@@ -357,40 +354,35 @@ const SplitLayout = () => {
 
                 {/* Bottom half */}
                 {isEnlisted && (
-                    <Stack
-                        className="tutorial-faction-chat"
-                        sx={{ position: "relative", height: "50%", backgroundColor: (theme) => `#0D0415`, overflow: "hidden" }}
-                    >
+                    <Stack className="tutorial-faction-chat" sx={{ position: "relative", height: "50%", backgroundColor: `#0D0415`, overflow: "hidden" }}>
                         <Stack
                             justifyContent="center"
                             sx={{
+                                zIndex: 9,
                                 height: `${5}rem`,
                                 px: "1.8rem",
-                                background: `linear-gradient(${factionChatBannerColor} 26%, ${factionChatBannerColor}95)`,
+                                background: "#2D0311",
+                                borderTop: `1px solid #9F0410`,
                                 boxShadow: 1,
-                                zIndex: 9,
                             }}
                         >
                             <Stack
                                 direction="row"
                                 alignItems="center"
                                 spacing=".96rem"
-                                sx={{ animation: banProposal ? `${zoomEffect(1.03)} 1s infinite` : "none" }}
+                                sx={{
+                                    animation: banProposal ? `${zoomEffect(1.03)} 1s infinite` : "none",
+                                }}
                             >
                                 <Box
                                     sx={{
-                                        width: "2.1rem",
-                                        height: "2.1rem",
+                                        width: "4rem",
+                                        height: "4rem",
                                         flexShrink: 0,
-                                        mb: ".16rem",
-                                        mr: ".8rem",
                                         backgroundImage: `url(${faction.logo_url})`,
                                         backgroundRepeat: "no-repeat",
                                         backgroundPosition: "center",
                                         backgroundSize: "contain",
-                                        backgroundColor: (theme) => theme.factionTheme.primary,
-                                        borderRadius: 0.5,
-                                        border: (theme) => `${theme.factionTheme.primary} solid 1px`,
                                     }}
                                 />
                                 {banProposal && (
@@ -416,18 +408,7 @@ const SplitLayout = () => {
                 )}
             </Stack>
         )
-    }, [
-        banProposal,
-        faction.logo_url,
-        factionChatBannerColor,
-        factionID,
-        factionTabLabel,
-        globalChatBannerColor,
-        isEnlisted,
-        theme.factionTheme.primary,
-        theme.factionTheme.secondary,
-        userID,
-    ])
+    }, [banProposal, faction.logo_url, factionID, factionTabLabel, isEnlisted, theme.factionTheme.primary, theme.factionTheme.secondary, userID])
 }
 
 const Content = React.memo(function Content({
