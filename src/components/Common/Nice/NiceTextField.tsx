@@ -1,4 +1,5 @@
 import { BaseTextFieldProps, Box, OutlinedInputProps, Stack, SxProps, TextField } from "@mui/material"
+import { useMemo } from "react"
 import { SvgArrow } from "../../../assets"
 import { fonts } from "../../../theme/theme"
 
@@ -26,6 +27,52 @@ export const NiceTextField = ({
     multiline,
     ...props
 }: NiceTextFieldProps) => {
+    const numberArrows = useMemo(() => {
+        if (props.type !== "number") {
+            return {}
+        }
+
+        return {
+            endAdornment: (
+                <Stack
+                    spacing="-.1rem"
+                    alignItems="center"
+                    sx={{
+                        zIndex: 1,
+                        "& svg:active": {
+                            transform: "scale(1.1)",
+                            transition: "all .1s",
+                        },
+                    }}
+                >
+                    <Box
+                        sx={{
+                            cursor: "pointer",
+                        }}
+                        onClick={() => {
+                            if (!onChange || !value || typeof value !== "number") return
+                            onChange(value + 1)
+                        }}
+                    >
+                        <SvgArrow size=".8rem" />
+                    </Box>
+                    <Box
+                        sx={{
+                            transform: "scaleY(-1)",
+                            cursor: "pointer",
+                        }}
+                        onClick={() => {
+                            if (!onChange || !value || typeof value !== "number") return
+                            if (value > 1) onChange(value - 1)
+                        }}
+                    >
+                        <SvgArrow size=".8rem" />
+                    </Box>
+                </Stack>
+            ),
+        }
+    }, [onChange, props.type, value])
+
     return (
         <Box
             position="relative"
@@ -36,7 +83,6 @@ export const NiceTextField = ({
 
                 ".MuiOutlinedInput-root": {
                     py: 0,
-                    pl: 0,
                 },
 
                 ".MuiInputBase-root": {
@@ -47,7 +93,7 @@ export const NiceTextField = ({
                         backgroundColor: `${primaryColor}15`,
                     },
                     ".MuiOutlinedInput-notchedOutline": {
-                        border: `${primaryColor} 2px solid !important`,
+                        border: `${primaryColor} 1px solid !important`,
                     },
                 },
                 ...sx,
@@ -97,62 +143,9 @@ export const NiceTextField = ({
                     onKeyDown && onKeyDown(e)
                     e.stopPropagation()
                 }}
-                InputProps={InputProps}
+                InputProps={{ ...InputProps, ...numberArrows }}
                 {...props}
             />
-
-            {props.type === "number" && typeof value === "number" && (
-                <Stack
-                    spacing="-.3rem"
-                    sx={{
-                        position: "absolute",
-                        top: 0,
-                        right: ".8rem",
-                        "& svg:active": {
-                            transform: "scale(1.1)",
-                            transition: "all .1s",
-                        },
-                    }}
-                >
-                    <Box
-                        sx={{
-                            transform: "rotate(-90deg)",
-                            cursor: "pointer",
-                            zIndex: 1,
-                            fill: primaryColor,
-                            svg: {
-                                fill: "#FFFFFF",
-                                width: ".5rem",
-                                height: ".5rem",
-                            },
-                        }}
-                        onClick={() => {
-                            if (!onChange) return
-                            onChange(value + 1)
-                        }}
-                    >
-                        <SvgArrow />
-                    </Box>
-                    <Box
-                        sx={{
-                            transform: "rotate(-90deg) scaleX(-1)",
-                            cursor: "pointer",
-                            fill: primaryColor,
-                            svg: {
-                                fill: "#FFFFFF",
-                                width: ".5rem",
-                                height: ".5rem",
-                            },
-                        }}
-                        onClick={() => {
-                            if (!onChange) return
-                            if (value > 1) onChange(value - 1)
-                        }}
-                    >
-                        <SvgArrow />
-                    </Box>
-                </Stack>
-            )}
         </Box>
     )
 }

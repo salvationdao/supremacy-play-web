@@ -137,7 +137,7 @@ export const FactionPassOption = React.memo(function FactionPassOption({ days, f
 
                 {/* Buy button */}
                 <Box sx={{ p: ".8rem 1.5rem" }}>
-                    <NiceButton fill buttonColor={colors.green} onClick={() => buyFactionPass(days)} sx={{ width: "100%", p: ".4rem 1rem" }}>
+                    <NiceButton corners buttonColor={colors.green} onClick={() => buyFactionPass(days)} sx={{ width: "100%", p: ".4rem 1rem" }}>
                         <Stack spacing=".8rem" direction="row" alignItems="center">
                             <SvgWallet />
                             <Typography sx={{ fontFamily: fonts.nostromoBlack }}>BUY NOW</Typography>
