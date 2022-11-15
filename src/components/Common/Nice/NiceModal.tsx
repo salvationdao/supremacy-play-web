@@ -1,6 +1,6 @@
-import { IconButton, Modal, ModalProps, SxProps } from "@mui/material"
-import { SvgClose } from "../../../assets"
-import { useTheme } from "../../../containers/theme"
+import { Box, IconButton, Modal, ModalProps, SxProps } from "@mui/material"
+import { SvgClose2 } from "../../../assets"
+import { colors } from "../../../theme/theme"
 import { NiceBoxThing } from "./NiceBoxThing"
 
 export interface NiceModalProps extends ModalProps {
@@ -10,13 +10,11 @@ export interface NiceModalProps extends ModalProps {
 }
 
 export const NiceModal = ({ modalSx, sx, children, onClose, ...props }: NiceModalProps) => {
-    const theme = useTheme()
-
     return (
         <Modal {...props} onClose={onClose} sx={modalSx}>
             <NiceBoxThing
-                border={{ color: theme.factionTheme.primary }}
-                background={{ colors: [theme.factionTheme.background] }}
+                border={{ color: "#FFFFFF60", thickness: "very-lean" }}
+                background={{ colors: [colors.darkerNavy] }}
                 sx={{
                     position: "absolute",
                     top: "50%",
@@ -45,8 +43,21 @@ export const NiceModal = ({ modalSx, sx, children, onClose, ...props }: NiceModa
                         ":active": { opacity: 1 },
                     }}
                 >
-                    <SvgClose size="2.6rem" sx={{}} />
+                    <SvgClose2 size="2.6rem" sx={{}} />
                 </IconButton>
+
+                {/* Background color */}
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: 0,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        backgroundColor: "#FFFFFF08",
+                        zIndex: -1,
+                    }}
+                />
             </NiceBoxThing>
         </Modal>
     )

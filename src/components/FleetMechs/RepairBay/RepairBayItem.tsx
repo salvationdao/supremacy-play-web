@@ -12,6 +12,7 @@ import { colors, fonts } from "../../../theme/theme"
 import { MechDetails, RepairSlot } from "../../../types"
 import { ClipThing } from "../../Common/Deprecated/ClipThing"
 import { MechRepairBlocks } from "../../Common/Mech/MechRepairBlocks"
+import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { RepairBayItemActions } from "./RepairBayItemActions"
 
 export const RepairBayItem = ({
@@ -60,6 +61,8 @@ export const RepairBayItem = ({
     return (
         <>
             <ClipThing clipSize="6px" opacity={0.8} border={{ borderColor: primaryColor }} backgroundColor={backgroundColor} sx={{ width: "100%" }}>
+                <NiceBoxThing></NiceBoxThing>
+
                 <Stack
                     direction={isBigVersion ? "column" : "row"}
                     spacing="1.2rem"
