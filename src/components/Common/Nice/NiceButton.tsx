@@ -206,7 +206,7 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
         let colors: string[] = []
 
         if (buttonColor) {
-            colors = fillColor ? [fillColor, `${fillColor}${fill ? "BB" : "20"}`] : [buttonColor, `${buttonColor}00`]
+            colors = fillColor ? [fillColor, `${fillColor}${fill ? "BB" : "30"}`] : [buttonColor, `${buttonColor}20`]
             if (flat) colors = [colors[0]]
         }
 
