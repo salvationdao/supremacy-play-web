@@ -45,7 +45,8 @@ export const NiceButtonGroup = <T,>({
                             minWidth: "3rem",
                             borderRadius: 0,
                             color: isActive ? `${secondaryColor} !important` : "#FFFFFF !important",
-                            backgroundColor: isActive ? `${primaryColor} !important` : "#FFFFFF15",
+                            border: isActive ? `${primaryColor} 1px solid` : "none",
+                            background: isActive ? `linear-gradient(180deg, ${primaryColor}90, ${primaryColor}20)` : "#FFFFFF15",
 
                             "*": {
                                 fill: isActive ? `${secondaryColor} !important` : "#FFFFFF !important",
