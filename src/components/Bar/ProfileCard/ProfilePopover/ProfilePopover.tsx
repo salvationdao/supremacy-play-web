@@ -46,7 +46,7 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
                     horizontal: "right",
                 }}
                 sx={{
-                    mt: "-.2rem",
+                    mt: "-.6rem",
                 }}
             >
                 <NiceBoxThing border={{ color: theme.factionTheme.primary }} background={{ colors: [theme.factionTheme.background] }} sx={{ height: "100%" }}>

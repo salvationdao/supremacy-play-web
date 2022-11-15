@@ -9,7 +9,7 @@ import { colors, fonts } from "../../../theme/theme"
 import { RepairJob } from "../../../types/jobs"
 import { FancyButton } from "../../Common/Deprecated/FancyButton"
 import { PlayerNameGid } from "../../Common/PlayerNameGid"
-import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
+import { RepairBlocks } from "../../Common/Mech/MechRepairBlocks"
 import { General } from "../../Marketplace/Common/MarketItem/General"
 
 interface RepairJobItemProps {

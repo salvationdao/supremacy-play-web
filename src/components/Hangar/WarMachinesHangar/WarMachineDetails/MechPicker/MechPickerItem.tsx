@@ -9,7 +9,7 @@ import { MechBasic, MechDetails, MechStatus, MechStatusEnum } from "../../../../
 import { RepairStatus } from "../../../../../types/jobs"
 import { NiceBoxThing } from "../../../../Common/Nice/NiceBoxThing"
 import { NiceButton } from "../../../../Common/Nice/NiceButton"
-import { MechRepairBlocks } from "../../Common/MechRepairBlocks"
+import { MechRepairBlocks } from "../../../../Common/Mech/MechRepairBlocks"
 
 export interface MechPickerItemProps {
     initialData: MechBasic

@@ -1,25 +1,25 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { EmptyWarMachinesPNG, SvgFilter, SvgGridView, SvgListView, SvgSearch } from "../../../assets"
-import { useTheme } from "../../../containers/theme"
-import { getRarityDeets, parseString } from "../../../helpers"
-import { useDebounce, usePagination, useUrlQuery } from "../../../hooks"
-import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
-import { useLocalStorage } from "../../../hooks/useLocalStorage"
-import { GameServerKeys } from "../../../keys"
-import { colors, fonts } from "../../../theme/theme"
-import { LobbyMech, MechStatusEnum, RarityEnum } from "../../../types"
-import { SortTypeLabel } from "../../../types/marketplace"
-import { BulkActionPopover } from "../../Common/Mech/BulkActionPopover"
-import { MechCard } from "../../Common/Mech/MechCard"
-import { NavTabs } from "../../Common/NavTabs/NavTabs"
-import { usePageTabs } from "../../Common/NavTabs/usePageTabs"
-import { NiceButton } from "../../Common/Nice/NiceButton"
-import { NiceButtonGroup } from "../../Common/Nice/NiceButtonGroup"
-import { NiceSelect } from "../../Common/Nice/NiceSelect"
-import { NiceTextField } from "../../Common/Nice/NiceTextField"
-import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
-import { RepairBlocks } from "../../Common/Mech/MechRepairBlocks"
+import { EmptyWarMachinesPNG, SvgFilter, SvgGridView, SvgListView, SvgSearch } from "../../assets"
+import { useTheme } from "../../containers/theme"
+import { getRarityDeets, parseString } from "../../helpers"
+import { useDebounce, usePagination, useUrlQuery } from "../../hooks"
+import { useGameServerSubscriptionSecuredUser } from "../../hooks/useGameServer"
+import { useLocalStorage } from "../../hooks/useLocalStorage"
+import { GameServerKeys } from "../../keys"
+import { colors, fonts } from "../../theme/theme"
+import { LobbyMech, MechStatusEnum, RarityEnum } from "../../types"
+import { SortTypeLabel } from "../../types/marketplace"
+import { BulkActionPopover } from "../Common/Mech/BulkActionPopover"
+import { MechCard } from "../Common/Mech/MechCard"
+import { RepairBlocks } from "../Common/Mech/MechRepairBlocks"
+import { NavTabs } from "../Common/NavTabs/NavTabs"
+import { usePageTabs } from "../Common/NavTabs/usePageTabs"
+import { NiceButton } from "../Common/Nice/NiceButton"
+import { NiceButtonGroup } from "../Common/Nice/NiceButtonGroup"
+import { NiceSelect } from "../Common/Nice/NiceSelect"
+import { NiceTextField } from "../Common/Nice/NiceTextField"
+import { SortAndFilters } from "../Common/SortAndFilters/SortAndFilters"
 
 enum UrlQueryParams {
     Sort = "sort",
@@ -55,16 +55,16 @@ const layoutOptions = [
     { label: "", value: false, svg: <SvgListView size="1.5rem" /> },
 ]
 
-export const FactionPassMechPool = () => {
+export const FleetMechs = () => {
     const [query, updateQuery] = useUrlQuery()
     const theme = useTheme()
     const { tabs, activeTabID, setActiveTabID, prevTab, nextTab } = usePageTabs()
 
     // Filter, search, pagination
-    const [showFilters, setShowFilters] = useLocalStorage<boolean>("factionPassMechPoolFilters", false)
+    const [showFilters, setShowFilters] = useLocalStorage<boolean>("fleetMechsFilters", false)
     const [search, setSearch, searchInstant] = useDebounce(query.get(UrlQueryParams.Search) || "", 300)
     const [sort, setSort] = useState<string>(query.get(UrlQueryParams.Sort) || SortTypeLabel.MechQueueAsc)
-    const [isGridView, setIsGridView] = useLocalStorage<boolean>("factionPassMechPoolGrid", true)
+    const [isGridView, setIsGridView] = useLocalStorage<boolean>("fleetMechsGrid", true)
     const [status, setStatus] = useState<string[]>((query.get(UrlQueryParams.Statuses) || undefined)?.split("||") || [])
     const [rarities, setRarities] = useState<string[]>((query.get(UrlQueryParams.Rarities) || undefined)?.split("||") || [])
     const [repairBlocks, setRepairBlocks] = useState<string[]>((query.get(UrlQueryParams.RepairBlocks) || undefined)?.split("||") || [])
@@ -100,10 +100,10 @@ export const FactionPassMechPool = () => {
         })
     }, [])
 
-    useGameServerSubscriptionFaction<LobbyMech[]>(
+    useGameServerSubscriptionSecuredUser<LobbyMech[]>(
         {
-            URI: "/staked_mechs",
-            key: GameServerKeys.SubFactionStakedMechs,
+            URI: "/owned_queueable_mechs",
+            key: GameServerKeys.SubPlayerQueueableMechs,
         },
         (payload) => {
             setIsLoading(false)
@@ -245,7 +245,16 @@ export const FactionPassMechPool = () => {
                 >
                     {displayMechs.map((mech) => {
                         const isSelected = !!selectedMechs.find((m) => m.id === mech.id)
-                        return <MechCard key={`mech-${mech.id}`} mech={mech} isGridView={isGridView} isSelected={isSelected} toggleSelected={toggleSelected} />
+                        return (
+                            <MechCard
+                                key={`mech-${mech.id}`}
+                                mech={mech}
+                                isGridView={isGridView}
+                                isSelected={isSelected}
+                                toggleSelected={toggleSelected}
+                                hide={{ ownerName: true, kdwlStats: true }}
+                            />
+                        )
                     })}
                 </Box>
             )

@@ -85,6 +85,10 @@ export const NiceTextField = ({
                     py: 0,
                 },
 
+                ".MuiInputBase-multiline": {
+                    pl: 0,
+                },
+
                 ".MuiInputBase-root": {
                     backgroundColor: "#FFFFFF15",
                 },

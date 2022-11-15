@@ -15,7 +15,7 @@ import { General } from "../../Marketplace/Common/MarketItem/General"
 import { MechBarStats } from "./Common/MechBarStats"
 import { MechGeneralStatus } from "./Common/MechGeneralStatus"
 import { MechLoadoutIcons } from "./Common/MechLoadoutIcons"
-import { MechRepairBlocks } from "./Common/MechRepairBlocks"
+import { MechRepairBlocks } from "../../Common/Mech/MechRepairBlocks"
 
 interface WarMachineHangarItemProps {
     isSelected?: boolean
