@@ -9,9 +9,11 @@ import { useLocalStorage } from "../../hooks/useLocalStorage"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
 import { LobbyMech, MechStatusEnum, RarityEnum } from "../../types"
+import { PlayerQueueStatus } from "../../types/battle_queue"
 import { SortTypeLabel } from "../../types/marketplace"
 import { BulkActionPopover } from "../Common/Mech/BulkActionPopover"
 import { MechCard } from "../Common/Mech/MechCard"
+import { MechQueueLimit } from "../Common/Mech/MechQueueLimit"
 import { RepairBlocks } from "../Common/Mech/MechRepairBlocks"
 import { NavTabs } from "../Common/NavTabs/NavTabs"
 import { usePageTabs } from "../Common/NavTabs/usePageTabs"
@@ -60,6 +62,12 @@ export const FleetMechs = () => {
     const theme = useTheme()
     const { tabs, activeTabID, setActiveTabID, prevTab, nextTab } = usePageTabs()
 
+    // Player queue status
+    const [playerQueueStatus, setPlayerQueueStatus] = useState<PlayerQueueStatus>({
+        queue_limit: 10,
+        total_queued: 0,
+    })
+
     // Filter, search, pagination
     const [showFilters, setShowFilters] = useLocalStorage<boolean>("fleetMechsFilters", false)
     const [search, setSearch, searchInstant] = useDebounce(query.get(UrlQueryParams.Search) || "", 300)
@@ -99,6 +107,16 @@ export const FleetMechs = () => {
             return newArray
         })
     }, [])
+
+    useGameServerSubscriptionSecuredUser<PlayerQueueStatus>(
+        {
+            URI: "/queue_status",
+            key: GameServerKeys.PlayerQueueStatus,
+        },
+        (payload) => {
+            setPlayerQueueStatus(payload)
+        },
+    )
 
     useGameServerSubscriptionSecuredUser<LobbyMech[]>(
         {
@@ -252,7 +270,7 @@ export const FleetMechs = () => {
                                 isGridView={isGridView}
                                 isSelected={isSelected}
                                 toggleSelected={toggleSelected}
-                                hide={{ ownerName: true, kdwlStats: true }}
+                                hide={{ ownerName: true }}
                             />
                         )
                     })}
@@ -410,6 +428,8 @@ export const FleetMechs = () => {
                                 <SvgFilter inline size="1.5rem" /> FILTER
                             </Typography>
                         </NiceButton>
+
+                        <MechQueueLimit playerQueueStatus={playerQueueStatus} />
 
                         <Box flex={1} />
 
