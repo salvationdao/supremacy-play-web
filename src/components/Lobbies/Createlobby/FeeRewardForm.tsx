@@ -6,6 +6,7 @@ import { Section } from "./RoomSettingForm"
 import { NiceTextField } from "../../Common/Nice/NiceTextField"
 import { SvgSupToken } from "../../../assets"
 import { colors } from "../../../theme/theme"
+import { Controller, useFormContext } from "react-hook-form"
 
 interface FeeRewardFormProps {
     nextPage: () => void
@@ -14,55 +15,92 @@ interface FeeRewardFormProps {
 
 export const FeeRewardForm = ({ nextPage, prevPage }: FeeRewardFormProps) => {
     const { factionTheme } = useTheme()
+    const { control } = useFormContext()
     return (
         <Stack direction="column" flex={1} sx={{ px: "25rem", py: "4rem" }}>
             <Stack direction="column" flex={1} spacing="4rem">
                 <Stack direction="column" spacing={1}>
                     <Section orderLabel="A" title="ENTRY FEE" description="This will be charged per Mech." />
-                    <NiceTextField
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position={"start"}>
-                                    <SvgSupToken size="1.5rem" sx={{ opacity: 0.5 }} fill={colors.gold} />
-                                </InputAdornment>
-                            ),
-                        }}
+                    <Controller
+                        name="entry_fee"
+                        control={control}
+                        render={({ field }) => (
+                            <NiceTextField
+                                {...field}
+                                type="number"
+                                primaryColor={factionTheme.primary}
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position={"start"}>
+                                            <SvgSupToken size="1.5rem" sx={{ opacity: 0.5 }} fill={colors.gold} />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                        )}
                     />
                 </Stack>
                 <Stack direction="column" spacing={1}>
                     <Section orderLabel="B" title="WINNING FACTION CUT" description="Set a winning percentage." />
-                    <NiceTextField
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position={"start"}>
-                                    <Typography>%</Typography>
-                                </InputAdornment>
-                            ),
-                        }}
+                    <Controller
+                        name="first_faction_cut"
+                        control={control}
+                        render={({ field }) => (
+                            <NiceTextField
+                                {...field}
+                                type="number"
+                                primaryColor={factionTheme.primary}
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position={"start"}>
+                                            <Typography>%</Typography>
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                        )}
                     />
                 </Stack>
                 <Stack direction="column" spacing={1}>
                     <Section orderLabel="C" title="SECOND PLACE FACTION CUT" description="Set a Second place percentage." />
-                    <NiceTextField
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position={"start"}>
-                                    <Typography>%</Typography>
-                                </InputAdornment>
-                            ),
-                        }}
+                    <Controller
+                        name="second_faction_cut"
+                        control={control}
+                        render={({ field }) => (
+                            <NiceTextField
+                                {...field}
+                                type="number"
+                                primaryColor={factionTheme.primary}
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position={"start"}>
+                                            <Typography>%</Typography>
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                        )}
                     />
                 </Stack>
                 <Stack direction="column" spacing={1}>
                     <Section orderLabel="D" title="EXTRA REWARD" description="Set extra rewards to be shared for all the players." />
-                    <NiceTextField
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position={"start"}>
-                                    <SvgSupToken size="1.5rem" sx={{ opacity: 0.5 }} fill={colors.gold} />
-                                </InputAdornment>
-                            ),
-                        }}
+                    <Controller
+                        name="extra_reward"
+                        control={control}
+                        render={({ field }) => (
+                            <NiceTextField
+                                {...field}
+                                type="number"
+                                primaryColor={factionTheme.primary}
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position={"start"}>
+                                            <SvgSupToken size="1.5rem" sx={{ opacity: 0.5 }} fill={colors.gold} />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                        )}
                     />
                 </Stack>
             </Stack>

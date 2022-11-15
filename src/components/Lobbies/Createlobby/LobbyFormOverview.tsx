@@ -31,6 +31,20 @@ export const LobbyFormOverview = () => {
 
     const mapName = useMemo(() => gameMaps.find((gm) => gm.id === game_map_id)?.name || "Random", [gameMaps, game_map_id])
 
+    const firstFactionCut = useMemo(() => {
+        const firstFactionCut = parseFloat(first_faction_cut)
+        if (isNaN(firstFactionCut)) return 0
+        return Math.floor(firstFactionCut * 100) / 100
+    }, [first_faction_cut])
+
+    const secondFactionCut = useMemo(() => {
+        const secondFactionCut = parseFloat(second_faction_cut)
+        if (isNaN(secondFactionCut)) return 0
+        return Math.floor(secondFactionCut * 100) / 100
+    }, [second_faction_cut])
+
+    const losingFactionCut = useMemo(() => 100 - firstFactionCut - secondFactionCut, [firstFactionCut, secondFactionCut])
+
     return (
         <Stack
             sx={{
@@ -58,9 +72,10 @@ export const LobbyFormOverview = () => {
 
                 <Stack direction="column">
                     <OverviewField label="Entry Fee" preIcon={<SvgSupToken fill={colors.gold} />} value={entry_fee} />
-                    <OverviewField label="Winning Faction Cut" value={`${first_faction_cut}%`} />
-                    <OverviewField label="Second Place Faction Cut" value={`${second_faction_cut}%`} />
                     <OverviewField label="Extra Reward" preIcon={<SvgSupToken fill={colors.gold} />} value={extra_reward} />
+                    <OverviewField label="Winning Faction Cut" value={`${firstFactionCut}%`} />
+                    <OverviewField label="Second Place Faction Cut" value={`${secondFactionCut}%`} />
+                    <OverviewField label="Losing Faction Cut" value={`${losingFactionCut}%`} />
                 </Stack>
 
                 <Stack direction="column">
