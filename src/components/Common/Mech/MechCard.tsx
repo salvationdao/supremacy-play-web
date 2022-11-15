@@ -28,7 +28,7 @@ export const MechCard = React.memo(function MechCard({ mech, isSelected, toggleS
         return (
             <NiceBoxThing
                 border={{
-                    color: isSelected ? `${colors.neonBlue}80` : "#FFFFFF30",
+                    color: isSelected ? `${colors.neonBlue}80` : "#FFFFFF20",
                     thickness: isSelected ? "lean" : "very-lean",
                 }}
                 background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.06 }}
@@ -50,7 +50,7 @@ export const MechCard = React.memo(function MechCard({ mech, isSelected, toggleS
                 >
                     {/* Mech image */}
                     <NiceBoxThing
-                        border={{ color: `#FFFFFF30`, thickness: "very-lean" }}
+                        border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
                         background={{ colors: [ownerFaction.background_color] }}
                         sx={{ height: "100%", width: "100%", boxShadow: 0.4 }}
                     >
@@ -139,7 +139,7 @@ export const MechCard = React.memo(function MechCard({ mech, isSelected, toggleS
     return (
         <NiceBoxThing
             border={{
-                color: isSelected ? `${colors.neonBlue}80` : "#FFFFFF30",
+                color: isSelected ? `${colors.neonBlue}80` : "#FFFFFF20",
                 thickness: isSelected ? "lean" : "very-lean",
             }}
             background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.06 }}
@@ -176,7 +176,7 @@ export const MechCard = React.memo(function MechCard({ mech, isSelected, toggleS
 
                 {/* Mech image */}
                 <NiceBoxThing
-                    border={{ color: `#FFFFFF30`, thickness: "very-lean" }}
+                    border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
                     background={{ colors: [ownerFaction.background_color] }}
                     sx={{ boxShadow: 0.4 }}
                 >
