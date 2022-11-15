@@ -1,10 +1,10 @@
 import { Stack, SxProps, Typography } from "@mui/material"
 import React, { useMemo } from "react"
-import { useGameServerSubscriptionSecured } from "../../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../../keys"
-import { pulseEffect } from "../../../../theme/keyframes"
-import { colors, fonts } from "../../../../theme/theme"
-import { RepairStatus } from "../../../../types/jobs"
+import { useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
+import { pulseEffect } from "../../../theme/keyframes"
+import { colors, fonts } from "../../../theme/theme"
+import { RepairStatus } from "../../../types/jobs"
 
 export const RepairBlocks = ({
     defaultBlocks,

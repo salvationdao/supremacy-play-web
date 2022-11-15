@@ -11,7 +11,7 @@ import { TruncateTextLines } from "../../../../theme/styles"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechDetails, RepairSlot } from "../../../../types"
 import { ClipThing } from "../../../Common/Deprecated/ClipThing"
-import { MechRepairBlocks } from "../Common/MechRepairBlocks"
+import { MechRepairBlocks } from "../../../Common/Mech/MechRepairBlocks"
 import { RepairBayItemActions } from "./RepairBayItemActions"
 
 export const RepairBayItem = ({

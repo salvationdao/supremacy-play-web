@@ -7,7 +7,7 @@ import { MechBasic, MechStatus, MechStatusEnum } from "../../../../types"
 import { RepairOffer, RepairStatus } from "../../../../types/jobs"
 import { ClipThing } from "../../../Common/Deprecated/ClipThing"
 import { HireContractorsCard } from "../WarMachineDetails/Modals/RepairModal/HireContractorsCard"
-import { RepairBlocks } from "./MechRepairBlocks"
+import { RepairBlocks } from "../../../Common/Mech/MechRepairBlocks"
 
 export const BulkRepairConfirmModal = ({
     setBulkRepairConfirmModalOpen,

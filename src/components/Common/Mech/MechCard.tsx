@@ -6,7 +6,7 @@ import { getMechStatusDeets } from "../../../helpers"
 import { TruncateTextLines } from "../../../theme/styles"
 import { colors, fonts } from "../../../theme/theme"
 import { LobbyMech } from "../../../types"
-import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
+import { RepairBlocks } from "./MechRepairBlocks"
 import { NiceBoxThing } from "../Nice/NiceBoxThing"
 
 interface MechCardProps {

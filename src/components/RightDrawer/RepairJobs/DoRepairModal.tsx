@@ -14,7 +14,7 @@ import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { RepairAgent, RepairJob, RepairStatus } from "../../../types/jobs"
 import { ClipThing } from "../../Common/Deprecated/ClipThing"
 import { FancyButton } from "../../Common/Deprecated/FancyButton"
-import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
+import { RepairBlocks } from "../../Common/Mech/MechRepairBlocks"
 import { isWebGLAvailable } from "./StackTower/src/utils"
 import { StackTower } from "./StackTower/StackTower"
 
