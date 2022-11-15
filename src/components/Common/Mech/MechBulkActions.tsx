@@ -108,7 +108,7 @@ const BulkRepairModal = ({
     selectedMechs: LobbyMech[]
     setSelectedMechs: React.Dispatch<React.SetStateAction<LobbyMech[]>>
 }) => {
-    const validMechs = useMemo(() => selectedMechs.filter((mech) => mech.status === MechStatusEnum.Damaged), [selectedMechs])
+    const validMechs = useMemo(() => selectedMechs.filter((mech) => mech.status === MechStatusEnum.Damaged && !mech.has_repair_offer), [selectedMechs])
 
     const remainDamagedBlocks = useMemo(
         () =>

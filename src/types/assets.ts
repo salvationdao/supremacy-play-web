@@ -198,6 +198,7 @@ export interface LobbyMech extends MechBasic {
     stats: BattleMechStats
 
     in_queue: boolean
+    has_repair_offer: boolean
     status: MechStatusEnum
     can_deploy: boolean
     lobby_locked_at?: Date

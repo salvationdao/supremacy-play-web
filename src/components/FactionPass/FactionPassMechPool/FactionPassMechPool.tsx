@@ -403,7 +403,7 @@ export const FactionPassMechPool = () => {
                         <Box flex={1} />
 
                         {/* Bulk actions */}
-                        <MechBulkActions selectedMechs={selectedMechs} />
+                        <MechBulkActions selectedMechs={selectedMechs} setSelectedMechs={setSelectedMechs} />
 
                         <Stack direction="row" alignItems="center">
                             {/* Show Total */}
