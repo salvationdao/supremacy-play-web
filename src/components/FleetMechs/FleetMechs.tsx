@@ -235,7 +235,6 @@ export const FleetMechs = () => {
 
         // Pagination
         result = result.slice((page - 1) * pageSize, page * pageSize)
-        changePage(1)
         setTotalItems(mechs.length)
 
         setDisplayMechs(result)
@@ -463,7 +462,10 @@ export const FleetMechs = () => {
                                 secondaryColor={theme.factionTheme.secondary}
                                 options={pageSizeOptions}
                                 selected={pageSize}
-                                onSelected={(value) => changePageSize(parseString(value, 1))}
+                                onSelected={(value) => {
+                                    changePageSize(parseString(value, 1))
+                                    changePage(1)
+                                }}
                             />
                         </Stack>
 
