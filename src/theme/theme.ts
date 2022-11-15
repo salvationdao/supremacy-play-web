@@ -79,6 +79,8 @@ export const colors = {
     marketCreate: "#E6C85C",
     marketBidReturned: "#CC3F3F",
 
+    repair: "#EA8622",
+
     // Mech loadout
     chassisSkin: "#D4AA13",
     introAnimation: "#B63DD4",

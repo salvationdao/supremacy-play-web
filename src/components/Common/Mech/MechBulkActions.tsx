@@ -139,7 +139,7 @@ const BulkRepairModal = ({
                         onSubmitted={() => setSelectedMechs([])}
                     />
                 ) : (
-                    <Typography variant="body2" fontFamily={fonts.nostromoBold} color={colors.lightGrey}>
+                    <Typography variant="body2" fontFamily={fonts.nostromoBold} color={colors.grey}>
                         The mechs you have selected are not damaged...
                     </Typography>
                 )}

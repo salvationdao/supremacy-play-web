@@ -8,7 +8,7 @@ import { colors, fonts } from "../../../../theme/theme"
 import { MechBasic, RepairSlot } from "../../../../types"
 import { ClipThing } from "../../../Common/Deprecated/ClipThing"
 import { FancyButton } from "../../../Common/Deprecated/FancyButton"
-import { EmptyRepairBayItem, RepairBayItem } from "./RepairBayItem"
+import { EmptyRepairBayItem, RepairBayItem } from "../../../FleetMechs/RepairBay/RepairBayItem"
 
 const REPAIR_BAY_SLOTS_MAX = 5
 

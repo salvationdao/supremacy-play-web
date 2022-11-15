@@ -27,7 +27,7 @@ export const NiceSelect = ({
     return (
         <Stack direction="row" alignItems="center" sx={{ backgroundColor: "#FFFFFF15", boxShadow: 0.5, ...sx }}>
             {label && (
-                <Typography sx={{ lineHeight: 1.75, height: "3.3rem", border: `${"#FFFFFF"}50 1px solid`, borderRight: "none", px: "1rem" }}>
+                <Typography sx={{ lineHeight: 1.75, height: "3.3rem", border: `${"#FFFFFF"}50 1px inset`, borderRight: "none", px: "1rem" }}>
                     {label}
                 </Typography>
             )}
@@ -36,7 +36,7 @@ export const NiceSelect = ({
                 sx={{
                     flex: 1,
                     p: ".1rem .8rem",
-                    border: `${"#FFFFFF"}50 1px solid`,
+                    border: `${"#FFFFFF"}50 1px inset`,
                     borderRadius: 0,
                     height: "3.3rem",
 
@@ -56,7 +56,7 @@ export const NiceSelect = ({
 
                     "&:hover": {
                         backgroundColor: `${primaryColor}15`,
-                        border: `${primaryColor} 1px solid !important`,
+                        border: `${primaryColor} 1px inset !important`,
                     },
                 }}
                 value={selected}

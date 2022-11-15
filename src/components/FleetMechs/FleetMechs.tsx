@@ -1,6 +1,6 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { EmptyWarMachinesPNG, SvgFilter, SvgGridView, SvgListView, SvgSearch } from "../../assets"
+import { EmptyWarMachinesPNG, SvgFilter, SvgGridView, SvgListView, SvgRepair, SvgSearch } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { getRarityDeets, parseString } from "../../helpers"
 import { useDebounce, usePagination, useUrlQuery } from "../../hooks"
@@ -22,6 +22,7 @@ import { NiceButtonGroup } from "../Common/Nice/NiceButtonGroup"
 import { NiceSelect } from "../Common/Nice/NiceSelect"
 import { NiceTextField } from "../Common/Nice/NiceTextField"
 import { SortAndFilters } from "../Common/SortAndFilters/SortAndFilters"
+import { RepairBay } from "./RepairBay/RepairBay"
 
 enum UrlQueryParams {
     Sort = "sort",
@@ -70,6 +71,7 @@ export const FleetMechs = () => {
 
     // Filter, search, pagination
     const [showFilters, setShowFilters] = useLocalStorage<boolean>("fleetMechsFilters", false)
+    const [showRepairBay, setShowRepairBay] = useLocalStorage<boolean>("fleetMechsRepairBay", true)
     const [search, setSearch, searchInstant] = useDebounce(query.get(UrlQueryParams.Search) || "", 300)
     const [sort, setSort] = useState<string>(query.get(UrlQueryParams.Sort) || SortTypeLabel.MechQueueAsc)
     const [isGridView, setIsGridView] = useLocalStorage<boolean>("fleetMechsGrid", true)
@@ -412,8 +414,8 @@ export const FleetMechs = () => {
                     ]}
                 />
 
-                {/* Search, sort, grid view, and other top buttons */}
                 <Stack spacing="2rem" alignItems="stretch" flex={1} sx={{ overflow: "hidden" }}>
+                    {/* Search, sort, grid view, and other top buttons */}
                     <Stack spacing="1rem" direction="row" alignItems="center" sx={{ overflowX: "auto", overflowY: "hidden", width: "100%", pb: ".2rem" }}>
                         {/* Filter button */}
                         <NiceButton
@@ -424,6 +426,19 @@ export const FleetMechs = () => {
                         >
                             <Typography variant="subtitle1" fontFamily={fonts.nostromoBold} color={showFilters ? theme.factionTheme.secondary : "#FFFFFF"}>
                                 <SvgFilter inline size="1.5rem" /> FILTER
+                            </Typography>
+                        </NiceButton>
+
+                        {/* Repair bay button */}
+                        <NiceButton
+                            onClick={() => setShowRepairBay((prev) => !prev)}
+                            fill={showRepairBay}
+                            buttonColor={colors.repair}
+                            disableAutoColor
+                            sx={{ p: ".2rem 1rem", pt: ".4rem" }}
+                        >
+                            <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
+                                <SvgRepair inline size="1.5rem" /> REPAIR BAY
                             </Typography>
                         </NiceButton>
 
@@ -488,6 +503,8 @@ export const FleetMechs = () => {
 
                     <Pagination sx={{ mt: "auto" }} count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
                 </Stack>
+
+                <RepairBay open={showRepairBay} />
             </Stack>
         </Stack>
     )
