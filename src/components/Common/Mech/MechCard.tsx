@@ -2,7 +2,7 @@ import { Box, Checkbox, Stack, Typography } from "@mui/material"
 import React, { useMemo } from "react"
 import { SvgMechDeaths, SvgMechKills, SvgMechLosses, SvgMechWins, SvgUserDiamond } from "../../../assets"
 import { useSupremacy } from "../../../containers"
-import { getMechStatusDeets, getRarityDeets } from "../../../helpers"
+import { getMechStatusDeets } from "../../../helpers"
 import { TruncateTextLines } from "../../../theme/styles"
 import { colors, fonts } from "../../../theme/theme"
 import { LobbyMech } from "../../../types"
@@ -21,7 +21,6 @@ export const MechCard = React.memo(function MechCard({ mech, isSelected, toggleS
     const { name, label } = mech
 
     const ownerFaction = useMemo(() => getFaction(mech.owner.faction_id), [getFaction, mech.owner.faction_id])
-    const rarityDeets = useMemo(() => getRarityDeets(mech.tier), [mech.tier])
     const statusDeets = useMemo(() => getMechStatusDeets(mech.status), [mech.status])
 
     // List view
@@ -50,11 +49,7 @@ export const MechCard = React.memo(function MechCard({ mech, isSelected, toggleS
                     }}
                 >
                     {/* Mech image */}
-                    <NiceBoxThing
-                        border={{ color: `${rarityDeets.color}80`, thickness: "very-lean" }}
-                        caret={{ position: "bottom-right", size: "small" }}
-                        sx={{ height: "100%", width: "100%", boxShadow: 0.4 }}
-                    >
+                    <NiceBoxThing border={{ color: `#FFFFFF30`, thickness: "very-lean" }} sx={{ height: "100%", width: "100%", boxShadow: 0.4 }}>
                         <Box
                             component="img"
                             src={mech.avatar_url}
@@ -176,7 +171,7 @@ export const MechCard = React.memo(function MechCard({ mech, isSelected, toggleS
                 </Typography>
 
                 {/* Mech image */}
-                <NiceBoxThing border={{ color: `${rarityDeets.color}80` }} caret={{ position: "bottom-right" }} sx={{ boxShadow: 0.4 }}>
+                <NiceBoxThing border={{ color: `#FFFFFF30`, thickness: "very-lean" }} sx={{ boxShadow: 0.4 }}>
                     <Box
                         component="img"
                         src={mech.avatar_url}
