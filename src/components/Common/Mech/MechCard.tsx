@@ -49,7 +49,11 @@ export const MechCard = React.memo(function MechCard({ mech, isSelected, toggleS
                     }}
                 >
                     {/* Mech image */}
-                    <NiceBoxThing border={{ color: `#FFFFFF30`, thickness: "very-lean" }} sx={{ height: "100%", width: "100%", boxShadow: 0.4 }}>
+                    <NiceBoxThing
+                        border={{ color: `#FFFFFF30`, thickness: "very-lean" }}
+                        background={{ colors: [ownerFaction.background_color] }}
+                        sx={{ height: "100%", width: "100%", boxShadow: 0.4 }}
+                    >
                         <Box
                             component="img"
                             src={mech.avatar_url}
@@ -171,7 +175,11 @@ export const MechCard = React.memo(function MechCard({ mech, isSelected, toggleS
                 </Typography>
 
                 {/* Mech image */}
-                <NiceBoxThing border={{ color: `#FFFFFF30`, thickness: "very-lean" }} sx={{ boxShadow: 0.4 }}>
+                <NiceBoxThing
+                    border={{ color: `#FFFFFF30`, thickness: "very-lean" }}
+                    background={{ colors: [ownerFaction.background_color] }}
+                    sx={{ boxShadow: 0.4 }}
+                >
                     <Box
                         component="img"
                         src={mech.avatar_url}

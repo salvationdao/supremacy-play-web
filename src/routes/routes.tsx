@@ -9,12 +9,12 @@ import { Claims } from "../components/Claims/Claims"
 import { FactionPassBuy } from "../components/FactionPass/FactionPassBuy/FactionPassBuy"
 import { FactionPassDashboard } from "../components/FactionPass/FactionPassDashboard/FactionPassDashboard"
 import { FactionPassMechPool } from "../components/FactionPass/FactionPassMechPool/FactionPassMechPool"
+import { FleetMechs } from "../components/FleetMechs/FleetMechs"
 import { KeycardsHangar } from "../components/Hangar/KeycardsHangar/KeycardsHangar"
 import { MysteryCratesHangar } from "../components/Hangar/MysteryCratesHangar/MysteryCratesHangar"
 import { PlayerAbilitiesHangar } from "../components/Hangar/PlayerAbilitiesHangar/PlayerAbilitiesHangar"
 import { SubmodelsHangar } from "../components/Hangar/SubmodelHangar/SubmodelsHangar"
 import { MechPage } from "../components/Hangar/WarMachinesHangar/WarMachineDetails/MechPage"
-import { WarMachinesHangar } from "../components/Hangar/WarMachinesHangar/WarMachinesHangar"
 import { WeaponHangarDetails } from "../components/Hangar/WeaponsHangar/WeaponDetails/WeaponHangarDetails"
 import { WeaponsHangar } from "../components/Hangar/WeaponsHangar/WeaponsHangar"
 import { GlobalStats } from "../components/Leaderboard/GlobalStats/GlobalStats"
@@ -283,7 +283,7 @@ export const Routes: RouteSingle[] = [
         id: RouteSingleID.FleetMechs,
         path: "/fleet/mechs",
         exact: true,
-        Component: WarMachinesHangar,
+        Component: FleetMechs,
         restrictions: {
             requireAuth: true,
             requireFaction: true,
