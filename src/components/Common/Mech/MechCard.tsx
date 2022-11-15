@@ -6,22 +6,48 @@ import { getMechStatusDeets } from "../../../helpers"
 import { TruncateTextLines } from "../../../theme/styles"
 import { colors, fonts } from "../../../theme/theme"
 import { LobbyMech } from "../../../types"
-import { RepairBlocks } from "./MechRepairBlocks"
 import { NiceBoxThing } from "../Nice/NiceBoxThing"
+import { RepairBlocks } from "./MechRepairBlocks"
 
 interface MechCardProps {
     mech: LobbyMech
     isGridView: boolean
     isSelected?: boolean
     toggleSelected?: (mech: LobbyMech) => void
+    hide?: {
+        ownerName?: boolean
+        kdwlStats?: boolean
+    }
 }
 
-export const MechCard = React.memo(function MechCard({ mech, isSelected, toggleSelected, isGridView }: MechCardProps) {
+// CSS grid widths of each component in list view
+const MECH_IMAGE_GRID_WIDTH = "8rem"
+const MECH_NAME_GRID_WIDTH = "1fr"
+const OWNER_NAME_GRID_WIDTH = "1fr"
+const MECH_STATUS_GRID_WIDTH = "10rem"
+const MECH_BLOCKS_GRID_WIDTH = "15rem"
+const KDWL_GRID_WIDTH = "repeat(4, 5rem)"
+const CHECKBOX_GRID_WIDTH = "5rem"
+
+export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, toggleSelected, isGridView }: MechCardProps) {
     const { getFaction } = useSupremacy()
     const { name, label } = mech
 
     const ownerFaction = useMemo(() => getFaction(mech.owner.faction_id), [getFaction, mech.owner.faction_id])
     const statusDeets = useMemo(() => getMechStatusDeets(mech.status), [mech.status])
+
+    // CSS grid widths
+    const cssGridWidths = useMemo(() => {
+        const result: string[] = []
+        result.push(MECH_IMAGE_GRID_WIDTH)
+        result.push(MECH_NAME_GRID_WIDTH)
+        if (!hide?.ownerName) result.push(OWNER_NAME_GRID_WIDTH)
+        result.push(MECH_STATUS_GRID_WIDTH)
+        result.push(MECH_BLOCKS_GRID_WIDTH)
+        if (!hide?.kdwlStats) result.push(KDWL_GRID_WIDTH)
+        result.push(CHECKBOX_GRID_WIDTH)
+        return result.join(" ")
+    }, [hide])
 
     // List view
     if (!isGridView) {
@@ -41,7 +67,7 @@ export const MechCard = React.memo(function MechCard({ mech, isSelected, toggleS
                         p: "1rem 1.5rem",
                         display: "grid",
                         gridTemplateRows: "8rem",
-                        gridTemplateColumns: "8rem 1fr 1fr 10rem 15rem repeat(5, 5rem)",
+                        gridTemplateColumns: cssGridWidths,
                         gap: "3rem",
                         alignItems: "center",
                         overflowY: "hidden",
@@ -70,17 +96,19 @@ export const MechCard = React.memo(function MechCard({ mech, isSelected, toggleS
                     <Typography sx={{ fontFamily: fonts.nostromoBlack, ...TruncateTextLines(1) }}>{name || label}</Typography>
 
                     {/* Owner name */}
-                    <Typography
-                        variant="h6"
-                        sx={{
-                            color: ownerFaction.primary_color,
-                            fontWeight: "bold",
-                            mt: ".3rem !important",
-                            ...TruncateTextLines(1),
-                        }}
-                    >
-                        {mech.owner.username}#{mech.owner.gid}
-                    </Typography>
+                    {!hide?.ownerName && (
+                        <Typography
+                            variant="h6"
+                            sx={{
+                                color: ownerFaction.primary_color,
+                                fontWeight: "bold",
+                                mt: ".3rem !important",
+                                ...TruncateTextLines(1),
+                            }}
+                        >
+                            {mech.owner.username}#{mech.owner.gid}
+                        </Typography>
+                    )}
 
                     {/* Mech status */}
                     <Typography
@@ -106,18 +134,22 @@ export const MechCard = React.memo(function MechCard({ mech, isSelected, toggleS
                     />
 
                     {/* KDWL stats */}
-                    <Typography>
-                        <SvgMechKills inline size="1.8rem" /> {mech.stats.total_kills}
-                    </Typography>
-                    <Typography>
-                        <SvgMechDeaths inline size="1.8rem" /> {mech.stats.total_deaths}
-                    </Typography>
-                    <Typography>
-                        <SvgMechWins inline size="1.8rem" /> {mech.stats.total_wins}
-                    </Typography>
-                    <Typography>
-                        <SvgMechLosses inline size="1.8rem" /> {mech.stats.total_losses}
-                    </Typography>
+                    {!hide?.kdwlStats && (
+                        <>
+                            <Typography>
+                                <SvgMechKills inline size="1.8rem" /> {mech.stats.total_kills}
+                            </Typography>
+                            <Typography>
+                                <SvgMechDeaths inline size="1.8rem" /> {mech.stats.total_deaths}
+                            </Typography>
+                            <Typography>
+                                <SvgMechWins inline size="1.8rem" /> {mech.stats.total_wins}
+                            </Typography>
+                            <Typography>
+                                <SvgMechLosses inline size="1.8rem" /> {mech.stats.total_losses}
+                            </Typography>
+                        </>
+                    )}
 
                     {/* Checkbox */}
                     {toggleSelected && (
@@ -162,17 +194,19 @@ export const MechCard = React.memo(function MechCard({ mech, isSelected, toggleS
                 </Stack>
 
                 {/* Owner name */}
-                <Typography
-                    variant="h6"
-                    sx={{
-                        color: ownerFaction.primary_color,
-                        fontWeight: "bold",
-                        mt: ".3rem !important",
-                        ...TruncateTextLines(1),
-                    }}
-                >
-                    <SvgUserDiamond size="2.5rem" inline fill={ownerFaction.primary_color} /> {mech.owner.username}#{mech.owner.gid}
-                </Typography>
+                {!hide?.ownerName && (
+                    <Typography
+                        variant="h6"
+                        sx={{
+                            color: ownerFaction.primary_color,
+                            fontWeight: "bold",
+                            mt: ".3rem !important",
+                            ...TruncateTextLines(1),
+                        }}
+                    >
+                        <SvgUserDiamond size="2.5rem" inline fill={ownerFaction.primary_color} /> {mech.owner.username}#{mech.owner.gid}
+                    </Typography>
+                )}
 
                 {/* Mech image */}
                 <NiceBoxThing
@@ -193,27 +227,29 @@ export const MechCard = React.memo(function MechCard({ mech, isSelected, toggleS
                 </NiceBoxThing>
 
                 {/* Mech KDWL stats */}
-                <Stack
-                    direction="row"
-                    alignItems="center"
-                    spacing=".8rem"
-                    sx={{
-                        "&>*": { flex: 1, p: ".2rem 1rem", pt: ".5rem", lineHeight: 1, backgroundColor: "#FFFFFF16", boxShadow: 0.4 },
-                    }}
-                >
-                    <Typography>
-                        <SvgMechKills inline size="1.8rem" /> {mech.stats.total_kills}
-                    </Typography>
-                    <Typography>
-                        <SvgMechDeaths inline size="1.8rem" /> {mech.stats.total_deaths}
-                    </Typography>
-                    <Typography>
-                        <SvgMechWins inline size="1.8rem" /> {mech.stats.total_wins}
-                    </Typography>
-                    <Typography>
-                        <SvgMechLosses inline size="1.8rem" /> {mech.stats.total_losses}
-                    </Typography>
-                </Stack>
+                {!hide?.kdwlStats && (
+                    <Stack
+                        direction="row"
+                        alignItems="center"
+                        spacing=".8rem"
+                        sx={{
+                            "&>*": { flex: 1, p: ".2rem 1rem", pt: ".5rem", lineHeight: 1, backgroundColor: "#FFFFFF16", boxShadow: 0.4 },
+                        }}
+                    >
+                        <Typography>
+                            <SvgMechKills inline size="1.8rem" /> {mech.stats.total_kills}
+                        </Typography>
+                        <Typography>
+                            <SvgMechDeaths inline size="1.8rem" /> {mech.stats.total_deaths}
+                        </Typography>
+                        <Typography>
+                            <SvgMechWins inline size="1.8rem" /> {mech.stats.total_wins}
+                        </Typography>
+                        <Typography>
+                            <SvgMechLosses inline size="1.8rem" /> {mech.stats.total_losses}
+                        </Typography>
+                    </Stack>
+                )}
 
                 {/* Mech status and repair blocks */}
                 <Stack direction="row" alignItems="center" justifyContent="space-between">

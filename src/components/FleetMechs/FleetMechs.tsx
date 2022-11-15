@@ -245,7 +245,16 @@ export const FleetMechs = () => {
                 >
                     {displayMechs.map((mech) => {
                         const isSelected = !!selectedMechs.find((m) => m.id === mech.id)
-                        return <MechCard key={`mech-${mech.id}`} mech={mech} isGridView={isGridView} isSelected={isSelected} toggleSelected={toggleSelected} />
+                        return (
+                            <MechCard
+                                key={`mech-${mech.id}`}
+                                mech={mech}
+                                isGridView={isGridView}
+                                isSelected={isSelected}
+                                toggleSelected={toggleSelected}
+                                hide={{ ownerName: true, kdwlStats: true }}
+                            />
+                        )
                     })}
                 </Box>
             )
