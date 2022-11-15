@@ -7,6 +7,7 @@ import { scaleUpKeyframes } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { MechWeaponSlot } from "../../../types/battle_queue"
 import { NiceTooltip, TooltipPlacement } from "../../Common/Nice/NiceTooltip"
+import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 
 interface WeaponSlotProps {
     weaponSlot: MechWeaponSlot
@@ -41,7 +42,7 @@ export const WeaponSlot = ({ weaponSlot, tooltipPlacement, size }: WeaponSlotPro
                         height: size || "4rem",
                         width: size || "4rem",
                         border: `${colors.grey}80 2px solid`,
-                        borderRadius: 0.6,
+                        borderRadius: 0,
                         backgroundColor: `${factionTheme.background}`,
                         "&:hover": {
                             border: `${factionTheme.primary} 2px solid`,
@@ -71,7 +72,7 @@ export const WeaponSlot = ({ weaponSlot, tooltipPlacement, size }: WeaponSlotPro
                                     width: "6rem",
                                     height: "6rem",
                                     objectFit: "cover",
-                                    borderRadius: 0.6,
+                                    borderRadius: 0,
                                     animation: `${scaleUpKeyframes} .5s ease-out`,
                                 }}
                             />
@@ -99,15 +100,15 @@ export const WeaponSlot = ({ weaponSlot, tooltipPlacement, size }: WeaponSlotPro
                 }
                 placement={tooltipPlacement}
             >
-                <Box
+                <NiceBoxThing
+                    border={{ color: `${weaponRarity.color}80`, thickness: "very-lean" }}
+                    caret={{ position: "bottom-right", size: "small" }}
                     sx={{
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         height: size || "4rem",
                         width: size || "4rem",
-                        border: `${weaponRarity.color}80 2px solid`,
-                        borderRadius: 0.6,
                         backgroundColor: `${factionTheme.background}`,
                         "&:hover": {
                             border: `${factionTheme.primary} 2px solid`,
@@ -122,11 +123,11 @@ export const WeaponSlot = ({ weaponSlot, tooltipPlacement, size }: WeaponSlotPro
                             width: "100%",
                             height: "100%",
                             objectFit: "cover",
-                            borderRadius: 0.6,
+                            objectPosition: "center",
                             animation: `${scaleUpKeyframes} .5s ease-out`,
                         }}
                     />
-                </Box>
+                </NiceBoxThing>
             </NiceTooltip>
         )
     }, [factionTheme.background, factionTheme.primary, size, tooltipPlacement, weapon, weaponStat])
