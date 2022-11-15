@@ -1,4 +1,4 @@
-import { MechBasic, RarityEnum } from "./assets"
+import { MechBasic, PowerCore, RarityEnum } from "./assets"
 import { GameMap } from "./game"
 import { User } from "./user"
 
@@ -55,6 +55,7 @@ export interface BattleLobbiesMech extends MechBasic {
     queued_by?: User
     is_destroyed: boolean
     weapon_slots: MechWeaponSlot[]
+    power_core?: PowerCore
 }
 
 export interface BattleLobbySupporter {

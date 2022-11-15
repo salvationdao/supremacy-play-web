@@ -1,6 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useImperativeHandle } from "react"
+import { useImperativeHandle, useState } from "react"
 import { SvgLoadoutPowerCore, SvgLoadoutSkin, SvgLoadoutWeapon } from "../../../../../assets"
+import { useTheme } from "../../../../../containers/theme"
 import { fonts } from "../../../../../theme/theme"
 import { AssetItemType, MechSkin, PowerCore, Utility, Weapon } from "../../../../../types"
 import { NiceAccordion } from "../../../../Common/Nice/NiceAccordion"
@@ -40,6 +41,8 @@ export const MechLoadoutDraggables = ({
     powerCoreSize,
     compareToWeapon,
 }: MechLoadoutDraggablesProps) => {
+    const theme = useTheme()
+    const [expanded, setExpanded] = useState<string | number>("weapons")
     useImperativeHandle(draggablesRef, () => ({
         handleMechLoadoutUpdated: () => {
             console.log("updated")
@@ -53,16 +56,22 @@ export const MechLoadoutDraggables = ({
             }}
         >
             <NiceAccordion
+                onExpand={(eid) => setExpanded(eid)}
                 expandID="weapons"
                 items={[
                     {
                         id: "weapons",
                         header: (
                             <Stack direction="row" spacing="1rem" alignItems="center">
-                                <SvgLoadoutWeapon width="5rem" height="auto" />
+                                <SvgLoadoutWeapon
+                                    width="5rem"
+                                    height="auto"
+                                    fill={expanded === "weapons" ? theme.factionTheme.background : theme.factionTheme.primary}
+                                />
                                 <Typography
                                     sx={{
                                         fontFamily: fonts.nostromoBlack,
+                                        color: expanded === "weapons" ? theme.factionTheme.background : theme.factionTheme.primary,
                                     }}
                                 >
                                     Weapons
@@ -75,10 +84,16 @@ export const MechLoadoutDraggables = ({
                         id: "mech skins",
                         header: (
                             <Stack direction="row" spacing="1rem" alignItems="center">
-                                <SvgLoadoutSkin ml=".5rem" height="3rem" width="auto" />
+                                <SvgLoadoutSkin
+                                    ml=".5rem"
+                                    height="3rem"
+                                    width="auto"
+                                    fill={expanded === "mech skins" ? theme.factionTheme.background : theme.factionTheme.primary}
+                                />
                                 <Typography
                                     sx={{
                                         fontFamily: fonts.nostromoBlack,
+                                        color: expanded === "mech skins" ? theme.factionTheme.background : theme.factionTheme.primary,
                                     }}
                                 >
                                     Skins
@@ -98,10 +113,15 @@ export const MechLoadoutDraggables = ({
                         id: "power cores",
                         header: (
                             <Stack direction="row" spacing="1rem" alignItems="center">
-                                <SvgLoadoutPowerCore width="4rem" height="auto" />
+                                <SvgLoadoutPowerCore
+                                    width="4rem"
+                                    height="auto"
+                                    fill={expanded === "power cores" ? theme.factionTheme.background : theme.factionTheme.primary}
+                                />
                                 <Typography
                                     sx={{
                                         fontFamily: fonts.nostromoBlack,
+                                        color: expanded === "power cores" ? theme.factionTheme.background : theme.factionTheme.primary,
                                     }}
                                 >
                                     Power Cores

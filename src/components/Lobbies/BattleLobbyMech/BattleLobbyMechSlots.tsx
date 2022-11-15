@@ -1,19 +1,20 @@
 import { Box, Button, IconButton, Stack, Typography } from "@mui/material"
-import React, { useCallback, useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
+import { useHistory } from "react-router-dom"
 import { SvgLogout, SvgPlus, SvgUnhide } from "../../../assets"
 import { useAuth, useGlobalNotifications, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { TruncateTextLines } from "../../../theme/styles"
 import { colors, fonts } from "../../../theme/theme"
 import { Faction } from "../../../types"
 import { BattleLobbiesMech, BattleLobbySupporter } from "../../../types/battle_queue"
 import { ConfirmModal } from "../../Common/Deprecated/ConfirmModal"
-import { WeaponSlot } from "../Common/weaponSlot"
 import { MechBarStats } from "../../Hangar/WarMachinesHangar/Common/MechBarStats"
-import { TruncateTextLines } from "../../../theme/styles"
-import { useHistory } from "react-router-dom"
+import { PowerCoreSlot } from "../Common/PowerCoreSlot"
+import { WeaponSlot } from "../Common/weaponSlot"
 
 export interface BattleLobbyFaction {
     faction: Faction
@@ -179,6 +180,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                             </Box>
                             <Stack flex={1} sx={{ position: "relative" }}>
                                 <Stack direction="row" spacing=".5rem" mb=".5rem">
+                                    {ms.power_core && <PowerCoreSlot powerCore={ms.power_core} tooltipPlacement="top-end" size="3rem" />}
                                     {ms.weapon_slots.map((ws) => (
                                         <WeaponSlot key={ws.slot_number} weaponSlot={ws} tooltipPlacement={"top-end"} size="3rem" />
                                     ))}
