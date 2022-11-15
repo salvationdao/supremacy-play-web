@@ -4,7 +4,7 @@ import { EmptyWarMachinesPNG, SvgFilter, SvgGridView, SvgListView, SvgSearch } f
 import { useTheme } from "../../containers/theme"
 import { getRarityDeets, parseString } from "../../helpers"
 import { useDebounce, usePagination, useUrlQuery } from "../../hooks"
-import { useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
+import { useGameServerSubscriptionSecuredUser } from "../../hooks/useGameServer"
 import { useLocalStorage } from "../../hooks/useLocalStorage"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
@@ -19,7 +19,6 @@ import { NiceButton } from "../Common/Nice/NiceButton"
 import { NiceButtonGroup } from "../Common/Nice/NiceButtonGroup"
 import { NiceSelect } from "../Common/Nice/NiceSelect"
 import { NiceTextField } from "../Common/Nice/NiceTextField"
-import { FreqGraphProps } from "../Common/SortAndFilters/RangeFilterSection"
 import { SortAndFilters } from "../Common/SortAndFilters/SortAndFilters"
 
 enum UrlQueryParams {
@@ -56,16 +55,16 @@ const layoutOptions = [
     { label: "", value: false, svg: <SvgListView size="1.5rem" /> },
 ]
 
-export const FactionPassMechPool = () => {
+export const FleetMechs = () => {
     const [query, updateQuery] = useUrlQuery()
     const theme = useTheme()
     const { tabs, activeTabID, setActiveTabID, prevTab, nextTab } = usePageTabs()
 
     // Filter, search, pagination
-    const [showFilters, setShowFilters] = useLocalStorage<boolean>("factionPassMechPoolFilters", false)
+    const [showFilters, setShowFilters] = useLocalStorage<boolean>("fleetMechsFilters", false)
     const [search, setSearch, searchInstant] = useDebounce(query.get(UrlQueryParams.Search) || "", 300)
     const [sort, setSort] = useState<string>(query.get(UrlQueryParams.Sort) || SortTypeLabel.MechQueueAsc)
-    const [isGridView, setIsGridView] = useLocalStorage<boolean>("factionPassMechPoolGrid", true)
+    const [isGridView, setIsGridView] = useLocalStorage<boolean>("fleetMechsGrid", true)
     const [status, setStatus] = useState<string[]>((query.get(UrlQueryParams.Statuses) || undefined)?.split("||") || [])
     const [rarities, setRarities] = useState<string[]>((query.get(UrlQueryParams.Rarities) || undefined)?.split("||") || [])
     const [repairBlocks, setRepairBlocks] = useState<string[]>((query.get(UrlQueryParams.RepairBlocks) || undefined)?.split("||") || [])
@@ -101,10 +100,10 @@ export const FactionPassMechPool = () => {
         })
     }, [])
 
-    useGameServerSubscriptionFaction<LobbyMech[]>(
+    useGameServerSubscriptionSecuredUser<LobbyMech[]>(
         {
-            URI: "/staked_mechs",
-            key: GameServerKeys.SubFactionStakedMechs,
+            URI: "/owned_queueable_mechs",
+            key: GameServerKeys.SubPlayerQueueableMechs,
         },
         (payload) => {
             setIsLoading(false)
@@ -223,67 +222,6 @@ export const FactionPassMechPool = () => {
 
         setDisplayMechs(result)
     }, [changePage, deaths, isLoading, kills, losses, mechs, page, pageSize, rarities, repairBlocks, search, setTotalItems, sort, status, updateQuery, wins])
-
-    // For graphing the bar graphs in the range filter
-    const killsGraph: FreqGraphProps = useMemo(() => {
-        let min = 0
-        let max = 0
-        const freq: { [value: number]: number } = {}
-        mechs.forEach((mech) => {
-            const totalKills = mech.stats.total_kills
-            if (totalKills < min) min = totalKills
-            if (totalKills > max) max = totalKills
-            freq[totalKills] = (freq[totalKills] || 0) + 1
-        })
-        const maxFreq = Object.values(freq).reduce((acc, f) => (f > acc ? f : acc), 0)
-
-        return { min, max, freq, maxFreq }
-    }, [mechs])
-
-    const deathsGraph: FreqGraphProps = useMemo(() => {
-        let min = 0
-        let max = 0
-        const freq: { [value: number]: number } = {}
-        mechs.forEach((mech) => {
-            const totalDeaths = mech.stats.total_deaths
-            if (totalDeaths < min) min = totalDeaths
-            if (totalDeaths > max) max = totalDeaths
-            freq[totalDeaths] = (freq[totalDeaths] || 0) + 1
-        })
-        const maxFreq = Object.values(freq).reduce((acc, f) => (f > acc ? f : acc), 0)
-
-        return { min, max, freq, maxFreq }
-    }, [mechs])
-
-    const winsGraph: FreqGraphProps = useMemo(() => {
-        let min = 0
-        let max = 0
-        const freq: { [value: number]: number } = {}
-        mechs.forEach((mech) => {
-            const totalWins = mech.stats.total_wins
-            if (totalWins < min) min = totalWins
-            if (totalWins > max) max = totalWins
-            freq[totalWins] = (freq[totalWins] || 0) + 1
-        })
-        const maxFreq = Object.values(freq).reduce((acc, f) => (f > acc ? f : acc), 0)
-
-        return { min, max, freq, maxFreq }
-    }, [mechs])
-
-    const lossesGraph: FreqGraphProps = useMemo(() => {
-        let min = 0
-        let max = 0
-        const freq: { [value: number]: number } = {}
-        mechs.forEach((mech) => {
-            const totalLosses = mech.stats.total_losses
-            if (totalLosses < min) min = totalLosses
-            if (totalLosses > max) max = totalLosses
-            freq[totalLosses] = (freq[totalLosses] || 0) + 1
-        })
-        const maxFreq = Object.values(freq).reduce((acc, f) => (f > acc ? f : acc), 0)
-
-        return { min, max, freq, maxFreq }
-    }, [mechs])
 
     const content = useMemo(() => {
         if (isLoading) {
@@ -421,34 +359,30 @@ export const FactionPassMechPool = () => {
                         {
                             label: "Kills",
                             initialExpanded: true,
-                            minMax: [killsGraph.min, killsGraph.max],
                             values: kills,
                             setValues: setKills,
-                            freqGraph: killsGraph,
+                            numberFreq: mechs.map((mech) => mech.stats.total_kills),
                         },
                         {
                             label: "Deaths",
                             initialExpanded: true,
-                            minMax: [deathsGraph.min, deathsGraph.max],
                             values: deaths,
                             setValues: setDeaths,
-                            freqGraph: deathsGraph,
+                            numberFreq: mechs.map((mech) => mech.stats.total_deaths),
                         },
                         {
                             label: "Wins",
                             initialExpanded: true,
-                            minMax: [winsGraph.min, winsGraph.max],
                             values: wins,
                             setValues: setWins,
-                            freqGraph: winsGraph,
+                            numberFreq: mechs.map((mech) => mech.stats.total_wins),
                         },
                         {
                             label: "Losses",
                             initialExpanded: true,
-                            minMax: [lossesGraph.min, lossesGraph.max],
                             values: losses,
                             setValues: setLosses,
-                            freqGraph: lossesGraph,
+                            numberFreq: mechs.map((mech) => mech.stats.total_losses),
                         },
                     ]}
                 />

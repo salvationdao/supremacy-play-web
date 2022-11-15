@@ -18,7 +18,6 @@ import { NiceButton } from "../../Common/Nice/NiceButton"
 import { NiceButtonGroup } from "../../Common/Nice/NiceButtonGroup"
 import { NiceSelect } from "../../Common/Nice/NiceSelect"
 import { NiceTextField } from "../../Common/Nice/NiceTextField"
-import { FreqGraphProps } from "../../Common/SortAndFilters/RangeFilterSection"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { RepairBlocks } from "../../Common/Mech/MechRepairBlocks"
 
@@ -224,67 +223,6 @@ export const FactionPassMechPool = () => {
         setDisplayMechs(result)
     }, [changePage, deaths, isLoading, kills, losses, mechs, page, pageSize, rarities, repairBlocks, search, setTotalItems, sort, status, updateQuery, wins])
 
-    // For graphing the bar graphs in the range filter
-    const killsGraph: FreqGraphProps = useMemo(() => {
-        let min = 0
-        let max = 0
-        const freq: { [value: number]: number } = {}
-        mechs.forEach((mech) => {
-            const totalKills = mech.stats.total_kills
-            if (totalKills < min) min = totalKills
-            if (totalKills > max) max = totalKills
-            freq[totalKills] = (freq[totalKills] || 0) + 1
-        })
-        const maxFreq = Object.values(freq).reduce((acc, f) => (f > acc ? f : acc), 0)
-
-        return { min, max, freq, maxFreq }
-    }, [mechs])
-
-    const deathsGraph: FreqGraphProps = useMemo(() => {
-        let min = 0
-        let max = 0
-        const freq: { [value: number]: number } = {}
-        mechs.forEach((mech) => {
-            const totalDeaths = mech.stats.total_deaths
-            if (totalDeaths < min) min = totalDeaths
-            if (totalDeaths > max) max = totalDeaths
-            freq[totalDeaths] = (freq[totalDeaths] || 0) + 1
-        })
-        const maxFreq = Object.values(freq).reduce((acc, f) => (f > acc ? f : acc), 0)
-
-        return { min, max, freq, maxFreq }
-    }, [mechs])
-
-    const winsGraph: FreqGraphProps = useMemo(() => {
-        let min = 0
-        let max = 0
-        const freq: { [value: number]: number } = {}
-        mechs.forEach((mech) => {
-            const totalWins = mech.stats.total_wins
-            if (totalWins < min) min = totalWins
-            if (totalWins > max) max = totalWins
-            freq[totalWins] = (freq[totalWins] || 0) + 1
-        })
-        const maxFreq = Object.values(freq).reduce((acc, f) => (f > acc ? f : acc), 0)
-
-        return { min, max, freq, maxFreq }
-    }, [mechs])
-
-    const lossesGraph: FreqGraphProps = useMemo(() => {
-        let min = 0
-        let max = 0
-        const freq: { [value: number]: number } = {}
-        mechs.forEach((mech) => {
-            const totalLosses = mech.stats.total_losses
-            if (totalLosses < min) min = totalLosses
-            if (totalLosses > max) max = totalLosses
-            freq[totalLosses] = (freq[totalLosses] || 0) + 1
-        })
-        const maxFreq = Object.values(freq).reduce((acc, f) => (f > acc ? f : acc), 0)
-
-        return { min, max, freq, maxFreq }
-    }, [mechs])
-
     const content = useMemo(() => {
         if (isLoading) {
             return (
@@ -421,34 +359,30 @@ export const FactionPassMechPool = () => {
                         {
                             label: "Kills",
                             initialExpanded: true,
-                            minMax: [killsGraph.min, killsGraph.max],
                             values: kills,
                             setValues: setKills,
-                            freqGraph: killsGraph,
+                            numberFreq: mechs.map((mech) => mech.stats.total_kills),
                         },
                         {
                             label: "Deaths",
                             initialExpanded: true,
-                            minMax: [deathsGraph.min, deathsGraph.max],
                             values: deaths,
                             setValues: setDeaths,
-                            freqGraph: deathsGraph,
+                            numberFreq: mechs.map((mech) => mech.stats.total_deaths),
                         },
                         {
                             label: "Wins",
                             initialExpanded: true,
-                            minMax: [winsGraph.min, winsGraph.max],
                             values: wins,
                             setValues: setWins,
-                            freqGraph: winsGraph,
+                            numberFreq: mechs.map((mech) => mech.stats.total_wins),
                         },
                         {
                             label: "Losses",
                             initialExpanded: true,
-                            minMax: [lossesGraph.min, lossesGraph.max],
                             values: losses,
                             setValues: setLosses,
-                            freqGraph: lossesGraph,
+                            numberFreq: mechs.map((mech) => mech.stats.total_losses),
                         },
                     ]}
                 />

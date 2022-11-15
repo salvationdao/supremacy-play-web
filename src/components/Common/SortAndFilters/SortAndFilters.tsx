@@ -18,9 +18,20 @@ interface SortAndFiltersProps {
 export const SortAndFilters = React.memo(function SortAndFilters({ open, chipFilters, rangeFilters, sx }: SortAndFiltersProps) {
     const theme = useTheme()
 
-    const isFilterApplied = useMemo(() => {
+    const areFiltersApplied = useMemo(() => {
         const chipApplied = chipFilters?.some((f) => f.selected?.length > 0)
-        const rangeApplied = rangeFilters?.some((f) => f.values && (f.values[0] !== f.minMax[0] || f.values[1] !== f.minMax[1]))
+        const rangeApplied = rangeFilters?.some((f) => {
+            if (!f.values) return false
+
+            let min = 0
+            let max = 0
+            f.numberFreq.forEach((num) => {
+                if (num < min) min = num
+                if (num > max) max = num
+            })
+
+            return f.values[0] !== min || f.values[1] !== max
+        })
         return chipApplied || rangeApplied
     }, [chipFilters, rangeFilters])
 
@@ -50,7 +61,7 @@ export const SortAndFilters = React.memo(function SortAndFilters({ open, chipFil
                     <Typography fontFamily={fonts.nostromoBlack}>FILTERS</Typography>
 
                     <NiceButton
-                        disabled={!isFilterApplied}
+                        disabled={!areFiltersApplied}
                         buttonColor={theme.factionTheme.primary}
                         onClick={clearAllFilters}
                         sx={{
