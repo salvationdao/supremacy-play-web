@@ -149,6 +149,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
         outro_animation,
         locked_to_marketplace,
         xsyn_locked,
+        market_locked,
         mech_type,
         inherit_all_weapon_skins,
     } = currLoadout
@@ -158,6 +159,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
             (enable3DLoadout && (isUnityPendingChange || !isUnityLoaded)) ||
             xsyn_locked ||
             locked_to_marketplace ||
+            market_locked ||
             mechStaked ||
             (mechStatus?.battle_lobby_is_locked && mechStatus?.status === MechStatusEnum.Queue) ||
             mechStatus?.status === MechStatusEnum.Battle ||
@@ -167,6 +169,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
             isUnityLoaded,
             isUnityPendingChange,
             locked_to_marketplace,
+            market_locked,
             mechStaked,
             mechStatus?.battle_lobby_is_locked,
             mechStatus?.status,
@@ -1038,28 +1041,30 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
                     </Box>
                 </NiceBoxThing>
             </Stack>
-            <MechLoadoutDraggables
-                draggablesRef={draggablesRef}
-                compareToWeapon={compareToWeapon?.weapon}
-                excludeWeaponIDs={(() => {
-                    const result: string[] = []
-                    for (const ew of weapons_map.values()) {
-                        if (!ew) continue
-                        result.push(ew.id)
-                    }
-                    return result
-                })()}
-                excludeMechSkinIDs={chassis_skin ? [chassis_skin.blueprint_id] : []}
-                includeMechSkinIDs={compatible_blueprint_mech_skin_ids}
-                mechModelID={mechDetails.blueprint_id}
-                powerCoreSize={currLoadout.power_core_size}
-                drag={{
-                    onDrag: onItemDrag,
-                    onDragStart: onItemDragStart,
-                    onDragStop: onItemDragStop,
-                }}
-                onClick={onItemClick}
-            />
+            {userID === owner_id && (
+                <MechLoadoutDraggables
+                    draggablesRef={draggablesRef}
+                    compareToWeapon={compareToWeapon?.weapon}
+                    excludeWeaponIDs={(() => {
+                        const result: string[] = []
+                        for (const ew of weapons_map.values()) {
+                            if (!ew) continue
+                            result.push(ew.id)
+                        }
+                        return result
+                    })()}
+                    excludeMechSkinIDs={chassis_skin ? [chassis_skin.blueprint_id] : []}
+                    includeMechSkinIDs={compatible_blueprint_mech_skin_ids}
+                    mechModelID={mechDetails.blueprint_id}
+                    powerCoreSize={currLoadout.power_core_size}
+                    drag={{
+                        onDrag: onItemDrag,
+                        onDragStart: onItemDragStart,
+                        onDragStop: onItemDragStop,
+                    }}
+                    onClick={onItemClick}
+                />
+            )}
         </Stack>
     )
 }
