@@ -1,7 +1,7 @@
 import { Badge, Box, Stack, Tab, Tabs, Typography } from "@mui/material"
 import React, { ReactNode, useMemo, useRef, useState } from "react"
 import { AdditionalOptionsButton, FancyButton, NiceTooltip } from "../.."
-import { SvgChat, SvgExternalLink, SvgGlobal, SvgInfoCircular, SvgSettings } from "../../../assets"
+import { SvgChat, SvgChatGlobal, SvgExternalLink, SvgGlobal, SvgInfoCircular, SvgSettings } from "../../../assets"
 import { useAuth, useChat, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { acronym, shadeColor } from "../../../helpers"
@@ -177,7 +177,7 @@ const TabbedLayout = () => {
                     flex: 1,
                     height: 0,
                     position: "relative",
-                    backgroundColor: (theme) => (tabValue == 1 ? `${theme.factionTheme.primary}06` : `${colors.globalChat}13`),
+                    backgroundColor: (theme) => `#0D0415`,
                     overflow: "hidden",
                 }}
             >
@@ -191,9 +191,10 @@ const TabbedLayout = () => {
                         boxShadow: 1,
                         zIndex: 9,
                         minHeight: 0,
-                        ".MuiButtonBase-root": {
+                        ".MuiTab-root": {
                             height: `${4.8}rem`,
                             minHeight: 0,
+                            p: "1rem",
                         },
                         ".MuiTabs-indicator": {
                             zIndex: -1,
@@ -213,7 +214,7 @@ const TabbedLayout = () => {
                         label={
                             <Stack direction="row" alignItems="center" justifyContent="center" spacing=".96rem">
                                 <UnreadBadge tabValue={0}>
-                                    <SvgGlobal size="2rem" />
+                                    <SvgChatGlobal size="3rem" />
                                 </UnreadBadge>
                                 <Typography
                                     variant="caption"
@@ -228,7 +229,6 @@ const TabbedLayout = () => {
                             </Stack>
                         }
                         sx={{
-                            transition: "border-width .2s ease-out",
                             borderBottom: tabValue !== 0 ? `1px solid #9F0410` : `0px solid transparent`,
                         }}
                     />
@@ -246,18 +246,13 @@ const TabbedLayout = () => {
                                     <UnreadBadge tabValue={1}>
                                         <Box
                                             sx={{
-                                                width: "2.1rem",
-                                                height: "2.1rem",
+                                                width: "4rem",
+                                                height: "4rem",
                                                 flexShrink: 0,
-                                                mb: ".16rem",
-                                                mr: ".8rem",
                                                 backgroundImage: `url(${faction.logo_url})`,
                                                 backgroundRepeat: "no-repeat",
                                                 backgroundPosition: "center",
                                                 backgroundSize: "contain",
-                                                backgroundColor: (theme) => theme.factionTheme.primary,
-                                                borderRadius: 0.5,
-                                                border: (theme) => `${theme.factionTheme.primary} solid 1px`,
                                             }}
                                         />
                                     </UnreadBadge>
@@ -274,7 +269,6 @@ const TabbedLayout = () => {
                                 </Stack>
                             }
                             sx={{
-                                transition: "border-width .2s ease-out",
                                 borderBottom: tabValue !== 1 ? `1px solid #9F0410` : `0px solid transparent`,
                             }}
                         />
@@ -284,19 +278,7 @@ const TabbedLayout = () => {
                 <Content userID={userID} faction_id={faction_id} primaryColor={primaryColor} secondaryColor={secondaryColor} />
             </Stack>
         )
-    }, [
-        banProposal,
-        bannerBackgroundColor,
-        faction.logo_url,
-        factionTabLabel,
-        faction_id,
-        isEnlisted,
-        primaryColor,
-        secondaryColor,
-        changeTab,
-        tabValue,
-        userID,
-    ])
+    }, [banProposal, changeTab, faction.logo_url, factionTabLabel, faction_id, isEnlisted, primaryColor, secondaryColor, tabValue, userID])
 }
 
 const SplitLayout = () => {
@@ -372,7 +354,7 @@ const SplitLayout = () => {
                 {isEnlisted && (
                     <Stack
                         className="tutorial-faction-chat"
-                        sx={{ position: "relative", height: "50%", backgroundColor: (theme) => `${theme.factionTheme.primary}06`, overflow: "hidden" }}
+                        sx={{ position: "relative", height: "50%", backgroundColor: (theme) => `#0D0415`, overflow: "hidden" }}
                     >
                         <Stack
                             justifyContent="center"

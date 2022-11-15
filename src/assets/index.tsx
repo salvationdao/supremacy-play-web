@@ -6,6 +6,7 @@ import Ammo from "!@svgr/webpack!./svg/Ammo.svg"
 import Armor from "!@svgr/webpack!./svg/Armor.svg"
 import Assets from "!@svgr/webpack!./svg/Assets.svg"
 import BostonMechKillIcon from "!@svgr/webpack!./svg/BostonKillIcon.svg"
+import ChatGlobal from "!@svgr/webpack!./svg/ChatGlobal.svg"
 import CheckMark from "!@svgr/webpack!./svg/CheckMark.svg"
 import Chest from "!@svgr/webpack!./svg/Chest.svg"
 import Close from "!@svgr/webpack!./svg/Close.svg"
@@ -1679,5 +1680,11 @@ export const SvgMechWins: React.VoidFunctionComponent<SvgWrapperProps> = (props)
 export const SvgButtonCorner: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <ButtonCorner />
+    </SvgWrapper>
+)
+
+export const SvgChatGlobal: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ChatGlobal />
     </SvgWrapper>
 )
