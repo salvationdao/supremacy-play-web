@@ -15,6 +15,7 @@ import { getRarityDeets, parseString } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { QueueableMechCard } from "./QueueableMechCard"
 import { NiceButtonGroup } from "../../Common/Nice/NiceButtonGroup"
+import { useFormContext } from "react-hook-form"
 
 enum UrlQueryParams {
     Sort = "sort",
@@ -44,9 +45,12 @@ const mechListOptions = [
 
 interface WarMachineFormProps {
     prevPage: () => void
+    ownedMechs: LobbyMech[]
+    stakedMechs: LobbyMech[]
 }
 
-export const WarMachineForm = ({ prevPage }: WarMachineFormProps) => {
+export const WarMachineForm = ({ prevPage, ownedMechs, stakedMechs }: WarMachineFormProps) => {
+    const { setValue, watch } = useFormContext()
     const [query, updateQuery] = useUrlQuery()
     const { factionTheme } = useTheme()
     const [search, setSearch, searchInstant] = useDebounce(query.get(UrlQueryParams.Search) || "", 300)
@@ -56,89 +60,23 @@ export const WarMachineForm = ({ prevPage }: WarMachineFormProps) => {
         page: parseString(query.get(UrlQueryParams.Page), 1),
     })
 
+    const selectedMechs: LobbyMech[] = watch("selected_mechs")
+
+    const toggleSelectedMech = useCallback(
+        (lobbyMech: LobbyMech) => {
+            let list = [...selectedMechs]
+            if (list.some((sm) => sm.id === lobbyMech.id)) {
+                list = list.filter((sm) => sm.id !== lobbyMech.id)
+            } else {
+                list.push(lobbyMech)
+            }
+
+            setValue("selected_mechs", list)
+        },
+        [setValue, selectedMechs],
+    )
+
     const [isOwnedMech, setIsOwnedMech] = useState(true)
-
-    const [stakedMechs, setStakedMechs] = useState<LobbyMech[]>([])
-    useGameServerSubscriptionFaction<LobbyMech[]>(
-        {
-            URI: "/staked_mechs",
-            key: GameServerKeys.SubFactionStakedMechs,
-        },
-        (payload) => {
-            if (!payload) return
-
-            setStakedMechs((prev) => {
-                if (prev.length === 0) {
-                    return payload.filter((p) => p.can_deploy)
-                }
-
-                // Replace current list
-                const list = prev.map((sm) => payload.find((p) => p.id === sm.id) || sm)
-
-                // Append new list
-                payload.forEach((p) => {
-                    // If already exists
-                    if (list.some((mech) => mech.id === p.id)) {
-                        return
-                    }
-                    // Otherwise, push to the list
-                    list.push(p)
-                })
-
-                return list.filter((p) => p.can_deploy)
-            })
-        },
-    )
-
-    // return true, if a mech has equipped a power core and more than one weapon
-    const queueable = useCallback((lb: LobbyMech): boolean => {
-        // check power core
-        if (!lb.power_core) return false
-
-        // check weapon count
-        let hasWeapon = false
-        lb.weapon_slots?.forEach((ws) => {
-            // skip, if already has weapon
-            if (hasWeapon) return
-
-            // check whether the mech has weapon equipped
-            hasWeapon = !!ws.weapon
-        })
-
-        return hasWeapon
-    }, [])
-
-    const [ownedMechs, setOwnedMechs] = useState<LobbyMech[]>([])
-    useGameServerSubscriptionSecuredUser<LobbyMech[]>(
-        {
-            URI: "/owned_queueable_mechs",
-            key: GameServerKeys.SubPlayerQueueableMechs,
-        },
-        (payload) => {
-            if (!payload) return
-
-            setOwnedMechs((mqs) => {
-                if (mqs.length === 0) {
-                    return payload.filter((p) => !p.is_staked && p.can_deploy && queueable(p))
-                }
-
-                // replace current list
-                const list = mqs.map((mq) => payload.find((p) => p.id === mq.id) || mq)
-
-                // append new list
-                payload.forEach((p) => {
-                    // if already exists
-                    if (list.some((mq) => mq.id === p.id)) {
-                        return
-                    }
-                    // otherwise, push to the list
-                    list.push(p)
-                })
-
-                return list.filter((p) => !p.is_staked && p.can_deploy && queueable(p))
-            })
-        },
-    )
 
     const [list, setList] = useState<LobbyMech[]>([])
     // Apply sort, search, and filters
@@ -194,18 +132,28 @@ export const WarMachineForm = ({ prevPage }: WarMachineFormProps) => {
             return (
                 <Box
                     sx={{
+                        height: "100%",
                         display: "grid",
                         gridTemplateColumns: "repeat(auto-fill, minmax(30rem, 1fr))",
                         gridTemplateRows: "25rem",
                         overflowY: "auto",
-                        gap: "1.5rem",
+                        gap: "4rem",
                         alignItems: "center",
                         justifyContent: "center",
+                        pr: ".5rem",
+                        px: "5rem",
                     }}
                 >
                     {list.map((mech) => {
                         // const isSelected = !!selectedMechs.find((m) => m.id === mech.id)
-                        return <QueueableMechCard key={`mech-${mech.id}`} lobbyMech={mech} />
+                        return (
+                            <QueueableMechCard
+                                key={`mech-${mech.id}`}
+                                lobbyMech={mech}
+                                onSelect={() => toggleSelectedMech(mech)}
+                                isSelected={selectedMechs.some((sm) => sm.id === mech.id)}
+                            />
+                        )
                     })}
                 </Box>
             )
@@ -243,51 +191,53 @@ export const WarMachineForm = ({ prevPage }: WarMachineFormProps) => {
                 </NiceButton>
             </Stack>
         )
-    }, [list, factionTheme.primary])
+    }, [list, factionTheme.primary, selectedMechs, toggleSelectedMech])
 
     return (
-        <Stack direction="column" flex={1} sx={{ px: "25rem", py: "4rem" }}>
-            <Stack direction="column" flex={1} sx={{ overflowY: "hidden" }}>
-                <Section orderLabel="A" title="WAR MACHINES" description="Select your War machines to deploy for this lobby." />
+        <Stack direction="column" flex={1} sx={{ height: "100%", py: "4rem" }}>
+            <Stack direction="column" flex={1} spacing="1.5rem" sx={{ overflowY: "hidden", height: "100%" }}>
+                <Stack spacing="1.5rem" sx={{ px: "25rem" }}>
+                    <Section orderLabel="A" title="WAR MACHINES" description="Select your War machines to deploy for this lobby." />
 
-                <Stack direction="row" spacing={1}>
-                    {/* Search bar */}
-                    <NiceTextField
-                        primaryColor={factionTheme.primary}
-                        value={searchInstant}
-                        onChange={setSearch}
-                        placeholder="Search..."
-                        InputProps={{
-                            endAdornment: <SvgSearch size="1.5rem" sx={{ opacity: 0.5 }} />,
-                        }}
-                    />
+                    <Stack direction="row" spacing={1}>
+                        {/* Search bar */}
+                        <NiceTextField
+                            primaryColor={factionTheme.primary}
+                            value={searchInstant}
+                            onChange={setSearch}
+                            placeholder="Search..."
+                            InputProps={{
+                                endAdornment: <SvgSearch size="1.5rem" sx={{ opacity: 0.5 }} />,
+                            }}
+                        />
 
-                    {/* Page layout options */}
-                    <NiceButtonGroup
-                        primaryColor={factionTheme.primary}
-                        secondaryColor={factionTheme.secondary}
-                        options={mechListOptions}
-                        selected={isOwnedMech}
-                        onSelected={(value) => setIsOwnedMech(value)}
-                    />
+                        {/* Page layout options */}
+                        <NiceButtonGroup
+                            primaryColor={factionTheme.primary}
+                            secondaryColor={factionTheme.secondary}
+                            options={mechListOptions}
+                            selected={isOwnedMech}
+                            onSelected={(value) => setIsOwnedMech(value)}
+                        />
 
-                    {/* Sort */}
-                    <NiceSelect
-                        label="Sort:"
-                        primaryColor={factionTheme.primary}
-                        secondaryColor={factionTheme.secondary}
-                        options={sortOptions}
-                        selected={sort}
-                        onSelected={(value) => setSort(`${value}`)}
-                        sx={{ minWidth: "26rem" }}
-                    />
+                        {/* Sort */}
+                        <NiceSelect
+                            label="Sort:"
+                            primaryColor={factionTheme.primary}
+                            secondaryColor={factionTheme.secondary}
+                            options={sortOptions}
+                            selected={sort}
+                            onSelected={(value) => setSort(`${value}`)}
+                            sx={{ minWidth: "26rem" }}
+                        />
+                    </Stack>
                 </Stack>
 
                 {content}
                 <Pagination sx={{ mt: "auto" }} count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
             </Stack>
 
-            <Stack direction="row" alignItems="center" justifyContent="space-between">
+            <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ px: "25rem" }}>
                 <NiceButton
                     buttonColor={factionTheme.primary}
                     onClick={() => prevPage()}

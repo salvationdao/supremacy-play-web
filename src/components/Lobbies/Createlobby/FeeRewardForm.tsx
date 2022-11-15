@@ -5,7 +5,7 @@ import { useTheme } from "../../../containers/theme"
 import { Section } from "./RoomSettingForm"
 import { NiceTextField } from "../../Common/Nice/NiceTextField"
 import { SvgSupToken } from "../../../assets"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { Controller, useFormContext } from "react-hook-form"
 
 interface FeeRewardFormProps {
@@ -30,9 +30,10 @@ export const FeeRewardForm = ({ nextPage, prevPage }: FeeRewardFormProps) => {
                                 type="number"
                                 primaryColor={factionTheme.primary}
                                 InputProps={{
+                                    sx: { minHeight: "4.5rem" },
                                     startAdornment: (
                                         <InputAdornment position={"start"}>
-                                            <SvgSupToken size="1.5rem" sx={{ opacity: 0.5 }} fill={colors.gold} />
+                                            <SvgSupToken size="1.8rem" fill={colors.gold} />
                                         </InputAdornment>
                                     ),
                                 }}
@@ -51,9 +52,10 @@ export const FeeRewardForm = ({ nextPage, prevPage }: FeeRewardFormProps) => {
                                 type="number"
                                 primaryColor={factionTheme.primary}
                                 InputProps={{
+                                    sx: { minHeight: "4.5rem" },
                                     startAdornment: (
                                         <InputAdornment position={"start"}>
-                                            <Typography>%</Typography>
+                                            <Typography fontFamily={fonts.shareTech}>%</Typography>
                                         </InputAdornment>
                                     ),
                                 }}
@@ -72,9 +74,10 @@ export const FeeRewardForm = ({ nextPage, prevPage }: FeeRewardFormProps) => {
                                 type="number"
                                 primaryColor={factionTheme.primary}
                                 InputProps={{
+                                    sx: { minHeight: "4.5rem" },
                                     startAdornment: (
                                         <InputAdornment position={"start"}>
-                                            <Typography>%</Typography>
+                                            <Typography fontFamily={fonts.shareTech}>%</Typography>
                                         </InputAdornment>
                                     ),
                                 }}
@@ -93,9 +96,10 @@ export const FeeRewardForm = ({ nextPage, prevPage }: FeeRewardFormProps) => {
                                 type="number"
                                 primaryColor={factionTheme.primary}
                                 InputProps={{
+                                    sx: { minHeight: "4.5rem" },
                                     startAdornment: (
                                         <InputAdornment position={"start"}>
-                                            <SvgSupToken size="1.5rem" sx={{ opacity: 0.5 }} fill={colors.gold} />
+                                            <SvgSupToken size="1.8rem" fill={colors.gold} />
                                         </InputAdornment>
                                     ),
                                 }}

@@ -7,12 +7,15 @@ import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
 import { MechBarStats } from "../../Hangar/WarMachinesHangar/Common/MechBarStats"
 import { WeaponSlot } from "../Common/weaponSlot"
+import { fonts } from "../../../theme/theme"
 
 interface QueueableMechCardProps {
     lobbyMech: LobbyMech
+    onSelect: () => void
+    isSelected: boolean
 }
 
-export const QueueableMechCard = ({ lobbyMech }: QueueableMechCardProps) => {
+export const QueueableMechCard = ({ lobbyMech, onSelect, isSelected }: QueueableMechCardProps) => {
     const { getFaction } = useSupremacy()
     const { name, label, owner, tier, avatar_url, repair_blocks, damaged_blocks, weapon_slots } = lobbyMech
 
@@ -27,8 +30,11 @@ export const QueueableMechCard = ({ lobbyMech }: QueueableMechCardProps) => {
                 width: "100%",
                 height: "100%",
                 border: `${ownerFaction.primary_color} 2px dashed`,
+                cursor: "pointer",
+                backgroundColor: isSelected ? `${ownerFaction.primary_color}50` : ownerFaction.background_color,
             }}
             spacing=".5rem"
+            onClick={onSelect}
         >
             <Stack direction="column" flex={1} spacing=".5rem">
                 <Stack direction="row" spacing="1rem">
@@ -36,7 +42,7 @@ export const QueueableMechCard = ({ lobbyMech }: QueueableMechCardProps) => {
                     <NiceBoxThing
                         border={{ color: `${rarityDeets.color}80`, thickness: "very-lean" }}
                         caret={{ position: "bottom-right", size: "small" }}
-                        sx={{ height: "5rem", width: "5rem", boxShadow: 0.4 }}
+                        sx={{ height: "6rem", width: "6rem", boxShadow: 0.4 }}
                     >
                         <Box
                             component="img"
@@ -52,6 +58,15 @@ export const QueueableMechCard = ({ lobbyMech }: QueueableMechCardProps) => {
 
                     <Stack direction="column" flex={1}>
                         <Typography>{name || label}</Typography>
+                        <Typography
+                            variant="caption"
+                            sx={{
+                                fontFamily: fonts.nostromoHeavy,
+                                color: rarityDeets.color,
+                            }}
+                        >
+                            {rarityDeets.label}
+                        </Typography>
                         <RepairBlocks
                             defaultBlocks={repair_blocks}
                             remainDamagedBlocks={damaged_blocks}
@@ -66,14 +81,14 @@ export const QueueableMechCard = ({ lobbyMech }: QueueableMechCardProps) => {
                     color={ownerFaction.primary_color}
                     fontSize="1.3rem"
                     width="100%"
-                    spacing=".75rem"
+                    spacing=".25rem"
                     barHeight=".8rem"
                     compact
                     outerSx={{ flex: 1 }}
                 />
             </Stack>
             <Stack direction="column" spacing={1}>
-                {weapon_slots && weapon_slots.map((ws) => <WeaponSlot key={ws.slot_number} weaponSlot={ws} tooltipPlacement="left-end" size="4.5rem" />)}
+                {weapon_slots && weapon_slots.map((ws) => <WeaponSlot key={ws.slot_number} weaponSlot={ws} tooltipPlacement="right-end" size="4.5rem" />)}
             </Stack>
         </Stack>
     )

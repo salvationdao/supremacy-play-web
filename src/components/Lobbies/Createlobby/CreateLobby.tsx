@@ -1,13 +1,16 @@
 import { Stack } from "@mui/material"
 import { useTheme } from "../../../containers/theme"
 import { CreateLobbyFormTabs } from "./CreateLobbyFormTabs"
-import { useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 import moment from "moment"
 import { RoomSettingForm } from "./RoomSettingForm"
 import { LobbyFormOverview } from "./LobbyFormOverview"
 import { FeeRewardForm } from "./FeeRewardForm"
 import { WarMachineForm } from "./WarMachineForm"
+import { LobbyMech } from "../../../types"
+import { useGameServerSubscriptionFaction, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
 
 export interface LobbyForm {
     name: string
@@ -18,11 +21,12 @@ export interface LobbyForm {
     third_faction_cut: string
     game_map_id: string
     scheduling_type: string
-    wont_start_until_date: moment.Moment | null
-    wont_start_until_time: moment.Moment | null
+    wont_start_until_date: moment.Moment
+    wont_start_until_time: moment.Moment
     accessibility: string
     max_deploy_number: number
     extra_reward: string
+    selected_mechs: LobbyMech[]
 }
 
 export enum Accessibility {
@@ -53,8 +57,91 @@ export const CreateLobby = () => {
             accessibility: Accessibility.Public,
             max_deploy_number: 3,
             extra_reward: "0",
+            selected_mechs: [],
         },
     })
+
+    // return true, if a mech has equipped a power core and more than one weapon
+    const queueable = useCallback((lb: LobbyMech): boolean => {
+        // check power core
+        if (!lb.power_core) return false
+
+        // check weapon count
+        let hasWeapon = false
+        lb.weapon_slots?.forEach((ws) => {
+            // skip, if already has weapon
+            if (hasWeapon) return
+
+            // check whether the mech has weapon equipped
+            hasWeapon = !!ws.weapon
+        })
+
+        return hasWeapon
+    }, [])
+
+    const [stakedMechs, setStakedMechs] = useState<LobbyMech[]>([])
+    useGameServerSubscriptionFaction<LobbyMech[]>(
+        {
+            URI: "/staked_mechs",
+            key: GameServerKeys.SubFactionStakedMechs,
+        },
+        (payload) => {
+            if (!payload) return
+
+            setStakedMechs((prev) => {
+                if (prev.length === 0) {
+                    return payload.filter((p) => p.can_deploy)
+                }
+
+                // Replace current list
+                const list = prev.map((sm) => payload.find((p) => p.id === sm.id) || sm)
+
+                // Append new list
+                payload.forEach((p) => {
+                    // If already exists
+                    if (list.some((mech) => mech.id === p.id)) {
+                        return
+                    }
+                    // Otherwise, push to the list
+                    list.push(p)
+                })
+
+                return list.filter((p) => p.can_deploy)
+            })
+        },
+    )
+
+    const [ownedMechs, setOwnedMechs] = useState<LobbyMech[]>([])
+    useGameServerSubscriptionSecuredUser<LobbyMech[]>(
+        {
+            URI: "/owned_queueable_mechs",
+            key: GameServerKeys.SubPlayerQueueableMechs,
+        },
+        (payload) => {
+            if (!payload) return
+
+            setOwnedMechs((mqs) => {
+                if (mqs.length === 0) {
+                    return payload.filter((p) => !p.is_staked && p.can_deploy && queueable(p))
+                }
+
+                // replace current list
+                const list = mqs.map((mq) => payload.find((p) => p.id === mq.id) || mq)
+
+                // append new list
+                payload.forEach((p) => {
+                    // if already exists
+                    if (list.some((mq) => mq.id === p.id)) {
+                        return
+                    }
+                    // otherwise, push to the list
+                    list.push(p)
+                })
+
+                return list.filter((p) => !p.is_staked && p.can_deploy && queueable(p))
+            })
+        },
+    )
 
     const content = useMemo(() => {
         switch (currentProcess) {
@@ -63,19 +150,22 @@ export const CreateLobby = () => {
             case 2:
                 return <FeeRewardForm prevPage={() => setCurrentProcess(1)} nextPage={() => setCurrentProcess(3)} />
             case 3:
-                return <WarMachineForm prevPage={() => setCurrentProcess(2)} />
+                return <WarMachineForm prevPage={() => setCurrentProcess(2)} ownedMechs={ownedMechs} stakedMechs={stakedMechs} />
             default:
                 return null
         }
-    }, [currentProcess, setCurrentProcess])
+    }, [currentProcess, ownedMechs, stakedMechs])
 
     return (
         <FormProvider {...useFormMethods}>
             <Stack
                 flex={1}
+                direction="column"
                 sx={{
+                    height: "100%",
                     width: "100%",
                     maxWidth: "1920px",
+                    minHeight: 0,
                 }}
             >
                 <CreateLobbyFormTabs
@@ -87,7 +177,9 @@ export const CreateLobby = () => {
                     direction="row"
                     flex={1}
                     sx={{
+                        minHeight: 0,
                         width: "100%",
+                        height: "100%",
                         borderBottom: `${factionTheme.primary} 2px solid`,
                         borderRight: `${factionTheme.primary} 2px solid`,
                         borderLeft: `${factionTheme.primary} 2px solid`,

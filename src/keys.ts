@@ -123,6 +123,7 @@ export enum GameServerKeys {
     GetBanOptions = "PUNISH:OPTIONS",
     GetPlayerListFaction = "FACTION:PLAYER:SEARCH",
     GetPlayerList = "PLAYER:SEARCH",
+    GetPlayerFriends = "PLAYER:FRIEND:SEARCH",
     GetBanPlayerCost = "PUNISH:VOTE:PRICE:QUOTE",
     SubmitBanProposal = "ISSUE:PUNISH:VOTE",
     SubBanProposals = "PUNISH:VOTE:SUBSCRIBE",
