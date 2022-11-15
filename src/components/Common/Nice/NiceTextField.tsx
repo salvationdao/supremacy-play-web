@@ -36,7 +36,7 @@ export const NiceTextField = ({
 
                 ".MuiOutlinedInput-root": {
                     py: 0,
-                    pl: 0,
+                    // pl: 0,
                 },
 
                 ".MuiInputBase-root": {

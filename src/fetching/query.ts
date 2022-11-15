@@ -4,13 +4,14 @@ import { Fingerprint } from "../containers"
 import { OvenStream } from "../containers/oven"
 import { Faction, Feature, PowerCoreMaxStats, SaleAbilityAvailability, User, UserFromPassport, WarMachineDestroyedRecord, WeaponMaxStats } from "../types"
 
-export const PassportLoginCheck = (issue_token?: string): Action<UserFromPassport> => {
+export const PassportLoginCheck = (formValues: { issue_token: string; fingerprint?: Fingerprint }): Action<UserFromPassport> => {
+    const { issue_token, fingerprint } = formValues
     return {
         method: "POST",
         endpoint: `${window.location.protocol}//${GAME_SERVER_HOSTNAME}/api/auth/xsyn`,
         credentials: "include",
         responseType: "json",
-        body: { issue_token },
+        body: { issue_token, fingerprint },
     }
 }
 

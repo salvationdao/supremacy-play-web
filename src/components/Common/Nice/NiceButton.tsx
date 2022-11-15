@@ -88,7 +88,7 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
             flexShrink: 0,
             whiteSpace: "nowrap",
             borderRadius: 0,
-            transition: "all .2s",
+            transition: "all .1s",
 
             ...(buttonColor ? {} : { border: "none" }),
 
@@ -124,7 +124,7 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
             ...(fill && !disableAutoColor
                 ? {
                       [`&, *`]: {
-                          transition: "all .2s",
+                          transition: "all .1s",
                           color: `${contrastTextColor} !important`,
                           fill: `${contrastTextColor} !important`,
                       },
@@ -300,14 +300,14 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
                 sx={{
                     pointerEvents: "none",
                     position: "absolute",
-                    top: "-2px",
-                    left: "-2px",
-                    right: "-2px",
-                    bottom: "-2px",
+                    top: "-1px",
+                    left: "-1px",
+                    right: "-1px",
+                    bottom: "-1px",
                     backgroundColor: fillColor,
                     opacity: 0,
                     zIndex: -1,
-                    transition: ".2s all",
+                    transition: "all .1s",
                 }}
             />
 
