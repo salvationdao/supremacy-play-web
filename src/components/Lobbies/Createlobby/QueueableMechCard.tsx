@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { LobbyMech } from "../../../types"
 import { useSupremacy } from "../../../containers"
 import React, { useMemo } from "react"
-import { getMechStatusDeets, getRarityDeets } from "../../../helpers"
+import { getRarityDeets } from "../../../helpers"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
 import { MechBarStats } from "../../Hangar/WarMachinesHangar/Common/MechBarStats"
@@ -24,8 +24,8 @@ export const QueueableMechCard = ({ lobbyMech }: QueueableMechCardProps) => {
             direction="row"
             sx={{
                 p: "1rem",
-                width: "35rem",
-                height: "25rem",
+                width: "100%",
+                height: "100%",
                 border: `${ownerFaction.primary_color} 2px dashed`,
             }}
             spacing=".5rem"

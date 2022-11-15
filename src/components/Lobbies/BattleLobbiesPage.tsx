@@ -8,7 +8,6 @@ import { NavTabs } from "../Common/NavTabs/NavTabs"
 import { useTheme } from "../../containers/theme"
 import { snakeToTitle } from "../../helpers"
 import { CreateLobby } from "./Createlobby/CreateLobby"
-import moment from "moment/moment"
 
 enum LobbyTabs {
     JoinLobbies = "JOIN_LOBBIES",

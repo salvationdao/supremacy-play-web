@@ -1,10 +1,10 @@
-import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
+import { Box, Pagination, Stack, Typography } from "@mui/material"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { useTheme } from "../../../containers/theme"
 import { Section } from "./RoomSettingForm"
 import { NiceTextField } from "../../Common/Nice/NiceTextField"
-import { EmptyWarMachinesPNG, SvgGridView, SvgListView, SvgSearch } from "../../../assets"
+import { EmptyWarMachinesPNG, SvgSearch } from "../../../assets"
 import { useDebounce, usePagination, useUrlQuery } from "../../../hooks"
 import { NiceSelect } from "../../Common/Nice/NiceSelect"
 import { SortTypeLabel } from "../../../types/marketplace"
@@ -12,7 +12,6 @@ import { useGameServerSubscriptionFaction, useGameServerSubscriptionSecuredUser 
 import { LobbyMech } from "../../../types"
 import { GameServerKeys } from "../../../keys"
 import { getRarityDeets, parseString } from "../../../helpers"
-import { MechCard } from "../../Common/Mech/MechCard"
 import { colors, fonts } from "../../../theme/theme"
 import { QueueableMechCard } from "./QueueableMechCard"
 import { NiceButtonGroup } from "../../Common/Nice/NiceButtonGroup"
@@ -197,6 +196,8 @@ export const WarMachineForm = ({ prevPage }: WarMachineFormProps) => {
                     sx={{
                         display: "grid",
                         gridTemplateColumns: "repeat(auto-fill, minmax(30rem, 1fr))",
+                        gridTemplateRows: "25rem",
+                        overflowY: "auto",
                         gap: "1.5rem",
                         alignItems: "center",
                         justifyContent: "center",
@@ -246,7 +247,7 @@ export const WarMachineForm = ({ prevPage }: WarMachineFormProps) => {
 
     return (
         <Stack direction="column" flex={1} sx={{ px: "25rem", py: "4rem" }}>
-            <Stack direction="column" flex={1}>
+            <Stack direction="column" flex={1} sx={{ overflowY: "hidden" }}>
                 <Section orderLabel="A" title="WAR MACHINES" description="Select your War machines to deploy for this lobby." />
 
                 <Stack direction="row" spacing={1}>
@@ -282,7 +283,7 @@ export const WarMachineForm = ({ prevPage }: WarMachineFormProps) => {
                     />
                 </Stack>
 
-                <Box sx={{ flex: 1, height: "100%", overflowY: "auto", pr: ".8rem", py: "1rem" }}>{content}</Box>
+                {content}
                 <Pagination sx={{ mt: "auto" }} count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
             </Stack>
 
