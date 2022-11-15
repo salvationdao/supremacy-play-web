@@ -62,7 +62,12 @@ export const NiceTooltip = ({
                         {renderNode || (
                             <Typography
                                 variant="body1"
-                                sx={{ color: textColor || "#FFFFFF", fontFamily: fonts.shareTech, textAlign: isCentered ? "center" : "start" }}
+                                sx={{
+                                    color: textColor || "#FFFFFF",
+                                    fontFamily: fonts.shareTech,
+                                    lineHeight: 15,
+                                    textAlign: isCentered ? "center" : "start",
+                                }}
                             >
                                 <strong>{text}</strong>
                             </Typography>
