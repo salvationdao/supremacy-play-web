@@ -15,85 +15,16 @@ import { ChatSend } from "./ChatSend/ChatSend"
 import { SettingsPopover } from "./ChatSettings/SettingsPopover"
 
 export const LiveChat = () => {
-    const theme = useTheme()
-    const { isMobile } = useMobile()
     const { splitOption, isPoppedout, setIsPoppedout } = useChat()
-
-    const popoverRef = useRef(null)
-    const [showSettings, setShowSettings] = useState(false)
 
     const common = useMemo(() => {
         return (
             <Stack sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
-                <Stack
-                    spacing="1rem"
-                    direction="row"
-                    sx={{
-                        p: "1rem",
-                        alignItems: "center",
-                        backgroundColor: `#1B0313`,
-                    }}
-                >
-                    <NiceButton
-                        buttonColor={theme.factionTheme.primary}
-                        corners
-                        sx={{
-                            p: ".8rem",
-                            pb: ".6rem",
-                        }}
-                    >
-                        <SvgChat size="3rem" />
-                    </NiceButton>
-                    <Typography
-                        sx={{
-                            fontFamily: fonts.nostromoBlack,
-                            fontSize: "1.8rem",
-                        }}
-                    >
-                        Live Chat
-                    </Typography>
-                    <Box flex={1} />
-                    {/* Pop-out */}
-                    {!isPoppedout && !isMobile && (
-                        <NiceButton
-                            corners
-                            buttonColor={theme.factionTheme.primary}
-                            onClick={() => setIsPoppedout(true)}
-                            sx={{
-                                p: ".5rem",
-                                pb: ".3rem",
-                            }}
-                        >
-                            <SvgExternalLink height="2rem" />
-                        </NiceButton>
-                    )}
-                    {/* Settings */}
-                    <NiceButton
-                        ref={popoverRef}
-                        corners
-                        buttonColor={theme.factionTheme.primary}
-                        onClick={() => setShowSettings(true)}
-                        sx={{
-                            p: ".5rem",
-                            pb: ".3rem",
-                        }}
-                    >
-                        <SvgSettings height="2rem" />
-                    </NiceButton>
-                    {showSettings && (
-                        <SettingsPopover
-                            open={showSettings}
-                            popoverRef={popoverRef}
-                            onClose={() => setShowSettings(false)}
-                            primaryColor={theme.factionTheme.primary}
-                        />
-                    )}
-                </Stack>
                 {splitOption === SplitOptionType.Split ? <SplitLayout /> : <TabbedLayout />}
                 <AdditionalOptionsButton />
             </Stack>
         )
-    }, [isMobile, isPoppedout, setIsPoppedout, showSettings, splitOption, theme.factionTheme.primary])
+    }, [splitOption])
 
     return useMemo(() => {
         if (isPoppedout) {
@@ -135,6 +66,79 @@ export const LiveChat = () => {
         return <>{common}</>
     }, [common, isPoppedout, setIsPoppedout])
 }
+
+const Header = () => {
+    const theme = useTheme()
+    const { isMobile } = useMobile()
+    const { isPoppedout, setIsPoppedout } = useChat()
+
+    const popoverRef = useRef(null)
+    const [showSettings, setShowSettings] = useState(false)
+
+    return (
+        <Stack
+            spacing="1rem"
+            direction="row"
+            sx={{
+                width: "100%",
+                p: "1rem",
+                alignItems: "center",
+                backgroundColor: `#1B0313`,
+            }}
+        >
+            <NiceButton
+                buttonColor={theme.factionTheme.primary}
+                corners
+                sx={{
+                    p: ".8rem",
+                    pb: ".6rem",
+                }}
+            >
+                <SvgChat size="3rem" />
+            </NiceButton>
+            <Typography
+                sx={{
+                    fontFamily: fonts.nostromoBlack,
+                    fontSize: "1.8rem",
+                }}
+            >
+                Live Chat
+            </Typography>
+            <Box flex={1} />
+            {/* Pop-out */}
+            {!isPoppedout && !isMobile && (
+                <NiceButton
+                    corners
+                    buttonColor={theme.factionTheme.primary}
+                    onClick={() => setIsPoppedout(true)}
+                    sx={{
+                        p: ".5rem",
+                        pb: ".3rem",
+                    }}
+                >
+                    <SvgExternalLink height="2rem" />
+                </NiceButton>
+            )}
+            {/* Settings */}
+            <NiceButton
+                ref={popoverRef}
+                corners
+                buttonColor={theme.factionTheme.primary}
+                onClick={() => setShowSettings(true)}
+                sx={{
+                    p: ".5rem",
+                    pb: ".3rem",
+                }}
+            >
+                <SvgSettings height="2rem" />
+            </NiceButton>
+            {showSettings && (
+                <SettingsPopover open={showSettings} popoverRef={popoverRef} onClose={() => setShowSettings(false)} primaryColor={theme.factionTheme.primary} />
+            )}
+        </Stack>
+    )
+}
+LiveChat.Header = Header
 
 const TabbedLayout = () => {
     const theme = useTheme()

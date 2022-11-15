@@ -19,6 +19,7 @@ export enum RightRouteID {
 export interface SideRouteSingle {
     id: LeftRouteID | RightRouteID
     Component?: () => JSX.Element | null
+    Header?: () => JSX.Element
     icon: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
     label: string
     matchRouteIDs?: RouteSingleID[] // Leave undefined to have the tab available on all pages, else specify the routes
@@ -32,6 +33,7 @@ export const RightRoutes: SideRouteSingle[] = [
         icon: <SvgChat size="1.1rem" sx={{ pt: ".3rem" }} />,
         label: "Live Chat",
         Component: LiveChat,
+        Header: LiveChat.Header,
         requireAuth: false,
         matchRouteIDs: undefined,
         mountAllTime: true,

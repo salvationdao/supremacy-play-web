@@ -1,4 +1,4 @@
-import { Box, Drawer, Fade } from "@mui/material"
+import { Accordion, AccordionDetails, AccordionSummary, Drawer } from "@mui/material"
 import { DRAWER_TRANSITION_DURATION } from "../../constants"
 import { useAuth, useMobile, useUI } from "../../containers"
 import { useActiveRouteID } from "../../hooks/useActiveRouteID"
@@ -9,7 +9,7 @@ import { DrawerButtons } from "./DrawerButtons"
 export const RIGHT_DRAWER_WIDTH = 38 // rem
 
 export const RightDrawer = () => {
-    const { rightDrawerActiveTabID } = useUI()
+    const { rightDrawerActiveTabID, setRightDrawerActiveTabID } = useUI()
     const { isMobile } = useMobile()
     const { userID } = useAuth()
     const activeRoute = useActiveRouteID()
@@ -17,20 +17,17 @@ export const RightDrawer = () => {
     // Hide the drawer if on mobile OR none of the tabs are visible on the page
     if (isMobile || RightRoutes.filter((r) => !r.matchRouteIDs || (activeRoute && r.matchRouteIDs.includes(activeRoute.id))).length <= 0) return null
 
-    const match = RightRoutes.find((route) => route.id === rightDrawerActiveTabID)
-    const isOpen = match && (match.matchRouteIDs === undefined || (activeRoute && match.matchRouteIDs?.includes(activeRoute.id)))
-
     return (
         <>
             <DrawerButtons />
             <Drawer
                 transitionDuration={DRAWER_TRANSITION_DURATION}
-                open={isOpen}
+                open
                 variant="persistent"
                 anchor="right"
                 sx={{
                     flexShrink: 0,
-                    width: isOpen ? `${RIGHT_DRAWER_WIDTH}rem` : 0,
+                    width: `${RIGHT_DRAWER_WIDTH}rem`,
                     transition: `all ${DRAWER_TRANSITION_DURATION}ms cubic-bezier(0, 0, 0.2, 1)`,
                     zIndex: siteZIndex.Drawer,
                     "& .MuiDrawer-paper": {
@@ -43,9 +40,53 @@ export const RightDrawer = () => {
                 }}
             >
                 {RightRoutes.map((route) => {
+                    if (
+                        (!route.Header && !route.Component) ||
+                        (route.requireAuth && !userID) ||
+                        (route.matchRouteIDs && activeRoute && !route.matchRouteIDs.includes(activeRoute.id))
+                    )
+                        return null
+
+                    return (
+                        <Accordion key={route.id} expanded={route.id === rightDrawerActiveTabID}>
+                            <AccordionSummary
+                                sx={{
+                                    p: 0,
+                                    minHeight: "auto !important",
+                                    ".MuiAccordionSummary-content": {
+                                        m: 0,
+                                    },
+                                    ".MuiAccordionSummary-content.Mui-expanded": {
+                                        m: 0,
+                                    },
+                                }}
+                                onClick={() =>
+                                    setRightDrawerActiveTabID((prev) => {
+                                        if (route.id === prev) {
+                                            return ""
+                                        }
+                                        return route.id
+                                    })
+                                }
+                            >
+                                {route.Header && <route.Header />}
+                            </AccordionSummary>
+                            {route.Component && (
+                                <AccordionDetails
+                                    sx={{
+                                        p: 0,
+                                    }}
+                                >
+                                    <route.Component />
+                                </AccordionDetails>
+                            )}
+                        </Accordion>
+                    )
+                })}
+                {/* {RightRoutes.map((route) => {
                     if ((route.requireAuth && !userID) || (route.matchRouteIDs && activeRoute && !route.matchRouteIDs.includes(activeRoute.id))) return null
                     const isActive = route.id === rightDrawerActiveTabID
-                    if (isActive || route.mountAllTime) {
+                    if (isActive) {
                         return (
                             <Fade key={route.id} in>
                                 <Box
@@ -55,13 +96,14 @@ export const RightDrawer = () => {
                                         pointerEvents: isActive ? "all" : "none",
                                     }}
                                 >
+                                    {route.Header && <route.Header />}
                                     {route.Component && <route.Component />}
                                 </Box>
                             </Fade>
                         )
                     }
                     return null
-                })}
+                })} */}
             </Drawer>
         </>
     )
