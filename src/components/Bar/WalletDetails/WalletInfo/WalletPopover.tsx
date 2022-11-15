@@ -7,7 +7,7 @@ import { IS_TESTING_MODE, PASSPORT_WEB } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
 import { supFormatter } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
-import { colors, fonts, siteZIndex } from "../../../../theme/theme"
+import { colors, fonts } from "../../../../theme/theme"
 import { Transaction } from "../../../../types"
 import { NiceBoxThing } from "../../../Common/Nice/NiceBoxThing"
 import { TimeElapsed } from "./TimeElapsed"
@@ -57,15 +57,6 @@ export const WalletPopover = ({
             transformOrigin={{
                 vertical: "top",
                 horizontal: "center",
-            }}
-            sx={{
-                mt: ".8rem",
-                zIndex: siteZIndex.Popover,
-                ".MuiPaper-root": {
-                    mt: ".8rem",
-                    background: "none",
-                    boxShadow: 0,
-                },
             }}
         >
             <NiceBoxThing border={{ color: theme.factionTheme.primary }} background={{ colors: [theme.factionTheme.background] }} sx={{ height: "100%" }}>

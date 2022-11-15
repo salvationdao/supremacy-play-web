@@ -2,7 +2,6 @@ import { Box, Popover, Stack } from "@mui/material"
 import { MutableRefObject, useCallback, useEffect } from "react"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
-import { siteZIndex } from "../../../../theme/theme"
 import { ShoppingCart } from "../../../../types/fiat"
 import { NiceBoxThing } from "../../../Common/Nice/NiceBoxThing"
 import { ShoppingCartTable } from "./ShoppingCartTable"
@@ -46,15 +45,6 @@ export const ShoppingCartPopover = ({ open, loading, shoppingCart, popoverRef, o
             transformOrigin={{
                 vertical: "top",
                 horizontal: "center",
-            }}
-            sx={{
-                mt: ".8rem",
-                zIndex: siteZIndex.Popover,
-                ".MuiPaper-root": {
-                    mt: ".8rem",
-                    background: "none",
-                    boxShadow: 0,
-                },
             }}
         >
             <NiceBoxThing border={{ color: theme.factionTheme.primary }} background={{ colors: [theme.factionTheme.background] }} sx={{ height: "100%" }}>

@@ -1,10 +1,10 @@
 import { Box, Popover } from "@mui/material"
-import "emoji-mart/css/emoji-mart.css"
 import { BaseEmoji, Picker } from "emoji-mart"
-import { colors, fonts, siteZIndex } from "../../../../theme/theme"
-import { useToggle } from "../../../../hooks"
+import "emoji-mart/css/emoji-mart.css"
 import { useEffect } from "react"
 import { ClipThing } from "../../.."
+import { useToggle } from "../../../../hooks"
+import { colors, fonts } from "../../../../theme/theme"
 
 interface EnlistDetailsProps {
     primaryColor: string
@@ -41,8 +41,6 @@ export const EmojiPopover = ({ primaryColor, setMessage, popoverRef, isEmojiOpen
                 vertical: "bottom",
                 horizontal: "center",
             }}
-            PaperProps={{ sx: { background: "none", boxShadow: 0, overflow: "visible" } }}
-            sx={{ zIndex: siteZIndex.Popover, overflow: "visible" }}
         >
             <ClipThing
                 clipSize="10px"

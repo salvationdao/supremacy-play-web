@@ -4,7 +4,7 @@ import { ClipThing, SplitView, SystemMessageFilter } from "../../.."
 import { SvgSettings } from "../../../../assets"
 import { shadeColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
-import { fonts, siteZIndex } from "../../../../theme/theme"
+import { fonts } from "../../../../theme/theme"
 import { ChatFontSize } from "./ChatFontSize"
 
 export const ChatSettings = ({ primaryColor }: { primaryColor: string }) => {
@@ -69,8 +69,6 @@ const SettingsPopover = ({
                 horizontal: "center",
             }}
             sx={{
-                mt: ".8rem",
-                zIndex: siteZIndex.Popover,
                 ".MuiPaper-root": {
                     mt: "-3rem",
                     background: "none",

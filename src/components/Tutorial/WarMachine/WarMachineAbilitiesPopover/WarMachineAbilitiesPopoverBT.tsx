@@ -50,7 +50,6 @@ export const WarMachineAbilitiesPopoverBT = ({
                 vertical: "bottom",
                 horizontal: "left",
             }}
-            PaperProps={{ sx: { background: "none", boxShadow: 0 } }}
             transitionDuration={100}
             sx={{ ".MuiBackdrop-root": { backgroundColor: isPoppedout ? "#00000070" : "transparent" } }}
         >

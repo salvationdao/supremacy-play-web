@@ -3,7 +3,7 @@ import { MutableRefObject, useEffect, useRef } from "react"
 import { RIGHT_DRAWER_WIDTH, UserBanForm } from "../../.."
 import { useAuth } from "../../../../containers"
 import { useToggle } from "../../../../hooks"
-import { colors, siteZIndex } from "../../../../theme/theme"
+import { colors } from "../../../../theme/theme"
 
 export const AdditionalOptionsButton = () => {
     const { userID } = useAuth()
@@ -88,7 +88,6 @@ const OptionsPopover = ({
                 horizontal: "center",
             }}
             sx={{
-                zIndex: siteZIndex.Popover,
                 ".MuiPaper-root": {
                     ml: 2,
                     width: `${RIGHT_DRAWER_WIDTH}rem`,

@@ -5,7 +5,7 @@ import { SvgClose, SvgExpandMoreIcon } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { timeSinceInWords } from "../../../helpers"
 import { useToggle } from "../../../hooks"
-import { colors, fonts, siteZIndex } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { QuestProgress, QuestStat } from "../../../types"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { QuestItem } from "./QuestItem"
@@ -55,15 +55,6 @@ export const QuestsPopover = ({
             transformOrigin={{
                 vertical: "top",
                 horizontal: "center",
-            }}
-            sx={{
-                mt: ".8rem",
-                zIndex: siteZIndex.Popover,
-                ".MuiPaper-root": {
-                    mt: ".8rem",
-                    background: "none",
-                    boxShadow: 0,
-                },
             }}
         >
             <NiceBoxThing border={{ color: colors.purple }} background={{ colors: [theme.factionTheme.background] }} sx={{ height: "100%" }}>

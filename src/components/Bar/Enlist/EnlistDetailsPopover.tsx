@@ -6,7 +6,7 @@ import { useGlobalNotifications } from "../../../containers"
 import { useToggle } from "../../../hooks"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { colors, fonts, siteZIndex } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { Faction, FactionStat } from "../../../types"
 
 interface EnlistDetailsProps {
@@ -44,8 +44,7 @@ export const EnlistDetailsPopover = ({ popoverRef, open, onClose, faction }: Enl
                 vertical: "top",
                 horizontal: "center",
             }}
-            PaperProps={{ sx: { backgroundColor: "transparent", boxShadow: 0, overflow: "visible" } }}
-            sx={{ zIndex: siteZIndex.Popover }}
+            PaperProps={{ sx: { overflow: "visible" } }}
         >
             <Box sx={{ filter: "drop-shadow(0 3px 3px #00000050)" }}>
                 <ClipThing
