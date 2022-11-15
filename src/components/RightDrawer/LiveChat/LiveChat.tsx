@@ -1,28 +1,94 @@
 import { Badge, Box, Stack, Tab, Tabs, Typography } from "@mui/material"
-import React, { ReactNode, useMemo } from "react"
+import React, { ReactNode, useMemo, useRef, useState } from "react"
 import { AdditionalOptionsButton, FancyButton, NiceTooltip } from "../.."
-import { SvgGlobal, SvgInfoCircular } from "../../../assets"
+import { SvgChat, SvgExternalLink, SvgGlobal, SvgInfoCircular, SvgSettings } from "../../../assets"
 import { useAuth, useChat, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { acronym, shadeColor } from "../../../helpers"
 import { zoomEffect } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { SplitOptionType } from "../../../types/chat"
+import { NiceButton } from "../../Common/Nice/NiceButton"
 import { WindowPortal } from "../../Common/WindowPortal/WindowPortal"
 import { ChatMessages } from "./ChatMessages/ChatMessages"
 import { ChatSend } from "./ChatSend/ChatSend"
+import { SettingsPopover } from "./ChatSettings/SettingsPopover"
 
 export const LiveChat = () => {
+    const theme = useTheme()
+    const popoverRef = useRef(null)
+    const [showSettings, setShowSettings] = useState(false)
     const { splitOption, isPoppedout, setIsPoppedout } = useChat()
 
     const common = useMemo(() => {
         return (
             <Stack sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
+                <Stack
+                    spacing="1rem"
+                    direction="row"
+                    sx={{
+                        p: "1rem",
+                        alignItems: "center",
+                        backgroundColor: `#1B0313`,
+                    }}
+                >
+                    <NiceButton
+                        buttonColor={theme.factionTheme.primary}
+                        corners
+                        sx={{
+                            p: ".8rem",
+                            pb: ".6rem",
+                        }}
+                    >
+                        <SvgChat size="3rem" />
+                    </NiceButton>
+                    <Typography
+                        sx={{
+                            fontFamily: fonts.nostromoBlack,
+                            fontSize: "1.8rem",
+                        }}
+                    >
+                        Live Chat
+                    </Typography>
+                    <Box flex={1} />
+                    {/* Pop-out */}
+                    <NiceButton
+                        corners
+                        buttonColor={theme.factionTheme.primary}
+                        sx={{
+                            p: ".5rem",
+                            pb: ".3rem",
+                        }}
+                    >
+                        <SvgExternalLink height="2rem" />
+                    </NiceButton>
+                    {/* Settings */}
+                    <NiceButton
+                        ref={popoverRef}
+                        corners
+                        buttonColor={theme.factionTheme.primary}
+                        onClick={() => setShowSettings(true)}
+                        sx={{
+                            p: ".5rem",
+                            pb: ".3rem",
+                        }}
+                    >
+                        <SvgSettings height="2rem" />
+                    </NiceButton>
+                    {showSettings && (
+                        <SettingsPopover
+                            open={showSettings}
+                            popoverRef={popoverRef}
+                            onClose={() => setShowSettings(false)}
+                            primaryColor={theme.factionTheme.primary}
+                        />
+                    )}
+                </Stack>
                 {splitOption === SplitOptionType.Split ? <SplitLayout /> : <TabbedLayout />}
                 <AdditionalOptionsButton />
             </Stack>
         )
-    }, [splitOption])
+    }, [showSettings, splitOption, theme.factionTheme.primary])
 
     return useMemo(() => {
         if (isPoppedout) {
@@ -121,7 +187,7 @@ const TabbedLayout = () => {
                     variant="fullWidth"
                     sx={{
                         height: `${4.8}rem`,
-                        background: `linear-gradient(${bannerBackgroundColor} 26%, ${bannerBackgroundColor}95)`,
+                        background: `#0D0415`,
                         boxShadow: 1,
                         zIndex: 9,
                         minHeight: 0,
@@ -130,8 +196,12 @@ const TabbedLayout = () => {
                             minHeight: 0,
                         },
                         ".MuiTabs-indicator": {
-                            height: "3px",
-                            background: "#FFFFFF50",
+                            zIndex: -1,
+                            height: "100%",
+                            background: "#2D0311",
+                            borderTop: `1px solid #9F0410`,
+                            borderLeft: `1px solid #9F0410`,
+                            borderRight: `1px solid #9F0410`,
                         },
                     }}
                     onChange={(_event, newValue) => {
@@ -157,6 +227,10 @@ const TabbedLayout = () => {
                                 </Typography>
                             </Stack>
                         }
+                        sx={{
+                            transition: "border-width .2s ease-out",
+                            borderBottom: tabValue !== 0 ? `1px solid #9F0410` : `0px solid transparent`,
+                        }}
                     />
                     {isEnlisted && (
                         <Tab
@@ -199,6 +273,10 @@ const TabbedLayout = () => {
                                     </Typography>
                                 </Stack>
                             }
+                            sx={{
+                                transition: "border-width .2s ease-out",
+                                borderBottom: tabValue !== 1 ? `1px solid #9F0410` : `0px solid transparent`,
+                            }}
                         />
                     )}
                 </Tabs>
