@@ -84,10 +84,14 @@ export const MarketingModal = () => {
                                         onChange={(e) => {
                                             setAcceptMarketing(e.currentTarget.checked)
                                         }}
-                                        sx={{ ml: ".8rem", my: "1rem" }}
+                                        sx={{
+                                            ml: "-2px",
+                                            mr: "1rem",
+                                        }}
                                     />
                                 }
                                 label="Subscribe to Supremacy news and updates"
+                                sx={{ mx: 0, my: "1rem" }}
                             />
 
                             <Collapse in={!userFromPassport?.email && acceptMarketing} unmountOnExit>
