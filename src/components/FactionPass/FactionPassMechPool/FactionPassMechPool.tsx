@@ -216,7 +216,7 @@ export const FactionPassMechPool = () => {
         // Pagination
         result = result.slice((page - 1) * pageSize, page * pageSize)
         changePage(1)
-        setTotalItems(result.length)
+        setTotalItems(mechs.length)
 
         setDisplayMechs(result)
     }, [changePage, deaths, isLoading, kills, losses, mechs, page, pageSize, rarities, repairBlocks, search, setTotalItems, sort, status, updateQuery, wins])
