@@ -51,6 +51,8 @@ export const NiceButtonGroup = <T,>({
                             "*": {
                                 fill: isActive ? `${secondaryColor} !important` : "#FFFFFF !important",
                             },
+
+                            ":hover": { backgroundColor: `${primaryColor}15` },
                         }}
                         size="small"
                         onClick={() => onSelected(option.value)}
