@@ -352,7 +352,7 @@ const SplitLayout = () => {
                         </Typography>
                     </Stack>
 
-                    <Content userID={userID} faction_id={null} primaryColor={colors.globalChat} secondaryColor={"#FFFFFF"} />
+                    <Content userID={userID} faction_id={null} primaryColor={theme.factionTheme.primary} secondaryColor={"#FFFFFF"} />
                 </Stack>
 
                 {/* Bottom half */}
@@ -471,7 +471,7 @@ const UnreadBadge = ({ tabValue: forTabValue, children }: { tabValue: number; ch
             sx={{
                 ".MuiBadge-badge": {
                     fontSize: "1.2rem",
-                    fontFamily: fonts.rajdhaniMedium,
+                    fontFamily: fonts.shareTech,
                     fontWeight: "bold",
                     lineHeight: 0,
                     color: "#FFFFFF",

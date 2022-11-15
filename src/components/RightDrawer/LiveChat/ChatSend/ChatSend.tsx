@@ -199,7 +199,7 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
                         hiddenLabel
                         InputProps={{
                             sx: {
-                                p: "1rem",
+                                minHeight: "6rem",
                             },
                             endAdornment: (
                                 <InputAdornment position="end">
@@ -210,12 +210,11 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
                                             buttonColor={theme.factionTheme.primary}
                                             onClick={() => toggleIsEmojiOpen()}
                                             sx={{
-                                                m: "1rem",
+                                                mr: "1rem",
                                                 p: ".5rem",
-                                                pb: ".3rem",
                                             }}
                                         >
-                                            <SvgEmoji size="1.4rem" fill="#FFFFFF" sx={{ pb: 0 }} />
+                                            <SvgEmoji size="2rem" fill="#FFFFFF" sx={{ pb: 0 }} />
                                         </NiceButton>
                                     </NiceTooltip>
 
@@ -224,12 +223,10 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
                                         buttonColor={theme.factionTheme.primary}
                                         onClick={sendMessage}
                                         sx={{
-                                            m: "1rem",
                                             p: ".5rem",
-                                            pb: ".3rem",
                                         }}
                                     >
-                                        <SvgSend size="1.4rem" fill="#FFFFFF" sx={{ pb: 0 }} />
+                                        <SvgSend size="2rem" fill="#FFFFFF" sx={{ pb: 0 }} />
                                     </NiceButton>
                                 </InputAdornment>
                             ),
@@ -263,6 +260,17 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
                 )}
             </form>
         ),
-        [faction_id, focusCaretTextField, isEmojiOpen, message, primaryColor, sendMessage, setMessageWithCheck, showCharCount, toggleIsEmojiOpen],
+        [
+            faction_id,
+            focusCaretTextField,
+            isEmojiOpen,
+            message,
+            primaryColor,
+            sendMessage,
+            setMessageWithCheck,
+            showCharCount,
+            theme.factionTheme.primary,
+            toggleIsEmojiOpen,
+        ],
     )
 }
