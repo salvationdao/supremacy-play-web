@@ -33,6 +33,7 @@ export const ChipFilterSection = React.memo(function ChipFilterSection({ label, 
                     return (
                         <Box key={i} sx={{ p: ".6rem", opacity: isSelected ? 1 : 0.5, ":hover": { opacity: 1 } }}>
                             <NiceButton
+                                flat
                                 fill={isSelected}
                                 buttonColor={render?.color || "#EEEEEE"}
                                 sx={{
