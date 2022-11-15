@@ -28,10 +28,10 @@ export const MechCard = React.memo(function MechCard({ mech, isSelected, toggleS
         return (
             <NiceBoxThing
                 border={{
-                    color: isSelected ? `${colors.neonBlue}80` : "#FFFFFF38",
+                    color: isSelected ? `${colors.neonBlue}80` : "#FFFFFF30",
                     thickness: isSelected ? "lean" : "very-lean",
                 }}
-                background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.08 }}
+                background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.06 }}
                 sx={{
                     overflow: "hidden",
                 }}
@@ -135,10 +135,10 @@ export const MechCard = React.memo(function MechCard({ mech, isSelected, toggleS
     return (
         <NiceBoxThing
             border={{
-                color: isSelected ? `${colors.neonBlue}80` : "#FFFFFF38",
+                color: isSelected ? `${colors.neonBlue}80` : "#FFFFFF30",
                 thickness: isSelected ? "lean" : "very-lean",
             }}
-            background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.1 }}
+            background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.06 }}
             sx={{ p: "1rem 1.5rem" }}
         >
             <Stack spacing="1.2rem">
