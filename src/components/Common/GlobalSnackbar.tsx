@@ -73,7 +73,7 @@ export const GlobalSnackbar = () => {
             key={messageInfo ? `global-snackbar-${messageInfo.key}` : undefined}
             open={open}
             anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-            autoHideDuration={4000}
+            autoHideDuration={6000}
             onClose={handleClose}
             TransitionProps={{ onExited: handleExited }}
             icon={severityDeets.icon}

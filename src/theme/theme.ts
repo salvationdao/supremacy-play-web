@@ -273,8 +273,6 @@ export const theme = createTheme({
             },
             styleOverrides: {
                 root: {
-                    marginTop: ".4rem",
-                    marginBottom: ".4rem",
                     zIndex: siteZIndex.Popover,
 
                     ".MuiPaper-root": {

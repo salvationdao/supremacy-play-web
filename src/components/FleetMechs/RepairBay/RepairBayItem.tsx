@@ -3,7 +3,6 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import { useTimer } from "use-timer"
 import { SvgMoreOptions, SvgUserDiamond } from "../../../assets"
 import { useSupremacy } from "../../../containers"
-import { useToggle } from "../../../hooks"
 import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { TruncateTextLines } from "../../../theme/styles"
@@ -32,7 +31,7 @@ export const RepairBayItem = ({
     const popoverRef = useRef(null)
     const { getFaction } = useSupremacy()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
-    const [isActionsPopoverOpen, toggleIsActionsPopoverOpen] = useToggle(false)
+    const [isActionsPopoverOpen, setIsActionsPopoverOpen] = useState(false)
     const { mech_id, next_repair_time } = repairSlot
 
     const ownerFaction = useMemo(() => getFaction(mechDetails?.user.faction_id), [getFaction, mechDetails?.user.faction_id])
@@ -124,7 +123,7 @@ export const RepairBayItem = ({
                         </Stack>
 
                         <Box ref={popoverRef} sx={{ position: "absolute", right: "-.5rem", top: ".2rem" }}>
-                            <NiceButton sx={{ p: 0 }} onClick={() => toggleIsActionsPopoverOpen()}>
+                            <NiceButton sx={{ p: 0 }} onClick={() => setIsActionsPopoverOpen(true)}>
                                 <SvgMoreOptions size="1.6rem" />
                             </NiceButton>
                         </Box>
@@ -134,7 +133,7 @@ export const RepairBayItem = ({
 
             <RepairBayItemActions
                 open={isActionsPopoverOpen}
-                onClose={() => toggleIsActionsPopoverOpen(false)}
+                onClose={() => setIsActionsPopoverOpen(false)}
                 popoverRef={popoverRef}
                 repairSlot={repairSlot}
                 aboveSlot={aboveSlot}

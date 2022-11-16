@@ -76,7 +76,7 @@ const BulkActionPopover = ({
                 setSelectedMechs([])
                 newSnackbarMessage("Successfully added mechs to repair bay.", "success")
             } catch (err) {
-                const message = typeof err === "string" ? err : "Failed to insert into repair bay."
+                const message = typeof err === "string" ? err : "Failed to insert mech to repair bay."
                 newSnackbarMessage(message, "error")
                 console.error(err)
             }

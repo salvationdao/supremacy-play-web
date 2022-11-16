@@ -11,7 +11,7 @@ import { NiceBoxThing } from "../../../../../Common/Nice/NiceBoxThing"
 import { NiceButton } from "../../../../../Common/Nice/NiceButton"
 import { NiceSelect } from "../../../../../Common/Nice/NiceSelect"
 import { NiceTextField } from "../../../../../Common/Nice/NiceTextField"
-import { AmountItem } from "../DeployModal"
+import { AmountItem } from "../AmountItem"
 
 const listingDurations: {
     label: string
