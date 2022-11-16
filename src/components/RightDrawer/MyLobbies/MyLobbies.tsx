@@ -6,7 +6,7 @@ import { useTheme } from "../../../containers/theme"
 import { useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { HeaderProps } from "../../../routes"
-import { fonts } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { BattleLobby } from "../../../types/battle_queue"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 import { SmallLobbyCard } from "../../Lobbies/BattleLobbies/SmallLobbyCard"
@@ -84,6 +84,33 @@ export const MyLobbies = () => {
 
 const Header = ({ isOpen, onClose }: HeaderProps) => {
     const theme = useTheme()
+    const [involvedLobbies, setInvolvedLobbies] = useState<BattleLobby[]>([])
+
+    useGameServerSubscriptionSecuredUser<BattleLobby[]>(
+        {
+            URI: "/involved_battle_lobbies",
+            key: GameServerKeys.SubInvolvedBattleLobbiesUpdate,
+        },
+        (payload) => {
+            if (!payload) return
+            setInvolvedLobbies((prev) => {
+                if (prev.length === 0) return payload.filter((bl) => !bl.ended_at && !bl.deleted_at).sort((a, b) => (a.stage_order > b.stage_order ? 1 : -1))
+
+                const list = prev.map((bl) => payload.find((p) => p.id === bl.id) || bl)
+
+                payload.forEach((p) => {
+                    // if already exists
+                    if (list.some((b) => b.id === p.id)) {
+                        return
+                    }
+                    // otherwise, push to the list
+                    list.push(p)
+                })
+
+                return list.filter((bl) => !bl.ended_at && !bl.deleted_at).sort((a, b) => (a.stage_order > b.stage_order ? 1 : -1))
+            })
+        },
+    )
 
     return (
         <Stack
@@ -115,6 +142,14 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
                 }}
             >
                 My Lobbies
+            </Typography>
+            <Box flex={1} />
+            <Typography
+                sx={{
+                    color: involvedLobbies.length > 0 ? colors.lightGrey : colors.darkGrey,
+                }}
+            >
+                {involvedLobbies.length} open lobbies
             </Typography>
         </Stack>
     )
