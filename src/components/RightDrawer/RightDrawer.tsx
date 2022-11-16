@@ -48,7 +48,31 @@ export const RightDrawer = () => {
                         return null
 
                     return (
-                        <Accordion key={route.id} expanded={route.id === rightDrawerActiveTabID}>
+                        <Accordion
+                            key={route.id}
+                            expanded={route.id === rightDrawerActiveTabID}
+                            sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                "&.Mui-expanded": {
+                                    flex: 1,
+                                    minHeight: 0,
+                                    m: 0,
+                                    ".MuiCollapse-root": {
+                                        flex: 1,
+                                        ".MuiCollapse-wrapper": {
+                                            height: "100%",
+                                            ".MuiAccordion-region": {
+                                                height: "100%",
+                                            },
+                                        },
+                                    },
+                                },
+                                "&:before": {
+                                    display: "none",
+                                },
+                            }}
+                        >
                             <AccordionSummary
                                 sx={{
                                     p: 0,
@@ -70,6 +94,7 @@ export const RightDrawer = () => {
                             {route.Component && (
                                 <AccordionDetails
                                     sx={{
+                                        height: "100%",
                                         p: 0,
                                     }}
                                 >
