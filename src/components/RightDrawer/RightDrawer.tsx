@@ -59,6 +59,9 @@ export const RightDrawer = () => {
                                     ".MuiAccordionSummary-content.Mui-expanded": {
                                         m: 0,
                                     },
+                                    ":hover": {
+                                        opacity: 1,
+                                    },
                                 }}
                                 onClick={route.id !== rightDrawerActiveTabID ? () => setRightDrawerActiveTabID(route.id) : undefined}
                             >

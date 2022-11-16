@@ -1,4 +1,4 @@
-import { Badge, Box, Stack, Tab, Tabs, Typography } from "@mui/material"
+import { Badge, Box, Fade, Stack, Tab, Tabs, Typography } from "@mui/material"
 import React, { ReactNode, useMemo, useRef, useState } from "react"
 import { AdditionalOptionsButton, FancyButton, NiceTooltip } from "../.."
 import { SvgChat, SvgChatGlobal, SvgExternalLink, SvgInfoCircular, SvgSettings } from "../../../assets"
@@ -108,33 +108,43 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
                 Live Chat
             </Typography>
             <Box flex={1} />
-            {/* Pop-out */}
-            {!isPoppedout && !isMobile && (
-                <NiceButton
-                    corners
-                    buttonColor={theme.factionTheme.primary}
-                    onClick={() => setIsPoppedout(true)}
+            <Fade in={isOpen} unmountOnExit>
+                <Stack
+                    direction="row"
+                    spacing="1rem"
                     sx={{
-                        p: ".5rem",
-                        pb: ".3rem",
+                        alignItems: "center",
                     }}
                 >
-                    <SvgExternalLink height="2rem" />
-                </NiceButton>
-            )}
-            {/* Settings */}
-            <NiceButton
-                ref={popoverRef}
-                corners
-                buttonColor={theme.factionTheme.primary}
-                onClick={() => setShowSettings(true)}
-                sx={{
-                    p: ".5rem",
-                    pb: ".3rem",
-                }}
-            >
-                <SvgSettings height="2rem" />
-            </NiceButton>
+                    {/* Pop-out */}
+                    {!isPoppedout && !isMobile && (
+                        <NiceButton
+                            corners
+                            buttonColor={theme.factionTheme.primary}
+                            onClick={() => setIsPoppedout(true)}
+                            sx={{
+                                p: ".5rem",
+                                pb: ".3rem",
+                            }}
+                        >
+                            <SvgExternalLink height="2rem" />
+                        </NiceButton>
+                    )}
+                    {/* Settings */}
+                    <NiceButton
+                        ref={popoverRef}
+                        corners
+                        buttonColor={theme.factionTheme.primary}
+                        onClick={() => setShowSettings(true)}
+                        sx={{
+                            p: ".5rem",
+                            pb: ".3rem",
+                        }}
+                    >
+                        <SvgSettings height="2rem" />
+                    </NiceButton>
+                </Stack>
+            </Fade>
             {showSettings && (
                 <SettingsPopover open={showSettings} popoverRef={popoverRef} onClose={() => setShowSettings(false)} primaryColor={theme.factionTheme.primary} />
             )}
