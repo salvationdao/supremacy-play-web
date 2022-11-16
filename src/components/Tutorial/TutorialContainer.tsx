@@ -8,10 +8,10 @@ import { useTraining } from "../../containers"
 import { zoomEffect } from "../../theme/keyframes"
 import { fonts } from "../../theme/theme"
 import { Context, TrainingLobby } from "../../types"
-import { FancyButton } from "../Common/Deprecated/FancyButton"
-import { tourStyles } from "./SetupTutorial"
-import { Congratulations, TrainingAbility } from "./Congratulations"
 import { TOP_BAR_HEIGHT } from "../BattleArena/BigDisplay/MiniMapNew/MiniMapNew"
+import { FancyButton } from "../Common/Deprecated/FancyButton"
+import { Congratulations, TrainingAbility } from "./Congratulations"
+import { tourStyles } from "./SetupTutorial"
 
 interface TutorialContainerProps {
     currentAbility: TrainingAbility

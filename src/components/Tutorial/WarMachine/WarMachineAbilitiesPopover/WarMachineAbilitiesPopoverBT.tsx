@@ -1,10 +1,11 @@
-import { Box, Popover, Stack, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useEffect } from "react"
 import { GenericWarMachinePNG } from "../../../../assets"
 import { useTraining } from "../../../../containers"
 import { Faction, GameAbility, MechAbilityStages, WarMachineState } from "../../../../types"
 import { ClipThing } from "../../../Common/Deprecated/ClipThing"
+import { NicePopover } from "../../../Common/Nice/NicePopover"
 import { WarMachineAbilityItemBT } from "../WarMachineItem/WarMachineAbilityItemBT"
 interface WarMachineAbilitiesPopoverProps {
     popoverRef: React.MutableRefObject<null>
@@ -38,7 +39,7 @@ export const WarMachineAbilitiesPopoverBT = ({
     }, [trainingStage, togglePopoverOpen, open])
 
     return (
-        <Popover
+        <NicePopover
             open={open}
             anchorEl={popoverRef.current}
             onClose={onClose}
@@ -50,17 +51,10 @@ export const WarMachineAbilitiesPopoverBT = ({
                 vertical: "bottom",
                 horizontal: "left",
             }}
-            PaperProps={{ sx: { background: "none", boxShadow: 0 } }}
             transitionDuration={100}
             sx={{ ".MuiBackdrop-root": { backgroundColor: isPoppedout ? "#00000070" : "transparent" } }}
         >
-            <Box
-                sx={{
-                    ml: ".2rem",
-                    mb: "1.4rem",
-                    filter: "drop-shadow(0 3px 3px #00000050)",
-                }}
-            >
+            <Box sx={{ ml: ".2rem", mb: "1.4rem" }}>
                 <ClipThing
                     clipSize="5px"
                     clipSlantSize={isPoppedout ? "0px" : "8px"}
@@ -102,6 +96,6 @@ export const WarMachineAbilitiesPopoverBT = ({
                     </Stack>
                 </ClipThing>
             </Box>
-        </Popover>
+        </NicePopover>
     )
 }

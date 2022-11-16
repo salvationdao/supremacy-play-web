@@ -1,10 +1,11 @@
-import { IconButton, Popover, Stack } from "@mui/material"
+import { IconButton, Stack } from "@mui/material"
 import { MutableRefObject, useEffect } from "react"
-import { SvgDelete, SvgDownArrow, SvgUpArrow } from "../../../../assets"
-import { useToggle } from "../../../../hooks"
-import { colors, siteZIndex } from "../../../../theme/theme"
-import { RepairSlot } from "../../../../types"
-import { ClipThing } from "../../../Common/Deprecated/ClipThing"
+import { SvgDelete, SvgDownArrow, SvgUpArrow } from "../../../assets"
+import { useToggle } from "../../../hooks"
+import { colors } from "../../../theme/theme"
+import { RepairSlot } from "../../../types"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
+import { NicePopover } from "../../Common/Nice/NicePopover"
 
 export const RepairBayItemActions = ({
     open,
@@ -40,7 +41,7 @@ export const RepairBayItemActions = ({
     }, [localOpen, onClose])
 
     return (
-        <Popover
+        <NicePopover
             open={localOpen}
             anchorEl={popoverRef.current}
             onClose={() => toggleLocalOpen(false)}
@@ -51,14 +52,6 @@ export const RepairBayItemActions = ({
             transformOrigin={{
                 vertical: "top",
                 horizontal: "right",
-            }}
-            sx={{
-                mt: ".5rem",
-                zIndex: siteZIndex.Popover,
-                ".MuiPaper-root": {
-                    background: "none",
-                    boxShadow: 0,
-                },
             }}
         >
             <ClipThing
@@ -101,6 +94,6 @@ export const RepairBayItemActions = ({
                     )}
                 </Stack>
             </ClipThing>
-        </Popover>
+        </NicePopover>
     )
 }

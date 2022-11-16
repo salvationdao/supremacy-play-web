@@ -68,6 +68,7 @@ export const Bar = () => {
                     zIndex: siteZIndex.TopBar,
                     overflowX: "auto",
                     overflowY: "hidden",
+                    boxShadow: 3,
                 }}
             >
                 <BarContent userID={userID} user={user} />
@@ -80,7 +81,7 @@ export const Bar = () => {
                         bottom: 0,
                         left: 0,
                         right: 0,
-                        background: (theme) => `linear-gradient(#FFFFFF10 26%, ${theme.factionTheme.background})`,
+                        background: (theme) => `linear-gradient(${theme.factionTheme.primary}16 26%, ${theme.factionTheme.primary}06)`,
                         pointerEvents: "none",
                         zIndex: -1,
                     }}

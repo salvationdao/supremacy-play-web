@@ -252,8 +252,6 @@ export const WeaponDraggables = ({ compareToWeapon, excludeWeaponIDs, drag }: We
                 />
                 <NiceSelect
                     label="Sort:"
-                    primaryColor={theme.factionTheme.primary}
-                    secondaryColor={theme.factionTheme.secondary}
                     options={[
                         {
                             value: SortTypeLabel.Alphabetical,

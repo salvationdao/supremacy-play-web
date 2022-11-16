@@ -27,50 +27,48 @@ export const NiceTextField = ({
     multiline,
     ...props
 }: NiceTextFieldProps) => {
-    const numberArrows = useMemo(() => {
+    const numberArrowsEndAdornment = useMemo(() => {
         if (props.type !== "number") {
-            return {}
+            return null
         }
 
-        return {
-            endAdornment: (
-                <Stack
-                    spacing="-.1rem"
-                    alignItems="center"
+        return (
+            <Stack
+                spacing="-.1rem"
+                alignItems="center"
+                sx={{
+                    zIndex: 1,
+                    "& svg:active": {
+                        transform: "scale(1.1)",
+                        transition: "all .1s",
+                    },
+                }}
+            >
+                <Box
                     sx={{
-                        zIndex: 1,
-                        "& svg:active": {
-                            transform: "scale(1.1)",
-                            transition: "all .1s",
-                        },
+                        cursor: "pointer",
+                    }}
+                    onClick={() => {
+                        if (!onChange || !value || typeof value !== "number") return
+                        onChange(value + 1)
                     }}
                 >
-                    <Box
-                        sx={{
-                            cursor: "pointer",
-                        }}
-                        onClick={() => {
-                            if (!onChange || !value || typeof value !== "number") return
-                            onChange(value + 1)
-                        }}
-                    >
-                        <SvgArrow size=".8rem" />
-                    </Box>
-                    <Box
-                        sx={{
-                            transform: "scaleY(-1)",
-                            cursor: "pointer",
-                        }}
-                        onClick={() => {
-                            if (!onChange || !value || typeof value !== "number") return
-                            if (value > 1) onChange(value - 1)
-                        }}
-                    >
-                        <SvgArrow size=".8rem" />
-                    </Box>
-                </Stack>
-            ),
-        }
+                    <SvgArrow size=".8rem" />
+                </Box>
+                <Box
+                    sx={{
+                        transform: "scaleY(-1)",
+                        cursor: "pointer",
+                    }}
+                    onClick={() => {
+                        if (!onChange || !value || typeof value !== "number") return
+                        if (value > 1) onChange(value - 1)
+                    }}
+                >
+                    <SvgArrow size=".8rem" />
+                </Box>
+            </Stack>
+        )
     }, [onChange, props.type, value])
 
     return (
@@ -85,6 +83,10 @@ export const NiceTextField = ({
                     py: 0,
                 },
 
+                ".MuiInputBase-multiline": {
+                    pl: 0,
+                },
+
                 ".MuiInputBase-root": {
                     backgroundColor: "#FFFFFF15",
                 },
@@ -93,7 +95,7 @@ export const NiceTextField = ({
                         backgroundColor: `${primaryColor}15`,
                     },
                     ".MuiOutlinedInput-notchedOutline": {
-                        border: `${primaryColor} 1px solid !important`,
+                        border: `${primaryColor} 1px inset !important`,
                     },
                 },
                 ...sx,
@@ -121,7 +123,7 @@ export const NiceTextField = ({
                         appearance: "textfield",
                     },
                     ".MuiOutlinedInput-notchedOutline": {
-                        border: `${"#FFFFFF"}50 1px solid`,
+                        border: `${"#FFFFFF"}50 1px inset`,
                         borderRadius: 0,
                     },
                 }}
@@ -143,7 +145,15 @@ export const NiceTextField = ({
                     onKeyDown && onKeyDown(e)
                     e.stopPropagation()
                 }}
-                InputProps={{ ...InputProps, ...numberArrows }}
+                InputProps={{
+                    ...InputProps,
+                    endAdornment: (
+                        <Stack direction="row" spacing="1rem" alignItems="center">
+                            {InputProps?.endAdornment}
+                            {numberArrowsEndAdornment}
+                        </Stack>
+                    ),
+                }}
                 {...props}
             />
         </Box>

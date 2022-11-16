@@ -90,16 +90,30 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
             whiteSpace: "nowrap",
             borderRadius: 0,
             transition: "all .1s",
+            mt: "1px",
+            mb: "1px",
+            ml: "1px",
+            mr: "1px",
 
             ...(buttonColor ? {} : { border: "none" }),
 
             ":hover": {
+                [`.${CORNER_CLASSNAME}`]: {
+                    opacity: 0,
+                },
+
                 [`&, *`]: !disableAutoColor
                     ? {
                           color: `${contrastTextColor} !important`,
                           fill: `${contrastTextColor} !important`,
                       }
                     : {},
+            },
+
+            ":disabled": {
+                [`.${CORNER_CLASSNAME}`]: {
+                    opacity: 0,
+                },
             },
 
             [`&:disabled .${OVERLAY_CLASSNAME}`]: {
@@ -112,9 +126,6 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
             },
             [`&:active:enabled .${OVERLAY_CLASSNAME}`]: {
                 opacity: 0.4,
-            },
-            [`&:hover:enabled .${CORNER_CLASSNAME}`]: {
-                opacity: 0,
             },
 
             ...sx,

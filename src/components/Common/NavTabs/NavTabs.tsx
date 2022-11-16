@@ -71,6 +71,10 @@ export const NavTabs = <T,>({
                         minHeight: 0,
                         py: 0,
                         zIndex: 2,
+
+                        ":hover": {
+                            backgroundColor: `${theme.factionTheme.primary}25`,
+                        },
                     },
                     ".MuiTabs-indicator": {
                         height: "100%",

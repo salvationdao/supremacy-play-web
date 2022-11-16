@@ -15,7 +15,7 @@ import { NiceBoxThing } from "../../../../Common/Nice/NiceBoxThing"
 import { NiceSelect } from "../../../../Common/Nice/NiceSelect"
 import { NiceTextField } from "../../../../Common/Nice/NiceTextField"
 import { MechBarStats } from "../../Common/MechBarStats"
-import { MechRepairBlocks } from "../../Common/MechRepairBlocks"
+import { MechRepairBlocks } from "../../../../Common/Mech/MechRepairBlocks"
 import { GetMechsRequest, GetMechsResponse } from "../../WarMachinesHangar"
 import { PlayerAssetMechEquipRequest } from "../MechLoadout/MechLoadout"
 import { MechName } from "../MechName"
@@ -522,8 +522,6 @@ const MechPickerDropdown = React.memo(function MechPickerDropdown() {
                         />
                         <NiceSelect
                             label="Sort:"
-                            primaryColor={theme.factionTheme.primary}
-                            secondaryColor={theme.factionTheme.secondary}
                             options={[
                                 { value: SortTypeLabel.MechQueueAsc, label: SortTypeLabel.MechQueueAsc },
                                 { value: SortTypeLabel.MechQueueDesc, label: SortTypeLabel.MechQueueDesc },

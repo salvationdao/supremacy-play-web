@@ -8,7 +8,7 @@ import { MechThumbnail } from "../../Hangar/WarMachinesHangar/Common/MechThumbna
 import React, { useMemo } from "react"
 import { MechBarStats } from "../../Hangar/WarMachinesHangar/Common/MechBarStats"
 import { WeaponSlot } from "./weaponSlot"
-import { MechRepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
+import { MechRepairBlocks } from "../../Common/Mech/MechRepairBlocks"
 import { useAuth } from "../../../containers"
 import { FancyButton } from "../../Common/Deprecated/FancyButton"
 import { TruncateTextLines } from "../../../theme/styles"

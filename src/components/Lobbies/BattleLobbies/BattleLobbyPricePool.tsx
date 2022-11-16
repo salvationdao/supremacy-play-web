@@ -1,13 +1,14 @@
-import { BattleLobby } from "../../../types/battle_queue"
-import { Box, IconButton, Popover, Stack, Typography } from "@mui/material"
-import { colors, fonts } from "../../../theme/theme"
+import { Box, IconButton, Stack, Typography } from "@mui/material"
 import React, { useCallback, useState } from "react"
-import { supFormatter } from "../../../helpers"
 import { SvgChest, SvgSupToken } from "../../../assets"
-import { InputField } from "../Common/InputField"
 import { useTheme } from "../../../containers/theme"
+import { supFormatter } from "../../../helpers"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { colors, fonts } from "../../../theme/theme"
+import { BattleLobby } from "../../../types/battle_queue"
+import { NicePopover } from "../../Common/Nice/NicePopover"
+import { InputField } from "../Common/InputField"
 
 interface BattleLobbyPricePoolProps {
     battleLobby: BattleLobby
@@ -96,7 +97,7 @@ export const BattleLobbyPricePool = ({ battleLobby }: BattleLobbyPricePoolProps)
                 >
                     <SvgChest size="1.5rem" fill={colors.gold} />
                 </IconButton>
-                <Popover
+                <NicePopover
                     id={"top-up-reward-popover"}
                     open={!!anchorEl}
                     anchorEl={anchorEl}
@@ -109,16 +110,8 @@ export const BattleLobbyPricePool = ({ battleLobby }: BattleLobbyPricePoolProps)
                         vertical: "bottom",
                         horizontal: "left",
                     }}
-                    sx={{
-                        ".MuiPaper-root": {
-                            backgroundColor: factionTheme.background,
-                            backgroundImage: "unset",
-                            border: `${factionTheme.primary}99 2px solid`,
-                            width: "35rem",
-                        },
-                    }}
                 >
-                    <Stack direction="column" sx={{ p: "1rem" }}>
+                    <Stack direction="column" sx={{ p: "1rem", width: "35rem" }}>
                         <Typography variant="h6" fontFamily={fonts.nostromoBlack}>
                             Reminder:
                         </Typography>
@@ -154,7 +147,7 @@ export const BattleLobbyPricePool = ({ battleLobby }: BattleLobbyPricePoolProps)
                             }
                         />
                     </Stack>
-                </Popover>
+                </NicePopover>
             </Stack>
 
             <Stack direction="row" alignItems="center" spacing=".4rem">

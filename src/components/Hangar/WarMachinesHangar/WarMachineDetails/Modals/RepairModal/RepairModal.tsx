@@ -8,7 +8,7 @@ import { GameServerKeys } from "../../../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../../../theme/theme"
 import { MechDetails } from "../../../../../../types"
 import { RepairOffer, RepairStatus } from "../../../../../../types/jobs"
-import { MechRepairBlocks } from "../../../Common/MechRepairBlocks"
+import { MechRepairBlocks } from "../../../../../Common/Mech/MechRepairBlocks"
 import { ExistingRepairJobCard } from "./ExistingRepairJobCard"
 import { HireContractorsCard } from "./HireContractorsCard"
 import { SelfRepairCard } from "./SelfRepairCard"
@@ -104,7 +104,7 @@ export const RepairModal = ({
                                 {remainDamagedBlocks} x DAMAGED BLOCKS
                             </Typography>
 
-                            <MechRepairBlocks mechID={selectedMechDetails?.id} defaultBlocks={selectedMechDetails?.repair_blocks} hideNumber />
+                            <MechRepairBlocks mechID={selectedMechDetails?.id} defaultBlocks={selectedMechDetails?.repair_blocks} />
                         </Stack>
 
                         <SelfRepairCard defaultOpenSelfRepair={defaultOpenSelfRepair} repairStatus={repairStatus} remainDamagedBlocks={remainDamagedBlocks} />

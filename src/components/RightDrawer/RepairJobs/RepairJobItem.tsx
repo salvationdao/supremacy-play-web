@@ -9,7 +9,7 @@ import { colors, fonts } from "../../../theme/theme"
 import { RepairJob } from "../../../types/jobs"
 import { FancyButton } from "../../Common/Deprecated/FancyButton"
 import { PlayerNameGid } from "../../Common/PlayerNameGid"
-import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
+import { RepairBlocks } from "../../Common/Mech/MechRepairBlocks"
 import { General } from "../../Marketplace/Common/MarketItem/General"
 
 interface RepairJobItemProps {
@@ -87,7 +87,7 @@ export const RepairJobItem = React.memo(function RepairJobItem({ repairJob, remo
                                 >
                                     <span>{remainDamagedBlocks}</span> BLOCKS REMAINING
                                 </Typography>
-                                <RepairBlocks size={7} defaultBlocks={repairJob.blocks_required_repair} remainDamagedBlocks={remainDamagedBlocks} hideNumber />
+                                <RepairBlocks size={7} defaultBlocks={repairJob.blocks_required_repair} remainDamagedBlocks={remainDamagedBlocks} />
                             </Stack>
                         </Stack>
 
