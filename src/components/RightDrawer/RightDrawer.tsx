@@ -3,9 +3,10 @@ import { DRAWER_TRANSITION_DURATION } from "../../constants"
 import { useAuth, useMobile, useUI } from "../../containers"
 import { useActiveRouteID } from "../../hooks/useActiveRouteID"
 import { RightRoutes } from "../../routes"
-import { colors, siteZIndex } from "../../theme/theme"
+import { siteZIndex } from "../../theme/theme"
 
 export const RIGHT_DRAWER_WIDTH = 38 // rem
+const RIGHT_DRAWER_OFFSET = "7rem"
 
 export const RightDrawer = () => {
     const { rightDrawerActiveTabID, setRightDrawerActiveTabID } = useUI()
@@ -20,20 +21,22 @@ export const RightDrawer = () => {
         <>
             <Drawer
                 transitionDuration={DRAWER_TRANSITION_DURATION}
-                open
+                open={!!rightDrawerActiveTabID}
                 variant="persistent"
                 anchor="right"
                 sx={{
                     flexShrink: 0,
-                    width: `${RIGHT_DRAWER_WIDTH}rem`,
+                    width: rightDrawerActiveTabID ? `${RIGHT_DRAWER_WIDTH}rem` : RIGHT_DRAWER_OFFSET,
                     transition: `all ${DRAWER_TRANSITION_DURATION}ms cubic-bezier(0, 0, 0.2, 1)`,
                     zIndex: siteZIndex.Drawer,
                     "& .MuiDrawer-paper": {
                         width: `${RIGHT_DRAWER_WIDTH}rem`,
-                        backgroundColor: colors.darkNavy,
+                        backgroundColor: `#1B0313`,
                         position: "absolute",
                         borderLeft: `1px solid #9F0410`,
                         overflow: "hidden",
+                        transform: !rightDrawerActiveTabID ? `translateX(calc(${RIGHT_DRAWER_WIDTH}rem - ${RIGHT_DRAWER_OFFSET})) !important` : "",
+                        visibility: !rightDrawerActiveTabID ? "visible !important" : "",
                     },
                 }}
             >
@@ -52,6 +55,9 @@ export const RightDrawer = () => {
                             sx={{
                                 display: "flex",
                                 flexDirection: "column",
+                                "&:not(:last-child)": {
+                                    mb: ".5rem",
+                                },
                                 "&.Mui-expanded": {
                                     flex: 1,
                                     minHeight: 0,

@@ -362,8 +362,6 @@ export const TextMessage = React.memo(function TextMessage({
                                     <Typography
                                         sx={{
                                             flexShrink: 0,
-                                            display: "inline-flex",
-                                            alignItems: "center",
                                             lineHeight: 1,
                                             fontFamily: fonts.nostromoBold,
                                             fontSize: fontSizes.normal,
@@ -379,8 +377,7 @@ export const TextMessage = React.memo(function TextMessage({
                                             },
                                         }}
                                     >
-                                        <SvgSkull size={fontSizes.large} fill={abilityKillColor} sx={{ display: "inline-block", mr: ".3rem" }} />
-                                        {from_user_stat.ability_kill_count}
+                                        <SvgSkull size={fontSizes.large} fill={abilityKillColor} inline /> {from_user_stat.ability_kill_count}
                                     </Typography>
                                 )}
                             </Stack>

@@ -13,6 +13,7 @@ import { RepairJob } from "../../../types/jobs"
 import { SortTypeLabel } from "../../../types/marketplace"
 import { TotalAndPageSizeOptions } from "../../Common/Deprecated/TotalAndPageSizeOptions"
 import { NiceButton } from "../../Common/Nice/NiceButton"
+import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
 import { DoRepairModal } from "./DoRepairModal"
 import { RepairJobItem } from "./RepairJobItem"
 
@@ -177,6 +178,33 @@ export const RepairJobs = () => {
 
 const Header = ({ isOpen, onClose }: HeaderProps) => {
     const theme = useTheme()
+    const [repairJobs, setRepairJobs] = useState<RepairJob[]>([])
+
+    useGameServerSubscriptionSecured<RepairJob[]>(
+        {
+            URI: "/repair_offer/update",
+            key: GameServerKeys.SubRepairJobListUpdated,
+        },
+        (payload) => {
+            if (!payload || payload.length <= 0) return
+
+            setRepairJobs((prev) => {
+                let newArray = [...prev]
+
+                for (let index = 0; index < payload.length; index++) {
+                    const foundIndex = newArray.findIndex((rj) => rj.id === payload[index].id)
+                    if (foundIndex >= 0) {
+                        newArray[foundIndex] = payload[index]
+                    } else {
+                        // If repair job is not in the array, then add it
+                        newArray = [...newArray, payload[index]]
+                    }
+                }
+
+                return newArray
+            })
+        },
+    )
 
     return (
         <Stack
@@ -190,17 +218,19 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
                 transition: "background-color .2s ease-out",
             }}
         >
-            <NiceButton
-                onClick={onClose}
-                buttonColor={theme.factionTheme.primary}
-                corners
-                sx={{
-                    p: ".8rem",
-                    pb: ".6rem",
-                }}
-            >
-                <SvgRepair size="3rem" />
-            </NiceButton>
+            <NiceTooltip text="Repair Jobs" placement="left">
+                <NiceButton
+                    onClick={onClose}
+                    buttonColor={theme.factionTheme.primary}
+                    corners
+                    sx={{
+                        p: ".8rem",
+                        pb: ".6rem",
+                    }}
+                >
+                    <SvgRepair size="3rem" />
+                </NiceButton>
+            </NiceTooltip>
             <Typography
                 sx={{
                     fontFamily: fonts.nostromoBlack,
@@ -208,6 +238,14 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
                 }}
             >
                 Repair Jobs
+            </Typography>
+            <Box flex={1} />
+            <Typography
+                sx={{
+                    color: repairJobs.length > 0 ? colors.lightGrey : colors.darkGrey,
+                }}
+            >
+                {repairJobs.length} jobs
             </Typography>
         </Stack>
     )
