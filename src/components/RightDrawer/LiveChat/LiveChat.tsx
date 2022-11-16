@@ -76,17 +76,19 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
                 transition: "background-color .2s ease-out",
             }}
         >
-            <NiceButton
-                onClick={onClose}
-                buttonColor={theme.factionTheme.primary}
-                corners
-                sx={{
-                    p: ".8rem",
-                    pb: ".6rem",
-                }}
-            >
-                <SvgChat size="3rem" />
-            </NiceButton>
+            <NiceTooltip text="Live Chat" placement="left">
+                <NiceButton
+                    onClick={onClose}
+                    buttonColor={theme.factionTheme.primary}
+                    corners
+                    sx={{
+                        p: ".8rem",
+                        pb: ".6rem",
+                    }}
+                >
+                    <SvgChat size="3rem" />
+                </NiceButton>
+            </NiceTooltip>
             <Typography
                 sx={{
                     fontFamily: fonts.nostromoBlack,

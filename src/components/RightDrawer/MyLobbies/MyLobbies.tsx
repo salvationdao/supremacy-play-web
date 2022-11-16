@@ -9,6 +9,7 @@ import { HeaderProps } from "../../../routes"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleLobby } from "../../../types/battle_queue"
 import { NiceButton } from "../../Common/Nice/NiceButton"
+import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
 import { SmallLobbyCard } from "../../Lobbies/BattleLobbies/SmallLobbyCard"
 
 export const MyLobbies = () => {
@@ -124,17 +125,19 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
                 transition: "background-color .2s ease-out",
             }}
         >
-            <NiceButton
-                onClick={onClose}
-                buttonColor={theme.factionTheme.primary}
-                corners
-                sx={{
-                    p: ".8rem",
-                    pb: ".6rem",
-                }}
-            >
-                <SvgLobbies size="3rem" />
-            </NiceButton>
+            <NiceTooltip text="My Lobbies" placement="left">
+                <NiceButton
+                    onClick={onClose}
+                    buttonColor={theme.factionTheme.primary}
+                    corners
+                    sx={{
+                        p: ".8rem",
+                        pb: ".6rem",
+                    }}
+                >
+                    <SvgLobbies size="3rem" />
+                </NiceButton>
+            </NiceTooltip>
             <Typography
                 sx={{
                     fontFamily: fonts.nostromoBlack,

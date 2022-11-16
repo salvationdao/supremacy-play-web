@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { PlayerListContent } from "../.."
+import { NiceTooltip, PlayerListContent } from "../.."
 import { SvgUserDiamond2 } from "../../../assets"
 import { useChat } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -34,17 +34,19 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
                 transition: "background-color .2s ease-out",
             }}
         >
-            <NiceButton
-                onClick={onClose}
-                buttonColor={theme.factionTheme.primary}
-                corners
-                sx={{
-                    p: ".8rem",
-                    pb: ".6rem",
-                }}
-            >
-                <SvgUserDiamond2 size="3rem" />
-            </NiceButton>
+            <NiceTooltip text="Active Players" placement="left">
+                <NiceButton
+                    onClick={onClose}
+                    buttonColor={theme.factionTheme.primary}
+                    corners
+                    sx={{
+                        p: ".8rem",
+                        pb: ".6rem",
+                    }}
+                >
+                    <SvgUserDiamond2 size="3rem" />
+                </NiceButton>
+            </NiceTooltip>
             <Typography
                 sx={{
                     fontFamily: fonts.nostromoBlack,

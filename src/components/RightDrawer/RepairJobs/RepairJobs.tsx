@@ -13,6 +13,7 @@ import { RepairJob } from "../../../types/jobs"
 import { SortTypeLabel } from "../../../types/marketplace"
 import { TotalAndPageSizeOptions } from "../../Common/Deprecated/TotalAndPageSizeOptions"
 import { NiceButton } from "../../Common/Nice/NiceButton"
+import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
 import { DoRepairModal } from "./DoRepairModal"
 import { RepairJobItem } from "./RepairJobItem"
 
@@ -217,17 +218,19 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
                 transition: "background-color .2s ease-out",
             }}
         >
-            <NiceButton
-                onClick={onClose}
-                buttonColor={theme.factionTheme.primary}
-                corners
-                sx={{
-                    p: ".8rem",
-                    pb: ".6rem",
-                }}
-            >
-                <SvgRepair size="3rem" />
-            </NiceButton>
+            <NiceTooltip text="Repair Jobs" placement="left">
+                <NiceButton
+                    onClick={onClose}
+                    buttonColor={theme.factionTheme.primary}
+                    corners
+                    sx={{
+                        p: ".8rem",
+                        pb: ".6rem",
+                    }}
+                >
+                    <SvgRepair size="3rem" />
+                </NiceButton>
+            </NiceTooltip>
             <Typography
                 sx={{
                     fontFamily: fonts.nostromoBlack,
