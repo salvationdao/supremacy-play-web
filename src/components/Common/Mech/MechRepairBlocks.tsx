@@ -32,6 +32,7 @@ export const RepairBlocks = ({
                     "& > div": {
                         p: `${size * 0.36}px`,
                         ".single-block": {
+                            overflow: "hidden",
                             position: "relative",
                             height: `${size}px`,
                             width: `${size}px`,
@@ -55,9 +56,9 @@ export const RepairBlocks = ({
                                       "::after": {
                                           content: '""',
                                           position: "absolute",
-                                          top: 0,
+                                          top: "-3px",
                                           left: 0,
-                                          bottom: 0,
+                                          bottom: "-3px",
                                           width: `${pulsateEffectPercent}%`,
                                           backgroundColor: colors.green,
                                       },
@@ -99,6 +100,7 @@ export const MechRepairBlocks = React.memo(function MechRepairBlocks({
     showNumber,
     pulsateEffectPercent,
     size,
+    sx,
 }: {
     mechID?: string
     defaultBlocks?: number
@@ -106,6 +108,7 @@ export const MechRepairBlocks = React.memo(function MechRepairBlocks({
     showNumber?: boolean
     pulsateEffectPercent?: number
     size?: number
+    sx?: SxProps
 }) {
     const repairStatus = useGameServerSubscriptionSecured<RepairStatus>({
         URI: `/mech/${mechID}/repair_case`,
@@ -130,6 +133,7 @@ export const MechRepairBlocks = React.memo(function MechRepairBlocks({
             showNumber={showNumber}
             pulsateEffectPercent={pulsateEffectPercent}
             size={size}
+            sx={sx}
         />
     )
 })

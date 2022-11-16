@@ -46,7 +46,7 @@ export const GlobalSnackbar = () => {
 
     const severityDeets: { color: string; icon: ReactNode } = useMemo(() => {
         let color = colors.blue
-        let icon = <SvgInfoCircular inline size="1.4rem" />
+        let icon = <SvgInfoCircular inline size="1.8rem" />
 
         switch (messageInfo?.severity) {
             case "error":
@@ -54,11 +54,11 @@ export const GlobalSnackbar = () => {
                 break
             case "success":
                 color = colors.green
-                icon = <SvgSuccess inline size="1.4rem" />
+                icon = <SvgSuccess inline size="1.8rem" />
                 break
             case "warning":
                 color = colors.orange
-                icon = <SvgWarnTriangle inline size="1.4rem" />
+                icon = <SvgWarnTriangle inline size="1.8rem" />
                 break
             case "info":
             default:

@@ -93,6 +93,7 @@ export const RepairBay = React.memo(function RepairBay({ open }: { open: boolean
                     <Stack alignItems="center" justifyContent="center" sx={{ minHeight: "20rem", p: "1.8rem" }}>
                         {activeRepairSlot ? (
                             <RepairBayItem
+                                isBigVersion
                                 repairSlot={activeRepairSlot}
                                 belowSlot={queuedRepairSlots ? queuedRepairSlots[0] : undefined}
                                 removeRepairBay={removeRepairBay}

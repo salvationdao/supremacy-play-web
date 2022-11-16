@@ -36,6 +36,7 @@ export const MechBulkActions = React.memo(function MechBulkActions({
                     Actions ({selectedMechs.length})
                 </Typography>
             </NiceButton>
+
             <BulkActionPopover
                 open={bulkPopover}
                 onClose={() => setBulkPopover(false)}
