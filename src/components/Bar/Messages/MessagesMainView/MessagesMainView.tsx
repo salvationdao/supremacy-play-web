@@ -127,7 +127,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                             textAlign: "center",
                         }}
                     >
-                        YOUR INBOX IS EMPTY.
+                        YOUR INBOX IS EMPTY
                     </Typography>
                 </Stack>
             )
