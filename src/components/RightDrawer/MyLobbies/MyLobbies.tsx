@@ -1,15 +1,17 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useTheme } from "../../../containers/theme"
-import { fonts } from "../../../theme/theme"
-import { useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../keys"
-import { BattleLobby } from "../../../types/battle_queue"
 import { useMemo, useState } from "react"
 import FlipMove from "react-flip-move"
+import { SvgLobbies } from "../../../assets"
+import { useTheme } from "../../../containers/theme"
+import { useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
+import { HeaderProps } from "../../../routes"
+import { fonts } from "../../../theme/theme"
+import { BattleLobby } from "../../../types/battle_queue"
+import { NiceButton } from "../../Common/Nice/NiceButton"
 import { SmallLobbyCard } from "../../Lobbies/BattleLobbies/SmallLobbyCard"
 
 export const MyLobbies = () => {
-    const { factionTheme } = useTheme()
     const [involvedLobbies, setInvolvedLobbies] = useState<BattleLobby[]>([])
     useGameServerSubscriptionSecuredUser<BattleLobby[]>(
         {
@@ -62,22 +64,7 @@ export const MyLobbies = () => {
 
     return (
         <>
-            <Stack sx={{ position: "relative", height: "100%", backgroundColor: factionTheme.background }}>
-                <Stack
-                    direction="row"
-                    alignItems="center"
-                    justifyContent="center"
-                    sx={{
-                        height: "5rem",
-                        backgroundColor: factionTheme.primary,
-                        borderBottom: `${factionTheme.primary} 2px solid`,
-                    }}
-                >
-                    <Typography color={factionTheme.secondary} fontFamily={fonts.nostromoBlack}>
-                        My Lobbies
-                    </Typography>
-                </Stack>
-
+            <Stack sx={{ position: "relative", height: "100%" }}>
                 <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
                     <Box
                         flex={1}
@@ -94,3 +81,42 @@ export const MyLobbies = () => {
         </>
     )
 }
+
+const Header = ({ isOpen, onClose }: HeaderProps) => {
+    const theme = useTheme()
+
+    return (
+        <Stack
+            spacing="1rem"
+            direction="row"
+            sx={{
+                width: "100%",
+                p: "1rem",
+                alignItems: "center",
+                backgroundColor: isOpen ? `#1B0313` : `#1c1424`,
+                transition: "background-color .2s ease-out",
+            }}
+        >
+            <NiceButton
+                onClick={onClose}
+                buttonColor={theme.factionTheme.primary}
+                corners
+                sx={{
+                    p: ".8rem",
+                    pb: ".6rem",
+                }}
+            >
+                <SvgLobbies size="3rem" />
+            </NiceButton>
+            <Typography
+                sx={{
+                    fontFamily: fonts.nostromoBlack,
+                    fontSize: "1.8rem",
+                }}
+            >
+                Repair Jobs
+            </Typography>
+        </Stack>
+    )
+}
+MyLobbies.Header = Header

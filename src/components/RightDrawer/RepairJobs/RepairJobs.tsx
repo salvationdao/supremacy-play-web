@@ -26,7 +26,6 @@ const sortOptions = [
 ]
 
 export const RepairJobs = () => {
-    const theme = useTheme()
     const [repairJobModal, setRepairJobModal] = useState<RepairJob>()
 
     // Items

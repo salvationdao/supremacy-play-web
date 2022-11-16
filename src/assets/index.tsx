@@ -50,6 +50,7 @@ import LoadoutSpeed from "!@svgr/webpack!./svg/Loadout/Speed.svg"
 import LoadoutUtility from "!@svgr/webpack!./svg/Loadout/Utility.svg"
 import LoadoutWeapon from "!@svgr/webpack!./svg/Loadout/Weapon.svg"
 import LoadoutWins from "!@svgr/webpack!./svg/Loadout/Wins.svg"
+import Lobbies from "!@svgr/webpack!./svg/Lobbies.svg"
 import Lock from "!@svgr/webpack!./svg/Lock.svg"
 import Logout from "!@svgr/webpack!./svg/Logout.svg"
 import Mail from "!@svgr/webpack!./svg/Mail.svg"
@@ -1693,5 +1694,11 @@ export const SvgChatGlobal: React.VoidFunctionComponent<SvgWrapperProps> = (prop
 export const SvgUserDiamond2: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <UserDiamond2 />
+    </SvgWrapper>
+)
+
+export const SvgLobbies: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Lobbies />
     </SvgWrapper>
 )

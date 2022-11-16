@@ -74,6 +74,7 @@ export const RightRoutes: SideRouteSingle[] = [
         icon: <SvgRepair size="1.1rem" sx={{ pt: ".3rem" }} />,
         label: "My Lobbies",
         Component: MyLobbies,
+        Header: MyLobbies.Header,
         requireAuth: true,
         matchRouteIDs: undefined,
         mountAllTime: false,
