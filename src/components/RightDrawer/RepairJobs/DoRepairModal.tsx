@@ -319,7 +319,6 @@ export const DoRepairModal = React.memo(function DoRepairModal({ repairStatus, r
                                     size={12}
                                     defaultBlocks={repairJob?.blocks_required_repair || repairStatus?.blocks_required_repair}
                                     remainDamagedBlocks={remainDamagedBlocks}
-                                    hideNumber
                                 />
                             </Stack>
                         </Stack>

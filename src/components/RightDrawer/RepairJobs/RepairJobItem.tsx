@@ -87,7 +87,7 @@ export const RepairJobItem = React.memo(function RepairJobItem({ repairJob, remo
                                 >
                                     <span>{remainDamagedBlocks}</span> BLOCKS REMAINING
                                 </Typography>
-                                <RepairBlocks size={7} defaultBlocks={repairJob.blocks_required_repair} remainDamagedBlocks={remainDamagedBlocks} hideNumber />
+                                <RepairBlocks size={7} defaultBlocks={repairJob.blocks_required_repair} remainDamagedBlocks={remainDamagedBlocks} />
                             </Stack>
                         </Stack>
 

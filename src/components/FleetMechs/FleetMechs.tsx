@@ -369,12 +369,12 @@ export const FleetMechs = () => {
                         {
                             label: "Repair Progress",
                             options: [
-                                { value: "0", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={0} hideNumber size={7} /> },
-                                { value: "1", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={1} hideNumber size={7} /> },
-                                { value: "2", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={2} hideNumber size={7} /> },
-                                { value: "3", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={3} hideNumber size={7} /> },
-                                { value: "4", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={4} hideNumber size={7} /> },
-                                { value: "5", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={5} hideNumber size={7} /> },
+                                { value: "0", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={0} size={7} /> },
+                                { value: "1", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={1} size={7} /> },
+                                { value: "2", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={2} size={7} /> },
+                                { value: "3", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={3} size={7} /> },
+                                { value: "4", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={4} size={7} /> },
+                                { value: "5", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={5} size={7} /> },
                             ],
                             initialExpanded: true,
                             selected: repairBlocks,
