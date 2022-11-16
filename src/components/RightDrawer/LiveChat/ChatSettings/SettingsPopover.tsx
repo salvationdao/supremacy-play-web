@@ -1,7 +1,6 @@
 import { Stack, Typography } from "@mui/material"
-import { MutableRefObject, useEffect } from "react"
+import { MutableRefObject } from "react"
 import { SplitView, SystemMessageFilter } from "../../.."
-import { useToggle } from "../../../../hooks"
 import { fonts } from "../../../../theme/theme"
 import { NicePopover } from "../../../Common/Nice/NicePopover"
 import { ChatFontSize } from "./ChatFontSize"
@@ -14,33 +13,14 @@ interface SettingsPopoverProps {
 }
 
 export const SettingsPopover = ({ open, popoverRef, onClose }: SettingsPopoverProps) => {
-    const [localOpen, toggleLocalOpen] = useToggle(open)
-
-    useEffect(() => {
-        if (!localOpen) {
-            const timeout = setTimeout(() => {
-                onClose()
-            }, 300)
-
-            return () => clearTimeout(timeout)
-        }
-    }, [localOpen, onClose])
-
     return (
         <NicePopover
-            open={localOpen}
+            open={open}
             anchorEl={popoverRef.current}
-            onClose={() => toggleLocalOpen(false)}
+            onClose={onClose}
             anchorOrigin={{
                 vertical: "bottom",
                 horizontal: "left",
-            }}
-            sx={{
-                ".MuiPaper-root": {
-                    mt: "-3rem",
-                    background: "none",
-                    boxShadow: 0,
-                },
             }}
         >
             <Stack

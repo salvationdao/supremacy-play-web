@@ -145,9 +145,7 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
                     </NiceButton>
                 </Stack>
             </Fade>
-            {showSettings && (
-                <SettingsPopover open={showSettings} popoverRef={popoverRef} onClose={() => setShowSettings(false)} primaryColor={theme.factionTheme.primary} />
-            )}
+            <SettingsPopover open={showSettings} popoverRef={popoverRef} onClose={() => setShowSettings(false)} primaryColor={theme.factionTheme.primary} />
         </Stack>
     )
 }
