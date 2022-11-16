@@ -1,9 +1,9 @@
-import { Popover, Stack, Typography } from "@mui/material"
-import { MutableRefObject, useEffect, useMemo } from "react"
-import { ClipThing, SplitView, SystemMessageFilter } from "../../.."
-import { shadeColor } from "../../../../helpers"
+import { Stack, Typography } from "@mui/material"
+import { MutableRefObject, useEffect } from "react"
+import { SplitView, SystemMessageFilter } from "../../.."
 import { useToggle } from "../../../../hooks"
 import { fonts } from "../../../../theme/theme"
+import { NicePopover } from "../../../Common/Nice/NicePopover"
 import { ChatFontSize } from "./ChatFontSize"
 
 interface SettingsPopoverProps {
@@ -13,7 +13,7 @@ interface SettingsPopoverProps {
     primaryColor: string
 }
 
-export const SettingsPopover = ({ open, popoverRef, onClose, primaryColor }: SettingsPopoverProps) => {
+export const SettingsPopover = ({ open, popoverRef, onClose }: SettingsPopoverProps) => {
     const [localOpen, toggleLocalOpen] = useToggle(open)
 
     useEffect(() => {
@@ -26,10 +26,8 @@ export const SettingsPopover = ({ open, popoverRef, onClose, primaryColor }: Set
         }
     }, [localOpen, onClose])
 
-    const backgroundColor = useMemo(() => shadeColor(primaryColor, -95), [primaryColor])
-
     return (
-        <Popover
+        <NicePopover
             open={localOpen}
             anchorEl={popoverRef.current}
             onClose={() => toggleLocalOpen(false)}
@@ -45,24 +43,24 @@ export const SettingsPopover = ({ open, popoverRef, onClose, primaryColor }: Set
                 },
             }}
         >
-            <ClipThing
-                clipSize="10px"
-                border={{
-                    borderColor: primaryColor,
-                    borderThickness: ".2rem",
+            <Stack
+                spacing=".7rem"
+                sx={{
+                    position: "relative",
+                    width: "30rem",
+                    maxWidth: "30rem",
+                    px: "1.6rem",
+                    py: "1.2rem",
+                    pb: "1.6rem",
                 }}
-                backgroundColor={backgroundColor}
-                sx={{ height: "100%" }}
             >
-                <Stack spacing=".7rem" sx={{ position: "relative", width: "30rem", maxWidth: "30rem", px: "1.6rem", py: "1.2rem", pb: "1.6rem" }}>
-                    <Typography gutterBottom sx={{ fontFamily: fonts.nostromoBlack }}>
-                        CHAT SETTINGS
-                    </Typography>
-                    <ChatFontSize />
-                    <SplitView />
-                    <SystemMessageFilter />
-                </Stack>
-            </ClipThing>
-        </Popover>
+                <Typography gutterBottom sx={{ fontFamily: fonts.nostromoBlack }}>
+                    CHAT SETTINGS
+                </Typography>
+                <ChatFontSize />
+                <SplitView />
+                <SystemMessageFilter />
+            </Stack>
+        </NicePopover>
     )
 }

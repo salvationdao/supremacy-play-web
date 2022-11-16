@@ -1,8 +1,10 @@
-import { Box, IconButton, Popover, Slider, Stack, Typography } from "@mui/material"
+import { Box, IconButton, Slider, Stack, Typography } from "@mui/material"
 import OvenLiveKit from "ovenlivekit"
 import OvenPlayer from "ovenplayer"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { SvgMicrophone, SvgMicrophoneMute, SvgVoice, SvgVolume, SvgVolumeMute } from "../../../assets"
+import ConnectSound from "../../../assets/voiceChat/Connect.wav"
+import DisconnectSound from "../../../assets/voiceChat/Disconnect.wav"
 import { useArena, useAuth, useGlobalNotifications, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { acronym, shadeColor } from "../../../helpers"
@@ -12,10 +14,9 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { Faction, FeatureName, User } from "../../../types"
 import { StyledImageText } from "../../BattleArena/Notifications/Common/StyledImageText"
-import ConnectSound from "../../../assets/voiceChat/Connect.wav"
-import DisconnectSound from "../../../assets/voiceChat/Disconnect.wav"
 import { ConfirmModal } from "../../Common/Deprecated/ConfirmModal"
 import { FancyButton } from "../../Common/Deprecated/FancyButton"
+import { NicePopover } from "../../Common/Nice/NicePopover"
 
 export interface VoiceStream {
     listen_url: string
@@ -357,7 +358,7 @@ export const VoiceChat = () => {
                 </Box>
             </FancyButton>
 
-            <Popover
+            <NicePopover
                 sx={{ zIndex: 400 }}
                 id={"voice-chat"}
                 open={open}
@@ -391,7 +392,7 @@ export const VoiceChat = () => {
                         onVoteKick={voteKick}
                     />
                 </Box>
-            </Popover>
+            </NicePopover>
 
             <>
                 {voiceStreams &&

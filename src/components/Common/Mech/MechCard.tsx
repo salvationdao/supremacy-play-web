@@ -22,8 +22,8 @@ interface MechCardProps {
 
 // CSS grid widths of each component in list view
 const MECH_IMAGE_GRID_WIDTH = "8rem"
-const MECH_NAME_GRID_WIDTH = "1fr"
-const OWNER_NAME_GRID_WIDTH = "1fr"
+const MECH_NAME_GRID_WIDTH = "minmax(8rem, 1fr)"
+const OWNER_NAME_GRID_WIDTH = "minmax(8rem, 1fr)"
 const MECH_STATUS_GRID_WIDTH = "10rem"
 const MECH_BLOCKS_GRID_WIDTH = "15rem"
 const KDWL_GRID_WIDTH = "repeat(4, 5rem)"

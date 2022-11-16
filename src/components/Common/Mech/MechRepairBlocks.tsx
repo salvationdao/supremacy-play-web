@@ -9,14 +9,14 @@ import { RepairStatus } from "../../../types/jobs"
 export const RepairBlocks = ({
     defaultBlocks,
     remainDamagedBlocks,
-    hideNumber,
+    showNumber,
     size = 8.4,
     pulsateEffectPercent,
     sx,
 }: {
     defaultBlocks?: number
     remainDamagedBlocks: number
-    hideNumber?: boolean
+    showNumber?: boolean
     size?: number
     pulsateEffectPercent?: number // Out of 100
     sx?: SxProps
@@ -27,6 +27,7 @@ export const RepairBlocks = ({
             <Stack
                 direction="row"
                 flexWrap="wrap"
+                alignItems="center"
                 sx={{
                     "& > div": {
                         p: `${size * 0.36}px`,
@@ -72,7 +73,7 @@ export const RepairBlocks = ({
                     </div>
                 ))}
 
-                {!hideNumber && defaultBlocks && remainDamagedBlocksFix > 0 && (
+                {showNumber && defaultBlocks && remainDamagedBlocksFix > 0 && (
                     <Typography
                         variant="caption"
                         sx={{
@@ -95,14 +96,14 @@ export const MechRepairBlocks = React.memo(function MechRepairBlocks({
     mechID,
     defaultBlocks,
     damagedBlocks,
-    hideNumber,
+    showNumber,
     pulsateEffectPercent,
     size,
 }: {
     mechID?: string
     defaultBlocks?: number
     damagedBlocks?: number
-    hideNumber?: boolean
+    showNumber?: boolean
     pulsateEffectPercent?: number
     size?: number
 }) {
@@ -126,7 +127,7 @@ export const MechRepairBlocks = React.memo(function MechRepairBlocks({
         <RepairBlocks
             defaultBlocks={defaultBlocks}
             remainDamagedBlocks={remainDamagedBlocks}
-            hideNumber={hideNumber}
+            showNumber={showNumber}
             pulsateEffectPercent={pulsateEffectPercent}
             size={size}
         />

@@ -1,9 +1,9 @@
-import { Box, Popover, Stack } from "@mui/material"
+import { Box, Stack } from "@mui/material"
 import { MutableRefObject, useCallback, useEffect } from "react"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
 import { ShoppingCart } from "../../../../types/fiat"
-import { NiceBoxThing } from "../../../Common/Nice/NiceBoxThing"
+import { NicePopover } from "../../../Common/Nice/NicePopover"
 import { ShoppingCartTable } from "./ShoppingCartTable"
 
 interface Props {
@@ -34,7 +34,7 @@ export const ShoppingCartPopover = ({ open, loading, shoppingCart, popoverRef, o
     const backgroundColor = theme.factionTheme.background
 
     return (
-        <Popover
+        <NicePopover
             open={localOpen}
             anchorEl={popoverRef.current}
             onClose={closePopover}
@@ -47,19 +47,17 @@ export const ShoppingCartPopover = ({ open, loading, shoppingCart, popoverRef, o
                 horizontal: "center",
             }}
         >
-            <NiceBoxThing border={{ color: theme.factionTheme.primary }} background={{ colors: [theme.factionTheme.background] }} sx={{ height: "100%" }}>
-                <Stack spacing="2rem" sx={{ position: "relative", minWidth: "35rem", maxHeight: "90vh", px: "2rem", pt: "1.6rem", pb: "2rem" }}>
-                    <Box sx={{ minWidth: "500px" }}>
-                        <ShoppingCartTable
-                            loading={loading}
-                            shoppingCart={shoppingCart}
-                            primaryColor={primaryColor}
-                            backgroundColor={backgroundColor}
-                            onCheckoutClicked={closePopover}
-                        />
-                    </Box>
-                </Stack>
-            </NiceBoxThing>
-        </Popover>
+            <Stack spacing="2rem" sx={{ position: "relative", minWidth: "35rem", maxHeight: "90vh", px: "2rem", pt: "1.6rem", pb: "2rem" }}>
+                <Box sx={{ minWidth: "500px" }}>
+                    <ShoppingCartTable
+                        loading={loading}
+                        shoppingCart={shoppingCart}
+                        primaryColor={primaryColor}
+                        backgroundColor={backgroundColor}
+                        onCheckoutClicked={closePopover}
+                    />
+                </Box>
+            </Stack>
+        </NicePopover>
     )
 }

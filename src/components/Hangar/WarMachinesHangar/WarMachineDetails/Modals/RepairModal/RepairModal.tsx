@@ -104,7 +104,7 @@ export const RepairModal = ({
                                 {remainDamagedBlocks} x DAMAGED BLOCKS
                             </Typography>
 
-                            <MechRepairBlocks mechID={selectedMechDetails?.id} defaultBlocks={selectedMechDetails?.repair_blocks} hideNumber />
+                            <MechRepairBlocks mechID={selectedMechDetails?.id} defaultBlocks={selectedMechDetails?.repair_blocks} />
                         </Stack>
 
                         <SelfRepairCard defaultOpenSelfRepair={defaultOpenSelfRepair} repairStatus={repairStatus} remainDamagedBlocks={remainDamagedBlocks} />

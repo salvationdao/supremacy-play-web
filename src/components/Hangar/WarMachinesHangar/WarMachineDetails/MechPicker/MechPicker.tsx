@@ -522,8 +522,6 @@ const MechPickerDropdown = React.memo(function MechPickerDropdown() {
                         />
                         <NiceSelect
                             label="Sort:"
-                            primaryColor={theme.factionTheme.primary}
-                            secondaryColor={theme.factionTheme.secondary}
                             options={[
                                 { value: SortTypeLabel.MechQueueAsc, label: SortTypeLabel.MechQueueAsc },
                                 { value: SortTypeLabel.MechQueueDesc, label: SortTypeLabel.MechQueueDesc },

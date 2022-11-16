@@ -42,7 +42,7 @@ export const SortAndFilters = React.memo(function SortAndFilters({ open, chipFil
 
     return (
         <NiceBoxThing
-            border={{ color: "#FFFFFF38", thickness: "very-lean" }}
+            border={{ color: "#FFFFFF28", thickness: "very-lean" }}
             background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.06 }}
             sx={{
                 visibility: open ? "visible" : "hidden",

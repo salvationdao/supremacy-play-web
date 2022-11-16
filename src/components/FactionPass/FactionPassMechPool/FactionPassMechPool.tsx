@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { EmptyWarMachinesPNG, SvgFilter, SvgGridView, SvgListView, SvgSearch } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, parseString } from "../../../helpers"
@@ -10,8 +10,9 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { LobbyMech, MechStatusEnum, RarityEnum } from "../../../types"
 import { SortTypeLabel } from "../../../types/marketplace"
-import { BulkActionPopover } from "../../Common/Mech/BulkActionPopover"
+import { MechBulkActions } from "../../Common/Mech/MechBulkActions"
 import { MechCard } from "../../Common/Mech/MechCard"
+import { RepairBlocks } from "../../Common/Mech/MechRepairBlocks"
 import { NavTabs } from "../../Common/NavTabs/NavTabs"
 import { usePageTabs } from "../../Common/NavTabs/usePageTabs"
 import { NiceButton } from "../../Common/Nice/NiceButton"
@@ -19,7 +20,6 @@ import { NiceButtonGroup } from "../../Common/Nice/NiceButtonGroup"
 import { NiceSelect } from "../../Common/Nice/NiceSelect"
 import { NiceTextField } from "../../Common/Nice/NiceTextField"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
-import { RepairBlocks } from "../../Common/Mech/MechRepairBlocks"
 
 enum UrlQueryParams {
     Sort = "sort",
@@ -84,8 +84,6 @@ export const FactionPassMechPool = () => {
 
     // For bulk selecting mechs
     const [selectedMechs, setSelectedMechs] = useState<LobbyMech[]>([])
-    const [bulkPopover, setBulkPopover] = useState(false)
-    const bulkPopoverRef = useRef(null)
     const toggleSelected = useCallback((mech: LobbyMech) => {
         setSelectedMechs((prev) => {
             const newArray = [...prev]
@@ -217,8 +215,7 @@ export const FactionPassMechPool = () => {
 
         // Pagination
         result = result.slice((page - 1) * pageSize, page * pageSize)
-        changePage(1)
-        setTotalItems(result.length)
+        setTotalItems(mechs.length)
 
         setDisplayMechs(result)
     }, [changePage, deaths, isLoading, kills, losses, mechs, page, pageSize, rarities, repairBlocks, search, setTotalItems, sort, status, updateQuery, wins])
@@ -343,12 +340,12 @@ export const FactionPassMechPool = () => {
                         {
                             label: "Repair Progress",
                             options: [
-                                { value: "0", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={0} hideNumber size={7} /> },
-                                { value: "1", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={1} hideNumber size={7} /> },
-                                { value: "2", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={2} hideNumber size={7} /> },
-                                { value: "3", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={3} hideNumber size={7} /> },
-                                { value: "4", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={4} hideNumber size={7} /> },
-                                { value: "5", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={5} hideNumber size={7} /> },
+                                { value: "0", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={0} size={7} /> },
+                                { value: "1", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={1} size={7} /> },
+                                { value: "2", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={2} size={7} /> },
+                                { value: "3", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={3} size={7} /> },
+                                { value: "4", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={4} size={7} /> },
+                                { value: "5", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={5} size={7} /> },
                             ],
                             initialExpanded: true,
                             selected: repairBlocks,
@@ -387,8 +384,8 @@ export const FactionPassMechPool = () => {
                     ]}
                 />
 
-                {/* Search, sort, grid view, and other top buttons */}
                 <Stack spacing="2rem" alignItems="stretch" flex={1} sx={{ overflow: "hidden" }}>
+                    {/* Search, sort, grid view, and other top buttons */}
                     <Stack spacing="1rem" direction="row" alignItems="center" sx={{ overflowX: "auto", overflowY: "hidden", width: "100%", pb: ".2rem" }}>
                         {/* Filter button */}
                         <NiceButton
@@ -405,18 +402,7 @@ export const FactionPassMechPool = () => {
                         <Box flex={1} />
 
                         {/* Bulk actions */}
-                        <NiceButton
-                            ref={bulkPopoverRef}
-                            buttonColor={theme.factionTheme.primary}
-                            sx={{ p: ".2rem 1rem", pt: ".4rem" }}
-                            disabled={selectedMechs.length <= 0}
-                            onClick={() => setBulkPopover(true)}
-                        >
-                            <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
-                                Actions ({selectedMechs.length})
-                            </Typography>
-                        </NiceButton>
-                        <BulkActionPopover open={bulkPopover} onClose={() => setBulkPopover(false)} popoverRef={bulkPopoverRef} />
+                        <MechBulkActions selectedMechs={selectedMechs} setSelectedMechs={setSelectedMechs} />
 
                         <Stack direction="row" alignItems="center">
                             {/* Show Total */}
@@ -432,7 +418,10 @@ export const FactionPassMechPool = () => {
                                 secondaryColor={theme.factionTheme.secondary}
                                 options={pageSizeOptions}
                                 selected={pageSize}
-                                onSelected={(value) => changePageSize(parseString(value, 1))}
+                                onSelected={(value) => {
+                                    changePageSize(parseString(value, 1))
+                                    changePage(1)
+                                }}
                             />
                         </Stack>
 
@@ -459,8 +448,6 @@ export const FactionPassMechPool = () => {
                         {/* Sort */}
                         <NiceSelect
                             label="Sort:"
-                            primaryColor={theme.factionTheme.primary}
-                            secondaryColor={theme.factionTheme.secondary}
                             options={sortOptions}
                             selected={sort}
                             onSelected={(value) => setSort(`${value}`)}
