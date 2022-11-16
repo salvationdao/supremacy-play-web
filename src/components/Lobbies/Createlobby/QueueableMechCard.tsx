@@ -36,8 +36,8 @@ export const QueueableMechCard = ({ lobbyMech, onSelect, isSelected }: Queueable
             spacing=".5rem"
             onClick={onSelect}
         >
-            <Stack direction="column" flex={1} spacing=".5rem">
-                <Stack direction="row" spacing="1rem">
+            <Stack direction="column" flex={1} spacing="2rem">
+                <Stack direction="row" spacing="1.5rem">
                     {/* Mech image */}
                     <NiceBoxThing
                         border={{ color: `${rarityDeets.color}80`, thickness: "very-lean" }}
@@ -81,8 +81,8 @@ export const QueueableMechCard = ({ lobbyMech, onSelect, isSelected }: Queueable
                     color={ownerFaction.primary_color}
                     fontSize="1.3rem"
                     width="100%"
-                    spacing=".25rem"
-                    barHeight=".8rem"
+                    spacing=".5rem"
+                    barHeight="1rem"
                     compact
                     outerSx={{ flex: 1 }}
                 />
