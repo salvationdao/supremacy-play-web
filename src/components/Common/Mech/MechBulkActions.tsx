@@ -89,7 +89,7 @@ const BulkActionPopover = ({
             <NicePopover open={open} anchorEl={popoverRef.current} onClose={onClose}>
                 <Stack>
                     <NiceButton
-                        disabled={selectedMechs.length <= 0}
+                        disabled={true || selectedMechs.length <= 0}
                         sx={{ justifyContent: "flex-start" }}
                         onClick={() => {
                             onClose()
