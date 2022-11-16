@@ -65,7 +65,12 @@ export const RepairBayItem = ({
                 background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.06 }}
                 sx={{ width: "100%", height: isBigVersion ? "100%" : "unset" }}
             >
-                <Stack direction={isBigVersion ? "column-reverse" : "row"} spacing="1.2rem" alignItems="stretch" sx={{ p: ".8rem 1rem", borderRadius: 0.8 }}>
+                <Stack
+                    direction={isBigVersion ? "column-reverse" : "row"}
+                    spacing="1.2rem"
+                    alignItems="stretch"
+                    sx={{ p: ".8rem 1rem", borderRadius: 0.8, height: "100%" }}
+                >
                     {/* Mech image */}
                     <NiceBoxThing
                         border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
@@ -89,7 +94,7 @@ export const RepairBayItem = ({
                     </NiceBoxThing>
 
                     {/* Right side */}
-                    <Stack sx={{ flex: 1, position: "relative" }}>
+                    <Stack sx={{ position: "relative", flex: 1 }}>
                         <Typography
                             variant="body2"
                             sx={{

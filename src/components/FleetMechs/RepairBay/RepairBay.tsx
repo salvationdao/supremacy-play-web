@@ -90,7 +90,7 @@ export const RepairBay = React.memo(function RepairBay({ open }: { open: boolean
                 <Stack>
                     <Typography sx={{ p: "1rem 1.5rem", backgroundColor: primaryColor, fontFamily: fonts.nostromoBlack }}>ACTIVE REPAIR BAY</Typography>
 
-                    <Stack alignItems="center" justifyContent="center" sx={{ minHeight: "20rem", p: "1.8rem" }}>
+                    <Stack alignItems="center" justifyContent="center" sx={{ minHeight: "28rem", p: "1.8rem" }}>
                         {activeRepairSlot ? (
                             <RepairBayItem
                                 isBigVersion
