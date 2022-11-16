@@ -3,7 +3,7 @@ import { useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { secondsToWords } from "../../../helpers"
-import { AmountItem } from "../../Hangar/WarMachinesHangar/WarMachineDetails/Modals/DeployModal"
+import { AmountItem } from "../../Hangar/WarMachinesHangar/WarMachineDetails/Modals/AmountItem"
 
 export const BattleETA = () => {
     const [battleETASeconds, setBattleETASeconds] = useState<number>(300)

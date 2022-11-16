@@ -1,10 +1,8 @@
-import { IconButton, Stack } from "@mui/material"
-import { MutableRefObject, useEffect } from "react"
+import { Stack } from "@mui/material"
+import { MutableRefObject } from "react"
 import { SvgDelete, SvgDownArrow, SvgUpArrow } from "../../../assets"
-import { useToggle } from "../../../hooks"
-import { colors } from "../../../theme/theme"
 import { RepairSlot } from "../../../types"
-import { ClipThing } from "../../Common/Deprecated/ClipThing"
+import { NiceButton } from "../../Common/Nice/NiceButton"
 import { NicePopover } from "../../Common/Nice/NicePopover"
 
 export const RepairBayItemActions = ({
@@ -26,74 +24,58 @@ export const RepairBayItemActions = ({
     removeRepairBay?: (mechIDs: string[]) => Promise<void>
     swapRepairBay?: (mechIDs: [string, string]) => Promise<void>
 }) => {
-    const [localOpen, toggleLocalOpen] = useToggle(open)
-
     const { mech_id } = repairSlot
-
-    useEffect(() => {
-        if (!localOpen) {
-            const timeout = setTimeout(() => {
-                onClose()
-            }, 300)
-
-            return () => clearTimeout(timeout)
-        }
-    }, [localOpen, onClose])
 
     return (
         <NicePopover
-            open={localOpen}
+            open={open}
             anchorEl={popoverRef.current}
-            onClose={() => toggleLocalOpen(false)}
+            onClose={onClose}
             anchorOrigin={{
                 vertical: "top",
-                horizontal: "left",
+                horizontal: "right",
             }}
             transformOrigin={{
                 vertical: "top",
                 horizontal: "right",
             }}
         >
-            <ClipThing
-                clipSize="5px"
-                border={{
-                    borderColor: colors.bronze,
-                    borderThickness: ".2rem",
-                }}
-                backgroundColor={colors.darkNavy}
-            >
-                <Stack justifyContent="center" sx={{ p: "1rem 1.3rem" }}>
-                    {aboveSlot && swapRepairBay && (
-                        <IconButton
-                            size="small"
-                            onClick={() => {
-                                toggleLocalOpen(false)
-                                swapRepairBay([mech_id, aboveSlot.mech_id])
-                            }}
-                        >
-                            <SvgUpArrow size="1.4rem" />
-                        </IconButton>
-                    )}
+            <Stack>
+                {aboveSlot && swapRepairBay && (
+                    <NiceButton
+                        sx={{ justifyContent: "flex-start" }}
+                        onClick={() => {
+                            swapRepairBay([mech_id, aboveSlot.mech_id])
+                            onClose()
+                        }}
+                    >
+                        <SvgUpArrow inline size="1.4rem" /> MOVE UP
+                    </NiceButton>
+                )}
 
-                    {belowSlot && swapRepairBay && (
-                        <IconButton
-                            size="small"
-                            onClick={() => {
-                                toggleLocalOpen(false)
-                                swapRepairBay([mech_id, belowSlot.mech_id])
-                            }}
-                        >
-                            <SvgDownArrow size="1.4rem" />
-                        </IconButton>
-                    )}
+                {belowSlot && swapRepairBay && (
+                    <NiceButton
+                        sx={{ justifyContent: "flex-start" }}
+                        onClick={() => {
+                            swapRepairBay([mech_id, belowSlot.mech_id])
+                            onClose()
+                        }}
+                    >
+                        <SvgDownArrow inline size="1.4rem" /> MOVE DOWN
+                    </NiceButton>
+                )}
 
-                    {removeRepairBay && (
-                        <IconButton size="small" onClick={() => removeRepairBay([mech_id])}>
-                            <SvgDelete size="1.4rem" fill={colors.red} />
-                        </IconButton>
-                    )}
-                </Stack>
-            </ClipThing>
+                {removeRepairBay && (
+                    <NiceButton
+                        sx={{ justifyContent: "flex-start" }}
+                        onClick={() => {
+                            removeRepairBay([mech_id])
+                        }}
+                    >
+                        <SvgDelete inline size="1.4rem" /> REMOVE
+                    </NiceButton>
+                )}
+            </Stack>
         </NicePopover>
     )
 }
