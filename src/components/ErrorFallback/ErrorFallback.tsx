@@ -1,8 +1,8 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { Gabs } from "../../assets"
-import { FancyButton } from ".."
 import { useTheme } from "../../containers/theme"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
+import { NiceButton } from "../Common/Nice/NiceButton"
 
 export const ErrorFallback = () => {
     const theme = useTheme()
@@ -37,23 +37,22 @@ export const ErrorFallback = () => {
                 }}
             />
 
-            <Typography variant="h3">Oh no... an error occurred!</Typography>
+            <Typography variant="h4" fontFamily={fonts.nostromoBold}>
+                Oh no... there&apos;s been a glitch!
+            </Typography>
 
-            <FancyButton
-                clipThingsProps={{
-                    clipSize: "9px",
-                    backgroundColor: theme.factionTheme.primary,
-                    opacity: 1,
-                    border: { borderColor: theme.factionTheme.primary, borderThickness: "2px" },
-                    sx: { position: "relative" },
+            <NiceButton
+                corners
+                buttonColor={theme.factionTheme.primary}
+                sx={{
+                    p: "1rem 2.5rem",
                 }}
-                sx={{ px: "1.6rem", py: ".6rem", color: theme.factionTheme.secondary }}
                 onClick={() => location.reload()}
             >
-                <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}>
+                <Typography variant="h6" fontFamily={fonts.nostromoBold}>
                     RELOAD PAGE
                 </Typography>
-            </FancyButton>
+            </NiceButton>
         </Stack>
     )
 }

@@ -41,7 +41,7 @@ export const RepairBay = React.memo(function RepairBay({ open }: { open: boolean
                 })
             } catch (err) {
                 const message = typeof err === "string" ? err : "Failed to remove from repair bay."
-                newSnackbarMessage(message)
+                newSnackbarMessage(message, "error")
                 console.error(err)
             }
         },
@@ -57,7 +57,7 @@ export const RepairBay = React.memo(function RepairBay({ open }: { open: boolean
                 })
             } catch (err) {
                 const message = typeof err === "string" ? err : "Failed to swap repair bay slots."
-                newSnackbarMessage(message)
+                newSnackbarMessage(message, "error")
                 console.error(err)
             }
         },
@@ -93,6 +93,7 @@ export const RepairBay = React.memo(function RepairBay({ open }: { open: boolean
                     <Stack alignItems="center" justifyContent="center" sx={{ minHeight: "20rem", p: "1.8rem" }}>
                         {activeRepairSlot ? (
                             <RepairBayItem
+                                isBigVersion
                                 repairSlot={activeRepairSlot}
                                 belowSlot={queuedRepairSlots ? queuedRepairSlots[0] : undefined}
                                 removeRepairBay={removeRepairBay}

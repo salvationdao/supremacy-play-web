@@ -435,6 +435,7 @@ export const SvgWrapper = React.memo(function SvgWrapper({ className, fill, stro
                 justifyContent: "center",
                 alignItems: "center",
                 pb: 0.3,
+                px: inline ? 0.3 : 0,
                 verticalAlign: "middle",
                 "& > svg": {
                     width: width || size || "2rem",

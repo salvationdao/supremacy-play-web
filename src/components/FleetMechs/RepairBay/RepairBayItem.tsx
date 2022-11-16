@@ -1,18 +1,16 @@
-import { Box, IconButton, Stack, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useTimer } from "use-timer"
-import { SvgMoreOptions } from "../../../assets"
-import { useTheme } from "../../../containers/theme"
-import { getRarityDeets } from "../../../helpers"
-import { useToggle } from "../../../hooks"
+import { SvgMoreOptions, SvgUserDiamond } from "../../../assets"
+import { useSupremacy } from "../../../containers"
 import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { TruncateTextLines } from "../../../theme/styles"
 import { colors, fonts } from "../../../theme/theme"
 import { MechDetails, RepairSlot } from "../../../types"
-import { ClipThing } from "../../Common/Deprecated/ClipThing"
 import { MechRepairBlocks } from "../../Common/Mech/MechRepairBlocks"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
+import { NiceButton } from "../../Common/Nice/NiceButton"
 import { RepairBayItemActions } from "./RepairBayItemActions"
 
 export const RepairBayItem = ({
@@ -31,11 +29,12 @@ export const RepairBayItem = ({
     swapRepairBay?: (mechIDs: [string, string]) => Promise<void>
 }) => {
     const popoverRef = useRef(null)
-    const { mech_id, next_repair_time } = repairSlot
-    const theme = useTheme()
+    const { getFaction } = useSupremacy()
     const [mechDetails, setMechDetails] = useState<MechDetails>()
-    const rarityDeets = useMemo(() => getRarityDeets(mechDetails?.tier || ""), [mechDetails])
-    const [isActionsPopoverOpen, toggleIsActionsPopoverOpen] = useToggle(false)
+    const [isActionsPopoverOpen, setIsActionsPopoverOpen] = useState(false)
+    const { mech_id, next_repair_time } = repairSlot
+
+    const ownerFaction = useMemo(() => getFaction(mechDetails?.user.faction_id), [getFaction, mechDetails?.user.faction_id])
 
     // Get addition mech data
     useGameServerSubscriptionFaction<MechDetails>(
@@ -53,70 +52,66 @@ export const RepairBayItem = ({
         return <EmptyRepairBayItem isLoading isBigVersion={isBigVersion} />
     }
 
-    const backgroundColor = theme.factionTheme.background
-    const primaryColor = colors.bronze
     const skin = mechDetails ? mechDetails.chassis_skin || mechDetails.default_chassis_skin : undefined
     const imageUrl = skin?.avatar_url || skin?.image_url || mechDetails.avatar_url || mechDetails.image_url
 
     return (
         <>
-            <ClipThing clipSize="6px" opacity={0.8} border={{ borderColor: primaryColor }} backgroundColor={backgroundColor} sx={{ width: "100%" }}>
-                <NiceBoxThing></NiceBoxThing>
-
-                <Stack
-                    direction={isBigVersion ? "column" : "row"}
-                    spacing="1.2rem"
-                    alignItems={isBigVersion ? "stretch" : "center"}
-                    sx={{ position: "relative", p: ".8rem 1rem", borderRadius: 0.8 }}
-                >
+            <NiceBoxThing
+                border={{
+                    color: "#FFFFFF20",
+                    thickness: "very-lean",
+                }}
+                background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.06 }}
+                sx={{ width: "100%", height: isBigVersion ? "100%" : "unset" }}
+            >
+                <Stack direction={isBigVersion ? "column-reverse" : "row"} spacing="1.2rem" alignItems="stretch" sx={{ p: ".8rem 1rem", borderRadius: 0.8 }}>
                     {/* Mech image */}
-                    <Box
+                    <NiceBoxThing
+                        border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
+                        background={{ colors: [colors.darkerNavy] }}
                         sx={{
-                            height: isBigVersion ? "16rem" : "8rem",
+                            height: isBigVersion ? "16rem" : "unset",
                             width: isBigVersion ? "100%" : "8rem",
-                            overflow: "hidden",
-                            background: `url(${imageUrl})`,
-                            backgroundRepeat: "no-repeat",
-                            backgroundPosition: "center",
-                            backgroundSize: "cover",
-                            borderRadius: 0.3,
+                            boxShadow: 0.4,
                         }}
-                    />
+                    >
+                        <Box
+                            component="img"
+                            src={imageUrl}
+                            sx={{
+                                height: "100%",
+                                width: "100%",
+                                objectFit: "cover",
+                                objectPosition: "center",
+                            }}
+                        />
+                    </NiceBoxThing>
 
                     {/* Right side */}
-                    <Stack spacing="1.2rem" direction="row" alignItems="flex-start" sx={{ position: "relative", py: ".2rem", flex: 1 }}>
-                        <Stack sx={{ flex: 1 }}>
-                            <Box sx={{ py: ".2rem", flex: 1 }}>
-                                <Typography
-                                    variant="caption"
-                                    sx={{
-                                        fontFamily: fonts.nostromoHeavy,
-                                        color: rarityDeets.color,
-                                    }}
-                                >
-                                    {rarityDeets.label}
-                                </Typography>
+                    <Stack sx={{ flex: 1, position: "relative" }}>
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                fontFamily: fonts.nostromoBlack,
+                                fontWeight: "bold",
+                                ...TruncateTextLines(1),
+                            }}
+                        >
+                            {mechDetails.name || mechDetails.label}
+                        </Typography>
 
-                                <Typography
-                                    sx={{
-                                        fontSize: "1.8rem",
-                                        color: !mechDetails.name ? colors.grey : "#FFFFFF",
-                                        ...TruncateTextLines(1),
-                                    }}
-                                >
-                                    {mechDetails.name || "Unnamed"}
-                                </Typography>
-                            </Box>
-
+                        <Stack sx={{ flex: 1, mt: ".3rem" }} direction={isBigVersion ? "row" : "column"}>
                             <Typography
-                                variant="body2"
+                                variant="h6"
                                 sx={{
-                                    fontFamily: fonts.nostromoBlack,
+                                    flex: 1,
+                                    color: ownerFaction.primary_color,
                                     fontWeight: "bold",
                                     ...TruncateTextLines(1),
                                 }}
                             >
-                                {mechDetails.label}
+                                <SvgUserDiamond size="2.2rem" inline fill={ownerFaction.primary_color} /> {mechDetails.user.username}#{mechDetails.user.gid}
                             </Typography>
 
                             <Blocks
@@ -127,27 +122,25 @@ export const RepairBayItem = ({
                             />
                         </Stack>
 
-                        <Box ref={popoverRef} sx={{ position: "absolute", right: "0rem", top: "0rem", backgroundColor: "#000000", borderRadius: "50%" }}>
-                            <IconButton size="small" onClick={() => toggleIsActionsPopoverOpen()}>
-                                <SvgMoreOptions size="1.4rem" />
-                            </IconButton>
+                        <Box ref={popoverRef} sx={{ position: "absolute", right: "-.5rem", top: ".2rem" }}>
+                            <NiceButton sx={{ p: 0 }} onClick={() => setIsActionsPopoverOpen(true)}>
+                                <SvgMoreOptions size="1.6rem" />
+                            </NiceButton>
                         </Box>
                     </Stack>
                 </Stack>
-            </ClipThing>
+            </NiceBoxThing>
 
-            {isActionsPopoverOpen && (
-                <RepairBayItemActions
-                    open={isActionsPopoverOpen}
-                    onClose={() => toggleIsActionsPopoverOpen(false)}
-                    popoverRef={popoverRef}
-                    repairSlot={repairSlot}
-                    aboveSlot={aboveSlot}
-                    belowSlot={belowSlot}
-                    removeRepairBay={removeRepairBay}
-                    swapRepairBay={swapRepairBay}
-                />
-            )}
+            <RepairBayItemActions
+                open={isActionsPopoverOpen}
+                onClose={() => setIsActionsPopoverOpen(false)}
+                popoverRef={popoverRef}
+                repairSlot={repairSlot}
+                aboveSlot={aboveSlot}
+                belowSlot={belowSlot}
+                removeRepairBay={removeRepairBay}
+                swapRepairBay={swapRepairBay}
+            />
         </>
     )
 }
@@ -167,7 +160,7 @@ const Blocks = ({ mechID, defaultBlocks, nextRepairTime }: { mechID: string; def
         pulsateEffectPercent.current = totalTimeDurationSec.current ? 100 - Math.max(0, (100 * time) / totalTimeDurationSec.current) : 0
     }, [time])
 
-    return <MechRepairBlocks mechID={mechID} defaultBlocks={defaultBlocks} pulsateEffectPercent={pulsateEffectPercent.current} />
+    return <MechRepairBlocks mechID={mechID} defaultBlocks={defaultBlocks} pulsateEffectPercent={pulsateEffectPercent.current} sx={{ width: "unset" }} />
 }
 
 export const EmptyRepairBayItem = ({ isBigVersion }: { isLoading?: boolean; isBigVersion?: boolean }) => {

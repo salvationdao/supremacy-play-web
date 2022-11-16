@@ -30,14 +30,7 @@ export const ProfilePopover = ({ open, popoverRef, onClose, user }: { open: bool
 
     return (
         <>
-            <NicePopover
-                open={localOpen}
-                anchorEl={popoverRef.current}
-                onClose={() => toggleLocalOpen(false)}
-                sx={{
-                    mt: "-.6rem",
-                }}
-            >
+            <NicePopover open={localOpen} anchorEl={popoverRef.current} onClose={() => toggleLocalOpen(false)}>
                 <Stack spacing=".32rem">
                     <NavButton
                         linkProps={{
