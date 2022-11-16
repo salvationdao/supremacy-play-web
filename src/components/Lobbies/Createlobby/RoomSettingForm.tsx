@@ -71,7 +71,7 @@ export const RoomSettingForm = ({ nextPage }: RoomSettingFormProps) => {
                     }}
                 >
                     <Section orderLabel="B" title="Name" />
-                    <Stack spacing={1}>
+                    <Stack direction="column">
                         <Controller
                             name="name"
                             control={control}
@@ -96,11 +96,20 @@ export const RoomSettingForm = ({ nextPage }: RoomSettingFormProps) => {
                                     placeholder="Lobby Name..."
                                     primaryColor={factionTheme.primary}
                                     errorMessage={errors[field.name]?.message as string}
+                                    sx={{
+                                        height: "4.5rem",
+                                        ".MuiOutlinedInput-root": {
+                                            py: 0,
+                                            height: "4.5rem",
+                                        },
+                                    }}
                                 />
                             )}
                         />
                         <Stack alignItems="flex-end">
-                            <Typography variant="subtitle1">max 20 characters</Typography>
+                            <Typography variant="body2" fontFamily={fonts.shareTechMono} fontWeight="bold" color={`${factionTheme.primary}AA`}>
+                                Max 20 characters
+                            </Typography>
                         </Stack>
                     </Stack>
                 </Stack>

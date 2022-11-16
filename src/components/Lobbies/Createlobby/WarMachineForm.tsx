@@ -8,9 +8,7 @@ import { EmptyWarMachinesPNG, SvgSearch } from "../../../assets"
 import { useDebounce, usePagination, useUrlQuery } from "../../../hooks"
 import { NiceSelect } from "../../Common/Nice/NiceSelect"
 import { SortTypeLabel } from "../../../types/marketplace"
-import { useGameServerSubscriptionFaction, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { LobbyMech } from "../../../types"
-import { GameServerKeys } from "../../../keys"
 import { getRarityDeets, parseString } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { QueueableMechCard } from "./QueueableMechCard"
@@ -47,9 +45,10 @@ interface WarMachineFormProps {
     prevPage: () => void
     ownedMechs: LobbyMech[]
     stakedMechs: LobbyMech[]
+    playerQueueLimit: number
 }
 
-export const WarMachineForm = ({ prevPage, ownedMechs, stakedMechs }: WarMachineFormProps) => {
+export const WarMachineForm = ({ prevPage, ownedMechs, stakedMechs, playerQueueLimit }: WarMachineFormProps) => {
     const { setValue, watch } = useFormContext()
     const [query, updateQuery] = useUrlQuery()
     const { factionTheme } = useTheme()
@@ -61,6 +60,7 @@ export const WarMachineForm = ({ prevPage, ownedMechs, stakedMechs }: WarMachine
     })
 
     const selectedMechs: LobbyMech[] = watch("selected_mechs")
+    const queueLimit = useMemo(() => Math.min(3, playerQueueLimit) - selectedMechs.length, [selectedMechs, playerQueueLimit])
 
     const toggleSelectedMech = useCallback(
         (lobbyMech: LobbyMech) => {
@@ -68,12 +68,15 @@ export const WarMachineForm = ({ prevPage, ownedMechs, stakedMechs }: WarMachine
             if (list.some((sm) => sm.id === lobbyMech.id)) {
                 list = list.filter((sm) => sm.id !== lobbyMech.id)
             } else {
+                // skip, if limit reached
+                if (queueLimit <= 0) return
+
                 list.push(lobbyMech)
             }
 
             setValue("selected_mechs", list)
         },
-        [setValue, selectedMechs],
+        [setValue, selectedMechs, queueLimit],
     )
 
     const [isOwnedMech, setIsOwnedMech] = useState(true)
@@ -135,7 +138,7 @@ export const WarMachineForm = ({ prevPage, ownedMechs, stakedMechs }: WarMachine
                         height: "100%",
                         display: "grid",
                         gridTemplateColumns: "repeat(auto-fill, minmax(30rem, 1fr))",
-                        gridTemplateRows: "25rem",
+                        gridTemplateRows: "repeat(auto-fill, minmax(22rem, 1fr))",
                         overflowY: "auto",
                         gap: "4rem",
                         alignItems: "center",

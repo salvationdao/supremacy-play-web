@@ -1,7 +1,7 @@
 import { Stack } from "@mui/material"
 import { useTheme } from "../../../containers/theme"
 import { CreateLobbyFormTabs } from "./CreateLobbyFormTabs"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 import moment from "moment"
 import { RoomSettingForm } from "./RoomSettingForm"
@@ -11,6 +11,7 @@ import { WarMachineForm } from "./WarMachineForm"
 import { LobbyMech } from "../../../types"
 import { useGameServerSubscriptionFaction, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { PlayerQueueStatus } from "../../../types/battle_queue"
 
 export interface LobbyForm {
     name: string
@@ -142,6 +143,16 @@ export const CreateLobby = () => {
             })
         },
     )
+    const [playerQueueLimit, setPlayerQueueLimit] = useState<number>(10)
+    useGameServerSubscriptionSecuredUser<PlayerQueueStatus>(
+        {
+            URI: "/queue_status",
+            key: GameServerKeys.PlayerQueueStatus,
+        },
+        (payload) => {
+            setPlayerQueueLimit(payload.queue_limit)
+        },
+    )
 
     const content = useMemo(() => {
         switch (currentProcess) {
@@ -150,11 +161,18 @@ export const CreateLobby = () => {
             case 2:
                 return <FeeRewardForm prevPage={() => setCurrentProcess(1)} nextPage={() => setCurrentProcess(3)} />
             case 3:
-                return <WarMachineForm prevPage={() => setCurrentProcess(2)} ownedMechs={ownedMechs} stakedMechs={stakedMechs} />
+                return (
+                    <WarMachineForm
+                        prevPage={() => setCurrentProcess(2)}
+                        ownedMechs={ownedMechs}
+                        stakedMechs={stakedMechs}
+                        playerQueueLimit={playerQueueLimit}
+                    />
+                )
             default:
                 return null
         }
-    }, [currentProcess, ownedMechs, stakedMechs])
+    }, [currentProcess, ownedMechs, playerQueueLimit, stakedMechs])
 
     return (
         <FormProvider {...useFormMethods}>

@@ -7,6 +7,7 @@ import { NiceTextField } from "../../Common/Nice/NiceTextField"
 import { SvgSupToken } from "../../../assets"
 import { colors, fonts } from "../../../theme/theme"
 import { Controller, useFormContext } from "react-hook-form"
+import { LobbyForm } from "./CreateLobby"
 
 interface FeeRewardFormProps {
     nextPage: () => void
@@ -15,7 +16,9 @@ interface FeeRewardFormProps {
 
 export const FeeRewardForm = ({ nextPage, prevPage }: FeeRewardFormProps) => {
     const { factionTheme } = useTheme()
-    const { control } = useFormContext()
+    const { control, watch } = useFormContext()
+    const firstFactionCut: string = watch("first_faction_cut")
+    const secondFactionCut: string = watch("second_faction_cut")
     return (
         <Stack direction="column" flex={1} sx={{ px: "25rem", py: "4rem" }}>
             <Stack direction="column" flex={1} spacing="4rem">
@@ -30,12 +33,18 @@ export const FeeRewardForm = ({ nextPage, prevPage }: FeeRewardFormProps) => {
                                 type="number"
                                 primaryColor={factionTheme.primary}
                                 InputProps={{
-                                    sx: { minHeight: "4.5rem" },
                                     startAdornment: (
                                         <InputAdornment position={"start"}>
                                             <SvgSupToken size="1.8rem" fill={colors.gold} />
                                         </InputAdornment>
                                     ),
+                                }}
+                                sx={{
+                                    height: "4.5rem",
+                                    ".MuiOutlinedInput-root": {
+                                        py: 0,
+                                        height: "4.5rem",
+                                    },
                                 }}
                             />
                         )}
@@ -49,15 +58,29 @@ export const FeeRewardForm = ({ nextPage, prevPage }: FeeRewardFormProps) => {
                         render={({ field }) => (
                             <NiceTextField
                                 {...field}
+                                value={field.value}
+                                onChange={(e) => {
+                                    const v = parseFloat(e)
+                                    const sfc = parseFloat(secondFactionCut)
+                                    if (isNaN(v) || isNaN(sfc) || v + sfc > 100) return
+
+                                    field.onChange(e)
+                                }}
                                 type="number"
                                 primaryColor={factionTheme.primary}
                                 InputProps={{
-                                    sx: { minHeight: "4.5rem" },
                                     startAdornment: (
                                         <InputAdornment position={"start"}>
                                             <Typography fontFamily={fonts.shareTech}>%</Typography>
                                         </InputAdornment>
                                     ),
+                                }}
+                                sx={{
+                                    height: "4.5rem",
+                                    ".MuiOutlinedInput-root": {
+                                        py: 0,
+                                        height: "4.5rem",
+                                    },
                                 }}
                             />
                         )}
@@ -71,15 +94,29 @@ export const FeeRewardForm = ({ nextPage, prevPage }: FeeRewardFormProps) => {
                         render={({ field }) => (
                             <NiceTextField
                                 {...field}
+                                value={field.value}
+                                onChange={(e) => {
+                                    const v = parseFloat(e)
+                                    const ffc = parseFloat(firstFactionCut)
+                                    if (isNaN(v) || isNaN(ffc) || v + ffc > 100) return
+
+                                    field.onChange(e)
+                                }}
                                 type="number"
                                 primaryColor={factionTheme.primary}
                                 InputProps={{
-                                    sx: { minHeight: "4.5rem" },
                                     startAdornment: (
                                         <InputAdornment position={"start"}>
                                             <Typography fontFamily={fonts.shareTech}>%</Typography>
                                         </InputAdornment>
                                     ),
+                                }}
+                                sx={{
+                                    height: "4.5rem",
+                                    ".MuiOutlinedInput-root": {
+                                        py: 0,
+                                        height: "4.5rem",
+                                    },
                                 }}
                             />
                         )}
@@ -96,12 +133,18 @@ export const FeeRewardForm = ({ nextPage, prevPage }: FeeRewardFormProps) => {
                                 type="number"
                                 primaryColor={factionTheme.primary}
                                 InputProps={{
-                                    sx: { minHeight: "4.5rem" },
                                     startAdornment: (
                                         <InputAdornment position={"start"}>
                                             <SvgSupToken size="1.8rem" fill={colors.gold} />
                                         </InputAdornment>
                                     ),
+                                }}
+                                sx={{
+                                    height: "4.5rem",
+                                    ".MuiOutlinedInput-root": {
+                                        py: 0,
+                                        height: "4.5rem",
+                                    },
                                 }}
                             />
                         )}

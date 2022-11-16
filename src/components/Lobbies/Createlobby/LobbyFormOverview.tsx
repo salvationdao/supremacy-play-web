@@ -4,11 +4,11 @@ import { Accessibility, LobbyForm, Scheduling } from "./CreateLobby"
 import { colors, fonts } from "../../../theme/theme"
 import { useTheme } from "../../../containers/theme"
 import { useGameServerCommandsFaction, useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
-import { GameMap, RoleType, User } from "../../../types"
+import { GameMap, LobbyMech, RoleType, User } from "../../../types"
 import { GameServerKeys } from "../../../keys"
-import React, { ReactNode, useEffect, useMemo, useState } from "react"
+import React, { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 import { camelToTitle, getRarityDeets, shortCodeGenerator } from "../../../helpers"
-import { SvgSupToken } from "../../../assets"
+import { SvgLogout, SvgSupToken } from "../../../assets"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { WeaponSlot } from "../Common/weaponSlot"
@@ -37,7 +37,7 @@ const UserItem = ({ user, sx }: { user: User; sx?: SxProps }) => {
 
 export const LobbyFormOverview = () => {
     const { factionTheme } = useTheme()
-    const { watch } = useFormContext<LobbyForm>()
+    const { watch, setValue } = useFormContext()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [userDropdown, setUserDropdown] = useState<User[]>([])
     const [isLoadingUsers, toggleIsLoadingUsers] = useToggle()
@@ -59,6 +59,15 @@ export const LobbyFormOverview = () => {
         wont_start_until_date,
         wont_start_until_time,
     } = watch()
+
+    const removeSelectedMech = useCallback(
+        (lobbyMechID: string) =>
+            setValue(
+                "selected_mechs",
+                [...selected_mechs].filter((sm) => sm.id !== lobbyMechID),
+            ),
+        [setValue, selected_mechs],
+    )
 
     const accessCode = useMemo(() => {
         let code = ""
@@ -119,50 +128,59 @@ export const LobbyFormOverview = () => {
 
     const mechSlots = useMemo(() => {
         const list: JSX.Element[] = []
-        selected_mechs.forEach((sm) => {
+        selected_mechs.forEach((sm: LobbyMech) => {
             const rarity = getRarityDeets(sm.tier)
             list.push(
-                <NiceBoxThing key={sm.id} border={{ color: `${factionTheme.primary}80`, thickness: "very-lean" }} sx={{ height: "20rem", width: "20rem" }}>
+                <NiceBoxThing key={sm.id} border={{ color: `${factionTheme.primary}80`, thickness: "very-lean" }} sx={{ flex: 1, height: "20rem" }}>
                     <Stack sx={{ height: "100%", width: "100%", p: ".5rem" }} spacing={1}>
-                        <Stack direction="row" spacing={1}>
-                            <NiceBoxThing
-                                key={sm.id}
-                                border={{ color: `${factionTheme.primary}80`, thickness: "very-lean" }}
-                                caret={{ position: "bottom-right", size: "small" }}
-                                sx={{ height: "6rem", width: "6rem", boxShadow: 0.4 }}
-                            >
-                                <Box
-                                    component="img"
-                                    src={sm.avatar_url}
-                                    sx={{
-                                        height: "100%",
-                                        width: "100%",
-                                        objectFit: "cover",
-                                        objectPosition: "center",
-                                    }}
-                                />
-                            </NiceBoxThing>
-
-                            <Stack direction="column" flex={1}>
-                                <Typography>{sm.name || sm.label}</Typography>
-                                <Typography
-                                    variant="caption"
-                                    sx={{
-                                        fontFamily: fonts.nostromoHeavy,
-                                        color: rarity.color,
-                                    }}
+                        <Stack direction="row" justifyContent="flex-start">
+                            <Stack direction="row" spacing={1} flex={1}>
+                                <NiceBoxThing
+                                    key={sm.id}
+                                    border={{ color: `${factionTheme.primary}80`, thickness: "very-lean" }}
+                                    caret={{ position: "bottom-right", size: "small" }}
+                                    sx={{ height: "6rem", width: "6rem", boxShadow: 0.4 }}
                                 >
-                                    {rarity.label}
-                                </Typography>
-                                <RepairBlocks
-                                    defaultBlocks={sm.repair_blocks}
-                                    remainDamagedBlocks={sm.damaged_blocks}
-                                    sx={{
-                                        width: "fit-content",
-                                    }}
-                                />
+                                    <Box
+                                        component="img"
+                                        src={sm.avatar_url}
+                                        sx={{
+                                            height: "100%",
+                                            width: "100%",
+                                            objectFit: "cover",
+                                            objectPosition: "center",
+                                        }}
+                                    />
+                                </NiceBoxThing>
+
+                                <Stack direction="column" flex={1}>
+                                    <Typography>{sm.name || sm.label}</Typography>
+                                    <Typography
+                                        variant="caption"
+                                        sx={{
+                                            fontFamily: fonts.nostromoHeavy,
+                                            color: rarity.color,
+                                        }}
+                                    >
+                                        {rarity.label}
+                                    </Typography>
+                                    <RepairBlocks
+                                        defaultBlocks={sm.repair_blocks}
+                                        remainDamagedBlocks={sm.damaged_blocks}
+                                        sx={{
+                                            width: "fit-content",
+                                        }}
+                                    />
+                                </Stack>
                             </Stack>
+
+                            <Box>
+                                <NiceButton sx={{ p: 0 }} onClick={() => removeSelectedMech(sm.id)}>
+                                    <SvgLogout size="1.5rem" />
+                                </NiceButton>
+                            </Box>
                         </Stack>
+
                         <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap" }}>
                             {sm.weapon_slots &&
                                 sm.weapon_slots.map((ws) => <WeaponSlot key={ws.slot_number} weaponSlot={ws} tooltipPlacement="top-start" size="4.5rem" />)}
@@ -177,13 +195,13 @@ export const LobbyFormOverview = () => {
                 <NiceBoxThing
                     key={list.length}
                     border={{ color: `${factionTheme.primary}80`, thickness: "very-lean" }}
-                    sx={{ height: "20rem", width: "20rem", boxShadow: 0.4 }}
+                    sx={{ flex: 1, height: "20rem", boxShadow: 0.4 }}
                 />,
             )
         }
 
         return list
-    }, [factionTheme.primary, selected_mechs])
+    }, [factionTheme.primary, removeSelectedMech, selected_mechs])
 
     return (
         <Stack
