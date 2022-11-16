@@ -64,6 +64,7 @@ export const RightRoutes: SideRouteSingle[] = [
         icon: <SvgRepair size="1.1rem" sx={{ pt: ".3rem" }} />,
         label: "Repairs Jobs",
         Component: RepairJobs,
+        Header: RepairJobs.Header,
         requireAuth: true,
         matchRouteIDs: undefined,
         mountAllTime: false,

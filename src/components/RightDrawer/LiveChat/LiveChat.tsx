@@ -197,7 +197,6 @@ const TabbedLayout = () => {
                     flex: 1,
                     height: 0,
                     position: "relative",
-                    backgroundColor: `#0D0415`,
                     overflow: "hidden",
                 }}
             >
@@ -334,7 +333,6 @@ const SplitLayout = () => {
                     sx={{
                         position: "relative",
                         height: isEnlisted ? "50%" : "100%",
-                        backgroundColor: `#0D0415`,
                         overflow: "hidden",
                     }}
                 >
@@ -369,7 +367,7 @@ const SplitLayout = () => {
 
                 {/* Bottom half */}
                 {isEnlisted && (
-                    <Stack className="tutorial-faction-chat" sx={{ position: "relative", height: "50%", backgroundColor: `#0D0415`, overflow: "hidden" }}>
+                    <Stack className="tutorial-faction-chat" sx={{ position: "relative", height: "50%", overflow: "hidden" }}>
                         <Stack
                             justifyContent="center"
                             sx={{
