@@ -177,6 +177,7 @@ const RepairActions = ({ open, popoverRef, onClose, mech }: { open: boolean; pop
                             e.preventDefault()
                             e.stopPropagation()
                             insertMechToRepairBay()
+                            onClose()
                         }}
                     >
                         <SvgRepair inline size="1.3rem" /> SEND TO REPAIR BAY
