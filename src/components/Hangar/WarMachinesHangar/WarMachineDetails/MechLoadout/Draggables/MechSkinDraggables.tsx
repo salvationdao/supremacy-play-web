@@ -183,8 +183,6 @@ export const MechSkinDraggables = ({ excludeMechSkinIDs, includeMechSkinIDs, mec
                 />
                 <NiceSelect
                     label="Sort:"
-                    primaryColor={theme.factionTheme.primary}
-                    secondaryColor={theme.factionTheme.secondary}
                     options={[
                         {
                             value: SortTypeLabel.Alphabetical,

@@ -1,10 +1,11 @@
 import { MenuItem, Select, Stack, SxProps, Typography } from "@mui/material"
-import { colors } from "../../../theme/theme"
+import { useTheme } from "../../../containers/theme"
 
 export const NiceSelect = ({
     label,
     primaryColor: _primaryColor,
     secondaryColor: _secondaryColor,
+    backgroundColor: _backgroundColor,
     selected,
     onSelected,
     options,
@@ -13,6 +14,7 @@ export const NiceSelect = ({
     label?: string
     primaryColor?: string
     secondaryColor?: string
+    backgroundColor?: string
     selected: string
     onSelected: (value: string) => void
     options: {
@@ -21,8 +23,11 @@ export const NiceSelect = ({
     }[]
     sx?: SxProps
 }) => {
-    const primaryColor = _primaryColor || "#FFFFFF"
-    const secondaryColor = _secondaryColor || "#000000"
+    const theme = useTheme()
+
+    const primaryColor = _primaryColor || theme.factionTheme.primary
+    const secondaryColor = _secondaryColor || theme.factionTheme.secondary
+    const backgroundColor = _backgroundColor || theme.factionTheme.background
 
     return (
         <Stack direction="row" alignItems="center" sx={{ backgroundColor: "#FFFFFF15", boxShadow: 0.5, ...sx }}>
@@ -72,11 +77,13 @@ export const NiceSelect = ({
                     },
                     PaperProps: {
                         sx: {
-                            backgroundColor: colors.darkNavy,
+                            border: `#FFFFFF40 1px solid`,
+                            backgroundColor: backgroundColor,
                             borderRadius: 0,
 
                             ".MuiList-root": {
                                 py: 0,
+                                backgroundColor: "#FFFFFF10",
                             },
                         },
                     },

@@ -448,8 +448,6 @@ export const FactionPassMechPool = () => {
                         {/* Sort */}
                         <NiceSelect
                             label="Sort:"
-                            primaryColor={theme.factionTheme.primary}
-                            secondaryColor={theme.factionTheme.secondary}
                             options={sortOptions}
                             selected={sort}
                             onSelected={(value) => setSort(`${value}`)}

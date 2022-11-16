@@ -65,7 +65,7 @@ export const NiceTooltip = ({
                                 sx={{
                                     color: textColor || "#FFFFFF",
                                     fontFamily: fonts.shareTech,
-                                    lineHeight: 15,
+                                    lineHeight: 1.5,
                                     textAlign: isCentered ? "center" : "start",
                                 }}
                             >

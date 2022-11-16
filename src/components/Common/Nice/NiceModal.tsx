@@ -13,7 +13,7 @@ export const NiceModal = ({ modalSx, sx, children, onClose, ...props }: NiceModa
     return (
         <Modal {...props} onClose={onClose} sx={modalSx}>
             <NiceBoxThing
-                border={{ color: "#FFFFFF60", thickness: "very-lean" }}
+                border={{ color: colors.darkGrey, thickness: "very-lean" }}
                 background={{ colors: [colors.darkerNavy] }}
                 sx={{
                     position: "absolute",
@@ -35,7 +35,7 @@ export const NiceModal = ({ modalSx, sx, children, onClose, ...props }: NiceModa
                     onClick={onClose}
                     sx={{
                         position: "absolute",
-                        top: ".5rem",
+                        top: ".4rem",
                         right: ".5rem",
 
                         opacity: 0.1,

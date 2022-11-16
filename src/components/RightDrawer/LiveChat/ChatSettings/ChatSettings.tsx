@@ -1,10 +1,10 @@
-import { IconButton, Popover, Stack, Typography } from "@mui/material"
-import { MutableRefObject, useEffect, useMemo, useRef } from "react"
-import { ClipThing, SplitView, SystemMessageFilter } from "../../.."
+import { IconButton, Stack, Typography } from "@mui/material"
+import { MutableRefObject, useEffect, useRef } from "react"
+import { SplitView, SystemMessageFilter } from "../../.."
 import { SvgSettings } from "../../../../assets"
-import { shadeColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { fonts } from "../../../../theme/theme"
+import { NicePopover } from "../../../Common/Nice/NicePopover"
 import { ChatFontSize } from "./ChatFontSize"
 
 export const ChatSettings = ({ primaryColor }: { primaryColor: string }) => {
@@ -30,17 +30,7 @@ export const ChatSettings = ({ primaryColor }: { primaryColor: string }) => {
     )
 }
 
-const SettingsPopover = ({
-    open,
-    popoverRef,
-    onClose,
-    primaryColor,
-}: {
-    open: boolean
-    popoverRef: MutableRefObject<null>
-    onClose: () => void
-    primaryColor: string
-}) => {
+const SettingsPopover = ({ open, popoverRef, onClose }: { open: boolean; popoverRef: MutableRefObject<null>; onClose: () => void; primaryColor: string }) => {
     const [localOpen, toggleLocalOpen] = useToggle(open)
 
     useEffect(() => {
@@ -53,10 +43,8 @@ const SettingsPopover = ({
         }
     }, [localOpen, onClose])
 
-    const backgroundColor = useMemo(() => shadeColor(primaryColor, -95), [primaryColor])
-
     return (
-        <Popover
+        <NicePopover
             open={localOpen}
             anchorEl={popoverRef.current}
             onClose={() => toggleLocalOpen(false)}
@@ -68,26 +56,10 @@ const SettingsPopover = ({
                 vertical: "bottom",
                 horizontal: "center",
             }}
-            sx={{
-                ".MuiPaper-root": {
-                    mt: "-3rem",
-                    background: "none",
-                    boxShadow: 0,
-                },
-            }}
+            sx={{ mt: "-1rem" }}
         >
-            <ClipThing
-                clipSize="10px"
-                border={{
-                    borderColor: primaryColor,
-                    borderThickness: ".2rem",
-                }}
-                backgroundColor={backgroundColor}
-                sx={{ height: "100%" }}
-            >
-                <SettingsContent />
-            </ClipThing>
-        </Popover>
+            <SettingsContent />
+        </NicePopover>
     )
 }
 
