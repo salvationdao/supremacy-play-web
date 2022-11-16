@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react"
 import { useMiniMapPixi } from "../../../../../../containers"
-import { useToggle } from "../../../../../../hooks"
+import { useLocalStorage } from "../../../../../../hooks/useLocalStorage"
 import { PixiGrid } from "./pixiGrid"
 
 export const Grid = React.memo(function Grid() {
     const { pixiMiniMapPixi, gridSizeRef, mapMousePosition } = useMiniMapPixi()
     const [pixiGrid, setPixiGrid] = useState<PixiGrid>()
-    const [showGrid, toggleShowGrid] = useToggle(localStorage.getItem("minimap-show-grid") === "true")
+    const [showGrid, setShowGrid] = useLocalStorage<boolean>("minimap-show-grid", false)
 
     // Initial setup
     useEffect(() => {
@@ -21,10 +21,10 @@ export const Grid = React.memo(function Grid() {
         const btn = document.getElementById("minimap-show-grid-button")
         if (btn) {
             btn.addEventListener("pointerup", () => {
-                toggleShowGrid()
+                setShowGrid((prev) => !prev)
             })
         }
-    }, [gridSizeRef, pixiMiniMapPixi, toggleShowGrid, mapMousePosition])
+    }, [gridSizeRef, pixiMiniMapPixi, setShowGrid, mapMousePosition])
 
     // Cleanup
     useEffect(() => {
@@ -35,7 +35,6 @@ export const Grid = React.memo(function Grid() {
     // Do the toggle
     useEffect(() => {
         if (!pixiGrid) return
-        localStorage.setItem("minimap-show-grid", showGrid.toString())
         pixiGrid.showGrid(showGrid)
 
         // Change button opacity
