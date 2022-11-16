@@ -220,7 +220,7 @@ const TabbedLayout = () => {
                             height: "100%",
                             background: "#2D0311",
                             borderTop: `1px solid #9F0410`,
-                            borderLeft: `1px solid #9F0410`,
+                            borderLeft: tabValue !== 0 ? `1px solid #9F0410` : `0px solid transparent`,
                             borderRight: `1px solid #9F0410`,
                         },
                     }}
@@ -345,7 +345,6 @@ const SplitLayout = () => {
                             height: `${5}rem`,
                             px: "1.8rem",
                             background: "#2D0311",
-                            borderTop: `1px solid #9F0410`,
                             boxShadow: 1,
                         }}
                     >
@@ -375,7 +374,6 @@ const SplitLayout = () => {
                                 height: `${5}rem`,
                                 px: "1.8rem",
                                 background: "#2D0311",
-                                borderTop: `1px solid #9F0410`,
                                 boxShadow: 1,
                             }}
                         >

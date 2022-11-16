@@ -4,7 +4,6 @@ import { useAuth, useMobile, useUI } from "../../containers"
 import { useActiveRouteID } from "../../hooks/useActiveRouteID"
 import { RightRoutes } from "../../routes"
 import { colors, siteZIndex } from "../../theme/theme"
-import { DrawerButtons } from "./DrawerButtons"
 
 export const RIGHT_DRAWER_WIDTH = 38 // rem
 
@@ -19,7 +18,6 @@ export const RightDrawer = () => {
 
     return (
         <>
-            <DrawerButtons />
             <Drawer
                 transitionDuration={DRAWER_TRANSITION_DURATION}
                 open
@@ -34,7 +32,7 @@ export const RightDrawer = () => {
                         width: `${RIGHT_DRAWER_WIDTH}rem`,
                         backgroundColor: colors.darkNavy,
                         position: "absolute",
-                        borderLeft: 0,
+                        borderLeft: `1px solid #9F0410`,
                         overflow: "hidden",
                     },
                 }}
