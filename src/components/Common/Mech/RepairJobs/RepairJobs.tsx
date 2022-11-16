@@ -2,15 +2,18 @@ import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useEffect, useMemo, useState } from "react"
 import FlipMove from "react-flip-move"
-import { EmptyWarMachinesPNG } from "../../../../assets"
+import { EmptyWarMachinesPNG, SvgRepair } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { useArray } from "../../../../hooks"
 import { useGameServerSubscriptionSecured } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
+import { HeaderProps } from "../../../../routes"
 import { colors, fonts } from "../../../../theme/theme"
 import { RepairJob } from "../../../../types/jobs"
 import { SortTypeLabel } from "../../../../types/marketplace"
 import { TotalAndPageSizeOptions } from "../../Deprecated/TotalAndPageSizeOptions"
+import { NiceButton } from "../../Nice/NiceButton"
+import { NiceTooltip } from "../../Nice/NiceTooltip"
 import { DoRepairModal } from "./DoRepairModal"
 import { RepairJobItem } from "./RepairJobItem"
 
@@ -24,7 +27,6 @@ const sortOptions = [
 ]
 
 export const RepairJobs = () => {
-    const theme = useTheme()
     const [repairJobModal, setRepairJobModal] = useState<RepairJob>()
 
     // Items
@@ -143,22 +145,7 @@ export const RepairJobs = () => {
 
     const main = useMemo(
         () => (
-            <Stack sx={{ position: "relative", height: "100%", backgroundColor: theme.factionTheme.background }}>
-                <Stack
-                    direction="row"
-                    alignItems="center"
-                    sx={{
-                        px: "2.2rem",
-                        height: "5rem",
-                        background: `linear-gradient(${theme.factionTheme.primary} 26%, ${theme.factionTheme.primary}95)`,
-                        boxShadow: 1.5,
-                    }}
-                >
-                    <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}>
-                        REPAIR JOBS
-                    </Typography>
-                </Stack>
-
+            <Stack sx={{ position: "relative", height: "100%" }}>
                 <TotalAndPageSizeOptions sortOptions={sortOptions} selectedSort={sort} onSetSort={setSort} />
 
                 <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
@@ -178,7 +165,7 @@ export const RepairJobs = () => {
                 </Stack>
             </Stack>
         ),
-        [content, sort, theme.factionTheme.background, theme.factionTheme.primary, theme.factionTheme.secondary],
+        [content, sort],
     )
 
     return (
@@ -188,3 +175,79 @@ export const RepairJobs = () => {
         </>
     )
 }
+
+const Header = ({ isOpen, onClose }: HeaderProps) => {
+    const theme = useTheme()
+    const [repairJobs, setRepairJobs] = useState<RepairJob[]>([])
+
+    useGameServerSubscriptionSecured<RepairJob[]>(
+        {
+            URI: "/repair_offer/update",
+            key: GameServerKeys.SubRepairJobListUpdated,
+        },
+        (payload) => {
+            if (!payload || payload.length <= 0) return
+
+            setRepairJobs((prev) => {
+                let newArray = [...prev]
+
+                for (let index = 0; index < payload.length; index++) {
+                    const foundIndex = newArray.findIndex((rj) => rj.id === payload[index].id)
+                    if (foundIndex >= 0) {
+                        newArray[foundIndex] = payload[index]
+                    } else {
+                        // If repair job is not in the array, then add it
+                        newArray = [...newArray, payload[index]]
+                    }
+                }
+
+                return newArray
+            })
+        },
+    )
+
+    return (
+        <Stack
+            spacing="1rem"
+            direction="row"
+            sx={{
+                width: "100%",
+                p: "1rem",
+                alignItems: "center",
+                backgroundColor: isOpen ? `#1B0313` : `#1c1424`,
+                transition: "background-color .2s ease-out",
+            }}
+        >
+            <NiceTooltip text="Repair Jobs" placement="left">
+                <NiceButton
+                    onClick={onClose}
+                    buttonColor={theme.factionTheme.primary}
+                    corners
+                    sx={{
+                        p: ".8rem",
+                        pb: ".6rem",
+                    }}
+                >
+                    <SvgRepair size="3rem" />
+                </NiceButton>
+            </NiceTooltip>
+            <Typography
+                sx={{
+                    fontFamily: fonts.nostromoBlack,
+                    fontSize: "1.8rem",
+                }}
+            >
+                Repair Jobs
+            </Typography>
+            <Box flex={1} />
+            <Typography
+                sx={{
+                    color: repairJobs.length > 0 ? colors.lightGrey : colors.darkGrey,
+                }}
+            >
+                {repairJobs.length} jobs
+            </Typography>
+        </Stack>
+    )
+}
+RepairJobs.Header = Header
