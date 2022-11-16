@@ -6,7 +6,7 @@ import { colors, fonts } from "../../../../../theme/theme"
 import { MechDetails } from "../../../../../types"
 import { MechBarStats } from "../MechBarStats"
 import { MechLoadoutItem } from "../MechLoadoutItem"
-import { MechRepairBlocks } from "../MechRepairBlocks"
+import { MechRepairBlocks } from "../../../../Common/Mech/MechRepairBlocks"
 
 export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails }) => {
     const theme = useTheme()

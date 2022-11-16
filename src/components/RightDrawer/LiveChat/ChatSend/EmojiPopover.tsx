@@ -1,10 +1,10 @@
-import { Box, Popover } from "@mui/material"
-import "emoji-mart/css/emoji-mart.css"
+import { Box } from "@mui/material"
 import { BaseEmoji, Picker } from "emoji-mart"
-import { colors, fonts, siteZIndex } from "../../../../theme/theme"
-import { useToggle } from "../../../../hooks"
+import "emoji-mart/css/emoji-mart.css"
 import { useEffect } from "react"
-import { ClipThing } from "../../.."
+import { useToggle } from "../../../../hooks"
+import { fonts } from "../../../../theme/theme"
+import { NicePopover } from "../../../Common/Nice/NicePopover"
 
 interface EnlistDetailsProps {
     primaryColor: string
@@ -28,7 +28,7 @@ export const EmojiPopover = ({ primaryColor, setMessage, popoverRef, isEmojiOpen
     }, [localOpen, toggleIsEmojiOpen])
 
     return (
-        <Popover
+        <NicePopover
             open={localOpen}
             transitionDuration={180}
             anchorEl={popoverRef.current}
@@ -41,68 +41,55 @@ export const EmojiPopover = ({ primaryColor, setMessage, popoverRef, isEmojiOpen
                 vertical: "bottom",
                 horizontal: "center",
             }}
-            PaperProps={{ sx: { background: "none", boxShadow: 0, overflow: "visible" } }}
-            sx={{ zIndex: siteZIndex.Popover, overflow: "visible" }}
+            sx={{ mt: "-1rem" }}
         >
-            <ClipThing
-                clipSize="10px"
-                border={{
-                    borderColor: primaryColor,
-                    borderThickness: ".2rem",
+            <Box
+                sx={{
+                    boxShadow: 20,
+                    borderRadius: 0.9,
+                    backgroundColor: `${primaryColor}10`,
+                    ".emoji-mart": {
+                        backgroundColor: "transparent",
+                    },
+                    ".emoji-mart-category-label span": {
+                        backgroundColor: "#1F1F1F !important",
+                        borderRadius: 1,
+                    },
+                    ".emoji-mart-scroll": {
+                        mr: ".32rem",
+                        my: ".32rem",
+                        overflowY: "auto",
+                        overflowX: "hidden",
+                        direction: "ltr",
+                    },
+                    ".emoji-mart-search": {
+                        mb: ".8rem",
+                    },
+                    ".emoji-mart, #emoji-mart-search-2": {
+                        border: "none",
+                    },
+                    "#emoji-mart-search-8": {
+                        fontFamily: fonts.shareTech,
+                    },
+                    "#emoji-mart-search-30": {
+                        pb: "3.6px",
+                    },
                 }}
-                backgroundColor={colors.darkNavy}
-                sx={{ mb: "1.6rem" }}
             >
-                <Box>
-                    <Box
-                        sx={{
-                            boxShadow: 20,
-                            borderRadius: 0.9,
-                            backgroundColor: `${primaryColor}10`,
-                            ".emoji-mart": {
-                                backgroundColor: "transparent",
-                            },
-                            ".emoji-mart-category-label span": {
-                                backgroundColor: "#1F1F1F !important",
-                                borderRadius: 1,
-                            },
-                            ".emoji-mart-scroll": {
-                                mr: ".32rem",
-                                my: ".32rem",
-                                overflowY: "auto",
-                                overflowX: "hidden",
-                                direction: "ltr",
-                            },
-                            ".emoji-mart-search": {
-                                mb: ".8rem",
-                            },
-                            ".emoji-mart, #emoji-mart-search-2": {
-                                border: "none",
-                            },
-                            "#emoji-mart-search-8": {
-                                fontFamily: fonts.shareTech,
-                            },
-                            "#emoji-mart-search-30": {
-                                pb: "3.6px",
-                            },
-                        }}
-                    >
-                        <Picker
-                            set="facebook"
-                            theme="dark"
-                            emojiSize={20}
-                            emoji="robot_face"
-                            perLine={8}
-                            showPreview={false}
-                            showSkinTones={false}
-                            title=""
-                            onSelect={(emoji: BaseEmoji) => {
-                                setMessage(emoji.native, true)
-                            }}
-                        />
-                    </Box>
-                </Box>
-            </ClipThing>
-        </Popover>
+                <Picker
+                    set="facebook"
+                    theme="dark"
+                    emojiSize={20}
+                    emoji="robot_face"
+                    perLine={8}
+                    showPreview={false}
+                    showSkinTones={false}
+                    title=""
+                    onSelect={(emoji: BaseEmoji) => {
+                        setMessage(emoji.native, true)
+                    }}
+                />
+            </Box>
+        </NicePopover>
     )
 }

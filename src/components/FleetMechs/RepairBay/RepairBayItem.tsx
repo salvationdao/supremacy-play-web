@@ -1,17 +1,18 @@
-import { Box, CircularProgress, IconButton, Stack, Typography } from "@mui/material"
+import { Box, IconButton, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useTimer } from "use-timer"
-import { SvgMoreOptions } from "../../../../assets"
-import { useTheme } from "../../../../containers/theme"
-import { getRarityDeets } from "../../../../helpers"
-import { useToggle } from "../../../../hooks"
-import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../../keys"
-import { TruncateTextLines } from "../../../../theme/styles"
-import { colors, fonts } from "../../../../theme/theme"
-import { MechDetails, RepairSlot } from "../../../../types"
-import { ClipThing } from "../../../Common/Deprecated/ClipThing"
-import { MechRepairBlocks } from "../Common/MechRepairBlocks"
+import { SvgMoreOptions } from "../../../assets"
+import { useTheme } from "../../../containers/theme"
+import { getRarityDeets } from "../../../helpers"
+import { useToggle } from "../../../hooks"
+import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
+import { TruncateTextLines } from "../../../theme/styles"
+import { colors, fonts } from "../../../theme/theme"
+import { MechDetails, RepairSlot } from "../../../types"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
+import { MechRepairBlocks } from "../../Common/Mech/MechRepairBlocks"
+import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { RepairBayItemActions } from "./RepairBayItemActions"
 
 export const RepairBayItem = ({
@@ -60,6 +61,8 @@ export const RepairBayItem = ({
     return (
         <>
             <ClipThing clipSize="6px" opacity={0.8} border={{ borderColor: primaryColor }} backgroundColor={backgroundColor} sx={{ width: "100%" }}>
+                <NiceBoxThing></NiceBoxThing>
+
                 <Stack
                     direction={isBigVersion ? "column" : "row"}
                     spacing="1.2rem"
@@ -149,33 +152,6 @@ export const RepairBayItem = ({
     )
 }
 
-export const EmptyRepairBayItem = ({ isLoading, isBigVersion }: { isLoading?: boolean; isBigVersion?: boolean }) => {
-    const theme = useTheme()
-
-    const backgroundColor = theme.factionTheme.background
-    const primaryColor = isLoading ? colors.bronze : backgroundColor
-
-    return (
-        <ClipThing
-            clipSize="6px"
-            opacity={0.6}
-            border={{ borderColor: primaryColor }}
-            backgroundColor={backgroundColor}
-            sx={{ height: isBigVersion ? "100%" : "8rem", width: "100%" }}
-        >
-            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                {isLoading ? (
-                    <CircularProgress size="2rem" />
-                ) : (
-                    <Typography variant="body2" sx={{ textAlign: "center", color: colors.grey, fontFamily: fonts.nostromoBold }}>
-                        Empty slot
-                    </Typography>
-                )}
-            </Stack>
-        </ClipThing>
-    )
-}
-
 const Blocks = ({ mechID, defaultBlocks, nextRepairTime }: { mechID: string; defaultBlocks?: number; nextRepairTime?: Date }) => {
     const { time } = useTimer({
         autostart: true,
@@ -192,4 +168,29 @@ const Blocks = ({ mechID, defaultBlocks, nextRepairTime }: { mechID: string; def
     }, [time])
 
     return <MechRepairBlocks mechID={mechID} defaultBlocks={defaultBlocks} pulsateEffectPercent={pulsateEffectPercent.current} />
+}
+
+export const EmptyRepairBayItem = ({ isBigVersion }: { isLoading?: boolean; isBigVersion?: boolean }) => {
+    return (
+        <Stack
+            justifyContent="center"
+            sx={{
+                border: "#FFFFFF80 1px dashed",
+                backgroundColor: "#FFFFFF10",
+                height: isBigVersion ? "100%" : "8rem",
+                width: "100%",
+            }}
+        >
+            <Typography
+                variant="body2"
+                sx={{
+                    color: colors.grey,
+                    textAlign: "center",
+                    fontFamily: fonts.nostromoBold,
+                }}
+            >
+                {isBigVersion ? "Select mechs to add to the repair bay." : "Empty slot"}
+            </Typography>
+        </Stack>
+    )
 }

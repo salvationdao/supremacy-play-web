@@ -1,12 +1,12 @@
 import { Slider, Stack, Typography } from "@mui/material"
-import React, { useEffect, useRef } from "react"
+import React, { useEffect, useMemo, useRef } from "react"
 import { useTheme } from "../../../containers/theme"
 import { useDebounce } from "../../../hooks"
 import { colors, fonts } from "../../../theme/theme"
 import { NiceTextField } from "../Nice/NiceTextField"
 import { Section } from "./Section"
 
-export interface FreqGraphProps {
+interface FreqGraph {
     min: number
     max: number
     maxFreq: number
@@ -16,16 +16,34 @@ export interface FreqGraphProps {
 export interface RangeFilterProps {
     label: string
     initialExpanded?: boolean
-    minMax: number[]
     values: number[] | undefined
     setValues: React.Dispatch<React.SetStateAction<number[] | undefined>>
-    freqGraph: FreqGraphProps
+    numberFreq: number[]
 }
 
 export const RangeFilterSection = React.memo(function RangeFilterSection(props: RangeFilterProps) {
-    if (props.freqGraph.max - props.freqGraph.min <= 0) return null
-    return <RangeFilterSectionInner {...props} />
+    const freqGraph = useMemo(() => {
+        let min = 0
+        let max = 0
+        const freq: { [value: number]: number } = {}
+        props.numberFreq.forEach((num) => {
+            if (num < min) min = num
+            if (num > max) max = num
+            freq[num] = (freq[num] || 0) + 1
+        })
+        const maxFreq = Object.values(freq).reduce((acc, f) => (f > acc ? f : acc), 0)
+
+        return { min, max, freq, maxFreq }
+    }, [props.numberFreq])
+
+    if (freqGraph.max - freqGraph.min <= 0) return null
+    return <RangeFilterSectionInner {...props} freqGraph={freqGraph} minMax={[freqGraph.min, freqGraph.max]} />
 })
+
+interface RangeFilterSectionInnerProps extends RangeFilterProps {
+    minMax: number[]
+    freqGraph: FreqGraph
+}
 
 const RangeFilterSectionInner = React.memo(function RangeFilterSectionInner({
     label,
@@ -34,7 +52,7 @@ const RangeFilterSectionInner = React.memo(function RangeFilterSectionInner({
     setValues,
     initialExpanded,
     freqGraph,
-}: RangeFilterProps) {
+}: RangeFilterSectionInnerProps) {
     const theme = useTheme()
     const [value, setValue, valueInstant, setValueInstant] = useDebounce<number[] | undefined>(values || minMax, 300)
     const calledCallback = useRef(true)
@@ -113,7 +131,7 @@ const HistogramGraph = React.memo(function HistogramGraph({
 }: {
     range: number
     primaryColor: string
-    freqGraph: FreqGraphProps
+    freqGraph: FreqGraph
     values: number[] | undefined
 }) {
     return (

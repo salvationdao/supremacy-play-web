@@ -90,6 +90,10 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
             whiteSpace: "nowrap",
             borderRadius: 0,
             transition: "all .1s",
+            mt: "1px",
+            mb: "1px",
+            ml: "1px",
+            mr: "1px",
 
             ...(buttonColor ? {} : { border: "none" }),
 

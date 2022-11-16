@@ -85,6 +85,10 @@ export const NiceTextField = ({
                     py: 0,
                 },
 
+                ".MuiInputBase-multiline": {
+                    pl: 0,
+                },
+
                 ".MuiInputBase-root": {
                     backgroundColor: "#FFFFFF15",
                 },
@@ -93,7 +97,7 @@ export const NiceTextField = ({
                         backgroundColor: `${primaryColor}15`,
                     },
                     ".MuiOutlinedInput-notchedOutline": {
-                        border: `${primaryColor} 1px solid !important`,
+                        border: `${primaryColor} 1px inset !important`,
                     },
                 },
                 ...sx,
@@ -121,7 +125,7 @@ export const NiceTextField = ({
                         appearance: "textfield",
                     },
                     ".MuiOutlinedInput-notchedOutline": {
-                        border: `${"#FFFFFF"}50 1px solid`,
+                        border: `${"#FFFFFF"}50 1px inset`,
                         borderRadius: 0,
                     },
                 }}

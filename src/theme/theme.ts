@@ -79,6 +79,8 @@ export const colors = {
     marketCreate: "#E6C85C",
     marketBidReturned: "#CC3F3F",
 
+    repair: "#EA8622",
+
     // Mech loadout
     chassisSkin: "#D4AA13",
     introAnimation: "#B63DD4",
@@ -123,9 +125,9 @@ export enum siteZIndex {
     Tooltip = 900,
     TopBar = 800,
     MainMenuModal = 700,
-    Modal = 600,
-    Drawer = 500,
-    Popover = 400,
+    Popover = 600,
+    Modal = 500,
+    Drawer = 400,
 
     // Stream site top elements
     RoutePage = 101,
@@ -271,8 +273,15 @@ export const theme = createTheme({
             },
             styleOverrides: {
                 root: {
-                    marginTop: ".8rem",
+                    marginTop: ".4rem",
+                    marginBottom: ".4rem",
                     zIndex: siteZIndex.Popover,
+
+                    ".MuiPaper-root": {
+                        backgroundImage: "unset",
+                        boxShadow: 0,
+                        borderRadius: 0,
+                    },
                 },
             },
         },

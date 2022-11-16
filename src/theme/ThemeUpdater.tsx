@@ -29,7 +29,8 @@ export const ThemeUpdater = ({ children }: { children: ReactNode }) => {
                     ".Mui-selected": {
                         borderRadius: 0,
                         color: theme.factionTheme.secondary,
-                        backgroundColor: `${theme.factionTheme.primary} !important`,
+                        border: `${theme.factionTheme.primary} 1px solid !important`,
+                        background: `linear-gradient(180deg, ${theme.factionTheme.primary}90, ${theme.factionTheme.primary}30) !important`,
                         boxShadow: 1,
                     },
                 },
