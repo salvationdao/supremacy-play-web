@@ -114,7 +114,7 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
                     fontSize: "1.8rem",
                 }}
             >
-                Repair Jobs
+                My Lobbies
             </Typography>
         </Stack>
     )
