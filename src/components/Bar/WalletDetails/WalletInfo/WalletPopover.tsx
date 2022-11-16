@@ -59,7 +59,7 @@ export const WalletPopover = ({
                 horizontal: "center",
             }}
         >
-            <Stack spacing="2rem" sx={{ position: "relative", minWidth: "35rem", maxHeight: "90vh", px: "2rem", pt: "1.6rem", pb: "2rem" }}>
+            <Stack spacing="2rem" sx={{ position: "relative", minWidth: "35rem", maxHeight: "90vh", p: "1rem 1.6rem" }}>
                 <Box>
                     <Typography sx={{ mb: "1rem", fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>CURRENT SESSION</Typography>
 
