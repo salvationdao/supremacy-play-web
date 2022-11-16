@@ -1,14 +1,14 @@
 import { Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { useTimer } from "use-timer"
-import { FancyButton } from "../../../../.."
-import { useGlobalNotifications } from "../../../../../../containers"
-import { supFormatter, timeSinceInWords } from "../../../../../../helpers"
-import { useGameServerCommandsUser } from "../../../../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../../../../keys"
-import { colors, fonts } from "../../../../../../theme/theme"
-import { RepairOffer } from "../../../../../../types/jobs"
-import { AmountItem } from "../AmountItem"
+import { FancyButton } from "../../.."
+import { useGlobalNotifications } from "../../../../containers"
+import { supFormatter, timeSinceInWords } from "../../../../helpers"
+import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
+import { colors, fonts } from "../../../../theme/theme"
+import { RepairOffer } from "../../../../types/jobs"
+import { AmountItem } from "../../../Hangar/WarMachinesHangar/WarMachineDetails/Modals/AmountItem"
 
 export const ExistingRepairJobCard = ({ repairOffer, remainDamagedBlocks }: { repairOffer: RepairOffer; remainDamagedBlocks: number }) => {
     const { newSnackbarMessage } = useGlobalNotifications()

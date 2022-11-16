@@ -6,7 +6,7 @@ import { NiceBoxThing } from "./NiceBoxThing"
 export interface NiceModalProps extends ModalProps {
     modalSx?: SxProps
     sx?: SxProps
-    onClose: () => void
+    onClose?: () => void
 }
 
 export const NiceModal = ({ modalSx, sx, children, onClose, ...props }: NiceModalProps) => {
@@ -32,6 +32,7 @@ export const NiceModal = ({ modalSx, sx, children, onClose, ...props }: NiceModa
 
                 <IconButton
                     size="small"
+                    disabled={!onClose}
                     onClick={onClose}
                     sx={{
                         position: "absolute",

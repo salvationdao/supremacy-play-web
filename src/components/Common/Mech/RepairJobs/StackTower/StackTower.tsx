@@ -1,12 +1,13 @@
 import { Box, Stack, Typography } from "@mui/material"
 import React, { useEffect, useRef, useState } from "react"
-import { useTheme } from "../../../../containers/theme"
-import { useGameServerCommandsUser, useGameServerSubscriptionSecuredUser } from "../../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../../keys"
-import { opacityEffect } from "../../../../theme/keyframes"
-import { colors, fonts } from "../../../../theme/theme"
-import { RepairAgent } from "../../../../types/jobs"
-import { ProgressBar } from "../../../Common/ProgressBar"
+import { useTheme } from "../../../../../containers/theme"
+import { useGameServerCommandsUser, useGameServerSubscriptionSecuredUser } from "../../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../../keys"
+import { opacityEffect } from "../../../../../theme/keyframes"
+import { colors, fonts } from "../../../../../theme/theme"
+import { RepairAgent } from "../../../../../types/jobs"
+import { NiceBoxThing } from "../../../Nice/NiceBoxThing"
+import { ProgressBar } from "../../../ProgressBar"
 import { blockConfig } from "./src/config"
 import { Game } from "./src/game"
 import { BlockServer, BlockType, GameState, NewStackInfo, PlayButton } from "./src/types"
@@ -74,14 +75,13 @@ export const StackTower = React.memo(function StackTower({ primaryColor, disable
     }, [onPlaceBlock, setGameState, theme.factionTheme.background])
 
     return (
-        <Box
+        <NiceBoxThing
+            border={{ color: `${primaryColor}40`, thickness: "very-lean" }}
+            background={{ colors: [`${primaryColor}20`] }}
             sx={{
                 height: "100%",
                 p: "1.8rem 3rem",
-                border: `${primaryColor}70 2px solid`,
-                backgroundColor: `${primaryColor}30`,
                 boxShadow: 2,
-                borderRadius: 1.3,
             }}
         >
             {/* Will unmount and unsubscribe when game ends, and re-subscribe for new game what ready again */}
@@ -250,7 +250,7 @@ export const StackTower = React.memo(function StackTower({ primaryColor, disable
                     </i>
                 </Typography>
             </Stack>
-        </Box>
+        </NiceBoxThing>
     )
 }, propsAreEqual)
 

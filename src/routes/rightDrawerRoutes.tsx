@@ -4,7 +4,7 @@ import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
 import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
 
 import { MyLobbies } from "../components/RightDrawer/MyLobbies/MyLobbies"
-import { RepairJobs } from "../components/RightDrawer/RepairJobs/RepairJobs"
+import { RepairJobs } from "../components/Common/Mech/RepairJobs/RepairJobs"
 import { colors } from "../theme/theme"
 import { LeftRouteID } from "./leftDrawerRoutes"
 import { RouteSingleID } from "./routes"

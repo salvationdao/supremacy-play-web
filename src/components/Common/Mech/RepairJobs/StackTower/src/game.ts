@@ -1,5 +1,5 @@
 import TWEEN from "@tweenjs/tween.js"
-import { isInBetweenInclusive } from "../../../../../helpers"
+import { isInBetweenInclusive } from "../../../../../../helpers"
 import { FallingBlock, MovingBlock } from "./block"
 import { blockConfig, cameraConfig, shrinkMultiplier } from "./config"
 import { Stage } from "./stage"

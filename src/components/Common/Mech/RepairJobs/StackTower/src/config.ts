@@ -29,7 +29,7 @@ import {
     Stack10aJPG,
     Stack10bJPG,
     Stack10cJPG,
-} from "../../../../../assets"
+} from "../../../../../../assets"
 
 export const skins: Skin[] = [
     {
