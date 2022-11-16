@@ -20,12 +20,12 @@ export const RightDrawer = () => {
         <>
             <Drawer
                 transitionDuration={DRAWER_TRANSITION_DURATION}
-                open
+                open={!!rightDrawerActiveTabID}
                 variant="persistent"
                 anchor="right"
                 sx={{
                     flexShrink: 0,
-                    width: `${RIGHT_DRAWER_WIDTH}rem`,
+                    width: rightDrawerActiveTabID ? `${RIGHT_DRAWER_WIDTH}rem` : "55px",
                     transition: `all ${DRAWER_TRANSITION_DURATION}ms cubic-bezier(0, 0, 0.2, 1)`,
                     zIndex: siteZIndex.Drawer,
                     "& .MuiDrawer-paper": {
@@ -34,6 +34,8 @@ export const RightDrawer = () => {
                         position: "absolute",
                         borderLeft: `1px solid #9F0410`,
                         overflow: "hidden",
+                        transform: !rightDrawerActiveTabID ? `translateX(calc(${RIGHT_DRAWER_WIDTH}rem - 55px)) !important` : "",
+                        visibility: !rightDrawerActiveTabID ? "visible !important" : "",
                     },
                 }}
             >
@@ -52,6 +54,9 @@ export const RightDrawer = () => {
                             sx={{
                                 display: "flex",
                                 flexDirection: "column",
+                                "&:not(:last-child)": {
+                                    mb: ".5rem",
+                                },
                                 "&.Mui-expanded": {
                                     flex: 1,
                                     minHeight: 0,
