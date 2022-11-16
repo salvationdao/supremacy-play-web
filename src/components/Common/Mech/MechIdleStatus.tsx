@@ -12,7 +12,7 @@ import {
 import { GameServerKeys } from "../../../keys"
 import { LobbyMech, MechStatus, MechStatusEnum, RepairSlot } from "../../../types"
 import { RepairOffer } from "../../../types/jobs"
-import { RepairModal } from "../../Hangar/WarMachinesHangar/WarMachineDetails/Modals/RepairModal/RepairModal"
+import { RepairModal } from "./RepairModal/RepairModal"
 import { NiceButton } from "../Nice/NiceButton"
 import { NicePopover } from "../Nice/NicePopover"
 

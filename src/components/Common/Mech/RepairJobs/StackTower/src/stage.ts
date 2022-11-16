@@ -1,6 +1,6 @@
 import gsap from "gsap"
 import * as THREE from "three"
-import { StackTowerBackgroundJPG } from "../../../../../assets"
+import { StackTowerBackgroundJPG } from "../../../../../../assets"
 import { cameraConfig, lightsConfig } from "./config"
 import { cover } from "./utils"
 

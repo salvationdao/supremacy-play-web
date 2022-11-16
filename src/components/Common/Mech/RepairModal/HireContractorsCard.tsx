@@ -1,17 +1,17 @@
 import { Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { SvgSupToken } from "../../../../../../assets"
-import { useGlobalNotifications } from "../../../../../../containers"
-import { numberCommaFormatter, parseString } from "../../../../../../helpers"
-import { useGameServerCommandsUser } from "../../../../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../../../../keys"
-import { colors, fonts } from "../../../../../../theme/theme"
-import { MechBasic } from "../../../../../../types"
-import { NiceBoxThing } from "../../../../../Common/Nice/NiceBoxThing"
-import { NiceButton } from "../../../../../Common/Nice/NiceButton"
-import { NiceSelect } from "../../../../../Common/Nice/NiceSelect"
-import { NiceTextField } from "../../../../../Common/Nice/NiceTextField"
-import { AmountItem } from "../AmountItem"
+import { SvgSupToken } from "../../../../assets"
+import { useGlobalNotifications } from "../../../../containers"
+import { numberCommaFormatter, parseString } from "../../../../helpers"
+import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
+import { colors, fonts } from "../../../../theme/theme"
+import { MechBasic } from "../../../../types"
+import { NiceBoxThing } from "../../Nice/NiceBoxThing"
+import { NiceButton } from "../../Nice/NiceButton"
+import { NiceSelect } from "../../Nice/NiceSelect"
+import { NiceTextField } from "../../Nice/NiceTextField"
+import { AmountItem } from "../../../Hangar/WarMachinesHangar/WarMachineDetails/Modals/AmountItem"
 
 const listingDurations: {
     label: string
@@ -77,7 +77,7 @@ const HireContractorsCardInner = ({
     }, [send, mechs, durationMinutes, agentRewardPerBlock, newSnackbarMessage, onSubmitted, onClose])
 
     return (
-        <NiceBoxThing border={{ color: `${colors.blue2}34`, thickness: "very-lean" }} background={{ colors: ["#FFFFFF"], opacity: 0.06 }}>
+        <NiceBoxThing border={{ color: `${colors.blue2}50`, thickness: "very-lean" }} background={{ colors: ["#FFFFFF"], opacity: 0.06 }}>
             <Stack spacing="1rem" sx={{ p: "2rem", pt: "1.6rem" }}>
                 <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack, color: colors.blue2 }}>
                     HIRE CONTRACTORS
