@@ -51,7 +51,7 @@ export const NiceSelect = ({
 
                     ".MuiTypography-root": {
                         px: ".1rem",
-                        py: ".2rem",
+                        py: ".1rem",
                     },
 
                     "& .MuiSelect-outlined": { px: ".8rem", pt: ".2rem", pb: 0 },
@@ -95,7 +95,7 @@ export const NiceSelect = ({
                             key={`${option.value}-${i}`}
                             value={option.value}
                             onClick={() => onSelected(option.value)}
-                            sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
+                            sx={{ py: ".6rem", "&:hover": { backgroundColor: "#FFFFFF20" } }}
                         >
                             <Typography>{option.label}</Typography>
                         </MenuItem>

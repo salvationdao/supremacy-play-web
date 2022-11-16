@@ -1,4 +1,4 @@
-import { InputAdornment, Stack, TextField, Typography } from "@mui/material"
+import { Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { SvgSupToken } from "../../../../../../assets"
 import { useGlobalNotifications } from "../../../../../../containers"
@@ -10,6 +10,7 @@ import { MechBasic } from "../../../../../../types"
 import { NiceBoxThing } from "../../../../../Common/Nice/NiceBoxThing"
 import { NiceButton } from "../../../../../Common/Nice/NiceButton"
 import { NiceSelect } from "../../../../../Common/Nice/NiceSelect"
+import { NiceTextField } from "../../../../../Common/Nice/NiceTextField"
 import { AmountItem } from "../DeployModal"
 
 const listingDurations: {
@@ -105,42 +106,24 @@ const HireContractorsCardInner = ({
                     <Typography variant="body2" sx={{ color: colors.blue2, fontFamily: fonts.nostromoBlack }}>
                         REWARD TO OFFER (PER BLOCK):
                     </Typography>
-                    <TextField
-                        variant="outlined"
-                        hiddenLabel
+
+                    <NiceTextField
+                        primaryColor={colors.blue2}
+                        value={agentRewardPerBlock}
+                        type="number"
+                        onChange={(value) => {
+                            const valueNumber = parseFloat(value)
+                            setAgentRewardPerBlock(valueNumber)
+                            setAgentReward(valueNumber * remainDamagedBlocks)
+                        }}
                         placeholder="ANY"
                         InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <SvgSupToken fill={colors.yellow} size="1.9rem" />
-                                </InputAdornment>
-                            ),
+                            startAdornment: <SvgSupToken fill={colors.yellow} size="1.9rem" />,
                             endAdornment: (
-                                <InputAdornment position="end">
-                                    <Typography variant="body2">PER BLOCK</Typography>
-                                </InputAdornment>
+                                <Typography variant="body2" whiteSpace="nowrap">
+                                    PER BLOCK
+                                </Typography>
                             ),
-                        }}
-                        sx={{
-                            backgroundColor: "#00000090",
-                            ".MuiOutlinedInput-root": { borderRadius: 0.5, border: `${colors.blue2}99 2px dashed` },
-                            ".MuiOutlinedInput-input": {
-                                px: "1.5rem",
-                                py: ".6rem",
-                                fontSize: "1.7rem",
-                                height: "unset",
-                                "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
-                                    WebkitAppearance: "none",
-                                },
-                            },
-                            ".MuiOutlinedInput-notchedOutline": { border: "unset" },
-                        }}
-                        type="number"
-                        value={agentRewardPerBlock}
-                        onChange={(e) => {
-                            const value = parseFloat(e.target.value)
-                            setAgentRewardPerBlock(value)
-                            setAgentReward(value * remainDamagedBlocks)
                         }}
                     />
                 </Stack>
@@ -150,37 +133,19 @@ const HireContractorsCardInner = ({
                     <Typography variant="body2" sx={{ color: colors.blue2, fontFamily: fonts.nostromoBlack }}>
                         REWARD TO OFFER:
                     </Typography>
-                    <TextField
-                        variant="outlined"
-                        hiddenLabel
+
+                    <NiceTextField
+                        primaryColor={colors.blue2}
+                        value={agentReward}
+                        type="number"
+                        onChange={(value) => {
+                            const valueNumber = parseFloat(value)
+                            setAgentReward(valueNumber)
+                            setAgentRewardPerBlock(Math.round((valueNumber / remainDamagedBlocks) * 100) / 100)
+                        }}
                         placeholder="ANY"
                         InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <SvgSupToken fill={colors.yellow} size="1.9rem" />
-                                </InputAdornment>
-                            ),
-                        }}
-                        sx={{
-                            backgroundColor: "#00000090",
-                            ".MuiOutlinedInput-root": { borderRadius: 0.5, border: `${colors.blue2}99 2px dashed` },
-                            ".MuiOutlinedInput-input": {
-                                px: "1.5rem",
-                                py: ".6rem",
-                                fontSize: "1.7rem",
-                                height: "unset",
-                                "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
-                                    WebkitAppearance: "none",
-                                },
-                            },
-                            ".MuiOutlinedInput-notchedOutline": { border: "unset" },
-                        }}
-                        type="number"
-                        value={agentReward}
-                        onChange={(e) => {
-                            const value = parseFloat(e.target.value)
-                            setAgentReward(value)
-                            setAgentRewardPerBlock(Math.round((value / remainDamagedBlocks) * 100) / 100)
+                            startAdornment: <SvgSupToken fill={colors.yellow} size="1.9rem" />,
                         }}
                     />
                 </Stack>
