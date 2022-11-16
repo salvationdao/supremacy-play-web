@@ -5,6 +5,7 @@ import { useAuth, useGlobalNotifications } from "../../../../../containers"
 import { useTheme } from "../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../helpers"
 import { useGameServerCommandsUser } from "../../../../../hooks/useGameServer"
+import { useLocalStorage } from "../../../../../hooks/useLocalStorage"
 import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
 import { AssetItemType, MechDetails, MechSkin, MechStatus, MechStatusEnum, MechTypeEnum, PowerCore, Utility, Weapon, WeaponType } from "../../../../../types"
@@ -115,7 +116,7 @@ interface MechLoadoutProps {
     onUpdate: (newMechDetails: MechDetails) => void
 }
 
-const LOCAL_STORAGE_KEY_PREFERS_2D_LOADOUT = "prefers2DLoadout"
+const LOCAL_STORAGE_KEY_PREFERS_3D_LOADOUT = "prefers3DLoadout"
 
 export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: MechLoadoutProps) => {
     const theme = useTheme()
@@ -132,7 +133,7 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
 
     const [isUnityLoaded, setIsUnityLoaded] = useState(false)
     const [isUnityPendingChange, setIsUnityPendingChange] = useState(false)
-    const [enable3DLoadout, setEnable3DLoadout] = useState(localStorage.getItem(LOCAL_STORAGE_KEY_PREFERS_2D_LOADOUT) !== "true")
+    const [enable3DLoadout, setEnable3DLoadout] = useLocalStorage<boolean>(LOCAL_STORAGE_KEY_PREFERS_3D_LOADOUT, true)
     const unityControlsRef = useRef<UnityHandle>(null)
     const orbitControlsRef = useRef<HTMLDivElement>(null)
 
@@ -596,11 +597,9 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
         await unityControlsRef.current.handleUnload()
         setEnable3DLoadout(false)
         setIsUnityLoaded(false)
-        localStorage.setItem(LOCAL_STORAGE_KEY_PREFERS_2D_LOADOUT, "true")
     }
     const switchTo3DView = async () => {
         setEnable3DLoadout(true)
-        localStorage.setItem(LOCAL_STORAGE_KEY_PREFERS_2D_LOADOUT, "false")
     }
 
     // LOADOUT ITEM RENDERERS
