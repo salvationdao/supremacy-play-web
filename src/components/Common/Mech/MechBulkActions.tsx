@@ -63,9 +63,16 @@ const BulkActionPopover = ({
         <>
             <NicePopover open={open} anchorEl={popoverRef.current} onClose={onClose}>
                 <Stack>
-                    <NiceButton disabled={selectedMechs.length <= 0} sx={{ justifyContent: "flex-start" }}>
+                    <NiceButton
+                        disabled={selectedMechs.length <= 0}
+                        sx={{ justifyContent: "flex-start" }}
+                        onClick={() => {
+                            onClose()
+                        }}
+                    >
                         STAKE SELECTED
                     </NiceButton>
+
                     <NiceButton
                         disabled={selectedMechs.length <= 0}
                         sx={{ justifyContent: "flex-start" }}
@@ -74,7 +81,18 @@ const BulkActionPopover = ({
                             onClose()
                         }}
                     >
-                        REPAIR SELECTED
+                        SEND TO REPAIR BAY
+                    </NiceButton>
+
+                    <NiceButton
+                        disabled={selectedMechs.length <= 0}
+                        sx={{ justifyContent: "flex-start" }}
+                        onClick={() => {
+                            setBulkRepairModalOpen(true)
+                            onClose()
+                        }}
+                    >
+                        CREATE REPAIR JOBS
                     </NiceButton>
                 </Stack>
             </NicePopover>
