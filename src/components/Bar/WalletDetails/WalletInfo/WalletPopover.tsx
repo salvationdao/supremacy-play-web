@@ -59,43 +59,36 @@ export const WalletPopover = ({
                 horizontal: "center",
             }}
         >
-            <Stack spacing="2rem" sx={{ position: "relative", minWidth: "35rem", maxHeight: "90vh", p: "1rem 1.6rem" }}>
+            <Stack spacing="2rem" sx={{ position: "relative", minWidth: "30rem", maxHeight: "90vh", p: "1rem 1.6rem" }}>
                 <Box>
-                    <Typography sx={{ mb: "1rem", fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>CURRENT SESSION</Typography>
+                    <Typography sx={{ mb: "1rem", fontFamily: fonts.nostromoBlack }}>CURRENT SESSION</Typography>
 
                     <Stack spacing=".5rem">
-                        <Stack direction="row" alignItems="center">
-                            <Typography sx={{ lineHeight: 1, mr: ".3rem" }}>• TIME ELAPSED:</Typography>
-                            <Typography sx={{ lineHeight: 1, color: colors.neonBlue }}>
+                        <Typography sx={{ lineHeight: 1 }}>
+                            • TIME ELAPSED:{" "}
+                            <span style={{ color: colors.neonBlue }}>
                                 <TimeElapsed startTime={startTime} />
-                            </Typography>
-                        </Stack>
+                            </span>
+                        </Typography>
 
-                        <Stack direction="row" alignItems="center">
-                            <Typography sx={{ lineHeight: 1, mr: ".3rem" }}>• SUPS EARNED:</Typography>
-                            <SvgSupToken size="1.4rem" fill={colors.supsCredit} sx={{ pb: ".1rem" }} />
-                            <Typography
-                                sx={{
-                                    lineHeight: 1,
-                                    color: colors.supsCredit,
-                                }}
-                            >
+                        <Typography sx={{ lineHeight: 1 }}>
+                            • SUPS EARNED:{" "}
+                            <span style={{ color: colors.supsCredit }}>
+                                <SvgSupToken size="1.4rem" fill={colors.supsCredit} inline />
                                 {supFormatter(supsEarned.current.toString(), 4)}
-                            </Typography>
-                        </Stack>
+                            </span>
+                        </Typography>
                     </Stack>
                 </Box>
 
-                <Box>
-                    <Typography sx={{ mb: "1rem", fontFamily: fonts.nostromoBlack, color: theme.factionTheme.primary }}>
-                        TOTAL {IS_TESTING_MODE ? "V" : ""}SUPS
+                <Stack spacing=".5rem">
+                    <Typography sx={{ fontFamily: fonts.nostromoBlack }}>TOTAL {IS_TESTING_MODE ? "V" : ""}SUPS</Typography>
+
+                    <Typography sx={{ lineHeight: 1 }}>
+                        <SvgSupToken size="1.4rem" fill={IS_TESTING_MODE ? colors.red : colors.yellow} inline />
+                        {sups ? supFormatter(sups, 18) : "0.00"}
                     </Typography>
-
-                    <Stack direction="row" alignItems="center">
-                        <SvgSupToken size="1.4rem" fill={IS_TESTING_MODE ? colors.red : colors.yellow} sx={{ pb: ".1rem" }} />
-                        <Typography sx={{ lineHeight: 1 }}>{sups ? supFormatter(sups, 18) : "0.00"}</Typography>
-                    </Stack>
-                </Box>
+                </Stack>
 
                 {transactions.length > 0 && (
                     <Box>
