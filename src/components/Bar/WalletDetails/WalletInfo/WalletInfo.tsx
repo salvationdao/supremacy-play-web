@@ -6,6 +6,7 @@ import { IS_TESTING_MODE } from "../../../../constants"
 import { useAuth, useWallet } from "../../../../containers"
 import { supFormatter } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
+import { useLocalStorage } from "../../../../hooks/useLocalStorage"
 import { usePassportSubscriptionAccount } from "../../../../hooks/usePassport"
 import { PassportServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
@@ -86,7 +87,7 @@ const WalletInfoInner = ({
 }) => {
     const walletPopoverRef = useRef(null)
     const [isWalletPopoverOpen, toggleIsWalletPopoverOpen] = useToggle()
-    const [isHideValue, setIsHideValue] = useState(localStorage.getItem("walletHide") === "true")
+    const [isHideValue, setIsHideValue] = useLocalStorage<boolean>("walletHide", false)
 
     if (!onWorldSupsRaw) {
         return (
@@ -125,16 +126,7 @@ const WalletInfoInner = ({
                 </Typography>
             </Stack>
 
-            <IconButton
-                size="small"
-                sx={{ ml: "-.4rem", opacity: 0.4, ":hover": { opacity: 1 } }}
-                onClick={() => {
-                    setIsHideValue((prev) => {
-                        localStorage.setItem("walletHide", (!prev).toString())
-                        return !prev
-                    })
-                }}
-            >
+            <IconButton size="small" sx={{ ml: "-.4rem", opacity: 0.4, ":hover": { opacity: 1 } }} onClick={() => setIsHideValue((prev) => !prev)}>
                 {isHideValue ? <SvgUnhide size="1.3rem" /> : <SvgHide size="1.3rem" />}
             </IconButton>
 
