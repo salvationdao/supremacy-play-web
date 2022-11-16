@@ -2,12 +2,14 @@ import { Stack, Typography } from "@mui/material"
 import { Box } from "@mui/system"
 import moment from "moment"
 import { useEffect, useRef } from "react"
-import { SectionFactions, SectionWinner } from "../.."
+import { NiceTooltip, SectionFactions, SectionWinner } from "../.."
+import { SvgLobbies } from "../../../assets"
 import { useArena, useGame, useUI } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { LeftRouteID, LeftRoutes } from "../../../routes"
+import { HeaderProps, LeftRouteID, LeftRoutes } from "../../../routes"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { BattleState } from "../../../types"
+import { NiceButton } from "../../Common/Nice/NiceButton"
 import { SectionMechRewards } from "./Sections/SectionMechRewards"
 
 export const BattleEndScreen = () => {
@@ -103,3 +105,44 @@ export const BattleEndScreen = () => {
         </Stack>
     )
 }
+
+const Header = ({ isOpen, onClose }: HeaderProps) => {
+    const theme = useTheme()
+
+    return (
+        <Stack
+            spacing="1rem"
+            direction="row"
+            sx={{
+                width: "100%",
+                p: "1rem",
+                alignItems: "center",
+                backgroundColor: isOpen ? `#1B0313` : `#1c1424`,
+                transition: "background-color .2s ease-out",
+            }}
+        >
+            <NiceTooltip text="My Lobbies" placement="left">
+                <NiceButton
+                    onClick={onClose}
+                    buttonColor={theme.factionTheme.primary}
+                    corners
+                    sx={{
+                        p: ".8rem",
+                        pb: ".6rem",
+                    }}
+                >
+                    <SvgLobbies size="3rem" />
+                </NiceButton>
+            </NiceTooltip>
+            <Typography
+                sx={{
+                    fontFamily: fonts.nostromoBlack,
+                    fontSize: "1.8rem",
+                }}
+            >
+                Previous Battle
+            </Typography>
+        </Stack>
+    )
+}
+BattleEndScreen.Header = Header

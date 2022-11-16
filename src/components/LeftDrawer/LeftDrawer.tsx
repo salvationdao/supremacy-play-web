@@ -1,15 +1,15 @@
-import { Box, Drawer, Fade } from "@mui/material"
+import { Accordion, AccordionDetails, AccordionSummary, Drawer } from "@mui/material"
 import { DRAWER_TRANSITION_DURATION } from "../../constants"
 import { useAuth, useMobile, useUI } from "../../containers"
 import { useActiveRouteID } from "../../hooks/useActiveRouteID"
 import { LeftRoutes } from "../../routes"
 import { colors, siteZIndex } from "../../theme/theme"
-import { DrawerButtons } from "./DrawerButtons"
+import { DRAWER_OFFSET } from "../RightDrawer/RightDrawer"
 
 export const LEFT_DRAWER_WIDTH = 44 // rem
 
 export const LeftDrawer = () => {
-    const { leftDrawerActiveTabID } = useUI()
+    const { leftDrawerActiveTabID, setLeftDrawerActiveTabID } = useUI()
     const { isMobile } = useMobile()
     const { userID } = useAuth()
     const activeRoute = useActiveRouteID()
@@ -29,32 +29,89 @@ export const LeftDrawer = () => {
                 anchor="left"
                 sx={{
                     flexShrink: 0,
-                    width: isOpen ? `${LEFT_DRAWER_WIDTH}rem` : 0,
+                    width: isOpen ? `${LEFT_DRAWER_WIDTH}rem` : DRAWER_OFFSET,
                     transition: `all ${DRAWER_TRANSITION_DURATION}ms cubic-bezier(0, 0, 0.2, 1)`,
                     zIndex: siteZIndex.Drawer,
                     "& .MuiDrawer-paper": {
                         width: `${LEFT_DRAWER_WIDTH}rem`,
                         backgroundColor: colors.darkNavy,
                         position: "absolute",
-                        borderRight: 0,
+                        borderRight: `1px solid #9F0410`,
                         overflow: "hidden",
+                        transform: !leftDrawerActiveTabID ? `translateX(calc(-${LEFT_DRAWER_WIDTH}rem + ${DRAWER_OFFSET})) !important` : "",
+                        visibility: !leftDrawerActiveTabID ? "visible !important" : "",
                     },
                 }}
             >
                 {LeftRoutes.map((route) => {
-                    if ((route.requireAuth && !userID) || (route.matchRouteIDs && activeRoute && !route.matchRouteIDs.includes(activeRoute.id))) return null
-                    const isActive = route.id === leftDrawerActiveTabID
-                    if (isActive || route.mountAllTime) {
-                        return (
-                            <Fade key={route.id} in>
-                                <Box sx={{ display: isActive ? "block" : "none", height: "100%" }}>{route.Component && <route.Component />}</Box>
-                            </Fade>
-                        )
-                    }
-                    return null
+                    if (
+                        (!route.Header && !route.Component) ||
+                        (route.requireAuth && !userID) ||
+                        (route.matchRouteIDs && activeRoute && !route.matchRouteIDs.includes(activeRoute.id))
+                    )
+                        return null
+                    return (
+                        <Accordion
+                            key={route.id}
+                            expanded={route.id === leftDrawerActiveTabID}
+                            sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                "&:not(:last-child)": {
+                                    mb: ".5rem",
+                                },
+                                "&.Mui-expanded": {
+                                    flex: 1,
+                                    minHeight: 0,
+                                    m: 0,
+                                    ".MuiCollapse-root": {
+                                        flex: 1,
+                                        ".MuiCollapse-wrapper": {
+                                            height: "100%",
+                                            ".MuiAccordion-region": {
+                                                height: "100%",
+                                            },
+                                        },
+                                    },
+                                },
+                                "&:before": {
+                                    display: "none",
+                                },
+                            }}
+                        >
+                            <AccordionSummary
+                                sx={{
+                                    p: 0,
+                                    minHeight: "auto !important",
+                                    ".MuiAccordionSummary-content": {
+                                        m: 0,
+                                    },
+                                    ".MuiAccordionSummary-content.Mui-expanded": {
+                                        m: 0,
+                                    },
+                                    ":hover": {
+                                        opacity: 1,
+                                    },
+                                }}
+                                onClick={route.id !== leftDrawerActiveTabID ? () => setLeftDrawerActiveTabID(route.id) : undefined}
+                            >
+                                {route.Header && <route.Header isOpen={route.id === leftDrawerActiveTabID} onClose={() => setLeftDrawerActiveTabID("")} />}
+                            </AccordionSummary>
+                            {route.Component && (
+                                <AccordionDetails
+                                    sx={{
+                                        height: "100%",
+                                        p: 0,
+                                        backgroundColor: "#0D0415",
+                                    }}
+                                >
+                                    <route.Component />
+                                </AccordionDetails>
+                            )}
+                        </Accordion>
+                    )
                 })}
             </Drawer>
-            <DrawerButtons />
         </>
     )
 }
