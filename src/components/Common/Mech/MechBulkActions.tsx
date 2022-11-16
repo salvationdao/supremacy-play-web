@@ -1,6 +1,9 @@
 import { Stack, Typography } from "@mui/material"
-import React, { MutableRefObject, useMemo, useRef, useState } from "react"
+import React, { MutableRefObject, useCallback, useMemo, useRef, useState } from "react"
+import { useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
+import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { LobbyMech, MechStatusEnum } from "../../../types"
 import { HireContractorsCard } from "../../Hangar/WarMachinesHangar/WarMachineDetails/Modals/RepairModal/HireContractorsCard"
@@ -57,7 +60,28 @@ const BulkActionPopover = ({
     selectedMechs: LobbyMech[]
     setSelectedMechs: React.Dispatch<React.SetStateAction<LobbyMech[]>>
 }) => {
+    const { newSnackbarMessage } = useGlobalNotifications()
+    const { send } = useGameServerCommandsUser("/user_commander")
     const [bulkRepairModalOpen, setBulkRepairModalOpen] = useState(false)
+
+    const insertMechsToRepairBay = useCallback(
+        async (mechs: LobbyMech[]) => {
+            try {
+                if (mechs.length <= 0) return
+
+                await send<boolean>(GameServerKeys.InsertRepairBay, {
+                    mech_ids: mechs.map((mech) => mech.id),
+                })
+                setSelectedMechs([])
+                newSnackbarMessage("Successfully added mechs to repair bay.", "success")
+            } catch (err) {
+                const message = typeof err === "string" ? err : "Failed to insert into repair bay."
+                newSnackbarMessage(message, "error")
+                console.error(err)
+            }
+        },
+        [newSnackbarMessage, send, setSelectedMechs],
+    )
 
     return (
         <>
@@ -77,7 +101,7 @@ const BulkActionPopover = ({
                         disabled={selectedMechs.length <= 0}
                         sx={{ justifyContent: "flex-start" }}
                         onClick={() => {
-                            setBulkRepairModalOpen(true)
+                            insertMechsToRepairBay(selectedMechs)
                             onClose()
                         }}
                     >
