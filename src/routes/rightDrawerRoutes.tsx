@@ -16,10 +16,17 @@ export enum RightRouteID {
     MyLobbies = "MY_LOBBIES",
 }
 
+export interface HeaderProps {
+    isOpen: boolean
+    onClose: () => void
+}
+
+type HeaderComponent = (props: HeaderProps) => JSX.Element
+
 export interface SideRouteSingle {
     id: LeftRouteID | RightRouteID
     Component?: () => JSX.Element | null
-    Header?: () => JSX.Element
+    Header?: HeaderComponent
     icon: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
     label: string
     matchRouteIDs?: RouteSingleID[] // Leave undefined to have the tab available on all pages, else specify the routes

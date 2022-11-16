@@ -5,6 +5,7 @@ import { SvgChat, SvgChatGlobal, SvgExternalLink, SvgInfoCircular, SvgSettings }
 import { useAuth, useChat, useMobile, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { acronym, shadeColor } from "../../../helpers"
+import { HeaderProps } from "../../../routes"
 import { zoomEffect } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { SplitOptionType } from "../../../types/chat"
@@ -67,7 +68,7 @@ export const LiveChat = () => {
     }, [common, isPoppedout, setIsPoppedout])
 }
 
-const Header = () => {
+const Header = ({ isOpen, onClose }: HeaderProps) => {
     const theme = useTheme()
     const { isMobile } = useMobile()
     const { isPoppedout, setIsPoppedout } = useChat()
@@ -83,10 +84,12 @@ const Header = () => {
                 width: "100%",
                 p: "1rem",
                 alignItems: "center",
-                backgroundColor: `#1B0313`,
+                backgroundColor: isOpen ? `#1B0313` : `#1c1424`,
+                transition: "background-color .2s ease-out",
             }}
         >
             <NiceButton
+                onClick={onClose}
                 buttonColor={theme.factionTheme.primary}
                 corners
                 sx={{

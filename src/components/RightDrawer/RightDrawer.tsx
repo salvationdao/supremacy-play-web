@@ -60,16 +60,9 @@ export const RightDrawer = () => {
                                         m: 0,
                                     },
                                 }}
-                                onClick={() =>
-                                    setRightDrawerActiveTabID((prev) => {
-                                        if (route.id === prev) {
-                                            return ""
-                                        }
-                                        return route.id
-                                    })
-                                }
+                                onClick={route.id !== rightDrawerActiveTabID ? () => setRightDrawerActiveTabID(route.id) : undefined}
                             >
-                                {route.Header && <route.Header />}
+                                {route.Header && <route.Header isOpen={route.id === rightDrawerActiveTabID} onClose={() => setRightDrawerActiveTabID("")} />}
                             </AccordionSummary>
                             {route.Component && (
                                 <AccordionDetails
