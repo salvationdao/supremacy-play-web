@@ -2,6 +2,7 @@ import { Stack, Typography } from "@mui/material"
 import { fonts } from "../../../theme/theme"
 import React, { useMemo } from "react"
 import { useTheme } from "../../../containers/theme"
+import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 
 interface CreateLobbyFormTabsProps {
     currentProcess: number
@@ -49,8 +50,18 @@ const FormTab = ({ currentProcess, formNumber, label, onClick }: FormTabProps) =
                 borderBottom: shouldHighlight ? "none" : `${factionTheme.primary} 2px solid`,
             }}
         >
-            <Stack direction="row" flex={1}>
-                <Typography fontFamily={fonts.nostromoBold}>{formNumber}</Typography>
+            <Stack direction="row" flex={1} alignItems="center">
+                <NiceBoxThing
+                    caret={{
+                        position: "top-left",
+                        color: `${factionTheme.primary}${shouldHighlight ? "AA" : "50"}`,
+                        size: "small",
+                    }}
+                >
+                    <Typography fontFamily={fonts.nostromoBold} sx={{ ml: "1.5rem" }}>
+                        {formNumber}
+                    </Typography>
+                </NiceBoxThing>
                 <Stack direction="row" justifyContent="center" alignItems="center" flex={1}>
                     <Typography fontFamily={fonts.nostromoBold}>{label}</Typography>
                 </Stack>

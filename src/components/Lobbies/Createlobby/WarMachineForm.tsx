@@ -60,7 +60,8 @@ export const WarMachineForm = ({ prevPage, ownedMechs, stakedMechs, playerQueueL
     })
 
     const selectedMechs: LobbyMech[] = watch("selected_mechs")
-    const queueLimit = useMemo(() => Math.min(3, playerQueueLimit) - selectedMechs.length, [selectedMechs, playerQueueLimit])
+    const totalLimit = useMemo(() => Math.min(3, playerQueueLimit), [playerQueueLimit])
+    const queueLimit = useMemo(() => totalLimit - selectedMechs.length, [selectedMechs, totalLimit])
 
     const toggleSelectedMech = useCallback(
         (lobbyMech: LobbyMech) => {
@@ -189,8 +190,8 @@ export const WarMachineForm = ({ prevPage, ownedMechs, stakedMechs, playerQueueL
                     {"No results..."}
                 </Typography>
 
-                <NiceButton route={{ to: `/marketplace/mechs` }} buttonColor={factionTheme.primary}>
-                    GO TO MARKETPLACE
+                <NiceButton route={{ to: `/fleet/mechs` }} buttonColor={factionTheme.primary}>
+                    GO TO FLEET
                 </NiceButton>
             </Stack>
         )
@@ -200,40 +201,44 @@ export const WarMachineForm = ({ prevPage, ownedMechs, stakedMechs, playerQueueL
         <Stack direction="column" flex={1} sx={{ height: "100%", py: "4rem" }}>
             <Stack direction="column" flex={1} spacing="1.5rem" sx={{ overflowY: "hidden", height: "100%" }}>
                 <Stack spacing="1.5rem" sx={{ px: "25rem" }}>
-                    <Section orderLabel="A" title="WAR MACHINES" description="Select your War machines to deploy for this lobby." />
+                    <Section
+                        orderLabel="A"
+                        title={`WAR MACHINES (${selectedMechs.length}/${totalLimit})`}
+                        description="Select your War machines to deploy for this lobby."
+                    />
+                </Stack>
 
-                    <Stack direction="row" spacing={1}>
-                        {/* Search bar */}
-                        <NiceTextField
-                            primaryColor={factionTheme.primary}
-                            value={searchInstant}
-                            onChange={setSearch}
-                            placeholder="Search..."
-                            InputProps={{
-                                endAdornment: <SvgSearch size="1.5rem" sx={{ opacity: 0.5 }} />,
-                            }}
-                        />
+                <Stack direction="row" spacing={1} alignItems="center" justifyContent="center">
+                    {/* Search bar */}
+                    <NiceTextField
+                        primaryColor={factionTheme.primary}
+                        value={searchInstant}
+                        onChange={setSearch}
+                        placeholder="Search..."
+                        InputProps={{
+                            endAdornment: <SvgSearch size="1.5rem" sx={{ opacity: 0.5 }} />,
+                        }}
+                    />
 
-                        {/* Page layout options */}
-                        <NiceButtonGroup
-                            primaryColor={factionTheme.primary}
-                            secondaryColor={factionTheme.secondary}
-                            options={mechListOptions}
-                            selected={isOwnedMech}
-                            onSelected={(value) => setIsOwnedMech(value)}
-                        />
+                    {/* Page layout options */}
+                    <NiceButtonGroup
+                        primaryColor={factionTheme.primary}
+                        secondaryColor={factionTheme.secondary}
+                        options={mechListOptions}
+                        selected={isOwnedMech}
+                        onSelected={(value) => setIsOwnedMech(value)}
+                    />
 
-                        {/* Sort */}
-                        <NiceSelect
-                            label="Sort:"
-                            primaryColor={factionTheme.primary}
-                            secondaryColor={factionTheme.secondary}
-                            options={sortOptions}
-                            selected={sort}
-                            onSelected={(value) => setSort(`${value}`)}
-                            sx={{ minWidth: "26rem" }}
-                        />
-                    </Stack>
+                    {/* Sort */}
+                    <NiceSelect
+                        label="Sort:"
+                        primaryColor={factionTheme.primary}
+                        secondaryColor={factionTheme.secondary}
+                        options={sortOptions}
+                        selected={sort}
+                        onSelected={(value) => setSort(`${value}`)}
+                        sx={{ minWidth: "26rem" }}
+                    />
                 </Stack>
 
                 {content}

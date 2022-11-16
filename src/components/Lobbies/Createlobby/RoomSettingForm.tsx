@@ -76,11 +76,6 @@ export const RoomSettingForm = ({ nextPage }: RoomSettingFormProps) => {
                             name="name"
                             control={control}
                             rules={{
-                                required: "Lobby name is required",
-                                minLength: {
-                                    value: 1,
-                                    message: "Lobby name cannot be empty.",
-                                },
                                 maxLength: {
                                     value: 20,
                                     message: "No more than 20 characters.",

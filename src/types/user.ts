@@ -131,6 +131,7 @@ export enum SystemMessageDataType {
     Faction = "FACTION",
     PlayerAbilityRefunded = "PLAYER_ABILITY_REFUNDED",
     ExpiredBattleLobby = "EXPIRED_BATTLE_LOBBY",
+    BattleLobbyInvitation = "BATTLE_LOBBY_INVITATION",
 }
 
 export interface SystemMessage {
