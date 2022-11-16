@@ -1,11 +1,12 @@
-import { useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
-import { GameMap } from "../../../types"
-import { GameServerKeys } from "../../../keys"
-import React, { useMemo, useRef, useState } from "react"
+import { Box, Typography } from "@mui/material"
+import { useMemo, useRef, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { useTheme } from "../../../containers/theme"
-import { Box, Popover, Typography } from "@mui/material"
+import { useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
 import { fonts } from "../../../theme/theme"
+import { GameMap } from "../../../types"
+import { NicePopover } from "../../Common/Nice/NicePopover"
 
 export const GameMapSelector = () => {
     const { factionTheme } = useTheme()
@@ -104,7 +105,7 @@ export const GameMapSelector = () => {
                 )}
             </Box>
             {openMapSelector && (
-                <Popover
+                <NicePopover
                     id={"map-popover"}
                     open={!!popoverRef.current}
                     anchorEl={popoverRef.current}
@@ -188,7 +189,7 @@ export const GameMapSelector = () => {
                             {randomOption}
                         </Box>
                     </Box>
-                </Popover>
+                </NicePopover>
             )}
         </>
     )
