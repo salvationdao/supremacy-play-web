@@ -5,16 +5,16 @@ import { useAuth } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { usePagination } from "../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
+import { useLocalStorage } from "../../../../hooks/useLocalStorage"
 import { GameServerKeys } from "../../../../keys"
+import { TruncateTextLines } from "../../../../theme/styles"
 import { colors, fonts } from "../../../../theme/theme"
 import { FeatureName, SystemMessage, SystemMessageDataType } from "../../../../types"
 import { CoolTable } from "../../../Common/CoolTable"
-import { FancyButton } from "../../../Common/Deprecated/FancyButton"
+import { NiceButton } from "../../../Common/Nice/NiceButton"
 import { PreferenceToggle } from "../../ProfileCard/PreferencesModal/NotificationPreferences"
 import { SystemMessageDisplayable } from "../Messages"
 import { MessageDisplay } from "./MessageDisplay/MessageDisplay"
-import { TruncateTextLines } from "../../../../theme/styles"
-import { useLocalStorage } from "../../../../hooks/useLocalStorage"
 
 export interface MessagesMainViewProps {
     lastUpdated: Date
@@ -245,43 +245,21 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
     return (
         <Stack direction="row" height="100%">
             {userHasFeature(FeatureName.systemMessages) && (
-                <Stack sx={{ height: "100%", backgroundColor: "#000000", borderRight: `${theme.factionTheme.primary}70 1.5px solid` }}>
+                <Stack sx={{ height: "100%", backgroundColor: "#000000", borderRight: `${colors.darkGrey} 1px solid` }}>
                     <Stack spacing="1.4rem" flex={1} sx={{ p: "1.6rem" }}>
-                        <FancyButton
-                            clipThingsProps={{
-                                clipSize: "9px",
-                                clipSlantSize: "0px",
-                                backgroundColor: theme.factionTheme.primary,
-                                opacity: 1,
-                                border: { borderColor: theme.factionTheme.primary, borderThickness: "1px" },
-                                sx: { position: "relative" },
-                            }}
-                            sx={{ px: "1.6rem", py: ".6rem", color: theme.factionTheme.secondary }}
-                            onClick={() => onCompose(SystemMessageDataType.Global)}
-                        >
-                            <Typography sx={{ fontWeight: "bold", color: theme.factionTheme.secondary }}>Compose Global Message</Typography>
-                        </FancyButton>
+                        <NiceButton corners buttonColor={colors.green} onClick={() => onCompose(SystemMessageDataType.Global)}>
+                            Compose Global Message
+                        </NiceButton>
 
-                        <FancyButton
-                            clipThingsProps={{
-                                clipSize: "9px",
-                                clipSlantSize: "0px",
-                                backgroundColor: theme.factionTheme.primary,
-                                opacity: 1,
-                                border: { borderColor: theme.factionTheme.primary, borderThickness: "1px" },
-                                sx: { position: "relative" },
-                            }}
-                            sx={{ px: "1.6rem", py: ".6rem", color: theme.factionTheme.secondary }}
-                            onClick={() => onCompose(SystemMessageDataType.Faction)}
-                        >
-                            <Typography sx={{ fontWeight: "bold", color: theme.factionTheme.secondary }}>Compose Faction Message</Typography>
-                        </FancyButton>
+                        <NiceButton corners buttonColor={theme.factionTheme.primary} onClick={() => onCompose(SystemMessageDataType.Faction)}>
+                            Compose Faction Message
+                        </NiceButton>
                     </Stack>
                 </Stack>
             )}
 
             <Stack sx={{ flex: 1, height: "100%" }}>
-                <Stack sx={{ p: ".6rem 1.6rem", pt: "1rem", borderBottom: `${theme.factionTheme.primary}70 1.5px solid` }}>
+                <Stack sx={{ p: ".6rem 1.6rem", pt: "1rem", borderBottom: `${colors.darkGrey} 1px solid` }}>
                     <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
                         YOUR INBOX
                     </Typography>
