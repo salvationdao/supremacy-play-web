@@ -104,27 +104,6 @@ export const RightDrawer = () => {
                         </Accordion>
                     )
                 })}
-                {/* {RightRoutes.map((route) => {
-                    if ((route.requireAuth && !userID) || (route.matchRouteIDs && activeRoute && !route.matchRouteIDs.includes(activeRoute.id))) return null
-                    const isActive = route.id === rightDrawerActiveTabID
-                    if (isActive) {
-                        return (
-                            <Fade key={route.id} in>
-                                <Box
-                                    sx={{
-                                        height: isActive ? "100%" : 0,
-                                        visibility: isActive ? "visible" : "hidden",
-                                        pointerEvents: isActive ? "all" : "none",
-                                    }}
-                                >
-                                    {route.Header && <route.Header />}
-                                    {route.Component && <route.Component />}
-                                </Box>
-                            </Fade>
-                        )
-                    }
-                    return null
-                })} */}
             </Drawer>
         </>
     )
