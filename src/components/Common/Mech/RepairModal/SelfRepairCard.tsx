@@ -4,7 +4,7 @@ import { colors, fonts } from "../../../../theme/theme"
 import { RepairStatus } from "../../../../types/jobs"
 import { NiceBoxThing } from "../../Nice/NiceBoxThing"
 import { NiceButton } from "../../Nice/NiceButton"
-import { DoRepairModal } from "../RepairJobs/DoRepairModal"
+import { DoRepairModal } from "./DoRepairModal"
 
 export const SelfRepairCard = ({
     defaultOpenSelfRepair,
