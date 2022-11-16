@@ -206,39 +206,39 @@ export const WarMachineForm = ({ prevPage, ownedMechs, stakedMechs, playerQueueL
                         title={`WAR MACHINES (${selectedMechs.length}/${totalLimit})`}
                         description="Select your War machines to deploy for this lobby."
                     />
+                </Stack>
 
-                    <Stack direction="row" spacing={1}>
-                        {/* Search bar */}
-                        <NiceTextField
-                            primaryColor={factionTheme.primary}
-                            value={searchInstant}
-                            onChange={setSearch}
-                            placeholder="Search..."
-                            InputProps={{
-                                endAdornment: <SvgSearch size="1.5rem" sx={{ opacity: 0.5 }} />,
-                            }}
-                        />
+                <Stack direction="row" spacing={1} alignItems="center" justifyContent="center">
+                    {/* Search bar */}
+                    <NiceTextField
+                        primaryColor={factionTheme.primary}
+                        value={searchInstant}
+                        onChange={setSearch}
+                        placeholder="Search..."
+                        InputProps={{
+                            endAdornment: <SvgSearch size="1.5rem" sx={{ opacity: 0.5 }} />,
+                        }}
+                    />
 
-                        {/* Page layout options */}
-                        <NiceButtonGroup
-                            primaryColor={factionTheme.primary}
-                            secondaryColor={factionTheme.secondary}
-                            options={mechListOptions}
-                            selected={isOwnedMech}
-                            onSelected={(value) => setIsOwnedMech(value)}
-                        />
+                    {/* Page layout options */}
+                    <NiceButtonGroup
+                        primaryColor={factionTheme.primary}
+                        secondaryColor={factionTheme.secondary}
+                        options={mechListOptions}
+                        selected={isOwnedMech}
+                        onSelected={(value) => setIsOwnedMech(value)}
+                    />
 
-                        {/* Sort */}
-                        <NiceSelect
-                            label="Sort:"
-                            primaryColor={factionTheme.primary}
-                            secondaryColor={factionTheme.secondary}
-                            options={sortOptions}
-                            selected={sort}
-                            onSelected={(value) => setSort(`${value}`)}
-                            sx={{ minWidth: "26rem" }}
-                        />
-                    </Stack>
+                    {/* Sort */}
+                    <NiceSelect
+                        label="Sort:"
+                        primaryColor={factionTheme.primary}
+                        secondaryColor={factionTheme.secondary}
+                        options={sortOptions}
+                        selected={sort}
+                        onSelected={(value) => setSort(`${value}`)}
+                        sx={{ minWidth: "26rem" }}
+                    />
                 </Stack>
 
                 {content}
