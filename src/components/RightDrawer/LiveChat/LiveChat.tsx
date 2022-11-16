@@ -466,6 +466,7 @@ const UnreadBadge = ({ tabValue: forTabValue, children }: { tabValue: number; ch
             badgeContent={tabValue == forTabValue ? 0 : unreadCount}
             sx={{
                 ".MuiBadge-badge": {
+                    top: 8,
                     fontSize: "1.2rem",
                     fontFamily: fonts.shareTech,
                     fontWeight: "bold",
