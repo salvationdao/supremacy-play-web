@@ -10,6 +10,8 @@ import { MechBattleCompleteDetails } from "./MechBattleCompleteDetails"
 import { PlayerAbilityRefundedData, PlayerAbilityRefundedMessage } from "./PlayerAbilityRefundedMessage"
 import { MechBattleBeginDetails } from "./MechBattleBeginDetails"
 import { ExpiredBattleLobby } from "./ExpiredBattleLobby"
+import { BattleLobbyInvitation } from "./BattleLobbyInvitation"
+import { BattleLobby } from "../../../../../types/battle_queue"
 
 export interface MessageDisplayProps {
     message: SystemMessageDisplayable
@@ -27,6 +29,8 @@ export const MessageDisplay = ({ message, onClose }: MessageDisplayProps) => {
                 return <PlayerAbilityRefundedMessage message={message.message} data={message.data as PlayerAbilityRefundedData[]} />
             case SystemMessageDataType.ExpiredBattleLobby:
                 return <ExpiredBattleLobby message={message.message} data={message.data as SystemMessageMechStruct[]} />
+            case SystemMessageDataType.BattleLobbyInvitation:
+                return <BattleLobbyInvitation message={message.message} data={message.data as BattleLobby} />
         }
 
         return <MessageRenderer markdown={message.message} />

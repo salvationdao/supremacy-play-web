@@ -1,4 +1,4 @@
-import { Autocomplete, Box, CircularProgress, Stack, SxProps, TextField, Typography } from "@mui/material"
+import { Autocomplete, Avatar, Box, CircularProgress, Stack, SxProps, TextField, Typography } from "@mui/material"
 import { useFormContext } from "react-hook-form"
 import { Accessibility, LobbyForm, Scheduling } from "./CreateLobby"
 import { colors, fonts } from "../../../theme/theme"
@@ -7,18 +7,43 @@ import { useGameServerCommandsFaction, useGameServerSubscriptionSecured } from "
 import { GameMap, LobbyMech, RoleType, User } from "../../../types"
 import { GameServerKeys } from "../../../keys"
 import React, { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
-import { camelToTitle, getRarityDeets, shortCodeGenerator } from "../../../helpers"
-import { SvgLogout, SvgSupToken } from "../../../assets"
+import { camelToTitle, combineDateTime, getRarityDeets, shortCodeGenerator } from "../../../helpers"
+import { SvgClose, SvgLogout, SvgSupToken } from "../../../assets"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { WeaponSlot } from "../Common/weaponSlot"
-import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
+import { RepairBlocks } from "../../Common/Mech/MechRepairBlocks"
 import { useDebounce, useToggle } from "../../../hooks"
 import { PlayerNameGid } from "../../Common/PlayerNameGid"
+import { useSupremacy } from "../../../containers"
 
-const UserItem = ({ user, sx }: { user: User; sx?: SxProps }) => {
+const UserItem = ({ user, remove }: { user: User; remove?: () => void }) => {
+    const { getFaction } = useSupremacy()
+    const faction = getFaction(user.faction_id)
+
+    const sxProps: SxProps | undefined = useMemo(() => {
+        if (!remove) return undefined
+        return {
+            border: `${faction.primary_color} 2px solid`,
+            backgroundColor: `${faction.primary_color}30`,
+            p: "1rem",
+            borderRadius: 0.9,
+        }
+    }, [remove, faction])
     return (
-        <Stack direction="row" spacing=".6rem" alignItems="center" sx={sx}>
+        <Stack direction="row" spacing=".6rem" alignItems="center" sx={sxProps}>
+            <Avatar
+                src={faction.logo_url}
+                alt={`${user.username}'s Avatar`}
+                sx={{
+                    height: "2.6rem",
+                    width: "2.6rem",
+                    borderRadius: 0.8,
+                    border: `${faction.primary_color} 2px solid`,
+                    backgroundColor: faction.primary_color,
+                }}
+                variant="square"
+            />
             <PlayerNameGid
                 player={{
                     id: user.id,
@@ -31,19 +56,26 @@ const UserItem = ({ user, sx }: { user: User; sx?: SxProps }) => {
                 }}
                 styledImageTextProps={{ textColor: "#FFFFFF" }}
             />
+            {remove && (
+                <NiceButton sx={{ p: 0, ml: "1rem" }} onClick={remove}>
+                    <SvgClose />
+                </NiceButton>
+            )}
         </Stack>
     )
 }
 
 export const LobbyFormOverview = () => {
     const { factionTheme } = useTheme()
-    const { watch, setValue } = useFormContext()
+    const { watch, setValue, getValues } = useFormContext()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [userDropdown, setUserDropdown] = useState<User[]>([])
     const [isLoadingUsers, toggleIsLoadingUsers] = useToggle()
     const [selectedUsers, setSelectedUsers] = useState<User[]>([])
     const [searchText, setSearchText] = useState("")
     const [search, setSearch] = useDebounce("", 300)
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState("")
 
     const {
         name,
@@ -88,8 +120,7 @@ export const LobbyFormOverview = () => {
                     excluded_player_ids: selectedUsers.map((su) => su.id),
                 })
 
-                if (!resp) return
-                setUserDropdown(resp)
+                setUserDropdown(resp || [])
             } catch (e) {
                 console.log(e)
             } finally {
@@ -202,6 +233,38 @@ export const LobbyFormOverview = () => {
 
         return list
     }, [factionTheme.primary, removeSelectedMech, selected_mechs])
+
+    const onCreate = useCallback(async () => {
+        const data = getValues() as LobbyForm
+
+        // build payload
+        const payload = {
+            name: data.name,
+            accessibility: data.accessibility,
+            access_code: data.accessibility === Accessibility.Private ? accessCode : undefined,
+            entry_fee: data.entry_fee,
+            first_faction_cut: data.first_faction_cut,
+            second_faction_cut: data.second_faction_cut,
+            game_map_id: data.game_map_id || undefined,
+            scheduling_type: data.scheduling_type,
+            wont_start_until:
+                data.scheduling_type === Scheduling.SetTime ? combineDateTime(data.wont_start_until_date, data.wont_start_until_time).toDate() : undefined,
+            max_deploy_number: data.max_deploy_number,
+            extra_reward: data.extra_reward,
+            mech_ids: data.selected_mechs.map((sm) => sm.id),
+            invited_user_ids: selectedUsers.map((su) => su.id),
+        }
+
+        try {
+            setIsLoading(true)
+            await send<boolean>(GameServerKeys.CreateBattleLobby, payload)
+        } catch (err) {
+            const message = typeof err === "string" ? err : "Failed to insert into repair bay."
+            setError(message)
+        } finally {
+            setIsLoading(false)
+        }
+    }, [accessCode, getValues, selectedUsers, send])
 
     return (
         <Stack
@@ -344,12 +407,9 @@ export const LobbyFormOverview = () => {
                                 <UserItem user={u} />
                             </Box>
                         )}
-                        getOptionLabel={(u) => `${u.username}#${u.gid}`}
-                        noOptionsText={
-                            <Typography sx={{ opacity: 0.6 }}>
-                                <i>Start typing a username...</i>
-                            </Typography>
-                        }
+                        disableClearable
+                        getOptionLabel={() => ""}
+                        noOptionsText={<Typography sx={{ opacity: 0.6 }}>Start typing a username...</Typography>}
                         filterOptions={(option) => option}
                         renderInput={(params) => (
                             <TextField
@@ -391,6 +451,14 @@ export const LobbyFormOverview = () => {
                             />
                         )}
                     />
+
+                    <Stack direction="row" sx={{ flexWrap: "wrap", py: "1rem" }} spacing={1}>
+                        {selectedUsers.map((su) => (
+                            <NiceBoxThing key={su.id}>
+                                <UserItem user={su} remove={() => setSelectedUsers((prev) => prev.filter((p) => p.id !== su.id))} />
+                            </NiceBoxThing>
+                        ))}
+                    </Stack>
                 </Stack>
             </Stack>
 
@@ -401,6 +469,7 @@ export const LobbyFormOverview = () => {
                         px: "4rem",
                         py: "1.5rem",
                     }}
+                    onClick={onCreate}
                 >
                     Create Lobby
                 </NiceButton>
