@@ -8,7 +8,7 @@ import { useGameServerCommandsUser } from "../../../../../../hooks/useGameServer
 import { GameServerKeys } from "../../../../../../keys"
 import { colors, fonts } from "../../../../../../theme/theme"
 import { RepairOffer } from "../../../../../../types/jobs"
-import { AmountItem } from "../DeployModal"
+import { AmountItem } from "../AmountItem"
 
 export const ExistingRepairJobCard = ({ repairOffer, remainDamagedBlocks }: { repairOffer: RepairOffer; remainDamagedBlocks: number }) => {
     const { newSnackbarMessage } = useGlobalNotifications()

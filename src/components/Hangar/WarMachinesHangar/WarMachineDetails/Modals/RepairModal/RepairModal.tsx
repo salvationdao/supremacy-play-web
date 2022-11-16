@@ -6,7 +6,7 @@ import { useTheme } from "../../../../../../containers/theme"
 import { useGameServerSubscriptionSecured } from "../../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../../keys"
 import { colors, fonts, siteZIndex } from "../../../../../../theme/theme"
-import { MechDetails } from "../../../../../../types"
+import { LobbyMech } from "../../../../../../types"
 import { RepairOffer, RepairStatus } from "../../../../../../types/jobs"
 import { MechRepairBlocks } from "../../../../../Common/Mech/MechRepairBlocks"
 import { ExistingRepairJobCard } from "./ExistingRepairJobCard"
@@ -15,25 +15,25 @@ import { SelfRepairCard } from "./SelfRepairCard"
 
 export const RepairModal = ({
     defaultOpenSelfRepair,
-    selectedMechDetails,
+    mech,
     repairMechModalOpen,
     setRepairMechModalOpen,
 }: {
     defaultOpenSelfRepair?: boolean // Immediately opens the self repair game modal
-    selectedMechDetails: MechDetails
+    mech: LobbyMech
     repairMechModalOpen: boolean
     setRepairMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
     const theme = useTheme()
 
     const repairStatus = useGameServerSubscriptionSecured<RepairStatus>({
-        URI: `/mech/${selectedMechDetails.id}/repair_case`,
+        URI: `/mech/${mech.id}/repair_case`,
         key: GameServerKeys.SubMechRepairStatus,
-        ready: !!selectedMechDetails.id,
+        ready: !!mech.id,
     })
 
     const repairOffer = useGameServerSubscriptionSecured<RepairOffer>({
-        URI: `/mech/${selectedMechDetails.id}/active_repair_offer`,
+        URI: `/mech/${mech.id}/active_repair_offer`,
         key: GameServerKeys.GetMechRepairJob,
     })
 
@@ -43,7 +43,7 @@ export const RepairModal = ({
         setRepairMechModalOpen(false)
     }, [setRepairMechModalOpen])
 
-    if (!selectedMechDetails) return null
+    if (!mech) return null
 
     return (
         <Modal
@@ -104,7 +104,7 @@ export const RepairModal = ({
                                 {remainDamagedBlocks} x DAMAGED BLOCKS
                             </Typography>
 
-                            <MechRepairBlocks mechID={selectedMechDetails?.id} defaultBlocks={selectedMechDetails?.repair_blocks} />
+                            <MechRepairBlocks mechID={mech?.id} defaultBlocks={mech?.repair_blocks} />
                         </Stack>
 
                         <SelfRepairCard defaultOpenSelfRepair={defaultOpenSelfRepair} repairStatus={repairStatus} remainDamagedBlocks={remainDamagedBlocks} />
@@ -112,7 +112,7 @@ export const RepairModal = ({
                         {repairOffer && !repairOffer.closed_at ? (
                             <ExistingRepairJobCard repairOffer={repairOffer} remainDamagedBlocks={remainDamagedBlocks} />
                         ) : (
-                            <HireContractorsCard mechs={[selectedMechDetails]} remainDamagedBlocks={remainDamagedBlocks} />
+                            <HireContractorsCard mechs={[mech]} remainDamagedBlocks={remainDamagedBlocks} />
                         )}
                     </Stack>
 

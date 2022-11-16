@@ -4,7 +4,7 @@ import { Weapon } from "../../../../types"
 import { ItemType } from "../../../../types/marketplace"
 import { ClipThing } from "../../../Common/Deprecated/ClipThing"
 import { NiceTooltip } from "../../../Common/Nice/NiceTooltip"
-import { ReusableButton } from "../../WarMachinesHangar/WarMachineDetails/MechButtons"
+import { ReusableButton } from "../../WarMachinesHangar/WarMachineDetails/ReusableButton"
 
 export const WeaponButtons = ({ weaponDetails }: { weaponDetails: Weapon }) => {
     const theme = useTheme()

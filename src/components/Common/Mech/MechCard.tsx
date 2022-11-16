@@ -1,12 +1,13 @@
 import { Box, Checkbox, Stack, Typography } from "@mui/material"
 import React, { useMemo } from "react"
+import { Link } from "react-router-dom"
 import { SvgMechDeaths, SvgMechKills, SvgMechLosses, SvgMechWins, SvgUserDiamond } from "../../../assets"
 import { useSupremacy } from "../../../containers"
-import { getMechStatusDeets } from "../../../helpers"
 import { TruncateTextLines } from "../../../theme/styles"
 import { colors, fonts } from "../../../theme/theme"
 import { LobbyMech } from "../../../types"
 import { NiceBoxThing } from "../Nice/NiceBoxThing"
+import { MechIdleStatus } from "./MechIdleStatus"
 import { RepairBlocks } from "./MechRepairBlocks"
 
 interface MechCardProps {
@@ -34,7 +35,6 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
     const { name, label } = mech
 
     const ownerFaction = useMemo(() => getFaction(mech.owner.faction_id), [getFaction, mech.owner.faction_id])
-    const statusDeets = useMemo(() => getMechStatusDeets(mech.status), [mech.status])
 
     // CSS grid widths
     const cssGridWidths = useMemo(() => {
@@ -93,7 +93,9 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                     </NiceBoxThing>
 
                     {/* Mech name */}
-                    <Typography sx={{ fontFamily: fonts.nostromoBlack, ...TruncateTextLines(1) }}>{name || label}</Typography>
+                    <Link to={`/mech/${mech.id}`}>
+                        <Typography sx={{ fontFamily: fonts.nostromoBlack, ...TruncateTextLines(1) }}>{name || label}</Typography>
+                    </Link>
 
                     {/* Owner name */}
                     {!hide?.ownerName && (
@@ -111,18 +113,7 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                     )}
 
                     {/* Mech status */}
-                    <Typography
-                        sx={{
-                            width: "fit-content",
-                            p: ".1rem 1.6rem",
-                            fontWeight: "bold",
-                            color: statusDeets.color,
-                            backgroundColor: `${statusDeets.color}30`,
-                            boxShadow: 0.4,
-                        }}
-                    >
-                        {statusDeets.label}
-                    </Typography>
+                    <MechIdleStatus mech={mech} />
 
                     {/* Repair blocks */}
                     <RepairBlocks
@@ -180,7 +171,11 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
             <Stack spacing="1.2rem">
                 {/* Mech name and checkbox */}
                 <Stack direction="row" alignItems="center" justifyContent="space-between" spacing=".5rem">
-                    <Typography sx={{ fontFamily: fonts.nostromoBlack, ...TruncateTextLines(1) }}>{name || label}</Typography>
+                    {/* Mech name */}
+                    <Link to={`/mech/${mech.id}`}>
+                        <Typography sx={{ fontFamily: fonts.nostromoBlack, ...TruncateTextLines(1) }}>{name || label}</Typography>
+                    </Link>
+
                     {toggleSelected && (
                         <Checkbox
                             checked={isSelected}
@@ -253,17 +248,7 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
 
                 {/* Mech status and repair blocks */}
                 <Stack direction="row" alignItems="center" justifyContent="space-between">
-                    <Typography
-                        sx={{
-                            p: ".1rem 1.6rem",
-                            fontWeight: "bold",
-                            color: statusDeets.color,
-                            backgroundColor: `${statusDeets.color}30`,
-                            boxShadow: 0.4,
-                        }}
-                    >
-                        {statusDeets.label}
-                    </Typography>
+                    <MechIdleStatus mech={mech} />
 
                     <RepairBlocks
                         defaultBlocks={mech.repair_blocks}

@@ -35,7 +35,7 @@ export const NiceSnackBar = React.memo(function NiceSnackbar({ icon, message, co
                     }}
                 >
                     <Typography variant="h6" sx={{ fontWeight: "bold", lineHeight: 1.75 }}>
-                        {icon || <SvgInfoCircular inline size="1.4rem" />} {message}
+                        {icon || <SvgInfoCircular inline size="1.8rem" />} {message}
                     </Typography>
 
                     <IconButton size="small" onClick={() => props.onClose}>
