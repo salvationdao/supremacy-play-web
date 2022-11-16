@@ -1,6 +1,6 @@
 import { Badge, Box, Fade, Stack, Tab, Tabs, Typography } from "@mui/material"
 import React, { ReactNode, useMemo, useRef, useState } from "react"
-import { AdditionalOptionsButton, FancyButton, NiceTooltip } from "../.."
+import { AdditionalOptionsButton, NiceTooltip } from "../.."
 import { SvgChat, SvgChatGlobal, SvgExternalLink, SvgInfoCircular, SvgSettings } from "../../../assets"
 import { useAuth, useChat, useMobile, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -44,21 +44,9 @@ export const LiveChat = () => {
 
                     <Stack spacing=".6rem" alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                         <Typography sx={{ color: colors.grey, textAlign: "center" }}>Live chat has been opened in a new window.</Typography>
-                        <FancyButton
-                            clipThingsProps={{
-                                clipSize: "6px",
-                                clipSlantSize: "0px",
-                                backgroundColor: "#333333",
-                                opacity: 1,
-                                sx: { position: "relative" },
-                            }}
-                            sx={{ px: "2rem", py: ".2rem", color: "#FFFFFF" }}
-                            onClick={() => setIsPoppedout(false)}
-                        >
-                            <Typography variant="caption" sx={{ fontWeight: "bold", color: "#FFFFFF" }}>
-                                RESTORE WINDOW
-                            </Typography>
-                        </FancyButton>
+                        <NiceButton corners buttonColor={colors.lightGrey} onClick={() => setIsPoppedout(false)}>
+                            RESTORE WINDOW
+                        </NiceButton>
                     </Stack>
                 </>
             )

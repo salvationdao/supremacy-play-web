@@ -3,7 +3,7 @@ import { DRAWER_TRANSITION_DURATION } from "../../constants"
 import { useAuth, useMobile, useUI } from "../../containers"
 import { useActiveRouteID } from "../../hooks/useActiveRouteID"
 import { RightRoutes } from "../../routes"
-import { colors, siteZIndex } from "../../theme/theme"
+import { siteZIndex } from "../../theme/theme"
 
 export const RIGHT_DRAWER_WIDTH = 38 // rem
 
@@ -25,16 +25,16 @@ export const RightDrawer = () => {
                 anchor="right"
                 sx={{
                     flexShrink: 0,
-                    width: rightDrawerActiveTabID ? `${RIGHT_DRAWER_WIDTH}rem` : "55px",
+                    width: rightDrawerActiveTabID ? `${RIGHT_DRAWER_WIDTH}rem` : "7rem",
                     transition: `all ${DRAWER_TRANSITION_DURATION}ms cubic-bezier(0, 0, 0.2, 1)`,
                     zIndex: siteZIndex.Drawer,
                     "& .MuiDrawer-paper": {
                         width: `${RIGHT_DRAWER_WIDTH}rem`,
-                        backgroundColor: colors.darkNavy,
+                        backgroundColor: `#1B0313`,
                         position: "absolute",
                         borderLeft: `1px solid #9F0410`,
                         overflow: "hidden",
-                        transform: !rightDrawerActiveTabID ? `translateX(calc(${RIGHT_DRAWER_WIDTH}rem - 55px)) !important` : "",
+                        transform: !rightDrawerActiveTabID ? `translateX(calc(${RIGHT_DRAWER_WIDTH}rem - 7rem)) !important` : "",
                         visibility: !rightDrawerActiveTabID ? "visible !important" : "",
                     },
                 }}
