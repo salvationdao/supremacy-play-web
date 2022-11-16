@@ -68,24 +68,10 @@ export const Bar = () => {
                     zIndex: siteZIndex.TopBar,
                     overflowX: "auto",
                     overflowY: "hidden",
-                    boxShadow: 3,
+                    boxShadow: 1.2,
                 }}
             >
                 <BarContent userID={userID} user={user} />
-
-                {/* Background gradient */}
-                <Box
-                    sx={{
-                        position: "absolute",
-                        top: 0,
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        background: (theme) => `linear-gradient(${theme.factionTheme.primary}16 26%, ${theme.factionTheme.primary}06)`,
-                        pointerEvents: "none",
-                        zIndex: -1,
-                    }}
-                />
             </Stack>
         </>
     )
