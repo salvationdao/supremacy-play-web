@@ -93,6 +93,7 @@ import Spread from "!@svgr/webpack!./svg/Spread.svg"
 import SupremacyLogo from "!@svgr/webpack!./svg/SupremacyLogo.svg"
 import Swap from "!@svgr/webpack!./svg/Swap.svg"
 import Unhide from "!@svgr/webpack!./svg/Unhide.svg"
+import UserDiamond2 from "!@svgr/webpack!./svg/UserDiamond2.svg"
 import Utilities from "!@svgr/webpack!./svg/Utilities.svg"
 import View from "!@svgr/webpack!./svg/View.svg"
 import VoiceChat from "!@svgr/webpack!./svg/VoiceChat.svg"
@@ -1686,5 +1687,11 @@ export const SvgButtonCorner: React.VoidFunctionComponent<SvgWrapperProps> = (pr
 export const SvgChatGlobal: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <ChatGlobal />
+    </SvgWrapper>
+)
+
+export const SvgUserDiamond2: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <UserDiamond2 />
     </SvgWrapper>
 )

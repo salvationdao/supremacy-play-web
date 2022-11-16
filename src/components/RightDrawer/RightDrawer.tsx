@@ -96,6 +96,7 @@ export const RightDrawer = () => {
                                     sx={{
                                         height: "100%",
                                         p: 0,
+                                        backgroundColor: "#0D0415",
                                     }}
                                 >
                                     <route.Component />
