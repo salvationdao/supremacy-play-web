@@ -37,7 +37,11 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
     const displayAccessCode = useMemo(() => lobby.access_code || accessCode, [accessCode, lobby.access_code])
 
     return (
-        <NiceBoxThing border={{ color: "#FFFFFF20", thickness: "very-lean" }} background={{ colors: ["#FFFFFF"], opacity: 0.06 }} sx={{ p: "1.2rem 1.8rem" }}>
+        <NiceBoxThing
+            border={{ color: "#FFFFFF20", thickness: "very-lean" }}
+            background={{ colors: ["#FFFFFF"], opacity: 0.06 }}
+            sx={{ position: "relative", p: "1.2rem 1.8rem" }}
+        >
             {/* Lobby details */}
             <Stack>
                 <Stack direction="row" alignItems="center" spacing="2rem">
@@ -135,6 +139,38 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
                     {/* Mechs */}
                 </Stack>
             </Stack>
+
+            {/* Background map image */}
+            <Box
+                sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: `url(${
+                        lobby.game_map?.background_url || "https://afiles.ninja-cdn.com//supremacy-stream-site/assets/img/maps/backgrounds/iron_dust.png"
+                    })`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    backgroundSize: "cover",
+                    opacity: 0.3,
+                    zIndex: -2,
+                }}
+            />
+
+            {/* Background gradient */}
+            <Box
+                sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: "linear-gradient(to right, #000000BB 0%, #00000020 35%, #00000000)",
+                    zIndex: -1,
+                }}
+            />
         </NiceBoxThing>
     )
 })
