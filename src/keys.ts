@@ -76,6 +76,7 @@ export enum GameServerKeys {
     GetPlayerOwnedWeapons = "PLAYER:OWNED:WEAPONS",
     GetPlayerOwnedMechSkins = "PLAYER:OWNED:MECH:SKINS",
     GetPlayerOwnedWeaponSkins = "PLAYER:OWNED:WEAPON:SKINS",
+    GetPlayerOwnedMysteryCrates = "PLAYER:OWNED:MYSTERY:CRATES",
     GetWeaponsDetailed = "PLAYER:ASSET:WEAPON:DETAIL:LIST",
     GetWeaponDetails = "PLAYER:ASSET:WEAPON:DETAIL",
     GetPowerCores = "PLAYER:ASSET:POWER_CORE:LIST",

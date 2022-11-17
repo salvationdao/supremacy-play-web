@@ -6,7 +6,7 @@ import { HANGAR_PAGE } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
 import { usePagination, useUrlQuery } from "../../../hooks"
-import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
+import { useGameServerCommandsUser, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { MysteryCrate, MysteryCrateType, OpenCrateResponse, StorefrontMysteryCrate } from "../../../types"
@@ -43,6 +43,27 @@ export const MysteryCratesHangar = () => {
     const [openingCrate, setOpeningCrate] = useState<OpeningCrate>()
     const [openedRewards, setOpenedRewards] = useState<OpenCrateResponse>()
     const [futureCratesToOpen, setFutureCratesToOpen] = useState<(StorefrontMysteryCrate | MysteryCrate)[]>([])
+
+    const [ownedMysteryCrates, setOwnedMysteryCrates] = useState<MysteryCrate[]>([])
+    useGameServerSubscriptionSecuredUser<MysteryCrate[]>(
+        {
+            URI: "/owned_mystery_crates",
+            key: GameServerKeys.GetPlayerOwnedMysteryCrates,
+        },
+        (payload) => {
+            if (!payload) return
+            console.log(payload)
+            setOwnedMysteryCrates((prev) => {
+                if (!prev.length) {
+                    return payload
+                }
+
+                prev = prev.map((mc) => payload.find((p) => p.id === mc.id) || mc)
+                payload.forEach((p) => (prev.some((mc) => mc.id === p.id) ? undefined : prev.push(p)))
+                return prev
+            })
+        },
+    )
 
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize, prevPage } = usePagination({
         pageSize: parseString(query.get("pageSize"), 10),

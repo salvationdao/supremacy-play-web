@@ -81,7 +81,7 @@ const SubmodelsHangarInner = () => {
                 prev = prev.map((ms) => payload.find((p) => p.id === ms.id) || ms)
 
                 // append new mech skins
-                payload.forEach((p) => (prev.some((ms) => ms.id === p.id) ? prev.push(p) : undefined))
+                payload.forEach((p) => (prev.some((ms) => ms.id === p.id) ? undefined : prev.push(p)))
 
                 return prev
             })
@@ -107,7 +107,7 @@ const SubmodelsHangarInner = () => {
                 prev = prev.map((ws) => payload.find((p) => p.id === ws.id) || ws)
 
                 // append new weapon skins
-                payload.forEach((p) => (prev.some((ws) => ws.id === p.id) ? prev.push(p) : undefined))
+                payload.forEach((p) => (prev.some((ws) => ws.id === p.id) ? undefined : prev.push(p)))
 
                 return prev
             })
