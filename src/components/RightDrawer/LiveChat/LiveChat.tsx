@@ -211,7 +211,7 @@ const TabbedLayout = () => {
                             background: "#2D0311",
                             borderTop: `1px solid #9F0410`,
                             borderLeft: tabValue !== 0 ? `1px solid #9F0410` : `0px solid transparent`,
-                            borderRight: `1px solid #9F0410`,
+                            borderRight: isEnlisted ? `1px solid #9F0410` : `0px solid transparent`,
                         },
                     }}
                     onChange={(_event, newValue) => {

@@ -51,11 +51,9 @@ export const BattleEndScreen = () => {
         }
     }, [battleEndDetail, hasModalsOpen, setLeftDrawerActiveTabID])
 
-    const backgroundColor = theme.factionTheme.background
-
     if (!battleEndDetail) {
         return (
-            <Stack spacing=".6rem" alignItems="center" justifyContent="center" sx={{ px: "6rem", height: "100%", backgroundColor }}>
+            <Stack spacing=".6rem" alignItems="center" justifyContent="center" sx={{ px: "6rem", height: "100%" }}>
                 <Typography variant="body2" sx={{ color: colors.grey, textAlign: "center", fontFamily: fonts.nostromoBold }}>
                     Please wait for the current battle to finish.
                 </Typography>
@@ -76,7 +74,6 @@ export const BattleEndScreen = () => {
                 width: "100%",
                 boxShadow: 20,
                 zIndex: siteZIndex.Popover,
-                backgroundColor,
             }}
         >
             <Box>

@@ -51,7 +51,7 @@ export const BattleArena = () => {
 
     return useMemo(() => {
         return (
-            <Stack sx={{ position: "relative", height: "100%", backgroundColor: (theme) => theme.factionTheme.background }}>
+            <Stack sx={{ position: "relative", height: "100%" }}>
                 {content}
 
                 {battleIdentifier && (

@@ -26,7 +26,7 @@ export const LeftRoutes: SideRouteSingle[] = [
         icon: <SvgHistoryClock size="1.3rem" sx={{ pt: ".3rem" }} />,
         label: "Previous Battle",
         Component: BattleEndScreen,
-        Header: BattleArena.Header,
+        Header: BattleEndScreen.Header,
         requireAuth: false,
         matchRouteIDs: BATTLE_ARENA_OPEN ? [RouteSingleID.Home] : [],
         mountAllTime: true,
