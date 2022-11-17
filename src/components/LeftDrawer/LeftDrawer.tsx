@@ -38,8 +38,8 @@ export const LeftDrawer = () => {
                         position: "absolute",
                         borderRight: `1px solid #9F0410`,
                         overflow: "hidden",
-                        transform: !leftDrawerActiveTabID ? `translateX(calc(-${LEFT_DRAWER_WIDTH}rem + ${DRAWER_OFFSET})) !important` : "",
-                        visibility: !leftDrawerActiveTabID ? "visible !important" : "",
+                        transform: !isOpen ? `translateX(calc(-${LEFT_DRAWER_WIDTH}rem + ${DRAWER_OFFSET})) !important` : "",
+                        visibility: !isOpen ? "visible !important" : "",
                     },
                 }}
             >
@@ -95,7 +95,13 @@ export const LeftDrawer = () => {
                                 }}
                                 onClick={route.id !== leftDrawerActiveTabID ? () => setLeftDrawerActiveTabID(route.id) : undefined}
                             >
-                                {route.Header && <route.Header isOpen={route.id === leftDrawerActiveTabID} onClose={() => setLeftDrawerActiveTabID("")} />}
+                                {route.Header && (
+                                    <route.Header
+                                        isDrawerOpen={!!isOpen}
+                                        isOpen={route.id === leftDrawerActiveTabID}
+                                        onClose={() => setLeftDrawerActiveTabID("")}
+                                    />
+                                )}
                             </AccordionSummary>
                             {route.Component && (
                                 <AccordionDetails

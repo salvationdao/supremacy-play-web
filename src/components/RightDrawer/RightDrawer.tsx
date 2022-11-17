@@ -17,16 +17,19 @@ export const RightDrawer = () => {
     // Hide the drawer if on mobile OR none of the tabs are visible on the page
     if (isMobile || RightRoutes.filter((r) => !r.matchRouteIDs || (activeRoute && r.matchRouteIDs.includes(activeRoute.id))).length <= 0) return null
 
+    const match = RightRoutes.find((route) => route.id === rightDrawerActiveTabID)
+    const isOpen = match && (match.matchRouteIDs === undefined || (activeRoute && match.matchRouteIDs?.includes(activeRoute.id)))
+
     return (
         <>
             <Drawer
                 transitionDuration={DRAWER_TRANSITION_DURATION}
-                open={!!rightDrawerActiveTabID}
+                open={isOpen}
                 variant="persistent"
                 anchor="right"
                 sx={{
                     flexShrink: 0,
-                    width: rightDrawerActiveTabID ? `${RIGHT_DRAWER_WIDTH}rem` : DRAWER_OFFSET,
+                    width: isOpen ? `${RIGHT_DRAWER_WIDTH}rem` : DRAWER_OFFSET,
                     transition: `all ${DRAWER_TRANSITION_DURATION}ms cubic-bezier(0, 0, 0.2, 1)`,
                     zIndex: siteZIndex.Drawer,
                     "& .MuiDrawer-paper": {
@@ -35,8 +38,8 @@ export const RightDrawer = () => {
                         position: "absolute",
                         borderLeft: `1px solid #9F0410`,
                         overflow: "hidden",
-                        transform: !rightDrawerActiveTabID ? `translateX(calc(${RIGHT_DRAWER_WIDTH}rem - ${DRAWER_OFFSET})) !important` : "",
-                        visibility: !rightDrawerActiveTabID ? "visible !important" : "",
+                        transform: !isOpen ? `translateX(calc(${RIGHT_DRAWER_WIDTH}rem - ${DRAWER_OFFSET})) !important` : "",
+                        visibility: !isOpen ? "visible !important" : "",
                     },
                 }}
             >
@@ -93,7 +96,13 @@ export const RightDrawer = () => {
                                 }}
                                 onClick={route.id !== rightDrawerActiveTabID ? () => setRightDrawerActiveTabID(route.id) : undefined}
                             >
-                                {route.Header && <route.Header isOpen={route.id === rightDrawerActiveTabID} onClose={() => setRightDrawerActiveTabID("")} />}
+                                {route.Header && (
+                                    <route.Header
+                                        isDrawerOpen={!!isOpen}
+                                        isOpen={route.id === rightDrawerActiveTabID}
+                                        onClose={() => setRightDrawerActiveTabID("")}
+                                    />
+                                )}
                             </AccordionSummary>
                             {route.Component && (
                                 <AccordionDetails
