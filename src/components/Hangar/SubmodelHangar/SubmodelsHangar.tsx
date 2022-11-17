@@ -9,7 +9,7 @@ import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
 import { useGameServerCommandsUser, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
-import { BlueprintMech, BlueprintWeapon, MechSkin, SubmodelStatus } from "../../../types"
+import { BlueprintMech, BlueprintWeapon, MechSkin, SubmodelStatus, WeaponSkin } from "../../../types"
 import { SortDir, SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/Deprecated/PageHeader"
 import { ChipFilter } from "../../Common/Deprecated/SortAndFilters/ChipFilterSection"
@@ -62,7 +62,8 @@ const SubmodelsHangarInner = () => {
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
 
-    useGameServerSubscriptionSecuredUser(
+    const [ownedMechSkins, setOwnedMechSkins] = useState<MechSkin[]>([])
+    useGameServerSubscriptionSecuredUser<MechSkin[]>(
         {
             URI: "/owned_mech_skins",
             key: GameServerKeys.GetPlayerOwnedMechSkins,
@@ -70,6 +71,46 @@ const SubmodelsHangarInner = () => {
         (payload) => {
             if (!payload) return
             console.log(payload)
+
+            setOwnedMechSkins((prev) => {
+                if (prev.length === 0) {
+                    return payload
+                }
+
+                // replace existing mech skins
+                prev = prev.map((ms) => payload.find((p) => p.id === ms.id) || ms)
+
+                // append new mech skins
+                payload.forEach((p) => (prev.some((ms) => ms.id === p.id) ? prev.push(p) : undefined))
+
+                return prev
+            })
+        },
+    )
+
+    const [ownedWeaponSkins, setOwnedWeaponSkins] = useState<WeaponSkin[]>([])
+    useGameServerSubscriptionSecuredUser<WeaponSkin[]>(
+        {
+            URI: "/owned_weapon_skins",
+            key: GameServerKeys.GetPlayerOwnedWeaponSkins,
+        },
+        (payload) => {
+            if (!payload) return
+            console.log(payload)
+
+            setOwnedWeaponSkins((prev) => {
+                if (prev.length === 0) {
+                    return payload
+                }
+
+                // replace existing weapon skins
+                prev = prev.map((ws) => payload.find((p) => p.id === ws.id) || ws)
+
+                // append new weapon skins
+                payload.forEach((p) => (prev.some((ws) => ws.id === p.id) ? prev.push(p) : undefined))
+
+                return prev
+            })
         },
     )
 
