@@ -59,7 +59,7 @@ export const NiceTooltip = ({
             title={
                 <NiceBoxThing
                     border={{
-                        color: primaryColor,
+                        color: `${primaryColor}80`,
                         thickness: "very-lean",
                     }}
                     background={{ colors: [primaryColor] }}
@@ -86,7 +86,7 @@ export const NiceTooltip = ({
                 popper: {
                     style: { filter: "drop-shadow(0 3px 3px #00000050)", zIndex: 999999 },
                 },
-                arrow: { sx: { color: primaryColor } },
+                arrow: { sx: { color: `${primaryColor}80` } },
                 tooltip: { sx: { padding: "0 !important", maxWidth: "25rem", background: "unset", ...tooltipSx } },
             }}
         >
