@@ -8,7 +8,7 @@ import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { useLocalStorage } from "../../../hooks/useLocalStorage"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { NewMechStruct, MechStatusEnum, RarityEnum } from "../../../types"
+import { MechStatusEnum, NewMechStruct, RarityEnum } from "../../../types"
 import { SortTypeLabel } from "../../../types/marketplace"
 import { MechBulkActions } from "../../Common/Mech/MechBulkActions"
 import { MechCard } from "../../Common/Mech/MechCard"
@@ -272,7 +272,7 @@ export const FactionPassMechPool = () => {
                         textAlign: "center",
                     }}
                 >
-                    {"No results..."}
+                    No results...
                 </Typography>
 
                 <NiceButton route={{ to: `/marketplace/mechs` }} buttonColor={theme.factionTheme.primary}>

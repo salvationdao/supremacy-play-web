@@ -10,7 +10,7 @@ import { MechRepairBlocks } from "../../Common/Mech/MechRepairBlocks"
 import { MechThumbnail } from "../../Hangar/WarMachinesHangar/Common/MechThumbnail"
 import { MechName } from "../../Hangar/WarMachinesHangar/WarMachineDetails/MechName"
 import { WeaponSlot } from "../Common/weaponSlot"
-import { MechQueueStatus } from "../MechQueueStatus"
+import { MechQueueStatus } from "./MechQueueStatus"
 
 interface QuickDeployItemProps {
     mech: NewMechStruct

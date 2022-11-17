@@ -90,12 +90,6 @@ export const BattleLobbies = ({ battleLobbies }: BattleLobbiesProps) => {
             case SortTypeLabel.QueuedAmountHighest:
                 sorted = sorted.sort((a, b) => (a.battle_lobbies_mechs.length > b.battle_lobbies_mechs.length ? -1 : 1))
                 break
-            case SortTypeLabel.ReadyTimeNewestFirst:
-                sorted = sorted.sort((a, b) => (!!a.ready_at && !!b.ready_at && a.ready_at > b.ready_at ? -1 : 1))
-                break
-            case SortTypeLabel.ReadyTimeOldestFirst:
-                sorted = sorted.sort((a, b) => (!!a.ready_at && !!b.ready_at && a.ready_at < b.ready_at ? -1 : 1))
-                break
         }
 
         // pagination
