@@ -105,11 +105,11 @@ const TopUpPopover = ({ open, onClose, popoverRef, lobbyID }: { open: boolean; o
             anchorEl={popoverRef.current}
             onClose={onClose}
             anchorOrigin={{
-                vertical: "top",
+                vertical: "center",
                 horizontal: "right",
             }}
             transformOrigin={{
-                vertical: "top",
+                vertical: "center",
                 horizontal: "left",
             }}
         >

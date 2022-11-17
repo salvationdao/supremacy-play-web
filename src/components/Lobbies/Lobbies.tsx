@@ -14,6 +14,7 @@ import { NiceButton } from "../Common/Nice/NiceButton"
 import { NiceButtonGroup } from "../Common/Nice/NiceButtonGroup"
 import { NiceSelect } from "../Common/Nice/NiceSelect"
 import { NiceTextField } from "../Common/Nice/NiceTextField"
+import { CentralQueue } from "./CentralQueue"
 import { LobbyItem } from "./LobbyItem/LobbyItem"
 
 enum LobbyTabs {
@@ -244,7 +245,7 @@ export const Lobbies = () => {
             <NavTabs activeTabID={activeTabID} setActiveTabID={setActiveTabID} tabs={tabs} prevTab={prevTab} nextTab={nextTab} width="28rem" />
 
             <Stack direction="row" alignItems="stretch" sx={{ flex: 1, width: "100%", overflow: "hidden" }}>
-                {/* <CentralQueue /> */}
+                <CentralQueue lobbies={lobbies} />
 
                 <Stack spacing="2rem" alignItems="stretch" flex={1} sx={{ overflow: "hidden" }}>
                     {/* Search, sort, grid view, and other top buttons */}
