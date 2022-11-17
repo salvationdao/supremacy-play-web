@@ -44,6 +44,7 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs, battleLobby, kee
         queue_limit: 10,
         total_queued: 0,
     })
+
     useGameServerSubscriptionSecuredUser<PlayerQueueStatus>(
         {
             URI: "/queue_status",
