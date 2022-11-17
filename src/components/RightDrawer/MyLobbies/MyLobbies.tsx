@@ -10,7 +10,7 @@ import { colors, fonts } from "../../../theme/theme"
 import { BattleLobby } from "../../../types/battle_queue"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
-import { SmallLobbyCard } from "../../Lobbies/BattleLobbies/SmallLobbyCard"
+import { MyLobbyItem } from "./MyLobbyItem"
 
 export const MyLobbies = () => {
     const [involvedLobbies, setInvolvedLobbies] = useState<BattleLobby[]>([])
@@ -42,42 +42,29 @@ export const MyLobbies = () => {
 
     const content = useMemo(() => {
         return (
-            <Box sx={{ direction: "ltr", height: 0 }}>
-                <FlipMove>
-                    {involvedLobbies.map((battleLobby) => {
-                        return (
-                            <Box
-                                key={`battle-lobby-${battleLobby.id}`}
-                                sx={{
-                                    "&:not(:last-child)": {
-                                        mb: ".8rem",
-                                    },
-                                }}
-                            >
-                                <SmallLobbyCard battleLobby={battleLobby} />
-                            </Box>
-                        )
-                    })}
-                </FlipMove>
-            </Box>
+            <FlipMove>
+                {involvedLobbies.map((battleLobby) => {
+                    return (
+                        <Box
+                            key={`battle-lobby-${battleLobby.id}`}
+                            sx={{
+                                "&:not(:last-child)": {
+                                    mb: ".8rem",
+                                },
+                            }}
+                        >
+                            <MyLobbyItem battleLobby={battleLobby} />
+                        </Box>
+                    )
+                })}
+            </FlipMove>
         )
     }, [involvedLobbies])
 
     return (
         <>
-            <Stack sx={{ position: "relative", height: "100%" }}>
-                <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
-                    <Box
-                        flex={1}
-                        sx={{
-                            overflowY: "auto",
-                            overflowX: "hidden",
-                            direction: "ltr",
-                        }}
-                    >
-                        {content}
-                    </Box>
-                </Stack>
+            <Stack sx={{ position: "relative", height: "100%", overflow: "hidden" }}>
+                <Stack sx={{ px: "1rem", py: "1rem", flex: 1, overflowY: "auto", overflowX: "hidden" }}>{content}</Stack>
             </Stack>
         </>
     )

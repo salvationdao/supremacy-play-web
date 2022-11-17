@@ -208,7 +208,7 @@ const TabbedLayout = () => {
                         ".MuiTabs-indicator": {
                             zIndex: -1,
                             height: "100%",
-                            background: "#2D0311",
+                            background: `#2D0311`,
                             borderTop: `1px solid #9F0410`,
                             borderLeft: tabValue !== 0 ? `1px solid #9F0410` : `0px solid transparent`,
                             borderRight: isEnlisted ? `1px solid #9F0410` : `0px solid transparent`,
