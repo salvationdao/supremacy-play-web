@@ -37,28 +37,12 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
     const displayAccessCode = useMemo(() => lobby.access_code || accessCode, [accessCode, lobby.access_code])
 
     return (
-        <NiceBoxThing border={{ color: "#FFFFFF20", thickness: "very-lean" }} background={{ colors: ["#FFFFFF"], opacity: 0.06 }} sx={{ p: "1rem 1.5rem" }}>
+        <NiceBoxThing border={{ color: "#FFFFFF20", thickness: "very-lean" }} background={{ colors: ["#FFFFFF"], opacity: 0.06 }} sx={{ p: "1.2rem 1.8rem" }}>
             {/* Lobby details */}
             <Stack>
                 <Stack direction="row" alignItems="center" spacing="2rem">
                     {/* Lobby name */}
                     <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{lobby.name || `Lobby #${lobby.number}`}</Typography>
-
-                    {/* Lobby private or public */}
-                    {lobby.is_private ? (
-                        <Typography color={colors.orange}>
-                            <SvgLock inline size="1.6rem" fill={colors.orange} /> PRIVATE
-                        </Typography>
-                    ) : (
-                        <Typography color={colors.green}>
-                            <SvgGlobal inline size="1.6rem" fill={colors.green} /> PUBLIC
-                        </Typography>
-                    )}
-
-                    {/* Entry fees */}
-                    {entryFeeDisplay}
-
-                    <Box flex={1} />
 
                     {/* Access code */}
                     {displayAccessCode && userID === lobby.host_by_id && (
@@ -74,6 +58,22 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
                                 <SvgContentCopyIcon inline size="1.3rem" />
                             </IconButton>
                         </Stack>
+                    )}
+
+                    {/* Entry fees */}
+                    {entryFeeDisplay}
+
+                    <Box flex={1} />
+
+                    {/* Lobby private or public */}
+                    {lobby.is_private ? (
+                        <Typography color={colors.orange}>
+                            <SvgLock inline size="1.6rem" fill={colors.orange} /> PRIVATE
+                        </Typography>
+                    ) : (
+                        <Typography color={colors.green}>
+                            <SvgGlobal inline size="1.6rem" fill={colors.green} /> PUBLIC
+                        </Typography>
                     )}
                 </Stack>
 
@@ -131,6 +131,8 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
                             </Box>
                         )}
                     </Stack>
+
+                    {/* Mechs */}
                 </Stack>
             </Stack>
         </NiceBoxThing>

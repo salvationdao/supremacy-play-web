@@ -1,14 +1,14 @@
-import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { EmptyWarMachinesPNG, SvgFilter, SvgGridView, SvgListView, SvgRepair, SvgSearch } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { getRarityDeets, parseString } from "../../helpers"
-import { useDebounce, usePagination, useUrlQuery } from "../../hooks"
+import { useDebounce, useUrlQuery } from "../../hooks"
 import { useGameServerSubscriptionSecuredUser } from "../../hooks/useGameServer"
 import { useLocalStorage } from "../../hooks/useLocalStorage"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
-import { NewMechStruct, MechStatusEnum, RarityEnum } from "../../types"
+import { MechStatusEnum, NewMechStruct, RarityEnum } from "../../types"
 import { PlayerQueueStatus } from "../../types/battle_queue"
 import { SortTypeLabel } from "../../types/marketplace"
 import { MechBulkActions } from "../Common/Mech/MechBulkActions"
@@ -34,8 +34,6 @@ enum UrlQueryParams {
     Wins = "wins",
     Losses = "losses",
     RepairBlocks = "repairBlocks",
-    PageSize = "pageSize",
-    Page = "page",
 }
 
 const sortOptions = [
@@ -45,12 +43,6 @@ const sortOptions = [
     { label: SortTypeLabel.AlphabeticalReverse, value: SortTypeLabel.AlphabeticalReverse },
     { label: SortTypeLabel.RarestAsc, value: SortTypeLabel.RarestAsc },
     { label: SortTypeLabel.RarestDesc, value: SortTypeLabel.RarestDesc },
-]
-
-const pageSizeOptions = [
-    { label: "10", value: 10 },
-    { label: "20", value: 20 },
-    { label: "40", value: 40 },
 ]
 
 const layoutOptions = [
@@ -82,10 +74,6 @@ export const FleetMechs = () => {
     const [deaths, setDeaths] = useState<number[] | undefined>((query.get(UrlQueryParams.Deaths) || undefined)?.split("||").map((a) => parseString(a, 0)))
     const [wins, setWins] = useState<number[] | undefined>((query.get(UrlQueryParams.Wins) || undefined)?.split("||").map((a) => parseString(a, 0)))
     const [losses, setLosses] = useState<number[] | undefined>((query.get(UrlQueryParams.Losses) || undefined)?.split("||").map((a) => parseString(a, 0)))
-    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
-        pageSize: parseString(query.get(UrlQueryParams.PageSize), 10),
-        page: parseString(query.get(UrlQueryParams.Page), 1),
-    })
 
     // Items
     const [displayMechs, setDisplayMechs] = useState<NewMechStruct[]>([])
@@ -229,16 +217,10 @@ export const FleetMechs = () => {
             [UrlQueryParams.Wins]: wins?.join("||"),
             [UrlQueryParams.Losses]: losses?.join("||"),
             [UrlQueryParams.RepairBlocks]: repairBlocks?.join("||"),
-            [UrlQueryParams.Page]: page.toString(),
-            [UrlQueryParams.PageSize]: pageSize.toString(),
         })
 
-        // Pagination
-        result = result.slice((page - 1) * pageSize, page * pageSize)
-        setTotalItems(mechs.length)
-
         setDisplayMechs(result)
-    }, [changePage, deaths, isLoading, kills, losses, mechs, page, pageSize, rarities, repairBlocks, search, setTotalItems, sort, status, updateQuery, wins])
+    }, [deaths, isLoading, kills, losses, mechs, rarities, repairBlocks, search, sort, status, updateQuery, wins])
 
     const content = useMemo(() => {
         if (isLoading) {
@@ -448,26 +430,12 @@ export const FleetMechs = () => {
                         {/* Bulk actions */}
                         <MechBulkActions selectedMechs={selectedMechs} setSelectedMechs={setSelectedMechs} />
 
-                        <Stack direction="row" alignItems="center">
-                            {/* Show Total */}
-                            <Box sx={{ height: "100%", backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", px: "1rem", borderRight: "none" }}>
-                                <Typography variant="h6" sx={{ whiteSpace: "nowrap" }}>
-                                    {displayMechs?.length || 0} of {totalItems}
-                                </Typography>
-                            </Box>
-
-                            {/* Page size options */}
-                            <NiceButtonGroup
-                                primaryColor={theme.factionTheme.primary}
-                                secondaryColor={theme.factionTheme.secondary}
-                                options={pageSizeOptions}
-                                selected={pageSize}
-                                onSelected={(value) => {
-                                    changePageSize(parseString(value, 1))
-                                    changePage(1)
-                                }}
-                            />
-                        </Stack>
+                        {/* Show Total */}
+                        <Box sx={{ backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", px: "1rem" }}>
+                            <Typography variant="h6" sx={{ whiteSpace: "nowrap" }}>
+                                {displayMechs?.length || 0} ITEMS
+                            </Typography>
+                        </Box>
 
                         {/* Page layout options */}
                         <NiceButtonGroup
@@ -500,8 +468,6 @@ export const FleetMechs = () => {
                     </Stack>
 
                     <Box sx={{ flex: 1, height: "100%", overflowY: "auto", pr: ".8rem" }}>{content}</Box>
-
-                    <Pagination sx={{ mt: "auto" }} count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
                 </Stack>
 
                 <RepairBay open={showRepairBay} />
