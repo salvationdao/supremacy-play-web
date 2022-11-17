@@ -6,7 +6,7 @@ import { HANGAR_PAGE } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, parseString } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
-import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
+import { useGameServerCommandsUser, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { BlueprintMech, BlueprintWeapon, MechSkin, SubmodelStatus } from "../../../types"
@@ -61,6 +61,17 @@ const SubmodelsHangarInner = () => {
     const [query, updateQuery] = useUrlQuery()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
+
+    useGameServerSubscriptionSecuredUser(
+        {
+            URI: "/owned_mech_skins",
+            key: GameServerKeys.GetPlayerOwnedMechSkins,
+        },
+        (payload) => {
+            if (!payload) return
+            console.log(payload)
+        },
+    )
 
     // Items
     const [isLoading, setIsLoading] = useState(true)
