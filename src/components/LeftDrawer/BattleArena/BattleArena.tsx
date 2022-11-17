@@ -1,6 +1,6 @@
 import { Box, Fade, Stack, Typography, useTheme } from "@mui/material"
 import { useMemo } from "react"
-import { SvgLobbies } from "../../../assets"
+import { SvgCommand } from "../../../assets"
 import { useAuth, useGame, useSupremacy, useUI } from "../../../containers"
 import { HeaderProps } from "../../../routes"
 import { colors, fonts } from "../../../theme/theme"
@@ -86,7 +86,7 @@ const Header = ({ isOpen, isDrawerOpen, onClose }: HeaderProps) => {
                 pb: ".6rem",
             }}
         >
-            <SvgLobbies size="3rem" />
+            <SvgCommand size="3rem" />
         </NiceButton>
     )
 

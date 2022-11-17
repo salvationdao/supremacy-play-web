@@ -122,6 +122,7 @@ import ChatSplit from "!react-svg-loader!./svg/ChatSplit.svg"
 import ChatTabbed from "!react-svg-loader!./svg/ChatTabbed.svg"
 import ChevronDown from "!react-svg-loader!./svg/ChevronDown.svg"
 import ChevronUp from "!react-svg-loader!./svg/ChevronUp.svg"
+import Command from "!react-svg-loader!./svg/Command.svg"
 import CreditCard from "!react-svg-loader!./svg/CreditCard.svg"
 import Damage from "!react-svg-loader!./svg/Damage.svg"
 import Delete from "!react-svg-loader!./svg/Delete.svg"
@@ -1743,5 +1744,11 @@ export const SvgLeaderboard: React.VoidFunctionComponent<SvgWrapperProps> = (pro
 export const SvgQueue: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Queue />
+    </SvgWrapper>
+)
+
+export const SvgCommand: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Command />
     </SvgWrapper>
 )
