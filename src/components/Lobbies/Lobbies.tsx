@@ -1,9 +1,9 @@
-import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { EmptyWarMachinesPNG, SvgSearch } from "../../assets"
 import { useTheme } from "../../containers/theme"
-import { parseString, snakeToTitle } from "../../helpers"
-import { useDebounce, usePagination, useUrlQuery } from "../../hooks"
+import { snakeToTitle } from "../../helpers"
+import { useDebounce, useUrlQuery } from "../../hooks"
 import { useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
@@ -11,7 +11,6 @@ import { BattleLobby } from "../../types/battle_queue"
 import { SortTypeLabel } from "../../types/marketplace"
 import { NavTabs } from "../Common/NavTabs/NavTabs"
 import { NiceButton } from "../Common/Nice/NiceButton"
-import { NiceButtonGroup } from "../Common/Nice/NiceButtonGroup"
 import { NiceSelect } from "../Common/Nice/NiceSelect"
 import { NiceTextField } from "../Common/Nice/NiceTextField"
 import { CentralQueue } from "./CentralQueue"
@@ -25,8 +24,6 @@ enum LobbyTabs {
 enum UrlQueryParams {
     Sort = "sort",
     Search = "search",
-    PageSize = "pageSize",
-    Page = "page",
 }
 
 const sortOptions = [
@@ -34,12 +31,6 @@ const sortOptions = [
     { label: SortTypeLabel.QueuedAmountLowest, value: SortTypeLabel.QueuedAmountLowest },
     { label: SortTypeLabel.CreateTimeNewestFirst, value: SortTypeLabel.CreateTimeNewestFirst },
     { label: SortTypeLabel.CreateTimeOldestFirst, value: SortTypeLabel.CreateTimeOldestFirst },
-]
-
-const pageSizeOptions = [
-    { label: "10", value: 10 },
-    { label: "20", value: 20 },
-    { label: "40", value: 40 },
 ]
 
 export const Lobbies = () => {
@@ -75,10 +66,6 @@ export const Lobbies = () => {
     // Filter, search, pagination
     const [search, setSearch, searchInstant] = useDebounce(query.get(UrlQueryParams.Search) || "", 300)
     const [sort, setSort] = useState<string>(query.get(UrlQueryParams.Sort) || SortTypeLabel.QueuedAmountHighest)
-    const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
-        pageSize: parseString(query.get(UrlQueryParams.PageSize), 10),
-        page: parseString(query.get(UrlQueryParams.Page), 1),
-    })
 
     // Items
     const [displayLobbies, setDisplayLobbies] = useState<BattleLobby[]>([])
@@ -161,16 +148,10 @@ export const Lobbies = () => {
         updateQuery.current({
             [UrlQueryParams.Sort]: sort,
             [UrlQueryParams.Search]: search,
-            [UrlQueryParams.Page]: page.toString(),
-            [UrlQueryParams.PageSize]: pageSize.toString(),
         })
 
-        // Pagination
-        result = result.slice((page - 1) * pageSize, page * pageSize)
-        setTotalItems(filteredLobbies.length)
-
         setDisplayLobbies(result)
-    }, [activeTabID, changePage, isLoading, lobbies, page, pageSize, search, setTotalItems, sort, updateQuery])
+    }, [activeTabID, isLoading, lobbies, search, sort, updateQuery])
 
     const content = useMemo(() => {
         if (isLoading) {
@@ -266,26 +247,12 @@ export const Lobbies = () => {
 
                         <Box flex={1} />
 
-                        <Stack direction="row" alignItems="center">
-                            {/* Show Total */}
-                            <Box sx={{ height: "100%", backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", px: "1rem", borderRight: "none" }}>
-                                <Typography variant="h6" sx={{ whiteSpace: "nowrap" }}>
-                                    {displayLobbies?.length || 0} of {totalItems}
-                                </Typography>
-                            </Box>
-
-                            {/* Page size options */}
-                            <NiceButtonGroup
-                                primaryColor={theme.factionTheme.primary}
-                                secondaryColor={theme.factionTheme.secondary}
-                                options={pageSizeOptions}
-                                selected={pageSize}
-                                onSelected={(value) => {
-                                    changePageSize(parseString(value, 1))
-                                    changePage(1)
-                                }}
-                            />
-                        </Stack>
+                        {/* Show Total */}
+                        <Box sx={{ backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", px: "1rem" }}>
+                            <Typography variant="h6" sx={{ whiteSpace: "nowrap" }}>
+                                {displayLobbies?.length || 0} ITEMS
+                            </Typography>
+                        </Box>
 
                         {/* Search bar */}
                         <NiceTextField
@@ -309,8 +276,6 @@ export const Lobbies = () => {
                     </Stack>
 
                     <Box sx={{ flex: 1, height: "100%", overflowY: "auto", pr: ".8rem" }}>{content}</Box>
-
-                    <Pagination sx={{ mt: "auto" }} count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
                 </Stack>
             </Stack>
         </Stack>
