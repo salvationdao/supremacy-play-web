@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
 import FlipMove from "react-flip-move"
-import { SvgLobbies } from "../../../assets"
+import { EmptyWarMachinesPNG, SvgLobbies } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -41,6 +41,39 @@ export const MyLobbies = () => {
     )
 
     const content = useMemo(() => {
+        if (involvedLobbies.length === 0) {
+            return (
+                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                        <Box
+                            sx={{
+                                width: "80%",
+                                height: "10rem",
+                                opacity: 0.7,
+                                filter: "grayscale(100%)",
+                                background: `url(${EmptyWarMachinesPNG})`,
+                                backgroundRepeat: "no-repeat",
+                                backgroundPosition: "bottom center",
+                                backgroundSize: "contain",
+                            }}
+                        />
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                px: "1.28rem",
+                                pt: "1.28rem",
+                                color: colors.grey,
+                                fontFamily: fonts.nostromoBold,
+                                textAlign: "center",
+                            }}
+                        >
+                            Your lobbies will appear here.
+                        </Typography>
+                    </Stack>
+                </Stack>
+            )
+        }
+
         return (
             <FlipMove>
                 {involvedLobbies.map((battleLobby) => {
