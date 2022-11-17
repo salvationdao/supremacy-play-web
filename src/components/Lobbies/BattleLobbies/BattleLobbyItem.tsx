@@ -176,26 +176,6 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                             >
                                 {/* Lobby Info */}
                                 <Stack direction="column" flexBasis="25rem" height="100%" mr="1rem" spacing={0.5}>
-                                    <Stack direction="row" alignItems="center" spacing={0.6}>
-                                        {is_private ? <SvgLock size="1.8rem" fill={colors.gold} /> : <SvgGlobal size="1.8rem" fill={colors.green} />}
-                                        <Typography
-                                            variant="h5"
-                                            sx={{
-                                                lineHeight: 1,
-                                                fontFamily: fonts.nostromoBlack,
-                                                ...TruncateTextLines(1),
-                                            }}
-                                        >
-                                            {name ? name : `Lobby ${number}`}
-                                        </Typography>
-                                    </Stack>
-
-                                    {entryFeeDisplay}
-
-                                    {displayedAccessCode && userID === battleLobby.host_by_id && (
-                                        <LobbyInfoField title="ACCESS CODE:" value={displayedAccessCode} />
-                                    )}
-
                                     {assignedToArenaName && <LobbyInfoField title="Arena:" value={assignedToArenaName} />}
 
                                     {fill_at && (
@@ -231,45 +211,6 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                             fontSize: "1.2rem",
                                         }}
                                     />
-
-                                    <Stack direction="column">
-                                        <Typography
-                                            variant="body2"
-                                            fontFamily={fonts.nostromoHeavy}
-                                            sx={{
-                                                color: colors.grey,
-                                            }}
-                                        >
-                                            Hosted by
-                                        </Typography>
-                                        <Stack direction="row" alignItems="center">
-                                            {!generated_by_system && (
-                                                <Avatar
-                                                    src={getFaction(host_by.faction_id).logo_url}
-                                                    alt={`${getFaction(host_by.faction_id).label}'s Avatar`}
-                                                    sx={{
-                                                        height: "2.6rem",
-                                                        width: "2.6rem",
-                                                    }}
-                                                    variant="square"
-                                                />
-                                            )}
-                                            <Typography
-                                                variant="h6"
-                                                sx={{
-                                                    ...TruncateTextLines(1),
-                                                    lineHeight: "unset",
-                                                    fontStyle: "italic",
-                                                    color: generated_by_system ? colors.offWhite : getFaction(host_by.faction_id).primary_color,
-                                                }}
-                                            >
-                                                {generated_by_system ? "SYSTEM" : `${host_by.username} #${host_by.gid}`}
-                                            </Typography>
-                                        </Stack>
-                                    </Stack>
-
-                                    {/* Prize pool */}
-                                    <BattleLobbyPricePool battleLobby={battleLobby} />
 
                                     {/* Other faction mech slots */}
                                     <Stack spacing=".5rem">
