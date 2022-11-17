@@ -353,6 +353,8 @@ export interface Weapon extends Collection, Images {
     slot_number?: number
     inherit_skin: boolean
     locked_to_mech: boolean
+
+    deleted_at?: Date // used for sold item
 }
 
 export interface WeaponSkin extends Collection, Images {

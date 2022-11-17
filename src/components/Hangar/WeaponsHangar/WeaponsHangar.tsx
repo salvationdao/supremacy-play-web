@@ -9,10 +9,10 @@ import { useTheme } from "../../../containers/theme"
 import { GetWeaponMaxStats } from "../../../fetching"
 import { getRarityDeets, getWeaponTypeColor, parseString } from "../../../helpers"
 import { usePagination, useToggle, useUrlQuery } from "../../../hooks"
-import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
+import { useGameServerCommandsUser, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
-import { PlayerAsset, WeaponType } from "../../../types"
+import { PlayerAsset, Weapon, WeaponType } from "../../../types"
 import { SortDir, SortTypeLabel } from "../../../types/marketplace"
 import { PageHeader } from "../../Common/Deprecated/PageHeader"
 import { ChipFilter } from "../../Common/Deprecated/SortAndFilters/ChipFilterSection"
@@ -80,6 +80,34 @@ export const WeaponsHangar = () => {
         pageSize: parseString(query.get("pageSize"), 10),
         page: parseString(query.get("page"), 1),
     })
+
+    const [weaponList, setWeaponList] = useState<Weapon[]>([])
+    useGameServerSubscriptionSecuredUser<Weapon[]>(
+        {
+            URI: "/owned_weapons",
+            key: GameServerKeys.GetPlayerOwnedWeapons,
+        },
+        (payload) => {
+            if (!payload) return
+            console.log(payload)
+            setWeaponList((prev) => {
+                if (prev.length === 0) {
+                    return payload.filter((w) => !w.deleted_at)
+                }
+
+                // replace existing weapon
+                prev = prev.map((w) => payload.find((p) => p.id === w.id) || w)
+
+                // add new weapon
+                payload.forEach((p) => {
+                    if (prev.some((w) => w.id === p.id)) return
+                    prev.push(p)
+                })
+
+                return prev.filter((w) => !w.deleted_at)
+            })
+        },
+    )
 
     // Filters and sorts
     const [isFiltersExpanded, toggleIsFiltersExpanded] = useToggle(localStorage.getItem("isWeaponsHangarFiltersExpanded") === "true")
