@@ -8,7 +8,7 @@ import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { useLocalStorage } from "../../../hooks/useLocalStorage"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { LobbyMech, MechStatusEnum, RarityEnum } from "../../../types"
+import { NewMechStruct, MechStatusEnum, RarityEnum } from "../../../types"
 import { SortTypeLabel } from "../../../types/marketplace"
 import { MechBulkActions } from "../../Common/Mech/MechBulkActions"
 import { MechCard } from "../../Common/Mech/MechCard"
@@ -78,13 +78,13 @@ export const FactionPassMechPool = () => {
     })
 
     // Items
-    const [displayMechs, setDisplayMechs] = useState<LobbyMech[]>([])
-    const [mechs, setMechs] = useState<LobbyMech[]>([])
+    const [displayMechs, setDisplayMechs] = useState<NewMechStruct[]>([])
+    const [mechs, setMechs] = useState<NewMechStruct[]>([])
     const [isLoading, setIsLoading] = useState(true)
 
     // For bulk selecting mechs
-    const [selectedMechs, setSelectedMechs] = useState<LobbyMech[]>([])
-    const toggleSelected = useCallback((mech: LobbyMech) => {
+    const [selectedMechs, setSelectedMechs] = useState<NewMechStruct[]>([])
+    const toggleSelected = useCallback((mech: NewMechStruct) => {
         setSelectedMechs((prev) => {
             const newArray = [...prev]
             const isAlreadySelected = prev.findIndex((s) => s.id === mech.id)
@@ -98,7 +98,7 @@ export const FactionPassMechPool = () => {
         })
     }, [])
 
-    useGameServerSubscriptionFaction<LobbyMech[]>(
+    useGameServerSubscriptionFaction<NewMechStruct[]>(
         {
             URI: "/staked_mechs",
             key: GameServerKeys.SubFactionStakedMechs,

@@ -3,7 +3,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { EmptyWarMachinesPNG, SvgLogout } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets } from "../../../helpers"
-import { LobbyMech } from "../../../types"
+import { NewMechStruct } from "../../../types"
 import { MechThumbnail } from "../../Hangar/WarMachinesHangar/Common/MechThumbnail"
 import React, { useMemo } from "react"
 import { MechBarStats } from "../../Hangar/WarMachinesHangar/Common/MechBarStats"
@@ -14,7 +14,7 @@ import { FancyButton } from "../../Common/Deprecated/FancyButton"
 import { TruncateTextLines } from "../../../theme/styles"
 
 interface MechSlotProps {
-    lobbyMech: LobbyMech | null
+    lobbyMech: NewMechStruct | null
     leftQueue: () => void
     canLeave?: boolean
 }

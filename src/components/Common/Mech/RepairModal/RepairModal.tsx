@@ -4,7 +4,7 @@ import { useTheme } from "../../../../containers/theme"
 import { useGameServerSubscriptionSecured } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
-import { LobbyMech } from "../../../../types"
+import { NewMechStruct } from "../../../../types"
 import { RepairOffer, RepairStatus } from "../../../../types/jobs"
 import { MechRepairBlocks } from "../MechRepairBlocks"
 import { NiceModal } from "../../Nice/NiceModal"
@@ -19,7 +19,7 @@ export const RepairModal = ({
     setRepairMechModalOpen,
 }: {
     defaultOpenSelfRepair?: boolean // Immediately opens the self repair game modal
-    mech: LobbyMech
+    mech: NewMechStruct
     repairMechModalOpen: boolean
     setRepairMechModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {

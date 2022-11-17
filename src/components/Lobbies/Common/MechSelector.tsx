@@ -2,7 +2,7 @@ import { Box, Pagination, Stack, Typography } from "@mui/material"
 import { useTheme } from "../../../containers/theme"
 import { useDebounce, usePagination } from "../../../hooks"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { LobbyMech } from "../../../types"
+import { NewMechStruct } from "../../../types"
 import { colors, fonts } from "../../../theme/theme"
 import { SearchBattle } from "../../Replays/BattlesReplays/SearchBattle"
 import { TotalAndPageSizeOptions } from "../../Common/Deprecated/TotalAndPageSizeOptions"
@@ -26,8 +26,8 @@ const sortOptions = [
 ]
 
 interface MechSelectorProps {
-    selectedMechs: LobbyMech[]
-    setSelectedMechs: React.Dispatch<React.SetStateAction<LobbyMech[]>>
+    selectedMechs: NewMechStruct[]
+    setSelectedMechs: React.Dispatch<React.SetStateAction<NewMechStruct[]>>
     battleLobby?: BattleLobby
     keepOnSelect?: boolean
 }
@@ -36,7 +36,7 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs, battleLobby, kee
     const { factionTheme } = useTheme()
     const { userID, factionID } = useAuth()
     const [searchValue, setSearchValue, searchValueInstant] = useDebounce("", 300)
-    const [list, setList] = useState<LobbyMech[]>([])
+    const [list, setList] = useState<NewMechStruct[]>([])
 
     const [showStakedMechs, setShowStakedMechs] = useState(false)
 
@@ -62,7 +62,7 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs, battleLobby, kee
     const [sort, setSort] = useState<string>(SortTypeLabel.RarestDesc)
 
     // return true, if a mech has equipped a power core and more than one weapon
-    const queueable = useCallback((lb: LobbyMech): boolean => {
+    const queueable = useCallback((lb: NewMechStruct): boolean => {
         // check power core
         if (!lb.power_core) return false
 
@@ -79,8 +79,8 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs, battleLobby, kee
         return hasWeapon
     }, [])
 
-    const [factionStakedMechs, setFactionStakedMechs] = useState<LobbyMech[]>([])
-    useGameServerSubscriptionFaction<LobbyMech[]>(
+    const [factionStakedMechs, setFactionStakedMechs] = useState<NewMechStruct[]>([])
+    useGameServerSubscriptionFaction<NewMechStruct[]>(
         {
             URI: "/staked_mechs",
             key: GameServerKeys.SubFactionStakedMechs,
@@ -110,8 +110,8 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs, battleLobby, kee
         },
     )
 
-    const [ownedMechs, setOwnedMechs] = useState<LobbyMech[]>([])
-    useGameServerSubscriptionSecuredUser<LobbyMech[]>(
+    const [ownedMechs, setOwnedMechs] = useState<NewMechStruct[]>([])
+    useGameServerSubscriptionSecuredUser<NewMechStruct[]>(
         {
             URI: "/owned_mechs",
             key: GameServerKeys.SubPlayerQueueableMechs,

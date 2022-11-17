@@ -4,7 +4,7 @@ import { useTheme } from "../../../containers/theme"
 import { getRarityDeets } from "../../../helpers"
 import { TruncateTextLines } from "../../../theme/styles"
 import { fonts } from "../../../theme/theme"
-import { LobbyMech } from "../../../types"
+import { NewMechStruct } from "../../../types"
 import { MechBarStats } from "../../Hangar/WarMachinesHangar/Common/MechBarStats"
 import { MechRepairBlocks } from "../../Common/Mech/MechRepairBlocks"
 import { MechThumbnail } from "../../Hangar/WarMachinesHangar/Common/MechThumbnail"
@@ -13,7 +13,7 @@ import { WeaponSlot } from "../Common/weaponSlot"
 import { MechQueueStatus } from "../MechQueueStatus"
 
 interface QuickDeployItemProps {
-    mech: LobbyMech
+    mech: NewMechStruct
     isSelected?: boolean
     toggleIsSelected?: () => void
 }

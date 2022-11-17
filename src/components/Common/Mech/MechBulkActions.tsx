@@ -5,7 +5,7 @@ import { useTheme } from "../../../containers/theme"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { LobbyMech, MechStatusEnum } from "../../../types"
+import { NewMechStruct, MechStatusEnum } from "../../../types"
 import { HireContractorsCard } from "./RepairModal/HireContractorsCard"
 import { NiceButton } from "../Nice/NiceButton"
 import { NiceModal } from "../Nice/NiceModal"
@@ -16,8 +16,8 @@ export const MechBulkActions = React.memo(function MechBulkActions({
     selectedMechs,
     setSelectedMechs,
 }: {
-    selectedMechs: LobbyMech[]
-    setSelectedMechs: React.Dispatch<React.SetStateAction<LobbyMech[]>>
+    selectedMechs: NewMechStruct[]
+    setSelectedMechs: React.Dispatch<React.SetStateAction<NewMechStruct[]>>
 }) {
     const theme = useTheme()
     const [bulkPopover, setBulkPopover] = useState(false)
@@ -58,15 +58,15 @@ const BulkActionPopover = ({
     open: boolean
     onClose: () => void
     popoverRef: MutableRefObject<null>
-    selectedMechs: LobbyMech[]
-    setSelectedMechs: React.Dispatch<React.SetStateAction<LobbyMech[]>>
+    selectedMechs: NewMechStruct[]
+    setSelectedMechs: React.Dispatch<React.SetStateAction<NewMechStruct[]>>
 }) => {
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [bulkRepairModalOpen, setBulkRepairModalOpen] = useState(false)
 
     const insertMechsToRepairBay = useCallback(
-        async (mechs: LobbyMech[]) => {
+        async (mechs: NewMechStruct[]) => {
             try {
                 if (mechs.length <= 0) return
 
@@ -140,8 +140,8 @@ const BulkRepairModal = ({
 }: {
     open: boolean
     onClose: () => void
-    selectedMechs: LobbyMech[]
-    setSelectedMechs: React.Dispatch<React.SetStateAction<LobbyMech[]>>
+    selectedMechs: NewMechStruct[]
+    setSelectedMechs: React.Dispatch<React.SetStateAction<NewMechStruct[]>>
 }) => {
     const validMechs = useMemo(() => selectedMechs.filter((mech) => mech.status === MechStatusEnum.Damaged && !mech.has_repair_offer), [selectedMechs])
 

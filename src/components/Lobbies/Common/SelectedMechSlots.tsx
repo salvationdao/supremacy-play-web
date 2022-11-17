@@ -1,16 +1,16 @@
 import { MechSlot } from "./MechSlot"
 import { Stack } from "@mui/material"
 import React, { useMemo } from "react"
-import { LobbyMech } from "../../../types"
+import { NewMechStruct } from "../../../types"
 
 interface SelectedMechSlotsProps {
-    selectedMechs: LobbyMech[]
-    setSelectedMechs: React.Dispatch<React.SetStateAction<LobbyMech[]>>
+    selectedMechs: NewMechStruct[]
+    setSelectedMechs: React.Dispatch<React.SetStateAction<NewMechStruct[]>>
 }
 
 export const SelectedMechSlots = ({ selectedMechs, setSelectedMechs }: SelectedMechSlotsProps) => {
     const mechSlots = useMemo(() => {
-        const list: (LobbyMech | null)[] = [...selectedMechs]
+        const list: (NewMechStruct | null)[] = [...selectedMechs]
 
         while (list.length < 3) {
             list.push(null)

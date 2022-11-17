@@ -8,7 +8,7 @@ import { RoomSettingForm } from "./RoomSettingForm"
 import { LobbyFormOverview } from "./LobbyFormOverview"
 import { FeeRewardForm } from "./FeeRewardForm"
 import { WarMachineForm } from "./WarMachineForm"
-import { LobbyMech } from "../../../types"
+import { NewMechStruct } from "../../../types"
 import { useGameServerSubscriptionFaction, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { PlayerQueueStatus } from "../../../types/battle_queue"
@@ -27,7 +27,7 @@ export interface LobbyForm {
     accessibility: string
     max_deploy_number: number
     extra_reward: string
-    selected_mechs: LobbyMech[]
+    selected_mechs: NewMechStruct[]
 }
 
 export enum Accessibility {
@@ -63,7 +63,7 @@ export const CreateLobby = () => {
     })
 
     // return true, if a mech has equipped a power core and more than one weapon
-    const queueable = useCallback((lb: LobbyMech): boolean => {
+    const queueable = useCallback((lb: NewMechStruct): boolean => {
         // check power core
         if (!lb.power_core) return false
 
@@ -80,8 +80,8 @@ export const CreateLobby = () => {
         return hasWeapon
     }, [])
 
-    const [stakedMechs, setStakedMechs] = useState<LobbyMech[]>([])
-    useGameServerSubscriptionFaction<LobbyMech[]>(
+    const [stakedMechs, setStakedMechs] = useState<NewMechStruct[]>([])
+    useGameServerSubscriptionFaction<NewMechStruct[]>(
         {
             URI: "/staked_mechs",
             key: GameServerKeys.SubFactionStakedMechs,
@@ -112,8 +112,8 @@ export const CreateLobby = () => {
         },
     )
 
-    const [ownedMechs, setOwnedMechs] = useState<LobbyMech[]>([])
-    useGameServerSubscriptionSecuredUser<LobbyMech[]>(
+    const [ownedMechs, setOwnedMechs] = useState<NewMechStruct[]>([])
+    useGameServerSubscriptionSecuredUser<NewMechStruct[]>(
         {
             URI: "/owned_mechs",
             key: GameServerKeys.SubPlayerQueueableMechs,

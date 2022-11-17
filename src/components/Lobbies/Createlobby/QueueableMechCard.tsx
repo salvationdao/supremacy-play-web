@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { LobbyMech } from "../../../types"
+import { NewMechStruct } from "../../../types"
 import { useSupremacy } from "../../../containers"
 import React, { useMemo } from "react"
 import { getRarityDeets } from "../../../helpers"
@@ -10,7 +10,7 @@ import { WeaponSlot } from "../Common/weaponSlot"
 import { fonts } from "../../../theme/theme"
 
 interface QueueableMechCardProps {
-    lobbyMech: LobbyMech
+    lobbyMech: NewMechStruct
     onSelect: () => void
     isSelected: boolean
 }

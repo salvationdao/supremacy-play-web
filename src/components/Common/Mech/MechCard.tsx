@@ -5,16 +5,16 @@ import { SvgMechDeaths, SvgMechKills, SvgMechLosses, SvgMechWins, SvgUserDiamond
 import { useSupremacy } from "../../../containers"
 import { TruncateTextLines } from "../../../theme/styles"
 import { colors, fonts } from "../../../theme/theme"
-import { LobbyMech } from "../../../types"
+import { NewMechStruct } from "../../../types"
 import { NiceBoxThing } from "../Nice/NiceBoxThing"
 import { MechIdleStatus } from "./MechIdleStatus"
 import { RepairBlocks } from "./MechRepairBlocks"
 
 interface MechCardProps {
-    mech: LobbyMech
+    mech: NewMechStruct
     isGridView: boolean
     isSelected?: boolean
-    toggleSelected?: (mech: LobbyMech) => void
+    toggleSelected?: (mech: NewMechStruct) => void
     hide?: {
         ownerName?: boolean
         kdwlStats?: boolean

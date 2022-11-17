@@ -6,7 +6,7 @@ import { SvgSupToken } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { useGameServerCommandsFaction, useGameServerSubscriptionSecured } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { GameMap, LobbyMech } from "../../../../types"
+import { GameMap, NewMechStruct } from "../../../../types"
 import { FactionBasedDatePicker } from "../../../Common/FactionBasedDatePicker"
 import moment from "moment"
 import { FactionBasedTimePicker } from "../../../Common/FactionBasedTimePicker"
@@ -55,7 +55,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
     const { factionTheme } = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
-    const [selectedMechs, setSelectedMechs] = useState<LobbyMech[]>([])
+    const [selectedMechs, setSelectedMechs] = useState<NewMechStruct[]>([])
     const [mapURL, setMapURL] = useState("")
 
     const [gameMaps, setGameMaps] = useState<GameMap[]>([])

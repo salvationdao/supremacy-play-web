@@ -4,7 +4,7 @@ import { Accessibility, LobbyForm, Scheduling } from "./CreateLobby"
 import { colors, fonts } from "../../../theme/theme"
 import { useTheme } from "../../../containers/theme"
 import { useGameServerCommandsFaction, useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
-import { GameMap, LobbyMech, RoleType, User } from "../../../types"
+import { GameMap, NewMechStruct, RoleType, User } from "../../../types"
 import { GameServerKeys } from "../../../keys"
 import React, { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 import { camelToTitle, combineDateTime, getRarityDeets, shortCodeGenerator } from "../../../helpers"
@@ -159,7 +159,7 @@ export const LobbyFormOverview = () => {
 
     const mechSlots = useMemo(() => {
         const list: JSX.Element[] = []
-        selected_mechs.forEach((sm: LobbyMech) => {
+        selected_mechs.forEach((sm: NewMechStruct) => {
             const rarity = getRarityDeets(sm.tier)
             list.push(
                 <NiceBoxThing key={sm.id} border={{ color: `${factionTheme.primary}80`, thickness: "very-lean" }} sx={{ flex: 1, height: "20rem" }}>

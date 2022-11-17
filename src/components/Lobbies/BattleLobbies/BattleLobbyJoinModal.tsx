@@ -2,7 +2,7 @@ import { Stack } from "@mui/material"
 import { useCallback, useState } from "react"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { LobbyMech } from "../../../types"
+import { NewMechStruct } from "../../../types"
 import { BattleLobby } from "../../../types/battle_queue"
 import { ConfirmModal } from "../../Common/Deprecated/ConfirmModal"
 import { MechSelector } from "../Common/MechSelector"
@@ -17,7 +17,7 @@ interface BattleLobbyJoinModalProps {
 export const BattleLobbyJoinModal = ({ battleLobby, onJoin, onClose, accessCode }: BattleLobbyJoinModalProps) => {
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [error, setError] = useState("")
-    const [selectedMechs, setSelectedMechs] = useState<LobbyMech[]>([])
+    const [selectedMechs, setSelectedMechs] = useState<NewMechStruct[]>([])
 
     const joinBattleLobby = useCallback(
         async (battleLobbyID: string) => {

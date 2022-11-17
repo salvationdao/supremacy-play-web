@@ -187,7 +187,7 @@ export interface MechUtilitySlot {
     utility?: Utility
 }
 
-export interface LobbyMech extends MechBasic {
+export interface NewMechStruct extends MechBasic {
     owner: User
     power_core?: PowerCore
     weapon_slots?: MechWeaponSlot[]

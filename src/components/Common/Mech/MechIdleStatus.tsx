@@ -10,13 +10,13 @@ import {
     useGameServerSubscriptionSecuredUser,
 } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { LobbyMech, MechStatus, MechStatusEnum, RepairSlot } from "../../../types"
+import { NewMechStruct, MechStatus, MechStatusEnum, RepairSlot } from "../../../types"
 import { RepairOffer } from "../../../types/jobs"
 import { RepairModal } from "./RepairModal/RepairModal"
 import { NiceButton } from "../Nice/NiceButton"
 import { NicePopover } from "../Nice/NicePopover"
 
-export const MechIdleStatus = ({ mech }: { mech: LobbyMech }) => {
+export const MechIdleStatus = ({ mech }: { mech: NewMechStruct }) => {
     const [mechStatus, setMechStatus] = useState<MechStatusEnum>(mech.status)
 
     const popoverRef = useRef(null)
@@ -74,7 +74,17 @@ export const MechIdleStatus = ({ mech }: { mech: LobbyMech }) => {
     )
 }
 
-const RepairActions = ({ open, popoverRef, onClose, mech }: { open: boolean; popoverRef: MutableRefObject<null>; onClose: () => void; mech: LobbyMech }) => {
+const RepairActions = ({
+    open,
+    popoverRef,
+    onClose,
+    mech,
+}: {
+    open: boolean
+    popoverRef: MutableRefObject<null>
+    onClose: () => void
+    mech: NewMechStruct
+}) => {
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
 

@@ -8,7 +8,7 @@ import { EmptyWarMachinesPNG, SvgSearch } from "../../../assets"
 import { useDebounce, usePagination, useUrlQuery } from "../../../hooks"
 import { NiceSelect } from "../../Common/Nice/NiceSelect"
 import { SortTypeLabel } from "../../../types/marketplace"
-import { LobbyMech } from "../../../types"
+import { NewMechStruct } from "../../../types"
 import { getRarityDeets, parseString } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { QueueableMechCard } from "./QueueableMechCard"
@@ -43,8 +43,8 @@ const mechListOptions = [
 
 interface WarMachineFormProps {
     prevPage: () => void
-    ownedMechs: LobbyMech[]
-    stakedMechs: LobbyMech[]
+    ownedMechs: NewMechStruct[]
+    stakedMechs: NewMechStruct[]
     playerQueueLimit: number
 }
 
@@ -59,12 +59,12 @@ export const WarMachineForm = ({ prevPage, ownedMechs, stakedMechs, playerQueueL
         page: parseString(query.get(UrlQueryParams.Page), 1),
     })
 
-    const selectedMechs: LobbyMech[] = watch("selected_mechs")
+    const selectedMechs: NewMechStruct[] = watch("selected_mechs")
     const totalLimit = useMemo(() => Math.min(3, playerQueueLimit), [playerQueueLimit])
     const queueLimit = useMemo(() => totalLimit - selectedMechs.length, [selectedMechs, totalLimit])
 
     const toggleSelectedMech = useCallback(
-        (lobbyMech: LobbyMech) => {
+        (lobbyMech: NewMechStruct) => {
             let list = [...selectedMechs]
             if (list.some((sm) => sm.id === lobbyMech.id)) {
                 list = list.filter((sm) => sm.id !== lobbyMech.id)
@@ -82,7 +82,7 @@ export const WarMachineForm = ({ prevPage, ownedMechs, stakedMechs, playerQueueL
 
     const [isOwnedMech, setIsOwnedMech] = useState(true)
 
-    const [list, setList] = useState<LobbyMech[]>([])
+    const [list, setList] = useState<NewMechStruct[]>([])
     // Apply sort, search, and filters
     useEffect(() => {
         let result = [...ownedMechs]
