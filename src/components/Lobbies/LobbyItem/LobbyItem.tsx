@@ -190,19 +190,23 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
                                     MAP
                                 </Typography>
 
-                                <Box
-                                    sx={{
-                                        width: "100%",
-                                        height: "3rem",
-                                        background: `url(${
-                                            lobby.game_map?.logo_url ||
-                                            "https://afiles.ninja-cdn.com/supremacy-stream-site/assets/img/maps/logos/iron_dust_5.png"
-                                        })`,
-                                        backgroundRepeat: "no-repeat",
-                                        backgroundPosition: "left center",
-                                        backgroundSize: "contain",
-                                    }}
-                                />
+                                {lobby.game_map ? (
+                                    <Box
+                                        sx={{
+                                            width: "100%",
+                                            height: "3rem",
+                                            background: `url(${
+                                                lobby.game_map?.logo_url ||
+                                                "https://afiles.ninja-cdn.com/supremacy-stream-site/assets/img/maps/logos/iron_dust_5.png"
+                                            })`,
+                                            backgroundRepeat: "no-repeat",
+                                            backgroundPosition: "left center",
+                                            backgroundSize: "contain",
+                                        }}
+                                    />
+                                ) : (
+                                    <Typography>RANDOM</Typography>
+                                )}
                             </Box>
 
                             {/* Reward pool and distribution */}
