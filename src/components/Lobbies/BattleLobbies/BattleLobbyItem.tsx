@@ -1,20 +1,17 @@
-import { Avatar, Box, Stack, SxProps, Typography } from "@mui/material"
-import React, { ReactNode, useMemo, useState } from "react"
-import { SvgGlobal, SvgLock, SvgQuestionMark2, SvgSupToken } from "../../../assets"
+import { Avatar, Box, Stack, Typography } from "@mui/material"
+import React, { useMemo, useState } from "react"
+import { SvgQuestionMark2 } from "../../../assets"
 import { FactionIDs } from "../../../constants"
 import { useArena, useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { supFormatter } from "../../../helpers"
 import { TruncateTextLines } from "../../../theme/styles"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleLobby } from "../../../types/battle_queue"
 import { Avatar as SupremacyAvatar } from "../../Avatar"
 import { OptInButton } from "../../BattleArena/UpcomingBattle/UpcomingBattle"
 import { ClipThing } from "../../Common/Deprecated/ClipThing"
-import { TimeLeft } from "../../Storefront/PlayerAbilitiesStore/PlayerAbilitiesStore"
 import { BattleLobbyFaction, MyFactionLobbySlots } from "../BattleLobbyMech/BattleLobbyMechSlots"
 import { BattleLobbyJoinModal } from "./BattleLobbyJoinModal"
-import { BattleLobbyPricePool } from "./BattleLobbyPricePool"
 import { BattleLobbyMechList } from "./SmallLobbyCard"
 
 interface BattleLobbyItemProps {
@@ -117,32 +114,6 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
         return [myFactionLobbySlots, otherFactionLobbySlots]
     }, [getFaction, factionID, factionsAll, battle_lobbies_mechs, selected_zai_supporters, selected_bc_supporters, selected_rm_supporters])
 
-    const entryFeeDisplay = useMemo(() => {
-        const hasFee = entry_fee !== "0"
-        const text = hasFee ? supFormatter(entry_fee, 2) : "NONE"
-
-        return (
-            <Stack direction="row" spacing={0.8}>
-                <Typography
-                    variant="body2"
-                    fontFamily={fonts.nostromoHeavy}
-                    sx={{
-                        color: hasFee ? colors.gold : colors.green,
-                        textAlign: "bottom",
-                    }}
-                >
-                    Entry Fee:
-                </Typography>
-                <Stack direction="row" alignItems="center" spacing=".4rem">
-                    {hasFee && <SvgSupToken size="1.5rem" fill={colors.gold} />}
-                    <Typography variant="body2" fontFamily={fonts.nostromoHeavy} sx={{ opacity: hasFee ? 1 : 0.6 }}>
-                        {text}
-                    </Typography>
-                </Stack>
-            </Stack>
-        )
-    }, [entry_fee])
-
     return (
         <>
             <Stack sx={{ color: primaryColor, textAlign: "start", height: "100%", opacity: disabled ? 0.4 : 1 }}>
@@ -176,42 +147,6 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                             >
                                 {/* Lobby Info */}
                                 <Stack direction="column" flexBasis="25rem" height="100%" mr="1rem" spacing={0.5}>
-                                    {assignedToArenaName && <LobbyInfoField title="Arena:" value={assignedToArenaName} />}
-
-                                    {fill_at && (
-                                        <LobbyInfoField
-                                            title="Ready In"
-                                            value={<TimeLeft dateTo={fill_at} timeUpMessage="Filling AI Mechs" />}
-                                            valueSxProp={{
-                                                fontFamily: fonts.nostromoMedium,
-                                                fontStyle: "italic",
-                                                fontSize: "1.2rem",
-                                            }}
-                                        />
-                                    )}
-
-                                    {expires_at && (
-                                        <LobbyInfoField
-                                            title="Expires In"
-                                            value={<TimeLeft dateTo={expires_at} timeUpMessage="Closing Lobby" />}
-                                            valueSxProp={{
-                                                fontFamily: fonts.nostromoMedium,
-                                                fontStyle: "italic",
-                                                fontSize: "1.2rem",
-                                            }}
-                                        />
-                                    )}
-
-                                    <LobbyInfoField
-                                        title="Max deploy"
-                                        value={battleLobby.max_deploy_per_player}
-                                        valueSxProp={{
-                                            fontFamily: fonts.nostromoMedium,
-                                            fontStyle: "italic",
-                                            fontSize: "1.2rem",
-                                        }}
-                                    />
-
                                     {/* Other faction mech slots */}
                                     <Stack spacing=".5rem">
                                         {otherFactionLobbySlots.map((fls) => (
@@ -420,42 +355,3 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
         </>
     )
 }, propsAreEqual)
-
-interface LobbyInfoFieldProps {
-    title: string
-    value: ReactNode
-
-    titleSxProp?: SxProps
-    valueSxProp?: SxProps
-}
-
-const LobbyInfoField = ({ title, value, titleSxProp, valueSxProp }: LobbyInfoFieldProps) => {
-    return (
-        <Stack direction="column">
-            <Typography
-                variant="body2"
-                sx={{
-                    fontFamily: fonts.nostromoHeavy,
-                    color: colors.grey,
-                    ...titleSxProp,
-                }}
-            >
-                {title}
-            </Typography>
-            <Typography
-                sx={{
-                    fontFamily: fonts.nostromoBold,
-                    display: "-webkit-box",
-                    overflow: "hidden",
-                    overflowWrap: "anywhere",
-                    textOverflow: "ellipsis",
-                    WebkitLineClamp: 1,
-                    WebkitBoxOrient: "vertical",
-                    ...valueSxProp,
-                }}
-            >
-                {value}
-            </Typography>
-        </Stack>
-    )
-}

@@ -1,17 +1,21 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
 import React, { useMemo } from "react"
 import { SvgContentCopyIcon, SvgGlobal, SvgLock, SvgSupToken, SvgUserDiamond } from "../../../assets"
-import { useAuth, useSupremacy } from "../../../containers"
+import { useArena, useAuth, useSupremacy } from "../../../containers"
 import { supFormatter } from "../../../helpers"
 import { TruncateTextLines } from "../../../theme/styles"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleLobby } from "../../../types/battle_queue"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
+import { TimeLeft } from "../../Common/TimeLeft"
 import { PrizePool } from "./PrizePool"
 
 export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { lobby: BattleLobby; accessCode?: string }) {
     const { userID } = useAuth()
+    const { arenaList } = useArena()
     const { getFaction } = useSupremacy()
+
+    const arenaName = useMemo(() => arenaList.find((a) => a.id === lobby.assigned_to_arena_id)?.name, [arenaList, lobby.assigned_to_arena_id])
 
     const ownerFaction = useMemo(() => getFaction(lobby.host_by.faction_id), [getFaction, lobby.host_by.faction_id])
 
@@ -73,8 +77,8 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
                     )}
                 </Stack>
 
-                <Stack direction="row" spacing="2rem" sx={{ mt: "1.4rem" }}>
-                    <Stack spacing="1.4rem">
+                <Stack direction="row" spacing="2rem" sx={{ mt: "1.8rem" }}>
+                    <Stack spacing="1.8rem">
                         {/* Host name */}
                         <Typography
                             variant="h6"
@@ -88,8 +92,44 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
                             {lobby.generated_by_system ? "The Overseer" : `${lobby.host_by.username}#${lobby.host_by.gid}`}
                         </Typography>
 
-                        {/* Reward pool */}
+                        {/* Arena name */}
+                        {arenaName && (
+                            <Box>
+                                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold} color={colors.lightGrey}>
+                                    BATTLE ARENA
+                                </Typography>
+
+                                <Typography>{arenaName}</Typography>
+                            </Box>
+                        )}
+
+                        {/* Reward pool and distribution */}
                         <PrizePool lobby={lobby} />
+
+                        {/* Time left */}
+                        {lobby.fill_at && (
+                            <Box>
+                                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold} color={colors.lightGrey}>
+                                    READY IN
+                                </Typography>
+
+                                <Typography>
+                                    <TimeLeft dateTo={lobby.fill_at} timeUpMessage="Filling with AI Mechs..." />
+                                </Typography>
+                            </Box>
+                        )}
+
+                        {lobby.expires_at && (
+                            <Box>
+                                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold} color={colors.lightGrey}>
+                                    TIME LEFT
+                                </Typography>
+
+                                <Typography>
+                                    <TimeLeft dateTo={lobby.expires_at} timeUpMessage="Closing lobby..." />
+                                </Typography>
+                            </Box>
+                        )}
                     </Stack>
                 </Stack>
             </Stack>

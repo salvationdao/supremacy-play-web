@@ -19,7 +19,7 @@ export const PrizePool = ({ lobby }: { lobby: BattleLobby }) => {
         <>
             {/* Reward pool */}
             <Box>
-                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold}>
+                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold} color={colors.lightGrey}>
                     REWARD POOL
                 </Typography>
 
@@ -40,7 +40,7 @@ export const PrizePool = ({ lobby }: { lobby: BattleLobby }) => {
 
             {/* Reward distribution */}
             <Box>
-                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold}>
+                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold} color={colors.lightGrey}>
                     DISTRIBUTION
                 </Typography>
                 <Stack direction="row" alignItems="center" spacing="1rem">
