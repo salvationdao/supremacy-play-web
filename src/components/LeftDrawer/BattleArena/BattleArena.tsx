@@ -1,4 +1,4 @@
-import { Box, Stack, Typography, useTheme } from "@mui/material"
+import { Box, Fade, Stack, Typography, useTheme } from "@mui/material"
 import { useMemo } from "react"
 import { SvgLobbies } from "../../../assets"
 import { useAuth, useGame, useSupremacy, useUI } from "../../../containers"
@@ -73,8 +73,22 @@ export const BattleArena = () => {
     }, [battleIdentifier, content, isAIDrivenMatch])
 }
 
-const Header = ({ isOpen, onClose }: HeaderProps) => {
+const Header = ({ isOpen, isDrawerOpen, onClose }: HeaderProps) => {
     const theme = useTheme()
+
+    const button = (
+        <NiceButton
+            onClick={onClose}
+            buttonColor={theme.factionTheme.primary}
+            corners
+            sx={{
+                p: ".8rem",
+                pb: ".6rem",
+            }}
+        >
+            <SvgLobbies size="3rem" />
+        </NiceButton>
+    )
 
     return (
         <Stack
@@ -88,19 +102,7 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
                 transition: "background-color .2s ease-out",
             }}
         >
-            <NiceTooltip text="My Lobbies" placement="left">
-                <NiceButton
-                    onClick={onClose}
-                    buttonColor={theme.factionTheme.primary}
-                    corners
-                    sx={{
-                        p: ".8rem",
-                        pb: ".6rem",
-                    }}
-                >
-                    <SvgLobbies size="3rem" />
-                </NiceButton>
-            </NiceTooltip>
+            {button}
             <Typography
                 sx={{
                     fontFamily: fonts.nostromoBlack,
@@ -109,6 +111,14 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
             >
                 Battle Commands
             </Typography>
+            {!isDrawerOpen && <Box flex={1} />}
+            <Fade in={!isDrawerOpen} unmountOnExit>
+                <Box>
+                    <NiceTooltip text="Battle Commands & Arena Selection" placement="right">
+                        {button}
+                    </NiceTooltip>
+                </Box>
+            </Fade>
         </Stack>
     )
 }

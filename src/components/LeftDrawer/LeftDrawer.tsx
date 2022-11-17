@@ -3,7 +3,7 @@ import { DRAWER_TRANSITION_DURATION } from "../../constants"
 import { useAuth, useMobile, useUI } from "../../containers"
 import { useActiveRouteID } from "../../hooks/useActiveRouteID"
 import { LeftRoutes } from "../../routes"
-import { colors, siteZIndex } from "../../theme/theme"
+import { siteZIndex } from "../../theme/theme"
 import { DRAWER_OFFSET } from "../RightDrawer/RightDrawer"
 
 export const LEFT_DRAWER_WIDTH = 44 // rem
@@ -34,7 +34,7 @@ export const LeftDrawer = () => {
                     zIndex: siteZIndex.Drawer,
                     "& .MuiDrawer-paper": {
                         width: `${LEFT_DRAWER_WIDTH}rem`,
-                        backgroundColor: colors.darkNavy,
+                        backgroundColor: `#1B0313`,
                         position: "absolute",
                         borderRight: `1px solid #9F0410`,
                         overflow: "hidden",
