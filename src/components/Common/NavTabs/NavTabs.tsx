@@ -18,6 +18,7 @@ export const NavTabs = <T,>({
     tabs,
     prevTab,
     nextTab,
+    width,
     sx,
 }: {
     activeTabID?: T
@@ -25,6 +26,7 @@ export const NavTabs = <T,>({
     tabs: OneTab<T>[]
     prevTab: (activeTabID: T) => void
     nextTab: (activeTabID: T) => void
+    width?: string
     sx?: SxProps
 }) => {
     const theme = useTheme()
@@ -64,7 +66,7 @@ export const NavTabs = <T,>({
                     boxShadow: 1,
                     zIndex: 9,
                     minHeight: 0,
-                    ".MuiTab-root": { minWidth: "21rem" },
+                    ".MuiTab-root": { minWidth: width || "21rem" },
                     ".MuiButtonBase-root": {
                         height: `${TAB_HEIGHT}rem`,
                         pt: `${TAB_HEIGHT / 2}rem`,

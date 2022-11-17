@@ -1,7 +1,7 @@
 import { Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { colors, fonts } from "../../theme/theme"
-import { MechBasicWithQueueStatus, MechStatusEnum } from "../../types"
+import { colors, fonts } from "../../../theme/theme"
+import { MechBasicWithQueueStatus, MechStatusEnum } from "../../../types"
 
 export const MechQueueStatus = ({ mech }: { mech: MechBasicWithQueueStatus }) => {
     const color = useMemo(() => {

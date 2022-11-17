@@ -18,7 +18,7 @@ import { MechPage } from "../components/Hangar/WarMachinesHangar/WarMachineDetai
 import { WeaponHangarDetails } from "../components/Hangar/WeaponsHangar/WeaponDetails/WeaponHangarDetails"
 import { WeaponsHangar } from "../components/Hangar/WeaponsHangar/WeaponsHangar"
 import { GlobalStats } from "../components/Leaderboard/GlobalStats/GlobalStats"
-import { BattleLobbiesPage } from "../components/Lobbies/BattleLobbiesPage"
+import { Lobbies } from "../components/Lobbies/Lobbies"
 import { HistoryMarket } from "../components/Marketplace/HistoryMarket/HistoryMarket"
 import { KeycardMarketDetails } from "../components/Marketplace/KeycardsMarket/KeycardMarketDetails/KeycardMarketDetails"
 import { KeycardsMarket } from "../components/Marketplace/KeycardsMarket/KeycardsMarket"
@@ -175,7 +175,7 @@ export const Routes: RouteSingle[] = [
         id: RouteSingleID.Lobbies,
         path: "/lobbies",
         exact: true,
-        Component: BattleLobbiesPage,
+        Component: Lobbies,
         restrictions: {
             requireAuth: true,
             requireFaction: true,
@@ -183,7 +183,7 @@ export const Routes: RouteSingle[] = [
         },
         showInMainMenu: {
             groupID: RouteGroupID.BattleArena,
-            label: "My Lobbies",
+            label: "Lobbies",
             image: GenericPNG,
             path: "/lobbies",
         },

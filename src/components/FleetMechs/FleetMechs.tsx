@@ -301,7 +301,7 @@ export const FleetMechs = () => {
                         textAlign: "center",
                     }}
                 >
-                    {"No results..."}
+                    No results...
                 </Typography>
 
                 <NiceButton route={{ to: `/marketplace/mechs` }} buttonColor={theme.factionTheme.primary}>
