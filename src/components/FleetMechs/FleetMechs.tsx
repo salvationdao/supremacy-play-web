@@ -120,7 +120,7 @@ export const FleetMechs = () => {
 
     useGameServerSubscriptionSecuredUser<LobbyMech[]>(
         {
-            URI: "/owned_queueable_mechs",
+            URI: "/owned_mechs",
             key: GameServerKeys.SubPlayerQueueableMechs,
         },
         (payload) => {

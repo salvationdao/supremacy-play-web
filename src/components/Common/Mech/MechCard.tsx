@@ -127,17 +127,17 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                     {/* KDWL stats */}
                     {!hide?.kdwlStats && (
                         <>
-                            <Typography>
-                                <SvgMechKills inline size="1.8rem" /> {mech.stats.total_kills}
+                            <Typography whiteSpace="nowrap">
+                                <SvgMechKills inline size="1.6rem" /> {mech.stats.total_kills}
                             </Typography>
-                            <Typography>
-                                <SvgMechDeaths inline size="1.8rem" /> {mech.stats.total_deaths}
+                            <Typography whiteSpace="nowrap">
+                                <SvgMechDeaths inline size="1.6rem" /> {mech.stats.total_deaths}
                             </Typography>
-                            <Typography>
-                                <SvgMechWins inline size="1.8rem" /> {mech.stats.total_wins}
+                            <Typography whiteSpace="nowrap">
+                                <SvgMechWins inline size="1.6rem" /> {mech.stats.total_wins}
                             </Typography>
-                            <Typography>
-                                <SvgMechLosses inline size="1.8rem" /> {mech.stats.total_losses}
+                            <Typography whiteSpace="nowrap">
+                                <SvgMechLosses inline size="1.6rem" /> {mech.stats.total_losses}
                             </Typography>
                         </>
                     )}
@@ -231,17 +231,17 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                             "&>*": { flex: 1, p: ".2rem 1rem", pt: ".5rem", lineHeight: 1, backgroundColor: "#FFFFFF16", boxShadow: 0.4 },
                         }}
                     >
-                        <Typography>
-                            <SvgMechKills inline size="1.8rem" /> {mech.stats.total_kills}
+                        <Typography whiteSpace="nowrap">
+                            <SvgMechKills inline size="1.6rem" /> {mech.stats.total_kills}
                         </Typography>
-                        <Typography>
-                            <SvgMechDeaths inline size="1.8rem" /> {mech.stats.total_deaths}
+                        <Typography whiteSpace="nowrap">
+                            <SvgMechDeaths inline size="1.6rem" /> {mech.stats.total_deaths}
                         </Typography>
-                        <Typography>
-                            <SvgMechWins inline size="1.8rem" /> {mech.stats.total_wins}
+                        <Typography whiteSpace="nowrap">
+                            <SvgMechWins inline size="1.6rem" /> {mech.stats.total_wins}
                         </Typography>
-                        <Typography>
-                            <SvgMechLosses inline size="1.8rem" /> {mech.stats.total_losses}
+                        <Typography whiteSpace="nowrap">
+                            <SvgMechLosses inline size="1.6rem" /> {mech.stats.total_losses}
                         </Typography>
                     </Stack>
                 )}

@@ -115,7 +115,7 @@ export const CreateLobby = () => {
     const [ownedMechs, setOwnedMechs] = useState<LobbyMech[]>([])
     useGameServerSubscriptionSecuredUser<LobbyMech[]>(
         {
-            URI: "/owned_queueable_mechs",
+            URI: "/owned_mechs",
             key: GameServerKeys.SubPlayerQueueableMechs,
         },
         (payload) => {

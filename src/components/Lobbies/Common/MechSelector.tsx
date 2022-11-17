@@ -113,7 +113,7 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs, battleLobby, kee
     const [ownedMechs, setOwnedMechs] = useState<LobbyMech[]>([])
     useGameServerSubscriptionSecuredUser<LobbyMech[]>(
         {
-            URI: "/owned_queueable_mechs",
+            URI: "/owned_mechs",
             key: GameServerKeys.SubPlayerQueueableMechs,
         },
         (payload) => {
