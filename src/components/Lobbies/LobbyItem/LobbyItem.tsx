@@ -1,19 +1,35 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
-import React, { useMemo } from "react"
+import React, { useMemo, useState } from "react"
 import { SvgContentCopyIcon, SvgGlobal, SvgLock, SvgSupToken, SvgUserDiamond } from "../../../assets"
+import { FactionIDs } from "../../../constants"
 import { useArena, useAuth, useSupremacy } from "../../../containers"
 import { supFormatter } from "../../../helpers"
 import { TruncateTextLines } from "../../../theme/styles"
 import { colors, fonts } from "../../../theme/theme"
-import { BattleLobby } from "../../../types/battle_queue"
+import { Faction } from "../../../types"
+import { BattleLobbiesMech, BattleLobby, BattleLobbySupporter } from "../../../types/battle_queue"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { TimeLeft } from "../../Common/TimeLeft"
+import { MyFactionMechs } from "./MyFactionMechs/MyFactionMechs"
+import { OtherFactionMechs } from "./OtherFactionMechs/OtherFactionMechs"
 import { PrizePool } from "./PrizePool"
+import { Supporters } from "./Supporters"
+
+export const NUMBER_MECHS_REQUIRED = 3
+
+export interface FactionLobbySlots {
+    faction: Faction
+    mechSlots: BattleLobbiesMech[] // null represents empty slot
+    supporterSlots: BattleLobbySupporter[] // null represents empty slot
+}
 
 export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { lobby: BattleLobby; accessCode?: string }) {
-    const { userID } = useAuth()
+    const { userID, factionID } = useAuth()
     const { arenaList } = useArena()
-    const { getFaction } = useSupremacy()
+    const { getFaction, factionsAll } = useSupremacy()
+
+    // Modals
+    const [isJoinModalOpen, setIsJoinModalOpen] = useState(false)
 
     const arenaName = useMemo(() => arenaList.find((a) => a.id === lobby.assigned_to_arena_id)?.name, [arenaList, lobby.assigned_to_arena_id])
 
@@ -34,6 +50,63 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
         )
     }, [lobby.entry_fee])
 
+    const [myFactionLobbySlots, otherFactionLobbySlots] = useMemo(() => {
+        let myFactionLobbySlots: FactionLobbySlots = {
+            faction: getFaction(factionID),
+            mechSlots: [],
+            supporterSlots: [],
+        }
+
+        const otherFactionLobbySlots: FactionLobbySlots[] = []
+
+        Object.values(factionsAll)
+            .sort((a, b) => a.label.localeCompare(b.label))
+            .forEach((f) => {
+                const bls: FactionLobbySlots = {
+                    faction: f,
+                    mechSlots: [],
+                    supporterSlots: [],
+                }
+
+                lobby.battle_lobbies_mechs.forEach((blm) => {
+                    // Skip, if not in the same faction
+                    if (blm.faction_id !== f.id) return
+
+                    // Parse data
+                    bls.mechSlots.push(blm)
+                })
+
+                // since supporters are already split up by faction, use a switch to add the right one to this object
+                switch (f.id) {
+                    case FactionIDs.ZHI:
+                        bls.supporterSlots.push(...(lobby.selected_zai_supporters || []))
+                        break
+                    case FactionIDs.BC:
+                        bls.supporterSlots.push(...(lobby.selected_bc_supporters || []))
+                        break
+                    case FactionIDs.RM:
+                        bls.supporterSlots.push(...(lobby.selected_rm_supporters || []))
+                        break
+                }
+
+                if (f.id === factionID) {
+                    myFactionLobbySlots = bls
+                } else {
+                    otherFactionLobbySlots.push(bls)
+                }
+            })
+
+        return [myFactionLobbySlots, otherFactionLobbySlots]
+    }, [
+        getFaction,
+        factionID,
+        factionsAll,
+        lobby.battle_lobbies_mechs,
+        lobby.selected_zai_supporters,
+        lobby.selected_bc_supporters,
+        lobby.selected_rm_supporters,
+    ])
+
     const displayAccessCode = useMemo(() => lobby.access_code || accessCode, [accessCode, lobby.access_code])
 
     return (
@@ -43,10 +116,12 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
             sx={{ position: "relative", p: "1.2rem 1.8rem" }}
         >
             {/* Lobby details */}
-            <Stack>
+            <Stack spacing="1.8rem">
                 <Stack direction="row" alignItems="center" spacing="2rem">
                     {/* Lobby name */}
-                    <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{lobby.name || `Lobby #${lobby.number}`}</Typography>
+                    <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
+                        {lobby.name || `Lobby #${lobby.number}`}
+                    </Typography>
 
                     {/* Access code */}
                     {displayAccessCode && userID === lobby.host_by_id && (
@@ -81,7 +156,7 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
                     )}
                 </Stack>
 
-                <Stack direction="row" spacing="2rem" sx={{ mt: "1.8rem" }}>
+                <Stack direction="row" spacing="3rem" sx={{ flex: 1 }}>
                     <Stack spacing="1.8rem">
                         {/* Host name */}
                         <Typography
@@ -106,6 +181,26 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
                                 <Typography>{arenaName}</Typography>
                             </Box>
                         )}
+
+                        {/* Map logo */}
+                        <Box>
+                            <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold} color={colors.lightGrey}>
+                                MAP
+                            </Typography>
+
+                            <Box
+                                sx={{
+                                    width: "100%",
+                                    height: "3rem",
+                                    background: `url(${
+                                        lobby.game_map?.logo_url || "https://afiles.ninja-cdn.com/supremacy-stream-site/assets/img/maps/logos/iron_dust_5.png"
+                                    })`,
+                                    backgroundRepeat: "no-repeat",
+                                    backgroundPosition: "left center",
+                                    backgroundSize: "contain",
+                                }}
+                            />
+                        </Box>
 
                         {/* Reward pool and distribution */}
                         <PrizePool lobby={lobby} />
@@ -137,7 +232,14 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
                     </Stack>
 
                     {/* Mechs */}
+                    <MyFactionMechs factionLobbySlots={myFactionLobbySlots} isLocked={!!lobby.ready_at} onSlotClick={() => setIsJoinModalOpen(true)} />
+
+                    {/* Other faction mechs */}
+                    <OtherFactionMechs factionLobbySlots={otherFactionLobbySlots} />
                 </Stack>
+
+                {/* Supports */}
+                <Supporters />
             </Stack>
 
             {/* Background map image */}
