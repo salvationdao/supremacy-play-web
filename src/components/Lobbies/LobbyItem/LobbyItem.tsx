@@ -131,6 +131,8 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
                             </Box>
                         )}
                     </Stack>
+
+                    {/* Mechs */}
                 </Stack>
             </Stack>
         </NiceBoxThing>
