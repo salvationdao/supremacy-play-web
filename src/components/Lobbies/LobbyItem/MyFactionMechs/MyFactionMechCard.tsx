@@ -16,8 +16,8 @@ export const MyFactionMechCard = ({ mech }: { mech: BattleLobbiesMech }) => {
                 })
 
                 newSnackbarMessage("Successfully removed mech from lobby.", "success")
-            } catch (e) {
-                newSnackbarMessage(typeof e === "string" ? e : "Failed to leave lobby, try again or contact support.", "error")
+            } catch (err) {
+                newSnackbarMessage(typeof err === "string" ? err : "Failed to leave lobby, try again or contact support.", "error")
             }
         },
         [newSnackbarMessage, send],

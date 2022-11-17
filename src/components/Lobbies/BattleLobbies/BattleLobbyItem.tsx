@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import React, { useMemo, useState } from "react"
+import React, { useMemo } from "react"
 import { FactionIDs } from "../../../constants"
 import { useAuth, useSupremacy } from "../../../containers"
 import { fonts } from "../../../theme/theme"
@@ -7,8 +7,6 @@ import { BattleLobby } from "../../../types/battle_queue"
 import { Avatar as SupremacyAvatar } from "../../Avatar"
 import { OptInButton } from "../../BattleArena/UpcomingBattle/UpcomingBattle"
 import { BattleLobbyFaction } from "../BattleLobbyMech/BattleLobbyMechSlots"
-import { BattleLobbyJoinModal } from "./BattleLobbyJoinModal"
-import { BattleLobbyMechList } from "./SmallLobbyCard"
 
 interface BattleLobbyItemProps {
     battleLobby: BattleLobby
@@ -40,9 +38,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
 
     const displayedAccessCode = useMemo(() => battleLobby.access_code || accessCode, [accessCode, battleLobby.access_code])
 
-    const [showJoinModal, setShowJoinModal] = useState(false)
-
-    const [myFactionLobbySlots, otherFactionLobbySlots] = useMemo(() => {
+    const [myFactionLobbySlots] = useMemo(() => {
         let myFactionLobbySlots: BattleLobbyFaction = {
             faction: getFaction(factionID),
             mechSlots: [],
@@ -97,25 +93,6 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                     p: "2rem",
                 }}
             >
-                <Stack
-                    direction="row"
-                    spacing="1rem"
-                    sx={{
-                        position: "relative",
-                        minHeight: "10rem",
-                    }}
-                >
-                    {/* Lobby Info */}
-                    <Stack direction="column" flexBasis="25rem" height="100%" mr="1rem" spacing={0.5}>
-                        {/* Other faction mech slots */}
-                        <Stack spacing=".5rem">
-                            {otherFactionLobbySlots.map((fls) => (
-                                <BattleLobbyMechList key={fls.faction.id} factionID={fls.faction.id} battleLobbiesMechs={fls.mechSlots} />
-                            ))}
-                        </Stack>
-                    </Stack>
-                </Stack>
-
                 {displayedAccessCode && (
                     <Stack
                         direction="column"
@@ -164,15 +141,6 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                     </Stack>
                 )}
             </Stack>
-
-            {showJoinModal && (
-                <BattleLobbyJoinModal
-                    battleLobby={battleLobby}
-                    onJoin={() => setShowJoinModal(false)}
-                    onClose={() => setShowJoinModal(false)}
-                    accessCode={displayedAccessCode}
-                />
-            )}
         </>
     )
 }, propsAreEqual)

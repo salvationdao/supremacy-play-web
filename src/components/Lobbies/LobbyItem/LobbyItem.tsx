@@ -10,6 +10,7 @@ import { Faction } from "../../../types"
 import { BattleLobbiesMech, BattleLobby, BattleLobbySupporter } from "../../../types/battle_queue"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { TimeLeft } from "../../Common/TimeLeft"
+import { JoinLobbyModal } from "./JoinLobbyModal"
 import { MyFactionMechs } from "./MyFactionMechs/MyFactionMechs"
 import { OtherFactionMechs } from "./OtherFactionMechs/OtherFactionMechs"
 import { PrizePool } from "./PrizePool"
@@ -110,169 +111,182 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
     const displayAccessCode = useMemo(() => lobby.access_code || accessCode, [accessCode, lobby.access_code])
 
     return (
-        <NiceBoxThing
-            border={{ color: "#FFFFFF20", thickness: "very-lean" }}
-            background={{ colors: ["#FFFFFF"], opacity: 0.06 }}
-            sx={{ position: "relative", p: "1.2rem 1.8rem" }}
-        >
-            {/* Lobby details */}
-            <Stack spacing="1.8rem">
-                <Stack direction="row" alignItems="center" spacing="2rem">
-                    {/* Lobby name */}
-                    <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
-                        {lobby.name || `Lobby #${lobby.number}`}
-                    </Typography>
-
-                    {/* Access code */}
-                    {displayAccessCode && userID === lobby.host_by_id && (
-                        <Stack direction="row" alignItems="center">
-                            <Typography color={colors.neonBlue}>{displayAccessCode}</Typography>
-                            <IconButton
-                                size="small"
-                                sx={{ opacity: 0.6, ":hover": { opacity: 1 } }}
-                                onClick={() => {
-                                    navigator.clipboard.writeText(displayAccessCode || "")
-                                }}
-                            >
-                                <SvgContentCopyIcon inline size="1.3rem" />
-                            </IconButton>
-                        </Stack>
-                    )}
-
-                    {/* Entry fees */}
-                    {entryFeeDisplay}
-
-                    <Box flex={1} />
-
-                    {/* Lobby private or public */}
-                    {lobby.is_private ? (
-                        <Typography color={colors.orange}>
-                            <SvgLock inline size="1.6rem" fill={colors.orange} /> PRIVATE
-                        </Typography>
-                    ) : (
-                        <Typography color={colors.green}>
-                            <SvgGlobal inline size="1.6rem" fill={colors.green} /> PUBLIC
-                        </Typography>
-                    )}
-                </Stack>
-
-                <Stack direction="row" spacing="3rem" sx={{ flex: 1 }}>
-                    <Stack spacing="1.8rem">
-                        {/* Host name */}
-                        <Typography
-                            variant="h6"
-                            sx={{
-                                color: ownerFaction.primary_color,
-                                fontWeight: "bold",
-                                ...TruncateTextLines(1),
-                            }}
-                        >
-                            <SvgUserDiamond size="2.2rem" inline fill={ownerFaction.primary_color} />{" "}
-                            {lobby.generated_by_system ? "The Overseer" : `${lobby.host_by.username}#${lobby.host_by.gid}`}
+        <>
+            <NiceBoxThing
+                border={{ color: "#FFFFFF20", thickness: "very-lean" }}
+                background={{ colors: ["#FFFFFF"], opacity: 0.06 }}
+                sx={{ position: "relative", p: "1.2rem 1.8rem" }}
+            >
+                {/* Lobby details */}
+                <Stack spacing="1.8rem">
+                    <Stack direction="row" alignItems="center" spacing="2rem">
+                        {/* Lobby name */}
+                        <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
+                            {lobby.name || `Lobby #${lobby.number}`}
                         </Typography>
 
-                        {/* Arena name */}
-                        {arenaName && (
-                            <Box>
-                                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold} color={colors.lightGrey}>
-                                    BATTLE ARENA
-                                </Typography>
-
-                                <Typography>{arenaName}</Typography>
-                            </Box>
+                        {/* Access code */}
+                        {displayAccessCode && userID === lobby.host_by_id && (
+                            <Stack direction="row" alignItems="center">
+                                <Typography color={colors.neonBlue}>{displayAccessCode}</Typography>
+                                <IconButton
+                                    size="small"
+                                    sx={{ opacity: 0.6, ":hover": { opacity: 1 } }}
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(displayAccessCode || "")
+                                    }}
+                                >
+                                    <SvgContentCopyIcon inline size="1.3rem" />
+                                </IconButton>
+                            </Stack>
                         )}
 
-                        {/* Map logo */}
-                        <Box>
-                            <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold} color={colors.lightGrey}>
-                                MAP
+                        {/* Entry fees */}
+                        {entryFeeDisplay}
+
+                        <Box flex={1} />
+
+                        {/* Lobby private or public */}
+                        {lobby.is_private ? (
+                            <Typography color={colors.orange}>
+                                <SvgLock inline size="1.6rem" fill={colors.orange} /> PRIVATE
                             </Typography>
-
-                            <Box
-                                sx={{
-                                    width: "100%",
-                                    height: "3rem",
-                                    background: `url(${
-                                        lobby.game_map?.logo_url || "https://afiles.ninja-cdn.com/supremacy-stream-site/assets/img/maps/logos/iron_dust_5.png"
-                                    })`,
-                                    backgroundRepeat: "no-repeat",
-                                    backgroundPosition: "left center",
-                                    backgroundSize: "contain",
-                                }}
-                            />
-                        </Box>
-
-                        {/* Reward pool and distribution */}
-                        <PrizePool lobby={lobby} />
-
-                        {/* Time left */}
-                        {lobby.fill_at && (
-                            <Box>
-                                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold} color={colors.lightGrey}>
-                                    READY IN
-                                </Typography>
-
-                                <Typography>
-                                    <TimeLeft dateTo={lobby.fill_at} timeUpMessage="Filling with AI Mechs..." />
-                                </Typography>
-                            </Box>
-                        )}
-
-                        {lobby.expires_at && (
-                            <Box>
-                                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold} color={colors.lightGrey}>
-                                    TIME LEFT
-                                </Typography>
-
-                                <Typography>
-                                    <TimeLeft dateTo={lobby.expires_at} timeUpMessage="Closing lobby..." />
-                                </Typography>
-                            </Box>
+                        ) : (
+                            <Typography color={colors.green}>
+                                <SvgGlobal inline size="1.6rem" fill={colors.green} /> PUBLIC
+                            </Typography>
                         )}
                     </Stack>
 
-                    {/* Mechs */}
-                    <MyFactionMechs factionLobbySlots={myFactionLobbySlots} isLocked={!!lobby.ready_at} onSlotClick={() => setIsJoinModalOpen(true)} />
+                    <Stack direction="row" spacing="3rem" sx={{ flex: 1 }}>
+                        <Stack spacing="1.8rem">
+                            {/* Host name */}
+                            <Typography
+                                variant="h6"
+                                sx={{
+                                    color: ownerFaction.primary_color,
+                                    fontWeight: "bold",
+                                    ...TruncateTextLines(1),
+                                }}
+                            >
+                                <SvgUserDiamond size="2.2rem" inline fill={ownerFaction.primary_color} />{" "}
+                                {lobby.generated_by_system ? "The Overseer" : `${lobby.host_by.username}#${lobby.host_by.gid}`}
+                            </Typography>
 
-                    {/* Other faction mechs */}
-                    <OtherFactionMechs factionLobbySlots={otherFactionLobbySlots} />
+                            {/* Arena name */}
+                            {arenaName && (
+                                <Box>
+                                    <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold} color={colors.lightGrey}>
+                                        BATTLE ARENA
+                                    </Typography>
+
+                                    <Typography>{arenaName}</Typography>
+                                </Box>
+                            )}
+
+                            {/* Map logo */}
+                            <Box>
+                                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold} color={colors.lightGrey}>
+                                    MAP
+                                </Typography>
+
+                                <Box
+                                    sx={{
+                                        width: "100%",
+                                        height: "3rem",
+                                        background: `url(${
+                                            lobby.game_map?.logo_url ||
+                                            "https://afiles.ninja-cdn.com/supremacy-stream-site/assets/img/maps/logos/iron_dust_5.png"
+                                        })`,
+                                        backgroundRepeat: "no-repeat",
+                                        backgroundPosition: "left center",
+                                        backgroundSize: "contain",
+                                    }}
+                                />
+                            </Box>
+
+                            {/* Reward pool and distribution */}
+                            <PrizePool lobby={lobby} />
+
+                            {/* Time left */}
+                            {lobby.fill_at && (
+                                <Box>
+                                    <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold} color={colors.lightGrey}>
+                                        READY IN
+                                    </Typography>
+
+                                    <Typography>
+                                        <TimeLeft dateTo={lobby.fill_at} timeUpMessage="Filling with AI Mechs..." />
+                                    </Typography>
+                                </Box>
+                            )}
+
+                            {lobby.expires_at && (
+                                <Box>
+                                    <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold} color={colors.lightGrey}>
+                                        TIME LEFT
+                                    </Typography>
+
+                                    <Typography>
+                                        <TimeLeft dateTo={lobby.expires_at} timeUpMessage="Closing lobby..." />
+                                    </Typography>
+                                </Box>
+                            )}
+                        </Stack>
+
+                        {/* Mechs */}
+                        <MyFactionMechs myFactionLobbySlots={myFactionLobbySlots} isLocked={!!lobby.ready_at} onSlotClick={() => setIsJoinModalOpen(true)} />
+
+                        {/* Other faction mechs */}
+                        <OtherFactionMechs otherFactionLobbySlots={otherFactionLobbySlots} />
+                    </Stack>
+
+                    {/* Supports */}
+                    <Supporters />
                 </Stack>
 
-                {/* Supports */}
-                <Supporters />
-            </Stack>
+                {/* Background map image */}
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: `url(${
+                            lobby.game_map?.background_url || "https://afiles.ninja-cdn.com//supremacy-stream-site/assets/img/maps/backgrounds/iron_dust.png"
+                        })`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                        opacity: 0.3,
+                        zIndex: -2,
+                    }}
+                />
 
-            {/* Background map image */}
-            <Box
-                sx={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    background: `url(${
-                        lobby.game_map?.background_url || "https://afiles.ninja-cdn.com//supremacy-stream-site/assets/img/maps/backgrounds/iron_dust.png"
-                    })`,
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                    backgroundSize: "cover",
-                    opacity: 0.3,
-                    zIndex: -2,
-                }}
-            />
+                {/* Background gradient */}
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: "linear-gradient(to right, #000000BB 0%, #00000020 35%, #00000000)",
+                        zIndex: -1,
+                    }}
+                />
+            </NiceBoxThing>
 
-            {/* Background gradient */}
-            <Box
-                sx={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    background: "linear-gradient(to right, #000000BB 0%, #00000020 35%, #00000000)",
-                    zIndex: -1,
-                }}
-            />
-        </NiceBoxThing>
+            {isJoinModalOpen && (
+                <JoinLobbyModal
+                    open={isJoinModalOpen}
+                    onClose={() => setIsJoinModalOpen(false)}
+                    myFactionLobbySlots={myFactionLobbySlots}
+                    lobby={lobby}
+                    accessCode={displayAccessCode}
+                />
+            )}
+        </>
     )
 })

@@ -7,11 +7,11 @@ import { FactionLobbySlots, NUMBER_MECHS_REQUIRED } from "../LobbyItem"
 import { MyFactionMechCard } from "./MyFactionMechCard"
 
 export const MyFactionMechs = React.memo(function MyFactionMechs({
-    factionLobbySlots,
+    myFactionLobbySlots,
     isLocked,
     onSlotClick,
 }: {
-    factionLobbySlots: FactionLobbySlots
+    myFactionLobbySlots: FactionLobbySlots
     isLocked: boolean
     onSlotClick: () => void
 }) {
@@ -19,8 +19,8 @@ export const MyFactionMechs = React.memo(function MyFactionMechs({
         <Stack flex={1}>
             <Stack direction="row" alignItems="stretch" spacing="2rem" sx={{ flex: 1, "& > *": { flex: 1 } }}>
                 {/* Empty slots */}
-                {NUMBER_MECHS_REQUIRED - factionLobbySlots.mechSlots.length > 0 &&
-                    new Array(NUMBER_MECHS_REQUIRED - factionLobbySlots.mechSlots.length).fill(0).map((_, index) => (
+                {NUMBER_MECHS_REQUIRED - myFactionLobbySlots.mechSlots.length > 0 &&
+                    new Array(NUMBER_MECHS_REQUIRED - myFactionLobbySlots.mechSlots.length).fill(0).map((_, index) => (
                         <Stack key={`empty-slot-${index}`} alignItems="center" justifyContent="center">
                             <NiceButton corners disabled={isLocked} onClick={onSlotClick} sx={{ p: "1.5rem 2rem" }}>
                                 <Stack alignItems="center" justifyContent="center" spacing="1.2rem">
@@ -32,7 +32,7 @@ export const MyFactionMechs = React.memo(function MyFactionMechs({
                     ))}
 
                 {/* Mech cards */}
-                {factionLobbySlots.mechSlots.map((mech) => {
+                {myFactionLobbySlots.mechSlots.map((mech) => {
                     return <MyFactionMechCard key={`mech-${mech.id}`} mech={mech} />
                 })}
             </Stack>

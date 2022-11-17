@@ -4,11 +4,11 @@ import { useAuth } from "../../../../containers"
 import { colors, fonts } from "../../../../theme/theme"
 import { FactionLobbySlots, NUMBER_MECHS_REQUIRED } from "../LobbyItem"
 
-export const OtherFactionMechs = React.memo(function OtherFactionMechs({ factionLobbySlots }: { factionLobbySlots: FactionLobbySlots[] }) {
+export const OtherFactionMechs = React.memo(function OtherFactionMechs({ otherFactionLobbySlots }: { otherFactionLobbySlots: FactionLobbySlots[] }) {
     return (
         <Stack direction="row" spacing="1.2rem">
-            {factionLobbySlots.map((fls) => (
-                <SingleColumn key={`fls-${fls.faction.id}`} factionLobbySlots={fls} />
+            {otherFactionLobbySlots.map((fls) => (
+                <SingleColumn key={`fls-${fls.faction.id}`} otherFactionLobbySlots={fls} />
             ))}
         </Stack>
     )
@@ -16,7 +16,7 @@ export const OtherFactionMechs = React.memo(function OtherFactionMechs({ faction
 
 const SIZE = "3.8rem"
 
-const SingleColumn = ({ factionLobbySlots }: { factionLobbySlots: FactionLobbySlots }) => {
+const SingleColumn = ({ otherFactionLobbySlots }: { otherFactionLobbySlots: FactionLobbySlots }) => {
     const { userID } = useAuth()
 
     return (
@@ -25,7 +25,7 @@ const SingleColumn = ({ factionLobbySlots }: { factionLobbySlots: FactionLobbySl
                 sx={{
                     width: "100%",
                     height: SIZE,
-                    background: `url(${factionLobbySlots.faction.logo_url})`,
+                    background: `url(${otherFactionLobbySlots.faction.logo_url})`,
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",
                     backgroundSize: "contain",
@@ -33,12 +33,12 @@ const SingleColumn = ({ factionLobbySlots }: { factionLobbySlots: FactionLobbySl
             />
 
             {/* Mech cards */}
-            {factionLobbySlots.mechSlots.map((mech) => {
+            {otherFactionLobbySlots.mechSlots.map((mech) => {
                 return (
                     <Box
                         key={`mech-${mech.id}`}
                         sx={{
-                            border: `${mech?.queued_by?.id === userID ? colors.gold : factionLobbySlots.faction.primary_color} 1px solid`,
+                            border: `${mech?.queued_by?.id === userID ? colors.gold : otherFactionLobbySlots.faction.primary_color} 1px solid`,
                             width: "100%",
                             height: SIZE,
                             background: `url(${mech.avatar_url})`,
@@ -52,20 +52,20 @@ const SingleColumn = ({ factionLobbySlots }: { factionLobbySlots: FactionLobbySl
             })}
 
             {/* Empty slots */}
-            {NUMBER_MECHS_REQUIRED - factionLobbySlots.mechSlots.length > 0 &&
-                new Array(NUMBER_MECHS_REQUIRED - factionLobbySlots.mechSlots.length).fill(0).map((_, index) => (
+            {NUMBER_MECHS_REQUIRED - otherFactionLobbySlots.mechSlots.length > 0 &&
+                new Array(NUMBER_MECHS_REQUIRED - otherFactionLobbySlots.mechSlots.length).fill(0).map((_, index) => (
                     <Stack
                         key={`empty-slot-${index}`}
                         alignItems="center"
                         justifyContent="center"
                         sx={{
-                            border: `${factionLobbySlots.faction.primary_color} 1px solid`,
+                            border: `${otherFactionLobbySlots.faction.primary_color} 1px solid`,
                             width: "100%",
                             height: SIZE,
                             opacity: 0.6,
                         }}
                     >
-                        <Typography fontFamily={fonts.nostromoBold} color={factionLobbySlots.faction.primary_color}>
+                        <Typography fontFamily={fonts.nostromoBold} color={otherFactionLobbySlots.faction.primary_color}>
                             ?
                         </Typography>
                     </Stack>

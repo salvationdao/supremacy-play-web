@@ -1,6 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { MutableRefObject, useCallback, useRef, useState } from "react"
 import { SvgSupToken } from "../../../assets"
+import { useGlobalNotifications } from "../../../containers"
 import { supFormatter } from "../../../helpers"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -80,6 +81,7 @@ const DistributionValue = ({ color, rank, value }: { color: string; rank: number
 
 const TopUpPopover = ({ open, onClose, popoverRef, lobbyID }: { open: boolean; onClose: () => void; popoverRef: MutableRefObject<null>; lobbyID: string }) => {
     const [topUpReward, setTopUpReward] = useState(0)
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [isLoading, setIsLoading] = useState(false)
 
@@ -90,14 +92,16 @@ const TopUpPopover = ({ open, onClose, popoverRef, lobbyID }: { open: boolean; o
                 battle_lobby_id: lobbyID,
                 amount: topUpReward,
             })
-        } catch (e) {
-            console.log(e)
+            newSnackbarMessage("Successfully added to reward pool.", "success")
+        } catch (err) {
+            console.log(err)
+            newSnackbarMessage(typeof err === "string" ? err : "Failed to add to reward pool, try again or contact support", "error")
         } finally {
             setTimeout(() => setIsLoading(false), 500)
             setTimeout(() => onClose(), 650)
             setTopUpReward(0)
         }
-    }, [lobbyID, onClose, send, topUpReward])
+    }, [lobbyID, newSnackbarMessage, onClose, send, topUpReward])
 
     return (
         <NicePopover
