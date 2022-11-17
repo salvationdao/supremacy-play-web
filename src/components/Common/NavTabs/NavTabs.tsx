@@ -7,7 +7,7 @@ import { ArrowButton } from "./ArrowButton"
 
 export const TAB_HEIGHT = 3.8 // rems
 
-interface OneTab<T> {
+export interface OneTab<T> {
     id: T
     label: string
 }

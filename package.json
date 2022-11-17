@@ -54,6 +54,7 @@
         "react-flip-move": "^3.0.4",
         "react-ga4": "^1.4.1",
         "react-helmet": "^6.1.0",
+        "react-hook-form": "^7.39.3",
         "react-new-window": "^0.2.1",
         "react-qr-code": "^2.0.5",
         "react-resizable": "^3.0.4",

@@ -134,8 +134,8 @@ export const NiceTextField = ({
 
                     if (!onChange) return
                     if (props.type === "number") {
-                        const num = parseInt(e.target.value)
-                        if (num <= 0) return
+                        const num = parseFloat(e.target.value)
+                        if (num < 0) return
                         onChange(num, e)
                     } else {
                         onChange(e.target.value, e)
