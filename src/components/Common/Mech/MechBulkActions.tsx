@@ -20,7 +20,7 @@ export const MechBulkActions = React.memo(function MechBulkActions({
     setSelectedMechs: React.Dispatch<React.SetStateAction<NewMechStruct[]>>
 }) {
     const theme = useTheme()
-    const [bulkPopover, setBulkPopover] = useState(false)
+    const [isBulkPopoverOpen, setIsBulkPopoverOpen] = useState(false)
     const bulkPopoverRef = useRef(null)
 
     return (
@@ -30,7 +30,7 @@ export const MechBulkActions = React.memo(function MechBulkActions({
                 buttonColor={theme.factionTheme.primary}
                 sx={{ p: ".2rem 1rem", pt: ".4rem" }}
                 disabled={selectedMechs.length <= 0}
-                onClick={() => setBulkPopover(true)}
+                onClick={() => setIsBulkPopoverOpen(true)}
             >
                 <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
                     Actions ({selectedMechs.length})
@@ -38,8 +38,8 @@ export const MechBulkActions = React.memo(function MechBulkActions({
             </NiceButton>
 
             <BulkActionPopover
-                open={bulkPopover}
-                onClose={() => setBulkPopover(false)}
+                open={isBulkPopoverOpen}
+                onClose={() => setIsBulkPopoverOpen(false)}
                 popoverRef={bulkPopoverRef}
                 selectedMechs={selectedMechs}
                 setSelectedMechs={setSelectedMechs}

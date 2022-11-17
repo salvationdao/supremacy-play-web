@@ -7,7 +7,7 @@ import { useGameServerSubscriptionSecured, useGameServerSubscriptionSecuredUser 
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { PlayerAbility, SaleAbility, SaleAbilityAvailability } from "../../../../types"
-import { TimeLeft } from "../../../Storefront/PlayerAbilitiesStore/PlayerAbilitiesStore"
+import { TimeLeft } from "../../../Common/TimeLeft"
 import { SectionCollapsible } from "../Common/SectionCollapsible"
 import { QuickPlayerAbilitiesItem } from "./QuickPlayerAbilitiesItem"
 

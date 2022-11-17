@@ -14,6 +14,7 @@ import { NiceButton } from "../Common/Nice/NiceButton"
 import { NiceButtonGroup } from "../Common/Nice/NiceButtonGroup"
 import { NiceSelect } from "../Common/Nice/NiceSelect"
 import { NiceTextField } from "../Common/Nice/NiceTextField"
+import { LobbyItem } from "./LobbyItem/LobbyItem"
 
 enum LobbyTabs {
     SystemLobbies = "SYSTEM_LOBBIES",
@@ -72,7 +73,7 @@ export const Lobbies = () => {
 
     // Filter, search, pagination
     const [search, setSearch, searchInstant] = useDebounce(query.get(UrlQueryParams.Search) || "", 300)
-    const [sort, setSort] = useState<string>(query.get(UrlQueryParams.Sort) || SortTypeLabel.MechQueueAsc)
+    const [sort, setSort] = useState<string>(query.get(UrlQueryParams.Sort) || SortTypeLabel.QueuedAmountHighest)
     const { page, changePage, totalItems, setTotalItems, totalPages, pageSize, changePageSize } = usePagination({
         pageSize: parseString(query.get(UrlQueryParams.PageSize), 10),
         page: parseString(query.get(UrlQueryParams.Page), 1),
@@ -183,7 +184,7 @@ export const Lobbies = () => {
             return (
                 <Stack spacing="1.3rem" alignItems="stretch">
                     {displayLobbies.map((lobby) => {
-                        return null
+                        return <LobbyItem key={`lobby-${lobby.id}`} lobby={lobby} />
                     })}
                 </Stack>
             )
@@ -248,7 +249,19 @@ export const Lobbies = () => {
                 <Stack spacing="2rem" alignItems="stretch" flex={1} sx={{ overflow: "hidden" }}>
                     {/* Search, sort, grid view, and other top buttons */}
                     <Stack spacing="1rem" direction="row" alignItems="center" sx={{ overflowX: "auto", overflowY: "hidden", width: "100%", pb: ".2rem" }}>
-                        {/* Buttons */}
+                        {/* Create lobby button */}
+                        <NiceButton corners buttonColor={colors.green} sx={{ p: ".2rem 1rem", pt: ".4rem" }}>
+                            <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
+                                CREATE LOBBY
+                            </Typography>
+                        </NiceButton>
+
+                        {/* Access code button */}
+                        <NiceButton corners buttonColor={theme.factionTheme.primary} sx={{ p: ".2rem 1rem", pt: ".4rem" }}>
+                            <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
+                                Access Code
+                            </Typography>
+                        </NiceButton>
 
                         <Box flex={1} />
 
