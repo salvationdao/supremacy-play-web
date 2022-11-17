@@ -186,13 +186,13 @@ export const MysteryCratesHangar = () => {
                             border: { isFancy: true, borderColor: theme.factionTheme.primary },
                             sx: { position: "relative", mt: "2rem" },
                         }}
-                        sx={{ px: "1.8rem", py: ".8rem", color: theme.factionTheme.secondary }}
+                        sx={{ px: "1.8rem", py: ".8rem", color: theme.factionTheme.text }}
                     >
                         <Typography
                             variant="body2"
                             sx={{
                                 textAlign: "center",
-                                color: theme.factionTheme.secondary,
+                                color: theme.factionTheme.text,
                                 fontFamily: fonts.nostromoBold,
                             }}
                         >
@@ -202,7 +202,7 @@ export const MysteryCratesHangar = () => {
                 </Stack>
             </Stack>
         )
-    }, [crates, isLoading, loadError, theme.factionTheme.primary, theme.factionTheme.secondary, getItems])
+    }, [crates, isLoading, loadError, theme.factionTheme.primary, theme.factionTheme.text, getItems])
 
     return (
         <>

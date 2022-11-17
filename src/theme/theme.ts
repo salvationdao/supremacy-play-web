@@ -15,14 +15,32 @@ declare module "@mui/material/styles" {
 
     export interface FactionTheme {
         primary: string
-        secondary: string
+        text: string
         background: string
+        s100: string
+        s200: string
+        s300: string
+        s400: string
+        s500: string
+        s600: string
+        s700: string
+        s800: string
+        s900: string
     }
     // allow configuration using `createTheme`
     interface FactionThemeOptions {
         primary?: string
-        secondary?: string
+        text?: string
         background?: string
+        s100?: string
+        s200?: string
+        s300?: string
+        s400?: string
+        s500?: string
+        s600?: string
+        s700?: string
+        s800?: string
+        s900?: string
     }
 }
 
@@ -106,8 +124,17 @@ export const colors = {
 
 const factionTheme: FactionTheme = {
     primary: "#00FAFA",
-    secondary: "#00FAFA",
+    text: "#fff",
     background: "#050c12",
+    s100: "#ccfefe",
+    s200: "#80fdfd",
+    s300: "#33fbfb",
+    s400: "#00fafa",
+    s500: "#00c8c8",
+    s600: "#00afaf",
+    s700: "#006464",
+    s800: "#003232",
+    s900: "#001919",
 }
 
 export const fonts = {

@@ -140,7 +140,7 @@ export const BattleLobbyPricePool = ({ battleLobby }: BattleLobbyPricePoolProps)
                                     }}
                                     onClick={loading ? undefined : onTopUp}
                                 >
-                                    <Typography variant="body2" fontFamily={fonts.nostromoBlack} sx={{ color: factionTheme.secondary }}>
+                                    <Typography variant="body2" fontFamily={fonts.nostromoBlack} sx={{ color: factionTheme.text }}>
                                         submit
                                     </Typography>
                                 </Box>

@@ -187,7 +187,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                         <Typography
                             variant="body1"
                             sx={{
-                                color: factionTheme.secondary,
+                                color: factionTheme.text,
                                 pl: "1rem",
                                 fontFamily: fonts.nostromoBlack,
                                 backgroundColor: factionTheme.primary,
@@ -354,7 +354,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                         <Typography
                             variant="body1"
                             sx={{
-                                color: factionTheme.secondary,
+                                color: factionTheme.text,
                                 pl: "1rem",
                                 fontFamily: fonts.nostromoBlack,
                                 backgroundColor: factionTheme.primary,
@@ -442,7 +442,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                         <Typography
                             variant="body1"
                             sx={{
-                                color: factionTheme.secondary,
+                                color: factionTheme.text,
                                 pl: "1rem",
                                 fontFamily: fonts.nostromoBlack,
                                 backgroundColor: factionTheme.primary,
@@ -457,7 +457,7 @@ export const BattleLobbyCreateModal = ({ setOpen }: BattleLobbyCreateModalProps)
                 <Typography
                     variant="body1"
                     sx={{
-                        color: factionTheme.secondary,
+                        color: factionTheme.text,
                         pl: "1rem",
                         fontFamily: fonts.nostromoBlack,
                         backgroundColor: factionTheme.primary,

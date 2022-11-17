@@ -104,7 +104,7 @@ const LookupSidebar = ({ playerGID }: { playerGID: string }) => {
                             p: "1rem",
                             width: "100%",
                             textAlign: "center",
-                            color: theme.factionTheme.secondary,
+                            color: theme.factionTheme.text,
                             background: theme.factionTheme.primary,
                         }}
                     >
@@ -126,7 +126,7 @@ const LookupSidebar = ({ playerGID }: { playerGID: string }) => {
                             p: "1rem",
                             width: "100%",
                             textAlign: "center",
-                            color: theme.factionTheme.secondary,
+                            color: theme.factionTheme.text,
                             background: theme.factionTheme.primary,
                         }}
                     >

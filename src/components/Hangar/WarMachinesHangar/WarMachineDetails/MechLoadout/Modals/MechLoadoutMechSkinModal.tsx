@@ -261,13 +261,13 @@ export const MechLoadoutMechSkinModal = ({
                             border: { isFancy: true, borderColor: theme.factionTheme.primary },
                             sx: { position: "relative", mt: "2rem" },
                         }}
-                        sx={{ px: "1.8rem", py: ".8rem", color: theme.factionTheme.secondary }}
+                        sx={{ px: "1.8rem", py: ".8rem", color: theme.factionTheme.text }}
                     >
                         <Typography
                             variant="body2"
                             sx={{
                                 textAlign: "center",
-                                color: theme.factionTheme.secondary,
+                                color: theme.factionTheme.text,
                                 fontFamily: fonts.nostromoBold,
                             }}
                         >
@@ -277,7 +277,7 @@ export const MechLoadoutMechSkinModal = ({
                 </Stack>
             </Stack>
         )
-    }, [loadError, submodels, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary, mech.chassis_skin?.level, selectedSubmodel?.id])
+    }, [loadError, submodels, isLoading, theme.factionTheme.primary, theme.factionTheme.text, mech.chassis_skin?.level, selectedSubmodel?.id])
 
     return (
         <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>

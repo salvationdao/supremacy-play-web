@@ -3,11 +3,11 @@ import { useMemo } from "react"
 import { SvgSkin } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets } from "../../../helpers"
+import { TruncateTextLines } from "../../../theme/styles"
 import { fonts } from "../../../theme/theme"
 import { MechSkin } from "../../../types"
 import { ClipThing } from "../../Common/Deprecated/ClipThing"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
-import { TruncateTextLines } from "../../../theme/styles"
 
 interface SubmodelItemProps {
     submodel: MechSkin
@@ -78,10 +78,7 @@ const SubmodelItemInner = ({ submodel }: SubmodelItemProps) => {
                                 <SvgSkin fill={rarityDeets.color} size="1.7rem" />
 
                                 {typeof submodel.level !== "undefined" && (
-                                    <Typography
-                                        variant="body2"
-                                        sx={{ ml: "auto !important", color: theme.factionTheme.secondary, fontFamily: fonts.nostromoBlack }}
-                                    >
+                                    <Typography variant="body2" sx={{ ml: "auto !important", color: theme.factionTheme.text, fontFamily: fonts.nostromoBlack }}>
                                         Level: {submodel.level}
                                     </Typography>
                                 )}

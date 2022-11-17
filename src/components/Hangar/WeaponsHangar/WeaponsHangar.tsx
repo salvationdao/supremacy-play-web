@@ -568,13 +568,13 @@ export const WeaponsHangar = () => {
                             border: { isFancy: true, borderColor: theme.factionTheme.primary },
                             sx: { position: "relative", mt: "2rem" },
                         }}
-                        sx={{ px: "1.8rem", py: ".8rem", color: theme.factionTheme.secondary }}
+                        sx={{ px: "1.8rem", py: ".8rem", color: theme.factionTheme.text }}
                     >
                         <Typography
                             variant="body2"
                             sx={{
                                 textAlign: "center",
-                                color: theme.factionTheme.secondary,
+                                color: theme.factionTheme.text,
                                 fontFamily: fonts.nostromoBold,
                             }}
                         >
@@ -584,7 +584,7 @@ export const WeaponsHangar = () => {
                 </Stack>
             </Stack>
         )
-    }, [loadError, weapons, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary, isGridView])
+    }, [loadError, weapons, isLoading, theme.factionTheme.primary, theme.factionTheme.text, isGridView])
 
     return (
         <Box

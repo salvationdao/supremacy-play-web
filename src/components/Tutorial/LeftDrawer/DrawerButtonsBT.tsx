@@ -58,7 +58,7 @@ export const DrawerButtonsBT = () => {
                             }}
                             isActive={route.id === leftDrawerActiveTabID}
                             primaryColor={theme.factionTheme.primary}
-                            secondaryColor={theme.factionTheme.secondary}
+                            secondaryColor={theme.factionTheme.text}
                         />
                     )
                 })}

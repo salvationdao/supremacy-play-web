@@ -38,7 +38,7 @@ export const WarMachineMarketItem = ({ item, isGridView, isExpanded, toggleIsExp
         <MarketItem item={item} isGridView={isGridView} linkSubPath={"mechs"}>
             <MechCommonArea
                 primaryColor={theme.factionTheme.primary}
-                secondaryColor={theme.factionTheme.secondary}
+                secondaryColor={theme.factionTheme.text}
                 isGridView={isGridView}
                 mechDetails={mechDetails}
                 isExpanded={isExpanded}

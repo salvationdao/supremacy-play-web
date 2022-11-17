@@ -1,8 +1,7 @@
-import { DatePicker } from "@mui/x-date-pickers"
-import { useTheme } from "../../containers/theme"
-import moment from "moment"
-import React from "react"
 import { TextField } from "@mui/material"
+import { DatePicker } from "@mui/x-date-pickers"
+import moment from "moment"
+import { useTheme } from "../../containers/theme"
 import { fonts } from "../../theme/theme"
 
 interface FactionBasedDatePickerProps {
@@ -49,7 +48,7 @@ export const FactionBasedDatePicker = ({ value, onChange, enableYear, disabled }
                                     ".MuiPickersCalendarHeader-label": {
                                         fontSize: "1.5rem",
                                         fontWeight: "bold",
-                                        color: factionTheme.secondary,
+                                        color: factionTheme.text,
                                         fontFamily: fonts.nostromoBlack,
                                     },
                                 },
@@ -79,7 +78,7 @@ export const FactionBasedDatePicker = ({ value, onChange, enableYear, disabled }
                         },
                         ".MuiDayPicker-weekContainer": {
                             "& .MuiPickersDay-root": {
-                                color: factionTheme.secondary,
+                                color: factionTheme.text,
                                 fontSize: "1.3rem",
                                 fontWeight: "bold",
                                 fontFamily: fonts.nostromoBlack,
@@ -100,7 +99,7 @@ export const FactionBasedDatePicker = ({ value, onChange, enableYear, disabled }
                                         fontWeight: "bold",
                                         ":hover, :focus, :active": {
                                             backgroundColor: `${factionTheme.primary}AA`,
-                                            color: factionTheme.secondary,
+                                            color: factionTheme.text,
                                         },
                                     },
                                 },

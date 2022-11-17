@@ -5,7 +5,6 @@ import { useCallback, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { ClipThing } from ".."
 import { HangarBg, SafePNG } from "../../assets"
-import { MysteryCrateBanner } from "../BannersPromotions/MysteryCrateBanner"
 import { useTheme } from "../../containers/theme"
 import { generatePriceText, getOrderStatusDeets, parseString } from "../../helpers"
 import { usePagination, useUrlQuery } from "../../hooks"
@@ -13,6 +12,7 @@ import { useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { FiatOrder } from "../../types/fiat"
+import { MysteryCrateBanner } from "../BannersPromotions/MysteryCrateBanner"
 import { CoolTable } from "../Common/CoolTable"
 import { PageHeader } from "../Common/Deprecated/PageHeader"
 
@@ -167,7 +167,7 @@ export const BillingHistory = () => {
                                     sx={{
                                         ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
                                         ".Mui-selected": {
-                                            color: (theme) => theme.factionTheme.secondary,
+                                            color: (theme) => theme.factionTheme.text,
                                             backgroundColor: `${theme.factionTheme.primary} !important`,
                                         },
                                     }}

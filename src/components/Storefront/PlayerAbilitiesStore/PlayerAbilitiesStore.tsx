@@ -280,7 +280,7 @@ export const PlayerAbilitiesStore = () => {
                                 <Typography
                                     variant="caption"
                                     sx={{
-                                        color: theme.factionTheme.secondary,
+                                        color: theme.factionTheme.text,
                                         whiteSpace: "nowrap",
                                         fontFamily: fonts.nostromoBlack,
                                     }}

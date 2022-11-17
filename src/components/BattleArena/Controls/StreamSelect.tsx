@@ -7,7 +7,7 @@ export const OvenStreamSelect = () => {
     const theme = useTheme()
     const { currentOvenStream, changeOvenStream, ovenStreamOptions } = useOvenStream()
     const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
+    const secondaryColor = theme.factionTheme.text
 
     return (
         <Stack direction="row" spacing=".24rem" alignItems="center">

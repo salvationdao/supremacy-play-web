@@ -40,7 +40,7 @@ export const MysteryCrateHangarItem = React.memo(function MysteryCrateHangarItem
     const [loading, setLoading] = useState(false)
 
     const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
+    const secondaryColor = theme.factionTheme.text
     const backgroundColor = theme.factionTheme.background
 
     const openCrate = useCallback(async () => {

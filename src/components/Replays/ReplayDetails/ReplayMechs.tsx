@@ -15,7 +15,7 @@ export const ReplayMechs = ({ mechs }: { mechs?: MechDetails[] }) => {
     }
 
     const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
+    const secondaryColor = theme.factionTheme.text
 
     return (
         <Stack spacing="1rem">

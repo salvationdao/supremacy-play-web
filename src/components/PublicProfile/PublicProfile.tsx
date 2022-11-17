@@ -257,7 +257,7 @@ export const PublicProfile = () => {
 
     const faction = profile?.faction
     const primaryColor = faction?.primary_color || theme.factionTheme.primary
-    const secondaryColor = faction?.secondary_color || theme.factionTheme.secondary
+    const secondaryColor = faction?.secondary_color || theme.factionTheme.text
     const backgroundColor = faction?.background_color || theme.factionTheme.background
 
     if (loading) {

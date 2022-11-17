@@ -169,7 +169,7 @@ export const BattleLobbies = ({ battleLobbies }: BattleLobbiesProps) => {
                                                 variant="h5"
                                                 sx={{
                                                     fontFamily: fonts.nostromoBlack,
-                                                    color: selectedLobbyType === lt ? theme.factionTheme.secondary : theme.factionTheme.primary,
+                                                    color: selectedLobbyType === lt ? theme.factionTheme.text : theme.factionTheme.primary,
                                                 }}
                                             >
                                                 {lt} LOBBIES

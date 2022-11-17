@@ -208,7 +208,7 @@ const FilterButton = ({
                     border: `1px solid ${theme.factionTheme.primary}`,
                 },
                 svg: {
-                    fill: isSame ? theme.factionTheme.secondary : "#FFFFFF",
+                    fill: isSame ? theme.factionTheme.text : "#FFFFFF",
                 },
             }}
             onClick={() => {

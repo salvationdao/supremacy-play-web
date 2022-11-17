@@ -58,7 +58,7 @@ export const UserBanForm = ({ open, onClose, prefillUser }: { open: boolean; onC
     const [reason, setReason] = useState("")
 
     const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
+    const secondaryColor = theme.factionTheme.text
 
     // Load the ban options
     useEffect(() => {

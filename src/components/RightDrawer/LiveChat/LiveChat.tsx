@@ -166,7 +166,7 @@ const TabbedLayout = () => {
         if (tabValue == 1 && isEnlisted) {
             faction_id = factionID
             primaryColor = theme.factionTheme.primary
-            secondaryColor = theme.factionTheme.secondary
+            secondaryColor = theme.factionTheme.text
             bannerBackgroundColor = shadeColor(primaryColor, -60)
         }
 
@@ -178,7 +178,7 @@ const TabbedLayout = () => {
             bannerBackgroundColor,
             factionTabLabel,
         }
-    }, [faction.label, factionID, tabValue, theme.factionTheme.primary, theme.factionTheme.secondary])
+    }, [faction.label, factionID, tabValue, theme.factionTheme.primary, theme.factionTheme.text])
 
     return useMemo(() => {
         return (
@@ -399,17 +399,12 @@ const SplitLayout = () => {
                             </Stack>
                         </Stack>
 
-                        <Content
-                            userID={userID}
-                            faction_id={factionID}
-                            primaryColor={theme.factionTheme.primary}
-                            secondaryColor={theme.factionTheme.secondary}
-                        />
+                        <Content userID={userID} faction_id={factionID} primaryColor={theme.factionTheme.primary} secondaryColor={theme.factionTheme.text} />
                     </Stack>
                 )}
             </Stack>
         )
-    }, [banProposal, faction.logo_url, factionID, factionTabLabel, isEnlisted, theme.factionTheme.primary, theme.factionTheme.secondary, userID])
+    }, [banProposal, faction.logo_url, factionID, factionTabLabel, isEnlisted, theme.factionTheme.primary, theme.factionTheme.text, userID])
 }
 
 const Content = React.memo(function Content({

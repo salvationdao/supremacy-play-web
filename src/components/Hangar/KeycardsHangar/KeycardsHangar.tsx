@@ -164,13 +164,13 @@ export const KeycardsHangar = () => {
                             border: { isFancy: true, borderColor: theme.factionTheme.primary },
                             sx: { position: "relative", mt: "2rem" },
                         }}
-                        sx={{ px: "1.8rem", py: ".8rem", color: theme.factionTheme.secondary }}
+                        sx={{ px: "1.8rem", py: ".8rem", color: theme.factionTheme.text }}
                     >
                         <Typography
                             variant="body2"
                             sx={{
                                 textAlign: "center",
-                                color: theme.factionTheme.secondary,
+                                color: theme.factionTheme.text,
                                 fontFamily: fonts.nostromoBold,
                             }}
                         >
@@ -180,7 +180,7 @@ export const KeycardsHangar = () => {
                 </Stack>
             </Stack>
         )
-    }, [loadError, keycards, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary])
+    }, [loadError, keycards, isLoading, theme.factionTheme.primary, theme.factionTheme.text])
 
     return (
         <Box
@@ -269,7 +269,7 @@ export const KeycardsHangar = () => {
                                 sx={{
                                     ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
                                     ".Mui-selected": {
-                                        color: (theme) => theme.factionTheme.secondary,
+                                        color: (theme) => theme.factionTheme.text,
                                         backgroundColor: `${theme.factionTheme.primary} !important`,
                                     },
                                 }}

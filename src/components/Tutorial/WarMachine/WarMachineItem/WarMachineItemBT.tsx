@@ -6,6 +6,7 @@ import { useAuth, useMobile, useSupremacy, useTraining } from "../../../../conta
 import { getRarityDeets } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { dropShadowEffect, zoomEffect } from "../../../../theme/keyframes"
+import { TruncateTextLines } from "../../../../theme/styles"
 import { colors, fonts } from "../../../../theme/theme"
 import { GameAbility, LocationSelectType, MechAbilityStages, WarMachineState } from "../../../../types"
 import { ClipThing } from "../../../Common/Deprecated/ClipThing"
@@ -13,7 +14,6 @@ import { WarMachineAbilitiesPopoverBT } from "../WarMachineAbilitiesPopover/WarM
 import { WarMachineDestroyedInfoBT } from "../WarMachineDestroyedInfoBT"
 import { HealthShieldBarsBT } from "./HealthShieldBarsBT"
 import { MoveCommandBT } from "./MoveCommandBT"
-import { TruncateTextLines } from "../../../../theme/styles"
 
 // in rems
 const WIDTH_AVATAR = 8.6
@@ -287,7 +287,7 @@ export const WarMachineItemBT = ({
                                         variant="body1"
                                         sx={{
                                             fontWeight: "bold",
-                                            color: (theme) => theme.factionTheme.secondary,
+                                            color: (theme) => theme.factionTheme.text,
                                             letterSpacing: 1,
                                             transition: "all .2s",
                                             animation: trainingStage === MechAbilityStages.ExplainMA ? `${zoomEffect(1.35)} 2s infinite` : "unset",

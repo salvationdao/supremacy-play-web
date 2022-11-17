@@ -26,7 +26,7 @@ export const AssetToSell = ({
     const question = itemTypeLabel ? `Choose a ${itemTypeLabel}` : "Choose an item type"
 
     const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
+    const secondaryColor = theme.factionTheme.text
     const backgroundColor = theme.factionTheme.background
 
     return (

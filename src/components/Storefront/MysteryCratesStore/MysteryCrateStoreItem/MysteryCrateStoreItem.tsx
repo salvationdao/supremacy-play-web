@@ -312,7 +312,7 @@ export const MysteryCrateStoreItem = React.memo(function MysteryCrateStoreItem({
                                 >
                                     <Typography
                                         variant={enlargedView ? "body1" : "caption"}
-                                        sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}
+                                        sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.text }}
                                     >
                                         Buy Now
                                     </Typography>
@@ -331,7 +331,7 @@ export const MysteryCrateStoreItem = React.memo(function MysteryCrateStoreItem({
                                     >
                                         <Typography
                                             variant={enlargedView ? "body1" : "caption"}
-                                            sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}
+                                            sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.text }}
                                         >
                                             Add to Cart
                                         </Typography>

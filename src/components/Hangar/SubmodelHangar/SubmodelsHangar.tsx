@@ -324,13 +324,13 @@ const SubmodelsHangarInner = () => {
                             border: { isFancy: true, borderColor: theme.factionTheme.primary },
                             sx: { position: "relative", mt: "2rem" },
                         }}
-                        sx={{ px: "1.8rem", py: ".8rem", color: theme.factionTheme.secondary }}
+                        sx={{ px: "1.8rem", py: ".8rem", color: theme.factionTheme.text }}
                     >
                         <Typography
                             variant="body2"
                             sx={{
                                 textAlign: "center",
-                                color: theme.factionTheme.secondary,
+                                color: theme.factionTheme.text,
                                 fontFamily: fonts.nostromoBold,
                             }}
                         >
@@ -340,7 +340,7 @@ const SubmodelsHangarInner = () => {
                 </Stack>
             </Stack>
         )
-    }, [loadError, submodels, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary, submodelType])
+    }, [loadError, submodels, isLoading, theme.factionTheme.primary, theme.factionTheme.text, submodelType])
 
     return (
         <Box
@@ -434,7 +434,7 @@ const SubmodelsHangarInner = () => {
                                         minHeight: 0,
                                         ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "5rem", width: "20rem" },
                                         ".Mui-selected": {
-                                            color: `${theme.factionTheme.secondary} !important`,
+                                            color: `${theme.factionTheme.text} !important`,
                                             background: `linear-gradient(${theme.factionTheme.primary} 26%, ${theme.factionTheme.primary}BB)`,
                                         },
                                         ".MuiTabs-indicator": { display: "none" },

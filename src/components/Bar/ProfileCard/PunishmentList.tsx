@@ -63,10 +63,10 @@ export const PunishmentList = ({ open, onClose, punishments }: Props) => {
                                             spacing="1rem"
                                             sx={{ backgroundColor: theme.factionTheme.primary, p: ".2rem .8rem" }}
                                         >
-                                            <Typography sx={{ color: theme.factionTheme.secondary }}>
+                                            <Typography sx={{ color: theme.factionTheme.text }}>
                                                 <strong>{banFrom}</strong>
                                             </Typography>
-                                            <Typography sx={{ color: theme.factionTheme.secondary }}>
+                                            <Typography sx={{ color: theme.factionTheme.text }}>
                                                 {p.is_permanent ? (
                                                     <strong>PERMANENT</strong>
                                                 ) : (

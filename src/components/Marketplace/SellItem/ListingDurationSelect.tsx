@@ -37,7 +37,7 @@ export const ListingDurationSelect = ({
     const listingDurationLabel = useMemo(() => listingDurations.find((i) => i.value === listingDurationHours)?.label, [listingDurationHours])
 
     const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
+    const secondaryColor = theme.factionTheme.text
     const backgroundColor = theme.factionTheme.background
 
     return (

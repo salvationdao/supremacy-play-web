@@ -69,7 +69,7 @@ export const CoolTable = <T,>({
     const theme = useTheme()
 
     const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
+    const secondaryColor = theme.factionTheme.text
 
     const tableBody = useMemo(() => {
         if (loadError) {

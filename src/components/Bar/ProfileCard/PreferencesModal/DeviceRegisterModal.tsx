@@ -1,12 +1,12 @@
 import { Box, IconButton, Modal, Skeleton, Stack, Typography } from "@mui/material"
+import { useEffect, useState } from "react"
+import QRCode from "react-qr-code"
 import { SvgClose } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
+import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { ClipThing } from "../../../Common/Deprecated/ClipThing"
-import QRCode from "react-qr-code"
-import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
-import { useEffect, useState } from "react"
-import { GameServerKeys } from "../../../../keys"
 import { FancyButton } from "../../../Common/Deprecated/FancyButton"
 
 const QR_CODE_SIZE = 180
@@ -116,13 +116,13 @@ export const DeviceRegisterModal = ({ onClose }: DeviceRegisterModalProps) => {
                                 border: { borderColor: theme.factionTheme.primary, borderThickness: "2px" },
                                 sx: { position: "relative", ml: "2rem", width: "9rem" },
                             }}
-                            sx={{ py: ".3rem", color: theme.factionTheme.secondary, minWidth: 0 }}
+                            sx={{ py: ".3rem", color: theme.factionTheme.text, minWidth: 0 }}
                             onClick={onClose}
                         >
                             <Typography
                                 variant="caption"
                                 sx={{
-                                    color: theme.factionTheme.secondary,
+                                    color: theme.factionTheme.text,
                                     fontFamily: fonts.nostromoBlack,
                                 }}
                             >

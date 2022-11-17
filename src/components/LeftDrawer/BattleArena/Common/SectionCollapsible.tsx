@@ -26,7 +26,7 @@ export const SectionCollapsible = ({
     )
 
     const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
+    const secondaryColor = theme.factionTheme.text
 
     useEffect(() => {
         localStorage.setItem(`${localStoragePrefix}-section-collapsible`, isExpanded.toString())
@@ -70,7 +70,7 @@ export const SectionCollapsible = ({
                                     ":hover": { opacity: 1 },
                                 }}
                             >
-                                <SvgInfoCircular fill={theme.factionTheme.secondary} size="1.5rem" />
+                                <SvgInfoCircular fill={theme.factionTheme.text} size="1.5rem" />
                             </Box>
                         </NiceTooltip>
                     )}
