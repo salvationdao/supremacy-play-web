@@ -63,7 +63,7 @@ export const Lobbies = () => {
         [tabs],
     )
 
-    // Filter, search, pagination
+    // Filter, search
     const [search, setSearch, searchInstant] = useDebounce(query.get(UrlQueryParams.Search) || "", 300)
     const [sort, setSort] = useState<string>(query.get(UrlQueryParams.Sort) || SortTypeLabel.QueuedAmountHighest)
 
@@ -247,7 +247,7 @@ export const Lobbies = () => {
 
                         <Box flex={1} />
 
-                        {/* Show Total */}
+                        {/* Show total */}
                         <Box sx={{ backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", px: "1rem" }}>
                             <Typography variant="h6" sx={{ whiteSpace: "nowrap" }}>
                                 {displayLobbies?.length || 0} ITEMS

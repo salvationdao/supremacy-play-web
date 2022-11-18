@@ -7,7 +7,7 @@ import { NewMechStruct } from "../../../types"
 import { BattleLobby } from "../../../types/battle_queue"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 import { NiceModal } from "../../Common/Nice/NiceModal"
-import { MechSelector } from "../MechSelector"
+import { MechSelector } from "../../Common/Mech/MechSelector"
 import { FactionLobbySlots, NUMBER_MECHS_REQUIRED } from "./LobbyItem"
 
 export const JoinLobbyModal = ({
@@ -42,7 +42,7 @@ export const JoinLobbyModal = ({
     }, [send, lobby.id, selectedMechs, accessCode, onClose])
 
     return (
-        <NiceModal open={open} onClose={onClose} sx={{ p: "1.8rem 2.5rem", maxHeight: "calc(100vh - 15rem)", width: "50rem" }}>
+        <NiceModal open={open} onClose={onClose} sx={{ p: "1.8rem 2.5rem", maxHeight: "calc(100vh - 15rem)", width: "60rem" }}>
             <Stack spacing="1.5rem">
                 <Typography variant="h6" fontFamily={fonts.nostromoBlack}>
                     Join Lobby

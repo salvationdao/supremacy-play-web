@@ -52,7 +52,7 @@ export const FactionPassMechPool = () => {
     const theme = useTheme()
     const { tabs, activeTabID, setActiveTabID, prevTab, nextTab } = usePageTabs()
 
-    // Filter, search, pagination
+    // Filter, search
     const [showFilters, setShowFilters] = useLocalStorage<boolean>("factionPassMechPoolFilters", false)
     const [search, setSearch, searchInstant] = useDebounce(query.get(UrlQueryParams.Search) || "", 300)
     const [sort, setSort] = useState<string>(query.get(UrlQueryParams.Sort) || SortTypeLabel.MechQueueAsc)
@@ -386,7 +386,7 @@ export const FactionPassMechPool = () => {
                         {/* Bulk actions */}
                         <MechBulkActions selectedMechs={selectedMechs} setSelectedMechs={setSelectedMechs} />
 
-                        {/* Show Total */}
+                        {/* Show total */}
                         <Box sx={{ backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", px: "1rem" }}>
                             <Typography variant="h6" sx={{ whiteSpace: "nowrap" }}>
                                 {displayMechs?.length || 0} ITEMS

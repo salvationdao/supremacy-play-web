@@ -7,7 +7,7 @@ export const AllGameMapsCombined = React.memo(function AllGameMapsCombined({ sx 
 
     return (
         <Stack direction="row" alignItems="center" sx={{ transform: "skewX(-10deg)", overflow: "hidden", ...sx }}>
-            {gameMaps.reverse().map((gm) => (
+            {gameMaps.map((gm) => (
                 <Box
                     key={gm.id}
                     sx={{
