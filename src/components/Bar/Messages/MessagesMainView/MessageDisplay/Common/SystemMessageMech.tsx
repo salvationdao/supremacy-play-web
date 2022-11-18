@@ -138,7 +138,7 @@ export const SystemMessageMech = ({ mech }: { mech: SystemMessageMechStruct }) =
                                     <Typography
                                         sx={{
                                             fontWeight: "bold",
-                                            color: killedfaction.palette.primary,
+                                            color: killedFaction.palette.primary,
                                             textDecoration: "line-through",
                                             lineHeight: 1.2,
                                             ...TruncateTextLines(2),
