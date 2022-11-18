@@ -4,7 +4,7 @@ import { SvgMapSkull, SvgMapWarMachine } from "../../../../../assets"
 import { useAuth, useSupremacy, useTraining } from "../../../../../containers"
 import { spinEffect } from "../../../../../theme/keyframes"
 import { colors, fonts } from "../../../../../theme/theme"
-import { LocationSelectType, Map, GAME_CLIENT_TILE_SIZE, WarMachineState } from "../../../../../types"
+import { GAME_CLIENT_TILE_SIZE, LocationSelectType, Map, WarMachineState } from "../../../../../types"
 import { MechAbilityStages } from "../../../../../types/training"
 const TRANSITION_DURATION = 0.275 // seconds
 
@@ -45,7 +45,7 @@ const MapMechInner = ({ warMachine, map }: MapMechInnerProps) => {
     const iconSize = useMemo(() => Math.min(gridWidth, gridHeight) * 1.8, [gridWidth, gridHeight])
     const dirArrowLength = useMemo(() => iconSize / 2 + 0.6 * iconSize, [iconSize])
     const primaryColor = useMemo(
-        () => (ownedByID === userID ? colors.gold : getFaction(warMachineFactionID).primary_color || colors.neonBlue),
+        () => (ownedByID === userID ? colors.gold : getFaction(warMachineFactionID).palette.primary || colors.neonBlue),
         [getFaction, warMachineFactionID, userID, ownedByID],
     )
     // const factionLogoUrl = useMemo(() => getFaction(warMachineFactionID).logo_url, [getFaction, warMachineFactionID])

@@ -1,14 +1,14 @@
 import { Box, CircularProgress, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
+import { useParameterizedQuery } from "react-fetching-library"
 import { ClipThing } from "../../.."
 import { FlamesPNG, GenericWarMachinePNG, SvgClose, SvgDamageCross, SvgDamageIcon, SvgSkull } from "../../../../assets"
-import { colors, fonts, siteZIndex } from "../../../../theme/theme"
-import { DamageRecord, Faction, WarMachineDestroyedRecord, WarMachineState } from "../../../../types"
-import { useTheme } from "../../../../containers/theme"
 import { useGlobalNotifications } from "../../../../containers"
-import { useParameterizedQuery } from "react-fetching-library"
+import { useTheme } from "../../../../containers/theme"
 import { GetMechDestroyedInfo } from "../../../../fetching"
 import { TruncateTextLines } from "../../../../theme/styles"
+import { colors, fonts, siteZIndex } from "../../../../theme/theme"
+import { DamageRecord, Faction, WarMachineDestroyedRecord, WarMachineState } from "../../../../types"
 
 export const WarMachineDestroyedInfo = ({
     warMachine,
@@ -225,7 +225,7 @@ const WarMachineBig = ({
     isDead?: boolean
     getFaction: (factionID: string) => Faction
 }) => {
-    const color = getFaction(warMachine?.factionID || "").primary_color || colors.text
+    const color = getFaction(warMachine?.factionID || "").palette.primary || colors.text
     return (
         <Stack alignItems="center" spacing=".8rem" sx={{ width: "15rem" }}>
             {warMachine ? (
@@ -259,7 +259,7 @@ const WarMachineSmall = ({
     damagePercent: number
     getFaction: (factionID: string) => Faction
 }) => {
-    const color = getFaction(warMachine?.factionID || "").primary_color || colors.text
+    const color = getFaction(warMachine?.factionID || "").palette.primary || colors.text
     return (
         <Stack direction="row" alignItems="center" spacing=".96rem">
             {warMachine ? (

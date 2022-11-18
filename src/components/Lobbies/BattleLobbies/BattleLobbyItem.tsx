@@ -260,7 +260,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                                     ...TruncateTextLines(1),
                                                     lineHeight: "unset",
                                                     fontStyle: "italic",
-                                                    color: generated_by_system ? colors.offWhite : getFaction(host_by.faction_id).primary_color,
+                                                    color: generated_by_system ? colors.offWhite : getFaction(host_by.faction_id).palette.primary,
                                                 }}
                                             >
                                                 {generated_by_system ? "SYSTEM" : `${host_by.username} #${host_by.gid}`}

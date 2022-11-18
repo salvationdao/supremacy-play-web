@@ -256,9 +256,9 @@ export const PublicProfile = () => {
     }, [playerGID, fetchProfile])
 
     const faction = profile?.faction
-    const primaryColor = faction?.primary_color || theme.factionTheme.primary
-    const secondaryColor = faction?.secondary_color || theme.factionTheme.text
-    const backgroundColor = faction?.background_color || theme.factionTheme.background
+    const primaryColor = faction?.palette.primary || theme.factionTheme.primary
+    const secondaryColor = faction?.palette.text || theme.factionTheme.text
+    const backgroundColor = faction?.palette.background || theme.factionTheme.background
 
     if (loading) {
         return (

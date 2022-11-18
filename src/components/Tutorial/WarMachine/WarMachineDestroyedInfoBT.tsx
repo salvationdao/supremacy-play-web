@@ -5,10 +5,10 @@ import { FlamesPNG, GenericWarMachinePNG, SvgClose, SvgDamageCross, SvgDamageIco
 import { useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { GetMechDestroyedInfo } from "../../../fetching"
+import { TruncateTextLines } from "../../../theme/styles"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { DamageRecord, Faction, WarMachineDestroyedRecord, WarMachineState } from "../../../types"
 import { ClipThing } from "../../Common/Deprecated/ClipThing"
-import { TruncateTextLines } from "../../../theme/styles"
 
 export const WarMachineDestroyedInfoBT = ({
     warMachine,
@@ -225,7 +225,7 @@ const WarMachineBig = ({
     isDead?: boolean
     getFaction: (factionID: string) => Faction
 }) => {
-    const color = getFaction(warMachine?.factionID || "").primary_color || colors.text
+    const color = getFaction(warMachine?.factionID || "").palette.primary || colors.text
     return (
         <Stack alignItems="center" spacing=".8rem" sx={{ width: "15rem" }}>
             {warMachine ? (
@@ -259,7 +259,7 @@ const WarMachineSmall = ({
     damagePercent: number
     getFaction: (factionID: string) => Faction
 }) => {
-    const color = getFaction(warMachine?.factionID || "").primary_color || colors.text
+    const color = getFaction(warMachine?.factionID || "").palette.primary || colors.text
     return (
         <Stack direction="row" alignItems="center" spacing=".96rem">
             {warMachine ? (

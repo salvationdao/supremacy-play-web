@@ -10,7 +10,7 @@ export const KillAlert = ({ data, getFaction }: { data: KillAlertProps; getFacti
 
     if (!destroyed_war_machine) return null
 
-    const mainColor = getFaction(killed_by_war_machine?.factionID || killed_by_user?.faction_id || "").primary_color
+    const mainColor = getFaction(killed_by_war_machine?.factionID || killed_by_user?.faction_id || "").palette.primary
 
     let killedBy = null
     if (killed_by_war_machine) {
@@ -44,7 +44,7 @@ export const KillAlert = ({ data, getFaction }: { data: KillAlertProps; getFacti
                 <StyledImageText
                     textSx={{ textDecoration: "line-through" }}
                     text={destroyed_war_machine.name || destroyed_war_machine.hash}
-                    color={getFaction(destroyed_war_machine.factionID).primary_color}
+                    color={getFaction(destroyed_war_machine.factionID).palette.primary}
                     imageUrl={destroyed_war_machine.imageAvatar}
                 />
             </Box>

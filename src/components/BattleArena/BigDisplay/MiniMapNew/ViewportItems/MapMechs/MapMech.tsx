@@ -59,7 +59,7 @@ export const MapMech = React.memo(function MapMech({ warMachine, label, isAI }: 
     const prevRotation = useRef(warMachine.rotation)
     const [isAlive, setIsAlive] = useState(warMachine.health > 0)
     const primaryColor = useMemo(
-        () => (ownedByID === userID ? colors.gold : getFaction(warMachineFactionID).primary_color || colors.neonBlue),
+        () => (ownedByID === userID ? colors.gold : getFaction(warMachineFactionID).palette.primary || colors.neonBlue),
         [ownedByID, userID, getFaction, warMachineFactionID],
     )
 

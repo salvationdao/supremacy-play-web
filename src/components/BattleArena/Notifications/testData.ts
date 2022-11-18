@@ -1,4 +1,5 @@
-import { AnyAbility, LocationSelectType, NotificationStruct, User, UserRank, RoleType } from "../../../types"
+import { theme } from "../../../theme/theme"
+import { AnyAbility, FactionWithPalette, LocationSelectType, NotificationStruct, RoleType, User, UserRank } from "../../../types"
 
 enum NotificationType {
     Text = "TEXT",
@@ -18,15 +19,14 @@ export enum LocationSelectAlertType {
     Assigned = "ASSIGNED",
 }
 
-const faction1 = {
+const faction1: FactionWithPalette = {
     id: "aaa",
     background_url: "aaa",
     label: "Red Mountain Offworld Mining Corporation",
     logo_url: "91dae11d-eb07-4906-bbdd-6417b880770a",
-    primary_color: "#C24242",
-    secondary_color: "#FFFFFF",
-    background_color: "#0D0404",
     description: "aaa",
+    wallpaper_url: "",
+    palette: theme.factionTheme,
 }
 
 const user1: User = {

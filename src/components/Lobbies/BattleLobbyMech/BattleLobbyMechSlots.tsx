@@ -210,7 +210,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                         variant="h6"
                                         sx={{
                                             ...TruncateTextLines(1),
-                                            color: `${getFaction(ms.faction_id).primary_color}`,
+                                            color: `${getFaction(ms.faction_id).palette.primary}`,
                                             fontStyle: "italic",
                                         }}
                                     >
