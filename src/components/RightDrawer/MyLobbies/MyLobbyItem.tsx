@@ -76,7 +76,7 @@ export const MyLobbyItem = ({ battleLobby }: MyLobbyItemProps) => {
                         <Typography
                             sx={{
                                 p: "1rem",
-                                backgroundColor: `#9BFBFF`,
+                                backgroundColor: `#7cc8cc`,
                                 textAlign: "center",
                                 fontFamily: fonts.nostromoBlack,
                             }}
