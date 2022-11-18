@@ -29,6 +29,7 @@ export const JoinLobbyModal = ({
 
     const joinBattleLobby = useCallback(async () => {
         try {
+            setError("")
             await send(GameServerKeys.JoinBattleLobby, {
                 battle_lobby_id: lobby.id,
                 mech_ids: selectedMechs.map((s) => s.id),
@@ -65,7 +66,7 @@ export const JoinLobbyModal = ({
                         Cancel
                     </NiceButton>
 
-                    <NiceButton buttonColor={colors.green} sx={{ flex: 1, height: "100%" }} onClick={joinBattleLobby}>
+                    <NiceButton buttonColor={colors.green} sx={{ flex: 1, height: "100%" }} onClick={joinBattleLobby} disabled={selectedMechs.length <= 0}>
                         Confirm
                     </NiceButton>
                 </Stack>

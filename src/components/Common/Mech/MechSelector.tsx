@@ -278,7 +278,7 @@ export const MechSelector = React.memo(function MechSelector({
                     value={searchInstant}
                     onChange={(value) => setSearch(value)}
                     placeholder="Search..."
-                    sx={{ width: "16rem" }}
+                    sx={{ width: "1rem", flex: 1 }}
                     InputProps={{
                         endAdornment: <SvgSearch size="1.5rem" sx={{ opacity: 0.5 }} />,
                     }}
