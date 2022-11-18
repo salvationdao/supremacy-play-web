@@ -25,7 +25,7 @@ export const SectionCollapsible = ({
         (localStorage.getItem(`${localStoragePrefix}-section-collapsible`) || initialExpanded?.toString()) === "true",
     )
 
-    const primaryColor = theme.factionTheme.primary
+    const primaryColor = theme.factionTheme.s500
     const secondaryColor = theme.factionTheme.text
 
     useEffect(() => {

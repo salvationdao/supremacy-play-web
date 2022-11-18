@@ -206,9 +206,9 @@ const TabbedLayout = () => {
                             zIndex: -1,
                             height: "100%",
                             background: theme.factionTheme.s600,
-                            borderTop: `1px solid ${theme.factionTheme.primary}`,
-                            borderLeft: tabValue !== 0 ? `1px solid ${theme.factionTheme.primary}` : `0px solid transparent`,
-                            borderRight: isEnlisted ? `1px solid ${theme.factionTheme.primary}` : `0px solid transparent`,
+                            borderTop: `1px solid ${theme.factionTheme.s500}`,
+                            borderLeft: tabValue !== 0 ? `1px solid ${theme.factionTheme.s500}` : `0px solid transparent`,
+                            borderRight: isEnlisted ? `1px solid ${theme.factionTheme.s500}` : `0px solid transparent`,
                         },
                     }}
                     onChange={(_event, newValue) => {
@@ -235,7 +235,7 @@ const TabbedLayout = () => {
                             </Stack>
                         }
                         sx={{
-                            borderBottom: tabValue !== 0 ? `1px solid ${theme.factionTheme.primary}` : `0px solid transparent`,
+                            borderBottom: tabValue !== 0 ? `1px solid ${theme.factionTheme.s500}` : `0px solid transparent`,
                         }}
                     />
                     {isEnlisted && (
@@ -275,7 +275,7 @@ const TabbedLayout = () => {
                                 </Stack>
                             }
                             sx={{
-                                borderBottom: tabValue !== 1 ? `1px solid ${theme.factionTheme.primary}` : `0px solid transparent`,
+                                borderBottom: tabValue !== 1 ? `1px solid ${theme.factionTheme.s500}` : `0px solid transparent`,
                             }}
                         />
                     )}
@@ -295,7 +295,7 @@ const TabbedLayout = () => {
         secondaryColor,
         tabValue,
         theme.factionTheme.background,
-        theme.factionTheme.primary,
+        theme.factionTheme.s500,
         theme.factionTheme.s600,
         userID,
     ])
