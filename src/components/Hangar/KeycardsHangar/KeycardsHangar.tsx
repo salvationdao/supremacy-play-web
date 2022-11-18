@@ -7,7 +7,7 @@ import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
 import { usePagination, useUrlQuery } from "../../../hooks"
-import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
+import { useGameServerCommandsUser, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { Keycard } from "../../../types"
@@ -31,6 +31,17 @@ export const KeycardsHangar = () => {
     const { user } = useAuth()
     const { send } = useGameServerCommandsUser("/user_commander")
     const theme = useTheme()
+
+    useGameServerSubscriptionSecuredUser(
+        {
+            URI: "/owned_keycards",
+            key: GameServerKeys.GetPlayerOwnedKeycards,
+        },
+        (payload) => {
+            console.log(payload)
+        },
+    )
+
     const [keycards, setKeycards] = useState<Keycard[]>()
     const [isLoading, setIsLoading] = useState(true)
     const [loadError, setLoadError] = useState<string>()
