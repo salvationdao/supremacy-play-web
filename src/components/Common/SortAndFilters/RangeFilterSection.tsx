@@ -56,6 +56,8 @@ interface RangeFilterSectionInnerProps extends RangeFilterProps {
     freqGraph: FreqGraph
 }
 
+const MAX_HISTOGRAM_BARS = 30
+
 const RangeFilterSectionInner = React.memo(function RangeFilterSectionInner({
     label,
     minMax,
@@ -90,7 +92,7 @@ const RangeFilterSectionInner = React.memo(function RangeFilterSectionInner({
         <Section label={label} initialExpanded={initialExpanded}>
             <Stack sx={{ px: "1.6rem", pb: "1.8rem" }} spacing=".6rem">
                 <Stack sx={{ px: ".8rem" }}>
-                    <HistogramGraph range={minMax[1] - minMax[0]} primaryColor={theme.factionTheme.primary} freqGraph={freqGraph} values={values} />
+                    <HistogramGraph range={minMax[1] - minMax[0]} primaryColor={theme.factionTheme.primary} freqGraph={freqGraph} values={value} />
 
                     <Slider
                         defaultValue={minMax}
@@ -99,6 +101,7 @@ const RangeFilterSectionInner = React.memo(function RangeFilterSectionInner({
                         valueLabelDisplay="auto"
                         min={minMax[0]}
                         max={minMax[1]}
+                        step={Math.max(1, (minMax[1] - minMax[0]) / MAX_HISTOGRAM_BARS)}
                     />
                 </Stack>
 
@@ -106,7 +109,7 @@ const RangeFilterSectionInner = React.memo(function RangeFilterSectionInner({
                 <Stack direction="row" alignItems="center" spacing="1rem">
                     <NiceTextField
                         primaryColor={theme.factionTheme.primary}
-                        value={valueInstant ? valueInstant[0] : minMax[0]}
+                        value={valueInstant ? Math.round(valueInstant[0]) : minMax[0]}
                         onChange={(value) => {
                             setValue([value, valueInstant ? valueInstant[1] : minMax[1]])
                         }}
@@ -121,7 +124,7 @@ const RangeFilterSectionInner = React.memo(function RangeFilterSectionInner({
 
                     <NiceTextField
                         primaryColor={theme.factionTheme.primary}
-                        value={valueInstant ? valueInstant[1] : minMax[1]}
+                        value={valueInstant ? Math.round(valueInstant[1]) : minMax[1]}
                         onChange={(value) => {
                             setValue([valueInstant ? valueInstant[0] : minMax[0], value])
                         }}
@@ -134,9 +137,7 @@ const RangeFilterSectionInner = React.memo(function RangeFilterSectionInner({
     )
 })
 
-const MAX_HISTOGRAM_BARS = 30
-
-const HistogramGraph = React.memo(function HistogramGraph({
+const HistogramGraph = ({
     range,
     primaryColor,
     freqGraph,
@@ -146,53 +147,60 @@ const HistogramGraph = React.memo(function HistogramGraph({
     primaryColor: string
     freqGraph: FreqGraph
     values: number[] | undefined
-}) {
-    const numColumns = clamp(0, range, MAX_HISTOGRAM_BARS)
+}) => {
+    const numColumns = useMemo(() => clamp(0, range, MAX_HISTOGRAM_BARS), [range])
 
-    const lowerThreshold = !values ? 0 : (values[0] - freqGraph.min) / freqGraph.max
-    const upperThreshold = !values ? 1 : (values[1] - freqGraph.min) / freqGraph.max
-    const step = range / numColumns
-    // const sums = new Array(numColumns).fill(0).map((_, i) => {
-    //     let sum = 0
-    //     for (let x = Math.ceil(i * step); x < Math.ceil((i + 1) * step); i++) {
-    //         sum += freqGraph.freq[x]
-    //     }
-    //     return sum
-    // })
+    const highlightThresholds = useMemo(() => {
+        const loThreshold = !values ? 0 : Math.round(((values[0] - freqGraph.min) / freqGraph.max) * numColumns)
+        const hiThreshold = !values ? numColumns : Math.round(((values[1] - freqGraph.min) / freqGraph.max) * numColumns)
+        return [loThreshold, hiThreshold]
+    }, [freqGraph.max, freqGraph.min, numColumns, values])
 
-    // console.log(sums)
+    const heights = useMemo(() => {
+        const step = range / numColumns
+
+        const d: number[] = new Array(numColumns).fill(0).map((_, index) => {
+            let val = 0
+
+            const loThreshold = index * step
+            const hiThreshold = (index + 1) * step
+
+            Object.entries(freqGraph.freq).forEach(([index, value]) => {
+                const i = parseInt(index)
+
+                // skip, if index is NAN
+                if (isNaN(i)) return
+
+                // stack value if the index is within the range
+                if (i >= loThreshold && i <= hiThreshold) val += value
+            })
+
+            return val
+        })
+
+        return d
+    }, [freqGraph.freq, numColumns, range])
+
+    const maxHeight = useMemo(() => Math.max(...heights), [heights])
 
     return (
-        <Stack direction="row" alignItems="flex-end" sx={{ mb: "-1.6rem", height: "3rem", px: "1px", zIndex: -1 }}>
+        <Stack direction="row" alignItems="flex-end" sx={{ mb: "-1.6rem", height: "5rem", px: "1px", zIndex: -1 }}>
             {new Array(numColumns).fill(0).map((_, index) => {
-                const curThreshold = index / numColumns
-                const isHighlighted = lowerThreshold <= curThreshold && curThreshold <= upperThreshold
-
-                // console.log({
-                //     isHighlighted,
-                //     lowerThreshold,
-                //     upperThreshold,
-                //     curThreshold,
-                //     indexRange: Math.ceil(index * step),
-                //     indexRange2: Math.ceil((index + 1) * step),
-                //     sum,
-                // })
-
-                return null
-
-                // return (
-                //     <div
-                //         key={index}
-                //         style={{
-                //             flex: 1,
-                //             height: `${Math.min(100, (100 * freqGraph.freq[index + 1]) / freqGraph.maxFreq || 0)}%`,
-                //             backgroundColor: primaryColor,
-                //             boxShadow: "inset 1px 1px 2px #00000080",
-                //             opacity: isHighlighted ? 1 : 0.3,
-                //         }}
-                //     />
-                // )
+                const proportion = index
+                const isHighlighted = proportion >= highlightThresholds[0] && proportion <= highlightThresholds[1]
+                return (
+                    <div
+                        key={index}
+                        style={{
+                            flex: 1,
+                            height: `${Math.min(100, (100 * heights[index]) / maxHeight || 0)}%`,
+                            backgroundColor: primaryColor,
+                            boxShadow: "inset 1px 1px 2px #00000080",
+                            opacity: isHighlighted ? 1 : 0.3,
+                        }}
+                    />
+                )
             })}
         </Stack>
     )
-})
+}
