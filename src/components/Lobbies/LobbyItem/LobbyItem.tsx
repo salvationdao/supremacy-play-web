@@ -8,6 +8,7 @@ import { TruncateTextLines } from "../../../theme/styles"
 import { colors, fonts } from "../../../theme/theme"
 import { Faction } from "../../../types"
 import { BattleLobbiesMech, BattleLobby, BattleLobbySupporter } from "../../../types/battle_queue"
+import { AllGameMapsCombined } from "../../Common/AllGameMapsCombined"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { TimeLeft } from "../../Common/TimeLeft"
 import { JoinLobbyModal } from "./JoinLobbyModal"
@@ -205,7 +206,7 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
                                         }}
                                     />
                                 ) : (
-                                    <Typography>RANDOM</Typography>
+                                    <Typography color={colors.grey}>To be determined...</Typography>
                                 )}
                             </Box>
 
@@ -257,16 +258,16 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
                         left: 0,
                         right: 0,
                         bottom: 0,
-                        background: `url(${
-                            lobby.game_map?.background_url || "https://afiles.ninja-cdn.com//supremacy-stream-site/assets/img/maps/backgrounds/iron_dust.png"
-                        })`,
+                        background: `url(${lobby.game_map?.background_url})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
                         backgroundSize: "cover",
                         opacity: 0.3,
                         zIndex: -2,
                     }}
-                />
+                >
+                    {!lobby.game_map && <AllGameMapsCombined sx={{ height: "100%", width: "100%", opacity: 0.6 }} />}
+                </Box>
 
                 {/* Background gradient */}
                 <Box

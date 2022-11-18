@@ -164,7 +164,7 @@ export const Lobbies = () => {
 
         if (displayLobbies && displayLobbies.length > 0) {
             return (
-                <Stack spacing="1.3rem" alignItems="stretch">
+                <Stack spacing="1.3rem" alignItems="stretch" minWidth="fit-content">
                     {displayLobbies.map((lobby) => {
                         return <LobbyItem key={`lobby-${lobby.id}`} lobby={lobby} />
                     })}
