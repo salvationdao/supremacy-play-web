@@ -1,117 +1,12 @@
 import { Box, Stack, Typography } from "@mui/material"
-import React, { useMemo, useState } from "react"
-import { FancyButton } from "../.."
+import { useMemo } from "react"
 import { SvgDropdownArrow, SvgSkin } from "../../../assets"
-import { useTheme } from "../../../containers/theme"
-import { getRarityDeets, getWeaponDamageTypeColor, getWeaponTypeColor, shadeColor } from "../../../helpers"
-import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../keys"
+import { getRarityDeets, getWeaponDamageTypeColor, getWeaponTypeColor, shadeColor, truncateTextLines } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { PlayerAsset, Weapon } from "../../../types"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { General } from "../../Marketplace/Common/MarketItem/General"
 import { WeaponBarStats } from "./Common/WeaponBarStats"
-import { truncateTextLines } from "../../../helpers"
-
-interface WeaponHangarItemProps {
-    weapon: PlayerAsset
-    isGridView?: boolean
-}
-
-const propsAreEqual = (prevProps: WeaponHangarItemProps, nextProps: WeaponHangarItemProps) => {
-    return prevProps.isGridView === nextProps.isGridView && prevProps.weapon.id === nextProps.weapon.id
-}
-
-export const WeaponHangarItem = React.memo(function WeaponHangarItem({ weapon, isGridView }: WeaponHangarItemProps) {
-    const theme = useTheme()
-    const [weaponDetails, setWeaponDetails] = useState<Weapon>()
-
-    useGameServerSubscriptionFaction<Weapon>(
-        {
-            URI: `/weapon/${weapon.id}/details`,
-            key: GameServerKeys.GetWeaponDetails,
-        },
-        (payload) => {
-            if (!payload) return
-            setWeaponDetails(payload)
-        },
-    )
-
-    const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
-    const backgroundColor = theme.factionTheme.background
-
-    return (
-        <Box sx={{ position: "relative", overflow: "visible", height: "100%" }}>
-            <FancyButton
-                disableRipple
-                clipThingsProps={{
-                    clipSize: "7px",
-                    clipSlantSize: "0px",
-                    corners: {
-                        topLeft: true,
-                        topRight: true,
-                        bottomLeft: true,
-                        bottomRight: true,
-                    },
-                    backgroundColor: backgroundColor,
-                    opacity: 0.9,
-                    border: { isFancy: !isGridView, borderColor: `${primaryColor}50`, borderThickness: ".25rem" },
-                    sx: { position: "relative", height: "100%", ":hover": { opacity: 1 } },
-                }}
-                sx={{ color: primaryColor, textAlign: "start", height: "100%" }}
-                to={`/weapon/${weapon.id}`}
-            >
-                <Box
-                    sx={{
-                        position: "relative",
-                        height: "100%",
-                        p: isGridView ? ".5rem .6rem" : ".1rem .3rem",
-                        display: isGridView ? "block" : "grid",
-                        gridTemplateRows: "7rem",
-                        gridTemplateColumns: `minmax(38rem, auto) 20rem 32rem`,
-                        gap: "1.4rem",
-                        ...(isGridView
-                            ? {
-                                  "&>*:not(:last-child)": {
-                                      mb: "1rem",
-                                  },
-                              }
-                            : {}),
-                    }}
-                >
-                    <WeaponCommonArea
-                        isGridView={isGridView}
-                        weapon={weapon}
-                        weaponDetails={weaponDetails}
-                        primaryColor={primaryColor}
-                        secondaryColor={secondaryColor}
-                    />
-
-                    <General title="DAMAGE TYPE" isGridView={isGridView}>
-                        <Typography variant="h6" sx={{ color: getWeaponDamageTypeColor(weaponDetails?.default_damage_type), fontWeight: "bold" }}>
-                            {weaponDetails?.default_damage_type}
-                        </Typography>
-                    </General>
-
-                    {weaponDetails && <WeaponBarStats fontSize="1.5rem" weapon={weaponDetails} color={primaryColor} iconVersion />}
-                </Box>
-
-                <Box
-                    sx={{
-                        position: "absolute",
-                        left: 0,
-                        right: 0,
-                        top: 0,
-                        bottom: 0,
-                        background: `linear-gradient(to top, #FFFFFF08, ${backgroundColor}90)`,
-                        zIndex: -1,
-                    }}
-                />
-            </FancyButton>
-        </Box>
-    )
-}, propsAreEqual)
 
 export const WeaponCommonArea = ({
     primaryColor,
