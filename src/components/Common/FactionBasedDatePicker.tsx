@@ -36,13 +36,13 @@ export const FactionBasedDatePicker = ({ value, onChange, enableYear, disabled }
                 sx: {
                     ".MuiCalendarPicker-root": {
                         borderRadius: 0.8,
-                        border: `${factionTheme.primary}99 2px solid`,
+                        border: `${factionTheme.s600} 2px solid`,
                         backgroundColor: factionTheme.background,
                         ".MuiPickersCalendarHeader-root": {
                             mt: 0,
                             maxHeight: "unset",
                             py: "2rem",
-                            borderBottom: `${factionTheme.primary}99 2px solid`,
+                            borderBottom: `${factionTheme.s600} 2px solid`,
                             ".MuiPickersCalendarHeader-labelContainer": {
                                 ".MuiPickersFadeTransitionGroup-root": {
                                     ".MuiPickersCalendarHeader-label": {
@@ -82,8 +82,8 @@ export const FactionBasedDatePicker = ({ value, onChange, enableYear, disabled }
                                 fontSize: "1.3rem",
                                 fontWeight: "bold",
                                 fontFamily: fonts.nostromoBlack,
-                                backgroundColor: `${factionTheme.primary}20`,
-                                borderColor: `${factionTheme.primary}20`,
+                                backgroundColor: `${factionTheme.s800}`,
+                                borderColor: `${factionTheme.s800}`,
                                 ":hover, :focus, :active": {
                                     backgroundColor: factionTheme.primary,
                                     borderColor: factionTheme.primary,
@@ -98,7 +98,7 @@ export const FactionBasedDatePicker = ({ value, onChange, enableYear, disabled }
                                         fontSize: "1.75rem",
                                         fontWeight: "bold",
                                         ":hover, :focus, :active": {
-                                            backgroundColor: `${factionTheme.primary}AA`,
+                                            backgroundColor: `${factionTheme.s600}`,
                                             color: factionTheme.text,
                                         },
                                     },
@@ -117,7 +117,7 @@ export const FactionBasedDatePicker = ({ value, onChange, enableYear, disabled }
                     sx={{
                         ".MuiOutlinedInput-root": {
                             pr: 0,
-                            border: `${factionTheme.primary}99 2px dashed`,
+                            border: `${factionTheme.s600} 2px dashed`,
                         },
                         ".MuiOutlinedInput-input": {
                             pl: "1.5rem",
