@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import React, { useState } from "react"
+import React from "react"
 import { useTimer } from "use-timer"
 import { IS_TESTING_MODE } from "../../../constants"
 import { useTheme } from "../../../containers/theme"
@@ -25,10 +25,6 @@ const propsAreEqual = (prevProps: MysteryCrateStoreItemProps, nextProps: Mystery
 
 export const MysteryCrateHangarItem = React.memo(function MysteryCrateHangarItem({ crate }: MysteryCrateStoreItemProps) {
     const theme = useTheme()
-    const [loading] = useState(false)
-
-    const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
 
     return (
