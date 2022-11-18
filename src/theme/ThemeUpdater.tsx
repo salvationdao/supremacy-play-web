@@ -9,7 +9,7 @@ export const ThemeUpdater = ({ children }: { children: ReactNode }) => {
         <Box
             sx={{
                 "*": {
-                    scrollbarColor: `${theme.factionTheme.primary}50 #FFFFFF !important`,
+                    scrollbarColor: `${theme.factionTheme.s500} ${theme.factionTheme.s700} !important`,
 
                     "::-webkit-scrollbar-track": {
                         background: "#FFFFFF15",
