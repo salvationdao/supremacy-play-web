@@ -61,7 +61,7 @@ export const WeaponSlot = ({ weaponSlot, tooltipPlacement, size }: WeaponSlotPro
                 }}
                 color={factionTheme.background}
                 renderNode={
-                    <Stack direction="column" sx={{ width: "30rem" }}>
+                    <Stack direction="column" sx={{ width: "30rem", p: "1rem" }}>
                         <Stack direction="row" alignItems="center">
                             <Box
                                 key={!weapon.avatar_url ? weapon.image_url : weapon.avatar_url}
