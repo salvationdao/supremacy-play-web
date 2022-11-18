@@ -45,7 +45,7 @@ export const MechSelector = React.memo(function MechSelector({
 
     // Filter, search
     const [search, setSearch, searchInstant] = useDebounce("", 300)
-    const [sort, setSort] = useState<string>(SortTypeLabel.RarestAsc)
+    const [sort, setSort] = useState<string>(SortTypeLabel.Alphabetical)
     const [onlyStakedMechs, setOnlyStakedMechs] = useState<boolean>(false)
 
     // Items

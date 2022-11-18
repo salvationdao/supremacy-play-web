@@ -10,13 +10,13 @@ import { FactionPassBuy } from "../components/FactionPass/FactionPassBuy/Faction
 import { FactionPassDashboard } from "../components/FactionPass/FactionPassDashboard/FactionPassDashboard"
 import { FactionPassMechPool } from "../components/FactionPass/FactionPassMechPool/FactionPassMechPool"
 import { FleetMechs } from "../components/FleetMechs/FleetMechs"
+import { FleetWeapons } from "../components/FleetWeapons/FleetWeapons"
 import { KeycardsHangar } from "../components/Hangar/KeycardsHangar/KeycardsHangar"
 import { MysteryCratesHangar } from "../components/Hangar/MysteryCratesHangar/MysteryCratesHangar"
 import { PlayerAbilitiesHangar } from "../components/Hangar/PlayerAbilitiesHangar/PlayerAbilitiesHangar"
 import { SubmodelsHangar } from "../components/Hangar/SubmodelHangar/SubmodelsHangar"
 import { MechPage } from "../components/Hangar/WarMachinesHangar/WarMachineDetails/MechPage"
 import { WeaponHangarDetails } from "../components/Hangar/WeaponsHangar/WeaponDetails/WeaponHangarDetails"
-import { WeaponsHangar } from "../components/Hangar/WeaponsHangar/WeaponsHangar"
 import { GlobalStats } from "../components/Leaderboard/GlobalStats/GlobalStats"
 import { Lobbies } from "../components/Lobbies/Lobbies"
 import { HistoryMarket } from "../components/Marketplace/HistoryMarket/HistoryMarket"
@@ -302,7 +302,7 @@ export const Routes: RouteSingle[] = [
         id: RouteSingleID.FleetWeapons,
         path: "/fleet/weapons",
         exact: true,
-        Component: WeaponsHangar,
+        Component: FleetWeapons,
         restrictions: {
             requireAuth: true,
             requireFaction: true,
@@ -348,7 +348,7 @@ export const Routes: RouteSingle[] = [
         },
         showInMainMenu: {
             groupID: RouteGroupID.Inventory,
-            label: "Mystery Crates",
+            label: "Crates",
             image: GenericPNG,
             path: "/fleet/mystery-crates",
         },

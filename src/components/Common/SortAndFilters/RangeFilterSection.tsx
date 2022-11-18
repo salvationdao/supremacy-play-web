@@ -1,6 +1,7 @@
 import { Slider, Stack, Typography } from "@mui/material"
 import React, { useEffect, useMemo, useRef } from "react"
 import { useTheme } from "../../../containers/theme"
+import { clamp } from "../../../helpers"
 import { useDebounce } from "../../../hooks"
 import { colors, fonts } from "../../../theme/theme"
 import { NiceTextField } from "../Nice/NiceTextField"
@@ -21,6 +22,16 @@ export interface RangeFilterProps {
     numberFreq: number[]
 }
 
+const propsAreEqual = (prevProps: RangeFilterProps, nextProps: RangeFilterProps) => {
+    return (
+        prevProps.label === nextProps.label &&
+        prevProps.initialExpanded === nextProps.initialExpanded &&
+        prevProps.values?.length === nextProps.values?.length &&
+        prevProps.setValues === nextProps.setValues &&
+        prevProps.numberFreq.length === nextProps.numberFreq.length
+    )
+}
+
 export const RangeFilterSection = React.memo(function RangeFilterSection(props: RangeFilterProps) {
     const freqGraph = useMemo(() => {
         let min = 0
@@ -38,7 +49,7 @@ export const RangeFilterSection = React.memo(function RangeFilterSection(props: 
 
     if (freqGraph.max - freqGraph.min <= 0) return null
     return <RangeFilterSectionInner {...props} freqGraph={freqGraph} minMax={[freqGraph.min, freqGraph.max]} />
-})
+}, propsAreEqual)
 
 interface RangeFilterSectionInnerProps extends RangeFilterProps {
     minMax: number[]
@@ -123,6 +134,8 @@ const RangeFilterSectionInner = React.memo(function RangeFilterSectionInner({
     )
 })
 
+const MAX_HISTOGRAM_BARS = 30
+
 const HistogramGraph = React.memo(function HistogramGraph({
     range,
     primaryColor,
@@ -134,21 +147,51 @@ const HistogramGraph = React.memo(function HistogramGraph({
     freqGraph: FreqGraph
     values: number[] | undefined
 }) {
+    const numColumns = clamp(0, range, MAX_HISTOGRAM_BARS)
+
+    const lowerThreshold = !values ? 0 : (values[0] - freqGraph.min) / freqGraph.max
+    const upperThreshold = !values ? 1 : (values[1] - freqGraph.min) / freqGraph.max
+    const step = range / numColumns
+    // const sums = new Array(numColumns).fill(0).map((_, i) => {
+    //     let sum = 0
+    //     for (let x = Math.ceil(i * step); x < Math.ceil((i + 1) * step); i++) {
+    //         sum += freqGraph.freq[x]
+    //     }
+    //     return sum
+    // })
+
+    // console.log(sums)
+
     return (
         <Stack direction="row" alignItems="flex-end" sx={{ mb: "-1.6rem", height: "3rem", px: "1px", zIndex: -1 }}>
-            {new Array(Math.max(range, 0)).fill(0).map((_, index) => {
-                return (
-                    <div
-                        key={index}
-                        style={{
-                            flex: 1,
-                            height: `${Math.min(100, (100 * freqGraph.freq[index + 1]) / freqGraph.maxFreq || 0)}%`,
-                            backgroundColor: primaryColor,
-                            boxShadow: "inset 1px 1px 2px #00000080",
-                            opacity: !values || (values[0] <= index && index <= values[1]) ? 1 : 0.3,
-                        }}
-                    />
-                )
+            {new Array(numColumns).fill(0).map((_, index) => {
+                const curThreshold = index / numColumns
+                const isHighlighted = lowerThreshold <= curThreshold && curThreshold <= upperThreshold
+
+                // console.log({
+                //     isHighlighted,
+                //     lowerThreshold,
+                //     upperThreshold,
+                //     curThreshold,
+                //     indexRange: Math.ceil(index * step),
+                //     indexRange2: Math.ceil((index + 1) * step),
+                //     sum,
+                // })
+
+                return null
+
+                // return (
+                //     <div
+                //         key={index}
+                //         style={{
+                //             flex: 1,
+                //             height: `${Math.min(100, (100 * freqGraph.freq[index + 1]) / freqGraph.maxFreq || 0)}%`,
+                //             backgroundColor: primaryColor,
+                //             boxShadow: "inset 1px 1px 2px #00000080",
+                //             opacity: isHighlighted ? 1 : 0.3,
+                //         }}
+                //     />
+                // )
             })}
         </Stack>
     )
