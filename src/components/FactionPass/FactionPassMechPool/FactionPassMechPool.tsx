@@ -387,7 +387,7 @@ export const FactionPassMechPool = () => {
                         <MechBulkActions selectedMechs={selectedMechs} setSelectedMechs={setSelectedMechs} />
 
                         {/* Show total */}
-                        <Box sx={{ backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", px: "1rem" }}>
+                        <Box sx={{ backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", p: ".2rem 1rem" }}>
                             <Typography variant="h6" sx={{ whiteSpace: "nowrap" }}>
                                 {displayMechs?.length || 0} ITEMS
                             </Typography>

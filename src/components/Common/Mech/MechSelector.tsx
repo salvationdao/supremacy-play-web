@@ -241,7 +241,7 @@ export const MechSelector = React.memo(function MechSelector({
             <Stack spacing="1rem" direction="row" alignItems="center" sx={{ overflowX: "auto", overflowY: "hidden", width: "100%", pb: ".2rem" }}>
                 {/* Show total */}
                 {!!limit && (
-                    <Box sx={{ backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", px: "1rem" }}>
+                    <Box sx={{ backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", p: ".2rem 1rem" }}>
                         <Typography variant="h6" sx={{ whiteSpace: "nowrap", color: selectedMechs.length >= limit ? colors.red : "#FFFFFF" }}>
                             {selectedMechs.length}/{limit}
                         </Typography>
