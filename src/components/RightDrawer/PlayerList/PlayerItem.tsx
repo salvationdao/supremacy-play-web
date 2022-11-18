@@ -32,7 +32,7 @@ export const PlayerItem = React.memo(function PlayerItem({ player, isActive }: P
                 sx={{
                     px: "1.3rem",
                     py: ".5rem",
-                    backgroundColor: (theme) => theme.factionTheme.s600,
+                    backgroundColor: (theme) => theme.factionTheme.s700,
                     opacity: isActive ? 1 : 0.6,
                 }}
             >
