@@ -127,7 +127,7 @@ const Header = ({ isOpen, isDrawerOpen, onClose }: HeaderProps) => {
                 width: "100%",
                 p: "1rem",
                 alignItems: "center",
-                backgroundColor: isOpen ? theme.factionTheme.s800 : theme.factionTheme.s700,
+                backgroundColor: isOpen ? theme.factionTheme.s600 : theme.factionTheme.s800,
                 transition: "background-color .2s ease-out",
             }}
         >
