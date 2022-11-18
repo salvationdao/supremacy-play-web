@@ -1,3 +1,4 @@
+import { SxProps } from "@mui/material"
 import BigNumber from "bignumber.js"
 import emojiRegex from "emoji-regex"
 import moment from "moment"
@@ -17,7 +18,7 @@ import {
     SvgWrapperProps,
 } from "../assets"
 import { colors } from "../theme/theme"
-import { AssetItemType, Dimension, GAME_CLIENT_TILE_SIZE, MechStatusEnum, MysteryCrateType, Rarity, RarityEnum, UserRank } from "../types"
+import { AssetItemType, Dimension, GAME_CLIENT_TILE_SIZE, MechStatusEnum, MysteryCrateType, NewMechStruct, Rarity, RarityEnum, UserRank } from "../types"
 import { FiatOrderStatus } from "../types/fiat"
 
 // Capitalize convert a string "example" to "Example"
@@ -790,3 +791,30 @@ export const noop = () => {
 }
 
 export const isBrowser = typeof window !== "undefined"
+
+export const truncateTextLines = (numLines = 1, isInline = false): SxProps => ({
+    display: isInline ? "-webkit-inline-box" : "-webkit-box",
+    overflow: "hidden",
+    overflowWrap: "anywhere",
+    textOverflow: "ellipsis",
+    WebkitLineClamp: numLines,
+    WebkitBoxOrient: "vertical",
+})
+
+// Return true, if a mech has equipped a power core and more than one weapon
+export const isMechDeployable = (mech: NewMechStruct): boolean => {
+    // Check power core
+    if (!mech.power_core) return false
+
+    // Check weapon count
+    let hasWeapon = false
+    mech.weapon_slots?.forEach((weaponSlot) => {
+        // Skip, if already has weapon
+        if (hasWeapon) return
+
+        // Check whether the mech has weapon equipped
+        hasWeapon = !!weaponSlot.weapon
+    })
+
+    return hasWeapon
+}

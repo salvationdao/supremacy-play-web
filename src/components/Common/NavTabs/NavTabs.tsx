@@ -1,7 +1,7 @@
 import { Stack, SxProps, Tab, Tabs, Typography } from "@mui/material"
 import { useEffect } from "react"
 import { useTheme } from "../../../containers/theme"
-import { TruncateTextLines } from "../../../theme/styles"
+import { truncateTextLines } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { ArrowButton } from "./ArrowButton"
 
@@ -111,7 +111,7 @@ export const NavTabs = <T,>({
                                     sx={{
                                         color: tab.id === activeTabID ? theme.factionTheme.secondary : "#FFFFFF",
                                         fontFamily: fonts.nostromoBlack,
-                                        ...TruncateTextLines(1),
+                                        ...truncateTextLines(1),
                                     }}
                                 >
                                     {tab.label}

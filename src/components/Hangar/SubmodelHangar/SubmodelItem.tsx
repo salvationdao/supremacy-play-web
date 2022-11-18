@@ -7,7 +7,7 @@ import { fonts } from "../../../theme/theme"
 import { MechSkin } from "../../../types"
 import { ClipThing } from "../../Common/Deprecated/ClipThing"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
-import { TruncateTextLines } from "../../../theme/styles"
+import { truncateTextLines } from "../../../helpers"
 
 interface SubmodelItemProps {
     submodel: MechSkin
@@ -70,7 +70,7 @@ const SubmodelItemInner = ({ submodel }: SubmodelItemProps) => {
                                     sx={{
                                         color: rarityDeets.color,
                                         fontFamily: fonts.nostromoBold,
-                                        ...TruncateTextLines(1),
+                                        ...truncateTextLines(1),
                                     }}
                                 >
                                     {rarityDeets.label}

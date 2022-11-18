@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { SvgDropdownArrow } from "../../../assets"
 import { shadeColor } from "../../../helpers"
-import { TruncateTextLines } from "../../../theme/styles"
+import { truncateTextLines } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../types"
 import { MechRepairBlocks } from "../../Common/Mech/MechRepairBlocks"
@@ -77,7 +77,7 @@ export const MechCommonArea = ({
                         sx={{
                             color: mech1?.name ? colors.offWhite : "#FFFFFF",
                             fontFamily: fonts.nostromoBlack,
-                            ...TruncateTextLines(1),
+                            ...truncateTextLines(1),
                         }}
                     >
                         {mech1?.name || mech1?.label || label}

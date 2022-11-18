@@ -8,7 +8,7 @@ import { colors, fonts } from "../../../../../../theme/theme"
 import { SystemMessageMechStruct } from "../../../../../../types"
 import { ClipThing } from "../../../../../Common/Deprecated/ClipThing"
 import { RepairBlocks } from "../../../../../Common/Mech/MechRepairBlocks"
-import { TruncateTextLines } from "../../../../../../theme/styles"
+import { truncateTextLines } from "../../../../../../helpers"
 
 export const SystemMessageMech = ({ mech }: { mech: SystemMessageMechStruct }) => {
     const { name, image_url, tier, total_blocks, damaged_blocks, kills, killed } = mech
@@ -89,7 +89,7 @@ export const SystemMessageMech = ({ mech }: { mech: SystemMessageMechStruct }) =
                                 variant="body2"
                                 sx={{
                                     fontSize: "1.8rem",
-                                    ...TruncateTextLines(1),
+                                    ...truncateTextLines(1),
                                 }}
                             >
                                 {name}
@@ -114,7 +114,7 @@ export const SystemMessageMech = ({ mech }: { mech: SystemMessageMechStruct }) =
                                 fontWeight: "bold",
                                 color: getFaction(killed.faction_id).primary_color,
                                 lineHeight: 1.2,
-                                ...TruncateTextLines(2),
+                                ...truncateTextLines(2),
                             }}
                         >
                             {killed.name}
@@ -141,7 +141,7 @@ export const SystemMessageMech = ({ mech }: { mech: SystemMessageMechStruct }) =
                                             color: killedFaction.primary_color,
                                             textDecoration: "line-through",
                                             lineHeight: 1.2,
-                                            ...TruncateTextLines(2),
+                                            ...truncateTextLines(2),
                                         }}
                                     >
                                         {kill.name}

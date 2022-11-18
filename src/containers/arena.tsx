@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react"
 import { createContainer } from "unstated-next"
 import { useUrlQuery } from "../hooks"
-import { useGameServerSubscription } from "../hooks/useGameServer"
+import { useGameServerSubscription, useGameServerSubscriptionSecured } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
-import { Arena, ArenaStatus } from "../types"
+import { Arena, ArenaStatus, GameMap } from "../types"
 import { blankOptionOven, useOvenStream } from "./oven"
 
 export const ArenaContainer = createContainer(() => {
@@ -11,6 +11,7 @@ export const ArenaContainer = createContainer(() => {
     const [currentArena, setCurrentArena] = useState<Arena>()
     const { changeOvenStream, setCurrentStreamOptions } = useOvenStream()
     const [, updateQuery] = useUrlQuery()
+    const [gameMaps, setGameMaps] = useState<GameMap[]>([])
 
     const currentArenaID = currentArena?.id || ""
 
@@ -26,12 +27,25 @@ export const ArenaContainer = createContainer(() => {
         updateQuery.current({ arenaName: currentArena?.name })
     }, [currentArena, updateQuery])
 
+    // Gets all available game maps in the game
+    useGameServerSubscriptionSecured<GameMap[]>(
+        {
+            URI: "/game_map_list",
+            key: GameServerKeys.SubGameMapList,
+        },
+        (payload) => {
+            if (!payload) return
+            setGameMaps(payload)
+        },
+    )
+
     return {
         arenaList,
         setArenaList,
         currentArena,
         setCurrentArena,
         currentArenaID,
+        gameMaps,
     }
 })
 
@@ -95,5 +109,6 @@ export const ArenaListener = () => {
             setCurrentArena(undefined)
         },
     )
+
     return null
 }

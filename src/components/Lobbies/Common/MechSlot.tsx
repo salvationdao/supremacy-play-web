@@ -11,7 +11,7 @@ import { WeaponSlot } from "./weaponSlot"
 import { MechRepairBlocks } from "../../Common/Mech/MechRepairBlocks"
 import { useAuth } from "../../../containers"
 import { FancyButton } from "../../Common/Deprecated/FancyButton"
-import { TruncateTextLines } from "../../../theme/styles"
+import { truncateTextLines } from "../../../helpers"
 
 interface MechSlotProps {
     lobbyMech: NewMechStruct | null
@@ -118,7 +118,7 @@ export const MechSlot = ({ lobbyMech, canLeave, leftQueue }: MechSlotProps) => {
                     <Typography
                         variant="h6"
                         sx={{
-                            ...TruncateTextLines(1),
+                            ...truncateTextLines(1),
                             textTransform: "uppercase",
                             fontWeight: "bold",
                             color: `#ffffff`,

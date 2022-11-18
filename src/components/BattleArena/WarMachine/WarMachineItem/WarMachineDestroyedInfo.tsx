@@ -8,7 +8,7 @@ import { useTheme } from "../../../../containers/theme"
 import { useGlobalNotifications } from "../../../../containers"
 import { useParameterizedQuery } from "react-fetching-library"
 import { GetMechDestroyedInfo } from "../../../../fetching"
-import { TruncateTextLines } from "../../../../theme/styles"
+import { truncateTextLines } from "../../../../helpers"
 
 export const WarMachineDestroyedInfo = ({
     warMachine,
@@ -238,7 +238,7 @@ const WarMachineBig = ({
                 sx={{
                     textAlign: "center",
                     fontFamily: fonts.nostromoBlack,
-                    ...TruncateTextLines(2),
+                    ...truncateTextLines(2),
                     color,
                 }}
             >
@@ -273,7 +273,7 @@ const WarMachineSmall = ({
                     variant="body2"
                     sx={{
                         fontFamily: fonts.nostromoBlack,
-                        ...TruncateTextLines(1),
+                        ...truncateTextLines(1),
                         color,
                     }}
                 >

@@ -5,7 +5,7 @@ import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgUtiliti
 import { getRarityDeets } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
-import { TruncateTextLines } from "../../../../theme/styles"
+import { truncateTextLines } from "../../../../helpers"
 
 export const MechLoadoutIcons = ({ mech, mechDetails }: { mech?: MechBasic; mechDetails?: MechDetails }) => {
     const rarityDeets = useMemo(() => getRarityDeets(mech?.tier || mechDetails?.chassis_skin?.tier || mechDetails?.tier || ""), [mech, mechDetails])
@@ -45,7 +45,7 @@ export const MechLoadoutIcons = ({ mech, mechDetails }: { mech?: MechBasic; mech
                         sx={{
                             color: rarityDeets.color,
                             fontFamily: fonts.nostromoBold,
-                            ...TruncateTextLines(1),
+                            ...truncateTextLines(1),
                         }}
                     >
                         {rarityDeets.label}

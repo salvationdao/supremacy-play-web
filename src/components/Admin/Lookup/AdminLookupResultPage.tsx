@@ -7,7 +7,7 @@ import { useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { TruncateTextLines } from "../../../theme/styles"
+import { truncateTextLines } from "../../../helpers"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { Faction, RoleType } from "../../../types"
 import { AdminPlayerBan, GetUserResp } from "../../../types/admin"
@@ -300,7 +300,7 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
                                 sx={{
                                     fontSize: "1.8rem",
                                     color: "#FFFFFF",
-                                    ...TruncateTextLines(1),
+                                    ...truncateTextLines(1),
                                 }}
                             >
                                 {userData.user.username}

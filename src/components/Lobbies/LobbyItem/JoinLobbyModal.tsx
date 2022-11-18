@@ -7,7 +7,7 @@ import { NewMechStruct } from "../../../types"
 import { BattleLobby } from "../../../types/battle_queue"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 import { NiceModal } from "../../Common/Nice/NiceModal"
-import { MechSelector } from "../MechSelector"
+import { MechSelector } from "../../Common/Mech/MechSelector"
 import { FactionLobbySlots, NUMBER_MECHS_REQUIRED } from "./LobbyItem"
 
 export const JoinLobbyModal = ({
@@ -29,6 +29,7 @@ export const JoinLobbyModal = ({
 
     const joinBattleLobby = useCallback(async () => {
         try {
+            setError("")
             await send(GameServerKeys.JoinBattleLobby, {
                 battle_lobby_id: lobby.id,
                 mech_ids: selectedMechs.map((s) => s.id),
@@ -42,8 +43,8 @@ export const JoinLobbyModal = ({
     }, [send, lobby.id, selectedMechs, accessCode, onClose])
 
     return (
-        <NiceModal open={open} onClose={onClose} sx={{ p: "1.8rem 2.5rem", maxHeight: "calc(100vh - 15rem)", width: "50rem" }}>
-            <Stack spacing="1.5rem">
+        <NiceModal open={open} onClose={onClose} sx={{ p: "1.8rem 2.5rem", height: "calc(100vh - 15rem)", width: "60rem" }}>
+            <Stack spacing="1.5rem" height="100%">
                 <Typography variant="h6" fontFamily={fonts.nostromoBlack}>
                     Join Lobby
                 </Typography>
@@ -52,6 +53,8 @@ export const JoinLobbyModal = ({
                     selectedMechs={selectedMechs}
                     setSelectedMechs={setSelectedMechs}
                     limit={NUMBER_MECHS_REQUIRED - myFactionLobbySlots.mechSlots.length}
+                    onlyDeployableMechs
+                    sx={{ flex: 1 }}
                 />
 
                 {/* Show errors */}
@@ -63,7 +66,7 @@ export const JoinLobbyModal = ({
                         Cancel
                     </NiceButton>
 
-                    <NiceButton buttonColor={colors.green} sx={{ flex: 1, height: "100%" }} onClick={joinBattleLobby}>
+                    <NiceButton buttonColor={colors.green} sx={{ flex: 1, height: "100%" }} onClick={joinBattleLobby} disabled={selectedMechs.length <= 0}>
                         Confirm
                     </NiceButton>
                 </Stack>

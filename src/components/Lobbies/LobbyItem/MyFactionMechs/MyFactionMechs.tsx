@@ -18,6 +18,11 @@ export const MyFactionMechs = React.memo(function MyFactionMechs({
     return (
         <Stack flex={1}>
             <Stack direction="row" alignItems="stretch" spacing="2rem" sx={{ flex: 1, "& > *": { flex: 1 } }}>
+                {/* Mech cards */}
+                {myFactionLobbySlots.mechSlots.map((mech) => {
+                    return <MyFactionMechCard key={`mech-${mech.id}`} mech={mech} />
+                })}
+
                 {/* Empty slots */}
                 {NUMBER_MECHS_REQUIRED - myFactionLobbySlots.mechSlots.length > 0 &&
                     new Array(NUMBER_MECHS_REQUIRED - myFactionLobbySlots.mechSlots.length).fill(0).map((_, index) => (
@@ -30,11 +35,6 @@ export const MyFactionMechs = React.memo(function MyFactionMechs({
                             </NiceButton>
                         </Stack>
                     ))}
-
-                {/* Mech cards */}
-                {myFactionLobbySlots.mechSlots.map((mech) => {
-                    return <MyFactionMechCard key={`mech-${mech.id}`} mech={mech} />
-                })}
             </Stack>
         </Stack>
     )

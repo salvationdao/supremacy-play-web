@@ -3,11 +3,11 @@ import React, { useMemo, useState } from "react"
 import { SvgContentCopyIcon, SvgGlobal, SvgLock, SvgSupToken, SvgUserDiamond } from "../../../assets"
 import { FactionIDs } from "../../../constants"
 import { useArena, useAuth, useSupremacy } from "../../../containers"
-import { supFormatter } from "../../../helpers"
-import { TruncateTextLines } from "../../../theme/styles"
+import { supFormatter, truncateTextLines } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { Faction } from "../../../types"
 import { BattleLobbiesMech, BattleLobby, BattleLobbySupporter } from "../../../types/battle_queue"
+import { AllGameMapsCombined } from "../../Common/AllGameMapsCombined"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { TimeLeft } from "../../Common/TimeLeft"
 import { JoinLobbyModal } from "./JoinLobbyModal"
@@ -166,7 +166,7 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
                                 sx={{
                                     color: ownerFaction.primary_color,
                                     fontWeight: "bold",
-                                    ...TruncateTextLines(1),
+                                    ...truncateTextLines(1),
                                 }}
                             >
                                 <SvgUserDiamond size="2.2rem" inline fill={ownerFaction.primary_color} />{" "}
@@ -187,22 +187,26 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
                             {/* Map logo */}
                             <Box>
                                 <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold} color={colors.lightGrey}>
-                                    MAP
+                                    MAP ({lobby.max_deploy_per_player} v {lobby.max_deploy_per_player} v {lobby.max_deploy_per_player})
                                 </Typography>
 
-                                <Box
-                                    sx={{
-                                        width: "100%",
-                                        height: "3rem",
-                                        background: `url(${
-                                            lobby.game_map?.logo_url ||
-                                            "https://afiles.ninja-cdn.com/supremacy-stream-site/assets/img/maps/logos/iron_dust_5.png"
-                                        })`,
-                                        backgroundRepeat: "no-repeat",
-                                        backgroundPosition: "left center",
-                                        backgroundSize: "contain",
-                                    }}
-                                />
+                                {lobby.game_map ? (
+                                    <Box
+                                        sx={{
+                                            width: "100%",
+                                            height: "3rem",
+                                            background: `url(${
+                                                lobby.game_map?.logo_url ||
+                                                "https://afiles.ninja-cdn.com/supremacy-stream-site/assets/img/maps/logos/iron_dust_5.png"
+                                            })`,
+                                            backgroundRepeat: "no-repeat",
+                                            backgroundPosition: "left center",
+                                            backgroundSize: "contain",
+                                        }}
+                                    />
+                                ) : (
+                                    <Typography color={colors.grey}>To be determined...</Typography>
+                                )}
                             </Box>
 
                             {/* Reward pool and distribution */}
@@ -253,16 +257,16 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
                         left: 0,
                         right: 0,
                         bottom: 0,
-                        background: `url(${
-                            lobby.game_map?.background_url || "https://afiles.ninja-cdn.com//supremacy-stream-site/assets/img/maps/backgrounds/iron_dust.png"
-                        })`,
+                        background: `url(${lobby.game_map?.background_url})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
                         backgroundSize: "cover",
                         opacity: 0.3,
                         zIndex: -2,
                     }}
-                />
+                >
+                    {!lobby.game_map && <AllGameMapsCombined sx={{ height: "100%", width: "100%", opacity: 0.6 }} />}
+                </Box>
 
                 {/* Background gradient */}
                 <Box

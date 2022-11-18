@@ -7,7 +7,7 @@ import { colors } from "../../../theme/theme"
 import { LocationSelectType, PlayerAbilityPrePurchase, PlayerAbilityStages, SaleAbility } from "../../../types"
 import { FancyButton } from "../../Common/Deprecated/FancyButton"
 import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
-import { TruncateTextLines } from "../../../theme/styles"
+import { truncateTextLines } from "../../../helpers"
 
 export interface QuickPlayerAbilitiesItemProps {
     saleAbility: SaleAbility
@@ -217,7 +217,7 @@ export const QuickPlayerAbilitiesItemBT = ({ saleAbility, amount = 0, setError, 
                                     variant="body2"
                                     sx={{
                                         lineHeight: 1.2,
-                                        ...TruncateTextLines(2),
+                                        ...truncateTextLines(2),
                                         fontWeight: "bold",
                                     }}
                                 >

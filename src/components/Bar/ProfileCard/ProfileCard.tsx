@@ -7,7 +7,7 @@ import { useToggle } from "../../../hooks"
 import { colors, fonts } from "../../../theme/theme"
 import { User } from "../../../types"
 import { ProfilePopover } from "./ProfilePopover/ProfilePopover"
-import { TruncateTextLines } from "../../../theme/styles"
+import { truncateTextLines } from "../../../helpers"
 
 export const ProfileCard = ({ userID, user }: { userID?: string; user: User }) => {
     const { punishments } = useAuth()
@@ -56,7 +56,7 @@ export const ProfileCard = ({ userID, user }: { userID?: string; user: User }) =
                         mt: ".29rem !important",
                         fontFamily: fonts.nostromoBlack,
                         color: (theme) => theme.factionTheme.primary,
-                        ...TruncateTextLines(2),
+                        ...truncateTextLines(2),
                     }}
                 >
                     {username}

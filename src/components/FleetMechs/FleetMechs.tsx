@@ -61,7 +61,7 @@ export const FleetMechs = () => {
         total_queued: 0,
     })
 
-    // Filter, search, pagination
+    // Filter, search
     const [showFilters, setShowFilters] = useLocalStorage<boolean>("fleetMechsFilters", false)
     const [showRepairBay, setShowRepairBay] = useLocalStorage<boolean>("fleetMechsRepairBay", true)
     const [search, setSearch, searchInstant] = useDebounce(query.get(UrlQueryParams.Search) || "", 300)
@@ -430,7 +430,7 @@ export const FleetMechs = () => {
                         {/* Bulk actions */}
                         <MechBulkActions selectedMechs={selectedMechs} setSelectedMechs={setSelectedMechs} />
 
-                        {/* Show Total */}
+                        {/* Show total */}
                         <Box sx={{ backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", px: "1rem" }}>
                             <Typography variant="h6" sx={{ whiteSpace: "nowrap" }}>
                                 {displayMechs?.length || 0} ITEMS
