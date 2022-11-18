@@ -272,7 +272,7 @@ const FactionMechList = ({ factionID, battleLobbiesMechs }: FactionMechListProps
     const faction = useMemo(() => getFaction(factionID), [getFaction, factionID])
 
     const MechBox = useCallback(
-        (key: string, blm?: BattleLobbiesMech) => {
+        (key: number, blm?: BattleLobbiesMech) => {
             const isQueuedBy = blm?.queued_by?.id === userID
             const isDestroyed = !!blm?.is_destroyed
 
@@ -350,8 +350,8 @@ const FactionMechList = ({ factionID, battleLobbiesMechs }: FactionMechListProps
                 }}
             />
             <Stack direction="row" alignItems="center" spacing="1rem">
-                {mechBlocks.map((mb) => MechBox(mb.mech_id, mb))}
-                {emptyBlocks.map((v, i) => MechBox(`${i}`))}
+                {mechBlocks.map((mb, index) => MechBox(index, mb))}
+                {emptyBlocks.map((v, index) => MechBox(index))}
             </Stack>
         </Stack>
     )
