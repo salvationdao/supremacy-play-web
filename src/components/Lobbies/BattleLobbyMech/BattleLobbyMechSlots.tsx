@@ -172,7 +172,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                         cursor: "pointer",
                                     }}
                                     onClick={() => {
-                                        history.push(`/mech/${ms.mech_id}`)
+                                        history.push(`/mech/${ms.id}`)
                                     }}
                                 >
                                     <SvgUnhide size="1.5rem" fill={`${colors.offWhite}DD`} />
@@ -181,13 +181,13 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                             <Stack flex={1} sx={{ position: "relative" }}>
                                 <Stack direction="row" spacing=".5rem" mb=".5rem">
                                     {ms.power_core && <PowerCoreSlot powerCore={ms.power_core} tooltipPlacement="top-end" size="3rem" />}
-                                    {ms.weapon_slots.map((ws) => (
+                                    {ms.weapon_slots?.map((ws) => (
                                         <WeaponSlot key={ws.slot_number} weaponSlot={ws} tooltipPlacement={"top-end"} size="3rem" />
                                     ))}
                                 </Stack>
                                 {!isLocked && ms.queued_by?.id === userID && (
                                     <Box sx={{ position: "absolute", right: 0, top: 0, transform: "translate(40%, -20%)" }}>
-                                        <IconButton size="small" onClick={() => setLeftMechID(ms?.mech_id || "")}>
+                                        <IconButton size="small" onClick={() => setLeftMechID(ms?.id || "")}>
                                             <SvgLogout size="1.5rem" />
                                         </IconButton>
                                     </Box>
@@ -230,8 +230,8 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                             compact
                             outerSx={{ flex: 1, width: "100%" }}
                         />
-                        {!isLocked && ms.queued_by?.id === userID && leftMechID === ms.mech_id && (
-                            <ConfirmModal title="Confirm Removal" onConfirm={() => leaveLobby(ms.mech_id)} onClose={() => setLeftMechID("")}>
+                        {!isLocked && ms.queued_by?.id === userID && leftMechID === ms.id && (
+                            <ConfirmModal title="Confirm Removal" onConfirm={() => leaveLobby(ms.id)} onClose={() => setLeftMechID("")}>
                                 <Typography
                                     variant="h6"
                                     sx={{

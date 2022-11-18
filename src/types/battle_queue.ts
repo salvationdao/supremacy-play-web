@@ -1,4 +1,4 @@
-import { MechBasic, PowerCore, RarityEnum } from "./assets"
+import { MechBasic, NewMechStruct, PowerCore, RarityEnum } from "./assets"
 import { GameMap } from "./game"
 import { User } from "./user"
 
@@ -43,19 +43,10 @@ export interface BattleLobby {
     selected_bc_supporters: BattleLobbySupporter[]
 }
 
-export interface BattleLobbiesMech extends MechBasic {
-    mech_id: string
+export interface BattleLobbiesMech extends NewMechStruct {
     battle_lobby_id: string
-    name: string
-    label: string
-    tier: string
-    avatar_url: string
-    faction_id: string
-    owner?: User
     queued_by?: User
     is_destroyed: boolean
-    weapon_slots: MechWeaponSlot[]
-    power_core?: PowerCore
 }
 
 export interface BattleLobbySupporter {

@@ -224,7 +224,7 @@ export const BattleLobbyMechList = ({ factionID, battleLobbiesMechs }: BattleLob
                 {faction.label}
             </Typography>
             <Stack direction="row" alignItems="center" spacing={0.5}>
-                {mechBlocks.map((mb) => MechBox(mb.mech_id, mb))}
+                {mechBlocks.map((mb) => MechBox(mb.id, mb))}
                 {emptyBlocks.map((v, i) => MechBox(`${i}`))}
             </Stack>
         </Stack>

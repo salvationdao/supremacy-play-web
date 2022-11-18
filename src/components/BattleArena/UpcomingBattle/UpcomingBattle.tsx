@@ -180,7 +180,7 @@ const CardGroup = ({
         >
             <Grid container spacing={0} direction="row" sx={{ width: "100%", flexWrap: "nowrap", justifyContent: "space-evenly" }}>
                 {mechs.map((m) => (
-                    <Grid key={`${m.mech_id}-${m.is_destroyed}-${m.battle_lobby_id}`} item sm={4} maxHeight={"100%"}>
+                    <Grid key={`${m.id}-${m.is_destroyed}-${m.battle_lobby_id}`} item sm={4} maxHeight={"100%"}>
                         <MechCard mech={m} faction={faction} />
                     </Grid>
                 ))}

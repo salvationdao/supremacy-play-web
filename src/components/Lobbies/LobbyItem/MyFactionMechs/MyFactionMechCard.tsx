@@ -3,6 +3,7 @@ import { useGlobalNotifications } from "../../../../containers"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { BattleLobbiesMech } from "../../../../types/battle_queue"
+import { MechCardWeaponAndStats } from "../../../Common/Mech/MechCardWeaponAndStats"
 
 export const MyFactionMechCard = ({ mech }: { mech: BattleLobbiesMech }) => {
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -23,5 +24,5 @@ export const MyFactionMechCard = ({ mech }: { mech: BattleLobbiesMech }) => {
         [newSnackbarMessage, send],
     )
 
-    return null
+    return <MechCardWeaponAndStats mech={{ ...mech, owner: mech.queued_by || mech.owner }} />
 }
