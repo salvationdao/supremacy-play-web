@@ -42,8 +42,8 @@ export const JoinLobbyModal = ({
     }, [send, lobby.id, selectedMechs, accessCode, onClose])
 
     return (
-        <NiceModal open={open} onClose={onClose} sx={{ p: "1.8rem 2.5rem", maxHeight: "calc(100vh - 15rem)", width: "60rem" }}>
-            <Stack spacing="1.5rem">
+        <NiceModal open={open} onClose={onClose} sx={{ p: "1.8rem 2.5rem", height: "calc(100vh - 15rem)", width: "60rem" }}>
+            <Stack spacing="1.5rem" height="100%">
                 <Typography variant="h6" fontFamily={fonts.nostromoBlack}>
                     Join Lobby
                 </Typography>
@@ -52,6 +52,8 @@ export const JoinLobbyModal = ({
                     selectedMechs={selectedMechs}
                     setSelectedMechs={setSelectedMechs}
                     limit={NUMBER_MECHS_REQUIRED - myFactionLobbySlots.mechSlots.length}
+                    onlyDeployableMechs
+                    sx={{ flex: 1 }}
                 />
 
                 {/* Show errors */}

@@ -32,7 +32,6 @@ const CHECKBOX_GRID_WIDTH = "5rem"
 
 export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, toggleSelected, isGridView }: MechCardProps) {
     const { getFaction } = useSupremacy()
-    const { name, label } = mech
 
     const ownerFaction = useMemo(() => getFaction(mech.owner.faction_id), [getFaction, mech.owner.faction_id])
 
@@ -94,7 +93,7 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
 
                     {/* Mech name */}
                     <Link to={`/mech/${mech.id}`}>
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack, ...truncateTextLines(1) }}>{name || label}</Typography>
+                        <Typography sx={{ fontFamily: fonts.nostromoBlack, ...truncateTextLines(1) }}>{mech.name || mech.label}</Typography>
                     </Link>
 
                     {/* Owner name */}
@@ -170,10 +169,10 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
         >
             <Stack spacing="1.2rem">
                 {/* Mech name and checkbox */}
-                <Stack direction="row" alignItems="center" justifyContent="space-between" spacing=".5rem">
+                <Stack direction="row" alignItems="center" justifyContent="space-between" spacing="1rem">
                     {/* Mech name */}
                     <Link to={`/mech/${mech.id}`}>
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack, ...truncateTextLines(1) }}>{name || label}</Typography>
+                        <Typography sx={{ fontFamily: fonts.nostromoBlack, ...truncateTextLines(1) }}>{mech.name || mech.label}</Typography>
                     </Link>
 
                     {toggleSelected && (

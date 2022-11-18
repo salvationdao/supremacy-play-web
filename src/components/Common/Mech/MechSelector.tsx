@@ -1,8 +1,8 @@
-import { Box, CircularProgress, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Stack, SxProps, Typography } from "@mui/material"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { EmptyWarMachinesPNG, SvgSearch } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { getRarityDeets } from "../../../helpers"
+import { getRarityDeets, isMechDeployable } from "../../../helpers"
 import { useDebounce } from "../../../hooks"
 import { useGameServerSubscriptionFaction, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -32,16 +32,20 @@ export const MechSelector = React.memo(function MechSelector({
     selectedMechs,
     setSelectedMechs,
     limit,
+    sx,
+    onlyDeployableMechs,
 }: {
     selectedMechs: NewMechStruct[]
     setSelectedMechs: React.Dispatch<React.SetStateAction<NewMechStruct[]>>
     limit?: number
+    sx?: SxProps
+    onlyDeployableMechs?: boolean
 }) {
     const theme = useTheme()
 
     // Filter, search
     const [search, setSearch, searchInstant] = useDebounce("", 300)
-    const [sort, setSort] = useState<string>(SortTypeLabel.MechQueueAsc)
+    const [sort, setSort] = useState<string>(SortTypeLabel.RarestAsc)
     const [onlyStakedMechs, setOnlyStakedMechs] = useState<boolean>(false)
 
     // Items
@@ -54,16 +58,16 @@ export const MechSelector = React.memo(function MechSelector({
     const toggleSelected = useCallback(
         (mech: NewMechStruct) => {
             setSelectedMechs((prev) => {
-                // Check if reach limit
-                if (!!limit && prev.length >= limit) {
-                    return prev
-                }
-
                 const newArray = [...prev]
                 const isAlreadySelected = prev.findIndex((s) => s.id === mech.id)
                 if (isAlreadySelected >= 0) {
                     newArray.splice(isAlreadySelected, 1)
                 } else {
+                    // Check if reach limit
+                    if (!!limit && prev.length >= limit) {
+                        return prev
+                    }
+
                     newArray.push(mech)
                 }
 
@@ -85,7 +89,12 @@ export const MechSelector = React.memo(function MechSelector({
 
             setOwnedMechs((prev) => {
                 if (prev.length === 0) {
-                    return payload
+                    return payload.filter((mech) => {
+                        if (onlyDeployableMechs) {
+                            return mech.is_staked && mech.can_deploy && isMechDeployable(mech)
+                        }
+                        return mech.is_staked
+                    })
                 }
 
                 // Replace current list
@@ -101,7 +110,12 @@ export const MechSelector = React.memo(function MechSelector({
                     list.push(p)
                 })
 
-                return list
+                return list.filter((mech) => {
+                    if (onlyDeployableMechs) {
+                        return mech.is_staked && mech.can_deploy && isMechDeployable(mech)
+                    }
+                    return mech.is_staked
+                })
             })
         },
     )
@@ -118,7 +132,12 @@ export const MechSelector = React.memo(function MechSelector({
 
             setStakedMechs((prev) => {
                 if (prev.length === 0) {
-                    return payload
+                    return payload.filter((mech) => {
+                        if (onlyDeployableMechs) {
+                            return mech.can_deploy && isMechDeployable(mech)
+                        }
+                        return true
+                    })
                 }
 
                 // Replace current list
@@ -134,7 +153,12 @@ export const MechSelector = React.memo(function MechSelector({
                     list.push(p)
                 })
 
-                return list
+                return list.filter((mech) => {
+                    if (onlyDeployableMechs) {
+                        return mech.can_deploy && isMechDeployable(mech)
+                    }
+                    return true
+                })
             })
         },
     )
@@ -183,7 +207,7 @@ export const MechSelector = React.memo(function MechSelector({
 
         if (displayMechs && displayMechs.length > 0) {
             return (
-                <Stack spacing="1.5rem">
+                <Stack spacing="1.25rem">
                     {displayMechs.map((mech) => {
                         const isSelected = !!selectedMechs.find((m) => m.id === mech.id)
                         return <MechCardWeaponAndStats key={`mech-${mech.id}`} mech={mech} isSelected={isSelected} toggleSelected={toggleSelected} />
@@ -227,7 +251,7 @@ export const MechSelector = React.memo(function MechSelector({
     }, [displayMechs, isLoading, selectedMechs, theme.factionTheme.primary, toggleSelected])
 
     return (
-        <Stack spacing="1rem">
+        <Stack spacing="1rem" sx={{ ...sx, overflow: "hidden" }}>
             {/* Owned mechs or faction staked mechs options */}
             <NiceButtonGroup
                 primaryColor={theme.factionTheme.primary}
@@ -235,7 +259,7 @@ export const MechSelector = React.memo(function MechSelector({
                 options={ownedOrStakedOptions}
                 selected={onlyStakedMechs}
                 onSelected={(value) => setOnlyStakedMechs(value)}
-                sx={{ "&>*": { flex: 1 } }}
+                sx={{ "&>*": { flex: "1 !important" } }}
             />
 
             <Stack spacing="1rem" direction="row" alignItems="center" sx={{ overflowX: "auto", overflowY: "hidden", width: "100%", pb: ".2rem" }}>
