@@ -1,12 +1,8 @@
-import { Faction, WarMachineState } from "."
+import { WarMachineState } from "."
 import { OvenStream } from "../containers/oven"
 import { colors } from "../theme/theme"
 import { FactionIDs } from "./../constants"
 import { User } from "./user"
-
-export interface FactionsAll {
-    [faction_id: string]: Faction
-}
 
 export enum BattleState {
     EndState = 0,
