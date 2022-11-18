@@ -124,8 +124,8 @@ export const colors = {
 
 const factionTheme: FactionTheme = {
     primary: "#00FAFA",
-    text: "#fff",
-    background: "#050c12",
+    text: "#ffffff",
+    background: "#001919",
     s100: "#ccfefe",
     s200: "#80fdfd",
     s300: "#33fbfb",
