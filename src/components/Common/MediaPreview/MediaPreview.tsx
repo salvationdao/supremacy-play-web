@@ -35,25 +35,6 @@ export const MediaPreview = ({
                 ...sx,
             }}
         >
-            {blurBackground && imageUrl && (
-                <Box
-                    sx={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        filter: "blur(25px)",
-                        opacity: 0.65,
-                        height: "100%",
-                        width: "100%",
-                        background: `url(${imageUrl})`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "center",
-                        backgroundSize: "cover",
-                        zIndex: -1,
-                    }}
-                />
-            )}
-
             {(!videoUrlsFilters || videoUrlsFilters.length <= 0) && imageUrl ? (
                 <Box
                     component="img"
@@ -86,6 +67,25 @@ export const MediaPreview = ({
                 >
                     {videoUrlsFilters.map((videoUrl, i) => videoUrl && <source key={videoUrl + i} src={videoUrl} type="video/mp4" />)}
                 </Box>
+            )}
+
+            {blurBackground && imageUrl && (
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        filter: "blur(25px)",
+                        opacity: 0.65,
+                        height: "100%",
+                        width: "100%",
+                        background: `url(${imageUrl})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                        zIndex: -1,
+                    }}
+                />
             )}
         </Box>
     )
