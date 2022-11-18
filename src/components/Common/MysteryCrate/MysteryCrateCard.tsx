@@ -2,6 +2,7 @@ import { Stack, Typography } from "@mui/material"
 import React, { useCallback, useMemo, useState } from "react"
 import { SafePNG } from "../../../assets"
 import { useAuth, useGlobalNotifications, useSupremacy } from "../../../containers"
+import { useTheme } from "../../../containers/theme"
 import { truncateTextLines } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -10,6 +11,7 @@ import { MysteryCrate, MysteryCrateType, OpenCrateResponse } from "../../../type
 import { OpeningCrate } from "../../FleetCrates/FleetCrates"
 import { MediaPreview } from "../MediaPreview/MediaPreview"
 import { NiceBoxThing } from "../Nice/NiceBoxThing"
+import { NiceButton } from "../Nice/NiceButton"
 
 interface MysteryCrateCardProps {
     crate: MysteryCrate
@@ -18,6 +20,7 @@ interface MysteryCrateCardProps {
 }
 
 export const MysteryCrateCard = React.memo(function MysteryCrateCard({ crate, setOpeningCrate, setOpenedRewards }: MysteryCrateCardProps) {
+    const theme = useTheme()
     const { factionID } = useAuth()
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -78,7 +81,12 @@ export const MysteryCrateCard = React.memo(function MysteryCrateCard({ crate, se
                 </NiceBoxThing>
 
                 {/* Crate description */}
-                <Typography sx={{ ...truncateTextLines(2) }}>{crate.description}</Typography>
+                {crate.description && <Typography sx={{ ...truncateTextLines(2) }}>{crate.description}</Typography>}
+
+                {/* Open button */}
+                <NiceButton buttonColor={theme.factionTheme.primary} corners disabled={new Date() < crate.locked_until} loading={isLoading} onClick={openCrate}>
+                    Open
+                </NiceButton>
             </Stack>
         </NiceBoxThing>
     )

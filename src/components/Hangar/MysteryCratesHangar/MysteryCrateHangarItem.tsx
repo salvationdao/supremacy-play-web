@@ -62,24 +62,6 @@ export const MysteryCrateHangarItem = React.memo(function MysteryCrateHangarItem
 
                         <Stack sx={{ flex: 1, px: ".4rem", py: ".3rem" }}>
                             <Stack alignItems="center" sx={{ mt: "auto !important", alignSelf: "stretch" }}>
-                                <FancyButton
-                                    disabled={new Date() < crate.locked_until}
-                                    loading={loading}
-                                    onClick={openCrate}
-                                    clipThingsProps={{
-                                        clipSize: "5px",
-                                        backgroundColor: primaryColor,
-                                        opacity: 1,
-                                        border: { isFancy: true, borderColor: primaryColor, borderThickness: "1.5px" },
-                                        sx: { position: "relative", mt: "1rem", width: "100%" },
-                                    }}
-                                    sx={{ px: "1.6rem", py: ".6rem", color: secondaryColor }}
-                                >
-                                    <Typography variant={"caption"} sx={{ fontFamily: fonts.nostromoBlack, color: secondaryColor }}>
-                                        OPEN
-                                    </Typography>
-                                </FancyButton>
-
                                 {!IS_TESTING_MODE && (
                                     <FancyButton
                                         to={
