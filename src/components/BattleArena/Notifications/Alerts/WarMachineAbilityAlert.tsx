@@ -12,7 +12,7 @@ export const WarMachineAbilityAlert = ({ data, getFaction }: { data: WarMachineA
 
     const faction = getFaction(factionID)
     const wmImageUrl = useMemo(() => warMachineImageUrl || GenericWarMachinePNG, [warMachineImageUrl])
-    const mainColor = faction.primary_color
+    const mainColor = faction.palette.primary
 
     return (
         <ClipThing

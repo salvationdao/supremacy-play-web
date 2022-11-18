@@ -365,7 +365,7 @@ export const BattleLobbyItem = React.memo(function BattleLobbyItem({ battleLobby
                                             alignItems="center"
                                             sx={{
                                                 p: ".5rem",
-                                                backgroundColor: `${myFactionLobbySlots.faction.primary_color}30`,
+                                                backgroundColor: `${myFactionLobbySlots.faction.palette.primary}30`,
                                             }}
                                         >
                                             <Avatar

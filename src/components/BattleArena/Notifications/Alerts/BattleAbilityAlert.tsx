@@ -10,7 +10,7 @@ export const BattleAbilityAlert = ({ data, getFaction }: { data: BattleFactionAb
     const { label, colour, image_url } = ability
 
     const faction = getFaction(user.faction_id)
-    const mainColor = faction.primary_color
+    const mainColor = faction.palette.primary
 
     return (
         <ClipThing

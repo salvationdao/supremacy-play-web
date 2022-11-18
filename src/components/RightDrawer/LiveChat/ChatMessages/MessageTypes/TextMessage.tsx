@@ -85,8 +85,8 @@ export const TextMessage = React.memo(function TextMessage({
         const isTagged = metadata && user.gid in metadata.tagged_users_read
 
         const fromUserFaction = from_user.faction_id ? getFaction(from_user.faction_id) : undefined
-        const factionColor = fromUserFaction ? fromUserFaction.primary_color : message_color
-        const factionSecondaryColor = fromUserFaction ? fromUserFaction.secondary_color : "#FFFFFF"
+        const factionColor = fromUserFaction ? fromUserfaction.palette.primary : message_color
+        const factionSecondaryColor = fromUserFaction ? fromUserfaction.palette.text : "#FFFFFF"
         const factionLogoUrl = fromUserFaction ? fromUserFaction.logo_url : ""
 
         let abilityKillColor = ""
@@ -559,8 +559,8 @@ export const UsernameJSX = React.memo(function UsernameJSX({ data, fontSize, tog
                 display: "inline",
                 cursor: toggleIsPopoverOpen ? "pointer" : "unset",
                 p: toggleIsPopoverOpen ? "unset" : ".08rem .5rem",
-                color: toggleIsPopoverOpen ? message_color : faction.secondary_color,
-                backgroundColor: toggleIsPopoverOpen ? "unset" : faction.primary_color,
+                color: toggleIsPopoverOpen ? message_color : faction.palette.text,
+                backgroundColor: toggleIsPopoverOpen ? "unset" : faction.palette.primary,
                 borderRadius: toggleIsPopoverOpen ? "unset" : 0.5,
                 fontSize,
                 verticalAlign: "middle",

@@ -196,11 +196,11 @@ const AdminBanModalInner = ({
                 <ClipThing
                     clipSize="8px"
                     border={{
-                        borderColor: faction.primary_color,
+                        borderColor: faction.palette.primary,
                         borderThickness: ".3rem",
                     }}
                     sx={{ position: "relative" }}
-                    backgroundColor={faction.background_color}
+                    backgroundColor={faction.palette.background}
                 >
                     <Stack
                         sx={{
@@ -262,7 +262,7 @@ const AdminBanModalInner = ({
 
                         <Stack spacing="1.5rem" sx={{ mt: "1.6rem" }}>
                             <Stack spacing=".3rem">
-                                <Typography sx={{ color: faction.primary_color, fontWeight: "bold" }}>Ban Duration (Hours):</Typography>
+                                <Typography sx={{ color: faction.palette.primary, fontWeight: "bold" }}>Ban Duration (Hours):</Typography>
                                 <TextField
                                     value={banDurationHours === 0 ? "" : banDurationHours.toString()}
                                     placeholder="Ban duration in hours"
@@ -291,7 +291,7 @@ const AdminBanModalInner = ({
                                             color: "#FFFFFF70",
                                         },
                                         ".Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                            borderColor: `${faction.primary_color} !important`,
+                                            borderColor: `${faction.palette.primary} !important`,
                                         },
                                         textarea: {
                                             p: 0,
@@ -303,7 +303,7 @@ const AdminBanModalInner = ({
                             </Stack>
 
                             <Stack spacing=".3rem">
-                                <Typography sx={{ color: faction.primary_color, fontWeight: "bold" }}>Ban Duration (Days):</Typography>
+                                <Typography sx={{ color: faction.palette.primary, fontWeight: "bold" }}>Ban Duration (Days):</Typography>
                                 <TextField
                                     value={banDurationDays === 0 ? "" : banDurationDays.toString()}
                                     placeholder="Ban duration in days"
@@ -332,7 +332,7 @@ const AdminBanModalInner = ({
                                             color: "#FFFFFF70",
                                         },
                                         ".Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                            borderColor: `${faction.primary_color} !important`,
+                                            borderColor: `${faction.palette.primary} !important`,
                                         },
                                         textarea: {
                                             p: 0,
@@ -344,7 +344,7 @@ const AdminBanModalInner = ({
                             </Stack>
 
                             <Stack spacing=".3rem">
-                                <Typography sx={{ color: faction.primary_color, fontWeight: "bold" }}>Ban reason:</Typography>
+                                <Typography sx={{ color: faction.palette.primary, fontWeight: "bold" }}>Ban reason:</Typography>
                                 <TextField
                                     value={banReason}
                                     placeholder="Type the reason to punish the user..."
@@ -369,7 +369,7 @@ const AdminBanModalInner = ({
                                             color: "#FFFFFF70",
                                         },
                                         ".Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                            borderColor: `${faction.primary_color} !important`,
+                                            borderColor: `${faction.palette.primary} !important`,
                                         },
                                         textarea: {
                                             p: 0,
@@ -384,19 +384,19 @@ const AdminBanModalInner = ({
                         <FancyButton
                             clipThingsProps={{
                                 clipSize: "9px",
-                                backgroundColor: faction.primary_color,
+                                backgroundColor: faction.palette.primary,
                                 opacity: 1,
-                                border: { isFancy: true, borderColor: faction.primary_color, borderThickness: "2px" },
+                                border: { isFancy: true, borderColor: faction.palette.primary, borderThickness: "2px" },
                                 sx: { position: "relative", flex: 1, minWidth: 0, mt: "1.8rem" },
                             }}
-                            sx={{ px: "1.6rem", py: ".3rem", color: faction.secondary_color }}
+                            sx={{ px: "1.6rem", py: ".3rem", color: faction.palette.text }}
                             onClick={sendBanCommand}
                             disabled={!canSubmit}
                         >
                             <Typography
                                 variant="caption"
                                 sx={{
-                                    color: faction.secondary_color,
+                                    color: faction.palette.text,
                                     fontFamily: fonts.nostromoBlack,
                                 }}
                             >

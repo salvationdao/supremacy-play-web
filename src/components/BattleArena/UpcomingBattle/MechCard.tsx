@@ -1,11 +1,11 @@
 import { Box, Typography } from "@mui/material"
 import React, { useMemo } from "react"
-import { BattleLobbiesMech } from "../../../types/battle_queue"
 import { BCBorder, BCDeploy, BCWaiting, RMBorder, RMDeploy, RMWaiting, ZHIBorder, ZHIDeploy, ZHIWaiting } from "../../../assets"
 import { FactionIDs } from "../../../constants"
 import { useAuth } from "../../../containers"
 import { zoomEffect } from "../../../theme/keyframes"
 import { Faction } from "../../../types"
+import { BattleLobbiesMech } from "../../../types/battle_queue"
 import { ClipThing } from "../../Common/Deprecated/ClipThing"
 
 export const getCardStyles = (factionID: string) => {
@@ -125,11 +125,11 @@ export const MechCard = React.memo(function MechCard({ mech, faction }: MechCard
             <ClipThing
                 clipSize="10px"
                 border={{
-                    borderColor: faction.primary_color,
+                    borderColor: faction.palette.primary,
                     borderThickness: ".2rem",
                 }}
                 corners={{ bottomLeft: true, bottomRight: true }}
-                backgroundColor={faction.background_color}
+                backgroundColor={faction.palette.background}
                 sx={{
                     display: "flex",
                     margin: "auto",

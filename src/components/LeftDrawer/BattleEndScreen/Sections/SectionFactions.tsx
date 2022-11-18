@@ -50,7 +50,7 @@ export const SectionFactions = ({ battleEndDetail }: { battleEndDetail: BattleEn
                                     {index + 1}.
                                 </Typography>
                                 <StyledImageText
-                                    color={faction.primary_color}
+                                    color={faction.palette.primary}
                                     text={label}
                                     imageUrl={faction.logo_url}
                                     variant="h6"

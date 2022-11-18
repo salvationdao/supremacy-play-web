@@ -9,7 +9,7 @@ import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { TruncateTextLines } from "../../../theme/styles"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
-import { Faction, RoleType } from "../../../types"
+import { FactionWithPalette, RoleType } from "../../../types"
 import { AdminPlayerBan, GetUserResp } from "../../../types/admin"
 import { FancyButton } from "../../Common/Deprecated/FancyButton"
 import { PageHeader } from "../../Common/Deprecated/PageHeader"
@@ -167,7 +167,7 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
     const [userData, setUserData] = useState<GetUserResp>()
     const [isLoading, setIsLoading] = useState(false)
     const [loadError, setLoadError] = useState<string>()
-    const [faction, setFaction] = useState<Faction>(getFaction(user.faction_id))
+    const [faction, setFaction] = useState<FactionWithPalette>(getFaction(user.faction_id))
     const [currentTab, setCurrentTab] = useState<string>("PLAYER-INFO")
 
     const [banModalOpen, setBanModalOpen] = useState<boolean>(false)
@@ -256,10 +256,10 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
             <ClipThing
                 clipSize="10px"
                 border={{
-                    borderColor: faction.primary_color,
+                    borderColor: faction.palette.primary,
                     borderThickness: ".3rem",
                 }}
-                backgroundColor={faction.background_color}
+                backgroundColor={faction.palette.background}
                 opacity={0.9}
                 sx={{ flex: 1, height: "100%" }}
             >
@@ -275,10 +275,10 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
             <ClipThing
                 clipSize="10px"
                 border={{
-                    borderColor: faction.primary_color,
+                    borderColor: faction.palette.primary,
                     borderThickness: ".3rem",
                 }}
-                backgroundColor={faction.background_color}
+                backgroundColor={faction.palette.background}
                 opacity={0.9}
                 sx={{ flex: 1, height: "100%" }}
                 contentSx={{
@@ -311,7 +311,7 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
                     imageUrl={faction.logo_url}
                     imageHeight={"7rem"}
                     imageWidth={"7rem"}
-                    primaryColor={faction.primary_color}
+                    primaryColor={faction.palette.primary}
                 >
                     <Stack spacing="1rem" direction="row" alignItems="center" sx={{ ml: "auto !important", pr: "2rem" }}>
                         <FancyButton
@@ -331,7 +331,7 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
                         </FancyButton>
                     </Stack>
                 </PageHeader>
-                <Box sx={{ borderBottom: `${faction.primary_color}70 1.5px solid` }}>
+                <Box sx={{ borderBottom: `${faction.palette.primary}70 1.5px solid` }}>
                     <Tabs
                         value={currentTab}
                         onChange={handleChange}
@@ -339,12 +339,12 @@ const LookupResult = ({ playerGIDString }: LookupResultProps) => {
                         scrollButtons="auto"
                         sx={{
                             flexShrink: 0,
-                            color: faction.primary_color,
+                            color: faction.palette.primary,
                             minHeight: 0,
                             ".MuiTab-root": { minHeight: 0, fontSize: "1.3rem", height: "5rem", width: "20rem" },
                             ".Mui-selected": {
-                                color: `${faction.secondary_color} !important`,
-                                background: `linear-gradient(${faction.primary_color} 26%, ${faction.primary_color}BB)`,
+                                color: `${faction.palette.text} !important`,
+                                background: `linear-gradient(${faction.palette.primary} 26%, ${faction.palette.primary}BB)`,
                             },
                             ".MuiTabs-indicator": { display: "none" },
                             ".MuiTabScrollButton-root": { display: "none" },

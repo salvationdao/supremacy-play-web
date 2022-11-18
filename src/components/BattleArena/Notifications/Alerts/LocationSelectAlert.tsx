@@ -14,7 +14,7 @@ export const LocationSelectAlert = ({ data, getFaction }: { data: LocationSelect
 
     const faction = getFaction(faction_id)
     const abilityImageUrl = useMemo(() => `${image_url}`, [image_url])
-    const mainColor = faction.primary_color
+    const mainColor = faction.palette.primary
 
     return (
         <ClipThing

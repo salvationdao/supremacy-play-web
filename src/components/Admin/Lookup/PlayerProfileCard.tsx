@@ -22,11 +22,11 @@ export const PlayerProfileCard = ({
         <ClipThing
             clipSize="10px"
             border={{
-                borderColor: faction.primary_color,
+                borderColor: faction.palette.primary,
                 borderThickness: ".3rem",
             }}
             opacity={0.9}
-            backgroundColor={faction.background_color}
+            backgroundColor={faction.palette.background}
             sx={{ width: fullWidth ? "100%" : "auto", ...sx }}
             contentSx={{
                 display: "flex",
@@ -40,8 +40,8 @@ export const PlayerProfileCard = ({
                     p: "1rem",
                     width: "100%",
                     textAlign: "center",
-                    color: faction.secondary_color,
-                    background: faction.primary_color,
+                    color: faction.palette.text,
+                    background: faction.palette.primary,
                 }}
             >
                 {title}

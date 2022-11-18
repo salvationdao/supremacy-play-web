@@ -625,7 +625,7 @@ export const VoiceChatInner = ({
                                 <span style={{ marginLeft: ".2rem", opacity: 0.8, color: "#FFF" }}>{`#${user.gid}`}</span>
                             </>
                         }
-                        color={faction.primary_color}
+                        color={faction.palette.primary}
                         imageUrl={faction.logo_url}
                         {...StyledImageText}
                     />

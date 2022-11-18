@@ -1,11 +1,11 @@
-import { useGlobalNotifications, useSupremacy } from "../../containers"
-import { Faction } from "../../types"
-import { ClipThing } from "./Deprecated/ClipThing"
-import { fonts } from "../../theme/theme"
 import { Box, Fade, Stack, Typography, useMediaQuery } from "@mui/material"
 import { useCallback, useState } from "react"
-import { GameServerKeys } from "../../keys"
+import { useGlobalNotifications, useSupremacy } from "../../containers"
 import { useGameServerCommandsUser } from "../../hooks/useGameServer"
+import { GameServerKeys } from "../../keys"
+import { fonts } from "../../theme/theme"
+import { Faction } from "../../types"
+import { ClipThing } from "./Deprecated/ClipThing"
 import { FancyButton } from "./Deprecated/FancyButton"
 
 export const SelectFaction = () => {
@@ -67,14 +67,14 @@ const ExtendedFactionEnlist = ({ faction }: { faction: Faction }) => {
                         bottomLeft: true,
                     }}
                     border={{
-                        borderColor: faction.primary_color,
+                        borderColor: faction.palette.primary,
                         borderThickness: ".3rem",
                     }}
                     sx={{
                         position: "relative",
                         height: "100%",
                     }}
-                    backgroundColor={faction.background_color}
+                    backgroundColor={faction.palette.background}
                     opacity={0.9}
                 >
                     <Stack
@@ -104,15 +104,15 @@ const ExtendedFactionEnlist = ({ faction }: { faction: Faction }) => {
                         <FancyButton
                             clipThingsProps={{
                                 clipSize: "9px",
-                                backgroundColor: faction.primary_color,
+                                backgroundColor: faction.palette.primary,
                                 opacity: 1,
-                                border: { isFancy: true, borderColor: faction.primary_color, borderThickness: "2px" },
+                                border: { isFancy: true, borderColor: faction.palette.primary, borderThickness: "2px" },
                                 sx: { position: "relative" },
                             }}
-                            sx={{ px: "8rem", py: "1rem", color: faction.secondary_color }}
+                            sx={{ px: "8rem", py: "1rem", color: faction.palette.text }}
                             onClick={enlistFaction}
                         >
-                            <Typography variant="caption" sx={{ color: faction.secondary_color, fontFamily: fonts.nostromoBlack }}>
+                            <Typography variant="caption" sx={{ color: faction.palette.text, fontFamily: fonts.nostromoBlack }}>
                                 Enlist
                             </Typography>
                         </FancyButton>
@@ -143,7 +143,7 @@ const ExtendedFactionEnlist = ({ faction }: { faction: Faction }) => {
                             right: 0,
                             opacity: 0.1,
                             zIndex: -1,
-                            background: `linear-gradient(0deg, #FFFFFF20 26%, ${faction.primary_color})`,
+                            background: `linear-gradient(0deg, #FFFFFF20 26%, ${faction.palette.primary})`,
                         }}
                     />
                 </ClipThing>

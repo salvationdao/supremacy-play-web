@@ -71,11 +71,11 @@ export const AdminUpdateMechNameModal = ({ user, mech, onClose, onSuccess, facti
                 <ClipThing
                     clipSize="8px"
                     border={{
-                        borderColor: faction.primary_color,
+                        borderColor: faction.palette.primary,
                         borderThickness: ".3rem",
                     }}
                     sx={{ position: "relative" }}
-                    backgroundColor={faction.background_color}
+                    backgroundColor={faction.palette.background}
                 >
                     <Stack
                         component="form"
@@ -100,7 +100,7 @@ export const AdminUpdateMechNameModal = ({ user, mech, onClose, onSuccess, facti
 
                         <Stack spacing="1.5rem">
                             <Stack spacing=".3rem">
-                                <Typography sx={{ color: faction.primary_color, fontWeight: "bold" }}>New Mech Name:</Typography>
+                                <Typography sx={{ color: faction.palette.primary, fontWeight: "bold" }}>New Mech Name:</Typography>
                                 <TextField
                                     value={mechName}
                                     onChange={(e) => {
@@ -122,7 +122,7 @@ export const AdminUpdateMechNameModal = ({ user, mech, onClose, onSuccess, facti
                                             color: "#FFFFFF70",
                                         },
                                         ".Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                            borderColor: `${faction.primary_color} !important`,
+                                            borderColor: `${faction.palette.primary} !important`,
                                         },
                                         input: {
                                             p: 0,
@@ -134,7 +134,7 @@ export const AdminUpdateMechNameModal = ({ user, mech, onClose, onSuccess, facti
                             </Stack>
 
                             <Stack spacing=".3rem">
-                                <Typography sx={{ color: faction.primary_color, fontWeight: "bold" }}>Reason:</Typography>
+                                <Typography sx={{ color: faction.palette.primary, fontWeight: "bold" }}>Reason:</Typography>
                                 <TextField
                                     required
                                     value={reason}
@@ -160,7 +160,7 @@ export const AdminUpdateMechNameModal = ({ user, mech, onClose, onSuccess, facti
                                             color: "#FFFFFF70",
                                         },
                                         ".Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                            borderColor: `${faction.primary_color} !important`,
+                                            borderColor: `${faction.palette.primary} !important`,
                                         },
                                         textarea: {
                                             p: 0,
@@ -175,19 +175,19 @@ export const AdminUpdateMechNameModal = ({ user, mech, onClose, onSuccess, facti
                         <FancyButton
                             clipThingsProps={{
                                 clipSize: "9px",
-                                backgroundColor: faction.primary_color,
+                                backgroundColor: faction.palette.primary,
                                 opacity: 1,
-                                border: { isFancy: true, borderColor: faction.primary_color, borderThickness: "2px" },
+                                border: { isFancy: true, borderColor: faction.palette.primary, borderThickness: "2px" },
                                 sx: { position: "relative", flex: 1, minWidth: 0, mt: "1.8rem" },
                             }}
-                            sx={{ px: "1.6rem", py: ".3rem", color: faction.secondary_color }}
+                            sx={{ px: "1.6rem", py: ".3rem", color: faction.palette.text }}
                             loading={isLoading}
                             type="submit"
                         >
                             <Typography
                                 variant="caption"
                                 sx={{
-                                    color: faction.secondary_color,
+                                    color: faction.palette.text,
                                     fontFamily: fonts.nostromoBlack,
                                 }}
                             >

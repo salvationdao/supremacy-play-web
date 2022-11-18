@@ -48,9 +48,9 @@ export const FactionPassBuy = () => {
             }}
         >
             <NiceBoxThing
-                border={{ color: faction.primary_color }}
-                background={{ colors: [colors.darkNavyBlue, faction.background_color, faction.background_color] }}
-                sx={{ position: "relative", filter: `drop-shadow(0 3px 4px ${faction.primary_color}80)`, zIndex: 2, maxWidth: "89rem" }}
+                border={{ color: faction.palette.primary }}
+                background={{ colors: [colors.darkNavyBlue, faction.palette.background, faction.palette.background] }}
+                sx={{ position: "relative", filter: `drop-shadow(0 3px 4px ${faction.palette.primary}80)`, zIndex: 2, maxWidth: "89rem" }}
             >
                 {/* Centered faction logo */}
                 <Box
@@ -65,19 +65,19 @@ export const FactionPassBuy = () => {
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
                         backgroundSize: "cover",
-                        backgroundColor: faction.background_color,
+                        backgroundColor: faction.palette.background,
                         zIndex: 6,
-                        border: `${faction.primary_color} 2px solid`,
+                        border: `${faction.palette.primary} 2px solid`,
                         borderRadius: "50%",
                     }}
                 />
 
                 <Stack spacing="4rem" sx={{ position: "relative", p: "4.2rem 5.5rem" }}>
                     <Stack direction="row" alignItems="center" justifyContent="space-between" spacing="2rem">
-                        <Typography variant="h4" sx={{ color: faction.primary_color, fontFamily: fonts.nostromoHeavy }}>
+                        <Typography variant="h4" sx={{ color: faction.palette.primary, fontFamily: fonts.nostromoHeavy }}>
                             {faction.label} FACTION PASS
                         </Typography>
-                        <SvgFactionPassArrow size="5.5rem" fill={faction.primary_color} />
+                        <SvgFactionPassArrow size="5.5rem" fill={faction.palette.primary} />
                     </Stack>
 
                     <Stack spacing="5rem" direction="row" alignItems="center">
@@ -160,7 +160,7 @@ export const FactionPassBuy = () => {
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    backgroundColor: `${faction.primary_color}10`,
+                    backgroundColor: `${faction.palette.primary}10`,
                     zIndex: 1,
                 }}
             />

@@ -3,9 +3,9 @@ import { BattleEndTooltip } from "../../.."
 import { GenericWarMachinePNG, SvgSupToken } from "../../../../assets"
 import { useAuth, useSupremacy } from "../../../../containers"
 import { supFormatter } from "../../../../helpers"
+import { TruncateTextLines } from "../../../../theme/styles"
 import { colors, fonts } from "../../../../theme/theme"
 import { BattleEndDetail } from "../../../../types"
-import { TruncateTextLines } from "../../../../theme/styles"
 
 export const SectionMechRewards = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
     const { userID } = useAuth()
@@ -44,9 +44,9 @@ export const SectionMechRewards = ({ battleEndDetail }: { battleEndDetail: Battl
                                         backgroundRepeat: "no-repeat",
                                         backgroundPosition: "center",
                                         backgroundSize: "cover",
-                                        backgroundColor: `${faction.primary_color}60`,
+                                        backgroundColor: `${faction.palette.primary}60`,
                                         borderRadius: 0.5,
-                                        border: `${faction.primary_color} solid .2rem`,
+                                        border: `${faction.palette.primary} solid .2rem`,
                                     }}
                                 />
 
@@ -55,7 +55,7 @@ export const SectionMechRewards = ({ battleEndDetail }: { battleEndDetail: Battl
                                         variant="h6"
                                         sx={{
                                             lineHeight: 1,
-                                            color: faction.primary_color,
+                                            color: faction.palette.primary,
                                             fontWeight: "bold",
                                             ...TruncateTextLines(1),
 

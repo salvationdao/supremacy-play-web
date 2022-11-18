@@ -4,11 +4,11 @@ import { SvgCrown, SvgDeath, SvgSkull, SvgSkull2 } from "../../../../../../asset
 import { useSupremacy } from "../../../../../../containers"
 import { useTheme } from "../../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../../helpers"
+import { TruncateTextLines } from "../../../../../../theme/styles"
 import { colors, fonts } from "../../../../../../theme/theme"
 import { SystemMessageMechStruct } from "../../../../../../types"
 import { ClipThing } from "../../../../../Common/Deprecated/ClipThing"
 import { RepairBlocks } from "../../../../../Common/Mech/MechRepairBlocks"
-import { TruncateTextLines } from "../../../../../../theme/styles"
 
 export const SystemMessageMech = ({ mech }: { mech: SystemMessageMechStruct }) => {
     const { name, image_url, tier, total_blocks, damaged_blocks, kills, killed } = mech
@@ -138,7 +138,7 @@ export const SystemMessageMech = ({ mech }: { mech: SystemMessageMechStruct }) =
                                     <Typography
                                         sx={{
                                             fontWeight: "bold",
-                                            color: killedFaction.primary_color,
+                                            color: killedfaction.palette.primary,
                                             textDecoration: "line-through",
                                             lineHeight: 1.2,
                                             ...TruncateTextLines(2),

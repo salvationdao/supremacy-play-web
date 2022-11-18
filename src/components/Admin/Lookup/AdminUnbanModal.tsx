@@ -105,11 +105,11 @@ const AdminUnbanModalInner = ({
                 <ClipThing
                     clipSize="8px"
                     border={{
-                        borderColor: faction.primary_color,
+                        borderColor: faction.palette.primary,
                         borderThickness: ".3rem",
                     }}
                     sx={{ position: "relative" }}
-                    backgroundColor={faction.background_color}
+                    backgroundColor={faction.palette.background}
                 >
                     <Stack
                         sx={{
@@ -129,7 +129,7 @@ const AdminUnbanModalInner = ({
                             Unban user {user.username} #{user.gid.toString()}
                         </Typography>
                         <Stack spacing=".3rem">
-                            <Typography sx={{ color: faction.primary_color, fontWeight: "bold" }}>Unban reason:</Typography>
+                            <Typography sx={{ color: faction.palette.primary, fontWeight: "bold" }}>Unban reason:</Typography>
                             <TextField
                                 value={unbanReason}
                                 placeholder="Type the reason to unban this user..."
@@ -154,7 +154,7 @@ const AdminUnbanModalInner = ({
                                         color: "#FFFFFF70",
                                     },
                                     ".Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                        borderColor: `${faction.primary_color} !important`,
+                                        borderColor: `${faction.palette.primary} !important`,
                                     },
                                     textarea: {
                                         p: 0,
@@ -170,19 +170,19 @@ const AdminUnbanModalInner = ({
                         <FancyButton
                             clipThingsProps={{
                                 clipSize: "9px",
-                                backgroundColor: faction.primary_color,
+                                backgroundColor: faction.palette.primary,
                                 opacity: 1,
-                                border: { isFancy: true, borderColor: faction.primary_color, borderThickness: "2px" },
+                                border: { isFancy: true, borderColor: faction.palette.primary, borderThickness: "2px" },
                                 sx: { position: "relative", minWidth: 0, mt: "1.8rem" },
                             }}
-                            sx={{ px: "0.5rem", py: ".3rem", color: faction.secondary_color }}
+                            sx={{ px: "0.5rem", py: ".3rem", color: faction.palette.text }}
                             onClick={() => sendUnbanCommand()}
                             disabled={unbanReason === ""}
                         >
                             <Typography
                                 variant="caption"
                                 sx={{
-                                    color: faction.secondary_color,
+                                    color: faction.palette.text,
                                     fontFamily: fonts.nostromoBlack,
                                 }}
                             >

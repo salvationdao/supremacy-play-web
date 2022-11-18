@@ -285,7 +285,7 @@ const FactionMechList = ({ factionID, battleLobbiesMechs }: FactionMechListProps
                         position: "relative",
                         height: MECH_BLOCK_SIZE,
                         width: MECH_BLOCK_SIZE,
-                        border: `${isQueuedBy ? colors.gold : faction.primary_color} 1px solid`,
+                        border: `${isQueuedBy ? colors.gold : faction.palette.primary} 1px solid`,
                     }}
                 >
                     {blm ? (
@@ -297,7 +297,7 @@ const FactionMechList = ({ factionID, battleLobbiesMechs }: FactionMechListProps
                                     bottom: 0,
                                     width: "100%",
                                     transform: "translate(-50%, 0)",
-                                    backgroundColor: `${faction.background_color}dd`,
+                                    backgroundColor: `${faction.palette.background}dd`,
                                 }}
                             />
                             <Box
@@ -318,7 +318,7 @@ const FactionMechList = ({ factionID, battleLobbiesMechs }: FactionMechListProps
                                         left: 0,
                                         width: "100%",
                                         height: "100%",
-                                        backgroundColor: `${faction.background_color}AA`,
+                                        backgroundColor: `${faction.palette.background}AA`,
                                     }}
                                 />
                             )}
@@ -334,7 +334,7 @@ const FactionMechList = ({ factionID, battleLobbiesMechs }: FactionMechListProps
                 </Stack>
             )
         },
-        [faction.background_color, faction.primary_color, userID],
+        [faction.palette.background, faction.palette.primary, userID],
     )
 
     return (

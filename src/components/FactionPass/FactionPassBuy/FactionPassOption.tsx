@@ -102,13 +102,13 @@ export const FactionPassOption = React.memo(function FactionPassOption({ days, f
                 }}
             />
 
-            <NiceBoxThing border={{ color: `${faction.primary_color}50` }} sx={{ boxShadow: 3 }}>
-                <Box sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.primary_color}40 1px solid`, backgroundColor: `${faction.primary_color}80` }}>
-                    <Typography sx={{ color: faction.secondary_color, fontFamily: fonts.nostromoBlack, textAlign: "center" }}>{priceLabel} PRICE</Typography>
+            <NiceBoxThing border={{ color: `${faction.palette.primary}50` }} sx={{ boxShadow: 3 }}>
+                <Box sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.palette.primary}40 1px solid`, backgroundColor: `${faction.palette.primary}80` }}>
+                    <Typography sx={{ color: faction.palette.text, fontFamily: fonts.nostromoBlack, textAlign: "center" }}>{priceLabel} PRICE</Typography>
                 </Box>
 
                 {/* SUPS */}
-                <Stack direction="row" justifyContent="space-between" sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.primary_color}40 1px solid` }}>
+                <Stack direction="row" justifyContent="space-between" sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.palette.primary}40 1px solid` }}>
                     <Typography fontWeight="bold">
                         SUPS <i style={{ color: colors.red }}>-30% OFF</i>
                     </Typography>
@@ -119,7 +119,7 @@ export const FactionPassOption = React.memo(function FactionPassOption({ days, f
                 </Stack>
 
                 {/* ETH */}
-                <Stack direction="row" justifyContent="space-between" sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.primary_color}40 1px solid` }}>
+                <Stack direction="row" justifyContent="space-between" sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.palette.primary}40 1px solid` }}>
                     <Typography fontWeight="bold">ETH</Typography>
                     <Typography>
                         <SvgEthereum size="1.8rem" inline />
@@ -128,7 +128,7 @@ export const FactionPassOption = React.memo(function FactionPassOption({ days, f
                 </Stack>
 
                 {/* Fiat */}
-                <Stack direction="row" justifyContent="space-between" sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.primary_color}40 1px solid` }}>
+                <Stack direction="row" justifyContent="space-between" sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.palette.primary}40 1px solid` }}>
                     <Typography fontWeight="bold">USD</Typography>
                     <Typography>
                         <SvgCreditCard fill={colors.blue} size="1.6rem" inline /> ${prices ? prices.fiat.toFixed(2) : "---"}
