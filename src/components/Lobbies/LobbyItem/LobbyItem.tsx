@@ -3,8 +3,7 @@ import React, { useMemo, useState } from "react"
 import { SvgContentCopyIcon, SvgGlobal, SvgLock, SvgSupToken, SvgUserDiamond } from "../../../assets"
 import { FactionIDs } from "../../../constants"
 import { useArena, useAuth, useSupremacy } from "../../../containers"
-import { supFormatter } from "../../../helpers"
-import { truncateTextLines } from "../../../helpers"
+import { supFormatter, truncateTextLines } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { Faction } from "../../../types"
 import { BattleLobbiesMech, BattleLobby, BattleLobbySupporter } from "../../../types/battle_queue"
@@ -188,7 +187,7 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
                             {/* Map logo */}
                             <Box>
                                 <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold} color={colors.lightGrey}>
-                                    MAP
+                                    MAP ({lobby.max_deploy_per_player} v {lobby.max_deploy_per_player} v {lobby.max_deploy_per_player})
                                 </Typography>
 
                                 {lobby.game_map ? (
