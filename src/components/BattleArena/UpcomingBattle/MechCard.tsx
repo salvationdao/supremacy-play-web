@@ -4,7 +4,7 @@ import { BCBorder, BCDeploy, BCWaiting, RMBorder, RMDeploy, RMWaiting, ZHIBorder
 import { FactionIDs } from "../../../constants"
 import { useAuth } from "../../../containers"
 import { zoomEffect } from "../../../theme/keyframes"
-import { Faction } from "../../../types"
+import { FactionWithPalette } from "../../../types"
 import { BattleLobbiesMech } from "../../../types/battle_queue"
 import { ClipThing } from "../../Common/Deprecated/ClipThing"
 
@@ -42,7 +42,7 @@ export const getCardStyles = (factionID: string) => {
 
 interface MechCardProps {
     mech?: BattleLobbiesMech
-    faction: Faction
+    faction: FactionWithPalette
 }
 
 export const MechCard = React.memo(function MechCard({ mech, faction }: MechCardProps) {

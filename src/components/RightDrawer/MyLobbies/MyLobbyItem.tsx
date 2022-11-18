@@ -59,7 +59,7 @@ export const MyLobbyItem = ({ battleLobby }: MyLobbyItemProps) => {
                     <Box
                         sx={{
                             minWidth: 300,
-                            backgroundColor: `#1B0313`,
+                            backgroundColor: factionTheme.s800,
                         }}
                     >
                         <Typography
@@ -67,8 +67,8 @@ export const MyLobbyItem = ({ battleLobby }: MyLobbyItemProps) => {
                                 p: "1rem",
                                 fontFamily: fonts.nostromoBlack,
                                 fontSize: "2rem",
-                                borderBottom: `1px solid #9F0410`,
-                                backgroundColor: `#2D0311`,
+                                borderBottom: `1px solid ${factionTheme.primary}`,
+                                backgroundColor: factionTheme.s700,
                             }}
                         >
                             <SvgLobbies inline /> {battleLobby.name}

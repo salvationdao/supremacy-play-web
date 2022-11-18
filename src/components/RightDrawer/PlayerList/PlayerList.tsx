@@ -30,7 +30,7 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
                 width: "100%",
                 p: "1rem",
                 alignItems: "center",
-                backgroundColor: isOpen ? `#1B0313` : `#1c1424`,
+                backgroundColor: isOpen ? theme.factionTheme.s800 : `#1c1424`,
                 transition: "background-color .2s ease-out",
             }}
         >

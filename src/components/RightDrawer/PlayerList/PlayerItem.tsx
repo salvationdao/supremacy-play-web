@@ -32,14 +32,14 @@ export const PlayerItem = React.memo(function PlayerItem({ player, isActive }: P
                 sx={{
                     px: "1.3rem",
                     py: ".5rem",
-                    backgroundColor: (theme) => `${theme.factionTheme.primary}10`,
+                    backgroundColor: (theme) => theme.factionTheme.s600,
                     opacity: isActive ? 1 : 0.6,
                 }}
             >
                 <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: isActive ? colors.green : colors.yellow }} />
 
                 <Box sx={{ pt: ".3rem", ml: "1.1rem" }}>
-                <Stack direction="row" spacing=".5rem" alignItems="center">
+                    <Stack direction="row" spacing=".5rem" alignItems="center">
                         <Box
                             sx={{
                                 width: "3rem",

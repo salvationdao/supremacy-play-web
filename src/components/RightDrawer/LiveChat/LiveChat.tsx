@@ -4,7 +4,7 @@ import { AdditionalOptionsButton, NiceTooltip } from "../.."
 import { SvgChat, SvgChatGlobal, SvgExternalLink, SvgInfoCircular, SvgSettings } from "../../../assets"
 import { useAuth, useChat, useMobile, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { acronym, shadeColor } from "../../../helpers"
+import { acronym } from "../../../helpers"
 import { HeaderProps } from "../../../routes"
 import { zoomEffect } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
@@ -72,7 +72,7 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
                 width: "100%",
                 p: "1rem",
                 alignItems: "center",
-                backgroundColor: isOpen ? `#1B0313` : `#1c1424`,
+                backgroundColor: isOpen ? theme.factionTheme.s800 : `#1c1424`,
                 transition: "background-color .2s ease-out",
             }}
         >
@@ -154,7 +154,6 @@ const TabbedLayout = () => {
         let faction_id = null
         let primaryColor = colors.globalChat
         let secondaryColor = "#FFFFFF"
-        let bannerBackgroundColor = shadeColor(primaryColor, -30)
         let factionTabLabel = ""
 
         if (isEnlisted) {
@@ -167,7 +166,6 @@ const TabbedLayout = () => {
             faction_id = factionID
             primaryColor = theme.factionTheme.primary
             secondaryColor = theme.factionTheme.text
-            bannerBackgroundColor = shadeColor(primaryColor, -60)
         }
 
         return {
@@ -175,7 +173,6 @@ const TabbedLayout = () => {
             faction_id,
             primaryColor,
             secondaryColor,
-            bannerBackgroundColor,
             factionTabLabel,
         }
     }, [faction.label, factionID, tabValue, theme.factionTheme.primary, theme.factionTheme.text])
@@ -196,7 +193,7 @@ const TabbedLayout = () => {
                     variant="fullWidth"
                     sx={{
                         height: `${4.8}rem`,
-                        background: `#0D0415`,
+                        background: theme.factionTheme.background,
                         boxShadow: 1,
                         zIndex: 9,
                         minHeight: 0,
@@ -208,10 +205,10 @@ const TabbedLayout = () => {
                         ".MuiTabs-indicator": {
                             zIndex: -1,
                             height: "100%",
-                            background: `#2D0311`,
-                            borderTop: `1px solid #9F0410`,
-                            borderLeft: tabValue !== 0 ? `1px solid #9F0410` : `0px solid transparent`,
-                            borderRight: isEnlisted ? `1px solid #9F0410` : `0px solid transparent`,
+                            background: theme.factionTheme.s700,
+                            borderTop: `1px solid ${theme.factionTheme.primary}`,
+                            borderLeft: tabValue !== 0 ? `1px solid ${theme.factionTheme.primary}` : `0px solid transparent`,
+                            borderRight: isEnlisted ? `1px solid ${theme.factionTheme.primary}` : `0px solid transparent`,
                         },
                     }}
                     onChange={(_event, newValue) => {
@@ -238,7 +235,7 @@ const TabbedLayout = () => {
                             </Stack>
                         }
                         sx={{
-                            borderBottom: tabValue !== 0 ? `1px solid #9F0410` : `0px solid transparent`,
+                            borderBottom: tabValue !== 0 ? `1px solid ${theme.factionTheme.primary}` : `0px solid transparent`,
                         }}
                     />
                     {isEnlisted && (
@@ -278,7 +275,7 @@ const TabbedLayout = () => {
                                 </Stack>
                             }
                             sx={{
-                                borderBottom: tabValue !== 1 ? `1px solid #9F0410` : `0px solid transparent`,
+                                borderBottom: tabValue !== 1 ? `1px solid ${theme.factionTheme.primary}` : `0px solid transparent`,
                             }}
                         />
                     )}
@@ -287,7 +284,21 @@ const TabbedLayout = () => {
                 <Content userID={userID} faction_id={faction_id} primaryColor={primaryColor} secondaryColor={secondaryColor} />
             </Stack>
         )
-    }, [banProposal, changeTab, faction.logo_url, factionTabLabel, faction_id, isEnlisted, primaryColor, secondaryColor, tabValue, userID])
+    }, [
+        banProposal,
+        changeTab,
+        faction.logo_url,
+        factionTabLabel,
+        faction_id,
+        isEnlisted,
+        primaryColor,
+        secondaryColor,
+        tabValue,
+        theme.factionTheme.background,
+        theme.factionTheme.primary,
+        theme.factionTheme.s700,
+        userID,
+    ])
 }
 
 const SplitLayout = () => {
@@ -334,7 +345,7 @@ const SplitLayout = () => {
                             zIndex: 9,
                             height: `${5}rem`,
                             px: "1.8rem",
-                            background: "#2D0311",
+                            background: theme.factionTheme.s700,
                             boxShadow: 1,
                         }}
                     >
@@ -351,7 +362,7 @@ const SplitLayout = () => {
                         </Typography>
                     </Stack>
 
-                    <Content userID={userID} faction_id={null} primaryColor={theme.factionTheme.primary} secondaryColor={"#FFFFFF"} />
+                    <Content userID={userID} faction_id={null} primaryColor={theme.factionTheme.primary} secondaryColor={theme.factionTheme.text} />
                 </Stack>
 
                 {/* Bottom half */}
@@ -363,7 +374,7 @@ const SplitLayout = () => {
                                 zIndex: 9,
                                 height: `${5}rem`,
                                 px: "1.8rem",
-                                background: "#2D0311",
+                                background: theme.factionTheme.s700,
                                 boxShadow: 1,
                             }}
                         >
@@ -404,7 +415,17 @@ const SplitLayout = () => {
                 )}
             </Stack>
         )
-    }, [banProposal, faction.logo_url, factionID, factionTabLabel, isEnlisted, theme.factionTheme.primary, theme.factionTheme.text, userID])
+    }, [
+        banProposal,
+        faction.logo_url,
+        factionID,
+        factionTabLabel,
+        isEnlisted,
+        theme.factionTheme.primary,
+        theme.factionTheme.s700,
+        theme.factionTheme.text,
+        userID,
+    ])
 }
 
 const Content = React.memo(function Content({
