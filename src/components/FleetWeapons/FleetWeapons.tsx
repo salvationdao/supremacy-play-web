@@ -2,13 +2,13 @@ import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { EmptyWarMachinesPNG, SvgFilter, SvgGridView, SvgListView, SvgSearch } from "../../assets"
 import { useTheme } from "../../containers/theme"
-import { getRarityDeets, parseString } from "../../helpers"
+import { getRarityDeets, getWeaponTypeColor, parseString } from "../../helpers"
 import { useDebounce, useUrlQuery } from "../../hooks"
 import { useGameServerSubscriptionSecuredUser } from "../../hooks/useGameServer"
 import { useLocalStorage } from "../../hooks/useLocalStorage"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
-import { RarityEnum, Weapon } from "../../types"
+import { RarityEnum, Weapon, WeaponType } from "../../types"
 import { SortTypeLabel } from "../../types/marketplace"
 import { NavTabs } from "../Common/NavTabs/NavTabs"
 import { usePageTabs } from "../Common/NavTabs/usePageTabs"
@@ -17,10 +17,12 @@ import { NiceButtonGroup } from "../Common/Nice/NiceButtonGroup"
 import { NiceSelect } from "../Common/Nice/NiceSelect"
 import { NiceTextField } from "../Common/Nice/NiceTextField"
 import { SortAndFilters } from "../Common/SortAndFilters/SortAndFilters"
+import { WeaponCard } from "../Common/Weapon/WeaponCard"
 
 enum UrlQueryParams {
     Sort = "sort",
     Search = "search",
+    WeaponType = "weaponType",
     Rarities = "rarities",
     EquippedStatus = "equippedStatus",
     AmmoRange = "ammoRange",
@@ -47,6 +49,37 @@ const equippedStatusOptions = [
     { value: "false", render: { label: "Not Equipped", color: colors.yellow } },
 ]
 
+const weaponTypeOptions = [
+    { value: WeaponType.Cannon, render: { label: WeaponType.Cannon, color: getWeaponTypeColor(WeaponType.Cannon) } },
+    { value: WeaponType.GrenadeLauncher, render: { label: WeaponType.GrenadeLauncher, color: getWeaponTypeColor(WeaponType.GrenadeLauncher) } },
+    { value: WeaponType.MachineGun, render: { label: WeaponType.MachineGun, color: getWeaponTypeColor(WeaponType.MachineGun) } },
+    { value: WeaponType.Flak, render: { label: WeaponType.Flak, color: getWeaponTypeColor(WeaponType.Flak) } },
+    { value: WeaponType.Sword, render: { label: WeaponType.Sword, color: getWeaponTypeColor(WeaponType.Sword) } },
+    { value: WeaponType.Minigun, render: { label: WeaponType.Minigun, color: getWeaponTypeColor(WeaponType.Minigun) } },
+    { value: WeaponType.MissileLauncher, render: { label: WeaponType.MissileLauncher, color: getWeaponTypeColor(WeaponType.MissileLauncher) } },
+    { value: WeaponType.PlasmaGun, render: { label: WeaponType.PlasmaGun, color: getWeaponTypeColor(WeaponType.PlasmaGun) } },
+    { value: WeaponType.SniperRifle, render: { label: WeaponType.SniperRifle, color: getWeaponTypeColor(WeaponType.SniperRifle) } },
+    { value: WeaponType.Flamethrower, render: { label: WeaponType.Flamethrower, color: getWeaponTypeColor(WeaponType.Flamethrower) } },
+    { value: WeaponType.LaserBeam, render: { label: WeaponType.LaserBeam, color: getWeaponTypeColor(WeaponType.LaserBeam) } },
+    { value: WeaponType.LightningGun, render: { label: WeaponType.LightningGun, color: getWeaponTypeColor(WeaponType.LightningGun) } },
+    { value: WeaponType.BFG, render: { label: WeaponType.BFG, color: getWeaponTypeColor(WeaponType.BFG) } },
+    { value: WeaponType.Rifle, render: { label: WeaponType.Rifle, color: getWeaponTypeColor(WeaponType.Rifle) } },
+]
+
+const rarityOptions = [
+    { value: RarityEnum.Mega, render: { ...getRarityDeets("MEGA") } },
+    { value: RarityEnum.Colossal, render: { ...getRarityDeets("COLOSSAL") } },
+    { value: RarityEnum.Rare, render: { ...getRarityDeets("RARE") } },
+    { value: RarityEnum.Legendary, render: { ...getRarityDeets("LEGENDARY") } },
+    { value: RarityEnum.EliteLegendary, render: { ...getRarityDeets("ELITE_LEGENDARY") } },
+    { value: RarityEnum.UltraRare, render: { ...getRarityDeets("ULTRA_RARE") } },
+    { value: RarityEnum.Exotic, render: { ...getRarityDeets("EXOTIC") } },
+    { value: RarityEnum.Guardian, render: { ...getRarityDeets("GUARDIAN") } },
+    { value: RarityEnum.Mythic, render: { ...getRarityDeets("MYTHIC") } },
+    { value: RarityEnum.DeusEx, render: { ...getRarityDeets("DEUS_EX") } },
+    { value: RarityEnum.Titan, render: { ...getRarityDeets("TITAN") } },
+]
+
 const layoutOptions = [
     { label: "", value: true, svg: <SvgGridView size="1.5rem" /> },
     { label: "", value: false, svg: <SvgListView size="1.5rem" /> },
@@ -62,6 +95,7 @@ export const FleetWeapons = () => {
     const [search, setSearch, searchInstant] = useDebounce(query.get(UrlQueryParams.Search) || "", 300)
     const [sort, setSort] = useState<string>(query.get(UrlQueryParams.Sort) || SortTypeLabel.Alphabetical)
     const [isGridView, setIsGridView] = useLocalStorage<boolean>("fleetWeaponsGrid", true)
+    const [weaponType, setWeaponType] = useState<string[]>((query.get(UrlQueryParams.WeaponType) || undefined)?.split("||") || [])
     const [rarities, setRarities] = useState<string[]>((query.get(UrlQueryParams.Rarities) || undefined)?.split("||") || [])
     const [equippedStatus, setEquippedStatus] = useState<string[]>((query.get(UrlQueryParams.EquippedStatus) || undefined)?.split("||") || [])
     const [ammoRange, setAmmoRange] = useState<number[] | undefined>(
@@ -141,6 +175,11 @@ export const FleetWeapons = () => {
         // Apply search
         if (search) {
             result = result.filter((weapon) => `${weapon.label.toLowerCase()}`.includes(search.toLowerCase()))
+        }
+
+        // Apply weapon type filter
+        if (weaponType && weaponType.length) {
+            result = result.filter((weapon) => weaponType.includes(weapon.weapon_type))
         }
 
         // Apply rarity filter
@@ -251,6 +290,7 @@ export const FleetWeapons = () => {
         updateQuery.current({
             [UrlQueryParams.Sort]: sort,
             [UrlQueryParams.Search]: search,
+            [UrlQueryParams.WeaponType]: weaponType.join("||"),
             [UrlQueryParams.Rarities]: rarities.join("||"),
             [UrlQueryParams.EquippedStatus]: equippedStatus.join("||"),
             [UrlQueryParams.AmmoRange]: ammoRange?.join("||"),
@@ -284,6 +324,7 @@ export const FleetWeapons = () => {
         spreadRange,
         updateQuery,
         weapons,
+        weaponType,
     ])
 
     const content = useMemo(() => {
@@ -307,16 +348,7 @@ export const FleetWeapons = () => {
                     }}
                 >
                     {displayWeapons.map((weapon) => {
-                        return null
-                        // return (
-                        //     <MechCard
-                        //         key={`mech-${mech.id}`}
-                        //         mech={mech}
-                        //         isGridView={isGridView}
-                        //         toggleSelected={toggleSelected}
-                        //         hide={{ ownerName: true }}
-                        //     />
-                        // )
+                        return <WeaponCard key={`mech-${weapon.id}`} weapon={weapon} isGridView={isGridView} />
                     })}
                 </Box>
             )
@@ -387,20 +419,15 @@ export const FleetWeapons = () => {
                             setSelected: setEquippedStatus,
                         },
                         {
+                            label: "Weapon Type",
+                            options: weaponTypeOptions,
+                            initialExpanded: true,
+                            selected: weaponType,
+                            setSelected: setWeaponType,
+                        },
+                        {
                             label: "Rarity",
-                            options: [
-                                { value: RarityEnum.Mega, render: { ...getRarityDeets("MEGA") } },
-                                { value: RarityEnum.Colossal, render: { ...getRarityDeets("COLOSSAL") } },
-                                { value: RarityEnum.Rare, render: { ...getRarityDeets("RARE") } },
-                                { value: RarityEnum.Legendary, render: { ...getRarityDeets("LEGENDARY") } },
-                                { value: RarityEnum.EliteLegendary, render: { ...getRarityDeets("ELITE_LEGENDARY") } },
-                                { value: RarityEnum.UltraRare, render: { ...getRarityDeets("ULTRA_RARE") } },
-                                { value: RarityEnum.Exotic, render: { ...getRarityDeets("EXOTIC") } },
-                                { value: RarityEnum.Guardian, render: { ...getRarityDeets("GUARDIAN") } },
-                                { value: RarityEnum.Mythic, render: { ...getRarityDeets("MYTHIC") } },
-                                { value: RarityEnum.DeusEx, render: { ...getRarityDeets("DEUS_EX") } },
-                                { value: RarityEnum.Titan, render: { ...getRarityDeets("TITAN") } },
-                            ],
+                            options: rarityOptions,
                             initialExpanded: true,
                             selected: rarities,
                             setSelected: setRarities,

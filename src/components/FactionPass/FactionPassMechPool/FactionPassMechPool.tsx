@@ -47,6 +47,37 @@ const layoutOptions = [
     { label: "", value: false, svg: <SvgListView size="1.5rem" /> },
 ]
 
+const mechStatusOptions = [
+    { value: MechStatusEnum.Idle, render: { label: "IDLE", color: colors.green } },
+    { value: MechStatusEnum.Queue, render: { label: "IN QUEUE", color: colors.yellow } },
+    { value: MechStatusEnum.Battle, render: { label: "IN BATTLE", color: colors.orange } },
+    { value: MechStatusEnum.Market, render: { label: "MARKETPLACE", color: colors.bronze } },
+    { value: MechStatusEnum.Damaged, render: { label: "DAMAGED", color: colors.red } },
+]
+
+const repairProgressOptions = [
+    { value: "0", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={0} size={7} /> },
+    { value: "1", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={1} size={7} /> },
+    { value: "2", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={2} size={7} /> },
+    { value: "3", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={3} size={7} /> },
+    { value: "4", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={4} size={7} /> },
+    { value: "5", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={5} size={7} /> },
+]
+
+const rarityOptions = [
+    { value: RarityEnum.Mega, render: { ...getRarityDeets("MEGA") } },
+    { value: RarityEnum.Colossal, render: { ...getRarityDeets("COLOSSAL") } },
+    { value: RarityEnum.Rare, render: { ...getRarityDeets("RARE") } },
+    { value: RarityEnum.Legendary, render: { ...getRarityDeets("LEGENDARY") } },
+    { value: RarityEnum.EliteLegendary, render: { ...getRarityDeets("ELITE_LEGENDARY") } },
+    { value: RarityEnum.UltraRare, render: { ...getRarityDeets("ULTRA_RARE") } },
+    { value: RarityEnum.Exotic, render: { ...getRarityDeets("EXOTIC") } },
+    { value: RarityEnum.Guardian, render: { ...getRarityDeets("GUARDIAN") } },
+    { value: RarityEnum.Mythic, render: { ...getRarityDeets("MYTHIC") } },
+    { value: RarityEnum.DeusEx, render: { ...getRarityDeets("DEUS_EX") } },
+    { value: RarityEnum.Titan, render: { ...getRarityDeets("TITAN") } },
+]
+
 export const FactionPassMechPool = () => {
     const [query, updateQuery] = useUrlQuery()
     const theme = useTheme()
@@ -289,46 +320,21 @@ export const FactionPassMechPool = () => {
                     chipFilters={[
                         {
                             label: "Status",
-                            options: [
-                                { value: MechStatusEnum.Idle, render: { label: "IDLE", color: colors.green } },
-                                { value: MechStatusEnum.Queue, render: { label: "IN QUEUE", color: colors.yellow } },
-                                { value: MechStatusEnum.Battle, render: { label: "IN BATTLE", color: colors.orange } },
-                                { value: MechStatusEnum.Market, render: { label: "MARKETPLACE", color: colors.bronze } },
-                                { value: MechStatusEnum.Damaged, render: { label: "DAMAGED", color: colors.red } },
-                            ],
+                            options: mechStatusOptions,
                             initialExpanded: true,
                             selected: status,
                             setSelected: setStatus,
                         },
                         {
                             label: "Rarity",
-                            options: [
-                                { value: RarityEnum.Mega, render: { ...getRarityDeets("MEGA") } },
-                                { value: RarityEnum.Colossal, render: { ...getRarityDeets("COLOSSAL") } },
-                                { value: RarityEnum.Rare, render: { ...getRarityDeets("RARE") } },
-                                { value: RarityEnum.Legendary, render: { ...getRarityDeets("LEGENDARY") } },
-                                { value: RarityEnum.EliteLegendary, render: { ...getRarityDeets("ELITE_LEGENDARY") } },
-                                { value: RarityEnum.UltraRare, render: { ...getRarityDeets("ULTRA_RARE") } },
-                                { value: RarityEnum.Exotic, render: { ...getRarityDeets("EXOTIC") } },
-                                { value: RarityEnum.Guardian, render: { ...getRarityDeets("GUARDIAN") } },
-                                { value: RarityEnum.Mythic, render: { ...getRarityDeets("MYTHIC") } },
-                                { value: RarityEnum.DeusEx, render: { ...getRarityDeets("DEUS_EX") } },
-                                { value: RarityEnum.Titan, render: { ...getRarityDeets("TITAN") } },
-                            ],
+                            options: rarityOptions,
                             initialExpanded: true,
                             selected: rarities,
                             setSelected: setRarities,
                         },
                         {
                             label: "Repair Progress",
-                            options: [
-                                { value: "0", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={0} size={7} /> },
-                                { value: "1", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={1} size={7} /> },
-                                { value: "2", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={2} size={7} /> },
-                                { value: "3", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={3} size={7} /> },
-                                { value: "4", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={4} size={7} /> },
-                                { value: "5", renderNode: <RepairBlocks defaultBlocks={5} remainDamagedBlocks={5} size={7} /> },
-                            ],
+                            options: repairProgressOptions,
                             initialExpanded: true,
                             selected: repairBlocks,
                             setSelected: setRepairBlocks,

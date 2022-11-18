@@ -3,7 +3,7 @@ import React, { useMemo } from "react"
 import { Link } from "react-router-dom"
 import { SvgMechDeaths, SvgMechKills, SvgMechLosses, SvgMechWins, SvgUserDiamond } from "../../../assets"
 import { useSupremacy } from "../../../containers"
-import { truncateTextLines } from "../../../helpers"
+import { numFormatter, truncateTextLines } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { NewMechStruct } from "../../../types"
 import { NiceBoxThing } from "../Nice/NiceBoxThing"
@@ -127,16 +127,20 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                     {!hide?.kdwlStats && (
                         <>
                             <Typography whiteSpace="nowrap">
-                                <SvgMechKills inline size="1.6rem" /> {mech.stats.total_kills}
+                                <SvgMechKills inline size="1.6rem" />
+                                {numFormatter(mech.stats.total_kills)}
                             </Typography>
                             <Typography whiteSpace="nowrap">
-                                <SvgMechDeaths inline size="1.6rem" /> {mech.stats.total_deaths}
+                                <SvgMechDeaths inline size="1.6rem" />
+                                {numFormatter(mech.stats.total_deaths)}
                             </Typography>
                             <Typography whiteSpace="nowrap">
-                                <SvgMechWins inline size="1.6rem" /> {mech.stats.total_wins}
+                                <SvgMechWins inline size="1.6rem" />
+                                {numFormatter(mech.stats.total_wins)}
                             </Typography>
                             <Typography whiteSpace="nowrap">
-                                <SvgMechLosses inline size="1.6rem" /> {mech.stats.total_losses}
+                                <SvgMechLosses inline size="1.6rem" />
+                                {numFormatter(mech.stats.total_losses)}
                             </Typography>
                         </>
                     )}
@@ -231,16 +235,20 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                         }}
                     >
                         <Typography whiteSpace="nowrap">
-                            <SvgMechKills inline size="1.6rem" /> {mech.stats.total_kills}
+                            <SvgMechKills inline size="1.6rem" />
+                            {numFormatter(mech.stats.total_kills)}
                         </Typography>
                         <Typography whiteSpace="nowrap">
-                            <SvgMechDeaths inline size="1.6rem" /> {mech.stats.total_deaths}
+                            <SvgMechDeaths inline size="1.6rem" />
+                            {numFormatter(mech.stats.total_deaths)}
                         </Typography>
                         <Typography whiteSpace="nowrap">
-                            <SvgMechWins inline size="1.6rem" /> {mech.stats.total_wins}
+                            <SvgMechWins inline size="1.6rem" />
+                            {numFormatter(mech.stats.total_wins)}
                         </Typography>
                         <Typography whiteSpace="nowrap">
-                            <SvgMechLosses inline size="1.6rem" /> {mech.stats.total_losses}
+                            <SvgMechLosses inline size="1.6rem" />
+                            {numFormatter(mech.stats.total_losses)}
                         </Typography>
                     </Stack>
                 )}
