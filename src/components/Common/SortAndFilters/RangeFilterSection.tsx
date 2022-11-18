@@ -109,7 +109,7 @@ const RangeFilterSectionInner = React.memo(function RangeFilterSectionInner({
                 <Stack direction="row" alignItems="center" spacing="1rem">
                     <NiceTextField
                         primaryColor={theme.factionTheme.primary}
-                        value={valueInstant ? Math.round(valueInstant[0]) : minMax[0]}
+                        value={valueInstant ? Math.round(100 * valueInstant[0]) / 100 : minMax[0]}
                         onChange={(value) => {
                             setValue([value, valueInstant ? valueInstant[1] : minMax[1]])
                         }}
@@ -124,7 +124,7 @@ const RangeFilterSectionInner = React.memo(function RangeFilterSectionInner({
 
                     <NiceTextField
                         primaryColor={theme.factionTheme.primary}
-                        value={valueInstant ? Math.round(valueInstant[1]) : minMax[1]}
+                        value={valueInstant ? Math.round(100 * valueInstant[1]) / 100 : minMax[1]}
                         onChange={(value) => {
                             setValue([valueInstant ? valueInstant[0] : minMax[0], value])
                         }}
@@ -137,7 +137,7 @@ const RangeFilterSectionInner = React.memo(function RangeFilterSectionInner({
     )
 })
 
-const HistogramGraph = ({
+const HistogramGraph = React.memo(function HistogramGraph({
     range,
     primaryColor,
     freqGraph,
@@ -147,7 +147,7 @@ const HistogramGraph = ({
     primaryColor: string
     freqGraph: FreqGraph
     values: number[] | undefined
-}) => {
+}) {
     const numColumns = useMemo(() => clamp(0, range, MAX_HISTOGRAM_BARS), [range])
 
     const highlightThresholds = useMemo(() => {
@@ -168,10 +168,10 @@ const HistogramGraph = ({
             Object.entries(freqGraph.freq).forEach(([index, value]) => {
                 const i = parseInt(index)
 
-                // skip, if index is NAN
+                // Skip, if index is NAN
                 if (isNaN(i)) return
 
-                // stack value if the index is within the range
+                // Stack value if the index is within the range
                 if (i >= loThreshold && i <= hiThreshold) val += value
             })
 
@@ -184,7 +184,7 @@ const HistogramGraph = ({
     const maxHeight = useMemo(() => Math.max(...heights), [heights])
 
     return (
-        <Stack direction="row" alignItems="flex-end" sx={{ mb: "-1.6rem", height: "5rem", px: "1px", zIndex: -1 }}>
+        <Stack direction="row" alignItems="flex-end" sx={{ mb: "-1.6rem", height: "4rem", px: "1px", zIndex: -1 }}>
             {new Array(numColumns).fill(0).map((_, index) => {
                 const proportion = index
                 const isHighlighted = proportion >= highlightThresholds[0] && proportion <= highlightThresholds[1]
@@ -203,4 +203,4 @@ const HistogramGraph = ({
             })}
         </Stack>
     )
-}
+})

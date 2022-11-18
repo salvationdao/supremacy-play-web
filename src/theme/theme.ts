@@ -431,8 +431,8 @@ export const theme = createTheme({
                     height: "1px",
                     borderRadius: 0,
                     ".MuiSlider-thumb": {
-                        width: "15px",
-                        height: "15px",
+                        width: "12px",
+                        height: "12px",
                         ":after": {
                             width: "100%",
                             height: "100%",
