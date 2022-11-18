@@ -9,6 +9,7 @@ import { Claims } from "../components/Claims/Claims"
 import { FactionPassBuy } from "../components/FactionPass/FactionPassBuy/FactionPassBuy"
 import { FactionPassDashboard } from "../components/FactionPass/FactionPassDashboard/FactionPassDashboard"
 import { FactionPassMechPool } from "../components/FactionPass/FactionPassMechPool/FactionPassMechPool"
+import { FleetCrates } from "../components/FleetCrates/FleetCrates"
 import { FleetMechs } from "../components/FleetMechs/FleetMechs"
 import { FleetWeapons } from "../components/FleetWeapons/FleetWeapons"
 import { KeycardsHangar } from "../components/Hangar/KeycardsHangar/KeycardsHangar"
@@ -340,7 +341,7 @@ export const Routes: RouteSingle[] = [
         id: RouteSingleID.FleetCrates,
         path: "/fleet/mystery-crates",
         exact: true,
-        Component: MysteryCratesHangar,
+        Component: FleetCrates,
         restrictions: {
             requireAuth: true,
             requireFaction: true,

@@ -1,16 +1,11 @@
 import { Box, Stack, Typography } from "@mui/material"
-import React, { useCallback, useState } from "react"
+import React, { useState } from "react"
 import { useTimer } from "use-timer"
-import { SafePNG } from "../../../assets"
 import { IS_TESTING_MODE } from "../../../constants"
-import { useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { msToTime } from "../../../helpers"
-import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../keys"
-import { truncateTextLines } from "../../../helpers"
+import { msToTime, truncateTextLines } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
-import { MysteryCrate, MysteryCrateType, OpenCrateResponse } from "../../../types"
+import { MysteryCrate, OpenCrateResponse } from "../../../types"
 import { ItemType } from "../../../types/marketplace"
 import { ClipThing } from "../../Common/Deprecated/ClipThing"
 import { FancyButton } from "../../Common/Deprecated/FancyButton"
@@ -28,68 +23,18 @@ const propsAreEqual = (prevProps: MysteryCrateStoreItemProps, nextProps: Mystery
     return prevProps.crate.id === nextProps.crate.id && prevProps.getCrates === nextProps.getCrates
 }
 
-export const MysteryCrateHangarItem = React.memo(function MysteryCrateHangarItem({
-    crate,
-    setOpeningCrate,
-    setOpenedRewards,
-    getCrates,
-}: MysteryCrateStoreItemProps) {
+export const MysteryCrateHangarItem = React.memo(function MysteryCrateHangarItem({ crate }: MysteryCrateStoreItemProps) {
     const theme = useTheme()
-    const { newSnackbarMessage } = useGlobalNotifications()
-    const { send } = useGameServerCommandsFaction("/faction_commander")
-    const [loading, setLoading] = useState(false)
+    const [loading] = useState(false)
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.secondary
     const backgroundColor = theme.factionTheme.background
 
-    const openCrate = useCallback(async () => {
-        try {
-            setOpeningCrate({
-                factionID: crate.faction_id,
-                crateType: crate.label.toLowerCase().includes("weapon") ? MysteryCrateType.Weapon : MysteryCrateType.Mech,
-            })
-
-            setLoading(true)
-
-            const resp = await send<OpenCrateResponse>(GameServerKeys.OpenCrate, {
-                id: crate.id,
-            })
-
-            if (!resp) return
-            setOpenedRewards({ ...resp })
-            getCrates()
-        } catch (e) {
-            const message = typeof e === "string" ? e : "Failed to get mystery crates."
-            newSnackbarMessage(message, "error")
-            console.error(message)
-        } finally {
-            setLoading(false)
-        }
-    }, [setOpeningCrate, crate.faction_id, crate.label, crate.id, send, setOpenedRewards, getCrates, newSnackbarMessage])
-
     return (
         <>
-            <Box
-                sx={{
-                    height: "100%",
-                    width: "100%",
-                    transition: "all .15s",
-                    ":hover": {
-                        transform: "translateY(-.4rem)",
-                    },
-                }}
-            >
-                <ClipThing
-                    clipSize="12px"
-                    border={{
-                        borderColor: `${primaryColor}50`,
-                        borderThickness: ".25rem",
-                    }}
-                    opacity={0.9}
-                    backgroundColor={backgroundColor}
-                    sx={{ height: "100%" }}
-                >
+            <Box>
+                <ClipThing>
                     <Stack spacing={"1.5rem"} justifyContent="center" sx={{ height: "100%", p: "1.5rem" }}>
                         <Box
                             sx={{
@@ -97,12 +42,6 @@ export const MysteryCrateHangarItem = React.memo(function MysteryCrateHangarItem
                                 height: "20rem",
                             }}
                         >
-                            <MediaPreview
-                                imageUrl={crate.large_image_url || crate.image_url || crate.avatar_url || SafePNG}
-                                videoUrls={[crate.animation_url, crate.card_animation_url]}
-                                objectFit="cover"
-                            />
-
                             {new Date() < (crate.locked_until || Date.now) && (
                                 <Stack
                                     alignItems="center"
@@ -122,14 +61,6 @@ export const MysteryCrateHangarItem = React.memo(function MysteryCrateHangarItem
                         </Box>
 
                         <Stack sx={{ flex: 1, px: ".4rem", py: ".3rem" }}>
-                            <Typography variant="h6" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
-                                {crate.label}
-                            </Typography>
-
-                            <Typography variant="h6" sx={{ color: primaryColor }}>
-                                {crate.description}
-                            </Typography>
-
                             <Stack alignItems="center" sx={{ mt: "auto !important", alignSelf: "stretch" }}>
                                 <FancyButton
                                     disabled={new Date() < crate.locked_until}
@@ -182,8 +113,7 @@ export const MysteryCrateHangarItem = React.memo(function MysteryCrateHangarItem
             </Box>
         </>
     )
-},
-propsAreEqual)
+}, propsAreEqual)
 
 export const Countdown = ({ initialTime }: { initialTime: number | undefined }) => {
     const { time } = useTimer({
