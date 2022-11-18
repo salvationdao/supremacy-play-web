@@ -10,7 +10,7 @@ import {
     SvgSecondPlace,
     SvgSupToken,
     SvgThirdPlace,
-    SvgUserDiamond2
+    SvgUserDiamond2,
 } from "../../../assets"
 import { useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -86,6 +86,7 @@ export const MyLobbyItem = ({ battleLobby }: MyLobbyItemProps) => {
                         <Stack
                             sx={{
                                 p: "1rem",
+                                pb: "1.5rem",
                                 fontFamily: fonts.nostromoBlack,
                             }}
                             spacing="1rem"
