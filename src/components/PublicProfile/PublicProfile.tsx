@@ -256,7 +256,7 @@ export const PublicProfile = () => {
         fetchProfile(playerGID)
     }, [playerGID, fetchProfile])
 
-    const faction = useMemo(() => getFaction(playerGID), [getFaction, playerGID])
+    const faction = useMemo(() => getFaction(profile?.faction?.id), [getFaction, profile?.faction?.id])
     const primaryColor = faction.palette.primary
     const secondaryColor = faction.palette.text
     const backgroundColor = faction.palette.background
