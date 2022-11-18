@@ -8,7 +8,7 @@ import { useTheme } from "../../../../containers/theme"
 import { GetMechDestroyedInfo } from "../../../../fetching"
 import { TruncateTextLines } from "../../../../theme/styles"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
-import { DamageRecord, Faction, WarMachineDestroyedRecord, WarMachineState } from "../../../../types"
+import { DamageRecord, FactionWithPalette, WarMachineDestroyedRecord, WarMachineState } from "../../../../types"
 
 export const WarMachineDestroyedInfo = ({
     warMachine,
@@ -19,7 +19,7 @@ export const WarMachineDestroyedInfo = ({
     warMachine: WarMachineState
     open: boolean
     onClose: () => void
-    getFaction: (factionID: string) => Faction
+    getFaction: (factionID: string) => FactionWithPalette
 }) => {
     const theme = useTheme()
     const { newSnackbarMessage } = useGlobalNotifications()
@@ -192,13 +192,13 @@ const WarMachineIcon = ({ color, imageUrl, isDead, size }: { color: string; imag
                                 transition: "all .2s",
                             }}
                         >
-                            {isDead && <SvgDamageCross fill="#FF1919" size={`${size * 1.3}rem`} sx={{ opacity: 0.6 }} />}
+                            {isDead && <SvgDamageCross fill={colors.red} size={`${size * 1.3}rem`} sx={{ opacity: 0.6 }} />}
                         </Stack>
 
                         {!imageUrl && (
                             <SvgDamageIcon
                                 size={`${size * 0.5}rem`}
-                                fill="#8C8C8C"
+                                fill={colors.grey}
                                 sx={{
                                     position: "absolute",
                                     top: "50%",
@@ -223,7 +223,7 @@ const WarMachineBig = ({
     warMachine?: WarMachineState
     name?: string
     isDead?: boolean
-    getFaction: (factionID: string) => Faction
+    getFaction: (factionID: string) => FactionWithPalette
 }) => {
     const color = getFaction(warMachine?.factionID || "").palette.primary || colors.text
     return (
@@ -257,7 +257,7 @@ const WarMachineSmall = ({
     warMachine?: WarMachineState
     name?: string
     damagePercent: number
-    getFaction: (factionID: string) => Faction
+    getFaction: (factionID: string) => FactionWithPalette
 }) => {
     const color = getFaction(warMachine?.factionID || "").palette.primary || colors.text
     return (
@@ -296,7 +296,7 @@ const DamageList = ({
     title: string
     damageRecords: DamageRecord[]
     top?: number
-    getFaction: (factionID: string) => Faction
+    getFaction: (factionID: string) => FactionWithPalette
 }) => {
     return (
         <Box sx={{ flex: 1 }}>

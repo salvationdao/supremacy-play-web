@@ -2,11 +2,11 @@ import { Avatar, Box, CircularProgress, IconButton, Stack, Typography } from "@m
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useHistory, useParams } from "react-router-dom"
 import { AboutMeSVG, BattleHistorySVG, StatsSVG, SvgAbility, SvgCake, SvgClose, SvgDeath, SvgSkull2, SvgView } from "../../assets"
-import { useAuth, useGlobalNotifications, useUI } from "../../containers"
+import { useAuth, useGlobalNotifications, useSupremacy, useUI } from "../../containers"
 import { getUserRankDeets, snakeToTitle, timeSince } from "../../helpers"
 import { useGameServerCommands, useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
-import { colors, fonts, theme } from "../../theme/theme"
+import { colors, fonts } from "../../theme/theme"
 import { Faction, FeatureName, UserRank } from "../../types"
 import { ClipThing } from "../Common/Deprecated/ClipThing"
 import { PageHeader } from "../Common/Deprecated/PageHeader"
@@ -103,6 +103,7 @@ export const PublicProfile = () => {
 
     const { send } = useGameServerCommands("/public/commander")
     const { send: userSend } = useGameServerCommandsUser("/user_commander")
+    const { getFaction } = useSupremacy()
     const { newSnackbarMessage } = useGlobalNotifications()
     const { rightDrawerActiveTabID } = useUI()
     const isMe = `${user?.gid}` === playerGID
@@ -255,10 +256,10 @@ export const PublicProfile = () => {
         fetchProfile(playerGID)
     }, [playerGID, fetchProfile])
 
-    const faction = profile?.faction
-    const primaryColor = faction?.palette.primary || theme.factionTheme.primary
-    const secondaryColor = faction?.palette.text || theme.factionTheme.text
-    const backgroundColor = faction?.palette.background || theme.factionTheme.background
+    const faction = useMemo(() => getFaction(playerGID), [getFaction, playerGID])
+    const primaryColor = faction.palette.primary
+    const secondaryColor = faction.palette.text
+    const backgroundColor = faction.palette.background
 
     if (loading) {
         return (

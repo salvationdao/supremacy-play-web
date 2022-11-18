@@ -3,7 +3,7 @@ import BigNumber from "bignumber.js"
 import { useEffect } from "react"
 import { GenericWarMachinePNG } from "../../../../assets"
 import { useTraining } from "../../../../containers"
-import { Faction, GameAbility, MechAbilityStages, WarMachineState } from "../../../../types"
+import { FactionWithPalette, GameAbility, MechAbilityStages, WarMachineState } from "../../../../types"
 import { ClipThing } from "../../../Common/Deprecated/ClipThing"
 import { NicePopover } from "../../../Common/Nice/NicePopover"
 import { WarMachineAbilityItemBT } from "../WarMachineItem/WarMachineAbilityItemBT"
@@ -14,7 +14,7 @@ interface WarMachineAbilitiesPopoverProps {
     warMachine: WarMachineState
     gameAbilities: GameAbility[]
     maxAbilityPriceMap: React.MutableRefObject<Map<string, BigNumber>>
-    getFaction: (factionID: string) => Faction
+    getFaction: (factionID: string) => FactionWithPalette
     isPoppedout?: boolean
     togglePopoverOpen: (value?: boolean | undefined) => void
 }

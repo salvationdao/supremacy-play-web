@@ -5,7 +5,7 @@ import { MAX_BAN_PROPOSAL_REASON_LENGTH } from "../../../constants"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
-import { Faction, User } from "../../../types"
+import { FactionWithPalette, User } from "../../../types"
 import { ClipThing } from "../../Common/Deprecated/ClipThing"
 import { FancyButton } from "../../Common/Deprecated/FancyButton"
 
@@ -13,7 +13,7 @@ export interface AdminUpdateUsernameModalProps {
     user: User
     onClose: () => void
     onSuccess: (newUsername: string) => void
-    faction: Faction
+    faction: FactionWithPalette
 }
 
 export const AdminUpdateUsernameModal = ({ user, onClose, onSuccess, faction }: AdminUpdateUsernameModalProps) => {

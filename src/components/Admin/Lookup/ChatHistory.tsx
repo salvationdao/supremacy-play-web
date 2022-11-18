@@ -1,10 +1,10 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { dateFormatter } from "../../../helpers"
 import { colors } from "../../../theme/theme"
-import { Faction, User } from "../../../types"
+import { FactionWithPalette, User } from "../../../types"
 import { AdminChatView } from "../../../types/admin"
 
-export const ChatHistory = ({ chatHistory, faction, user }: { chatHistory: AdminChatView[]; faction: Faction; user: User }) => {
+export const ChatHistory = ({ chatHistory, faction, user }: { chatHistory: AdminChatView[]; faction: FactionWithPalette; user: User }) => {
     return (
         <Box>
             {chatHistory.map((chat) => {

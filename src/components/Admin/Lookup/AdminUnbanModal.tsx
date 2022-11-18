@@ -5,7 +5,7 @@ import { MAX_BAN_PROPOSAL_REASON_LENGTH } from "../../../constants"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
-import { Faction, User } from "../../../types"
+import { FactionWithPalette, User } from "../../../types"
 import { ClipThing } from "../../Common/Deprecated/ClipThing"
 import { FancyButton } from "../../Common/Deprecated/FancyButton"
 
@@ -21,7 +21,7 @@ export const AdminUnbanModal = ({
     modalOpen: boolean
     setModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     user: User
-    faction: Faction
+    faction: FactionWithPalette
     fetchPlayer: (newGid: number) => void
 }) => {
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -86,7 +86,7 @@ const AdminUnbanModalInner = ({
     reqError: string
     unbanReason: string
     user: User
-    faction: Faction
+    faction: FactionWithPalette
 }) => {
     return (
         <Modal open={modalOpen} onClose={onClose}>

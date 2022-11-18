@@ -1,11 +1,11 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { dateFormatter } from "../../../helpers"
 import { colors } from "../../../theme/theme"
-import { Faction } from "../../../types"
+import { FactionWithPalette } from "../../../types"
 import { AdminPlayerBan } from "../../../types/admin"
 import { ClipThing } from "../../Common/Deprecated/ClipThing"
 
-export const BanHistoryPanel = ({ faction, playerBans }: { faction: Faction; playerBans: AdminPlayerBan[] }) => {
+export const BanHistoryPanel = ({ faction, playerBans }: { faction: FactionWithPalette; playerBans: AdminPlayerBan[] }) => {
     return (
         <Stack sx={{ flex: 2, p: "1rem" }} spacing={"1rem"}>
             {playerBans.map((playerBan) => {

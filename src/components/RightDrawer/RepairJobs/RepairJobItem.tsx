@@ -40,8 +40,8 @@ export const RepairJobItem = React.memo(function RepairJobItem({ repairJob, remo
 
     const isFinished = repairJob.closed_at || repairJob.expires_at < new Date()
     const remainDamagedBlocks = repairJob.blocks_required_repair - repairJob.blocks_repaired
-    const primaryColor = jobOwnerfaction.palette.primary
-    const backgroundColor = jobOwnerfaction.palette.background
+    const primaryColor = jobOwnerFaction.palette.primary
+    const backgroundColor = jobOwnerFaction.palette.background
 
     useEffect(() => {
         if (isFinished && !repairJobModal) {

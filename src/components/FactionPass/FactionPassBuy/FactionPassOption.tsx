@@ -18,7 +18,7 @@ import {
 import { FactionIDs } from "../../../constants"
 import { supFormatter } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
-import { Faction } from "../../../types"
+import { FactionWithPalette } from "../../../types"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 import { DAYS_IN_A_MONTH } from "./FactionPassBuy"
@@ -53,7 +53,11 @@ const headerArrowImages: {
     },
 }
 
-export const FactionPassOption = React.memo(function FactionPassOption({ days, faction }: { days: number; faction: Faction }) {
+interface FactionPassOptionProps {
+    days: number
+    faction: FactionWithPalette
+}
+export const FactionPassOption = React.memo(function FactionPassOption({ days, faction }: FactionPassOptionProps) {
     const [prices, setPrices] = useState<OptionPrices>()
 
     useEffect(() => {

@@ -1,6 +1,6 @@
 import { Box, Stack, styled, Typography } from "@mui/material"
 import { GAME_UI_ID, useDimension, useGlobalNotifications, useSupremacy, useUI } from "../../../containers"
-import { Faction } from "../../../types"
+import { FactionWithPalette } from "../../../types"
 
 import { ArrowForward } from "@mui/icons-material"
 import { useCallback, useEffect } from "react"
@@ -125,7 +125,7 @@ const getFactionInfo = (factionLabel: string) => {
     }
 }
 
-const FactionBox = ({ faction }: { faction: Faction }) => {
+const FactionBox = ({ faction }: { faction: FactionWithPalette }) => {
     const { setLeftDrawerActiveTabID, setRightDrawerActiveTabID } = useUI()
     const { description, fleetImages, abilities, wallpaper, colorOverlay, wiki, logo } = getFactionInfo(faction.label)
     const { gameUIDimensions } = useDimension()

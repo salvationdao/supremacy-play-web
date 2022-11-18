@@ -2,7 +2,7 @@ import { Stack, Typography } from "@mui/material"
 import { SxProps } from "@mui/system"
 import { ReactNode } from "react"
 import { fonts } from "../../../theme/theme"
-import { Faction } from "../../../types"
+import { FactionWithPalette } from "../../../types"
 import { ClipThing } from "../../Common/Deprecated/ClipThing"
 
 export const PlayerProfileCard = ({
@@ -12,7 +12,7 @@ export const PlayerProfileCard = ({
     fullWidth,
     sx,
 }: {
-    faction: Faction
+    faction: FactionWithPalette
     title: string
     children: ReactNode
     fullWidth?: boolean

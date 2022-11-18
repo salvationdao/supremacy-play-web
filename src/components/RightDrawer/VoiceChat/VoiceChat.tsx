@@ -12,7 +12,7 @@ import { useToggle } from "../../../hooks"
 import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { Faction, FeatureName, User } from "../../../types"
+import { Faction, FactionWithPalette, FeatureName, User } from "../../../types"
 import { StyledImageText } from "../../BattleArena/Notifications/Common/StyledImageText"
 import { ConfirmModal } from "../../Common/Deprecated/ConfirmModal"
 import { FancyButton } from "../../Common/Deprecated/FancyButton"
@@ -425,7 +425,7 @@ export const VoiceChatInner = ({
     onVoteKick,
 }: {
     user: User
-    faction: Faction
+    faction: FactionWithPalette
     hasFactionCommander: boolean
     voiceStreams: VoiceStream[]
     listeners: User[]

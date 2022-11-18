@@ -4,7 +4,7 @@ import { useGlobalNotifications, useSupremacy } from "../../containers"
 import { useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { fonts } from "../../theme/theme"
-import { Faction } from "../../types"
+import { Faction, FactionWithPalette } from "../../types"
 import { ClipThing } from "./Deprecated/ClipThing"
 import { FancyButton } from "./Deprecated/FancyButton"
 
@@ -41,7 +41,7 @@ const renderLastDescription = (faction: Faction) => {
     }
 }
 
-const ExtendedFactionEnlist = ({ faction }: { faction: Faction }) => {
+const ExtendedFactionEnlist = ({ faction }: { faction: FactionWithPalette }) => {
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
     const below1250 = useMediaQuery("(max-width:1250px)")
@@ -152,11 +152,11 @@ const ExtendedFactionEnlist = ({ faction }: { faction: Faction }) => {
     )
 }
 
-const ExtendedFactionCarousel = ({ factions }: { factions: Faction[] }) => {
-    const [openedFaction, setOpenedFaction] = useState<Faction>(factions[0])
-    const [unselectedFactions, setUnselectedFactions] = useState<Faction[]>(factions.slice(1))
+const ExtendedFactionCarousel = ({ factions }: { factions: FactionWithPalette[] }) => {
+    const [openedFaction, setOpenedFaction] = useState<FactionWithPalette>(factions[0])
+    const [unselectedFactions, setUnselectedFactions] = useState<FactionWithPalette[]>(factions.slice(1))
 
-    const onSelect = (faction: Faction) => {
+    const onSelect = (faction: FactionWithPalette) => {
         const newUnselected = factions.filter((el) => {
             return el.id != faction.id
         })
@@ -175,7 +175,7 @@ const ExtendedFactionCarousel = ({ factions }: { factions: Faction[] }) => {
     )
 }
 
-const FactionLogoSelector = ({ faction, onClick }: { faction: Faction; onClick: (faction: Faction) => void }) => {
+const FactionLogoSelector = ({ faction, onClick }: { faction: FactionWithPalette; onClick: (faction: FactionWithPalette) => void }) => {
     return (
         <Box
             component={"img"}

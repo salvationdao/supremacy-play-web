@@ -4,10 +4,10 @@ import { ClipThing, StyledImageText } from "../../.."
 import { SvgLocation } from "../../../../assets"
 import { FallbackUser } from "../../../../containers"
 import { colors } from "../../../../theme/theme"
-import { Faction, LocationSelectAlertProps } from "../../../../types"
+import { FactionWithPalette, LocationSelectAlertProps } from "../../../../types"
 import { PlayerNameGid } from "../../../Common/PlayerNameGid"
 
-export const LocationSelectAlert = ({ data, getFaction }: { data: LocationSelectAlertProps; getFaction: (factionID: string) => Faction }) => {
+export const LocationSelectAlert = ({ data, getFaction }: { data: LocationSelectAlertProps; getFaction: (factionID: string) => FactionWithPalette }) => {
     const { currentUser, ability } = data
     const { label, colour, image_url } = ability
     const { faction_id } = currentUser || FallbackUser

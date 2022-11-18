@@ -7,7 +7,7 @@ import { useTheme } from "../../../containers/theme"
 import { GetMechDestroyedInfo } from "../../../fetching"
 import { TruncateTextLines } from "../../../theme/styles"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
-import { DamageRecord, Faction, WarMachineDestroyedRecord, WarMachineState } from "../../../types"
+import { DamageRecord, FactionWithPalette, WarMachineDestroyedRecord, WarMachineState } from "../../../types"
 import { ClipThing } from "../../Common/Deprecated/ClipThing"
 
 export const WarMachineDestroyedInfoBT = ({
@@ -19,7 +19,7 @@ export const WarMachineDestroyedInfoBT = ({
     warMachine: WarMachineState
     open: boolean
     onClose: () => void
-    getFaction: (factionID: string) => Faction
+    getFaction: (factionID: string) => FactionWithPalette
 }) => {
     const theme = useTheme()
     const { newSnackbarMessage } = useGlobalNotifications()
@@ -223,7 +223,7 @@ const WarMachineBig = ({
     warMachine?: WarMachineState
     name?: string
     isDead?: boolean
-    getFaction: (factionID: string) => Faction
+    getFaction: (factionID: string) => FactionWithPalette
 }) => {
     const color = getFaction(warMachine?.factionID || "").palette.primary || colors.text
     return (
@@ -257,7 +257,7 @@ const WarMachineSmall = ({
     warMachine?: WarMachineState
     name?: string
     damagePercent: number
-    getFaction: (factionID: string) => Faction
+    getFaction: (factionID: string) => FactionWithPalette
 }) => {
     const color = getFaction(warMachine?.factionID || "").palette.primary || colors.text
     return (
@@ -296,7 +296,7 @@ const DamageList = ({
     title: string
     damageRecords: DamageRecord[]
     top?: number
-    getFaction: (factionID: string) => Faction
+    getFaction: (factionID: string) => FactionWithPalette
 }) => {
     return (
         <Box sx={{ flex: 1 }}>

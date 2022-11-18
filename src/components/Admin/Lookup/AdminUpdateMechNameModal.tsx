@@ -6,7 +6,7 @@ import { MAX_BAN_PROPOSAL_REASON_LENGTH } from "../../../constants"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
-import { Faction, MechDetails, User } from "../../../types"
+import { FactionWithPalette, MechDetails, User } from "../../../types"
 import { ClipThing } from "../../Common/Deprecated/ClipThing"
 import { FancyButton } from "../../Common/Deprecated/FancyButton"
 
@@ -15,7 +15,7 @@ export interface AdminUpdateMechNameModalProps {
     mech: MechDetails
     onClose: () => void
     onSuccess: (newMechName: string) => void
-    faction: Faction
+    faction: FactionWithPalette
 }
 
 export const AdminUpdateMechNameModal = ({ user, mech, onClose, onSuccess, faction }: AdminUpdateMechNameModalProps) => {

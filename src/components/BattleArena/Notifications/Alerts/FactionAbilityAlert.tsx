@@ -3,9 +3,9 @@ import { ClipThing, StyledImageText } from "../../.."
 import { SvgEmergency } from "../../../../assets"
 import { acronym } from "../../../../helpers"
 import { colors } from "../../../../theme/theme"
-import { BattleFactionAbilityAlertProps, Faction } from "../../../../types"
+import { BattleFactionAbilityAlertProps, FactionWithPalette } from "../../../../types"
 
-export const FactionAbilityAlert = ({ data, getFaction }: { data: BattleFactionAbilityAlertProps; getFaction: (factionID: string) => Faction }) => {
+export const FactionAbilityAlert = ({ data, getFaction }: { data: BattleFactionAbilityAlertProps; getFaction: (factionID: string) => FactionWithPalette }) => {
     const { user, ability } = data
     const { label, colour, image_url } = ability
 
