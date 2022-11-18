@@ -61,29 +61,23 @@ export const colors = {
     blue2: "#309FFF",
     purple: "#9A73F5",
     black2: "#13161B",
-    black3: "#080303",
 
-    neonPink: "#F72485",
     lightNeonBlue: "#8DE9FF",
     neonBlue: "#3DE0E0",
-    darkNeonBlue: "#176969",
     darkerNeonBlue: "#073339",
+    darkestNeonBlue: "#050c12",
     darkNavyBlue: "#0C0C1A",
+
     navy: "#2A2A40",
     darkNavy: "#101019",
     darkerNavy: "#08080C",
 
     health: "#BFF600",
     shield: "#00F7F7",
-    warMachineSkillBar: "#9669FF",
 
     lightGrey: "#999999",
     grey: "#777777",
     darkGrey: "#444444",
-    battleQueueBanner: "#C24242",
-    darkestNeonBlue: "#050c12",
-
-    globalChat: "#35A679",
 
     // Transactions
     supsCredit: "#01FF70",

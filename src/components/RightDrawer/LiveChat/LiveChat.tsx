@@ -152,7 +152,7 @@ const TabbedLayout = () => {
     const { isEnlisted, faction_id, primaryColor, secondaryColor, factionTabLabel } = useMemo(() => {
         const isEnlisted = !!factionID
         let faction_id = null
-        let primaryColor = colors.globalChat
+        let primaryColor = colors.green
         let secondaryColor = "#FFFFFF"
         let factionTabLabel = ""
 

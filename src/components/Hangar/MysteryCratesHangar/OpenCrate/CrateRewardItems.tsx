@@ -4,12 +4,12 @@ import { Link } from "react-router-dom"
 import { SvgSkin } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { getAssetItemDeets, getRarityDeets } from "../../../../helpers"
+import { TruncateTextLines } from "../../../../theme/styles"
 import { colors, fonts } from "../../../../theme/theme"
 import { FancyButton } from "../../../Common/Deprecated/FancyButton"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
 import { NiceTooltip } from "../../../Common/Nice/NiceTooltip"
 import { ArrayItem } from "./CrateRewardsModal"
-import { TruncateTextLines } from "../../../../theme/styles"
 
 interface CrateRewardItemsProps {
     item?: ArrayItem
@@ -38,7 +38,7 @@ export const CrateRewardItemsLarge = ({ item, largerVersion }: CrateRewardItemsP
                         borderThickness: ".2rem",
                     },
                     opacity: 0.8,
-                    backgroundColor: colors.black3,
+                    backgroundColor: colors.black2,
                     sx: { height: "100%", pointerEvents: assetItemDeets.subRoute ? "all" : "none" },
                 }}
                 sx={{ p: 0, color: "#FFFFFF" }}
