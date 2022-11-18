@@ -72,7 +72,7 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
                 width: "100%",
                 p: "1rem",
                 alignItems: "center",
-                backgroundColor: isOpen ? theme.factionTheme.s800 : `#1c1424`,
+                backgroundColor: isOpen ? theme.factionTheme.s800 : theme.factionTheme.s700,
                 transition: "background-color .2s ease-out",
             }}
         >
@@ -205,7 +205,7 @@ const TabbedLayout = () => {
                         ".MuiTabs-indicator": {
                             zIndex: -1,
                             height: "100%",
-                            background: theme.factionTheme.s700,
+                            background: theme.factionTheme.s600,
                             borderTop: `1px solid ${theme.factionTheme.primary}`,
                             borderLeft: tabValue !== 0 ? `1px solid ${theme.factionTheme.primary}` : `0px solid transparent`,
                             borderRight: isEnlisted ? `1px solid ${theme.factionTheme.primary}` : `0px solid transparent`,
@@ -296,7 +296,7 @@ const TabbedLayout = () => {
         tabValue,
         theme.factionTheme.background,
         theme.factionTheme.primary,
-        theme.factionTheme.s700,
+        theme.factionTheme.s600,
         userID,
     ])
 }
@@ -345,7 +345,7 @@ const SplitLayout = () => {
                             zIndex: 9,
                             height: `${5}rem`,
                             px: "1.8rem",
-                            background: theme.factionTheme.s700,
+                            background: theme.factionTheme.s600,
                             boxShadow: 1,
                         }}
                     >
@@ -374,7 +374,7 @@ const SplitLayout = () => {
                                 zIndex: 9,
                                 height: `${5}rem`,
                                 px: "1.8rem",
-                                background: theme.factionTheme.s700,
+                                background: theme.factionTheme.s600,
                                 boxShadow: 1,
                             }}
                         >
@@ -422,7 +422,7 @@ const SplitLayout = () => {
         factionTabLabel,
         isEnlisted,
         theme.factionTheme.primary,
-        theme.factionTheme.s700,
+        theme.factionTheme.s600,
         theme.factionTheme.text,
         userID,
     ])

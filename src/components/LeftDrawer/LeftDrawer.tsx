@@ -1,6 +1,7 @@
 import { Accordion, AccordionDetails, AccordionSummary, Drawer } from "@mui/material"
 import { DRAWER_TRANSITION_DURATION } from "../../constants"
 import { useAuth, useMobile, useUI } from "../../containers"
+import { useTheme } from "../../containers/theme"
 import { useActiveRouteID } from "../../hooks/useActiveRouteID"
 import { LeftRoutes } from "../../routes"
 import { siteZIndex } from "../../theme/theme"
@@ -9,6 +10,7 @@ import { DRAWER_OFFSET } from "../RightDrawer/RightDrawer"
 export const LEFT_DRAWER_WIDTH = 44 // rem
 
 export const LeftDrawer = () => {
+    const theme = useTheme()
     const { leftDrawerActiveTabID, setLeftDrawerActiveTabID } = useUI()
     const { isMobile } = useMobile()
     const { userID } = useAuth()
@@ -34,9 +36,9 @@ export const LeftDrawer = () => {
                     zIndex: siteZIndex.Drawer,
                     "& .MuiDrawer-paper": {
                         width: `${LEFT_DRAWER_WIDTH}rem`,
-                        backgroundColor: `#1B0313`,
+                        backgroundColor: theme.factionTheme.s800,
                         position: "absolute",
-                        borderRight: `1px solid #9F0410`,
+                        borderRight: `1px solid ${theme.factionTheme.primary}`,
                         overflow: "hidden",
                         transform: !isOpen ? `translateX(calc(-${LEFT_DRAWER_WIDTH}rem + ${DRAWER_OFFSET})) !important` : "",
                         visibility: !isOpen ? "visible !important" : "",
@@ -108,7 +110,7 @@ export const LeftDrawer = () => {
                                     sx={{
                                         height: "100%",
                                         p: 0,
-                                        backgroundColor: "#0D0415",
+                                        backgroundColor: theme.factionTheme.background,
                                     }}
                                 >
                                     <route.Component />

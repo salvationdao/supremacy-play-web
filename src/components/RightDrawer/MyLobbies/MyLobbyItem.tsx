@@ -10,7 +10,7 @@ import {
     SvgSecondPlace,
     SvgSupToken,
     SvgThirdPlace,
-    SvgUserDiamond2,
+    SvgUserDiamond2
 } from "../../../assets"
 import { useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -68,7 +68,7 @@ export const MyLobbyItem = ({ battleLobby }: MyLobbyItemProps) => {
                                 fontFamily: fonts.nostromoBlack,
                                 fontSize: "2rem",
                                 borderBottom: `1px solid ${factionTheme.primary}`,
-                                backgroundColor: factionTheme.s700,
+                                backgroundColor: factionTheme.s600,
                             }}
                         >
                             <SvgLobbies inline /> {battleLobby.name}

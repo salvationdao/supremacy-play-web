@@ -1,6 +1,7 @@
 import { Accordion, AccordionDetails, AccordionSummary, Drawer } from "@mui/material"
 import { DRAWER_TRANSITION_DURATION } from "../../constants"
 import { useAuth, useMobile, useUI } from "../../containers"
+import { useTheme } from "../../containers/theme"
 import { useActiveRouteID } from "../../hooks/useActiveRouteID"
 import { RightRoutes } from "../../routes"
 import { siteZIndex } from "../../theme/theme"
@@ -9,9 +10,10 @@ export const RIGHT_DRAWER_WIDTH = 38 // rem
 export const DRAWER_OFFSET = "7rem"
 
 export const RightDrawer = () => {
-    const { rightDrawerActiveTabID, setRightDrawerActiveTabID } = useUI()
-    const { isMobile } = useMobile()
+    const theme = useTheme()
     const { userID } = useAuth()
+    const { isMobile } = useMobile()
+    const { rightDrawerActiveTabID, setRightDrawerActiveTabID } = useUI()
     const activeRoute = useActiveRouteID()
 
     // Hide the drawer if on mobile OR none of the tabs are visible on the page
@@ -34,9 +36,9 @@ export const RightDrawer = () => {
                     zIndex: siteZIndex.Drawer,
                     "& .MuiDrawer-paper": {
                         width: `${RIGHT_DRAWER_WIDTH}rem`,
-                        backgroundColor: `#1B0313`,
+                        backgroundColor: theme.factionTheme.s800,
                         position: "absolute",
-                        borderLeft: `1px solid #9F0410`,
+                        borderLeft: `1px solid ${theme.factionTheme.primary}`,
                         overflow: "hidden",
                         transform: !isOpen ? `translateX(calc(${RIGHT_DRAWER_WIDTH}rem - ${DRAWER_OFFSET})) !important` : "",
                         visibility: !isOpen ? "visible !important" : "",
@@ -109,7 +111,7 @@ export const RightDrawer = () => {
                                     sx={{
                                         height: "100%",
                                         p: 0,
-                                        backgroundColor: "#0D0415",
+                                        backgroundColor: theme.factionTheme.background,
                                     }}
                                 >
                                     <route.Component />
