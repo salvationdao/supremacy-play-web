@@ -1,3 +1,4 @@
+import { SxProps } from "@mui/material"
 import BigNumber from "bignumber.js"
 import emojiRegex from "emoji-regex"
 import moment from "moment"
@@ -790,3 +791,12 @@ export const noop = () => {
 }
 
 export const isBrowser = typeof window !== "undefined"
+
+export const truncateTextLines = (numLines = 1, isInline = false): SxProps => ({
+    display: isInline ? "-webkit-inline-box" : "-webkit-box",
+    overflow: "hidden",
+    overflowWrap: "anywhere",
+    textOverflow: "ellipsis",
+    WebkitLineClamp: numLines,
+    WebkitBoxOrient: "vertical",
+})

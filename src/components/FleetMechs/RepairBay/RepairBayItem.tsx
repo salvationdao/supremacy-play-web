@@ -5,7 +5,7 @@ import { SvgMoreOptions, SvgUserDiamond } from "../../../assets"
 import { useSupremacy } from "../../../containers"
 import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { TruncateTextLines } from "../../../theme/styles"
+import { truncateTextLines } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { MechDetails, RepairSlot } from "../../../types"
 import { MechRepairBlocks } from "../../Common/Mech/MechRepairBlocks"
@@ -100,7 +100,7 @@ export const RepairBayItem = ({
                             sx={{
                                 fontFamily: fonts.nostromoBlack,
                                 fontWeight: "bold",
-                                ...TruncateTextLines(1),
+                                ...truncateTextLines(1),
                             }}
                         >
                             {mechDetails.name || mechDetails.label}
@@ -113,7 +113,7 @@ export const RepairBayItem = ({
                                     flex: 1,
                                     color: ownerFaction.primary_color,
                                     fontWeight: "bold",
-                                    ...TruncateTextLines(1),
+                                    ...truncateTextLines(1),
                                 }}
                             >
                                 <SvgUserDiamond size="2.2rem" inline fill={ownerFaction.primary_color} /> {mechDetails.user.username}#{mechDetails.user.gid}

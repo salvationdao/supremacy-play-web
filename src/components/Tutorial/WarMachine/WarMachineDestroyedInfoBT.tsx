@@ -8,7 +8,7 @@ import { GetMechDestroyedInfo } from "../../../fetching"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { DamageRecord, Faction, WarMachineDestroyedRecord, WarMachineState } from "../../../types"
 import { ClipThing } from "../../Common/Deprecated/ClipThing"
-import { TruncateTextLines } from "../../../theme/styles"
+import { truncateTextLines } from "../../../helpers"
 
 export const WarMachineDestroyedInfoBT = ({
     warMachine,
@@ -238,7 +238,7 @@ const WarMachineBig = ({
                 sx={{
                     textAlign: "center",
                     fontFamily: fonts.nostromoBlack,
-                    ...TruncateTextLines(2),
+                    ...truncateTextLines(2),
                     color,
                 }}
             >
@@ -273,7 +273,7 @@ const WarMachineSmall = ({
                     variant="body2"
                     sx={{
                         fontFamily: fonts.nostromoBlack,
-                        ...TruncateTextLines(1),
+                        ...truncateTextLines(1),
                         color,
                     }}
                 >

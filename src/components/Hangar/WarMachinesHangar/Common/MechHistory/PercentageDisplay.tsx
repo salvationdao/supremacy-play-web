@@ -1,7 +1,7 @@
 import { keyframes } from "@emotion/react"
 import { Box, Skeleton, Stack, styled, Typography } from "@mui/material"
 import { colors, fonts } from "../../../../../theme/theme"
-import { TruncateTextLines } from "../../../../../theme/styles"
+import { truncateTextLines } from "../../../../../helpers"
 
 interface PercentageDisplayProps {
     displayValue: string
@@ -75,7 +75,7 @@ export const PercentageDisplay = ({ displayValue, percentage, label, circleSize,
                     lineHeight: 1.2,
                     fontSize: "1.1rem",
                     fontFamily: fonts.nostromoBold,
-                    ...TruncateTextLines(2),
+                    ...truncateTextLines(2),
                 }}
             >
                 {label}

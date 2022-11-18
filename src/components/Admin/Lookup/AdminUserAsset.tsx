@@ -1,7 +1,7 @@
 import { Box, Button, Stack, Typography } from "@mui/material"
 import { useState } from "react"
 import { SvgEdit } from "../../../assets"
-import { TruncateTextLines } from "../../../theme/styles"
+import { truncateTextLines } from "../../../helpers"
 import { Faction, MechDetails, User } from "../../../types"
 import { AdminGetUserAsset } from "../../../types/admin"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
@@ -78,7 +78,7 @@ const MechEntry = ({ user, faction, mech }: MechEntryProps) => {
                         sx={{
                             fontSize: "1.8rem",
                             color: "#FFFFFF",
-                            ...TruncateTextLines(1),
+                            ...truncateTextLines(1),
                         }}
                     >
                         {name}

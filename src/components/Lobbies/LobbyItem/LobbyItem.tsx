@@ -4,7 +4,7 @@ import { SvgContentCopyIcon, SvgGlobal, SvgLock, SvgSupToken, SvgUserDiamond } f
 import { FactionIDs } from "../../../constants"
 import { useArena, useAuth, useSupremacy } from "../../../containers"
 import { supFormatter } from "../../../helpers"
-import { TruncateTextLines } from "../../../theme/styles"
+import { truncateTextLines } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { Faction } from "../../../types"
 import { BattleLobbiesMech, BattleLobby, BattleLobbySupporter } from "../../../types/battle_queue"
@@ -167,7 +167,7 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
                                 sx={{
                                     color: ownerFaction.primary_color,
                                     fontWeight: "bold",
-                                    ...TruncateTextLines(1),
+                                    ...truncateTextLines(1),
                                 }}
                             >
                                 <SvgUserDiamond size="2.2rem" inline fill={ownerFaction.primary_color} />{" "}

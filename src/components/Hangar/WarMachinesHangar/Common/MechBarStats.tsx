@@ -11,7 +11,7 @@ import {
     SvgWrapperProps,
 } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
-import { TruncateTextLines } from "../../../../theme/styles"
+import { truncateTextLines } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
 import { NiceTooltip } from "../../../Common/Nice/NiceTooltip"
@@ -262,7 +262,7 @@ export const BarStat = ({
                             sx={{
                                 fontSize,
                                 fontFamily: fonts.nostromoMedium,
-                                ...TruncateTextLines(1),
+                                ...truncateTextLines(1),
                             }}
                         >
                             {label}
@@ -323,7 +323,7 @@ export const BarStat = ({
                             fontFamily: fonts.nostromoBold,
                             color: parsedBoosted && parsedBoosted != parsedCurrent ? colors.gold : "#FFFFFF",
                             width: "10rem",
-                            ...TruncateTextLines(1),
+                            ...truncateTextLines(1),
                         }}
                     >
                         {parsedBoosted || parsedCurrent}
@@ -351,7 +351,7 @@ export const BarStat = ({
                             sx={{
                                 fontSize,
                                 fontFamily: fonts.nostromoBlack,
-                                ...TruncateTextLines(1),
+                                ...truncateTextLines(1),
                             }}
                         >
                             {label}
@@ -365,7 +365,7 @@ export const BarStat = ({
                             textAlign: "end",
                             fontFamily: fonts.nostromoBold,
                             color: parsedBoosted && parsedBoosted != parsedCurrent ? colors.gold : "#FFFFFF",
-                            ...TruncateTextLines(1),
+                            ...truncateTextLines(1),
                         }}
                     >
                         {compareDifference ? (

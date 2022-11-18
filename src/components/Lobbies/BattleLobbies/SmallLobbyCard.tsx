@@ -4,7 +4,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { useAuth, useSupremacy } from "../../../containers"
 import { colors, fonts } from "../../../theme/theme"
-import { TruncateTextLines } from "../../../theme/styles"
+import { truncateTextLines } from "../../../helpers"
 import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
 import { SvgGlobal, SvgLock, SvgQuestionMark2, SvgSupToken } from "../../../assets"
 import { supFormatter } from "../../../helpers"
@@ -220,7 +220,7 @@ export const BattleLobbyMechList = ({ factionID, battleLobbiesMechs }: BattleLob
 
     return (
         <Stack>
-            <Typography variant="subtitle2" fontFamily={fonts.nostromoBlack} color={faction.primary_color} sx={{ ...TruncateTextLines(1) }}>
+            <Typography variant="subtitle2" fontFamily={fonts.nostromoBlack} color={faction.primary_color} sx={{ ...truncateTextLines(1) }}>
                 {faction.label}
             </Typography>
             <Stack direction="row" alignItems="center" spacing={0.5}>

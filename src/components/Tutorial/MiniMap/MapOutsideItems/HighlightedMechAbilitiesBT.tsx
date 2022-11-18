@@ -15,7 +15,7 @@ import {
 } from "../../../../types"
 import { ClipThing } from "../../../Common/Deprecated/ClipThing"
 import { MoveCommandBT } from "../../WarMachine/WarMachineItem/MoveCommandBT"
-import { TruncateTextLines } from "../../../../theme/styles"
+import { truncateTextLines } from "../../../../helpers"
 
 const trainingGameAbilities: GameAbility[] = [
     {
@@ -166,7 +166,7 @@ const AbilityItem = ({ ability }: { hash: string; participantID: number; ability
                     pt: ".4rem",
                     lineHeight: 1,
                     fontWeight: "bold",
-                    ...TruncateTextLines(1),
+                    ...truncateTextLines(1),
                 }}
             >
                 {ready ? label : `${remainSeconds}s`}

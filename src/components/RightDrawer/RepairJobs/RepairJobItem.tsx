@@ -4,7 +4,7 @@ import { useTimer } from "use-timer"
 import { SvgCubes, SvgSupToken } from "../../../assets"
 import { useAuth, useSupremacy } from "../../../containers"
 import { supFormatter, timeSinceInWords } from "../../../helpers"
-import { TruncateTextLines } from "../../../theme/styles"
+import { truncateTextLines } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { RepairJob } from "../../../types/jobs"
 import { FancyButton } from "../../Common/Deprecated/FancyButton"
@@ -81,7 +81,7 @@ export const RepairJobItem = React.memo(function RepairJobItem({ repairJob, remo
                                     variant="body2"
                                     sx={{
                                         fontFamily: fonts.nostromoBlack,
-                                        ...TruncateTextLines(2),
+                                        ...truncateTextLines(2),
                                         span: { color: colors.orange },
                                     }}
                                 >
@@ -104,7 +104,7 @@ export const RepairJobItem = React.memo(function RepairJobItem({ repairJob, remo
                                 <Typography
                                     sx={{
                                         fontWeight: "bold",
-                                        ...TruncateTextLines(2),
+                                        ...truncateTextLines(2),
                                     }}
                                 >
                                     {supFormatter(repairJob.sups_worth_per_block || "0", 2)} / BLOCK

@@ -11,7 +11,7 @@ import { PlayerAsset, Weapon } from "../../../types"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { General } from "../../Marketplace/Common/MarketItem/General"
 import { WeaponBarStats } from "./Common/WeaponBarStats"
-import { TruncateTextLines } from "../../../theme/styles"
+import { truncateTextLines } from "../../../helpers"
 
 interface WeaponHangarItemProps {
     weapon: PlayerAsset
@@ -174,7 +174,7 @@ export const WeaponCommonArea = ({
                             sx={{
                                 color: rarityDeets.color,
                                 fontFamily: fonts.nostromoBold,
-                                ...TruncateTextLines(1),
+                                ...truncateTextLines(1),
                             }}
                         >
                             {rarityDeets.label}
@@ -187,7 +187,7 @@ export const WeaponCommonArea = ({
                 <Typography
                     sx={{
                         fontFamily: fonts.nostromoBlack,
-                        ...TruncateTextLines(1),
+                        ...truncateTextLines(1),
                     }}
                 >
                     {weap?.label}
@@ -198,7 +198,7 @@ export const WeaponCommonArea = ({
                     sx={{
                         color: getWeaponTypeColor(weaponDetails?.weapon_type),
                         fontFamily: fonts.nostromoBold,
-                        ...TruncateTextLines(1),
+                        ...truncateTextLines(1),
                     }}
                 >
                     {weaponDetails?.weapon_type}

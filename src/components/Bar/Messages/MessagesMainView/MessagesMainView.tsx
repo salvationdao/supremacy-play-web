@@ -7,7 +7,7 @@ import { usePagination } from "../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { useLocalStorage } from "../../../../hooks/useLocalStorage"
 import { GameServerKeys } from "../../../../keys"
-import { TruncateTextLines } from "../../../../theme/styles"
+import { truncateTextLines } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
 import { FeatureName, SystemMessage, SystemMessageDataType } from "../../../../types"
 import { CoolTable } from "../../../Common/CoolTable"
@@ -182,7 +182,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                                             {item.icon}
                                             <Typography
                                                 sx={{
-                                                    ...TruncateTextLines(1),
+                                                    ...truncateTextLines(1),
                                                     width: "100%",
                                                     maxWidth: "100px",
                                                     textAlign: "left",
@@ -195,7 +195,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                                         <Typography
                                             key={1}
                                             sx={{
-                                                ...TruncateTextLines(1),
+                                                ...truncateTextLines(1),
                                                 width: "100%",
                                                 maxWidth: "100px",
                                                 textAlign: "left",
@@ -206,7 +206,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                                         <Typography
                                             key={2}
                                             sx={{
-                                                ...TruncateTextLines(1),
+                                                ...truncateTextLines(1),
                                                 textAlign: "left",
                                                 textTransform: "none",
                                             }}

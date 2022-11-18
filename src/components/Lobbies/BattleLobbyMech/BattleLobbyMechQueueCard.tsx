@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import React, { useMemo } from "react"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets } from "../../../helpers"
-import { TruncateTextLines } from "../../../theme/styles"
+import { truncateTextLines } from "../../../helpers"
 import { fonts } from "../../../theme/theme"
 import { NewMechStruct } from "../../../types"
 import { MechBarStats } from "../../Hangar/WarMachinesHangar/Common/MechBarStats"
@@ -71,7 +71,7 @@ export const BattleLobbyMechQueueCard = React.memo(function QuickDeployItem({ is
                         sx={{
                             fontFamily: fonts.nostromoBlack,
                             fontWeight: "bold",
-                            ...TruncateTextLines(1),
+                            ...truncateTextLines(1),
                         }}
                     >
                         {mech.label}

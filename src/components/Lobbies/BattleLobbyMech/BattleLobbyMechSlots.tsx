@@ -7,7 +7,7 @@ import { useTheme } from "../../../containers/theme"
 import { getRarityDeets } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { TruncateTextLines } from "../../../theme/styles"
+import { truncateTextLines } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { Faction } from "../../../types"
 import { BattleLobbiesMech, BattleLobbySupporter } from "../../../types/battle_queue"
@@ -196,7 +196,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                 <Typography
                                     variant="h6"
                                     sx={{
-                                        ...TruncateTextLines(1),
+                                        ...truncateTextLines(1),
                                         textTransform: "uppercase",
                                         fontWeight: "bold",
                                         color: `#ffffff`,
@@ -209,7 +209,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                     <Typography
                                         variant="h6"
                                         sx={{
-                                            ...TruncateTextLines(1),
+                                            ...truncateTextLines(1),
                                             color: `${getFaction(ms.faction_id).primary_color}`,
                                             fontStyle: "italic",
                                         }}
