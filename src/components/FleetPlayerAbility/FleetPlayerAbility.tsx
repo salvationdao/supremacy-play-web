@@ -6,14 +6,14 @@ import { useDebounce, useUrlQuery } from "../../hooks"
 import { useGameServerSubscriptionSecuredUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
-import { Keycard } from "../../types"
+import { PlayerAbility } from "../../types"
 import { SortTypeLabel } from "../../types/marketplace"
-import { KeycardCard } from "../Common/Keycard/KeycardCard"
 import { NavTabs } from "../Common/NavTabs/NavTabs"
 import { usePageTabs } from "../Common/NavTabs/usePageTabs"
 import { NiceButton } from "../Common/Nice/NiceButton"
 import { NiceSelect } from "../Common/Nice/NiceSelect"
 import { NiceTextField } from "../Common/Nice/NiceTextField"
+import { PlayerAbilityCard } from "../Common/PlayerAbility/PlayerAbilitycard"
 
 enum UrlQueryParams {
     Sort = "sort",
@@ -23,9 +23,10 @@ enum UrlQueryParams {
 const sortOptions = [
     { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
     { label: SortTypeLabel.AlphabeticalReverse, value: SortTypeLabel.AlphabeticalReverse },
+    { label: SortTypeLabel.AbilityType, value: SortTypeLabel.AbilityType },
 ]
 
-export const FleetKeycards = () => {
+export const FleetPlayerAbility = () => {
     const [query, updateQuery] = useUrlQuery()
     const theme = useTheme()
     const { tabs, activeTabID, setActiveTabID, prevTab, nextTab } = usePageTabs()
@@ -35,30 +36,30 @@ export const FleetKeycards = () => {
     const [sort, setSort] = useState<string>(query.get(UrlQueryParams.Sort) || SortTypeLabel.Alphabetical)
 
     // Items
-    const [displayKeycards, setDisplayKeycards] = useState<Keycard[]>([])
-    const [keycards, setKeycards] = useState<Keycard[]>([])
+    const [displayPlayerAbilities, setDisplayPlayerAbilities] = useState<PlayerAbility[]>([])
+    const [playerAbilities, setPlayerAbilities] = useState<PlayerAbility[]>([])
     const [isLoading, setIsLoading] = useState(true)
 
-    useGameServerSubscriptionSecuredUser<Keycard[]>(
+    useGameServerSubscriptionSecuredUser<PlayerAbility[]>(
         {
-            URI: "/owned_keycards",
-            key: GameServerKeys.GetPlayerOwnedKeycards,
+            URI: "/player_abilities",
+            key: GameServerKeys.SubPlayerAbilitiesList,
         },
         (payload) => {
             if (!payload) return
 
-            setKeycards((prev) => {
+            setPlayerAbilities((prev) => {
                 if (prev.length === 0) {
                     return payload
                 }
 
                 // Replace current list
-                const list = prev.map((keycard) => payload.find((p) => p.id === keycard.id) || keycard)
+                const list = prev.map((playerAbility) => payload.find((p) => p.id === playerAbility.id) || playerAbility)
 
                 // Append new list
                 payload.forEach((p) => {
                     // If already exists
-                    if (list.some((keycard) => keycard.id === p.id)) {
+                    if (list.some((playerAbility) => playerAbility.id === p.id)) {
                         return
                     }
                     // Otherwise, push to the list
@@ -76,22 +77,25 @@ export const FleetKeycards = () => {
     useEffect(() => {
         if (isLoading) return
 
-        let result = [...keycards]
+        let result = [...playerAbilities]
 
         // Apply search
         if (search) {
-            result = result.filter((keycard) =>
-                `${keycard.blueprints.label.toLowerCase()} ${keycard.blueprints.description.toLowerCase()}`.includes(search.toLowerCase()),
+            result = result.filter((playerAbility) =>
+                `${playerAbility.ability.label.toLowerCase()} ${playerAbility.ability.description.toLowerCase()}`.includes(search.toLowerCase()),
             )
         }
 
         // Apply sort
         switch (sort) {
             case SortTypeLabel.Alphabetical:
-                result = result.sort((a, b) => `${a.blueprints.label}`.localeCompare(`${b.blueprints.label}`))
+                result = result.sort((a, b) => `${a.ability.label}`.localeCompare(`${b.ability.label}`))
                 break
             case SortTypeLabel.AlphabeticalReverse:
-                result = result.sort((a, b) => `${b.blueprints.label}`.localeCompare(`${a.blueprints.label}`))
+                result = result.sort((a, b) => `${b.ability.label}`.localeCompare(`${a.ability.label}`))
+                break
+            case SortTypeLabel.AbilityType:
+                result = result.sort((a, b) => `${b.ability.location_select_type}`.localeCompare(`${a.ability.location_select_type}`))
                 break
         }
 
@@ -101,8 +105,8 @@ export const FleetKeycards = () => {
             [UrlQueryParams.Search]: search,
         })
 
-        setDisplayKeycards(result)
-    }, [isLoading, keycards, search, sort, updateQuery])
+        setDisplayPlayerAbilities(result)
+    }, [isLoading, playerAbilities, search, sort, updateQuery])
 
     const content = useMemo(() => {
         if (isLoading) {
@@ -113,7 +117,7 @@ export const FleetKeycards = () => {
             )
         }
 
-        if (displayKeycards && displayKeycards.length > 0) {
+        if (displayPlayerAbilities && displayPlayerAbilities.length > 0) {
             return (
                 <Box
                     sx={{
@@ -124,8 +128,8 @@ export const FleetKeycards = () => {
                         justifyContent: "center",
                     }}
                 >
-                    {displayKeycards.map((keycard) => {
-                        return <KeycardCard key={`keycard-${keycard.id}`} keycard={keycard} />
+                    {displayPlayerAbilities.map((playerAbility) => {
+                        return <PlayerAbilityCard key={`playerAbility-${playerAbility.id}`} playerAbility={playerAbility} />
                     })}
                 </Box>
             )
@@ -158,12 +162,12 @@ export const FleetKeycards = () => {
                     No results...
                 </Typography>
 
-                <NiceButton route={{ to: `/marketplace/keycards` }} buttonColor={theme.factionTheme.primary}>
-                    GO TO MARKETPLACE
+                <NiceButton route={{ to: `/storefront/abilities` }} buttonColor={theme.factionTheme.primary}>
+                    GO TO STOREFRONT
                 </NiceButton>
             </Stack>
         )
-    }, [displayKeycards, isLoading, theme.factionTheme.primary])
+    }, [displayPlayerAbilities, isLoading, theme.factionTheme.primary])
 
     return (
         <Stack
@@ -193,7 +197,7 @@ export const FleetKeycards = () => {
                         {/* Show total */}
                         <Box sx={{ backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", px: "1rem" }}>
                             <Typography variant="h6" sx={{ whiteSpace: "nowrap" }}>
-                                {displayKeycards?.length || 0} ITEMS
+                                {displayPlayerAbilities?.length || 0} ITEMS
                             </Typography>
                         </Box>
 

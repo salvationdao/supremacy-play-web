@@ -38,6 +38,7 @@ export enum SortTypeLabel {
     MostViewed = "Most viewed",
     QueuedAmountHighest = "Queued amount: highest",
     QueuedAmountLowest = "Queued amount: lowest",
+    AbilityType = "Ability type",
 }
 
 export interface MarketUser {
