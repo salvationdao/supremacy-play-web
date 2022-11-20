@@ -91,7 +91,7 @@ export const FleetCrates = () => {
 
         // Apply search
         if (search) {
-            result = result.filter((crate) => `${crate.label.toLowerCase()}`.includes(search.toLowerCase()))
+            result = result.filter((crate) => `${crate.label.toLowerCase()} ${crate.description.toLowerCase()}`.includes(search.toLowerCase()))
         }
 
         // Apply sort

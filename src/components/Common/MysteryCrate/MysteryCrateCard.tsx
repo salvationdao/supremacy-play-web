@@ -67,11 +67,11 @@ export const MysteryCrateCard = React.memo(function MysteryCrateCard({ crate, se
                 {/* Crate name */}
                 <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{crate.label}</Typography>
 
-                {/* Mech image */}
+                {/* Crate image */}
                 <NiceBoxThing
                     border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
                     background={{ colors: [ownerFaction.background_color] }}
-                    sx={{ boxShadow: 0.4 }}
+                    sx={{ position: "relative", boxShadow: 0.4 }}
                 >
                     <MediaPreview
                         imageUrl={crate.large_image_url || crate.image_url || crate.avatar_url || SafePNG}

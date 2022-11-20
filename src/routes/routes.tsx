@@ -10,9 +10,9 @@ import { FactionPassBuy } from "../components/FactionPass/FactionPassBuy/Faction
 import { FactionPassDashboard } from "../components/FactionPass/FactionPassDashboard/FactionPassDashboard"
 import { FactionPassMechPool } from "../components/FactionPass/FactionPassMechPool/FactionPassMechPool"
 import { FleetCrates } from "../components/FleetCrates/FleetCrates"
+import { FleetKeycards } from "../components/FleetKeycards.tsx/FleetKeycards"
 import { FleetMechs } from "../components/FleetMechs/FleetMechs"
 import { FleetWeapons } from "../components/FleetWeapons/FleetWeapons"
-import { KeycardsHangar } from "../components/Hangar/KeycardsHangar/KeycardsHangar"
 import { PlayerAbilitiesHangar } from "../components/Hangar/PlayerAbilitiesHangar/PlayerAbilitiesHangar"
 import { SubmodelsHangar } from "../components/Hangar/SubmodelHangar/SubmodelsHangar"
 import { MechPage } from "../components/Hangar/WarMachinesHangar/WarMachineDetails/MechPage"
@@ -378,7 +378,7 @@ export const Routes: RouteSingle[] = [
         id: RouteSingleID.FleetKeycards,
         path: "/fleet/keycards",
         exact: true,
-        Component: KeycardsHangar,
+        Component: FleetKeycards,
         restrictions: {
             requireAuth: true,
             requireFaction: true,
