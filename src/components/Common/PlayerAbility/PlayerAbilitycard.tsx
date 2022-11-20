@@ -9,11 +9,11 @@ import { MediaPreview } from "../MediaPreview/MediaPreview"
 import { NiceBoxThing } from "../Nice/NiceBoxThing"
 import { NiceTooltip } from "../Nice/NiceTooltip"
 
-interface PlayerAbilityPlayerAbilityCardProps {
+interface PlayerAbilityCardProps {
     playerAbility: PlayerAbility
 }
 
-export const PlayerAbilityCard = React.memo(function PlayerAbilityCard({ playerAbility }: PlayerAbilityPlayerAbilityCardProps) {
+export const PlayerAbilityCard = React.memo(function PlayerAbilityCard({ playerAbility }: PlayerAbilityCardProps) {
     const { factionID } = useAuth()
     const { getFaction } = useSupremacy()
 

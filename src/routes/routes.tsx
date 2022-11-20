@@ -13,8 +13,8 @@ import { FleetCrates } from "../components/FleetCrates/FleetCrates"
 import { FleetKeycards } from "../components/FleetKeycards.tsx/FleetKeycards"
 import { FleetMechs } from "../components/FleetMechs/FleetMechs"
 import { FleetPlayerAbility } from "../components/FleetPlayerAbility/FleetPlayerAbility"
+import { FleetSubmodels } from "../components/FleetSubmodels/FleetSubmodels"
 import { FleetWeapons } from "../components/FleetWeapons/FleetWeapons"
-import { SubmodelsHangar } from "../components/Hangar/SubmodelHangar/SubmodelsHangar"
 import { MechPage } from "../components/Hangar/WarMachinesHangar/WarMachineDetails/MechPage"
 import { WeaponHangarDetails } from "../components/Hangar/WeaponsHangar/WeaponDetails/WeaponHangarDetails"
 import { GlobalStats } from "../components/Leaderboard/GlobalStats/GlobalStats"
@@ -321,7 +321,7 @@ export const Routes: RouteSingle[] = [
         id: RouteSingleID.FleetSubmodels,
         path: "/fleet/submodels",
         exact: true,
-        Component: SubmodelsHangar,
+        Component: FleetSubmodels,
         restrictions: {
             requireAuth: true,
             requireFaction: true,
