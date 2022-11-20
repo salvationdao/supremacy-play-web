@@ -1,12 +1,13 @@
 import { Stack, Typography } from "@mui/material"
 import React, { useCallback, useMemo, useState } from "react"
+import { useTimer } from "use-timer"
 import { SafePNG } from "../../../assets"
 import { useAuth, useGlobalNotifications, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { truncateTextLines } from "../../../helpers"
+import { msToTime, truncateTextLines } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { fonts } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { MysteryCrate, MysteryCrateType, OpenCrateResponse } from "../../../types"
 import { OpeningCrate } from "../../FleetCrates/FleetCrates"
 import { MediaPreview } from "../MediaPreview/MediaPreview"
@@ -78,6 +79,23 @@ export const MysteryCrateCard = React.memo(function MysteryCrateCard({ crate, se
                         objectFit="cover"
                         sx={{ height: "20rem" }}
                     />
+
+                    {new Date() < (crate.locked_until || Date.now) && (
+                        <Stack
+                            alignItems="center"
+                            sx={{
+                                position: "absolute",
+                                bottom: "-.2rem",
+                                width: "100%",
+                                px: ".8rem",
+                                py: ".5rem",
+                                background: `linear-gradient(#000000CC 26%, #000000)`,
+                                zIndex: 2,
+                            }}
+                        >
+                            <Countdown initialTime={(crate.locked_until.getTime() - new Date().getTime()) / 1000} />
+                        </Stack>
+                    )}
                 </NiceBoxThing>
 
                 {/* Crate description */}
@@ -91,3 +109,41 @@ export const MysteryCrateCard = React.memo(function MysteryCrateCard({ crate, se
         </NiceBoxThing>
     )
 })
+
+export const Countdown = ({ initialTime }: { initialTime: number | undefined }) => {
+    const { time } = useTimer({
+        autostart: true,
+        initialTime: initialTime,
+        endTime: 0,
+        timerType: "DECREMENTAL",
+    })
+
+    if (time <= 0) return null
+
+    const { days, hours, minutes, seconds } = msToTime(time * 1000)
+
+    return (
+        <Stack direction="row">
+            <SingleCountDown value={`${days}`} label="Days" />
+            <Typography sx={{ mx: ".5rem" }}>: </Typography>
+            <SingleCountDown value={`${hours}`} label="Hours" />
+            <Typography sx={{ mx: ".5rem" }}>: </Typography>
+            <SingleCountDown value={`${minutes}`} label="Minutes" />
+            <Typography sx={{ mx: ".5rem" }}>: </Typography>
+            <SingleCountDown value={`${seconds}`} label="Seconds" />
+        </Stack>
+    )
+}
+
+const SingleCountDown = ({ value, label }: { value: string; label: string }) => {
+    return (
+        <Stack alignItems="center">
+            <Typography variant="caption" sx={{ color: colors.lightNeonBlue, fontFamily: fonts.nostromoBold }}>
+                {value}
+            </Typography>
+            <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBold }}>
+                {label}
+            </Typography>
+        </Stack>
+    )
+}

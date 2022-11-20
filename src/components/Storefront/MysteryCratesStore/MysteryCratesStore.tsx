@@ -13,8 +13,8 @@ import { MysteryCrate, OpenCrateResponse, StorefrontMysteryCrate } from "../../.
 import { PageHeader } from "../../Common/Deprecated/PageHeader"
 import { TotalAndPageSizeOptions } from "../../Common/Deprecated/TotalAndPageSizeOptions"
 import { OpeningCrate } from "../../Hangar/MysteryCratesHangar/MysteryCratesHangar"
-import { CrateRewardsModal } from "../../Hangar/MysteryCratesHangar/OpenCrate/CrateRewardsModal"
-import { CrateRewardVideo } from "../../Hangar/MysteryCratesHangar/OpenCrate/CrateRewardVideo"
+import { CrateRewardsModal } from "../../FleetCrates/OpenCrate/CrateRewardsModal"
+import { CrateRewardVideo } from "../../FleetCrates/OpenCrate/CrateRewardVideo"
 import { MysteryCrateStoreItem } from "./MysteryCrateStoreItem/MysteryCrateStoreItem"
 
 export const MysteryCratesStore = () => {

@@ -14,8 +14,8 @@ import { usePageTabs } from "../Common/NavTabs/usePageTabs"
 import { NiceButton } from "../Common/Nice/NiceButton"
 import { NiceSelect } from "../Common/Nice/NiceSelect"
 import { NiceTextField } from "../Common/Nice/NiceTextField"
-import { CrateRewardsModal } from "../Hangar/MysteryCratesHangar/OpenCrate/CrateRewardsModal"
-import { CrateRewardVideo } from "../Hangar/MysteryCratesHangar/OpenCrate/CrateRewardVideo"
+import { CrateRewardsModal } from "./OpenCrate/CrateRewardsModal"
+import { CrateRewardVideo } from "./OpenCrate/CrateRewardVideo"
 
 export interface OpeningCrate {
     factionID: string
