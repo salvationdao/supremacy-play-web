@@ -10,6 +10,7 @@ export enum GameServerKeys {
     ToggleGojiBerryTea = "GOJI:BERRY:TEA",
     PlayerRank = "PLAYER:RANK:GET",
     ListPunishments = "PLAYER:PUNISHMENT:LIST",
+    SubPlayerFactionPassExpiryDate = "PLAYER:FACTION:PASS:EXPIRY:DATE",
 
     // Notification container
     SubGameNotification = "GAME:NOTIFICATION",
@@ -283,6 +284,10 @@ export enum GameServerKeys {
     VoiceChatVoteKick = "VOICE:VOTE:KICK",
     VoiceChatConnect = "VOICE:STREAM:CONNECT",
     VoiceChatDisconnect = "VOICE:STREAM:DISCONNECT",
+
+    // Faction Pass
+    SubFactionPassList = "FACTION:PASS:LIST",
+    PurchaseFactionPassWithSups = "FACTION:PASS:SUPS:PURCHASE",
 }
 
 export enum PassportServerKeys {

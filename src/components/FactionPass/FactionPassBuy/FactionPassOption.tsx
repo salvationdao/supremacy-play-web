@@ -22,6 +22,13 @@ import { FactionWithPalette } from "../../../types"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 import { DAYS_IN_A_MONTH } from "./FactionPassBuy"
+import { FactionPass } from "../../../types/faction_passes"
+import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
+import { AdminLookupHistoryResp } from "../../../types/admin"
+import { GameServerKeys } from "../../../keys"
+import { ConfirmModal } from "../../Common/Deprecated/ConfirmModal"
+import { NiceModal } from "../../Common/Nice/NiceModal"
+import { FactionPassBuyModal } from "./FactionPassBuyModal"
 
 interface OptionPrices {
     sups: string
@@ -54,26 +61,28 @@ const headerArrowImages: {
 }
 
 interface FactionPassOptionProps {
-    days: number
+    factionPass: FactionPass
     faction: FactionWithPalette
 }
-export const FactionPassOption = React.memo(function FactionPassOption({ days, faction }: FactionPassOptionProps) {
-    const [prices, setPrices] = useState<OptionPrices>()
+export const FactionPassOption = React.memo(function FactionPassOption({ factionPass, faction }: FactionPassOptionProps) {
+    const { send } = useGameServerCommandsFaction("/faction_commander")
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState("")
+    const [openPaymentModal, setOpenPaymentModal] = useState(false)
 
-    useEffect(() => {
-        setPrices({
-            sups: "1000000000000000000001",
+    const prices = useMemo(
+        () => ({
+            sups: factionPass.sups_cost,
             eth: 0.01,
             fiat: 8.2,
-        })
-    }, [])
-
-    const buyFactionPass = useCallback((days: number) => {
-        console.log("TODO", days)
-    }, [])
+        }),
+        [factionPass],
+    )
 
     const { priceLabel, headerArrowImage } = useMemo(() => {
-        let priceLabel = `${days} DAY PRICE`
+        const days = factionPass.last_for_days
+
+        let priceLabel = `${factionPass.label} PRICE`
         let headerArrowImage = ""
 
         if (days <= 3) {
@@ -90,7 +99,23 @@ export const FactionPassOption = React.memo(function FactionPassOption({ days, f
         }
 
         return { priceLabel, headerArrowImage }
-    }, [days, faction.id])
+    }, [factionPass.last_for_days, factionPass.label, faction.id])
+
+    const buyFactionPassWithSups = useCallback(async () => {
+        setIsLoading(true)
+        try {
+            const resp = await send<boolean>(GameServerKeys.PurchaseFactionPassWithSups, { faction_pass_id: factionPass.id })
+            if (!resp) return
+
+            setError("")
+            setOpenPaymentModal(false)
+        } catch (e) {
+            setError(typeof e === "string" ? e : "Failed to get lookup history.")
+            console.error(e)
+        } finally {
+            setIsLoading(false)
+        }
+    }, [factionPass.id, send])
 
     return (
         <Box sx={{ flex: 1, p: ".7rem" }}>
@@ -114,7 +139,10 @@ export const FactionPassOption = React.memo(function FactionPassOption({ days, f
                 {/* SUPS */}
                 <Stack direction="row" justifyContent="space-between" sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.palette.s600} 1px solid` }}>
                     <Typography fontWeight="bold">
-                        SUPS <i style={{ color: colors.red }}>-30% OFF</i>
+                        SUPS{" "}
+                        <i style={{ color: colors.red }}>
+                            {factionPass.sups_discount_percentage !== "0" ? `-${factionPass.sups_discount_percentage} % OFF` : ""}
+                        </i>
                     </Typography>
                     <Typography>
                         <SvgSupToken fill={colors.gold} size="1.8rem" inline />
@@ -141,7 +169,7 @@ export const FactionPassOption = React.memo(function FactionPassOption({ days, f
 
                 {/* Buy button */}
                 <Box sx={{ p: ".8rem 1.5rem" }}>
-                    <NiceButton corners buttonColor={colors.green} onClick={() => buyFactionPass(days)} sx={{ width: "100%", p: ".4rem 1rem" }}>
+                    <NiceButton corners buttonColor={colors.green} onClick={() => setOpenPaymentModal(true)} sx={{ width: "100%", p: ".4rem 1rem" }}>
                         <Stack spacing=".8rem" direction="row" alignItems="center">
                             <SvgWallet />
                             <Typography sx={{ fontFamily: fonts.nostromoBlack }}>BUY NOW</Typography>
@@ -149,6 +177,15 @@ export const FactionPassOption = React.memo(function FactionPassOption({ days, f
                     </NiceButton>
                 </Box>
             </NiceBoxThing>
+            {openPaymentModal && (
+                <FactionPassBuyModal
+                    open={openPaymentModal}
+                    factionPass={factionPass}
+                    onClose={() => setOpenPaymentModal(false)}
+                    onSupPurchaseConfirm={buyFactionPassWithSups}
+                    error={error}
+                />
+            )}
         </Box>
     )
 })

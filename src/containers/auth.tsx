@@ -51,6 +51,9 @@ export interface AuthState {
     punishments: PunishListItem[]
     setPunishments: Dispatch<React.SetStateAction<PunishListItem[]>>
     globalFeatures: Feature[]
+
+    setFactionPassExpiryDate: Dispatch<React.SetStateAction<Date | null>>
+    factionPassExpiryDate: Date | null
 }
 
 const initialState: AuthState = {
@@ -96,6 +99,10 @@ const initialState: AuthState = {
         return
     },
     globalFeatures: [],
+    setFactionPassExpiryDate: () => {
+        return
+    },
+    factionPassExpiryDate: null,
 }
 
 export const AuthContext = createContext<AuthState>(initialState)
@@ -109,6 +116,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const [userFromPassport, setUserFromPassport] = useState<UserFromPassport>()
     const [user, setUser] = useState<User>(initialState.user)
+    const [factionPassExpiryDate, setFactionPassExpiryDate] = useState<Date | null>(null)
     const userID = user.id
     const factionID = user.faction_id
     const roleType = user.role_type
@@ -269,6 +277,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 userRank,
                 setUserRank,
                 globalFeatures,
+                setFactionPassExpiryDate,
+                factionPassExpiryDate,
             }}
         >
             {children}
@@ -281,7 +291,7 @@ export const useAuth = () => {
 }
 
 export const UserUpdater = () => {
-    const { userID, factionID, setUser, setUserStat, setUserRank, setPunishments, setIsActive } = useAuth()
+    const { userID, factionID, setUser, setUserStat, setUserRank, setPunishments, setIsActive, setFactionPassExpiryDate } = useAuth()
     const { getFaction } = useSupremacy()
     const { setFactionColors } = useTheme()
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -335,6 +345,17 @@ export const UserUpdater = () => {
         (payload) => {
             if (!payload) return
             setPunishments(payload)
+        },
+    )
+
+    // Listen on user punishments
+    useGameServerSubscriptionSecuredUser<Date | null>(
+        {
+            URI: "/faction_pass_expiry_date",
+            key: GameServerKeys.SubPlayerFactionPassExpiryDate,
+        },
+        (payload) => {
+            setFactionPassExpiryDate(payload)
         },
     )
 
