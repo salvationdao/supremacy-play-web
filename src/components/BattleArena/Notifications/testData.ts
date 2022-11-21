@@ -1,4 +1,4 @@
-import { AnyAbility, LocationSelectType, NotificationStruct, User, UserRank, RoleType } from "../../../types"
+import { AnyAbility, LocationSelectType, NotificationStruct, User, UserRank, RoleType, RarityEnum } from "../../../types"
 
 enum NotificationType {
     Text = "TEXT",
@@ -81,7 +81,7 @@ const wm1 = {
     maxHealth: 1,
     maxShield: 1,
     imageAvatar: "http://localhost:5005/static/media/GenericWarMachinePNG.df93230e7e423976eda9.png",
-    tier: "string",
+    tier: RarityEnum.Colossal,
     ownerUsername: "noob-0x14dc3eb9#12443",
     modelID: "ac27f3b9-753d-4ace-84a9-21c041195344",
     health: 1,
@@ -119,7 +119,7 @@ const wm2 = {
     maxHealth: 1,
     maxShield: 1,
     imageAvatar: "http://localhost:5005/static/media/GenericWarMachinePNG.df93230e7e423976eda9.png",
-    tier: "string",
+    tier: RarityEnum.Colossal,
     health: 1,
     shield: 1,
     position: { x: 1, y: 1 },

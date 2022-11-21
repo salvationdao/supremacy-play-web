@@ -11,7 +11,7 @@ import { colors, fonts } from "../../theme/theme"
 import { MysteryCrateType, OpenCrateResponse, RewardResponse } from "../../types"
 import { ClipThing } from "../Common/Deprecated/ClipThing"
 import { FancyButton } from "../Common/Deprecated/FancyButton"
-import { OpeningCrate } from "../Hangar/MysteryCratesHangar/MysteryCratesHangar"
+import { OpeningCrate } from "../FleetCrates/FleetCrates"
 
 interface ClaimedRewardsProps {
     rewards: RewardResponse[]

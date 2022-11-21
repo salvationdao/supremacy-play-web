@@ -18,7 +18,7 @@ import { ChipFilter } from "../../../../../Common/Deprecated/SortAndFilters/Chip
 import { SliderRangeFilter } from "../../../../../Common/Deprecated/SortAndFilters/SliderRangeFilterSection"
 import { SortAndFilters } from "../../../../../Common/Deprecated/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../../../../Common/Deprecated/TotalAndPageSizeOptions"
-import { GetWeaponsRequest, GetWeaponsResponse } from "../../../../WeaponsHangar/WeaponsHangar"
+import { GetWeaponsRequest, GetWeaponsResponse } from "../Draggables/WeaponDraggables"
 import { WeaponItem } from "./Weapons/WeaponItem"
 import { WeaponPreview } from "./Weapons/WeaponPreview"
 

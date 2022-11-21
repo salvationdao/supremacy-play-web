@@ -9,7 +9,7 @@ import { fonts, siteZIndex } from "../../../theme/theme"
 import { AssetItemType, MechSkin, MysteryCrate, MysteryCrateType, OpenCrateResponse, StorefrontMysteryCrate, WeaponSkin } from "../../../types"
 import { ClipThing } from "../../Common/Deprecated/ClipThing"
 import { FancyButton } from "../../Common/Deprecated/FancyButton"
-import { OpeningCrate } from "../../Hangar/MysteryCratesHangar/MysteryCratesHangar"
+import { OpeningCrate } from "../FleetCrates"
 import { CrateRewardItemsLarge, CrateRewardItemsSmall } from "./CrateRewardItems"
 
 interface CrateRewardsModalProps {

@@ -15,7 +15,7 @@ import { MysteryCrate, OpenCrateResponse, RewardResponse, StorefrontMysteryCrate
 import { ClaimedRewards } from "../../../Claims/ClaimedRewards"
 import { ConfirmModal } from "../../../Common/Deprecated/ConfirmModal"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
-import { OpeningCrate } from "../../../Hangar/MysteryCratesHangar/MysteryCratesHangar"
+import { OpeningCrate } from "../../../FleetCrates/FleetCrates"
 
 interface MysteryCrateStoreItemProps {
     enlargedView?: boolean

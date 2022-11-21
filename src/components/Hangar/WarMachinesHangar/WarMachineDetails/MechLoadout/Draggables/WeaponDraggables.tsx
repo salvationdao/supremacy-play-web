@@ -5,18 +5,54 @@ import { useDimension } from "../../../../../../containers"
 import { useTheme } from "../../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../../helpers"
 import { usePagination } from "../../../../../../hooks"
-import { useGameServerCommandsUser, useGameServerSubscriptionSecuredUser } from "../../../../../../hooks/useGameServer"
+import { useGameServerCommandsUser } from "../../../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../../../keys"
 import { colors, fonts } from "../../../../../../theme/theme"
-import { AssetItemType, Weapon } from "../../../../../../types"
+import { AssetItemType, PlayerAsset, Weapon } from "../../../../../../types"
 import { SortTypeLabel } from "../../../../../../types/marketplace"
 import { NiceSelect } from "../../../../../Common/Nice/NiceSelect"
 import { NiceTextField } from "../../../../../Common/Nice/NiceTextField"
-import { GetWeaponsRequest } from "../../../../WeaponsHangar/WeaponsHangar"
 import { MechLoadoutItem } from "../../../Common/MechLoadoutItem"
 import { DragWithTypesProps } from "../MechLoadoutDraggables"
 import { WeaponTooltip } from "../Tooltips/WeaponTooltip"
 import { LoadoutDraggable } from "./LoadoutDraggable"
+
+export interface GetWeaponsRequest {
+    search: string
+    page: number
+    page_size: number
+    display_xsyn_mechs?: boolean
+    display_genesis_and_limited?: boolean
+    include_market_listed: boolean
+    exclude_equipped?: boolean
+    exclude_mech_locked?: boolean
+    sort_by: string
+    sort_dir: string
+    exclude_ids: string[]
+    weapon_types: string[]
+    rarities: string[]
+    equipped_statuses: string[]
+    stat_ammo?: GetWeaponStatFilter
+    stat_damage?: GetWeaponStatFilter
+    stat_damage_falloff?: GetWeaponStatFilter
+    stat_damage_falloff_rate?: GetWeaponStatFilter
+    stat_radius?: GetWeaponStatFilter
+    stat_radius_damage_falloff?: GetWeaponStatFilter
+    stat_rate_of_fire?: GetWeaponStatFilter
+    stat_energy_cost?: GetWeaponStatFilter
+    stat_projectile_speed?: GetWeaponStatFilter
+    stat_spread?: GetWeaponStatFilter
+}
+
+interface GetWeaponStatFilter {
+    min?: number
+    max?: number
+}
+
+export interface GetWeaponsResponse {
+    weapons: PlayerAsset[]
+    total: number
+}
 
 export interface GetWeaponsDetailedResponse {
     weapons: Weapon[]
