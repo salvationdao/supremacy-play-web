@@ -1,6 +1,6 @@
 import { Box, Stack, styled, Typography } from "@mui/material"
 import { GAME_UI_ID, useDimension, useGlobalNotifications, useSupremacy, useUI } from "../../../containers"
-import { Faction } from "../../../types"
+import { FactionWithPalette } from "../../../types"
 
 import { ArrowForward } from "@mui/icons-material"
 import { useCallback, useEffect } from "react"
@@ -125,7 +125,7 @@ const getFactionInfo = (factionLabel: string) => {
     }
 }
 
-const FactionBox = ({ faction }: { faction: Faction }) => {
+const FactionBox = ({ faction }: { faction: FactionWithPalette }) => {
     const { setLeftDrawerActiveTabID, setRightDrawerActiveTabID } = useUI()
     const { description, fleetImages, abilities, wallpaper, colorOverlay, wiki, logo } = getFactionInfo(faction.label)
     const { gameUIDimensions } = useDimension()
@@ -231,7 +231,7 @@ const FactionBox = ({ faction }: { faction: Faction }) => {
                         <Box id="logo" component="img" src={logo} alt={`${faction.label}'s logo`} />
                         <Typography variant="h2">{faction.label}</Typography>
                     </Box>
-                    <InnerStack id="inner-stack" color={faction.primary_color} mediumScreen={mediumScreen}>
+                    <InnerStack id="inner-stack" color={faction.palette.primary} mediumScreen={mediumScreen}>
                         {/* description */}
                         <Typography
                             sx={{
@@ -322,7 +322,7 @@ const FactionBox = ({ faction }: { faction: Faction }) => {
                                 clipSize: "9px",
                                 backgroundColor: colors.darkNavyBlue,
                                 opacity: 1,
-                                border: { borderColor: faction.primary_color, borderThickness: "1px" },
+                                border: { borderColor: faction.palette.primary, borderThickness: "1px" },
                             }}
                             onClick={enlistFaction}
                         >
@@ -333,7 +333,7 @@ const FactionBox = ({ faction }: { faction: Faction }) => {
                                     zIndex: 2,
                                     padding: "0 2em",
                                     textAlign: "center !important",
-                                    color: faction.primary_color,
+                                    color: faction.palette.primary,
                                     fontSize: "2.5rem",
                                     fontFamily: fonts.nostromoBold,
                                 }}

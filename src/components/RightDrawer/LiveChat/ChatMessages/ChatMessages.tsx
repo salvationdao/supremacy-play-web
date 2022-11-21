@@ -86,16 +86,13 @@ export const ChatMessages = React.memo(function ChatMessages({ faction_id, prima
                     sx={{
                         flex: 1,
                         position: "relative",
-                        ml: "1.5rem",
-                        mr: ".8rem",
-                        pr: "1.6rem",
-                        my: "1rem",
                         overflowY: "auto",
                         overflowX: "hidden",
                         direction: "ltr",
+                        p: "1rem",
                     }}
                 >
-                    <Stack spacing=".6rem" sx={{ mt: ".88rem" }}>
+                    <Stack spacing=".6rem">
                         {chatMessages && chatMessages.length > 0 ? (
                             chatMessages.map((message, i) => {
                                 if (message.type === ChatMessageType.Text) {

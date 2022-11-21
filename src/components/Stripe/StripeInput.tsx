@@ -1,6 +1,6 @@
-import React, { useState, useImperativeHandle } from "react"
-import { useTheme } from "@mui/material/styles"
 import { InputBaseComponentProps } from "@mui/material/InputBase"
+import { useTheme } from "@mui/material/styles"
+import React, { useImperativeHandle, useState } from "react"
 import { fonts } from "../../theme/theme"
 
 export interface StripeGenericChangeEvent {
@@ -35,7 +35,7 @@ export const StripeInput = React.forwardRef<any, InputBaseComponentProps>(functi
                 style: {
                     base: {
                         color: theme.palette.text.primary,
-                        fontFamily: fonts.shareTech,
+                        fontFamily: fonts.rajdhaniMedium,
                         fontSize: "13.2px",
                     },
                     invalid: {

@@ -29,7 +29,7 @@ export const RelatedAccounts = ({ relatedAccounts }: RelatedAccountsProps) => {
                                             width: "2rem",
                                             height: "2rem",
                                             background: `url(${faction.logo_url})`,
-                                            backgroundColor: faction.background_color,
+                                            backgroundColor: faction.palette.background,
                                             backgroundRepeat: "no-repeat",
                                             backgroundPosition: "center",
                                             backgroundSize: "contain",

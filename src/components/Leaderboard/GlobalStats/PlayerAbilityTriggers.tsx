@@ -83,7 +83,7 @@ export const PlayerAbilityTriggers = ({ selectedRound }: { selectedRound?: Leade
 
                         <PlayerNameGid key={2} player={item.player} styledImageTextProps={{ variant: "h6", imageSize: 2.4 }} />,
 
-                        <Typography variant="h6" key={3} sx={{ fontWeight: "bold", color: faction.primary_color, textTransform: "uppercase" }}>
+                        <Typography variant="h6" key={3} sx={{ fontWeight: "bold", color: faction.palette.primary, textTransform: "uppercase" }}>
                             {faction.label}
                         </Typography>,
 

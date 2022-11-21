@@ -111,12 +111,12 @@ export const RepairBayItem = ({
                                 variant="h6"
                                 sx={{
                                     flex: 1,
-                                    color: ownerFaction.primary_color,
+                                    color: ownerFaction.palette.primary,
                                     fontWeight: "bold",
                                     ...truncateTextLines(1),
                                 }}
                             >
-                                <SvgUserDiamond size="2.2rem" inline fill={ownerFaction.primary_color} /> {mechDetails.user.username}#{mechDetails.user.gid}
+                                <SvgUserDiamond size="2.2rem" inline fill={ownerFaction.palette.primary} /> {mechDetails.user.username}#{mechDetails.user.gid}
                             </Typography>
 
                             <Blocks

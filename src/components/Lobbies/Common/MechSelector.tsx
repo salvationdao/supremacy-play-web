@@ -1,22 +1,22 @@
 import { Box, Pagination, Stack, Typography } from "@mui/material"
-import { useTheme } from "../../../containers/theme"
-import { useDebounce, usePagination } from "../../../hooks"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { NewMechStruct } from "../../../types"
-import { colors, fonts } from "../../../theme/theme"
-import { SearchBattle } from "../../Replays/BattlesReplays/SearchBattle"
-import { TotalAndPageSizeOptions } from "../../Common/Deprecated/TotalAndPageSizeOptions"
-import { SortTypeLabel } from "../../../types/marketplace"
+import FlipMove from "react-flip-move"
+import { EmptyWarMachinesPNG } from "../../../assets"
+import { useAuth } from "../../../containers"
+import { useTheme } from "../../../containers/theme"
+import { getRarityDeets } from "../../../helpers"
+import { useDebounce, usePagination } from "../../../hooks"
 import { useGameServerSubscriptionFaction, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { getRarityDeets } from "../../../helpers"
-import FlipMove from "react-flip-move"
-import { BattleLobbyMechQueueCard } from "../BattleLobbyMech/BattleLobbyMechQueueCard"
-import { EmptyWarMachinesPNG } from "../../../assets"
-import { QueueDetails } from "../BattleLobbyMech/QueueDetails"
-import { FancyButton } from "../../Common/Deprecated/FancyButton"
+import { colors, fonts } from "../../../theme/theme"
+import { NewMechStruct } from "../../../types"
 import { BattleLobby, PlayerQueueStatus } from "../../../types/battle_queue"
-import { useAuth } from "../../../containers"
+import { SortTypeLabel } from "../../../types/marketplace"
+import { FancyButton } from "../../Common/Deprecated/FancyButton"
+import { TotalAndPageSizeOptions } from "../../Common/Deprecated/TotalAndPageSizeOptions"
+import { SearchBattle } from "../../Replays/BattlesReplays/SearchBattle"
+import { BattleLobbyMechQueueCard } from "../BattleLobbyMech/BattleLobbyMechQueueCard"
+import { QueueDetails } from "../BattleLobbyMech/QueueDetails"
 
 const sortOptions = [
     { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
@@ -311,7 +311,7 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs, battleLobby, kee
                         changePage(1)
                     }}
                 >
-                    <Typography variant="body2" fontFamily={fonts.nostromoHeavy} color={showStakedMechs ? factionTheme.secondary : factionTheme.primary}>
+                    <Typography variant="body2" fontFamily={fonts.nostromoHeavy} color={showStakedMechs ? factionTheme.text : factionTheme.primary}>
                         Staked Mechs
                     </Typography>
                 </FancyButton>

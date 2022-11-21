@@ -489,13 +489,13 @@ export const MechLoadoutWeaponModal = ({ containerRef, onClose, onConfirm, equip
                             border: { isFancy: true, borderColor: theme.factionTheme.primary },
                             sx: { position: "relative", mt: "2rem" },
                         }}
-                        sx={{ px: "1.8rem", py: ".8rem", color: theme.factionTheme.secondary }}
+                        sx={{ px: "1.8rem", py: ".8rem", color: theme.factionTheme.text }}
                     >
                         <Typography
                             variant="body2"
                             sx={{
                                 textAlign: "center",
-                                color: theme.factionTheme.secondary,
+                                color: theme.factionTheme.text,
                                 fontFamily: fonts.nostromoBold,
                             }}
                         >
@@ -505,7 +505,7 @@ export const MechLoadoutWeaponModal = ({ containerRef, onClose, onConfirm, equip
                 </Stack>
             </Stack>
         )
-    }, [equipped, isLoading, loadError, selectedWeapon?.id, theme.factionTheme.primary, theme.factionTheme.secondary, weapons])
+    }, [equipped, isLoading, loadError, selectedWeapon?.id, theme.factionTheme.primary, theme.factionTheme.text, weapons])
 
     return (
         <Drawer

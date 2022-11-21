@@ -65,21 +65,21 @@ export const NiceTooltip = ({
                     background={{ colors: [primaryColor] }}
                     sx={{ height: "100%" }}
                 >
-                    <Stack sx={{ height: "100%", p: ".5rem 1.2rem", backgroundColor: "#00000090" }}>
-                        {renderNode || (
+                    {renderNode || (
+                        <Stack sx={{ height: "100%", p: ".5rem 1.2rem", backgroundColor: "#00000090" }}>
                             <Typography
                                 variant="body1"
                                 sx={{
                                     color: textColor || "#FFFFFF",
-                                    fontFamily: fonts.shareTech,
+                                    fontFamily: fonts.rajdhaniMedium,
                                     lineHeight: 1.5,
                                     textAlign: isCentered ? "center" : "start",
                                 }}
                             >
                                 <strong>{text}</strong>
                             </Typography>
-                        )}
-                    </Stack>
+                        </Stack>
+                    )}
                 </NiceBoxThing>
             }
             componentsProps={{
@@ -87,7 +87,7 @@ export const NiceTooltip = ({
                     style: { filter: "drop-shadow(0 3px 3px #00000050)", zIndex: 999999 },
                 },
                 arrow: { sx: { color: `${primaryColor}80` } },
-                tooltip: { sx: { padding: "0 !important", maxWidth: "25rem", background: "unset", ...tooltipSx } },
+                tooltip: { sx: { padding: "0 !important", maxWidth: renderNode ? "auto" : "25rem", background: "unset", ...tooltipSx } },
             }}
         >
             {children}

@@ -262,7 +262,7 @@ export const UserDetailsPopover = ({
                             borderRadius: 0.5,
                             "&:hover": {
                                 backgroundColor: theme.factionTheme.primary,
-                                ".MuiTypography-root": { color: theme.factionTheme.secondary },
+                                ".MuiTypography-root": { color: theme.factionTheme.text },
                             },
                             ".MuiTypography-root": {
                                 px: "1rem",
@@ -279,7 +279,7 @@ export const UserDetailsPopover = ({
                             sx: {
                                 "&& .Mui-selected": {
                                     ".MuiTypography-root": {
-                                        color: theme.factionTheme.secondary,
+                                        color: theme.factionTheme.text,
                                     },
                                     backgroundColor: theme.factionTheme.primary,
                                 },

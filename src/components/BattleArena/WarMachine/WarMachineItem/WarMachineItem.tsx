@@ -47,8 +47,8 @@ export const WarMachineItem = ({
     const rarityDeets = useMemo(() => getRarityDeets(tier), [tier])
     const wmImageUrl = useMemo(() => imageAvatar || GenericWarMachinePNG, [imageAvatar])
     const selfOwned = useMemo(() => ownedByID === userID, [ownedByID, userID])
-    const primaryColor = useMemo(() => (selfOwned ? colors.gold : faction.primary_color), [faction.primary_color, selfOwned])
-    const backgroundColor = useMemo(() => faction.background_color, [faction.background_color])
+    const primaryColor = useMemo(() => (selfOwned ? colors.gold : faction.palette.primary), [faction.palette.primary, selfOwned])
+    const backgroundColor = useMemo(() => faction.palette.background, [faction.palette.background])
 
     // Highlighting on the map
     const handleClick = useCallback(() => {

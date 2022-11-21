@@ -1,14 +1,13 @@
-import { BattleLobbiesMech, BattleLobby } from "../../../types/battle_queue"
-import { useTheme } from "../../../containers/theme"
 import { Box, Stack, Typography } from "@mui/material"
-import React, { useCallback, useEffect, useMemo, useState } from "react"
-import { useAuth, useSupremacy } from "../../../containers"
-import { colors, fonts } from "../../../theme/theme"
-import { truncateTextLines } from "../../../helpers"
-import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { SvgGlobal, SvgLock, SvgQuestionMark2, SvgSupToken } from "../../../assets"
-import { supFormatter } from "../../../helpers"
+import { useAuth, useSupremacy } from "../../../containers"
+import { useTheme } from "../../../containers/theme"
+import { supFormatter, truncateTextLines } from "../../../helpers"
 import { scaleUpKeyframes } from "../../../theme/keyframes"
+import { colors, fonts } from "../../../theme/theme"
+import { BattleLobbiesMech, BattleLobby } from "../../../types/battle_queue"
+import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
 import { BattleLobbySingleModal } from "./BattleLobbySingleModal"
 
 interface SmallLobbyCardProps {
@@ -162,7 +161,7 @@ export const BattleLobbyMechList = ({ factionID, battleLobbiesMechs }: BattleLob
                     justifyContent="center"
                     key={key}
                     sx={{
-                        border: `${isQueuedBy ? colors.gold : faction.primary_color} 1px solid`,
+                        border: `${isQueuedBy ? colors.gold : faction.palette.primary} 1px solid`,
                         height: "4rem",
                         width: "4rem",
 
@@ -178,7 +177,7 @@ export const BattleLobbyMechList = ({ factionID, battleLobbiesMechs }: BattleLob
                                     bottom: 0,
                                     width: "100%",
                                     transform: "translate(-50%, 0)",
-                                    backgroundColor: `${faction.background_color}dd`,
+                                    backgroundColor: `${faction.palette.background}dd`,
                                 }}
                             />
                             <Box
@@ -199,7 +198,7 @@ export const BattleLobbyMechList = ({ factionID, battleLobbiesMechs }: BattleLob
                                         left: 0,
                                         width: "100%",
                                         height: "100%",
-                                        backgroundColor: `${faction.background_color}AA`,
+                                        backgroundColor: `${faction.palette.background}AA`,
                                     }}
                                 />
                             )}
@@ -215,12 +214,12 @@ export const BattleLobbyMechList = ({ factionID, battleLobbiesMechs }: BattleLob
                 </Stack>
             )
         },
-        [faction.background_color, faction.primary_color, userID],
+        [faction.palette.background, faction.palette.primary, userID],
     )
 
     return (
         <Stack>
-            <Typography variant="subtitle2" fontFamily={fonts.nostromoBlack} color={faction.primary_color} sx={{ ...truncateTextLines(1) }}>
+            <Typography variant="subtitle2" fontFamily={fonts.nostromoBlack} color={faction.palette.primary} sx={{ ...truncateTextLines(1) }}>
                 {faction.label}
             </Typography>
             <Stack direction="row" alignItems="center" spacing={0.5}>

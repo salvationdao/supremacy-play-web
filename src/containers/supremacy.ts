@@ -4,8 +4,12 @@ import { createContainer } from "unstated-next"
 import { FallbackFaction, useGlobalNotifications } from "."
 import { GAME_SERVER_HOSTNAME } from "../constants"
 import { GetFactionsAll } from "../fetching"
-import { FactionsAll } from "../types"
+import { FactionWithPalette } from "../types"
 import { useWS } from "./ws/useWS"
+
+interface FactionsAll {
+    [faction_id: string]: FactionWithPalette
+}
 
 export const SupremacyContainer = createContainer(() => {
     const isTutorial = location.pathname.includes("/tutorial")
@@ -92,6 +96,7 @@ export const SupremacyContainer = createContainer(() => {
                     currentData[f.id] = f
                 })
                 setFactionsAll(currentData)
+                console.log(resp, currentData)
             } catch (e) {
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to retrieve faction data.", "error")
                 console.error(e)

@@ -20,7 +20,7 @@ export const FactionPassDashboard = () => {
                 p: "4rem 5rem",
                 position: "relative",
                 height: "100%",
-                backgroundColor: faction.background_color,
+                backgroundColor: faction.palette.background,
                 background: `url()`,
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",

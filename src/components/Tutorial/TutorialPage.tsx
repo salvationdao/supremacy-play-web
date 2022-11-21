@@ -275,7 +275,9 @@ const BattleTraining = () => {
                                         >
                                             {t.title}
                                         </Typography>
-                                        <Typography sx={{ fontFamily: fonts.shareTech, textTransform: "none", fontSize: "2rem" }}>{t.description}</Typography>
+                                        <Typography sx={{ fontFamily: fonts.rajdhaniMedium, textTransform: "none", fontSize: "2rem" }}>
+                                            {t.description}
+                                        </Typography>
                                     </Stack>
                                 </Stack>
                             </ClipThing>

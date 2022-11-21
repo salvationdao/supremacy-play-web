@@ -3,7 +3,7 @@ import BigNumber from "bignumber.js"
 import { useEffect } from "react"
 import { GenericWarMachinePNG } from "../../../../assets"
 import { useTraining } from "../../../../containers"
-import { Faction, GameAbility, MechAbilityStages, WarMachineState } from "../../../../types"
+import { FactionWithPalette, GameAbility, MechAbilityStages, WarMachineState } from "../../../../types"
 import { ClipThing } from "../../../Common/Deprecated/ClipThing"
 import { NicePopover } from "../../../Common/Nice/NicePopover"
 import { WarMachineAbilityItemBT } from "../WarMachineItem/WarMachineAbilityItemBT"
@@ -14,7 +14,7 @@ interface WarMachineAbilitiesPopoverProps {
     warMachine: WarMachineState
     gameAbilities: GameAbility[]
     maxAbilityPriceMap: React.MutableRefObject<Map<string, BigNumber>>
-    getFaction: (factionID: string) => Faction
+    getFaction: (factionID: string) => FactionWithPalette
     isPoppedout?: boolean
     togglePopoverOpen: (value?: boolean | undefined) => void
 }
@@ -60,10 +60,10 @@ export const WarMachineAbilitiesPopoverBT = ({
                     clipSlantSize={isPoppedout ? "0px" : "8px"}
                     border={{
                         borderThickness: ".2rem",
-                        borderColor: faction.primary_color,
+                        borderColor: faction.palette.primary,
                     }}
                     opacity={0.9}
-                    backgroundColor={faction.background_color}
+                    backgroundColor={faction.palette.background}
                 >
                     <Stack spacing="1rem" sx={{ p: "1.6rem" }}>
                         <Stack direction="row" spacing=".8rem" alignItems="center" sx={{ ml: ".88rem" }}>
@@ -75,13 +75,13 @@ export const WarMachineAbilitiesPopoverBT = ({
                                     backgroundRepeat: "no-repeat",
                                     backgroundPosition: "center",
                                     backgroundSize: "cover",
-                                    backgroundColor: faction.primary_color,
+                                    backgroundColor: faction.palette.primary,
                                     mb: ".12rem",
-                                    border: `${faction.primary_color} 1px solid`,
+                                    border: `${faction.palette.primary} 1px solid`,
                                     borderRadius: 0.5,
                                 }}
                             />
-                            <Typography sx={{ lineHeight: 1, color: faction.primary_color, fontWeight: "bold" }}>
+                            <Typography sx={{ lineHeight: 1, color: faction.palette.primary, fontWeight: "bold" }}>
                                 WAR MACHINE UNIQUE SKILL{gameAbilities.length > 1 ? "S" : ""}
                             </Typography>
                         </Stack>

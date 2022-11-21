@@ -96,7 +96,7 @@ export const AssetToSellItem = ({
             return (
                 <MechCommonArea
                     primaryColor={theme.factionTheme.primary}
-                    secondaryColor={theme.factionTheme.secondary}
+                    secondaryColor={theme.factionTheme.text}
                     isGridView={orientation === "vertical"}
                     mech={assetToSell.mech}
                     mechDetails={mechDetails}
@@ -108,7 +108,7 @@ export const AssetToSellItem = ({
             return (
                 <WeaponCommonArea
                     primaryColor={theme.factionTheme.primary}
-                    secondaryColor={theme.factionTheme.secondary}
+                    secondaryColor={theme.factionTheme.text}
                     isGridView={orientation === "vertical"}
                     weapon={assetToSell.weapon}
                     weaponDetails={weaponDetails}
@@ -177,7 +177,7 @@ export const AssetToSellItem = ({
         mysteryCrate?.label,
         orientation,
         theme.factionTheme.primary,
-        theme.factionTheme.secondary,
+        theme.factionTheme.text,
         weaponDetails,
     ])
 

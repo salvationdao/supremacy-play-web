@@ -1,9 +1,9 @@
-import { ConfirmModal } from "../../Common/Deprecated/ConfirmModal"
 import { Box, Stack, Typography } from "@mui/material"
-import { InputField } from "../Common/InputField"
-import { fonts } from "../../../theme/theme"
 import React, { useState } from "react"
 import { useTheme } from "../../../containers/theme"
+import { fonts } from "../../../theme/theme"
+import { ConfirmModal } from "../../Common/Deprecated/ConfirmModal"
+import { InputField } from "../Common/InputField"
 
 interface BattleLobbyAccessCodeModalProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -44,7 +44,7 @@ export const BattleLobbyAccessCodeModal = ({ setOpen, setAccessCode }: BattleLob
                                 setAccessCode(code)
                             }}
                         >
-                            <Typography variant="body2" fontFamily={fonts.nostromoBlack} sx={{ color: factionTheme.secondary }}>
+                            <Typography variant="body2" fontFamily={fonts.nostromoBlack} sx={{ color: factionTheme.text }}>
                                 submit
                             </Typography>
                         </Box>

@@ -21,7 +21,7 @@ export const SectionCollapsibleBT = ({
     const [isExpanded, toggleIsExpanded] = useToggle(true)
 
     const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
+    const secondaryColor = theme.factionTheme.text
 
     return (
         <Box sx={{ my: isExpanded ? "1rem" : ".5rem" }}>

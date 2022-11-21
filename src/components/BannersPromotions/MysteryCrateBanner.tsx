@@ -9,8 +9,8 @@ import { GameServerKeys } from "../../keys"
 import { zoomEffect } from "../../theme/keyframes"
 import { colors, fonts } from "../../theme/theme"
 import { StorefrontMysteryCrate } from "../../types"
-import { ClipThing } from "../Common/Deprecated/ClipThing"
 import { FancyButton } from "../Common/Deprecated/FancyButton"
+import { NiceBoxThing } from "../Common/Nice/NiceBoxThing"
 
 const LOCKED_UNTIL = "2022-07-22T00:00:00+08:00"
 
@@ -44,17 +44,18 @@ export const MysteryCrateBanner = () => {
     const faction = useMemo(() => getFaction(factionID), [factionID, getFaction])
 
     const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
+    const secondaryColor = theme.factionTheme.text
     const backgroundColor = theme.factionTheme.background
 
     return (
-        <ClipThing
-            clipSize="10px"
+        <NiceBoxThing
             border={{
-                borderColor: primaryColor,
-                borderThickness: ".3rem",
+                color: primaryColor,
+                thickness: "thicc",
             }}
-            backgroundColor={backgroundColor}
+            background={{
+                colors: [backgroundColor],
+            }}
             sx={{ flex: 1, alignSelf: "stretch", flexShrink: 0 }}
         >
             <Stack
@@ -150,7 +151,7 @@ export const MysteryCrateBanner = () => {
                     }}
                 />
             </Stack>
-        </ClipThing>
+        </NiceBoxThing>
     )
 }
 

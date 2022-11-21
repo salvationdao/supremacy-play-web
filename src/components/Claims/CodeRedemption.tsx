@@ -1,12 +1,12 @@
-import { ClipThing } from "../Common/Deprecated/ClipThing"
 import { Stack, TextField, Typography } from "@mui/material"
-import { colors, fonts } from "../../theme/theme"
-import { useTheme } from "../../containers/theme"
 import { useCallback, useEffect, useState } from "react"
-import { FancyButton } from "../Common/Deprecated/FancyButton"
+import { useTheme } from "../../containers/theme"
 import { useGameServerCommandsFaction } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
+import { colors, fonts } from "../../theme/theme"
 import { RewardResponse } from "../../types"
+import { ClipThing } from "../Common/Deprecated/ClipThing"
+import { FancyButton } from "../Common/Deprecated/FancyButton"
 
 interface redemptionProps {
     setRewards: (value: ((prevState: RewardResponse[] | undefined) => RewardResponse[] | undefined) | RewardResponse[] | undefined) => void
@@ -98,13 +98,13 @@ export const CodeRedemption = ({ setRewards }: redemptionProps) => {
                             border: { isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: "2px" },
                             sx: { position: "relative" },
                         }}
-                        sx={{ width: "100%", py: "1.1rem", color: theme.factionTheme.secondary }}
+                        sx={{ width: "100%", py: "1.1rem", color: theme.factionTheme.text }}
                         onClick={onClaim}
                     >
                         <Typography
                             variant="caption"
                             sx={{
-                                color: theme.factionTheme.secondary,
+                                color: theme.factionTheme.text,
                                 fontFamily: fonts.nostromoBlack,
                             }}
                         >

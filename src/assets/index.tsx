@@ -6,8 +6,10 @@ import Ammo from "!@svgr/webpack!./svg/Ammo.svg"
 import Armor from "!@svgr/webpack!./svg/Armor.svg"
 import Assets from "!@svgr/webpack!./svg/Assets.svg"
 import BostonMechKillIcon from "!@svgr/webpack!./svg/BostonKillIcon.svg"
+import ChatGlobal from "!@svgr/webpack!./svg/ChatGlobal.svg"
 import CheckMark from "!@svgr/webpack!./svg/CheckMark.svg"
 import Chest from "!@svgr/webpack!./svg/Chest.svg"
+import Chest2 from "!@svgr/webpack!./svg/Chest2.svg"
 import Close from "!@svgr/webpack!./svg/Close.svg"
 import Close2 from "!@svgr/webpack!./svg/Close2.svg"
 import Copy from "!@svgr/webpack!./svg/Copy.svg"
@@ -24,6 +26,7 @@ import EmptySet from "!@svgr/webpack!./svg/EmptySet.svg"
 import Energy from "!@svgr/webpack!./svg/Energy.svg"
 import ExternalLink from "!@svgr/webpack!./svg/ExternalLink.svg"
 import FastRepair from "!@svgr/webpack!./svg/FastRepair.svg"
+import FirstPlace from "!@svgr/webpack!./svg/FirstPlace.svg"
 import FontCase from "!@svgr/webpack!./svg/FontCase.svg"
 import Global from "!@svgr/webpack!./svg/Global.svg"
 import Graph from "!@svgr/webpack!./svg/Graph.svg"
@@ -32,6 +35,7 @@ import Hammer from "!@svgr/webpack!./svg/Hammer.svg"
 import Headphone from "!@svgr/webpack!./svg/Headphone.svg"
 import Health from "!@svgr/webpack!./svg/Health.svg"
 import IntroAnimation from "!@svgr/webpack!./svg/IntroAnimation.svg"
+import Leaderboard from "!@svgr/webpack!./svg/Leaderboard.svg"
 import LoadoutArmour from "!@svgr/webpack!./svg/Loadout/Armour.svg"
 import LoadoutDamage from "!@svgr/webpack!./svg/Loadout/Damage.svg"
 import LoadoutDeaths from "!@svgr/webpack!./svg/Loadout/Deaths.svg"
@@ -49,6 +53,7 @@ import LoadoutSpeed from "!@svgr/webpack!./svg/Loadout/Speed.svg"
 import LoadoutUtility from "!@svgr/webpack!./svg/Loadout/Utility.svg"
 import LoadoutWeapon from "!@svgr/webpack!./svg/Loadout/Weapon.svg"
 import LoadoutWins from "!@svgr/webpack!./svg/Loadout/Wins.svg"
+import Lobbies from "!@svgr/webpack!./svg/Lobbies.svg"
 import Lock from "!@svgr/webpack!./svg/Lock.svg"
 import Logout from "!@svgr/webpack!./svg/Logout.svg"
 import Mail from "!@svgr/webpack!./svg/Mail.svg"
@@ -71,6 +76,7 @@ import PowerCoreRegen from "!@svgr/webpack!./svg/PowerCoreRegen.svg"
 import Profile from "!@svgr/webpack!./svg/Profile.svg"
 import ProjectileSpeed from "!@svgr/webpack!./svg/ProjectileSpeed.svg"
 import QuestionMark2 from "!@svgr/webpack!./svg/QuestionMark2.svg"
+import Queue from "!@svgr/webpack!./svg/Queue.svg"
 import Radius from "!@svgr/webpack!./svg/Radius.svg"
 import RadiusDamageFalloffRate from "!@svgr/webpack!./svg/RadiusDamageFalloffRate.svg"
 import Rank from "!@svgr/webpack!./svg/Rank.svg"
@@ -81,6 +87,7 @@ import Refresh from "!@svgr/webpack!./svg/Refresh.svg"
 import Remove from "!@svgr/webpack!./svg/Remove.svg"
 import Save from "!@svgr/webpack!./svg/Save.svg"
 import Scrolldown from "!@svgr/webpack!./svg/Scrolldown.svg"
+import SecondPlace from "!@svgr/webpack!./svg/SecondPlace.svg"
 import Send from "!@svgr/webpack!./svg/Send.svg"
 import Shield from "!@svgr/webpack!./svg/Shield.svg"
 import ShieldRegen from "!@svgr/webpack!./svg/ShieldRegen.svg"
@@ -91,7 +98,9 @@ import Speed from "!@svgr/webpack!./svg/Speed.svg"
 import Spread from "!@svgr/webpack!./svg/Spread.svg"
 import SupremacyLogo from "!@svgr/webpack!./svg/SupremacyLogo.svg"
 import Swap from "!@svgr/webpack!./svg/Swap.svg"
+import ThirdPlace from "!@svgr/webpack!./svg/ThirdPlace.svg"
 import Unhide from "!@svgr/webpack!./svg/Unhide.svg"
+import UserDiamond2 from "!@svgr/webpack!./svg/UserDiamond2.svg"
 import Utilities from "!@svgr/webpack!./svg/Utilities.svg"
 import View from "!@svgr/webpack!./svg/View.svg"
 import VoiceChat from "!@svgr/webpack!./svg/VoiceChat.svg"
@@ -113,6 +122,7 @@ import ChatSplit from "!react-svg-loader!./svg/ChatSplit.svg"
 import ChatTabbed from "!react-svg-loader!./svg/ChatTabbed.svg"
 import ChevronDown from "!react-svg-loader!./svg/ChevronDown.svg"
 import ChevronUp from "!react-svg-loader!./svg/ChevronUp.svg"
+import Command from "!react-svg-loader!./svg/Command.svg"
 import CreditCard from "!react-svg-loader!./svg/CreditCard.svg"
 import Damage from "!react-svg-loader!./svg/Damage.svg"
 import Delete from "!react-svg-loader!./svg/Delete.svg"
@@ -1680,5 +1690,65 @@ export const SvgMechWins: React.VoidFunctionComponent<SvgWrapperProps> = (props)
 export const SvgButtonCorner: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <ButtonCorner />
+    </SvgWrapper>
+)
+
+export const SvgChatGlobal: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ChatGlobal />
+    </SvgWrapper>
+)
+
+export const SvgUserDiamond2: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <UserDiamond2 />
+    </SvgWrapper>
+)
+
+export const SvgLobbies: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Lobbies />
+    </SvgWrapper>
+)
+
+export const SvgFirstPlace: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <FirstPlace />
+    </SvgWrapper>
+)
+
+export const SvgSecondPlace: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <SecondPlace />
+    </SvgWrapper>
+)
+
+export const SvgThirdPlace: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <ThirdPlace />
+    </SvgWrapper>
+)
+
+export const SvgChest2: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Chest2 />
+    </SvgWrapper>
+)
+
+export const SvgLeaderboard: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Leaderboard />
+    </SvgWrapper>
+)
+
+export const SvgQueue: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Queue />
+    </SvgWrapper>
+)
+
+export const SvgCommand: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Command />
     </SvgWrapper>
 )

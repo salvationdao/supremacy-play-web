@@ -1,14 +1,14 @@
 import { Box, CircularProgress, IconButton, Modal, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
+import { useParameterizedQuery } from "react-fetching-library"
 import { ClipThing } from "../../.."
 import { FlamesPNG, GenericWarMachinePNG, SvgClose, SvgDamageCross, SvgDamageIcon, SvgSkull } from "../../../../assets"
-import { colors, fonts, siteZIndex } from "../../../../theme/theme"
-import { DamageRecord, Faction, WarMachineDestroyedRecord, WarMachineState } from "../../../../types"
-import { useTheme } from "../../../../containers/theme"
 import { useGlobalNotifications } from "../../../../containers"
-import { useParameterizedQuery } from "react-fetching-library"
+import { useTheme } from "../../../../containers/theme"
 import { GetMechDestroyedInfo } from "../../../../fetching"
-import { truncateTextLines } from "../../../../helpers"
+import { truncateTextLines } from "../../../../theme/styles"
+import { colors, fonts, siteZIndex } from "../../../../theme/theme"
+import { DamageRecord, FactionWithPalette, WarMachineDestroyedRecord, WarMachineState } from "../../../../types"
 
 export const WarMachineDestroyedInfo = ({
     warMachine,
@@ -19,7 +19,7 @@ export const WarMachineDestroyedInfo = ({
     warMachine: WarMachineState
     open: boolean
     onClose: () => void
-    getFaction: (factionID: string) => Faction
+    getFaction: (factionID: string) => FactionWithPalette
 }) => {
     const theme = useTheme()
     const { newSnackbarMessage } = useGlobalNotifications()
@@ -192,13 +192,13 @@ const WarMachineIcon = ({ color, imageUrl, isDead, size }: { color: string; imag
                                 transition: "all .2s",
                             }}
                         >
-                            {isDead && <SvgDamageCross fill="#FF1919" size={`${size * 1.3}rem`} sx={{ opacity: 0.6 }} />}
+                            {isDead && <SvgDamageCross fill={colors.red} size={`${size * 1.3}rem`} sx={{ opacity: 0.6 }} />}
                         </Stack>
 
                         {!imageUrl && (
                             <SvgDamageIcon
                                 size={`${size * 0.5}rem`}
-                                fill="#8C8C8C"
+                                fill={colors.grey}
                                 sx={{
                                     position: "absolute",
                                     top: "50%",
@@ -223,9 +223,9 @@ const WarMachineBig = ({
     warMachine?: WarMachineState
     name?: string
     isDead?: boolean
-    getFaction: (factionID: string) => Faction
+    getFaction: (factionID: string) => FactionWithPalette
 }) => {
-    const color = getFaction(warMachine?.factionID || "").primary_color || colors.text
+    const color = getFaction(warMachine?.factionID || "").palette.primary || colors.text
     return (
         <Stack alignItems="center" spacing=".8rem" sx={{ width: "15rem" }}>
             {warMachine ? (
@@ -257,9 +257,9 @@ const WarMachineSmall = ({
     warMachine?: WarMachineState
     name?: string
     damagePercent: number
-    getFaction: (factionID: string) => Faction
+    getFaction: (factionID: string) => FactionWithPalette
 }) => {
-    const color = getFaction(warMachine?.factionID || "").primary_color || colors.text
+    const color = getFaction(warMachine?.factionID || "").palette.primary || colors.text
     return (
         <Stack direction="row" alignItems="center" spacing=".96rem">
             {warMachine ? (
@@ -296,7 +296,7 @@ const DamageList = ({
     title: string
     damageRecords: DamageRecord[]
     top?: number
-    getFaction: (factionID: string) => Faction
+    getFaction: (factionID: string) => FactionWithPalette
 }) => {
     return (
         <Box sx={{ flex: 1 }}>

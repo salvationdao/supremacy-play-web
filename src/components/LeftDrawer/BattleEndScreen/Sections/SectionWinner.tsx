@@ -33,7 +33,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                     <SvgCrown fill={colors.yellow} size="2rem" sx={{ position: "absolute", bottom: "calc(100% - .7rem)", left: ".8rem" }} />
 
                     <StyledImageText
-                        color={faction.primary_color}
+                        color={faction.palette.primary}
                         text={faction.label}
                         imageUrl={faction.logo_url}
                         variant="h6"
@@ -53,8 +53,8 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                                 <StyledImageText
                                     key={`${wm.hash}-${wm.participantID}`}
                                     color={colors.text}
-                                    imageBorderColor={faction.primary_color}
-                                    imageBackgroundColor={`${faction.primary_color}60`}
+                                    imageBorderColor={faction.palette.primary}
+                                    imageBackgroundColor={`${faction.palette.primary}60`}
                                     text={(wm.name || wm.hash).toUpperCase()}
                                     imageUrl={wm.imageAvatar || GenericWarMachinePNG}
                                     variant="h6"

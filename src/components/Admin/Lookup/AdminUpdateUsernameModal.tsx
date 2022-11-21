@@ -5,7 +5,7 @@ import { MAX_BAN_PROPOSAL_REASON_LENGTH } from "../../../constants"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
-import { Faction, User } from "../../../types"
+import { FactionWithPalette, User } from "../../../types"
 import { ClipThing } from "../../Common/Deprecated/ClipThing"
 import { FancyButton } from "../../Common/Deprecated/FancyButton"
 
@@ -13,7 +13,7 @@ export interface AdminUpdateUsernameModalProps {
     user: User
     onClose: () => void
     onSuccess: (newUsername: string) => void
-    faction: Faction
+    faction: FactionWithPalette
 }
 
 export const AdminUpdateUsernameModal = ({ user, onClose, onSuccess, faction }: AdminUpdateUsernameModalProps) => {
@@ -68,11 +68,11 @@ export const AdminUpdateUsernameModal = ({ user, onClose, onSuccess, faction }: 
                 <ClipThing
                     clipSize="8px"
                     border={{
-                        borderColor: faction.primary_color,
+                        borderColor: faction.palette.primary,
                         borderThickness: ".3rem",
                     }}
                     sx={{ position: "relative" }}
-                    backgroundColor={faction.background_color}
+                    backgroundColor={faction.palette.background}
                 >
                     <Stack
                         component="form"
@@ -99,7 +99,7 @@ export const AdminUpdateUsernameModal = ({ user, onClose, onSuccess, faction }: 
 
                         <Stack spacing="1.5rem">
                             <Stack spacing=".3rem">
-                                <Typography sx={{ color: faction.primary_color, fontWeight: "bold" }}>New Username:</Typography>
+                                <Typography sx={{ color: faction.palette.primary, fontWeight: "bold" }}>New Username:</Typography>
                                 <TextField
                                     value={username}
                                     onChange={(e) => {
@@ -111,7 +111,7 @@ export const AdminUpdateUsernameModal = ({ user, onClose, onSuccess, faction }: 
                                     sx={{
                                         borderRadius: 1,
                                         "& .MuiInputBase-root": {
-                                            fontFamily: fonts.shareTech,
+                                            fontFamily: fonts.rajdhaniMedium,
                                             px: "1.1em",
                                             pt: ".9rem",
                                             pb: ".7rem",
@@ -121,7 +121,7 @@ export const AdminUpdateUsernameModal = ({ user, onClose, onSuccess, faction }: 
                                             color: "#FFFFFF70",
                                         },
                                         ".Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                            borderColor: `${faction.primary_color} !important`,
+                                            borderColor: `${faction.palette.primary} !important`,
                                         },
                                         input: {
                                             p: 0,
@@ -133,7 +133,7 @@ export const AdminUpdateUsernameModal = ({ user, onClose, onSuccess, faction }: 
                             </Stack>
 
                             <Stack spacing=".3rem">
-                                <Typography sx={{ color: faction.primary_color, fontWeight: "bold" }}>Reason:</Typography>
+                                <Typography sx={{ color: faction.palette.primary, fontWeight: "bold" }}>Reason:</Typography>
                                 <TextField
                                     required
                                     value={reason}
@@ -149,7 +149,7 @@ export const AdminUpdateUsernameModal = ({ user, onClose, onSuccess, faction }: 
                                     sx={{
                                         borderRadius: 1,
                                         "& .MuiInputBase-root": {
-                                            fontFamily: fonts.shareTech,
+                                            fontFamily: fonts.rajdhaniMedium,
                                             px: "1.1em",
                                             pt: ".9rem",
                                             pb: ".7rem",
@@ -159,7 +159,7 @@ export const AdminUpdateUsernameModal = ({ user, onClose, onSuccess, faction }: 
                                             color: "#FFFFFF70",
                                         },
                                         ".Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                            borderColor: `${faction.primary_color} !important`,
+                                            borderColor: `${faction.palette.primary} !important`,
                                         },
                                         textarea: {
                                             p: 0,
@@ -174,19 +174,19 @@ export const AdminUpdateUsernameModal = ({ user, onClose, onSuccess, faction }: 
                         <FancyButton
                             clipThingsProps={{
                                 clipSize: "9px",
-                                backgroundColor: faction.primary_color,
+                                backgroundColor: faction.palette.primary,
                                 opacity: 1,
-                                border: { isFancy: true, borderColor: faction.primary_color, borderThickness: "2px" },
+                                border: { isFancy: true, borderColor: faction.palette.primary, borderThickness: "2px" },
                                 sx: { position: "relative", flex: 1, minWidth: 0, mt: "1.8rem" },
                             }}
-                            sx={{ px: "1.6rem", py: ".3rem", color: faction.secondary_color }}
+                            sx={{ px: "1.6rem", py: ".3rem", color: faction.palette.text }}
                             loading={isLoading}
                             type="submit"
                         >
                             <Typography
                                 variant="caption"
                                 sx={{
-                                    color: faction.secondary_color,
+                                    color: faction.palette.text,
                                     fontFamily: fonts.nostromoBlack,
                                 }}
                             >

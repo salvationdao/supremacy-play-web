@@ -76,7 +76,7 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                     {/* Mech image */}
                     <NiceBoxThing
                         border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
-                        background={{ colors: [ownerFaction.background_color] }}
+                        background={{ colors: [ownerFaction.palette.background] }}
                         sx={{ height: "100%", width: "100%", boxShadow: 0.4 }}
                     >
                         <Box
@@ -101,7 +101,7 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                         <Typography
                             variant="h6"
                             sx={{
-                                color: ownerFaction.primary_color,
+                                color: ownerFaction.palette.primary,
                                 fontWeight: "bold",
                                 mt: ".3rem !important",
                                 ...truncateTextLines(1),
@@ -196,20 +196,20 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                     <Typography
                         variant="h6"
                         sx={{
-                            color: ownerFaction.primary_color,
+                            color: ownerFaction.palette.primary,
                             fontWeight: "bold",
                             mt: ".3rem !important",
                             ...truncateTextLines(1),
                         }}
                     >
-                        <SvgUserDiamond size="2.5rem" inline fill={ownerFaction.primary_color} /> {mech.owner.username}#{mech.owner.gid}
+                        <SvgUserDiamond size="2.5rem" inline fill={ownerFaction.palette.primary} /> {mech.owner.username}#{mech.owner.gid}
                     </Typography>
                 )}
 
                 {/* Mech image */}
                 <NiceBoxThing
                     border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
-                    background={{ colors: [ownerFaction.background_color] }}
+                    background={{ colors: [ownerFaction.palette.background] }}
                     sx={{ position: "relative", boxShadow: 0.4 }}
                 >
                     <Box

@@ -147,7 +147,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                         bottom: 0,
                                         width: "100%",
                                         transform: "translate(-50%, 0)",
-                                        backgroundColor: `${factionLobby.faction.background_color}dd`,
+                                        backgroundColor: `${getFaction(factionLobby.faction.id).palette.background}dd`,
                                     }}
                                 >
                                     <Typography
@@ -168,7 +168,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                         position: "absolute",
                                         left: "1%",
                                         top: "1%",
-                                        backgroundColor: `${factionLobby.faction.background_color}30`,
+                                        backgroundColor: `${getFaction(factionLobby.faction.id).palette.background}30`,
                                         cursor: "pointer",
                                     }}
                                     onClick={() => {
@@ -210,7 +210,7 @@ export const MyFactionLobbySlots = ({ factionLobby, isLocked, onSlotClick }: MyF
                                         variant="h6"
                                         sx={{
                                             ...truncateTextLines(1),
-                                            color: `${getFaction(ms.faction_id).primary_color}`,
+                                            color: `${getFaction(ms.faction_id).palette.primary}`,
                                             fontStyle: "italic",
                                         }}
                                     >

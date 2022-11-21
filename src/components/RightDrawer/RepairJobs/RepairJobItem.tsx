@@ -8,8 +8,8 @@ import { truncateTextLines } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { RepairJob } from "../../../types/jobs"
 import { FancyButton } from "../../Common/Deprecated/FancyButton"
-import { PlayerNameGid } from "../../Common/PlayerNameGid"
 import { RepairBlocks } from "../../Common/Mech/MechRepairBlocks"
+import { PlayerNameGid } from "../../Common/PlayerNameGid"
 import { General } from "../../Marketplace/Common/MarketItem/General"
 
 interface RepairJobItemProps {
@@ -40,8 +40,8 @@ export const RepairJobItem = React.memo(function RepairJobItem({ repairJob, remo
 
     const isFinished = repairJob.closed_at || repairJob.expires_at < new Date()
     const remainDamagedBlocks = repairJob.blocks_required_repair - repairJob.blocks_repaired
-    const primaryColor = jobOwnerFaction.primary_color
-    const backgroundColor = jobOwnerFaction.background_color
+    const primaryColor = jobOwnerFaction.palette.primary
+    const backgroundColor = jobOwnerFaction.palette.background
 
     useEffect(() => {
         if (isFinished && !repairJobModal) {

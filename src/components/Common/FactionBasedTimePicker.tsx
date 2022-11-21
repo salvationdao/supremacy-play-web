@@ -1,7 +1,6 @@
-import moment from "moment"
 import { TextField } from "@mui/material"
 import { TimePicker } from "@mui/x-date-pickers"
-import React from "react"
+import moment from "moment"
 import { useTheme } from "../../containers/theme"
 import { fonts } from "../../theme/theme"
 
@@ -53,15 +52,15 @@ export const FactionBasedTimePicker = ({ value, onChange, disabled }: FactionBas
 
                                 // pin in the center
                                 ".MuiClock-pin": {
-                                    backgroundColor: factionTheme.secondary,
+                                    backgroundColor: factionTheme.text,
                                 },
 
                                 // bar
                                 ".MuiClockPointer-root": {
-                                    backgroundColor: factionTheme.secondary,
+                                    backgroundColor: factionTheme.text,
                                     ".MuiClockPointer-thumb": {
-                                        backgroundColor: factionTheme.secondary,
-                                        borderColor: factionTheme.secondary,
+                                        backgroundColor: factionTheme.text,
+                                        borderColor: factionTheme.text,
                                     },
                                 },
 

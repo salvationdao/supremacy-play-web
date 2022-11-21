@@ -114,7 +114,7 @@ export const TutorialContainer: React.FC<TutorialContainerProps> = ({
                                         display: "flex",
                                         gap: ".5rem",
                                         animation: `${zoomEffect(1.35)} 2s infinite`,
-                                        color: theme.factionTheme.secondary,
+                                        color: theme.factionTheme.text,
                                     }}
                                 >
                                     Next <ArrowForwardIcon />

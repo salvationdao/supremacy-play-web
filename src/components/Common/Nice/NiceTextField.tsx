@@ -116,7 +116,7 @@ export const NiceTextField = ({
                         p: ".37rem 1.6rem",
                         pt: ".55rem",
                         fontSize: "1.7rem",
-                        fontFamily: fonts.shareTech,
+                        fontFamily: fonts.rajdhaniMedium,
                         "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
                             WebkitAppearance: "none",
                         },

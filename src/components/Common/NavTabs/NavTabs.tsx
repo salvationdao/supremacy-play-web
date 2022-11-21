@@ -109,7 +109,7 @@ export const NavTabs = <T,>({
                             label={
                                 <Typography
                                     sx={{
-                                        color: tab.id === activeTabID ? theme.factionTheme.secondary : "#FFFFFF",
+                                        color: tab.id === activeTabID ? theme.factionTheme.text : "#FFFFFF",
                                         fontFamily: fonts.nostromoBlack,
                                         ...truncateTextLines(1),
                                     }}
