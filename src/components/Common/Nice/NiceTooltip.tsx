@@ -1,5 +1,6 @@
 import { Stack, SxProps, Tooltip, Typography } from "@mui/material"
 import { ReactElement } from "react"
+import { useTheme } from "../../../containers/theme"
 import { autoTextColor } from "../../../helpers"
 import { fonts, siteZIndex } from "../../../theme/theme"
 import { NiceBoxThing } from "./NiceBoxThing"
@@ -39,6 +40,7 @@ export const NiceTooltip = ({
     textColor?: string
     tooltipSx?: SxProps
 }) => {
+    const theme = useTheme()
     if (!text && !renderNode) return <>{children}</>
 
     const primaryColor = color || "#555555"
@@ -62,10 +64,10 @@ export const NiceTooltip = ({
                         color: `${primaryColor}80`,
                         thickness: "very-lean",
                     }}
-                    background={{ colors: [primaryColor] }}
+                    background={{ colors: [theme.factionTheme.background] }}
                     sx={{ height: "100%" }}
                 >
-                    <Stack sx={{ height: "100%", backgroundColor: "#00000090" }}>
+                    <Stack sx={{ height: "100%", backgroundColor: "#FFFFFF10" }}>
                         {renderNode || (
                             <Typography
                                 variant="body1"

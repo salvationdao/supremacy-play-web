@@ -9,7 +9,7 @@ import { VoiceChat } from "../../RightDrawer/VoiceChat/VoiceChat"
 import { OvenResolutionSelect } from "./ResolutionSelect"
 import { OvenStreamSelect } from "./StreamSelect"
 
-export const CONTROLS_HEIGHT = 3.0 // rem
+export const CONTROLS_HEIGHT = 4.5 // rem
 
 export const Controls = () => {
     const { isMobile } = useMobile()
@@ -31,8 +31,7 @@ export const Controls = () => {
                 width: "100%",
                 height: `${CONTROLS_HEIGHT}rem`,
                 px: "1rem",
-                pt: ".24rem",
-                pb: ".16rem",
+                py: ".2rem",
                 background: `linear-gradient(${darkerBackgroundColor} 26%, ${theme.factionTheme.background})`,
                 borderTop: `${theme.factionTheme.s700} 1px solid`,
                 zIndex: siteZIndex.Controls,
