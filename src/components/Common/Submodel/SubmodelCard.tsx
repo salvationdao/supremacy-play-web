@@ -22,10 +22,10 @@ export const SubmodelCard = React.memo(function SubmodelCard({ submodel }: Submo
     return (
         <NiceBoxThing
             border={{
-                color: `${rarityDeets.color}20`,
+                color: `${rarityDeets.color}50`,
                 thickness: "very-lean",
             }}
-            background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.06 }}
+            background={{ colors: [rarityDeets.color, rarityDeets.color], opacity: 0.06 }}
             sx={{ p: "1rem 1.5rem" }}
         >
             <Stack spacing="1.2rem">
@@ -48,7 +48,7 @@ export const SubmodelCard = React.memo(function SubmodelCard({ submodel }: Submo
                         ...truncateTextLines(1),
                     }}
                 >
-                    <SvgSkin inline size="2.5rem" fill={rarityDeets.color} /> {rarityDeets.label}{" "}
+                    <SvgSkin inline size="2rem" fill={rarityDeets.color} /> {rarityDeets.label}{" "}
                     {typeof submodel.level !== "undefined" && <>[{submodel.level}]</>}
                 </Typography>
 

@@ -44,8 +44,8 @@ const submodelTypeOpens = [
 ]
 
 const equippedStatusOptions = [
-    { value: "true", render: { label: "EQUIPPED", color: colors.gold } },
-    { value: "false", render: { label: "UNEQUIPPED", color: colors.bronze } },
+    { value: "true", render: { label: "EQUIPPED", color: colors.green } },
+    { value: "false", render: { label: "NOT EQUIPPED", color: colors.bronze } },
 ]
 
 const rarityOptions = [
@@ -152,12 +152,17 @@ export const FleetSubmodels = () => {
         if (isLoading) return
 
         let result: (MechSkin | WeaponSkin)[] = []
-        if ((submodelType as unknown as SubmodelType) === SubmodelType.Mech) {
+        if ((submodelType as unknown as SubmodelType[]).includes(SubmodelType.Mech)) {
             result = [...result, ...mechSubmodels]
         }
 
-        if ((submodelType as unknown as SubmodelType) === SubmodelType.Weapon) {
+        if ((submodelType as unknown as SubmodelType[]).includes(SubmodelType.Weapon)) {
             result = [...result, ...weaponSubmodels]
+        }
+
+        // If nothing is selected, include all submodel types
+        if (submodelType.length <= 0) {
+            result = [...mechSubmodels, ...weaponSubmodels]
         }
 
         // Apply search
