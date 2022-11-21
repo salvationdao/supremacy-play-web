@@ -8,12 +8,12 @@ import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
 import { MysteryCrate, MysteryCrateType, OpenCrateResponse, StorefrontMysteryCrate } from "../../types"
 import { SortTypeLabel } from "../../types/marketplace"
-import { MysteryCrateCard } from "../Common/MysteryCrate/MysteryCrateCard"
 import { NavTabs } from "../Common/NavTabs/NavTabs"
 import { usePageTabs } from "../Common/NavTabs/usePageTabs"
 import { NiceButton } from "../Common/Nice/NiceButton"
 import { NiceSelect } from "../Common/Nice/NiceSelect"
 import { NiceTextField } from "../Common/Nice/NiceTextField"
+import { VirtualizedGrid } from "../Common/VirtualizedGrid"
 import { CrateRewardsModal } from "./OpenCrate/CrateRewardsModal"
 import { CrateRewardVideo } from "./OpenCrate/CrateRewardVideo"
 
@@ -124,22 +124,26 @@ export const FleetCrates = () => {
 
         if (displayCrates && displayCrates.length > 0) {
             return (
-                <Box
-                    sx={{
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fill, minmax(30rem, 1fr))",
-                        gap: "1.5rem",
-                        alignItems: "stretch",
-                        justifyContent: "center",
-                    }}
-                >
-                    {displayCrates.map((crate) => {
-                        return (
-                            <MysteryCrateCard key={`crate-${crate.id}`} crate={crate} setOpeningCrate={setOpeningCrate} setOpenedRewards={setOpenedRewards} />
-                        )
-                    })}
-                </Box>
+                <VirtualizedGrid uniqueID="fleetCrateCssGrid" itemWidthConfig={{ minWidth: 300 }} itemHeight={300} totalItems={displayCrates.length} gap={13} />
             )
+
+            // return (
+            //     <Box
+            //         sx={{
+            //             display: "grid",
+            //             gridTemplateColumns: "repeat(auto-fill, minmax(30rem, 1fr))",
+            //             gap: "1.5rem",
+            //             alignItems: "stretch",
+            //             justifyContent: "center",
+            //         }}
+            //     >
+            //         {displayCrates.map((crate) => {
+            //             return (
+            //                 <MysteryCrateCard key={`crate-${crate.id}`} crate={crate} setOpeningCrate={setOpeningCrate} setOpenedRewards={setOpenedRewards} />
+            //             )
+            //         })}
+            //     </Box>
+            // )
         }
 
         return (
@@ -225,7 +229,7 @@ export const FleetCrates = () => {
                             />
                         </Stack>
 
-                        <Box sx={{ flex: 1, height: "100%", overflowY: "auto", pr: ".8rem" }}>{content}</Box>
+                        <Box sx={{ flex: 1, overflowY: "auto" }}>{content}</Box>
                     </Stack>
                 </Stack>
             </Stack>
