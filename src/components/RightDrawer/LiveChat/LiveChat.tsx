@@ -222,7 +222,7 @@ const TabbedLayout = () => {
                         label={
                             <Stack direction="row" alignItems="center" justifyContent="center" spacing=".96rem">
                                 <UnreadBadge tabValue={0}>
-                                    <SvgChatGlobal size="3rem" />
+                                    <SvgChatGlobal size="2.5rem" />
                                 </UnreadBadge>
                                 <Typography
                                     variant="caption"
@@ -254,8 +254,8 @@ const TabbedLayout = () => {
                                     <UnreadBadge tabValue={1}>
                                         <Box
                                             sx={{
-                                                width: "4rem",
-                                                height: "4rem",
+                                                width: "3.2rem",
+                                                height: "3.2rem",
                                                 flexShrink: 0,
                                                 backgroundImage: `url(${faction.logo_url})`,
                                                 backgroundRepeat: "no-repeat",
@@ -351,7 +351,7 @@ const SplitLayout = () => {
                             boxShadow: 1,
                         }}
                     >
-                        <SvgChatGlobal size="3rem" />
+                        <SvgChatGlobal size="2.5rem" />
                         <Typography
                             variant="caption"
                             sx={{
@@ -390,8 +390,8 @@ const SplitLayout = () => {
                             >
                                 <Box
                                     sx={{
-                                        width: "4rem",
-                                        height: "4rem",
+                                        width: "3.2rem",
+                                        height: "3.2rem",
                                         flexShrink: 0,
                                         backgroundImage: `url(${faction.logo_url})`,
                                         backgroundRepeat: "no-repeat",

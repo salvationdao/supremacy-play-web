@@ -65,11 +65,12 @@ export const NiceTooltip = ({
                     background={{ colors: [primaryColor] }}
                     sx={{ height: "100%" }}
                 >
-                    {renderNode || (
-                        <Stack sx={{ height: "100%", p: ".5rem 1.2rem", backgroundColor: "#00000090" }}>
+                    <Stack sx={{ height: "100%", backgroundColor: "#00000090" }}>
+                        {renderNode || (
                             <Typography
                                 variant="body1"
                                 sx={{
+                                    p: ".5rem 1.2rem",
                                     color: textColor || "#FFFFFF",
                                     fontFamily: fonts.rajdhaniMedium,
                                     lineHeight: 1.5,
@@ -78,8 +79,8 @@ export const NiceTooltip = ({
                             >
                                 <strong>{text}</strong>
                             </Typography>
-                        </Stack>
-                    )}
+                        )}
+                    </Stack>
                 </NiceBoxThing>
             }
             componentsProps={{

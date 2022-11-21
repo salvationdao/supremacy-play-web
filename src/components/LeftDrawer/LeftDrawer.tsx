@@ -36,9 +36,9 @@ export const LeftDrawer = () => {
                     zIndex: siteZIndex.Drawer,
                     "& .MuiDrawer-paper": {
                         width: `${LEFT_DRAWER_WIDTH}rem`,
-                        backgroundColor: theme.factionTheme.s800,
+                        backgroundColor: theme.factionTheme.background,
                         position: "absolute",
-                        borderRight: `1px solid ${theme.factionTheme.s500}`,
+                        borderRight: `1px solid ${theme.factionTheme.s600}`,
                         overflow: "hidden",
                         transform: !isOpen ? `translateX(calc(-${LEFT_DRAWER_WIDTH}rem + ${DRAWER_OFFSET})) !important` : "",
                         visibility: !isOpen ? "visible !important" : "",
