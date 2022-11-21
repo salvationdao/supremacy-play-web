@@ -27,7 +27,7 @@ const sortOptions = [
     { label: SortTypeLabel.AbilityType, value: SortTypeLabel.AbilityType },
 ]
 
-export const FleetPlayerAbility = () => {
+export const FleetPlayerAbilities = () => {
     const [query, updateQuery] = useUrlQuery()
     const theme = useTheme()
     const { tabs, activeTabID, setActiveTabID, prevTab, nextTab } = usePageTabs()

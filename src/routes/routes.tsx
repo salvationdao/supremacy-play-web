@@ -12,7 +12,7 @@ import { FactionPassMechPool } from "../components/FactionPass/FactionPassMechPo
 import { FleetCrates } from "../components/FleetCrates/FleetCrates"
 import { FleetKeycards } from "../components/FleetKeycards.tsx/FleetKeycards"
 import { FleetMechs } from "../components/FleetMechs/FleetMechs"
-import { FleetPlayerAbility } from "../components/FleetPlayerAbility/FleetPlayerAbility"
+import { FleetPlayerAbilities } from "../components/FleetPlayerAbilities/FleetPlayerAbilities"
 import { FleetSubmodels } from "../components/FleetSubmodels/FleetSubmodels"
 import { FleetWeapons } from "../components/FleetWeapons/FleetWeapons"
 import { MechPage } from "../components/Hangar/WarMachinesHangar/WarMachineDetails/MechPage"
@@ -359,7 +359,7 @@ export const Routes: RouteSingle[] = [
         id: RouteSingleID.FleetAbilities,
         path: "/fleet/abilities",
         exact: true,
-        Component: FleetPlayerAbility,
+        Component: FleetPlayerAbilities,
         restrictions: {
             requireAuth: true,
             requireFaction: true,
