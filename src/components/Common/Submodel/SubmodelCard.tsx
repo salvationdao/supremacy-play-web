@@ -26,7 +26,7 @@ export const SubmodelCard = React.memo(function SubmodelCard({ submodel }: Submo
                 thickness: "very-lean",
             }}
             background={{ colors: [rarityDeets.color, rarityDeets.color], opacity: 0.06 }}
-            sx={{ p: "1rem 1.5rem" }}
+            sx={{ p: "1rem 1.5rem", width: "100%", height: "100%", overflow: "hidden" }}
         >
             <Stack spacing="1.2rem">
                 {/* Submodel name and count */}
@@ -56,7 +56,7 @@ export const SubmodelCard = React.memo(function SubmodelCard({ submodel }: Submo
                 <NiceBoxThing
                     border={{ color: `${rarityDeets.color}20`, thickness: "very-lean" }}
                     background={{ colors: [ownerFaction.palette.background] }}
-                    sx={{ position: "relative", boxShadow: 0.4 }}
+                    sx={{ position: "relative", boxShadow: 0.4, flex: 1 }}
                 >
                     <MediaPreview
                         imageUrl={
@@ -69,7 +69,7 @@ export const SubmodelCard = React.memo(function SubmodelCard({ submodel }: Submo
                             ""
                         }
                         objectFit="cover"
-                        sx={{ height: "20rem" }}
+                        sx={{ height: "25rem" }}
                     />
                 </NiceBoxThing>
             </Stack>

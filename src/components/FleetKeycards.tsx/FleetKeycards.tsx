@@ -14,6 +14,7 @@ import { usePageTabs } from "../Common/NavTabs/usePageTabs"
 import { NiceButton } from "../Common/Nice/NiceButton"
 import { NiceSelect } from "../Common/Nice/NiceSelect"
 import { NiceTextField } from "../Common/Nice/NiceTextField"
+import { VirtualizedGrid } from "../Common/VirtualizedGrid"
 
 enum UrlQueryParams {
     Sort = "sort",
@@ -115,19 +116,20 @@ export const FleetKeycards = () => {
 
         if (displayKeycards && displayKeycards.length > 0) {
             return (
-                <Box
-                    sx={{
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fill, minmax(30rem, 1fr))",
-                        gap: "1.5rem",
-                        alignItems: "stretch",
-                        justifyContent: "center",
-                    }}
-                >
-                    {displayKeycards.map((keycard) => {
+                <VirtualizedGrid
+                    uniqueID="fleetKeycardsGrid"
+                    itemWidthConfig={{ minWidth: 300 }}
+                    itemHeight={290}
+                    totalItems={displayKeycards.length}
+                    gap={13}
+                    renderIndex={(index) => {
+                        const keycard = displayKeycards[index]
+                        if (!keycard) {
+                            return null
+                        }
                         return <KeycardCard key={`keycard-${keycard.id}`} keycard={keycard} />
-                    })}
-                </Box>
+                    }}
+                />
             )
         }
 
@@ -213,7 +215,7 @@ export const FleetKeycards = () => {
                         />
                     </Stack>
 
-                    <Box sx={{ flex: 1, height: "100%", overflowY: "auto", pr: ".8rem" }}>{content}</Box>
+                    <Box sx={{ flex: 1, overflowY: "auto" }}>{content}</Box>
                 </Stack>
             </Stack>
         </Stack>

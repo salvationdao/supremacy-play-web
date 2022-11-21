@@ -14,6 +14,7 @@ import { NiceButton } from "../Common/Nice/NiceButton"
 import { NiceSelect } from "../Common/Nice/NiceSelect"
 import { NiceTextField } from "../Common/Nice/NiceTextField"
 import { PlayerAbilityCard } from "../Common/PlayerAbility/PlayerAbilitycard"
+import { VirtualizedGrid } from "../Common/VirtualizedGrid"
 
 enum UrlQueryParams {
     Sort = "sort",
@@ -119,19 +120,20 @@ export const FleetPlayerAbility = () => {
 
         if (displayPlayerAbilities && displayPlayerAbilities.length > 0) {
             return (
-                <Box
-                    sx={{
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fill, minmax(30rem, 1fr))",
-                        gap: "1.5rem",
-                        alignItems: "stretch",
-                        justifyContent: "center",
-                    }}
-                >
-                    {displayPlayerAbilities.map((playerAbility) => {
+                <VirtualizedGrid
+                    uniqueID="fleetPlayerAbilitiesGrid"
+                    itemWidthConfig={{ minWidth: 300 }}
+                    itemHeight={283}
+                    totalItems={displayPlayerAbilities.length}
+                    gap={13}
+                    renderIndex={(index) => {
+                        const playerAbility = displayPlayerAbilities[index]
+                        if (!playerAbility) {
+                            return null
+                        }
                         return <PlayerAbilityCard key={`playerAbility-${playerAbility.id}`} playerAbility={playerAbility} />
-                    })}
-                </Box>
+                    }}
+                />
             )
         }
 
@@ -217,7 +219,7 @@ export const FleetPlayerAbility = () => {
                         />
                     </Stack>
 
-                    <Box sx={{ flex: 1, height: "100%", overflowY: "auto", pr: ".8rem" }}>{content}</Box>
+                    <Box sx={{ flex: 1, overflowY: "auto" }}>{content}</Box>
                 </Stack>
             </Stack>
         </Stack>

@@ -30,7 +30,7 @@ interface VirtualizedGridProps {
 // The way this is setup is that it will render items left ot right, then top to down
 export const VirtualizedGrid = ({ uniqueID, itemWidthConfig, itemHeight, totalItems, gap = 0, renderIndex }: VirtualizedGridProps) => {
     const resizeObserver = useRef<ResizeObserver>()
-    const [dimension, setDimension] = useDebounce<Dimension>({ width: 0, height: 0 }, 500)
+    const [dimension, setDimension] = useDebounce<Dimension>({ width: 0, height: 0 }, 250)
 
     // Setup resize observer to watch the parent element
     useEffect(() => {
@@ -78,7 +78,7 @@ export const VirtualizedGrid = ({ uniqueID, itemWidthConfig, itemHeight, totalIt
 
     const Cell = useCallback(
         ({ columnIndex, rowIndex, style }: { columnIndex: number; rowIndex: number; style: React.CSSProperties }) => {
-            const index = rowIndex * rowCount + (columnIndex % columnCount)
+            const index = rowIndex * columnCount + (columnIndex % columnCount)
             return (
                 <div
                     style={{
@@ -86,7 +86,7 @@ export const VirtualizedGrid = ({ uniqueID, itemWidthConfig, itemHeight, totalIt
                         left: `calc(${style.left}px + ${(columnIndex === 0 ? 0 : columnIndex) * (gap / columnCount)}px)`,
                         top: `calc(${style.top}px + ${(rowIndex === 0 ? 0 : rowIndex) * (gap / rowCount)}px)`,
                         width: `calc(${style.width}px - ${gap / 2 + gap / columnCount}px)`,
-                        height: `calc(${style.height}px - ${gap / 2 + gap / rowCount}px)`,
+                        height: `calc(${style.height}px - ${gap + gap / rowCount}px)`,
                     }}
                 >
                     <Box sx={{ width: "100%", height: "100%" }}>{renderIndex(index)}</Box>

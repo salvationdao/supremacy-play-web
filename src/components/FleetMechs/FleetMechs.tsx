@@ -22,6 +22,7 @@ import { NiceButtonGroup } from "../Common/Nice/NiceButtonGroup"
 import { NiceSelect } from "../Common/Nice/NiceSelect"
 import { NiceTextField } from "../Common/Nice/NiceTextField"
 import { SortAndFilters } from "../Common/SortAndFilters/SortAndFilters"
+import { VirtualizedGrid } from "../Common/VirtualizedGrid"
 import { RepairBay } from "./RepairBay/RepairBay"
 
 enum UrlQueryParams {
@@ -265,16 +266,18 @@ export const FleetMechs = () => {
 
         if (displayMechs && displayMechs.length > 0) {
             return (
-                <Box
-                    sx={{
-                        display: "grid",
-                        gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(30rem, 1fr))" : "100%",
-                        gap: "1.5rem",
-                        alignItems: "stretch",
-                        justifyContent: "center",
-                    }}
-                >
-                    {displayMechs.map((mech) => {
+                <VirtualizedGrid
+                    uniqueID="fleetMechsGrid"
+                    itemWidthConfig={{ minWidth: 300 }}
+                    itemHeight={290}
+                    totalItems={displayMechs.length}
+                    gap={13}
+                    renderIndex={(index) => {
+                        console.log(index)
+                        const mech = displayMechs[index]
+                        if (!mech) {
+                            return null
+                        }
                         const isSelected = !!selectedMechs.find((m) => m.id === mech.id)
                         return (
                             <MechCard
@@ -286,8 +289,8 @@ export const FleetMechs = () => {
                                 hide={{ ownerName: true }}
                             />
                         )
-                    })}
-                </Box>
+                    }}
+                />
             )
         }
 
@@ -469,7 +472,7 @@ export const FleetMechs = () => {
                         />
                     </Stack>
 
-                    <Box sx={{ flex: 1, height: "100%", overflowY: "auto", pr: ".8rem" }}>{content}</Box>
+                    <Box sx={{ flex: 1, overflowY: "auto" }}>{content}</Box>
                 </Stack>
 
                 <RepairBay open={showRepairBay} />

@@ -20,6 +20,7 @@ import { NiceButtonGroup } from "../../Common/Nice/NiceButtonGroup"
 import { NiceSelect } from "../../Common/Nice/NiceSelect"
 import { NiceTextField } from "../../Common/Nice/NiceTextField"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
+import { VirtualizedGrid } from "../../Common/VirtualizedGrid"
 
 enum UrlQueryParams {
     Sort = "sort",
@@ -244,20 +245,21 @@ export const FactionPassMechPool = () => {
 
         if (displayMechs && displayMechs.length > 0) {
             return (
-                <Box
-                    sx={{
-                        display: "grid",
-                        gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(30rem, 1fr))" : "100%",
-                        gap: "1.5rem",
-                        alignItems: "center",
-                        justifyContent: "center",
-                    }}
-                >
-                    {displayMechs.map((mech) => {
+                <VirtualizedGrid
+                    uniqueID="fleetMechPoolGrid"
+                    itemWidthConfig={{ minWidth: 300 }}
+                    itemHeight={290}
+                    totalItems={displayMechs.length}
+                    gap={13}
+                    renderIndex={(index) => {
+                        const mech = displayMechs[index]
+                        if (!mech) {
+                            return null
+                        }
                         const isSelected = !!selectedMechs.find((m) => m.id === mech.id)
                         return <MechCard key={`mech-${mech.id}`} mech={mech} isGridView={isGridView} isSelected={isSelected} toggleSelected={toggleSelected} />
-                    })}
-                </Box>
+                    }}
+                />
             )
         }
 
@@ -424,7 +426,7 @@ export const FactionPassMechPool = () => {
                         />
                     </Stack>
 
-                    <Box sx={{ flex: 1, height: "100%", overflowY: "auto", pr: ".8rem" }}>{content}</Box>
+                    <Box sx={{ flex: 1, overflowY: "auto" }}>{content}</Box>
                 </Stack>
             </Stack>
         </Stack>

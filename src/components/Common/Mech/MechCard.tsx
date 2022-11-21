@@ -57,9 +57,7 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                     thickness: isSelected ? "lean" : "very-lean",
                 }}
                 background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.06 }}
-                sx={{
-                    overflow: "hidden",
-                }}
+                sx={{ width: "100%", height: "100%", overflow: "hidden" }}
             >
                 <Box
                     sx={{
@@ -169,7 +167,7 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                 thickness: isSelected ? "lean" : "very-lean",
             }}
             background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.06 }}
-            sx={{ p: "1rem 1.5rem" }}
+            sx={{ p: "1rem 1.5rem", width: "100%", height: "100%", overflow: "hidden" }}
         >
             <Stack spacing="1.2rem">
                 {/* Mech name and checkbox */}
@@ -210,7 +208,7 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                 <NiceBoxThing
                     border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
                     background={{ colors: [ownerFaction.palette.background] }}
-                    sx={{ position: "relative", boxShadow: 0.4 }}
+                    sx={{ position: "relative", boxShadow: 0.4, flex: 1 }}
                 >
                     <Box
                         component="img"

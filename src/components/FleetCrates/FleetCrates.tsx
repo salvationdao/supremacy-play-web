@@ -126,9 +126,9 @@ export const FleetCrates = () => {
         if (displayCrates && displayCrates.length > 0) {
             return (
                 <VirtualizedGrid
-                    uniqueID="fleetCrateCssGrid"
+                    uniqueID="fleetCratesGrid"
                     itemWidthConfig={{ minWidth: 300 }}
-                    itemHeight={280}
+                    itemHeight={283}
                     totalItems={displayCrates.length}
                     gap={13}
                     renderIndex={(index) => {

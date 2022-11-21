@@ -61,7 +61,7 @@ export const MysteryCrateCard = React.memo(function MysteryCrateCard({ crate, se
                 thickness: "very-lean",
             }}
             background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.06 }}
-            sx={{ p: "1rem 1.5rem", width: "100%", height: "100%" }}
+            sx={{ p: "1rem 1.5rem", width: "100%", height: "100%", overflow: "hidden" }}
         >
             <Stack spacing="1.2rem">
                 {/* Crate name */}
@@ -71,7 +71,7 @@ export const MysteryCrateCard = React.memo(function MysteryCrateCard({ crate, se
                 <NiceBoxThing
                     border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
                     background={{ colors: [ownerFaction.palette.background] }}
-                    sx={{ position: "relative", boxShadow: 0.4 }}
+                    sx={{ position: "relative", boxShadow: 0.4, flex: 1 }}
                 >
                     <MediaPreview
                         imageUrl={crate.large_image_url || crate.image_url || crate.avatar_url || SafePNG}

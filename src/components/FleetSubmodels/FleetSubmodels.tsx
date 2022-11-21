@@ -17,6 +17,7 @@ import { NiceSelect } from "../Common/Nice/NiceSelect"
 import { NiceTextField } from "../Common/Nice/NiceTextField"
 import { SortAndFilters } from "../Common/SortAndFilters/SortAndFilters"
 import { SubmodelCard } from "../Common/Submodel/SubmodelCard"
+import { VirtualizedGrid } from "../Common/VirtualizedGrid"
 
 enum UrlQueryParams {
     Sort = "sort",
@@ -223,19 +224,20 @@ export const FleetSubmodels = () => {
 
         if (displaySubmodels && displaySubmodels.length > 0) {
             return (
-                <Box
-                    sx={{
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fill, minmax(30rem, 1fr))",
-                        gap: "1.5rem",
-                        alignItems: "stretch",
-                        justifyContent: "center",
-                    }}
-                >
-                    {displaySubmodels.map((submodel) => {
+                <VirtualizedGrid
+                    uniqueID="fleetSubmodelsGrid"
+                    itemWidthConfig={{ minWidth: 300 }}
+                    itemHeight={290}
+                    totalItems={displaySubmodels.length}
+                    gap={13}
+                    renderIndex={(index) => {
+                        const submodel = displaySubmodels[index]
+                        if (!submodel) {
+                            return null
+                        }
                         return <SubmodelCard key={`submodel-${submodel.id}`} submodel={submodel} />
-                    })}
-                </Box>
+                    }}
+                />
             )
         }
 
@@ -360,7 +362,7 @@ export const FleetSubmodels = () => {
                         />
                     </Stack>
 
-                    <Box sx={{ flex: 1, height: "100%", overflowY: "auto", pr: ".8rem" }}>{content}</Box>
+                    <Box sx={{ flex: 1, overflowY: "auto" }}>{content}</Box>
                 </Stack>
             </Stack>
         </Stack>

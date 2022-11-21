@@ -47,9 +47,7 @@ export const WeaponCard = React.memo(function WeaponCard({ weapon, hide, isGridV
                     thickness: "very-lean",
                 }}
                 background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.06 }}
-                sx={{
-                    overflow: "hidden",
-                }}
+                sx={{ width: "100%", height: "100%", overflow: "hidden" }}
             >
                 <Box
                     sx={{
@@ -120,7 +118,7 @@ export const WeaponCard = React.memo(function WeaponCard({ weapon, hide, isGridV
                 thickness: "very-lean",
             }}
             background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.06 }}
-            sx={{ p: "1rem 1.5rem" }}
+            sx={{ p: "1rem 1.5rem", width: "100%", height: "100%", overflow: "hidden" }}
         >
             <Stack spacing="1.2rem">
                 {/* Weapon name */}
@@ -132,7 +130,7 @@ export const WeaponCard = React.memo(function WeaponCard({ weapon, hide, isGridV
                 <NiceBoxThing
                     border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
                     background={{ colors: [ownerFaction.palette.background] }}
-                    sx={{ boxShadow: 0.4 }}
+                    sx={{ boxShadow: 0.4, flex: 1 }}
                 >
                     <Box
                         component="img"
