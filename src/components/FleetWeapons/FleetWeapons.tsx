@@ -279,10 +279,10 @@ export const FleetWeapons = () => {
                 result = result.sort((a, b) => `${b.label}`.localeCompare(`${a.label}`))
                 break
             case SortTypeLabel.RarestAsc:
-                result = result.sort((a, b) => (getRarityDeets(a.tier.toUpperCase()).rank > getRarityDeets(b.tier.toUpperCase()).rank ? 1 : -1))
+                result = result.sort((a, b) => (getRarityDeets(a.tier.toUpperCase()).rank < getRarityDeets(b.tier.toUpperCase()).rank ? 1 : -1))
                 break
             case SortTypeLabel.RarestDesc:
-                result = result.sort((a, b) => (getRarityDeets(a.tier.toUpperCase()).rank < getRarityDeets(b.tier.toUpperCase()).rank ? 1 : -1))
+                result = result.sort((a, b) => (getRarityDeets(a.tier.toUpperCase()).rank > getRarityDeets(b.tier.toUpperCase()).rank ? 1 : -1))
                 break
         }
 
