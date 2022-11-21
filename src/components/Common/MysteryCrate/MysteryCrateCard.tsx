@@ -61,7 +61,7 @@ export const MysteryCrateCard = React.memo(function MysteryCrateCard({ crate, se
                 thickness: "very-lean",
             }}
             background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.06 }}
-            sx={{ p: "1rem 1.5rem" }}
+            sx={{ p: "1rem 1.5rem", width: "100%", height: "100%" }}
         >
             <Stack spacing="1.2rem">
                 {/* Crate name */}

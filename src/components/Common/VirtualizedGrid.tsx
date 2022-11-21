@@ -1,5 +1,5 @@
-import { Box, Typography } from "@mui/material"
-import React, { useCallback, useEffect, useMemo, useRef } from "react"
+import { Box } from "@mui/material"
+import React, { ReactNode, useCallback, useEffect, useMemo, useRef } from "react"
 import { FixedSizeGrid } from "react-window"
 import { useDebounce } from "../../hooks"
 import { Dimension } from "../../types"
@@ -23,13 +23,14 @@ interface VirtualizedGridProps {
     itemHeight: number
     totalItems: number
     gap?: number
+    renderIndex: (index: number) => ReactNode
 }
 
 // It will take up 100% of parent's width and height
 // The way this is setup is that it will render items left ot right, then top to down
-export const VirtualizedGrid = ({ uniqueID, itemWidthConfig, itemHeight, totalItems, gap = 0 }: VirtualizedGridProps) => {
+export const VirtualizedGrid = ({ uniqueID, itemWidthConfig, itemHeight, totalItems, gap = 0, renderIndex }: VirtualizedGridProps) => {
     const resizeObserver = useRef<ResizeObserver>()
-    const [dimension, setDimension] = useDebounce<Dimension>({ width: 300, height: 300 }, 500)
+    const [dimension, setDimension] = useDebounce<Dimension>({ width: 0, height: 0 }, 500)
 
     // Setup resize observer to watch the parent element
     useEffect(() => {
@@ -77,7 +78,7 @@ export const VirtualizedGrid = ({ uniqueID, itemWidthConfig, itemHeight, totalIt
 
     const Cell = useCallback(
         ({ columnIndex, rowIndex, style }: { columnIndex: number; rowIndex: number; style: React.CSSProperties }) => {
-            console.log(style.height, gap)
+            const index = rowIndex * rowCount + (columnIndex % columnCount)
             return (
                 <div
                     style={{
@@ -85,19 +86,19 @@ export const VirtualizedGrid = ({ uniqueID, itemWidthConfig, itemHeight, totalIt
                         left: `calc(${style.left}px + ${(columnIndex === 0 ? 0 : columnIndex) * (gap / columnCount)}px)`,
                         top: `calc(${style.top}px + ${(rowIndex === 0 ? 0 : rowIndex) * (gap / rowCount)}px)`,
                         width: `calc(${style.width}px - ${gap / 2 + gap / columnCount}px)`,
-                        height: `calc(${style.height}px - ${gap / 2}px)`,
+                        height: `calc(${style.height}px - ${gap / 2 + gap / rowCount}px)`,
                     }}
                 >
-                    <Box sx={{ width: "100%", height: "100%", background: "#FFFFFF30" }}>
-                        <Typography>
-                            Item {rowIndex},{columnIndex}
-                        </Typography>
-                    </Box>
+                    <Box sx={{ width: "100%", height: "100%" }}>{renderIndex(index)}</Box>
                 </div>
             )
         },
-        [columnCount, gap, rowCount],
+        [columnCount, gap, renderIndex, rowCount],
     )
+
+    if (dimension.width <= 0 || dimension.height <= 0) {
+        return <div className={uniqueID} />
+    }
 
     return (
         <FixedSizeGrid
