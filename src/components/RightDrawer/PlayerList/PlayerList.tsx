@@ -58,13 +58,7 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
             </Typography>
             <Box flex={1} />
             <Box sx={{ minWidth: ".8rem", minHeight: ".8rem", borderRadius: "50%", backgroundColor: activePlayers.length > 0 ? colors.green : colors.grey }} />
-            <Typography
-                sx={{
-                    color: activePlayers.length > 0 ? colors.lightGrey : colors.darkGrey,
-                }}
-            >
-                {activePlayers.length} active
-            </Typography>
+            <Typography sx={{ color: colors.lightGrey }}>{activePlayers.length} active</Typography>
         </Stack>
     )
 }
