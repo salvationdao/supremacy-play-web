@@ -255,6 +255,27 @@ export const FleetMechs = () => {
         setDisplayMechs(result)
     }, [deaths, isLoading, kills, losses, mechs, rarities, repairBlocks, search, sort, status, updateQuery, wins])
 
+    const renderIndex = useCallback(
+        (index) => {
+            const mech = displayMechs[index]
+            if (!mech) {
+                return null
+            }
+            const isSelected = !!selectedMechs.find((m) => m.id === mech.id)
+            return (
+                <MechCard
+                    key={`mech-${mech.id}`}
+                    mech={mech}
+                    isGridView={isGridView}
+                    isSelected={isSelected}
+                    toggleSelected={toggleSelected}
+                    hide={{ ownerName: true }}
+                />
+            )
+        },
+        [displayMechs, isGridView, selectedMechs, toggleSelected],
+    )
+
     const content = useMemo(() => {
         if (isLoading) {
             return (
@@ -272,23 +293,7 @@ export const FleetMechs = () => {
                     itemHeight={isGridView ? 290 : 100}
                     totalItems={displayMechs.length}
                     gap={13}
-                    renderIndex={(index) => {
-                        const mech = displayMechs[index]
-                        if (!mech) {
-                            return null
-                        }
-                        const isSelected = !!selectedMechs.find((m) => m.id === mech.id)
-                        return (
-                            <MechCard
-                                key={`mech-${mech.id}`}
-                                mech={mech}
-                                isGridView={isGridView}
-                                isSelected={isSelected}
-                                toggleSelected={toggleSelected}
-                                hide={{ ownerName: true }}
-                            />
-                        )
-                    }}
+                    renderIndex={renderIndex}
                 />
             )
         }
@@ -325,7 +330,7 @@ export const FleetMechs = () => {
                 </NiceButton>
             </Stack>
         )
-    }, [displayMechs, isGridView, isLoading, selectedMechs, theme.factionTheme.primary, toggleSelected])
+    }, [displayMechs, isGridView, isLoading, renderIndex, theme.factionTheme.primary])
 
     return (
         <Stack

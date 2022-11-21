@@ -1,4 +1,5 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
+import { useCallback } from "react"
 import { useEffect, useMemo, useState } from "react"
 import { EmptyWarMachinesPNG, SvgFilter, SvgGridView, SvgListView, SvgSearch } from "../../assets"
 import { useTheme } from "../../containers/theme"
@@ -328,6 +329,17 @@ export const FleetWeapons = () => {
         weaponType,
     ])
 
+    const renderIndex = useCallback(
+        (index) => {
+            const weapon = displayWeapons[index]
+            if (!weapon) {
+                return null
+            }
+            return <WeaponCard key={`weapon-${weapon.id}`} weapon={weapon} isGridView={isGridView} />
+        },
+        [displayWeapons, isGridView],
+    )
+
     const content = useMemo(() => {
         if (isLoading) {
             return (
@@ -345,13 +357,7 @@ export const FleetWeapons = () => {
                     itemHeight={isGridView ? 260 : 100}
                     totalItems={displayWeapons.length}
                     gap={13}
-                    renderIndex={(index) => {
-                        const weapon = displayWeapons[index]
-                        if (!weapon) {
-                            return null
-                        }
-                        return <WeaponCard key={`weapon-${weapon.id}`} weapon={weapon} isGridView={isGridView} />
-                    }}
+                    renderIndex={renderIndex}
                 />
             )
         }
@@ -388,7 +394,7 @@ export const FleetWeapons = () => {
                 </NiceButton>
             </Stack>
         )
-    }, [displayWeapons, isGridView, isLoading, theme.factionTheme.primary])
+    }, [displayWeapons, isGridView, isLoading, renderIndex, theme.factionTheme.primary])
 
     return (
         <Stack

@@ -28,7 +28,14 @@ interface VirtualizedGridProps {
 
 // It will take up 100% of parent's width and height
 // The way this is setup is that it will render items left ot right, then top to down
-export const VirtualizedGrid = ({ uniqueID, itemWidthConfig, itemHeight, totalItems, gap = 0, renderIndex }: VirtualizedGridProps) => {
+export const VirtualizedGrid = React.memo(function VirtualizedGrid({
+    uniqueID,
+    itemWidthConfig,
+    itemHeight,
+    totalItems,
+    gap = 0,
+    renderIndex,
+}: VirtualizedGridProps) {
     const resizeObserver = useRef<ResizeObserver>()
     const [dimension, setDimension] = useDebounce<Dimension>({ width: 0, height: 0 }, 250)
 
@@ -113,4 +120,4 @@ export const VirtualizedGrid = ({ uniqueID, itemWidthConfig, itemHeight, totalIt
             {Cell}
         </FixedSizeGrid>
     )
-}
+})

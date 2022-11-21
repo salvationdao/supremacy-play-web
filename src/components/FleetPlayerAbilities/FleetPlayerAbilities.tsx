@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { EmptyWarMachinesPNG, SvgSearch } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { useDebounce, useUrlQuery } from "../../hooks"
@@ -109,6 +109,17 @@ export const FleetPlayerAbilities = () => {
         setDisplayPlayerAbilities(result)
     }, [isLoading, playerAbilities, search, sort, updateQuery])
 
+    const renderIndex = useCallback(
+        (index) => {
+            const playerAbility = displayPlayerAbilities[index]
+            if (!playerAbility) {
+                return null
+            }
+            return <PlayerAbilityCard key={`player-ability-${playerAbility.id}`} playerAbility={playerAbility} />
+        },
+        [displayPlayerAbilities],
+    )
+
     const content = useMemo(() => {
         if (isLoading) {
             return (
@@ -126,13 +137,7 @@ export const FleetPlayerAbilities = () => {
                     itemHeight={283}
                     totalItems={displayPlayerAbilities.length}
                     gap={13}
-                    renderIndex={(index) => {
-                        const playerAbility = displayPlayerAbilities[index]
-                        if (!playerAbility) {
-                            return null
-                        }
-                        return <PlayerAbilityCard key={`player-ability-${playerAbility.id}`} playerAbility={playerAbility} />
-                    }}
+                    renderIndex={renderIndex}
                 />
             )
         }
@@ -169,7 +174,7 @@ export const FleetPlayerAbilities = () => {
                 </NiceButton>
             </Stack>
         )
-    }, [displayPlayerAbilities, isLoading, theme.factionTheme.primary])
+    }, [displayPlayerAbilities, isLoading, renderIndex, theme.factionTheme.primary])
 
     return (
         <Stack

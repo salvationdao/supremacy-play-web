@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { SafePNG, SvgSearch } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { useDebounce, useUrlQuery } from "../../hooks"
@@ -114,6 +114,17 @@ export const FleetCrates = () => {
         setDisplayCrates(result)
     }, [crates, isLoading, search, sort, updateQuery])
 
+    const renderIndex = useCallback(
+        (index) => {
+            const crate = displayCrates[index]
+            if (!crate) {
+                return null
+            }
+            return <MysteryCrateCard key={`crate-${crate.id}`} crate={crate} setOpeningCrate={setOpeningCrate} setOpenedRewards={setOpenedRewards} />
+        },
+        [displayCrates],
+    )
+
     const content = useMemo(() => {
         if (isLoading) {
             return (
@@ -131,15 +142,7 @@ export const FleetCrates = () => {
                     itemHeight={283}
                     totalItems={displayCrates.length}
                     gap={13}
-                    renderIndex={(index) => {
-                        const crate = displayCrates[index]
-                        if (!crate) {
-                            return null
-                        }
-                        return (
-                            <MysteryCrateCard key={`crate-${crate.id}`} crate={crate} setOpeningCrate={setOpeningCrate} setOpenedRewards={setOpenedRewards} />
-                        )
-                    }}
+                    renderIndex={renderIndex}
                 />
             )
         }
@@ -176,7 +179,7 @@ export const FleetCrates = () => {
                 </NiceButton>
             </Stack>
         )
-    }, [displayCrates, isLoading, theme.factionTheme.primary])
+    }, [displayCrates, isLoading, renderIndex, theme.factionTheme.primary])
 
     return (
         <>

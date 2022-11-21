@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { EmptyWarMachinesPNG, SvgSearch } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { useDebounce, useUrlQuery } from "../../hooks"
@@ -105,6 +105,17 @@ export const FleetKeycards = () => {
         setDisplayKeycards(result)
     }, [isLoading, keycards, search, sort, updateQuery])
 
+    const renderIndex = useCallback(
+        (index) => {
+            const keycard = displayKeycards[index]
+            if (!keycard) {
+                return null
+            }
+            return <KeycardCard key={`keycard-${keycard.id}`} keycard={keycard} />
+        },
+        [displayKeycards],
+    )
+
     const content = useMemo(() => {
         if (isLoading) {
             return (
@@ -122,13 +133,7 @@ export const FleetKeycards = () => {
                     itemHeight={290}
                     totalItems={displayKeycards.length}
                     gap={13}
-                    renderIndex={(index) => {
-                        const keycard = displayKeycards[index]
-                        if (!keycard) {
-                            return null
-                        }
-                        return <KeycardCard key={`keycard-${keycard.id}`} keycard={keycard} />
-                    }}
+                    renderIndex={renderIndex}
                 />
             )
         }
@@ -165,7 +170,7 @@ export const FleetKeycards = () => {
                 </NiceButton>
             </Stack>
         )
-    }, [displayKeycards, isLoading, theme.factionTheme.primary])
+    }, [displayKeycards, isLoading, renderIndex, theme.factionTheme.primary])
 
     return (
         <Stack

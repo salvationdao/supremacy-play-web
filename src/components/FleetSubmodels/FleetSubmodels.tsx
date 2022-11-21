@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { EmptyWarMachinesPNG, SvgFilter, SvgSearch } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { getRarityDeets } from "../../helpers"
@@ -213,6 +213,17 @@ export const FleetSubmodels = () => {
         setDisplaySubmodels(result)
     }, [equippedStatus, isLoading, mechSubmodels, rarities, search, sort, submodelType, updateQuery, weaponSubmodels])
 
+    const renderIndex = useCallback(
+        (index) => {
+            const submodel = displaySubmodels[index]
+            if (!submodel) {
+                return null
+            }
+            return <SubmodelCard key={`submodel-${submodel.id}`} submodel={submodel} />
+        },
+        [displaySubmodels],
+    )
+
     const content = useMemo(() => {
         if (isLoading) {
             return (
@@ -230,13 +241,7 @@ export const FleetSubmodels = () => {
                     itemHeight={290}
                     totalItems={displaySubmodels.length}
                     gap={13}
-                    renderIndex={(index) => {
-                        const submodel = displaySubmodels[index]
-                        if (!submodel) {
-                            return null
-                        }
-                        return <SubmodelCard key={`submodel-${submodel.id}`} submodel={submodel} />
-                    }}
+                    renderIndex={renderIndex}
                 />
             )
         }
@@ -273,7 +278,7 @@ export const FleetSubmodels = () => {
                 </NiceButton>
             </Stack>
         )
-    }, [displaySubmodels, isLoading, theme.factionTheme.primary])
+    }, [displaySubmodels, isLoading, renderIndex, theme.factionTheme.primary])
 
     return (
         <Stack
