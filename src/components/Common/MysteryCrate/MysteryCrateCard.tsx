@@ -99,7 +99,11 @@ export const MysteryCrateCard = React.memo(function MysteryCrateCard({ crate, se
                 </NiceBoxThing>
 
                 {/* Crate description */}
-                {crate.description && <Typography sx={{ ...truncateTextLines(2) }}>{crate.description}</Typography>}
+                {crate.description && (
+                    <Typography variant="h6" sx={{ ...truncateTextLines(2) }}>
+                        {crate.description}
+                    </Typography>
+                )}
 
                 {/* Open button */}
                 <NiceButton buttonColor={theme.factionTheme.primary} corners disabled={new Date() < crate.locked_until} loading={isLoading} onClick={openCrate}>

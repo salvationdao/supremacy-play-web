@@ -55,7 +55,7 @@ export const PlayerAbilityCard = React.memo(function PlayerAbilityCard({ playerA
         >
             <Stack spacing="1.2rem">
                 {/* Keycard name and count */}
-                <Stack direction="row" alignItems="center" justifyContent="space-between" spacing="1rem">
+                <Stack direction="row" alignItems="flex-start" justifyContent="space-between" spacing="1rem">
                     {/* Keycard name */}
                     <NiceTooltip text={iconTooltip} placement="bottom-start">
                         <Typography sx={{ fontFamily: fonts.nostromoBlack, ...truncateTextLines(1) }}>
@@ -78,7 +78,9 @@ export const PlayerAbilityCard = React.memo(function PlayerAbilityCard({ playerA
                 </NiceBoxThing>
 
                 {/* Keycard description */}
-                <Typography sx={{ ...truncateTextLines(2) }}>{playerAbility.ability.description}</Typography>
+                <Typography variant="h6" sx={{ ...truncateTextLines(2) }}>
+                    {playerAbility.ability.description}
+                </Typography>
             </Stack>
         </NiceBoxThing>
     )

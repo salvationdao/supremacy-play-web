@@ -30,7 +30,7 @@ export const SubmodelCard = React.memo(function SubmodelCard({ submodel }: Submo
         >
             <Stack spacing="1.2rem">
                 {/* Submodel name and count */}
-                <Stack direction="row" alignItems="center" justifyContent="space-between" spacing="1rem">
+                <Stack direction="row" alignItems="flex-start" justifyContent="space-between" spacing="1rem">
                     {/* Submodel name */}
                     <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{submodel.label}</Typography>
 
