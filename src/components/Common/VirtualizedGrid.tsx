@@ -103,21 +103,23 @@ export const VirtualizedGrid = React.memo(function VirtualizedGrid({
         [columnCount, gap, renderIndex, rowCount],
     )
 
-    if (dimension.width <= 0 || dimension.height <= 0) {
-        return <div className={uniqueID} />
-    }
+    return useMemo(() => {
+        if (dimension.width <= 0 || dimension.height <= 0) {
+            return <div className={uniqueID} />
+        }
 
-    return (
-        <FixedSizeGrid
-            className={uniqueID}
-            width={dimension.width}
-            height={dimension.height}
-            columnCount={columnCount}
-            columnWidth={itemWidth}
-            rowCount={rowCount}
-            rowHeight={itemHeight}
-        >
-            {Cell}
-        </FixedSizeGrid>
-    )
+        return (
+            <FixedSizeGrid
+                className={uniqueID}
+                width={dimension.width}
+                height={dimension.height}
+                columnCount={columnCount}
+                columnWidth={itemWidth}
+                rowCount={rowCount}
+                rowHeight={itemHeight}
+            >
+                {Cell}
+            </FixedSizeGrid>
+        )
+    }, [Cell, columnCount, dimension.height, dimension.width, itemHeight, itemWidth, rowCount, uniqueID])
 })

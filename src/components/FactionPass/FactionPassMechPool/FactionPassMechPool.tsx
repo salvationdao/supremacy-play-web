@@ -234,6 +234,18 @@ export const FactionPassMechPool = () => {
         setDisplayMechs(result)
     }, [deaths, isLoading, kills, losses, mechs, rarities, repairBlocks, search, sort, status, updateQuery, wins])
 
+    const renderIndex = useCallback(
+        (index) => {
+            const mech = displayMechs[index]
+            if (!mech) {
+                return null
+            }
+            const isSelected = !!selectedMechs.find((m) => m.id === mech.id)
+            return <MechCard key={`mech-${mech.id}`} mech={mech} isGridView={isGridView} isSelected={isSelected} toggleSelected={toggleSelected} />
+        },
+        [displayMechs, isGridView, selectedMechs, toggleSelected],
+    )
+
     const content = useMemo(() => {
         if (isLoading) {
             return (
@@ -251,14 +263,7 @@ export const FactionPassMechPool = () => {
                     itemHeight={290}
                     totalItems={displayMechs.length}
                     gap={13}
-                    renderIndex={(index) => {
-                        const mech = displayMechs[index]
-                        if (!mech) {
-                            return null
-                        }
-                        const isSelected = !!selectedMechs.find((m) => m.id === mech.id)
-                        return <MechCard key={`mech-${mech.id}`} mech={mech} isGridView={isGridView} isSelected={isSelected} toggleSelected={toggleSelected} />
-                    }}
+                    renderIndex={renderIndex}
                 />
             )
         }
@@ -295,7 +300,7 @@ export const FactionPassMechPool = () => {
                 </NiceButton>
             </Stack>
         )
-    }, [displayMechs, isGridView, isLoading, selectedMechs, theme.factionTheme.primary, toggleSelected])
+    }, [displayMechs, isLoading, renderIndex, theme.factionTheme.primary])
 
     return (
         <Stack
