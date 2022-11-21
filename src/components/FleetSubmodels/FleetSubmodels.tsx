@@ -70,7 +70,7 @@ export const FleetSubmodels = () => {
     // Filter, search
     const [showFilters, setShowFilters] = useLocalStorage<boolean>("fleetSubmodelsFilters", false)
     const [search, setSearch, searchInstant] = useDebounce(query.get(UrlQueryParams.Search) || "", 300)
-    const [sort, setSort] = useState<string>(query.get(UrlQueryParams.Sort) || SortTypeLabel.Alphabetical)
+    const [sort, setSort] = useState<string>(query.get(UrlQueryParams.Sort) || SortTypeLabel.RarestDesc)
     const [submodelType, setSubmodelType] = useState<string[]>((query.get(UrlQueryParams.SubmodelType) || undefined)?.split("||") || [])
     const [equippedStatus, setEquippedStatus] = useState<string[]>((query.get(UrlQueryParams.EquippedStatus) || undefined)?.split("||") || [])
     const [rarities, setRarities] = useState<string[]>((query.get(UrlQueryParams.Rarities) || undefined)?.split("||") || [])

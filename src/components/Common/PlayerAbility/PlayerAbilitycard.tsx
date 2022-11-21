@@ -57,12 +57,11 @@ export const PlayerAbilityCard = React.memo(function PlayerAbilityCard({ playerA
                 {/* Keycard name and count */}
                 <Stack direction="row" alignItems="center" justifyContent="space-between" spacing="1rem">
                     {/* Keycard name */}
-                    <Typography sx={{ fontFamily: fonts.nostromoBlack }}>
-                        <NiceTooltip text={iconTooltip} placement="right-start">
-                            {icon}
-                        </NiceTooltip>{" "}
-                        {playerAbility.ability.label}
-                    </Typography>
+                    <NiceTooltip text={iconTooltip} placement="bottom-start">
+                        <Typography sx={{ fontFamily: fonts.nostromoBlack, ...truncateTextLines(1) }}>
+                            {icon} {playerAbility.ability.label}
+                        </Typography>
+                    </NiceTooltip>
 
                     <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                         {playerAbility.count}x
