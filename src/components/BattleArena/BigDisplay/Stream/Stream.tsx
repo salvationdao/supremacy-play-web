@@ -59,7 +59,7 @@ export const Stream = () => {
 
                 {isStreamBigDisplay && (
                     <Box onClick={() => toggleIsEnlarged()} sx={{ cursor: "pointer", opacity: 0.4, ":hover": { opacity: 1 } }}>
-                        {isEnlarged ? <SvgMinimize size="1.6rem" /> : <SvgFullscreen size="1.6rem" />}
+                        {isEnlarged ? <SvgMinimize size="1.7rem" /> : <SvgFullscreen size="1.7rem" />}
                     </Box>
                 )}
 
