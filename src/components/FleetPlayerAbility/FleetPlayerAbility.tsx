@@ -124,7 +124,7 @@ export const FleetPlayerAbility = () => {
                         display: "grid",
                         gridTemplateColumns: "repeat(auto-fill, minmax(30rem, 1fr))",
                         gap: "1.5rem",
-                        alignItems: "center",
+                        alignItems: "stretch",
                         justifyContent: "center",
                     }}
                 >

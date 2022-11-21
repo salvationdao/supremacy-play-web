@@ -343,7 +343,7 @@ export const FleetWeapons = () => {
                         display: "grid",
                         gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(30rem, 1fr))" : "100%",
                         gap: "1.5rem",
-                        alignItems: "center",
+                        alignItems: "stretch",
                         justifyContent: "center",
                     }}
                 >
