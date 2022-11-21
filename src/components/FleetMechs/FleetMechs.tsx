@@ -268,12 +268,11 @@ export const FleetMechs = () => {
             return (
                 <VirtualizedGrid
                     uniqueID="fleetMechsGrid"
-                    itemWidthConfig={{ minWidth: 300 }}
-                    itemHeight={290}
+                    itemWidthConfig={isGridView ? { minWidth: 300 } : { columnCount: 1 }}
+                    itemHeight={isGridView ? 290 : 100}
                     totalItems={displayMechs.length}
                     gap={13}
                     renderIndex={(index) => {
-                        console.log(index)
                         const mech = displayMechs[index]
                         if (!mech) {
                             return null

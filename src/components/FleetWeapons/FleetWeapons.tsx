@@ -341,8 +341,8 @@ export const FleetWeapons = () => {
             return (
                 <VirtualizedGrid
                     uniqueID="fleetWeaponsGrid"
-                    itemWidthConfig={{ minWidth: 300 }}
-                    itemHeight={260}
+                    itemWidthConfig={isGridView ? { minWidth: 300 } : { columnCount: 1 }}
+                    itemHeight={isGridView ? 260 : 100}
                     totalItems={displayWeapons.length}
                     gap={13}
                     renderIndex={(index) => {
