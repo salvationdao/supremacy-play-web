@@ -2,7 +2,6 @@ import { Box, Stack, Typography } from "@mui/material"
 import React, { useMemo } from "react"
 import { UserBanForm } from "../.."
 import { useSupremacy } from "../../../containers"
-import { useTheme } from "../../../containers/theme"
 import { useToggle } from "../../../hooks"
 import { colors, fonts } from "../../../theme/theme"
 import { User } from "../../../types"
@@ -18,7 +17,6 @@ const propsAreEqual = (prevProps: PlayerItemProps, nextProps: PlayerItemProps) =
 }
 
 export const PlayerItem = React.memo(function PlayerItem({ player, isActive }: PlayerItemProps) {
-    const theme = useTheme()
     const { getFaction } = useSupremacy()
 
     const [banModalOpen, toggleBanModalOpen] = useToggle()
@@ -40,25 +38,23 @@ export const PlayerItem = React.memo(function PlayerItem({ player, isActive }: P
             >
                 <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: isActive ? colors.green : colors.yellow }} />
 
-                <Box sx={{ pt: ".3rem", ml: "1.1rem" }}>
-                    <Stack direction="row" spacing=".5rem" alignItems="center">
-                        <Box
-                            sx={{
-                                width: "3rem",
-                                height: "3rem",
-                                flexShrink: 0,
-                                backgroundImage: `url(${faction.logo_url})`,
-                                backgroundRepeat: "no-repeat",
-                                backgroundPosition: "center",
-                                backgroundSize: "contain",
-                            }}
-                        />
-                        <Typography>
-                            {`${username}`}
-                            <span style={{ marginLeft: ".2rem", opacity: 0.8 }}>{`#${gid}`}</span>
-                        </Typography>
-                    </Stack>
-                </Box>
+                <Stack direction="row" spacing=".5rem" alignItems="center" sx={{ pt: ".3rem", ml: "1.1rem" }}>
+                    <Box
+                        sx={{
+                            width: "3rem",
+                            height: "3rem",
+                            flexShrink: 0,
+                            backgroundImage: `url(${faction.logo_url})`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "center",
+                            backgroundSize: "contain",
+                        }}
+                    />
+                    <Typography>
+                        {`${username}`}
+                        <span style={{ marginLeft: ".2rem", opacity: 0.8 }}>{`#${gid}`}</span>
+                    </Typography>
+                </Stack>
 
                 <NiceButton sx={{ px: "1rem", py: ".1rem", ml: "auto" }} onClick={() => toggleBanModalOpen()}>
                     <Typography

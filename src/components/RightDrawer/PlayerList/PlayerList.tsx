@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { NiceTooltip, PlayerListContent } from "../.."
+import { NiceTooltip, PlayerItem } from "../.."
 import { SvgUserDiamond2 } from "../../../assets"
 import { useChat } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -79,7 +79,11 @@ const Content = ({ activePlayers }: { activePlayers: User[] }) => {
                     direction: "ltr",
                 }}
             >
-                <PlayerListContent activePlayers={activePlayers} />
+                <Stack spacing=".5rem">
+                    {activePlayers.map((p) => (
+                        <PlayerItem key={`active-player-${p.id}`} player={p} isActive />
+                    ))}
+                </Stack>
             </Box>
         </Stack>
     )
