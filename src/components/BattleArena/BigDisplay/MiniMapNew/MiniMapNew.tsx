@@ -9,7 +9,7 @@ import { useWindowPortal } from "../../../Common/WindowPortal/WindowPortalContai
 import { LEFT_DRAWER_WIDTH } from "../../../LeftDrawer/LeftDrawer"
 import { MiniMapPixi } from "./MiniMapPixi/MiniMapPixi"
 
-export const TOP_BAR_HEIGHT = 3.4 // rems
+export const TOP_BAR_HEIGHT = 4.5 // rems
 const BOTTOM_PADDING = 12 // rems
 
 export const MiniMapNew = () => {
