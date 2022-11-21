@@ -7,7 +7,7 @@ import { RightRoutes } from "../../routes"
 import { siteZIndex } from "../../theme/theme"
 
 export const RIGHT_DRAWER_WIDTH = 38 // rem
-export const DRAWER_OFFSET = "7rem"
+export const DRAWER_OFFSET = "6.6rem"
 
 export const RightDrawer = () => {
     const theme = useTheme()

@@ -30,7 +30,7 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
                 width: "100%",
                 p: "1rem",
                 alignItems: "center",
-                backgroundColor: isOpen ? theme.factionTheme.s600 : theme.factionTheme.s800,
+                background: isOpen ? `linear-gradient(${theme.factionTheme.s500}70 26%, ${theme.factionTheme.s600})` : theme.factionTheme.s800,
                 transition: "background-color .2s ease-out",
             }}
         >
@@ -44,7 +44,7 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
                         pb: ".6rem",
                     }}
                 >
-                    <SvgUserDiamond2 size="3rem" />
+                    <SvgUserDiamond2 size="2.6rem" />
                 </NiceButton>
             </NiceTooltip>
             <Typography
