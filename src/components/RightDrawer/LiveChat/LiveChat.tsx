@@ -74,6 +74,7 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
                 width: "100%",
                 p: "1rem",
                 alignItems: "center",
+                opacity: isOpen ? 1 : 0.7,
                 background: isOpen ? `linear-gradient(${theme.factionTheme.s500}70 26%, ${theme.factionTheme.s600})` : theme.factionTheme.s800,
                 transition: "background-color .2s ease-out",
             }}
@@ -154,7 +155,7 @@ const TabbedLayout = () => {
     const { isEnlisted, faction_id, primaryColor, secondaryColor, factionTabLabel } = useMemo(() => {
         const isEnlisted = !!factionID
         let faction_id = null
-        let primaryColor = colors.green
+        let primaryColor = theme.factionTheme.primary
         let secondaryColor = "#FFFFFF"
         let factionTabLabel = ""
 
