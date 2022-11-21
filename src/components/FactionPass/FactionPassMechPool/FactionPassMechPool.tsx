@@ -304,11 +304,6 @@ export const FactionPassMechPool = () => {
                 mx: "auto",
                 position: "relative",
                 height: "100%",
-                backgroundColor: theme.factionTheme.background,
-                background: `url()`,
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-                backgroundSize: "cover",
                 maxWidth: "190rem",
             }}
         >
