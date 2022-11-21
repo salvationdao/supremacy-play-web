@@ -19,7 +19,7 @@ export const ErrorFallback = () => {
                 left: 0,
                 right: 0,
                 p: "4rem",
-                background: colors.darkNavyBlue,
+                background: colors.darkerNavy,
                 zIndex: siteZIndex.RoutePage,
             }}
         >

@@ -1,15 +1,15 @@
 import { Box, Button, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { Link } from "react-router-dom"
-import { SvgSkin } from "../../../../assets"
-import { useTheme } from "../../../../containers/theme"
-import { getAssetItemDeets, getRarityDeets } from "../../../../helpers"
-import { colors, fonts } from "../../../../theme/theme"
-import { FancyButton } from "../../../Common/Deprecated/FancyButton"
-import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
-import { NiceTooltip } from "../../../Common/Nice/NiceTooltip"
+import { SvgSkin } from "../../../assets"
+import { useTheme } from "../../../containers/theme"
+import { getAssetItemDeets, getRarityDeets } from "../../../helpers"
+import { colors, fonts } from "../../../theme/theme"
+import { FancyButton } from "../../Common/Deprecated/FancyButton"
+import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
+import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
 import { ArrayItem } from "./CrateRewardsModal"
-import { truncateTextLines } from "../../../../helpers"
+import { truncateTextLines } from "../../../helpers"
 
 interface CrateRewardItemsProps {
     item?: ArrayItem

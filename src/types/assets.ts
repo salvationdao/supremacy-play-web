@@ -111,7 +111,7 @@ export interface Collection {
     token_id: number
     item_type: AssetItemType
     item_id: string
-    tier: string
+    tier: RarityEnum
     owner_id: string
     on_chain_status: string
     locked_to_marketplace: boolean
@@ -364,9 +364,11 @@ export interface WeaponSkin extends Collection, Images {
     label: string
     weapon_type: string
     equipped_on?: string
-    tier: string
+    tier: RarityEnum
     created_at: string
     weapon_model_id: Date
+    level?: number
+    swatch_images?: Images
 }
 
 export interface WeaponMaxStats {
@@ -497,7 +499,7 @@ export interface WarMachineState {
     externalUrl: string
     name: string
     image: string
-    tier: string
+    tier: RarityEnum
     model: string
     skin: string
     shieldRechargeRate: number

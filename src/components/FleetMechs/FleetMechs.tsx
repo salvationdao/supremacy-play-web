@@ -143,7 +143,6 @@ export const FleetMechs = () => {
             key: GameServerKeys.SubPlayerQueueableMechs,
         },
         (payload) => {
-            setIsLoading(false)
             if (!payload) return
 
             setMechs((prev) => {
@@ -166,6 +165,8 @@ export const FleetMechs = () => {
 
                 return list
             })
+
+            setIsLoading(false)
         },
     )
 

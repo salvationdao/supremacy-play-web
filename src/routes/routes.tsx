@@ -9,12 +9,12 @@ import { Claims } from "../components/Claims/Claims"
 import { FactionPassBuy } from "../components/FactionPass/FactionPassBuy/FactionPassBuy"
 import { FactionPassDashboard } from "../components/FactionPass/FactionPassDashboard/FactionPassDashboard"
 import { FactionPassMechPool } from "../components/FactionPass/FactionPassMechPool/FactionPassMechPool"
+import { FleetCrates } from "../components/FleetCrates/FleetCrates"
+import { FleetKeycards } from "../components/FleetKeycards.tsx/FleetKeycards"
 import { FleetMechs } from "../components/FleetMechs/FleetMechs"
+import { FleetPlayerAbility } from "../components/FleetPlayerAbility/FleetPlayerAbility"
+import { FleetSubmodels } from "../components/FleetSubmodels/FleetSubmodels"
 import { FleetWeapons } from "../components/FleetWeapons/FleetWeapons"
-import { KeycardsHangar } from "../components/Hangar/KeycardsHangar/KeycardsHangar"
-import { MysteryCratesHangar } from "../components/Hangar/MysteryCratesHangar/MysteryCratesHangar"
-import { PlayerAbilitiesHangar } from "../components/Hangar/PlayerAbilitiesHangar/PlayerAbilitiesHangar"
-import { SubmodelsHangar } from "../components/Hangar/SubmodelHangar/SubmodelsHangar"
 import { MechPage } from "../components/Hangar/WarMachinesHangar/WarMachineDetails/MechPage"
 import { WeaponHangarDetails } from "../components/Hangar/WeaponsHangar/WeaponDetails/WeaponHangarDetails"
 import { GlobalStats } from "../components/Leaderboard/GlobalStats/GlobalStats"
@@ -321,7 +321,7 @@ export const Routes: RouteSingle[] = [
         id: RouteSingleID.FleetSubmodels,
         path: "/fleet/submodels",
         exact: true,
-        Component: SubmodelsHangar,
+        Component: FleetSubmodels,
         restrictions: {
             requireAuth: true,
             requireFaction: true,
@@ -340,7 +340,7 @@ export const Routes: RouteSingle[] = [
         id: RouteSingleID.FleetCrates,
         path: "/fleet/mystery-crates",
         exact: true,
-        Component: MysteryCratesHangar,
+        Component: FleetCrates,
         restrictions: {
             requireAuth: true,
             requireFaction: true,
@@ -359,7 +359,7 @@ export const Routes: RouteSingle[] = [
         id: RouteSingleID.FleetAbilities,
         path: "/fleet/abilities",
         exact: true,
-        Component: PlayerAbilitiesHangar,
+        Component: FleetPlayerAbility,
         restrictions: {
             requireAuth: true,
             requireFaction: true,
@@ -378,7 +378,7 @@ export const Routes: RouteSingle[] = [
         id: RouteSingleID.FleetKeycards,
         path: "/fleet/keycards",
         exact: true,
-        Component: KeycardsHangar,
+        Component: FleetKeycards,
         restrictions: {
             requireAuth: true,
             requireFaction: true,

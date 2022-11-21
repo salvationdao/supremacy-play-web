@@ -210,7 +210,7 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                 <NiceBoxThing
                     border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
                     background={{ colors: [ownerFaction.background_color] }}
-                    sx={{ boxShadow: 0.4 }}
+                    sx={{ position: "relative", boxShadow: 0.4 }}
                 >
                     <Box
                         component="img"

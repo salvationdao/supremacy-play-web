@@ -1,10 +1,10 @@
 import { Box, Modal, Stack } from "@mui/material"
 import { useEffect } from "react"
-import { FactionIDs } from "../../../../constants"
-import { useTheme } from "../../../../containers/theme"
-import { siteZIndex } from "../../../../theme/theme"
-import { MysteryCrateType } from "../../../../types"
-import { NiceButton } from "../../../Common/Nice/NiceButton"
+import { FactionIDs } from "../../../constants"
+import { useTheme } from "../../../containers/theme"
+import { siteZIndex } from "../../../theme/theme"
+import { MysteryCrateType } from "../../../types"
+import { NiceButton } from "../../Common/Nice/NiceButton"
 
 const CRATE_OPENING_VIDEOS_MECH: { [factionID: string]: string } = {
     [FactionIDs.ZHI]: "https://afiles.ninja-cdn.com/passport/nexus/lootbox/opening/mech/X3_Crate_OpeningVideo.mp4",
