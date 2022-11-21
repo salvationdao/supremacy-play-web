@@ -43,7 +43,7 @@ const KeycardCardInner = React.memo(function KeycardCardInner({ keycard, itemSal
         >
             <Stack spacing="1.2rem">
                 {/* Keycard name and count */}
-                <Stack direction="row" alignItems="center" justifyContent="space-between" spacing="1rem">
+                <Stack direction="row" alignItems="flex-start" justifyContent="space-between" spacing="1rem">
                     {/* Keycard name */}
                     <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{keycard.blueprints.label}</Typography>
 
@@ -57,7 +57,7 @@ const KeycardCardInner = React.memo(function KeycardCardInner({ keycard, itemSal
                 {/* Keycard image */}
                 <NiceBoxThing
                     border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
-                    background={{ colors: [ownerFaction.background_color] }}
+                    background={{ colors: [ownerFaction.palette.background] }}
                     sx={{ position: "relative", boxShadow: 0.4 }}
                 >
                     <MediaPreview
@@ -69,7 +69,9 @@ const KeycardCardInner = React.memo(function KeycardCardInner({ keycard, itemSal
                 </NiceBoxThing>
 
                 {/* Keycard description */}
-                <Typography sx={{ ...truncateTextLines(2) }}>{keycard.blueprints.description}</Typography>
+                <Typography variant="h6" sx={{ ...truncateTextLines(2) }}>
+                    {keycard.blueprints.description}
+                </Typography>
             </Stack>
         </NiceBoxThing>
     )

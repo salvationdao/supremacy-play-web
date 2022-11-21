@@ -61,7 +61,7 @@ export const PowerCoreSlot = ({ powerCore, tooltipPlacement, size }: PowerCoreSl
                 }}
                 color={factionTheme.background}
                 renderNode={
-                    <Stack direction="column" sx={{ width: "30rem" }}>
+                    <Stack direction="column" sx={{ width: "30rem", p: "1rem" }}>
                         <Stack direction="row" alignItems="center">
                             <Box
                                 key={!powerCore.avatar_url ? powerCore.image_url : powerCore.avatar_url}

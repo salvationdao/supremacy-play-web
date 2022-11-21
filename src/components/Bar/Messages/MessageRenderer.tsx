@@ -14,7 +14,7 @@ const InternalMessageRenderer = ({ markdown }: MessageRendererProps) => {
 
     const props = options
     props.style = {
-        fontFamily: fonts.shareTech,
+        fontFamily: fonts.rajdhaniMedium,
         backgroundColor: "transparent",
     }
 
@@ -63,7 +63,7 @@ type MessageRenderer = typeof InternalMessageRenderer & {
 ;(InternalMessageRenderer as MessageRenderer).generateOptions = (backgroundColor: string) => ({
     ...options,
     style: {
-        fontFamily: fonts.shareTech,
+        fontFamily: fonts.rajdhaniMedium,
         backgroundColor: backgroundColor,
     },
 })

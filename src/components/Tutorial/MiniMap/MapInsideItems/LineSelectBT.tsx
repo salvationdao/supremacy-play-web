@@ -166,9 +166,7 @@ export const LineSelectBT = ({ mapScale }: { mapScale: number }) => {
                         opacity: selectStage === SelectStage.StartCoord ? 0.8 : 1,
                     }}
                 >
-                    <Typography sx={{ fontSize: `${indicatorDiameter / 2}px`, fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}>
-                        1
-                    </Typography>
+                    <Typography sx={{ fontSize: `${indicatorDiameter / 2}px`, fontFamily: fonts.nostromoBlack, color: theme.factionTheme.text }}>1</Typography>
                 </Stack>
             )}
             {_selection?.endCoords && (
@@ -199,9 +197,7 @@ export const LineSelectBT = ({ mapScale }: { mapScale: number }) => {
                         animation: selectStage === SelectStage.EndCoord ? (theme) => `${glowEffect(theme.factionTheme.primary, true)} 2s infinite` : "unset",
                     }}
                 >
-                    <Typography sx={{ fontSize: `${indicatorDiameter / 2}px`, fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}>
-                        2
-                    </Typography>
+                    <Typography sx={{ fontSize: `${indicatorDiameter / 2}px`, fontFamily: fonts.nostromoBlack, color: theme.factionTheme.text }}>2</Typography>
                 </Stack>
             )}
             <canvas

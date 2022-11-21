@@ -1,4 +1,4 @@
-import { MechBasic, NewMechStruct, PowerCore, RarityEnum } from "./assets"
+import { NewMechStruct, RarityEnum } from "./assets"
 import { GameMap } from "./game"
 import { User } from "./user"
 

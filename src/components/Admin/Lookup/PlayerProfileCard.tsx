@@ -2,7 +2,7 @@ import { Stack, Typography } from "@mui/material"
 import { SxProps } from "@mui/system"
 import { ReactNode } from "react"
 import { fonts } from "../../../theme/theme"
-import { Faction } from "../../../types"
+import { FactionWithPalette } from "../../../types"
 import { ClipThing } from "../../Common/Deprecated/ClipThing"
 
 export const PlayerProfileCard = ({
@@ -12,7 +12,7 @@ export const PlayerProfileCard = ({
     fullWidth,
     sx,
 }: {
-    faction: Faction
+    faction: FactionWithPalette
     title: string
     children: ReactNode
     fullWidth?: boolean
@@ -22,11 +22,11 @@ export const PlayerProfileCard = ({
         <ClipThing
             clipSize="10px"
             border={{
-                borderColor: faction.primary_color,
+                borderColor: faction.palette.primary,
                 borderThickness: ".3rem",
             }}
             opacity={0.9}
-            backgroundColor={faction.background_color}
+            backgroundColor={faction.palette.background}
             sx={{ width: fullWidth ? "100%" : "auto", ...sx }}
             contentSx={{
                 display: "flex",
@@ -40,8 +40,8 @@ export const PlayerProfileCard = ({
                     p: "1rem",
                     width: "100%",
                     textAlign: "center",
-                    color: faction.secondary_color,
-                    background: faction.primary_color,
+                    color: faction.palette.text,
+                    background: faction.palette.primary,
                 }}
             >
                 {title}

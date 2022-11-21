@@ -1,16 +1,10 @@
-import { createContext, useContext, useEffect, useState, Dispatch } from "react"
-import { ThemeProvider as MuiThemeProvider, Theme } from "@mui/material"
-import { mergeDeep, shadeColor } from "../helpers"
-import { colors, theme } from "../theme/theme"
-
-interface FactionThemeColors {
-    primary: string
-    secondary: string
-    background: string
-}
+import { FactionTheme, Theme, ThemeProvider as MuiThemeProvider } from "@mui/material"
+import { createContext, Dispatch, useContext, useEffect, useState } from "react"
+import { mergeDeep } from "../helpers"
+import { theme } from "../theme/theme"
 
 export interface ThemeState extends Theme {
-    setFactionColors: Dispatch<React.SetStateAction<FactionThemeColors>>
+    setFactionColors: Dispatch<React.SetStateAction<FactionTheme>>
 }
 
 const initialState: ThemeState = {
@@ -24,10 +18,8 @@ export const ThemeContext = createContext<ThemeState>(initialState)
 
 export const ThemeProvider: React.FC = ({ children }) => {
     const [currentTheme, setCurrentTheme] = useState<Theme>(theme)
-    const [factionColors, setFactionColors] = useState<FactionThemeColors>({
-        primary: colors.neonBlue,
-        secondary: "#000000",
-        background: shadeColor(colors.neonBlue, -95),
+    const [factionColors, setFactionColors] = useState<FactionTheme>({
+        ...theme.factionTheme,
     })
 
     useEffect(() => {

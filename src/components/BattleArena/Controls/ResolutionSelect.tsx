@@ -20,7 +20,7 @@ export const OvenResolutionSelect = () => {
     if (!ovenResolutions || ovenResolutions.length <= 0) return null
 
     const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
+    const secondaryColor = theme.factionTheme.text
 
     return (
         <Stack direction="row" spacing=".24rem" alignItems="center">

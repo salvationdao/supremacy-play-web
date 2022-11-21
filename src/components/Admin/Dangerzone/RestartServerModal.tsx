@@ -1,12 +1,12 @@
-import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
-import React, { useCallback, useState } from "react"
-import { GameServerKeys } from "../../../keys"
 import { Box, IconButton, Modal, Stack, TextField, Typography } from "@mui/material"
-import { ClipThing } from "../../Common/Deprecated/ClipThing"
-import { colors, fonts, siteZIndex } from "../../../theme/theme"
-import { MAX_BAN_PROPOSAL_REASON_LENGTH } from "../../../constants"
-import { FancyButton } from "../../Common/Deprecated/FancyButton"
+import React, { useCallback, useState } from "react"
 import { SvgClose } from "../../../assets"
+import { MAX_BAN_PROPOSAL_REASON_LENGTH } from "../../../constants"
+import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
+import { FancyButton } from "../../Common/Deprecated/FancyButton"
 
 export const RestartServerModal = ({ modalOpen, setModalOpen }: { modalOpen: boolean; setModalOpen: React.Dispatch<React.SetStateAction<boolean>> }) => {
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -123,7 +123,7 @@ const AdminUnbanModalInner = ({
                                 sx={{
                                     borderRadius: 1,
                                     "& .MuiInputBase-root": {
-                                        fontFamily: fonts.shareTech,
+                                        fontFamily: fonts.rajdhaniMedium,
                                         px: "1.1em",
                                         pt: ".9rem",
                                         pb: ".7rem",

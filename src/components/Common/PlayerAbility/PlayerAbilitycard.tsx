@@ -55,14 +55,13 @@ export const PlayerAbilityCard = React.memo(function PlayerAbilityCard({ playerA
         >
             <Stack spacing="1.2rem">
                 {/* Keycard name and count */}
-                <Stack direction="row" alignItems="center" justifyContent="space-between" spacing="1rem">
+                <Stack direction="row" alignItems="flex-start" justifyContent="space-between" spacing="1rem">
                     {/* Keycard name */}
-                    <Typography sx={{ fontFamily: fonts.nostromoBlack }}>
-                        <NiceTooltip text={iconTooltip} placement="right-start">
-                            {icon}
-                        </NiceTooltip>{" "}
-                        {playerAbility.ability.label}
-                    </Typography>
+                    <NiceTooltip text={iconTooltip} placement="bottom-start">
+                        <Typography sx={{ fontFamily: fonts.nostromoBlack, ...truncateTextLines(1) }}>
+                            {icon} {playerAbility.ability.label}
+                        </Typography>
+                    </NiceTooltip>
 
                     <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                         {playerAbility.count}x
@@ -72,14 +71,16 @@ export const PlayerAbilityCard = React.memo(function PlayerAbilityCard({ playerA
                 {/* Keycard image */}
                 <NiceBoxThing
                     border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
-                    background={{ colors: [ownerFaction.background_color] }}
+                    background={{ colors: [ownerFaction.palette.background] }}
                     sx={{ position: "relative", boxShadow: 0.4 }}
                 >
                     <MediaPreview imageUrl={playerAbility.ability.image_url} objectFit="cover" sx={{ height: "20rem" }} />
                 </NiceBoxThing>
 
                 {/* Keycard description */}
-                <Typography sx={{ ...truncateTextLines(2) }}>{playerAbility.ability.description}</Typography>
+                <Typography variant="h6" sx={{ ...truncateTextLines(2) }}>
+                    {playerAbility.ability.description}
+                </Typography>
             </Stack>
         </NiceBoxThing>
     )

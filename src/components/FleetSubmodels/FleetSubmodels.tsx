@@ -44,8 +44,8 @@ const submodelTypeOpens = [
 ]
 
 const equippedStatusOptions = [
-    { value: "true", render: { label: "EQUIPPED", color: colors.gold } },
-    { value: "false", render: { label: "UNEQUIPPED", color: colors.bronze } },
+    { value: "true", render: { label: "EQUIPPED", color: colors.green } },
+    { value: "false", render: { label: "NOT EQUIPPED", color: colors.bronze } },
 ]
 
 const rarityOptions = [
@@ -70,7 +70,7 @@ export const FleetSubmodels = () => {
     // Filter, search
     const [showFilters, setShowFilters] = useLocalStorage<boolean>("fleetSubmodelsFilters", false)
     const [search, setSearch, searchInstant] = useDebounce(query.get(UrlQueryParams.Search) || "", 300)
-    const [sort, setSort] = useState<string>(query.get(UrlQueryParams.Sort) || SortTypeLabel.Alphabetical)
+    const [sort, setSort] = useState<string>(query.get(UrlQueryParams.Sort) || SortTypeLabel.RarestDesc)
     const [submodelType, setSubmodelType] = useState<string[]>((query.get(UrlQueryParams.SubmodelType) || undefined)?.split("||") || [])
     const [equippedStatus, setEquippedStatus] = useState<string[]>((query.get(UrlQueryParams.EquippedStatus) || undefined)?.split("||") || [])
     const [rarities, setRarities] = useState<string[]>((query.get(UrlQueryParams.Rarities) || undefined)?.split("||") || [])
@@ -152,12 +152,17 @@ export const FleetSubmodels = () => {
         if (isLoading) return
 
         let result: (MechSkin | WeaponSkin)[] = []
-        if ((submodelType as unknown as SubmodelType) === SubmodelType.Mech) {
+        if ((submodelType as unknown as SubmodelType[]).includes(SubmodelType.Mech)) {
             result = [...result, ...mechSubmodels]
         }
 
-        if ((submodelType as unknown as SubmodelType) === SubmodelType.Weapon) {
+        if ((submodelType as unknown as SubmodelType[]).includes(SubmodelType.Weapon)) {
             result = [...result, ...weaponSubmodels]
+        }
+
+        // If nothing is selected, include all submodel types
+        if (submodelType.length <= 0) {
+            result = [...mechSubmodels, ...weaponSubmodels]
         }
 
         // Apply search
@@ -188,10 +193,10 @@ export const FleetSubmodels = () => {
                 result = result.sort((a, b) => `${b.label}`.localeCompare(`${a.label}`))
                 break
             case SortTypeLabel.RarestAsc:
-                result = result.sort((a, b) => (getRarityDeets(a.tier.toUpperCase()).rank > getRarityDeets(b.tier.toUpperCase()).rank ? 1 : -1))
+                result = result.sort((a, b) => (getRarityDeets(a.tier.toUpperCase()).rank < getRarityDeets(b.tier.toUpperCase()).rank ? 1 : -1))
                 break
             case SortTypeLabel.RarestDesc:
-                result = result.sort((a, b) => (getRarityDeets(a.tier.toUpperCase()).rank < getRarityDeets(b.tier.toUpperCase()).rank ? 1 : -1))
+                result = result.sort((a, b) => (getRarityDeets(a.tier.toUpperCase()).rank > getRarityDeets(b.tier.toUpperCase()).rank ? 1 : -1))
                 break
         }
 
@@ -223,7 +228,7 @@ export const FleetSubmodels = () => {
                         display: "grid",
                         gridTemplateColumns: "repeat(auto-fill, minmax(30rem, 1fr))",
                         gap: "1.5rem",
-                        alignItems: "center",
+                        alignItems: "stretch",
                         justifyContent: "center",
                     }}
                 >
@@ -325,7 +330,7 @@ export const FleetSubmodels = () => {
                             buttonColor={theme.factionTheme.primary}
                             sx={{ p: ".2rem 1rem", pt: ".4rem" }}
                         >
-                            <Typography variant="subtitle1" fontFamily={fonts.nostromoBold} color={showFilters ? theme.factionTheme.secondary : "#FFFFFF"}>
+                            <Typography variant="subtitle1" fontFamily={fonts.nostromoBold} color={showFilters ? theme.factionTheme.text : "#FFFFFF"}>
                                 <SvgFilter inline size="1.5rem" /> FILTER
                             </Typography>
                         </NiceButton>

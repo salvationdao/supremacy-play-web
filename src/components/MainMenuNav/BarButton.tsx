@@ -2,7 +2,7 @@ import { Stack, Typography } from "@mui/material"
 import { useEffect } from "react"
 import { SvgMainMenu } from "../../assets"
 import { useUI } from "../../containers"
-import { colors, fonts } from "../../theme/theme"
+import { fonts } from "../../theme/theme"
 import { KeyboardKey } from "../Common/KeyboardKey"
 import { NiceButton } from "../Common/Nice/NiceButton"
 
@@ -25,7 +25,7 @@ export const BarButton = () => {
     return (
         <NiceButton sx={{ mx: "1.4rem", border: "none" }} onClick={() => toggleShowMainMenu()} disableAutoColor>
             <Stack direction="row" alignItems="center" spacing=".7rem">
-                <SvgMainMenu fill={colors.neonBlue} size="1.5rem" />
+                <SvgMainMenu fill="#ffffff" size="1.5rem" />
 
                 <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
                     MAIN MENU

@@ -15,7 +15,7 @@ import { MysteryCrate, OpenCrateResponse, RewardResponse, StorefrontMysteryCrate
 import { ClaimedRewards } from "../../../Claims/ClaimedRewards"
 import { ConfirmModal } from "../../../Common/Deprecated/ConfirmModal"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
-import { OpeningCrate } from "../../../Hangar/MysteryCratesHangar/MysteryCratesHangar"
+import { OpeningCrate } from "../../../FleetCrates/FleetCrates"
 
 interface MysteryCrateStoreItemProps {
     enlargedView?: boolean
@@ -312,7 +312,7 @@ export const MysteryCrateStoreItem = React.memo(function MysteryCrateStoreItem({
                                 >
                                     <Typography
                                         variant={enlargedView ? "body1" : "caption"}
-                                        sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}
+                                        sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.text }}
                                     >
                                         Buy Now
                                     </Typography>
@@ -331,7 +331,7 @@ export const MysteryCrateStoreItem = React.memo(function MysteryCrateStoreItem({
                                     >
                                         <Typography
                                             variant={enlargedView ? "body1" : "caption"}
-                                            sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}
+                                            sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.text }}
                                         >
                                             Add to Cart
                                         </Typography>

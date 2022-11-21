@@ -204,10 +204,10 @@ export const FactionPassMechPool = () => {
                 result = result.sort((a, b) => `${b.name}${b.label}`.localeCompare(`${a.name}${a.label}`))
                 break
             case SortTypeLabel.RarestAsc:
-                result = result.sort((a, b) => (getRarityDeets(a.tier.toUpperCase()).rank > getRarityDeets(b.tier.toUpperCase()).rank ? 1 : -1))
+                result = result.sort((a, b) => (getRarityDeets(a.tier.toUpperCase()).rank < getRarityDeets(b.tier.toUpperCase()).rank ? 1 : -1))
                 break
             case SortTypeLabel.RarestDesc:
-                result = result.sort((a, b) => (getRarityDeets(a.tier.toUpperCase()).rank < getRarityDeets(b.tier.toUpperCase()).rank ? 1 : -1))
+                result = result.sort((a, b) => (getRarityDeets(a.tier.toUpperCase()).rank > getRarityDeets(b.tier.toUpperCase()).rank ? 1 : -1))
                 break
             case SortTypeLabel.MechQueueAsc:
                 result = result.sort((a, b) => (a.queue_position && b.queue_position && a.queue_position > b.queue_position ? 1 : -1))
@@ -382,7 +382,7 @@ export const FactionPassMechPool = () => {
                             buttonColor={theme.factionTheme.primary}
                             sx={{ p: ".2rem 1rem", pt: ".4rem" }}
                         >
-                            <Typography variant="subtitle1" fontFamily={fonts.nostromoBold} color={showFilters ? theme.factionTheme.secondary : "#FFFFFF"}>
+                            <Typography variant="subtitle1" fontFamily={fonts.nostromoBold} color={showFilters ? theme.factionTheme.text : "#FFFFFF"}>
                                 <SvgFilter inline size="1.5rem" /> FILTER
                             </Typography>
                         </NiceButton>
@@ -402,7 +402,7 @@ export const FactionPassMechPool = () => {
                         {/* Page layout options */}
                         <NiceButtonGroup
                             primaryColor={theme.factionTheme.primary}
-                            secondaryColor={theme.factionTheme.secondary}
+                            secondaryColor={theme.factionTheme.text}
                             options={layoutOptions}
                             selected={isGridView}
                             onSelected={(value) => setIsGridView(value)}

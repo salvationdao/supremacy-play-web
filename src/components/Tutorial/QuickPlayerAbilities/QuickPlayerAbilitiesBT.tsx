@@ -29,7 +29,7 @@ const QuickPlayerAbilitiesInner = () => {
     }, [trainingStage, setTutorialRef])
 
     const timeLeft = useMemo(() => {
-        return <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.shareTech, textTransform: "uppercase" }}>10 Minutes</Typography>
+        return <Typography sx={{ color: colors.lightNeonBlue, fontFamily: fonts.rajdhaniMedium, textTransform: "uppercase" }}>10 Minutes</Typography>
     }, [])
 
     return (

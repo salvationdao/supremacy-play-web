@@ -11,10 +11,7 @@ import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { MechDetails, Weapon } from "../../../types/assets"
 import { MarketplaceBuyAuctionItem, MarketplaceEvent, MarketplaceEventType } from "../../../types/marketplace"
-import { KeycardCommonArea } from "../../Hangar/KeycardsHangar/KeycardHangarItem"
-import { CrateCommonArea } from "../../Hangar/MysteryCratesHangar/MysteryCrateHangarItem"
-import { MechCommonArea } from "../../Hangar/WarMachinesHangar/WarMachineHangarItem"
-import { WeaponCommonArea } from "../../Hangar/WeaponsHangar/WeaponHangarItem"
+import { CrateCommonArea, KeycardCommonArea, MechCommonArea, WeaponCommonArea } from "../../Hangar/Deprecated/HangarItemDeprecated"
 import { General } from "../Common/MarketItem/General"
 
 export const HistoryItem = ({ eventItem, isGridView }: { eventItem: MarketplaceEvent; isGridView: boolean }) => {

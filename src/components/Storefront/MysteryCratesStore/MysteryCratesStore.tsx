@@ -12,7 +12,7 @@ import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { MysteryCrate, OpenCrateResponse, StorefrontMysteryCrate } from "../../../types"
 import { PageHeader } from "../../Common/Deprecated/PageHeader"
 import { TotalAndPageSizeOptions } from "../../Common/Deprecated/TotalAndPageSizeOptions"
-import { OpeningCrate } from "../../Hangar/MysteryCratesHangar/MysteryCratesHangar"
+import { OpeningCrate } from "../../FleetCrates/FleetCrates"
 import { CrateRewardsModal } from "../../FleetCrates/OpenCrate/CrateRewardsModal"
 import { CrateRewardVideo } from "../../FleetCrates/OpenCrate/CrateRewardVideo"
 import { MysteryCrateStoreItem } from "./MysteryCrateStoreItem/MysteryCrateStoreItem"
@@ -265,13 +265,13 @@ export const MysteryCratesStore = () => {
                                             border: { borderColor: theme.factionTheme.primary, borderThickness: "2px" },
                                             sx: { position: "relative" },
                                         }}
-                                        sx={{ px: "1.6rem", py: ".6rem", color: theme.factionTheme.secondary }}
+                                        sx={{ px: "1.6rem", py: ".6rem", color: theme.factionTheme.text }}
                                         to={`/fleet/mystery-crates`}
                                     >
                                         <Typography
                                             variant="caption"
                                             sx={{
-                                                color: theme.factionTheme.secondary,
+                                                color: theme.factionTheme.text,
                                                 fontFamily: fonts.nostromoBlack,
                                             }}
                                         >

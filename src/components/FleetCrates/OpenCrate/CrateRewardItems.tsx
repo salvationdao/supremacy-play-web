@@ -38,7 +38,7 @@ export const CrateRewardItemsLarge = ({ item, largerVersion }: CrateRewardItemsP
                         borderThickness: ".2rem",
                     },
                     opacity: 0.8,
-                    backgroundColor: colors.black3,
+                    backgroundColor: colors.black2,
                     sx: { height: "100%", pointerEvents: assetItemDeets.subRoute ? "all" : "none" },
                 }}
                 sx={{ p: 0, color: "#FFFFFF" }}

@@ -1,7 +1,7 @@
 import { Checkbox, Stack, Typography } from "@mui/material"
 import { dateFormatter } from "../../../helpers"
 import { colors } from "../../../theme/theme"
-import { Faction } from "../../../types"
+import { FactionWithPalette } from "../../../types"
 import { AdminPlayerBan } from "../../../types/admin"
 import { ClipThing } from "../../Common/Deprecated/ClipThing"
 
@@ -11,7 +11,7 @@ export const ActiveBanPanel = ({
     toggleSelected,
     playerUnBanIDs,
 }: {
-    faction: Faction
+    faction: FactionWithPalette
     playerBans: AdminPlayerBan[]
     toggleSelected: (playerBan: AdminPlayerBan) => void
     playerUnBanIDs: string[]
@@ -25,10 +25,10 @@ export const ActiveBanPanel = ({
                     <ClipThing
                         clipSize="5px"
                         border={{
-                            borderColor: faction.primary_color,
+                            borderColor: faction.palette.primary,
                             borderThickness: ".3rem",
                         }}
-                        backgroundColor={faction.background_color}
+                        backgroundColor={faction.palette.background}
                         opacity={0.9}
                         sx={{ height: "100%" }}
                         key={playerBan.id}

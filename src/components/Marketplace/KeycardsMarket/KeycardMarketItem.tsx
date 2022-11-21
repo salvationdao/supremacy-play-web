@@ -1,5 +1,5 @@
 import { MarketplaceBuyAuctionItem } from "../../../types/marketplace"
-import { KeycardCommonArea } from "../../Hangar/KeycardsHangar/KeycardHangarItem"
+import { KeycardCommonArea } from "../../Hangar/Deprecated/HangarItemDeprecated"
 import { MarketItem } from "../Common/MarketItem/MarketItem"
 
 interface KeycardMarketItemProps {

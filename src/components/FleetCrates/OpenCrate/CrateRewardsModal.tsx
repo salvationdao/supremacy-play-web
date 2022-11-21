@@ -9,7 +9,7 @@ import { fonts, siteZIndex } from "../../../theme/theme"
 import { AssetItemType, MechSkin, MysteryCrate, MysteryCrateType, OpenCrateResponse, StorefrontMysteryCrate, WeaponSkin } from "../../../types"
 import { ClipThing } from "../../Common/Deprecated/ClipThing"
 import { FancyButton } from "../../Common/Deprecated/FancyButton"
-import { OpeningCrate } from "../../Hangar/MysteryCratesHangar/MysteryCratesHangar"
+import { OpeningCrate } from "../FleetCrates"
 import { CrateRewardItemsLarge, CrateRewardItemsSmall } from "./CrateRewardItems"
 
 interface CrateRewardsModalProps {
@@ -242,12 +242,12 @@ export const CrateRewardsModal = ({
                                                 border: { isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: "2px" },
                                                 sx: { position: "relative", width: "32rem" },
                                             }}
-                                            sx={{ width: "100%", py: "1rem", color: theme.factionTheme.secondary }}
+                                            sx={{ width: "100%", py: "1rem", color: theme.factionTheme.text }}
                                             onClick={openNextCrate}
                                         >
                                             <Typography
                                                 sx={{
-                                                    color: theme.factionTheme.secondary,
+                                                    color: theme.factionTheme.text,
                                                     fontFamily: fonts.nostromoBlack,
                                                 }}
                                             >
@@ -264,13 +264,13 @@ export const CrateRewardsModal = ({
                                                 border: { isFancy: true, borderColor: theme.factionTheme.primary, borderThickness: "2px" },
                                                 sx: { position: "relative", width: "32rem" },
                                             }}
-                                            sx={{ width: "100%", py: "1rem", color: theme.factionTheme.secondary }}
+                                            sx={{ width: "100%", py: "1rem", color: theme.factionTheme.text }}
                                             to="/storefront/mystery-crates"
                                             onClick={onClose}
                                         >
                                             <Typography
                                                 sx={{
-                                                    color: theme.factionTheme.secondary,
+                                                    color: theme.factionTheme.text,
                                                     fontFamily: fonts.nostromoBlack,
                                                 }}
                                             >
@@ -287,7 +287,7 @@ export const CrateRewardsModal = ({
                                             border: { borderColor: theme.factionTheme.primary, borderThickness: "2px" },
                                             sx: { position: "relative", width: "32rem" },
                                         }}
-                                        sx={{ width: "100%", py: "1rem", color: theme.factionTheme.secondary }}
+                                        sx={{ width: "100%", py: "1rem", color: theme.factionTheme.text }}
                                         onClick={onClose}
                                     >
                                         <Typography

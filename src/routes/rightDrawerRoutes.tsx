@@ -4,10 +4,10 @@ import { LiveChat } from "../components/RightDrawer/LiveChat/LiveChat"
 import { PlayerList } from "../components/RightDrawer/PlayerList/PlayerList"
 
 import { MyLobbies } from "../components/RightDrawer/MyLobbies/MyLobbies"
+import { RepairJobs } from "../components/RightDrawer/RepairJobs/RepairJobs"
 import { colors } from "../theme/theme"
 import { LeftRouteID } from "./leftDrawerRoutes"
 import { RouteSingleID } from "./routes"
-import { RepairJobs } from "../components/RightDrawer/RepairJobs/RepairJobs"
 
 export enum RightRouteID {
     LiveChat = "LIVE_CHAT",
@@ -16,9 +16,18 @@ export enum RightRouteID {
     MyLobbies = "MY_LOBBIES",
 }
 
+export interface HeaderProps {
+    isOpen: boolean
+    isDrawerOpen: boolean
+    onClose: () => void
+}
+
+type HeaderComponent = (props: HeaderProps) => JSX.Element
+
 export interface SideRouteSingle {
     id: LeftRouteID | RightRouteID
     Component?: () => JSX.Element | null
+    Header?: HeaderComponent
     icon: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
     label: string
     matchRouteIDs?: RouteSingleID[] // Leave undefined to have the tab available on all pages, else specify the routes
@@ -32,6 +41,7 @@ export const RightRoutes: SideRouteSingle[] = [
         icon: <SvgChat size="1.1rem" sx={{ pt: ".3rem" }} />,
         label: "Live Chat",
         Component: LiveChat,
+        Header: LiveChat.Header,
         requireAuth: false,
         matchRouteIDs: undefined,
         mountAllTime: true,
@@ -45,6 +55,7 @@ export const RightRoutes: SideRouteSingle[] = [
         ),
         label: "Active Players",
         Component: PlayerList,
+        Header: PlayerList.Header,
         requireAuth: true,
         matchRouteIDs: undefined,
         mountAllTime: false,
@@ -54,6 +65,7 @@ export const RightRoutes: SideRouteSingle[] = [
         icon: <SvgRepair size="1.1rem" sx={{ pt: ".3rem" }} />,
         label: "Repairs Jobs",
         Component: RepairJobs,
+        Header: RepairJobs.Header,
         requireAuth: true,
         matchRouteIDs: undefined,
         mountAllTime: false,
@@ -63,6 +75,7 @@ export const RightRoutes: SideRouteSingle[] = [
         icon: <SvgRepair size="1.1rem" sx={{ pt: ".3rem" }} />,
         label: "My Lobbies",
         Component: MyLobbies,
+        Header: MyLobbies.Header,
         requireAuth: true,
         matchRouteIDs: undefined,
         mountAllTime: false,

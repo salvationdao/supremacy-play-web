@@ -3,12 +3,11 @@ import { useMutation, useQuery } from "react-fetching-library"
 import { useFingerprint, useSupremacy } from "."
 import { PASSPORT_WEB } from "../constants"
 import { GameServerLoginCheck, GetGlobalFeatures, PassportLoginCheck } from "../fetching"
-import { shadeColor } from "../helpers"
 import { useGameServerCommandsUser, useGameServerSubscriptionSecuredUser } from "../hooks/useGameServer"
 import { useInactivity } from "../hooks/useInactivity"
 import { GameServerKeys } from "../keys"
-import { colors } from "../theme/theme"
-import { Faction, Feature, FeatureName, PunishListItem, RoleType, User, UserFromPassport, UserRank, UserStat } from "../types"
+import { theme } from "../theme/theme"
+import { FactionWithPalette, Feature, FeatureName, PunishListItem, RoleType, User, UserFromPassport, UserRank, UserStat } from "../types"
 import { useTheme } from "./theme"
 
 export const FallbackUser: User = {
@@ -21,16 +20,14 @@ export const FallbackUser: User = {
     role_type: RoleType.player,
 }
 
-export const FallbackFaction: Faction = {
+export const FallbackFaction: FactionWithPalette = {
     id: "",
     label: "",
     logo_url: "",
     background_url: "",
     wallpaper_url: "",
-    primary_color: colors.neonBlue,
-    secondary_color: "#000000",
-    background_color: shadeColor(colors.neonBlue, -95),
     description: "",
+    palette: theme.factionTheme,
 }
 
 export interface AuthState {
@@ -345,7 +342,7 @@ export const UserUpdater = () => {
         const faction = getFaction(factionID)
 
         if (faction) {
-            setFactionColors({ primary: faction.primary_color, secondary: faction.secondary_color, background: shadeColor(faction.primary_color, -95) })
+            setFactionColors(faction.palette)
         }
     }, [factionID, getFaction, setFactionColors])
 

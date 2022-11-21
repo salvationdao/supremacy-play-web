@@ -5,7 +5,7 @@ import { FactionIDs } from "../../../constants"
 import { useArena, useAuth, useSupremacy } from "../../../containers"
 import { supFormatter, truncateTextLines } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
-import { Faction } from "../../../types"
+import { FactionWithPalette } from "../../../types"
 import { BattleLobbiesMech, BattleLobby, BattleLobbySupporter } from "../../../types/battle_queue"
 import { AllGameMapsCombined } from "../../Common/AllGameMapsCombined"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
@@ -19,7 +19,7 @@ import { Supporters } from "./Supporters"
 export const NUMBER_MECHS_REQUIRED = 3
 
 export interface FactionLobbySlots {
-    faction: Faction
+    faction: FactionWithPalette
     mechSlots: BattleLobbiesMech[] // null represents empty slot
     supporterSlots: BattleLobbySupporter[] // null represents empty slot
 }
@@ -164,12 +164,12 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
                             <Typography
                                 variant="h6"
                                 sx={{
-                                    color: ownerFaction.primary_color,
+                                    color: ownerFaction.palette.primary,
                                     fontWeight: "bold",
                                     ...truncateTextLines(1),
                                 }}
                             >
-                                <SvgUserDiamond size="2.2rem" inline fill={ownerFaction.primary_color} />{" "}
+                                <SvgUserDiamond size="2.2rem" inline fill={ownerFaction.palette.primary} />{" "}
                                 {lobby.generated_by_system ? "The Overseer" : `${lobby.host_by.username}#${lobby.host_by.gid}`}
                             </Typography>
 

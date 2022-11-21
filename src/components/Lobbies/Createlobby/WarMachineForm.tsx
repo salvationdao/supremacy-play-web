@@ -1,19 +1,19 @@
 import { Box, Pagination, Stack, Typography } from "@mui/material"
-import { NiceButton } from "../../Common/Nice/NiceButton"
-import React, { useCallback, useEffect, useMemo, useState } from "react"
-import { useTheme } from "../../../containers/theme"
-import { Section } from "./RoomSettingForm"
-import { NiceTextField } from "../../Common/Nice/NiceTextField"
-import { EmptyWarMachinesPNG, SvgSearch } from "../../../assets"
-import { useDebounce, usePagination, useUrlQuery } from "../../../hooks"
-import { NiceSelect } from "../../Common/Nice/NiceSelect"
-import { SortTypeLabel } from "../../../types/marketplace"
-import { NewMechStruct } from "../../../types"
-import { getRarityDeets, parseString } from "../../../helpers"
-import { colors, fonts } from "../../../theme/theme"
-import { QueueableMechCard } from "./QueueableMechCard"
-import { NiceButtonGroup } from "../../Common/Nice/NiceButtonGroup"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useFormContext } from "react-hook-form"
+import { EmptyWarMachinesPNG, SvgSearch } from "../../../assets"
+import { useTheme } from "../../../containers/theme"
+import { getRarityDeets, parseString } from "../../../helpers"
+import { useDebounce, usePagination, useUrlQuery } from "../../../hooks"
+import { colors, fonts } from "../../../theme/theme"
+import { NewMechStruct } from "../../../types"
+import { SortTypeLabel } from "../../../types/marketplace"
+import { NiceButton } from "../../Common/Nice/NiceButton"
+import { NiceButtonGroup } from "../../Common/Nice/NiceButtonGroup"
+import { NiceSelect } from "../../Common/Nice/NiceSelect"
+import { NiceTextField } from "../../Common/Nice/NiceTextField"
+import { QueueableMechCard } from "./QueueableMechCard"
+import { Section } from "./RoomSettingForm"
 
 enum UrlQueryParams {
     Sort = "sort",
@@ -102,10 +102,10 @@ export const WarMachineForm = ({ prevPage, ownedMechs, stakedMechs, playerQueueL
                 result = result.sort((a, b) => `${b.name}${b.label}`.localeCompare(`${a.name}${a.label}`))
                 break
             case SortTypeLabel.RarestAsc:
-                result = result.sort((a, b) => (getRarityDeets(a.tier.toUpperCase()).rank > getRarityDeets(b.tier.toUpperCase()).rank ? 1 : -1))
+                result = result.sort((a, b) => (getRarityDeets(a.tier.toUpperCase()).rank < getRarityDeets(b.tier.toUpperCase()).rank ? 1 : -1))
                 break
             case SortTypeLabel.RarestDesc:
-                result = result.sort((a, b) => (getRarityDeets(a.tier.toUpperCase()).rank < getRarityDeets(b.tier.toUpperCase()).rank ? 1 : -1))
+                result = result.sort((a, b) => (getRarityDeets(a.tier.toUpperCase()).rank > getRarityDeets(b.tier.toUpperCase()).rank ? 1 : -1))
                 break
             case SortTypeLabel.MechQueueAsc:
                 result = result.sort((a, b) => (a.queue_position && b.queue_position && a.queue_position > b.queue_position ? 1 : -1))
@@ -223,7 +223,7 @@ export const WarMachineForm = ({ prevPage, ownedMechs, stakedMechs, playerQueueL
                     {/* Page layout options */}
                     <NiceButtonGroup
                         primaryColor={factionTheme.primary}
-                        secondaryColor={factionTheme.secondary}
+                        secondaryColor={factionTheme.text}
                         options={mechListOptions}
                         selected={isOwnedMech}
                         onSelected={(value) => setIsOwnedMech(value)}
@@ -233,7 +233,7 @@ export const WarMachineForm = ({ prevPage, ownedMechs, stakedMechs, playerQueueL
                     <NiceSelect
                         label="Sort:"
                         primaryColor={factionTheme.primary}
-                        secondaryColor={factionTheme.secondary}
+                        secondaryColor={factionTheme.text}
                         options={sortOptions}
                         selected={sort}
                         onSelected={(value) => setSort(`${value}`)}

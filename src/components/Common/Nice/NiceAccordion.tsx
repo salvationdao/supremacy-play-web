@@ -103,7 +103,7 @@ const AccordionSummary = styled(({ sx, children, ...props }: AccordionSummaryPro
             sx={{
                 px: "0",
                 backgroundColor: theme.factionTheme.primary,
-                color: theme.factionTheme.secondary,
+                color: theme.factionTheme.text,
                 transition: "background-color .2s ease-out",
                 "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
                     transform: "rotate(90deg)",

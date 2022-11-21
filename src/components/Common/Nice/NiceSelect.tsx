@@ -26,7 +26,7 @@ export const NiceSelect = ({
     const theme = useTheme()
 
     const primaryColor = _primaryColor || theme.factionTheme.primary
-    const secondaryColor = _secondaryColor || theme.factionTheme.secondary
+    const secondaryColor = _secondaryColor || theme.factionTheme.text
     const backgroundColor = _backgroundColor || theme.factionTheme.background
 
     return (

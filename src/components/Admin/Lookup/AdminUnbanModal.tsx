@@ -1,13 +1,13 @@
-import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
-import React, { useCallback, useState } from "react"
-import { GameServerKeys } from "../../../keys"
 import { Box, IconButton, Modal, Stack, TextField, Typography } from "@mui/material"
-import { ClipThing } from "../../Common/Deprecated/ClipThing"
-import { colors, fonts, siteZIndex } from "../../../theme/theme"
-import { MAX_BAN_PROPOSAL_REASON_LENGTH } from "../../../constants"
-import { FancyButton } from "../../Common/Deprecated/FancyButton"
+import React, { useCallback, useState } from "react"
 import { SvgClose } from "../../../assets"
-import { Faction, User } from "../../../types"
+import { MAX_BAN_PROPOSAL_REASON_LENGTH } from "../../../constants"
+import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
+import { FactionWithPalette, User } from "../../../types"
+import { ClipThing } from "../../Common/Deprecated/ClipThing"
+import { FancyButton } from "../../Common/Deprecated/FancyButton"
 
 export const AdminUnbanModal = ({
     playerUnbanIDs,
@@ -21,7 +21,7 @@ export const AdminUnbanModal = ({
     modalOpen: boolean
     setModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     user: User
-    faction: Faction
+    faction: FactionWithPalette
     fetchPlayer: (newGid: number) => void
 }) => {
     const { send } = useGameServerCommandsUser("/user_commander")
@@ -86,7 +86,7 @@ const AdminUnbanModalInner = ({
     reqError: string
     unbanReason: string
     user: User
-    faction: Faction
+    faction: FactionWithPalette
 }) => {
     return (
         <Modal open={modalOpen} onClose={onClose}>
@@ -105,11 +105,11 @@ const AdminUnbanModalInner = ({
                 <ClipThing
                     clipSize="8px"
                     border={{
-                        borderColor: faction.primary_color,
+                        borderColor: faction.palette.primary,
                         borderThickness: ".3rem",
                     }}
                     sx={{ position: "relative" }}
-                    backgroundColor={faction.background_color}
+                    backgroundColor={faction.palette.background}
                 >
                     <Stack
                         sx={{
@@ -129,7 +129,7 @@ const AdminUnbanModalInner = ({
                             Unban user {user.username} #{user.gid.toString()}
                         </Typography>
                         <Stack spacing=".3rem">
-                            <Typography sx={{ color: faction.primary_color, fontWeight: "bold" }}>Unban reason:</Typography>
+                            <Typography sx={{ color: faction.palette.primary, fontWeight: "bold" }}>Unban reason:</Typography>
                             <TextField
                                 value={unbanReason}
                                 placeholder="Type the reason to unban this user..."
@@ -144,7 +144,7 @@ const AdminUnbanModalInner = ({
                                 sx={{
                                     borderRadius: 1,
                                     "& .MuiInputBase-root": {
-                                        fontFamily: fonts.shareTech,
+                                        fontFamily: fonts.rajdhaniMedium,
                                         px: "1.1em",
                                         pt: ".9rem",
                                         pb: ".7rem",
@@ -154,7 +154,7 @@ const AdminUnbanModalInner = ({
                                         color: "#FFFFFF70",
                                     },
                                     ".Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                        borderColor: `${faction.primary_color} !important`,
+                                        borderColor: `${faction.palette.primary} !important`,
                                     },
                                     textarea: {
                                         p: 0,
@@ -170,19 +170,19 @@ const AdminUnbanModalInner = ({
                         <FancyButton
                             clipThingsProps={{
                                 clipSize: "9px",
-                                backgroundColor: faction.primary_color,
+                                backgroundColor: faction.palette.primary,
                                 opacity: 1,
-                                border: { isFancy: true, borderColor: faction.primary_color, borderThickness: "2px" },
+                                border: { isFancy: true, borderColor: faction.palette.primary, borderThickness: "2px" },
                                 sx: { position: "relative", minWidth: 0, mt: "1.8rem" },
                             }}
-                            sx={{ px: "0.5rem", py: ".3rem", color: faction.secondary_color }}
+                            sx={{ px: "0.5rem", py: ".3rem", color: faction.palette.text }}
                             onClick={() => sendUnbanCommand()}
                             disabled={unbanReason === ""}
                         >
                             <Typography
                                 variant="caption"
                                 sx={{
-                                    color: faction.secondary_color,
+                                    color: faction.palette.text,
                                     fontFamily: fonts.nostromoBlack,
                                 }}
                             >

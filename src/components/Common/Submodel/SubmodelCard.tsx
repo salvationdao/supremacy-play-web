@@ -22,15 +22,15 @@ export const SubmodelCard = React.memo(function SubmodelCard({ submodel }: Submo
     return (
         <NiceBoxThing
             border={{
-                color: `${rarityDeets.color}20`,
+                color: `${rarityDeets.color}50`,
                 thickness: "very-lean",
             }}
-            background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.06 }}
+            background={{ colors: [rarityDeets.color, rarityDeets.color], opacity: 0.06 }}
             sx={{ p: "1rem 1.5rem" }}
         >
             <Stack spacing="1.2rem">
                 {/* Submodel name and count */}
-                <Stack direction="row" alignItems="center" justifyContent="space-between" spacing="1rem">
+                <Stack direction="row" alignItems="flex-start" justifyContent="space-between" spacing="1rem">
                     {/* Submodel name */}
                     <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{submodel.label}</Typography>
 
@@ -48,14 +48,14 @@ export const SubmodelCard = React.memo(function SubmodelCard({ submodel }: Submo
                         ...truncateTextLines(1),
                     }}
                 >
-                    <SvgSkin inline size="2.5rem" fill={rarityDeets.color} /> {rarityDeets.label}{" "}
+                    <SvgSkin inline size="2rem" fill={rarityDeets.color} /> {rarityDeets.label}{" "}
                     {typeof submodel.level !== "undefined" && <>[{submodel.level}]</>}
                 </Typography>
 
                 {/* Submodel image */}
                 <NiceBoxThing
                     border={{ color: `${rarityDeets.color}20`, thickness: "very-lean" }}
-                    background={{ colors: [ownerFaction.background_color] }}
+                    background={{ colors: [ownerFaction.palette.background] }}
                     sx={{ position: "relative", boxShadow: 0.4 }}
                 >
                     <MediaPreview

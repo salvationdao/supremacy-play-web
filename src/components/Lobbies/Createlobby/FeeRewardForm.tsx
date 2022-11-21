@@ -71,7 +71,7 @@ export const FeeRewardForm = ({ nextPage, prevPage }: FeeRewardFormProps) => {
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position={"start"}>
-                                            <Typography fontFamily={fonts.shareTech}>%</Typography>
+                                            <Typography fontFamily={fonts.rajdhaniMedium}>%</Typography>
                                         </InputAdornment>
                                     ),
                                 }}
@@ -107,7 +107,7 @@ export const FeeRewardForm = ({ nextPage, prevPage }: FeeRewardFormProps) => {
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position={"start"}>
-                                            <Typography fontFamily={fonts.shareTech}>%</Typography>
+                                            <Typography fontFamily={fonts.rajdhaniMedium}>%</Typography>
                                         </InputAdornment>
                                     ),
                                 }}

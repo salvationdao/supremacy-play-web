@@ -66,7 +66,7 @@ export const WeaponCard = React.memo(function WeaponCard({ weapon, hide, isGridV
                     {/* Weapon image */}
                     <NiceBoxThing
                         border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
-                        background={{ colors: [ownerFaction.background_color] }}
+                        background={{ colors: [ownerFaction.palette.background] }}
                         sx={{ height: "100%", width: "100%", boxShadow: 0.4 }}
                     >
                         <Box
@@ -131,7 +131,7 @@ export const WeaponCard = React.memo(function WeaponCard({ weapon, hide, isGridV
                 {/* Weapon image */}
                 <NiceBoxThing
                     border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
-                    background={{ colors: [ownerFaction.background_color] }}
+                    background={{ colors: [ownerFaction.palette.background] }}
                     sx={{ boxShadow: 0.4 }}
                 >
                     <Box

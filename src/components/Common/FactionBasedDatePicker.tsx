@@ -1,8 +1,7 @@
-import { DatePicker } from "@mui/x-date-pickers"
-import { useTheme } from "../../containers/theme"
-import moment from "moment"
-import React from "react"
 import { TextField } from "@mui/material"
+import { DatePicker } from "@mui/x-date-pickers"
+import moment from "moment"
+import { useTheme } from "../../containers/theme"
 import { fonts } from "../../theme/theme"
 
 interface FactionBasedDatePickerProps {
@@ -37,19 +36,19 @@ export const FactionBasedDatePicker = ({ value, onChange, enableYear, disabled }
                 sx: {
                     ".MuiCalendarPicker-root": {
                         borderRadius: 0.8,
-                        border: `${factionTheme.primary}99 2px solid`,
+                        border: `${factionTheme.s600} 2px solid`,
                         backgroundColor: factionTheme.background,
                         ".MuiPickersCalendarHeader-root": {
                             mt: 0,
                             maxHeight: "unset",
                             py: "2rem",
-                            borderBottom: `${factionTheme.primary}99 2px solid`,
+                            borderBottom: `${factionTheme.s600} 2px solid`,
                             ".MuiPickersCalendarHeader-labelContainer": {
                                 ".MuiPickersFadeTransitionGroup-root": {
                                     ".MuiPickersCalendarHeader-label": {
                                         fontSize: "1.5rem",
                                         fontWeight: "bold",
-                                        color: factionTheme.secondary,
+                                        color: factionTheme.text,
                                         fontFamily: fonts.nostromoBlack,
                                     },
                                 },
@@ -79,12 +78,12 @@ export const FactionBasedDatePicker = ({ value, onChange, enableYear, disabled }
                         },
                         ".MuiDayPicker-weekContainer": {
                             "& .MuiPickersDay-root": {
-                                color: factionTheme.secondary,
+                                color: factionTheme.text,
                                 fontSize: "1.3rem",
                                 fontWeight: "bold",
                                 fontFamily: fonts.nostromoBlack,
-                                backgroundColor: `${factionTheme.primary}20`,
-                                borderColor: `${factionTheme.primary}20`,
+                                backgroundColor: `${factionTheme.s800}`,
+                                borderColor: `${factionTheme.s800}`,
                                 ":hover, :focus, :active": {
                                     backgroundColor: factionTheme.primary,
                                     borderColor: factionTheme.primary,
@@ -99,8 +98,8 @@ export const FactionBasedDatePicker = ({ value, onChange, enableYear, disabled }
                                         fontSize: "1.75rem",
                                         fontWeight: "bold",
                                         ":hover, :focus, :active": {
-                                            backgroundColor: `${factionTheme.primary}AA`,
-                                            color: factionTheme.secondary,
+                                            backgroundColor: `${factionTheme.s600}`,
+                                            color: factionTheme.text,
                                         },
                                     },
                                 },
@@ -118,7 +117,7 @@ export const FactionBasedDatePicker = ({ value, onChange, enableYear, disabled }
                     sx={{
                         ".MuiOutlinedInput-root": {
                             pr: 0,
-                            border: `${factionTheme.primary}99 2px solid`,
+                            border: `${factionTheme.s600} 2px dashed`,
                         },
                         ".MuiOutlinedInput-input": {
                             pl: "1.5rem",

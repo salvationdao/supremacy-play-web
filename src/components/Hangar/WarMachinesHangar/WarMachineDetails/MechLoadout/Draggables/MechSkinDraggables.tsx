@@ -10,9 +10,9 @@ import { AssetItemType, MechSkin } from "../../../../../../types"
 import { SortTypeLabel } from "../../../../../../types/marketplace"
 import { NiceSelect } from "../../../../../Common/Nice/NiceSelect"
 import { NiceTextField } from "../../../../../Common/Nice/NiceTextField"
-import { GetSubmodelsRequest, GetSubmodelsResponse } from "../../../../SubmodelHangar/SubmodelsHangar"
 import { MechLoadoutItem } from "../../../Common/MechLoadoutItem"
 import { OnClickEventWithType } from "../MechLoadoutDraggables"
+import { GetSubmodelsRequest, GetSubmodelsResponse } from "../Modals/MechLoadoutMechSkinModal"
 
 export interface MechSkinDraggablesProps {
     excludeMechSkinIDs: string[]

@@ -1,11 +1,12 @@
-import { Box, Tabs } from "@mui/material"
+import { Box, Tab, Tabs } from "@mui/material"
 import { useAuth, useUI } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useActiveRouteID } from "../../../hooks/useActiveRouteID"
 import { LeftRoutes } from "../../../routes"
-import { colors, siteZIndex } from "../../../theme/theme"
-import { TabButton } from "../../RightDrawer/DrawerButtons"
+import { colors, fonts, siteZIndex } from "../../../theme/theme"
 
+const BUTTON_WIDTH = 20 //rem
+const RIGHT_DRAWER_BAR_WIDTH = 3 // rem
 export const LEFT_DRAWER_BAR_WIDTH = 3 // rem
 
 export const DrawerButtonsBT = () => {
@@ -58,11 +59,73 @@ export const DrawerButtonsBT = () => {
                             }}
                             isActive={route.id === leftDrawerActiveTabID}
                             primaryColor={theme.factionTheme.primary}
-                            secondaryColor={theme.factionTheme.secondary}
+                            secondaryColor={theme.factionTheme.text}
                         />
                     )
                 })}
             </Tabs>
+        </Box>
+    )
+}
+
+export const TabButton = ({
+    label,
+    enable,
+    icon,
+    isActive,
+    primaryColor,
+    secondaryColor,
+    onClick,
+}: {
+    label: string
+    enable?: boolean
+    icon?: string | React.ReactElement<unknown, string | React.JSXElementConstructor<unknown>>
+    isActive?: boolean
+    primaryColor: string
+    secondaryColor: string
+    onClick: () => void
+}) => {
+    return (
+        <Box
+            sx={{
+                position: "relative",
+                height: `${BUTTON_WIDTH}rem`,
+                width: `${RIGHT_DRAWER_BAR_WIDTH}rem`,
+            }}
+        >
+            <Tab
+                label={label}
+                icon={icon}
+                iconPosition="end"
+                onClick={onClick}
+                disabled={!enable}
+                sx={{
+                    p: 0,
+                    pt: ".2rem",
+                    position: "absolute",
+                    whiteSpace: "nowrap",
+                    fontFamily: fonts.nostromoBold,
+                    fontSize: "1.2rem",
+                    lineHeight: 1,
+                    color: isActive ? secondaryColor : "#FFFFFF",
+                    backgroundColor: enable ? (isActive ? `${primaryColor}CC` : `${primaryColor}25`) : `${primaryColor}20`,
+                    opacity: isActive ? 1 : 0.6,
+                    transform: `translate(${-BUTTON_WIDTH / 2 + RIGHT_DRAWER_BAR_WIDTH / 2}rem, ${
+                        BUTTON_WIDTH / 2 - RIGHT_DRAWER_BAR_WIDTH / 2
+                    }rem) rotate(-90deg)`,
+                    ":hover": {
+                        opacity: 1,
+                    },
+                    "&, .MuiTouchRipple-root": {
+                        width: `${BUTTON_WIDTH}rem`,
+                        height: `${RIGHT_DRAWER_BAR_WIDTH}rem`,
+                        minHeight: `${RIGHT_DRAWER_BAR_WIDTH}rem`,
+                    },
+                    "& svg": {
+                        fill: isActive ? `${secondaryColor} !important` : "#FFFFFF",
+                    },
+                }}
+            />
         </Box>
     )
 }

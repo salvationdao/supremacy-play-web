@@ -306,7 +306,7 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
             {children}
 
             {/* Sheen effect */}
-            <Box sx={sheenStyles} />
+            {sheen && <Box sx={sheenStyles} />}
 
             <Box
                 className={OVERLAY_CLASSNAME}

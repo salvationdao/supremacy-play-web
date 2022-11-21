@@ -184,7 +184,7 @@ const PlayerAbilityTargetHint = () => {
                 <ClipThing
                     backgroundColor={theme.factionTheme.primary}
                     corners={{ topRight: true }}
-                    sx={{ zIndex: 1, p: ".9rem 1.1rem", svg: { fill: theme.factionTheme.secondary } }}
+                    sx={{ zIndex: 1, p: ".9rem 1.1rem", svg: { fill: theme.factionTheme.text } }}
                 >
                     {data?.icon}
                 </ClipThing>

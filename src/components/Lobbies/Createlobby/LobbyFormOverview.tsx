@@ -24,8 +24,8 @@ const UserItem = ({ user, remove }: { user: User; remove?: () => void }) => {
     const sxProps: SxProps | undefined = useMemo(() => {
         if (!remove) return undefined
         return {
-            border: `${faction.primary_color} 2px solid`,
-            backgroundColor: `${faction.primary_color}30`,
+            border: `${faction.palette.primary} 2px solid`,
+            backgroundColor: `${faction.palette.primary}30`,
             p: "1rem",
             borderRadius: 0.9,
         }
@@ -39,8 +39,8 @@ const UserItem = ({ user, remove }: { user: User; remove?: () => void }) => {
                     height: "2.6rem",
                     width: "2.6rem",
                     borderRadius: 0.8,
-                    border: `${faction.primary_color} 2px solid`,
-                    backgroundColor: faction.primary_color,
+                    border: `${faction.palette.primary} 2px solid`,
+                    backgroundColor: faction.palette.primary,
                 }}
                 variant="square"
             />
@@ -425,7 +425,7 @@ export const LobbyFormOverview = () => {
                                     borderRadius: 1,
                                     "& .MuiInputBase-root": {
                                         py: 0,
-                                        fontFamily: fonts.shareTech,
+                                        fontFamily: fonts.rajdhaniMedium,
                                     },
                                     ".Mui-disabled": {
                                         WebkitTextFillColor: "unset",
@@ -491,7 +491,7 @@ const OverviewField = ({ label, value, preIcon }: OverviewFieldProps) => {
                 <strong>{label}:</strong>
             </Typography>
             {preIcon}
-            <Typography variant="h6" fontFamily={fonts.shareTech}>
+            <Typography variant="h6" fontFamily={fonts.rajdhaniMedium}>
                 <strong>{value}</strong>
             </Typography>
         </Stack>

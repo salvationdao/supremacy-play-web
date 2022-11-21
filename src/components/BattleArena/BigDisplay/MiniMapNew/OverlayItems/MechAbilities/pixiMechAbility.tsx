@@ -27,7 +27,7 @@ export class PixiMechAbility {
         // Label
         this.labelText = `${anyAbility.label} [${MECH_ABILITY_KEY[index]}]`
         this.label = new PIXI.Text(this.labelText, {
-            fontFamily: fonts.shareTech,
+            fontFamily: fonts.rajdhaniMedium,
             fontSize: 12,
             fill: "#FFFFFF",
             lineHeight: 1,
