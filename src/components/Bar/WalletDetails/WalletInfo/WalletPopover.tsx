@@ -52,11 +52,11 @@ export const WalletPopover = ({
             onClose={() => toggleLocalOpen(false)}
             anchorOrigin={{
                 vertical: "bottom",
-                horizontal: "center",
+                horizontal: "left",
             }}
             transformOrigin={{
                 vertical: "top",
-                horizontal: "center",
+                horizontal: "left",
             }}
         >
             <Stack spacing="2rem" sx={{ position: "relative", minWidth: "30rem", maxHeight: "90vh", p: "1rem 1.6rem" }}>
