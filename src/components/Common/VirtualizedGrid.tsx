@@ -86,7 +86,7 @@ export const VirtualizedGrid = ({ uniqueID, itemWidthConfig, itemHeight, totalIt
                         left: `calc(${style.left}px + ${(columnIndex === 0 ? 0 : columnIndex) * (gap / columnCount)}px)`,
                         top: `calc(${style.top}px + ${(rowIndex === 0 ? 0 : rowIndex) * (gap / rowCount)}px)`,
                         width: `calc(${style.width}px - ${gap / 2 + gap / columnCount}px)`,
-                        height: `calc(${style.height}px - ${gap + gap / rowCount}px)`,
+                        height: `calc(${style.height}px - ${gap / 2 + gap / rowCount}px)`,
                     }}
                 >
                     <Box sx={{ width: "100%", height: "100%" }}>{renderIndex(index)}</Box>
