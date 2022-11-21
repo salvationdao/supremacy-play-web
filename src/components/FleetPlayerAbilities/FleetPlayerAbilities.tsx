@@ -131,7 +131,7 @@ export const FleetPlayerAbilities = () => {
                         if (!playerAbility) {
                             return null
                         }
-                        return <PlayerAbilityCard key={`playerAbility-${playerAbility.id}`} playerAbility={playerAbility} />
+                        return <PlayerAbilityCard key={`player-ability-${playerAbility.id}`} playerAbility={playerAbility} />
                     }}
                 />
             )

@@ -350,7 +350,7 @@ export const FleetWeapons = () => {
                         if (!weapon) {
                             return null
                         }
-                        return <WeaponCard key={`mech-${weapon.id}`} weapon={weapon} isGridView={isGridView} />
+                        return <WeaponCard key={`weapon-${weapon.id}`} weapon={weapon} isGridView={isGridView} />
                     }}
                 />
             )
