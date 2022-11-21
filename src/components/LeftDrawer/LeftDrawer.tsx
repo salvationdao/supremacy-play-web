@@ -50,8 +50,10 @@ export const LeftDrawer = () => {
                         (!route.Header && !route.Component) ||
                         (route.requireAuth && !userID) ||
                         (route.matchRouteIDs && activeRoute && !route.matchRouteIDs.includes(activeRoute.id))
-                    )
+                    ) {
                         return null
+                    }
+
                     return (
                         <Accordion
                             key={route.id}

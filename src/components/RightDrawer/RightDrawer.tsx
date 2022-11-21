@@ -50,8 +50,9 @@ export const RightDrawer = () => {
                         (!route.Header && !route.Component) ||
                         (route.requireAuth && !userID) ||
                         (route.matchRouteIDs && activeRoute && !route.matchRouteIDs.includes(activeRoute.id))
-                    )
+                    ) {
                         return null
+                    }
 
                     return (
                         <Accordion
