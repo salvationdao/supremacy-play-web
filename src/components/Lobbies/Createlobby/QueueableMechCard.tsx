@@ -1,13 +1,13 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { NewMechStruct } from "../../../types"
+import { useMemo } from "react"
 import { useSupremacy } from "../../../containers"
-import React, { useMemo } from "react"
 import { getRarityDeets } from "../../../helpers"
-import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
+import { fonts } from "../../../theme/theme"
+import { NewMechStruct } from "../../../types"
 import { RepairBlocks } from "../../Common/Mech/MechRepairBlocks"
+import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { MechBarStats } from "../../Hangar/WarMachinesHangar/Common/MechBarStats"
 import { WeaponSlot } from "../Common/weaponSlot"
-import { fonts } from "../../../theme/theme"
 
 interface QueueableMechCardProps {
     lobbyMech: NewMechStruct
@@ -29,9 +29,9 @@ export const QueueableMechCard = ({ lobbyMech, onSelect, isSelected }: Queueable
                 p: "1rem",
                 width: "100%",
                 height: "100%",
-                border: `${ownerFaction.primary_color} 2px dashed`,
+                border: `${ownerFaction.palette.primary} 2px dashed`,
                 cursor: "pointer",
-                backgroundColor: isSelected ? `${ownerFaction.primary_color}50` : ownerFaction.background_color,
+                backgroundColor: isSelected ? `${ownerFaction.palette.primary}50` : ownerFaction.palette.background,
             }}
             spacing=".5rem"
             onClick={onSelect}
@@ -78,7 +78,7 @@ export const QueueableMechCard = ({ lobbyMech, onSelect, isSelected }: Queueable
                 </Stack>
                 <MechBarStats
                     mech={lobbyMech}
-                    color={ownerFaction.primary_color}
+                    color={ownerFaction.palette.primary}
                     fontSize="1.3rem"
                     width="100%"
                     spacing=".5rem"

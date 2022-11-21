@@ -48,7 +48,7 @@ export const MechCardWeaponAndStats = React.memo(function MechCardWeaponAndStats
                     {/* Mech image */}
                     <NiceBoxThing
                         border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
-                        background={{ colors: [ownerFaction.background_color] }}
+                        background={{ colors: [ownerFaction.palette.background] }}
                         sx={{ boxShadow: 0.4 }}
                     >
                         <Box
@@ -87,12 +87,12 @@ export const MechCardWeaponAndStats = React.memo(function MechCardWeaponAndStats
                         <Typography
                             variant="h6"
                             sx={{
-                                color: ownerFaction.primary_color,
+                                color: ownerFaction.palette.primary,
                                 fontWeight: "bold",
                                 ...truncateTextLines(1),
                             }}
                         >
-                            <SvgUserDiamond size="2.5rem" inline fill={ownerFaction.primary_color} /> {mech.owner.username}#{mech.owner.gid}
+                            <SvgUserDiamond size="2.5rem" inline fill={ownerFaction.palette.primary} /> {mech.owner.username}#{mech.owner.gid}
                         </Typography>
                     </Stack>
                 </Stack>

@@ -255,7 +255,7 @@ export const MechSelector = React.memo(function MechSelector({
             {/* Owned mechs or faction staked mechs options */}
             <NiceButtonGroup
                 primaryColor={theme.factionTheme.primary}
-                secondaryColor={theme.factionTheme.secondary}
+                secondaryColor={theme.factionTheme.text}
                 options={ownedOrStakedOptions}
                 selected={onlyStakedMechs}
                 onSelected={(value) => setOnlyStakedMechs(value)}

@@ -70,7 +70,7 @@ export const MysteryCrateCard = React.memo(function MysteryCrateCard({ crate, se
                 {/* Crate image */}
                 <NiceBoxThing
                     border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
-                    background={{ colors: [ownerFaction.background_color] }}
+                    background={{ colors: [ownerFaction.palette.background] }}
                     sx={{ position: "relative", boxShadow: 0.4 }}
                 >
                     <MediaPreview

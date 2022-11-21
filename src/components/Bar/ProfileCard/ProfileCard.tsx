@@ -30,7 +30,7 @@ export const ProfileCard = ({ userID, user }: { userID?: string; user: User }) =
                     sx={{
                         height: "3rem",
                         width: "3rem",
-                        mr: ".5rem",
+                        mr: "1rem",
                     }}
                     variant="square"
                 />
@@ -41,7 +41,7 @@ export const ProfileCard = ({ userID, user }: { userID?: string; user: User }) =
                         mt: ".29rem !important",
                         fontFamily: fonts.nostromoBlack,
                         color: (theme) => theme.factionTheme.primary,
-                        ...truncateTextLines(2),
+                        ...truncateTextLines(1),
                     }}
                 >
                     {username}

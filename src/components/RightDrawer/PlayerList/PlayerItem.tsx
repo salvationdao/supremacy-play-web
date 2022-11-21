@@ -1,11 +1,12 @@
 import { Box, Stack, Typography } from "@mui/material"
-import React from "react"
-import { FancyButton, UserBanForm } from "../.."
+import React, { useMemo } from "react"
+import { UserBanForm } from "../.."
 import { useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useToggle } from "../../../hooks"
 import { colors, fonts } from "../../../theme/theme"
 import { User } from "../../../types"
+import { NiceButton } from "../../Common/Nice/NiceButton"
 
 interface PlayerItemProps {
     player: User
@@ -22,7 +23,8 @@ export const PlayerItem = React.memo(function PlayerItem({ player, isActive }: P
 
     const [banModalOpen, toggleBanModalOpen] = useToggle()
     const { username, gid, faction_id } = player
-    const faction = getFaction(faction_id)
+
+    const faction = useMemo(() => getFaction(faction_id), [faction_id, getFaction])
 
     return (
         <>
@@ -58,25 +60,18 @@ export const PlayerItem = React.memo(function PlayerItem({ player, isActive }: P
                     </Stack>
                 </Box>
 
-                <FancyButton
-                    clipThingsProps={{
-                        clipSize: "7px",
-                        opacity: 1,
-                        sx: { position: "relative", ml: "auto" },
-                    }}
-                    sx={{ px: "1rem", py: ".1rem", color: theme.factionTheme.primary }}
-                    onClick={() => toggleBanModalOpen()}
-                >
+                <NiceButton sx={{ px: "1rem", py: ".1rem", ml: "auto" }} onClick={() => toggleBanModalOpen()}>
                     <Typography
                         variant="caption"
                         sx={{
+                            lineHeight: 1,
                             color: "#FFFFFF80",
                             fontFamily: fonts.nostromoBold,
                         }}
                     >
                         REPORT
                     </Typography>
-                </FancyButton>
+                </NiceButton>
             </Stack>
 
             {banModalOpen && (

@@ -120,7 +120,7 @@ export const TextMessage = React.memo(function TextMessage({
         () => ({
             small: fontSize ? `${1 * fontSize}rem` : "0.9rem",
             normal: `${(fontSize || 1.3) * 1.5}rem`,
-            large: `${(fontSize || 1.6) * 1.8}rem`,
+            large: `${(fontSize || 1.6) * 2.1}rem`,
             emoji: `${(fontSize || 1.3) * 3}rem`,
         }),
         [fontSize],
@@ -300,8 +300,8 @@ export const TextMessage = React.memo(function TextMessage({
                                     {avatar_id && (
                                         <Box
                                             sx={{
-                                                width: fontSize ? `${3 * fontSize}rem` : "3rem",
-                                                height: fontSize ? `${3 * fontSize}rem` : "3rem",
+                                                width: fontSize ? `${2.5 * fontSize}rem` : "3rem",
+                                                height: fontSize ? `${2.5 * fontSize}rem` : "3rem",
                                                 flexShrink: 0,
                                                 backgroundImage: `url(${PASSPORT_SERVER_HOST_IMAGES}/api/files/${avatar_id})`,
                                                 backgroundRepeat: "no-repeat",
@@ -316,8 +316,8 @@ export const TextMessage = React.memo(function TextMessage({
                                     {factionLogoUrl && (
                                         <Box
                                             sx={{
-                                                width: fontSize ? `${3 * fontSize}rem` : "3rem",
-                                                height: fontSize ? `${3 * fontSize}rem` : "3rem",
+                                                width: fontSize ? `${2.5 * fontSize}rem` : "3rem",
+                                                height: fontSize ? `${2.5 * fontSize}rem` : "3rem",
                                                 flexShrink: 0,
                                                 backgroundImage: `url(${factionLogoUrl})`,
                                                 backgroundRepeat: "no-repeat",
@@ -333,6 +333,7 @@ export const TextMessage = React.memo(function TextMessage({
                                                 <Typography
                                                     variant="body1"
                                                     sx={{
+                                                        p: "1rem",
                                                         color: "#FFFFFF",
                                                         fontFamily: fonts.rajdhaniMedium,
                                                         textAlign: "start",
@@ -352,32 +353,31 @@ export const TextMessage = React.memo(function TextMessage({
 
                                 <UsernameJSX
                                     data={data}
-                                    fontSize={fontSizes.large}
+                                    fontSize={`${fontSizes.normal}rem`}
                                     user={from_user}
                                     toggleIsPopoverOpen={toggleIsPopoverOpen}
                                     setClickedOnUser={setClickedOnUser}
                                     tabFactionID={tabFactionID}
                                 />
+
                                 {from_user_stat && (
                                     <Typography
                                         sx={{
                                             flexShrink: 0,
                                             lineHeight: 1,
-                                            fontFamily: fonts.nostromoBold,
                                             fontSize: fontSizes.normal,
                                             color: abilityKillColor,
                                             cursor: "default",
                                             "::before": {
                                                 content: "'['",
-                                                mr: ".3rem",
                                             },
                                             "::after": {
                                                 content: "']'",
-                                                ml: ".3rem",
                                             },
                                         }}
                                     >
-                                        <SvgSkull size={fontSizes.large} fill={abilityKillColor} inline /> {from_user_stat.ability_kill_count}
+                                        <SvgSkull size={fontSizes.normal} fill={abilityKillColor} inline />
+                                        {from_user_stat.ability_kill_count}
                                     </Typography>
                                 )}
                             </Stack>
@@ -489,7 +489,6 @@ export const TextMessage = React.memo(function TextMessage({
             factionSecondaryColor,
             fontSize,
             fontSizes.emoji,
-            fontSizes.large,
             fontSizes.normal,
             from_user,
             from_user_stat,

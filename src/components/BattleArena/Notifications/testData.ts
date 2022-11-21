@@ -1,5 +1,5 @@
 import { theme } from "../../../theme/theme"
-import { AnyAbility, FactionWithPalette, LocationSelectType, NotificationStruct, RoleType, User, UserRank } from "../../../types"
+import { AnyAbility, FactionWithPalette, LocationSelectType, NotificationStruct, RarityEnum, RoleType, User, UserRank } from "../../../types"
 
 enum NotificationType {
     Text = "TEXT",

@@ -6,7 +6,7 @@ import { FlamesPNG, GenericWarMachinePNG, SvgClose, SvgDamageCross, SvgDamageIco
 import { useGlobalNotifications } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { GetMechDestroyedInfo } from "../../../../fetching"
-import { truncateTextLines } from "../../../../theme/styles"
+import { truncateTextLines } from "../../../../helpers"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { DamageRecord, FactionWithPalette, WarMachineDestroyedRecord, WarMachineState } from "../../../../types"
 

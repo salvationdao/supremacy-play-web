@@ -42,10 +42,12 @@ export const LiveChat = () => {
                         {common}
                     </WindowPortal>
 
-                    <Stack spacing=".6rem" alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack spacing="1rem" alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                         <Typography sx={{ color: colors.grey, textAlign: "center" }}>Live chat has been opened in a new window.</Typography>
                         <NiceButton corners buttonColor={colors.lightGrey} onClick={() => setIsPoppedout(false)}>
-                            RESTORE WINDOW
+                            <Typography variant="body2" sx={{ textAlign: "center" }}>
+                                RESTORE WINDOW
+                            </Typography>
                         </NiceButton>
                     </Stack>
                 </>
@@ -470,7 +472,7 @@ const UnreadBadge = ({ tabValue: forTabValue, children }: { tabValue: number; ch
                 ".MuiBadge-badge": {
                     top: 8,
                     fontSize: "1.2rem",
-                    fontFamily: fonts.shareTech,
+                    fontFamily: fonts.rajdhaniMedium,
                     fontWeight: "bold",
                     lineHeight: 0,
                     color: "#FFFFFF",

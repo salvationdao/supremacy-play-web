@@ -82,10 +82,7 @@ export const BillingHistory = () => {
                     <MysteryCrateBanner />
                 </Stack>
                 <NiceBoxThing
-                    border={{
-                        color: theme.factionTheme.primary,
-                        thickness: "thicc",
-                    }}
+                    border={{ color: theme.factionTheme.primary }}
                     background={{
                         colors: [theme.factionTheme.background],
                         opacity: 0.7,

@@ -199,7 +199,7 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
                         hiddenLabel
                         InputProps={{
                             sx: {
-                                minHeight: "6rem",
+                                minHeight: "5rem",
                             },
                             endAdornment: (
                                 <InputAdornment position="end">
@@ -209,23 +209,13 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
                                             corners
                                             buttonColor={theme.factionTheme.primary}
                                             onClick={() => toggleIsEmojiOpen()}
-                                            sx={{
-                                                mr: "1rem",
-                                                p: ".5rem",
-                                            }}
+                                            sx={{ mr: "1rem", p: ".5rem" }}
                                         >
                                             <SvgEmoji size="2rem" fill="#FFFFFF" sx={{ pb: 0 }} />
                                         </NiceButton>
                                     </NiceTooltip>
 
-                                    <NiceButton
-                                        corners
-                                        buttonColor={theme.factionTheme.primary}
-                                        onClick={sendMessage}
-                                        sx={{
-                                            p: ".5rem",
-                                        }}
-                                    >
+                                    <NiceButton corners buttonColor={theme.factionTheme.primary} onClick={sendMessage} sx={{ p: ".5rem" }}>
                                         <SvgSend size="2rem" fill="#FFFFFF" sx={{ pb: 0 }} />
                                     </NiceButton>
                                 </InputAdornment>

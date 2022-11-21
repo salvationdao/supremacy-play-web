@@ -38,7 +38,7 @@ const SingleColumn = ({ otherFactionLobbySlots }: { otherFactionLobbySlots: Fact
                     <Box
                         key={`mech-${mech.id}`}
                         sx={{
-                            border: `${mech?.queued_by?.id === userID ? colors.gold : otherFactionLobbySlots.faction.primary_color} 1px solid`,
+                            border: `${mech?.queued_by?.id === userID ? colors.gold : otherFactionLobbySlots.faction.palette.primary} 1px solid`,
                             width: "100%",
                             height: SIZE,
                             background: `url(${mech.avatar_url})`,
@@ -59,13 +59,13 @@ const SingleColumn = ({ otherFactionLobbySlots }: { otherFactionLobbySlots: Fact
                         alignItems="center"
                         justifyContent="center"
                         sx={{
-                            border: `${otherFactionLobbySlots.faction.primary_color} 1px solid`,
+                            border: `${otherFactionLobbySlots.faction.palette.primary} 1px solid`,
                             width: "100%",
                             height: SIZE,
                             opacity: 0.6,
                         }}
                     >
-                        <Typography fontFamily={fonts.nostromoBold} color={otherFactionLobbySlots.faction.primary_color}>
+                        <Typography fontFamily={fonts.nostromoBold} color={otherFactionLobbySlots.faction.palette.primary}>
                             ?
                         </Typography>
                     </Stack>

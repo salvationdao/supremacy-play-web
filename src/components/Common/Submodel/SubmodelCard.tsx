@@ -55,7 +55,7 @@ export const SubmodelCard = React.memo(function SubmodelCard({ submodel }: Submo
                 {/* Submodel image */}
                 <NiceBoxThing
                     border={{ color: `${rarityDeets.color}20`, thickness: "very-lean" }}
-                    background={{ colors: [ownerFaction.background_color] }}
+                    background={{ colors: [ownerFaction.palette.background] }}
                     sx={{ position: "relative", boxShadow: 0.4 }}
                 >
                     <MediaPreview
