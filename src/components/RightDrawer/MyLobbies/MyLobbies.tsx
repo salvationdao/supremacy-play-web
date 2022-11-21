@@ -161,7 +161,7 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
             <Typography
                 sx={{
                     fontFamily: fonts.nostromoBlack,
-                    fontSize: "1.8rem",
+                    fontSize: "1.6rem",
                 }}
             >
                 My Lobbies

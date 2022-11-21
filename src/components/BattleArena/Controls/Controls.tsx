@@ -5,8 +5,8 @@ import { useArena, useMobile } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { shadeColor } from "../../../helpers"
 import { siteZIndex } from "../../../theme/theme"
-import { OvenResolutionSelect } from "./ResolutionSelect"
 import { VoiceChat } from "../../RightDrawer/VoiceChat/VoiceChat"
+import { OvenResolutionSelect } from "./ResolutionSelect"
 import { OvenStreamSelect } from "./StreamSelect"
 
 export const CONTROLS_HEIGHT = 3.0 // rem
@@ -33,7 +33,8 @@ export const Controls = () => {
                 px: "1rem",
                 pt: ".24rem",
                 pb: ".16rem",
-                background: (theme) => `linear-gradient(${darkerBackgroundColor} 26%, ${theme.factionTheme.background})`,
+                background: `linear-gradient(${darkerBackgroundColor} 26%, ${theme.factionTheme.background})`,
+                borderTop: `${theme.factionTheme.s700} 1px solid`,
                 zIndex: siteZIndex.Controls,
                 overflowX: "auto",
                 overflowY: "hidden",

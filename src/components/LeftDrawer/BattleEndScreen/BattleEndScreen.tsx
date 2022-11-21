@@ -135,7 +135,7 @@ const Header = ({ isOpen, isDrawerOpen, onClose }: HeaderProps) => {
             <Typography
                 sx={{
                     fontFamily: fonts.nostromoBlack,
-                    fontSize: "1.8rem",
+                    fontSize: "1.6rem",
                 }}
             >
                 Previous Battle

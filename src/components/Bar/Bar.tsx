@@ -64,7 +64,7 @@ export const Bar = () => {
                     width: "100vw",
                     color: "#FFFFFF",
                     backgroundColor: (theme) => theme.factionTheme.s800,
-                    borderBottom: (theme) => `${theme.factionTheme.s600} 1px solid`,
+                    borderBottom: (theme) => `${theme.factionTheme.s700} 1px solid`,
                     transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
                     zIndex: siteZIndex.TopBar,
                     overflowX: "auto",

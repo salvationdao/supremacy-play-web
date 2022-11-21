@@ -38,7 +38,7 @@ export const RightDrawer = () => {
                         width: `${RIGHT_DRAWER_WIDTH}rem`,
                         backgroundColor: theme.factionTheme.background,
                         position: "absolute",
-                        borderLeft: `1px solid ${theme.factionTheme.s600}`,
+                        borderLeft: `1px solid ${theme.factionTheme.s700}`,
                         overflow: "hidden",
                         transform: !isOpen ? `translateX(calc(${RIGHT_DRAWER_WIDTH}rem - ${DRAWER_OFFSET})) !important` : "",
                         visibility: !isOpen ? "visible !important" : "",
