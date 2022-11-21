@@ -6,10 +6,7 @@ import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../
 import { GameServerKeys } from "../../../../keys"
 import { Keycard, MechDetails, MysteryCrate, Weapon } from "../../../../types"
 import { ItemType } from "../../../../types/marketplace"
-import { KeycardCommonArea } from "../../../Hangar/Deprecated/HangarItemDeprecated"
-import { CrateCommonArea } from "../../../Hangar/MysteryCratesHangar/MysteryCrateHangarItem"
-import { MechCommonArea } from "../../../Hangar/WarMachinesHangar/WarMachineHangarItem"
-import { WeaponCommonArea } from "../../../Hangar/WeaponsHangar/WeaponHangarItem"
+import { CrateCommonArea, KeycardCommonArea, MechCommonArea, WeaponCommonArea } from "../../../Hangar/Deprecated/HangarItemDeprecated"
 import { AssetToSellStruct } from "../SellItem"
 
 export const AssetToSellItem = ({

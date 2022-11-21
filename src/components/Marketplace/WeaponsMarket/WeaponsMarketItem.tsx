@@ -4,7 +4,7 @@ import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { Weapon } from "../../../types"
 import { MarketplaceBuyAuctionItem } from "../../../types/marketplace"
-import { WeaponCommonArea } from "../../Hangar/WeaponsHangar/WeaponHangarItem"
+import { WeaponCommonArea } from "../../Hangar/Deprecated/HangarItemDeprecated"
 import { MarketItem } from "../Common/MarketItem/MarketItem"
 
 interface WarMachineMarketItemProps {
