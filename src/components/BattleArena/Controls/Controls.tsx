@@ -1,4 +1,4 @@
-import { Stack } from "@mui/material"
+import { Box, Stack } from "@mui/material"
 import { useMemo } from "react"
 import { LiveCounts, OverlayToggles, VideoPlayerControls } from "../.."
 import { useArena, useMobile } from "../../../containers"
@@ -22,8 +22,8 @@ export const Controls = () => {
     return (
         <Stack
             direction="row"
-            alignItems="center"
-            justifyContent="space-between"
+            alignItems="stretch"
+            justifyContent="flex-start"
             spacing="1.6rem"
             sx={{
                 flexShrink: 0,
@@ -40,17 +40,15 @@ export const Controls = () => {
                 overflowY: "hidden",
             }}
         >
-            <Stack direction="row" spacing="1.6rem" sx={{ flexShrink: 0, height: "100%" }}>
-                <LiveCounts />
-                {!isMobile && <OverlayToggles />}
-            </Stack>
+            <LiveCounts />
+            {!isMobile && <OverlayToggles />}
 
-            <Stack direction="row" spacing="1.2rem" sx={{ flexShrink: 0, height: "100%" }}>
-                {currentArenaID && <VoiceChat />}
-                <OvenStreamSelect />
-                <OvenResolutionSelect />
-                <VideoPlayerControls />
-            </Stack>
+            <Box flex={1} />
+
+            {currentArenaID && <VoiceChat />}
+            <OvenStreamSelect />
+            <OvenResolutionSelect />
+            <VideoPlayerControls />
         </Stack>
     )
 }

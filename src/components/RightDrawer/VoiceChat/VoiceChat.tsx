@@ -16,6 +16,7 @@ import { Faction, FactionWithPalette, FeatureName, User } from "../../../types"
 import { StyledImageText } from "../../BattleArena/Notifications/Common/StyledImageText"
 import { ConfirmModal } from "../../Common/Deprecated/ConfirmModal"
 import { FancyButton } from "../../Common/Deprecated/FancyButton"
+import { NiceButton } from "../../Common/Nice/NiceButton"
 import { NicePopover } from "../../Common/Nice/NicePopover"
 
 export interface VoiceStream {
@@ -338,29 +339,19 @@ export const VoiceChat = () => {
     }
     return (
         <>
-            <FancyButton
-                ref={popoverRef}
+            <NiceButton
+                buttonColor={theme.factionTheme.primary}
+                sx={{ position: "relative", minWidth: "7rem", px: "1rem", py: ".1rem" }}
                 onClick={() => setOpen(!open)}
-                clipThingsProps={{
-                    clipSize: "5px",
-                    backgroundColor: theme.factionTheme.primary === "#FFFFFF" ? "#A4A4A4" : theme.factionTheme.primary,
-                    border: { borderColor: theme.factionTheme.primary === "#FFFFFF" ? "#A4A4A4" : theme.factionTheme.primary, borderThickness: "1px" },
-                    sx: { position: "relative" },
-                }}
-                sx={{ px: "1rem", pt: 0, pb: ".1rem", minWidth: "7rem", color: "#FFFFFF" }}
             >
-                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <Typography variant="subtitle2" sx={{ mr: "1rem", fontFamily: fonts.nostromoBlack }}>
-                        Voice Chat
-                    </Typography>
-
-                    <SvgVoice size="1.5rem" />
-                </Box>
-            </FancyButton>
+                <SvgVoice inline size="1.5rem" />
+                <Typography variant="subtitle2" sx={{ mr: "1rem", fontFamily: fonts.nostromoBlack }}>
+                    Voice Chat
+                </Typography>
+            </NiceButton>
 
             <NicePopover
-                sx={{ zIndex: 400 }}
-                id={"voice-chat"}
+                id="voice-chat"
                 open={open}
                 onClose={() => setOpen(false)}
                 anchorEl={popoverRef.current}
@@ -507,35 +498,17 @@ export const VoiceChatInner = ({
 
                         <Box>
                             {connected ? (
-                                <FancyButton
-                                    clipThingsProps={{
-                                        clipSize: "5px",
-                                        backgroundColor: colors.red,
-                                        border: { borderColor: colors.red, borderThickness: "1px" },
-                                        sx: { position: "relative" },
-                                    }}
-                                    sx={{ px: "1rem", pt: 0, pb: ".1rem", minWidth: "7rem", color: "#FFFFFF" }}
-                                    onClick={onDisconnect}
-                                >
+                                <NiceButton buttonColor={colors.red} sx={{ px: "1rem", py: ".1rem", minWidth: "7rem" }} onClick={onDisconnect}>
                                     <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBlack }}>
                                         Disconnect
                                     </Typography>
-                                </FancyButton>
+                                </NiceButton>
                             ) : (
-                                <FancyButton
-                                    clipThingsProps={{
-                                        clipSize: "5px",
-                                        backgroundColor: colors.green,
-                                        border: { borderColor: colors.green, borderThickness: "1px" },
-                                        sx: { position: "relative" },
-                                    }}
-                                    sx={{ px: "1rem", pt: 0, pb: ".1rem", minWidth: "7rem", color: "#FFFFFF" }}
-                                    onClick={onConnect}
-                                >
+                                <NiceButton buttonColor={colors.green} sx={{ px: "1rem", py: ".1rem", minWidth: "7rem" }} onClick={onConnect}>
                                     <Typography variant="subtitle2" sx={{ fontFamily: fonts.nostromoBlack }}>
                                         Connect
                                     </Typography>
-                                </FancyButton>
+                                </NiceButton>
                             )}
                         </Box>
                     </Stack>
