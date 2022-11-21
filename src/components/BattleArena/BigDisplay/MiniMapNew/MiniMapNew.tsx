@@ -233,7 +233,7 @@ const MiniMapInner = ({ map, isPoppedout, width = 100, height = 100, poppedOutCo
                         sx={{
                             p: ".6rem 1.6rem",
                             height: `${TOP_BAR_HEIGHT}rem`,
-                            background: (theme) => `linear-gradient(${theme.factionTheme.background} 26%, ${theme.factionTheme.background}BB)`,
+                            background: (theme) => theme.factionTheme.background,
                             zIndex: 99,
                         }}
                     >

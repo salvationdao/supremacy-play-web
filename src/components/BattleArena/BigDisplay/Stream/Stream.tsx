@@ -50,7 +50,7 @@ export const Stream = () => {
                 sx={{
                     p: ".6rem 1.6rem",
                     height: `${TOP_BAR_HEIGHT}rem`,
-                    background: (theme) => `linear-gradient(${theme.factionTheme.background} 26%, ${theme.factionTheme.background}BB)`,
+                    background: (theme) => theme.factionTheme.background,
                 }}
             >
                 <Box onClick={() => setIsStreamBigDisplay((prev) => !prev)} sx={{ cursor: "pointer", opacity: 0.4, ":hover": { opacity: 1 } }}>

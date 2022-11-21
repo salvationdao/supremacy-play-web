@@ -1,9 +1,7 @@
 import { Box, Stack } from "@mui/material"
-import { useMemo } from "react"
 import { LiveCounts, OverlayToggles, VideoPlayerControls } from "../.."
 import { useArena, useMobile } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { shadeColor } from "../../../helpers"
 import { siteZIndex } from "../../../theme/theme"
 import { VoiceChat } from "../../RightDrawer/VoiceChat/VoiceChat"
 import { OvenResolutionSelect } from "./ResolutionSelect"
@@ -16,8 +14,6 @@ export const Controls = () => {
     const { currentArenaID } = useArena()
 
     const theme = useTheme()
-
-    const darkerBackgroundColor = useMemo(() => shadeColor(theme.factionTheme.primary, -91), [theme.factionTheme.primary])
 
     return (
         <Stack
@@ -32,7 +28,7 @@ export const Controls = () => {
                 height: `${CONTROLS_HEIGHT}rem`,
                 px: "1rem",
                 py: ".2rem",
-                background: `linear-gradient(${darkerBackgroundColor} 26%, ${theme.factionTheme.background})`,
+                background: theme.factionTheme.background,
                 borderTop: `${theme.factionTheme.s700} 1px solid`,
                 zIndex: siteZIndex.Controls,
                 overflowX: "auto",
