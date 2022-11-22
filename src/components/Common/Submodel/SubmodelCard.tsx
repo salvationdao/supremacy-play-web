@@ -71,7 +71,7 @@ export const SubmodelCard = React.memo(function SubmodelCard({ submodel }: Submo
                             submodel?.large_image_url ||
                             ""
                         }
-                        objectFit="cover"
+                        objectFit="contain"
                         sx={{ height: "25rem" }}
                         allowModal
                     />

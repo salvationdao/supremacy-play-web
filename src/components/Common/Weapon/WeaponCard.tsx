@@ -69,7 +69,7 @@ export const WeaponCard = React.memo(function WeaponCard({ weapon, hide, isGridV
                         background={{ colors: [ownerFaction.palette.background] }}
                         sx={{ height: "100%", width: "100%", boxShadow: 0.4 }}
                     >
-                        <MediaPreview imageUrl={image} objectFit="cover" allowModal />
+                        <MediaPreview imageUrl={image} objectFit="contain" allowModal />
                     </NiceBoxThing>
 
                     {/* Weapon name */}
@@ -132,7 +132,7 @@ export const WeaponCard = React.memo(function WeaponCard({ weapon, hide, isGridV
                     background={{ colors: [ownerFaction.palette.background] }}
                     sx={{ boxShadow: 0.4, flex: 1 }}
                 >
-                    <MediaPreview imageUrl={image} objectFit="cover" sx={{ height: "20rem" }} allowModal />
+                    <MediaPreview imageUrl={image} objectFit="contain" sx={{ height: "20rem" }} allowModal />
                 </NiceBoxThing>
 
                 {/* Weapon stats */}

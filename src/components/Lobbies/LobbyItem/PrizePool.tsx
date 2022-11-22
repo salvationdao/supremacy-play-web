@@ -21,12 +21,12 @@ export const PrizePool = React.memo(function PrizePool({ lobby }: { lobby: Battl
         <>
             {/* Reward pool */}
             <Box>
-                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold} color={colors.lightGrey}>
+                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold}>
                     REWARD POOL
                 </Typography>
 
                 <Stack direction="row" alignItems="center" spacing="1.8rem">
-                    <Typography>
+                    <Typography whiteSpace="nowrap">
                         <SvgSupToken inline size="2rem" fill={colors.gold} />
                         {supFormatter(sups_pool, 2)}
                     </Typography>
@@ -42,7 +42,7 @@ export const PrizePool = React.memo(function PrizePool({ lobby }: { lobby: Battl
 
             {/* Reward distribution */}
             <Box>
-                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold} color={colors.lightGrey}>
+                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold}>
                     DISTRIBUTION
                 </Typography>
 
@@ -73,7 +73,7 @@ export const PrizePool = React.memo(function PrizePool({ lobby }: { lobby: Battl
 const DistributionValue = ({ Icon, value, color }: { Icon: React.VoidFunctionComponent<SvgWrapperProps>; value: string; color: string }) => {
     return (
         <Box sx={{ p: ".4rem .5rem", backgroundColor: `${color}10`, boxShadow: 0.4, borderRadius: 0.5 }}>
-            <Typography>
+            <Typography whiteSpace="nowrap">
                 <Icon inline size="2.4rem" />
                 <SvgSupToken inline fill={colors.gold} size="1.7rem" />
                 {value}

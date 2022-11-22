@@ -58,7 +58,7 @@ export const NiceModal = ({ modalSx, sx, children, onClose, ...props }: NiceModa
                         bottom: 0,
                         left: 0,
                         right: 0,
-                        backgroundColor: "#FFFFFF08",
+                        backgroundColor: "#00000008",
                         zIndex: -1,
                     }}
                 />

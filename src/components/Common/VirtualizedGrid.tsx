@@ -60,28 +60,39 @@ export const VirtualizedGrid = React.memo(function VirtualizedGrid({
 
     // Calculate the width of each item based on config
     const { itemWidth, columnCount, rowCount } = useMemo(() => {
-        const parentWidth = dimension.width - SCROLLBAR_WIDTH
-
         if (itemWidthConfig.minWidth) {
+            let parentWidth = dimension.width - SCROLLBAR_WIDTH
             const columnCount = Math.floor(parentWidth / itemWidthConfig.minWidth)
-            const itemWidth = parentWidth / columnCount
             const rowCount = Math.ceil(totalItems / columnCount)
+
+            const isOverflowY = itemHeight * rowCount > dimension.height
+            if (!isOverflowY) parentWidth += SCROLLBAR_WIDTH
+            const itemWidth = parentWidth / columnCount
+
             return { itemWidth, columnCount, rowCount }
         }
 
         if (itemWidthConfig.columnCount) {
+            let parentWidth = dimension.width - SCROLLBAR_WIDTH
             const columnCount = itemWidthConfig.columnCount
-            const itemWidth = parentWidth / columnCount
             const rowCount = Math.ceil(totalItems / columnCount)
+
+            const isOverflowY = itemHeight * rowCount > dimension.height
+            if (!isOverflowY) parentWidth += SCROLLBAR_WIDTH
+            const itemWidth = parentWidth / columnCount
             return { itemWidth, columnCount, rowCount }
         }
+
+        let parentWidth = dimension.width - SCROLLBAR_WIDTH
+        const isOverflowY = itemHeight > dimension.height
+        if (!isOverflowY) parentWidth += SCROLLBAR_WIDTH
 
         return {
             itemWidth: parentWidth,
             columnCount: 1,
             rowCount: totalItems,
         }
-    }, [dimension.width, itemWidthConfig.columnCount, itemWidthConfig.minWidth, totalItems])
+    }, [dimension.height, dimension.width, itemHeight, itemWidthConfig.columnCount, itemWidthConfig.minWidth, totalItems])
 
     const Cell = useCallback(
         ({ columnIndex, rowIndex, style }: { columnIndex: number; rowIndex: number; style: React.CSSProperties }) => {

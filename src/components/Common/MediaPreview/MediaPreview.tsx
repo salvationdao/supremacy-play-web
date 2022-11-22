@@ -37,8 +37,8 @@ export const MediaPreview = ({
                     height: "100%",
                     width: "100%",
                     border: showBorder ? "#FFFFFF18 1.5px solid" : "unset",
-                    boxShadow: "inset 0 0 12px 6px #00000040",
-                    background: isTransparentVideo ? `radial-gradient(#FFFFFF08 10px, #00000080)` : "#000000",
+                    boxShadow: "inset 0 0 12px 6px #00000010",
+                    background: isTransparentVideo ? `radial-gradient(#FFFFFF08 10px, #00000060)` : "#000000",
                     cursor: allowModal ? "pointer" : "auto",
                     ...sx,
                 }}

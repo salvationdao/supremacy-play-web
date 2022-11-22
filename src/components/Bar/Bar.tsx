@@ -1,10 +1,12 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
+import { useMemo } from "react"
 import Marquee from "react-fast-marquee"
 import { BuySupsButton, Logo, ProfileCard, WalletDetails } from ".."
 import { SvgDisconnected } from "../../assets"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, IS_TESTING_MODE, STAGING_OR_DEV_ONLY } from "../../constants"
 import { useAuth, useSupremacy } from "../../containers"
-import { hexToRGB } from "../../helpers"
+import { useTheme } from "../../containers/theme"
+import { hexToRGB, shadeColor } from "../../helpers"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { User } from "../../types"
 import { BarButton } from "../MainMenuNav/BarButton"
@@ -15,8 +17,11 @@ import { Quests } from "./Quests/Quests"
 import { ShoppingCart } from "./ShoppingCart/ShoppingCart"
 
 export const Bar = () => {
+    const theme = useTheme()
     const { userID, user } = useAuth()
     const rgb = hexToRGB(colors.lightRed)
+
+    const darkerBg = useMemo(() => shadeColor(theme.factionTheme.background, -50), [theme.factionTheme.background])
 
     return (
         <>
@@ -83,7 +88,8 @@ export const Bar = () => {
                         bottom: 0,
                         left: 0,
                         right: 0,
-                        background: (theme) => `linear-gradient(${theme.factionTheme.primary}10 26%, ${theme.factionTheme.background})`,
+                        backgroundColor: darkerBg,
+                        // background: (theme) => `linear-gradient(${theme.factionTheme.primary}10 26%, ${theme.factionTheme.background})`,
                         pointerEvents: "none",
                         zIndex: -1,
                     }}

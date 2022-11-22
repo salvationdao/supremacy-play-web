@@ -13,6 +13,7 @@ import { NiceButton } from "../Nice/NiceButton"
 import { NiceButtonGroup } from "../Nice/NiceButtonGroup"
 import { NiceSelect } from "../Nice/NiceSelect"
 import { NiceTextField } from "../Nice/NiceTextField"
+import { VirtualizedGrid } from "../VirtualizedGrid"
 import { MechCardWeaponAndStats } from "./MechCardWeaponAndStats"
 
 const sortOptions = [
@@ -196,6 +197,18 @@ export const MechSelector = React.memo(function MechSelector({
         setDisplayMechs(result)
     }, [isLoading, onlyStakedMechs, ownedMechs, search, sort, stakedMechs])
 
+    const renderIndex = useCallback(
+        (index) => {
+            const mech = displayMechs[index]
+            if (!mech) {
+                return null
+            }
+            const isSelected = !!selectedMechs.find((m) => m.id === mech.id)
+            return <MechCardWeaponAndStats key={`mech-${mech.id}`} mech={mech} isSelected={isSelected} toggleSelected={toggleSelected} />
+        },
+        [displayMechs, selectedMechs, toggleSelected],
+    )
+
     const content = useMemo(() => {
         if (isLoading) {
             return (
@@ -207,21 +220,23 @@ export const MechSelector = React.memo(function MechSelector({
 
         if (displayMechs && displayMechs.length > 0) {
             return (
-                <Stack spacing="1.25rem">
-                    {displayMechs.map((mech) => {
-                        const isSelected = !!selectedMechs.find((m) => m.id === mech.id)
-                        return <MechCardWeaponAndStats key={`mech-${mech.id}`} mech={mech} isSelected={isSelected} toggleSelected={toggleSelected} />
-                    })}
-                </Stack>
+                <VirtualizedGrid
+                    uniqueID="mechSelectorList"
+                    itemWidthConfig={{ columnCount: 1 }}
+                    itemHeight={140}
+                    totalItems={displayMechs.length}
+                    gap={13}
+                    renderIndex={renderIndex}
+                />
             )
         }
 
         return (
-            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+            <Stack alignItems="center" justifyContent="center" spacing="1.2rem" sx={{ height: "100%", p: "1rem" }}>
                 <Box
                     sx={{
-                        width: "20rem",
-                        height: "20rem",
+                        width: "16rem",
+                        height: "16rem",
                         opacity: 0.7,
                         filter: "grayscale(100%)",
                         background: `url(${EmptyWarMachinesPNG})`,
@@ -231,10 +246,8 @@ export const MechSelector = React.memo(function MechSelector({
                     }}
                 />
                 <Typography
+                    variant="body2"
                     sx={{
-                        px: "1.28rem",
-                        pt: "1.28rem",
-                        mb: "1.5rem",
                         color: colors.grey,
                         fontFamily: fonts.nostromoBold,
                         textAlign: "center",
@@ -248,7 +261,7 @@ export const MechSelector = React.memo(function MechSelector({
                 </NiceButton>
             </Stack>
         )
-    }, [displayMechs, isLoading, selectedMechs, theme.factionTheme.primary, toggleSelected])
+    }, [displayMechs, isLoading, renderIndex, theme.factionTheme.primary])
 
     return (
         <Stack spacing="1rem" sx={{ ...sx, overflow: "hidden" }}>
@@ -288,7 +301,7 @@ export const MechSelector = React.memo(function MechSelector({
                 <NiceSelect label="Sort:" options={sortOptions} selected={sort} onSelected={(value) => setSort(`${value}`)} sx={{ minWidth: "24rem" }} />
             </Stack>
 
-            <Box sx={{ flex: 1, height: "100%", overflowY: "auto", pr: ".8rem", minHeight: "15rem" }}>{content}</Box>
+            <Box sx={{ flex: 1, overflowY: "auto", minHeight: "15rem", pt: ".6rem" }}>{content}</Box>
         </Stack>
     )
 })
