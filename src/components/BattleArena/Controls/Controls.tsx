@@ -3,7 +3,7 @@ import { LiveCounts, OverlayToggles, VideoPlayerControls } from "../.."
 import { useArena, useMobile } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { siteZIndex } from "../../../theme/theme"
-import { VoiceChat } from "../../RightDrawer/VoiceChat/VoiceChat"
+import { VoiceChat } from "./VoiceChat/VoiceChat"
 import { OvenResolutionSelect } from "./ResolutionSelect"
 import { OvenStreamSelect } from "./StreamSelect"
 

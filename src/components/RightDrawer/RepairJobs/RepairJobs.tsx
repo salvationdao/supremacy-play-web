@@ -11,9 +11,9 @@ import { HeaderProps } from "../../../routes"
 import { colors, fonts } from "../../../theme/theme"
 import { RepairJob } from "../../../types/jobs"
 import { SortTypeLabel } from "../../../types/marketplace"
-import { TotalAndPageSizeOptions } from "../../Common/Deprecated/TotalAndPageSizeOptions"
 import { DoRepairModal } from "../../Common/Mech/RepairModal/DoRepairModal"
 import { NiceButton } from "../../Common/Nice/NiceButton"
+import { NiceSelect } from "../../Common/Nice/NiceSelect"
 import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
 import { RepairJobItem } from "./RepairJobItem"
 
@@ -113,11 +113,11 @@ export const RepairJobs = () => {
 
         return (
             <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", maxWidth: "40rem" }}>
+                <Stack alignItems="center" justifyContent="center" spacing="2rem" sx={{ height: "100%", p: "1rem" }}>
                     <Box
                         sx={{
                             width: "80%",
-                            height: "10rem",
+                            height: "8rem",
                             opacity: 0.7,
                             filter: "grayscale(100%)",
                             background: `url(${EmptyWarMachinesPNG})`,
@@ -129,24 +129,23 @@ export const RepairJobs = () => {
                     <Typography
                         variant="body2"
                         sx={{
-                            px: "1.28rem",
-                            pt: "1.28rem",
                             color: colors.grey,
                             fontFamily: fonts.nostromoBold,
                             textAlign: "center",
                         }}
                     >
-                        Repair jobs will appear here.
+                        Repair jobs will appear here
                     </Typography>
                 </Stack>
             </Stack>
         )
     }, [removeByID, repairJobModal, repairJobsRender])
 
-    const main = useMemo(
-        () => (
+    return (
+        <>
             <Stack sx={{ position: "relative", height: "100%" }}>
-                <TotalAndPageSizeOptions sortOptions={sortOptions} selectedSort={sort} onSetSort={setSort} />
+                {/* Sort */}
+                <NiceSelect label="Sort:" options={sortOptions} selected={sort} onSelected={(value) => setSort(`${value}`)} sx={{}} />
 
                 <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
                     <Box
@@ -164,13 +163,7 @@ export const RepairJobs = () => {
                     </Box>
                 </Stack>
             </Stack>
-        ),
-        [content, sort],
-    )
 
-    return (
-        <>
-            {main}
             {repairJobModal && <DoRepairModal repairJob={repairJobModal} onClose={() => setRepairJobModal(undefined)} />}
         </>
     )
@@ -232,6 +225,7 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
                     <SvgRepair size="2.6rem" />
                 </NiceButton>
             </NiceTooltip>
+
             <Typography
                 sx={{
                     fontFamily: fonts.nostromoBlack,

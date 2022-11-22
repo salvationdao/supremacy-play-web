@@ -1,6 +1,6 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { EmptyWarMachinesPNG, SvgSearch } from "../../assets"
+import { EmptyWarMachinesPNG, SvgPlus, SvgSearch } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { snakeToTitle } from "../../helpers"
 import { useDebounce, useUrlQuery } from "../../hooks"
@@ -234,7 +234,7 @@ export const Lobbies = () => {
                         {/* Create lobby button */}
                         <NiceButton corners buttonColor={colors.green} sx={{ p: ".2rem 1rem", pt: ".4rem" }}>
                             <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
-                                CREATE LOBBY
+                                <SvgPlus inline size="1.2rem" /> CREATE LOBBY
                             </Typography>
                         </NiceButton>
 
