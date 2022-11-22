@@ -449,8 +449,8 @@ const Content = React.memo(function Content({
             {userID ? (
                 <ChatSend primaryColor={primaryColor} faction_id={faction_id} />
             ) : (
-                <Box sx={{ px: "1.6rem", py: ".4rem", backgroundColor: colors.red }}>
-                    <Typography sx={{ textAlign: "center", lineHeight: 1 }}>You must be signed in to send messages.</Typography>
+                <Box sx={{ px: "1.6rem", py: ".8rem", backgroundColor: colors.red }}>
+                    <Typography sx={{ textAlign: "center", lineHeight: 1 }}>You must be signed in to send messages</Typography>
                 </Box>
             )}
         </>

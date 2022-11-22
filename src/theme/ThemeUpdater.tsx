@@ -36,7 +36,7 @@ export const ThemeUpdater = ({ children }: { children: ReactNode }) => {
                 },
 
                 ".MuiCircularProgress-root": {
-                    color: theme.factionTheme.primary,
+                    color: theme.factionTheme.s300,
                 },
 
                 ".MuiSlider-root": {
