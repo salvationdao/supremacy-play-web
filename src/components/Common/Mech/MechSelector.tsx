@@ -13,6 +13,7 @@ import { NiceButton } from "../Nice/NiceButton"
 import { NiceButtonGroup } from "../Nice/NiceButtonGroup"
 import { NiceSelect } from "../Nice/NiceSelect"
 import { NiceTextField } from "../Nice/NiceTextField"
+import { VirtualizedGrid } from "../VirtualizedGrid"
 import { MechCardWeaponAndStats } from "./MechCardWeaponAndStats"
 
 const sortOptions = [
@@ -196,6 +197,18 @@ export const MechSelector = React.memo(function MechSelector({
         setDisplayMechs(result)
     }, [isLoading, onlyStakedMechs, ownedMechs, search, sort, stakedMechs])
 
+    const renderIndex = useCallback(
+        (index) => {
+            const mech = displayMechs[index]
+            if (!mech) {
+                return null
+            }
+            const isSelected = !!selectedMechs.find((m) => m.id === mech.id)
+            return <MechCardWeaponAndStats key={`mech-${mech.id}`} mech={mech} isSelected={isSelected} toggleSelected={toggleSelected} />
+        },
+        [displayMechs, selectedMechs, toggleSelected],
+    )
+
     const content = useMemo(() => {
         if (isLoading) {
             return (
@@ -207,12 +220,14 @@ export const MechSelector = React.memo(function MechSelector({
 
         if (displayMechs && displayMechs.length > 0) {
             return (
-                <Stack spacing="1.25rem">
-                    {displayMechs.map((mech) => {
-                        const isSelected = !!selectedMechs.find((m) => m.id === mech.id)
-                        return <MechCardWeaponAndStats key={`mech-${mech.id}`} mech={mech} isSelected={isSelected} toggleSelected={toggleSelected} />
-                    })}
-                </Stack>
+                <VirtualizedGrid
+                    uniqueID="mechSelectorList"
+                    itemWidthConfig={{ columnCount: 1 }}
+                    itemHeight={500}
+                    totalItems={displayMechs.length}
+                    gap={13}
+                    renderIndex={renderIndex}
+                />
             )
         }
 
@@ -248,7 +263,7 @@ export const MechSelector = React.memo(function MechSelector({
                 </NiceButton>
             </Stack>
         )
-    }, [displayMechs, isLoading, selectedMechs, theme.factionTheme.primary, toggleSelected])
+    }, [displayMechs, isLoading, renderIndex, theme.factionTheme.primary])
 
     return (
         <Stack spacing="1rem" sx={{ ...sx, overflow: "hidden" }}>
