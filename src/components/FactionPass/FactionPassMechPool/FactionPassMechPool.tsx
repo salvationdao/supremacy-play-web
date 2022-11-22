@@ -260,7 +260,7 @@ export const FactionPassMechPool = () => {
                 <VirtualizedGrid
                     uniqueID="fleetMechPoolGrid"
                     itemWidthConfig={isGridView ? { minWidth: 300 } : { columnCount: 1 }}
-                    itemHeight={isGridView ? 294 : 96}
+                    itemHeight={isGridView ? 308 : 96}
                     totalItems={displayMechs.length}
                     gap={13}
                     renderIndex={renderIndex}
