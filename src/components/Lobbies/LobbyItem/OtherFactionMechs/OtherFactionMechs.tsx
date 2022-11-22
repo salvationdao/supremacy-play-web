@@ -6,7 +6,7 @@ import { FactionLobbySlots, NUMBER_MECHS_REQUIRED } from "../LobbyItem"
 
 export const OtherFactionMechs = React.memo(function OtherFactionMechs({ otherFactionLobbySlots }: { otherFactionLobbySlots: FactionLobbySlots[] }) {
     return (
-        <Stack direction="row" spacing="1.4rem">
+        <Stack direction="row" spacing="1.5rem">
             {otherFactionLobbySlots.map((fls) => (
                 <SingleColumn key={`fls-${fls.faction.id}`} otherFactionLobbySlots={fls} />
             ))}
