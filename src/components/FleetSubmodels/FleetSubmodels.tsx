@@ -237,8 +237,8 @@ export const FleetSubmodels = () => {
             return (
                 <VirtualizedGrid
                     uniqueID="fleetSubmodelsGrid"
-                    itemWidthConfig={{ minWidth: 300 }}
-                    itemHeight={293}
+                    itemWidthConfig={{ minWidth: 260 }}
+                    itemHeight={255}
                     totalItems={displaySubmodels.length}
                     gap={13}
                     renderIndex={renderIndex}

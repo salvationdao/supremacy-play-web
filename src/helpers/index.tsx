@@ -538,7 +538,7 @@ export const getUtilityTypeColor = (utilityType: string | undefined) => {
 export const getWeaponTypeColor = (weaponType: WeaponType | undefined) => {
     if (!weaponType) return colors.neonBlue
 
-    switch (weaponType.toUpperCase()) {
+    switch (weaponType) {
         case WeaponType.Cannon:
             return colors.green
         case WeaponType.Sword:
