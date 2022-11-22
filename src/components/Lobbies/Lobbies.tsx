@@ -132,10 +132,10 @@ export const Lobbies = () => {
         // Apply sort
         switch (sort) {
             case SortTypeLabel.QueuedAmountHighest:
-                result = result.sort((a, b) => (a.battle_lobbies_mechs.length < b.battle_lobbies_mechs.length ? -1 : 1))
+                result = result.sort((a, b) => (a.battle_lobbies_mechs.length < b.battle_lobbies_mechs.length ? 1 : -1))
                 break
             case SortTypeLabel.QueuedAmountLowest:
-                result = result.sort((a, b) => (a.battle_lobbies_mechs.length > b.battle_lobbies_mechs.length ? -1 : 1))
+                result = result.sort((a, b) => (a.battle_lobbies_mechs.length > b.battle_lobbies_mechs.length ? 1 : -1))
                 break
             case SortTypeLabel.CreateTimeNewestFirst:
                 result = result.sort((a, b) => (a.created_at < b.created_at ? 1 : -1))

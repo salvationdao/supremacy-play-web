@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import React, { MutableRefObject, useCallback, useRef, useState } from "react"
-import { SvgFirstPlace, SvgSecondPlace, SvgSupToken, SvgThirdPlace, SvgWrapperProps } from "../../../assets"
+import { SvgChest2, SvgFirstPlace, SvgLeaderboard, SvgSecondPlace, SvgSupToken, SvgThirdPlace, SvgWrapperProps } from "../../../assets"
 import { useGlobalNotifications } from "../../../containers"
 import { supFormatter } from "../../../helpers"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
@@ -22,7 +22,7 @@ export const PrizePool = React.memo(function PrizePool({ lobby }: { lobby: Battl
             {/* Reward pool */}
             <Box>
                 <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold}>
-                    REWARD POOL
+                    <SvgChest2 inline /> REWARD POOL
                 </Typography>
 
                 <Stack direction="row" alignItems="center" spacing="1.8rem">
@@ -43,7 +43,7 @@ export const PrizePool = React.memo(function PrizePool({ lobby }: { lobby: Battl
             {/* Reward distribution */}
             <Box>
                 <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold}>
-                    DISTRIBUTION
+                    <SvgLeaderboard inline /> DISTRIBUTION
                 </Typography>
 
                 <Stack direction="row" alignItems="center" spacing="1rem">

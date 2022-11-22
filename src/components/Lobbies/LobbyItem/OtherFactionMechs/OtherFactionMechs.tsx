@@ -14,7 +14,7 @@ export const OtherFactionMechs = React.memo(function OtherFactionMechs({ otherFa
     )
 })
 
-const SIZE = "3.8rem"
+const SIZE = "4rem"
 
 const SingleColumn = ({ otherFactionLobbySlots }: { otherFactionLobbySlots: FactionLobbySlots }) => {
     const { userID } = useAuth()

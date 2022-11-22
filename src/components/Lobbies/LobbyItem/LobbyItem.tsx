@@ -1,6 +1,6 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
 import React, { useMemo, useState } from "react"
-import { SvgContentCopyIcon, SvgGlobal, SvgLobbies, SvgLock, SvgSupToken, SvgUserDiamond } from "../../../assets"
+import { SvgArena, SvgContentCopyIcon, SvgGlobal, SvgLobbies, SvgLock, SvgMap, SvgSupToken, SvgUserDiamond } from "../../../assets"
 import { FactionIDs } from "../../../constants"
 import { useArena, useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -196,7 +196,7 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
                         {arenaName && (
                             <Box>
                                 <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold}>
-                                    BATTLE ARENA
+                                    <SvgArena inline /> BATTLE ARENA
                                 </Typography>
 
                                 <Typography>{arenaName}</Typography>
@@ -206,7 +206,7 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
                         {/* Map logo */}
                         <Box>
                             <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold}>
-                                MAP
+                                <SvgMap inline /> MAP
                             </Typography>
 
                             {lobby.game_map ? (

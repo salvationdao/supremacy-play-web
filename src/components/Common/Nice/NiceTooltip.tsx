@@ -90,7 +90,7 @@ export const NiceTooltip = ({
                     style: { filter: "drop-shadow(0 3px 3px #00000050)", zIndex: 999999 },
                 },
                 arrow: { sx: { color: `${primaryColor}80` } },
-                tooltip: { sx: { padding: "0 !important", maxWidth: renderNode ? "auto" : "25rem", background: "unset", ...tooltipSx } },
+                tooltip: { sx: { padding: "0 !important", maxWidth: renderNode ? "unset" : "25rem", background: "unset", ...tooltipSx } },
             }}
         >
             {children}
