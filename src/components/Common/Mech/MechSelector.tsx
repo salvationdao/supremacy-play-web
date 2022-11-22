@@ -301,7 +301,7 @@ export const MechSelector = React.memo(function MechSelector({
                 <NiceSelect label="Sort:" options={sortOptions} selected={sort} onSelected={(value) => setSort(`${value}`)} sx={{ minWidth: "24rem" }} />
             </Stack>
 
-            <Box sx={{ flex: 1, height: "100%", overflowY: "auto", pr: ".8rem", minHeight: "15rem" }}>{content}</Box>
+            <Box sx={{ flex: 1, overflowY: "auto", minHeight: "15rem" }}>{content}</Box>
         </Stack>
     )
 })
