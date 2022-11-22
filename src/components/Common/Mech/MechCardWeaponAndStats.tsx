@@ -116,7 +116,7 @@ const WeaponSlot = React.memo(function WeaponSlot({ weaponSlot }: { weaponSlot?:
             showBorder
             imageUrl={weaponSlot.weapon.avatar_url || weaponSlot.weapon.image_url}
             objectFit="contain"
-            sx={{ height: "5rem", minWidth: "6rem", flex: 1, p: ".6rem", background: "#00000018" }}
+            sx={{ height: "5rem", minWidth: "5rem", flex: 1, p: ".6rem", background: "#00000018" }}
         />
     )
 })

@@ -21,7 +21,7 @@ export const PrizePool = React.memo(function PrizePool({ lobby }: { lobby: Battl
         <>
             {/* Reward pool */}
             <Box>
-                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold} color={colors.lightGrey}>
+                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold}>
                     REWARD POOL
                 </Typography>
 
@@ -42,7 +42,7 @@ export const PrizePool = React.memo(function PrizePool({ lobby }: { lobby: Battl
 
             {/* Reward distribution */}
             <Box>
-                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold} color={colors.lightGrey}>
+                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold}>
                     DISTRIBUTION
                 </Typography>
 

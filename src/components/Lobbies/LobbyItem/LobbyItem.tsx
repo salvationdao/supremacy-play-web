@@ -195,7 +195,7 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
                         {/* Arena name */}
                         {arenaName && (
                             <Box>
-                                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold} color={colors.lightGrey}>
+                                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold}>
                                     BATTLE ARENA
                                 </Typography>
 
@@ -205,7 +205,7 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
 
                         {/* Map logo */}
                         <Box>
-                            <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold} color={colors.lightGrey}>
+                            <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold}>
                                 MAP
                             </Typography>
 
@@ -234,7 +234,7 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
                         {/* Time left */}
                         {lobby.fill_at && (
                             <Box>
-                                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold} color={colors.lightGrey}>
+                                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold}>
                                     READY IN
                                 </Typography>
 
@@ -246,7 +246,7 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
 
                         {lobby.expires_at && (
                             <Box>
-                                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold} color={colors.lightGrey}>
+                                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold}>
                                     TIME LEFT
                                 </Typography>
 
