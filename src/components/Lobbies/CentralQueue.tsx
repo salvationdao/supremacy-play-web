@@ -4,7 +4,7 @@ import FlipMove from "react-flip-move"
 import { colors, fonts } from "../../theme/theme"
 import { BattleLobby } from "../../types/battle_queue"
 import { NiceBoxThing } from "../Common/Nice/NiceBoxThing"
-import { SmallLobbyCard } from "./BattleLobbies/SmallLobbyCard"
+import { MyLobbyItem } from "../RightDrawer/MyLobbies/MyLobbyItem"
 
 export const CentralQueue = ({ lobbies }: { lobbies: BattleLobby[] }) => {
     const [displayLobbies, setDisplayLobbies] = useState<BattleLobby[]>([])
@@ -51,7 +51,7 @@ export const CentralQueue = ({ lobbies }: { lobbies: BattleLobby[] }) => {
                                 },
                             }}
                         >
-                            <SmallLobbyCard battleLobby={battleLobby} />
+                            <MyLobbyItem battleLobby={battleLobby} />
                         </Box>
                     )
                 })}
