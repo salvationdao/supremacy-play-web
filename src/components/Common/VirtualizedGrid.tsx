@@ -92,8 +92,8 @@ export const VirtualizedGrid = React.memo(function VirtualizedGrid({
                         ...style,
                         left: `calc(${style.left}px + ${(columnIndex === 0 ? 0 : columnIndex) * (gap / columnCount)}px)`,
                         top: `calc(${style.top}px + ${(rowIndex === 0 ? 0 : rowIndex) * (gap / rowCount)}px)`,
-                        width: `calc(${style.width}px - ${gap / 2 + gap / columnCount}px)`,
-                        height: `calc(${style.height}px - ${gap / 2 + gap / rowCount}px)`,
+                        width: `calc(${style.width}px - ${(gap * (columnCount - 1)) / columnCount}px)`,
+                        height: `calc(${style.height}px - ${(gap * (rowCount - 1)) / rowCount}px)`,
                     }}
                 >
                     <Box sx={{ width: "100%", height: "100%" }}>{renderIndex(index)}</Box>

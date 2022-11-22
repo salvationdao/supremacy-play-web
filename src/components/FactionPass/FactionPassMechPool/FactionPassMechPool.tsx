@@ -259,8 +259,8 @@ export const FactionPassMechPool = () => {
             return (
                 <VirtualizedGrid
                     uniqueID="fleetMechPoolGrid"
-                    itemWidthConfig={{ minWidth: 300 }}
-                    itemHeight={290}
+                    itemWidthConfig={isGridView ? { minWidth: 300 } : { columnCount: 1 }}
+                    itemHeight={isGridView ? 290 : 88}
                     totalItems={displayMechs.length}
                     gap={13}
                     renderIndex={renderIndex}
@@ -300,7 +300,7 @@ export const FactionPassMechPool = () => {
                 </NiceButton>
             </Stack>
         )
-    }, [displayMechs, isLoading, renderIndex, theme.factionTheme.primary])
+    }, [displayMechs, isGridView, isLoading, renderIndex, theme.factionTheme.primary])
 
     return (
         <Stack

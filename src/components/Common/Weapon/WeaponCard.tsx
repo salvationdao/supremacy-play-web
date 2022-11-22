@@ -88,20 +88,16 @@ export const WeaponCard = React.memo(function WeaponCard({ weapon, hide, isGridV
                     {!hide?.stats && (
                         <>
                             <Typography whiteSpace="nowrap">
-                                <SvgDamage1 inline size="1.6rem" />
-                                {numFormatter(parseFloat(weapon.damage))}
+                                <SvgDamage1 inline size="1.6rem" /> {numFormatter(parseFloat(weapon.damage))}
                             </Typography>
                             <Typography whiteSpace="nowrap">
-                                <SvgAmmo inline size="1.6rem" />
-                                {numFormatter(parseFloat(weapon.max_ammo || "0"))}
+                                <SvgAmmo inline size="1.6rem" /> {numFormatter(parseFloat(weapon.max_ammo || "0"))}
                             </Typography>
                             <Typography whiteSpace="nowrap">
-                                <SvgRadius inline size="1.6rem" />
-                                {numFormatter(parseFloat(weapon.radius || "0"))}
+                                <SvgRadius inline size="1.6rem" /> {numFormatter(parseFloat(weapon.radius || "0"))}
                             </Typography>
                             <Typography whiteSpace="nowrap">
-                                <SvgRateOfFire inline size="1.6rem" />
-                                {numFormatter(parseFloat(weapon.rate_of_fire || "0"))}
+                                <SvgRateOfFire inline size="1.6rem" /> {numFormatter(parseFloat(weapon.rate_of_fire || "0"))}
                             </Typography>
                         </>
                     )}
@@ -155,20 +151,16 @@ export const WeaponCard = React.memo(function WeaponCard({ weapon, hide, isGridV
                         }}
                     >
                         <Typography whiteSpace="nowrap">
-                            <SvgDamage1 inline size="1.6rem" />
-                            {numFormatter(parseFloat(weapon.damage))}
+                            <SvgDamage1 inline size="1.6rem" /> {numFormatter(parseFloat(weapon.damage))}
                         </Typography>
                         <Typography whiteSpace="nowrap">
-                            <SvgAmmo inline size="1.6rem" />
-                            {numFormatter(parseFloat(weapon.max_ammo || "0"))}
+                            <SvgAmmo inline size="1.6rem" /> {numFormatter(parseFloat(weapon.max_ammo || "0"))}
                         </Typography>
                         <Typography whiteSpace="nowrap">
-                            <SvgRadius inline size="1.6rem" />
-                            {numFormatter(parseFloat(weapon.radius || "0"))}
+                            <SvgRadius inline size="1.6rem" /> {numFormatter(parseFloat(weapon.radius || "0"))}
                         </Typography>
                         <Typography whiteSpace="nowrap">
-                            <SvgRateOfFire inline size="1.6rem" />
-                            {numFormatter(parseFloat(weapon.rate_of_fire || "0"))}
+                            <SvgRateOfFire inline size="1.6rem" /> {numFormatter(parseFloat(weapon.rate_of_fire || "0"))}
                         </Typography>
                     </Stack>
                 )}
