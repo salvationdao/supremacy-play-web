@@ -8,6 +8,7 @@ import { fonts } from "../../../theme/theme"
 import { Weapon } from "../../../types"
 import { MediaPreview } from "../MediaPreview/MediaPreview"
 import { NiceBoxThing } from "../Nice/NiceBoxThing"
+import { NiceTooltip } from "../Nice/NiceTooltip"
 
 interface WeaponCardProps {
     weapon: Weapon
@@ -79,18 +80,29 @@ export const WeaponCard = React.memo(function WeaponCard({ weapon, hide, isGridV
                     {/* Weapon stats */}
                     {!hide?.stats && (
                         <>
-                            <Typography whiteSpace="nowrap">
-                                <SvgDamage1 inline size="1.6rem" /> {numFormatter(parseFloat(weapon.damage))}
-                            </Typography>
-                            <Typography whiteSpace="nowrap">
-                                <SvgAmmo inline size="1.6rem" /> {numFormatter(parseFloat(weapon.max_ammo || "0"))}
-                            </Typography>
-                            <Typography whiteSpace="nowrap">
-                                <SvgRadius inline size="1.6rem" /> {numFormatter(parseFloat(weapon.radius || "0"))}
-                            </Typography>
-                            <Typography whiteSpace="nowrap">
-                                <SvgRateOfFire inline size="1.6rem" /> {numFormatter(parseFloat(weapon.rate_of_fire || "0"))}
-                            </Typography>
+                            <NiceTooltip placement="top-start" text="Damage">
+                                <Typography whiteSpace="nowrap">
+                                    <SvgDamage1 inline size="1.6rem" /> {numFormatter(parseFloat(weapon.damage))}
+                                </Typography>
+                            </NiceTooltip>
+
+                            <NiceTooltip placement="top-start" text="Ammo">
+                                <Typography whiteSpace="nowrap">
+                                    <SvgAmmo inline size="1.6rem" /> {numFormatter(parseFloat(weapon.max_ammo || "0"))}
+                                </Typography>
+                            </NiceTooltip>
+
+                            <NiceTooltip placement="top-start" text="Radius">
+                                <Typography whiteSpace="nowrap">
+                                    <SvgRadius inline size="1.6rem" /> {numFormatter(parseFloat(weapon.radius || "0"))}
+                                </Typography>
+                            </NiceTooltip>
+
+                            <NiceTooltip placement="top-start" text="Rate of fire">
+                                <Typography whiteSpace="nowrap">
+                                    <SvgRateOfFire inline size="1.6rem" /> {numFormatter(parseFloat(weapon.rate_of_fire || "0"))}
+                                </Typography>
+                            </NiceTooltip>
                         </>
                     )}
                 </Box>
@@ -133,18 +145,29 @@ export const WeaponCard = React.memo(function WeaponCard({ weapon, hide, isGridV
                             "&>*": { flex: 1, p: ".2rem 1rem", pt: ".5rem", lineHeight: 1, backgroundColor: "#FFFFFF16", boxShadow: 0.4 },
                         }}
                     >
-                        <Typography whiteSpace="nowrap">
-                            <SvgDamage1 inline size="1.6rem" /> {numFormatter(parseFloat(weapon.damage))}
-                        </Typography>
-                        <Typography whiteSpace="nowrap">
-                            <SvgAmmo inline size="1.6rem" /> {numFormatter(parseFloat(weapon.max_ammo || "0"))}
-                        </Typography>
-                        <Typography whiteSpace="nowrap">
-                            <SvgRadius inline size="1.6rem" /> {numFormatter(parseFloat(weapon.radius || "0"))}
-                        </Typography>
-                        <Typography whiteSpace="nowrap">
-                            <SvgRateOfFire inline size="1.6rem" /> {numFormatter(parseFloat(weapon.rate_of_fire || "0"))}
-                        </Typography>
+                        <NiceTooltip placement="top-start" text="Damage">
+                            <Typography whiteSpace="nowrap">
+                                <SvgDamage1 inline size="1.6rem" /> {numFormatter(parseFloat(weapon.damage))}
+                            </Typography>
+                        </NiceTooltip>
+
+                        <NiceTooltip placement="top-start" text="Ammo">
+                            <Typography whiteSpace="nowrap">
+                                <SvgAmmo inline size="1.6rem" /> {numFormatter(parseFloat(weapon.max_ammo || "0"))}
+                            </Typography>
+                        </NiceTooltip>
+
+                        <NiceTooltip placement="top-start" text="Radius">
+                            <Typography whiteSpace="nowrap">
+                                <SvgRadius inline size="1.6rem" /> {numFormatter(parseFloat(weapon.radius || "0"))}
+                            </Typography>
+                        </NiceTooltip>
+
+                        <NiceTooltip placement="top-start" text="Rate of fire">
+                            <Typography whiteSpace="nowrap">
+                                <SvgRateOfFire inline size="1.6rem" /> {numFormatter(parseFloat(weapon.rate_of_fire || "0"))}
+                            </Typography>
+                        </NiceTooltip>
                     </Stack>
                 )}
             </Stack>
