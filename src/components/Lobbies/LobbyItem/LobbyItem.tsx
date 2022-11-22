@@ -120,7 +120,7 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
                 sx={{ width: "100%", height: "100%", overflow: "hidden" }}
             >
                 {/* Lobby details */}
-                <Stack direction="row" alignItems="center" spacing="2rem" sx={{ p: "1.2rem 1.8rem", backgroundColor: `${theme.factionTheme.s400}14` }}>
+                <Stack direction="row" alignItems="center" spacing="2rem" sx={{ p: "1.2rem 1.8rem", backgroundColor: `${theme.factionTheme.s400}16` }}>
                     {/* Lobby name */}
                     <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
                         <SvgLobbies inline size="2.4rem" /> {lobby.name || `Lobby #${lobby.number}`}
@@ -292,7 +292,7 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
                             left: 0,
                             right: 0,
                             bottom: 0,
-                            background: "linear-gradient(65deg, #000000EF 0%, #000000AB 40%, #00000000)",
+                            background: "linear-gradient(65deg, #000000EF 0%, #000000AB 30%, #00000000)",
                             zIndex: -1,
                         }}
                     />
