@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { EmptyWarMachinesPNG, SvgFilter, SvgSearch } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { getRarityDeets } from "../../helpers"
@@ -17,6 +17,7 @@ import { NiceSelect } from "../Common/Nice/NiceSelect"
 import { NiceTextField } from "../Common/Nice/NiceTextField"
 import { SortAndFilters } from "../Common/SortAndFilters/SortAndFilters"
 import { SubmodelCard } from "../Common/Submodel/SubmodelCard"
+import { VirtualizedGrid } from "../Common/VirtualizedGrid"
 
 enum UrlQueryParams {
     Sort = "sort",
@@ -212,6 +213,17 @@ export const FleetSubmodels = () => {
         setDisplaySubmodels(result)
     }, [equippedStatus, isLoading, mechSubmodels, rarities, search, sort, submodelType, updateQuery, weaponSubmodels])
 
+    const renderIndex = useCallback(
+        (index) => {
+            const submodel = displaySubmodels[index]
+            if (!submodel) {
+                return null
+            }
+            return <SubmodelCard key={`submodel-${submodel.id}`} submodel={submodel} />
+        },
+        [displaySubmodels],
+    )
+
     const content = useMemo(() => {
         if (isLoading) {
             return (
@@ -223,19 +235,14 @@ export const FleetSubmodels = () => {
 
         if (displaySubmodels && displaySubmodels.length > 0) {
             return (
-                <Box
-                    sx={{
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fill, minmax(30rem, 1fr))",
-                        gap: "1.5rem",
-                        alignItems: "stretch",
-                        justifyContent: "center",
-                    }}
-                >
-                    {displaySubmodels.map((submodel) => {
-                        return <SubmodelCard key={`submodel-${submodel.id}`} submodel={submodel} />
-                    })}
-                </Box>
+                <VirtualizedGrid
+                    uniqueID="fleetSubmodelsGrid"
+                    itemWidthConfig={{ minWidth: 300 }}
+                    itemHeight={293}
+                    totalItems={displaySubmodels.length}
+                    gap={13}
+                    renderIndex={renderIndex}
+                />
             )
         }
 
@@ -271,7 +278,7 @@ export const FleetSubmodels = () => {
                 </NiceButton>
             </Stack>
         )
-    }, [displaySubmodels, isLoading, theme.factionTheme.primary])
+    }, [displaySubmodels, isLoading, renderIndex, theme.factionTheme.primary])
 
     return (
         <Stack
@@ -282,11 +289,6 @@ export const FleetSubmodels = () => {
                 mx: "auto",
                 position: "relative",
                 height: "100%",
-                backgroundColor: theme.factionTheme.background,
-                background: `url()`,
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-                backgroundSize: "cover",
                 maxWidth: "190rem",
             }}
         >
@@ -365,7 +367,7 @@ export const FleetSubmodels = () => {
                         />
                     </Stack>
 
-                    <Box sx={{ flex: 1, height: "100%", overflowY: "auto", pr: ".8rem" }}>{content}</Box>
+                    <Box sx={{ flex: 1, overflowY: "auto" }}>{content}</Box>
                 </Stack>
             </Stack>
         </Stack>

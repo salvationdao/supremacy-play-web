@@ -86,7 +86,7 @@ const Header = ({ isOpen, isDrawerOpen, onClose }: HeaderProps) => {
                 pb: ".6rem",
             }}
         >
-            <SvgCommand size="3rem" />
+            <SvgCommand size="2.6rem" />
         </NiceButton>
     )
 
@@ -98,7 +98,8 @@ const Header = ({ isOpen, isDrawerOpen, onClose }: HeaderProps) => {
                 width: "100%",
                 p: "1rem",
                 alignItems: "center",
-                backgroundColor: isOpen ? theme.factionTheme.s600 : theme.factionTheme.s800,
+                opacity: isOpen ? 1 : 0.7,
+                background: isOpen ? `linear-gradient(${theme.factionTheme.s500}70 26%, ${theme.factionTheme.s600})` : theme.factionTheme.s800,
                 transition: "background-color .2s ease-out",
             }}
         >
@@ -106,7 +107,7 @@ const Header = ({ isOpen, isDrawerOpen, onClose }: HeaderProps) => {
             <Typography
                 sx={{
                     fontFamily: fonts.nostromoBlack,
-                    fontSize: "1.8rem",
+                    fontSize: "1.6rem",
                 }}
             >
                 Battle Commands

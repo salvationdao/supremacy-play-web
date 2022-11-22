@@ -96,7 +96,6 @@ export const SupremacyContainer = createContainer(() => {
                     currentData[f.id] = f
                 })
                 setFactionsAll(currentData)
-                console.log(resp, currentData)
             } catch (e) {
                 newSnackbarMessage(typeof e === "string" ? e : "Failed to retrieve faction data.", "error")
                 console.error(e)

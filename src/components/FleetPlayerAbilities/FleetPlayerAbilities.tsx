@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { EmptyWarMachinesPNG, SvgSearch } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { useDebounce, useUrlQuery } from "../../hooks"
@@ -14,6 +14,7 @@ import { NiceButton } from "../Common/Nice/NiceButton"
 import { NiceSelect } from "../Common/Nice/NiceSelect"
 import { NiceTextField } from "../Common/Nice/NiceTextField"
 import { PlayerAbilityCard } from "../Common/PlayerAbility/PlayerAbilitycard"
+import { VirtualizedGrid } from "../Common/VirtualizedGrid"
 
 enum UrlQueryParams {
     Sort = "sort",
@@ -26,7 +27,7 @@ const sortOptions = [
     { label: SortTypeLabel.AbilityType, value: SortTypeLabel.AbilityType },
 ]
 
-export const FleetPlayerAbility = () => {
+export const FleetPlayerAbilities = () => {
     const [query, updateQuery] = useUrlQuery()
     const theme = useTheme()
     const { tabs, activeTabID, setActiveTabID, prevTab, nextTab } = usePageTabs()
@@ -108,6 +109,17 @@ export const FleetPlayerAbility = () => {
         setDisplayPlayerAbilities(result)
     }, [isLoading, playerAbilities, search, sort, updateQuery])
 
+    const renderIndex = useCallback(
+        (index) => {
+            const playerAbility = displayPlayerAbilities[index]
+            if (!playerAbility) {
+                return null
+            }
+            return <PlayerAbilityCard key={`player-ability-${playerAbility.id}`} playerAbility={playerAbility} />
+        },
+        [displayPlayerAbilities],
+    )
+
     const content = useMemo(() => {
         if (isLoading) {
             return (
@@ -119,19 +131,14 @@ export const FleetPlayerAbility = () => {
 
         if (displayPlayerAbilities && displayPlayerAbilities.length > 0) {
             return (
-                <Box
-                    sx={{
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fill, minmax(30rem, 1fr))",
-                        gap: "1.5rem",
-                        alignItems: "stretch",
-                        justifyContent: "center",
-                    }}
-                >
-                    {displayPlayerAbilities.map((playerAbility) => {
-                        return <PlayerAbilityCard key={`playerAbility-${playerAbility.id}`} playerAbility={playerAbility} />
-                    })}
-                </Box>
+                <VirtualizedGrid
+                    uniqueID="fleetPlayerAbilitiesGrid"
+                    itemWidthConfig={{ minWidth: 300 }}
+                    itemHeight={283}
+                    totalItems={displayPlayerAbilities.length}
+                    gap={13}
+                    renderIndex={renderIndex}
+                />
             )
         }
 
@@ -167,7 +174,7 @@ export const FleetPlayerAbility = () => {
                 </NiceButton>
             </Stack>
         )
-    }, [displayPlayerAbilities, isLoading, theme.factionTheme.primary])
+    }, [displayPlayerAbilities, isLoading, renderIndex, theme.factionTheme.primary])
 
     return (
         <Stack
@@ -178,11 +185,6 @@ export const FleetPlayerAbility = () => {
                 mx: "auto",
                 position: "relative",
                 height: "100%",
-                backgroundColor: theme.factionTheme.background,
-                background: `url()`,
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-                backgroundSize: "cover",
                 maxWidth: "190rem",
             }}
         >
@@ -222,7 +224,7 @@ export const FleetPlayerAbility = () => {
                         />
                     </Stack>
 
-                    <Box sx={{ flex: 1, height: "100%", overflowY: "auto", pr: ".8rem" }}>{content}</Box>
+                    <Box sx={{ flex: 1, overflowY: "auto" }}>{content}</Box>
                 </Stack>
             </Stack>
         </Stack>

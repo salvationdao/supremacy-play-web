@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { EmptyWarMachinesPNG, SvgSearch } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { useDebounce, useUrlQuery } from "../../hooks"
@@ -14,6 +14,7 @@ import { usePageTabs } from "../Common/NavTabs/usePageTabs"
 import { NiceButton } from "../Common/Nice/NiceButton"
 import { NiceSelect } from "../Common/Nice/NiceSelect"
 import { NiceTextField } from "../Common/Nice/NiceTextField"
+import { VirtualizedGrid } from "../Common/VirtualizedGrid"
 
 enum UrlQueryParams {
     Sort = "sort",
@@ -104,6 +105,17 @@ export const FleetKeycards = () => {
         setDisplayKeycards(result)
     }, [isLoading, keycards, search, sort, updateQuery])
 
+    const renderIndex = useCallback(
+        (index) => {
+            const keycard = displayKeycards[index]
+            if (!keycard) {
+                return null
+            }
+            return <KeycardCard key={`keycard-${keycard.id}`} keycard={keycard} />
+        },
+        [displayKeycards],
+    )
+
     const content = useMemo(() => {
         if (isLoading) {
             return (
@@ -115,19 +127,14 @@ export const FleetKeycards = () => {
 
         if (displayKeycards && displayKeycards.length > 0) {
             return (
-                <Box
-                    sx={{
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fill, minmax(30rem, 1fr))",
-                        gap: "1.5rem",
-                        alignItems: "stretch",
-                        justifyContent: "center",
-                    }}
-                >
-                    {displayKeycards.map((keycard) => {
-                        return <KeycardCard key={`keycard-${keycard.id}`} keycard={keycard} />
-                    })}
-                </Box>
+                <VirtualizedGrid
+                    uniqueID="fleetKeycardsGrid"
+                    itemWidthConfig={{ minWidth: 300 }}
+                    itemHeight={290}
+                    totalItems={displayKeycards.length}
+                    gap={13}
+                    renderIndex={renderIndex}
+                />
             )
         }
 
@@ -163,7 +170,7 @@ export const FleetKeycards = () => {
                 </NiceButton>
             </Stack>
         )
-    }, [displayKeycards, isLoading, theme.factionTheme.primary])
+    }, [displayKeycards, isLoading, renderIndex, theme.factionTheme.primary])
 
     return (
         <Stack
@@ -174,11 +181,6 @@ export const FleetKeycards = () => {
                 mx: "auto",
                 position: "relative",
                 height: "100%",
-                backgroundColor: theme.factionTheme.background,
-                background: `url()`,
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-                backgroundSize: "cover",
                 maxWidth: "190rem",
             }}
         >
@@ -218,7 +220,7 @@ export const FleetKeycards = () => {
                         />
                     </Stack>
 
-                    <Box sx={{ flex: 1, height: "100%", overflowY: "auto", pr: ".8rem" }}>{content}</Box>
+                    <Box sx={{ flex: 1, overflowY: "auto" }}>{content}</Box>
                 </Stack>
             </Stack>
         </Stack>

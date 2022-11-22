@@ -7,6 +7,7 @@ import { colors, fonts } from "../../../theme/theme"
 import { MechSkin, WeaponSkin } from "../../../types"
 import { MediaPreview } from "../MediaPreview/MediaPreview"
 import { NiceBoxThing } from "../Nice/NiceBoxThing"
+import { NiceTooltip } from "../Nice/NiceTooltip"
 
 interface SubmodelCardProps {
     submodel: MechSkin | WeaponSkin
@@ -26,7 +27,7 @@ export const SubmodelCard = React.memo(function SubmodelCard({ submodel }: Submo
                 thickness: "very-lean",
             }}
             background={{ colors: [rarityDeets.color, rarityDeets.color], opacity: 0.06 }}
-            sx={{ p: "1rem 1.5rem" }}
+            sx={{ p: "1rem 1.5rem", width: "100%", height: "100%", overflow: "hidden" }}
         >
             <Stack spacing="1.2rem">
                 {/* Submodel name and count */}
@@ -34,9 +35,11 @@ export const SubmodelCard = React.memo(function SubmodelCard({ submodel }: Submo
                     {/* Submodel name */}
                     <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{submodel.label}</Typography>
 
-                    <Typography variant="h6" sx={{ fontWeight: "bold", color: submodel.equipped_on ? colors.green : colors.grey }}>
-                        {submodel.equipped_on ? "Equipped" : "Not Equipped"}
-                    </Typography>
+                    <NiceTooltip placement="bottom-end" text={submodel.equipped_on}>
+                        <Typography variant="h6" sx={{ fontWeight: "bold", color: submodel.equipped_on ? colors.green : colors.grey }}>
+                            {submodel.equipped_on ? "Equipped" : "Not Equipped"}
+                        </Typography>
+                    </NiceTooltip>
                 </Stack>
 
                 <Typography
@@ -56,7 +59,7 @@ export const SubmodelCard = React.memo(function SubmodelCard({ submodel }: Submo
                 <NiceBoxThing
                     border={{ color: `${rarityDeets.color}20`, thickness: "very-lean" }}
                     background={{ colors: [ownerFaction.palette.background] }}
-                    sx={{ position: "relative", boxShadow: 0.4 }}
+                    sx={{ position: "relative", boxShadow: 0.4, flex: 1 }}
                 >
                     <MediaPreview
                         imageUrl={
@@ -69,7 +72,8 @@ export const SubmodelCard = React.memo(function SubmodelCard({ submodel }: Submo
                             ""
                         }
                         objectFit="cover"
-                        sx={{ height: "20rem" }}
+                        sx={{ height: "25rem" }}
+                        allowModal
                     />
                 </NiceBoxThing>
             </Stack>

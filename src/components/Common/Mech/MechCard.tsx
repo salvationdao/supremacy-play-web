@@ -6,7 +6,9 @@ import { useSupremacy } from "../../../containers"
 import { numFormatter, truncateTextLines } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { NewMechStruct } from "../../../types"
+import { MediaPreview } from "../MediaPreview/MediaPreview"
 import { NiceBoxThing } from "../Nice/NiceBoxThing"
+import { NiceTooltip } from "../Nice/NiceTooltip"
 import { MechIdleStatus } from "./MechIdleStatus"
 import { RepairBlocks } from "./MechRepairBlocks"
 
@@ -57,9 +59,7 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                     thickness: isSelected ? "lean" : "very-lean",
                 }}
                 background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.06 }}
-                sx={{
-                    overflow: "hidden",
-                }}
+                sx={{ width: "100%", height: "100%", overflow: "hidden" }}
             >
                 <Box
                     sx={{
@@ -79,16 +79,7 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                         background={{ colors: [ownerFaction.palette.background] }}
                         sx={{ height: "100%", width: "100%", boxShadow: 0.4 }}
                     >
-                        <Box
-                            component="img"
-                            src={mech.avatar_url}
-                            sx={{
-                                height: "100%",
-                                width: "100%",
-                                objectFit: "cover",
-                                objectPosition: "center",
-                            }}
-                        />
+                        <MediaPreview imageUrl={mech.avatar_url} objectFit="cover" allowModal />
                     </NiceBoxThing>
 
                     {/* Mech name */}
@@ -126,22 +117,29 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                     {/* KDWL stats */}
                     {!hide?.kdwlStats && (
                         <>
-                            <Typography whiteSpace="nowrap">
-                                <SvgMechKills inline size="1.6rem" />
-                                {numFormatter(mech.stats.total_kills)}
-                            </Typography>
-                            <Typography whiteSpace="nowrap">
-                                <SvgMechDeaths inline size="1.6rem" />
-                                {numFormatter(mech.stats.total_deaths)}
-                            </Typography>
-                            <Typography whiteSpace="nowrap">
-                                <SvgMechWins inline size="1.6rem" />
-                                {numFormatter(mech.stats.total_wins)}
-                            </Typography>
-                            <Typography whiteSpace="nowrap">
-                                <SvgMechLosses inline size="1.6rem" />
-                                {numFormatter(mech.stats.total_losses)}
-                            </Typography>
+                            <NiceTooltip placement="top-start" text="Total kills">
+                                <Typography whiteSpace="nowrap">
+                                    <SvgMechKills inline size="1.6rem" /> {numFormatter(mech.stats.total_kills)}
+                                </Typography>
+                            </NiceTooltip>
+
+                            <NiceTooltip placement="top-start" text="Total deaths">
+                                <Typography whiteSpace="nowrap">
+                                    <SvgMechDeaths inline size="1.6rem" /> {numFormatter(mech.stats.total_deaths)}
+                                </Typography>
+                            </NiceTooltip>
+
+                            <NiceTooltip placement="top-start" text="Total wins">
+                                <Typography whiteSpace="nowrap">
+                                    <SvgMechWins inline size="1.6rem" /> {numFormatter(mech.stats.total_wins)}
+                                </Typography>
+                            </NiceTooltip>
+
+                            <NiceTooltip placement="top-start" text="Total losses">
+                                <Typography whiteSpace="nowrap">
+                                    <SvgMechLosses inline size="1.6rem" /> {numFormatter(mech.stats.total_losses)}
+                                </Typography>
+                            </NiceTooltip>
                         </>
                     )}
 
@@ -169,7 +167,7 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                 thickness: isSelected ? "lean" : "very-lean",
             }}
             background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.06 }}
-            sx={{ p: "1rem 1.5rem" }}
+            sx={{ p: "1rem 1.5rem", width: "100%", height: "100%", overflow: "hidden" }}
         >
             <Stack spacing="1.2rem">
                 {/* Mech name and checkbox */}
@@ -210,18 +208,9 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                 <NiceBoxThing
                     border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
                     background={{ colors: [ownerFaction.palette.background] }}
-                    sx={{ position: "relative", boxShadow: 0.4 }}
+                    sx={{ position: "relative", boxShadow: 0.4, flex: 1 }}
                 >
-                    <Box
-                        component="img"
-                        src={mech.avatar_url}
-                        sx={{
-                            height: "20rem",
-                            width: "100%",
-                            objectFit: "cover",
-                            objectPosition: "center",
-                        }}
-                    />
+                    <MediaPreview imageUrl={mech.avatar_url} objectFit="cover" sx={{ height: "20rem" }} allowModal />
                 </NiceBoxThing>
 
                 {/* Mech KDWL stats */}
@@ -234,22 +223,29 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                             "&>*": { flex: 1, p: ".2rem 1rem", pt: ".5rem", lineHeight: 1, backgroundColor: "#FFFFFF16", boxShadow: 0.4 },
                         }}
                     >
-                        <Typography whiteSpace="nowrap">
-                            <SvgMechKills inline size="1.6rem" />
-                            {numFormatter(mech.stats.total_kills)}
-                        </Typography>
-                        <Typography whiteSpace="nowrap">
-                            <SvgMechDeaths inline size="1.6rem" />
-                            {numFormatter(mech.stats.total_deaths)}
-                        </Typography>
-                        <Typography whiteSpace="nowrap">
-                            <SvgMechWins inline size="1.6rem" />
-                            {numFormatter(mech.stats.total_wins)}
-                        </Typography>
-                        <Typography whiteSpace="nowrap">
-                            <SvgMechLosses inline size="1.6rem" />
-                            {numFormatter(mech.stats.total_losses)}
-                        </Typography>
+                        <NiceTooltip placement="top-start" text="Total kills">
+                            <Typography whiteSpace="nowrap">
+                                <SvgMechKills inline size="1.6rem" /> {numFormatter(mech.stats.total_kills)}
+                            </Typography>
+                        </NiceTooltip>
+
+                        <NiceTooltip placement="top-start" text="Total deaths">
+                            <Typography whiteSpace="nowrap">
+                                <SvgMechDeaths inline size="1.6rem" /> {numFormatter(mech.stats.total_deaths)}
+                            </Typography>
+                        </NiceTooltip>
+
+                        <NiceTooltip placement="top-start" text="Total wins">
+                            <Typography whiteSpace="nowrap">
+                                <SvgMechWins inline size="1.6rem" /> {numFormatter(mech.stats.total_wins)}
+                            </Typography>
+                        </NiceTooltip>
+
+                        <NiceTooltip placement="top-start" text="Total losses">
+                            <Typography whiteSpace="nowrap">
+                                <SvgMechLosses inline size="1.6rem" /> {numFormatter(mech.stats.total_losses)}
+                            </Typography>
+                        </NiceTooltip>
                     </Stack>
                 )}
 

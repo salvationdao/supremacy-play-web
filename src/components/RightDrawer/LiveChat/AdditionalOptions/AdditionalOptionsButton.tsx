@@ -3,7 +3,6 @@ import { MutableRefObject, useEffect, useRef } from "react"
 import { RIGHT_DRAWER_WIDTH, UserBanForm } from "../../.."
 import { useAuth } from "../../../../containers"
 import { useToggle } from "../../../../hooks"
-import { colors } from "../../../../theme/theme"
 import { NicePopover } from "../../../Common/Nice/NicePopover"
 
 export const AdditionalOptionsButton = () => {
@@ -20,15 +19,15 @@ export const AdditionalOptionsButton = () => {
                 ref={popoverRef}
                 onClick={() => toggleIsPopoverOpen()}
                 sx={{
-                    backgroundColor: colors.darkerNavy,
-                    height: "2rem",
+                    backgroundColor: "#00000090",
+                    height: "3rem",
                     width: "100%",
                     borderRadius: 0,
                     "*": {
                         opacity: isPopoverOpen ? 1 : 0.6,
                     },
                     ":hover": {
-                        backgroundColor: colors.darkerNavy,
+                        backgroundColor: "#00000090",
                         "*": {
                             opacity: 1,
                         },

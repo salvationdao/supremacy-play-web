@@ -22,6 +22,7 @@ import { NiceButtonGroup } from "../Common/Nice/NiceButtonGroup"
 import { NiceSelect } from "../Common/Nice/NiceSelect"
 import { NiceTextField } from "../Common/Nice/NiceTextField"
 import { SortAndFilters } from "../Common/SortAndFilters/SortAndFilters"
+import { VirtualizedGrid } from "../Common/VirtualizedGrid"
 import { RepairBay } from "./RepairBay/RepairBay"
 
 enum UrlQueryParams {
@@ -254,6 +255,27 @@ export const FleetMechs = () => {
         setDisplayMechs(result)
     }, [deaths, isLoading, kills, losses, mechs, rarities, repairBlocks, search, sort, status, updateQuery, wins])
 
+    const renderIndex = useCallback(
+        (index) => {
+            const mech = displayMechs[index]
+            if (!mech) {
+                return null
+            }
+            const isSelected = !!selectedMechs.find((m) => m.id === mech.id)
+            return (
+                <MechCard
+                    key={`mech-${mech.id}`}
+                    mech={mech}
+                    isGridView={isGridView}
+                    isSelected={isSelected}
+                    toggleSelected={toggleSelected}
+                    hide={{ ownerName: true }}
+                />
+            )
+        },
+        [displayMechs, isGridView, selectedMechs, toggleSelected],
+    )
+
     const content = useMemo(() => {
         if (isLoading) {
             return (
@@ -265,29 +287,14 @@ export const FleetMechs = () => {
 
         if (displayMechs && displayMechs.length > 0) {
             return (
-                <Box
-                    sx={{
-                        display: "grid",
-                        gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(30rem, 1fr))" : "100%",
-                        gap: "1.5rem",
-                        alignItems: "stretch",
-                        justifyContent: "center",
-                    }}
-                >
-                    {displayMechs.map((mech) => {
-                        const isSelected = !!selectedMechs.find((m) => m.id === mech.id)
-                        return (
-                            <MechCard
-                                key={`mech-${mech.id}`}
-                                mech={mech}
-                                isGridView={isGridView}
-                                isSelected={isSelected}
-                                toggleSelected={toggleSelected}
-                                hide={{ ownerName: true }}
-                            />
-                        )
-                    })}
-                </Box>
+                <VirtualizedGrid
+                    uniqueID="fleetMechsGrid"
+                    itemWidthConfig={isGridView ? { minWidth: 300 } : { columnCount: 1 }}
+                    itemHeight={isGridView ? 294 : 96}
+                    totalItems={displayMechs.length}
+                    gap={13}
+                    renderIndex={renderIndex}
+                />
             )
         }
 
@@ -323,7 +330,7 @@ export const FleetMechs = () => {
                 </NiceButton>
             </Stack>
         )
-    }, [displayMechs, isGridView, isLoading, selectedMechs, theme.factionTheme.primary, toggleSelected])
+    }, [displayMechs, isGridView, isLoading, renderIndex, theme.factionTheme.primary])
 
     return (
         <Stack
@@ -334,11 +341,6 @@ export const FleetMechs = () => {
                 mx: "auto",
                 position: "relative",
                 height: "100%",
-                backgroundColor: theme.factionTheme.background,
-                background: `url()`,
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-                backgroundSize: "cover",
                 maxWidth: "190rem",
             }}
         >
@@ -474,7 +476,7 @@ export const FleetMechs = () => {
                         />
                     </Stack>
 
-                    <Box sx={{ flex: 1, height: "100%", overflowY: "auto", pr: ".8rem" }}>{content}</Box>
+                    <Box sx={{ flex: 1, overflowY: "auto" }}>{content}</Box>
                 </Stack>
 
                 <RepairBay open={showRepairBay} />

@@ -39,7 +39,7 @@ const KeycardCardInner = React.memo(function KeycardCardInner({ keycard, itemSal
                 thickness: "very-lean",
             }}
             background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.06 }}
-            sx={{ p: "1rem 1.5rem" }}
+            sx={{ p: "1rem 1.5rem", width: "100%", height: "100%", overflow: "hidden" }}
         >
             <Stack spacing="1.2rem">
                 {/* Keycard name and count */}
@@ -58,13 +58,14 @@ const KeycardCardInner = React.memo(function KeycardCardInner({ keycard, itemSal
                 <NiceBoxThing
                     border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
                     background={{ colors: [ownerFaction.palette.background] }}
-                    sx={{ position: "relative", boxShadow: 0.4 }}
+                    sx={{ position: "relative", boxShadow: 0.4, flex: 1 }}
                 >
                     <MediaPreview
                         imageUrl={keycard.blueprints.image_url}
                         videoUrls={[keycard.blueprints.animation_url, keycard.blueprints.card_animation_url]}
                         objectFit="cover"
                         sx={{ height: "20rem" }}
+                        allowModal
                     />
                 </NiceBoxThing>
 

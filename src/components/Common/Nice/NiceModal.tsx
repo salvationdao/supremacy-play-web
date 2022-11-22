@@ -44,7 +44,7 @@ export const NiceModal = ({ modalSx, sx, children, onClose, ...props }: NiceModa
                         ":active": { opacity: 1 },
                     }}
                 >
-                    <SvgClose2 size="2.6rem" sx={{}} />
+                    <SvgClose2 size="2.6rem" />
                 </IconButton>
 
                 {/* Background color */}

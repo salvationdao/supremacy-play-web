@@ -1,4 +1,5 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
+import { useCallback } from "react"
 import { useEffect, useMemo, useState } from "react"
 import { EmptyWarMachinesPNG, SvgFilter, SvgGridView, SvgListView, SvgSearch } from "../../assets"
 import { useTheme } from "../../containers/theme"
@@ -17,6 +18,7 @@ import { NiceButtonGroup } from "../Common/Nice/NiceButtonGroup"
 import { NiceSelect } from "../Common/Nice/NiceSelect"
 import { NiceTextField } from "../Common/Nice/NiceTextField"
 import { SortAndFilters } from "../Common/SortAndFilters/SortAndFilters"
+import { VirtualizedGrid } from "../Common/VirtualizedGrid"
 import { WeaponCard } from "../Common/Weapon/WeaponCard"
 
 enum UrlQueryParams {
@@ -327,6 +329,17 @@ export const FleetWeapons = () => {
         weaponType,
     ])
 
+    const renderIndex = useCallback(
+        (index) => {
+            const weapon = displayWeapons[index]
+            if (!weapon) {
+                return null
+            }
+            return <WeaponCard key={`weapon-${weapon.id}`} weapon={weapon} isGridView={isGridView} />
+        },
+        [displayWeapons, isGridView],
+    )
+
     const content = useMemo(() => {
         if (isLoading) {
             return (
@@ -338,19 +351,14 @@ export const FleetWeapons = () => {
 
         if (displayWeapons && displayWeapons.length > 0) {
             return (
-                <Box
-                    sx={{
-                        display: "grid",
-                        gridTemplateColumns: isGridView ? "repeat(auto-fill, minmax(30rem, 1fr))" : "100%",
-                        gap: "1.5rem",
-                        alignItems: "stretch",
-                        justifyContent: "center",
-                    }}
-                >
-                    {displayWeapons.map((weapon) => {
-                        return <WeaponCard key={`mech-${weapon.id}`} weapon={weapon} isGridView={isGridView} />
-                    })}
-                </Box>
+                <VirtualizedGrid
+                    uniqueID="fleetWeaponsGrid"
+                    itemWidthConfig={isGridView ? { minWidth: 300 } : { columnCount: 1 }}
+                    itemHeight={isGridView ? 262 : 96}
+                    totalItems={displayWeapons.length}
+                    gap={13}
+                    renderIndex={renderIndex}
+                />
             )
         }
 
@@ -386,7 +394,7 @@ export const FleetWeapons = () => {
                 </NiceButton>
             </Stack>
         )
-    }, [displayWeapons, isGridView, isLoading, theme.factionTheme.primary])
+    }, [displayWeapons, isGridView, isLoading, renderIndex, theme.factionTheme.primary])
 
     return (
         <Stack
@@ -397,11 +405,6 @@ export const FleetWeapons = () => {
                 mx: "auto",
                 position: "relative",
                 height: "100%",
-                backgroundColor: theme.factionTheme.background,
-                background: `url()`,
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-                backgroundSize: "cover",
                 maxWidth: "190rem",
             }}
         >
@@ -561,7 +564,7 @@ export const FleetWeapons = () => {
                         />
                     </Stack>
 
-                    <Box sx={{ flex: 1, height: "100%", overflowY: "auto", pr: ".8rem" }}>{content}</Box>
+                    <Box sx={{ flex: 1, overflowY: "auto" }}>{content}</Box>
                 </Stack>
             </Stack>
         </Stack>

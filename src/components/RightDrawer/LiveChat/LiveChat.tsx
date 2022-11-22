@@ -74,7 +74,8 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
                 width: "100%",
                 p: "1rem",
                 alignItems: "center",
-                backgroundColor: isOpen ? theme.factionTheme.s600 : theme.factionTheme.s800,
+                opacity: isOpen ? 1 : 0.7,
+                background: isOpen ? `linear-gradient(${theme.factionTheme.s500}70 26%, ${theme.factionTheme.s600})` : theme.factionTheme.s800,
                 transition: "background-color .2s ease-out",
             }}
         >
@@ -88,13 +89,13 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
                         pb: ".6rem",
                     }}
                 >
-                    <SvgChat size="3rem" />
+                    <SvgChat size="2.6rem" />
                 </NiceButton>
             </NiceTooltip>
             <Typography
                 sx={{
                     fontFamily: fonts.nostromoBlack,
-                    fontSize: "1.8rem",
+                    fontSize: "1.6rem",
                 }}
             >
                 Live Chat
@@ -154,7 +155,7 @@ const TabbedLayout = () => {
     const { isEnlisted, faction_id, primaryColor, secondaryColor, factionTabLabel } = useMemo(() => {
         const isEnlisted = !!factionID
         let faction_id = null
-        let primaryColor = colors.green
+        let primaryColor = theme.factionTheme.primary
         let secondaryColor = "#FFFFFF"
         let factionTabLabel = ""
 
@@ -222,7 +223,7 @@ const TabbedLayout = () => {
                         label={
                             <Stack direction="row" alignItems="center" justifyContent="center" spacing=".96rem">
                                 <UnreadBadge tabValue={0}>
-                                    <SvgChatGlobal size="3rem" />
+                                    <SvgChatGlobal size="2.5rem" />
                                 </UnreadBadge>
                                 <Typography
                                     variant="caption"
@@ -254,8 +255,8 @@ const TabbedLayout = () => {
                                     <UnreadBadge tabValue={1}>
                                         <Box
                                             sx={{
-                                                width: "4rem",
-                                                height: "4rem",
+                                                width: "3.2rem",
+                                                height: "3.2rem",
                                                 flexShrink: 0,
                                                 backgroundImage: `url(${faction.logo_url})`,
                                                 backgroundRepeat: "no-repeat",
@@ -351,7 +352,7 @@ const SplitLayout = () => {
                             boxShadow: 1,
                         }}
                     >
-                        <SvgChatGlobal size="3rem" />
+                        <SvgChatGlobal size="2.5rem" />
                         <Typography
                             variant="caption"
                             sx={{
@@ -390,8 +391,8 @@ const SplitLayout = () => {
                             >
                                 <Box
                                     sx={{
-                                        width: "4rem",
-                                        height: "4rem",
+                                        width: "3.2rem",
+                                        height: "3.2rem",
                                         flexShrink: 0,
                                         backgroundImage: `url(${faction.logo_url})`,
                                         backgroundRepeat: "no-repeat",

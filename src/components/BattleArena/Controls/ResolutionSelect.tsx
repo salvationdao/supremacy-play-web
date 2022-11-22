@@ -1,7 +1,7 @@
-import { MenuItem, Select, Stack, Typography } from "@mui/material"
+import { Stack, Typography } from "@mui/material"
+import { useMemo } from "react"
 import { useOvenStream } from "../../../containers/oven"
-import { useTheme } from "../../../containers/theme"
-import { colors } from "../../../theme/theme"
+import { NiceSelect } from "../../Common/Nice/NiceSelect"
 
 const resolutionToText = (resolution: string) => {
     if (resolution === "1080_60") {
@@ -14,67 +14,28 @@ const resolutionToText = (resolution: string) => {
 }
 
 export const OvenResolutionSelect = () => {
-    const theme = useTheme()
     const { ovenResolutions, selectedOvenResolution, setSelectedOvenResolution } = useOvenStream()
+
+    const options = useMemo(() => ovenResolutions.map((o) => ({ label: resolutionToText(o), value: o })), [ovenResolutions])
 
     if (!ovenResolutions || ovenResolutions.length <= 0) return null
 
-    const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.text
-
     return (
-        <Stack direction="row" spacing=".24rem" alignItems="center">
-            <Typography variant="body2" sx={{ lineHeight: 1 }}>
-                RESOLUTION:{" "}
+        <Stack direction="row" alignItems="center" spacing="1rem">
+            <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+                RESOLUTION:
             </Typography>
 
-            <Select
-                sx={{
-                    width: "15rem",
-                    borderRadius: 0.5,
-                    ".MuiTypography-root": {
-                        px: ".8rem",
-                        pt: ".48rem",
-                    },
-                    "& .MuiSelect-outlined": { p: 0 },
-                }}
+            <NiceSelect
+                options={options}
                 defaultValue={ovenResolutions[0]}
-                value={selectedOvenResolution || ovenResolutions[0] || 0}
-                MenuProps={{
-                    variant: "menu",
-                    sx: {
-                        "&& .Mui-selected": {
-                            ".MuiTypography-root": {
-                                color: secondaryColor,
-                            },
-                            backgroundColor: primaryColor,
-                        },
-                    },
-                    PaperProps: {
-                        sx: {
-                            backgroundColor: colors.darkNavy,
-                            borderRadius: 0.5,
-                        },
-                    },
+                selected={selectedOvenResolution || ovenResolutions[0] || "0"}
+                onSelected={(value) => setSelectedOvenResolution(value)}
+                sx={{
+                    minWidth: "14rem",
+                    ".MuiOutlinedInput-root": { border: "none" },
                 }}
-            >
-                {ovenResolutions.map((x) => {
-                    return (
-                        <MenuItem
-                            key={x}
-                            value={x}
-                            onClick={() => {
-                                setSelectedOvenResolution(x)
-                            }}
-                            sx={{ "&:hover": { backgroundColor: `#FFFFFF30` } }}
-                        >
-                            <Typography variant="body2" sx={{ lineHeight: 1 }}>
-                                {resolutionToText(x)}
-                            </Typography>
-                        </MenuItem>
-                    )
-                })}
-            </Select>
+            />
         </Stack>
     )
 }

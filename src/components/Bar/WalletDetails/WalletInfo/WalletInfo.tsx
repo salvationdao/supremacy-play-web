@@ -104,7 +104,7 @@ const WalletInfoInner = ({
                 onClick={() => toggleIsWalletPopoverOpen()}
                 sx={{
                     mr: ".3rem",
-                    px: ".7rem",
+                    px: ".4rem",
                     py: ".6rem",
                     cursor: "pointer",
                     borderRadius: 1,

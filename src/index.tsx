@@ -190,7 +190,7 @@ const AppInner = () => {
                             flex: 1,
                             position: "relative",
                             height: "100%",
-                            backgroundColor: colors.darkNavy,
+                            backgroundColor: (theme) => theme.factionTheme.background,
                             overflow: "hidden",
                         }}
                     >

@@ -38,19 +38,20 @@ export const Bar = () => {
                             </Typography>
                         </Marquee>
                     </Box>
-
-                    <Box
-                        sx={{
-                            position: "fixed",
-                            height: "100%",
-                            width: "100%",
-                            border: `${colors.lightRed} 3px solid`,
-                            zIndex: siteZIndex.Modal * 99,
-                            pointerEvents: "none",
-                        }}
-                    />
                 </>
             )}
+
+            {/* A border around the entire page */}
+            <Box
+                sx={{
+                    position: "fixed",
+                    height: "100%",
+                    width: "100%",
+                    border: (theme) => (IS_TESTING_MODE ? `${colors.lightRed} 3px solid` : `${theme.factionTheme.s700} 1px solid`),
+                    zIndex: siteZIndex.Modal * 99,
+                    pointerEvents: "none",
+                }}
+            />
 
             <Stack
                 direction="row"
@@ -63,7 +64,8 @@ export const Bar = () => {
                     height: `${GAME_BAR_HEIGHT}rem`,
                     width: "100vw",
                     color: "#FFFFFF",
-                    backgroundColor: (theme) => theme.factionTheme.background,
+                    backgroundColor: (theme) => theme.factionTheme.s800,
+                    borderBottom: (theme) => `${theme.factionTheme.s700} 1px solid`,
                     transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
                     zIndex: siteZIndex.TopBar,
                     overflowX: "auto",

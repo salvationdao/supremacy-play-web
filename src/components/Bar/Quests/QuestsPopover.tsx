@@ -91,7 +91,13 @@ export const QuestsPopover = ({
                                     defaultExpanded={i === 0 || itemHasConfetti}
                                     sx={{
                                         m: "0 !important",
-                                        ".MuiAccordionSummary-root.Mui-expanded": { backgroundColor: `${colors.purple}30`, minHeight: 0 },
+                                        ".MuiAccordionSummary-root": {
+                                            backgroundColor: (theme) => theme.factionTheme.s900,
+                                            "&.Mui-expanded": {
+                                                backgroundColor: `${colors.purple}40`,
+                                                minHeight: 0,
+                                            },
+                                        },
                                     }}
                                 >
                                     <AccordionSummary expandIcon={<SvgExpandMoreIcon />} sx={{ minHeight: 0, ":hover": { opacity: 0.95 } }}>
@@ -105,7 +111,7 @@ export const QuestsPopover = ({
                                             </Typography>
                                         </Stack>
                                     </AccordionSummary>
-                                    <AccordionDetails sx={{ p: "1rem 1rem 2rem" }}>
+                                    <AccordionDetails sx={{ p: "1rem 1rem 2rem", backgroundColor: (theme) => theme.factionTheme.background }}>
                                         <Stack spacing="1rem">
                                             {questStatsFiltered.map((qs) => {
                                                 const progress = questProgressions?.find((qp) => qp.quest_id === qs.id)

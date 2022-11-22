@@ -6,6 +6,7 @@ export const NiceSelect = ({
     primaryColor: _primaryColor,
     secondaryColor: _secondaryColor,
     backgroundColor: _backgroundColor,
+    defaultValue,
     selected,
     onSelected,
     options,
@@ -15,6 +16,7 @@ export const NiceSelect = ({
     primaryColor?: string
     secondaryColor?: string
     backgroundColor?: string
+    defaultValue?: string
     selected: string
     onSelected: (value: string) => void
     options: {
@@ -64,6 +66,7 @@ export const NiceSelect = ({
                         border: `${primaryColor} 1px inset !important`,
                     },
                 }}
+                defaultValue={defaultValue}
                 value={selected}
                 MenuProps={{
                     variant: "menu",

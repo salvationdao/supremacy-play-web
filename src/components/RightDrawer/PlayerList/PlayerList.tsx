@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { NiceTooltip, PlayerListContent } from "../.."
+import { NiceTooltip, PlayerItem } from "../.."
 import { SvgUserDiamond2 } from "../../../assets"
 import { useChat } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -30,7 +30,8 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
                 width: "100%",
                 p: "1rem",
                 alignItems: "center",
-                backgroundColor: isOpen ? theme.factionTheme.s600 : theme.factionTheme.s800,
+                opacity: isOpen ? 1 : 0.7,
+                background: isOpen ? `linear-gradient(${theme.factionTheme.s500}70 26%, ${theme.factionTheme.s600})` : theme.factionTheme.s800,
                 transition: "background-color .2s ease-out",
             }}
         >
@@ -44,26 +45,20 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
                         pb: ".6rem",
                     }}
                 >
-                    <SvgUserDiamond2 size="3rem" />
+                    <SvgUserDiamond2 size="2.6rem" />
                 </NiceButton>
             </NiceTooltip>
             <Typography
                 sx={{
                     fontFamily: fonts.nostromoBlack,
-                    fontSize: "1.8rem",
+                    fontSize: "1.6rem",
                 }}
             >
                 Active Players
             </Typography>
             <Box flex={1} />
             <Box sx={{ minWidth: ".8rem", minHeight: ".8rem", borderRadius: "50%", backgroundColor: activePlayers.length > 0 ? colors.green : colors.grey }} />
-            <Typography
-                sx={{
-                    color: activePlayers.length > 0 ? colors.lightGrey : colors.darkGrey,
-                }}
-            >
-                {activePlayers.length} active
-            </Typography>
+            <Typography sx={{ color: colors.lightGrey }}>{activePlayers.length} active</Typography>
         </Stack>
     )
 }
@@ -84,7 +79,11 @@ const Content = ({ activePlayers }: { activePlayers: User[] }) => {
                     direction: "ltr",
                 }}
             >
-                <PlayerListContent activePlayers={activePlayers} />
+                <Stack spacing=".5rem">
+                    {activePlayers.map((p) => (
+                        <PlayerItem key={`active-player-${p.id}`} player={p} isActive />
+                    ))}
+                </Stack>
             </Box>
         </Stack>
     )

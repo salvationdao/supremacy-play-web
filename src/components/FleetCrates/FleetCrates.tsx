@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { SafePNG, SvgSearch } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { useDebounce, useUrlQuery } from "../../hooks"
@@ -14,6 +14,7 @@ import { usePageTabs } from "../Common/NavTabs/usePageTabs"
 import { NiceButton } from "../Common/Nice/NiceButton"
 import { NiceSelect } from "../Common/Nice/NiceSelect"
 import { NiceTextField } from "../Common/Nice/NiceTextField"
+import { VirtualizedGrid } from "../Common/VirtualizedGrid"
 import { CrateRewardsModal } from "./OpenCrate/CrateRewardsModal"
 import { CrateRewardVideo } from "./OpenCrate/CrateRewardVideo"
 
@@ -113,6 +114,17 @@ export const FleetCrates = () => {
         setDisplayCrates(result)
     }, [crates, isLoading, search, sort, updateQuery])
 
+    const renderIndex = useCallback(
+        (index) => {
+            const crate = displayCrates[index]
+            if (!crate) {
+                return null
+            }
+            return <MysteryCrateCard key={`crate-${crate.id}`} crate={crate} setOpeningCrate={setOpeningCrate} setOpenedRewards={setOpenedRewards} />
+        },
+        [displayCrates],
+    )
+
     const content = useMemo(() => {
         if (isLoading) {
             return (
@@ -124,21 +136,14 @@ export const FleetCrates = () => {
 
         if (displayCrates && displayCrates.length > 0) {
             return (
-                <Box
-                    sx={{
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fill, minmax(30rem, 1fr))",
-                        gap: "1.5rem",
-                        alignItems: "stretch",
-                        justifyContent: "center",
-                    }}
-                >
-                    {displayCrates.map((crate) => {
-                        return (
-                            <MysteryCrateCard key={`crate-${crate.id}`} crate={crate} setOpeningCrate={setOpeningCrate} setOpenedRewards={setOpenedRewards} />
-                        )
-                    })}
-                </Box>
+                <VirtualizedGrid
+                    uniqueID="fleetCratesGrid"
+                    itemWidthConfig={{ minWidth: 300 }}
+                    itemHeight={283}
+                    totalItems={displayCrates.length}
+                    gap={13}
+                    renderIndex={renderIndex}
+                />
             )
         }
 
@@ -174,7 +179,7 @@ export const FleetCrates = () => {
                 </NiceButton>
             </Stack>
         )
-    }, [displayCrates, isLoading, theme.factionTheme.primary])
+    }, [displayCrates, isLoading, renderIndex, theme.factionTheme.primary])
 
     return (
         <>
@@ -186,11 +191,6 @@ export const FleetCrates = () => {
                     mx: "auto",
                     position: "relative",
                     height: "100%",
-                    backgroundColor: theme.factionTheme.background,
-                    background: `url()`,
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                    backgroundSize: "cover",
                     maxWidth: "190rem",
                 }}
             >
@@ -230,7 +230,7 @@ export const FleetCrates = () => {
                             />
                         </Stack>
 
-                        <Box sx={{ flex: 1, height: "100%", overflowY: "auto", pr: ".8rem" }}>{content}</Box>
+                        <Box sx={{ flex: 1, overflowY: "auto" }}>{content}</Box>
                     </Stack>
                 </Stack>
             </Stack>
