@@ -22,6 +22,8 @@ import { MediaPreview } from "../MediaPreview/MediaPreview"
 import { NiceBoxThing } from "../Nice/NiceBoxThing"
 import { NiceTooltip } from "../Nice/NiceTooltip"
 
+const MIN_NUM_WEAPONS = 4
+
 export const MechCardWeaponAndStats = React.memo(function MechCardWeaponAndStats({
     mech,
     isSelected,
@@ -94,27 +96,28 @@ export const MechCardWeaponAndStats = React.memo(function MechCardWeaponAndStats
                     {/* Mech stats
                     <MechStats mech={mech} sx={{ flex: 1 }} /> */}
                     {mech.weapon_slots && mech.weapon_slots.map((ws) => <WeaponSlot key={`weapon-${ws.slot_number}`} weaponSlot={ws} />)}
+
+                    {/* Empty slots */}
+                    {MIN_NUM_WEAPONS - (mech.weapon_slots?.length || 0) > 0 &&
+                        new Array(MIN_NUM_WEAPONS - (mech.weapon_slots?.length || 0)).fill(0).map((_, index) => <WeaponSlot key={`weapon-empty-${index}`} />)}
                 </Stack>
             </Stack>
         </NiceBoxThing>
     )
 })
 
-const WeaponSlot = React.memo(function WeaponSlot({ weaponSlot }: { weaponSlot: MechWeaponSlot }) {
-    if (!weaponSlot.weapon) {
-        return null
+const WeaponSlot = React.memo(function WeaponSlot({ weaponSlot }: { weaponSlot?: MechWeaponSlot }) {
+    if (!weaponSlot?.weapon) {
+        return <div style={{ flex: 1 }} />
     }
 
     return (
-        <NiceBoxThing
-            border={{
-                color: "#FFFFFF20",
-                thickness: "very-lean",
-            }}
-            background={{ colors: [colors.darkerNavy], opacity: 0.5 }}
-        >
-            <MediaPreview imageUrl={weaponSlot.weapon.avatar_url || weaponSlot.weapon.image_url} objectFit="contain" sx={{ height: "5rem", width: "6rem" }} />
-        </NiceBoxThing>
+        <MediaPreview
+            showBorder
+            imageUrl={weaponSlot.weapon.avatar_url || weaponSlot.weapon.image_url}
+            objectFit="contain"
+            sx={{ height: "5rem", minWidth: "6rem", flex: 1, p: ".6rem", background: "#00000018" }}
+        />
     )
 })
 
