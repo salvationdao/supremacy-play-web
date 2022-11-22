@@ -335,7 +335,7 @@ export interface Weapon extends Collection, Images {
     default_damage_type: string
     genesis_token_id?: number
     equipped_on?: string
-    weapon_type: string
+    weapon_type: WeaponType
     damage_falloff?: string
     damage_falloff_rate?: string
     spread?: string

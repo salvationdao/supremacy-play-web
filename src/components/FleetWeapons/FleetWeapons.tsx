@@ -66,6 +66,7 @@ const weaponTypeOptions = [
     { value: WeaponType.LightningGun, render: { label: WeaponType.LightningGun, color: getWeaponTypeColor(WeaponType.LightningGun) } },
     { value: WeaponType.BFG, render: { label: WeaponType.BFG, color: getWeaponTypeColor(WeaponType.BFG) } },
     { value: WeaponType.Rifle, render: { label: WeaponType.Rifle, color: getWeaponTypeColor(WeaponType.Rifle) } },
+    { value: WeaponType.RocketPods, render: { label: WeaponType.RocketPods, color: getWeaponTypeColor(WeaponType.RocketPods) } },
 ]
 
 const rarityOptions = [
