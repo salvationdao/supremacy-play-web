@@ -33,13 +33,13 @@ export const SubmodelCard = React.memo(function SubmodelCard({ submodel }: Submo
                 {/* Submodel name and count */}
                 <Stack direction="row" alignItems="flex-start" justifyContent="space-between" spacing="1rem">
                     {/* Submodel name */}
-                    <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{submodel.label}</Typography>
-
-                    <NiceTooltip placement="bottom-end" text={submodel.equipped_on}>
-                        <Typography variant="h6" sx={{ fontWeight: "bold", color: submodel.equipped_on ? colors.green : colors.grey }}>
-                            {submodel.equipped_on ? "Equipped" : "Not Equipped"}
-                        </Typography>
+                    <NiceTooltip placement="bottom-start" text={submodel.label}>
+                        <Typography sx={{ fontFamily: fonts.nostromoBlack, ...truncateTextLines(1) }}>{submodel.label}</Typography>
                     </NiceTooltip>
+
+                    <Typography variant="h6" sx={{ fontWeight: "bold", color: submodel.equipped_on ? colors.green : colors.grey, whiteSpace: "nowrap" }}>
+                        {submodel.equipped_on ? "Equipped" : "Not Equipped"}
+                    </Typography>
                 </Stack>
 
                 <Typography
@@ -72,7 +72,7 @@ export const SubmodelCard = React.memo(function SubmodelCard({ submodel }: Submo
                             ""
                         }
                         objectFit="contain"
-                        sx={{ height: "25rem" }}
+                        sx={{ height: "20rem" }}
                         allowModal
                     />
                 </NiceBoxThing>

@@ -111,6 +111,7 @@ import ZaibatsuMechKillIcon from "!@svgr/webpack!./svg/ZaibatsuKillIcon.svg"
 import Angle from "!react-svg-loader!./svg/Angle.svg"
 import Announcement from "!react-svg-loader!./svg/Announcement.svg"
 import Applause from "!react-svg-loader!./svg/Applause.svg"
+import Arena from "!react-svg-loader!./svg/Arena.svg"
 import Arrow from "!react-svg-loader!./svg/Arrow.svg"
 import Back from "!react-svg-loader!./svg/Back.svg"
 import Bin from "!react-svg-loader!./svg/Bin.svg"
@@ -185,6 +186,7 @@ import SupToken from "!react-svg-loader!./svg/SupToken.svg"
 import Target from "!react-svg-loader!./svg/Target.svg"
 import Telegram from "!react-svg-loader!./svg/Telegram.svg"
 import Trailer from "!react-svg-loader!./svg/Trailer.svg"
+import Map from "!react-svg-loader!./svg/Map.svg"
 import Twitter from "!react-svg-loader!./svg/Twitter.svg"
 import Unknown from "!react-svg-loader!./svg/Unknown.svg"
 import UpArrow from "!react-svg-loader!./svg/UpArrow.svg"
@@ -1750,5 +1752,17 @@ export const SvgQueue: React.VoidFunctionComponent<SvgWrapperProps> = (props) =>
 export const SvgCommand: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <Command />
+    </SvgWrapper>
+)
+
+export const SvgArena: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Arena />
+    </SvgWrapper>
+)
+
+export const SvgMap: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
+    <SvgWrapper {...props}>
+        <Map />
     </SvgWrapper>
 )

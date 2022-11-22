@@ -166,7 +166,9 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
                 My Lobbies
             </Typography>
             <Box flex={1} />
-            <Typography sx={{ color: colors.lightGrey }}>{involvedLobbies.length} open lobbies</Typography>
+            <Typography sx={{ color: colors.lightGrey }}>
+                {involvedLobbies.length} open {involvedLobbies.length === 1 ? "lobby" : "lobbies"}
+            </Typography>
         </Stack>
     )
 }
