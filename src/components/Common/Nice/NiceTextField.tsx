@@ -49,8 +49,8 @@ export const NiceTextField = ({
                         cursor: "pointer",
                     }}
                     onClick={() => {
-                        if (!onChange || !value || typeof value !== "number") return
-                        onChange(value + 1)
+                        if (!onChange || typeof value !== "number") return
+                        onChange((value || 0) + 1)
                     }}
                 >
                     <SvgArrow size=".8rem" />
@@ -61,8 +61,8 @@ export const NiceTextField = ({
                         cursor: "pointer",
                     }}
                     onClick={() => {
-                        if (!onChange || !value || typeof value !== "number") return
-                        if (value > 1) onChange(value - 1)
+                        if (!onChange || typeof value !== "number") return
+                        if (value > 1) onChange((value || 0) - 1)
                     }}
                 >
                     <SvgArrow size=".8rem" />

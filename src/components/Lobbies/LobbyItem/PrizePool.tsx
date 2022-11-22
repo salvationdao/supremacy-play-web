@@ -1,6 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { MutableRefObject, useCallback, useRef, useState } from "react"
-import { SvgSupToken } from "../../../assets"
+import BigNumber from "bignumber.js"
+import React, { MutableRefObject, useCallback, useRef, useState } from "react"
+import { SvgFirstPlace, SvgSecondPlace, SvgSupToken, SvgThirdPlace, SvgWrapperProps } from "../../../assets"
 import { useGlobalNotifications } from "../../../containers"
 import { supFormatter } from "../../../helpers"
 import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
@@ -11,8 +12,8 @@ import { NiceButton } from "../../Common/Nice/NiceButton"
 import { NicePopover } from "../../Common/Nice/NicePopover"
 import { NiceTextField } from "../../Common/Nice/NiceTextField"
 
-export const PrizePool = ({ lobby }: { lobby: BattleLobby }) => {
-    const { first_faction_cut, second_faction_cut, third_faction_cut } = lobby
+export const PrizePool = React.memo(function PrizePool({ lobby }: { lobby: BattleLobby }) {
+    const { sups_pool, first_faction_cut, second_faction_cut, third_faction_cut } = lobby
     const [isPopoverOpen, setIsPopoverOpen] = useState(false)
     const popoverRef = useRef(null)
 
@@ -24,14 +25,14 @@ export const PrizePool = ({ lobby }: { lobby: BattleLobby }) => {
                     REWARD POOL
                 </Typography>
 
-                <Stack direction="row" alignItems="center" spacing="1.4rem">
+                <Stack direction="row" alignItems="center" spacing="1.8rem">
                     <Typography>
-                        <SvgSupToken inline size="1.7rem" fill={colors.gold} />
-                        {supFormatter(lobby.sups_pool, 2)}
+                        <SvgSupToken inline size="2rem" fill={colors.gold} />
+                        {supFormatter(sups_pool, 2)}
                     </Typography>
 
                     {/* Top up */}
-                    <NiceButton buttonColor={colors.gold} sx={{ p: ".1rem 1rem", opacity: 0.84 }} ref={popoverRef} onClick={() => setIsPopoverOpen(true)}>
+                    <NiceButton buttonColor={colors.gold} sx={{ p: ".1rem .6rem", opacity: 0.84 }} ref={popoverRef} onClick={() => setIsPopoverOpen(true)}>
                         <Typography fontFamily={fonts.nostromoBold} variant="subtitle2" color={colors.gold}>
                             INCREASE
                         </Typography>
@@ -44,43 +45,45 @@ export const PrizePool = ({ lobby }: { lobby: BattleLobby }) => {
                 <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold} color={colors.lightGrey}>
                     DISTRIBUTION
                 </Typography>
+
                 <Stack direction="row" alignItems="center" spacing="1rem">
-                    <DistributionValue color={colors.gold} rank={1} value={first_faction_cut} />
-                    <DistributionValue color={colors.silver} rank={2} value={second_faction_cut} />
-                    <DistributionValue color={colors.bronze} rank={3} value={third_faction_cut} />
+                    <DistributionValue
+                        Icon={SvgFirstPlace}
+                        value={new BigNumber(sups_pool).shiftedBy(-18).multipliedBy(parseFloat(first_faction_cut)).toFixed(0)}
+                        color={colors.gold}
+                    />
+                    <DistributionValue
+                        Icon={SvgSecondPlace}
+                        value={new BigNumber(sups_pool).shiftedBy(-18).multipliedBy(parseFloat(second_faction_cut)).toFixed(0)}
+                        color={colors.silver}
+                    />
+                    <DistributionValue
+                        Icon={SvgThirdPlace}
+                        value={new BigNumber(sups_pool).shiftedBy(-18).multipliedBy(parseFloat(third_faction_cut)).toFixed(0)}
+                        color={colors.bronze}
+                    />
                 </Stack>
             </Box>
 
             {isPopoverOpen && <TopUpPopover open={isPopoverOpen} onClose={() => setIsPopoverOpen(false)} popoverRef={popoverRef} lobbyID={lobby.id} />}
         </>
     )
-}
+})
 
-const DistributionValue = ({ color, rank, value }: { color: string; rank: number; value: string }) => {
+const DistributionValue = ({ Icon, value, color }: { Icon: React.VoidFunctionComponent<SvgWrapperProps>; value: string; color: string }) => {
     return (
-        <Stack direction="row" alignItems="center" spacing="1rem">
-            <Stack
-                alignItems="center"
-                justifyContent="center"
-                sx={{
-                    width: "2rem",
-                    height: "2rem",
-                    borderRadius: "50%",
-                    backgroundColor: color,
-                }}
-            >
-                <Typography variant="body2" sx={{ color: "#000000A9", fontFamily: fonts.nostromoBold }}>
-                    {rank}
-                </Typography>
-            </Stack>
-
-            <Typography>{(parseFloat(value) * 100).toFixed(1)}%</Typography>
-        </Stack>
+        <Box sx={{ p: ".4rem .5rem", backgroundColor: `${color}10`, boxShadow: 0.4, borderRadius: 0.5 }}>
+            <Typography>
+                <Icon inline size="2.4rem" />
+                <SvgSupToken inline fill={colors.gold} size="1.7rem" />
+                {value}
+            </Typography>
+        </Box>
     )
 }
 
 const TopUpPopover = ({ open, onClose, popoverRef, lobbyID }: { open: boolean; onClose: () => void; popoverRef: MutableRefObject<null>; lobbyID: string }) => {
-    const [topUpReward, setTopUpReward] = useState(0)
+    const [topUpReward, setTopUpReward] = useState(1)
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
     const [isLoading, setIsLoading] = useState(false)
@@ -131,6 +134,7 @@ const TopUpPopover = ({ open, onClose, popoverRef, lobbyID }: { open: boolean; o
                         primaryColor={colors.green}
                         value={topUpReward}
                         type="number"
+                        defaultValue={1}
                         onChange={(value) => {
                             const valueNumber = parseFloat(value)
                             setTopUpReward(valueNumber)

@@ -44,11 +44,11 @@ export const MyLobbies = () => {
         if (involvedLobbies.length === 0) {
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                    <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack alignItems="center" justifyContent="center" spacing="2rem" sx={{ height: "100%", p: "1rem" }}>
                         <Box
                             sx={{
                                 width: "80%",
-                                height: "10rem",
+                                height: "8rem",
                                 opacity: 0.7,
                                 filter: "grayscale(100%)",
                                 background: `url(${EmptyWarMachinesPNG})`,
@@ -60,14 +60,12 @@ export const MyLobbies = () => {
                         <Typography
                             variant="body2"
                             sx={{
-                                px: "1.28rem",
-                                pt: "1.28rem",
                                 color: colors.grey,
                                 fontFamily: fonts.nostromoBold,
                                 textAlign: "center",
                             }}
                         >
-                            Your lobbies will appear here.
+                            Your lobbies will appear here
                         </Typography>
                     </Stack>
                 </Stack>

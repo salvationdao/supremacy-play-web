@@ -18,7 +18,18 @@ import {
     SvgWrapperProps,
 } from "../assets"
 import { colors } from "../theme/theme"
-import { AssetItemType, Dimension, GAME_CLIENT_TILE_SIZE, MechStatusEnum, MysteryCrateType, NewMechStruct, Rarity, RarityEnum, UserRank } from "../types"
+import {
+    AssetItemType,
+    Dimension,
+    GAME_CLIENT_TILE_SIZE,
+    MechStatusEnum,
+    MysteryCrateType,
+    NewMechStruct,
+    Rarity,
+    RarityEnum,
+    UserRank,
+    WeaponType,
+} from "../types"
 import { FiatOrderStatus } from "../types/fiat"
 
 // Capitalize convert a string "example" to "Example"
@@ -524,37 +535,39 @@ export const getUtilityTypeColor = (utilityType: string | undefined) => {
     }
 }
 
-export const getWeaponTypeColor = (weaponType: string | undefined) => {
+export const getWeaponTypeColor = (weaponType: WeaponType | undefined) => {
     if (!weaponType) return colors.neonBlue
 
     switch (weaponType.toUpperCase()) {
-        case "CANNON":
+        case WeaponType.Cannon:
             return colors.green
-        case "SWORD":
+        case WeaponType.Sword:
             return colors.red
-        case "MINIGUN":
+        case WeaponType.Minigun:
             return colors.blue
-        case "MISSILE LAUNCHER":
+        case WeaponType.MissileLauncher:
             return colors.orange
-        case "GRENADE LAUNCHER":
+        case WeaponType.RocketPods:
             return colors.orange
-        case "MACHINE GUN":
+        case WeaponType.GrenadeLauncher:
+            return colors.orange
+        case WeaponType.MachineGun:
             return colors.blue
-        case "PLASMA GUN":
+        case WeaponType.PlasmaGun:
             return colors.purple
-        case "SNIPER RIFLE":
+        case WeaponType.SniperRifle:
             return colors.blue
-        case "RIFLE":
+        case WeaponType.Rifle:
             return colors.blue
-        case "FLAK":
+        case WeaponType.Flak:
             return colors.orange
-        case "LASER BEAM":
+        case WeaponType.LaserBeam:
             return colors.purple
-        case "LIGHTNING GUN":
+        case WeaponType.LightningGun:
             return colors.purple
-        case "BFG":
+        case WeaponType.BFG:
             return colors.orange
-        case "FLAMETHROWER":
+        case WeaponType.Flamethrower:
             return colors.orange
         default:
             return colors.neonBlue

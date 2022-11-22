@@ -63,6 +63,7 @@ const SingleColumn = ({ otherFactionLobbySlots }: { otherFactionLobbySlots: Fact
                             width: "100%",
                             height: SIZE,
                             opacity: 0.6,
+                            backgroundColor: otherFactionLobbySlots.faction.palette.s900,
                         }}
                     >
                         <Typography fontFamily={fonts.nostromoBold} color={otherFactionLobbySlots.faction.palette.primary}>
