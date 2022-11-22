@@ -13,6 +13,7 @@ import { NavTabs } from "../Common/NavTabs/NavTabs"
 import { NiceButton } from "../Common/Nice/NiceButton"
 import { NiceSelect } from "../Common/Nice/NiceSelect"
 import { NiceTextField } from "../Common/Nice/NiceTextField"
+import { VirtualizedGrid } from "../Common/VirtualizedGrid"
 import { CentralQueue } from "./CentralQueue"
 import { LobbyItem } from "./LobbyItem/LobbyItem"
 
@@ -153,6 +154,17 @@ export const Lobbies = () => {
         setDisplayLobbies(result)
     }, [activeTabID, isLoading, lobbies, search, sort, updateQuery])
 
+    const renderIndex = useCallback(
+        (index) => {
+            const lobby = displayLobbies[index]
+            if (!lobby) {
+                return null
+            }
+            return <LobbyItem key={`lobby-${lobby.id}`} lobby={lobby} />
+        },
+        [displayLobbies],
+    )
+
     const content = useMemo(() => {
         if (isLoading) {
             return (
@@ -164,11 +176,14 @@ export const Lobbies = () => {
 
         if (displayLobbies && displayLobbies.length > 0) {
             return (
-                <Stack spacing="1.3rem" alignItems="stretch" minWidth="fit-content">
-                    {displayLobbies.map((lobby) => {
-                        return <LobbyItem key={`lobby-${lobby.id}`} lobby={lobby} />
-                    })}
-                </Stack>
+                <VirtualizedGrid
+                    uniqueID="lobbyList"
+                    itemWidthConfig={{ columnCount: 1 }}
+                    itemHeight={316}
+                    totalItems={displayLobbies.length}
+                    gap={13}
+                    renderIndex={renderIndex}
+                />
             )
         }
 
@@ -204,7 +219,7 @@ export const Lobbies = () => {
                 </NiceButton>
             </Stack>
         )
-    }, [displayLobbies, isLoading, theme.factionTheme.primary])
+    }, [displayLobbies, isLoading, renderIndex, theme.factionTheme.primary])
 
     return (
         <Stack

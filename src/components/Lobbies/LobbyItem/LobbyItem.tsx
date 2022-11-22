@@ -114,7 +114,11 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
 
     return (
         <>
-            <NiceBoxThing border={{ color: "#FFFFFF20", thickness: "very-lean" }} background={{ colors: ["#FFFFFF"], opacity: 0.06 }}>
+            <NiceBoxThing
+                border={{ color: "#FFFFFF20", thickness: "very-lean" }}
+                background={{ colors: ["#FFFFFF"], opacity: 0.06 }}
+                sx={{ width: "100%", height: "100%", overflow: "hidden" }}
+            >
                 {/* Lobby details */}
                 <Stack direction="row" alignItems="center" spacing="2rem" sx={{ p: "1.2rem 1.8rem", backgroundColor: `${theme.factionTheme.s400}14` }}>
                     {/* Lobby name */}
