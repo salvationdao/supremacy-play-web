@@ -6,7 +6,7 @@ import { useActiveRouteID } from "../../hooks/useActiveRouteID"
 import { RightRoutes } from "../../routes"
 import { siteZIndex } from "../../theme/theme"
 
-export const RIGHT_DRAWER_WIDTH = 38 // rem
+export const RIGHT_DRAWER_WIDTH = 42 // rem
 export const DRAWER_OFFSET = "6.6rem"
 
 export const RightDrawer = () => {

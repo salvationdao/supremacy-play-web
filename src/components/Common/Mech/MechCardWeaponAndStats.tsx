@@ -18,6 +18,7 @@ import { truncateTextLines } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { MechBasic, NewMechStruct } from "../../../types"
 import { MechWeaponSlot } from "../../../types/battle_queue"
+import { MediaPreview } from "../MediaPreview/MediaPreview"
 import { NiceBoxThing } from "../Nice/NiceBoxThing"
 import { NiceTooltip } from "../Nice/NiceTooltip"
 
@@ -41,9 +42,9 @@ export const MechCardWeaponAndStats = React.memo(function MechCardWeaponAndStats
                 thickness: isSelected ? "lean" : "very-lean",
             }}
             background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.06 }}
-            sx={{ p: "1rem 1.5rem" }}
+            sx={{ p: "1rem 1.5rem", width: "100%", height: "100%", overflow: "hidden" }}
         >
-            <Stack spacing="1.2rem">
+            <Stack spacing="1.2rem" sx={{ overflow: "hidden" }}>
                 <Stack direction="row" spacing="1.2rem">
                     {/* Mech image */}
                     <NiceBoxThing
@@ -51,16 +52,7 @@ export const MechCardWeaponAndStats = React.memo(function MechCardWeaponAndStats
                         background={{ colors: [ownerFaction.palette.background] }}
                         sx={{ boxShadow: 0.4 }}
                     >
-                        <Box
-                            component="img"
-                            src={mech.avatar_url}
-                            sx={{
-                                height: "7rem",
-                                width: "7rem",
-                                objectFit: "cover",
-                                objectPosition: "center",
-                            }}
-                        />
+                        <MediaPreview imageUrl={mech.avatar_url} objectFit="cover" sx={{ height: "7rem", width: "7rem" }} />
                     </NiceBoxThing>
 
                     <Stack flex={1} spacing=".4rem" sx={{ py: ".2rem" }}>
@@ -97,14 +89,11 @@ export const MechCardWeaponAndStats = React.memo(function MechCardWeaponAndStats
                     </Stack>
                 </Stack>
 
-                <Stack direction="row" spacing="1.5rem">
-                    {/* Mech stats */}
-                    <MechStats mech={mech} sx={{ flex: 1 }} />
-
-                    {/* Weapon slots */}
-                    <Stack alignItems="center" spacing=".8rem">
-                        {mech.weapon_slots && mech.weapon_slots.map((ws) => <WeaponSlot key={`weapon-${ws.slot_number}`} weaponSlot={ws} />)}
-                    </Stack>
+                {/* Equipped weapons */}
+                <Stack direction="row" spacing="1rem" sx={{ overflowX: "auto", pb: ".5rem" }}>
+                    {/* Mech stats
+                    <MechStats mech={mech} sx={{ flex: 1 }} /> */}
+                    {mech.weapon_slots && mech.weapon_slots.map((ws) => <WeaponSlot key={`weapon-${ws.slot_number}`} weaponSlot={ws} />)}
                 </Stack>
             </Stack>
         </NiceBoxThing>
@@ -124,16 +113,7 @@ const WeaponSlot = React.memo(function WeaponSlot({ weaponSlot }: { weaponSlot: 
             }}
             background={{ colors: [colors.darkerNavy], opacity: 0.5 }}
         >
-            <Box
-                component="img"
-                src={weaponSlot.weapon.avatar_url || weaponSlot.weapon.image_url}
-                sx={{
-                    height: "4rem",
-                    width: "4rem",
-                    objectFit: "cover",
-                    objectPosition: "center",
-                }}
-            />
+            <MediaPreview imageUrl={weaponSlot.weapon.avatar_url || weaponSlot.weapon.image_url} objectFit="contain" sx={{ height: "5rem", width: "6rem" }} />
         </NiceBoxThing>
     )
 })

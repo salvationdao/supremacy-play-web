@@ -223,7 +223,7 @@ export const MechSelector = React.memo(function MechSelector({
                 <VirtualizedGrid
                     uniqueID="mechSelectorList"
                     itemWidthConfig={{ columnCount: 1 }}
-                    itemHeight={500}
+                    itemHeight={140}
                     totalItems={displayMechs.length}
                     gap={13}
                     renderIndex={renderIndex}
@@ -232,11 +232,11 @@ export const MechSelector = React.memo(function MechSelector({
         }
 
         return (
-            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+            <Stack alignItems="center" justifyContent="center" spacing="1.2rem" sx={{ height: "100%", p: "1rem" }}>
                 <Box
                     sx={{
-                        width: "20rem",
-                        height: "20rem",
+                        width: "16rem",
+                        height: "16rem",
                         opacity: 0.7,
                         filter: "grayscale(100%)",
                         background: `url(${EmptyWarMachinesPNG})`,
@@ -246,10 +246,8 @@ export const MechSelector = React.memo(function MechSelector({
                     }}
                 />
                 <Typography
+                    variant="body2"
                     sx={{
-                        px: "1.28rem",
-                        pt: "1.28rem",
-                        mb: "1.5rem",
                         color: colors.grey,
                         fontFamily: fonts.nostromoBold,
                         textAlign: "center",

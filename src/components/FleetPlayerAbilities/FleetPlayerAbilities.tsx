@@ -143,7 +143,7 @@ export const FleetPlayerAbilities = () => {
         }
 
         return (
-            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+            <Stack alignItems="center" justifyContent="center" spacing="1.2rem" sx={{ height: "100%", p: "1rem" }}>
                 <Box
                     sx={{
                         width: "20rem",
@@ -158,9 +158,6 @@ export const FleetPlayerAbilities = () => {
                 />
                 <Typography
                     sx={{
-                        px: "1.28rem",
-                        pt: "1.28rem",
-                        mb: "1.5rem",
                         color: colors.grey,
                         fontFamily: fonts.nostromoBold,
                         textAlign: "center",
