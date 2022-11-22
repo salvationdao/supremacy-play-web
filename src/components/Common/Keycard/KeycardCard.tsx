@@ -65,6 +65,7 @@ const KeycardCardInner = React.memo(function KeycardCardInner({ keycard, itemSal
                         videoUrls={[keycard.blueprints.animation_url, keycard.blueprints.card_animation_url]}
                         objectFit="cover"
                         sx={{ height: "20rem" }}
+                        allowModal
                     />
                 </NiceBoxThing>
 

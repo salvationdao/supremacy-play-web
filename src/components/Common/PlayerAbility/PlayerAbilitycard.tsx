@@ -74,7 +74,7 @@ export const PlayerAbilityCard = React.memo(function PlayerAbilityCard({ playerA
                     background={{ colors: [ownerFaction.palette.background] }}
                     sx={{ position: "relative", boxShadow: 0.4, flex: 1 }}
                 >
-                    <MediaPreview imageUrl={playerAbility.ability.image_url} objectFit="cover" sx={{ height: "20rem" }} />
+                    <MediaPreview imageUrl={playerAbility.ability.image_url} objectFit="cover" sx={{ height: "20rem" }} allowModal />
                 </NiceBoxThing>
 
                 {/* Keycard description */}

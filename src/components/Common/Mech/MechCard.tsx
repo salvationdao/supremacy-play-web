@@ -6,6 +6,7 @@ import { useSupremacy } from "../../../containers"
 import { numFormatter, truncateTextLines } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { NewMechStruct } from "../../../types"
+import { MediaPreview } from "../MediaPreview/MediaPreview"
 import { NiceBoxThing } from "../Nice/NiceBoxThing"
 import { MechIdleStatus } from "./MechIdleStatus"
 import { RepairBlocks } from "./MechRepairBlocks"
@@ -77,16 +78,7 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                         background={{ colors: [ownerFaction.palette.background] }}
                         sx={{ height: "100%", width: "100%", boxShadow: 0.4 }}
                     >
-                        <Box
-                            component="img"
-                            src={mech.avatar_url}
-                            sx={{
-                                height: "100%",
-                                width: "100%",
-                                objectFit: "cover",
-                                objectPosition: "center",
-                            }}
-                        />
+                        <MediaPreview imageUrl={mech.avatar_url} objectFit="cover" allowModal />
                     </NiceBoxThing>
 
                     {/* Mech name */}
@@ -206,16 +198,7 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                     background={{ colors: [ownerFaction.palette.background] }}
                     sx={{ position: "relative", boxShadow: 0.4, flex: 1 }}
                 >
-                    <Box
-                        component="img"
-                        src={mech.avatar_url}
-                        sx={{
-                            height: "20rem",
-                            width: "100%",
-                            objectFit: "cover",
-                            objectPosition: "center",
-                        }}
-                    />
+                    <MediaPreview imageUrl={mech.avatar_url} objectFit="cover" sx={{ height: "20rem" }} allowModal />
                 </NiceBoxThing>
 
                 {/* Mech KDWL stats */}

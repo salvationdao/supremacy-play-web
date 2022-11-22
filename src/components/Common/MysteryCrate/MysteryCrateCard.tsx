@@ -78,6 +78,7 @@ export const MysteryCrateCard = React.memo(function MysteryCrateCard({ crate, se
                         videoUrls={[crate.animation_url, crate.card_animation_url]}
                         objectFit="cover"
                         sx={{ height: "20rem" }}
+                        allowModal
                     />
 
                     {new Date() < (crate.locked_until || Date.now) && (

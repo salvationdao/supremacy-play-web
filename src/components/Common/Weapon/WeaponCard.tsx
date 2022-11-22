@@ -6,6 +6,7 @@ import { useAuth, useSupremacy } from "../../../containers"
 import { numFormatter, truncateTextLines } from "../../../helpers"
 import { fonts } from "../../../theme/theme"
 import { Weapon } from "../../../types"
+import { MediaPreview } from "../MediaPreview/MediaPreview"
 import { NiceBoxThing } from "../Nice/NiceBoxThing"
 
 interface WeaponCardProps {
@@ -67,16 +68,7 @@ export const WeaponCard = React.memo(function WeaponCard({ weapon, hide, isGridV
                         background={{ colors: [ownerFaction.palette.background] }}
                         sx={{ height: "100%", width: "100%", boxShadow: 0.4 }}
                     >
-                        <Box
-                            component="img"
-                            src={image}
-                            sx={{
-                                height: "100%",
-                                width: "100%",
-                                objectFit: "cover",
-                                objectPosition: "center",
-                            }}
-                        />
+                        <MediaPreview imageUrl={image} objectFit="cover" allowModal />
                     </NiceBoxThing>
 
                     {/* Weapon name */}
@@ -128,16 +120,7 @@ export const WeaponCard = React.memo(function WeaponCard({ weapon, hide, isGridV
                     background={{ colors: [ownerFaction.palette.background] }}
                     sx={{ boxShadow: 0.4, flex: 1 }}
                 >
-                    <Box
-                        component="img"
-                        src={image}
-                        sx={{
-                            height: "20rem",
-                            width: "100%",
-                            objectFit: "cover",
-                            objectPosition: "center",
-                        }}
-                    />
+                    <MediaPreview imageUrl={image} objectFit="cover" sx={{ height: "20rem" }} allowModal />
                 </NiceBoxThing>
 
                 {/* Weapon stats */}

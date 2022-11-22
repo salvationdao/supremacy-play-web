@@ -1,5 +1,5 @@
-import { Box, Modal, IconButton } from "@mui/material"
-import { SvgClose } from "../../../assets"
+import { Box, IconButton, Modal } from "@mui/material"
+import { SvgClose2 } from "../../../assets"
 import { siteZIndex } from "../../../theme/theme"
 import { MediaPreview } from "./MediaPreview"
 
@@ -22,8 +22,20 @@ export const MediaPreviewModal = ({ imageUrl, videoUrls, onClose }: { imageUrl?:
                 <Box sx={{ position: "relative", height: "100%" }}>
                     <MediaPreview imageUrl={imageUrl} videoUrls={videoUrls} showBorder />
 
-                    <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
-                        <SvgClose size="3rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
+                    <IconButton
+                        size="small"
+                        onClick={onClose}
+                        sx={{
+                            position: "absolute",
+                            top: ".4rem",
+                            right: ".5rem",
+
+                            opacity: 0.1,
+                            ":hover": { opacity: 0.6 },
+                            ":active": { opacity: 1 },
+                        }}
+                    >
+                        <SvgClose2 size="3rem" />
                     </IconButton>
                 </Box>
             </Box>
