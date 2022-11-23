@@ -144,6 +144,10 @@ export const FleetMechs = () => {
             key: GameServerKeys.SubPlayerQueueableMechs,
         },
         (payload) => {
+            setTimeout(() => {
+                setIsLoading(false)
+            }, 1000)
+
             if (!payload) return
 
             setMechs((prev) => {
@@ -166,8 +170,6 @@ export const FleetMechs = () => {
 
                 return list
             })
-
-            setIsLoading(false)
         },
     )
 

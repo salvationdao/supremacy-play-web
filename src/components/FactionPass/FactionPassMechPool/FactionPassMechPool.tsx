@@ -124,7 +124,10 @@ export const FactionPassMechPool = () => {
             key: GameServerKeys.SubFactionStakedMechs,
         },
         (payload) => {
-            setIsLoading(false)
+            setTimeout(() => {
+                setIsLoading(false)
+            }, 1000)
+
             if (!payload) return
 
             setMechs((prev) => {

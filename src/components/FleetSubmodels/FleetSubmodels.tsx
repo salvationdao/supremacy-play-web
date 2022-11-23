@@ -121,6 +121,10 @@ export const FleetSubmodels = () => {
             key: GameServerKeys.GetPlayerOwnedWeaponSkins,
         },
         (payload) => {
+            setTimeout(() => {
+                setIsLoading(false)
+            }, 1000)
+
             if (!payload) return
 
             setWeaponSubmodels((prev) => {
@@ -143,8 +147,6 @@ export const FleetSubmodels = () => {
 
                 return list
             })
-
-            setIsLoading(false)
         },
     )
 
