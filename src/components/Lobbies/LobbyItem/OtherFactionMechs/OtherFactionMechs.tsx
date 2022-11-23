@@ -38,7 +38,8 @@ const SingleColumn = ({ otherFactionLobbySlots }: { otherFactionLobbySlots: Fact
                     <Box
                         key={`mech-${mech.id}-${i}`}
                         sx={{
-                            border: `${mech?.queued_by?.id === userID ? colors.gold : otherFactionLobbySlots.faction.palette.primary}80 1px solid`,
+                            border:
+                                mech?.queued_by?.id === userID ? `${colors.gold}80 2px solid` : `${otherFactionLobbySlots.faction.palette.primary}80 1px solid`,
                             width: "100%",
                             height: SIZE,
                             background: `url(${mech.avatar_url})`,
