@@ -9,9 +9,9 @@ import { AllGameMapsCombined } from "../../Common/AllGameMapsCombined"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
 import { BattleLobbySingleModal } from "../BattleLobbies/BattleLobbySingleModal"
-import { LobbyItemTooltip } from "./LobbyItemTooltip"
+import { CentralQueueItemTooltip } from "./CentralQueueItemTooltip"
 
-export const LobbyItem = ({ battleLobby }: { battleLobby: BattleLobby }) => {
+export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) => {
     const { factionTheme } = useTheme()
 
     const [showLobbyModal, setShowLobbyModal] = useState(false)
@@ -37,14 +37,14 @@ export const LobbyItem = ({ battleLobby }: { battleLobby: BattleLobby }) => {
 
     return (
         <>
-            <NiceTooltip placement="left-start" renderNode={<LobbyItemTooltip battleLobby={battleLobby} />} color={factionTheme.primary}>
+            <NiceTooltip placement="left-start" renderNode={<CentralQueueItemTooltip battleLobby={battleLobby} />} color={factionTheme.primary}>
                 <NiceButton onClick={() => setShowLobbyModal(true)} sx={{ width: "100%", p: 0, border: `${factionTheme.primary}38 1px solid` }}>
                     <Stack direction="row" alignItems="stretch" width="100%" position="relative">
                         <Stack alignItems="stretch" spacing=".4rem" sx={{ flex: 1, p: "1rem 1.5rem" }}>
                             <Stack direction="row" justifyContent="space-between">
                                 {/* Lobby name */}
                                 <Stack direction="row" spacing=".5rem" alignItems="baseline">
-                                    <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{battleLobby.name}</Typography>
+                                    <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{battleLobby.name || `Lobby #${battleLobby.number}`}</Typography>
                                     {lobbyStatus}
                                 </Stack>
 
