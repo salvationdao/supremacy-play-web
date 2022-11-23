@@ -143,7 +143,7 @@ export const FleetWeapons = () => {
             key: GameServerKeys.GetPlayerOwnedWeapons,
         },
         (payload) => {
-            setTimeout(() => setIsLoading(false), 1000)
+            setTimeout(() => setIsLoading(false), 750)
 
             if (!payload) return
 

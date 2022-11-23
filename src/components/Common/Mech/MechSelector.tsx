@@ -85,7 +85,7 @@ export const MechSelector = React.memo(function MechSelector({
             key: GameServerKeys.SubPlayerQueueableMechs,
         },
         (payload) => {
-            setTimeout(() => setIsLoading(false), 1000)
+            setTimeout(() => setIsLoading(false), 750)
 
             if (!payload) return
 
@@ -129,7 +129,7 @@ export const MechSelector = React.memo(function MechSelector({
             key: GameServerKeys.SubFactionStakedMechs,
         },
         (payload) => {
-            setTimeout(() => setIsLoading(false), 1000)
+            setTimeout(() => setIsLoading(false), 750)
 
             if (!payload) return
 

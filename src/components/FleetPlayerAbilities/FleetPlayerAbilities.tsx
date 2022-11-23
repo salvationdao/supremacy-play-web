@@ -47,7 +47,7 @@ export const FleetPlayerAbilities = () => {
             key: GameServerKeys.SubPlayerAbilitiesList,
         },
         (payload) => {
-            setTimeout(() => setIsLoading(false), 1000)
+            setTimeout(() => setIsLoading(false), 750)
 
             if (!payload) return
 
