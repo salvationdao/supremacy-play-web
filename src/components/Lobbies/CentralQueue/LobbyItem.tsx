@@ -8,10 +8,10 @@ import { BattleLobby } from "../../../types/battle_queue"
 import { AllGameMapsCombined } from "../../Common/AllGameMapsCombined"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
-import { BattleLobbySingleModal } from "../../Lobbies/BattleLobbies/BattleLobbySingleModal"
-import { MyLobbyTooltip } from "./MyLobbyTooltip"
+import { BattleLobbySingleModal } from "../BattleLobbies/BattleLobbySingleModal"
+import { LobbyItemTooltip } from "./LobbyItemTooltip"
 
-export const MyLobbyItem = ({ battleLobby }: { battleLobby: BattleLobby }) => {
+export const LobbyItem = ({ battleLobby }: { battleLobby: BattleLobby }) => {
     const { factionTheme } = useTheme()
 
     const [showLobbyModal, setShowLobbyModal] = useState(false)
@@ -37,7 +37,7 @@ export const MyLobbyItem = ({ battleLobby }: { battleLobby: BattleLobby }) => {
 
     return (
         <>
-            <NiceTooltip placement="left-start" renderNode={<MyLobbyTooltip battleLobby={battleLobby} />} color={factionTheme.primary}>
+            <NiceTooltip placement="left-start" renderNode={<LobbyItemTooltip battleLobby={battleLobby} />} color={factionTheme.primary}>
                 <NiceButton onClick={() => setShowLobbyModal(true)} buttonColor={factionTheme.primary} sx={{ width: "100%", p: 0 }}>
                     <Stack direction="row" alignItems="stretch" width="100%" position="relative">
                         <Stack alignItems="stretch" spacing=".4rem" sx={{ flex: 1, p: "1rem 1.5rem" }}>
