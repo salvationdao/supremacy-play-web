@@ -62,12 +62,13 @@ export const MechPickerItem = ({ initialData, onPick }: MechPickerItemProps) => 
             }}
             fill
             disableAutoColor
-            buttonColor={`${colors.lightGrey}44`}
+            buttonColor={`${colors.darkGrey}44`}
             sx={{
                 p: "1rem",
                 alignItems: "start",
                 justifyContent: "start",
                 textAlign: "left",
+                backgroundColor: `${colors.darkGrey}44`,
             }}
         >
             <NiceBoxThing
