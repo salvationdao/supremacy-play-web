@@ -9,24 +9,22 @@ import { LobbyItem } from "./LobbyItem"
 export const CentralQueue = ({ lobbies }: { lobbies: BattleLobby[] }) => {
     const [displayLobbies, setDisplayLobbies] = useState<BattleLobby[]>([])
 
-    useEffect(
-        () =>
-            setDisplayLobbies((prev) => {
-                const bls = [...lobbies].filter((bl) => !!bl.ready_at)
+    useEffect(() => {
+        setDisplayLobbies((prev) => {
+            const bls = [...lobbies].filter((bl) => !!bl.ready_at)
 
-                if (prev.length === 0) return bls
+            if (prev.length === 0) return bls.filter((bl) => !bl.ended_at && !bl.deleted_at)
 
-                prev = prev.map((p) => bls.find((bl) => bl.id === p.id) || p)
+            prev = prev.map((p) => bls.find((bl) => bl.id === p.id) || p)
 
-                bls.forEach((bl) => {
-                    if (prev.some((p) => p.id === bl.id)) return
-                    prev.push(bl)
-                })
+            bls.forEach((bl) => {
+                if (prev.some((p) => p.id === bl.id)) return
+                prev.push(bl)
+            })
 
-                return prev.filter((p) => !p.ended_at).sort((a, b) => (!!a.ready_at && !!b.ready_at && a.ready_at > b.ready_at ? 1 : -1))
-            }),
-        [lobbies],
-    )
+            return prev.filter((p) => !p.ended_at && !p.deleted_at).sort((a, b) => (!!a.ready_at && !!b.ready_at && a.ready_at > b.ready_at ? 1 : -1))
+        })
+    }, [lobbies])
 
     const content = useMemo(() => {
         if (displayLobbies.length === 0) {

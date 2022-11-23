@@ -101,7 +101,7 @@ export const Lobbies = () => {
                 })
 
                 // remove any finished lobby
-                return list.filter((p) => !p.ended_at && !p.deleted_at)
+                return list
             })
         },
     )
@@ -110,7 +110,7 @@ export const Lobbies = () => {
     useEffect(() => {
         if (isLoading) return
 
-        let filteredLobbies = [...lobbies]
+        let filteredLobbies = [...lobbies].filter((lobby) => !lobby.ended_at && !lobby.deleted_at)
 
         // Filter for the system or exhibition lobbies
         switch (activeTabID) {

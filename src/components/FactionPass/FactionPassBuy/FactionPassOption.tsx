@@ -60,6 +60,12 @@ const headerArrowImages: {
     },
 }
 
+enum PaymentType {
+    SUPS = "sups",
+    ETH = "eth",
+    Stripe = "stripe",
+}
+
 interface FactionPassOptionProps {
     factionPass: FactionPass
     faction: FactionWithPalette
@@ -104,7 +110,10 @@ export const FactionPassOption = React.memo(function FactionPassOption({ faction
     const buyFactionPassWithSups = useCallback(async () => {
         setIsLoading(true)
         try {
-            const resp = await send<boolean>(GameServerKeys.PurchaseFactionPassWithSups, { faction_pass_id: factionPass.id })
+            const resp = await send<boolean>(GameServerKeys.PurchaseFactionPassWithSups, {
+                faction_pass_id: factionPass.id,
+                payment_type: PaymentType.SUPS,
+            })
             if (!resp) return
 
             setError("")
