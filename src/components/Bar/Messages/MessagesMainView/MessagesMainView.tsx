@@ -14,6 +14,7 @@ import { PreferenceToggle } from "../../ProfileCard/PreferencesModal/Notificatio
 import { SystemMessageDisplayable } from "../Messages"
 import { MessageDisplay } from "./MessageDisplay/MessageDisplay"
 import { TruncateTextLines } from "../../../../theme/styles"
+import { useLocalStorage } from "../../../../hooks/useLocalStorage"
 
 export interface MessagesMainViewProps {
     lastUpdated: Date
@@ -28,15 +29,11 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
     const [messages, setMessages] = useState<SystemMessageDisplayable[]>([])
     const [focusedMessage, setFocusedMessage] = useState<SystemMessageDisplayable>()
     const [error, setError] = useState<string>()
-    const [hideRead, setHideRead] = useState(localStorage.getItem("hideReadMessages") === "true")
+    const [hideRead, setHideRead] = useLocalStorage<boolean>("hideReadMessages", false)
     const { page, changePage, setTotalItems, totalItems, changePageSize, pageSize } = usePagination({
         pageSize: 15,
         page: 0,
     })
-
-    useEffect(() => {
-        localStorage.setItem("hideReadMessages", hideRead.toString())
-    }, [hideRead])
 
     const fetchMessages = useCallback(async () => {
         try {
