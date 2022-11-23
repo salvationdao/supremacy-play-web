@@ -147,6 +147,14 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
 
                     <Box flex={1} />
 
+                    <Typography variant="body2" fontFamily={fonts.nostromoBold} color={colors.neonBlue}>
+                        <TimeLeft
+                            dateTo={new Date("2022-11-24")}
+                            prefixText={lobby.generated_by_system ? "READY IN " : "EXPIRES IN "}
+                            timeUpText="Filling with AI Mechs..."
+                        />
+                    </Typography>
+
                     {/* Time */}
                     {lobby.is_private || !lobby.fill_at || !lobby.expires_at ? (
                         <></>
@@ -156,7 +164,7 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
                                 {lobby.generated_by_system ? "READY IN " : "EXPIRES IN "}
                             </Typography>
                             <Typography>
-                                <TimeLeft dateTo={lobby.generated_by_system ? lobby.fill_at : lobby.expires_at} timeUpMessage="Filling with AI Mechs..." />
+                                <TimeLeft dateTo={lobby.generated_by_system ? lobby.fill_at : lobby.expires_at} timeUpText="Filling with AI Mechs..." />
                             </Typography>
                         </Stack>
                     )}
@@ -202,7 +210,7 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
                                 </Typography>
 
                                 <Typography>
-                                    <TimeLeft dateTo={lobby.expires_at} timeUpMessage="Closing lobby..." />
+                                    <TimeLeft dateTo={lobby.expires_at} timeUpText="Closing lobby..." />
                                 </Typography>
                             </Box>
                         )}
