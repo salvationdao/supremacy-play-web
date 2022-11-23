@@ -1,9 +1,9 @@
-import { Stack } from "@mui/material"
+import { Box, Typography } from "@mui/material"
 import { useCallback } from "react"
 import { useAuth, useGlobalNotifications } from "../../../../containers"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
-import { colors } from "../../../../theme/theme"
+import { colors, fonts } from "../../../../theme/theme"
 import { BattleLobbiesMech } from "../../../../types/battle_queue"
 import { MechCardWeaponAndStats } from "../../../Common/Mech/MechCardWeaponAndStats"
 import { NiceButton } from "../../../Common/Nice/NiceButton"
@@ -29,12 +29,25 @@ export const MyFactionMechCard = ({ mech, isLocked }: { mech: BattleLobbiesMech;
     )
 
     return (
-        <Stack justifyContent="center" spacing="1rem">
+        <Box sx={{ position: "relative" }}>
             <MechCardWeaponAndStats mech={{ ...mech, owner: mech.queued_by || mech.owner }} sx={{ height: "unset" }} />
 
-            <NiceButton disabled={isLocked || mech.queued_by?.id !== userID} onClick={() => leaveLobby(mech.id)} buttonColor={colors.darkGrey}>
-                Leave
-            </NiceButton>
-        </Stack>
+            {!isLocked && mech.queued_by?.id === userID && (
+                <NiceButton
+                    onClick={() => leaveLobby(mech.id)}
+                    buttonColor={colors.darkGrey}
+                    sx={{
+                        position: "absolute",
+                        top: "calc(100% + .4rem)",
+                        width: "100%",
+                        p: ".5rem",
+                    }}
+                >
+                    <Typography variant="subtitle2" fontFamily={fonts.nostromoBold}>
+                        Leave
+                    </Typography>
+                </NiceButton>
+            )}
+        </Box>
     )
 }

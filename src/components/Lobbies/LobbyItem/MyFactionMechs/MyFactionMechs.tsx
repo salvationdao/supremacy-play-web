@@ -17,7 +17,7 @@ export const MyFactionMechs = React.memo(function MyFactionMechs({
 }) {
     return (
         <Stack flex={1}>
-            <Stack direction="row" alignItems="stretch" spacing="2rem" sx={{ flex: 1, "& > *": { flex: 1 } }}>
+            <Stack direction="row" alignItems="center" spacing="2rem" sx={{ flex: 1, "& > *": { flex: 1 } }}>
                 {/* Mech cards */}
                 {myFactionLobbySlots.mechSlots.map((mech, index) => {
                     return <MyFactionMechCard key={`mech-${mech.id}-${index}`} mech={mech} isLocked={isLocked} />

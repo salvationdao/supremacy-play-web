@@ -88,7 +88,7 @@ export const MechCardWeaponAndStats = React.memo(function MechCardWeaponAndStats
                                 ...truncateTextLines(1),
                             }}
                         >
-                            <SvgUserDiamond size="2.5rem" inline fill={ownerFaction.palette.primary} /> {mech.owner.username}#{mech.owner.gid}
+                            <SvgUserDiamond size="2.5rem" inline fill={ownerFaction.palette.primary} /> {mech.owner.username} #{mech.owner.gid}
                         </Typography>
                     </Stack>
                 </Stack>
