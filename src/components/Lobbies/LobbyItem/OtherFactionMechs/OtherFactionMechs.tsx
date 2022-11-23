@@ -33,10 +33,10 @@ const SingleColumn = ({ otherFactionLobbySlots }: { otherFactionLobbySlots: Fact
             />
 
             {/* Mech cards */}
-            {otherFactionLobbySlots.mechSlots.map((mech, index) => {
+            {otherFactionLobbySlots.mechSlots.map((mech) => {
                 return (
                     <Box
-                        key={`mech-${mech.id}-${index}`}
+                        key={`mech-${mech.id}`}
                         sx={{
                             border: `${mech?.queued_by?.id === userID ? colors.gold : otherFactionLobbySlots.faction.palette.primary} 1px solid`,
                             width: "100%",
