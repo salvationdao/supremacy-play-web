@@ -302,12 +302,12 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
 
                     {/* Lobby private or public */}
                     {lobby.is_private ? (
-                        <Typography color={colors.orange} fontWeight="bold">
-                            <SvgLock inline size="1.6rem" fill={colors.orange} /> PRIVATE
+                        <Typography color={colors.orange} fontFamily={fonts.nostromoBold} variant="body2">
+                            <SvgLock inline size="1.8rem" fill={colors.orange} /> PRIVATE
                         </Typography>
                     ) : (
-                        <Typography color={colors.green} fontWeight="bold">
-                            <SvgGlobal inline size="1.6rem" fill={colors.green} /> PUBLIC
+                        <Typography color={colors.green} fontFamily={fonts.nostromoBold} variant="body2">
+                            <SvgGlobal inline size="1.8rem" fill={colors.green} /> PUBLIC
                         </Typography>
                     )}
                 </Stack>
