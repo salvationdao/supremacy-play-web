@@ -5,9 +5,9 @@ import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { NewMechStruct } from "../../../types"
 import { BattleLobby } from "../../../types/battle_queue"
+import { MechSelector } from "../../Common/Mech/MechSelector"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 import { NiceModal } from "../../Common/Nice/NiceModal"
-import { MechSelector } from "../../Common/Mech/MechSelector"
 import { FactionLobbySlots, NUMBER_MECHS_REQUIRED } from "./LobbyItem"
 
 export const JoinLobbyModal = ({

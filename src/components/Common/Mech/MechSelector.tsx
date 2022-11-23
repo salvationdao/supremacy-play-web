@@ -1,6 +1,6 @@
 import { Box, CircularProgress, Stack, SxProps, Typography } from "@mui/material"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
-import { EmptyWarMachinesPNG, SvgSearch } from "../../../assets"
+import { EmptyWarMachinesPNG, SvgInfoIcon, SvgSearch } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, isMechDeployable } from "../../../helpers"
 import { useDebounce } from "../../../hooks"
@@ -92,50 +92,7 @@ export const MechSelector = React.memo(function MechSelector({
                 if (prev.length === 0) {
                     return payload.filter((mech) => {
                         if (onlyDeployableMechs) {
-                            return mech.is_staked && mech.can_deploy && isMechDeployable(mech)
-                        }
-                        return mech.is_staked
-                    })
-                }
-
-                // Replace current list
-                const list = prev.map((mech) => payload.find((p) => p.id === mech.id) || mech)
-
-                // Append new list
-                payload.forEach((p) => {
-                    // If already exists
-                    if (list.some((mech) => mech.id === p.id)) {
-                        return
-                    }
-                    // Otherwise, push to the list
-                    list.push(p)
-                })
-
-                return list.filter((mech) => {
-                    if (onlyDeployableMechs) {
-                        return mech.is_staked && mech.can_deploy && isMechDeployable(mech)
-                    }
-                    return mech.is_staked
-                })
-            })
-        },
-    )
-
-    // Subscribe to staked mechs
-    useGameServerSubscriptionFaction<NewMechStruct[]>(
-        {
-            URI: "/staked_mechs",
-            key: GameServerKeys.SubFactionStakedMechs,
-        },
-        (payload) => {
-            setIsLoading(false)
-            if (!payload) return
-
-            setStakedMechs((prev) => {
-                if (prev.length === 0) {
-                    return payload.filter((mech) => {
-                        if (onlyDeployableMechs) {
-                            return mech.can_deploy && isMechDeployable(mech)
+                            return isMechDeployable(mech)
                         }
                         return true
                     })
@@ -156,7 +113,50 @@ export const MechSelector = React.memo(function MechSelector({
 
                 return list.filter((mech) => {
                     if (onlyDeployableMechs) {
-                        return mech.can_deploy && isMechDeployable(mech)
+                        return isMechDeployable(mech)
+                    }
+                    return true
+                })
+            })
+        },
+    )
+
+    // Subscribe to staked mechs
+    useGameServerSubscriptionFaction<NewMechStruct[]>(
+        {
+            URI: "/staked_mechs",
+            key: GameServerKeys.SubFactionStakedMechs,
+        },
+        (payload) => {
+            setIsLoading(false)
+            if (!payload) return
+
+            setStakedMechs((prev) => {
+                if (prev.length === 0) {
+                    return payload.filter((mech) => {
+                        if (onlyDeployableMechs) {
+                            return isMechDeployable(mech)
+                        }
+                        return true
+                    })
+                }
+
+                // Replace current list
+                const list = prev.map((mech) => payload.find((p) => p.id === mech.id) || mech)
+
+                // Append new list
+                payload.forEach((p) => {
+                    // If already exists
+                    if (list.some((mech) => mech.id === p.id)) {
+                        return
+                    }
+                    // Otherwise, push to the list
+                    list.push(p)
+                })
+
+                return list.filter((mech) => {
+                    if (onlyDeployableMechs) {
+                        return isMechDeployable(mech)
                     }
                     return true
                 })
@@ -256,8 +256,8 @@ export const MechSelector = React.memo(function MechSelector({
                     No results...
                 </Typography>
 
-                <NiceButton route={{ to: `/marketplace/mechs` }} buttonColor={theme.factionTheme.primary}>
-                    GO TO MARKETPLACE
+                <NiceButton route={{ to: `/fleet/mechs` }} buttonColor={theme.factionTheme.primary}>
+                    GO TO FLEET
                 </NiceButton>
             </Stack>
         )
@@ -300,6 +300,13 @@ export const MechSelector = React.memo(function MechSelector({
                 {/* Sort */}
                 <NiceSelect label="Sort:" options={sortOptions} selected={sort} onSelected={(value) => setSort(`${value}`)} sx={{ minWidth: "24rem" }} />
             </Stack>
+
+            {onlyDeployableMechs && (
+                <Typography sx={{ color: colors.neonBlue, fontWeight: "bold" }}>
+                    <SvgInfoIcon inline size="1.8rem" fill={colors.neonBlue} />
+                    Only mechs with a power core and weapons will be shown
+                </Typography>
+            )}
 
             <Box sx={{ flex: 1, overflowY: "auto", minHeight: "15rem", pt: ".6rem" }}>{content}</Box>
         </Stack>
