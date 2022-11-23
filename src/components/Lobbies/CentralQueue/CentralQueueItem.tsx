@@ -89,7 +89,7 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
                                 zIndex: -2,
                             }}
                         >
-                            {!battleLobby.game_map && <AllGameMapsCombined sx={{ height: "100%", width: "100%", opacity: 0.5 }} />}
+                            {!battleLobby.game_map && <AllGameMapsCombined sx={{ height: "100%", width: "100%", opacity: 0.38 }} />}
                         </Box>
                     </Stack>
                 </NiceButton>

@@ -47,7 +47,7 @@ export const CentralQueue = ({ lobbies }: { lobbies: BattleLobby[] }) => {
                             key={`battle-lobby-${battleLobby.id}`}
                             sx={{
                                 "&:not(:last-child)": {
-                                    mb: "1rem",
+                                    mb: ".8rem",
                                 },
                             }}
                         >
