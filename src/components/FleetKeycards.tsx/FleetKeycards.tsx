@@ -46,7 +46,7 @@ export const FleetKeycards = () => {
             key: GameServerKeys.GetPlayerOwnedKeycards,
         },
         (payload) => {
-            setTimeout(() => setIsLoading(false), 750)
+            setTimeout(() => setIsLoading(false), 300)
 
             if (!payload) return
 

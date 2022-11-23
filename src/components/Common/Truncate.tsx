@@ -1,28 +1,27 @@
-import { Box } from "@mui/material"
-import { ReactNode } from "react"
+import { Box, Typography, TypographyProps } from "@mui/material"
+import { fonts } from "../../theme/theme"
 
 // Super light weight wrapper, only CSS, use it!
-export const Truncate = ({ children }: { children: ReactNode }) => {
+export const TypographyTruncated = ({ children, sx, ...props }: TypographyProps) => {
     return (
-        <Box
-            component="span"
+        <Typography
             sx={{
-                display: "inline-block",
-                width: "250px",
-                overflow: "hidden",
-                whiteSpace: "nowrap",
-                verticalAlign: "middle",
+                fontFamily: fonts.nostromoBlack,
+
+                ...sx,
+                display: "grid",
 
                 span: {
                     display: "inline-block",
                     width: "100%",
                     verticalAlign: "middle",
+                    overflow: "hidden",
 
                     span: {
                         position: "relative",
-                        left: "0px",
-                        overflow: "hidden",
                         textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        left: "0px",
                     },
                 },
 
@@ -31,16 +30,17 @@ export const Truncate = ({ children }: { children: ReactNode }) => {
                         width: "auto",
 
                         span: {
-                            left: `calc(250px - 15px - 100%)`,
-                            transition: "left 4s linear",
+                            left: `calc(-100%)`,
+                            transition: "left 2s linear",
                         },
                     },
                 },
             }}
+            {...props}
         >
             <Box component="span">
                 <Box component="span">{children}</Box>
             </Box>
-        </Box>
+        </Typography>
     )
 }

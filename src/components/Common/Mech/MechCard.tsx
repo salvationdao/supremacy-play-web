@@ -9,7 +9,7 @@ import { NewMechStruct } from "../../../types"
 import { MediaPreview } from "../MediaPreview/MediaPreview"
 import { NiceBoxThing } from "../Nice/NiceBoxThing"
 import { NiceTooltip } from "../Nice/NiceTooltip"
-import { Truncate } from "../Truncate"
+import { TypographyTruncated } from "../Truncate"
 import { MechIdleStatus } from "./MechIdleStatus"
 import { RepairBlocks } from "./MechRepairBlocks"
 
@@ -176,15 +176,7 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                 <Stack direction="row" alignItems="flex-start" justifyContent="space-between" spacing="1rem">
                     {/* Mech name */}
                     <Link to={`/mech/${mech.id}`}>
-                        <Typography
-                            sx={{
-                                fontFamily: fonts.nostromoBlack,
-                                // ...truncateTextLines(1),
-                            }}
-                        >
-                            {/* {mech.name || mech.label} */}
-                            <Truncate>{mech.name || mech.label} sadhjsafgdshjfkjsdfhksjdhfdskj sdjkhfkds</Truncate>
-                        </Typography>
+                        <TypographyTruncated sx={{ fontFamily: fonts.nostromoBlack }}>{mech.name || mech.label}</TypographyTruncated>
                     </Link>
 
                     {toggleSelected && (
