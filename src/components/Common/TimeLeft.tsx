@@ -5,10 +5,11 @@ import { useInterval } from "../../hooks"
 
 interface TimeLeftProps {
     dateTo: Date
-    timeUpMessage?: string
+    prefixText?: string
+    timeUpText?: string
 }
 // No state change at all, very efficient
-export const TimeLeft = ({ dateTo, timeUpMessage }: TimeLeftProps) => {
+export const TimeLeft = ({ dateTo, prefixText, timeUpText: timeUpMessage }: TimeLeftProps) => {
     const secondsLeftRef = useRef(Math.round((dateTo.getTime() - new Date().getTime()) / 1000))
     const containerRef = useRef<HTMLDivElement>()
 
@@ -17,12 +18,12 @@ export const TimeLeft = ({ dateTo, timeUpMessage }: TimeLeftProps) => {
         secondsLeftRef.current -= 1
 
         if (!containerRef.current) return
-        containerRef.current.innerText = secondsLeftRef.current > 0 ? secondsToWords(secondsLeftRef.current) : timeUpMessage || "REFRESHING"
+        containerRef.current.innerText = secondsLeftRef.current > 0 ? `${prefixText}${secondsToWords(secondsLeftRef.current)}` : timeUpMessage || "REFRESHING"
     }, 1000)
 
     return (
         <Box ref={containerRef} component="span">
-            {secondsLeftRef.current > 0 ? secondsToWords(secondsLeftRef.current) : timeUpMessage || "REFRESHING"}
+            {secondsLeftRef.current > 0 ? `${prefixText}${secondsToWords(secondsLeftRef.current)}` : timeUpMessage || "REFRESHING"}
         </Box>
     )
 }
