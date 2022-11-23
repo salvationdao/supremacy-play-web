@@ -53,6 +53,25 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
         )
     }, [lobby.entry_fee])
 
+    const lobbyStatus = useMemo(() => {
+        let textColor = colors.orange
+        let text = "PENDING"
+
+        if (lobby.assigned_to_battle_id) {
+            textColor = colors.orange
+            text = "BATTLE"
+        } else if (lobby.ready_at) {
+            textColor = colors.green
+            text = "READY"
+        }
+
+        return (
+            <Typography variant="body2" fontFamily={fonts.nostromoBold} color={textColor}>
+                {text}
+            </Typography>
+        )
+    }, [lobby.assigned_to_battle_id, lobby.ready_at])
+
     const [myFactionLobbySlots, otherFactionLobbySlots] = useMemo(() => {
         let myFactionLobbySlots: FactionLobbySlots = {
             faction: getFaction(factionID),
@@ -149,7 +168,7 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
 
                     {/* Time */}
                     {lobby.is_private || (!lobby.fill_at && !lobby.expires_at) ? (
-                        <></>
+                        lobbyStatus
                     ) : (
                         <Typography variant="body2" fontFamily={fonts.nostromoBold} color={colors.neonBlue}>
                             <TimeLeft

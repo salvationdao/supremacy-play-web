@@ -58,7 +58,8 @@ export const FleetCrates = () => {
             key: GameServerKeys.GetPlayerOwnedMysteryCrates,
         },
         (payload) => {
-            setIsLoading(false)
+            setTimeout(() => setIsLoading(false), 750)
+
             if (!payload) return
 
             setCrates((prev) => {

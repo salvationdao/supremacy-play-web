@@ -79,7 +79,8 @@ export const Lobbies = () => {
             key: GameServerKeys.SubBattleLobbyListUpdate,
         },
         (payload) => {
-            setIsLoading(false)
+            setTimeout(() => setIsLoading(false), 750)
+
             if (!payload) return
 
             setLobbies((prev) => {
@@ -100,7 +101,7 @@ export const Lobbies = () => {
                     list.push(p)
                 })
 
-                // remove any finished lobby
+                // Remove any finished lobby
                 return list.filter((p) => !p.ended_at && !p.deleted_at)
             })
         },
