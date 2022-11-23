@@ -79,7 +79,8 @@ export const Lobbies = () => {
             key: GameServerKeys.SubBattleLobbyListUpdate,
         },
         (payload) => {
-            setIsLoading(false)
+            setTimeout(() => setIsLoading(false), 750)
+
             if (!payload) return
 
             setLobbies((prev) => {

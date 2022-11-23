@@ -88,6 +88,8 @@ export const FleetSubmodels = () => {
             key: GameServerKeys.GetPlayerOwnedMechSkins,
         },
         (payload) => {
+            setTimeout(() => setIsLoading(false), 750)
+
             if (!payload) return
 
             setMechSubmodels((prev) => {
@@ -110,8 +112,6 @@ export const FleetSubmodels = () => {
 
                 return list
             })
-
-            setIsLoading(false)
         },
     )
 
@@ -121,6 +121,8 @@ export const FleetSubmodels = () => {
             key: GameServerKeys.GetPlayerOwnedWeaponSkins,
         },
         (payload) => {
+            setTimeout(() => setIsLoading(false), 750)
+
             if (!payload) return
 
             setWeaponSubmodels((prev) => {
@@ -143,8 +145,6 @@ export const FleetSubmodels = () => {
 
                 return list
             })
-
-            setIsLoading(false)
         },
     )
 

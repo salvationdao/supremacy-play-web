@@ -47,6 +47,8 @@ export const FleetPlayerAbilities = () => {
             key: GameServerKeys.SubPlayerAbilitiesList,
         },
         (payload) => {
+            setTimeout(() => setIsLoading(false), 750)
+
             if (!payload) return
 
             setPlayerAbilities((prev) => {
@@ -69,8 +71,6 @@ export const FleetPlayerAbilities = () => {
 
                 return list
             })
-
-            setIsLoading(false)
         },
     )
 
