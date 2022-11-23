@@ -253,13 +253,13 @@ export const MechLoadout = ({ mechDetails, mechStatus, mechStaked, onUpdate }: M
     )
     const modifyWeaponSlot = useCallback(
         (ew: LoadoutWeapon) => {
-            if (unityControlsRef.current) {
-                unityControlsRef.current.handleWeaponUpdate(ew)
-            }
-
             // Don't inherit weapon skin if incompatible with mech
             if (ew.inherit_skin && !blueprint_weapon_ids_with_skin_inheritance.find((s) => s === ew.weapon?.blueprint_id)) {
                 ew.inherit_skin = false
+            }
+
+            if (unityControlsRef.current) {
+                unityControlsRef.current.handleWeaponUpdate(ew)
             }
 
             saveSelection({
