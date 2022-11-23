@@ -1,11 +1,15 @@
+import { Stack } from "@mui/material"
 import { useCallback } from "react"
-import { useGlobalNotifications } from "../../../../containers"
+import { useAuth, useGlobalNotifications } from "../../../../containers"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
+import { colors } from "../../../../theme/theme"
 import { BattleLobbiesMech } from "../../../../types/battle_queue"
 import { MechCardWeaponAndStats } from "../../../Common/Mech/MechCardWeaponAndStats"
+import { NiceButton } from "../../../Common/Nice/NiceButton"
 
-export const MyFactionMechCard = ({ mech }: { mech: BattleLobbiesMech }) => {
+export const MyFactionMechCard = ({ mech, isLocked }: { mech: BattleLobbiesMech; isLocked: boolean }) => {
+    const { userID } = useAuth()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const { newSnackbarMessage } = useGlobalNotifications()
 
@@ -24,5 +28,13 @@ export const MyFactionMechCard = ({ mech }: { mech: BattleLobbiesMech }) => {
         [newSnackbarMessage, send],
     )
 
-    return <MechCardWeaponAndStats mech={{ ...mech, owner: mech.queued_by || mech.owner }} />
+    return (
+        <Stack justifyContent="center" spacing="1rem">
+            <MechCardWeaponAndStats mech={{ ...mech, owner: mech.queued_by || mech.owner }} sx={{ height: "unset" }} />
+
+            <NiceButton disabled={isLocked || mech.queued_by?.id !== userID} onClick={() => leaveLobby(mech.id)} buttonColor={colors.darkGrey}>
+                Leave
+            </NiceButton>
+        </Stack>
+    )
 }

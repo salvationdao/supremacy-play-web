@@ -79,7 +79,7 @@ export const CentralQueue = ({ lobbies }: { lobbies: BattleLobby[] }) => {
 
                 <Divider />
 
-                <Stack sx={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>{content}</Stack>
+                <Stack sx={{ p: "1rem", flex: 1, overflowY: "auto", overflowX: "hidden" }}>{content}</Stack>
             </Stack>
         </NiceBoxThing>
     )

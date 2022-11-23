@@ -28,10 +28,12 @@ export const MechCardWeaponAndStats = React.memo(function MechCardWeaponAndStats
     mech,
     isSelected,
     toggleSelected,
+    sx,
 }: {
     mech: NewMechStruct
     isSelected?: boolean
     toggleSelected?: (mech: NewMechStruct) => void
+    sx?: SxProps
 }) {
     const { getFaction } = useSupremacy()
 
@@ -44,7 +46,7 @@ export const MechCardWeaponAndStats = React.memo(function MechCardWeaponAndStats
                 thickness: isSelected ? "lean" : "very-lean",
             }}
             background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.06 }}
-            sx={{ p: "1rem 1.5rem", width: "100%", height: "100%", overflow: "hidden" }}
+            sx={{ p: "1rem 1.5rem", width: "100%", height: "100%", overflow: "hidden", ...sx }}
         >
             <Stack spacing="1.2rem" sx={{ overflow: "hidden" }}>
                 <Stack direction="row" spacing="1.2rem">

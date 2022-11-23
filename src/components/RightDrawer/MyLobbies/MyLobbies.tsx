@@ -95,7 +95,7 @@ export const MyLobbies = () => {
     return (
         <>
             <Stack sx={{ position: "relative", height: "100%", overflow: "hidden" }}>
-                <Stack sx={{ px: "1rem", py: "1rem", flex: 1, overflowY: "auto", overflowX: "hidden" }}>{content}</Stack>
+                <Stack sx={{ p: "1rem", flex: 1, overflowY: "auto", overflowX: "hidden" }}>{content}</Stack>
             </Stack>
         </>
     )
