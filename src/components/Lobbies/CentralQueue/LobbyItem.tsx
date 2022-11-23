@@ -5,12 +5,13 @@ import { useTheme } from "../../../containers/theme"
 import { supFormatter } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleLobby } from "../../../types/battle_queue"
+import { AllGameMapsCombined } from "../../Common/AllGameMapsCombined"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
-import { BattleLobbySingleModal } from "../../Lobbies/BattleLobbies/BattleLobbySingleModal"
-import { MyLobbyTooltip } from "./MyLobbyTooltip"
+import { BattleLobbySingleModal } from "../BattleLobbies/BattleLobbySingleModal"
+import { LobbyItemTooltip } from "./LobbyItemTooltip"
 
-export const MyLobbyItem = ({ battleLobby }: { battleLobby: BattleLobby }) => {
+export const LobbyItem = ({ battleLobby }: { battleLobby: BattleLobby }) => {
     const { factionTheme } = useTheme()
 
     const [showLobbyModal, setShowLobbyModal] = useState(false)
@@ -36,22 +37,9 @@ export const MyLobbyItem = ({ battleLobby }: { battleLobby: BattleLobby }) => {
 
     return (
         <>
-            <NiceTooltip placement="left" renderNode={<MyLobbyTooltip battleLobby={battleLobby} />} color={factionTheme.primary}>
+            <NiceTooltip placement="left-start" renderNode={<LobbyItemTooltip battleLobby={battleLobby} />} color={factionTheme.primary}>
                 <NiceButton onClick={() => setShowLobbyModal(true)} buttonColor={factionTheme.primary} sx={{ width: "100%", p: 0 }}>
-                    <Stack direction="row" alignItems="stretch" width="100%">
-                        {/* Map image */}
-                        <Box
-                            sx={{
-                                flexShrink: 0,
-                                height: "100%",
-                                width: "8rem",
-                                background: `url(${battleLobby.game_map?.background_url})`,
-                                backgroundRepeat: "no-repeat",
-                                backgroundPosition: "center",
-                                backgroundSize: "contain",
-                            }}
-                        />
-
+                    <Stack direction="row" alignItems="stretch" width="100%" position="relative">
                         <Stack alignItems="stretch" spacing=".4rem" sx={{ flex: 1, p: "1rem 1.5rem" }}>
                             <Stack direction="row" justifyContent="space-between">
                                 {/* Lobby name */}
@@ -83,6 +71,26 @@ export const MyLobbyItem = ({ battleLobby }: { battleLobby: BattleLobby }) => {
                                 </Typography>
                             </Stack>
                         </Stack>
+
+                        {/* Background map image */}
+                        <Box
+                            sx={{
+                                position: "absolute",
+                                m: "0 !important",
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                background: `url(${battleLobby.game_map?.background_url})`,
+                                backgroundRepeat: "no-repeat",
+                                backgroundPosition: "center",
+                                backgroundSize: "cover",
+                                opacity: 0.42,
+                                zIndex: -2,
+                            }}
+                        >
+                            {!battleLobby.game_map && <AllGameMapsCombined sx={{ height: "100%", width: "100%", opacity: 0.5 }} />}
+                        </Box>
                     </Stack>
                 </NiceButton>
             </NiceTooltip>

@@ -98,7 +98,7 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                                 ...truncateTextLines(1),
                             }}
                         >
-                            {mech.owner.username}#{mech.owner.gid}
+                            {mech.owner.username} #{mech.owner.gid}
                         </Typography>
                     )}
 
@@ -200,7 +200,7 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                             ...truncateTextLines(1),
                         }}
                     >
-                        <SvgUserDiamond size="2.5rem" inline fill={ownerFaction.palette.primary} /> {mech.owner.username}#{mech.owner.gid}
+                        <SvgUserDiamond size="2.5rem" inline fill={ownerFaction.palette.primary} /> {mech.owner.username} #{mech.owner.gid}
                     </Typography>
                 )}
 

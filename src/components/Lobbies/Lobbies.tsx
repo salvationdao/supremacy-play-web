@@ -14,7 +14,7 @@ import { NiceButton } from "../Common/Nice/NiceButton"
 import { NiceSelect } from "../Common/Nice/NiceSelect"
 import { NiceTextField } from "../Common/Nice/NiceTextField"
 import { VirtualizedGrid } from "../Common/VirtualizedGrid"
-import { CentralQueue } from "./CentralQueue"
+import { CentralQueue } from "./CentralQueue/CentralQueue"
 import { LobbyItem } from "./LobbyItem/LobbyItem"
 
 enum LobbyTabs {

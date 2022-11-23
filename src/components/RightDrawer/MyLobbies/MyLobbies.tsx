@@ -10,7 +10,7 @@ import { colors, fonts } from "../../../theme/theme"
 import { BattleLobby } from "../../../types/battle_queue"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
-import { MyLobbyItem } from "./MyLobbyItem"
+import { LobbyItem } from "../../Lobbies/CentralQueue/LobbyItem"
 
 export const MyLobbies = () => {
     const [involvedLobbies, setInvolvedLobbies] = useState<BattleLobby[]>([])
@@ -84,7 +84,7 @@ export const MyLobbies = () => {
                                 },
                             }}
                         >
-                            <MyLobbyItem battleLobby={battleLobby} />
+                            <LobbyItem battleLobby={battleLobby} />
                         </Box>
                     )
                 })}
@@ -95,7 +95,7 @@ export const MyLobbies = () => {
     return (
         <>
             <Stack sx={{ position: "relative", height: "100%", overflow: "hidden" }}>
-                <Stack sx={{ px: "1rem", py: "1rem", flex: 1, overflowY: "auto", overflowX: "hidden" }}>{content}</Stack>
+                <Stack sx={{ p: "1rem", flex: 1, overflowY: "auto", overflowX: "hidden" }}>{content}</Stack>
             </Stack>
         </>
     )

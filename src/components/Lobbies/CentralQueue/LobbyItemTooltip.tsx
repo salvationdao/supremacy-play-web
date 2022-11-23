@@ -20,7 +20,7 @@ import { supFormatter, truncateTextLines } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleLobbiesMech, BattleLobby } from "../../../types/battle_queue"
 
-export const MyLobbyTooltip = ({ battleLobby }: { battleLobby: BattleLobby }) => {
+export const LobbyItemTooltip = ({ battleLobby }: { battleLobby: BattleLobby }) => {
     const { factionTheme } = useTheme()
     const { arenaList } = useArena()
     const { factionsAll, getFaction } = useSupremacy()

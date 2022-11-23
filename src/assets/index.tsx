@@ -322,6 +322,7 @@ import RMWaiting from "./svg/Landing/rm/RMWaiting.png"
 import ZHIBorder from "./svg/Landing/zhi/ZHIBorder.svg"
 import ZHIDeploy from "./svg/Landing/zhi/ZHIDeploy.png"
 import ZHIWaiting from "./svg/Landing/zhi/ZHIWaiting.png"
+import { truncateTextLines } from "../helpers"
 
 // Tower stack mini game skins
 export {

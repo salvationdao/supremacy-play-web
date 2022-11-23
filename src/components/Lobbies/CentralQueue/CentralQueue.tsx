@@ -1,10 +1,10 @@
 import { Box, Divider, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import FlipMove from "react-flip-move"
-import { colors, fonts } from "../../theme/theme"
-import { BattleLobby } from "../../types/battle_queue"
-import { NiceBoxThing } from "../Common/Nice/NiceBoxThing"
-import { MyLobbyItem } from "../RightDrawer/MyLobbies/MyLobbyItem"
+import { colors, fonts } from "../../../theme/theme"
+import { BattleLobby } from "../../../types/battle_queue"
+import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
+import { LobbyItem } from "./LobbyItem"
 
 export const CentralQueue = ({ lobbies }: { lobbies: BattleLobby[] }) => {
     const [displayLobbies, setDisplayLobbies] = useState<BattleLobby[]>([])
@@ -51,7 +51,7 @@ export const CentralQueue = ({ lobbies }: { lobbies: BattleLobby[] }) => {
                                 },
                             }}
                         >
-                            <MyLobbyItem battleLobby={battleLobby} />
+                            <LobbyItem battleLobby={battleLobby} />
                         </Box>
                     )
                 })}
@@ -79,7 +79,7 @@ export const CentralQueue = ({ lobbies }: { lobbies: BattleLobby[] }) => {
 
                 <Divider />
 
-                <Stack sx={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>{content}</Stack>
+                <Stack sx={{ p: "1rem", flex: 1, overflowY: "auto", overflowX: "hidden" }}>{content}</Stack>
             </Stack>
         </NiceBoxThing>
     )

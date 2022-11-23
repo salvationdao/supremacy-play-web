@@ -1,6 +1,6 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
 import React, { useMemo, useState } from "react"
-import { SvgArena, SvgContentCopyIcon, SvgGlobal, SvgLobbies, SvgLock, SvgMap, SvgSupToken, SvgUserDiamond } from "../../../assets"
+import { SvgArena, SvgContentCopyIcon, SvgGlobal, SvgLobbies, SvgLock, SvgMap, SvgSupToken, SvgUserDiamond2 } from "../../../assets"
 import { FactionIDs } from "../../../constants"
 import { useArena, useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -185,7 +185,7 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
                             >
                                 {!ownerFaction.logo_url && (
                                     <>
-                                        <SvgUserDiamond size="2.2rem" inline fill={ownerFaction.palette.primary} />{" "}
+                                        <SvgUserDiamond2 size="2.2rem" inline fill={ownerFaction.palette.primary} />{" "}
                                     </>
                                 )}
                                 {lobby.generated_by_system ? "The Overseer" : `${lobby.host_by.username}#${lobby.host_by.gid}`}
