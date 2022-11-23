@@ -176,16 +176,15 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                 <Stack direction="row" alignItems="flex-start" justifyContent="space-between" spacing="1rem">
                     {/* Mech name */}
                     <Link to={`/mech/${mech.id}`}>
-                        {/* <Typography
+                        <Typography
                             sx={{
                                 fontFamily: fonts.nostromoBlack,
-                                ...truncateTextLines(1),
+                                // ...truncateTextLines(1),
                             }}
                         >
-                            {mech.name || mech.label}
-                        </Typography> */}
-
-                        <Truncate>{mech.name || mech.label} sadhjsafgdshjfkjsdfhksjdhfdskj sdjkhfkds</Truncate>
+                            {/* {mech.name || mech.label} */}
+                            <Truncate>{mech.name || mech.label} sadhjsafgdshjfkjsdfhksjdhfdskj sdjkhfkds</Truncate>
+                        </Typography>
                     </Link>
 
                     {toggleSelected && (
