@@ -13,7 +13,7 @@ import {
     SvgUserDiamond,
     SvgWrapperProps,
 } from "../../../assets"
-import { useSupremacy } from "../../../containers"
+import { useAuth, useSupremacy } from "../../../containers"
 import { truncateTextLines } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { MechBasic, NewMechStruct } from "../../../types"
@@ -35,6 +35,7 @@ export const MechCardWeaponAndStats = React.memo(function MechCardWeaponAndStats
     toggleSelected?: (mech: NewMechStruct) => void
     sx?: SxProps
 }) {
+    const { userID } = useAuth()
     const { getFaction } = useSupremacy()
 
     const ownerFaction = useMemo(() => getFaction(mech.owner.faction_id), [getFaction, mech.owner.faction_id])
@@ -83,12 +84,13 @@ export const MechCardWeaponAndStats = React.memo(function MechCardWeaponAndStats
                         <Typography
                             variant="h6"
                             sx={{
-                                color: ownerFaction.palette.primary,
+                                color: userID === mech.owner.id ? colors.gold : ownerFaction.palette.primary,
                                 fontWeight: "bold",
                                 ...truncateTextLines(1),
                             }}
                         >
-                            <SvgUserDiamond size="2.5rem" inline fill={ownerFaction.palette.primary} /> {mech.owner.username} #{mech.owner.gid}
+                            <SvgUserDiamond size="2.5rem" inline fill={userID === mech.owner.id ? colors.gold : ownerFaction.palette.primary} />{" "}
+                            {mech.owner.username} #{mech.owner.gid}
                         </Typography>
                     </Stack>
                 </Stack>
