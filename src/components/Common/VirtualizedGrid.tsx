@@ -1,6 +1,7 @@
 import { Box } from "@mui/material"
 import React, { ReactNode, useCallback, useEffect, useMemo, useRef } from "react"
 import { FixedSizeGrid } from "react-window"
+import { useDimension } from "../../containers"
 import { useDebounce } from "../../hooks"
 import { Dimension } from "../../types"
 
@@ -9,7 +10,7 @@ const SCROLLBAR_WIDTH = 15 // px
 // Either specify the minimum width of each item or specify the minimum number of columns
 type ItemWidth =
     | {
-          minWidth: number
+          minWidth: number // rems
           columnCount?: never
       }
     | {
@@ -22,7 +23,7 @@ interface VirtualizedGridProps {
     itemWidthConfig: ItemWidth
     itemHeight: number
     totalItems: number
-    gap?: number
+    gap?: number // rems
     renderIndex: (index: number) => ReactNode
 }
 
@@ -30,14 +31,27 @@ interface VirtualizedGridProps {
 // The way this is setup is that it will render items left ot right, then top to down
 export const VirtualizedGrid = React.memo(function VirtualizedGrid({
     uniqueID,
-    itemWidthConfig,
-    itemHeight,
+    itemWidthConfig: _itemWidthConfig,
+    itemHeight: _itemHeight,
     totalItems,
-    gap = 0,
+    gap: _gap,
     renderIndex,
 }: VirtualizedGridProps) {
+    const { remToPxRatio } = useDimension()
     const resizeObserver = useRef<ResizeObserver>()
     const [dimension, setDimension] = useDebounce<Dimension>({ width: 0, height: 0 }, 250)
+
+    // Convert the rem values to pixels for pages to be responsive
+    const { itemWidthConfig, itemHeight, gap } = useMemo(() => {
+        const itemWidthConfig = { ..._itemWidthConfig }
+        if (itemWidthConfig.minWidth) itemWidthConfig.minWidth = itemWidthConfig.minWidth * remToPxRatio
+
+        return {
+            itemWidthConfig,
+            itemHeight: _itemHeight * remToPxRatio,
+            gap: (_gap || 0) * remToPxRatio,
+        }
+    }, [_gap, _itemHeight, _itemWidthConfig, remToPxRatio])
 
     // Setup resize observer to watch the parent element
     useEffect(() => {

@@ -223,9 +223,9 @@ export const MechSelector = React.memo(function MechSelector({
                 <VirtualizedGrid
                     uniqueID="mechSelectorList"
                     itemWidthConfig={{ columnCount: 1 }}
-                    itemHeight={135}
+                    itemHeight={16.8}
                     totalItems={displayMechs.length}
-                    gap={12}
+                    gap={1.5}
                     renderIndex={renderIndex}
                 />
             )

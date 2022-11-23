@@ -38,7 +38,7 @@ export const LobbyItem = ({ battleLobby }: { battleLobby: BattleLobby }) => {
     return (
         <>
             <NiceTooltip placement="left-start" renderNode={<LobbyItemTooltip battleLobby={battleLobby} />} color={factionTheme.primary}>
-                <NiceButton onClick={() => setShowLobbyModal(true)} buttonColor={factionTheme.primary} sx={{ width: "100%", p: 0 }}>
+                <NiceButton onClick={() => setShowLobbyModal(true)} sx={{ width: "100%", p: 0, border: `${factionTheme.primary}38 1px solid` }}>
                     <Stack direction="row" alignItems="stretch" width="100%" position="relative">
                         <Stack alignItems="stretch" spacing=".4rem" sx={{ flex: 1, p: "1rem 1.5rem" }}>
                             <Stack direction="row" justifyContent="space-between">
