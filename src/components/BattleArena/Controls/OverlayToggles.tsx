@@ -1,9 +1,10 @@
 import { IconButton, Stack, Typography } from "@mui/material"
 import { NiceTooltip } from "../.."
-import { SvgTrailer } from "../../../assets"
-import { useUI } from "../../../containers"
+import { SvgMeteor, SvgTrailer } from "../../../assets"
+import { useSupremacy, useUI } from "../../../containers"
 
 export const OverlayToggles = () => {
+    const { isTransparentMode, setIsTransparentMode } = useSupremacy()
     const { showTrailer, toggleShowTrailer } = useUI()
 
     return (
@@ -41,6 +42,23 @@ export const OverlayToggles = () => {
                     }}
                 >
                     <SvgTrailer size="1.7rem" fill="#E8BB3F" />
+                </IconButton>
+            </NiceTooltip>
+
+            {/* Desktop client mode */}
+            <NiceTooltip text="Desktop client mode.">
+                <IconButton
+                    size="small"
+                    onClick={() => setIsTransparentMode((prev) => !prev)}
+                    sx={{
+                        filter: isTransparentMode ? "grayscale(0)" : "grayscale(1)",
+                        opacity: isTransparentMode ? 1 : 0.4,
+                        transition: "all .2s",
+                        ":hover": { filter: "grayscale(0.2)" },
+                        ":active": { filter: "grayscale(.6)" },
+                    }}
+                >
+                    <SvgMeteor size="1.7rem" fill="#E8BB3F" />
                 </IconButton>
             </NiceTooltip>
         </Stack>

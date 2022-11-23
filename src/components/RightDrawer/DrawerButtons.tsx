@@ -21,7 +21,7 @@ export const DrawerButtons = () => {
                 height: "100%",
                 overflow: "hidden",
                 width: `${RIGHT_DRAWER_BAR_WIDTH}rem`,
-                background: (theme) => `linear-gradient(to right, #FFFFFF06 26%, ${theme.factionTheme.background})`,
+                background: theme.factionTheme.background,
                 zIndex: siteZIndex.Drawer,
                 ".MuiTabs-flexContainer": {
                     "& > :not(:last-child)": {
