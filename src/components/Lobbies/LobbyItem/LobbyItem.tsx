@@ -147,15 +147,18 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
 
                     <Box flex={1} />
 
-                    {/* Lobby private or public */}
-                    {lobby.is_private ? (
-                        <Typography color={colors.orange} fontWeight="bold">
-                            <SvgLock inline size="1.6rem" fill={colors.orange} /> PRIVATE
-                        </Typography>
+                    {/* Time */}
+                    {lobby.is_private || !lobby.fill_at || !lobby.expires_at ? (
+                        <></>
                     ) : (
-                        <Typography color={colors.green} fontWeight="bold">
-                            <SvgGlobal inline size="1.6rem" fill={colors.green} /> PUBLIC
-                        </Typography>
+                        <Stack direction="row">
+                            <Typography variant="body2" fontFamily={fonts.nostromoBold}>
+                                {lobby.generated_by_system ? "READY IN " : "EXPIRES IN "}
+                            </Typography>
+                            <Typography>
+                                <TimeLeft dateTo={lobby.generated_by_system ? lobby.fill_at : lobby.expires_at} timeUpMessage="Filling with AI Mechs..." />
+                            </Typography>
+                        </Stack>
                     )}
                 </Stack>
 
@@ -191,6 +194,18 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
                                 {lobby.generated_by_system ? "The Overseer" : `${lobby.host_by.username}#${lobby.host_by.gid}`}
                             </Typography>
                         </Stack>
+
+                        {lobby.expires_at && (
+                            <Box>
+                                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold}>
+                                    TIME LEFT
+                                </Typography>
+
+                                <Typography>
+                                    <TimeLeft dateTo={lobby.expires_at} timeUpMessage="Closing lobby..." />
+                                </Typography>
+                            </Box>
+                        )}
 
                         {/* Arena name */}
                         {arenaName && (
@@ -230,31 +245,6 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
 
                         {/* Reward pool and distribution */}
                         <PrizePool lobby={lobby} />
-
-                        {/* Time left */}
-                        {lobby.fill_at && (
-                            <Box>
-                                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold}>
-                                    READY IN
-                                </Typography>
-
-                                <Typography>
-                                    <TimeLeft dateTo={lobby.fill_at} timeUpMessage="Filling with AI Mechs..." />
-                                </Typography>
-                            </Box>
-                        )}
-
-                        {lobby.expires_at && (
-                            <Box>
-                                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold}>
-                                    TIME LEFT
-                                </Typography>
-
-                                <Typography>
-                                    <TimeLeft dateTo={lobby.expires_at} timeUpMessage="Closing lobby..." />
-                                </Typography>
-                            </Box>
-                        )}
                     </Stack>
 
                     {/* Mechs */}
@@ -299,7 +289,20 @@ export const LobbyItem = React.memo(function LobbyItem({ lobby, accessCode }: { 
                 </Stack>
 
                 {/* Supports */}
-                <Supporters />
+                <Stack direction="row" alignItems="center" sx={{ height: "4.5rem", p: "0 1.5rem" }}>
+                    <Supporters />
+
+                    {/* Lobby private or public */}
+                    {lobby.is_private ? (
+                        <Typography color={colors.orange} fontWeight="bold">
+                            <SvgLock inline size="1.6rem" fill={colors.orange} /> PRIVATE
+                        </Typography>
+                    ) : (
+                        <Typography color={colors.green} fontWeight="bold">
+                            <SvgGlobal inline size="1.6rem" fill={colors.green} /> PUBLIC
+                        </Typography>
+                    )}
+                </Stack>
             </NiceBoxThing>
 
             {isJoinModalOpen && (
