@@ -136,6 +136,7 @@ const MechLoadoutItemButton = ({
             <NiceButton
                 corners
                 disabled={disabled || locked}
+                disableAutoColor
                 buttonColor={rarity ? rarity.color : colors.darkGrey}
                 sx={{
                     width: shape === "rectangle" ? width : height,
