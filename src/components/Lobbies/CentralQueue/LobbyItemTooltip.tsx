@@ -222,7 +222,7 @@ const FactionMechList = ({ factionID, battleLobbiesMechs }: { factionID: string;
                         <Box
                             key={`mech-${mech.id}-${i}`}
                             sx={{
-                                border: `${mech?.queued_by?.id === userID ? colors.gold : faction.palette.primary}80 1px solid`,
+                                border: mech?.queued_by?.id === userID ? `${colors.gold}80 2px solid` : `${faction.palette.primary}80 1px solid`,
                                 width: SIZE,
                                 height: SIZE,
                                 background: `url(${mech.avatar_url})`,
