@@ -217,10 +217,10 @@ const FactionMechList = ({ factionID, battleLobbiesMechs }: { factionID: string;
             />
             <Stack direction="row" alignItems="center" spacing="1rem">
                 {/* Mech cards */}
-                {mechsFiltered.map((mech) => {
+                {mechsFiltered.map((mech, i) => {
                     return (
                         <Box
-                            key={`mech-${mech.id}`}
+                            key={`mech-${mech.id}-${i}`}
                             sx={{
                                 border: `${mech?.queued_by?.id === userID ? colors.gold : faction.palette.primary}80 1px solid`,
                                 width: SIZE,
