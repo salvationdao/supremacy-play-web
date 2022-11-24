@@ -204,7 +204,7 @@ export const MyLobbies = () => {
                 </Stack>
 
                 {/* Public lobbies */}
-                <Stack flex={displayLobbies.length === 0 ? 0.4 : 1}>
+                <Stack flex={displayLobbies.length === 0 ? 0.4 : 1.3}>
                     <NiceTabs tabs={tabs} value={tabValue} onChange={(newValue) => setTabValue(newValue)} />
                     <Stack
                         sx={{

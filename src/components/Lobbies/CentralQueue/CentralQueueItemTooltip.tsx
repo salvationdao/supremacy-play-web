@@ -47,7 +47,7 @@ export const CentralQueueItemTooltip = ({
                 direction="row"
                 alignItems="center"
                 justifyContent="space-between"
-                spacing="1rem"
+                spacing="1.6rem"
                 sx={{
                     p: "1rem 1.5rem",
                     pr: ".5rem",
