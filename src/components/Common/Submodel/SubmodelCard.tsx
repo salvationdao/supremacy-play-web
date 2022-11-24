@@ -2,12 +2,13 @@ import { Stack, Typography } from "@mui/material"
 import React, { useMemo } from "react"
 import { SvgSkin } from "../../../assets"
 import { useAuth, useSupremacy } from "../../../containers"
-import { getRarityDeets, truncateTextLines } from "../../../helpers"
+import { getRarityDeets } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { MechSkin, WeaponSkin } from "../../../types"
 import { MediaPreview } from "../MediaPreview/MediaPreview"
 import { NiceBoxThing } from "../Nice/NiceBoxThing"
 import { NiceTooltip } from "../Nice/NiceTooltip"
+import { TypographyTruncated } from "../TypographyTruncated"
 
 interface SubmodelCardProps {
     submodel: MechSkin | WeaponSkin
@@ -34,7 +35,7 @@ export const SubmodelCard = React.memo(function SubmodelCard({ submodel }: Submo
                 <Stack direction="row" alignItems="flex-start" justifyContent="space-between" spacing="1rem">
                     {/* Submodel name */}
                     <NiceTooltip placement="bottom-start" text={submodel.label}>
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack, ...truncateTextLines(1) }}>{submodel.label}</Typography>
+                        <TypographyTruncated sx={{ fontFamily: fonts.nostromoBlack }}>{submodel.label}</TypographyTruncated>
                     </NiceTooltip>
 
                     <Typography variant="h6" sx={{ fontWeight: "bold", color: submodel.equipped_on ? colors.green : colors.grey, whiteSpace: "nowrap" }}>
@@ -42,18 +43,17 @@ export const SubmodelCard = React.memo(function SubmodelCard({ submodel }: Submo
                     </Typography>
                 </Stack>
 
-                <Typography
+                <TypographyTruncated
                     variant="h6"
                     sx={{
                         color: rarityDeets.color,
                         fontWeight: "bold",
                         mt: ".3rem !important",
-                        ...truncateTextLines(1),
                     }}
                 >
                     <SvgSkin inline size="2rem" fill={rarityDeets.color} /> {rarityDeets.label}{" "}
                     {typeof submodel.level !== "undefined" && <>[{submodel.level}]</>}
-                </Typography>
+                </TypographyTruncated>
 
                 {/* Submodel image */}
                 <NiceBoxThing

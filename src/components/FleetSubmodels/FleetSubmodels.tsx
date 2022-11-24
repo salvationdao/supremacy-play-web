@@ -88,7 +88,7 @@ export const FleetSubmodels = () => {
             key: GameServerKeys.GetPlayerOwnedMechSkins,
         },
         (payload) => {
-            setTimeout(() => setIsLoading(false), 750)
+            setTimeout(() => setIsLoading(false), 300)
 
             if (!payload) return
 
@@ -121,7 +121,7 @@ export const FleetSubmodels = () => {
             key: GameServerKeys.GetPlayerOwnedWeaponSkins,
         },
         (payload) => {
-            setTimeout(() => setIsLoading(false), 750)
+            setTimeout(() => setIsLoading(false), 300)
 
             if (!payload) return
 

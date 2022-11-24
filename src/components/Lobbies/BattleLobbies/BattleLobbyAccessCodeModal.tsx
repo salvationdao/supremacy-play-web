@@ -3,7 +3,7 @@ import React, { useState } from "react"
 import { useTheme } from "../../../containers/theme"
 import { fonts } from "../../../theme/theme"
 import { ConfirmModal } from "../../Common/Deprecated/ConfirmModal"
-import { InputField } from "../Common/InputField"
+import { InputField } from "./BattleLobbyCreate/Common/InputField"
 
 interface BattleLobbyAccessCodeModalProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>

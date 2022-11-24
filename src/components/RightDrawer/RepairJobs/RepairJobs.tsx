@@ -234,8 +234,10 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
             >
                 Repair Jobs
             </Typography>
+
             <Box flex={1} />
-            <Typography sx={{ color: colors.lightGrey }}>{repairJobs.length} jobs</Typography>
+
+            <Typography>{repairJobs.length} jobs</Typography>
         </Stack>
     )
 }

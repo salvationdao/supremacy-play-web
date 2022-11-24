@@ -3,12 +3,13 @@ import React, { useMemo } from "react"
 import { Link } from "react-router-dom"
 import { SvgAmmo, SvgDamage1, SvgRadius, SvgRateOfFire } from "../../../assets"
 import { useAuth, useSupremacy } from "../../../containers"
-import { numFormatter, truncateTextLines } from "../../../helpers"
+import { numFormatter } from "../../../helpers"
 import { fonts } from "../../../theme/theme"
 import { Weapon } from "../../../types"
 import { MediaPreview } from "../MediaPreview/MediaPreview"
 import { NiceBoxThing } from "../Nice/NiceBoxThing"
 import { NiceTooltip } from "../Nice/NiceTooltip"
+import { TypographyTruncated } from "../TypographyTruncated"
 
 interface WeaponCardProps {
     weapon: Weapon
@@ -74,7 +75,7 @@ export const WeaponCard = React.memo(function WeaponCard({ weapon, hide, isGridV
 
                     {/* Weapon name */}
                     <Link to={`/weapon/${weapon.id}`}>
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack, ...truncateTextLines(1) }}>{weapon.label}</Typography>
+                        <TypographyTruncated sx={{ fontFamily: fonts.nostromoBlack }}>{weapon.label}</TypographyTruncated>
                     </Link>
 
                     {/* Weapon stats */}
@@ -123,7 +124,7 @@ export const WeaponCard = React.memo(function WeaponCard({ weapon, hide, isGridV
             <Stack spacing="1.2rem">
                 {/* Weapon name */}
                 <Link to={`/weapon/${weapon.id}`}>
-                    <Typography sx={{ fontFamily: fonts.nostromoBlack, ...truncateTextLines(1) }}>{weapon.label}</Typography>
+                    <TypographyTruncated sx={{ fontFamily: fonts.nostromoBlack }}>{weapon.label}</TypographyTruncated>
                 </Link>
 
                 {/* Weapon image */}

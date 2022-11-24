@@ -61,7 +61,7 @@ export const NiceTooltip = ({
             title={
                 <NiceBoxThing
                     border={{
-                        color: `${primaryColor}80`,
+                        color: `${primaryColor}50`,
                         thickness: "very-lean",
                     }}
                     background={{ colors: [theme.factionTheme.background] }}

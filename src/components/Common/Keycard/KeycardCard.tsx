@@ -6,6 +6,7 @@ import { fonts } from "../../../theme/theme"
 import { Keycard } from "../../../types"
 import { MediaPreview } from "../MediaPreview/MediaPreview"
 import { NiceBoxThing } from "../Nice/NiceBoxThing"
+import { TypographyTruncated } from "../TypographyTruncated"
 
 interface KeycardCardProps {
     keycard: Keycard
@@ -45,7 +46,7 @@ const KeycardCardInner = React.memo(function KeycardCardInner({ keycard, itemSal
                 {/* Keycard name and count */}
                 <Stack direction="row" alignItems="flex-start" justifyContent="space-between" spacing="1rem">
                     {/* Keycard name */}
-                    <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{keycard.blueprints.label}</Typography>
+                    <TypographyTruncated sx={{ fontFamily: fonts.nostromoBlack }}>{keycard.blueprints.label}</TypographyTruncated>
 
                     {!itemSaleID && (
                         <Typography variant="h6" sx={{ fontWeight: "bold" }}>
