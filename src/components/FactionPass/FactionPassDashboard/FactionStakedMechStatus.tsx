@@ -3,10 +3,10 @@ import { GameServerKeys } from "../../../keys"
 import { Box, Stack, Typography } from "@mui/material"
 import { ReactNode, useMemo, useState } from "react"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
-import { colors } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { FactionStakedMechStatistic } from "./FactionStakedMechStatistic"
 
-export const FactionPassStatus = () => {
+export const FactionStakedMechStatus = () => {
     const [stakedMechCount, setStakedMechCount] = useState(0)
     useGameServerSubscriptionFaction<number>(
         {
@@ -84,12 +84,22 @@ export const FactionPassStatus = () => {
                         p: "1.5rem",
                     }}
                 ></Box>
-                <FactionStakedMechStatusBox title={"STAKED MECHS BATTLED"} value={battledStakedMechCount} caption={"compare with last month"} />
-                <FactionStakedMechStatusBox title={"STAKED MECHS"} value={stakedMechCount} caption={"compare with last month"} />
-                <FactionStakedMechStatusBox title={"STAKED MECHS IN QUEUE"} value={inQueueStakedMechCount} caption={"GO TO MECH POOL"} />
-                <FactionStakedMechStatusBox title={"STAKED MECHS DAMAGED"} value={damagedStakedMechCount} caption={"GO TO REPAIR BAY"} />
-                <FactionStakedMechStatusBox title={"STAKED MECHS BATTLE READY"} value={battleReadyStakedMechCount} caption={"GO TO MECH POOL"} />
-                <FactionStakedMechStatusBox title={"STAKED MECHS IN BATTLE"} value={inBattleStakedMechCount} caption={"MECH SUPPORTER"} />
+                <FactionStakedMechStatusBox title={"STAKED MECHS BATTLED"} value={battledStakedMechCount} caption={" "} />
+                <FactionStakedMechStatusBox title={"STAKED MECHS"} value={stakedMechCount} caption={" "} />
+                <FactionStakedMechStatusBox title={"STAKED MECHS IN QUEUE"} value={inQueueStakedMechCount} caption={"GO TO MECH POOL"} color={colors.green} />
+                <FactionStakedMechStatusBox
+                    title={"STAKED MECHS DAMAGED"}
+                    value={damagedStakedMechCount}
+                    caption={"GO TO REPAIR BAY"}
+                    color={colors.lightRed}
+                />
+                <FactionStakedMechStatusBox
+                    title={"STAKED MECHS BATTLE READY"}
+                    value={battleReadyStakedMechCount}
+                    caption={"GO TO MECH POOL"}
+                    color={colors.orange}
+                />
+                <FactionStakedMechStatusBox title={"STAKED MECHS IN BATTLE"} value={inBattleStakedMechCount} caption={"MECH SUPPORTER"} color={colors.bronze} />
             </Box>
             <FactionStakedMechStatistic
                 totalCount={stakedMechCount}
@@ -106,23 +116,50 @@ interface FactionStakedMechStatusBoxProps {
     title: ReactNode
     value: string | number
     caption: ReactNode
+    color?: string
 }
 
-const FactionStakedMechStatusBox = ({ title, value, caption }: FactionStakedMechStatusBoxProps) => {
+const FactionStakedMechStatusBox = ({ title, value, caption, color }: FactionStakedMechStatusBoxProps) => {
     const label = useMemo(() => {
-        if (typeof title === "string") return <Typography>{title}</Typography>
+        if (typeof title === "string")
+            return (
+                <Typography variant="h5" fontFamily={fonts.rajdhaniBold} sx={{ opacity: 0.7 }}>
+                    {title}
+                </Typography>
+            )
         return title
     }, [title])
     const description = useMemo(() => {
-        if (typeof caption === "string") return <Typography>{caption}</Typography>
+        if (typeof caption === "string")
+            return (
+                <Typography variant="h5" color={color} fontFamily={fonts.rajdhaniBold}>
+                    {caption}
+                </Typography>
+            )
         return caption
     }, [caption])
     return (
         <NiceBoxThing background={{ colors: [`${colors.offWhite}20`] }} sx={{ width: "100%", height: "100%", p: "1.5rem" }}>
-            <Stack direction="column">
+            <Stack direction="column" flex={1} height="100%">
                 {label}
-                <Typography>{value}</Typography>
-                {description}
+                <Stack direction="row" alignItems="center" flex={1}>
+                    <Typography variant="h2" fontFamily={fonts.nostromoBlack}>
+                        {value}
+                    </Typography>
+                </Stack>
+                <Stack direction="row" alignItems="center" justifyContent="space-between">
+                    {description}
+                    {color && (
+                        <Box
+                            sx={{
+                                width: "2rem",
+                                height: "2rem",
+                                borderRadius: 0.8,
+                                backgroundColor: color,
+                            }}
+                        />
+                    )}
+                </Stack>
             </Stack>
         </NiceBoxThing>
     )

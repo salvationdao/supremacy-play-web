@@ -1,11 +1,10 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, Stack } from "@mui/material"
 import { useMemo } from "react"
 import { useAuth, useSupremacy } from "../../../containers"
 import { NavTabs } from "../../Common/NavTabs/NavTabs"
 import { usePageTabs } from "../../Common/NavTabs/usePageTabs"
-import { colors } from "../../../theme/theme"
-import { FactionPassStatus } from "./FactionPassStatus"
-import { FactionPassMVPMech } from "./FactionPassMVPMech"
+import { FactionStakedMechStatus } from "./FactionStakedMechStatus"
+import { FactionMostPopularStakedMech } from "./FactionMostPopularStakedMech"
 
 export const FactionPassDashboard = () => {
     const { factionID } = useAuth()
@@ -15,8 +14,6 @@ export const FactionPassDashboard = () => {
     const faction = useMemo(() => {
         return getFaction(factionID)
     }, [factionID, getFaction])
-
-    console.log(faction.logo_url)
 
     return (
         <Stack
@@ -32,21 +29,21 @@ export const FactionPassDashboard = () => {
             }}
         >
             <NavTabs activeTabID={activeTabID} setActiveTabID={setActiveTabID} tabs={tabs} prevTab={prevTab} nextTab={nextTab} />
-            <Stack direction="row" alignItems="stretch" spacing="1rem" sx={{ flex: 1, width: "100%", overflow: "hidden" }}>
-                <Stack spacing="1rem">
+            <Stack direction="row" alignItems="stretch" spacing="1.5rem" sx={{ flex: 1, width: "100%", overflow: "hidden" }}>
+                <Stack spacing="1.5rem">
                     <Box
                         sx={{
-                            height: "30rem",
-                            width: "30rem",
+                            height: "32.5rem",
+                            width: "32.5rem",
                             background: `url(${faction.logo_url})`,
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "center",
                             backgroundSize: "cover",
                         }}
                     />
-                    <FactionPassMVPMech />
+                    <FactionMostPopularStakedMech />
                 </Stack>
-                <FactionPassStatus />
+                <FactionStakedMechStatus />
             </Stack>
         </Stack>
     )
