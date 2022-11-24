@@ -195,7 +195,7 @@ export const MyLobbies = () => {
                 <Stack
                     sx={{
                         p: "1rem",
-                        flex: involvedLobbies.length === 0 ? 0.4 : 1,
+                        flex: 1,
                         overflowY: "auto",
                         overflowX: "hidden",
                     }}
@@ -204,7 +204,7 @@ export const MyLobbies = () => {
                 </Stack>
 
                 {/* Public lobbies */}
-                <Stack flex={displayLobbies.length === 0 ? 0.4 : 1}>
+                <Stack flex={1.5}>
                     <NiceTabs tabs={tabs} value={tabValue} onChange={(newValue) => setTabValue(newValue)} />
                     <Stack
                         sx={{
@@ -220,7 +220,7 @@ export const MyLobbies = () => {
                 </Stack>
 
                 {/* Some buttons */}
-                <NiceButton buttonColor={theme.factionTheme.primary} sx={{ p: ".2rem 1rem", pt: ".4rem" }} route={{ to: "/lobbies" }}>
+                <NiceButton buttonColor={theme.factionTheme.primary} sx={{ mt: "auto !important", p: ".2rem 1rem", pt: ".4rem" }} route={{ to: "/lobbies" }}>
                     <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
                         Go to lobbies
                     </Typography>
