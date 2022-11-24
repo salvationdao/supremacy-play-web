@@ -8,6 +8,7 @@ import { BattleLobby } from "../../../types/battle_queue"
 import { AllGameMapsCombined } from "../../Common/AllGameMapsCombined"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
+import { TypographyTruncated } from "../../Common/TypographyTruncated"
 import { BattleLobbySingleModal } from "../BattleLobbies/BattleLobbySingleModal"
 import { CentralQueueItemTooltip } from "./CentralQueueItemTooltip"
 
@@ -44,7 +45,9 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
                             <Stack direction="row" justifyContent="space-between">
                                 {/* Lobby name */}
                                 <Stack direction="row" spacing=".5rem" alignItems="baseline">
-                                    <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{battleLobby.name || `Lobby #${battleLobby.number}`}</Typography>
+                                    <TypographyTruncated sx={{ fontFamily: fonts.nostromoBlack }}>
+                                        {battleLobby.name || `Lobby #${battleLobby.number}`}
+                                    </TypographyTruncated>
                                     {lobbyStatus}
                                 </Stack>
 
