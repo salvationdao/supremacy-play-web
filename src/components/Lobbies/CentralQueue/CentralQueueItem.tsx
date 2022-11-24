@@ -52,6 +52,7 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
                     sx={{
                         position: "relative",
                         width: "100%",
+                        zIndex: 1,
                     }}
                 >
                     <Stack
@@ -62,7 +63,7 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
                             p: "1rem 1.5rem",
                         }}
                     >
-                        <Stack direction="row" justifyContent="space-between">
+                        <Stack direction="row" justifyContent="space-between" spacing="1.5rem">
                             {/* Lobby name */}
                             <Stack direction="row" spacing="1rem" alignItems="baseline">
                                 <TypographyTruncated sx={{ fontFamily: fonts.nostromoBlack }}>
@@ -72,7 +73,7 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
                                 {lobbyStatus}
                             </Stack>
 
-                            <Typography sx={{ fontFamily: fonts.nostromoBold }}>
+                            <Typography sx={{ fontFamily: fonts.nostromoBold }} whiteSpace="nowrap">
                                 <SvgQueue inline size="1.4rem" />
                                 {battleLobby.stage_order}
                             </Typography>
@@ -110,6 +111,7 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
                             backgroundPosition: "center",
                             backgroundSize: "cover",
                             opacity: 0.42,
+                            zIndex: -1,
                         }}
                     >
                         {!battleLobby.game_map && <AllGameMapsCombined sx={{ height: "100%", width: "100%", opacity: 0.38 }} />}
