@@ -1,8 +1,9 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { SvgContentCopyIcon, SvgLock, SvgQueue, SvgSupToken, SvgUserDiamond2 } from "../../../assets"
+import { SvgContentCopyIcon, SvgLock, SvgQueue, SvgSupToken, SvgUserDiamond } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { supFormatter } from "../../../helpers"
+import { pulseEffect } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleLobby } from "../../../types/battle_queue"
 import { AllGameMapsCombined } from "../../Common/AllGameMapsCombined"
@@ -15,24 +16,53 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
 
     const displayAccessCode = useMemo(() => battleLobby.access_code, [battleLobby.access_code])
 
-    const lobbyStatus = useMemo(() => {
-        let textColor = colors.orange
-        let text = "WAITING..."
-
+    const bottomSection = useMemo(() => {
+        // Battle in progress
         if (battleLobby.assigned_to_battle_id) {
-            textColor = colors.red
-            text = "BATTLE"
-        } else if (battleLobby.ready_at) {
-            textColor = colors.green
-            text = "READY"
+            return (
+                <Stack direction="row" alignItems="center" sx={{ pl: "1.5rem", pr: ".5rem", backgroundColor: "#00000026" }}>
+                    <Typography
+                        variant="subtitle1"
+                        sx={{
+                            fontFamily: fonts.nostromoBlack,
+                            color: colors.red,
+                            textAlign: "center",
+                            animation: `${pulseEffect} 4.5s infinite`,
+                        }}
+                    >
+                        Battle in progress...
+                    </Typography>
+                </Stack>
+            )
         }
 
-        return (
-            <Typography variant="body2" color={textColor} fontWeight="bold">
-                {text}
-            </Typography>
-        )
-    }, [battleLobby.assigned_to_battle_id, battleLobby.ready_at])
+        // Display invite friend message
+        if (displayAccessCode) {
+            return (
+                <Stack direction="row" alignItems="center" sx={{ pl: "1.5rem", pr: ".5rem", backgroundColor: "#00000026" }}>
+                    <Typography fontWeight="bold" color={colors.neonBlue}>
+                        Invite friends to the battle!
+                    </Typography>
+
+                    <Box flex={1} />
+
+                    <Typography>{displayAccessCode}</Typography>
+
+                    <IconButton
+                        size="small"
+                        sx={{ opacity: 0.6, ":hover": { opacity: 1 } }}
+                        onClick={() => {
+                            navigator.clipboard.writeText(displayAccessCode)
+                        }}
+                    >
+                        <SvgContentCopyIcon inline size="1.3rem" />
+                    </IconButton>
+                </Stack>
+            )
+        }
+
+        return null
+    }, [battleLobby.assigned_to_battle_id, displayAccessCode])
 
     return (
         <NiceTooltip
@@ -65,13 +95,10 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
                     >
                         <Stack direction="row" justifyContent="space-between" spacing="1.5rem">
                             {/* Lobby name */}
-                            <Stack direction="row" spacing="1rem" alignItems="baseline">
-                                <TypographyTruncated sx={{ fontFamily: fonts.nostromoBlack }}>
-                                    {displayAccessCode && <SvgLock inline size="1.6rem" fill={colors.orange} />}{" "}
-                                    {battleLobby.name || `Lobby #${battleLobby.number}`}
-                                </TypographyTruncated>
-                                {lobbyStatus}
-                            </Stack>
+                            <TypographyTruncated sx={{ fontFamily: fonts.nostromoBlack }}>
+                                {displayAccessCode && <SvgLock inline size="1.6rem" fill={colors.orange} />}{" "}
+                                {battleLobby.name || `Lobby #${battleLobby.number}`}
+                            </TypographyTruncated>
 
                             <Typography sx={{ fontFamily: fonts.nostromoBold }} whiteSpace="nowrap">
                                 <SvgQueue inline size="1.4rem" />
@@ -92,7 +119,11 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
                                     fontWeight: "bold",
                                 }}
                             >
-                                <SvgUserDiamond2 inline size="1.8rem" /> {battleLobby.battle_lobbies_mechs.length}/9
+                                <SvgUserDiamond inline size="1.8rem" />{" "}
+                                <span style={{ color: battleLobby.battle_lobbies_mechs.length < 9 ? colors.orange : "inherit" }}>
+                                    {battleLobby.battle_lobbies_mechs.length}
+                                </span>
+                                /9
                             </Typography>
                         </Stack>
                     </Stack>
@@ -101,16 +132,16 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
                     <Box
                         sx={{
                             position: "absolute",
-                            m: "0 !important",
                             top: 0,
                             left: 0,
                             right: 0,
                             bottom: 0,
+                            m: "0 !important",
                             background: `url(${battleLobby.game_map?.background_url})`,
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "center",
                             backgroundSize: "cover",
-                            opacity: 0.42,
+                            opacity: 0.36,
                             zIndex: -1,
                         }}
                     >
@@ -118,27 +149,7 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
                     </Box>
                 </Stack>
 
-                {displayAccessCode && (
-                    <Stack direction="row" alignItems="center" sx={{ pl: "1.5rem", pr: ".5rem", backgroundColor: "#00000026" }}>
-                        <Typography fontWeight="bold" color={colors.neonBlue}>
-                            Invite friends to the battle!
-                        </Typography>
-
-                        <Box flex={1} />
-
-                        <Typography>{displayAccessCode}</Typography>
-
-                        <IconButton
-                            size="small"
-                            sx={{ opacity: 0.6, ":hover": { opacity: 1 } }}
-                            onClick={() => {
-                                navigator.clipboard.writeText(displayAccessCode)
-                            }}
-                        >
-                            <SvgContentCopyIcon inline size="1.3rem" />
-                        </IconButton>
-                    </Stack>
-                )}
+                {bottomSection}
             </Box>
         </NiceTooltip>
     )

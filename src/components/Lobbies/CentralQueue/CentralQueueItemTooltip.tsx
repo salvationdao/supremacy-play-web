@@ -72,7 +72,7 @@ export const CentralQueueItemTooltip = ({ battleLobby, displayAccessCode }: { ba
                 variant="body2"
                 sx={{
                     p: ".4rem 1rem",
-                    backgroundColor: battleLobby.generated_by_system ? colors.green : colors.blue2,
+                    backgroundColor: battleLobby.generated_by_system ? colors.green : colors.orange,
                     textAlign: "center",
                     fontFamily: fonts.nostromoBlack,
                 }}
