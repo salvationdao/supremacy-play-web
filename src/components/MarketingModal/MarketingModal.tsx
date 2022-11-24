@@ -22,7 +22,6 @@ export const MarketingModal = () => {
     const updateMarketingPreferences = useCallback(async () => {
         setIsLoading(true)
         try {
-            console.log(newEmail)
             await send<null, { accepts_marketing: boolean; new_email?: string }>(GameServerKeys.UpdateMarketingPreferences, {
                 accepts_marketing: acceptMarketing,
                 new_email: newEmail,

@@ -61,12 +61,14 @@ export const MechPickerItem = ({ initialData, onPick }: MechPickerItemProps) => 
                 history.push(`/mech/${mech?.id || initialData.id}`)
             }}
             fill
-            buttonColor={colors.lightGrey}
+            disableAutoColor
+            buttonColor={`${colors.darkGrey}44`}
             sx={{
                 p: "1rem",
                 alignItems: "start",
                 justifyContent: "start",
                 textAlign: "left",
+                backgroundColor: `${colors.darkGrey}44`,
             }}
         >
             <NiceBoxThing
