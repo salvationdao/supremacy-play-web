@@ -25,7 +25,14 @@ export const AccessCodePopover = (props: AccessCodePopoverProps) => {
             {props.open && <AccessCodePopoverInner {...props} accessCode={accessCode} setAccessCode={setAccessCode} setBattleLobby={setBattleLobby} />}
 
             {battleLobby && accessCode && (
-                <PrivateLobbySingleModal battleLobby={battleLobby} accessCode={accessCode} onClose={() => setBattleLobby(undefined)} />
+                <PrivateLobbySingleModal
+                    battleLobby={battleLobby}
+                    accessCode={accessCode}
+                    onClose={() => {
+                        setAccessCode(undefined)
+                        setBattleLobby(undefined)
+                    }}
+                />
             )}
         </>
     )

@@ -31,7 +31,7 @@ export const PrivateLobbySingleModal = ({
     )
 
     return (
-        <NiceModal open={true} onClose={onClose} sx={{ p: "1.8rem 2.5rem", maxHeight: "calc(100vh - 20rem)" }}>
+        <NiceModal open={true} onClose={onClose} backdropColor="rgba(0,0,0,.8)" sx={{ p: "1.8rem 2.5rem", maxHeight: "calc(100vh - 20rem)" }}>
             <Stack>
                 <Typography variant="h6" fontFamily={fonts.nostromoBlack} mb=".6rem">
                     Private Lobby
