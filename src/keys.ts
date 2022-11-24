@@ -288,6 +288,13 @@ export enum GameServerKeys {
     // Faction Pass
     SubFactionPassList = "FACTION:PASS:LIST",
     PurchaseFactionPassWithSups = "FACTION:PASS:SUPS:PURCHASE",
+    SubFactionMVPStakedMech = "FACTION:MVP:STAKED:MECH",
+    SubFactionStakedMechCount = "FACTION:STAKED:MECH:COUNT",
+    SubFactionStakedMechInQueueCount = "FACTION:STAKED:MECH:IN:QUEUE:COUNT",
+    SubFactionStakedMechDamagedCount = "FACTION:STAKED:MECH:DAMAGED:COUNT",
+    SubFactionStakedMechBattleReadyCount = "FACTION:STAKED:MECH:BATTLE:READY:COUNT",
+    SubFactionStakedMechInBattleCount = "FACTION:STAKED:MECH:IN:BATTLE:COUNT",
+    SubFactionStakedMechBattledCount = "FACTION:STAKED:MECH:BATTLED:COUNT",
 }
 
 export enum PassportServerKeys {

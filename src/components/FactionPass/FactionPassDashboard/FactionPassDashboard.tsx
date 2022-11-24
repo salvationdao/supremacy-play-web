@@ -3,6 +3,9 @@ import { useMemo } from "react"
 import { useAuth, useSupremacy } from "../../../containers"
 import { NavTabs } from "../../Common/NavTabs/NavTabs"
 import { usePageTabs } from "../../Common/NavTabs/usePageTabs"
+import { colors } from "../../../theme/theme"
+import { FactionPassStatus } from "./FactionPassStatus"
+import { FactionPassMVPMech } from "./FactionPassMVPMech"
 
 export const FactionPassDashboard = () => {
     const { factionID } = useAuth()
@@ -28,19 +31,21 @@ export const FactionPassDashboard = () => {
             }}
         >
             <NavTabs activeTabID={activeTabID} setActiveTabID={setActiveTabID} tabs={tabs} prevTab={prevTab} nextTab={nextTab} />
-            <Stack direction="row" alignItems="stretch" sx={{ flex: 1, width: "100%", overflow: "hidden" }}>
-                <Stack sx={{ width: "20rem" }}>
+            <Stack direction="row" alignItems="stretch" spacing={1} sx={{ flex: 1, width: "100%", overflow: "hidden" }}>
+                <Stack spacing={1}>
                     <Box
                         sx={{
+                            height: "30rem",
+                            width: "30rem",
                             background: `url(${faction.logo_url})`,
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "center",
                             backgroundSize: "cover",
                         }}
                     />
+                    <FactionPassMVPMech />
                 </Stack>
-                <Stack flex={1}></Stack>
-                <Stack sx={{ width: "20rem" }}></Stack>
+                <FactionPassStatus />
             </Stack>
         </Stack>
     )
