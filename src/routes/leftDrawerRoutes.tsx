@@ -1,4 +1,3 @@
-import { SvgDamage1, SvgHistoryClock } from "../assets"
 import { BattleArena } from "../components/LeftDrawer/BattleArena/BattleArena"
 import { BattleEndScreen } from "../components/LeftDrawer/BattleEndScreen/BattleEndScreen"
 import { BATTLE_ARENA_OPEN } from "../constants"
@@ -13,7 +12,6 @@ export enum LeftRouteID {
 export const LeftRoutes: SideRouteSingle[] = [
     {
         id: LeftRouteID.BattleArena,
-        icon: <SvgDamage1 size="1.2rem" sx={{ pt: ".3rem" }} />,
         label: "Battle Commands",
         Component: BattleArena,
         Header: BattleArena.Header,
@@ -23,7 +21,6 @@ export const LeftRoutes: SideRouteSingle[] = [
     },
     {
         id: LeftRouteID.PreviousBattle,
-        icon: <SvgHistoryClock size="1.3rem" sx={{ pt: ".3rem" }} />,
         label: "Previous Battle",
         Component: BattleEndScreen,
         Header: BattleEndScreen.Header,

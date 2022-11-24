@@ -163,7 +163,7 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
                     fontSize: "1.6rem",
                 }}
             >
-                My Lobbies
+                Lobbies
             </Typography>
 
             <Box flex={1} />
