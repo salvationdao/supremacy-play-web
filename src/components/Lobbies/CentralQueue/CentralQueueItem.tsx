@@ -17,10 +17,10 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
 
     const lobbyStatus = useMemo(() => {
         let textColor = colors.orange
-        let text = "PENDING"
+        let text = "WAITING..."
 
         if (battleLobby.assigned_to_battle_id) {
-            textColor = colors.orange
+            textColor = colors.red
             text = "BATTLE"
         } else if (battleLobby.ready_at) {
             textColor = colors.green
@@ -64,7 +64,7 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
                     >
                         <Stack direction="row" justifyContent="space-between">
                             {/* Lobby name */}
-                            <Stack direction="row" spacing=".5rem" alignItems="baseline">
+                            <Stack direction="row" spacing="1rem" alignItems="baseline">
                                 <TypographyTruncated sx={{ fontFamily: fonts.nostromoBlack }}>
                                     {displayAccessCode && <SvgLock inline size="1.6rem" fill={colors.orange} />}{" "}
                                     {battleLobby.name || `Lobby #${battleLobby.number}`}
@@ -87,7 +87,7 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
 
                             <Typography
                                 sx={{
-                                    color: battleLobby.battle_lobbies_mechs.length < 9 ? colors.lightGrey : colors.green,
+                                    color: battleLobby.battle_lobbies_mechs.length < 9 ? "#FFFFFF" : colors.green,
                                     fontWeight: "bold",
                                 }}
                             >

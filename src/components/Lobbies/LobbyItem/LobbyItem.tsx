@@ -55,10 +55,10 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby }: { battle
 
     const lobbyStatus = useMemo(() => {
         let textColor = colors.orange
-        let text = "PENDING"
+        let text = "WAITING..."
 
         if (battleLobby.assigned_to_battle_id) {
-            textColor = colors.orange
+            textColor = colors.red
             text = "BATTLE"
         } else if (battleLobby.ready_at) {
             textColor = colors.green

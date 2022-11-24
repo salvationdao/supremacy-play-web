@@ -33,17 +33,17 @@ export const CentralQueueItemTooltip = ({ battleLobby, displayAccessCode }: { ba
     const arenaName = useMemo(() => arenaList.find((a) => a.id === battleLobby.assigned_to_arena_id)?.name, [arenaList, battleLobby.assigned_to_arena_id])
 
     return (
-        <Box sx={{ minWidth: "38rem", backgroundColor: factionTheme.s800 }}>
+        <Box sx={{ minWidth: "40rem", backgroundColor: factionTheme.s900 }}>
             {/* Lobby name */}
             <Stack
                 direction="row"
                 alignItems="center"
                 justifyContent="space-between"
+                spacing="1rem"
                 sx={{
                     p: "1rem 1.5rem",
                     pr: ".5rem",
-                    borderBottom: `1px solid ${factionTheme.primary}`,
-                    backgroundColor: factionTheme.s600,
+                    backgroundColor: factionTheme.s700,
                 }}
             >
                 <TypographyTruncated variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
@@ -80,26 +80,26 @@ export const CentralQueueItemTooltip = ({ battleLobby, displayAccessCode }: { ba
                 {battleLobby.generated_by_system ? "System Battle" : "Exhibition Battle"}
             </Typography>
 
-            <Stack sx={{ p: "1.4rem", pb: "2rem" }} spacing="1rem">
+            <Stack sx={{ p: "1.8rem", pb: "2rem" }} spacing="1rem">
                 {/* Position */}
-                <Stack direction="row" justifyContent="space-between">
-                    <Typography sx={{ fontFamily: fonts.nostromoBlack }}>
+                <Stack direction="row" justifyContent="space-between" spacing="1rem">
+                    <Typography sx={{ fontFamily: fonts.nostromoBlack }} variant="body2">
                         <SvgQueue inline /> Position:
                     </Typography>
                     <Typography>{battleLobby.stage_order}</Typography>
                 </Stack>
 
                 {/* Host name */}
-                <Stack direction="row" justifyContent="space-between">
-                    <Typography sx={{ fontFamily: fonts.nostromoBlack }}>
+                <Stack direction="row" justifyContent="space-between" spacing="1rem">
+                    <Typography sx={{ fontFamily: fonts.nostromoBlack }} variant="body2">
                         <SvgUserDiamond2 inline /> Hosted By:
                     </Typography>
                     <Stack direction="row" alignItems="center" spacing=".6rem">
                         {ownerFaction.logo_url && (
                             <Box
                                 sx={{
-                                    width: "2.8rem",
-                                    height: "2.8rem",
+                                    width: "2.4rem",
+                                    height: "2.4rem",
                                     background: `url(${ownerFaction.logo_url})`,
                                     backgroundRepeat: "no-repeat",
                                     backgroundPosition: "center",
@@ -107,7 +107,7 @@ export const CentralQueueItemTooltip = ({ battleLobby, displayAccessCode }: { ba
                                 }}
                             />
                         )}
-                        <TypographyTruncated sx={{ color: ownerFaction.palette.primary }}>
+                        <TypographyTruncated sx={{ color: ownerFaction.palette.primary, fontWeight: "bold" }}>
                             {battleLobby.generated_by_system ? "The Overseer" : `${battleLobby.host_by.username}#${battleLobby.host_by.gid}`}
                         </TypographyTruncated>
                     </Stack>
@@ -115,8 +115,8 @@ export const CentralQueueItemTooltip = ({ battleLobby, displayAccessCode }: { ba
 
                 {/* Arena name */}
                 {arenaName && (
-                    <Stack direction="row" justifyContent="space-between">
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>
+                    <Stack direction="row" justifyContent="space-between" spacing="1rem">
+                        <Typography sx={{ fontFamily: fonts.nostromoBlack }} variant="body2">
                             <SvgMap inline /> Arena:
                         </Typography>
                         <Typography>{arenaName}</Typography>
@@ -124,16 +124,16 @@ export const CentralQueueItemTooltip = ({ battleLobby, displayAccessCode }: { ba
                 )}
 
                 {/* Map */}
-                <Stack direction="row" justifyContent="space-between">
-                    <Typography sx={{ fontFamily: fonts.nostromoBlack }}>
+                <Stack direction="row" justifyContent="space-between" spacing="1rem">
+                    <Typography sx={{ fontFamily: fonts.nostromoBlack }} variant="body2">
                         <SvgMap inline /> Map:
                     </Typography>
                     <Typography>{battleLobby.game_map?.name || "To be determined..."}</Typography>
                 </Stack>
 
                 {/* Reward pool */}
-                <Stack direction="row" justifyContent="space-between">
-                    <Typography sx={{ fontFamily: fonts.nostromoBlack }}>
+                <Stack direction="row" justifyContent="space-between" spacing="1rem">
+                    <Typography sx={{ fontFamily: fonts.nostromoBlack }} variant="body2">
                         <SvgChest2 inline /> Reward Pool:
                     </Typography>
                     <Typography>
@@ -144,7 +144,7 @@ export const CentralQueueItemTooltip = ({ battleLobby, displayAccessCode }: { ba
 
                 {/* Distribution */}
                 <Box>
-                    <Typography sx={{ mb: "1rem", fontFamily: fonts.nostromoBlack }}>
+                    <Typography sx={{ mb: "1rem", fontFamily: fonts.nostromoBlack }} variant="body2">
                         <SvgLeaderboard inline /> Distribution:
                     </Typography>
 
@@ -169,8 +169,8 @@ export const CentralQueueItemTooltip = ({ battleLobby, displayAccessCode }: { ba
 
                 {/* Players */}
                 <Box>
-                    <Stack direction="row" justifyContent="space-between" my="1rem">
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>
+                    <Stack direction="row" justifyContent="space-between" spacing="1rem" my="1rem">
+                        <Typography sx={{ fontFamily: fonts.nostromoBlack }} variant="body2">
                             <SvgUserDiamond2 inline /> Players:
                         </Typography>
                         <Typography
@@ -207,7 +207,7 @@ const DistributionValue = ({ Icon, value }: { Icon: React.VoidFunctionComponent<
             backgroundColor: "#FFFFFF15",
         }}
     >
-        <Icon size="3.8rem" />
+        <Icon size="3.2rem" />
         <Typography>
             <SvgSupToken inline size="2rem" fill={colors.gold} />
             {value}
@@ -216,7 +216,7 @@ const DistributionValue = ({ Icon, value }: { Icon: React.VoidFunctionComponent<
 )
 
 const NUMBER_MECHS_REQUIRED = 3
-const SIZE = "5rem"
+const SIZE = "4.5rem"
 
 const FactionMechList = ({ factionID, battleLobbiesMechs }: { factionID: string; battleLobbiesMechs: BattleLobbiesMech[] }) => {
     const { userID } = useAuth()
@@ -268,7 +268,7 @@ const FactionMechList = ({ factionID, battleLobbiesMechs }: { factionID: string;
                                 border: `${faction.palette.primary} 1px solid`,
                                 width: SIZE,
                                 height: SIZE,
-                                opacity: 0.6,
+                                opacity: 0.4,
                                 backgroundColor: faction.palette.s900,
                             }}
                         >
