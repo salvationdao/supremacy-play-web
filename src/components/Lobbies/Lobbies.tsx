@@ -14,6 +14,7 @@ import { NiceButton } from "../Common/Nice/NiceButton"
 import { NiceSelect } from "../Common/Nice/NiceSelect"
 import { NiceTextField } from "../Common/Nice/NiceTextField"
 import { VirtualizedGrid } from "../Common/VirtualizedGrid"
+import { BattleLobbyCreateModal } from "./BattleLobbies/BattleLobbyCreate/BattleLobbyCreateModal"
 import { CentralQueue } from "./CentralQueue/CentralQueue"
 import { LobbyItem } from "./LobbyItem/LobbyItem"
 
@@ -37,6 +38,8 @@ const sortOptions = [
 export const Lobbies = () => {
     const [query, updateQuery] = useUrlQuery()
     const theme = useTheme()
+    const [showCreateLobbyModal, setShowCreateLobbyModal] = useState(false)
+    const [showJoinPrivateLobbyModal, setShowJoinPrivateLobbyModal] = useState(false)
 
     // Nav tabs at the top
     const [activeTabID, setActiveTabID] = useState<LobbyTabs | undefined>(LobbyTabs.SystemLobbies)
@@ -157,11 +160,11 @@ export const Lobbies = () => {
 
     const renderIndex = useCallback(
         (index) => {
-            const lobby = displayLobbies[index]
-            if (!lobby) {
+            const battleLobby = displayLobbies[index]
+            if (!battleLobby) {
                 return null
             }
-            return <LobbyItem key={`lobby-${lobby.id}`} lobby={lobby} />
+            return <LobbyItem key={`battleLobby-${battleLobby.id}`} battleLobby={battleLobby} />
         },
         [displayLobbies],
     )
@@ -223,77 +226,97 @@ export const Lobbies = () => {
     }, [displayLobbies, isLoading, renderIndex, theme.factionTheme.primary])
 
     return (
-        <Stack
-            alignItems="center"
-            spacing="3rem"
-            sx={{
-                p: "4rem 5rem",
-                mx: "auto",
-                position: "relative",
-                height: "100%",
-                backgroundColor: theme.factionTheme.background,
-                background: `url()`,
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-                backgroundSize: "cover",
-                maxWidth: "190rem",
-            }}
-        >
-            <NavTabs activeTabID={activeTabID} setActiveTabID={setActiveTabID} tabs={tabs} prevTab={prevTab} nextTab={nextTab} width="28rem" />
+        <>
+            <Stack
+                alignItems="center"
+                spacing="3rem"
+                sx={{
+                    p: "4rem 5rem",
+                    mx: "auto",
+                    position: "relative",
+                    height: "100%",
+                    backgroundColor: theme.factionTheme.background,
+                    background: `url()`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    backgroundSize: "cover",
+                    maxWidth: "190rem",
+                }}
+            >
+                <NavTabs activeTabID={activeTabID} setActiveTabID={setActiveTabID} tabs={tabs} prevTab={prevTab} nextTab={nextTab} width="28rem" />
 
-            <Stack direction="row" alignItems="stretch" sx={{ flex: 1, width: "100%", overflow: "hidden" }}>
-                <CentralQueue lobbies={lobbies} />
+                <Stack direction="row" alignItems="stretch" sx={{ flex: 1, width: "100%", overflow: "hidden" }}>
+                    <CentralQueue lobbies={lobbies} />
 
-                <Stack spacing="2rem" alignItems="stretch" flex={1} sx={{ overflow: "hidden" }}>
-                    {/* Search, sort, grid view, and other top buttons */}
-                    <Stack spacing="1rem" direction="row" alignItems="center" sx={{ overflowX: "auto", overflowY: "hidden", width: "100%", pb: ".2rem" }}>
-                        {/* Create lobby button */}
-                        <NiceButton corners buttonColor={colors.green} sx={{ p: ".2rem 1rem", pt: ".4rem" }}>
-                            <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
-                                <SvgPlus inline size="1.2rem" /> CREATE LOBBY
-                            </Typography>
-                        </NiceButton>
+                    <Stack spacing="2rem" alignItems="stretch" flex={1} sx={{ overflow: "hidden" }}>
+                        {/* Search, sort, grid view, and other top buttons */}
+                        <Stack spacing="1rem" direction="row" alignItems="center" sx={{ overflowX: "auto", overflowY: "hidden", width: "100%", pb: ".2rem" }}>
+                            {/* Create lobby button */}
+                            <NiceButton
+                                corners
+                                buttonColor={colors.green}
+                                sx={{
+                                    p: ".2rem 1rem",
+                                    pt: ".4rem",
+                                }}
+                                onClick={() => setShowCreateLobbyModal(true)}
+                            >
+                                <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
+                                    <SvgPlus inline size="1.2rem" /> CREATE LOBBY
+                                </Typography>
+                            </NiceButton>
 
-                        {/* Access code button */}
-                        <NiceButton corners buttonColor={theme.factionTheme.primary} sx={{ p: ".2rem 1rem", pt: ".4rem" }}>
-                            <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
-                                Access Code
-                            </Typography>
-                        </NiceButton>
+                            {/* Access code button */}
+                            <NiceButton
+                                corners
+                                buttonColor={theme.factionTheme.primary}
+                                sx={{
+                                    p: ".2rem 1rem",
+                                    pt: ".4rem",
+                                }}
+                                onClick={() => setShowJoinPrivateLobbyModal(true)}
+                            >
+                                <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
+                                    JOIN PRIVATE
+                                </Typography>
+                            </NiceButton>
 
-                        <Box flex={1} />
+                            <Box flex={1} />
 
-                        {/* Show total */}
-                        <Box sx={{ backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", p: ".2rem 1rem" }}>
-                            <Typography variant="h6" sx={{ whiteSpace: "nowrap" }}>
-                                {displayLobbies?.length || 0} ITEMS
-                            </Typography>
-                        </Box>
+                            {/* Show total */}
+                            <Box sx={{ backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", p: ".2rem 1rem" }}>
+                                <Typography variant="h6" sx={{ whiteSpace: "nowrap" }}>
+                                    {displayLobbies?.length || 0} ITEMS
+                                </Typography>
+                            </Box>
 
-                        {/* Search bar */}
-                        <NiceTextField
-                            primaryColor={theme.factionTheme.primary}
-                            value={searchInstant}
-                            onChange={(value) => setSearch(value)}
-                            placeholder="Search..."
-                            InputProps={{
-                                endAdornment: <SvgSearch size="1.5rem" sx={{ opacity: 0.5 }} />,
-                            }}
-                        />
+                            {/* Search bar */}
+                            <NiceTextField
+                                primaryColor={theme.factionTheme.primary}
+                                value={searchInstant}
+                                onChange={(value) => setSearch(value)}
+                                placeholder="Search..."
+                                InputProps={{
+                                    endAdornment: <SvgSearch size="1.5rem" sx={{ opacity: 0.5 }} />,
+                                }}
+                            />
 
-                        {/* Sort */}
-                        <NiceSelect
-                            label="Sort:"
-                            options={sortOptions}
-                            selected={sort}
-                            onSelected={(value) => setSort(`${value}`)}
-                            sx={{ minWidth: "26rem" }}
-                        />
+                            {/* Sort */}
+                            <NiceSelect
+                                label="Sort:"
+                                options={sortOptions}
+                                selected={sort}
+                                onSelected={(value) => setSort(`${value}`)}
+                                sx={{ minWidth: "26rem" }}
+                            />
+                        </Stack>
+
+                        <Box sx={{ flex: 1, height: "100%", overflowY: "auto", pr: ".8rem" }}>{content}</Box>
                     </Stack>
-
-                    <Box sx={{ flex: 1, height: "100%", overflowY: "auto", pr: ".8rem" }}>{content}</Box>
                 </Stack>
             </Stack>
-        </Stack>
+
+            {showCreateLobbyModal && <BattleLobbyCreateModal setOpen={setShowCreateLobbyModal} />}
+        </>
     )
 }
