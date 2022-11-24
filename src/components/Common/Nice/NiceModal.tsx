@@ -16,7 +16,7 @@ export const NiceModal = ({ modalSx, sx, children, onClose, ...props }: NiceModa
     return (
         <Modal {...props} onClose={onClose} sx={modalSx}>
             <NiceBoxThing
-                border={{ color: colors.darkGrey, thickness: "very-lean" }}
+                border={{ color: `${colors.darkGrey}90`, thickness: "very-lean" }}
                 background={{ colors: [theme.factionTheme.background] }}
                 sx={{
                     position: "absolute",
