@@ -1,6 +1,5 @@
 import { Box, Typography, TypographyProps } from "@mui/material"
 import { useMemo, useState } from "react"
-import { fonts } from "../../theme/theme"
 
 const TRANSITION_SPEED = 60
 
@@ -31,40 +30,44 @@ export const TypographyTruncated = ({ children, sx, ...props }: TypographyProps)
     return (
         <Typography
             sx={{
-                fontFamily: fonts.nostromoBlack,
-
                 ...sx,
                 display: "grid",
 
-                span: {
+                ".innerSpan": {
+                    display: "inline-block",
+                    width: "100%",
+                    verticalAlign: "middle",
+                    overflow: "hidden",
+                },
+
+                ".innerSpan2": {
                     display: "inline-block",
                     width: "100%",
                     verticalAlign: "middle",
                     overflow: "hidden",
 
-                    span: {
-                        position: "relative",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                        left: "0px",
-                    },
+                    position: "relative",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    left: "0px",
                 },
 
                 ":active, :hover": {
-                    span: {
+                    ".innerSpan": {
                         width: "auto",
+                    },
 
-                        span: {
-                            transform: `translateX(calc(-100% + ${parentWidth}px))`,
-                            transition: `all ${(selfWidth - parentWidth) / TRANSITION_SPEED}s linear`,
-                        },
+                    ".innerSpan2": {
+                        width: "auto",
+                        transform: selfWidth > parentWidth ? `translateX(calc(-100% + ${parentWidth}px - 5px))` : "none",
+                        transition: `all ${(selfWidth - parentWidth) / TRANSITION_SPEED}s linear`,
                     },
                 },
             }}
             {...props}
         >
-            <Box component="span">
-                <Box ref={setSpanRef} component="span">
+            <Box component="span" className="innerSpan">
+                <Box ref={setSpanRef} className="innerSpan2" component="span">
                     {children}
                 </Box>
             </Box>
