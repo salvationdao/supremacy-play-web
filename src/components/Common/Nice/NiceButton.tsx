@@ -102,12 +102,13 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
                     opacity: 0,
                 },
 
-                [`&, *`]: !disableAutoColor
-                    ? {
-                          color: `${contrastTextColor} !important`,
-                          fill: `${contrastTextColor} !important`,
-                      }
-                    : {},
+                [`&, *`]:
+                    !disableAutoColor && !buttonDisabled
+                        ? {
+                              color: `${contrastTextColor} !important`,
+                              fill: `${contrastTextColor} !important`,
+                          }
+                        : {},
             },
 
             ":disabled": {
@@ -133,7 +134,7 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
             // Please use the props to set button colors
             background: "unset",
             backgroundColor: "unset",
-            ...(fill && !disableAutoColor
+            ...(fill && !disableAutoColor && !buttonDisabled
                 ? {
                       [`&, *`]: {
                           transition: "all .1s",
@@ -328,7 +329,6 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
                 <Box
                     sx={{
                         pointerEvents: "none",
-                        zIndex: 1,
                         position: "absolute",
                         top: 0,
                         left: 0,
@@ -337,6 +337,7 @@ export const NiceButton = React.forwardRef<HTMLButtonElement, NiceButtonProps>(f
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
+                        zIndex: 9,
                     }}
                 >
                     {loading && <CircularProgress size="1.2rem" sx={{ color: buttonColor }} />}

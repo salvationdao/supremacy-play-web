@@ -244,7 +244,7 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby }: { battle
                         </Box>
 
                         {/* Reward pool and distribution */}
-                        <PrizePool lobby={battleLobby} />
+                        <PrizePool battleLobby={battleLobby} />
                     </Stack>
 
                     {/* Divider line */}
@@ -302,7 +302,7 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby }: { battle
                     open={isJoinModalOpen}
                     onClose={() => setIsJoinModalOpen(false)}
                     myFactionLobbySlots={myFactionLobbySlots}
-                    lobby={battleLobby}
+                    battleLobby={battleLobby}
                 />
             )}
         </>

@@ -95,7 +95,7 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
                     >
                         <Stack direction="row" justifyContent="space-between" spacing="1.5rem">
                             {/* Lobby name */}
-                            <TypographyTruncated sx={{ fontFamily: fonts.nostromoBlack }}>
+                            <TypographyTruncated variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
                                 {displayAccessCode && <SvgLock inline size="1.6rem" fill={colors.orange} />}{" "}
                                 {battleLobby.name || `Lobby #${battleLobby.number}`}
                             </TypographyTruncated>

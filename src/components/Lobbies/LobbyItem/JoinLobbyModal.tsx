@@ -14,12 +14,12 @@ export const JoinLobbyModal = ({
     open,
     onClose,
     myFactionLobbySlots,
-    lobby,
+    battleLobby,
     accessCode,
 }: {
     open: boolean
     onClose: () => void
-    lobby: BattleLobby
+    battleLobby: BattleLobby
     myFactionLobbySlots: FactionLobbySlots
     accessCode?: string
 }) => {
@@ -31,7 +31,7 @@ export const JoinLobbyModal = ({
         try {
             setError("")
             await send(GameServerKeys.JoinBattleLobby, {
-                battle_lobby_id: lobby.id,
+                battle_lobby_id: battleLobby.id,
                 mech_ids: selectedMechs.map((s) => s.id),
                 access_code: accessCode,
             })
@@ -40,7 +40,7 @@ export const JoinLobbyModal = ({
         } catch (err) {
             setError(typeof err === "string" ? err : "Failed to the join lobby, try again or contact support.")
         }
-    }, [send, lobby.id, selectedMechs, accessCode, onClose])
+    }, [send, battleLobby.id, selectedMechs, accessCode, onClose])
 
     return (
         <NiceModal open={open} onClose={onClose} sx={{ p: "1.8rem 2.5rem", height: "calc(100vh - 15rem)", width: "66rem" }}>
