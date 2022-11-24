@@ -134,7 +134,7 @@ export const FleetPlayerAbilities = () => {
                 <VirtualizedGrid
                     uniqueID="fleetPlayerAbilitiesGrid"
                     itemWidthConfig={{ minWidth: 37.5 }}
-                    itemHeight={35.4}
+                    itemHeight={33.5}
                     totalItems={displayPlayerAbilities.length}
                     gap={1.6}
                     renderIndex={renderIndex}

@@ -3,7 +3,7 @@ import React, { useMemo } from "react"
 import { Link } from "react-router-dom"
 import { SvgMechDeaths, SvgMechKills, SvgMechLosses, SvgMechWins, SvgUserDiamond } from "../../../assets"
 import { useAuth, useSupremacy } from "../../../containers"
-import { numFormatter, truncateTextLines } from "../../../helpers"
+import { numFormatter } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { NewMechStruct } from "../../../types"
 import { MediaPreview } from "../MediaPreview/MediaPreview"
@@ -86,22 +86,21 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
 
                     {/* Mech name */}
                     <Link to={`/mech/${mech.id}`}>
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack, ...truncateTextLines(1) }}>{mech.name || mech.label}</Typography>
+                        <TypographyTruncated sx={{ fontFamily: fonts.nostromoBlack }}>{mech.name || mech.label}</TypographyTruncated>
                     </Link>
 
                     {/* Owner name */}
                     {!hide?.ownerName && (
-                        <Typography
+                        <TypographyTruncated
                             variant="h6"
                             sx={{
                                 color: userID === mech.owner.id ? colors.gold : ownerFaction.palette.primary,
                                 fontWeight: "bold",
                                 mt: ".3rem !important",
-                                ...truncateTextLines(1),
                             }}
                         >
                             {mech.owner.username}#{mech.owner.gid}
-                        </Typography>
+                        </TypographyTruncated>
                     )}
 
                     {/* Mech status */}

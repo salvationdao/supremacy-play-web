@@ -14,13 +14,13 @@ import {
     SvgWrapperProps,
 } from "../../../assets"
 import { useAuth, useSupremacy } from "../../../containers"
-import { truncateTextLines } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { MechBasic, NewMechStruct } from "../../../types"
 import { MechWeaponSlot } from "../../../types/battle_queue"
 import { MediaPreview } from "../MediaPreview/MediaPreview"
 import { NiceBoxThing } from "../Nice/NiceBoxThing"
 import { NiceTooltip } from "../Nice/NiceTooltip"
+import { TypographyTruncated } from "../TypographyTruncated"
 
 const MIN_NUM_WEAPONS = 4
 
@@ -65,7 +65,7 @@ export const MechCardWeaponAndStats = React.memo(function MechCardWeaponAndStats
                         <Stack direction="row" alignItems="center" justifyContent="space-between" spacing="1rem">
                             {/* Mech name */}
                             <Link to={`/mech/${mech.id}`}>
-                                <Typography sx={{ fontFamily: fonts.nostromoBlack, ...truncateTextLines(1) }}>{mech.name || mech.label}</Typography>
+                                <TypographyTruncated sx={{ fontFamily: fonts.nostromoBlack }}>{mech.name || mech.label}</TypographyTruncated>
                             </Link>
 
                             {toggleSelected && (
@@ -81,17 +81,16 @@ export const MechCardWeaponAndStats = React.memo(function MechCardWeaponAndStats
                         </Stack>
 
                         {/* Owner name */}
-                        <Typography
+                        <TypographyTruncated
                             variant="h6"
                             sx={{
                                 color: userID === mech.owner.id ? colors.gold : ownerFaction.palette.primary,
                                 fontWeight: "bold",
-                                ...truncateTextLines(1),
                             }}
                         >
                             <SvgUserDiamond size="2.5rem" inline fill={userID === mech.owner.id ? colors.gold : ownerFaction.palette.primary} />{" "}
-                            {mech.owner.username} #{mech.owner.gid}
-                        </Typography>
+                            {mech.owner.username}#{mech.owner.gid}
+                        </TypographyTruncated>
                     </Stack>
                 </Stack>
 

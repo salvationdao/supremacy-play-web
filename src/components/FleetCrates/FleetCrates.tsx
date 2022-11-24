@@ -140,7 +140,7 @@ export const FleetCrates = () => {
                 <VirtualizedGrid
                     uniqueID="fleetCratesGrid"
                     itemWidthConfig={{ minWidth: 37.5 }}
-                    itemHeight={35.4}
+                    itemHeight={32.5}
                     totalItems={displayCrates.length}
                     gap={1.6}
                     renderIndex={renderIndex}

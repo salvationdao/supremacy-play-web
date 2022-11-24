@@ -130,7 +130,7 @@ export const FleetKeycards = () => {
                 <VirtualizedGrid
                     uniqueID="fleetKeycardsGrid"
                     itemWidthConfig={{ minWidth: 37.5 }}
-                    itemHeight={36.25}
+                    itemHeight={34.4}
                     totalItems={displayKeycards.length}
                     gap={1.6}
                     renderIndex={renderIndex}
