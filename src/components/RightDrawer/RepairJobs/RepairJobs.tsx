@@ -2,7 +2,7 @@ import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useEffect, useMemo, useState } from "react"
 import FlipMove from "react-flip-move"
-import { EmptyWarMachinesPNG, SvgRepair } from "../../../assets"
+import { SvgRepair } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { useArray } from "../../../hooks"
 import { useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
@@ -112,31 +112,17 @@ export const RepairJobs = () => {
         }
 
         return (
-            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
-                <Stack alignItems="center" justifyContent="center" spacing="2rem" sx={{ height: "100%", p: "1rem" }}>
-                    <Box
-                        sx={{
-                            width: "80%",
-                            height: "8rem",
-                            opacity: 0.7,
-                            filter: "grayscale(100%)",
-                            background: `url(${EmptyWarMachinesPNG})`,
-                            backgroundRepeat: "no-repeat",
-                            backgroundPosition: "bottom center",
-                            backgroundSize: "contain",
-                        }}
-                    />
-                    <Typography
-                        variant="body2"
-                        sx={{
-                            color: colors.grey,
-                            fontFamily: fonts.nostromoBold,
-                            textAlign: "center",
-                        }}
-                    >
-                        Repair jobs will appear here
-                    </Typography>
-                </Stack>
+            <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", p: "1rem" }}>
+                <Typography
+                    variant="body2"
+                    sx={{
+                        color: colors.grey,
+                        fontFamily: fonts.nostromoBold,
+                        textAlign: "center",
+                    }}
+                >
+                    Repair jobs will appear here
+                </Typography>
             </Stack>
         )
     }, [removeByID, repairJobModal, repairJobsRender])

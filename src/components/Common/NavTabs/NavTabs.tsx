@@ -1,8 +1,9 @@
-import { Stack, SxProps, Tab, Tabs, Typography } from "@mui/material"
+import { Stack, SxProps, Tab, Tabs } from "@mui/material"
 import { useEffect } from "react"
 import { useTheme } from "../../../containers/theme"
 import { truncateTextLines } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
+import { TypographyTruncated } from "../TypographyTruncated"
 import { ArrowButton } from "./ArrowButton"
 
 export const TAB_HEIGHT = 3.8 // rems
@@ -66,8 +67,9 @@ export const NavTabs = <T,>({
                     boxShadow: 1,
                     zIndex: 9,
                     minHeight: 0,
-                    ".MuiTab-root": { minWidth: width || "21rem" },
-                    ".MuiButtonBase-root": {
+
+                    ".MuiTab-root": {
+                        minWidth: width || "21rem",
                         height: `${TAB_HEIGHT}rem`,
                         pt: `${TAB_HEIGHT / 2}rem`,
                         minHeight: 0,
@@ -75,9 +77,10 @@ export const NavTabs = <T,>({
                         zIndex: 2,
 
                         ":hover": {
-                            backgroundColor: `${theme.factionTheme.primary}25`,
+                            backgroundColor: `${theme.factionTheme.primary}10`,
                         },
                     },
+
                     ".MuiTabs-indicator": {
                         height: "100%",
                         backgroundColor: colors.darkNavy,
@@ -107,7 +110,7 @@ export const NavTabs = <T,>({
                             key={i}
                             value={tab.id}
                             label={
-                                <Typography
+                                <TypographyTruncated
                                     sx={{
                                         color: tab.id === activeTabID ? theme.factionTheme.text : "#FFFFFF",
                                         fontFamily: fonts.nostromoBlack,
@@ -115,7 +118,7 @@ export const NavTabs = <T,>({
                                     }}
                                 >
                                     {tab.label}
-                                </Typography>
+                                </TypographyTruncated>
                             }
                         />
                     )

@@ -137,11 +137,11 @@ export const Lobbies = () => {
 
         // Filter for the system or exhibition lobbies
         switch (activeTabID) {
-            case LobbyTabs.ExhibitionLobbies:
-                filteredLobbies = filteredLobbies.filter((lobby) => !lobby.generated_by_system)
-                break
             case LobbyTabs.SystemLobbies:
                 filteredLobbies = filteredLobbies.filter((lobby) => lobby.generated_by_system)
+                break
+            case LobbyTabs.ExhibitionLobbies:
+                filteredLobbies = filteredLobbies.filter((lobby) => !lobby.generated_by_system)
                 break
         }
 
@@ -174,7 +174,7 @@ export const Lobbies = () => {
             [UrlQueryParams.Search]: search,
         })
 
-        setDisplayLobbies(result)
+        setDisplayLobbies(result.filter((p) => !p.ready_at))
     }, [activeTabID, isLoading, lobbies, search, sort, updateQuery])
 
     const renderIndex = useCallback(
@@ -237,8 +237,8 @@ export const Lobbies = () => {
                     No results...
                 </Typography>
 
-                <NiceButton route={{ to: `/marketplace/mechs` }} buttonColor={theme.factionTheme.primary}>
-                    GO TO MARKETPLACE
+                <NiceButton onClick={() => setShowCreateLobbyModal(true)} buttonColor={theme.factionTheme.primary}>
+                    Create lobby
                 </NiceButton>
             </Stack>
         )
