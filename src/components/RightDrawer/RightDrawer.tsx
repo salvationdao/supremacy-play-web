@@ -107,7 +107,8 @@ export const RightDrawer = () => {
                                     />
                                 )}
                             </AccordionSummary>
-                            {route.Component && (
+
+                            {route.Component && (route.mountAllTime || route.id === rightDrawerActiveTabID) && (
                                 <AccordionDetails
                                     sx={{
                                         height: "100%",

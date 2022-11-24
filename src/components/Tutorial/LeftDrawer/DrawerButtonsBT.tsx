@@ -48,7 +48,6 @@ export const DrawerButtonsBT = () => {
                             key={route.id}
                             label={route.label}
                             enable={true}
-                            icon={route.icon}
                             onClick={() => {
                                 setLeftDrawerActiveTabID((prev) => {
                                     if (route.id === prev) {

@@ -23,7 +23,15 @@ import { colors, fonts } from "../../../theme/theme"
 import { BattleLobbiesMech, BattleLobby } from "../../../types/battle_queue"
 import { TypographyTruncated } from "../../Common/TypographyTruncated"
 
-export const CentralQueueItemTooltip = ({ battleLobby, displayAccessCode }: { battleLobby: BattleLobby; displayAccessCode?: string }) => {
+export const CentralQueueItemTooltip = ({
+    battleLobby,
+    displayAccessCode,
+    width,
+}: {
+    battleLobby: BattleLobby
+    displayAccessCode?: string
+    width?: string
+}) => {
     const { factionTheme } = useTheme()
     const { arenaList } = useArena()
     const { factionsAll, getFaction } = useSupremacy()
@@ -33,7 +41,7 @@ export const CentralQueueItemTooltip = ({ battleLobby, displayAccessCode }: { ba
     const arenaName = useMemo(() => arenaList.find((a) => a.id === battleLobby.assigned_to_arena_id)?.name, [arenaList, battleLobby.assigned_to_arena_id])
 
     return (
-        <Box sx={{ minWidth: "40rem", backgroundColor: factionTheme.s900 }}>
+        <Box sx={{ width: width || "40rem", backgroundColor: factionTheme.s800 }}>
             {/* Lobby name */}
             <Stack
                 direction="row"
@@ -43,7 +51,7 @@ export const CentralQueueItemTooltip = ({ battleLobby, displayAccessCode }: { ba
                 sx={{
                     p: "1rem 1.5rem",
                     pr: ".5rem",
-                    backgroundColor: factionTheme.s700,
+                    backgroundColor: factionTheme.s600,
                 }}
             >
                 <TypographyTruncated variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
@@ -72,7 +80,7 @@ export const CentralQueueItemTooltip = ({ battleLobby, displayAccessCode }: { ba
                 variant="body2"
                 sx={{
                     p: ".4rem 1rem",
-                    backgroundColor: battleLobby.generated_by_system ? colors.green : colors.blue2,
+                    backgroundColor: battleLobby.generated_by_system ? colors.green : colors.orange,
                     textAlign: "center",
                     fontFamily: fonts.nostromoBlack,
                 }}
@@ -128,7 +136,7 @@ export const CentralQueueItemTooltip = ({ battleLobby, displayAccessCode }: { ba
                     <Typography sx={{ fontFamily: fonts.nostromoBlack }} variant="body2">
                         <SvgMap inline /> Map:
                     </Typography>
-                    <Typography>{battleLobby.game_map?.name || "To be determined..."}</Typography>
+                    <TypographyTruncated>{battleLobby.game_map?.name || "To be determined..."}</TypographyTruncated>
                 </Stack>
 
                 {/* Reward pool */}

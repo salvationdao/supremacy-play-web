@@ -1,4 +1,4 @@
-import { Badge, Box, Fade, Stack, Tab, Tabs, Typography } from "@mui/material"
+import { Badge, Box, Fade, Stack, Typography } from "@mui/material"
 import React, { ReactNode, useMemo, useRef, useState } from "react"
 import { AdditionalOptionsButton, NiceTooltip } from "../.."
 import { SvgChat, SvgChatGlobal, SvgExternalLink, SvgInfoCircular, SvgSettings } from "../../../assets"
@@ -10,6 +10,7 @@ import { zoomEffect } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { SplitOptionType } from "../../../types/chat"
 import { NiceButton } from "../../Common/Nice/NiceButton"
+import { NiceTab, NiceTabs } from "../../Common/Nice/NiceTabs"
 import { WindowPortal } from "../../Common/WindowPortal/WindowPortal"
 import { ChatMessages } from "./ChatMessages/ChatMessages"
 import { ChatSend } from "./ChatSend/ChatSend"
@@ -58,92 +59,6 @@ export const LiveChat = () => {
     }, [common, isPoppedout, setIsPoppedout])
 }
 
-const Header = ({ isOpen, onClose }: HeaderProps) => {
-    const theme = useTheme()
-    const { isMobile } = useMobile()
-    const { isPoppedout, setIsPoppedout } = useChat()
-
-    const popoverRef = useRef(null)
-    const [showSettings, setShowSettings] = useState(false)
-
-    return (
-        <Stack
-            spacing="1rem"
-            direction="row"
-            sx={{
-                width: "100%",
-                p: "1rem",
-                alignItems: "center",
-                opacity: isOpen ? 1 : 0.7,
-                background: isOpen ? `linear-gradient(${theme.factionTheme.s500}70 26%, ${theme.factionTheme.s600})` : theme.factionTheme.s800,
-                transition: "background-color .2s ease-out",
-            }}
-        >
-            <NiceTooltip text="Live Chat" placement="left">
-                <NiceButton
-                    onClick={onClose}
-                    buttonColor={theme.factionTheme.primary}
-                    corners
-                    sx={{
-                        p: ".8rem",
-                        pb: ".6rem",
-                    }}
-                >
-                    <SvgChat size="2.6rem" />
-                </NiceButton>
-            </NiceTooltip>
-            <Typography
-                sx={{
-                    fontFamily: fonts.nostromoBlack,
-                    fontSize: "1.6rem",
-                }}
-            >
-                Live Chat
-            </Typography>
-            <Box flex={1} />
-            <Fade in={isOpen} unmountOnExit>
-                <Stack
-                    direction="row"
-                    spacing="1rem"
-                    sx={{
-                        alignItems: "center",
-                    }}
-                >
-                    {/* Pop-out */}
-                    {!isPoppedout && !isMobile && (
-                        <NiceButton
-                            corners
-                            buttonColor={theme.factionTheme.primary}
-                            onClick={() => setIsPoppedout(true)}
-                            sx={{
-                                p: ".5rem",
-                                pb: ".3rem",
-                            }}
-                        >
-                            <SvgExternalLink height="2rem" />
-                        </NiceButton>
-                    )}
-                    {/* Settings */}
-                    <NiceButton
-                        ref={popoverRef}
-                        corners
-                        buttonColor={theme.factionTheme.primary}
-                        onClick={() => setShowSettings(true)}
-                        sx={{
-                            p: ".5rem",
-                            pb: ".3rem",
-                        }}
-                    >
-                        <SvgSettings height="2rem" />
-                    </NiceButton>
-                </Stack>
-            </Fade>
-            <SettingsPopover open={showSettings} popoverRef={popoverRef} onClose={() => setShowSettings(false)} primaryColor={theme.factionTheme.primary} />
-        </Stack>
-    )
-}
-LiveChat.Header = Header
-
 const TabbedLayout = () => {
     const theme = useTheme()
     const { getFaction } = useSupremacy()
@@ -180,6 +95,72 @@ const TabbedLayout = () => {
         }
     }, [faction.label, factionID, tabValue, theme.factionTheme.primary, theme.factionTheme.text])
 
+    const tabs = useMemo(() => {
+        const tabs: NiceTab[] = []
+
+        tabs.push({
+            value: 0,
+            label: (
+                <Stack direction="row" alignItems="center" justifyContent="center" spacing=".96rem">
+                    <UnreadBadge tabValue={0}>
+                        <SvgChatGlobal size="2.5rem" />
+                    </UnreadBadge>
+                    <Typography
+                        variant="caption"
+                        sx={{
+                            lineHeight: 1,
+                            fontFamily: fonts.nostromoBlack,
+                            textAlign: "start",
+                        }}
+                    >
+                        GLOBAL CHAT
+                    </Typography>
+                </Stack>
+            ),
+        })
+
+        if (isEnlisted) {
+            tabs.push({
+                value: 1,
+                label: (
+                    <Stack
+                        direction="row"
+                        alignItems="center"
+                        justifyContent="center"
+                        spacing=".96rem"
+                        sx={{ animation: banProposal ? `${zoomEffect(1.03)} 1s infinite` : "none" }}
+                    >
+                        <UnreadBadge tabValue={1}>
+                            <Box
+                                sx={{
+                                    width: "3.2rem",
+                                    height: "3.2rem",
+                                    flexShrink: 0,
+                                    backgroundImage: `url(${faction.logo_url})`,
+                                    backgroundRepeat: "no-repeat",
+                                    backgroundPosition: "center",
+                                    backgroundSize: "contain",
+                                }}
+                            />
+                        </UnreadBadge>
+                        {banProposal && (
+                            <NiceTooltip color={colors.orange} placement="bottom" text="Punish proposal ongoing">
+                                <Box sx={{ ml: "-.2rem", mr: ".4rem", animation: `${zoomEffect(1.1)} 1s infinite` }}>
+                                    <SvgInfoCircular size="1rem" fill={colors.orange} sx={{ pb: ".2rem" }} />
+                                </Box>
+                            </NiceTooltip>
+                        )}
+                        <Typography variant="caption" sx={{ lineHeight: 1, fontFamily: fonts.nostromoBlack, textAlign: "start" }}>
+                            {factionTabLabel}
+                        </Typography>
+                    </Stack>
+                ),
+            })
+        }
+
+        return tabs
+    }, [banProposal, faction.logo_url, factionTabLabel, isEnlisted])
+
     return useMemo(() => {
         return (
             <Stack
@@ -190,118 +171,11 @@ const TabbedLayout = () => {
                     overflow: "hidden",
                 }}
             >
-                {/* Tabs */}
-                <Tabs
-                    value={tabValue}
-                    variant="fullWidth"
-                    sx={{
-                        height: `${4.8}rem`,
-                        background: theme.factionTheme.background,
-                        boxShadow: 1,
-                        zIndex: 9,
-                        minHeight: 0,
-                        ".MuiTab-root": {
-                            height: `${4.8}rem`,
-                            minHeight: 0,
-                            p: "1rem",
-                        },
-                        ".MuiTabs-indicator": {
-                            zIndex: -1,
-                            height: "100%",
-                            background: theme.factionTheme.s600,
-                            borderTop: `1px solid ${theme.factionTheme.s500}`,
-                            borderLeft: tabValue !== 0 ? `1px solid ${theme.factionTheme.s500}` : `0px solid transparent`,
-                            borderRight: isEnlisted ? `1px solid ${theme.factionTheme.s500}` : `0px solid transparent`,
-                        },
-                    }}
-                    onChange={(_event, newValue) => {
-                        changeTab(newValue)
-                    }}
-                >
-                    <Tab
-                        className="tutorial-global-chat"
-                        label={
-                            <Stack direction="row" alignItems="center" justifyContent="center" spacing=".96rem">
-                                <UnreadBadge tabValue={0}>
-                                    <SvgChatGlobal size="2.5rem" />
-                                </UnreadBadge>
-                                <Typography
-                                    variant="caption"
-                                    sx={{
-                                        lineHeight: 1,
-                                        fontFamily: fonts.nostromoBlack,
-                                        textAlign: "start",
-                                    }}
-                                >
-                                    GLOBAL CHAT
-                                </Typography>
-                            </Stack>
-                        }
-                        sx={{
-                            borderBottom: tabValue !== 0 ? `1px solid ${theme.factionTheme.s500}` : `0px solid transparent`,
-                        }}
-                    />
-                    {isEnlisted && (
-                        <Tab
-                            className="tutorial-faction-chat"
-                            label={
-                                <Stack
-                                    direction="row"
-                                    alignItems="center"
-                                    justifyContent="center"
-                                    spacing=".96rem"
-                                    sx={{ animation: banProposal ? `${zoomEffect(1.03)} 1s infinite` : "none" }}
-                                >
-                                    <UnreadBadge tabValue={1}>
-                                        <Box
-                                            sx={{
-                                                width: "3.2rem",
-                                                height: "3.2rem",
-                                                flexShrink: 0,
-                                                backgroundImage: `url(${faction.logo_url})`,
-                                                backgroundRepeat: "no-repeat",
-                                                backgroundPosition: "center",
-                                                backgroundSize: "contain",
-                                            }}
-                                        />
-                                    </UnreadBadge>
-                                    {banProposal && (
-                                        <NiceTooltip color={colors.orange} placement="bottom" text="Punish proposal ongoing">
-                                            <Box sx={{ ml: "-.2rem", mr: ".4rem", animation: `${zoomEffect(1.1)} 1s infinite` }}>
-                                                <SvgInfoCircular size="1rem" fill={colors.orange} sx={{ pb: ".2rem" }} />
-                                            </Box>
-                                        </NiceTooltip>
-                                    )}
-                                    <Typography variant="caption" sx={{ lineHeight: 1, fontFamily: fonts.nostromoBlack, textAlign: "start" }}>
-                                        {factionTabLabel}
-                                    </Typography>
-                                </Stack>
-                            }
-                            sx={{
-                                borderBottom: tabValue !== 1 ? `1px solid ${theme.factionTheme.s500}` : `0px solid transparent`,
-                            }}
-                        />
-                    )}
-                </Tabs>
-
+                <NiceTabs value={tabValue} onChange={(newValue) => changeTab(newValue)} tabs={tabs} />
                 <Content userID={userID} faction_id={faction_id} primaryColor={primaryColor} secondaryColor={secondaryColor} />
             </Stack>
         )
-    }, [
-        banProposal,
-        changeTab,
-        faction.logo_url,
-        factionTabLabel,
-        faction_id,
-        isEnlisted,
-        primaryColor,
-        secondaryColor,
-        tabValue,
-        theme.factionTheme.background,
-        theme.factionTheme.s500,
-        theme.factionTheme.s600,
-        userID,
-    ])
+    }, [changeTab, faction_id, primaryColor, secondaryColor, tabValue, tabs, userID])
 }
 
 const SplitLayout = () => {
@@ -485,3 +359,89 @@ const UnreadBadge = ({ tabValue: forTabValue, children }: { tabValue: number; ch
         </Badge>
     )
 }
+
+const Header = ({ isOpen, onClose }: HeaderProps) => {
+    const theme = useTheme()
+    const { isMobile } = useMobile()
+    const { isPoppedout, setIsPoppedout } = useChat()
+
+    const popoverRef = useRef(null)
+    const [showSettings, setShowSettings] = useState(false)
+
+    return (
+        <Stack
+            spacing="1rem"
+            direction="row"
+            sx={{
+                width: "100%",
+                p: "1rem",
+                alignItems: "center",
+                opacity: isOpen ? 1 : 0.7,
+                background: isOpen ? `linear-gradient(${theme.factionTheme.s500}70 26%, ${theme.factionTheme.s600})` : theme.factionTheme.s800,
+                transition: "background-color .2s ease-out",
+            }}
+        >
+            <NiceTooltip text="Live Chat" placement="left">
+                <NiceButton
+                    onClick={onClose}
+                    buttonColor={theme.factionTheme.primary}
+                    corners
+                    sx={{
+                        p: ".8rem",
+                        pb: ".6rem",
+                    }}
+                >
+                    <SvgChat size="2.6rem" />
+                </NiceButton>
+            </NiceTooltip>
+            <Typography
+                sx={{
+                    fontFamily: fonts.nostromoBlack,
+                    fontSize: "1.6rem",
+                }}
+            >
+                Live Chat
+            </Typography>
+            <Box flex={1} />
+            <Fade in={isOpen} unmountOnExit>
+                <Stack
+                    direction="row"
+                    spacing="1rem"
+                    sx={{
+                        alignItems: "center",
+                    }}
+                >
+                    {/* Pop-out */}
+                    {!isPoppedout && !isMobile && (
+                        <NiceButton
+                            corners
+                            buttonColor={theme.factionTheme.primary}
+                            onClick={() => setIsPoppedout(true)}
+                            sx={{
+                                p: ".5rem",
+                                pb: ".3rem",
+                            }}
+                        >
+                            <SvgExternalLink height="2rem" />
+                        </NiceButton>
+                    )}
+                    {/* Settings */}
+                    <NiceButton
+                        ref={popoverRef}
+                        corners
+                        buttonColor={theme.factionTheme.primary}
+                        onClick={() => setShowSettings(true)}
+                        sx={{
+                            p: ".5rem",
+                            pb: ".3rem",
+                        }}
+                    >
+                        <SvgSettings height="2rem" />
+                    </NiceButton>
+                </Stack>
+            </Fade>
+            <SettingsPopover open={showSettings} popoverRef={popoverRef} onClose={() => setShowSettings(false)} primaryColor={theme.factionTheme.primary} />
+        </Stack>
+    )
+}
+LiveChat.Header = Header

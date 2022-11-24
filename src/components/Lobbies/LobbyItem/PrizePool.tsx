@@ -12,8 +12,8 @@ import { NiceButton } from "../../Common/Nice/NiceButton"
 import { NicePopover } from "../../Common/Nice/NicePopover"
 import { NiceTextField } from "../../Common/Nice/NiceTextField"
 
-export const PrizePool = React.memo(function PrizePool({ lobby }: { lobby: BattleLobby }) {
-    const { sups_pool, first_faction_cut, second_faction_cut, third_faction_cut } = lobby
+export const PrizePool = React.memo(function PrizePool({ battleLobby }: { battleLobby: BattleLobby }) {
+    const { sups_pool, first_faction_cut, second_faction_cut, third_faction_cut } = battleLobby
     const [isPopoverOpen, setIsPopoverOpen] = useState(false)
     const popoverRef = useRef(null)
 
@@ -65,7 +65,7 @@ export const PrizePool = React.memo(function PrizePool({ lobby }: { lobby: Battl
                 </Stack>
             </Box>
 
-            {isPopoverOpen && <TopUpPopover open={isPopoverOpen} onClose={() => setIsPopoverOpen(false)} popoverRef={popoverRef} lobbyID={lobby.id} />}
+            {isPopoverOpen && <TopUpPopover open={isPopoverOpen} onClose={() => setIsPopoverOpen(false)} popoverRef={popoverRef} lobbyID={battleLobby.id} />}
         </>
     )
 })
@@ -121,8 +121,8 @@ const TopUpPopover = ({ open, onClose, popoverRef, lobbyID }: { open: boolean; o
             }}
         >
             <Stack direction="column" sx={{ p: "1rem 1.3rem", width: "35rem" }}>
-                <Typography variant="h6" fontFamily={fonts.nostromoBlack}>
-                    NOTE:
+                <Typography variant="h6" fontFamily={fonts.nostromoBlack} mb=".4rem">
+                    NOTE
                 </Typography>
 
                 <Typography variant="body1" sx={{ mb: "1rem" }}>
@@ -139,7 +139,7 @@ const TopUpPopover = ({ open, onClose, popoverRef, lobbyID }: { open: boolean; o
                             const valueNumber = parseFloat(value)
                             setTopUpReward(valueNumber)
                         }}
-                        placeholder="Top up amount"
+                        placeholder="Enter amount..."
                         InputProps={{
                             startAdornment: <SvgSupToken fill={colors.yellow} size="1.9rem" />,
                         }}

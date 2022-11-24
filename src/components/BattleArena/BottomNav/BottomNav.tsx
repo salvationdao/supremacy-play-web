@@ -94,7 +94,6 @@ const BottomNavInner = () => {
                                 }}
                                 label={
                                     <Stack direction="row" alignItems="center" spacing="1rem">
-                                        {item.icon}
                                         <Typography variant="caption" sx={{ color: "inherit", fontFamily: fonts.nostromoBold }}>
                                             {item.label}
                                         </Typography>

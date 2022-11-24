@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { EmptyWarMachinesPNG, SvgPlus, SvgSearch } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { snakeToTitle } from "../../helpers"
@@ -17,6 +17,7 @@ import { NiceTextField } from "../Common/Nice/NiceTextField"
 import { VirtualizedGrid } from "../Common/VirtualizedGrid"
 import { BattleLobbyCreateModal } from "./BattleLobbies/BattleLobbyCreate/BattleLobbyCreateModal"
 import { CentralQueue } from "./CentralQueue/CentralQueue"
+import { AccessCodePopover } from "./JoinPrivateLobby/AccessCodePopover"
 import { LobbyItem } from "./LobbyItem/LobbyItem"
 
 enum LobbyTabs {
@@ -40,7 +41,8 @@ export const Lobbies = () => {
     const [query, updateQuery] = useUrlQuery()
     const theme = useTheme()
     const [showCreateLobbyModal, setShowCreateLobbyModal] = useState(false)
-    const [showJoinPrivateLobbyModal, setShowJoinPrivateLobbyModal] = useState(false)
+    const [isJoinPrivatePopoverOpen, setIsJoinPrivatePopoverOpen] = useState(false)
+    const joinPrivatePopoverRef = useRef(null)
 
     // Player queue status
     const [playerQueueStatus, setPlayerQueueStatus] = useState<PlayerQueueStatus>({
@@ -135,11 +137,11 @@ export const Lobbies = () => {
 
         // Filter for the system or exhibition lobbies
         switch (activeTabID) {
-            case LobbyTabs.ExhibitionLobbies:
-                filteredLobbies = filteredLobbies.filter((lobby) => !lobby.generated_by_system)
-                break
             case LobbyTabs.SystemLobbies:
                 filteredLobbies = filteredLobbies.filter((lobby) => lobby.generated_by_system)
+                break
+            case LobbyTabs.ExhibitionLobbies:
+                filteredLobbies = filteredLobbies.filter((lobby) => !lobby.generated_by_system)
                 break
         }
 
@@ -172,7 +174,7 @@ export const Lobbies = () => {
             [UrlQueryParams.Search]: search,
         })
 
-        setDisplayLobbies(result)
+        setDisplayLobbies(result.filter((p) => !p.ready_at))
     }, [activeTabID, isLoading, lobbies, search, sort, updateQuery])
 
     const renderIndex = useCallback(
@@ -235,8 +237,8 @@ export const Lobbies = () => {
                     No results...
                 </Typography>
 
-                <NiceButton route={{ to: `/marketplace/mechs` }} buttonColor={theme.factionTheme.primary}>
-                    GO TO MARKETPLACE
+                <NiceButton onClick={() => setShowCreateLobbyModal(true)} buttonColor={theme.factionTheme.primary}>
+                    Create lobby
                 </NiceButton>
             </Stack>
         )
@@ -285,13 +287,14 @@ export const Lobbies = () => {
 
                             {/* Access code button */}
                             <NiceButton
+                                ref={joinPrivatePopoverRef}
                                 corners
                                 buttonColor={theme.factionTheme.primary}
                                 sx={{
                                     p: ".2rem 1rem",
                                     pt: ".4rem",
                                 }}
-                                onClick={() => setShowJoinPrivateLobbyModal(true)}
+                                onClick={() => setIsJoinPrivatePopoverOpen(true)}
                             >
                                 <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
                                     JOIN PRIVATE
@@ -336,6 +339,8 @@ export const Lobbies = () => {
             </Stack>
 
             {showCreateLobbyModal && <BattleLobbyCreateModal setOpen={setShowCreateLobbyModal} />}
+
+            <AccessCodePopover open={isJoinPrivatePopoverOpen} onClose={() => setIsJoinPrivatePopoverOpen(false)} popoverRef={joinPrivatePopoverRef} />
         </>
     )
 }

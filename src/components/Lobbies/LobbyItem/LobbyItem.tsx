@@ -54,12 +54,12 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby }: { battle
     }, [battleLobby.entry_fee])
 
     const lobbyStatus = useMemo(() => {
-        let textColor = colors.orange
-        let text = "WAITING..."
+        let textColor = colors.lightGrey
+        let text = "WAITING FOR PLAYERS..."
 
         if (battleLobby.assigned_to_battle_id) {
             textColor = colors.red
-            text = "BATTLE"
+            text = "BATTLE IN PROGRESS..."
         } else if (battleLobby.ready_at) {
             textColor = colors.green
             text = "READY"
@@ -244,7 +244,7 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby }: { battle
                         </Box>
 
                         {/* Reward pool and distribution */}
-                        <PrizePool lobby={battleLobby} />
+                        <PrizePool battleLobby={battleLobby} />
                     </Stack>
 
                     {/* Divider line */}
@@ -302,7 +302,7 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby }: { battle
                     open={isJoinModalOpen}
                     onClose={() => setIsJoinModalOpen(false)}
                     myFactionLobbySlots={myFactionLobbySlots}
-                    lobby={battleLobby}
+                    battleLobby={battleLobby}
                 />
             )}
         </>
