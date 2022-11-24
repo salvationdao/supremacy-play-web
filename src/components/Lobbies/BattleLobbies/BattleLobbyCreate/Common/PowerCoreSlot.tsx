@@ -1,12 +1,12 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo } from "react"
-import { SvgPowerCore } from "../../../assets"
-import { useTheme } from "../../../containers/theme"
-import { getRarityDeets } from "../../../helpers"
-import { scaleUpKeyframes } from "../../../theme/keyframes"
-import { colors, fonts } from "../../../theme/theme"
-import { PowerCore } from "../../../types"
-import { NiceTooltip, TooltipPlacement } from "../../Common/Nice/NiceTooltip"
+import { SvgPowerCore } from "../../../../../assets"
+import { useTheme } from "../../../../../containers/theme"
+import { getRarityDeets } from "../../../../../helpers"
+import { scaleUpKeyframes } from "../../../../../theme/keyframes"
+import { colors, fonts } from "../../../../../theme/theme"
+import { PowerCore } from "../../../../../types"
+import { NiceTooltip, TooltipPlacement } from "../../../../Common/Nice/NiceTooltip"
 
 export interface PowerCoreSlotProps {
     powerCore: PowerCore

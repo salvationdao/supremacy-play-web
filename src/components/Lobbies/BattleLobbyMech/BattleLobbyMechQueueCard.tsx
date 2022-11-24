@@ -9,7 +9,7 @@ import { MechBarStats } from "../../Hangar/WarMachinesHangar/Common/MechBarStats
 import { MechRepairBlocks } from "../../Common/Mech/MechRepairBlocks"
 import { MechThumbnail } from "../../Hangar/WarMachinesHangar/Common/MechThumbnail"
 import { MechName } from "../../Hangar/WarMachinesHangar/WarMachineDetails/MechName"
-import { WeaponSlot } from "../Common/weaponSlot"
+import { WeaponSlot } from "../BattleLobbies/BattleLobbyCreate/Common/weaponSlot"
 import { MechQueueStatus } from "./MechQueueStatus"
 
 interface QuickDeployItemProps {

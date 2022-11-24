@@ -13,8 +13,8 @@ import { Faction } from "../../../types"
 import { BattleLobbiesMech, BattleLobbySupporter } from "../../../types/battle_queue"
 import { ConfirmModal } from "../../Common/Deprecated/ConfirmModal"
 import { MechBarStats } from "../../Hangar/WarMachinesHangar/Common/MechBarStats"
-import { PowerCoreSlot } from "../Common/PowerCoreSlot"
-import { WeaponSlot } from "../Common/weaponSlot"
+import { PowerCoreSlot } from "../BattleLobbies/BattleLobbyCreate/Common/PowerCoreSlot"
+import { WeaponSlot } from "../BattleLobbies/BattleLobbyCreate/Common/weaponSlot"
 
 export interface BattleLobbyFaction {
     faction: Faction

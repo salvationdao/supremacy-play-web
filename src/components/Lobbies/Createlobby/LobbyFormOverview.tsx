@@ -11,7 +11,7 @@ import { camelToTitle, combineDateTime, getRarityDeets, shortCodeGenerator } fro
 import { SvgClose, SvgLogout, SvgSupToken } from "../../../assets"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
-import { WeaponSlot } from "../Common/weaponSlot"
+import { WeaponSlot } from "../BattleLobbies/BattleLobbyCreate/Common/weaponSlot"
 import { RepairBlocks } from "../../Common/Mech/MechRepairBlocks"
 import { useDebounce, useToggle } from "../../../hooks"
 import { PlayerNameGid } from "../../Common/PlayerNameGid"

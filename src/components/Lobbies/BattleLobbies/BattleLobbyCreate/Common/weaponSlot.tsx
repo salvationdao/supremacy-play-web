@@ -1,13 +1,13 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo } from "react"
-import { SvgWeapons } from "../../../assets"
-import { useTheme } from "../../../containers/theme"
-import { getRarityDeets } from "../../../helpers"
-import { scaleUpKeyframes } from "../../../theme/keyframes"
-import { colors, fonts } from "../../../theme/theme"
-import { MechWeaponSlot } from "../../../types/battle_queue"
-import { NiceTooltip, TooltipPlacement } from "../../Common/Nice/NiceTooltip"
-import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
+import { SvgWeapons } from "../../../../../assets"
+import { useTheme } from "../../../../../containers/theme"
+import { getRarityDeets } from "../../../../../helpers"
+import { scaleUpKeyframes } from "../../../../../theme/keyframes"
+import { colors, fonts } from "../../../../../theme/theme"
+import { MechWeaponSlot } from "../../../../../types/battle_queue"
+import { NiceTooltip, TooltipPlacement } from "../../../../Common/Nice/NiceTooltip"
+import { NiceBoxThing } from "../../../../Common/Nice/NiceBoxThing"
 
 interface WeaponSlotProps {
     weaponSlot: MechWeaponSlot

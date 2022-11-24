@@ -7,7 +7,7 @@ import { NewMechStruct } from "../../../types"
 import { RepairBlocks } from "../../Common/Mech/MechRepairBlocks"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { MechBarStats } from "../../Hangar/WarMachinesHangar/Common/MechBarStats"
-import { WeaponSlot } from "../Common/weaponSlot"
+import { WeaponSlot } from "../BattleLobbies/BattleLobbyCreate/Common/weaponSlot"
 
 interface QueueableMechCardProps {
     lobbyMech: NewMechStruct
