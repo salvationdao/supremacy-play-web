@@ -812,6 +812,11 @@ export const truncateTextLines = (numLines = 1, isInline = false): SxProps => ({
     textOverflow: "ellipsis",
     WebkitLineClamp: numLines,
     WebkitBoxOrient: "vertical",
+
+    // ":hover": {
+    //     overflow: "visible",
+    //     zIndex: 1,
+    // },
 })
 
 // Return true, if a mech has equipped a power core and more than one weapon

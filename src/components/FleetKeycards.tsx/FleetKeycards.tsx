@@ -46,7 +46,7 @@ export const FleetKeycards = () => {
             key: GameServerKeys.GetPlayerOwnedKeycards,
         },
         (payload) => {
-            setTimeout(() => setIsLoading(false), 750)
+            setTimeout(() => setIsLoading(false), 300)
 
             if (!payload) return
 
@@ -130,7 +130,7 @@ export const FleetKeycards = () => {
                 <VirtualizedGrid
                     uniqueID="fleetKeycardsGrid"
                     itemWidthConfig={{ minWidth: 37.5 }}
-                    itemHeight={36.25}
+                    itemHeight={34.4}
                     totalItems={displayKeycards.length}
                     gap={1.6}
                     renderIndex={renderIndex}

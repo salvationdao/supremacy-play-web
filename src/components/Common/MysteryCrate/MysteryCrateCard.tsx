@@ -4,7 +4,7 @@ import { useTimer } from "use-timer"
 import { SafePNG } from "../../../assets"
 import { useAuth, useGlobalNotifications, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { msToTime, truncateTextLines } from "../../../helpers"
+import { msToTime } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
@@ -13,6 +13,7 @@ import { OpeningCrate } from "../../FleetCrates/FleetCrates"
 import { MediaPreview } from "../MediaPreview/MediaPreview"
 import { NiceBoxThing } from "../Nice/NiceBoxThing"
 import { NiceButton } from "../Nice/NiceButton"
+import { TypographyTruncated } from "../TypographyTruncated"
 
 interface MysteryCrateCardProps {
     crate: MysteryCrate
@@ -65,7 +66,7 @@ export const MysteryCrateCard = React.memo(function MysteryCrateCard({ crate, se
         >
             <Stack spacing="1.2rem">
                 {/* Crate name */}
-                <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{crate.label}</Typography>
+                <TypographyTruncated sx={{ fontFamily: fonts.nostromoBlack }}>{crate.label}</TypographyTruncated>
 
                 {/* Crate image */}
                 <NiceBoxThing
@@ -98,13 +99,6 @@ export const MysteryCrateCard = React.memo(function MysteryCrateCard({ crate, se
                         </Stack>
                     )}
                 </NiceBoxThing>
-
-                {/* Crate description */}
-                {crate.description && (
-                    <Typography variant="h6" sx={{ ...truncateTextLines(2) }}>
-                        {crate.description}
-                    </Typography>
-                )}
 
                 {/* Open button */}
                 <NiceButton buttonColor={theme.factionTheme.primary} corners disabled={new Date() < crate.locked_until} loading={isLoading} onClick={openCrate}>

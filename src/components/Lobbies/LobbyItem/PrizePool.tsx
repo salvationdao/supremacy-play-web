@@ -34,7 +34,7 @@ export const PrizePool = React.memo(function PrizePool({ lobby }: { lobby: Battl
                     {/* Top up */}
                     <NiceButton buttonColor={colors.gold} sx={{ p: ".1rem .6rem", opacity: 0.84 }} ref={popoverRef} onClick={() => setIsPopoverOpen(true)}>
                         <Typography fontFamily={fonts.nostromoBold} variant="subtitle2" color={colors.gold}>
-                            INCREASE
+                            SPONSOR
                         </Typography>
                     </NiceButton>
                 </Stack>

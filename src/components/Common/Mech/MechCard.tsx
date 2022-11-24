@@ -2,13 +2,14 @@ import { Box, Checkbox, Stack, Typography } from "@mui/material"
 import React, { useMemo } from "react"
 import { Link } from "react-router-dom"
 import { SvgMechDeaths, SvgMechKills, SvgMechLosses, SvgMechWins, SvgUserDiamond } from "../../../assets"
-import { useSupremacy } from "../../../containers"
-import { numFormatter, truncateTextLines } from "../../../helpers"
+import { useAuth, useSupremacy } from "../../../containers"
+import { numFormatter } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { NewMechStruct } from "../../../types"
 import { MediaPreview } from "../MediaPreview/MediaPreview"
 import { NiceBoxThing } from "../Nice/NiceBoxThing"
 import { NiceTooltip } from "../Nice/NiceTooltip"
+import { TypographyTruncated } from "../TypographyTruncated"
 import { MechIdleStatus } from "./MechIdleStatus"
 import { RepairBlocks } from "./MechRepairBlocks"
 
@@ -33,6 +34,7 @@ const KDWL_GRID_WIDTH = "repeat(4, 5rem)"
 const CHECKBOX_GRID_WIDTH = "5rem"
 
 export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, toggleSelected, isGridView }: MechCardProps) {
+    const { userID } = useAuth()
     const { getFaction } = useSupremacy()
 
     const ownerFaction = useMemo(() => getFaction(mech.owner.faction_id), [getFaction, mech.owner.faction_id])
@@ -84,22 +86,21 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
 
                     {/* Mech name */}
                     <Link to={`/mech/${mech.id}`}>
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack, ...truncateTextLines(1) }}>{mech.name || mech.label}</Typography>
+                        <TypographyTruncated sx={{ fontFamily: fonts.nostromoBlack }}>{mech.name || mech.label}</TypographyTruncated>
                     </Link>
 
                     {/* Owner name */}
                     {!hide?.ownerName && (
-                        <Typography
+                        <TypographyTruncated
                             variant="h6"
                             sx={{
-                                color: ownerFaction.palette.primary,
+                                color: userID === mech.owner.id ? colors.gold : ownerFaction.palette.primary,
                                 fontWeight: "bold",
                                 mt: ".3rem !important",
-                                ...truncateTextLines(1),
                             }}
                         >
-                            {mech.owner.username} #{mech.owner.gid}
-                        </Typography>
+                            {mech.owner.username}#{mech.owner.gid}
+                        </TypographyTruncated>
                     )}
 
                     {/* Mech status */}
@@ -174,7 +175,7 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                 <Stack direction="row" alignItems="flex-start" justifyContent="space-between" spacing="1rem">
                     {/* Mech name */}
                     <Link to={`/mech/${mech.id}`}>
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack, ...truncateTextLines(1) }}>{mech.name || mech.label}</Typography>
+                        <TypographyTruncated sx={{ fontFamily: fonts.nostromoBlack }}>{mech.name || mech.label}</TypographyTruncated>
                     </Link>
 
                     {toggleSelected && (
@@ -191,17 +192,17 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
 
                 {/* Owner name */}
                 {!hide?.ownerName && (
-                    <Typography
+                    <TypographyTruncated
                         variant="h6"
                         sx={{
-                            color: ownerFaction.palette.primary,
+                            color: userID === mech.owner.id ? colors.gold : ownerFaction.palette.primary,
                             fontWeight: "bold",
                             mt: ".3rem !important",
-                            ...truncateTextLines(1),
                         }}
                     >
-                        <SvgUserDiamond size="2.5rem" inline fill={ownerFaction.palette.primary} /> {mech.owner.username} #{mech.owner.gid}
-                    </Typography>
+                        <SvgUserDiamond size="2.5rem" inline fill={userID === mech.owner.id ? colors.gold : ownerFaction.palette.primary} />{" "}
+                        {mech.owner.username}#{mech.owner.gid}
+                    </TypographyTruncated>
                 )}
 
                 {/* Mech image */}

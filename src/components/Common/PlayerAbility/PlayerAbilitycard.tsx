@@ -8,6 +8,7 @@ import { LocationSelectType, PlayerAbility } from "../../../types"
 import { MediaPreview } from "../MediaPreview/MediaPreview"
 import { NiceBoxThing } from "../Nice/NiceBoxThing"
 import { NiceTooltip } from "../Nice/NiceTooltip"
+import { TypographyTruncated } from "../TypographyTruncated"
 
 interface PlayerAbilityCardProps {
     playerAbility: PlayerAbility
@@ -58,9 +59,9 @@ export const PlayerAbilityCard = React.memo(function PlayerAbilityCard({ playerA
                 <Stack direction="row" alignItems="flex-start" justifyContent="space-between" spacing="1rem">
                     {/* Keycard name */}
                     <NiceTooltip text={iconTooltip} placement="bottom-start">
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack, ...truncateTextLines(1) }}>
+                        <TypographyTruncated sx={{ fontFamily: fonts.nostromoBlack }}>
                             {icon} {playerAbility.ability.label}
-                        </Typography>
+                        </TypographyTruncated>
                     </NiceTooltip>
 
                     <Typography variant="h6" sx={{ fontWeight: "bold" }}>
