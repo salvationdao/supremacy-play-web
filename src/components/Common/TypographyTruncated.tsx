@@ -1,11 +1,17 @@
 import { Box, Typography, TypographyProps } from "@mui/material"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 
 const TRANSITION_SPEED = 60
 
 // Super light weight wrapper, only CSS, use it!
 export const TypographyTruncated = ({ children, sx, ...props }: TypographyProps) => {
     const [spanRef, setSpanRef] = useState<HTMLSpanElement | null>(null)
+    const [reRender, setReRender] = useState(new Date().toISOString())
+
+    // Trigger re-calculation of widths when typography when children changes
+    useEffect(() => {
+        setReRender(new Date().toISOString())
+    }, [children])
 
     const { selfWidth, parentWidth } = useMemo(() => {
         if (!spanRef) {
@@ -25,7 +31,8 @@ export const TypographyTruncated = ({ children, sx, ...props }: TypographyProps)
             selfWidth,
             parentWidth,
         }
-    }, [spanRef])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [spanRef, reRender])
 
     return (
         <Typography
