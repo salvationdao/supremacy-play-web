@@ -30,8 +30,9 @@ export const TypographyTruncated = ({ children, sx, ...props }: TypographyProps)
                         width: "auto",
 
                         span: {
-                            left: `calc(-100%)`,
-                            transition: "left 2s linear",
+                            left: `100%`,
+                            transform: "translateX(calc(-100% - 2rem))",
+                            transition: "all 2s linear",
                         },
                     },
                 },

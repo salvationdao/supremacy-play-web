@@ -9,7 +9,7 @@ import { NewMechStruct } from "../../../types"
 import { MediaPreview } from "../MediaPreview/MediaPreview"
 import { NiceBoxThing } from "../Nice/NiceBoxThing"
 import { NiceTooltip } from "../Nice/NiceTooltip"
-import { TypographyTruncated } from "../Truncate"
+import { TypographyTruncated } from "../TypographyTruncated"
 import { MechIdleStatus } from "./MechIdleStatus"
 import { RepairBlocks } from "./MechRepairBlocks"
 
@@ -176,7 +176,9 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                 <Stack direction="row" alignItems="flex-start" justifyContent="space-between" spacing="1rem">
                     {/* Mech name */}
                     <Link to={`/mech/${mech.id}`}>
-                        <TypographyTruncated sx={{ fontFamily: fonts.nostromoBlack }}>{mech.name || mech.label}</TypographyTruncated>
+                        <TypographyTruncated sx={{ fontFamily: fonts.nostromoBlack }}>
+                            {mech.name || mech.label} testing a really long name lol
+                        </TypographyTruncated>
                     </Link>
 
                     {toggleSelected && (
