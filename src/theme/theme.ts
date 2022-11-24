@@ -434,6 +434,10 @@ export const theme = createTheme({
             styleOverrides: {
                 root: {
                     zIndex: siteZIndex.Modal,
+
+                    ".MuiBackdrop-root": {
+                        backgroundColor: "rgba(0, 0, 0, 0.8)",
+                    },
                 },
             },
         },
