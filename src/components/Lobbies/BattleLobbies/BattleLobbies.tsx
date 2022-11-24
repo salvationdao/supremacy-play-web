@@ -12,7 +12,6 @@ import { FancyButton } from "../../Common/Deprecated/FancyButton"
 import { PageHeader } from "../../Common/Deprecated/PageHeader"
 import { TotalAndPageSizeOptions } from "../../Common/Deprecated/TotalAndPageSizeOptions"
 import { SearchBattle } from "../../Replays/BattlesReplays/SearchBattle"
-import { BattleLobbyAccessCodeModal } from "./BattleLobbyAccessCodeModal"
 import { BattleLobbyCreateModal } from "./BattleLobbyCreate/BattleLobbyCreateModal"
 import { BattleLobbyItem } from "./BattleLobbyItem"
 import { BattleLobbySingleModal } from "./BattleLobbySingleModal"
@@ -44,7 +43,6 @@ export const BattleLobbies = ({ battleLobbies }: BattleLobbiesProps) => {
     const primaryColor = theme.factionTheme.primary
 
     const [openNewLobbyModal, setOpenNewLobbyModal] = useState(false)
-    const [openPrivateRoom, setOpenPrivateRoom] = useState(false)
     const [accessCode, setAccessCode] = useState("")
 
     const [selectedLobbyType, setSelectedLobbyType] = useState(LobbyType.System)
@@ -188,22 +186,6 @@ export const BattleLobbies = ({ battleLobbies }: BattleLobbiesProps) => {
                                             NEW LOBBY
                                         </Typography>
                                     </FancyButton>
-
-                                    <FancyButton
-                                        clipThingsProps={{
-                                            clipSize: "6px",
-                                            clipSlantSize: "0px",
-                                            backgroundColor: colors.bronze,
-                                            border: { borderColor: colors.bronze, borderThickness: "1.5px" },
-                                            sx: { position: "relative", minWidth: "10rem" },
-                                        }}
-                                        sx={{ px: ".6rem", py: ".5rem", color: "#FFFFFF" }}
-                                        onClick={() => setOpenPrivateRoom(true)}
-                                    >
-                                        <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                            ACCESS CODE
-                                        </Typography>
-                                    </FancyButton>
                                 </Stack>
                             </Stack>
                         </PageHeader>
@@ -272,8 +254,6 @@ export const BattleLobbies = ({ battleLobbies }: BattleLobbiesProps) => {
             </ClipThing>
 
             {openNewLobbyModal && <BattleLobbyCreateModal setOpen={setOpenNewLobbyModal} />}
-
-            {!accessCode && openPrivateRoom && <BattleLobbyAccessCodeModal setOpen={setOpenPrivateRoom} setAccessCode={setAccessCode} />}
 
             {accessCode && <BattleLobbySingleModal setAccessCode={setAccessCode} accessCode={accessCode} />}
         </>
