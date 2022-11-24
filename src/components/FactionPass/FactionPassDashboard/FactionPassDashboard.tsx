@@ -21,6 +21,7 @@ export const FactionPassDashboard = () => {
     return (
         <Stack
             alignItems="center"
+            spacing="1.5rem"
             sx={{
                 p: "4rem 5rem",
                 mx: "auto",
@@ -31,8 +32,8 @@ export const FactionPassDashboard = () => {
             }}
         >
             <NavTabs activeTabID={activeTabID} setActiveTabID={setActiveTabID} tabs={tabs} prevTab={prevTab} nextTab={nextTab} />
-            <Stack direction="row" alignItems="stretch" spacing={1} sx={{ flex: 1, width: "100%", overflow: "hidden" }}>
-                <Stack spacing={1}>
+            <Stack direction="row" alignItems="stretch" spacing="1rem" sx={{ flex: 1, width: "100%", overflow: "hidden" }}>
+                <Stack spacing="1rem">
                     <Box
                         sx={{
                             height: "30rem",
