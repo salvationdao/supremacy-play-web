@@ -190,7 +190,7 @@ export const MyLobbies = () => {
 
     return (
         <>
-            <Stack spacing="1.6rem" sx={{ position: "relative", height: "100%", overflow: "hidden" }}>
+            <Stack spacing="1.2rem" sx={{ position: "relative", height: "100%", overflow: "hidden" }}>
                 {/* Involved lobbies */}
                 <Stack
                     sx={{
