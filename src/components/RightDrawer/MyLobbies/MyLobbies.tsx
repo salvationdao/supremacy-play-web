@@ -23,6 +23,7 @@ const tabs: NiceTab[] = [
 ]
 
 export const MyLobbies = () => {
+    const theme = useTheme()
     const [involvedLobbies, setInvolvedLobbies] = useState<BattleLobby[]>([])
     const [allLobbies, setAllLobbies] = useState<BattleLobby[]>([])
     const [displayLobbies, setDisplayLobbies] = useState<BattleLobby[]>([])
@@ -190,6 +191,7 @@ export const MyLobbies = () => {
     return (
         <>
             <Stack spacing="1.6rem" sx={{ position: "relative", height: "100%", overflow: "hidden" }}>
+                {/* Involved lobbies */}
                 <Stack
                     sx={{
                         p: "1rem",
@@ -201,6 +203,7 @@ export const MyLobbies = () => {
                     {involvedLobbiesContent}
                 </Stack>
 
+                {/* Public lobbies */}
                 <Stack flex={displayLobbies.length === 0 ? 0.4 : 1}>
                     <NiceTabs tabs={tabs} value={tabValue} onChange={(newValue) => setTabValue(newValue)} />
                     <Stack
@@ -215,6 +218,13 @@ export const MyLobbies = () => {
                         {publicLobbiesContent}
                     </Stack>
                 </Stack>
+
+                {/* Some buttons */}
+                <NiceButton buttonColor={theme.factionTheme.primary} sx={{ p: ".2rem 1rem", pt: ".4rem" }} route={{ to: "/lobbies" }}>
+                    <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
+                        Go to lobbies
+                    </Typography>
+                </NiceButton>
             </Stack>
         </>
     )
@@ -237,11 +247,11 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
                 const list = prev.map((bl) => payload.find((p) => p.id === bl.id) || bl)
 
                 payload.forEach((p) => {
-                    // if already exists
+                    // If already exists
                     if (list.some((b) => b.id === p.id)) {
                         return
                     }
-                    // otherwise, push to the list
+                    // Otherwise, push to the list
                     list.push(p)
                 })
 
@@ -282,7 +292,7 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
                     fontSize: "1.6rem",
                 }}
             >
-                Lobbies
+                My Lobbies
             </Typography>
 
             <Box flex={1} />
