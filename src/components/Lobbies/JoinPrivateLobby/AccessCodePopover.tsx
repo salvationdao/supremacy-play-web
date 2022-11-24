@@ -39,7 +39,7 @@ interface AccessCodePopoverInnerProps extends AccessCodePopoverProps {
 
 const AccessCodePopoverInner = ({ open, onClose, popoverRef, accessCode, setAccessCode, setBattleLobby }: AccessCodePopoverInnerProps) => {
     const theme = useTheme()
-    const { send } = useGameServerCommandsFaction("/")
+    const { send } = useGameServerCommandsFaction("/faction_commander")
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string>()
 
@@ -49,6 +49,7 @@ const AccessCodePopoverInner = ({ open, onClose, popoverRef, accessCode, setAcce
                 setError(undefined)
                 setIsLoading(true)
                 const _battleLobby = await send<BattleLobby>(GameServerKeys.GetPrivateBattleLobby, { access_code: _access_code })
+                console.log(_battleLobby)
                 setBattleLobby(_battleLobby)
                 onClose()
             } catch (err) {
@@ -56,20 +57,16 @@ const AccessCodePopoverInner = ({ open, onClose, popoverRef, accessCode, setAcce
                 setError(typeof err === "string" ? err : "Incorrect access code.")
             } finally {
                 setIsLoading(false)
-                setAccessCode(undefined)
             }
         },
-        [onClose, send, setAccessCode, setBattleLobby],
+        [onClose, send, setBattleLobby],
     )
 
     return (
         <NicePopover
             open={open}
             anchorEl={popoverRef.current}
-            onClose={() => {
-                setError(undefined)
-                onClose()
-            }}
+            onClose={onClose}
             anchorOrigin={{
                 vertical: "bottom",
                 horizontal: "left",

@@ -1,6 +1,6 @@
 import { Box, CircularProgress, Stack, SxProps, Typography } from "@mui/material"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
-import { EmptyWarMachinesPNG, SvgInfoIcon, SvgSearch } from "../../../assets"
+import { EmptyWarMachinesPNG, SvgInfoCircular, SvgSearch } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, isMechDeployable } from "../../../helpers"
 import { useDebounce } from "../../../hooks"
@@ -305,8 +305,7 @@ export const MechSelector = React.memo(function MechSelector({
 
             {onlyDeployableMechs && (
                 <Typography sx={{ color: colors.neonBlue, fontWeight: "bold" }}>
-                    <SvgInfoIcon inline size="1.8rem" fill={colors.neonBlue} />
-                    Only mechs with a power core and weapons will be shown
+                    <SvgInfoCircular inline size="1.8rem" fill={colors.neonBlue} /> Only mechs with a power core and weapons will be shown
                 </Typography>
             )}
 

@@ -23,7 +23,15 @@ import { colors, fonts } from "../../../theme/theme"
 import { BattleLobbiesMech, BattleLobby } from "../../../types/battle_queue"
 import { TypographyTruncated } from "../../Common/TypographyTruncated"
 
-export const CentralQueueItemTooltip = ({ battleLobby, displayAccessCode }: { battleLobby: BattleLobby; displayAccessCode?: string }) => {
+export const CentralQueueItemTooltip = ({
+    battleLobby,
+    displayAccessCode,
+    width,
+}: {
+    battleLobby: BattleLobby
+    displayAccessCode?: string
+    width?: string
+}) => {
     const { factionTheme } = useTheme()
     const { arenaList } = useArena()
     const { factionsAll, getFaction } = useSupremacy()
@@ -33,7 +41,7 @@ export const CentralQueueItemTooltip = ({ battleLobby, displayAccessCode }: { ba
     const arenaName = useMemo(() => arenaList.find((a) => a.id === battleLobby.assigned_to_arena_id)?.name, [arenaList, battleLobby.assigned_to_arena_id])
 
     return (
-        <Box sx={{ width: "40rem", backgroundColor: factionTheme.s800 }}>
+        <Box sx={{ width: width || "40rem", backgroundColor: factionTheme.s800 }}>
             {/* Lobby name */}
             <Stack
                 direction="row"
