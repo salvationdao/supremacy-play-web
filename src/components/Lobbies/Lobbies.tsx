@@ -4,11 +4,12 @@ import { EmptyWarMachinesPNG, SvgPlus, SvgSearch } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { snakeToTitle } from "../../helpers"
 import { useDebounce, useUrlQuery } from "../../hooks"
-import { useGameServerSubscriptionFaction } from "../../hooks/useGameServer"
+import { useGameServerSubscriptionFaction, useGameServerSubscriptionSecuredUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
-import { BattleLobby } from "../../types/battle_queue"
+import { BattleLobby, PlayerQueueStatus } from "../../types/battle_queue"
 import { SortTypeLabel } from "../../types/marketplace"
+import { MechQueueLimit } from "../Common/Mech/MechQueueLimit"
 import { NavTabs } from "../Common/NavTabs/NavTabs"
 import { NiceButton } from "../Common/Nice/NiceButton"
 import { NiceSelect } from "../Common/Nice/NiceSelect"
@@ -40,6 +41,12 @@ export const Lobbies = () => {
     const theme = useTheme()
     const [showCreateLobbyModal, setShowCreateLobbyModal] = useState(false)
     const [showJoinPrivateLobbyModal, setShowJoinPrivateLobbyModal] = useState(false)
+
+    // Player queue status
+    const [playerQueueStatus, setPlayerQueueStatus] = useState<PlayerQueueStatus>({
+        queue_limit: 10,
+        total_queued: 0,
+    })
 
     // Nav tabs at the top
     const [activeTabID, setActiveTabID] = useState<LobbyTabs | undefined>(LobbyTabs.SystemLobbies)
@@ -75,6 +82,16 @@ export const Lobbies = () => {
     const [displayLobbies, setDisplayLobbies] = useState<BattleLobby[]>([])
     const [lobbies, setLobbies] = useState<BattleLobby[]>([])
     const [isLoading, setIsLoading] = useState(true)
+
+    useGameServerSubscriptionSecuredUser<PlayerQueueStatus>(
+        {
+            URI: "/queue_status",
+            key: GameServerKeys.PlayerQueueStatus,
+        },
+        (payload) => {
+            setPlayerQueueStatus(payload)
+        },
+    )
 
     useGameServerSubscriptionFaction<BattleLobby[]>(
         {
@@ -280,6 +297,8 @@ export const Lobbies = () => {
                                     JOIN PRIVATE
                                 </Typography>
                             </NiceButton>
+
+                            <MechQueueLimit playerQueueStatus={playerQueueStatus} />
 
                             <Box flex={1} />
 

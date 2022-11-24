@@ -9,11 +9,9 @@ import { useLocalStorage } from "../../hooks/useLocalStorage"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts } from "../../theme/theme"
 import { MechStatusEnum, NewMechStruct, RarityEnum } from "../../types"
-import { PlayerQueueStatus } from "../../types/battle_queue"
 import { SortTypeLabel } from "../../types/marketplace"
 import { MechBulkActions } from "../Common/Mech/MechBulkActions"
 import { MechCard } from "../Common/Mech/MechCard"
-import { MechQueueLimit } from "../Common/Mech/MechQueueLimit"
 import { RepairBlocks } from "../Common/Mech/MechRepairBlocks"
 import { NavTabs } from "../Common/NavTabs/NavTabs"
 import { usePageTabs } from "../Common/NavTabs/usePageTabs"
@@ -87,12 +85,6 @@ export const FleetMechs = () => {
     const theme = useTheme()
     const { tabs, activeTabID, setActiveTabID, prevTab, nextTab } = usePageTabs()
 
-    // Player queue status
-    const [playerQueueStatus, setPlayerQueueStatus] = useState<PlayerQueueStatus>({
-        queue_limit: 10,
-        total_queued: 0,
-    })
-
     // Filter, search
     const [showFilters, setShowFilters] = useLocalStorage<boolean>("fleetMechsFilters", false)
     const [showRepairBay, setShowRepairBay] = useLocalStorage<boolean>("fleetMechsRepairBay", true)
@@ -127,16 +119,6 @@ export const FleetMechs = () => {
             return newArray
         })
     }, [])
-
-    useGameServerSubscriptionSecuredUser<PlayerQueueStatus>(
-        {
-            URI: "/queue_status",
-            key: GameServerKeys.PlayerQueueStatus,
-        },
-        (payload) => {
-            setPlayerQueueStatus(payload)
-        },
-    )
 
     useGameServerSubscriptionSecuredUser<NewMechStruct[]>(
         {
@@ -428,8 +410,6 @@ export const FleetMechs = () => {
                                 <SvgRepair inline size="1.5rem" /> REPAIR BAY
                             </Typography>
                         </NiceButton>
-
-                        <MechQueueLimit playerQueueStatus={playerQueueStatus} />
 
                         <Box flex={1} />
 

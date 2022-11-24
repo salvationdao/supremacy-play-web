@@ -15,8 +15,7 @@ import { SortTypeLabel } from "../../../../../types/marketplace"
 import { FancyButton } from "../../../../Common/Deprecated/FancyButton"
 import { TotalAndPageSizeOptions } from "../../../../Common/Deprecated/TotalAndPageSizeOptions"
 import { SearchBattle } from "../../../../Replays/BattlesReplays/SearchBattle"
-import { BattleLobbyMechQueueCard } from "../../../BattleLobbyMech/BattleLobbyMechQueueCard"
-import { QueueDetails } from "../../../BattleLobbyMech/QueueDetails"
+import { BattleLobbyMechQueueCard } from "./BattleLobbyMechQueueCard"
 
 const sortOptions = [
     { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
@@ -288,8 +287,6 @@ export const MechSelector = ({ selectedMechs, setSelectedMechs, battleLobby, kee
     return (
         <Stack flex={1}>
             <Stack direction="row" alignItems="center" justifyContent="space-between">
-                <QueueDetails playerQueueStatus={playerQueueLimit} />
-
                 <FancyButton
                     clipThingsProps={{
                         clipSize: "6px",
