@@ -1,5 +1,5 @@
 import { Stack } from "@mui/material"
-import { useTheme } from "../../../containers/theme"
+import { useTheme } from "../../../../../containers/theme"
 import { CreateLobbyFormTabs } from "./CreateLobbyFormTabs"
 import { useCallback, useMemo, useState } from "react"
 import { useForm, FormProvider } from "react-hook-form"
@@ -8,10 +8,10 @@ import { RoomSettingForm } from "./RoomSettingForm"
 import { LobbyFormOverview } from "./LobbyFormOverview"
 import { FeeRewardForm } from "./FeeRewardForm"
 import { WarMachineForm } from "./WarMachineForm"
-import { NewMechStruct } from "../../../types"
-import { useGameServerSubscriptionFaction, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../keys"
-import { PlayerQueueStatus } from "../../../types/battle_queue"
+import { NewMechStruct } from "../../../../../types"
+import { useGameServerSubscriptionFaction, useGameServerSubscriptionSecuredUser } from "../../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../../keys"
+import { PlayerQueueStatus } from "../../../../../types/battle_queue"
 
 export interface LobbyForm {
     name: string

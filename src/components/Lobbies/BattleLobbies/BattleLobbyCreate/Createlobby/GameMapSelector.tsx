@@ -1,12 +1,12 @@
 import { Box, Typography } from "@mui/material"
 import { useMemo, useRef, useState } from "react"
 import { useFormContext } from "react-hook-form"
-import { useTheme } from "../../../containers/theme"
-import { useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../keys"
-import { fonts } from "../../../theme/theme"
-import { GameMap } from "../../../types"
-import { NicePopover } from "../../Common/Nice/NicePopover"
+import { useTheme } from "../../../../../containers/theme"
+import { useGameServerSubscriptionSecured } from "../../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../../keys"
+import { fonts } from "../../../../../theme/theme"
+import { GameMap } from "../../../../../types"
+import { NicePopover } from "../../../../Common/Nice/NicePopover"
 
 export const GameMapSelector = () => {
     const { factionTheme } = useTheme()

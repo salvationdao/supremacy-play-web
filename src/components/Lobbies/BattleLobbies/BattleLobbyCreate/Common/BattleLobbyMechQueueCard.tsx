@@ -1,17 +1,14 @@
 import { Box, Stack, Typography } from "@mui/material"
 import React, { useMemo } from "react"
-import { useTheme } from "../../../containers/theme"
-import { getRarityDeets } from "../../../helpers"
-import { truncateTextLines } from "../../../helpers"
-import { fonts } from "../../../theme/theme"
-import { NewMechStruct } from "../../../types"
-import { MechBarStats } from "../../Hangar/WarMachinesHangar/Common/MechBarStats"
-import { MechRepairBlocks } from "../../Common/Mech/MechRepairBlocks"
-import { MechThumbnail } from "../../Hangar/WarMachinesHangar/Common/MechThumbnail"
-import { MechName } from "../../Hangar/WarMachinesHangar/WarMachineDetails/MechName"
-import { WeaponSlot } from "../Common/weaponSlot"
-import { MechQueueStatus } from "./MechQueueStatus"
-
+import { useTheme } from "../../../../../containers/theme"
+import { getRarityDeets, truncateTextLines } from "../../../../../helpers"
+import { fonts } from "../../../../../theme/theme"
+import { NewMechStruct } from "../../../../../types"
+import { MechRepairBlocks } from "../../../../Common/Mech/MechRepairBlocks"
+import { MechBarStats } from "../../../../Hangar/WarMachinesHangar/Common/MechBarStats"
+import { MechThumbnail } from "../../../../Hangar/WarMachinesHangar/Common/MechThumbnail"
+import { MechName } from "../../../../Hangar/WarMachinesHangar/WarMachineDetails/MechName"
+import { WeaponSlot } from "./weaponSlot"
 interface QuickDeployItemProps {
     mech: NewMechStruct
     isSelected?: boolean
@@ -62,8 +59,6 @@ export const BattleLobbyMechQueueCard = React.memo(function QuickDeployItem({ is
 
                             <MechName allowEdit mech={mech} />
                         </Box>
-
-                        <MechQueueStatus mech={mech} />
                     </Stack>
 
                     <Typography

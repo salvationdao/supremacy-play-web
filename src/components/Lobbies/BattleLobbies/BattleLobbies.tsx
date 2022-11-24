@@ -270,8 +270,11 @@ export const BattleLobbies = ({ battleLobbies }: BattleLobbiesProps) => {
                     </Stack>
                 </Stack>
             </ClipThing>
+
             {openNewLobbyModal && <BattleLobbyCreateModal setOpen={setOpenNewLobbyModal} />}
+
             {!accessCode && openPrivateRoom && <BattleLobbyAccessCodeModal setOpen={setOpenPrivateRoom} setAccessCode={setAccessCode} />}
+
             {accessCode && <BattleLobbySingleModal setAccessCode={setAccessCode} accessCode={accessCode} />}
         </>
     )

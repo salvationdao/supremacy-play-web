@@ -1,11 +1,13 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, IconButton, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { useMemo } from "react"
 import {
     SvgChest2,
+    SvgContentCopyIcon,
     SvgFirstPlace,
     SvgLeaderboard,
     SvgLobbies,
+    SvgLock,
     SvgMap,
     SvgQueue,
     SvgSecondPlace,
@@ -16,11 +18,12 @@ import {
 } from "../../../assets"
 import { useArena, useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { supFormatter, truncateTextLines } from "../../../helpers"
+import { supFormatter } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleLobbiesMech, BattleLobby } from "../../../types/battle_queue"
+import { TypographyTruncated } from "../../Common/TypographyTruncated"
 
-export const CentralQueueItemTooltip = ({ battleLobby }: { battleLobby: BattleLobby }) => {
+export const CentralQueueItemTooltip = ({ battleLobby, displayAccessCode }: { battleLobby: BattleLobby; displayAccessCode?: string }) => {
     const { factionTheme } = useTheme()
     const { arenaList } = useArena()
     const { factionsAll, getFaction } = useSupremacy()
@@ -32,30 +35,49 @@ export const CentralQueueItemTooltip = ({ battleLobby }: { battleLobby: BattleLo
     return (
         <Box sx={{ minWidth: "38rem", backgroundColor: factionTheme.s800 }}>
             {/* Lobby name */}
-            <Typography
+            <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="space-between"
                 sx={{
                     p: "1rem 1.5rem",
-                    fontFamily: fonts.nostromoBlack,
-                    fontSize: "2rem",
+                    pr: ".5rem",
                     borderBottom: `1px solid ${factionTheme.primary}`,
                     backgroundColor: factionTheme.s600,
-                    ...truncateTextLines(1),
                 }}
             >
-                <SvgLobbies inline size="2.2rem" /> {battleLobby.name}
-            </Typography>
+                <TypographyTruncated variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
+                    {displayAccessCode ? <SvgLock inline size="2.2rem" fill={colors.orange} /> : <SvgLobbies inline size="2.2rem" />}{" "}
+                    {battleLobby.name || `Lobby #${battleLobby.number}`}
+                </TypographyTruncated>
+
+                {displayAccessCode && (
+                    <Stack direction="row" alignItems="center">
+                        <Typography variant="h6">{displayAccessCode}</Typography>
+                        <IconButton
+                            size="small"
+                            sx={{ opacity: 0.6, ":hover": { opacity: 1 } }}
+                            onClick={() => {
+                                navigator.clipboard.writeText(displayAccessCode)
+                            }}
+                        >
+                            <SvgContentCopyIcon inline size="1.3rem" />
+                        </IconButton>
+                    </Stack>
+                )}
+            </Stack>
 
             {/* Label */}
             <Typography
                 variant="body2"
                 sx={{
                     p: ".4rem 1rem",
-                    backgroundColor: colors.green,
+                    backgroundColor: battleLobby.generated_by_system ? colors.green : colors.blue2,
                     textAlign: "center",
                     fontFamily: fonts.nostromoBlack,
                 }}
             >
-                Exhibition Arena
+                {battleLobby.generated_by_system ? "System Battle" : "Exhibition Battle"}
             </Typography>
 
             <Stack sx={{ p: "1.4rem", pb: "2rem" }} spacing="1rem">
@@ -85,9 +107,9 @@ export const CentralQueueItemTooltip = ({ battleLobby }: { battleLobby: BattleLo
                                 }}
                             />
                         )}
-                        <Typography sx={{ color: ownerFaction.palette.primary, ...truncateTextLines(1) }}>
+                        <TypographyTruncated sx={{ color: ownerFaction.palette.primary }}>
                             {battleLobby.generated_by_system ? "The Overseer" : `${battleLobby.host_by.username}#${battleLobby.host_by.gid}`}
-                        </Typography>
+                        </TypographyTruncated>
                     </Stack>
                 </Stack>
 

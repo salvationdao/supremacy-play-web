@@ -1,7 +1,7 @@
 import { MechSlot } from "./MechSlot"
 import { Stack } from "@mui/material"
 import React, { useMemo } from "react"
-import { NewMechStruct } from "../../../types"
+import { NewMechStruct } from "../../../../../types"
 
 interface SelectedMechSlotsProps {
     selectedMechs: NewMechStruct[]

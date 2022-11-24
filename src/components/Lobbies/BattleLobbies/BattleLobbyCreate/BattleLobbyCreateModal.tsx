@@ -12,12 +12,12 @@ import { ConfirmModal } from "../../../Common/Deprecated/ConfirmModal"
 import { FancyButton } from "../../../Common/Deprecated/FancyButton"
 import { FactionBasedDatePicker } from "../../../Common/FactionBasedDatePicker"
 import { FactionBasedTimePicker } from "../../../Common/FactionBasedTimePicker"
-import { InputField } from "../../Common/InputField"
-import { MechSelector } from "../../Common/MechSelector"
-import { RadioGroupField } from "../../Common/RadioGroupField"
-import { SelectedMechSlots } from "../../Common/SelectedMechSlots"
-import { SelectField } from "../../Common/SelectField"
-import { SliderField } from "../../Common/SliderField"
+import { InputField } from "./Common/InputField"
+import { MechSelector } from "./Common/MechSelector"
+import { RadioGroupField } from "./Common/RadioGroupField"
+import { SelectedMechSlots } from "./Common/SelectedMechSlots"
+import { SelectField } from "./Common/SelectField"
+import { SliderField } from "./Common/SliderField"
 
 interface BattleLobbyCreateModalProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>

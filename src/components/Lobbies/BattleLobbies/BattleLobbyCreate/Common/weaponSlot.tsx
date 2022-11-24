@@ -1,23 +1,24 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo } from "react"
-import { SvgPowerCore } from "../../../assets"
-import { useTheme } from "../../../containers/theme"
-import { getRarityDeets } from "../../../helpers"
-import { scaleUpKeyframes } from "../../../theme/keyframes"
-import { colors, fonts } from "../../../theme/theme"
-import { PowerCore } from "../../../types"
-import { NiceTooltip, TooltipPlacement } from "../../Common/Nice/NiceTooltip"
+import { SvgWeapons } from "../../../../../assets"
+import { useTheme } from "../../../../../containers/theme"
+import { getRarityDeets } from "../../../../../helpers"
+import { scaleUpKeyframes } from "../../../../../theme/keyframes"
+import { colors, fonts } from "../../../../../theme/theme"
+import { MechWeaponSlot } from "../../../../../types/battle_queue"
+import { NiceTooltip, TooltipPlacement } from "../../../../Common/Nice/NiceTooltip"
+import { NiceBoxThing } from "../../../../Common/Nice/NiceBoxThing"
 
-export interface PowerCoreSlotProps {
-    powerCore: PowerCore
+interface WeaponSlotProps {
+    weaponSlot: MechWeaponSlot
     tooltipPlacement: TooltipPlacement
     size?: string
 }
-
-export const PowerCoreSlot = ({ powerCore, tooltipPlacement, size }: PowerCoreSlotProps) => {
+export const WeaponSlot = ({ weaponSlot, tooltipPlacement, size }: WeaponSlotProps) => {
     const { factionTheme } = useTheme()
+    const weapon = weaponSlot.weapon
 
-    const renderStat = useCallback((label: string, value: string | number) => {
+    const weaponStat = useCallback((label: string, value: string | number) => {
         return (
             <Stack direction="row" alignItems="center" justifyContent="space-between">
                 <Typography variant="body2" fontFamily={fonts.nostromoMedium}>
@@ -31,7 +32,7 @@ export const PowerCoreSlot = ({ powerCore, tooltipPlacement, size }: PowerCoreSl
     }, [])
 
     return useMemo(() => {
-        if (!powerCore)
+        if (!weapon)
             return (
                 <Box
                     sx={{
@@ -41,7 +42,7 @@ export const PowerCoreSlot = ({ powerCore, tooltipPlacement, size }: PowerCoreSl
                         height: size || "4rem",
                         width: size || "4rem",
                         border: `${colors.grey}80 2px solid`,
-                        borderRadius: 0.6,
+                        borderRadius: 0,
                         backgroundColor: `${factionTheme.background}`,
                         "&:hover": {
                             border: `${factionTheme.primary} 2px solid`,
@@ -49,11 +50,11 @@ export const PowerCoreSlot = ({ powerCore, tooltipPlacement, size }: PowerCoreSl
                         opacity: "0.5",
                     }}
                 >
-                    <SvgPowerCore />
+                    <SvgWeapons />
                 </Box>
             )
 
-        const rarity = getRarityDeets(powerCore?.tier || "")
+        const weaponRarity = getRarityDeets(weapon?.tier || "")
         return (
             <NiceTooltip
                 tooltipSx={{
@@ -64,14 +65,14 @@ export const PowerCoreSlot = ({ powerCore, tooltipPlacement, size }: PowerCoreSl
                     <Stack direction="column" sx={{ width: "30rem", p: "1rem" }}>
                         <Stack direction="row" alignItems="center">
                             <Box
-                                key={!powerCore.avatar_url ? powerCore.image_url : powerCore.avatar_url}
+                                key={!weapon.avatar_url ? weapon.image_url : weapon.avatar_url}
                                 component="img"
-                                src={!powerCore.avatar_url ? powerCore.image_url : powerCore.avatar_url}
+                                src={!weapon.avatar_url ? weapon.image_url : weapon.avatar_url}
                                 sx={{
                                     width: "6rem",
                                     height: "6rem",
                                     objectFit: "cover",
-                                    borderRadius: 0.6,
+                                    borderRadius: 0,
                                     animation: `${scaleUpKeyframes} .5s ease-out`,
                                 }}
                             />
@@ -80,32 +81,34 @@ export const PowerCoreSlot = ({ powerCore, tooltipPlacement, size }: PowerCoreSl
                                     variant="caption"
                                     sx={{
                                         fontFamily: fonts.nostromoHeavy,
-                                        color: rarity.color,
+                                        color: weaponRarity.color,
                                     }}
                                 >
-                                    {rarity.label}
+                                    {weaponRarity.label}
                                 </Typography>
-                                <Typography fontFamily={fonts.nostromoBlack}>{powerCore.label}</Typography>
+                                <Typography fontFamily={fonts.nostromoBlack}>{weapon.label}</Typography>
                             </Stack>
                         </Stack>
-                        {renderStat("CAPACITY", powerCore.capacity)}
-                        {renderStat("MAX DRAW RATE", powerCore.max_draw_rate)}
-                        {renderStat("RECHARGE RATE", powerCore.recharge_rate)}
-                        {renderStat("ARMOUR", powerCore.armour)}
-                        {renderStat("MAX HITPOINTS", powerCore.max_hitpoints)}
+                        {weaponStat("DAMAGE", weapon.damage)}
+                        {weaponStat("DAMAGE FALLOFF", weapon.damage_falloff)}
+                        {weaponStat("RADIUS", weapon.radius)}
+                        {weaponStat("RADIAL DAMAGE FALLOFF", weapon.radius_damage_falloff)}
+                        {weaponStat("SPREAD", weapon.spread)}
+                        {weaponStat("RATE OF FIRE", weapon.rate_of_fire)}
+                        {weaponStat("ENERGY COST", weapon.power_cost)}
                     </Stack>
                 }
                 placement={tooltipPlacement}
             >
-                <Box
+                <NiceBoxThing
+                    border={{ color: `${weaponRarity.color}80`, thickness: "very-lean" }}
+                    caret={{ position: "bottom-right", size: "small" }}
                     sx={{
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         height: size || "4rem",
                         width: size || "4rem",
-                        border: `${rarity.color}80 2px solid`,
-                        borderRadius: 0.6,
                         backgroundColor: `${factionTheme.background}`,
                         "&:hover": {
                             border: `${factionTheme.primary} 2px solid`,
@@ -113,19 +116,19 @@ export const PowerCoreSlot = ({ powerCore, tooltipPlacement, size }: PowerCoreSl
                     }}
                 >
                     <Box
-                        key={!powerCore.avatar_url ? powerCore.image_url : powerCore.avatar_url}
+                        key={!weapon.avatar_url ? weapon.image_url : weapon.avatar_url}
                         component="img"
-                        src={!powerCore.avatar_url ? powerCore.image_url : powerCore.avatar_url}
+                        src={!weapon.avatar_url ? weapon.image_url : weapon.avatar_url}
                         sx={{
                             width: "100%",
                             height: "100%",
                             objectFit: "cover",
-                            borderRadius: 0.6,
+                            objectPosition: "center",
                             animation: `${scaleUpKeyframes} .5s ease-out`,
                         }}
                     />
-                </Box>
+                </NiceBoxThing>
             </NiceTooltip>
         )
-    }, [factionTheme.background, factionTheme.primary, powerCore, renderStat, size, tooltipPlacement])
+    }, [factionTheme.background, factionTheme.primary, size, tooltipPlacement, weapon, weaponStat])
 }
