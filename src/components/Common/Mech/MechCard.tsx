@@ -176,9 +176,7 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                 <Stack direction="row" alignItems="flex-start" justifyContent="space-between" spacing="1rem">
                     {/* Mech name */}
                     <Link to={`/mech/${mech.id}`}>
-                        <TypographyTruncated sx={{ fontFamily: fonts.nostromoBlack }}>
-                            {mech.name || mech.label} testing a really long name lol
-                        </TypographyTruncated>
+                        <TypographyTruncated sx={{ fontFamily: fonts.nostromoBlack }}>{mech.name || mech.label}</TypographyTruncated>
                     </Link>
 
                     {toggleSelected && (
