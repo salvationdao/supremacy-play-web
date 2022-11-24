@@ -169,7 +169,7 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
             <Box flex={1} />
 
             <Typography>
-                {involvedLobbies.length} open {involvedLobbies.length === 1 ? "lobby" : "lobbies"}
+                in {involvedLobbies.length} {involvedLobbies.length === 1 ? "lobby" : "lobbies"}
             </Typography>
         </Stack>
     )
