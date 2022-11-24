@@ -1,13 +1,13 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { useSupremacy } from "../../../containers"
-import { getRarityDeets } from "../../../helpers"
-import { fonts } from "../../../theme/theme"
-import { NewMechStruct } from "../../../types"
-import { RepairBlocks } from "../../Common/Mech/MechRepairBlocks"
-import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
-import { MechBarStats } from "../../Hangar/WarMachinesHangar/Common/MechBarStats"
-import { WeaponSlot } from "../BattleLobbies/BattleLobbyCreate/Common/weaponSlot"
+import { useSupremacy } from "../../../../../containers"
+import { getRarityDeets } from "../../../../../helpers"
+import { fonts } from "../../../../../theme/theme"
+import { NewMechStruct } from "../../../../../types"
+import { RepairBlocks } from "../../../../Common/Mech/MechRepairBlocks"
+import { NiceBoxThing } from "../../../../Common/Nice/NiceBoxThing"
+import { MechBarStats } from "../../../../Hangar/WarMachinesHangar/Common/MechBarStats"
+import { WeaponSlot } from "../Common/weaponSlot"
 
 interface QueueableMechCardProps {
     lobbyMech: NewMechStruct

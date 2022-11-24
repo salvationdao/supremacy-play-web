@@ -1,14 +1,14 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { Controller, useFormContext } from "react-hook-form"
-import { NiceTextField } from "../../Common/Nice/NiceTextField"
+import { NiceTextField } from "../../../../Common/Nice/NiceTextField"
 import React, { useCallback } from "react"
-import { useTheme } from "../../../containers/theme"
-import { NiceButton } from "../../Common/Nice/NiceButton"
-import { fonts } from "../../../theme/theme"
+import { useTheme } from "../../../../../containers/theme"
+import { NiceButton } from "../../../../Common/Nice/NiceButton"
+import { fonts } from "../../../../../theme/theme"
 import { Accessibility, Scheduling } from "./CreateLobby"
 import { GameMapSelector } from "./GameMapSelector"
-import { FactionBasedDatePicker } from "../../Common/FactionBasedDatePicker"
-import { FactionBasedTimePicker } from "../../Common/FactionBasedTimePicker"
+import { FactionBasedDatePicker } from "../../../../Common/FactionBasedDatePicker"
+import { FactionBasedTimePicker } from "../../../../Common/FactionBasedTimePicker"
 
 interface RoomSettingFormProps {
     nextPage: () => void

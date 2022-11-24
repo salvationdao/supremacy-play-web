@@ -1,8 +1,8 @@
 import { Stack, Typography } from "@mui/material"
-import { fonts } from "../../../theme/theme"
+import { fonts } from "../../../../../theme/theme"
 import React, { useMemo } from "react"
-import { useTheme } from "../../../containers/theme"
-import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
+import { useTheme } from "../../../../../containers/theme"
+import { NiceBoxThing } from "../../../../Common/Nice/NiceBoxThing"
 
 interface CreateLobbyFormTabsProps {
     currentProcess: number
