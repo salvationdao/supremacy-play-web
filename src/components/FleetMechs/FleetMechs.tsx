@@ -437,7 +437,7 @@ export const FleetMechs = () => {
                         <Box flex={1} />
 
                         {/* Bulk actions */}
-                        <MechBulkActions selectedMechs={selectedMechs} setSelectedMechs={setSelectedMechs} />
+                        <MechBulkActions mechs={displayMechs} selectedMechs={selectedMechs} setSelectedMechs={setSelectedMechs} />
 
                         {/* Show total */}
                         <Box sx={{ backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", px: "1rem" }}>
