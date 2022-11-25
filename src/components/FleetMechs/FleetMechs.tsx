@@ -33,6 +33,7 @@ enum UrlQueryParams {
     Wins = "wins",
     Losses = "losses",
     RepairBlocks = "repairBlocks",
+    Staked = "staked",
 }
 
 const sortOptions = [
@@ -55,6 +56,11 @@ const mechStatusOptions = [
     { value: MechStatusEnum.Battle, render: { label: "IN BATTLE", color: colors.orange } },
     { value: MechStatusEnum.Market, render: { label: "MARKETPLACE", color: colors.bronze } },
     { value: MechStatusEnum.Damaged, render: { label: "DAMAGED", color: colors.red } },
+]
+
+const mechStakedOptions = [
+    { value: "true", render: { label: "STAKED", color: colors.staked } },
+    { value: "false", render: { label: "NOT STAKED", color: colors.green } },
 ]
 
 const repairProgressOptions = [
@@ -92,6 +98,7 @@ export const FleetMechs = () => {
     const [sort, setSort] = useState<string>(query.get(UrlQueryParams.Sort) || SortTypeLabel.MechQueueAsc)
     const [isGridView, setIsGridView] = useLocalStorage<boolean>("fleetMechsGrid", true)
     const [status, setStatus] = useState<string[]>((query.get(UrlQueryParams.Statuses) || undefined)?.split("||") || [])
+    const [staked, setStaked] = useState<string[]>((query.get(UrlQueryParams.Staked) || undefined)?.split("||") || [])
     const [rarities, setRarities] = useState<string[]>((query.get(UrlQueryParams.Rarities) || undefined)?.split("||") || [])
     const [repairBlocks, setRepairBlocks] = useState<string[]>((query.get(UrlQueryParams.RepairBlocks) || undefined)?.split("||") || [])
     const [kills, setKills] = useState<number[] | undefined>((query.get(UrlQueryParams.Kills) || undefined)?.split("||").map((a) => parseString(a, 0)))
@@ -169,6 +176,11 @@ export const FleetMechs = () => {
             result = result.filter((mech) => status.includes(mech.status))
         }
 
+        // Apply staked filter
+        if (staked && staked.length) {
+            if (staked) result = result.filter((mech) => staked.includes(mech.is_staked.toString()))
+        }
+
         // Apply rarity filter
         if (rarities && rarities.length) {
             result = result.filter((mech) => rarities.includes(mech.tier))
@@ -227,6 +239,7 @@ export const FleetMechs = () => {
             [UrlQueryParams.Search]: search,
             [UrlQueryParams.Rarities]: rarities.join("||"),
             [UrlQueryParams.Statuses]: status.join("||"),
+            [UrlQueryParams.Staked]: status.join("||"),
             [UrlQueryParams.Kills]: kills?.join("||"),
             [UrlQueryParams.Deaths]: deaths?.join("||"),
             [UrlQueryParams.Wins]: wins?.join("||"),
@@ -235,7 +248,7 @@ export const FleetMechs = () => {
         })
 
         setDisplayMechs(result)
-    }, [deaths, isLoading, kills, losses, mechs, rarities, repairBlocks, search, sort, status, updateQuery, wins])
+    }, [deaths, isLoading, kills, losses, mechs, rarities, repairBlocks, search, sort, staked, status, updateQuery, wins])
 
     const renderIndex = useCallback(
         (index) => {
@@ -335,6 +348,13 @@ export const FleetMechs = () => {
                             initialExpanded: true,
                             selected: status,
                             setSelected: setStatus,
+                        },
+                        {
+                            label: "Stake Status",
+                            options: mechStakedOptions,
+                            initialExpanded: true,
+                            selected: staked,
+                            setSelected: setStaked,
                         },
                         {
                             label: "Rarity",

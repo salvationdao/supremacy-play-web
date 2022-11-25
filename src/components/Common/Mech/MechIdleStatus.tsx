@@ -10,11 +10,12 @@ import {
     useGameServerSubscriptionSecuredUser,
 } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { NewMechStruct, MechStatus, MechStatusEnum, RepairSlot } from "../../../types"
+import { colors } from "../../../theme/theme"
+import { MechStatus, MechStatusEnum, NewMechStruct, RepairSlot } from "../../../types"
 import { RepairOffer } from "../../../types/jobs"
-import { RepairModal } from "./RepairModal/RepairModal"
 import { NiceButton } from "../Nice/NiceButton"
 import { NicePopover } from "../Nice/NicePopover"
+import { RepairModal } from "./RepairModal/RepairModal"
 
 export const MechIdleStatus = ({ mech }: { mech: NewMechStruct }) => {
     const [mechStatus, setMechStatus] = useState<MechStatusEnum>(mech.status)
@@ -68,6 +69,18 @@ export const MechIdleStatus = ({ mech }: { mech: NewMechStruct }) => {
 
                         <RepairActions open={isActionsPopoverOpen} onClose={() => setIsActionsPopoverOpen(false)} popoverRef={popoverRef} mech={mech} />
                     </>
+                )}
+
+                {mech.is_staked && (
+                    <Typography
+                        sx={{
+                            p: ".1rem 1.6rem",
+                            fontWeight: "bold",
+                            color: colors.staked,
+                        }}
+                    >
+                        STAKED
+                    </Typography>
                 )}
             </Stack>
         </>
