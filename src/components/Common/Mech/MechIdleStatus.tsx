@@ -3,7 +3,12 @@ import { MutableRefObject, useCallback, useMemo, useRef, useState } from "react"
 import { SvgMoreOptions, SvgRepair } from "../../../assets"
 import { useGlobalNotifications } from "../../../containers"
 import { getMechStatusDeets } from "../../../helpers"
-import { useGameServerCommandsUser, useGameServerSubscriptionSecured, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
+import {
+    useGameServerCommandsFaction,
+    useGameServerCommandsUser,
+    useGameServerSubscriptionSecured,
+    useGameServerSubscriptionSecuredUser,
+} from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
 import { MechStatusEnum, NewMechStruct, RepairSlot } from "../../../types"
@@ -65,16 +70,24 @@ export const MechIdleStatus = ({ mech }: { mech: NewMechStruct }) => {
                     boxShadow: 0.4,
                 }}
             >
-                {mech.is_staked && (
-                    <Typography
-                        sx={{
-                            p: ".1rem 1.6rem",
-                            fontWeight: "bold",
-                            color: colors.staked,
-                        }}
-                    >
-                        STAKED
-                    </Typography>
+                <Typography
+                    sx={{
+                        p: ".1rem 1.6rem",
+                        fontWeight: "bold",
+                        color: mech.is_staked ? colors.staked : colors.green,
+                    }}
+                >
+                    {mech.is_staked ? "STAKED" : "NOT STAKED"}
+                </Typography>
+
+                <Box ref={stakePopoverRef}>
+                    <NiceButton sx={{ p: 0 }} onClick={() => setIsStakePopoverOpen(true)}>
+                        <SvgMoreOptions size="1.6rem" fill={mech.is_staked ? colors.staked : colors.green} />
+                    </NiceButton>
+                </Box>
+
+                {isStakePopoverOpen && (
+                    <StakeActions open={isStakePopoverOpen} onClose={() => setIsStakePopoverOpen(false)} popoverRef={stakePopoverRef} mech={mech} />
                 )}
             </Stack>
         </Stack>
@@ -210,6 +223,93 @@ const RepairActions = ({
                     setRepairMechModalOpen={setRepairMechModalOpen}
                 />
             )}
+        </>
+    )
+}
+
+const StakeActions = ({ open, popoverRef, onClose, mech }: { open: boolean; popoverRef: MutableRefObject<null>; onClose: () => void; mech: NewMechStruct }) => {
+    const { newSnackbarMessage } = useGlobalNotifications()
+    const { send } = useGameServerCommandsFaction("/faction_commander")
+
+    const stakeSelectedMechs = useCallback(
+        async (mechs: NewMechStruct[]) => {
+            try {
+                if (mechs.length <= 0) return
+
+                await send<boolean>(GameServerKeys.StakeMechs, {
+                    mech_ids: mechs.map((mech) => mech.id),
+                })
+                newSnackbarMessage("Successfully added mechs to faction mech pool.", "success")
+            } catch (err) {
+                const message = typeof err === "string" ? err : "Failed to add mechs to faction mech pool."
+                newSnackbarMessage(message, "error")
+                console.error(err)
+            }
+        },
+        [newSnackbarMessage, send],
+    )
+
+    const unstakeSelectedMechs = useCallback(
+        async (mechs: NewMechStruct[]) => {
+            try {
+                if (mechs.length <= 0) return
+
+                await send<boolean>(GameServerKeys.UnstakeMechs, {
+                    mech_ids: mechs.map((mech) => mech.id),
+                })
+                newSnackbarMessage("Successfully removed mechs from faction mech pool.", "success")
+            } catch (err) {
+                const message = typeof err === "string" ? err : "Failed to remove mechs from faction mech pool."
+                newSnackbarMessage(message, "error")
+                console.error(err)
+            }
+        },
+        [newSnackbarMessage, send],
+    )
+
+    return (
+        <>
+            <NicePopover
+                open={open}
+                anchorEl={popoverRef.current}
+                onClose={onClose}
+                anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                }}
+                transformOrigin={{
+                    vertical: "top",
+                    horizontal: "left",
+                }}
+            >
+                <Stack>
+                    {mech.is_staked ? (
+                        <NiceButton
+                            sx={{ justifyContent: "flex-start" }}
+                            onClick={(e) => {
+                                e.preventDefault()
+                                e.stopPropagation()
+                                unstakeSelectedMechs([mech])
+                                onClose()
+                            }}
+                        >
+                            UNSTAKE
+                        </NiceButton>
+                    ) : (
+                        <NiceButton
+                            sx={{ justifyContent: "flex-start" }}
+                            onClick={(e) => {
+                                e.preventDefault()
+                                e.stopPropagation()
+                                stakeSelectedMechs([mech])
+                                onClose()
+                            }}
+                        >
+                            STAKE
+                        </NiceButton>
+                    )}
+                </Stack>
+            </NicePopover>
         </>
     )
 }
