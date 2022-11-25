@@ -1,6 +1,6 @@
 import { Box } from "@mui/material"
-import React, { ReactNode, useCallback, useEffect, useMemo, useRef } from "react"
-import { FixedSizeGrid } from "react-window"
+import React, { ReactNode, useEffect, useMemo, useRef } from "react"
+import { areEqual, FixedSizeGrid } from "react-window"
 import { useDimension } from "../../containers"
 import { useDebounce } from "../../hooks"
 import { Dimension } from "../../types"
@@ -108,26 +108,6 @@ export const VirtualizedGrid = React.memo(function VirtualizedGrid({
         }
     }, [dimension.height, dimension.width, itemHeight, itemWidthConfig.columnCount, itemWidthConfig.minWidth, totalItems])
 
-    const Cell = useCallback(
-        ({ columnIndex, rowIndex, style }: { columnIndex: number; rowIndex: number; style: React.CSSProperties }) => {
-            const index = rowIndex * columnCount + (columnIndex % columnCount)
-            return (
-                <div
-                    style={{
-                        ...style,
-                        left: `calc(${style.left}px + ${(columnIndex === 0 ? 0 : columnIndex) * (gap / columnCount)}px)`,
-                        top: `calc(${style.top}px + ${(rowIndex === 0 ? 0 : rowIndex) * (gap / rowCount)}px)`,
-                        width: `calc(${style.width}px - ${(gap * (columnCount - 1)) / columnCount}px)`,
-                        height: `calc(${style.height}px - ${(gap * (rowCount - 1)) / rowCount}px)`,
-                    }}
-                >
-                    <Box sx={{ width: "100%", height: "100%" }}>{renderIndex(index)}</Box>
-                </div>
-            )
-        },
-        [columnCount, gap, renderIndex, rowCount],
-    )
-
     return useMemo(() => {
         if (dimension.width <= 0 || dimension.height <= 0) {
             return <div className={uniqueID} />
@@ -142,9 +122,52 @@ export const VirtualizedGrid = React.memo(function VirtualizedGrid({
                 columnWidth={itemWidth}
                 rowCount={rowCount}
                 rowHeight={itemHeight}
+                itemData={{
+                    columnCount,
+                    rowCount,
+                    gap,
+                    renderIndex,
+                }}
             >
                 {Cell}
             </FixedSizeGrid>
         )
-    }, [Cell, columnCount, dimension.height, dimension.width, itemHeight, itemWidth, rowCount, uniqueID])
+    }, [columnCount, dimension.height, dimension.width, gap, itemHeight, itemWidth, renderIndex, rowCount, uniqueID])
 })
+
+interface ItemData {
+    columnCount: number
+    rowCount: number
+    gap: number
+    renderIndex: (index: number) => ReactNode
+}
+
+const Cell = React.memo(function Cell({
+    columnIndex,
+    rowIndex,
+    style,
+    data,
+}: {
+    columnIndex: number
+    rowIndex: number
+    style: React.CSSProperties
+    data: ItemData
+}) {
+    const { columnCount, rowCount, gap, renderIndex } = data
+
+    const index = rowIndex * columnCount + (columnIndex % columnCount)
+    return (
+        <div
+            style={{
+                ...style,
+                left: `calc(${style.left}px + ${(columnIndex === 0 ? 0 : columnIndex) * (gap / columnCount)}px)`,
+                top: `calc(${style.top}px + ${(rowIndex === 0 ? 0 : rowIndex) * (gap / rowCount)}px)`,
+                width: `calc(${style.width}px - ${(gap * (columnCount - 1)) / columnCount}px)`,
+                height: `calc(${style.height}px - ${(gap * (rowCount - 1)) / rowCount}px)`,
+            }}
+        >
+            <Box sx={{ width: "100%", height: "100%" }}>{renderIndex(index)}</Box>
+        </div>
+    )
+},
+areEqual)
