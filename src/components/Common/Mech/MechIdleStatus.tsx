@@ -19,7 +19,7 @@ export const MechIdleStatus = ({ mech }: { mech: NewMechStruct }) => {
     const statusDeets = useMemo(() => getMechStatusDeets(mech.status), [mech.status])
 
     return (
-        <>
+        <Stack direction="row" alignItems="center" spacing=".8rem">
             <Stack
                 direction="row"
                 alignItems="center"
@@ -51,7 +51,18 @@ export const MechIdleStatus = ({ mech }: { mech: NewMechStruct }) => {
                         <RepairActions open={isActionsPopoverOpen} onClose={() => setIsActionsPopoverOpen(false)} popoverRef={popoverRef} mech={mech} />
                     </>
                 )}
+            </Stack>
 
+            <Stack
+                direction="row"
+                alignItems="center"
+                sx={{
+                    pt: ".1rem",
+                    width: "fit-content",
+                    backgroundColor: `${colors.staked}30`,
+                    boxShadow: 0.4,
+                }}
+            >
                 {mech.is_staked && (
                     <Typography
                         sx={{
@@ -64,7 +75,7 @@ export const MechIdleStatus = ({ mech }: { mech: NewMechStruct }) => {
                     </Typography>
                 )}
             </Stack>
-        </>
+        </Stack>
     )
 }
 
