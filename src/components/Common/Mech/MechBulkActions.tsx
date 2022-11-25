@@ -1,4 +1,4 @@
-import { Stack, Typography } from "@mui/material"
+import { Checkbox, Stack, Typography } from "@mui/material"
 import React, { MutableRefObject, useCallback, useMemo, useRef, useState } from "react"
 import { useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -13,9 +13,11 @@ import { RepairBlocks } from "./MechRepairBlocks"
 import { HireContractorsCard } from "./RepairModal/HireContractorsCard"
 
 export const MechBulkActions = React.memo(function MechBulkActions({
+    mechs,
     selectedMechs,
     setSelectedMechs,
 }: {
+    mechs: NewMechStruct[]
     selectedMechs: NewMechStruct[]
     setSelectedMechs: React.Dispatch<React.SetStateAction<NewMechStruct[]>>
 }) {
@@ -23,19 +25,31 @@ export const MechBulkActions = React.memo(function MechBulkActions({
     const [isBulkPopoverOpen, setIsBulkPopoverOpen] = useState(false)
     const bulkPopoverRef = useRef(null)
 
+    const selectedCount = selectedMechs.length
+    const totalItems = mechs.length
+
     return (
         <>
-            <NiceButton
-                ref={bulkPopoverRef}
-                buttonColor={theme.factionTheme.primary}
-                sx={{ p: ".2rem 1rem", pt: ".4rem" }}
-                disabled={selectedMechs.length <= 0}
-                onClick={() => setIsBulkPopoverOpen(true)}
-            >
-                <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
-                    Actions ({selectedMechs.length})
-                </Typography>
-            </NiceButton>
+            <Stack direction="row" alignItems="center" spacing=".6rem">
+                <Checkbox
+                    checked={(selectedCount || 0) >= totalItems}
+                    indeterminate={!!(selectedCount && selectedCount > 0 && selectedCount < totalItems)}
+                    onClick={(selectedCount || 0) >= totalItems ? () => setSelectedMechs([]) : () => setSelectedMechs(mechs)}
+                    sx={{ ".MuiSvgIcon-root": { width: "2rem", height: "2rem", color: `${theme.factionTheme.primary} !important` } }}
+                />
+
+                <NiceButton
+                    ref={bulkPopoverRef}
+                    buttonColor={theme.factionTheme.primary}
+                    sx={{ p: ".2rem 1rem", pt: ".4rem" }}
+                    disabled={selectedMechs.length <= 0}
+                    onClick={() => setIsBulkPopoverOpen(true)}
+                >
+                    <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
+                        Actions ({selectedMechs.length})
+                    </Typography>
+                </NiceButton>
+            </Stack>
 
             <BulkActionPopover
                 open={isBulkPopoverOpen}
