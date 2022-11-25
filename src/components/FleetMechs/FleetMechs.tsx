@@ -59,8 +59,8 @@ const mechStatusOptions = [
 ]
 
 const mechStakedOptions = [
-    { value: "true", render: { label: "STAKED", color: colors.staked } },
-    { value: "false", render: { label: "NOT STAKED", color: colors.green } },
+    { value: "true", render: { label: "STAKED", color: colors.notStaked } },
+    { value: "false", render: { label: "NOT STAKED", color: colors.notStaked } },
 ]
 
 const repairProgressOptions = [
@@ -351,7 +351,10 @@ export const FleetMechs = () => {
                         },
                         {
                             label: "Stake Status",
-                            options: mechStakedOptions,
+                            options: (() => {
+                                mechStakedOptions[0].render.color = theme.factionTheme.primary
+                                return mechStakedOptions
+                            })(),
                             initialExpanded: true,
                             selected: staked,
                             setSelected: setStaked,

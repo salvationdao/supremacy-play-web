@@ -61,7 +61,7 @@ export const colors = {
     blue2: "#309FFF",
     purple: "#9A73F5",
     black2: "#13161B",
-    staked: "#309FFF",
+    notStaked: "#50B1DE",
 
     lightNeonBlue: "#8DE9FF",
     neonBlue: "#3DE0E0",
