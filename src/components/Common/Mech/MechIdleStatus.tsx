@@ -3,39 +3,20 @@ import { MutableRefObject, useCallback, useMemo, useRef, useState } from "react"
 import { SvgMoreOptions, SvgRepair } from "../../../assets"
 import { useGlobalNotifications } from "../../../containers"
 import { getMechStatusDeets } from "../../../helpers"
-import {
-    useGameServerCommandsUser,
-    useGameServerSubscriptionFaction,
-    useGameServerSubscriptionSecured,
-    useGameServerSubscriptionSecuredUser,
-} from "../../../hooks/useGameServer"
+import { useGameServerCommandsUser, useGameServerSubscriptionSecured, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
-import { MechStatus, MechStatusEnum, NewMechStruct, RepairSlot } from "../../../types"
+import { MechStatusEnum, NewMechStruct, RepairSlot } from "../../../types"
 import { RepairOffer } from "../../../types/jobs"
 import { NiceButton } from "../Nice/NiceButton"
 import { NicePopover } from "../Nice/NicePopover"
 import { RepairModal } from "./RepairModal/RepairModal"
 
 export const MechIdleStatus = ({ mech }: { mech: NewMechStruct }) => {
-    const [mechStatus, setMechStatus] = useState<MechStatusEnum>(mech.status)
-
     const popoverRef = useRef(null)
     const [isActionsPopoverOpen, setIsActionsPopoverOpen] = useState(false)
 
-    // Subscribe on the mech's status
-    useGameServerSubscriptionFaction<MechStatus>(
-        {
-            URI: `/queue/${mech.id}`,
-            key: GameServerKeys.SubMechQueuePosition,
-        },
-        (payload) => {
-            if (!payload) return
-            setMechStatus(payload.status)
-        },
-    )
-
-    const statusDeets = useMemo(() => getMechStatusDeets(mechStatus), [mechStatus])
+    const statusDeets = useMemo(() => getMechStatusDeets(mech.status), [mech.status])
 
     return (
         <>
@@ -59,7 +40,7 @@ export const MechIdleStatus = ({ mech }: { mech: NewMechStruct }) => {
                     {statusDeets.label}
                 </Typography>
 
-                {mechStatus === MechStatusEnum.Damaged && (
+                {mech.status === MechStatusEnum.Damaged && (
                     <>
                         <Box ref={popoverRef}>
                             <NiceButton sx={{ p: 0 }} onClick={() => setIsActionsPopoverOpen(true)}>

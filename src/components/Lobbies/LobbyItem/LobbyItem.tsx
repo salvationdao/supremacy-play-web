@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import React, { useMemo, useState } from "react"
+import React, { useMemo } from "react"
 import { SvgArena, SvgLobbies, SvgMap, SvgSupToken, SvgUserDiamond2 } from "../../../assets"
 import { FactionIDs } from "../../../constants"
 import { useArena, useAuth, useSupremacy } from "../../../containers"
@@ -11,7 +11,6 @@ import { BattleLobbiesMech, BattleLobby, BattleLobbySupporter } from "../../../t
 import { AllGameMapsCombined } from "../../Common/AllGameMapsCombined"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { TimeLeft } from "../../Common/TimeLeft"
-import { JoinLobbyModal } from "./JoinLobbyModal"
 import { MyFactionMechs } from "./MyFactionMechs/MyFactionMechs"
 import { OtherFactionMechs } from "./OtherFactionMechs/OtherFactionMechs"
 import { PrizePool } from "./PrizePool"
@@ -25,14 +24,11 @@ export interface FactionLobbySlots {
     supporterSlots: BattleLobbySupporter[] // null represents empty slot
 }
 
-export const LobbyItem = React.memo(function LobbyItem({ battleLobby }: { battleLobby: BattleLobby }) {
+export const LobbyItem = React.memo(function LobbyItem({ battleLobby, joinBattleLobby }: { battleLobby: BattleLobby; joinBattleLobby: () => void }) {
     const theme = useTheme()
     const { factionID } = useAuth()
     const { arenaList } = useArena()
     const { getFaction, factionsAll } = useSupremacy()
-
-    // Modals
-    const [isJoinModalOpen, setIsJoinModalOpen] = useState(false)
 
     const arenaName = useMemo(() => arenaList.find((a) => a.id === battleLobby.assigned_to_arena_id)?.name, [arenaList, battleLobby.assigned_to_arena_id])
 
@@ -251,7 +247,7 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby }: { battle
                     <Box sx={{ borderRight: "#FFFFFF16 1px solid" }} />
 
                     {/* Mechs */}
-                    <MyFactionMechs myFactionLobbySlots={myFactionLobbySlots} isLocked={!!battleLobby.ready_at} onSlotClick={() => setIsJoinModalOpen(true)} />
+                    <MyFactionMechs myFactionLobbySlots={myFactionLobbySlots} isLocked={!!battleLobby.ready_at} onSlotClick={joinBattleLobby} />
 
                     {/* Other faction mechs */}
                     <OtherFactionMechs otherFactionLobbySlots={otherFactionLobbySlots} />
@@ -296,15 +292,6 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby }: { battle
                     <Supporters />
                 </Stack>
             </NiceBoxThing>
-
-            {isJoinModalOpen && (
-                <JoinLobbyModal
-                    open={isJoinModalOpen}
-                    onClose={() => setIsJoinModalOpen(false)}
-                    myFactionLobbySlots={myFactionLobbySlots}
-                    battleLobby={battleLobby}
-                />
-            )}
         </>
     )
 })
