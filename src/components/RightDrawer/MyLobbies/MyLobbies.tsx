@@ -109,7 +109,6 @@ export const MyLobbies = () => {
 
     const renderIndex = useCallback(
         (index) => {
-            console.log(index)
             const battleLobby = displayLobbies[index]
             if (!battleLobby) {
                 return null

@@ -124,7 +124,6 @@ export const Lobbies = () => {
                     list.push(p)
                 })
 
-                // remove any finished lobby
                 return list
             })
         },

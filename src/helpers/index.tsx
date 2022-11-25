@@ -820,9 +820,9 @@ export const truncateTextLines = (numLines = 1, isInline = false): SxProps => ({
 })
 
 // Return true, if a mech has equipped a power core and more than one weapon
-export const isMechDeployable = (mech: NewMechStruct): boolean => {
+export const mechHasPowerCoreAndWeapon = (mech: NewMechStruct): boolean => {
     // Check power core
-    if (!mech.power_core || !mech.can_deploy) return false
+    if (!mech.power_core) return false
 
     // Check weapon count
     let hasWeapon = false
