@@ -1,11 +1,14 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { FactionPassBgPNG, FactionPassSs1PNG, FactionPassSs2PNG, SvgFactionPassArrow } from "../../../assets"
 import { FactionIDs } from "../../../constants"
 import { useAuth, useSupremacy } from "../../../containers"
 import { colors, fonts } from "../../../theme/theme"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { FactionPassOption } from "./FactionPassOption"
+import { useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
+import { FactionPass } from "../../../types/faction_passes"
 
 export const DAYS_IN_A_MONTH = 28
 
@@ -31,6 +34,18 @@ export const FactionPassBuy = () => {
             hueRotate,
         }
     }, [factionID, getFaction])
+
+    const [factionPasses, setFactionPasses] = useState<FactionPass[]>([])
+    useGameServerSubscriptionSecured<FactionPass[]>(
+        {
+            URI: "/faction_pass_list",
+            key: GameServerKeys.SubFactionPassList,
+        },
+        (payload) => {
+            if (!payload) return
+            setFactionPasses(payload)
+        },
+    )
 
     return (
         <Stack
@@ -145,9 +160,9 @@ export const FactionPassBuy = () => {
 
                     {/* Buy options */}
                     <Stack direction="row" alignItems="center">
-                        <FactionPassOption faction={faction} days={1} />
-                        <FactionPassOption faction={faction} days={DAYS_IN_A_MONTH} />
-                        <FactionPassOption faction={faction} days={365} />
+                        {factionPasses.map((fp) => (
+                            <FactionPassOption key={fp.id} factionPass={fp} faction={faction} />
+                        ))}
                     </Stack>
                 </Stack>
             </NiceBoxThing>

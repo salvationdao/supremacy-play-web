@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { EmptyWarMachinesPNG, SvgPlus, SvgSearch } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { snakeToTitle } from "../../helpers"
@@ -19,6 +19,7 @@ import { BattleLobbyCreateModal } from "./BattleLobbies/BattleLobbyCreate/Battle
 import { CentralQueue } from "./CentralQueue/CentralQueue"
 import { AccessCodePopover } from "./JoinPrivateLobby/AccessCodePopover"
 import { LobbyItem } from "./LobbyItem/LobbyItem"
+import { JoinLobbyModal } from "./LobbyItem/JoinLobbyModal"
 
 enum LobbyTabs {
     SystemLobbies = "SYSTEM_LOBBIES",
@@ -43,7 +44,7 @@ export const Lobbies = () => {
     const [showCreateLobbyModal, setShowCreateLobbyModal] = useState(false)
     const [isJoinPrivatePopoverOpen, setIsJoinPrivatePopoverOpen] = useState(false)
     const joinPrivatePopoverRef = useRef(null)
-
+    const [selectedBattleLobby, setSelectedBattleLobby] = useState<BattleLobby | undefined>(undefined)
     // Player queue status
     const [playerQueueStatus, setPlayerQueueStatus] = useState<PlayerQueueStatus>({
         queue_limit: 10,
@@ -123,8 +124,8 @@ export const Lobbies = () => {
                     list.push(p)
                 })
 
-                // Remove any finished lobby
-                return list.filter((p) => !p.ended_at && !p.deleted_at)
+                // remove any finished lobby
+                return list
             })
         },
     )
@@ -133,7 +134,7 @@ export const Lobbies = () => {
     useEffect(() => {
         if (isLoading) return
 
-        let filteredLobbies = [...lobbies]
+        let filteredLobbies = [...lobbies].filter((lobby) => !lobby.ended_at && !lobby.deleted_at)
 
         // Filter for the system or exhibition lobbies
         switch (activeTabID) {
@@ -183,9 +184,9 @@ export const Lobbies = () => {
             if (!battleLobby) {
                 return null
             }
-            return <LobbyItem key={`battleLobby-${battleLobby.id}`} battleLobby={battleLobby} />
+            return <LobbyItem key={`battleLobby-${battleLobby.id}`} battleLobby={battleLobby} joinBattleLobby={() => setSelectedBattleLobby(battleLobby)} />
         },
-        [displayLobbies],
+        [displayLobbies, setSelectedBattleLobby],
     )
 
     const content = useMemo(() => {
@@ -339,6 +340,10 @@ export const Lobbies = () => {
             </Stack>
 
             {showCreateLobbyModal && <BattleLobbyCreateModal setOpen={setShowCreateLobbyModal} />}
+
+            {!!selectedBattleLobby && (
+                <JoinLobbyModal open={!!selectedBattleLobby} onClose={() => setSelectedBattleLobby(undefined)} battleLobby={selectedBattleLobby} />
+            )}
 
             <AccessCodePopover open={isJoinPrivatePopoverOpen} onClose={() => setIsJoinPrivatePopoverOpen(false)} popoverRef={joinPrivatePopoverRef} />
         </>

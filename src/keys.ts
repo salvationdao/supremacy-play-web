@@ -10,6 +10,7 @@ export enum GameServerKeys {
     ToggleGojiBerryTea = "GOJI:BERRY:TEA",
     PlayerRank = "PLAYER:RANK:GET",
     ListPunishments = "PLAYER:PUNISHMENT:LIST",
+    SubPlayerFactionPassExpiryDate = "PLAYER:FACTION:PASS:EXPIRY:DATE",
 
     // Notification container
     SubGameNotification = "GAME:NOTIFICATION",
@@ -284,6 +285,17 @@ export enum GameServerKeys {
     VoiceChatVoteKick = "VOICE:VOTE:KICK",
     VoiceChatConnect = "VOICE:STREAM:CONNECT",
     VoiceChatDisconnect = "VOICE:STREAM:DISCONNECT",
+
+    // Faction Pass
+    SubFactionPassList = "FACTION:PASS:LIST",
+    PurchaseFactionPassWithSups = "FACTION:PASS:SUPS:PURCHASE",
+    SubFactionMostPopularStakedMech = "FACTION:MOST:POPULAR:STAKED:MECH",
+    SubFactionStakedMechCount = "FACTION:STAKED:MECH:COUNT",
+    SubFactionStakedMechInQueueCount = "FACTION:STAKED:MECH:IN:QUEUE:COUNT",
+    SubFactionStakedMechDamagedCount = "FACTION:STAKED:MECH:DAMAGED:COUNT",
+    SubFactionStakedMechBattleReadyCount = "FACTION:STAKED:MECH:BATTLE:READY:COUNT",
+    SubFactionStakedMechInBattleCount = "FACTION:STAKED:MECH:IN:BATTLE:COUNT",
+    SubFactionStakedMechBattledCount = "FACTION:STAKED:MECH:BATTLED:COUNT",
 }
 
 export enum PassportServerKeys {
