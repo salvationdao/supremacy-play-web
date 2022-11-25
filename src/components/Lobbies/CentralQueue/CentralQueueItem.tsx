@@ -67,6 +67,8 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
     return (
         <NiceTooltip
             placement="left"
+            enterDelay={450}
+            enterNextDelay={700}
             renderNode={<CentralQueueItemTooltip battleLobby={battleLobby} displayAccessCode={displayAccessCode} />}
             color={factionTheme.primary}
         >
