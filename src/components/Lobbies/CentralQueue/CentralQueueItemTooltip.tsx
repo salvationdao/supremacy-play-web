@@ -21,16 +21,19 @@ import { useTheme } from "../../../containers/theme"
 import { supFormatter } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleLobbiesMech, BattleLobby } from "../../../types/battle_queue"
+import { NiceButton } from "../../Common/Nice/NiceButton"
 import { TypographyTruncated } from "../../Common/TypographyTruncated"
 
 export const CentralQueueItemTooltip = ({
     battleLobby,
     displayAccessCode,
     width,
+    setShowJoinLobbyModal,
 }: {
     battleLobby: BattleLobby
     displayAccessCode?: string
     width?: string
+    setShowJoinLobbyModal: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
     const { factionTheme } = useTheme()
     const { arenaList } = useArena()
@@ -193,7 +196,12 @@ export const CentralQueueItemTooltip = ({
 
                     <Stack spacing="1rem" ml=".5rem">
                         {Object.keys(factionsAll).map((fid, index) => (
-                            <FactionMechList key={index} factionID={fid} battleLobbiesMechs={battleLobby.battle_lobbies_mechs} />
+                            <FactionMechList
+                                key={index}
+                                factionID={fid}
+                                battleLobbiesMechs={battleLobby.battle_lobbies_mechs}
+                                setShowJoinLobbyModal={setShowJoinLobbyModal}
+                            />
                         ))}
                     </Stack>
                 </Box>
@@ -226,13 +234,23 @@ const DistributionValue = ({ Icon, value }: { Icon: React.VoidFunctionComponent<
 const NUMBER_MECHS_REQUIRED = 3
 const SIZE = "4.5rem"
 
-const FactionMechList = ({ factionID, battleLobbiesMechs }: { factionID: string; battleLobbiesMechs: BattleLobbiesMech[] }) => {
-    const { userID } = useAuth()
+const FactionMechList = ({
+    factionID,
+    battleLobbiesMechs,
+    setShowJoinLobbyModal,
+}: {
+    factionID: string
+    battleLobbiesMechs: BattleLobbiesMech[]
+    setShowJoinLobbyModal: React.Dispatch<React.SetStateAction<boolean>>
+}) => {
+    const { userID, factionID: userFactionID } = useAuth()
     const { getFaction } = useSupremacy()
 
     const faction = useMemo(() => getFaction(factionID), [getFaction, factionID])
 
     const mechsFiltered = useMemo(() => battleLobbiesMechs.filter((mech) => mech.faction_id === factionID), [battleLobbiesMechs, factionID])
+
+    const isOwnFaction = userFactionID === factionID
 
     return (
         <Stack direction="row" alignItems="center" spacing="2rem">
@@ -267,24 +285,46 @@ const FactionMechList = ({ factionID, battleLobbiesMechs }: { factionID: string;
 
                 {/* Empty slots */}
                 {NUMBER_MECHS_REQUIRED - mechsFiltered.length > 0 &&
-                    new Array(NUMBER_MECHS_REQUIRED - mechsFiltered.length).fill(0).map((_, index) => (
-                        <Stack
-                            key={`empty-slot-${index}`}
-                            alignItems="center"
-                            justifyContent="center"
-                            sx={{
-                                border: `${faction.palette.primary} 1px solid`,
-                                width: SIZE,
-                                height: SIZE,
-                                opacity: 0.4,
-                                backgroundColor: faction.palette.s900,
-                            }}
-                        >
-                            <Typography fontFamily={fonts.nostromoBold} color={faction.palette.primary}>
-                                ?
-                            </Typography>
-                        </Stack>
-                    ))}
+                    new Array(NUMBER_MECHS_REQUIRED - mechsFiltered.length).fill(0).map((_, index) => {
+                        if (isOwnFaction) {
+                            return (
+                                <NiceButton
+                                    key={`empty-slot-${index}`}
+                                    corners
+                                    buttonColor={faction.palette.primary}
+                                    sx={{
+                                        width: `calc(${SIZE} - 1px)`,
+                                        height: `calc(${SIZE} - 1px)`,
+                                        p: 0,
+                                    }}
+                                    onClick={() => setShowJoinLobbyModal(true)}
+                                >
+                                    <Typography fontFamily={fonts.nostromoBold} variant="h4">
+                                        +
+                                    </Typography>
+                                </NiceButton>
+                            )
+                        }
+
+                        return (
+                            <Stack
+                                key={`empty-slot-${index}`}
+                                alignItems="center"
+                                justifyContent="center"
+                                sx={{
+                                    border: `${faction.palette.primary} 1px solid`,
+                                    width: SIZE,
+                                    height: SIZE,
+                                    opacity: 0.4,
+                                    backgroundColor: faction.palette.s900,
+                                }}
+                            >
+                                <Typography fontFamily={fonts.nostromoBold} color={faction.palette.primary}>
+                                    ?
+                                </Typography>
+                            </Stack>
+                        )
+                    })}
             </Stack>
         </Stack>
     )
