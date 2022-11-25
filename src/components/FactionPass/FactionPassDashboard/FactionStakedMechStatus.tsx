@@ -61,6 +61,12 @@ export const FactionStakedMechStatus = () => {
         (payload) => setBattledStakedMechCount(payload),
     )
 
+    const idleMechCount = useMemo(() => {
+        const idleCount = stakedMechCount - inQueueStakedMechCount - damagedStakedMechCount - battleReadyStakedMechCount - inBattleStakedMechCount
+        if (idleCount <= 0) return 0
+        return idleCount
+    }, [stakedMechCount, inQueueStakedMechCount, damagedStakedMechCount, battleReadyStakedMechCount, inBattleStakedMechCount])
+
     return (
         <Stack direction="row" flex={1} spacing="1.5rem">
             <Box
@@ -86,23 +92,20 @@ export const FactionStakedMechStatus = () => {
                 ></Box>
                 <FactionStakedMechStatusBox title={"STAKED MECHS BATTLED"} value={battledStakedMechCount} caption={" "} />
                 <FactionStakedMechStatusBox title={"STAKED MECHS"} value={stakedMechCount} caption={" "} />
-                <FactionStakedMechStatusBox title={"STAKED MECHS IN QUEUE"} value={inQueueStakedMechCount} caption={"GO TO MECH POOL"} color={colors.green} />
-                <FactionStakedMechStatusBox
-                    title={"STAKED MECHS DAMAGED"}
-                    value={damagedStakedMechCount}
-                    caption={"GO TO REPAIR BAY"}
-                    color={colors.lightRed}
-                />
+                <FactionStakedMechStatusBox title={"STAKED MECHS IDLE"} value={idleMechCount} caption={"GO TO MECH POOL"} color={colors.green} />
+                <FactionStakedMechStatusBox title={"STAKED MECHS IN QUEUE"} value={inQueueStakedMechCount} caption={"GO TO MECH POOL"} color={colors.yellow} />
+                <FactionStakedMechStatusBox title={"STAKED MECHS DAMAGED"} value={damagedStakedMechCount} caption={"GO TO REPAIR BAY"} color={colors.bronze} />
                 <FactionStakedMechStatusBox
                     title={"STAKED MECHS BATTLE READY"}
                     value={battleReadyStakedMechCount}
                     caption={"GO TO MECH POOL"}
-                    color={colors.orange}
+                    color={colors.red}
                 />
-                <FactionStakedMechStatusBox title={"STAKED MECHS IN BATTLE"} value={inBattleStakedMechCount} caption={"MECH SUPPORTER"} color={colors.bronze} />
+                <FactionStakedMechStatusBox title={"STAKED MECHS IN BATTLE"} value={inBattleStakedMechCount} caption={"MECH SUPPORTER"} color={colors.orange} />
             </Box>
             <FactionStakedMechStatistic
                 totalCount={stakedMechCount}
+                idleMechCount={idleMechCount}
                 battleReadyCount={battleReadyStakedMechCount}
                 damagedCount={damagedStakedMechCount}
                 inBattleCount={inBattleStakedMechCount}
