@@ -125,6 +125,7 @@ export const FactionPassMechPool = () => {
         },
         (payload) => {
             setTimeout(() => setIsLoading(false), 300)
+            console.log(payload)
 
             if (!payload) return
 

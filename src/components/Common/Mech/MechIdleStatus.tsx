@@ -13,8 +13,10 @@ import { NicePopover } from "../Nice/NicePopover"
 import { RepairModal } from "./RepairModal/RepairModal"
 
 export const MechIdleStatus = ({ mech }: { mech: NewMechStruct }) => {
-    const popoverRef = useRef(null)
-    const [isActionsPopoverOpen, setIsActionsPopoverOpen] = useState(false)
+    const repairPopoverRef = useRef(null)
+    const stakePopoverRef = useRef(null)
+    const [isRepairPopoverOpen, setIsRepairPopoverOpen] = useState(false)
+    const [isStakePopoverOpen, setIsStakePopoverOpen] = useState(false)
 
     const statusDeets = useMemo(() => getMechStatusDeets(mech.status), [mech.status])
 
@@ -42,13 +44,13 @@ export const MechIdleStatus = ({ mech }: { mech: NewMechStruct }) => {
 
                 {mech.status === MechStatusEnum.Damaged && (
                     <>
-                        <Box ref={popoverRef}>
-                            <NiceButton sx={{ p: 0 }} onClick={() => setIsActionsPopoverOpen(true)}>
+                        <Box ref={repairPopoverRef}>
+                            <NiceButton sx={{ p: 0 }} onClick={() => setIsRepairPopoverOpen(true)}>
                                 <SvgMoreOptions size="1.6rem" fill={statusDeets.color} />
                             </NiceButton>
                         </Box>
 
-                        <RepairActions open={isActionsPopoverOpen} onClose={() => setIsActionsPopoverOpen(false)} popoverRef={popoverRef} mech={mech} />
+                        <RepairActions open={isRepairPopoverOpen} onClose={() => setIsRepairPopoverOpen(false)} popoverRef={repairPopoverRef} mech={mech} />
                     </>
                 )}
             </Stack>
