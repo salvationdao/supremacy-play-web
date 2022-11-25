@@ -63,7 +63,7 @@ const BulkActionPopover = ({
 }) => {
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
-    const { send: sendFaction } = useGameServerCommandsFaction("/user_commander")
+    const { send: sendFaction } = useGameServerCommandsFaction("/faction_commander")
     const [bulkRepairModalOpen, setBulkRepairModalOpen] = useState(false)
 
     const stakeSelectedMechs = useCallback(
