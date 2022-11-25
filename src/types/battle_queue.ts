@@ -28,7 +28,6 @@ export interface BattleLobby {
     host_by: User
     game_map?: GameMap
     is_private: boolean
-    stage_order: number
     access_code: string
     sups_pool: string
 

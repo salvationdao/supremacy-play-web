@@ -1,6 +1,6 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
-import { SvgContentCopyIcon, SvgLock, SvgQueue, SvgSupToken, SvgUserDiamond } from "../../../assets"
+import { SvgContentCopyIcon, SvgLock, SvgSupToken, SvgUserDiamond } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { supFormatter } from "../../../helpers"
 import { pulseEffect } from "../../../theme/keyframes"
@@ -42,9 +42,7 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
         if (displayAccessCode) {
             return (
                 <Stack direction="row" alignItems="center" sx={{ pl: "1.5rem", pr: ".5rem", backgroundColor: "#00000026" }}>
-                    <Typography fontWeight="bold" color={colors.neonBlue}>
-                        Invite friends to the battle!
-                    </Typography>
+                    <Typography color={colors.neonBlue}>Invite friends to the battle!</Typography>
 
                     <Box flex={1} />
 
@@ -107,19 +105,6 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
                                     {battleLobby.name || `Lobby #${battleLobby.number}`}
                                 </TypographyTruncated>
 
-                                <Typography sx={{ fontFamily: fonts.nostromoBold }} whiteSpace="nowrap">
-                                    <SvgQueue inline size="1.4rem" />
-                                    {battleLobby.stage_order}
-                                </Typography>
-                            </Stack>
-
-                            <Stack direction="row" justifyContent="space-between">
-                                <Typography>
-                                    Reward Pool:
-                                    <SvgSupToken fill={colors.gold} size="1.6rem" inline />
-                                    {supFormatter(battleLobby.sups_pool, 2)}
-                                </Typography>
-
                                 <Typography
                                     sx={{
                                         color: battleLobby.battle_lobbies_mechs.length < 9 ? "#FFFFFF" : colors.green,
@@ -131,6 +116,14 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
                                         {battleLobby.battle_lobbies_mechs.length}
                                     </span>
                                     /9
+                                </Typography>
+                            </Stack>
+
+                            <Stack direction="row" justifyContent="space-between">
+                                <Typography>
+                                    Reward Pool:
+                                    <SvgSupToken fill={colors.gold} size="1.6rem" inline />
+                                    {supFormatter(battleLobby.sups_pool, 2)}
                                 </Typography>
                             </Stack>
                         </Stack>

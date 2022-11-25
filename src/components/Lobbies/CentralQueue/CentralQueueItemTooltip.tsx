@@ -9,7 +9,6 @@ import {
     SvgLobbies,
     SvgLock,
     SvgMap,
-    SvgQueue,
     SvgSecondPlace,
     SvgSupToken,
     SvgThirdPlace,
@@ -92,14 +91,6 @@ export const CentralQueueItemTooltip = ({
             </Typography>
 
             <Stack sx={{ p: "1.8rem", pb: "2rem" }} spacing="1rem">
-                {/* Position */}
-                <Stack direction="row" justifyContent="space-between" spacing="1rem">
-                    <Typography sx={{ fontFamily: fonts.nostromoBlack }} variant="body2">
-                        <SvgQueue inline /> Position:
-                    </Typography>
-                    <Typography>{battleLobby.stage_order}</Typography>
-                </Stack>
-
                 {/* Host name */}
                 <Stack direction="row" justifyContent="space-between" spacing="1rem">
                     <Typography sx={{ fontFamily: fonts.nostromoBlack }} variant="body2">
