@@ -1,31 +1,60 @@
 import { Stack, Typography } from "@mui/material"
-import { useCallback, useState } from "react"
-import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
+import { useCallback, useMemo, useState } from "react"
+import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { NewMechStruct } from "../../../types"
-import { BattleLobby } from "../../../types/battle_queue"
+import { BattleLobby, PlayerQueueStatus } from "../../../types/battle_queue"
 import { MechSelector } from "../../Common/Mech/MechSelector"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 import { NiceModal } from "../../Common/Nice/NiceModal"
-import { FactionLobbySlots, NUMBER_MECHS_REQUIRED } from "./LobbyItem"
+import { useAuth } from "../../../containers"
 
 export const JoinLobbyModal = ({
     open,
     onClose,
-    myFactionLobbySlots,
     battleLobby,
     accessCode,
 }: {
     open: boolean
     onClose: () => void
     battleLobby: BattleLobby
-    myFactionLobbySlots: FactionLobbySlots
     accessCode?: string
 }) => {
+    const { factionID } = useAuth()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [selectedMechs, setSelectedMechs] = useState<NewMechStruct[]>([])
     const [error, setError] = useState("")
+
+    const [playerQueueStatus, setPlayerQueueStatus] = useState<PlayerQueueStatus>({
+        queue_limit: 10,
+        total_queued: 0,
+    })
+
+    useGameServerSubscriptionSecuredUser<PlayerQueueStatus>(
+        {
+            URI: "/queue_status",
+            key: GameServerKeys.PlayerQueueStatus,
+        },
+        (payload) => {
+            setPlayerQueueStatus(payload)
+        },
+    )
+
+    const queueLimit = useMemo(() => {
+        // get player remaining queue limit
+        let playerQueueLimit = playerQueueStatus.total_queued - playerQueueStatus.total_queued
+        if (playerQueueLimit <= 0) playerQueueLimit = 0
+
+        // calc lobby remain slots
+        let lobbyRemainSlots = battleLobby.each_faction_mech_amount - battleLobby.battle_lobbies_mechs.filter((blm) => blm.faction_id === factionID).length
+        if (lobbyRemainSlots <= 0) lobbyRemainSlots = 0
+
+        // get player maximum queue limit in lobby
+        const lobbyQueueLimit = battleLobby.max_deploy_per_player
+
+        return Math.min(playerQueueLimit, lobbyQueueLimit, lobbyRemainSlots)
+    }, [battleLobby.battle_lobbies_mechs, battleLobby.each_faction_mech_amount, battleLobby.max_deploy_per_player, factionID, playerQueueStatus.total_queued])
 
     const joinBattleLobby = useCallback(async () => {
         try {
@@ -49,13 +78,7 @@ export const JoinLobbyModal = ({
                     Join Lobby
                 </Typography>
 
-                <MechSelector
-                    selectedMechs={selectedMechs}
-                    setSelectedMechs={setSelectedMechs}
-                    limit={NUMBER_MECHS_REQUIRED - myFactionLobbySlots.mechSlots.length}
-                    onlyDeployableMechs
-                    sx={{ flex: 1 }}
-                />
+                <MechSelector selectedMechs={selectedMechs} setSelectedMechs={setSelectedMechs} limit={queueLimit} onlyDeployableMechs sx={{ flex: 1 }} />
 
                 {/* Show errors */}
                 {error && <Typography color={colors.red}>{error}</Typography>}
