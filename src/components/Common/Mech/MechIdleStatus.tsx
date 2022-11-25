@@ -2,7 +2,8 @@ import { Box, Stack, Typography } from "@mui/material"
 import { MutableRefObject, useCallback, useMemo, useRef, useState } from "react"
 import { SvgMoreOptions, SvgRepair } from "../../../assets"
 import { useGlobalNotifications } from "../../../containers"
-import { getMechStatusDeets } from "../../../helpers"
+import { useTheme } from "../../../containers/theme"
+import { getMechStatusDeets, mechHasPowerCoreAndWeapon } from "../../../helpers"
 import {
     useGameServerCommandsFaction,
     useGameServerCommandsUser,
@@ -15,15 +16,19 @@ import { MechStatusEnum, NewMechStruct, RepairSlot } from "../../../types"
 import { RepairOffer } from "../../../types/jobs"
 import { NiceButton } from "../Nice/NiceButton"
 import { NicePopover } from "../Nice/NicePopover"
+import { NiceTooltip } from "../Nice/NiceTooltip"
 import { RepairModal } from "./RepairModal/RepairModal"
 
 export const MechIdleStatus = ({ mech }: { mech: NewMechStruct }) => {
+    const theme = useTheme()
     const repairPopoverRef = useRef(null)
     const stakePopoverRef = useRef(null)
     const [isRepairPopoverOpen, setIsRepairPopoverOpen] = useState(false)
     const [isStakePopoverOpen, setIsStakePopoverOpen] = useState(false)
 
     const statusDeets = useMemo(() => getMechStatusDeets(mech.status), [mech.status])
+
+    const stakeColor = useMemo(() => (mech.is_staked ? theme.factionTheme.primary : colors.notStaked), [mech.is_staked, theme.factionTheme.primary])
 
     return (
         <Stack direction="row" alignItems="center" spacing=".8rem">
@@ -66,7 +71,7 @@ export const MechIdleStatus = ({ mech }: { mech: NewMechStruct }) => {
                 sx={{
                     pt: ".1rem",
                     width: "fit-content",
-                    backgroundColor: `${colors.staked}30`,
+                    backgroundColor: `${stakeColor}30`,
                     boxShadow: 0.4,
                 }}
             >
@@ -74,21 +79,20 @@ export const MechIdleStatus = ({ mech }: { mech: NewMechStruct }) => {
                     sx={{
                         p: ".1rem 1.6rem",
                         fontWeight: "bold",
-                        color: mech.is_staked ? colors.staked : colors.green,
+                        color: stakeColor,
                     }}
                 >
                     {mech.is_staked ? "STAKED" : "NOT STAKED"}
                 </Typography>
 
-                <Box ref={stakePopoverRef}>
-                    <NiceButton sx={{ p: 0 }} onClick={() => setIsStakePopoverOpen(true)}>
-                        <SvgMoreOptions size="1.6rem" fill={mech.is_staked ? colors.staked : colors.green} />
-                    </NiceButton>
-                </Box>
-
-                {isStakePopoverOpen && (
-                    <StakeActions open={isStakePopoverOpen} onClose={() => setIsStakePopoverOpen(false)} popoverRef={stakePopoverRef} mech={mech} />
-                )}
+                <NiceTooltip enterDelay={0} text="Mech must have a Power Core and a weapon equipped" placement="right">
+                    <Box ref={stakePopoverRef}>
+                        <NiceButton sx={{ p: 0 }} onClick={() => setIsStakePopoverOpen(true)}>
+                            <SvgMoreOptions size="1.6rem" fill={stakeColor} />
+                        </NiceButton>
+                    </Box>
+                </NiceTooltip>
+                <StakeActions open={isStakePopoverOpen} onClose={() => setIsStakePopoverOpen(false)} popoverRef={stakePopoverRef} mech={mech} />
             </Stack>
         </Stack>
     )
@@ -231,6 +235,8 @@ const StakeActions = ({ open, popoverRef, onClose, mech }: { open: boolean; popo
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
+    const isStakeable = useMemo(() => mechHasPowerCoreAndWeapon(mech), [mech])
+
     const stakeSelectedMechs = useCallback(
         async (mechs: NewMechStruct[]) => {
             try {
@@ -297,6 +303,7 @@ const StakeActions = ({ open, popoverRef, onClose, mech }: { open: boolean; popo
                         </NiceButton>
                     ) : (
                         <NiceButton
+                            disabled={!isStakeable}
                             sx={{ justifyContent: "flex-start" }}
                             onClick={(e) => {
                                 e.preventDefault()

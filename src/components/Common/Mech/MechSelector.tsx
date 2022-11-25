@@ -2,7 +2,7 @@ import { Box, CircularProgress, Stack, SxProps, Typography } from "@mui/material
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { EmptyWarMachinesPNG, SvgInfoCircular, SvgSearch } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
-import { getRarityDeets, isMechDeployable } from "../../../helpers"
+import { getRarityDeets, mechHasPowerCoreAndWeapon } from "../../../helpers"
 import { useDebounce } from "../../../hooks"
 import { useGameServerSubscriptionFaction, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -93,7 +93,7 @@ export const MechSelector = React.memo(function MechSelector({
                 if (prev.length === 0) {
                     return payload.filter((mech) => {
                         if (onlyDeployableMechs) {
-                            return isMechDeployable(mech)
+                            return mechHasPowerCoreAndWeapon(mech) && mech.can_deploy
                         }
                         return true
                     })
@@ -114,7 +114,7 @@ export const MechSelector = React.memo(function MechSelector({
 
                 return list.filter((mech) => {
                     if (onlyDeployableMechs) {
-                        return isMechDeployable(mech)
+                        return mechHasPowerCoreAndWeapon(mech) && mech.can_deploy
                     }
                     return true
                 })
@@ -137,7 +137,7 @@ export const MechSelector = React.memo(function MechSelector({
                 if (prev.length === 0) {
                     return payload.filter((mech) => {
                         if (onlyDeployableMechs) {
-                            return isMechDeployable(mech)
+                            return mechHasPowerCoreAndWeapon(mech) && mech.can_deploy
                         }
                         return true
                     })
@@ -158,7 +158,7 @@ export const MechSelector = React.memo(function MechSelector({
 
                 return list.filter((mech) => {
                     if (onlyDeployableMechs) {
-                        return isMechDeployable(mech)
+                        return mechHasPowerCoreAndWeapon(mech) && mech.can_deploy
                     }
                     return true
                 })
