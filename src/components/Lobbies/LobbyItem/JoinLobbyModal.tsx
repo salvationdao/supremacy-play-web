@@ -43,7 +43,7 @@ export const JoinLobbyModal = ({
 
     const queueLimit = useMemo(() => {
         // get player remaining queue limit
-        let playerQueueLimit = playerQueueStatus.total_queued - playerQueueStatus.total_queued
+        let playerQueueLimit = playerQueueStatus.queue_limit - playerQueueStatus.total_queued
         if (playerQueueLimit <= 0) playerQueueLimit = 0
 
         // calc lobby remain slots
