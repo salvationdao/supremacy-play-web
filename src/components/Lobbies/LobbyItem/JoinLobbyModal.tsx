@@ -1,5 +1,6 @@
 import { Stack, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
+import { useAuth, useGlobalNotifications } from "../../../containers"
 import { useGameServerCommandsFaction, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
@@ -8,7 +9,6 @@ import { BattleLobby, PlayerQueueStatus } from "../../../types/battle_queue"
 import { MechSelector } from "../../Common/Mech/MechSelector"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 import { NiceModal } from "../../Common/Nice/NiceModal"
-import { useAuth } from "../../../containers"
 
 export const JoinLobbyModal = ({
     open,
@@ -22,6 +22,7 @@ export const JoinLobbyModal = ({
     accessCode?: string
 }) => {
     const { factionID } = useAuth()
+    const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [selectedMechs, setSelectedMechs] = useState<NewMechStruct[]>([])
     const [error, setError] = useState("")
@@ -54,7 +55,14 @@ export const JoinLobbyModal = ({
         const lobbyQueueLimit = battleLobby.max_deploy_per_player
 
         return Math.min(playerQueueLimit, lobbyQueueLimit, lobbyRemainSlots)
-    }, [battleLobby.battle_lobbies_mechs, battleLobby.each_faction_mech_amount, battleLobby.max_deploy_per_player, factionID, playerQueueStatus.total_queued])
+    }, [
+        battleLobby.battle_lobbies_mechs,
+        battleLobby.each_faction_mech_amount,
+        battleLobby.max_deploy_per_player,
+        factionID,
+        playerQueueStatus.queue_limit,
+        playerQueueStatus.total_queued,
+    ])
 
     const joinBattleLobby = useCallback(async () => {
         try {
@@ -64,12 +72,15 @@ export const JoinLobbyModal = ({
                 mech_ids: selectedMechs.map((s) => s.id),
                 access_code: accessCode,
             })
+            newSnackbarMessage("Successfully added mech to battle lobby.", "success")
             setSelectedMechs([])
             onClose()
         } catch (err) {
-            setError(typeof err === "string" ? err : "Failed to the join lobby, try again or contact support.")
+            const message = typeof err === "string" ? err : "Failed to the join lobby, try again or contact support."
+            setError(message)
+            newSnackbarMessage(message, "error")
         }
-    }, [send, battleLobby.id, selectedMechs, accessCode, onClose])
+    }, [send, battleLobby.id, selectedMechs, accessCode, newSnackbarMessage, onClose])
 
     return (
         <NiceModal open={open} onClose={onClose} sx={{ p: "1.8rem 2.5rem", height: "calc(100vh - 15rem)", width: "66rem" }}>

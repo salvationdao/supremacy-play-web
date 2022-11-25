@@ -1,6 +1,6 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
-import { useMemo } from "react"
+import { useCallback, useMemo } from "react"
 import {
     SvgChest2,
     SvgContentCopyIcon,
@@ -15,9 +15,11 @@ import {
     SvgUserDiamond2,
     SvgWrapperProps,
 } from "../../../assets"
-import { useArena, useAuth, useSupremacy } from "../../../containers"
+import { useArena, useAuth, useGlobalNotifications, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { supFormatter } from "../../../helpers"
+import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleLobbiesMech, BattleLobby } from "../../../types/battle_queue"
 import { NiceButton } from "../../Common/Nice/NiceButton"
@@ -236,12 +238,29 @@ const FactionMechList = ({
 }) => {
     const { userID, factionID: userFactionID } = useAuth()
     const { getFaction } = useSupremacy()
+    const { newSnackbarMessage } = useGlobalNotifications()
+    const { send } = useGameServerCommandsFaction("/faction_commander")
 
     const faction = useMemo(() => getFaction(factionID), [getFaction, factionID])
 
     const mechsFiltered = useMemo(() => battleLobbiesMechs.filter((mech) => mech.faction_id === factionID), [battleLobbiesMechs, factionID])
 
     const isOwnFaction = userFactionID === factionID
+
+    const leaveLobby = useCallback(
+        async (mechID: string) => {
+            try {
+                await send(GameServerKeys.LeaveBattleLobby, {
+                    mech_ids: [mechID],
+                })
+
+                newSnackbarMessage("Successfully removed mech from battle lobby.", "success")
+            } catch (err) {
+                newSnackbarMessage(typeof err === "string" ? err : "Failed to leave battle lobby, try again or contact support.", "error")
+            }
+        },
+        [newSnackbarMessage, send],
+    )
 
     return (
         <Stack direction="row" alignItems="center" spacing="2rem">
@@ -258,19 +277,52 @@ const FactionMechList = ({
                 {/* Mech cards */}
                 {mechsFiltered.map((mech, i) => {
                     return (
-                        <Box
+                        <NiceButton
                             key={`mech-${mech.id}-${i}`}
+                            corners
+                            buttonColor={mech?.queued_by?.id === userID ? colors.gold : faction.palette.primary}
                             sx={{
-                                border: mech?.queued_by?.id === userID ? `${colors.gold} 2px solid` : `${faction.palette.primary}80 1px solid`,
-                                width: SIZE,
-                                height: SIZE,
-                                background: `url(${mech.avatar_url})`,
-                                backgroundRepeat: "no-repeat",
-                                backgroundPosition: "center",
-                                backgroundSize: "contain",
-                                opacity: !mech?.is_destroyed ? 1 : 0.6,
+                                position: "relative",
+                                width: `calc(${SIZE} - 1px)`,
+                                height: `calc(${SIZE} - 1px)`,
+                                p: 0,
                             }}
-                        />
+                            disableAutoColor
+                            onClick={() => leaveLobby(mech.id)}
+                        >
+                            <Box
+                                sx={{
+                                    width: "100%",
+                                    height: "100%",
+                                    background: `url(${mech.avatar_url})`,
+                                    backgroundRepeat: "no-repeat",
+                                    backgroundPosition: "center",
+                                    backgroundSize: "contain",
+                                    opacity: !mech?.is_destroyed ? 1 : 0.6,
+                                }}
+                            />
+
+                            {/* Minus overlay */}
+                            <Stack
+                                alignItems="center"
+                                justifyContent="center"
+                                sx={{
+                                    position: "absolute",
+                                    top: 0,
+                                    left: 0,
+                                    right: 0,
+                                    bottom: 0,
+                                    zIndex: 3,
+                                    backgroundColor: "#00000088",
+                                    opacity: 0,
+                                    ":hover": { opacity: 1 },
+                                }}
+                            >
+                                <Typography fontFamily={fonts.nostromoBold} variant="h4" color={colors.gold}>
+                                    -
+                                </Typography>
+                            </Stack>
+                        </NiceButton>
                     )
                 })}
 
