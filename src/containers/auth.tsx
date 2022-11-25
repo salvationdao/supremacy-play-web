@@ -2,7 +2,7 @@ import { createContext, Dispatch, ReactNode, useCallback, useContext, useEffect,
 import { useMutation, useQuery } from "react-fetching-library"
 import { useFingerprint, useSupremacy } from "."
 import { PASSPORT_WEB } from "../constants"
-import { GameServerLoginCheck, GetGlobalFeatures, PassportLoginCheck } from "../fetching"
+import { GameServerLoginCheck, GetGlobalFeatures, GameServerTokenLoginCheck } from "../fetching"
 import { useGameServerCommandsUser, useGameServerSubscriptionSecuredUser } from "../hooks/useGameServer"
 import { useInactivity } from "../hooks/useInactivity"
 import { GameServerKeys } from "../keys"
@@ -130,7 +130,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const { query: getGlobalFeatures } = useQuery(GetGlobalFeatures())
     const [globalFeatures, setGlobalFeatures] = useState<Feature[]>([])
     const { query: gameserverLoginCheck } = useQuery(GameServerLoginCheck(fingerprint), false)
-    const { mutate: passportLoginCheck } = useMutation(PassportLoginCheck)
+    const { mutate: gameserverTokenLogin } = useMutation(GameServerTokenLoginCheck)
 
     const handleVisibilityChange = useCallback(() => {
         if (document["hidden"]) {
@@ -153,26 +153,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const authCheckCallback = useCallback(
         async (event?: MessageEvent) => {
-            if (event && !("issue_token" in event.data)) return
+            if (!event || !("issue_token" in event.data)) return
             const issueToken = event?.data.issue_token as string
             // Check passport server login
-            if (!userFromPassport) {
-                try {
-                    const resp = await passportLoginCheck({
-                        issue_token: issueToken,
-                        fingerprint,
-                    })
-                    if (resp.error || !resp.payload) {
-                        setUserFromPassport(undefined)
-                        return
-                    }
-                    setUserFromPassport(resp.payload)
-                } catch (err) {
-                    console.error(err)
+            try {
+                const resp = await gameserverTokenLogin({
+                    issue_token: issueToken,
+                    fingerprint,
+                })
+                if (resp.error || !resp.payload) {
+                    setUserFromPassport(undefined)
+                    return
                 }
+                setUserFromPassport(resp.payload)
+            } catch (err) {
+                console.error(err)
             }
         },
-        [fingerprint, passportLoginCheck, userFromPassport],
+        [fingerprint, gameserverTokenLogin],
     )
 
     useEffect(() => {
@@ -239,7 +237,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const onLogInClick = useCallback(async () => {
         if (isLoggingIn) return
         setIsLoggingIn(true)
-        const href = `${PASSPORT_WEB}external/login?origin=${window.location.origin}`
+        const href = `${PASSPORT_WEB}external/login?origin=${window.location.origin}&redirectURL=${window.location.origin}/login-redirect`
         const popup = window.open(href, "_blank")
 
         setPassportPopup(popup)

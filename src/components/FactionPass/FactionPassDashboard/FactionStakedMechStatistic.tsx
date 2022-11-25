@@ -1,6 +1,11 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Stack, Typography } from "@mui/material"
 import { colors, fonts } from "../../../theme/theme"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js"
+import { Doughnut } from "react-chartjs-2"
+import { useMemo } from "react"
+
+ChartJS.register(ArcElement, Tooltip, Legend)
 
 interface FactionStakedMechStatisticProps {
     totalCount: number
@@ -11,13 +16,36 @@ interface FactionStakedMechStatisticProps {
 }
 
 export const FactionStakedMechStatistic = ({ totalCount, inQueueCount, damagedCount, battleReadyCount, inBattleCount }: FactionStakedMechStatisticProps) => {
+    const chartData = useMemo(
+        () => [
+            { label: "Mechs battle ready", color: colors.orange, percentage: Math.round((battleReadyCount * 100) / totalCount) / 100 },
+            { label: "Mechs in queue", color: colors.green, percentage: Math.round((inQueueCount * 100) / totalCount) / 100 },
+            { label: "Mechs Damaged", color: colors.lightRed, percentage: Math.round((damagedCount * 100) / totalCount) / 100 },
+            { label: "Mechs in battle", color: colors.bronze, percentage: Math.round((inBattleCount * 100) / totalCount) / 100 },
+        ],
+        [totalCount, inQueueCount, damagedCount, battleReadyCount, inBattleCount],
+    )
+
     return (
         <Stack direction="column" spacing="1rem" sx={{ width: "30rem", height: "fit-content", backgroundColor: `${colors.offWhite}20`, p: "1.5rem" }}>
+            <Doughnut
+                data={{
+                    labels: [],
+                    datasets: [
+                        {
+                            label: "Amount",
+                            data: chartData.map((cd) => cd.percentage),
+                            backgroundColor: chartData.map((cd) => cd.color),
+                            borderColor: chartData.map((cd) => cd.color),
+                            borderWidth: 1,
+                        },
+                    ],
+                }}
+            />
             <Stack direction="column" spacing="1.5rem">
-                <StakedMechStatBar color={colors.orange} label={"Mechs battle ready"} percentage={battleReadyCount / totalCount} />
-                <StakedMechStatBar color={colors.green} label={"Mechs in queue"} percentage={inQueueCount / totalCount} />
-                <StakedMechStatBar color={colors.lightRed} label={"Mechs Damaged"} percentage={damagedCount / totalCount} />
-                <StakedMechStatBar color={colors.bronze} label={"Mechs in battle"} percentage={inBattleCount / totalCount} />
+                {chartData.map((cd) => (
+                    <StakedMechStatBar key={cd.label} color={cd.color} label={cd.label} percentage={cd.percentage} />
+                ))}
             </Stack>
         </Stack>
     )
@@ -45,7 +73,7 @@ const StakedMechStatBar = ({ color, label, percentage }: StakedMechStatBarProps)
             </Stack>
 
             <Typography color={color} fontFamily={fonts.rajdhaniBold}>
-                {Math.round(percentage * 10000) / 100}%
+                {Math.round(percentage * 100)}%
             </Typography>
         </Stack>
     )
