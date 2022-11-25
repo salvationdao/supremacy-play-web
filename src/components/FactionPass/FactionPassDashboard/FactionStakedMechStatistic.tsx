@@ -9,35 +9,48 @@ ChartJS.register(ArcElement, Tooltip, Legend)
 
 interface FactionStakedMechStatisticProps {
     totalCount: number
+    idleMechCount: number
     inQueueCount: number
     damagedCount: number
     battleReadyCount: number
     inBattleCount: number
 }
 
-export const FactionStakedMechStatistic = ({ totalCount, inQueueCount, damagedCount, battleReadyCount, inBattleCount }: FactionStakedMechStatisticProps) => {
+export const FactionStakedMechStatistic = ({
+    totalCount,
+    inQueueCount,
+    damagedCount,
+    battleReadyCount,
+    idleMechCount,
+    inBattleCount,
+}: FactionStakedMechStatisticProps) => {
     const chartData = useMemo(
         () => [
-            { label: "Mechs battle ready", color: colors.orange, percentage: Math.round((battleReadyCount * 100) / totalCount) / 100 },
-            { label: "Mechs in queue", color: colors.green, percentage: Math.round((inQueueCount * 100) / totalCount) / 100 },
-            { label: "Mechs Damaged", color: colors.lightRed, percentage: Math.round((damagedCount * 100) / totalCount) / 100 },
-            { label: "Mechs in battle", color: colors.bronze, percentage: Math.round((inBattleCount * 100) / totalCount) / 100 },
+            { label: "Mechs idle", color: colors.green, percentage: Math.round((idleMechCount * 100) / totalCount) / 100 },
+            { label: "Mechs in queue", color: colors.yellow, percentage: Math.round((inQueueCount * 100) / totalCount) / 100 },
+            { label: "Mechs Damaged", color: colors.bronze, percentage: Math.round((damagedCount * 100) / totalCount) / 100 },
+            { label: "Mechs battle ready", color: colors.red, percentage: Math.round((battleReadyCount * 100) / totalCount) / 100 },
+            { label: "Mechs in battle", color: colors.orange, percentage: Math.round((inBattleCount * 100) / totalCount) / 100 },
         ],
-        [totalCount, inQueueCount, damagedCount, battleReadyCount, inBattleCount],
+        [totalCount, inQueueCount, damagedCount, battleReadyCount, inBattleCount, idleMechCount],
     )
 
     return (
         <Stack direction="column" spacing="1rem" sx={{ width: "30rem", height: "fit-content", backgroundColor: `${colors.offWhite}20`, p: "1.5rem" }}>
             <Doughnut
+                options={{
+                    cutout: "70%",
+                }}
                 data={{
                     labels: [],
                     datasets: [
                         {
-                            label: "Amount",
+                            // label: "Amount",
                             data: chartData.map((cd) => cd.percentage),
-                            backgroundColor: chartData.map((cd) => cd.color),
+                            backgroundColor: chartData.map((cd) => `${cd.color}99`),
                             borderColor: chartData.map((cd) => cd.color),
                             borderWidth: 1,
+                            weight: 700,
                         },
                     ],
                 }}
