@@ -1,9 +1,19 @@
-import { Stack, SxProps, Tooltip, Typography } from "@mui/material"
+import { Stack, SxProps, Tooltip, TooltipProps, Typography } from "@mui/material"
 import { ReactElement } from "react"
 import { useTheme } from "../../../containers/theme"
 import { autoTextColor } from "../../../helpers"
 import { fonts, siteZIndex } from "../../../theme/theme"
 import { NiceBoxThing } from "./NiceBoxThing"
+
+interface NiceTooltipProps extends Omit<TooltipProps, "title"> {
+    text?: string
+    renderNode?: React.ReactNode
+    children: ReactElement
+    placement?: TooltipPlacement
+    color?: string
+    textColor?: string
+    tooltipSx?: SxProps
+}
 
 export type TooltipPlacement =
     | "bottom-end"
@@ -19,27 +29,7 @@ export type TooltipPlacement =
     | "top-start"
     | "top"
 
-export const NiceTooltip = ({
-    text,
-    renderNode,
-    children,
-    isCentered,
-    placement,
-    open,
-    color,
-    textColor: tColor,
-    tooltipSx,
-}: {
-    text?: string
-    renderNode?: React.ReactNode
-    children: ReactElement
-    isCentered?: boolean
-    placement?: TooltipPlacement
-    open?: boolean
-    color?: string
-    textColor?: string
-    tooltipSx?: SxProps
-}) => {
+export const NiceTooltip = ({ text, renderNode, children, placement, color, textColor: tColor, tooltipSx, ...props }: NiceTooltipProps) => {
     const theme = useTheme()
     if (!text && !renderNode) return <>{children}</>
 
@@ -48,9 +38,8 @@ export const NiceTooltip = ({
 
     return (
         <Tooltip
-            open={open}
             arrow
-            placement={placement || (isCentered ? "bottom" : "bottom-start")}
+            placement={placement || "bottom-start"}
             sx={{
                 zIndex: `${siteZIndex.Tooltip} !important`,
                 ".MuiTooltip-popper": {
@@ -76,7 +65,7 @@ export const NiceTooltip = ({
                                     color: textColor || "#FFFFFF",
                                     fontFamily: fonts.rajdhaniMedium,
                                     lineHeight: 1.5,
-                                    textAlign: isCentered ? "center" : "start",
+                                    textAlign: "start",
                                 }}
                             >
                                 <strong>{text}</strong>
@@ -92,6 +81,7 @@ export const NiceTooltip = ({
                 arrow: { sx: { color: `${primaryColor}80` } },
                 tooltip: { sx: { padding: "0 !important", maxWidth: renderNode ? "unset" : "25rem", background: "unset", ...tooltipSx } },
             }}
+            {...props}
         >
             {children}
         </Tooltip>
