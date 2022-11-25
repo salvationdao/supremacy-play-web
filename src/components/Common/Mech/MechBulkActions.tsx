@@ -2,15 +2,15 @@ import { Stack, Typography } from "@mui/material"
 import React, { MutableRefObject, useCallback, useMemo, useRef, useState } from "react"
 import { useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { useGameServerCommandsUser } from "../../../hooks/useGameServer"
+import { useGameServerCommandsFaction, useGameServerCommandsUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
-import { NewMechStruct, MechStatusEnum } from "../../../types"
-import { HireContractorsCard } from "./RepairModal/HireContractorsCard"
+import { MechStatusEnum, NewMechStruct } from "../../../types"
 import { NiceButton } from "../Nice/NiceButton"
 import { NiceModal } from "../Nice/NiceModal"
 import { NicePopover } from "../Nice/NicePopover"
 import { RepairBlocks } from "./MechRepairBlocks"
+import { HireContractorsCard } from "./RepairModal/HireContractorsCard"
 
 export const MechBulkActions = React.memo(function MechBulkActions({
     selectedMechs,
@@ -63,7 +63,46 @@ const BulkActionPopover = ({
 }) => {
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
+    const { send: sendFaction } = useGameServerCommandsFaction("/user_commander")
     const [bulkRepairModalOpen, setBulkRepairModalOpen] = useState(false)
+
+    const stakeSelectedMechs = useCallback(
+        async (mechs: NewMechStruct[]) => {
+            try {
+                if (mechs.length <= 0) return
+
+                await sendFaction<boolean>(GameServerKeys.StakeMechs, {
+                    mech_ids: mechs.map((mech) => mech.id),
+                })
+                setSelectedMechs([])
+                newSnackbarMessage("Successfully added mechs to faction mech pool.", "success")
+            } catch (err) {
+                const message = typeof err === "string" ? err : "Failed to add mechs to faction mech pool."
+                newSnackbarMessage(message, "error")
+                console.error(err)
+            }
+        },
+        [newSnackbarMessage, sendFaction, setSelectedMechs],
+    )
+
+    const unstakeSelectedMechs = useCallback(
+        async (mechs: NewMechStruct[]) => {
+            try {
+                if (mechs.length <= 0) return
+
+                await sendFaction<boolean>(GameServerKeys.UnstakeMechs, {
+                    mech_ids: mechs.map((mech) => mech.id),
+                })
+                setSelectedMechs([])
+                newSnackbarMessage("Successfully removed mechs from faction mech pool.", "success")
+            } catch (err) {
+                const message = typeof err === "string" ? err : "Failed to remove mechs from faction mech pool."
+                newSnackbarMessage(message, "error")
+                console.error(err)
+            }
+        },
+        [newSnackbarMessage, sendFaction, setSelectedMechs],
+    )
 
     const insertMechsToRepairBay = useCallback(
         async (mechs: NewMechStruct[]) => {
@@ -89,13 +128,24 @@ const BulkActionPopover = ({
             <NicePopover open={open} anchorEl={popoverRef.current} onClose={onClose}>
                 <Stack>
                     <NiceButton
-                        disabled={true || selectedMechs.length <= 0}
+                        disabled={selectedMechs.length <= 0}
                         sx={{ justifyContent: "flex-start" }}
                         onClick={() => {
+                            stakeSelectedMechs(selectedMechs)
                             onClose()
                         }}
                     >
                         STAKE SELECTED
+                    </NiceButton>
+                    <NiceButton
+                        disabled={selectedMechs.length <= 0}
+                        sx={{ justifyContent: "flex-start" }}
+                        onClick={() => {
+                            unstakeSelectedMechs(selectedMechs)
+                            onClose()
+                        }}
+                    >
+                        UNSTAKE SELECTED
                     </NiceButton>
 
                     <NiceButton
