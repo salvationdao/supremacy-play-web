@@ -18,6 +18,7 @@ export const NiceModal = ({ modalSx, sx, children, onClose, backdropColor, ...pr
         <Modal
             {...props}
             onClose={onClose}
+            closeAfterTransition
             sx={{
                 ".MuiBackdrop-root": {
                     backgroundColor: backdropColor || "rgba(0, 0, 0, 0.4)",
