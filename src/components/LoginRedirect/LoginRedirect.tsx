@@ -5,8 +5,10 @@ import { colors, fonts } from "../../theme/theme"
 export const LoginRedirect = () => {
     // Receives token from the url param and passes it to the parent via postMessage
     useEffect(() => {
+        const search = new URLSearchParams(window.location.search)
+        window.opener.postMessage({ issue_token: search.get("token") })
         // Close the window
-        window.close()
+        setTimeout(() => window.close(), 500)
     }, [])
 
     return (

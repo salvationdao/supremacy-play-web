@@ -26,7 +26,6 @@ import {
 } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
-import { MechLoadoutItem } from "../../Hangar/WarMachinesHangar/Common/MechLoadoutItem"
 
 export const FactionMostPopularStakedMech = () => {
     const { getFaction } = useSupremacy()

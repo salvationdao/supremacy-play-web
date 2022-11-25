@@ -13,7 +13,7 @@ import {
     WeaponMaxStats,
 } from "../types"
 
-export const PassportLoginCheck = (formValues: { issue_token: string; fingerprint?: Fingerprint }): Action<UserFromPassport> => {
+export const GameServerTokenLoginCheck = (formValues: { issue_token: string; fingerprint?: Fingerprint }): Action<UserFromPassport> => {
     const { issue_token, fingerprint } = formValues
     return {
         method: "POST",
