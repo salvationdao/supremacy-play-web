@@ -18,12 +18,13 @@ export const TimeLeft = ({ dateTo, prefixText, timeUpText: timeUpMessage }: Time
         secondsLeftRef.current -= 1
 
         if (!containerRef.current) return
-        containerRef.current.innerText = secondsLeftRef.current > 0 ? `${prefixText}${secondsToWords(secondsLeftRef.current)}` : timeUpMessage || "REFRESHING"
+        containerRef.current.innerText =
+            secondsLeftRef.current > 0 ? `${prefixText || ""}${secondsToWords(secondsLeftRef.current)}` : timeUpMessage || "REFRESHING"
     }, 1000)
 
     return (
         <Box ref={containerRef} component="span">
-            {secondsLeftRef.current > 0 ? `${prefixText}${secondsToWords(secondsLeftRef.current)}` : timeUpMessage || "REFRESHING"}
+            {secondsLeftRef.current > 0 ? `${prefixText || ""}${secondsToWords(secondsLeftRef.current)}` : timeUpMessage || "REFRESHING"}
         </Box>
     )
 }
