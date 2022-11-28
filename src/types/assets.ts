@@ -346,8 +346,10 @@ export interface Weapon extends Collection, Images {
     equipped_on?: string
     weapon_type: string
     damage_falloff?: number
+    boosted_damage_falloff?: number
     damage_falloff_rate?: number
     spread?: number
+    boosted_spread?: number
     rate_of_fire?: number
     radius?: number
     radius_damage_falloff?: number
