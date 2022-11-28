@@ -2,19 +2,17 @@ import { Box, Stack, Typography } from "@mui/material"
 import { CoinsLeftPNG, CoinsRightPNG, LightningBackgroundPNG } from "../../../../assets"
 import { colors, fonts } from "../../../../theme/theme"
 import { ConnectButton } from "../../../Bar/ProfileCard/ConnectButton"
-import { ClipThing } from "../../../Common/Deprecated/ClipThing"
+import { NiceBoxThing } from "../../../Common/Nice/NiceBoxThing"
 
 export const UnauthPrompt = () => {
     return (
         <Box sx={{ py: "1rem" }}>
-            <ClipThing
-                clipSize="6px"
+            <NiceBoxThing
                 border={{
-                    borderColor: `${colors.yellow}`,
-                    borderThickness: ".3rem",
+                    color: `${colors.yellow}`,
+                    thickness: "very-lean",
                 }}
-                opacity={0.6}
-                backgroundColor={colors.darkestNeonBlue}
+                background={{ colors: [colors.darkestNeonBlue] }}
                 sx={{ position: "relative" }}
             >
                 <Stack
@@ -84,7 +82,7 @@ export const UnauthPrompt = () => {
                         backgroundSize: "cover",
                     }}
                 />
-            </ClipThing>
+            </NiceBoxThing>
         </Box>
     )
 }

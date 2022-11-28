@@ -155,7 +155,7 @@ export const NiceBoxThing = React.forwardRef<unknown, NiceBoxThingProps>(functio
             borderStyle: border.style || "solid",
         }
 
-        switch (typeof border.thickness === "undefined" ? "lean" : border.thickness) {
+        switch (typeof border.thickness === "undefined" ? "very-lean" : border.thickness) {
             case "very-lean":
                 styles.borderWidth = "1px"
                 break
