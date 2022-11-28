@@ -11,7 +11,7 @@ import { FeesRewards } from "./FeesRewards"
 import { Overview } from "./Overview"
 import { RoomSettings } from "./RoomSettings"
 
-const steps = [{ label: "Room Settings" }, { label: "Fees & Rewards" }, { label: "Deploy Mechs" }, { label: "Overview" }]
+const steps = [{ label: "Lobby Settings" }, { label: "Fees & Rewards" }, { label: "Deploy Mechs" }, { label: "Overview" }]
 
 export enum Accessibility {
     Public = "PUBLIC",
