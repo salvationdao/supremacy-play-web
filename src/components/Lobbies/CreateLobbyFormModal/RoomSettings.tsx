@@ -16,6 +16,7 @@ import { FormField } from "./FormField"
 
 export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<CreateLobbyFormFields, unknown> }) => {
     const theme = useTheme()
+    const [rerender, setRerender] = useState(new Date())
 
     return (
         <Stack spacing="2rem">
@@ -125,40 +126,43 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
                                     { label: "Custom date & time", value: Scheduling.SetTime },
                                 ]}
                                 selected={field.value}
-                                onSelected={(value) => field.onChange(value)}
+                                onSelected={(value) => {
+                                    field.onChange(value)
+                                    setRerender(new Date())
+                                }}
                                 sx={{ ".MuiButtonBase-root": { flex: 1 } }}
                             />
                         )
                     }}
                 />
+
+                {/* Custom start time */}
+                {formMethods.watch("scheduling_type") === Scheduling.SetTime && (
+                    <Stack direction="row" alignItems="center" spacing=".8rem" pt=".8rem">
+                        <Controller
+                            name="wont_start_until_date"
+                            control={formMethods.control}
+                            rules={{
+                                required: { value: true, message: "Start date field is required." },
+                            }}
+                            render={({ field }) => {
+                                return <NiceDatePicker value={field.value} onChange={(value) => field.onChange(value)} />
+                            }}
+                        />
+
+                        <Controller
+                            name="wont_start_until_time"
+                            control={formMethods.control}
+                            rules={{
+                                required: { value: true, message: "Start time field is required." },
+                            }}
+                            render={({ field }) => {
+                                return <NiceTimePicker value={field.value} onChange={(value) => field.onChange(value)} />
+                            }}
+                        />
+                    </Stack>
+                )}
             </FormField>
-
-            {/* Custom start time */}
-            {formMethods.watch("scheduling_type") === Scheduling.SetTime && (
-                <Stack direction="row" alignItems="center" spacing="1.5rem">
-                    <Controller
-                        name="wont_start_until_date"
-                        control={formMethods.control}
-                        rules={{
-                            required: { value: true, message: "Start date field is required." },
-                        }}
-                        render={({ field }) => {
-                            return <NiceDatePicker value={field.value} onChange={(value) => field.onChange(value)} />
-                        }}
-                    />
-
-                    <Controller
-                        name="wont_start_until_time"
-                        control={formMethods.control}
-                        rules={{
-                            required: { value: true, message: "Start time field is required." },
-                        }}
-                        render={({ field }) => {
-                            return <NiceTimePicker value={field.value} onChange={(value) => field.onChange(value)} />
-                        }}
-                    />
-                </Stack>
-            )}
         </Stack>
     )
 }

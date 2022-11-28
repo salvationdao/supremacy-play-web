@@ -9,7 +9,7 @@ interface NiceTimePickerProps {
     disabled?: boolean
 }
 
-export const NiceTimePicker = ({ value, onChange, disabled }: NiceTimePickerProps) => {
+export const NiceTimePicker = ({ value, onChange, disabled, ...props }: NiceTimePickerProps) => {
     const { factionTheme } = useTheme()
 
     return (
@@ -115,6 +115,7 @@ export const NiceTimePicker = ({ value, onChange, disabled }: NiceTimePickerProp
                     }}
                 />
             )}
+            {...props}
         />
     )
 }
