@@ -56,6 +56,10 @@ export const MyLobbies = () => {
                 return list
                     .filter((bl) => !bl.ended_at && !bl.deleted_at)
                     .sort((a, b) => {
+                        if (b.ready_at) {
+                            return 1
+                        }
+
                         if (a.ready_at && b.ready_at) {
                             return a.ready_at > b.ready_at ? 1 : -1
                         }
@@ -97,6 +101,10 @@ export const MyLobbies = () => {
                 return list
                     .filter((p) => !p.ended_at && !p.deleted_at)
                     .sort((a, b) => {
+                        if (b.ready_at) {
+                            return 1
+                        }
+
                         if (a.ready_at && b.ready_at) {
                             return a.ready_at > b.ready_at ? 1 : -1
                         }
@@ -125,6 +133,10 @@ export const MyLobbies = () => {
             filteredLobbies
                 .filter((p) => !p.ready_at && !involvedLobbies.some((b) => b.id === p.id))
                 .sort((a, b) => {
+                    if (b.ready_at) {
+                        return 1
+                    }
+
                     if (a.ready_at && b.ready_at) {
                         return a.ready_at > b.ready_at ? 1 : -1
                     }

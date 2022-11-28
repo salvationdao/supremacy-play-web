@@ -25,6 +25,10 @@ export const CentralQueue = ({ lobbies }: { lobbies: BattleLobby[] }) => {
             return prev
                 .filter((p) => !p.ended_at && !p.deleted_at)
                 .sort((a, b) => {
+                    if (b.ready_at) {
+                        return 1
+                    }
+
                     if (a.ready_at && b.ready_at) {
                         return a.ready_at > b.ready_at ? 1 : -1
                     }
