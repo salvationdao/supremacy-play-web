@@ -7,9 +7,11 @@ import { fonts } from "../../../theme/theme"
 import { AllGameMapsCombined } from "../../Common/AllGameMapsCombined"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { NiceButtonGroup } from "../../Common/Nice/NiceButtonGroup"
+import { NiceDatePicker } from "../../Common/Nice/NiceDatePicker"
 import { NicePopover } from "../../Common/Nice/NicePopover"
 import { NiceTextField } from "../../Common/Nice/NiceTextField"
-import { Accessibility, CreateLobbyFormFields } from "./CreateLobbyFormModal"
+import { NiceTimePicker } from "../../Common/Nice/NiceTimePicker"
+import { Accessibility, CreateLobbyFormFields, Scheduling } from "./CreateLobbyFormModal"
 import { FormField } from "./FormField"
 
 export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<CreateLobbyFormFields, unknown> }) => {
@@ -104,6 +106,59 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
                     }}
                 />
             </FormField>
+
+            {/* Start time */}
+            <FormField label="Battle start time">
+                <Controller
+                    name="scheduling_type"
+                    control={formMethods.control}
+                    rules={{
+                        required: { value: true, message: "Schedule field is required." },
+                    }}
+                    render={({ field }) => {
+                        return (
+                            <NiceButtonGroup
+                                primaryColor={theme.factionTheme.primary}
+                                secondaryColor={theme.factionTheme.text}
+                                options={[
+                                    { label: "When lobby is full", value: Scheduling.OnReady },
+                                    { label: "Custom date & time", value: Scheduling.SetTime },
+                                ]}
+                                selected={field.value}
+                                onSelected={(value) => field.onChange(value)}
+                                sx={{ ".MuiButtonBase-root": { flex: 1 } }}
+                            />
+                        )
+                    }}
+                />
+            </FormField>
+
+            {/* Custom start time */}
+            {formMethods.watch("scheduling_type") === Scheduling.SetTime && (
+                <Stack direction="row" alignItems="center" spacing="1.5rem">
+                    <Controller
+                        name="wont_start_until_date"
+                        control={formMethods.control}
+                        rules={{
+                            required: { value: true, message: "Start date field is required." },
+                        }}
+                        render={({ field }) => {
+                            return <NiceDatePicker value={field.value} onChange={(value) => field.onChange(value)} />
+                        }}
+                    />
+
+                    <Controller
+                        name="wont_start_until_time"
+                        control={formMethods.control}
+                        rules={{
+                            required: { value: true, message: "Start time field is required." },
+                        }}
+                        render={({ field }) => {
+                            return <NiceTimePicker value={field.value} onChange={(value) => field.onChange(value)} />
+                        }}
+                    />
+                </Stack>
+            )}
         </Stack>
     )
 }
