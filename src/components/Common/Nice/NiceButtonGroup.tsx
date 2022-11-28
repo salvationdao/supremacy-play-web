@@ -42,7 +42,7 @@ export const NiceButtonGroup = <T,>({
                         sx={{
                             height: "100%",
                             p: ".1rem 1.2rem",
-                            pt: ".4rem",
+                            pt: ".1rem",
                             minWidth: "3rem",
                             borderRadius: 0,
                             color: isActive ? `${secondaryColor} !important` : "#FFFFFF !important",

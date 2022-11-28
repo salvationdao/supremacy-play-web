@@ -111,21 +111,21 @@ export const CreateLobbyFormModal = React.memo(function CreateLobbyFormModal({ o
     }, [activeStep, formMethods])
 
     return (
-        <NiceModal open={open} onClose={onClose} sx={{ p: "1.8rem 2.5rem", maxHeight: "calc(100vh - 20rem)", minWidth: "70rem" }}>
-            <Stack>
+        <NiceModal open={open} onClose={onClose} sx={{ p: "1.8rem 2.5rem", height: "80rem", maxHeight: "calc(100vh - 20rem)", minWidth: "70rem" }}>
+            <Stack height="100%">
                 <Typography variant="h6" fontFamily={fonts.nostromoBlack} mb="2rem">
                     Create Lobby
                 </Typography>
 
-                <Stack direction="row" alignItems="flex-start" spacing="2.5rem">
+                <Stack direction="row" alignItems="flex-start" spacing="3rem" flex={1}>
                     {/* Stepper */}
                     <NiceStepper steps={steps} activeStep={activeStep} handleStep={handleStep} orientation="vertical" />
 
                     <Divider flexItem orientation="vertical" />
 
-                    <Stack spacing="2.5rem" flex={1}>
+                    <Stack spacing="2.5rem" flex={1} alignSelf="stretch">
                         {/* The form questions */}
-                        <Box flex={1} sx={{ overflowX: "hidden", overflowY: "auto" }}>
+                        <Box flex={1} sx={{ overflowX: "hidden", overflowY: "auto", pr: ".8rem" }}>
                             {stepForm}
                         </Box>
 

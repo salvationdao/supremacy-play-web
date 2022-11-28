@@ -16,7 +16,7 @@ import { FormField } from "./FormField"
 
 export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<CreateLobbyFormFields, unknown> }) => {
     const theme = useTheme()
-    const [rerender, setRerender] = useState(new Date())
+    const [, setRerender] = useState(new Date())
 
     return (
         <Stack spacing="2rem">
@@ -138,7 +138,7 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
 
                 {/* Custom start time */}
                 {formMethods.watch("scheduling_type") === Scheduling.SetTime && (
-                    <Stack direction="row" alignItems="center" spacing=".8rem" pt=".8rem">
+                    <Stack direction="row" alignItems="center" spacing="1.3rem" pt="1.6rem" sx={{ "& > *": { flex: 1 } }}>
                         <Controller
                             name="wont_start_until_date"
                             control={formMethods.control}

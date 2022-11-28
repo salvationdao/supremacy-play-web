@@ -26,6 +26,7 @@ export const NiceDatePicker = ({ value, onChange, disabled, minDate }: NiceDateP
                     value={value as string}
                     type="date"
                     onChange={(value) => params.onChange && params.onChange(value)}
+                    sx={{ ".MuiOutlinedInput-root": { pr: 0 } }}
                 />
             )}
         />
