@@ -4,16 +4,10 @@ import { SvgMoreOptions, SvgRepair } from "../../../assets"
 import { useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { getMechStatusDeets, mechHasPowerCoreAndWeapon } from "../../../helpers"
-import {
-    useGameServerCommandsFaction,
-    useGameServerCommandsUser,
-    useGameServerSubscriptionSecured,
-    useGameServerSubscriptionSecuredUser,
-} from "../../../hooks/useGameServer"
+import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors } from "../../../theme/theme"
-import { MechStatusEnum, NewMechStruct, RepairSlot } from "../../../types"
-import { RepairOffer } from "../../../types/jobs"
+import { MechStatusEnum, NewMechStruct } from "../../../types"
 import { NiceButton } from "../Nice/NiceButton"
 import { NicePopover } from "../Nice/NicePopover"
 import { NiceTooltip } from "../Nice/NiceTooltip"
@@ -113,39 +107,7 @@ const RepairActions = ({
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
     const [repairMechModalOpen, setRepairMechModalOpen] = useState<boolean>(false)
-    const [hasRepairOffer, setHasRepairOffer] = useState(false)
     const [defaultOpenSelfRepair, setDefaultOpenSelfRepair] = useState(false)
-    const [isInRepairBay, setIsInRepairBay] = useState(false)
-
-    // Subscribe on the mech's repair job listed
-    useGameServerSubscriptionSecured<RepairOffer>(
-        {
-            URI: `/mech/${mech.id}/active_repair_offer`,
-            key: GameServerKeys.GetMechRepairJob,
-        },
-        (payload) => {
-            if (!payload || payload.closed_at) {
-                setHasRepairOffer(false)
-                return
-            }
-            setHasRepairOffer(true)
-        },
-    )
-
-    // Subscribe on the repair bay
-    useGameServerSubscriptionSecuredUser<RepairSlot[]>(
-        {
-            URI: "/repair_bay",
-            key: GameServerKeys.GetRepairBaySlots,
-        },
-        (payload) => {
-            if (!payload || payload.length <= 0) {
-                setIsInRepairBay(false)
-                return
-            }
-            setIsInRepairBay(!!payload.find((repairSlot) => repairSlot.mech_id === mech.id))
-        },
-    )
 
     // Adds mech to repair bay
     const insertMechToRepairBay = useCallback(async () => {
@@ -191,7 +153,7 @@ const RepairActions = ({
                     </NiceButton>
 
                     <NiceButton
-                        disabled={hasRepairOffer}
+                        disabled={!!mech.has_repair_offer}
                         sx={{ justifyContent: "flex-start" }}
                         onClick={(e) => {
                             e.preventDefault()
@@ -205,7 +167,7 @@ const RepairActions = ({
                     </NiceButton>
 
                     <NiceButton
-                        disabled={isInRepairBay}
+                        disabled={!!mech.player_mech_repair_slot_id}
                         sx={{ justifyContent: "flex-start" }}
                         onClick={(e) => {
                             e.preventDefault()
