@@ -43,15 +43,15 @@ export const JoinLobbyModal = ({
     )
 
     const queueLimit = useMemo(() => {
-        // get player remaining queue limit
+        // Get player remaining queue limit
         let playerQueueLimit = playerQueueStatus.queue_limit - playerQueueStatus.total_queued
         if (playerQueueLimit <= 0) playerQueueLimit = 0
 
-        // calc lobby remain slots
+        // Calc lobby remain slots
         let lobbyRemainSlots = battleLobby.each_faction_mech_amount - battleLobby.battle_lobbies_mechs.filter((blm) => blm.faction_id === factionID).length
         if (lobbyRemainSlots <= 0) lobbyRemainSlots = 0
 
-        // get player maximum queue limit in lobby
+        // Get player maximum queue limit in lobby
         const lobbyQueueLimit = battleLobby.max_deploy_per_player
 
         return Math.min(playerQueueLimit, lobbyQueueLimit, lobbyRemainSlots)

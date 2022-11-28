@@ -13,6 +13,7 @@ import { NiceButton } from "../Nice/NiceButton"
 import { NiceButtonGroup } from "../Nice/NiceButtonGroup"
 import { NiceSelect } from "../Nice/NiceSelect"
 import { NiceTextField } from "../Nice/NiceTextField"
+import { TypographyTruncated } from "../TypographyTruncated"
 import { VirtualizedGrid } from "../VirtualizedGrid"
 import { MechCardWeaponAndStats } from "./MechCardWeaponAndStats"
 
@@ -304,9 +305,9 @@ export const MechSelector = React.memo(function MechSelector({
             </Stack>
 
             {onlyDeployableMechs && (
-                <Typography sx={{ color: colors.neonBlue, fontWeight: "bold" }}>
+                <TypographyTruncated sx={{ color: colors.neonBlue, fontWeight: "bold" }}>
                     <SvgInfoCircular inline size="1.8rem" fill={colors.neonBlue} /> Only mechs with a power core and weapons will be shown
-                </Typography>
+                </TypographyTruncated>
             )}
 
             <Box sx={{ flex: 1, overflowY: "auto", minHeight: "15rem", pt: ".6rem" }}>{content}</Box>

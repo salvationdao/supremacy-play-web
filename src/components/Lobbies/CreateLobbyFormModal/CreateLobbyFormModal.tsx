@@ -7,6 +7,7 @@ import { NewMechStruct } from "../../../types"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 import { NiceModal } from "../../Common/Nice/NiceModal"
 import { NiceStepper } from "../../Common/Nice/NiceStepper"
+import { DeployMechs } from "./DeployMechs"
 import { FeesRewards } from "./FeesRewards"
 import { Overview } from "./Overview"
 import { RoomSettings } from "./RoomSettings"
@@ -100,7 +101,7 @@ export const CreateLobbyFormModal = React.memo(function CreateLobbyFormModal({ o
         }
 
         if (activeStep === 2) {
-            return null
+            return <DeployMechs formMethods={formMethods} />
         }
 
         if (activeStep === 3) {

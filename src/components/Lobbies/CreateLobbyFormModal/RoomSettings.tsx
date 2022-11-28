@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, Fade, Stack, Typography } from "@mui/material"
 import { useMemo, useRef, useState } from "react"
 import { Controller, ControllerRenderProps, UseFormReturn } from "react-hook-form"
 import { useArena } from "../../../containers"
@@ -19,151 +19,153 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
     const [, setRerender] = useState(new Date())
 
     return (
-        <Stack spacing="2rem">
-            {/* Access */}
-            <FormField label="Lobby Access">
-                <Controller
-                    name="accessibility"
-                    control={formMethods.control}
-                    rules={{
-                        required: { value: true, message: "Access field is required." },
-                    }}
-                    render={({ field }) => {
-                        return (
-                            <NiceButtonGroup
-                                primaryColor={theme.factionTheme.primary}
-                                secondaryColor={theme.factionTheme.text}
-                                options={[
-                                    { label: "Public", value: Accessibility.Public },
-                                    { label: "Private", value: Accessibility.Private },
-                                ]}
-                                selected={field.value}
-                                onSelected={(value) => field.onChange(value)}
-                            />
-                        )
-                    }}
-                />
-            </FormField>
+        <Fade in>
+            <Stack spacing="2rem">
+                {/* Access */}
+                <FormField label="Lobby Access">
+                    <Controller
+                        name="accessibility"
+                        control={formMethods.control}
+                        rules={{
+                            required: { value: true, message: "Access field is required." },
+                        }}
+                        render={({ field }) => {
+                            return (
+                                <NiceButtonGroup
+                                    primaryColor={theme.factionTheme.primary}
+                                    secondaryColor={theme.factionTheme.text}
+                                    options={[
+                                        { label: "Public", value: Accessibility.Public },
+                                        { label: "Private", value: Accessibility.Private },
+                                    ]}
+                                    selected={field.value}
+                                    onSelected={(value) => field.onChange(value)}
+                                />
+                            )
+                        }}
+                    />
+                </FormField>
 
-            {/* Name */}
-            <FormField label="Lobby Name">
-                <Controller
-                    name="name"
-                    control={formMethods.control}
-                    rules={{
-                        required: { value: true, message: "Lobby name is required." },
-                        maxLength: { value: 20, message: "Lobby name is too long." },
-                    }}
-                    render={({ field }) => {
-                        const errorMessage = formMethods.formState.errors.name?.message
-                        return (
-                            <NiceTextField
-                                primaryColor={theme.factionTheme.primary}
-                                value={field.value}
-                                onChange={field.onChange}
-                                placeholder="Enter lobby name..."
-                                type="text"
-                                error={!!errorMessage}
-                                helperText={errorMessage}
-                            />
-                        )
-                    }}
-                />
-            </FormField>
+                {/* Name */}
+                <FormField label="Lobby Name">
+                    <Controller
+                        name="name"
+                        control={formMethods.control}
+                        rules={{
+                            required: { value: true, message: "Lobby name is required." },
+                            maxLength: { value: 20, message: "Lobby name is too long." },
+                        }}
+                        render={({ field }) => {
+                            const errorMessage = formMethods.formState.errors.name?.message
+                            return (
+                                <NiceTextField
+                                    primaryColor={theme.factionTheme.primary}
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    placeholder="Enter lobby name..."
+                                    type="text"
+                                    error={!!errorMessage}
+                                    helperText={errorMessage}
+                                />
+                            )
+                        }}
+                    />
+                </FormField>
 
-            {/* Game map */}
-            <FormField label="Map">
-                <Controller
-                    name="game_map_id"
-                    control={formMethods.control}
-                    render={({ field }) => {
-                        return <GameMapSelector field={field} />
-                    }}
-                />
-            </FormField>
+                {/* Game map */}
+                <FormField label="Map">
+                    <Controller
+                        name="game_map_id"
+                        control={formMethods.control}
+                        render={({ field }) => {
+                            return <GameMapSelector field={field} />
+                        }}
+                    />
+                </FormField>
 
-            {/* Max deploys */}
-            <FormField label="Max mech deploys per player">
-                <Controller
-                    name="max_deploy_number"
-                    control={formMethods.control}
-                    rules={{
-                        required: { value: true, message: "Max mech deploy field is required." },
-                    }}
-                    render={({ field }) => {
-                        return (
-                            <NiceButtonGroup
-                                primaryColor={theme.factionTheme.primary}
-                                secondaryColor={theme.factionTheme.text}
-                                options={[
-                                    { label: "1", value: 1 },
-                                    { label: "2", value: 2 },
-                                    { label: "3", value: 3 },
-                                ]}
-                                selected={field.value}
-                                onSelected={(value) => field.onChange(value)}
-                            />
-                        )
-                    }}
-                />
-            </FormField>
+                {/* Max deploys */}
+                <FormField label="Max mech deploys per player">
+                    <Controller
+                        name="max_deploy_number"
+                        control={formMethods.control}
+                        rules={{
+                            required: { value: true, message: "Max mech deploy field is required." },
+                        }}
+                        render={({ field }) => {
+                            return (
+                                <NiceButtonGroup
+                                    primaryColor={theme.factionTheme.primary}
+                                    secondaryColor={theme.factionTheme.text}
+                                    options={[
+                                        { label: "1", value: 1 },
+                                        { label: "2", value: 2 },
+                                        { label: "3", value: 3 },
+                                    ]}
+                                    selected={field.value}
+                                    onSelected={(value) => field.onChange(value)}
+                                />
+                            )
+                        }}
+                    />
+                </FormField>
 
-            {/* Start time */}
-            <FormField label="Battle start time">
-                <Controller
-                    name="scheduling_type"
-                    control={formMethods.control}
-                    rules={{
-                        required: { value: true, message: "Schedule field is required." },
-                    }}
-                    render={({ field }) => {
-                        return (
-                            <NiceButtonGroup
-                                primaryColor={theme.factionTheme.primary}
-                                secondaryColor={theme.factionTheme.text}
-                                options={[
-                                    { label: "When lobby is full", value: Scheduling.OnReady },
-                                    { label: "Custom date & time", value: Scheduling.SetTime },
-                                ]}
-                                selected={field.value}
-                                onSelected={(value) => {
-                                    field.onChange(value)
-                                    setRerender(new Date())
+                {/* Start time */}
+                <FormField label="Battle start time">
+                    <Controller
+                        name="scheduling_type"
+                        control={formMethods.control}
+                        rules={{
+                            required: { value: true, message: "Schedule field is required." },
+                        }}
+                        render={({ field }) => {
+                            return (
+                                <NiceButtonGroup
+                                    primaryColor={theme.factionTheme.primary}
+                                    secondaryColor={theme.factionTheme.text}
+                                    options={[
+                                        { label: "When lobby is full", value: Scheduling.OnReady },
+                                        { label: "Custom date & time", value: Scheduling.SetTime },
+                                    ]}
+                                    selected={field.value}
+                                    onSelected={(value) => {
+                                        field.onChange(value)
+                                        setRerender(new Date())
+                                    }}
+                                    sx={{ ".MuiButtonBase-root": { flex: 1 } }}
+                                />
+                            )
+                        }}
+                    />
+
+                    {/* Custom start time */}
+                    {formMethods.watch("scheduling_type") === Scheduling.SetTime && (
+                        <Stack direction="row" alignItems="center" spacing="1.3rem" pt="1.6rem" sx={{ "& > *": { flex: 1 } }}>
+                            <Controller
+                                name="wont_start_until_date"
+                                control={formMethods.control}
+                                rules={{
+                                    required: { value: true, message: "Start date field is required." },
                                 }}
-                                sx={{ ".MuiButtonBase-root": { flex: 1 } }}
+                                render={({ field }) => {
+                                    return <NiceDatePicker value={field.value} onChange={(value) => field.onChange(value)} />
+                                }}
                             />
-                        )
-                    }}
-                />
 
-                {/* Custom start time */}
-                {formMethods.watch("scheduling_type") === Scheduling.SetTime && (
-                    <Stack direction="row" alignItems="center" spacing="1.3rem" pt="1.6rem" sx={{ "& > *": { flex: 1 } }}>
-                        <Controller
-                            name="wont_start_until_date"
-                            control={formMethods.control}
-                            rules={{
-                                required: { value: true, message: "Start date field is required." },
-                            }}
-                            render={({ field }) => {
-                                return <NiceDatePicker value={field.value} onChange={(value) => field.onChange(value)} />
-                            }}
-                        />
-
-                        <Controller
-                            name="wont_start_until_time"
-                            control={formMethods.control}
-                            rules={{
-                                required: { value: true, message: "Start time field is required." },
-                            }}
-                            render={({ field }) => {
-                                return <NiceTimePicker value={field.value} onChange={(value) => field.onChange(value)} />
-                            }}
-                        />
-                    </Stack>
-                )}
-            </FormField>
-        </Stack>
+                            <Controller
+                                name="wont_start_until_time"
+                                control={formMethods.control}
+                                rules={{
+                                    required: { value: true, message: "Start time field is required." },
+                                }}
+                                render={({ field }) => {
+                                    return <NiceTimePicker value={field.value} onChange={(value) => field.onChange(value)} />
+                                }}
+                            />
+                        </Stack>
+                    )}
+                </FormField>
+            </Stack>
+        </Fade>
     )
 }
 
