@@ -125,6 +125,10 @@ export const Lobbies = () => {
                 })
 
                 return list.sort((a, b) => {
+                    if (b.ready_at) {
+                        return 1
+                    }
+
                     if (a.ready_at && b.ready_at) {
                         return a.ready_at > b.ready_at ? 1 : -1
                     }
@@ -184,6 +188,10 @@ export const Lobbies = () => {
             result
                 .filter((p) => !p.ready_at)
                 .sort((a, b) => {
+                    if (b.ready_at) {
+                        return 1
+                    }
+
                     if (a.ready_at && b.ready_at) {
                         return a.ready_at > b.ready_at ? 1 : -1
                     }
