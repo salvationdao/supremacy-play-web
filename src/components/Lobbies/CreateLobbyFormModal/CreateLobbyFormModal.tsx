@@ -9,6 +9,7 @@ import { NiceButton } from "../../Common/Nice/NiceButton"
 import { NiceModal } from "../../Common/Nice/NiceModal"
 import { NiceStepper } from "../../Common/Nice/NiceStepper"
 import { FeesRewards } from "./FeesRewards"
+import { Overview } from "./Overview"
 import { RoomSettings } from "./RoomSettings"
 
 const steps = [{ label: "Room Settings" }, { label: "Fees & Rewards" }, { label: "Deploy Mechs" }, { label: "Overview" }]
@@ -75,9 +76,6 @@ export const CreateLobbyFormModal = React.memo(function CreateLobbyFormModal({ o
 
     // Stepper
     const [activeStep, setActiveStep] = useState(0)
-    const [completedSteps, setCompletedSteps] = React.useState<{
-        [k: number]: boolean
-    }>({})
 
     const handleStep = useCallback((step: number) => {
         setActiveStep(step)
@@ -90,15 +88,6 @@ export const CreateLobbyFormModal = React.memo(function CreateLobbyFormModal({ o
     const handleNext = useCallback(() => {
         setActiveStep((prev) => Math.min(prev + 1, steps.length - 1))
     }, [])
-
-    // Complete a step
-    const handleComplete = useCallback(
-        (step: number) => {
-            setCompletedSteps((prev) => ({ ...prev, [step]: true }))
-            handleNext()
-        },
-        [handleNext],
-    )
 
     const isLastStep = activeStep >= steps.length - 1
 
@@ -115,6 +104,10 @@ export const CreateLobbyFormModal = React.memo(function CreateLobbyFormModal({ o
             return null
         }
 
+        if (activeStep === 4) {
+            return <Overview />
+        }
+
         return null
     }, [activeStep])
 
@@ -127,14 +120,7 @@ export const CreateLobbyFormModal = React.memo(function CreateLobbyFormModal({ o
 
                 <Stack direction="row" alignItems="stretch" spacing="2rem">
                     {/* Stepper */}
-                    <NiceStepper
-                        steps={steps}
-                        activeStep={activeStep}
-                        handleStep={handleStep}
-                        completedSteps={completedSteps}
-                        orientation="vertical"
-                        sx={{ ".MuiStepConnector-root": { ml: "1.25rem" } }}
-                    />
+                    <NiceStepper steps={steps} activeStep={activeStep} handleStep={handleStep} orientation="vertical" />
 
                     <Divider flexItem orientation="vertical" />
 

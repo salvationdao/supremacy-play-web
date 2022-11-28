@@ -25,7 +25,7 @@ export const NiceStepper = ({ steps, activeStep, completedSteps, handleStep, sx,
                     ? {
                           ".MuiStepConnector-root": {
                               ml: `calc(${ICON_SIZE} / 2)`,
-                              my: ".6rem",
+                              my: ".4rem",
                           },
                       }
                     : {}),
