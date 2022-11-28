@@ -199,6 +199,7 @@ export interface NewMechStruct extends MechBasic {
 
     in_queue: boolean
     has_repair_offer: boolean
+    player_mech_repair_slot_id?: string
     status: MechStatusEnum
     can_deploy: boolean
     lobby_locked_at?: Date
