@@ -4,6 +4,7 @@ import { createContainer } from "unstated-next"
 import { FallbackFaction, useGlobalNotifications } from "."
 import { GAME_SERVER_HOSTNAME } from "../constants"
 import { GetFactionsAll } from "../fetching"
+import { useLocalStorage } from "../hooks/useLocalStorage"
 import { FactionsAll } from "../types"
 import { useWS } from "./ws/useWS"
 
@@ -19,6 +20,8 @@ export const SupremacyContainer = createContainer(() => {
     const windowReloadTimeout = useRef<NodeJS.Timeout | null>(null)
     const [hasInteracted, setHasInteracted] = useState(false)
     const isWindowFocused = useRef(document.visibilityState === "visible")
+
+    const [isTransparentMode, setIsTransparentMode] = useLocalStorage("isTransparentMode", false)
 
     const [haveSups, toggleHaveSups] = useState<boolean>() // Needs 3 states: true, false, undefined. Undefined means it's not loaded yet.
     const [factionsAll, setFactionsAll] = useState<FactionsAll>({})
@@ -123,6 +126,9 @@ export const SupremacyContainer = createContainer(() => {
         setBattleID,
         haveSups,
         toggleHaveSups,
+
+        isTransparentMode,
+        setIsTransparentMode,
     }
 })
 
