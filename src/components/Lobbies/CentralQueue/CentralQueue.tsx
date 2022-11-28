@@ -22,7 +22,15 @@ export const CentralQueue = ({ lobbies }: { lobbies: BattleLobby[] }) => {
                 prev.push(bl)
             })
 
-            return prev.filter((p) => !p.ended_at && !p.deleted_at).sort((a, b) => (!!a.ready_at && !!b.ready_at && a.ready_at > b.ready_at ? 1 : -1))
+            return prev
+                .filter((p) => !p.ended_at && !p.deleted_at)
+                .sort((a, b) => {
+                    if (a.ready_at && b.ready_at) {
+                        return a.ready_at > b.ready_at ? 1 : -1
+                    }
+
+                    return a.created_at > b.created_at ? 1 : -1
+                })
         })
     }, [lobbies])
 

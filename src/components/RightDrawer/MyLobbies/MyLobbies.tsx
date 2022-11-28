@@ -53,7 +53,15 @@ export const MyLobbies = () => {
                     list.push(p)
                 })
 
-                return list.filter((bl) => !bl.ended_at && !bl.deleted_at).sort((a, b) => (a.ready_at && b.ready_at && a.ready_at > b.ready_at ? 1 : -1))
+                return list
+                    .filter((bl) => !bl.ended_at && !bl.deleted_at)
+                    .sort((a, b) => {
+                        if (a.ready_at && b.ready_at) {
+                            return a.ready_at > b.ready_at ? 1 : -1
+                        }
+
+                        return a.created_at > b.created_at ? 1 : -1
+                    })
             })
         },
     )
@@ -86,7 +94,15 @@ export const MyLobbies = () => {
                 })
 
                 // Remove any finished lobby
-                return list.filter((p) => !p.ended_at && !p.deleted_at)
+                return list
+                    .filter((p) => !p.ended_at && !p.deleted_at)
+                    .sort((a, b) => {
+                        if (a.ready_at && b.ready_at) {
+                            return a.ready_at > b.ready_at ? 1 : -1
+                        }
+
+                        return a.created_at > b.created_at ? 1 : -1
+                    })
             })
         },
     )
@@ -105,7 +121,17 @@ export const MyLobbies = () => {
                 break
         }
 
-        setDisplayLobbies(filteredLobbies.filter((p) => !p.ready_at && !involvedLobbies.some((b) => b.id === p.id)))
+        setDisplayLobbies(
+            filteredLobbies
+                .filter((p) => !p.ready_at && !involvedLobbies.some((b) => b.id === p.id))
+                .sort((a, b) => {
+                    if (a.ready_at && b.ready_at) {
+                        return a.ready_at > b.ready_at ? 1 : -1
+                    }
+
+                    return a.created_at > b.created_at ? 1 : -1
+                }),
+        )
     }, [allLobbies, involvedLobbies, tabValue])
 
     const renderIndex = useCallback(

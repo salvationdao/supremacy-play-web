@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { EmptyWarMachinesPNG, SvgPlus, SvgSearch } from "../../assets"
 import { useTheme } from "../../containers/theme"
 import { snakeToTitle } from "../../helpers"
@@ -15,11 +15,11 @@ import { NiceButton } from "../Common/Nice/NiceButton"
 import { NiceSelect } from "../Common/Nice/NiceSelect"
 import { NiceTextField } from "../Common/Nice/NiceTextField"
 import { VirtualizedGrid } from "../Common/VirtualizedGrid"
-import { BattleLobbyCreateModal } from "./BattleLobbies/BattleLobbyCreate/BattleLobbyCreateModal"
 import { CentralQueue } from "./CentralQueue/CentralQueue"
+import { CreateLobbyFormModal } from "./CreateLobbyFormModal/CreateLobbyFormModal"
 import { AccessCodePopover } from "./JoinPrivateLobby/AccessCodePopover"
-import { LobbyItem } from "./LobbyItem/LobbyItem"
 import { JoinLobbyModal } from "./LobbyItem/JoinLobbyModal"
+import { LobbyItem } from "./LobbyItem/LobbyItem"
 
 enum LobbyTabs {
     SystemLobbies = "SYSTEM_LOBBIES",
@@ -124,7 +124,13 @@ export const Lobbies = () => {
                     list.push(p)
                 })
 
-                return list
+                return list.sort((a, b) => {
+                    if (a.ready_at && b.ready_at) {
+                        return a.ready_at > b.ready_at ? 1 : -1
+                    }
+
+                    return a.created_at > b.created_at ? 1 : -1
+                })
             })
         },
     )
@@ -174,7 +180,17 @@ export const Lobbies = () => {
             [UrlQueryParams.Search]: search,
         })
 
-        setDisplayLobbies(result.filter((p) => !p.ready_at))
+        setDisplayLobbies(
+            result
+                .filter((p) => !p.ready_at)
+                .sort((a, b) => {
+                    if (a.ready_at && b.ready_at) {
+                        return a.ready_at > b.ready_at ? 1 : -1
+                    }
+
+                    return a.created_at > b.created_at ? 1 : -1
+                }),
+        )
     }, [activeTabID, isLoading, lobbies, search, sort, updateQuery])
 
     const renderIndex = useCallback(
@@ -338,7 +354,7 @@ export const Lobbies = () => {
                 </Stack>
             </Stack>
 
-            {showCreateLobbyModal && <BattleLobbyCreateModal setOpen={setShowCreateLobbyModal} />}
+            {showCreateLobbyModal && <CreateLobbyFormModal open={showCreateLobbyModal} onClose={() => setShowCreateLobbyModal(false)} />}
 
             {!!selectedBattleLobby && (
                 <JoinLobbyModal open={!!selectedBattleLobby} onClose={() => setSelectedBattleLobby(undefined)} battleLobby={selectedBattleLobby} />
