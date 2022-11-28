@@ -136,6 +136,8 @@ export const MechSelector = React.memo(function MechSelector({
             setStakedMechs((prev) => {
                 if (prev.length === 0) {
                     return payload.filter((mech) => {
+                        if (!mech.is_staked) return false
+
                         if (onlyDeployableMechs) {
                             return mechHasPowerCoreAndWeapon(mech) && mech.can_deploy
                         }
@@ -157,6 +159,7 @@ export const MechSelector = React.memo(function MechSelector({
                 })
 
                 return list.filter((mech) => {
+                    if (!mech.is_staked) return false
                     if (onlyDeployableMechs) {
                         return mechHasPowerCoreAndWeapon(mech) && mech.can_deploy
                     }

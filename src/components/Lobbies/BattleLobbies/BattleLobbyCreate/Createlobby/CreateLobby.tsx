@@ -91,7 +91,7 @@ export const CreateLobby = () => {
 
             setStakedMechs((prev) => {
                 if (prev.length === 0) {
-                    return payload.filter((p) => p.can_deploy)
+                    return payload.filter((p) => p.can_deploy && p.is_staked)
                 }
 
                 // Replace current list
@@ -107,7 +107,7 @@ export const CreateLobby = () => {
                     list.push(p)
                 })
 
-                return list.filter((p) => p.can_deploy)
+                return list.filter((p) => p.can_deploy && p.is_staked)
             })
         },
     )
