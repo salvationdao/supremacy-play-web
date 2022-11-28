@@ -17,6 +17,7 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
 
     return (
         <Stack spacing="2rem">
+            {/* Access */}
             <FormField label="Lobby Access">
                 <Controller
                     name="accessibility"
@@ -41,6 +42,7 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
                 />
             </FormField>
 
+            {/* Name */}
             <FormField label="Lobby Name">
                 <Controller
                     name="name"
@@ -66,12 +68,39 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
                 />
             </FormField>
 
+            {/* Game map */}
             <FormField label="Map">
                 <Controller
                     name="game_map_id"
                     control={formMethods.control}
                     render={({ field }) => {
                         return <GameMapSelector field={field} />
+                    }}
+                />
+            </FormField>
+
+            {/* Max deploys */}
+            <FormField label="Max mech deploys per player">
+                <Controller
+                    name="max_deploy_number"
+                    control={formMethods.control}
+                    rules={{
+                        required: { value: true, message: "Max mech deploy field is required." },
+                    }}
+                    render={({ field }) => {
+                        return (
+                            <NiceButtonGroup
+                                primaryColor={theme.factionTheme.primary}
+                                secondaryColor={theme.factionTheme.text}
+                                options={[
+                                    { label: "1", value: 1 },
+                                    { label: "2", value: 2 },
+                                    { label: "3", value: 3 },
+                                ]}
+                                selected={field.value}
+                                onSelected={(value) => field.onChange(value)}
+                            />
+                        )
                     }}
                 />
             </FormField>
@@ -94,7 +123,7 @@ export const GameMapSelector = ({ field }: { field: ControllerRenderProps<Create
             <Stack alignItems="center" justifyContent="center" sx={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: 1 }}>
                 <AllGameMapsCombined sx={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: -1, opacity: 0.5 }} />
                 <Typography variant="h4" fontFamily={fonts.nostromoBold}>
-                    RANDOM
+                    <i>RANDOM</i>
                 </Typography>
             </Stack>
         ),

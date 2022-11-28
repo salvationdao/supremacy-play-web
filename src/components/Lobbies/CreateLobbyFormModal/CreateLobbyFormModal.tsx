@@ -117,7 +117,7 @@ export const CreateLobbyFormModal = React.memo(function CreateLobbyFormModal({ o
                     Create Lobby
                 </Typography>
 
-                <Stack direction="row" alignItems="stretch" spacing="2rem">
+                <Stack direction="row" alignItems="flex-start" spacing="2.5rem">
                     {/* Stepper */}
                     <NiceStepper steps={steps} activeStep={activeStep} handleStep={handleStep} orientation="vertical" />
 
