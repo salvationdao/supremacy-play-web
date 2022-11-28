@@ -9,10 +9,17 @@ import { NiceModal } from "../../Common/Nice/NiceModal"
 import { NiceStepper } from "../../Common/Nice/NiceStepper"
 import { DeployMechs } from "./DeployMechs"
 import { FeesRewards } from "./FeesRewards"
+import { InviteFriends } from "./InviteFriends"
 import { Overview } from "./Overview"
 import { RoomSettings } from "./RoomSettings"
 
-const steps = [{ label: "Lobby Settings" }, { label: "Fees & Rewards" }, { label: "Deploy Mechs" }, { label: "Overview" }]
+const steps = [
+    { label: "Lobby Settings" },
+    { label: "Fees & Rewards" },
+    { label: "Deploy Mechs", isOptional: true },
+    { label: "Invite friends", isOptional: true },
+    { label: "Overview" },
+]
 
 export enum Accessibility {
     Public = "PUBLIC",
@@ -105,6 +112,10 @@ export const CreateLobbyFormModal = React.memo(function CreateLobbyFormModal({ o
         }
 
         if (activeStep === 3) {
+            return <InviteFriends formMethods={formMethods} />
+        }
+
+        if (activeStep === 4) {
             return <Overview formMethods={formMethods} />
         }
 
@@ -112,7 +123,7 @@ export const CreateLobbyFormModal = React.memo(function CreateLobbyFormModal({ o
     }, [activeStep, formMethods])
 
     return (
-        <NiceModal open={open} onClose={onClose} sx={{ p: "1.8rem 2.5rem", height: "80rem", maxHeight: "calc(100vh - 20rem)", minWidth: "70rem" }}>
+        <NiceModal open={open} onClose={onClose} sx={{ p: "1.8rem 2.5rem", height: "88rem", maxHeight: "calc(100vh - 20rem)", minWidth: "70rem" }}>
             <Stack height="100%">
                 <Typography variant="h6" fontFamily={fonts.nostromoBlack} mb="2rem">
                     Create Lobby
