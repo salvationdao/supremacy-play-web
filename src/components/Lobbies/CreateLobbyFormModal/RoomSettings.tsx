@@ -1,7 +1,13 @@
-import { Stack } from "@mui/material"
-import { Controller, UseFormReturn } from "react-hook-form"
+import { Box, Stack, Typography } from "@mui/material"
+import { useMemo, useRef, useState } from "react"
+import { Controller, ControllerRenderProps, UseFormReturn } from "react-hook-form"
+import { useArena } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
+import { fonts } from "../../../theme/theme"
+import { AllGameMapsCombined } from "../../Common/AllGameMapsCombined"
+import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { NiceButtonGroup } from "../../Common/Nice/NiceButtonGroup"
+import { NicePopover } from "../../Common/Nice/NicePopover"
 import { NiceTextField } from "../../Common/Nice/NiceTextField"
 import { Accessibility, CreateLobbyFormFields } from "./CreateLobbyFormModal"
 import { FormField } from "./FormField"
@@ -10,7 +16,7 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
     const theme = useTheme()
 
     return (
-        <Stack spacing="2.54rem">
+        <Stack spacing="2rem">
             <FormField label="Lobby Access">
                 <Controller
                     name="accessibility"
@@ -59,6 +65,164 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
                     }}
                 />
             </FormField>
+
+            <FormField label="Map">
+                <Controller
+                    name="game_map_id"
+                    control={formMethods.control}
+                    render={({ field }) => {
+                        return <GameMapSelector field={field} />
+                    }}
+                />
+            </FormField>
         </Stack>
+    )
+}
+
+export const GameMapSelector = ({ field }: { field: ControllerRenderProps<CreateLobbyFormFields, "game_map_id"> }) => {
+    const { factionTheme } = useTheme()
+    const { gameMaps } = useArena()
+
+    // Popover
+    const popoverRef = useRef(null)
+    const [openMapSelector, setOpenMapSelector] = useState(false)
+
+    const selectedGameMap = useMemo(() => gameMaps.find((gm) => gm.id === field.value), [gameMaps, field.value])
+
+    const randomOption = useMemo(
+        () => (
+            <Stack alignItems="center" justifyContent="center" sx={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: 1 }}>
+                <AllGameMapsCombined sx={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: -1, opacity: 0.5 }} />
+                <Typography variant="h4" fontFamily={fonts.nostromoBold}>
+                    RANDOM
+                </Typography>
+            </Stack>
+        ),
+        [],
+    )
+
+    return (
+        <>
+            <NiceBoxThing
+                ref={popoverRef}
+                border={{ color: "#FFFFFF30", thickness: "very-lean" }}
+                sx={{
+                    position: "relative",
+                    height: "8rem",
+                    cursor: "pointer",
+                    backgroundColor: factionTheme.background,
+                    backgroundImage: selectedGameMap ? `url(${selectedGameMap.background_url})` : undefined,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    backgroundSize: "cover",
+                }}
+                onClick={() => setOpenMapSelector(true)}
+            >
+                {!selectedGameMap ? (
+                    randomOption
+                ) : (
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            top: "50%",
+                            left: "50%",
+                            width: "calc(100% - 4rem)",
+                            height: "calc(100% - 2rem)",
+                            transform: `translate(-50%, -50%)`,
+                            backgroundImage: `url(${selectedGameMap.logo_url})`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "bottom center",
+                            backgroundSize: "contain",
+                        }}
+                    />
+                )}
+            </NiceBoxThing>
+
+            {openMapSelector && (
+                <NicePopover
+                    open={openMapSelector}
+                    anchorEl={popoverRef.current}
+                    onClose={() => setOpenMapSelector(false)}
+                    anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "center",
+                    }}
+                    transformOrigin={{
+                        vertical: "top",
+                        horizontal: "center",
+                    }}
+                >
+                    <Stack direction="row" flexWrap="wrap" sx={{ width: "60rem" }}>
+                        {gameMaps.map((gm) => {
+                            const isSelected = selectedGameMap?.id === gm.id
+                            return (
+                                <Box
+                                    key={gm.id}
+                                    sx={{
+                                        position: "relative",
+                                        width: "50%",
+                                        height: "6rem",
+                                        cursor: "pointer",
+                                        backgroundRepeat: "no-repeat",
+                                        backgroundPosition: "center",
+                                        backgroundSize: "cover",
+                                        backgroundImage: `url(${gm.background_url})`,
+                                        border: isSelected ? `#FFFFFF 2px solid` : "none",
+                                        opacity: isSelected ? 1 : 0.3,
+                                        boxShadow: isSelected ? 6 : 0,
+
+                                        "&:hover": {
+                                            opacity: 1,
+                                        },
+                                    }}
+                                    onClick={() => {
+                                        field.onChange(gm.id)
+                                        setOpenMapSelector(false)
+                                    }}
+                                >
+                                    {/* Logo */}
+                                    <Box
+                                        sx={{
+                                            position: "absolute",
+                                            top: "50%",
+                                            left: "50%",
+                                            width: "calc(100% - 4rem)",
+                                            height: "calc(100% - 2rem)",
+                                            transform: `translate(-50%, -50%)`,
+                                            backgroundImage: `url(${gm.logo_url})`,
+                                            backgroundRepeat: "no-repeat",
+                                            backgroundPosition: "bottom center",
+                                            backgroundSize: "contain",
+                                        }}
+                                    />
+                                </Box>
+                            )
+                        })}
+
+                        <Box
+                            sx={{
+                                position: "relative",
+                                width: "100%",
+                                height: "6rem",
+                                cursor: "pointer",
+                                border: !selectedGameMap ? `#FFFFFF 2px solid` : "none",
+                                opacity: !selectedGameMap ? 1 : 0.3,
+                                boxShadow: !selectedGameMap ? 6 : 0,
+
+                                "&:hover": {
+                                    opacity: 1,
+                                },
+                            }}
+                            onClick={() => {
+                                field.onChange("")
+                                setOpenMapSelector(false)
+                            }}
+                        >
+                            {randomOption}
+                        </Box>
+                    </Stack>
+                </NicePopover>
+            )}
+        </>
     )
 }

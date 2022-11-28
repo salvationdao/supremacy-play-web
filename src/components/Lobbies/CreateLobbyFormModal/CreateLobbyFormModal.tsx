@@ -123,9 +123,11 @@ export const CreateLobbyFormModal = React.memo(function CreateLobbyFormModal({ o
 
                     <Divider flexItem orientation="vertical" />
 
-                    <Stack spacing="1rem" flex={1}>
+                    <Stack spacing="2.5rem" flex={1}>
                         {/* The form questions */}
-                        <Box flex={1}>{stepForm}</Box>
+                        <Box flex={1} sx={{ overflowX: "hidden", overflowY: "auto" }}>
+                            {stepForm}
+                        </Box>
 
                         {/* Bottom buttons */}
                         <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing="1rem">
