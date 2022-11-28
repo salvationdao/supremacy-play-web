@@ -9,7 +9,7 @@ export interface Step {
 
 export interface NiceStepperProps extends StepperProps {
     steps: Step[]
-    activeStep: number // Starts from 1, 2, 3 etc. not 0.
+    activeStep: number // Starts from 0, 1, 2, 3 etc. not 1.
     handleStep: (step: number) => void
     completedSteps?: { [k: number]: boolean }
 }

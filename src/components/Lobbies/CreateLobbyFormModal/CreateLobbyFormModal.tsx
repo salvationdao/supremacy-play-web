@@ -1,5 +1,4 @@
 import { Box, Divider, Stack, Typography } from "@mui/material"
-import moment from "moment"
 import React, { useCallback, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useTheme } from "../../../containers/theme"
@@ -32,8 +31,8 @@ export interface CreateLobbyFormFields {
     max_deploy_number: number
     game_map_id: string
     scheduling_type: Scheduling
-    wont_start_until_date: moment.Moment
-    wont_start_until_time: moment.Moment
+    wont_start_until_date: Date
+    wont_start_until_time: Date
 
     // Step 2
     entry_fee: number
@@ -59,8 +58,8 @@ export const CreateLobbyFormModal = React.memo(function CreateLobbyFormModal({ o
             max_deploy_number: 3,
             game_map_id: "",
             scheduling_type: Scheduling.OnReady,
-            wont_start_until_date: moment(),
-            wont_start_until_time: moment(),
+            wont_start_until_date: new Date(),
+            wont_start_until_time: new Date(),
 
             // Step 2
             entry_fee: 0,
@@ -92,29 +91,29 @@ export const CreateLobbyFormModal = React.memo(function CreateLobbyFormModal({ o
     const isLastStep = activeStep >= steps.length - 1
 
     const stepForm = useMemo(() => {
+        if (activeStep === 0) {
+            return <RoomSettings formMethods={formMethods} />
+        }
+
         if (activeStep === 1) {
-            return <RoomSettings />
+            return <FeesRewards formMethods={formMethods} />
         }
 
         if (activeStep === 2) {
-            return <FeesRewards />
-        }
-
-        if (activeStep === 3) {
             return null
         }
 
-        if (activeStep === 4) {
-            return <Overview />
+        if (activeStep === 3) {
+            return <Overview formMethods={formMethods} />
         }
 
         return null
-    }, [activeStep])
+    }, [activeStep, formMethods])
 
     return (
-        <NiceModal open={open} onClose={onClose} sx={{ p: "1.8rem 2.5rem", maxHeight: "calc(100vh - 20rem)", minWidth: "70rem" }}>
-            <Stack spacing="1.5rem">
-                <Typography variant="h6" fontFamily={fonts.nostromoBlack}>
+        <NiceModal open={open} onClose={onClose} sx={{ p: "1.8rem 2.5rem", maxHeight: "calc(100vh - 20rem)", minWidth: "66rem" }}>
+            <Stack>
+                <Typography variant="h6" fontFamily={fonts.nostromoBlack} mb="2rem">
                     Create Lobby
                 </Typography>
 
