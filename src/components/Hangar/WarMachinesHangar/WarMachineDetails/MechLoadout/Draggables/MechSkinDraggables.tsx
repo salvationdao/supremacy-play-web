@@ -88,7 +88,6 @@ export const MechSkinDraggables = ({ excludeMechSkinIDs, includeMechSkinIDs, mec
                 display_genesis_and_limited: true,
                 exclude_market_locked: true,
                 display_xsyn: false,
-                display_unique: true,
                 skin_compatibility: [],
                 exclude_ids: excludeMechSkinIDs,
                 include_ids: includeMechSkinIDs,
