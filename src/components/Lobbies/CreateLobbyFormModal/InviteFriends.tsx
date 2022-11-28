@@ -1,4 +1,4 @@
-import { Autocomplete, Box, CircularProgress, Fade, Stack, TextField, Typography } from "@mui/material"
+import { Autocomplete, Box, CircularProgress, Fade, Stack, Typography } from "@mui/material"
 import { useEffect, useState } from "react"
 import { UseFormReturn } from "react-hook-form"
 import { SvgClose2 } from "../../../assets"
@@ -7,10 +7,10 @@ import { useTheme } from "../../../containers/theme"
 import { useDebounce } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { fonts } from "../../../theme/theme"
 import { RoleType, User } from "../../../types"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { NiceButton } from "../../Common/Nice/NiceButton"
+import { NiceTextField } from "../../Common/Nice/NiceTextField"
 import { PlayerNameGid } from "../../Common/PlayerNameGid"
 import { CreateLobbyFormFields } from "./CreateLobbyFormModal"
 
@@ -45,7 +45,9 @@ export const InviteFriends = ({ formMethods }: { formMethods: UseFormReturn<Crea
 
     return (
         <Fade in>
-            <Stack>
+            <Stack spacing="2rem">
+                <Typography variant="h4">Invite friends to join the battle</Typography>
+
                 <Autocomplete
                     options={userDropdown}
                     loading={isLoadingUsers}
@@ -67,50 +69,68 @@ export const InviteFriends = ({ formMethods }: { formMethods: UseFormReturn<Crea
                     getOptionLabel={() => ""}
                     noOptionsText={<Typography sx={{ opacity: 0.6 }}>Start typing a username...</Typography>}
                     filterOptions={(option) => option}
-                    renderInput={(params) => (
-                        <TextField
+                    renderInput={({ InputProps, ...params }) => (
+                        <NiceTextField
                             value={searchText}
                             placeholder="Search for username..."
-                            onChange={(e) => {
-                                setSearchText(e.currentTarget.value)
-                                setSearch(e.currentTarget.value)
+                            onChange={(value) => {
+                                setSearchText(value)
+                                setSearch(value)
                             }}
-                            type="text"
-                            hiddenLabel
-                            sx={{
-                                borderRadius: 1,
-                                "& .MuiInputBase-root": {
-                                    py: 0,
-                                    fontFamily: fonts.rajdhaniMedium,
-                                },
-                                ".Mui-disabled": {
-                                    WebkitTextFillColor: "unset",
-                                    color: "#FFFFFF70",
-                                },
-                                ".Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                    borderColor: `${theme.factionTheme.primary} !important`,
-                                },
-                                input: {
-                                    color: "#FFFFFF",
-                                },
-                            }}
-                            {...params}
                             InputProps={{
-                                ...params.InputProps,
                                 endAdornment: (
                                     <>
                                         {isLoadingUsers ? <CircularProgress size="1.2rem" /> : null}
-                                        {params.InputProps.endAdornment}
+                                        {InputProps.endAdornment}
                                     </>
                                 ),
                             }}
+                            {...params}
                         />
+
+                        // <TextField
+                        //     value={searchText}
+                        //     placeholder="Search for username..."
+                        //     onChange={(e) => {
+                        //         setSearchText(e.currentTarget.value)
+                        //         setSearch(e.currentTarget.value)
+                        //     }}
+                        //     type="text"
+                        //     hiddenLabel
+                        //     sx={{
+                        //         borderRadius: 1,
+                        //         "& .MuiInputBase-root": {
+                        //             py: 0,
+                        //             fontFamily: fonts.rajdhaniMedium,
+                        //         },
+                        //         ".Mui-disabled": {
+                        //             WebkitTextFillColor: "unset",
+                        //             color: "#FFFFFF70",
+                        //         },
+                        //         ".Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        //             borderColor: `${theme.factionTheme.primary} !important`,
+                        //         },
+                        //         input: {
+                        //             color: "#FFFFFF",
+                        //         },
+                        //     }}
+                        //     {...params}
+                        //     InputProps={{
+                        //         ...params.InputProps,
+                        //         endAdornment: (
+                        //             <>
+                        //                 {isLoadingUsers ? <CircularProgress size="1.2rem" /> : null}
+                        //                 {params.InputProps.endAdornment}
+                        //             </>
+                        //         ),
+                        //     }}
+                        // />
                     )}
                 />
 
-                <Stack direction="row" sx={{ flexWrap: "wrap", py: "1rem" }} spacing={1}>
+                <Stack direction="row" sx={{ flexWrap: "wrap" }}>
                     {selectedUsers.map((su) => (
-                        <NiceBoxThing key={su.id}>
+                        <NiceBoxThing key={su.id} sx={{ p: ".3rem" }}>
                             <UserItem user={su} remove={() => setSelectedUsers((prev) => prev.filter((p) => p.id !== su.id))} />
                         </NiceBoxThing>
                     ))}

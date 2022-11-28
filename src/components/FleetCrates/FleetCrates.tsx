@@ -201,11 +201,11 @@ export const FleetCrates = () => {
                             <Box flex={1} />
 
                             {/* Show total */}
-                            <Box sx={{ backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", px: "1rem" }}>
+                            <Stack justifyContent="center" sx={{ height: "4.3rem", backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", px: "1rem" }}>
                                 <Typography variant="h6" sx={{ whiteSpace: "nowrap" }}>
                                     {displayCrates?.length || 0} ITEMS
                                 </Typography>
-                            </Box>
+                            </Stack>
 
                             {/* Search bar */}
                             <NiceTextField

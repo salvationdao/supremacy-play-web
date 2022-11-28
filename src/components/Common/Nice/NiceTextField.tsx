@@ -12,6 +12,7 @@ interface NiceTextFieldProps extends BaseTextFieldProps {
     errorMessage?: string
     sx?: SxProps
     InputProps?: Partial<OutlinedInputProps> | undefined
+    height?: string
 }
 
 // Please use the MUI classnames to style the textfield itself in the sx prop
@@ -25,6 +26,7 @@ export const NiceTextField = ({
     InputProps,
     sx,
     multiline,
+    height = "4.3rem",
     ...props
 }: NiceTextFieldProps) => {
     const numberArrowsEndAdornment = useMemo(() => {
@@ -76,7 +78,7 @@ export const NiceTextField = ({
             position="relative"
             tabIndex={0}
             sx={{
-                height: multiline ? "unset" : "3.3rem",
+                height: multiline ? "unset" : height,
                 boxShadow: 0.5,
 
                 ".MuiOutlinedInput-root": {
@@ -116,6 +118,7 @@ export const NiceTextField = ({
                         p: ".37rem 1.6rem",
                         pt: ".55rem",
                         fontSize: "1.7rem",
+                        height: `calc(${height} - 1rem)`,
                         fontFamily: fonts.rajdhaniMedium,
                         "::-webkit-outer-spin-button, ::-webkit-inner-spin-button": {
                             WebkitAppearance: "none",

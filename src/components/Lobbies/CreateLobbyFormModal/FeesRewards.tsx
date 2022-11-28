@@ -13,6 +13,8 @@ export const FeesRewards = ({ formMethods }: { formMethods: UseFormReturn<Create
     return (
         <Fade in>
             <Stack spacing="2rem">
+                <Typography variant="h4">Fees & Rewards</Typography>
+
                 {/* Entry fee */}
                 <FormField label="Entry fee">
                     <Controller

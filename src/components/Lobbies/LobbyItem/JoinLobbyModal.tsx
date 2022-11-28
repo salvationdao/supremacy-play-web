@@ -83,7 +83,7 @@ export const JoinLobbyModal = ({
     }, [send, battleLobby.id, selectedMechs, accessCode, newSnackbarMessage, onClose])
 
     return (
-        <NiceModal open={open} onClose={onClose} sx={{ p: "1.8rem 2.5rem", height: "calc(100vh - 15rem)", width: "66rem" }}>
+        <NiceModal open={open} onClose={onClose} sx={{ p: "1.8rem 2.5rem", height: "calc(100vh - 15rem)", width: "70rem" }}>
             <Stack spacing="1.5rem" height="100%">
                 <Typography variant="h6" fontFamily={fonts.nostromoBlack}>
                     Join Lobby

@@ -2,7 +2,7 @@ import { Checkbox, Stack, Typography } from "@mui/material"
 import React, { MutableRefObject, useCallback, useMemo, useRef, useState } from "react"
 import { useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { useGameServerCommandsFaction, useGameServerCommandsUser } from "../../../hooks/useGameServer"
+import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MechStatusEnum, NewMechStruct } from "../../../types"
@@ -41,7 +41,7 @@ export const MechBulkActions = React.memo(function MechBulkActions({
                 <NiceButton
                     ref={bulkPopoverRef}
                     buttonColor={theme.factionTheme.primary}
-                    sx={{ p: ".2rem 1rem", pt: ".4rem" }}
+                    sx={{ p: ".85rem 1rem" }}
                     disabled={selectedMechs.length <= 0}
                     onClick={() => setIsBulkPopoverOpen(true)}
                 >
@@ -76,7 +76,6 @@ const BulkActionPopover = ({
     setSelectedMechs: React.Dispatch<React.SetStateAction<NewMechStruct[]>>
 }) => {
     const { newSnackbarMessage } = useGlobalNotifications()
-    const { send } = useGameServerCommandsUser("/user_commander")
     const { send: sendFaction } = useGameServerCommandsFaction("/faction_commander")
     const [bulkRepairModalOpen, setBulkRepairModalOpen] = useState(false)
 

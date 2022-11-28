@@ -21,6 +21,8 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
     return (
         <Fade in>
             <Stack spacing="2rem">
+                <Typography variant="h4">Room settings</Typography>
+
                 {/* Access */}
                 <FormField label="Lobby Access">
                     <Controller

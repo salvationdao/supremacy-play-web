@@ -1,4 +1,4 @@
-import { Fade, Stack } from "@mui/material"
+import { Fade, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { UseFormReturn } from "react-hook-form"
 import { useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
@@ -44,7 +44,9 @@ export const DeployMechs = ({ formMethods }: { formMethods: UseFormReturn<Create
 
     return (
         <Fade in>
-            <Stack height="100%">
+            <Stack height="100%" spacing="2rem">
+                <Typography variant="h4">Deploy your mechs</Typography>
+
                 <MechSelector selectedMechs={selectedMechs} setSelectedMechs={setSelectedMechs} limit={queueLimit} onlyDeployableMechs sx={{ flex: 1 }} />
             </Stack>
         </Fade>

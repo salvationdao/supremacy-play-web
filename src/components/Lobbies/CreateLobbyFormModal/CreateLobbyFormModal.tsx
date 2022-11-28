@@ -14,7 +14,7 @@ import { Overview } from "./Overview"
 import { RoomSettings } from "./RoomSettings"
 
 const steps = [
-    { label: "Lobby Settings" },
+    { label: "Room Settings" },
     { label: "Fees & Rewards" },
     { label: "Deploy Mechs", isOptional: true },
     { label: "Invite friends", isOptional: true },
@@ -123,9 +123,9 @@ export const CreateLobbyFormModal = React.memo(function CreateLobbyFormModal({ o
     }, [activeStep, formMethods])
 
     return (
-        <NiceModal open={open} onClose={onClose} sx={{ p: "1.8rem 2.5rem", height: "88rem", maxHeight: "calc(100vh - 20rem)", minWidth: "70rem" }}>
+        <NiceModal open={open} onClose={onClose} sx={{ p: "1.8rem 2.5rem", height: "95rem", maxHeight: "calc(100vh - 20rem)", minWidth: "70rem" }}>
             <Stack height="100%">
-                <Typography variant="h6" fontFamily={fonts.nostromoBlack} mb="2rem">
+                <Typography variant="h6" fontFamily={fonts.nostromoBlack} mb="3rem">
                     Create Lobby
                 </Typography>
 
