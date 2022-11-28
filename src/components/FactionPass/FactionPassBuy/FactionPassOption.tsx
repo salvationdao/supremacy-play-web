@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 import {
     BCAnnualPassArrowPNG,
     BCDailyPassArrowPNG,
@@ -17,24 +17,15 @@ import {
 } from "../../../assets"
 import { FactionIDs } from "../../../constants"
 import { supFormatter } from "../../../helpers"
+import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { FactionWithPalette } from "../../../types"
+import { FactionPass } from "../../../types/faction_passes"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 import { DAYS_IN_A_MONTH } from "./FactionPassBuy"
-import { FactionPass } from "../../../types/faction_passes"
-import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
-import { AdminLookupHistoryResp } from "../../../types/admin"
-import { GameServerKeys } from "../../../keys"
-import { ConfirmModal } from "../../Common/Deprecated/ConfirmModal"
-import { NiceModal } from "../../Common/Nice/NiceModal"
 import { FactionPassBuyModal } from "./FactionPassBuyModal"
-
-interface OptionPrices {
-    sups: string
-    eth: number
-    fiat: number
-}
 
 const headerArrowImages: {
     [factionID: string]: {
@@ -186,6 +177,7 @@ export const FactionPassOption = React.memo(function FactionPassOption({ faction
                     </NiceButton>
                 </Box>
             </NiceBoxThing>
+
             {openPaymentModal && (
                 <FactionPassBuyModal
                     open={openPaymentModal}
