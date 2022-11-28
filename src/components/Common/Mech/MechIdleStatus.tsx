@@ -110,7 +110,7 @@ const RepairActions = ({
     mech: NewMechStruct
 }) => {
     const { newSnackbarMessage } = useGlobalNotifications()
-    const { send } = useGameServerCommandsUser("/user_commander")
+    const { send } = useGameServerCommandsFaction("/faction_commander")
 
     const [repairMechModalOpen, setRepairMechModalOpen] = useState<boolean>(false)
     const [hasRepairOffer, setHasRepairOffer] = useState(false)

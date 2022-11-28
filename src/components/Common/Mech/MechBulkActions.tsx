@@ -123,7 +123,7 @@ const BulkActionPopover = ({
             try {
                 if (mechs.length <= 0) return
 
-                await send<boolean>(GameServerKeys.InsertRepairBay, {
+                await sendFaction<boolean>(GameServerKeys.InsertRepairBay, {
                     mech_ids: mechs.map((mech) => mech.id),
                 })
                 setSelectedMechs([])
@@ -134,7 +134,7 @@ const BulkActionPopover = ({
                 console.error(err)
             }
         },
-        [newSnackbarMessage, send, setSelectedMechs],
+        [newSnackbarMessage, sendFaction, setSelectedMechs],
     )
 
     return (
