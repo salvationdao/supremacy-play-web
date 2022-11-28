@@ -1,6 +1,6 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { EmptyWarMachinesPNG, SvgFilter, SvgGridView, SvgListView, SvgSearch } from "../../../assets"
+import { EmptyWarMachinesPNG, SvgFilter, SvgGridView, SvgListView, SvgRepair, SvgSearch } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, parseString } from "../../../helpers"
 import { useDebounce, useUrlQuery } from "../../../hooks"
@@ -21,6 +21,7 @@ import { NiceSelect } from "../../Common/Nice/NiceSelect"
 import { NiceTextField } from "../../Common/Nice/NiceTextField"
 import { SortAndFilters } from "../../Common/SortAndFilters/SortAndFilters"
 import { VirtualizedGrid } from "../../Common/VirtualizedGrid"
+import { RepairBay } from "../../FleetMechs/RepairBay/RepairBay"
 
 enum UrlQueryParams {
     Sort = "sort",
@@ -86,6 +87,7 @@ export const FactionPassMechPool = () => {
 
     // Filter, search
     const [showFilters, setShowFilters] = useLocalStorage<boolean>("factionPassMechPoolFilters", false)
+    const [showRepairBay, setShowRepairBay] = useLocalStorage<boolean>("factionPassMechPoolRepairBay", true)
     const [search, setSearch, searchInstant] = useDebounce(query.get(UrlQueryParams.Search) || "", 300)
     const [sort, setSort] = useState<string>(query.get(UrlQueryParams.Sort) || SortTypeLabel.MechQueueAsc)
     const [isGridView, setIsGridView] = useLocalStorage<boolean>("factionPassMechPoolGrid", true)
@@ -387,6 +389,19 @@ export const FactionPassMechPool = () => {
                             </Typography>
                         </NiceButton>
 
+                        {/* Repair bay button */}
+                        <NiceButton
+                            onClick={() => setShowRepairBay((prev) => !prev)}
+                            fill={showRepairBay}
+                            buttonColor={colors.repair}
+                            disableAutoColor
+                            sx={{ p: ".2rem 1rem", pt: ".4rem" }}
+                        >
+                            <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
+                                <SvgRepair inline size="1.5rem" /> REPAIR BAY
+                            </Typography>
+                        </NiceButton>
+
                         <Box flex={1} />
 
                         {/* Bulk actions */}
@@ -431,6 +446,8 @@ export const FactionPassMechPool = () => {
 
                     <Box sx={{ flex: 1, overflowY: "auto" }}>{content}</Box>
                 </Stack>
+
+                <RepairBay open={showRepairBay} />
             </Stack>
         </Stack>
     )

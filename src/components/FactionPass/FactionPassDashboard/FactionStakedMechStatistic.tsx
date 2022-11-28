@@ -26,11 +26,11 @@ export const FactionStakedMechStatistic = ({
 }: FactionStakedMechStatisticProps) => {
     const chartData = useMemo(
         () => [
-            { label: "Mechs idle", color: colors.green, percentage: Math.round((idleMechCount * 100) / totalCount) / 100 },
-            { label: "Mechs in queue", color: colors.yellow, percentage: Math.round((inQueueCount * 100) / totalCount) / 100 },
-            { label: "Mechs Damaged", color: colors.bronze, percentage: Math.round((damagedCount * 100) / totalCount) / 100 },
-            { label: "Mechs battle ready", color: colors.red, percentage: Math.round((battleReadyCount * 100) / totalCount) / 100 },
-            { label: "Mechs in battle", color: colors.orange, percentage: Math.round((inBattleCount * 100) / totalCount) / 100 },
+            { label: "Mechs idle", color: colors.green, amount: idleMechCount, percentage: Math.round((idleMechCount * 100) / totalCount) / 100 },
+            { label: "Mechs in queue", color: colors.yellow, amount: inQueueCount, percentage: Math.round((inQueueCount * 100) / totalCount) / 100 },
+            { label: "Mechs Damaged", color: colors.bronze, amount: damagedCount, percentage: Math.round((damagedCount * 100) / totalCount) / 100 },
+            { label: "Mechs battle ready", color: colors.red, amount: battleReadyCount, percentage: Math.round((battleReadyCount * 100) / totalCount) / 100 },
+            { label: "Mechs in battle", color: colors.orange, amount: inBattleCount, percentage: Math.round((inBattleCount * 100) / totalCount) / 100 },
         ],
         [totalCount, inQueueCount, damagedCount, battleReadyCount, inBattleCount, idleMechCount],
     )
@@ -39,14 +39,13 @@ export const FactionStakedMechStatistic = ({
         <Stack direction="column" spacing="1rem" sx={{ width: "30rem", height: "fit-content", backgroundColor: `${colors.offWhite}20`, p: "1.5rem" }}>
             <Doughnut
                 options={{
-                    cutout: "70%",
+                    cutout: "75%",
                 }}
                 data={{
                     labels: [],
                     datasets: [
                         {
-                            // label: "Amount",
-                            data: chartData.map((cd) => cd.percentage),
+                            data: chartData.map((cd) => cd.amount),
                             backgroundColor: chartData.map((cd) => `${cd.color}99`),
                             borderColor: chartData.map((cd) => cd.color),
                             borderWidth: 1,
