@@ -30,7 +30,7 @@ export const NiceButtonGroup = <T,>({
             alignItems="center"
             spacing="-1px"
             sx={{
-                height: "3.3rem",
+                height: "4.3rem",
                 ...sx,
             }}
         >
@@ -41,7 +41,8 @@ export const NiceButtonGroup = <T,>({
                         key={`${option.value}-${i}`}
                         sx={{
                             height: "100%",
-                            p: ".1rem 1.2rem",
+                            p: ".1rem 1.7rem",
+                            pt: ".1rem",
                             minWidth: "3rem",
                             borderRadius: 0,
                             color: isActive ? `${secondaryColor} !important` : "#FFFFFF !important",
@@ -66,7 +67,7 @@ export const NiceButtonGroup = <T,>({
                         size="small"
                         onClick={() => onSelected(option.value)}
                     >
-                        <Typography variant="subtitle1" sx={{ lineHeight: 1.5, color: "inherit", fontFamily: fonts.nostromoBold }}>
+                        <Typography variant="subtitle1" sx={{ lineHeight: 1.5, color: "inherit", fontFamily: fonts.nostromoBold, pt: ".2rem" }}>
                             {option.svg}
                             {option.label}
                         </Typography>

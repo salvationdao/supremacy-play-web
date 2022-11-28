@@ -1,10 +1,12 @@
 import { Stack, Step, Stepper, StepperProps, Typography } from "@mui/material"
 import { useTheme } from "../../../containers/theme"
+import { colors } from "../../../theme/theme"
 
 const ICON_SIZE = "2.5rem"
 
 export interface Step {
     label: string
+    isOptional?: boolean
 }
 
 export interface NiceStepperProps extends StepperProps {
@@ -40,7 +42,7 @@ export const NiceStepper = ({ steps, activeStep, completedSteps, handleStep, sx,
                         direction="row"
                         alignItems="center"
                         spacing=".8rem"
-                        sx={{ opacity: index === activeStep ? 1 : 0.3 }}
+                        sx={{ opacity: index === activeStep ? 1 : 0.4 }}
                     >
                         <Stack
                             alignItems="center"
@@ -55,7 +57,15 @@ export const NiceStepper = ({ steps, activeStep, completedSteps, handleStep, sx,
                             <Typography fontWeight="bold">{index + 1}</Typography>
                         </Stack>
 
-                        <Typography lineHeight={1.2}>{step.label}</Typography>
+                        <Typography lineHeight={1.2}>
+                            {step.label}
+                            {step.isOptional && (
+                                <>
+                                    <br />
+                                    <i style={{ color: colors.grey }}>Optional</i>
+                                </>
+                            )}
+                        </Typography>
                     </Stack>
                 </Step>
             ))}

@@ -517,7 +517,7 @@ export const FleetWeapons = () => {
                             onClick={() => setShowFilters((prev) => !prev)}
                             fill={showFilters}
                             buttonColor={theme.factionTheme.primary}
-                            sx={{ p: ".2rem 1rem", pt: ".4rem" }}
+                            sx={{ p: ".85rem 1rem" }}
                         >
                             <Typography variant="subtitle1" fontFamily={fonts.nostromoBold} color={showFilters ? theme.factionTheme.text : "#FFFFFF"}>
                                 <SvgFilter inline size="1.5rem" /> FILTER
@@ -527,11 +527,11 @@ export const FleetWeapons = () => {
                         <Box flex={1} />
 
                         {/* Show total */}
-                        <Box sx={{ backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", px: "1rem" }}>
+                        <Stack justifyContent="center" sx={{ height: "4.3rem", backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", px: "1rem" }}>
                             <Typography variant="h6" sx={{ whiteSpace: "nowrap" }}>
                                 {displayWeapons?.length || 0} ITEMS
                             </Typography>
-                        </Box>
+                        </Stack>
 
                         {/* Page layout options */}
                         <NiceButtonGroup

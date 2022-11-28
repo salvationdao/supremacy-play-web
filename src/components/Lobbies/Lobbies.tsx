@@ -295,15 +295,7 @@ export const Lobbies = () => {
                         {/* Search, sort, grid view, and other top buttons */}
                         <Stack spacing="1rem" direction="row" alignItems="center" sx={{ overflowX: "auto", overflowY: "hidden", width: "100%", pb: ".2rem" }}>
                             {/* Create lobby button */}
-                            <NiceButton
-                                corners
-                                buttonColor={colors.green}
-                                sx={{
-                                    p: ".2rem 1rem",
-                                    pt: ".4rem",
-                                }}
-                                onClick={() => setShowCreateLobbyModal(true)}
-                            >
+                            <NiceButton corners buttonColor={colors.green} sx={{ p: ".85rem 1rem" }} onClick={() => setShowCreateLobbyModal(true)}>
                                 <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
                                     <SvgPlus inline size="1.2rem" /> CREATE LOBBY
                                 </Typography>
@@ -314,10 +306,7 @@ export const Lobbies = () => {
                                 ref={joinPrivatePopoverRef}
                                 corners
                                 buttonColor={theme.factionTheme.primary}
-                                sx={{
-                                    p: ".2rem 1rem",
-                                    pt: ".4rem",
-                                }}
+                                sx={{ p: ".85rem 1rem" }}
                                 onClick={() => setIsJoinPrivatePopoverOpen(true)}
                             >
                                 <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
@@ -330,11 +319,11 @@ export const Lobbies = () => {
                             <Box flex={1} />
 
                             {/* Show total */}
-                            <Box sx={{ backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", p: ".2rem 1rem" }}>
+                            <Stack justifyContent="center" sx={{ height: "4.3rem", backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", px: "1rem" }}>
                                 <Typography variant="h6" sx={{ whiteSpace: "nowrap" }}>
                                     {displayLobbies?.length || 0} ITEMS
                                 </Typography>
-                            </Box>
+                            </Stack>
 
                             {/* Search bar */}
                             <NiceTextField
