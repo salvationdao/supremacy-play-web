@@ -34,9 +34,7 @@ export const NiceSelect = ({
     return (
         <Stack direction="row" alignItems="center" sx={{ backgroundColor: "#FFFFFF15", boxShadow: 0.5, ...sx }}>
             {label && (
-                <Typography sx={{ lineHeight: 1.75, height: "3.3rem", border: `${"#FFFFFF"}50 1px inset`, borderRight: "none", px: "1rem" }}>
-                    {label}
-                </Typography>
+                <Typography sx={{ lineHeight: 2.5, height: "4.3rem", border: `${"#FFFFFF"}50 1px inset`, borderRight: "none", px: "1rem" }}>{label}</Typography>
             )}
 
             <Select
@@ -45,7 +43,7 @@ export const NiceSelect = ({
                     p: ".1rem .8rem",
                     border: `${"#FFFFFF"}50 1px inset`,
                     borderRadius: 0,
-                    height: "3.3rem",
+                    height: "4.3rem",
 
                     ".MuiSvgIcon-root": {
                         transition: "none",

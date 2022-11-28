@@ -13,6 +13,7 @@ import { NiceButton } from "../Nice/NiceButton"
 import { NiceButtonGroup } from "../Nice/NiceButtonGroup"
 import { NiceSelect } from "../Nice/NiceSelect"
 import { NiceTextField } from "../Nice/NiceTextField"
+import { TypographyTruncated } from "../TypographyTruncated"
 import { VirtualizedGrid } from "../VirtualizedGrid"
 import { MechCardWeaponAndStats } from "./MechCardWeaponAndStats"
 
@@ -283,11 +284,11 @@ export const MechSelector = React.memo(function MechSelector({
             <Stack spacing="1rem" direction="row" alignItems="center" sx={{ overflowX: "auto", overflowY: "hidden", width: "100%", pb: ".2rem" }}>
                 {/* Show total */}
                 {limit !== undefined && (
-                    <Box sx={{ backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", p: ".2rem 1rem" }}>
+                    <Stack justifyContent="center" sx={{ height: "4.3rem", backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", px: "1rem" }}>
                         <Typography variant="h6" sx={{ whiteSpace: "nowrap", color: selectedMechs.length >= limit ? colors.red : "#FFFFFF" }}>
                             {selectedMechs.length}/{limit}
                         </Typography>
-                    </Box>
+                    </Stack>
                 )}
 
                 {/* Search bar */}
@@ -307,9 +308,9 @@ export const MechSelector = React.memo(function MechSelector({
             </Stack>
 
             {onlyDeployableMechs && (
-                <Typography sx={{ color: colors.neonBlue, fontWeight: "bold" }}>
+                <TypographyTruncated sx={{ color: colors.neonBlue, fontWeight: "bold" }}>
                     <SvgInfoCircular inline size="1.8rem" fill={colors.neonBlue} /> Only mechs with a power core and weapons will be shown
-                </Typography>
+                </TypographyTruncated>
             )}
 
             <Box sx={{ flex: 1, overflowY: "auto", minHeight: "15rem", pt: ".6rem" }}>{content}</Box>

@@ -104,6 +104,7 @@ export const GameMapSelector = () => {
                     />
                 )}
             </Box>
+
             {openMapSelector && (
                 <NicePopover
                     id={"map-popover"}

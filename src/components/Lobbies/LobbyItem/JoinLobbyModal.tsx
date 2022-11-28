@@ -43,15 +43,15 @@ export const JoinLobbyModal = ({
     )
 
     const queueLimit = useMemo(() => {
-        // get player remaining queue limit
+        // Get player remaining queue limit
         let playerQueueLimit = playerQueueStatus.queue_limit - playerQueueStatus.total_queued
         if (playerQueueLimit <= 0) playerQueueLimit = 0
 
-        // calc lobby remain slots
+        // Calc lobby remain slots
         let lobbyRemainSlots = battleLobby.each_faction_mech_amount - battleLobby.battle_lobbies_mechs.filter((blm) => blm.faction_id === factionID).length
         if (lobbyRemainSlots <= 0) lobbyRemainSlots = 0
 
-        // get player maximum queue limit in lobby
+        // Get player maximum queue limit in lobby
         const lobbyQueueLimit = battleLobby.max_deploy_per_player
 
         return Math.min(playerQueueLimit, lobbyQueueLimit, lobbyRemainSlots)
@@ -83,7 +83,7 @@ export const JoinLobbyModal = ({
     }, [send, battleLobby.id, selectedMechs, accessCode, newSnackbarMessage, onClose])
 
     return (
-        <NiceModal open={open} onClose={onClose} sx={{ p: "1.8rem 2.5rem", height: "calc(100vh - 15rem)", width: "66rem" }}>
+        <NiceModal open={open} onClose={onClose} sx={{ p: "1.8rem 2.5rem", height: "calc(100vh - 15rem)", width: "70rem" }}>
             <Stack spacing="1.5rem" height="100%">
                 <Typography variant="h6" fontFamily={fonts.nostromoBlack}>
                     Join Lobby

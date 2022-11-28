@@ -41,6 +41,7 @@ export const MechIdleStatus = ({ mech }: { mech: NewMechStruct }) => {
                         p: ".1rem 1.6rem",
                         fontWeight: "bold",
                         color: statusDeets.color,
+                        whiteSpace: "nowrap",
                     }}
                 >
                     {statusDeets.label}
@@ -74,6 +75,7 @@ export const MechIdleStatus = ({ mech }: { mech: NewMechStruct }) => {
                         p: ".1rem 1.6rem",
                         fontWeight: "bold",
                         color: stakeColor,
+                        whiteSpace: "nowrap",
                     }}
                 >
                     {mech.is_staked ? "STAKED" : "NOT STAKED"}
