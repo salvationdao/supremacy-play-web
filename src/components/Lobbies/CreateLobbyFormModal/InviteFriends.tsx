@@ -51,7 +51,6 @@ export const InviteFriends = ({ formMethods }: { formMethods: UseFormReturn<Crea
                     options={userDropdown}
                     loading={isLoadingUsers}
                     sx={{
-                        zIndex: 9999999999999,
                         ".MuiAutocomplete-endAdornment": {
                             top: "calc(50% - 9px)",
                         },
@@ -78,6 +77,7 @@ export const InviteFriends = ({ formMethods }: { formMethods: UseFormReturn<Crea
                                 setSearch(value)
                             }}
                             InputProps={{
+                                ...InputProps,
                                 endAdornment: (
                                     <>
                                         {isLoadingUsers ? <CircularProgress size="1.2rem" /> : null}
@@ -88,44 +88,6 @@ export const InviteFriends = ({ formMethods }: { formMethods: UseFormReturn<Crea
                             sx={{ py: 0 }}
                             {...params}
                         />
-
-                        // <TextField
-                        //     value={searchText}
-                        //     placeholder="Search for username..."
-                        //     onChange={(e) => {
-                        //         setSearchText(e.currentTarget.value)
-                        //         setSearch(e.currentTarget.value)
-                        //     }}
-                        //     type="text"
-                        //     hiddenLabel
-                        //     sx={{
-                        //         borderRadius: 1,
-                        //         "& .MuiInputBase-root": {
-                        //             py: 0,
-                        //             fontFamily: fonts.rajdhaniMedium,
-                        //         },
-                        //         ".Mui-disabled": {
-                        //             WebkitTextFillColor: "unset",
-                        //             color: "#FFFFFF70",
-                        //         },
-                        //         ".Mui-focused .MuiOutlinedInput-notchedOutline": {
-                        //             borderColor: `${theme.factionTheme.primary} !important`,
-                        //         },
-                        //         input: {
-                        //             color: "#FFFFFF",
-                        //         },
-                        //     }}
-                        //     {...params}
-                        //     InputProps={{
-                        //         ...params.InputProps,
-                        //         endAdornment: (
-                        //             <>
-                        //                 {isLoadingUsers ? <CircularProgress size="1.2rem" /> : null}
-                        //                 {params.InputProps.endAdornment}
-                        //             </>
-                        //         ),
-                        //     }}
-                        // />
                     )}
                 />
 
@@ -154,10 +116,9 @@ const UserItem = ({ user, remove }: { user: User; remove?: () => void }) => {
                 !remove
                     ? undefined
                     : {
-                          border: `${faction.palette.primary} 2px solid`,
-                          backgroundColor: `${faction.palette.primary}30`,
-                          p: "1rem",
-                          borderRadius: 0.9,
+                          p: "1rem 1.2rem",
+                          border: `${faction.palette.primary}60 1px solid`,
+                          backgroundColor: `${faction.palette.primary}20`,
                       }
             }
         >
@@ -186,8 +147,8 @@ const UserItem = ({ user, remove }: { user: User; remove?: () => void }) => {
             />
 
             {remove && (
-                <NiceButton sx={{ p: 0, ml: "1rem" }} onClick={remove}>
-                    <SvgClose2 />
+                <NiceButton sx={{ p: 0 }} onClick={remove}>
+                    <SvgClose2 sx={{ p: 0 }} />
                 </NiceButton>
             )}
         </Stack>
