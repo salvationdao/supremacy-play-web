@@ -56,7 +56,6 @@ const AccessCodePopoverInner = ({ open, onClose, popoverRef, accessCode, setAcce
                 setError(undefined)
                 setIsLoading(true)
                 const _battleLobby = await send<BattleLobby>(GameServerKeys.GetPrivateBattleLobby, { access_code: _access_code })
-                console.log(_battleLobby)
                 setBattleLobby(_battleLobby)
                 onClose()
             } catch (err) {
