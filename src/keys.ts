@@ -296,6 +296,7 @@ export enum GameServerKeys {
     SubFactionStakedMechBattleReadyCount = "FACTION:STAKED:MECH:BATTLE:READY:COUNT",
     SubFactionStakedMechInBattleCount = "FACTION:STAKED:MECH:IN:BATTLE:COUNT",
     SubFactionStakedMechBattledCount = "FACTION:STAKED:MECH:BATTLED:COUNT",
+    SubFactionStakedMechInRepairBay = "FACTION:STAKED:MECH:IN:REPAIR:BAY",
 }
 
 export enum PassportServerKeys {

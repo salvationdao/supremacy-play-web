@@ -6,6 +6,12 @@ import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { colors, fonts } from "../../../theme/theme"
 import { FactionStakedMechStatistic } from "./FactionStakedMechStatistic"
 
+interface FactionRepairBayStakedMech {
+    mech_count: number
+    total_required_repaired_blocks: number
+    total_repaired_blocks: number
+}
+
 export const FactionStakedMechStatus = () => {
     const [stakedMechCount, setStakedMechCount] = useState(0)
     useGameServerSubscriptionFaction<number>(
@@ -61,6 +67,19 @@ export const FactionStakedMechStatus = () => {
         (payload) => setBattledStakedMechCount(payload),
     )
 
+    const [repairBayStakedMechs, setRepairBayStakedMechs] = useState<FactionRepairBayStakedMech>({
+        mech_count: 0,
+        total_repaired_blocks: 0,
+        total_required_repaired_blocks: 0,
+    })
+    useGameServerSubscriptionFaction<FactionRepairBayStakedMech>(
+        {
+            URI: "/in_repair_bay_staked_mech",
+            key: GameServerKeys.SubFactionStakedMechInRepairBay,
+        },
+        (payload) => (payload ? setRepairBayStakedMechs(payload) : undefined),
+    )
+
     const idleMechCount = useMemo(() => {
         const idleCount = stakedMechCount - inQueueStakedMechCount - damagedStakedMechCount - battleReadyStakedMechCount - inBattleStakedMechCount
         if (idleCount <= 0) return 0
@@ -91,6 +110,11 @@ export const FactionStakedMechStatus = () => {
                     }}
                 ></Box>
                 <FactionStakedMechStatusBox title={"STAKED MECHS BATTLED"} value={battledStakedMechCount} caption={" "} />
+                <FactionStakedMechStatusBox
+                    title={"STAKED MECHS IN REPAIR BAY"}
+                    value={repairBayStakedMechs.mech_count}
+                    caption={`${repairBayStakedMechs.total_repaired_blocks} of ${repairBayStakedMechs.total_required_repaired_blocks} blocks complete`}
+                />
                 <FactionStakedMechStatusBox title={"STAKED MECHS"} value={stakedMechCount} caption={" "} />
                 <FactionStakedMechStatusBox title={"STAKED MECHS IDLE"} value={idleMechCount} caption={"GO TO MECH POOL"} color={colors.green} />
                 <FactionStakedMechStatusBox title={"STAKED MECHS IN QUEUE"} value={inQueueStakedMechCount} caption={"GO TO MECH POOL"} color={colors.yellow} />
