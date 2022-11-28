@@ -20,8 +20,7 @@ export const InviteFriends = ({ formMethods }: { formMethods: UseFormReturn<Crea
     const [userDropdown, setUserDropdown] = useState<User[]>([])
     const [isLoadingUsers, setIsLoadingUsers] = useState(false)
     const [selectedUsers, setSelectedUsers] = useState<User[]>([])
-    const [searchText, setSearchText] = useState("")
-    const [search, setSearch] = useDebounce("", 300)
+    const [search, setSearch, searchInstant] = useDebounce("", 300)
 
     // When searching for player, update the dropdown list
     useEffect(() => {
@@ -35,8 +34,8 @@ export const InviteFriends = ({ formMethods }: { formMethods: UseFormReturn<Crea
                 })
 
                 setUserDropdown(resp || [])
-            } catch (e) {
-                console.log(e)
+            } catch (err) {
+                console.log(err)
             } finally {
                 setIsLoadingUsers(false)
             }
@@ -52,6 +51,7 @@ export const InviteFriends = ({ formMethods }: { formMethods: UseFormReturn<Crea
                     options={userDropdown}
                     loading={isLoadingUsers}
                     sx={{
+                        zIndex: 9999999999999,
                         ".MuiAutocomplete-endAdornment": {
                             top: "calc(50% - 9px)",
                         },
@@ -71,10 +71,10 @@ export const InviteFriends = ({ formMethods }: { formMethods: UseFormReturn<Crea
                     filterOptions={(option) => option}
                     renderInput={({ InputProps, ...params }) => (
                         <NiceTextField
-                            value={searchText}
+                            primaryColor={theme.factionTheme.primary}
+                            value={searchInstant}
                             placeholder="Search for username..."
                             onChange={(value) => {
-                                setSearchText(value)
                                 setSearch(value)
                             }}
                             InputProps={{
@@ -85,6 +85,7 @@ export const InviteFriends = ({ formMethods }: { formMethods: UseFormReturn<Crea
                                     </>
                                 ),
                             }}
+                            sx={{ py: 0 }}
                             {...params}
                         />
 

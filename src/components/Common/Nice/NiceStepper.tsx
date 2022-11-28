@@ -42,7 +42,7 @@ export const NiceStepper = ({ steps, activeStep, completedSteps, handleStep, sx,
                         direction="row"
                         alignItems="center"
                         spacing=".8rem"
-                        sx={{ opacity: index === activeStep ? 1 : 0.3 }}
+                        sx={{ opacity: index === activeStep ? 1 : 0.4 }}
                     >
                         <Stack
                             alignItems="center"
