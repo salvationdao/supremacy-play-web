@@ -124,27 +124,78 @@ const FactionRow = ({ index, lobby }: FactionRowProps) => {
         const isMyFaction = factionID === lobby.faction.id
         const boxSize = "4rem"
         if (!isMyFaction) {
-            return new Array(MAX_SUPPORTER_SLOTS).fill(null).map((_, index) => (
-                <NiceBoxThing
-                    key={index}
-                    border={{
-                        color: theme.primary,
-                        thickness: "lean",
-                    }}
-                    background={{
-                        colors: [theme.background],
-                    }}
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        height: boxSize,
-                        width: boxSize,
-                    }}
-                >
-                    <SvgQuestionMark2 fill={theme.s700} />
-                </NiceBoxThing>
-            ))
+            if (selectedSupporterSlots.length === 0) {
+                return new Array(MAX_SUPPORTER_SLOTS).fill(null).map((_, index) => (
+                    <NiceBoxThing
+                        key={index}
+                        border={{
+                            color: theme.primary,
+                            thickness: "lean",
+                        }}
+                        background={{
+                            colors: [theme.background],
+                        }}
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            height: boxSize,
+                            width: boxSize,
+                        }}
+                    >
+                        <SvgQuestionMark2 fill={theme.s700} />
+                    </NiceBoxThing>
+                ))
+            }
+            return (
+                <>
+                    {selectedSupporterSlots.map((ss, index) => (
+                        <NiceBoxThing
+                            key={index}
+                            border={{
+                                color: theme.primary,
+                                thickness: "lean",
+                            }}
+                            background={{
+                                colors: [theme.background],
+                            }}
+                            sx={{
+                                position: "relative",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                height: boxSize,
+                                width: boxSize,
+                            }}
+                        >
+                            {ss.avatar_url && (
+                                <Box
+                                    component="img"
+                                    src={ss.avatar_url}
+                                    alt={`${ss.username}'s avatar`}
+                                    sx={{
+                                        width: "100%",
+                                        objectFit: "cover",
+                                    }}
+                                />
+                            )}
+                            <Stack
+                                sx={{
+                                    position: "absolute",
+                                    top: 0,
+                                    left: 0,
+                                    bottom: 0,
+                                    right: 0,
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                }}
+                            >
+                                <SvgCheckMark fill={colors.green} />
+                            </Stack>
+                        </NiceBoxThing>
+                    ))}
+                </>
+            )
         }
 
         if (selectedSupporterSlots.length === 0) {
@@ -284,7 +335,7 @@ const FactionRow = ({ index, lobby }: FactionRowProps) => {
                         spacing="1rem"
                         sx={{
                             width: "100%",
-                            maxWidth: 150,
+                            maxWidth: 140,
                         }}
                     >
                         {/* Faction logo */}
@@ -303,7 +354,7 @@ const FactionRow = ({ index, lobby }: FactionRowProps) => {
                                 flexWrap: "wrap",
                                 justifyContent: "center",
                                 alignItems: "center",
-                                gap: "1rem",
+                                gap: ".7rem",
                             }}
                         >
                             {supporterContent}
