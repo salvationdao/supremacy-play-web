@@ -19,7 +19,7 @@ export const InviteFriends = ({ formMethods }: { formMethods: UseFormReturn<Crea
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [userDropdown, setUserDropdown] = useState<User[]>([])
     const [isLoadingUsers, setIsLoadingUsers] = useState(false)
-    const [selectedUsers, setSelectedUsers] = useState<User[]>([])
+    const [selectedUsers, setSelectedUsers] = useState<User[]>(formMethods.getValues("invited_user_ids"))
     const [search, setSearch, searchInstant] = useDebounce("", 300)
 
     // When searching for player, update the dropdown list
@@ -42,6 +42,10 @@ export const InviteFriends = ({ formMethods }: { formMethods: UseFormReturn<Crea
         })()
     }, [search, send, setIsLoadingUsers, selectedUsers])
 
+    useEffect(() => {
+        formMethods.setValue("invited_user_ids", selectedUsers)
+    }, [formMethods, selectedUsers])
+
     return (
         <Fade in>
             <Stack spacing="2rem">
@@ -53,6 +57,19 @@ export const InviteFriends = ({ formMethods }: { formMethods: UseFormReturn<Crea
                     sx={{
                         ".MuiAutocomplete-endAdornment": {
                             top: "calc(50% - 9px)",
+                        },
+
+                        "& + .MuiAutocomplete-popper": {
+                            ".MuiPaper-root": {
+                                border: `#FFFFFF40 1px solid`,
+                                backgroundColor: theme.factionTheme.background,
+                                borderRadius: 0,
+
+                                ".MuiAutocomplete-listbox": {
+                                    py: 0,
+                                    backgroundColor: "#FFFFFF10",
+                                },
+                            },
                         },
                     }}
                     disablePortal
@@ -91,9 +108,9 @@ export const InviteFriends = ({ formMethods }: { formMethods: UseFormReturn<Crea
                     )}
                 />
 
-                <Stack direction="row" sx={{ flexWrap: "wrap" }}>
+                <Stack direction="row" sx={{ flexWrap: "wrap", gap: ".3rem" }}>
                     {selectedUsers.map((su) => (
-                        <NiceBoxThing key={su.id} sx={{ p: ".3rem" }}>
+                        <NiceBoxThing key={su.id}>
                             <UserItem user={su} remove={() => setSelectedUsers((prev) => prev.filter((p) => p.id !== su.id))} />
                         </NiceBoxThing>
                     ))}

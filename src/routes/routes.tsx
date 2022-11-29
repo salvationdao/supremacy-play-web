@@ -18,7 +18,6 @@ import { FleetWeapons } from "../components/FleetWeapons/FleetWeapons"
 import { MechPage } from "../components/Hangar/WarMachinesHangar/WarMachineDetails/MechPage"
 import { WeaponHangarDetails } from "../components/Hangar/WeaponsHangar/WeaponDetails/WeaponHangarDetails"
 import { GlobalStats } from "../components/Leaderboard/GlobalStats/GlobalStats"
-import { CreateLobby } from "../components/Lobbies/BattleLobbies/BattleLobbyCreate/Createlobby/CreateLobby"
 import { Lobbies } from "../components/Lobbies/Lobbies"
 import { HistoryMarket } from "../components/Marketplace/HistoryMarket/HistoryMarket"
 import { KeycardMarketDetails } from "../components/Marketplace/KeycardsMarket/KeycardMarketDetails/KeycardMarketDetails"
@@ -808,25 +807,6 @@ export const Routes: RouteSingle[] = [
         path: "/faction-pass/mech-pool",
         exact: true,
         Component: FactionPassMechPool,
-        restrictions: {
-            requireAuth: true,
-            requireFaction: true,
-            requireModerator: false,
-        },
-        showInMainMenu: {
-            groupID: RouteGroupID.FactionHQ,
-            label: "Mech Pool",
-            image: GenericPNG,
-            path: "/faction-pass/mech-pool",
-        },
-        enable: DEV_ONLY,
-        tabTitle: "Faction Mech Pool",
-    },
-    {
-        id: RouteSingleID.FactionPassMechPool,
-        path: "/test",
-        exact: true,
-        Component: CreateLobby,
         restrictions: {
             requireAuth: true,
             requireFaction: true,

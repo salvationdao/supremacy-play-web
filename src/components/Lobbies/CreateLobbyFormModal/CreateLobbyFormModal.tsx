@@ -3,7 +3,7 @@ import React, { useCallback, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useTheme } from "../../../containers/theme"
 import { colors, fonts } from "../../../theme/theme"
-import { NewMechStruct } from "../../../types"
+import { GameMap, NewMechStruct, User } from "../../../types"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 import { NiceModal } from "../../Common/Nice/NiceModal"
 import { NiceStepper } from "../../Common/Nice/NiceStepper"
@@ -37,7 +37,7 @@ export interface CreateLobbyFormFields {
     accessibility: Accessibility
     access_code: string
     max_deploy_number: number
-    game_map_id: string
+    game_map?: GameMap
     scheduling_type: Scheduling
     wont_start_until_date: Date
     wont_start_until_time: Date
@@ -51,6 +51,9 @@ export interface CreateLobbyFormFields {
 
     // Step 3
     selected_mechs: NewMechStruct[]
+
+    // Step 4
+    invited_user_ids: User[]
 }
 
 export const CreateLobbyFormModal = React.memo(function CreateLobbyFormModal({ open, onClose }: { open: boolean; onClose: () => void }) {
@@ -64,7 +67,7 @@ export const CreateLobbyFormModal = React.memo(function CreateLobbyFormModal({ o
             access_code: "",
             accessibility: Accessibility.Public,
             max_deploy_number: 3,
-            game_map_id: "",
+            game_map: undefined,
             scheduling_type: Scheduling.OnReady,
             wont_start_until_date: new Date(),
             wont_start_until_time: new Date(),
@@ -78,6 +81,9 @@ export const CreateLobbyFormModal = React.memo(function CreateLobbyFormModal({ o
 
             // Step 3
             selected_mechs: [],
+
+            // Step 4
+            invited_user_ids: [],
         },
     })
 
