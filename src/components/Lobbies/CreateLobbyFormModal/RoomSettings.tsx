@@ -162,7 +162,7 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
                                     primaryColor={theme.factionTheme.primary}
                                     secondaryColor={theme.factionTheme.text}
                                     options={[
-                                        { label: "When lobby is full", value: Scheduling.OnReady },
+                                        { label: "When room is full", value: Scheduling.OnReady },
                                         { label: "Custom date & time", value: Scheduling.SetTime },
                                     ]}
                                     selected={field.value}

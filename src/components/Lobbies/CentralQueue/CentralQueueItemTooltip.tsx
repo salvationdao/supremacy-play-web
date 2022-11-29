@@ -5,6 +5,7 @@ import {
     SvgChest2,
     SvgContentCopyIcon,
     SvgFirstPlace,
+    SvgHistoryClock,
     SvgLeaderboard,
     SvgLobbies,
     SvgLock,
@@ -143,6 +144,16 @@ export const CentralQueueItemTooltip = ({
                         <Typography>{arenaName}</Typography>
                     </Stack>
                 )}
+
+                {/* Map */}
+                <Stack direction="row" justifyContent="space-between" spacing="1rem">
+                    <Typography sx={{ fontFamily: fonts.nostromoBlack }} variant="body2">
+                        <SvgHistoryClock inline /> Start time:
+                    </Typography>
+                    <TypographyTruncated>
+                        {battleLobby.will_not_start_until ? battleLobby.will_not_start_until.toLocaleString() : "When room is full"}
+                    </TypographyTruncated>
+                </Stack>
 
                 {/* Map */}
                 <Stack direction="row" justifyContent="space-between" spacing="1rem">
