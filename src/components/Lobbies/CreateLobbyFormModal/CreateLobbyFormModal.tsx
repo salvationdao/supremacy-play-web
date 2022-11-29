@@ -159,6 +159,7 @@ export const CreateLobbyFormModal = React.memo(function CreateLobbyFormModal({ o
             setError(undefined)
             setIsLoading(true)
             await send<boolean>(GameServerKeys.CreateBattleLobby, payload)
+            onClose()
         } catch (err) {
             const message = typeof err === "string" ? err : "Failed to insert into repair bay."
             setError(message)
