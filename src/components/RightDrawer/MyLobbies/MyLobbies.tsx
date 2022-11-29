@@ -36,7 +36,6 @@ export const MyLobbies = () => {
             key: GameServerKeys.SubInvolvedBattleLobbiesUpdate,
         },
         (payload) => {
-            console.log(payload.filter((p) => !!p.will_not_start_until))
             if (!payload) return
             setInvolvedLobbies((prev) => {
                 if (prev.length === 0)
@@ -98,7 +97,6 @@ export const MyLobbies = () => {
             key: GameServerKeys.SubBattleLobbyListUpdate,
         },
         (payload) => {
-            console.log(payload.filter((p) => !!p.will_not_start_until))
             if (!payload) return
 
             setAllLobbies((prev) => {
