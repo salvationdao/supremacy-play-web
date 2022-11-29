@@ -30,7 +30,7 @@ export const Supporters = React.memo(function Supporters({ battleLobby }: { batt
         }
     }, [send, battleLobby.id, battleLobby.access_code, newSnackbarMessage])
 
-    const { supporters, isAlreadySet } = useMemo(() => {
+    const { supporters, isAlreadySet, isSupporting, hasMechDeployed } = useMemo(() => {
         let supporters: BattleLobbySupporter[] = []
         let isAlreadySet = false // This means battle already started, supporters are set and fixed
 
@@ -45,19 +45,16 @@ export const Supporters = React.memo(function Supporters({ battleLobby }: { batt
             supporters = isAlreadySet ? battleLobby.selected_zai_supporters : battleLobby.opted_in_zai_supporters
         }
 
+        const isSupporting = supporters.some((supporter) => supporter.id === userID)
+        const hasMechDeployed = battleLobby.battle_lobbies_mechs.some((mech) => mech.queued_by?.id === userID)
+
         return {
             supporters,
             isAlreadySet,
+            isSupporting,
+            hasMechDeployed,
         }
-    }, [
-        battleLobby.opted_in_bc_supporters,
-        battleLobby.opted_in_rm_supporters,
-        battleLobby.opted_in_zai_supporters,
-        battleLobby.selected_bc_supporters,
-        battleLobby.selected_rm_supporters,
-        battleLobby.selected_zai_supporters,
-        factionID,
-    ])
+    }, [battleLobby, factionID, userID])
 
     return (
         <Stack direction="row" alignItems="center" spacing=".9rem">
@@ -85,6 +82,7 @@ export const Supporters = React.memo(function Supporters({ battleLobby }: { batt
                                 p: 0,
                             }}
                             onClick={optIn}
+                            disabled={isSupporting || hasMechDeployed}
                         >
                             <Typography lineHeight={1} fontFamily={fonts.nostromoBold}>
                                 +
