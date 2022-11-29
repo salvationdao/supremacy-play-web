@@ -148,8 +148,8 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
                     />
                 </FormField>
 
-                {/* Start time */}
-                <FormField label="Battle start time">
+                {/* Scheduled time */}
+                <FormField label="Scheduled battle time">
                     <Controller
                         name="scheduling_type"
                         control={formMethods.control}
@@ -176,14 +176,14 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
                         }}
                     />
 
-                    {/* Custom start time */}
+                    {/* Custom scheduled time */}
                     {formMethods.watch("scheduling_type") === Scheduling.SetTime && (
                         <Stack direction="row" alignItems="center" spacing="1.3rem" pt="1.6rem" sx={{ "& > *": { flex: 1 } }}>
                             <Controller
                                 name="wont_start_until_date"
                                 control={formMethods.control}
                                 rules={{
-                                    required: { value: true, message: "Start date field is required." },
+                                    required: { value: true, message: "Scheduled date field is required." },
                                 }}
                                 render={({ field }) => {
                                     const errorMessage = formMethods.formState.errors.wont_start_until_date?.message
@@ -205,7 +205,7 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
                                 name="wont_start_until_time"
                                 control={formMethods.control}
                                 rules={{
-                                    required: { value: true, message: "Start time field is required." },
+                                    required: { value: true, message: "Scheduled time field is required." },
                                 }}
                                 render={({ field }) => {
                                     const errorMessage = formMethods.formState.errors.wont_start_until_time?.message

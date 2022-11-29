@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import React, { useMemo } from "react"
-import { SvgArena, SvgLobbies, SvgMap, SvgSupToken, SvgUserDiamond2 } from "../../../assets"
+import { SvgLobbies, SvgMap, SvgSupToken, SvgUserDiamond2 } from "../../../assets"
 import { FactionIDs } from "../../../constants"
 import { useArena, useAuth, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -14,8 +14,6 @@ import { TimeLeft } from "../../Common/TimeLeft"
 import { MyFactionMechs } from "./MyFactionMechs/MyFactionMechs"
 import { OtherFactionMechs } from "./OtherFactionMechs/OtherFactionMechs"
 import { PrizePool } from "./PrizePool"
-import { Supporters } from "./Supporters"
-
 export const NUMBER_MECHS_REQUIRED = 3
 
 export interface FactionLobbySlots {
@@ -191,29 +189,6 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby, joinBattle
                             </Typography>
                         </Stack>
 
-                        {battleLobby.expires_at && (
-                            <Box>
-                                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold}>
-                                    TIME LEFT
-                                </Typography>
-
-                                <Typography>
-                                    <TimeLeft dateTo={battleLobby.expires_at} timeUpText="Closing lobby..." />
-                                </Typography>
-                            </Box>
-                        )}
-
-                        {/* Arena name */}
-                        {arenaName && (
-                            <Box>
-                                <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold}>
-                                    <SvgArena inline /> BATTLE ARENA
-                                </Typography>
-
-                                <Typography>{arenaName}</Typography>
-                            </Box>
-                        )}
-
                         {/* Map logo */}
                         <Box>
                             <Typography variant="body2" gutterBottom fontFamily={fonts.nostromoBold}>
@@ -224,7 +199,7 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby, joinBattle
                                 <Box
                                     sx={{
                                         width: "100%",
-                                        height: "3rem",
+                                        height: "2.5rem",
                                         background: `url(${
                                             battleLobby.game_map?.logo_url ||
                                             "https://afiles.ninja-cdn.com/supremacy-stream-site/assets/img/maps/logos/iron_dust_5.png"
@@ -235,7 +210,9 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby, joinBattle
                                     }}
                                 />
                             ) : (
-                                <Typography color={colors.grey}>To be determined...</Typography>
+                                <Typography color={colors.grey}>
+                                    <i>To be determined...</i>
+                                </Typography>
                             )}
                         </Box>
 
@@ -288,8 +265,25 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby, joinBattle
                 </Stack>
 
                 {/* Supports */}
-                <Stack direction="row" alignItems="center" sx={{ height: "4.5rem", p: "0 1.5rem" }}>
-                    <Supporters />
+                <Stack direction="row" alignItems="center" spacing="2rem" sx={{ height: "4.5rem", p: "0 1.5rem" }}>
+                    {battleLobby.will_not_start_until && (
+                        <Stack direction="row" alignItems="center" spacing=".6rem">
+                            <Typography variant="body2" fontFamily={fonts.nostromoBold}>
+                                Scheduled time: {battleLobby.will_not_start_until.toLocaleString()}
+                            </Typography>
+                        </Stack>
+                    )}
+
+                    <Box flex={1} />
+
+                    {/* Arena name */}
+                    {arenaName && (
+                        <Stack direction="row" alignItems="center" spacing=".6rem">
+                            <Typography variant="body2" fontFamily={fonts.nostromoBold}>
+                                Battle arena: {arenaName}
+                            </Typography>
+                        </Stack>
+                    )}
                 </Stack>
             </NiceBoxThing>
         </>

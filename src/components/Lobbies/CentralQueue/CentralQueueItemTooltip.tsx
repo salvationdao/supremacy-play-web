@@ -148,7 +148,7 @@ export const CentralQueueItemTooltip = ({
                 {/* Map */}
                 <Stack direction="row" justifyContent="space-between" spacing="1rem">
                     <Typography sx={{ fontFamily: fonts.nostromoBlack }} variant="body2">
-                        <SvgHistoryClock inline /> Start time:
+                        <SvgHistoryClock inline /> Scheduled time:
                     </Typography>
                     <TypographyTruncated>
                         {battleLobby.will_not_start_until ? battleLobby.will_not_start_until.toLocaleString() : "When room is full"}
@@ -160,7 +160,9 @@ export const CentralQueueItemTooltip = ({
                     <Typography sx={{ fontFamily: fonts.nostromoBlack }} variant="body2">
                         <SvgMap inline /> Map:
                     </Typography>
-                    <TypographyTruncated>{camelToTitle(battleLobby.game_map?.name || "To be determined...")}</TypographyTruncated>
+                    <TypographyTruncated sx={{ fontStyle: battleLobby.game_map?.name ? "unset" : "italic" }}>
+                        {camelToTitle(battleLobby.game_map?.name || "To be determined...")}
+                    </TypographyTruncated>
                 </Stack>
 
                 {/* Reward pool */}
