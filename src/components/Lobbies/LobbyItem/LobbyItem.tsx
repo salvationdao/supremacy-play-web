@@ -19,9 +19,11 @@ import { Supporters } from "./Supporters"
 export const NUMBER_MECHS_REQUIRED = 3
 
 export interface FactionLobbySlots {
+    details: BattleLobby
     faction: FactionWithPalette
     mechSlots: BattleLobbiesMech[] // null represents empty slot
-    supporterSlots: BattleLobbySupporter[] // null represents empty slot
+    selectedSupporterSlots: BattleLobbySupporter[] // null represents empty slot
+    optedInSupporterSlots: BattleLobbySupporter[]
 }
 
 export const LobbyItem = React.memo(function LobbyItem({ battleLobby, joinBattleLobby }: { battleLobby: BattleLobby; joinBattleLobby: () => void }) {
@@ -70,9 +72,11 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby, joinBattle
 
     const [myFactionLobbySlots, otherFactionLobbySlots] = useMemo(() => {
         let myFactionLobbySlots: FactionLobbySlots = {
+            details: battleLobby,
             faction: getFaction(factionID),
             mechSlots: [],
-            supporterSlots: [],
+            selectedSupporterSlots: [],
+            optedInSupporterSlots: [],
         }
 
         const otherFactionLobbySlots: FactionLobbySlots[] = []
@@ -81,9 +85,11 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby, joinBattle
             .sort((a, b) => a.label.localeCompare(b.label))
             .forEach((f) => {
                 const bls: FactionLobbySlots = {
+                    details: battleLobby,
                     faction: f,
                     mechSlots: [],
-                    supporterSlots: [],
+                    selectedSupporterSlots: [],
+                    optedInSupporterSlots: [],
                 }
 
                 battleLobby.battle_lobbies_mechs.forEach((blm) => {
@@ -97,13 +103,13 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby, joinBattle
                 // since supporters are already split up by faction, use a switch to add the right one to this object
                 switch (f.id) {
                     case FactionIDs.ZHI:
-                        bls.supporterSlots.push(...(battleLobby.selected_zai_supporters || []))
+                        bls.selectedSupporterSlots.push(...(battleLobby.selected_zai_supporters || []))
                         break
                     case FactionIDs.BC:
-                        bls.supporterSlots.push(...(battleLobby.selected_bc_supporters || []))
+                        bls.selectedSupporterSlots.push(...(battleLobby.selected_bc_supporters || []))
                         break
                     case FactionIDs.RM:
-                        bls.supporterSlots.push(...(battleLobby.selected_rm_supporters || []))
+                        bls.selectedSupporterSlots.push(...(battleLobby.selected_rm_supporters || []))
                         break
                 }
 
@@ -115,15 +121,7 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby, joinBattle
             })
 
         return [myFactionLobbySlots, otherFactionLobbySlots]
-    }, [
-        getFaction,
-        factionID,
-        factionsAll,
-        battleLobby.battle_lobbies_mechs,
-        battleLobby.selected_zai_supporters,
-        battleLobby.selected_bc_supporters,
-        battleLobby.selected_rm_supporters,
-    ])
+    }, [battleLobby, factionID, factionsAll, getFaction])
 
     return (
         <>
