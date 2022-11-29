@@ -769,8 +769,10 @@ export const shortCodeGenerator = ({
     return result
 }
 
-export const combineDateTime = (date: moment.Moment, time: moment.Moment): moment.Moment => {
-    return moment(`${date.format("YYYY-MM-DD")} ${time.format("HH:mm")}`)
+export const combineDateTime = (date: Date, time: Date): moment.Moment => {
+    const dateMoment = moment(date)
+    const timeMoment = moment(time)
+    return moment(`${dateMoment.format("YYYY-MM-DD")} ${timeMoment.format("HH:mm")}`)
 }
 
 // Checks if given number is between two other numbers

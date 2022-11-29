@@ -2,7 +2,9 @@ import { Box, Divider, Stack, Typography } from "@mui/material"
 import React, { useCallback, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useTheme } from "../../../containers/theme"
+import { combineDateTime } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { GameMap, NewMechStruct, User } from "../../../types"
 import { NiceButton } from "../../Common/Nice/NiceButton"
@@ -61,7 +63,7 @@ export const CreateLobbyFormModal = React.memo(function CreateLobbyFormModal({ o
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState("")
+    const [error, setError] = useState<string>()
 
     //  Form
     const formMethods = useForm<CreateLobbyFormFields>({
@@ -132,37 +134,38 @@ export const CreateLobbyFormModal = React.memo(function CreateLobbyFormModal({ o
         return null
     }, [activeStep, formMethods])
 
-    // const onCreate = useCallback(async () => {
-    //     const data = getValues() as LobbyForm
+    const onCreate = formMethods.handleSubmit(async (formData) => {
+        // build payload
+        const payload = {
+            name: formData.name,
+            accessibility: formData.accessibility,
+            access_code: formData.accessibility === Accessibility.Private ? formData.access_code : undefined,
+            entry_fee: formData.entry_fee,
+            first_faction_cut: formData.first_faction_cut,
+            second_faction_cut: formData.second_faction_cut,
+            game_map_id: formData.game_map?.id || undefined,
+            scheduling_type: formData.scheduling_type,
+            wont_start_until:
+                formData.scheduling_type === Scheduling.SetTime
+                    ? combineDateTime(formData.wont_start_until_date, formData.wont_start_until_time).toDate()
+                    : undefined,
+            max_deploy_number: formData.max_deploy_number,
+            extra_reward: formData.extra_reward,
+            mech_ids: formData.selected_mechs.map((sm) => sm.id),
+            invited_user_ids: formData.invited_user.map((su) => su.id),
+        }
 
-    //     // build payload
-    //     const payload = {
-    //         name: data.name,
-    //         accessibility: data.accessibility,
-    //         access_code: data.accessibility === Accessibility.Private ? accessCode : undefined,
-    //         entry_fee: data.entry_fee,
-    //         first_faction_cut: data.first_faction_cut,
-    //         second_faction_cut: data.second_faction_cut,
-    //         game_map_id: data.game_map_id || undefined,
-    //         scheduling_type: data.scheduling_type,
-    //         wont_start_until:
-    //             data.scheduling_type === Scheduling.SetTime ? combineDateTime(data.wont_start_until_date, data.wont_start_until_time).toDate() : undefined,
-    //         max_deploy_number: data.max_deploy_number,
-    //         extra_reward: data.extra_reward,
-    //         mech_ids: data.selected_mechs.map((sm) => sm.id),
-    //         invited_user_ids: selectedUsers.map((su) => su.id),
-    //     }
-
-    //     try {
-    //         setIsLoading(true)
-    //         await send<boolean>(GameServerKeys.CreateBattleLobby, payload)
-    //     } catch (err) {
-    //         const message = typeof err === "string" ? err : "Failed to insert into repair bay."
-    //         setError(message)
-    //     } finally {
-    //         setIsLoading(false)
-    //     }
-    // }, [accessCode, getValues, selectedUsers, send])
+        try {
+            setError(undefined)
+            setIsLoading(true)
+            await send<boolean>(GameServerKeys.CreateBattleLobby, payload)
+        } catch (err) {
+            const message = typeof err === "string" ? err : "Failed to insert into repair bay."
+            setError(message)
+        } finally {
+            setIsLoading(false)
+        }
+    })
 
     return (
         <NiceModal open={open} onClose={onClose} sx={{ p: "1.8rem 2.5rem", height: "95rem", maxHeight: "calc(100vh - 20rem)", minWidth: "70rem" }}>
@@ -184,20 +187,29 @@ export const CreateLobbyFormModal = React.memo(function CreateLobbyFormModal({ o
                         </Box>
 
                         {/* Bottom buttons */}
-                        <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing="1rem">
-                            <NiceButton buttonColor={theme.factionTheme.primary} disabled={activeStep === 0} onClick={handleBack}>
-                                Back
-                            </NiceButton>
-
-                            {isLastStep ? (
-                                <NiceButton buttonColor={colors.green} onClick={handleNext}>
-                                    Create Lobby
-                                </NiceButton>
-                            ) : (
-                                <NiceButton buttonColor={theme.factionTheme.primary} onClick={handleNext}>
-                                    Next
-                                </NiceButton>
+                        <Stack spacing=".5rem">
+                            {/* Error */}
+                            {error && (
+                                <Typography variant="body2" sx={{ color: colors.red, textAlign: "end" }}>
+                                    {error}
+                                </Typography>
                             )}
+
+                            <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing="1rem">
+                                <NiceButton buttonColor={theme.factionTheme.primary} disabled={activeStep === 0} loading={isLoading} onClick={handleBack}>
+                                    Back
+                                </NiceButton>
+
+                                {isLastStep ? (
+                                    <NiceButton buttonColor={colors.green} loading={isLoading} onClick={onCreate}>
+                                        Create Lobby
+                                    </NiceButton>
+                                ) : (
+                                    <NiceButton buttonColor={theme.factionTheme.primary} loading={isLoading} onClick={handleNext}>
+                                        Next
+                                    </NiceButton>
+                                )}
+                            </Stack>
                         </Stack>
                     </Stack>
                 </Stack>
