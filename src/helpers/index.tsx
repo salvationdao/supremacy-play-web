@@ -1,7 +1,6 @@
 import { SxProps } from "@mui/material"
 import BigNumber from "bignumber.js"
 import emojiRegex from "emoji-regex"
-import moment from "moment"
 import { VoidFunctionComponent } from "react"
 import {
     SafePNG,
@@ -767,12 +766,6 @@ export const shortCodeGenerator = ({
         result += base.charAt(Math.floor(Math.random() * base.length))
     }
     return result
-}
-
-export const combineDateTime = (date: Date, time: Date): moment.Moment => {
-    const dateMoment = moment(date)
-    const timeMoment = moment(time)
-    return moment(`${dateMoment.format("YYYY-MM-DD")} ${timeMoment.format("HH:mm")}`)
 }
 
 // Checks if given number is between two other numbers

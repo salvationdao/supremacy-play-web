@@ -18,6 +18,25 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
 
     const displayAccessCode = useMemo(() => battleLobby.access_code, [battleLobby.access_code])
 
+    const lobbyStatus = useMemo(() => {
+        let textColor = colors.lightGrey
+        let text = "WAITING..."
+
+        if (battleLobby.assigned_to_battle_id) {
+            textColor = colors.red
+            text = "BATTLE"
+        } else if (battleLobby.ready_at) {
+            textColor = colors.green
+            text = "READY"
+        }
+
+        return (
+            <Typography variant="body2" color={textColor} fontWeight="bold">
+                {text}
+            </Typography>
+        )
+    }, [battleLobby.assigned_to_battle_id, battleLobby.ready_at])
+
     const bottomSection = useMemo(() => {
         // Battle in progress
         if (battleLobby.assigned_to_battle_id) {
@@ -105,18 +124,7 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
                                     {battleLobby.name || `Lobby #${battleLobby.number}`}
                                 </TypographyTruncated>
 
-                                <Typography
-                                    sx={{
-                                        color: battleLobby.battle_lobbies_mechs.length < 9 ? "#FFFFFF" : colors.green,
-                                        fontWeight: "bold",
-                                    }}
-                                >
-                                    <SvgUserDiamond inline size="1.8rem" />{" "}
-                                    <span style={{ color: battleLobby.battle_lobbies_mechs.length < 9 ? colors.orange : "inherit" }}>
-                                        {battleLobby.battle_lobbies_mechs.length}
-                                    </span>
-                                    /9
-                                </Typography>
+                                {lobbyStatus}
                             </Stack>
 
                             <Stack direction="row" justifyContent="space-between">
@@ -124,6 +132,14 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
                                     Reward Pool:
                                     <SvgSupToken fill={colors.gold} size="1.6rem" inline />
                                     {supFormatter(battleLobby.sups_pool, 2)}
+                                </Typography>
+
+                                <Typography sx={{ color: battleLobby.battle_lobbies_mechs.length < 9 ? "#FFFFFF" : colors.green }}>
+                                    <SvgUserDiamond inline size="1.8rem" />{" "}
+                                    <span style={{ color: battleLobby.battle_lobbies_mechs.length < 9 ? colors.orange : "inherit" }}>
+                                        {battleLobby.battle_lobbies_mechs.length}
+                                    </span>
+                                    /9
                                 </Typography>
                             </Stack>
                         </Stack>

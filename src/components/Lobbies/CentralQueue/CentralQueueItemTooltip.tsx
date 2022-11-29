@@ -17,7 +17,7 @@ import {
 } from "../../../assets"
 import { useArena, useAuth, useGlobalNotifications, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { supFormatter } from "../../../helpers"
+import { camelToTitle, supFormatter } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
@@ -43,6 +43,33 @@ export const CentralQueueItemTooltip = ({
     const ownerFaction = useMemo(() => getFaction(battleLobby.host_by.faction_id), [getFaction, battleLobby.host_by.faction_id])
 
     const arenaName = useMemo(() => arenaList.find((a) => a.id === battleLobby.assigned_to_arena_id)?.name, [arenaList, battleLobby.assigned_to_arena_id])
+
+    const topBanner = useMemo(() => {
+        let textColor = colors.grey
+        let text = "WAITING FOR PLAYERS..."
+
+        if (battleLobby.assigned_to_battle_id) {
+            textColor = battleLobby.generated_by_system ? colors.orange : colors.red
+            text = battleLobby.generated_by_system ? "System Battle" : "Exhibition Battle"
+        } else if (battleLobby.ready_at) {
+            textColor = colors.green
+            text = "READY"
+        }
+
+        return (
+            <Typography
+                variant="body2"
+                sx={{
+                    p: ".4rem 1rem",
+                    backgroundColor: textColor,
+                    textAlign: "center",
+                    fontFamily: fonts.nostromoBlack,
+                }}
+            >
+                {text}
+            </Typography>
+        )
+    }, [battleLobby.assigned_to_battle_id, battleLobby.generated_by_system, battleLobby.ready_at])
 
     return (
         <Box sx={{ width: width || "40rem", backgroundColor: factionTheme.s800 }}>
@@ -79,18 +106,8 @@ export const CentralQueueItemTooltip = ({
                 )}
             </Stack>
 
-            {/* Label */}
-            <Typography
-                variant="body2"
-                sx={{
-                    p: ".4rem 1rem",
-                    backgroundColor: battleLobby.generated_by_system ? colors.green : colors.orange,
-                    textAlign: "center",
-                    fontFamily: fonts.nostromoBlack,
-                }}
-            >
-                {battleLobby.generated_by_system ? "System Battle" : "Exhibition Battle"}
-            </Typography>
+            {/* Top banner */}
+            {topBanner}
 
             <Stack sx={{ p: "1.8rem", pb: "2rem" }} spacing="1rem">
                 {/* Host name */}
@@ -132,7 +149,7 @@ export const CentralQueueItemTooltip = ({
                     <Typography sx={{ fontFamily: fonts.nostromoBlack }} variant="body2">
                         <SvgMap inline /> Map:
                     </Typography>
-                    <TypographyTruncated>{battleLobby.game_map?.name || "To be determined..."}</TypographyTruncated>
+                    <TypographyTruncated>{camelToTitle(battleLobby.game_map?.name || "To be determined...")}</TypographyTruncated>
                 </Stack>
 
                 {/* Reward pool */}
