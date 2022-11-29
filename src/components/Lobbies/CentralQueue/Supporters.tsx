@@ -6,7 +6,7 @@ import { useAuth, useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { fonts } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { BattleLobby, BattleLobbySupporter } from "../../../types/battle_queue"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 
@@ -15,7 +15,7 @@ const SIZE = "2rem"
 
 export const Supporters = React.memo(function Supporters({ battleLobby }: { battleLobby: BattleLobby }) {
     const theme = useTheme()
-    const { factionID } = useAuth()
+    const { userID, factionID } = useAuth()
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const { newSnackbarMessage } = useGlobalNotifications()
 
@@ -61,8 +61,14 @@ export const Supporters = React.memo(function Supporters({ battleLobby }: { batt
 
     return (
         <Stack direction="row" alignItems="center" spacing=".9rem">
-            {supporters.map((mech, i) => {
-                return <SvgUserDiamond2 key={`mech-${mech.id}-${i}`} fill={theme.factionTheme.primary} size={`calc(${SIZE} - .3rem)`} />
+            {supporters.map((supporter, i) => {
+                return (
+                    <SvgUserDiamond2
+                        key={`supporter-${supporter.id}-${i}`}
+                        fill={supporter.id === userID ? colors.gold : theme.factionTheme.primary}
+                        size={`calc(${SIZE} - .3rem)`}
+                    />
+                )
             })}
 
             {/* Empty slots */}
