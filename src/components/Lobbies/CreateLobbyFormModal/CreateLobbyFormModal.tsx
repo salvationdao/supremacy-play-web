@@ -2,6 +2,7 @@ import { Box, Divider, Stack, Typography } from "@mui/material"
 import React, { useCallback, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useTheme } from "../../../containers/theme"
+import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { colors, fonts } from "../../../theme/theme"
 import { GameMap, NewMechStruct, User } from "../../../types"
 import { NiceButton } from "../../Common/Nice/NiceButton"
@@ -53,11 +54,14 @@ export interface CreateLobbyFormFields {
     selected_mechs: NewMechStruct[]
 
     // Step 4
-    invited_user_ids: User[]
+    invited_user: User[]
 }
 
 export const CreateLobbyFormModal = React.memo(function CreateLobbyFormModal({ open, onClose }: { open: boolean; onClose: () => void }) {
     const theme = useTheme()
+    const { send } = useGameServerCommandsFaction("/faction_commander")
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState("")
 
     //  Form
     const formMethods = useForm<CreateLobbyFormFields>({
@@ -83,7 +87,7 @@ export const CreateLobbyFormModal = React.memo(function CreateLobbyFormModal({ o
             selected_mechs: [],
 
             // Step 4
-            invited_user_ids: [],
+            invited_user: [],
         },
     })
 
@@ -128,6 +132,38 @@ export const CreateLobbyFormModal = React.memo(function CreateLobbyFormModal({ o
         return null
     }, [activeStep, formMethods])
 
+    // const onCreate = useCallback(async () => {
+    //     const data = getValues() as LobbyForm
+
+    //     // build payload
+    //     const payload = {
+    //         name: data.name,
+    //         accessibility: data.accessibility,
+    //         access_code: data.accessibility === Accessibility.Private ? accessCode : undefined,
+    //         entry_fee: data.entry_fee,
+    //         first_faction_cut: data.first_faction_cut,
+    //         second_faction_cut: data.second_faction_cut,
+    //         game_map_id: data.game_map_id || undefined,
+    //         scheduling_type: data.scheduling_type,
+    //         wont_start_until:
+    //             data.scheduling_type === Scheduling.SetTime ? combineDateTime(data.wont_start_until_date, data.wont_start_until_time).toDate() : undefined,
+    //         max_deploy_number: data.max_deploy_number,
+    //         extra_reward: data.extra_reward,
+    //         mech_ids: data.selected_mechs.map((sm) => sm.id),
+    //         invited_user_ids: selectedUsers.map((su) => su.id),
+    //     }
+
+    //     try {
+    //         setIsLoading(true)
+    //         await send<boolean>(GameServerKeys.CreateBattleLobby, payload)
+    //     } catch (err) {
+    //         const message = typeof err === "string" ? err : "Failed to insert into repair bay."
+    //         setError(message)
+    //     } finally {
+    //         setIsLoading(false)
+    //     }
+    // }, [accessCode, getValues, selectedUsers, send])
+
     return (
         <NiceModal open={open} onClose={onClose} sx={{ p: "1.8rem 2.5rem", height: "95rem", maxHeight: "calc(100vh - 20rem)", minWidth: "70rem" }}>
             <Stack height="100%">
@@ -135,13 +171,13 @@ export const CreateLobbyFormModal = React.memo(function CreateLobbyFormModal({ o
                     Create Lobby
                 </Typography>
 
-                <Stack direction="row" alignItems="flex-start" spacing="3rem" flex={1}>
+                <Stack direction="row" alignItems="flex-start" spacing="3rem" flex={1} height={0}>
                     {/* Stepper */}
                     <NiceStepper steps={steps} activeStep={activeStep} handleStep={handleStep} orientation="vertical" />
 
                     <Divider flexItem orientation="vertical" />
 
-                    <Stack spacing="2.5rem" flex={1} alignSelf="stretch">
+                    <Stack spacing="2.5rem" flex={1} alignSelf="stretch" overflow="hidden">
                         {/* The form questions */}
                         <Box flex={1} sx={{ overflowX: "hidden", overflowY: "auto", pr: ".8rem" }}>
                             {stepForm}

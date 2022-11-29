@@ -9,10 +9,8 @@ import { fonts } from "../../../theme/theme"
 import { AllGameMapsCombined } from "../../Common/AllGameMapsCombined"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { NiceButtonGroup } from "../../Common/Nice/NiceButtonGroup"
-import { NiceDatePicker } from "../../Common/Nice/NiceDatePicker"
 import { NicePopover } from "../../Common/Nice/NicePopover"
 import { NiceTextField } from "../../Common/Nice/NiceTextField"
-import { NiceTimePicker } from "../../Common/Nice/NiceTimePicker"
 import { Accessibility, CreateLobbyFormFields, Scheduling } from "./CreateLobbyFormModal"
 import { FormField } from "./FormField"
 
@@ -93,7 +91,6 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
                         name="name"
                         control={formMethods.control}
                         rules={{
-                            required: { value: true, message: "Lobby name is required." },
                             maxLength: { value: 20, message: "Lobby name is too long." },
                         }}
                         render={({ field }) => {
@@ -103,7 +100,7 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
                                     primaryColor={theme.factionTheme.primary}
                                     value={field.value}
                                     onChange={field.onChange}
-                                    placeholder="Enter lobby name..."
+                                    placeholder="Leave blank to use default name"
                                     type="text"
                                     error={!!errorMessage}
                                     helperText={errorMessage}
@@ -189,7 +186,18 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
                                     required: { value: true, message: "Start date field is required." },
                                 }}
                                 render={({ field }) => {
-                                    return <NiceDatePicker value={field.value} onChange={(value) => field.onChange(value)} />
+                                    const errorMessage = formMethods.formState.errors.wont_start_until_date?.message
+                                    return (
+                                        <NiceTextField
+                                            primaryColor={theme.factionTheme.primary}
+                                            value={field.value.toString()}
+                                            onChange={field.onChange}
+                                            type="date"
+                                            error={!!errorMessage}
+                                            helperText={errorMessage}
+                                            inputProps={{ maxLength: 20 }}
+                                        />
+                                    )
                                 }}
                             />
 
@@ -200,7 +208,18 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
                                     required: { value: true, message: "Start time field is required." },
                                 }}
                                 render={({ field }) => {
-                                    return <NiceTimePicker value={field.value} onChange={(value) => field.onChange(value)} />
+                                    const errorMessage = formMethods.formState.errors.wont_start_until_time?.message
+                                    return (
+                                        <NiceTextField
+                                            primaryColor={theme.factionTheme.primary}
+                                            value={field.value.toString()}
+                                            onChange={field.onChange}
+                                            type="time"
+                                            error={!!errorMessage}
+                                            helperText={errorMessage}
+                                            inputProps={{ maxLength: 20 }}
+                                        />
+                                    )
                                 }}
                             />
                         </Stack>
