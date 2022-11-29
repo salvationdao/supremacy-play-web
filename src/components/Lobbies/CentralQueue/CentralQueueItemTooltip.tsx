@@ -17,7 +17,7 @@ import {
 } from "../../../assets"
 import { useArena, useAuth, useGlobalNotifications, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { supFormatter } from "../../../helpers"
+import { camelToTitle, supFormatter } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
@@ -149,7 +149,7 @@ export const CentralQueueItemTooltip = ({
                     <Typography sx={{ fontFamily: fonts.nostromoBlack }} variant="body2">
                         <SvgMap inline /> Map:
                     </Typography>
-                    <TypographyTruncated>{battleLobby.game_map?.name || "To be determined..."}</TypographyTruncated>
+                    <TypographyTruncated>{camelToTitle(battleLobby.game_map?.name || "To be determined...")}</TypographyTruncated>
                 </Stack>
 
                 {/* Reward pool */}

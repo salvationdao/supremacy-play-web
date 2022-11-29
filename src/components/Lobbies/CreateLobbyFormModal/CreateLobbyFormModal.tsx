@@ -1,8 +1,8 @@
 import { Box, Divider, Stack, Typography } from "@mui/material"
+import moment from "moment"
 import React, { useCallback, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useTheme } from "../../../containers/theme"
-import { combineDateTime } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
@@ -135,7 +135,7 @@ export const CreateLobbyFormModal = React.memo(function CreateLobbyFormModal({ o
     }, [activeStep, formMethods])
 
     const onCreate = formMethods.handleSubmit(async (formData) => {
-        // build payload
+        // Build payload
         const payload = {
             name: formData.name,
             accessibility: formData.accessibility,
@@ -146,9 +146,7 @@ export const CreateLobbyFormModal = React.memo(function CreateLobbyFormModal({ o
             game_map_id: formData.game_map?.id || undefined,
             scheduling_type: formData.scheduling_type,
             wont_start_until:
-                formData.scheduling_type === Scheduling.SetTime
-                    ? combineDateTime(formData.wont_start_until_date, formData.wont_start_until_time).toDate()
-                    : undefined,
+                formData.scheduling_type === Scheduling.SetTime ? moment(`${formData.wont_start_until_date} ${formData.wont_start_until_time}`) : undefined,
             max_deploy_number: formData.max_deploy_number,
             extra_reward: formData.extra_reward,
             mech_ids: formData.selected_mechs.map((sm) => sm.id),
@@ -183,7 +181,7 @@ export const CreateLobbyFormModal = React.memo(function CreateLobbyFormModal({ o
 
                     <Stack spacing="2.5rem" flex={1} alignSelf="stretch" overflow="hidden">
                         {/* The form questions */}
-                        <Box flex={1} sx={{ overflowX: "hidden", overflowY: "auto", pr: ".8rem" }}>
+                        <Box flex={1} sx={{ overflowX: "hidden", overflowY: "auto", pr: ".8rem", pb: ".8rem" }}>
                             {stepForm}
                         </Box>
 
