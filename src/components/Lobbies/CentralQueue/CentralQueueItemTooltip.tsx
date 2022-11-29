@@ -160,7 +160,7 @@ export const CentralQueueItemTooltip = ({
                     <Typography sx={{ fontFamily: fonts.nostromoBlack }} variant="body2">
                         <SvgMap inline /> Map:
                     </Typography>
-                    <TypographyTruncated sx={{ fontStyle: battleLobby.game_map?.name ? "unset" : "italic" }}>
+                    <TypographyTruncated sx={!battleLobby.game_map?.name ? { fontStyle: "italic", color: colors.lightGrey } : {}}>
                         {camelToTitle(battleLobby.game_map?.name || "To be determined...")}
                     </TypographyTruncated>
                 </Stack>

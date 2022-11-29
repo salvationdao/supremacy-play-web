@@ -11,6 +11,7 @@ import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
 import { TypographyTruncated } from "../../Common/TypographyTruncated"
 import { JoinLobbyModal } from "../LobbyItem/JoinLobbyModal"
 import { CentralQueueItemTooltip } from "./CentralQueueItemTooltip"
+import { Supporters } from "./Supporters"
 
 export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) => {
     const { factionTheme } = useTheme()
@@ -38,13 +39,19 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
     }, [battleLobby.assigned_to_battle_id, battleLobby.ready_at])
 
     const bottomSection = useMemo(() => {
+        // If it's ready, then allow people to join as supporter
+        if (battleLobby.ready_at) {
+            return <Supporters battleLobby={battleLobby} />
+        }
+
         // Battle in progress
         if (battleLobby.assigned_to_battle_id) {
             return (
-                <Stack direction="row" alignItems="center" sx={{ pl: "1.5rem", pr: ".5rem", backgroundColor: "#00000026" }}>
+                <Stack direction="row" alignItems="center" spacing=".4rem" sx={{ height: "3rem", backgroundColor: "#00000036" }}>
                     <Typography
                         variant="subtitle1"
                         sx={{
+                            px: "1.5rem",
                             fontFamily: fonts.nostromoBlack,
                             color: colors.red,
                             textAlign: "center",
@@ -60,7 +67,7 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
         // Display invite friend message
         if (displayAccessCode) {
             return (
-                <Stack direction="row" alignItems="center" sx={{ pl: "1.5rem", pr: ".5rem", backgroundColor: "#00000026" }}>
+                <Stack direction="row" alignItems="center" spacing=".4rem" sx={{ height: "3rem", pl: "1.5rem", pr: ".5rem", backgroundColor: "#00000036" }}>
                     <Typography color={colors.neonBlue}>Invite friends to the battle!</Typography>
 
                     <Box flex={1} />
@@ -81,7 +88,7 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
         }
 
         return null
-    }, [battleLobby.assigned_to_battle_id, displayAccessCode])
+    }, [battleLobby, displayAccessCode])
 
     return (
         <>
