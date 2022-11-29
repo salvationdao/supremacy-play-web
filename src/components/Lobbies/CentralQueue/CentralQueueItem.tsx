@@ -41,7 +41,12 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
     const bottomSection = useMemo(() => {
         // If it's ready, then allow people to join as supporter
         if (battleLobby.ready_at) {
-            return <Supporters battleLobby={battleLobby} />
+            return (
+                <Stack direction="row" alignItems="center" spacing="1rem" sx={{ height: "3rem", px: "1.5rem", backgroundColor: "#00000036" }}>
+                    <Typography fontWeight="bold">SUPPORTERS:</Typography>
+                    <Supporters battleLobby={battleLobby} />
+                </Stack>
+            )
         }
 
         // Battle in progress

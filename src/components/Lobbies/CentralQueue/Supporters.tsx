@@ -1,10 +1,12 @@
 import { Stack, Typography } from "@mui/material"
-import React, { useMemo } from "react"
+import React, { useCallback, useMemo } from "react"
 import { SvgUserDiamond2 } from "../../../assets"
 import { FactionIDs } from "../../../constants"
-import { useAuth } from "../../../containers"
+import { useAuth, useGlobalNotifications } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { colors, fonts } from "../../../theme/theme"
+import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
+import { fonts } from "../../../theme/theme"
 import { BattleLobby, BattleLobbySupporter } from "../../../types/battle_queue"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 
@@ -12,8 +14,21 @@ const NUMBER_SUPPORTERS_REQUIRED = 5
 const SIZE = "2rem"
 
 export const Supporters = React.memo(function Supporters({ battleLobby }: { battleLobby: BattleLobby }) {
-    const { factionID } = useAuth()
     const theme = useTheme()
+    const { factionID } = useAuth()
+    const { send } = useGameServerCommandsFaction("/faction_commander")
+    const { newSnackbarMessage } = useGlobalNotifications()
+
+    const optIn = useCallback(async () => {
+        try {
+            await send(GameServerKeys.JoinBattleLobbySupporter, { battle_lobby_id: battleLobby.id, access_code: battleLobby.access_code })
+            newSnackbarMessage("Successfully joined as a battle supporter.", "success")
+        } catch (err) {
+            const message = typeof err === "string" ? err : "Failed to opt in to support battle."
+            console.error(message)
+            newSnackbarMessage(message, "error")
+        }
+    }, [send, battleLobby.id, battleLobby.access_code, newSnackbarMessage])
 
     const { supporters, isAlreadySet } = useMemo(() => {
         let supporters: BattleLobbySupporter[] = []
@@ -45,45 +60,9 @@ export const Supporters = React.memo(function Supporters({ battleLobby }: { batt
     ])
 
     return (
-        <Stack direction="row" alignItems="center" spacing=".9rem" sx={{ height: "3rem", backgroundColor: "#00000036", px: "1.5rem" }}>
-            <Typography fontWeight="bold">SUPPORTERS:</Typography>
-
+        <Stack direction="row" alignItems="center" spacing=".9rem">
             {supporters.map((mech, i) => {
-                return (
-                    <NiceButton
-                        key={`mech-${mech.id}-${i}`}
-                        sx={{
-                            position: "relative",
-                            width: `calc(${SIZE} - 1px)`,
-                            height: `calc(${SIZE} - 1px)`,
-                            p: 0,
-                        }}
-                        disableAutoColor
-                    >
-                        <SvgUserDiamond2 fill={theme.factionTheme.primary} size={`calc(${SIZE} - .6rem)`} />
-
-                        {/* Minus overlay */}
-                        <Stack
-                            alignItems="center"
-                            justifyContent="center"
-                            sx={{
-                                position: "absolute",
-                                top: 0,
-                                left: 0,
-                                right: 0,
-                                bottom: 0,
-                                zIndex: 3,
-                                backgroundColor: "#00000088",
-                                opacity: 0,
-                                ":hover": { opacity: 1 },
-                            }}
-                        >
-                            <Typography fontFamily={fonts.nostromoBold} variant="h4" color={colors.gold}>
-                                -
-                            </Typography>
-                        </Stack>
-                    </NiceButton>
-                )
+                return <SvgUserDiamond2 key={`mech-${mech.id}-${i}`} fill={theme.factionTheme.primary} size={`calc(${SIZE} - .3rem)`} />
             })}
 
             {/* Empty slots */}
@@ -99,6 +78,7 @@ export const Supporters = React.memo(function Supporters({ battleLobby }: { batt
                                 height: `calc(${SIZE} - 1px)`,
                                 p: 0,
                             }}
+                            onClick={optIn}
                         >
                             <Typography lineHeight={1} fontFamily={fonts.nostromoBold}>
                                 +

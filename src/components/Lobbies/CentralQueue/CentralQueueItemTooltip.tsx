@@ -25,6 +25,7 @@ import { colors, fonts } from "../../../theme/theme"
 import { BattleLobbiesMech, BattleLobby } from "../../../types/battle_queue"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 import { TypographyTruncated } from "../../Common/TypographyTruncated"
+import { Supporters } from "./Supporters"
 
 export const CentralQueueItemTooltip = ({
     battleLobby,
@@ -177,7 +178,7 @@ export const CentralQueueItemTooltip = ({
                 </Stack>
 
                 {/* Distribution */}
-                <Box>
+                <Box pb="1rem">
                     <Typography sx={{ mb: "1rem", fontFamily: fonts.nostromoBlack }} variant="body2">
                         <SvgLeaderboard inline /> Distribution:
                     </Typography>
@@ -200,6 +201,14 @@ export const CentralQueueItemTooltip = ({
                         />
                     </Stack>
                 </Box>
+
+                {/* Supporters */}
+                <Stack direction="row" justifyContent="space-between" spacing="1rem">
+                    <Typography sx={{ fontFamily: fonts.nostromoBlack }} variant="body2">
+                        <SvgMap inline /> Supporters:
+                    </Typography>
+                    <Supporters battleLobby={battleLobby} />
+                </Stack>
 
                 {/* Players */}
                 <Box>
