@@ -82,7 +82,7 @@ export const Overview = ({ formMethods }: { formMethods: UseFormReturn<CreateLob
                     <NiceTextField primaryColor={theme.factionTheme.primary} value={camelToTitle(game_map?.name || "Random")} disabled />
                 </FormField>
 
-                <FormField label="Start time">
+                <FormField label="Scheduled time">
                     <Stack>
                         <NiceTextField
                             primaryColor={theme.factionTheme.primary}
