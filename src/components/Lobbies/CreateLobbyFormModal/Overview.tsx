@@ -86,7 +86,7 @@ export const Overview = ({ formMethods }: { formMethods: UseFormReturn<CreateLob
                     <Stack>
                         <NiceTextField
                             primaryColor={theme.factionTheme.primary}
-                            value={scheduling_type === Scheduling.OnReady ? "When lobby is full" : "Custom date & time"}
+                            value={scheduling_type === Scheduling.OnReady ? "When room is full" : "Custom date & time"}
                             disabled
                         />
 

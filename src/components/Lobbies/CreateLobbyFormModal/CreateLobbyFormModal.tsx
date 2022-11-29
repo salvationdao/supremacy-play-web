@@ -145,7 +145,7 @@ export const CreateLobbyFormModal = React.memo(function CreateLobbyFormModal({ o
             second_faction_cut: formData.second_faction_cut,
             game_map_id: formData.game_map?.id || undefined,
             scheduling_type: formData.scheduling_type,
-            wont_start_until:
+            will_not_start_until:
                 formData.scheduling_type === Scheduling.SetTime ? moment(`${formData.wont_start_until_date} ${formData.wont_start_until_time}`) : undefined,
             max_deploy_number: formData.max_deploy_number,
             extra_reward: formData.extra_reward,
