@@ -1,22 +1,32 @@
-import { Box, Fade, Stack, Typography } from "@mui/material"
+import { Box, Fade, IconButton, Stack, Typography } from "@mui/material"
 import { useMemo, useRef, useState } from "react"
 import { Controller, ControllerRenderProps, UseFormReturn } from "react-hook-form"
+import { SvgContentCopyIcon } from "../../../assets"
 import { useArena } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
+import { shortCodeGenerator } from "../../../helpers"
 import { fonts } from "../../../theme/theme"
 import { AllGameMapsCombined } from "../../Common/AllGameMapsCombined"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { NiceButtonGroup } from "../../Common/Nice/NiceButtonGroup"
-import { NiceDatePicker } from "../../Common/Nice/NiceDatePicker"
 import { NicePopover } from "../../Common/Nice/NicePopover"
 import { NiceTextField } from "../../Common/Nice/NiceTextField"
-import { NiceTimePicker } from "../../Common/Nice/NiceTimePicker"
 import { Accessibility, CreateLobbyFormFields, Scheduling } from "./CreateLobbyFormModal"
 import { FormField } from "./FormField"
 
 export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<CreateLobbyFormFields, unknown> }) => {
     const theme = useTheme()
     const [, setRerender] = useState(new Date())
+
+    const accessibility = formMethods.watch("accessibility")
+
+    const accessCode = useMemo(() => {
+        let code = ""
+        if (accessibility === Accessibility.Private) code = shortCodeGenerator({ length: 10, omitUppercase: false, omitLowerCase: true, omitNumber: false })
+        formMethods.setValue("access_code", code)
+
+        return code
+    }, [accessibility, formMethods])
 
     return (
         <Fade in>
@@ -33,16 +43,43 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
                         }}
                         render={({ field }) => {
                             return (
-                                <NiceButtonGroup
-                                    primaryColor={theme.factionTheme.primary}
-                                    secondaryColor={theme.factionTheme.text}
-                                    options={[
-                                        { label: "Public", value: Accessibility.Public },
-                                        { label: "Private", value: Accessibility.Private },
-                                    ]}
-                                    selected={field.value}
-                                    onSelected={(value) => field.onChange(value)}
-                                />
+                                <Stack direction="row" alignItems="center" spacing="1rem">
+                                    <NiceButtonGroup
+                                        primaryColor={theme.factionTheme.primary}
+                                        secondaryColor={theme.factionTheme.text}
+                                        options={[
+                                            { label: "Public", value: Accessibility.Public },
+                                            { label: "Private", value: Accessibility.Private },
+                                        ]}
+                                        selected={field.value}
+                                        onSelected={(value) => {
+                                            field.onChange(value)
+                                            setRerender(new Date())
+                                        }}
+                                    />
+
+                                    {/* Access code */}
+                                    {accessCode && (
+                                        <NiceTextField
+                                            primaryColor={theme.factionTheme.primary}
+                                            value={accessCode}
+                                            disabled
+                                            InputProps={{
+                                                endAdornment: (
+                                                    <IconButton
+                                                        size="small"
+                                                        sx={{ opacity: 0.6, ":hover": { opacity: 1 } }}
+                                                        onClick={() => {
+                                                            navigator.clipboard.writeText(accessCode)
+                                                        }}
+                                                    >
+                                                        <SvgContentCopyIcon inline size="1.3rem" />
+                                                    </IconButton>
+                                                ),
+                                            }}
+                                        />
+                                    )}
+                                </Stack>
                             )
                         }}
                     />
@@ -54,7 +91,6 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
                         name="name"
                         control={formMethods.control}
                         rules={{
-                            required: { value: true, message: "Lobby name is required." },
                             maxLength: { value: 20, message: "Lobby name is too long." },
                         }}
                         render={({ field }) => {
@@ -64,10 +100,11 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
                                     primaryColor={theme.factionTheme.primary}
                                     value={field.value}
                                     onChange={field.onChange}
-                                    placeholder="Enter lobby name..."
+                                    placeholder="Leave blank to use default name"
                                     type="text"
                                     error={!!errorMessage}
                                     helperText={errorMessage}
+                                    inputProps={{ maxLength: 20 }}
                                 />
                             )
                         }}
@@ -77,7 +114,7 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
                 {/* Game map */}
                 <FormField label="Map">
                     <Controller
-                        name="game_map_id"
+                        name="game_map"
                         control={formMethods.control}
                         render={({ field }) => {
                             return <GameMapSelector field={field} />
@@ -149,7 +186,18 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
                                     required: { value: true, message: "Start date field is required." },
                                 }}
                                 render={({ field }) => {
-                                    return <NiceDatePicker value={field.value} onChange={(value) => field.onChange(value)} />
+                                    const errorMessage = formMethods.formState.errors.wont_start_until_date?.message
+                                    return (
+                                        <NiceTextField
+                                            primaryColor={theme.factionTheme.primary}
+                                            value={field.value.toString()}
+                                            onChange={field.onChange}
+                                            type="date"
+                                            error={!!errorMessage}
+                                            helperText={errorMessage}
+                                            inputProps={{ maxLength: 20 }}
+                                        />
+                                    )
                                 }}
                             />
 
@@ -160,7 +208,18 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
                                     required: { value: true, message: "Start time field is required." },
                                 }}
                                 render={({ field }) => {
-                                    return <NiceTimePicker value={field.value} onChange={(value) => field.onChange(value)} />
+                                    const errorMessage = formMethods.formState.errors.wont_start_until_time?.message
+                                    return (
+                                        <NiceTextField
+                                            primaryColor={theme.factionTheme.primary}
+                                            value={field.value.toString()}
+                                            onChange={field.onChange}
+                                            type="time"
+                                            error={!!errorMessage}
+                                            helperText={errorMessage}
+                                            inputProps={{ maxLength: 20 }}
+                                        />
+                                    )
                                 }}
                             />
                         </Stack>
@@ -171,7 +230,7 @@ export const RoomSettings = ({ formMethods }: { formMethods: UseFormReturn<Creat
     )
 }
 
-export const GameMapSelector = ({ field }: { field: ControllerRenderProps<CreateLobbyFormFields, "game_map_id"> }) => {
+export const GameMapSelector = ({ field }: { field: ControllerRenderProps<CreateLobbyFormFields, "game_map"> }) => {
     const { factionTheme } = useTheme()
     const { gameMaps } = useArena()
 
@@ -179,7 +238,7 @@ export const GameMapSelector = ({ field }: { field: ControllerRenderProps<Create
     const popoverRef = useRef(null)
     const [openMapSelector, setOpenMapSelector] = useState(false)
 
-    const selectedGameMap = useMemo(() => gameMaps.find((gm) => gm.id === field.value), [gameMaps, field.value])
+    const selectedGameMap = useMemo(() => gameMaps.find((gm) => gm.id === field.value?.id), [gameMaps, field.value])
 
     const randomOption = useMemo(
         () => (
@@ -268,7 +327,7 @@ export const GameMapSelector = ({ field }: { field: ControllerRenderProps<Create
                                         },
                                     }}
                                     onClick={() => {
-                                        field.onChange(gm.id)
+                                        field.onChange(gm)
                                         setOpenMapSelector(false)
                                     }}
                                 >
@@ -306,7 +365,7 @@ export const GameMapSelector = ({ field }: { field: ControllerRenderProps<Create
                                 },
                             }}
                             onClick={() => {
-                                field.onChange("")
+                                field.onChange(undefined)
                                 setOpenMapSelector(false)
                             }}
                         >

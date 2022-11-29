@@ -7,6 +7,7 @@ import { useTheme } from "../../../containers/theme"
 import { useDebounce } from "../../../hooks"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { colors, fonts } from "../../../theme/theme"
 import { RoleType, User } from "../../../types"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { NiceButton } from "../../Common/Nice/NiceButton"
@@ -19,7 +20,7 @@ export const InviteFriends = ({ formMethods }: { formMethods: UseFormReturn<Crea
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [userDropdown, setUserDropdown] = useState<User[]>([])
     const [isLoadingUsers, setIsLoadingUsers] = useState(false)
-    const [selectedUsers, setSelectedUsers] = useState<User[]>([])
+    const [selectedUsers, setSelectedUsers] = useState<User[]>(formMethods.getValues("invited_user"))
     const [search, setSearch, searchInstant] = useDebounce("", 300)
 
     // When searching for player, update the dropdown list
@@ -42,18 +43,34 @@ export const InviteFriends = ({ formMethods }: { formMethods: UseFormReturn<Crea
         })()
     }, [search, send, setIsLoadingUsers, selectedUsers])
 
+    useEffect(() => {
+        formMethods.setValue("invited_user", selectedUsers)
+    }, [formMethods, selectedUsers])
+
     return (
         <Fade in>
-            <Stack spacing="2rem">
+            <Stack spacing="2rem" height="100%">
                 <Typography variant="h4">Invite friends to join the battle</Typography>
 
                 <Autocomplete
                     options={userDropdown}
                     loading={isLoadingUsers}
                     sx={{
-                        zIndex: 9999999999999,
                         ".MuiAutocomplete-endAdornment": {
                             top: "calc(50% - 9px)",
+                        },
+
+                        "& + .MuiAutocomplete-popper": {
+                            ".MuiPaper-root": {
+                                border: `#FFFFFF40 1px solid`,
+                                backgroundColor: theme.factionTheme.background,
+                                borderRadius: 0,
+
+                                ".MuiAutocomplete-listbox": {
+                                    py: 0,
+                                    backgroundColor: "#FFFFFF10",
+                                },
+                            },
                         },
                     }}
                     disablePortal
@@ -62,7 +79,7 @@ export const InviteFriends = ({ formMethods }: { formMethods: UseFormReturn<Crea
                     }}
                     renderOption={(props, u) => (
                         <Box key={u.id} component="li" {...props}>
-                            <UserItem user={u} />
+                            <InviteUserItem user={u} />
                         </Box>
                     )}
                     disableClearable
@@ -78,6 +95,7 @@ export const InviteFriends = ({ formMethods }: { formMethods: UseFormReturn<Crea
                                 setSearch(value)
                             }}
                             InputProps={{
+                                ...InputProps,
                                 endAdornment: (
                                     <>
                                         {isLoadingUsers ? <CircularProgress size="1.2rem" /> : null}
@@ -88,60 +106,37 @@ export const InviteFriends = ({ formMethods }: { formMethods: UseFormReturn<Crea
                             sx={{ py: 0 }}
                             {...params}
                         />
-
-                        // <TextField
-                        //     value={searchText}
-                        //     placeholder="Search for username..."
-                        //     onChange={(e) => {
-                        //         setSearchText(e.currentTarget.value)
-                        //         setSearch(e.currentTarget.value)
-                        //     }}
-                        //     type="text"
-                        //     hiddenLabel
-                        //     sx={{
-                        //         borderRadius: 1,
-                        //         "& .MuiInputBase-root": {
-                        //             py: 0,
-                        //             fontFamily: fonts.rajdhaniMedium,
-                        //         },
-                        //         ".Mui-disabled": {
-                        //             WebkitTextFillColor: "unset",
-                        //             color: "#FFFFFF70",
-                        //         },
-                        //         ".Mui-focused .MuiOutlinedInput-notchedOutline": {
-                        //             borderColor: `${theme.factionTheme.primary} !important`,
-                        //         },
-                        //         input: {
-                        //             color: "#FFFFFF",
-                        //         },
-                        //     }}
-                        //     {...params}
-                        //     InputProps={{
-                        //         ...params.InputProps,
-                        //         endAdornment: (
-                        //             <>
-                        //                 {isLoadingUsers ? <CircularProgress size="1.2rem" /> : null}
-                        //                 {params.InputProps.endAdornment}
-                        //             </>
-                        //         ),
-                        //     }}
-                        // />
                     )}
                 />
 
-                <Stack direction="row" sx={{ flexWrap: "wrap" }}>
-                    {selectedUsers.map((su) => (
-                        <NiceBoxThing key={su.id} sx={{ p: ".3rem" }}>
-                            <UserItem user={su} remove={() => setSelectedUsers((prev) => prev.filter((p) => p.id !== su.id))} />
-                        </NiceBoxThing>
-                    ))}
+                <Stack direction="row" sx={{ flex: 1, flexWrap: "wrap", gap: ".3rem" }}>
+                    {selectedUsers.length > 0 ? (
+                        selectedUsers.map((su) => (
+                            <NiceBoxThing key={su.id}>
+                                <InviteUserItem user={su} remove={() => setSelectedUsers((prev) => prev.filter((p) => p.id !== su.id))} />
+                            </NiceBoxThing>
+                        ))
+                    ) : (
+                        <Stack alignItems="center" justifyContent="center" width="100%">
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    color: colors.grey,
+                                    fontFamily: fonts.nostromoBold,
+                                    textAlign: "center",
+                                }}
+                            >
+                                No friends...
+                            </Typography>
+                        </Stack>
+                    )}
                 </Stack>
             </Stack>
         </Fade>
     )
 }
 
-const UserItem = ({ user, remove }: { user: User; remove?: () => void }) => {
+export const InviteUserItem = ({ user, remove }: { user: User; remove?: () => void }) => {
     const { getFaction } = useSupremacy()
     const faction = getFaction(user.faction_id)
 
@@ -154,10 +149,9 @@ const UserItem = ({ user, remove }: { user: User; remove?: () => void }) => {
                 !remove
                     ? undefined
                     : {
-                          border: `${faction.palette.primary} 2px solid`,
-                          backgroundColor: `${faction.palette.primary}30`,
-                          p: "1rem",
-                          borderRadius: 0.9,
+                          p: "1rem 1.2rem",
+                          border: `${faction.palette.primary}60 1px solid`,
+                          backgroundColor: `${faction.palette.primary}20`,
                       }
             }
         >
@@ -186,8 +180,8 @@ const UserItem = ({ user, remove }: { user: User; remove?: () => void }) => {
             />
 
             {remove && (
-                <NiceButton sx={{ p: 0, ml: "1rem" }} onClick={remove}>
-                    <SvgClose2 />
+                <NiceButton sx={{ p: 0 }} onClick={remove}>
+                    <SvgClose2 sx={{ p: 0 }} />
                 </NiceButton>
             )}
         </Stack>
