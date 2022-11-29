@@ -137,12 +137,17 @@ export interface MechBasic extends Collection, Images {
     max_hitpoints: number
     boosted_max_hitpoints: number
     shield: number
+    boosted_shield: number
     shield_recharge_rate: number
     boosted_shield_recharge_rate: number
     shield_recharge_power_cost: number
     shield_type: string
     shield_type_label: string
     shield_type_description: string
+    walk_speed_modifier: string
+    boosted_walk_speed_modifier: string
+    sprint_spread_modifier: string
+    boosted_sprint_spread_modifier: string
     is_default: boolean
     is_insured: boolean
     name: string
@@ -237,6 +242,11 @@ export enum BoostStatEnum {
     MechHealth = "MECH_HEALTH",
     MechSpeed = "MECH_SPEED",
     ShieldRegen = "SHIELD_REGEN",
+    MechMaxShield = "MECH_MAX_SHIELD",
+    MechSprintSpreadModifier = "MECH_SPRINT_SPREAD_MODIFIER",
+    MechWalkSpeedModifier = "MECH_WALK_SPEED_MODIFIER",
+    WeaponDamageFalloff = "WEAPON_DAMAGE_FALLOFF",
+    WeaponSpread = "WEAPON_SPREAD",
 }
 
 export interface BlueprintMech {
@@ -336,8 +346,10 @@ export interface Weapon extends Collection, Images {
     equipped_on?: string
     weapon_type: string
     damage_falloff?: number
+    boosted_damage_falloff?: number
     damage_falloff_rate?: number
     spread?: number
+    boosted_spread?: number
     rate_of_fire?: number
     radius?: number
     radius_damage_falloff?: number
