@@ -55,47 +55,49 @@ export const MechTooltipRender = ({ mech }: { mech: NewMechStruct }) => {
                 </Stack>
 
                 {/* KDWL stats */}
-                <Stack direction="row" alignItems="center" spacing=".8rem" sx={{ p: ".8rem 1rem", "&>*": { flex: 1 } }}>
-                    <Stack alignItems="center">
-                        <TypographyTruncated whiteSpace="nowrap">
-                            <SvgMechKills inline size="1.8rem" /> {numFormatter(mech.stats.total_kills)}
-                        </TypographyTruncated>
+                {mech.stats && (
+                    <Stack direction="row" alignItems="center" spacing=".8rem" sx={{ p: ".8rem 1rem", "&>*": { flex: 1 } }}>
+                        <Stack alignItems="center">
+                            <TypographyTruncated whiteSpace="nowrap">
+                                <SvgMechKills inline size="1.8rem" /> {numFormatter(mech.stats.total_kills)}
+                            </TypographyTruncated>
 
-                        <Typography variant="body2" fontFamily={fonts.nostromoBlack}>
-                            KILLS
-                        </Typography>
+                            <Typography variant="body2" fontFamily={fonts.nostromoBlack}>
+                                KILLS
+                            </Typography>
+                        </Stack>
+
+                        <Stack alignItems="center">
+                            <TypographyTruncated whiteSpace="nowrap">
+                                <SvgMechDeaths inline size="1.8rem" /> {numFormatter(mech.stats.total_deaths)}
+                            </TypographyTruncated>
+
+                            <Typography variant="body2" fontFamily={fonts.nostromoBlack}>
+                                DEATHS
+                            </Typography>
+                        </Stack>
+
+                        <Stack alignItems="center">
+                            <TypographyTruncated whiteSpace="nowrap">
+                                <SvgMechWins inline size="1.8rem" /> {numFormatter(mech.stats.total_wins)}
+                            </TypographyTruncated>
+
+                            <Typography variant="body2" fontFamily={fonts.nostromoBlack}>
+                                WINS
+                            </Typography>
+                        </Stack>
+
+                        <Stack alignItems="center">
+                            <TypographyTruncated whiteSpace="nowrap">
+                                <SvgMechLosses inline size="1.8rem" /> {numFormatter(mech.stats.total_losses)}
+                            </TypographyTruncated>
+
+                            <Typography variant="body2" fontFamily={fonts.nostromoBlack}>
+                                LOSSES
+                            </Typography>
+                        </Stack>
                     </Stack>
-
-                    <Stack alignItems="center">
-                        <TypographyTruncated whiteSpace="nowrap">
-                            <SvgMechDeaths inline size="1.8rem" /> {numFormatter(mech.stats.total_deaths)}
-                        </TypographyTruncated>
-
-                        <Typography variant="body2" fontFamily={fonts.nostromoBlack}>
-                            DEATHS
-                        </Typography>
-                    </Stack>
-
-                    <Stack alignItems="center">
-                        <TypographyTruncated whiteSpace="nowrap">
-                            <SvgMechWins inline size="1.8rem" /> {numFormatter(mech.stats.total_wins)}
-                        </TypographyTruncated>
-
-                        <Typography variant="body2" fontFamily={fonts.nostromoBlack}>
-                            WINS
-                        </Typography>
-                    </Stack>
-
-                    <Stack alignItems="center">
-                        <TypographyTruncated whiteSpace="nowrap">
-                            <SvgMechLosses inline size="1.8rem" /> {numFormatter(mech.stats.total_losses)}
-                        </TypographyTruncated>
-
-                        <Typography variant="body2" fontFamily={fonts.nostromoBlack}>
-                            LOSSES
-                        </Typography>
-                    </Stack>
-                </Stack>
+                )}
 
                 <Divider />
 
