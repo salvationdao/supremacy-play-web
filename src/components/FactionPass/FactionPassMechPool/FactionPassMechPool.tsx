@@ -132,7 +132,7 @@ export const FactionPassMechPool = () => {
 
             setMechs((prev) => {
                 if (prev.length === 0) {
-                    return payload
+                    return payload.filter((m) => m.is_staked)
                 }
 
                 // Replace current list
@@ -148,7 +148,7 @@ export const FactionPassMechPool = () => {
                     list.push(p)
                 })
 
-                return list
+                return list.filter((m) => m.is_staked)
             })
         },
     )
