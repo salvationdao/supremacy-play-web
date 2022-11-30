@@ -9,6 +9,7 @@ export const ProgressBar = ({
     linePercent,
     boostedPercent,
     color,
+    boostedColor,
     backgroundColor,
     thickness,
     orientation = "vertical",
@@ -18,6 +19,7 @@ export const ProgressBar = ({
     boostedPercent?: number // 0 to 100
     linePercent?: number // 0 to 100
     color: string
+    boostedColor?: string
     backgroundColor?: string
     thickness?: string
     orientation?: "vertical" | "horizontal"
@@ -65,7 +67,7 @@ export const ProgressBar = ({
                                 height: "100%",
                                 width: `${boostedPercent2}%`,
                                 backgroundColor: color,
-                                background: `linear-gradient(${darkerShadeBackgroundColor} 26%, ${color})`,
+                                background: `${boostedColor || colors.gold}EE`,
                                 transition: "all .25s",
                                 transform: "translateY(-50%) scaleY(1.08)",
                                 zIndex: 2,
@@ -108,7 +110,7 @@ export const ProgressBar = ({
                         height: `${percent2}%`,
                         width: "100%",
                         backgroundColor: color,
-                        background: `linear-gradient(${darkerShadeBackgroundColor} 26%, ${color})`,
+                        background: `${boostedColor || colors.gold}EE`,
                         transition: "all .25s",
                         transform: "translateX(-50%) scaleX(1.08)",
                         zIndex: 3,

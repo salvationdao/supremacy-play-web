@@ -100,11 +100,9 @@ import Swap from "!@svgr/webpack!./svg/Swap.svg"
 import ThirdPlace from "!@svgr/webpack!./svg/ThirdPlace.svg"
 import Unhide from "!@svgr/webpack!./svg/Unhide.svg"
 import UserDiamond2 from "!@svgr/webpack!./svg/UserDiamond2.svg"
-import Utilities from "!@svgr/webpack!./svg/Utilities.svg"
 import View from "!@svgr/webpack!./svg/View.svg"
 import VoiceChat from "!@svgr/webpack!./svg/VoiceChat.svg"
 import Wallet from "!@svgr/webpack!./svg/Wallet.svg"
-import Weapons from "!@svgr/webpack!./svg/Weapons.svg"
 import Wrench from "!@svgr/webpack!./svg/Wrench.svg"
 import ZaibatsuMechKillIcon from "!@svgr/webpack!./svg/ZaibatsuKillIcon.svg"
 import Angle from "!react-svg-loader!./svg/Angle.svg"
@@ -1152,18 +1150,6 @@ export const SvgIntroAnimation: React.VoidFunctionComponent<SvgWrapperProps> = (
 export const SvgOutroAnimation: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <OutroAnimation />
-    </SvgWrapper>
-)
-
-export const SvgUtilities: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
-    <SvgWrapper {...props}>
-        <Utilities />
-    </SvgWrapper>
-)
-
-export const SvgWeapons: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
-    <SvgWrapper {...props}>
-        <Weapons />
     </SvgWrapper>
 )
 

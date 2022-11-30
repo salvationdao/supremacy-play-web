@@ -1,6 +1,6 @@
 import { Box, Divider, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { SvgLoadoutSkin, SvgMechDeaths, SvgMechKills, SvgMechLosses, SvgMechWins, SvgUserDiamond2 } from "../../../../assets"
+import { SvgLoadoutSkin, SvgLoadoutWeapon, SvgMechDeaths, SvgMechKills, SvgMechLosses, SvgMechWins, SvgUserDiamond2 } from "../../../../assets"
 import { useSupremacy } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { getRarityDeets, numFormatter } from "../../../../helpers"
@@ -9,6 +9,7 @@ import { NewMechStruct } from "../../../../types"
 import { TypographyTruncated } from "../../TypographyTruncated"
 import { MechIdleStatus } from "../MechIdleStatus"
 import { RepairBlocks } from "../MechRepairBlocks"
+import { MechLoadout } from "./MechLoadout"
 import { MechStats } from "./MechStats"
 
 export const MechTooltipRender = ({ mech }: { mech: NewMechStruct }) => {
@@ -100,6 +101,22 @@ export const MechTooltipRender = ({ mech }: { mech: NewMechStruct }) => {
 
             {/* Mech bar stats */}
             <MechStats mech={mech} sx={{ p: "1rem 1rem" }} />
+
+            <Divider />
+
+            {/* Mech loadout */}
+            <Stack spacing="1rem">
+                {mech.weapon_slots && mech.weapon_slots.length > 0 && (
+                    <MechLoadout
+                        items={mech.weapon_slots.map((x) => {
+                            const image = x.weapon?.avatar_url || x.weapon?.image_url || ""
+                            return { name: x.weapon?.label || "Unknown", imageUrl: image, tier: x.weapon?.tier }
+                        })}
+                        title="Weapons"
+                        icon={SvgLoadoutWeapon}
+                    />
+                )}
+            </Stack>
         </Box>
     )
 }

@@ -1,5 +1,14 @@
 import { Stack, Typography } from "@mui/material"
-import { SvgCubes, SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgLoadoutSkin, SvgStats, SvgUtilities, SvgWeapons } from "../../../../../assets"
+import {
+    SvgCubes,
+    SvgIntroAnimation,
+    SvgOutroAnimation,
+    SvgPowerCore,
+    SvgLoadoutSkin,
+    SvgStats,
+    SvgLoadoutUtility,
+    SvgLoadoutWeapon,
+} from "../../../../../assets"
 import { useTheme } from "../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../helpers"
 import { colors, fonts } from "../../../../../theme/theme"
@@ -71,7 +80,7 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
 
             <Stack spacing="1rem">
                 <Stack direction="row" spacing=".8rem" alignItems="center">
-                    <SvgWeapons fill={colors.weapons} size="2.5rem" />
+                    <SvgLoadoutWeapon fill={colors.weapons} size="2.5rem" />
                     <Typography variant="h5" sx={{ color: colors.weapons, fontFamily: fonts.nostromoBlack }}>
                         WEAPONS ({weapons?.length || 0}/{weapon_hardpoints})
                     </Typography>
@@ -85,7 +94,7 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
                                     key={w.id}
                                     imageUrl={w.image_url || w.avatar_url}
                                     label={w.label}
-                                    Icon={SvgWeapons}
+                                    Icon={SvgLoadoutWeapon}
                                     rarity={w.weapon_skin ? getRarityDeets(w.weapon_skin.tier) : undefined}
                                 />
                             )
@@ -98,7 +107,7 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
 
             <Stack spacing="1rem">
                 <Stack direction="row" spacing=".8rem" alignItems="center">
-                    <SvgUtilities fill={colors.utilities} size="2.5rem" />
+                    <SvgLoadoutUtility fill={colors.utilities} size="2.5rem" />
                     <Typography variant="h5" sx={{ color: colors.utilities, fontFamily: fonts.nostromoBlack }}>
                         UTILITIES ({utilities?.length || 0}/{utility_slots})
                     </Typography>
@@ -107,7 +116,7 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
                 {utilities && utilities.length > 0 ? (
                     <Stack direction="row" flexWrap="wrap">
                         {utilities.map((w) => {
-                            return <MechLoadoutItem key={w.id} imageUrl={w.image_url || w.avatar_url} label={w.label} Icon={SvgUtilities} />
+                            return <MechLoadoutItem key={w.id} imageUrl={w.image_url || w.avatar_url} label={w.label} Icon={SvgLoadoutUtility} />
                         })}
                     </Stack>
                 ) : (

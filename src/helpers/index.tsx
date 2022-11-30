@@ -12,8 +12,8 @@ import {
     SvgPowerCore,
     SvgPrivate,
     SvgLoadoutSkin,
-    SvgUtilities,
-    SvgWeapons,
+    SvgLoadoutUtility,
+    SvgLoadoutWeapon,
     SvgWrapperProps,
 } from "../assets"
 import { colors } from "../theme/theme"
@@ -605,7 +605,7 @@ export const getAssetItemDeets = (
             subRoute = "mech"
             break
         case AssetItemType.Weapon:
-            icon = SvgWeapons
+            icon = SvgLoadoutWeapon
             color = colors.weapons
             label = "Weapon"
             subRoute = "weapon"
@@ -626,7 +626,7 @@ export const getAssetItemDeets = (
             label = "Power Core"
             break
         case AssetItemType.Utility:
-            icon = SvgUtilities
+            icon = SvgLoadoutUtility
             color = colors.utilities
             label = "Utility"
             break

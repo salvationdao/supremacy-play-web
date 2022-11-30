@@ -76,15 +76,18 @@ const SingleStat = ({
             </Box>
 
             <Box flex={1}>
-                <ProgressBar percent={(100 * current) / total} orientation="horizontal" color={colors.red} />
+                <ProgressBar percent={(100 * current) / total} boostedPercent={(100 * boostedTo) / total} orientation="horizontal" color={colors.red} />
             </Box>
 
             <NiceTooltip text={boostedBy > 0 ? `Boosted from ${current} to ${current + boostedBy}` : ""} placement="top-end">
                 <Box sx={{ width: "8rem" }}>
-                    <TypographyTruncated color={boostedBy > 0 ? colors.neonBlue : "#FFFFFF"} sx={{ textAlign: "end" }}>
+                    <TypographyTruncated
+                        color={boostedBy > 0 ? colors.gold : "#FFFFFF"}
+                        sx={{ textAlign: "end", fontWeight: boostedBy > 0 ? "bold" : "unset" }}
+                    >
                         {current + boostedBy}
                         {unit}
-                        {boostedBy > 0 && <SvgDoubleChevronUp inline size="1.2rem" fill={colors.neonBlue} />}
+                        {boostedBy > 0 && <SvgDoubleChevronUp inline size="1.2rem" fill={colors.gold} />}
                     </TypographyTruncated>
                 </Box>
             </NiceTooltip>
