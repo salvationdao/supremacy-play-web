@@ -77,7 +77,9 @@ export const Supporters = React.memo(function Supporters({ battleLobby, factionI
                             key={`supporter-${supporter.id}-${i}`}
                             alt="Supporter"
                             src={faction.logo_url}
-                            sx={{ border: supporter.id === userID ? `${colors.gold} 1px solid !important` : `${faction.palette.primary}AA 1px solid` }}
+                            sx={{
+                                border: supporter.id === userID ? `${colors.gold} 1px solid !important` : `${faction.palette.primary}AA 1px solid !important`,
+                            }}
                         />
                     )
                 })}
