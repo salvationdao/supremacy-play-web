@@ -2,7 +2,7 @@ import { Box, Slide, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo, useState } from "react"
 import { SvgCheckMark, SvgPlus, SvgQuestionMark2, SvgUserDiamond } from "../../../../assets"
 import { FactionIDs } from "../../../../constants"
-import { useAuth, useGlobalNotifications, useSupremacy } from "../../../../containers"
+import { useAuth, useDimension, useGlobalNotifications, useSupremacy } from "../../../../containers"
 import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { pulseEffect } from "../../../../theme/keyframes"
@@ -69,9 +69,6 @@ export const BattleIntro = ({ currentBattle }: BattleIntroProps) => {
         <Stack
             sx={{
                 width: "100%",
-                height: "100%",
-                alignItems: "center",
-                justifyContent: "center",
                 backgroundImage: `url(${currentBattle?.game_map?.background_url})`,
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
@@ -96,6 +93,7 @@ const MAX_SUPPORTERS_TO_SHOW = 5
 const FactionRow = ({ index, lobby }: FactionRowProps) => {
     const { getFaction } = useSupremacy()
     const { userID, factionID } = useAuth()
+    const { gameUIDimensions } = useDimension()
 
     const theme = getFaction(lobby.faction.id).palette
     const { details, selectedSupporterSlots, optedInSupporterSlots } = lobby

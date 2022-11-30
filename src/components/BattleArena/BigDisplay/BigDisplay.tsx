@@ -20,12 +20,12 @@ export const BigDisplay = () => {
                     left: 0,
                     right: 0,
                     bottom: 0,
+                    overflowY: "auto",
                 }}
             >
-                <Box sx={{ position: "relative", height: "100%", width: "100%", zIndex: siteZIndex.Modal }}>
+                <Box sx={{ position: "relative", width: "100%", zIndex: siteZIndex.Modal }}>
                     <BattleIntro currentBattle={JSON.parse(MOCK_UPCOMING_BATTLE)} />
                 </Box>
-
                 {nextBattle && (
                     <Box sx={{ position: "relative", height: "100%", width: "100%", zIndex: siteZIndex.Modal }}>
                         <UpcomingBattle nextBattle={nextBattle} />
