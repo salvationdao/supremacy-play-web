@@ -66,7 +66,7 @@ export const Supporters = React.memo(function Supporters({
     }, [battleLobby, factionID, userID])
 
     return (
-        <Stack direction="row" alignItems="center" spacing="1rem">
+        <Stack direction="row" alignItems="center" spacing=".9rem">
             <AvatarGroup
                 max={5}
                 spacing={-7}
@@ -112,12 +112,12 @@ export const Supporters = React.memo(function Supporters({
                     })}
             </AvatarGroup>
 
-            {!isAlreadySet && !isAlreadySupporting && !hasMechDeployed && userFactionID === factionID && (
+            {battleLobby.ready_at && !isAlreadySet && !isAlreadySupporting && !hasMechDeployed && userFactionID === factionID && (
                 <NiceButton
                     buttonColor={faction.palette.primary}
                     sx={{
-                        width: `calc(${size} - 1px)`,
-                        height: `calc(${size} - 1px)`,
+                        width: size,
+                        height: size,
                         p: 0,
                         animation: `${pulseEffect} 3s infinite`,
                     }}

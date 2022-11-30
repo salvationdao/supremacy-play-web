@@ -97,7 +97,13 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
             )
         }
 
-        return null
+        return (
+            <Stack direction="row" alignItems="center" sx={{ height: "3rem", px: "1.5rem", backgroundColor: "#00000036" }}>
+                <Typography fontWeight="bold" color={colors.grey}>
+                    SCHEDULED TIME: {battleLobby.will_not_start_until ? battleLobby.will_not_start_until.toLocaleString() : "when room is full"}
+                </Typography>
+            </Stack>
+        )
     }, [battleLobby, displayAccessCode, factionID])
 
     return (

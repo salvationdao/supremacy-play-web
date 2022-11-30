@@ -171,7 +171,7 @@ export const MyLobbies = () => {
 
         setDisplayLobbies(
             filteredLobbies
-                .filter((p) => !p.ready_at && !involvedLobbies.some((b) => b.id === p.id))
+                .filter((p) => !involvedLobbies.some((b) => b.id === p.id))
                 .sort((a, b) => {
                     if (a.ready_at && b.ready_at) {
                         return a.ready_at > b.ready_at ? 1 : -1
@@ -263,7 +263,7 @@ export const MyLobbies = () => {
             <VirtualizedGrid
                 uniqueID="all-lobbies"
                 itemWidthConfig={{ columnCount: 1 }}
-                itemHeight={8.6}
+                itemHeight={11.5}
                 totalItems={displayLobbies.length}
                 renderIndex={renderIndex}
             />
