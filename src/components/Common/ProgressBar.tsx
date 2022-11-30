@@ -7,6 +7,7 @@ export const ProgressBar = ({
     id,
     percent,
     linePercent,
+    boostedPercent,
     color,
     backgroundColor,
     thickness,
@@ -14,21 +15,31 @@ export const ProgressBar = ({
 }: {
     id?: string
     percent: number // 0 to 100
-    linePercent?: number
+    boostedPercent?: number // 0 to 100
+    linePercent?: number // 0 to 100
     color: string
-    backgroundColor: string
-    thickness: string
+    backgroundColor?: string
+    thickness?: string
     orientation?: "vertical" | "horizontal"
 }) => {
     const darkerShadeBackgroundColor = useMemo(() => shadeColor(color, 5), [color])
 
     return useMemo(() => {
         const percent2 = Math.min(percent, 100)
+        const boostedPercent2 = boostedPercent ? Math.min(boostedPercent, 100) : undefined
         const linePercent2 = Math.min(linePercent || 0, 100)
 
         if (orientation === "horizontal") {
             return (
-                <Stack justifyContent="flex-end" style={{ position: "relative", height: thickness, width: "100%", backgroundColor }}>
+                <Stack
+                    justifyContent="flex-end"
+                    style={{
+                        position: "relative",
+                        height: thickness || "1.3rem",
+                        width: "100%",
+                        backgroundColor: backgroundColor || "#FFFFFF40",
+                    }}
+                >
                     <Box
                         id={id}
                         style={{
@@ -41,8 +52,26 @@ export const ProgressBar = ({
                             background: `linear-gradient(${darkerShadeBackgroundColor} 26%, ${color})`,
                             transition: "all .25s",
                             transform: "translateY(-50%) scaleY(1.08)",
+                            zIndex: 3,
                         }}
                     />
+
+                    {boostedPercent2 && (
+                        <Box
+                            style={{
+                                position: "absolute",
+                                top: "50%",
+                                left: 0,
+                                height: "100%",
+                                width: `${boostedPercent2}%`,
+                                backgroundColor: color,
+                                background: `linear-gradient(${darkerShadeBackgroundColor} 26%, ${color})`,
+                                transition: "all .25s",
+                                transform: "translateY(-50%) scaleY(1.08)",
+                                zIndex: 2,
+                            }}
+                        />
+                    )}
 
                     {!!linePercent2 && (
                         <Box
@@ -61,7 +90,15 @@ export const ProgressBar = ({
         }
 
         return (
-            <Stack justifyContent="flex-end" style={{ position: "relative", height: "100%", width: thickness, backgroundColor }}>
+            <Stack
+                justifyContent="flex-end"
+                style={{
+                    position: "relative",
+                    height: "100%",
+                    width: thickness || "1.3rem",
+                    backgroundColor: backgroundColor || "#FFFFFF40",
+                }}
+            >
                 <Box
                     id={id}
                     style={{
@@ -74,8 +111,26 @@ export const ProgressBar = ({
                         background: `linear-gradient(${darkerShadeBackgroundColor} 26%, ${color})`,
                         transition: "all .25s",
                         transform: "translateX(-50%) scaleX(1.08)",
+                        zIndex: 3,
                     }}
                 />
+
+                {boostedPercent2 && (
+                    <Box
+                        style={{
+                            position: "absolute",
+                            bottom: 0,
+                            left: "50%",
+                            height: `${boostedPercent2}%`,
+                            width: "100%",
+                            backgroundColor: color,
+                            background: `linear-gradient(${darkerShadeBackgroundColor} 26%, ${color})`,
+                            transition: "all .25s",
+                            transform: "translateX(-50%) scaleX(1.08)",
+                            zIndex: 3,
+                        }}
+                    />
+                )}
 
                 {!!linePercent2 && (
                     <Box
@@ -91,5 +146,5 @@ export const ProgressBar = ({
                 )}
             </Stack>
         )
-    }, [backgroundColor, color, darkerShadeBackgroundColor, id, linePercent, orientation, percent, thickness])
+    }, [backgroundColor, boostedPercent, color, darkerShadeBackgroundColor, id, linePercent, orientation, percent, thickness])
 }

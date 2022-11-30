@@ -13,7 +13,7 @@ import { NicePopover } from "../Nice/NicePopover"
 import { NiceTooltip } from "../Nice/NiceTooltip"
 import { RepairModal } from "./RepairModal/RepairModal"
 
-export const MechIdleStatus = ({ mech }: { mech: NewMechStruct }) => {
+export const MechIdleStatus = ({ mech, hideMoreOptionButtons }: { mech: NewMechStruct; hideMoreOptionButtons?: boolean }) => {
     const theme = useTheme()
     const repairPopoverRef = useRef(null)
     const stakePopoverRef = useRef(null)
@@ -47,7 +47,7 @@ export const MechIdleStatus = ({ mech }: { mech: NewMechStruct }) => {
                     {statusDeets.label}
                 </Typography>
 
-                {mech.status === MechStatusEnum.Damaged && (
+                {mech.status === MechStatusEnum.Damaged && !hideMoreOptionButtons && (
                     <>
                         <Box ref={repairPopoverRef}>
                             <NiceButton sx={{ p: 0 }} onClick={() => setIsRepairPopoverOpen(true)}>
@@ -81,14 +81,18 @@ export const MechIdleStatus = ({ mech }: { mech: NewMechStruct }) => {
                     {mech.is_staked ? "STAKED" : "NOT STAKED"}
                 </Typography>
 
-                <NiceTooltip enterDelay={0} text="Mech must have a Power Core and a weapon equipped" placement="right">
-                    <Box ref={stakePopoverRef}>
-                        <NiceButton sx={{ p: 0 }} onClick={() => setIsStakePopoverOpen(true)}>
-                            <SvgMoreOptions size="1.6rem" fill={stakeColor} />
-                        </NiceButton>
-                    </Box>
-                </NiceTooltip>
-                <StakeActions open={isStakePopoverOpen} onClose={() => setIsStakePopoverOpen(false)} popoverRef={stakePopoverRef} mech={mech} />
+                {!hideMoreOptionButtons && (
+                    <>
+                        <NiceTooltip enterDelay={0} text="Mech must have a Power Core and a weapon equipped" placement="right">
+                            <Box ref={stakePopoverRef}>
+                                <NiceButton sx={{ p: 0 }} onClick={() => setIsStakePopoverOpen(true)}>
+                                    <SvgMoreOptions size="1.6rem" fill={stakeColor} />
+                                </NiceButton>
+                            </Box>
+                        </NiceTooltip>
+                        <StakeActions open={isStakePopoverOpen} onClose={() => setIsStakePopoverOpen(false)} popoverRef={stakePopoverRef} mech={mech} />
+                    </>
+                )}
             </Stack>
         </Stack>
     )
