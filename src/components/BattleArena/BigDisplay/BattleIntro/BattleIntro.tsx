@@ -224,7 +224,7 @@ const FactionRow = ({ index, lobby }: FactionRowProps) => {
                             sx={{
                                 height: boxSize,
                                 width: boxSize,
-                                animation: `${pulseEffect} 1s infinite`,
+                                animation: `${pulseEffect} 3s infinite`,
                             }}
                         >
                             <SvgPlus fill={theme.s700} />
