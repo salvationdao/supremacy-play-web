@@ -5,7 +5,6 @@ import { GameServerKeys } from "../../keys"
 import { fonts } from "../../theme/theme"
 import { LeaderboardRound } from "../../types"
 import { NiceSelect } from "../Common/Nice/NiceSelect"
-import { LeaderboardTypeEnum } from "./Common/LeaderboardSelect"
 import { PlayerAbilityKills } from "./PlayerAbilityKills"
 import { PlayerAbilityTriggers } from "./PlayerAbilityTriggers"
 import { PlayerBattlesSpectated } from "./PlayerBattlesSpectated"
@@ -13,6 +12,16 @@ import { PlayerMechKills } from "./PlayerMechKills"
 import { PlayerMechsOwned } from "./PlayerMechsOwned"
 import { PlayerMechSurvives } from "./PlayerMechSurvives"
 import { PlayerRepairBlocks } from "./PlayerRepairBlocks"
+
+export enum LeaderboardTypeEnum {
+    PlayerAbilityKills = "PlayerAbilityKills",
+    PlayerBattlesSpectated = "PlayerBattlesSpectated",
+    PlayerMechSurvives = "PlayerMechSurvives",
+    PlayerMechKills = "PlayerMechKills",
+    PlayerAbilityTriggers = "PlayerAbilityTriggers",
+    PlayerMechsOwned = "PlayerMechsOwned",
+    PlayerRepairBlocks = "PlayerRepairBlocks",
+}
 
 const sortOptions = [
     { label: "Player Ability Kills", value: LeaderboardTypeEnum.PlayerAbilityKills },
