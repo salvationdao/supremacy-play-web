@@ -31,7 +31,7 @@ export const MechStats = React.memo(function MechStats({ mech, sx }: { mech: Mec
 
     return (
         <Stack sx={sx}>
-            <SingleStat label="HEALTH" current={health} Icon={SvgLoadoutArmour} boostedTo={boostedHealth} total={3000} />
+            <SingleStat label="HEALTH" current={health} Icon={SvgLoadoutArmour} boostedTo={boostedHealth} total={30000} />
             <SingleStat label="SHIELD" current={totalShield} Icon={SvgLoadoutShield} total={3000} />
             <SingleStat
                 label="SHIELD REGEN"
