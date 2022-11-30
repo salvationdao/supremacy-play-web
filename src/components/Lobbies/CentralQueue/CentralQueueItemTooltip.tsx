@@ -38,6 +38,7 @@ export const CentralQueueItemTooltip = ({
     width?: string
     setShowJoinLobbyModal: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
+    const { factionID } = useAuth()
     const { factionTheme } = useTheme()
     const { arenaList } = useArena()
     const { factionsAll, getFaction } = useSupremacy()
@@ -207,7 +208,7 @@ export const CentralQueueItemTooltip = ({
                     <Typography sx={{ fontFamily: fonts.nostromoBlack }} variant="body2">
                         <SvgMap inline /> Supporters:
                     </Typography>
-                    <Supporters battleLobby={battleLobby} />
+                    <Supporters battleLobby={battleLobby} factionID={factionID} />
                 </Stack>
 
                 {/* Players */}
