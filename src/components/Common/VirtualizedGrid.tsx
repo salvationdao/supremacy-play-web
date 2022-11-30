@@ -39,7 +39,7 @@ export const VirtualizedGrid = React.memo(function VirtualizedGrid({
 }: VirtualizedGridProps) {
     const { remToPxRatio } = useDimension()
     const resizeObserver = useRef<ResizeObserver>()
-    const [dimension, setDimension] = useDebounce<Dimension>({ width: 0, height: 0 }, 150)
+    const [dimension, setDimension] = useDebounce<Dimension>({ width: 0, height: 0 }, 100)
 
     // Convert the rem values to pixels for pages to be responsive
     const { itemWidthConfig, itemHeight, gap } = useMemo(() => {
