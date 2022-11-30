@@ -1,7 +1,8 @@
-import { Box, Stack } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { useGameServerCommands } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { fonts } from "../../../theme/theme"
 import { LeaderboardRound } from "../../../types"
 import { NiceSelect } from "../../Common/Nice/NiceSelect"
 import { LeaderboardTypeEnum } from "./Common/LeaderboardSelect"
@@ -43,25 +44,48 @@ export const GlobalStats = () => {
         })()
     }, [send])
 
-    const leaderboard = useMemo(() => {
+    const { leaderboard, leaderboardTitle } = useMemo(() => {
         switch (leaderboardType) {
             case LeaderboardTypeEnum.PlayerAbilityKills:
-                return <PlayerAbilityKills selectedRound={selectedRound} />
+                return {
+                    leaderboard: <PlayerAbilityKills selectedRound={selectedRound} />,
+                    leaderboardTitle: "MOST ABILITY KILLS",
+                }
             case LeaderboardTypeEnum.PlayerBattlesSpectated:
-                return <PlayerBattlesSpectated selectedRound={selectedRound} />
+                return {
+                    leaderboard: <PlayerBattlesSpectated selectedRound={selectedRound} />,
+                    leaderboardTitle: "MOST BATTLES SPECTATED",
+                }
             case LeaderboardTypeEnum.PlayerMechSurvives:
-                return <PlayerMechSurvives selectedRound={selectedRound} />
+                return {
+                    leaderboard: <PlayerMechSurvives selectedRound={selectedRound} />,
+                    leaderboardTitle: "MOST MECH SURVIVES",
+                }
             case LeaderboardTypeEnum.PlayerMechKills:
-                return <PlayerMechKills selectedRound={selectedRound} />
+                return {
+                    leaderboard: <PlayerMechKills selectedRound={selectedRound} />,
+                    leaderboardTitle: "MOST MECH KILLS",
+                }
             case LeaderboardTypeEnum.PlayerAbilityTriggers:
-                return <PlayerAbilityTriggers selectedRound={selectedRound} />
+                return {
+                    leaderboard: <PlayerAbilityTriggers selectedRound={selectedRound} />,
+                    leaderboardTitle: "MOST ABILITY TRIGGERS",
+                }
             case LeaderboardTypeEnum.PlayerMechsOwned:
-                return <PlayerMechsOwned />
+                return {
+                    leaderboard: <PlayerMechsOwned />,
+                    leaderboardTitle: "MOST MECHS OWNED",
+                }
             case LeaderboardTypeEnum.PlayerRepairBlocks:
-                return <PlayerRepairBlocks selectedRound={selectedRound} />
-
+                return {
+                    leaderboard: <PlayerRepairBlocks selectedRound={selectedRound} />,
+                    leaderboardTitle: "MOST BLOCKS REPAIRED",
+                }
             default:
-                return null
+                return {
+                    leaderboard: null,
+                    leaderboardTitle: "LEADERBOARD",
+                }
         }
     }, [leaderboardType, selectedRound])
 
@@ -78,6 +102,9 @@ export const GlobalStats = () => {
             }}
         >
             <Stack spacing="2rem" alignItems="stretch" flex={1} sx={{ overflow: "hidden", flex: 1, width: "100%" }}>
+                <Typography variant="h2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                    {leaderboardTitle}
+                </Typography>
                 <Stack spacing="1rem" direction="row" alignItems="center" sx={{ overflowX: "auto", overflowY: "hidden", width: "100%", pb: ".2rem" }}>
                     <NiceSelect
                         label="Display:"

@@ -49,7 +49,6 @@ export const PlayerAbilityTriggers = ({ selectedRound }: { selectedRound?: Leade
 
     return (
         <CoolTable
-            title="MOST ABILITIES TRIGGERED"
             tableHeadings={["TOP 100", "PLAYER", "FACTION", "ABILITIES TRIGGERED"]}
             alignments={["center", "left", "left", "center"]}
             widths={["19rem", "auto", "auto", "23rem"]}

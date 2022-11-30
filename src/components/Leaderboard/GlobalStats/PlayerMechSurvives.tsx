@@ -49,7 +49,6 @@ export const PlayerMechSurvives = ({ selectedRound }: { selectedRound?: Leaderbo
 
     return (
         <CoolTable
-            title="MOST MECH SURVIVES"
             tableHeadings={["TOP 100", "PLAYER", "FACTION", "MECH SURVIVES"]}
             alignments={["center", "left", "left", "center"]}
             widths={["19rem", "auto", "auto", "23rem"]}

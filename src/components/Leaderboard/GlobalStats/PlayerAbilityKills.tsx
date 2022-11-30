@@ -50,7 +50,6 @@ export const PlayerAbilityKills = ({ selectedRound }: { selectedRound?: Leaderbo
 
     return (
         <CoolTable
-            title="MOST ABILITY KILLS"
             tableHeadings={["TOP 100", "PLAYER", "FACTION", "ABILITY KILLS"]}
             alignments={["center", "left", "left", "center"]}
             widths={["19rem", "auto", "auto", "23rem"]}

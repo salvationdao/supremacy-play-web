@@ -49,7 +49,6 @@ export const PlayerBattlesSpectated = ({ selectedRound }: { selectedRound?: Lead
 
     return (
         <CoolTable
-            title="MOST BATTLES SPECTATED"
             tableHeadings={["TOP 100", "PLAYER", "FACTION", "BATTLES SPECTATED"]}
             alignments={["center", "left", "left", "center"]}
             widths={["19rem", "auto", "auto", "23rem"]}

@@ -49,7 +49,6 @@ export const PlayerMechKills = ({ selectedRound }: { selectedRound?: Leaderboard
 
     return (
         <CoolTable
-            title="MOST MECH KILLS"
             tableHeadings={["TOP 100", "PLAYER", "FACTION", "MECH KILLS"]}
             alignments={["center", "left", "left", "center"]}
             widths={["19rem", "auto", "auto", "23rem"]}

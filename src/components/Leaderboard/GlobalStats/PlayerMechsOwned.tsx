@@ -49,7 +49,6 @@ export const PlayerMechsOwned = () => {
 
     return (
         <CoolTable
-            title="MOST MECHS OWNED"
             tableHeadings={["TOP 100", "PLAYER", "FACTION", "MECHS OWNED"]}
             alignments={["center", "left", "left", "center"]}
             widths={["19rem", "auto", "auto", "23rem"]}
