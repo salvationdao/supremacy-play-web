@@ -1,5 +1,5 @@
 import { Stack, Typography } from "@mui/material"
-import { SvgSkin, SvgStats, SvgWeapons } from "../../../../assets"
+import { SvgLoadoutSkin, SvgStats, SvgWeapons } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { getRarityDeets, getWeaponTypeColor } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
@@ -47,14 +47,14 @@ export const WeaponStatsDetails = ({ weaponDetails }: Props) => {
 
             <Stack spacing="1rem">
                 <Stack direction="row" spacing=".8rem" alignItems="center">
-                    <SvgSkin fill={colors.chassisSkin} size="2.5rem" />
+                    <SvgLoadoutSkin fill={colors.chassisSkin} size="2.5rem" />
                     <Typography variant="h5" sx={{ color: colors.chassisSkin, fontFamily: fonts.nostromoBlack }}>
                         SUBMODEL ({skin ? 1 : 0}/1)
                     </Typography>
                 </Stack>
 
                 {skin ? (
-                    <MechLoadoutItem imageUrl={skin.image_url || skin.avatar_url} label={skin.label} Icon={SvgSkin} rarity={getRarityDeets(skin.tier)} />
+                    <MechLoadoutItem imageUrl={skin.image_url || skin.avatar_url} label={skin.label} Icon={SvgLoadoutSkin} rarity={getRarityDeets(skin.tier)} />
                 ) : (
                     <Typography sx={{ color: colors.lightGrey, fontFamily: fonts.nostromoBold }}>NOT EQUIPPED</Typography>
                 )}

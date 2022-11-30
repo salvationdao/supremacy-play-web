@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { NiceTooltip } from "../../.."
-import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
+import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgLoadoutSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
 import { getRarityDeets } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
@@ -50,14 +50,14 @@ export const MechLoadoutIcons = ({ mech, mechDetails }: { mech?: MechBasic; mech
                     >
                         {rarityDeets.label}
                     </Typography>
-                    <SvgSkin fill={rarityDeets.color} size="1.7rem" />
+                    <SvgLoadoutSkin fill={rarityDeets.color} size="1.7rem" />
                 </Stack>
             )}
 
             {!hasSkin && (
                 <NiceTooltip color={colors.chassisSkin} text="Submodel" placement="bottom">
                     <Box>
-                        <SvgSkin fill={hasSkin ? colors.chassisSkin : `${colors.darkGrey}80`} size="1.7rem" />
+                        <SvgLoadoutSkin fill={hasSkin ? colors.chassisSkin : `${colors.darkGrey}80`} size="1.7rem" />
                     </Box>
                 </NiceTooltip>
             )}

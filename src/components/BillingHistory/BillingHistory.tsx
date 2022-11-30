@@ -13,7 +13,7 @@ import { GameServerKeys } from "../../keys"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { FiatOrder } from "../../types/fiat"
 import { MysteryCrateBanner } from "../BannersPromotions/MysteryCrateBanner"
-import { CoolTable } from "../Common/CoolTable"
+import { CoolTable } from "../Common/Nice/NiceTable"
 import { PageHeader } from "../Common/Deprecated/PageHeader"
 import { NiceBoxThing } from "../Common/Nice/NiceBoxThing"
 

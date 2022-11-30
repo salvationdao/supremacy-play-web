@@ -10,6 +10,7 @@ import {
     SvgLobbies,
     SvgLock,
     SvgMap,
+    SvgMeteor,
     SvgSecondPlace,
     SvgSupToken,
     SvgThirdPlace,
@@ -27,7 +28,7 @@ import { NiceButton } from "../../Common/Nice/NiceButton"
 import { TypographyTruncated } from "../../Common/TypographyTruncated"
 import { Supporters } from "./Supporters"
 
-export const CentralQueueItemTooltip = ({
+export const CentralQueueItemTooltipRender = ({
     battleLobby,
     displayAccessCode,
     width,
@@ -38,7 +39,8 @@ export const CentralQueueItemTooltip = ({
     width?: string
     setShowJoinLobbyModal: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
-    const { factionTheme } = useTheme()
+    const { factionID } = useAuth()
+    const theme = useTheme()
     const { arenaList } = useArena()
     const { factionsAll, getFaction } = useSupremacy()
 
@@ -74,7 +76,7 @@ export const CentralQueueItemTooltip = ({
     }, [battleLobby.assigned_to_battle_id, battleLobby.generated_by_system, battleLobby.ready_at])
 
     return (
-        <Box sx={{ width: width || "40rem", backgroundColor: factionTheme.s800 }}>
+        <Box sx={{ width: width || "40rem", backgroundColor: theme.factionTheme.s800 }}>
             {/* Lobby name */}
             <Stack
                 direction="row"
@@ -84,7 +86,7 @@ export const CentralQueueItemTooltip = ({
                 sx={{
                     p: "1rem 1.5rem",
                     pr: ".5rem",
-                    backgroundColor: factionTheme.s600,
+                    backgroundColor: theme.factionTheme.s600,
                 }}
             >
                 <TypographyTruncated variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
@@ -205,9 +207,9 @@ export const CentralQueueItemTooltip = ({
                 {/* Supporters */}
                 <Stack direction="row" justifyContent="space-between" spacing="1rem">
                     <Typography sx={{ fontFamily: fonts.nostromoBlack }} variant="body2">
-                        <SvgMap inline /> Supporters:
+                        <SvgMeteor inline /> Supporters:
                     </Typography>
-                    <Supporters battleLobby={battleLobby} />
+                    <Supporters battleLobby={battleLobby} factionID={factionID} />
                 </Stack>
 
                 {/* Players */}

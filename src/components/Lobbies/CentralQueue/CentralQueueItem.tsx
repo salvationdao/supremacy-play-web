@@ -1,6 +1,7 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
-import { SvgContentCopyIcon, SvgLock, SvgSupToken, SvgUserDiamond } from "../../../assets"
+import { SvgContentCopyIcon, SvgLock, SvgMeteor, SvgSupToken, SvgUserDiamond } from "../../../assets"
+import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { supFormatter } from "../../../helpers"
 import { pulseEffect } from "../../../theme/keyframes"
@@ -10,11 +11,12 @@ import { AllGameMapsCombined } from "../../Common/AllGameMapsCombined"
 import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
 import { TypographyTruncated } from "../../Common/TypographyTruncated"
 import { JoinLobbyModal } from "../LobbyItem/JoinLobbyModal"
-import { CentralQueueItemTooltip } from "./CentralQueueItemTooltip"
+import { CentralQueueItemTooltipRender } from "./CentralQueueItemTooltipRender"
 import { Supporters } from "./Supporters"
 
 export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) => {
-    const { factionTheme } = useTheme()
+    const { factionID } = useAuth()
+    const theme = useTheme()
     const [showJoinLobbyModal, setShowJoinLobbyModal] = useState(false)
 
     const displayAccessCode = useMemo(() => battleLobby.access_code, [battleLobby.access_code])
@@ -42,9 +44,12 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
         // If it's ready, then allow people to join as supporter
         if (battleLobby.ready_at) {
             return (
-                <Stack direction="row" alignItems="center" spacing="1rem" sx={{ height: "3rem", px: "1.5rem", backgroundColor: "#00000036" }}>
-                    <Typography fontWeight="bold">SUPPORTERS:</Typography>
-                    <Supporters battleLobby={battleLobby} />
+                <Stack direction="row" alignItems="center" sx={{ height: "3rem", px: "1.5rem", backgroundColor: "#00000036" }}>
+                    <Typography fontWeight="bold">
+                        <SvgMeteor inline size="1.6rem" />
+                        SUPPORTERS:
+                    </Typography>
+                    <Supporters battleLobby={battleLobby} factionID={factionID} />
                 </Stack>
             )
         }
@@ -92,8 +97,14 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
             )
         }
 
-        return null
-    }, [battleLobby, displayAccessCode])
+        return (
+            <Stack direction="row" alignItems="center" sx={{ height: "3rem", px: "1.5rem", backgroundColor: "#00000036" }}>
+                <Typography fontWeight="bold" color={colors.grey}>
+                    SCHEDULED TIME: {battleLobby.will_not_start_until ? battleLobby.will_not_start_until.toLocaleString() : "when room is full"}
+                </Typography>
+            </Stack>
+        )
+    }, [battleLobby, displayAccessCode, factionID])
 
     return (
         <>
@@ -102,14 +113,18 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
                 enterDelay={450}
                 enterNextDelay={700}
                 renderNode={
-                    <CentralQueueItemTooltip battleLobby={battleLobby} displayAccessCode={displayAccessCode} setShowJoinLobbyModal={setShowJoinLobbyModal} />
+                    <CentralQueueItemTooltipRender
+                        battleLobby={battleLobby}
+                        displayAccessCode={displayAccessCode}
+                        setShowJoinLobbyModal={setShowJoinLobbyModal}
+                    />
                 }
-                color={factionTheme.primary}
+                color={theme.factionTheme.primary}
             >
                 <Box
                     sx={{
                         width: "100%",
-                        border: `${factionTheme.primary}38 1px solid`,
+                        border: `${theme.factionTheme.primary}38 1px solid`,
                     }}
                 >
                     <Stack

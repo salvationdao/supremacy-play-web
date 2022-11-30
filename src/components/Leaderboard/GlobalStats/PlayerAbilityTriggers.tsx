@@ -6,7 +6,7 @@ import { useGameServerCommands } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { LeaderboardRound, User } from "../../../types"
-import { CoolTable } from "../../Common/CoolTable"
+import { CoolTable } from "../../Common/Nice/NiceTable"
 import { PlayerNameGid } from "../../Common/PlayerNameGid"
 
 interface RankItem {

@@ -19,9 +19,9 @@ import {
     Typography,
 } from "@mui/material"
 import { ReactNode, useMemo } from "react"
-import { useTheme } from "../../containers/theme"
-import { mergeDeep } from "../../helpers"
-import { colors, fonts } from "../../theme/theme"
+import { useTheme } from "../../../containers/theme"
+import { mergeDeep } from "../../../helpers"
+import { colors, fonts } from "../../../theme/theme"
 
 interface CoolTableProps<T> {
     title?: string
