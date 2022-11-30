@@ -1,31 +1,33 @@
-import { Box } from "@mui/material"
+import { Box, Fade } from "@mui/material"
 import { useMemo } from "react"
 import { useGame, useUI } from "../../../containers"
 import { siteZIndex } from "../../../theme/theme"
-import { BattleState } from "../../../types"
-import { UpcomingBattle } from "../UpcomingBattle/UpcomingBattle"
-import { BattleIntro } from "./BattleIntro"
+import { BattleIntro } from "./BattleIntro/BattleIntro"
 import { MiniMapNew } from "./MiniMapNew/MiniMapNew"
 import { Stream } from "./Stream/Stream"
 
 export const BigDisplay = () => {
     const { setBigDisplayRef } = useUI()
-    const { nextBattle, battleState } = useGame()
+    const { nextBattle } = useGame()
 
     return useMemo(() => {
         return (
             <>
-                {battleState === BattleState.IntroState && nextBattle && (
-                    <Box sx={{ position: "relative", height: "100%", width: "100%", zIndex: siteZIndex.Modal }}>
-                        <BattleIntro currentBattle={nextBattle} />
+                <Fade in={!!nextBattle}>
+                    <Box
+                        sx={{
+                            zIndex: siteZIndex.Modal,
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            overflowY: "auto",
+                        }}
+                    >
+                        {nextBattle && <BattleIntro currentBattle={nextBattle} />}
                     </Box>
-                )}
-
-                {nextBattle && (
-                    <Box sx={{ position: "relative", height: "100%", width: "100%", zIndex: siteZIndex.Modal }}>
-                        <UpcomingBattle nextBattle={nextBattle} />
-                    </Box>
-                )}
+                </Fade>
 
                 <Box ref={setBigDisplayRef} sx={{ position: "relative", width: "100%", height: "100%" }}>
                     {/* One of the stream and minimap will mount itself to the left drawer, not both are rendered here */}
@@ -34,5 +36,5 @@ export const BigDisplay = () => {
                 </Box>
             </>
         )
-    }, [battleState, nextBattle, setBigDisplayRef])
+    }, [nextBattle, setBigDisplayRef])
 }
