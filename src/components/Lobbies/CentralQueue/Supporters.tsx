@@ -1,10 +1,10 @@
 import { Avatar, AvatarGroup, Stack, Typography } from "@mui/material"
 import React, { useCallback, useMemo } from "react"
-import { SvgUserDiamond2 } from "../../../assets"
 import { FactionIDs } from "../../../constants"
 import { useAuth, useGlobalNotifications, useSupremacy } from "../../../containers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { pulseEffect } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleLobby, BattleLobbySupporter } from "../../../types/battle_queue"
 import { NiceButton } from "../../Common/Nice/NiceButton"
@@ -71,6 +71,7 @@ export const Supporters = React.memo(function Supporters({ battleLobby, factionI
                     },
                 }}
             >
+                {/* Actual slots */}
                 {supporters.map((supporter, i) => {
                     return (
                         <Avatar
@@ -83,6 +84,22 @@ export const Supporters = React.memo(function Supporters({ battleLobby, factionI
                         />
                     )
                 })}
+
+                {/* Empty slots */}
+                {NUMBER_SUPPORTERS_REQUIRED - supporters.length > 0 &&
+                    new Array(NUMBER_SUPPORTERS_REQUIRED - supporters.length).fill(0).map((_, i) => {
+                        return (
+                            <Avatar
+                                key={`empty-supporter-${i}`}
+                                alt="Empty supporter"
+                                src={faction.logo_url}
+                                sx={{
+                                    filter: "grayscale(1)",
+                                    opacity: 0.5,
+                                }}
+                            />
+                        )
+                    })}
             </AvatarGroup>
 
             {!isAlreadySet && !isAlreadySupporting && !hasMechDeployed && userFactionID === factionID && (
@@ -92,6 +109,7 @@ export const Supporters = React.memo(function Supporters({ battleLobby, factionI
                         width: `calc(${SIZE} - 1px)`,
                         height: `calc(${SIZE} - 1px)`,
                         p: 0,
+                        animation: `${pulseEffect} 3s infinite`,
                     }}
                     onClick={optIn}
                 >
@@ -100,43 +118,6 @@ export const Supporters = React.memo(function Supporters({ battleLobby, factionI
                     </Typography>
                 </NiceButton>
             )}
-        </Stack>
-    )
-
-    return (
-        <Stack direction="row" alignItems="center" spacing=".9rem">
-            {supporters.map((supporter, i) => {
-                return (
-                    <SvgUserDiamond2
-                        key={`supporter-${supporter.id}-${i}`}
-                        fill={supporter.id === userID ? colors.gold : faction.palette.primary}
-                        size={`calc(${SIZE} - .3rem)`}
-                    />
-                )
-            })}
-
-            {/* Empty slots */}
-            {NUMBER_SUPPORTERS_REQUIRED - supporters.length > 0 &&
-                !isAlreadySet &&
-                new Array(NUMBER_SUPPORTERS_REQUIRED - supporters.length).fill(0).map((_, index) => {
-                    return (
-                        <NiceButton
-                            key={`empty-slot-${index}`}
-                            buttonColor={faction.palette.primary}
-                            sx={{
-                                width: `calc(${SIZE} - 1px)`,
-                                height: `calc(${SIZE} - 1px)`,
-                                p: 0,
-                            }}
-                            onClick={optIn}
-                            disabled={isAlreadySupporting || hasMechDeployed}
-                        >
-                            <Typography lineHeight={1} fontFamily={fonts.nostromoBold}>
-                                +
-                            </Typography>
-                        </NiceButton>
-                    )
-                })}
         </Stack>
     )
 })
