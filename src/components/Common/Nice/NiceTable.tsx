@@ -16,7 +16,7 @@ import {
     TablePagination,
     TableRow,
     TableRowProps,
-    Typography,
+    Typography
 } from "@mui/material"
 import { ReactNode, useMemo } from "react"
 import { useTheme } from "../../../containers/theme"
@@ -52,7 +52,7 @@ interface CoolTableProps<T> {
     }
 }
 
-export const CoolTable = <T,>({
+export const NiceTable = <T,>({
     title,
     tableHeadings,
     alignments,
