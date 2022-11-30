@@ -288,6 +288,8 @@ export enum GameServerKeys {
 
     // Faction Pass
     SubFactionPassList = "FACTION:PASS:LIST",
+    ClaimFactionPassStripePayment = "FACTION:PASS:STRIPE:PAYMENT:CLAIM",
+    SubFactionPassStripePaymentIntent = "FACTION:PASS:STRIPE:PAYMENT:INTENT",
     PurchaseFactionPassWithSups = "FACTION:PASS:SUPS:PURCHASE",
     SubFactionMostPopularStakedMech = "FACTION:MOST:POPULAR:STAKED:MECH",
     SubFactionStakedMechCount = "FACTION:STAKED:MECH:COUNT",
