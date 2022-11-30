@@ -40,7 +40,7 @@ export const CentralQueueItemTooltipRender = ({
     setShowJoinLobbyModal: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
     const { factionID } = useAuth()
-    const { factionTheme } = useTheme()
+    const theme = useTheme()
     const { arenaList } = useArena()
     const { factionsAll, getFaction } = useSupremacy()
 
@@ -76,7 +76,7 @@ export const CentralQueueItemTooltipRender = ({
     }, [battleLobby.assigned_to_battle_id, battleLobby.generated_by_system, battleLobby.ready_at])
 
     return (
-        <Box sx={{ width: width || "40rem", backgroundColor: factionTheme.s800 }}>
+        <Box sx={{ width: width || "40rem", backgroundColor: theme.factionTheme.s800 }}>
             {/* Lobby name */}
             <Stack
                 direction="row"
@@ -86,7 +86,7 @@ export const CentralQueueItemTooltipRender = ({
                 sx={{
                     p: "1rem 1.5rem",
                     pr: ".5rem",
-                    backgroundColor: factionTheme.s600,
+                    backgroundColor: theme.factionTheme.s600,
                 }}
             >
                 <TypographyTruncated variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
