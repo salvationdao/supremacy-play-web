@@ -13,7 +13,7 @@ import { useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { FiatOrder } from "../../types/fiat"
-import { CoolTable } from "../Common/CoolTable"
+import { CoolTable } from "../Common/Nice/NiceTable"
 import { PlayerNameGid } from "../Common/PlayerNameGid"
 import { PDFInvoice } from "./PDFInvoice"
 

@@ -20,7 +20,7 @@ import {
     SvgMechLosses,
     SvgMechWins,
     SvgPowerCore,
-    SvgSkin,
+    SvgLoadoutSkin,
     SvgUtilities,
     SvgWeapons,
 } from "../../../assets"
@@ -169,7 +169,7 @@ export const FactionMostPopularStakedMech = () => {
                         </Stack>
 
                         <Stack spacing=".5rem">
-                            <SvgSkin fill={colors.chassisSkin} size="2.5rem" />
+                            <SvgLoadoutSkin fill={colors.chassisSkin} size="2.5rem" />
                             <Stack direction="row" alignItems="center" justifyContent="center" spacing=".25rem">
                                 <Box
                                     sx={{

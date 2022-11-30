@@ -93,7 +93,6 @@ import Shield from "!@svgr/webpack!./svg/Shield.svg"
 import ShieldRegen from "!@svgr/webpack!./svg/ShieldRegen.svg"
 import Shop from "!@svgr/webpack!./svg/Shop.svg"
 import ShoppingCart from "!@svgr/webpack!./svg/ShoppingCart.svg"
-import Skin from "!@svgr/webpack!./svg/Skin.svg"
 import Speed from "!@svgr/webpack!./svg/Speed.svg"
 import Spread from "!@svgr/webpack!./svg/Spread.svg"
 import SupremacyLogo from "!@svgr/webpack!./svg/SupremacyLogo.svg"
@@ -153,6 +152,7 @@ import InfoCircular from "!react-svg-loader!./svg/InfoCircular.svg"
 import Line from "!react-svg-loader!./svg/Line.svg"
 import ListView from "!react-svg-loader!./svg/ListView.svg"
 import Location from "!react-svg-loader!./svg/Location.svg"
+import Map from "!react-svg-loader!./svg/Map.svg"
 import MapEnlarge from "!react-svg-loader!./svg/MapEnlarge.svg"
 import MapSkull from "!react-svg-loader!./svg/MapSkull.svg"
 import MapWarMachine from "!react-svg-loader!./svg/MapWarMachine.svg"
@@ -186,7 +186,6 @@ import SupToken from "!react-svg-loader!./svg/SupToken.svg"
 import Target from "!react-svg-loader!./svg/Target.svg"
 import Telegram from "!react-svg-loader!./svg/Telegram.svg"
 import Trailer from "!react-svg-loader!./svg/Trailer.svg"
-import Map from "!react-svg-loader!./svg/Map.svg"
 import Twitter from "!react-svg-loader!./svg/Twitter.svg"
 import Unknown from "!react-svg-loader!./svg/Unknown.svg"
 import UpArrow from "!react-svg-loader!./svg/UpArrow.svg"
@@ -322,7 +321,6 @@ import RMWaiting from "./svg/Landing/rm/RMWaiting.png"
 import ZHIBorder from "./svg/Landing/zhi/ZHIBorder.svg"
 import ZHIDeploy from "./svg/Landing/zhi/ZHIDeploy.png"
 import ZHIWaiting from "./svg/Landing/zhi/ZHIWaiting.png"
-import { truncateTextLines } from "../helpers"
 
 // Tower stack mini game skins
 export {
@@ -1154,12 +1152,6 @@ export const SvgIntroAnimation: React.VoidFunctionComponent<SvgWrapperProps> = (
 export const SvgOutroAnimation: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
     <SvgWrapper {...props}>
         <OutroAnimation />
-    </SvgWrapper>
-)
-
-export const SvgSkin: React.VoidFunctionComponent<SvgWrapperProps> = (props) => (
-    <SvgWrapper {...props}>
-        <Skin />
     </SvgWrapper>
 )
 

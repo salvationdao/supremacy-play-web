@@ -1,6 +1,6 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
-import { SvgCubes, SvgSkin, SvgStats } from "../../../assets"
+import { SvgCubes, SvgLoadoutSkin, SvgStats } from "../../../assets"
 import { getRarityDeets } from "../../../helpers"
 import { useGameServerSubscription } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -85,7 +85,7 @@ export const WarmachineDetails = ({ mechID, primaryColor, backgroundColor }: { m
                                 {/* Mech avatar, label, name etc */}
                                 <Stack spacing=".5rem">
                                     <Stack spacing=".5rem" direction="row" alignItems="center">
-                                        <SvgSkin fill={rarityDeets.color} />
+                                        <SvgLoadoutSkin fill={rarityDeets.color} />
                                         <Typography variant="body2" sx={{ color: rarityDeets.color, fontFamily: fonts.nostromoHeavy }}>
                                             {rarityDeets.label}
                                         </Typography>

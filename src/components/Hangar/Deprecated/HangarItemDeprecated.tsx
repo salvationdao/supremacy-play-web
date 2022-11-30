@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { SvgDropdownArrow, SvgSkin } from "../../../assets"
+import { SvgDropdownArrow, SvgLoadoutSkin } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, getWeaponDamageTypeColor, getWeaponTypeColor, shadeColor, truncateTextLines } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
@@ -226,7 +226,7 @@ export const WeaponCommonArea = ({
                         </Typography>
                     )}
 
-                    <SvgSkin fill={weaponDetails?.weapon_skin ? rarityDeets.color : `${colors.darkGrey}80`} size="1.7rem" />
+                    <SvgLoadoutSkin fill={weaponDetails?.weapon_skin ? rarityDeets.color : `${colors.darkGrey}80`} size="1.7rem" />
                 </Stack>
 
                 <Typography
