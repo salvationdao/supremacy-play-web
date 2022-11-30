@@ -1,5 +1,5 @@
 import { Stack, Typography } from "@mui/material"
-import { SvgCubes, SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgSkin, SvgStats, SvgUtilities, SvgWeapons } from "../../../../../assets"
+import { SvgCubes, SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgLoadoutSkin, SvgStats, SvgUtilities, SvgWeapons } from "../../../../../assets"
 import { useTheme } from "../../../../../containers/theme"
 import { getRarityDeets } from "../../../../../helpers"
 import { colors, fonts } from "../../../../../theme/theme"
@@ -117,7 +117,7 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
 
             <Stack spacing="1rem">
                 <Stack direction="row" spacing=".8rem" alignItems="center">
-                    <SvgSkin fill={colors.chassisSkin} size="2.5rem" />
+                    <SvgLoadoutSkin fill={colors.chassisSkin} size="2.5rem" />
                     <Typography variant="h5" sx={{ color: colors.chassisSkin, fontFamily: fonts.nostromoBlack }}>
                         SUBMODEL ({chassis_skin_id ? 1 : 0}/1)
                     </Typography>
@@ -127,7 +127,7 @@ export const MechStatsDetails = ({ mechDetails }: { mechDetails?: MechDetails })
                     <MechLoadoutItem
                         imageUrl={chassisSkin.image_url || chassisSkin.avatar_url}
                         label={chassisSkin.label}
-                        Icon={SvgSkin}
+                        Icon={SvgLoadoutSkin}
                         rarity={getRarityDeets(chassisSkin.tier)}
                     />
                 ) : (

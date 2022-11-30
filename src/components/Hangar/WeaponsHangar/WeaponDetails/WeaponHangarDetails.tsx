@@ -1,7 +1,7 @@
 import { Box, CircularProgress, Stack, Typography, useTheme } from "@mui/material"
 import { useMemo, useState } from "react"
 import { useParams } from "react-router-dom"
-import { HangarBg, SvgSkin, SvgStats } from "../../../../assets"
+import { HangarBg, SvgLoadoutSkin, SvgStats } from "../../../../assets"
 import { getRarityDeets, getWeaponDamageTypeColor, getWeaponTypeColor } from "../../../../helpers"
 import { useGameServerSubscriptionFaction } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -95,7 +95,7 @@ export const WeaponHangarDetails = () => {
                                     {/* Weapon avatar, label, name etc */}
                                     <Stack spacing=".5rem">
                                         <Stack spacing=".5rem" direction="row" alignItems="center">
-                                            <SvgSkin fill={rarityDeets.color} />
+                                            <SvgLoadoutSkin fill={rarityDeets.color} />
                                             <Typography variant="body2" sx={{ color: rarityDeets.color, fontFamily: fonts.nostromoHeavy }}>
                                                 {rarityDeets.label}
                                             </Typography>

@@ -11,7 +11,7 @@ import {
     SvgOutroAnimation,
     SvgPowerCore,
     SvgPrivate,
-    SvgSkin,
+    SvgLoadoutSkin,
     SvgUtilities,
     SvgWeapons,
     SvgWrapperProps,
@@ -611,12 +611,12 @@ export const getAssetItemDeets = (
             subRoute = "weapon"
             break
         case AssetItemType.MechSkin:
-            icon = SvgSkin
+            icon = SvgLoadoutSkin
             color = colors.chassisSkin
             label = "Mech Skin"
             break
         case AssetItemType.WeaponSkin:
-            icon = SvgSkin
+            icon = SvgLoadoutSkin
             color = colors.chassisSkin
             label = "Weapon Skin"
             break

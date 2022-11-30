@@ -1,7 +1,7 @@
 import { Box, Button, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { Link } from "react-router-dom"
-import { SvgSkin } from "../../../assets"
+import { SvgLoadoutSkin } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
 import { getAssetItemDeets, getRarityDeets } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
@@ -69,7 +69,7 @@ export const CrateRewardItemsLarge = ({ item, largerVersion }: CrateRewardItemsP
 
                     {item?.skin && (
                         <Stack direction="row" spacing=".3rem" alignItems="center" sx={{ mb: ".4rem" }}>
-                            <SvgSkin size="1.8rem" fill={colors.chassisSkin} />
+                            <SvgLoadoutSkin size="1.8rem" fill={colors.chassisSkin} />
                             <Typography
                                 variant="body2"
                                 sx={{
@@ -138,7 +138,7 @@ export const CrateRewardItemsSmall = ({ item }: CrateRewardItemsProps) => {
 
                         {item?.skin && (
                             <Stack direction="row" spacing=".3rem" alignItems="center" sx={{ mb: ".4rem" }}>
-                                <SvgSkin size="1.8rem" fill={colors.chassisSkin} />
+                                <SvgLoadoutSkin size="1.8rem" fill={colors.chassisSkin} />
                                 <Typography
                                     variant="body2"
                                     sx={{

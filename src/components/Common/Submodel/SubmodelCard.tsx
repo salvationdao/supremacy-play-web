@@ -1,6 +1,6 @@
 import { Stack, Typography } from "@mui/material"
 import React, { useMemo } from "react"
-import { SvgSkin } from "../../../assets"
+import { SvgLoadoutSkin } from "../../../assets"
 import { useAuth, useSupremacy } from "../../../containers"
 import { getRarityDeets } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
@@ -51,7 +51,7 @@ export const SubmodelCard = React.memo(function SubmodelCard({ submodel }: Submo
                         mt: ".3rem !important",
                     }}
                 >
-                    <SvgSkin inline size="2rem" fill={rarityDeets.color} /> {rarityDeets.label}{" "}
+                    <SvgLoadoutSkin inline size="2rem" fill={rarityDeets.color} /> {rarityDeets.label}{" "}
                     {typeof submodel.level !== "undefined" && <>[{submodel.level}]</>}
                 </TypographyTruncated>
 
