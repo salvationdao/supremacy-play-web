@@ -1,21 +1,21 @@
 import { Stack } from "@mui/material"
 import { useEffect, useState } from "react"
-import { useAuth, useGlobalNotifications, useSupremacy } from "../../../containers"
-import { useTheme } from "../../../containers/theme"
-import { useGameServerCommands } from "../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../keys"
-import { colors, fonts } from "../../../theme/theme"
-import { LeaderboardRound, User } from "../../../types"
-import { NiceTable } from "../../Common/Nice/NiceTable"
-import { PlayerNameGid } from "../../Common/PlayerNameGid"
-import { TypographyTruncated } from "../../Common/TypographyTruncated"
+import { useAuth, useGlobalNotifications, useSupremacy } from "../../containers"
+import { useTheme } from "../../containers/theme"
+import { useGameServerCommands } from "../../hooks/useGameServer"
+import { GameServerKeys } from "../../keys"
+import { colors, fonts } from "../../theme/theme"
+import { LeaderboardRound, User } from "../../types"
+import { NiceTable } from "../Common/Nice/NiceTable"
+import { PlayerNameGid } from "../Common/PlayerNameGid"
+import { TypographyTruncated } from "../Common/TypographyTruncated"
 
 interface RankItem {
     player: User
-    total_ability_triggered: number
+    view_battle_count: number
 }
 
-export const PlayerAbilityTriggers = ({ selectedRound }: { selectedRound?: LeaderboardRound }) => {
+export const PlayerBattlesSpectated = ({ selectedRound }: { selectedRound?: LeaderboardRound }) => {
     const theme = useTheme()
     const { userID } = useAuth()
     const { getFaction } = useSupremacy()
@@ -32,13 +32,13 @@ export const PlayerAbilityTriggers = ({ selectedRound }: { selectedRound?: Leade
             try {
                 setIsLoading(true)
 
-                const resp = await send<RankItem[]>(GameServerKeys.GetPlayerAbilityTriggers, { round_id: selectedRound?.id })
+                const resp = await send<RankItem[]>(GameServerKeys.GetPlayerBattlesSpectated, { round_id: selectedRound?.id })
 
                 if (!resp) return
                 setLoadError(undefined)
                 setRankItems(resp)
             } catch (e) {
-                const message = typeof e === "string" ? e : "Failed to player ability triggers."
+                const message = typeof e === "string" ? e : "Failed to player battles spectated."
                 setLoadError(message)
                 newSnackbarMessage(message, "error")
                 console.error(e)
@@ -50,7 +50,7 @@ export const PlayerAbilityTriggers = ({ selectedRound }: { selectedRound?: Leade
 
     return (
         <NiceTable
-            tableHeadings={["TOP 100", "PLAYER", "FACTION", "ABILITIES TRIGGERED"]}
+            tableHeadings={["TOP 100", "PLAYER", "FACTION", "BATTLES SPECTATED"]}
             alignments={["center", "left", "left", "center"]}
             widths={["19rem", "auto", "auto", "23rem"]}
             items={rankItems}
@@ -89,7 +89,7 @@ export const PlayerAbilityTriggers = ({ selectedRound }: { selectedRound?: Leade
 
                         <Stack key={4} direction="row" spacing=".4rem" alignItems="center" justifyContent="center">
                             <TypographyTruncated variant="h6" sx={{ fontWeight: "bold" }}>
-                                {item.total_ability_triggered}
+                                {item.view_battle_count}
                             </TypographyTruncated>
                         </Stack>,
                     ],

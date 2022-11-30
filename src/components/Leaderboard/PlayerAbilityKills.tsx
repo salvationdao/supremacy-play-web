@@ -1,22 +1,22 @@
 import { Stack } from "@mui/material"
 import { useEffect, useState } from "react"
-import { useGlobalNotifications, useSupremacy } from "../../../containers"
-import { useAuth } from "../../../containers/auth"
-import { useTheme } from "../../../containers/theme"
-import { useGameServerCommands } from "../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../keys"
-import { colors, fonts } from "../../../theme/theme"
-import { LeaderboardRound, User } from "../../../types"
-import { NiceTable } from "../../Common/Nice/NiceTable"
-import { PlayerNameGid } from "../../Common/PlayerNameGid"
-import { TypographyTruncated } from "../../Common/TypographyTruncated"
+import { useGlobalNotifications, useSupremacy } from "../../containers"
+import { useAuth } from "../../containers/auth"
+import { useTheme } from "../../containers/theme"
+import { useGameServerCommands } from "../../hooks/useGameServer"
+import { GameServerKeys } from "../../keys"
+import { colors, fonts } from "../../theme/theme"
+import { LeaderboardRound, User } from "../../types"
+import { NiceTable } from "../Common/Nice/NiceTable"
+import { PlayerNameGid } from "../Common/PlayerNameGid"
+import { TypographyTruncated } from "../Common/TypographyTruncated"
 
 interface RankItem {
     player: User
-    total_block_repaired: number
+    ability_kill_count: number
 }
 
-export const PlayerRepairBlocks = ({ selectedRound }: { selectedRound?: LeaderboardRound }) => {
+export const PlayerAbilityKills = ({ selectedRound }: { selectedRound?: LeaderboardRound }) => {
     const theme = useTheme()
     const { userID } = useAuth()
     const { getFaction } = useSupremacy()
@@ -33,13 +33,13 @@ export const PlayerRepairBlocks = ({ selectedRound }: { selectedRound?: Leaderbo
             try {
                 setIsLoading(true)
 
-                const resp = await send<RankItem[]>(GameServerKeys.GetPlayerRepairBlocks, { round_id: selectedRound?.id })
+                const resp = await send<RankItem[]>(GameServerKeys.GetPlayerAbilityKills, { round_id: selectedRound?.id })
 
                 if (!resp) return
                 setLoadError(undefined)
                 setRankItems(resp)
             } catch (e) {
-                const message = typeof e === "string" ? e : "Failed to player repair blocks."
+                const message = typeof e === "string" ? e : "Failed to player ability kills."
                 setLoadError(message)
                 newSnackbarMessage(message, "error")
                 console.error(e)
@@ -51,7 +51,7 @@ export const PlayerRepairBlocks = ({ selectedRound }: { selectedRound?: Leaderbo
 
     return (
         <NiceTable
-            tableHeadings={["TOP 100", "PLAYER", "FACTION", "BLOCKS REPAIRED"]}
+            tableHeadings={["TOP 100", "PLAYER", "FACTION", "ABILITY KILLS"]}
             alignments={["center", "left", "left", "center"]}
             widths={["19rem", "auto", "auto", "23rem"]}
             items={rankItems}
@@ -90,7 +90,7 @@ export const PlayerRepairBlocks = ({ selectedRound }: { selectedRound?: Leaderbo
 
                         <Stack key={4} direction="row" spacing=".4rem" alignItems="center" justifyContent="center">
                             <TypographyTruncated variant="h6" sx={{ fontWeight: "bold" }}>
-                                {item.total_block_repaired}
+                                {item.ability_kill_count}
                             </TypographyTruncated>
                         </Stack>,
                     ],

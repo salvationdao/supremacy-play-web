@@ -1,22 +1,21 @@
 import { Stack } from "@mui/material"
 import { useEffect, useState } from "react"
-import { useGlobalNotifications, useSupremacy } from "../../../containers"
-import { useAuth } from "../../../containers/auth"
-import { useTheme } from "../../../containers/theme"
-import { useGameServerCommands } from "../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../keys"
-import { colors, fonts } from "../../../theme/theme"
-import { LeaderboardRound, User } from "../../../types"
-import { NiceTable } from "../../Common/Nice/NiceTable"
-import { PlayerNameGid } from "../../Common/PlayerNameGid"
-import { TypographyTruncated } from "../../Common/TypographyTruncated"
+import { useAuth, useGlobalNotifications, useSupremacy } from "../../containers"
+import { useTheme } from "../../containers/theme"
+import { useGameServerCommands } from "../../hooks/useGameServer"
+import { GameServerKeys } from "../../keys"
+import { colors, fonts } from "../../theme/theme"
+import { LeaderboardRound, User } from "../../types"
+import { NiceTable } from "../Common/Nice/NiceTable"
+import { PlayerNameGid } from "../Common/PlayerNameGid"
+import { TypographyTruncated } from "../Common/TypographyTruncated"
 
 interface RankItem {
     player: User
-    ability_kill_count: number
+    mech_survive_count: number
 }
 
-export const PlayerAbilityKills = ({ selectedRound }: { selectedRound?: LeaderboardRound }) => {
+export const PlayerMechSurvives = ({ selectedRound }: { selectedRound?: LeaderboardRound }) => {
     const theme = useTheme()
     const { userID } = useAuth()
     const { getFaction } = useSupremacy()
@@ -33,13 +32,13 @@ export const PlayerAbilityKills = ({ selectedRound }: { selectedRound?: Leaderbo
             try {
                 setIsLoading(true)
 
-                const resp = await send<RankItem[]>(GameServerKeys.GetPlayerAbilityKills, { round_id: selectedRound?.id })
+                const resp = await send<RankItem[]>(GameServerKeys.GetPlayerMechSurvives, { round_id: selectedRound?.id })
 
                 if (!resp) return
                 setLoadError(undefined)
                 setRankItems(resp)
             } catch (e) {
-                const message = typeof e === "string" ? e : "Failed to player ability kills."
+                const message = typeof e === "string" ? e : "Failed to player mech survives."
                 setLoadError(message)
                 newSnackbarMessage(message, "error")
                 console.error(e)
@@ -51,7 +50,7 @@ export const PlayerAbilityKills = ({ selectedRound }: { selectedRound?: Leaderbo
 
     return (
         <NiceTable
-            tableHeadings={["TOP 100", "PLAYER", "FACTION", "ABILITY KILLS"]}
+            tableHeadings={["TOP 100", "PLAYER", "FACTION", "MECH SURVIVES"]}
             alignments={["center", "left", "left", "center"]}
             widths={["19rem", "auto", "auto", "23rem"]}
             items={rankItems}
@@ -90,7 +89,7 @@ export const PlayerAbilityKills = ({ selectedRound }: { selectedRound?: Leaderbo
 
                         <Stack key={4} direction="row" spacing=".4rem" alignItems="center" justifyContent="center">
                             <TypographyTruncated variant="h6" sx={{ fontWeight: "bold" }}>
-                                {item.ability_kill_count}
+                                {item.mech_survive_count}
                             </TypographyTruncated>
                         </Stack>,
                     ],

@@ -1,21 +1,22 @@
 import { Stack } from "@mui/material"
 import { useEffect, useState } from "react"
-import { useAuth, useGlobalNotifications, useSupremacy } from "../../../containers"
-import { useTheme } from "../../../containers/theme"
-import { useGameServerCommands } from "../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../keys"
-import { colors, fonts } from "../../../theme/theme"
-import { LeaderboardRound, User } from "../../../types"
-import { NiceTable } from "../../Common/Nice/NiceTable"
-import { PlayerNameGid } from "../../Common/PlayerNameGid"
-import { TypographyTruncated } from "../../Common/TypographyTruncated"
+import { useGlobalNotifications, useSupremacy } from "../../containers"
+import { useAuth } from "../../containers/auth"
+import { useTheme } from "../../containers/theme"
+import { useGameServerCommands } from "../../hooks/useGameServer"
+import { GameServerKeys } from "../../keys"
+import { colors, fonts } from "../../theme/theme"
+import { LeaderboardRound, User } from "../../types"
+import { NiceTable } from "../Common/Nice/NiceTable"
+import { PlayerNameGid } from "../Common/PlayerNameGid"
+import { TypographyTruncated } from "../Common/TypographyTruncated"
 
 interface RankItem {
     player: User
-    mech_kill_count: number
+    total_block_repaired: number
 }
 
-export const PlayerMechKills = ({ selectedRound }: { selectedRound?: LeaderboardRound }) => {
+export const PlayerRepairBlocks = ({ selectedRound }: { selectedRound?: LeaderboardRound }) => {
     const theme = useTheme()
     const { userID } = useAuth()
     const { getFaction } = useSupremacy()
@@ -32,13 +33,13 @@ export const PlayerMechKills = ({ selectedRound }: { selectedRound?: Leaderboard
             try {
                 setIsLoading(true)
 
-                const resp = await send<RankItem[]>(GameServerKeys.GetPlayerMechKills, { round_id: selectedRound?.id })
+                const resp = await send<RankItem[]>(GameServerKeys.GetPlayerRepairBlocks, { round_id: selectedRound?.id })
 
                 if (!resp) return
                 setLoadError(undefined)
                 setRankItems(resp)
             } catch (e) {
-                const message = typeof e === "string" ? e : "Failed to player mech kills."
+                const message = typeof e === "string" ? e : "Failed to player repair blocks."
                 setLoadError(message)
                 newSnackbarMessage(message, "error")
                 console.error(e)
@@ -50,7 +51,7 @@ export const PlayerMechKills = ({ selectedRound }: { selectedRound?: Leaderboard
 
     return (
         <NiceTable
-            tableHeadings={["TOP 100", "PLAYER", "FACTION", "MECH KILLS"]}
+            tableHeadings={["TOP 100", "PLAYER", "FACTION", "BLOCKS REPAIRED"]}
             alignments={["center", "left", "left", "center"]}
             widths={["19rem", "auto", "auto", "23rem"]}
             items={rankItems}
@@ -89,7 +90,7 @@ export const PlayerMechKills = ({ selectedRound }: { selectedRound?: Leaderboard
 
                         <Stack key={4} direction="row" spacing=".4rem" alignItems="center" justifyContent="center">
                             <TypographyTruncated variant="h6" sx={{ fontWeight: "bold" }}>
-                                {item.mech_kill_count}
+                                {item.total_block_repaired}
                             </TypographyTruncated>
                         </Stack>,
                     ],

@@ -1,25 +1,38 @@
 import { MenuItem, Select, Stack, Typography } from "@mui/material"
-import { useMemo } from "react"
-import { useTheme } from "../../../../containers/theme"
-import { colors } from "../../../../theme/theme"
-import { LeaderboardRound } from "../../../../types"
+import { useTheme } from "../../../containers/theme"
+import { colors } from "../../../theme/theme"
 
-export const RoundSelect = ({
-    roundOptions,
-    selectedRound,
-    setSelectedRound,
+export enum LeaderboardTypeEnum {
+    PlayerAbilityKills = "PlayerAbilityKills",
+    PlayerBattlesSpectated = "PlayerBattlesSpectated",
+    PlayerMechSurvives = "PlayerMechSurvives",
+    PlayerMechKills = "PlayerMechKills",
+    PlayerAbilityTriggers = "PlayerAbilityTriggers",
+    PlayerMechsOwned = "PlayerMechsOwned",
+    PlayerRepairBlocks = "PlayerRepairBlocks",
+}
+
+export const leaderboardTypeOptions: {
+    label: string
+    value: LeaderboardTypeEnum
+}[] = [
+    { label: "Top Player Ability Kills", value: LeaderboardTypeEnum.PlayerAbilityKills },
+    { label: "Top Player Battles Spectated", value: LeaderboardTypeEnum.PlayerBattlesSpectated },
+    { label: "Top Player Mech Survives", value: LeaderboardTypeEnum.PlayerMechSurvives },
+    { label: "Top Player Mech Kills", value: LeaderboardTypeEnum.PlayerMechKills },
+    { label: "Top Player Ability Triggers", value: LeaderboardTypeEnum.PlayerAbilityTriggers },
+    { label: "Top Player Mechs Owned", value: LeaderboardTypeEnum.PlayerMechsOwned },
+    { label: "Top Player Blocks Repaired", value: LeaderboardTypeEnum.PlayerRepairBlocks },
+]
+
+export const LeaderboardSelect = ({
+    leaderboardType,
+    setLeaderboardType,
 }: {
-    roundOptions: LeaderboardRound[]
-    selectedRound?: LeaderboardRound
-    setSelectedRound: React.Dispatch<React.SetStateAction<LeaderboardRound | undefined>>
+    leaderboardType: LeaderboardTypeEnum
+    setLeaderboardType: React.Dispatch<React.SetStateAction<LeaderboardTypeEnum>>
 }) => {
     const theme = useTheme()
-
-    const label = useMemo(() => {
-        const selected = roundOptions.find((i) => i.id === selectedRound?.id)
-        if (!selected) return null
-        return `${selected.name}`
-    }, [roundOptions, selectedRound?.id])
 
     const primaryColor = theme.factionTheme.primary
     const secondaryColor = theme.factionTheme.text
@@ -53,7 +66,7 @@ export const RoundSelect = ({
                     },
                 }}
                 displayEmpty
-                value={selectedRound || ""}
+                value={leaderboardType}
                 MenuProps={{
                     variant: "menu",
                     sx: {
@@ -71,31 +84,19 @@ export const RoundSelect = ({
                         },
                     },
                 }}
-                renderValue={() => {
-                    return (
-                        <Typography textTransform="uppercase" sx={{ fontWeight: "bold" }}>
-                            {label || "ALL TIME"}
-                        </Typography>
-                    )
-                }}
             >
-                <MenuItem value="" onClick={() => setSelectedRound(undefined)}>
-                    <Typography textTransform="uppercase" sx={{ fontWeight: "bold" }}>
-                        ALL TIME
-                    </Typography>
-                </MenuItem>
-                {roundOptions.map((x, i) => {
+                {leaderboardTypeOptions.map((x, i) => {
                     return (
                         <MenuItem
-                            key={x.id + i}
-                            value={x.id}
+                            key={x.value + i}
+                            value={x.value}
                             onClick={() => {
-                                setSelectedRound(x)
+                                setLeaderboardType(x.value)
                             }}
                             sx={{ "&:hover": { backgroundColor: "#FFFFFF20" } }}
                         >
                             <Typography textTransform="uppercase" sx={{ fontWeight: "bold" }}>
-                                {x.name}
+                                {x.label}
                             </Typography>
                         </MenuItem>
                     )
