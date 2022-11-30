@@ -1,7 +1,6 @@
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, Stack } from "@mui/material"
 import { useMemo } from "react"
 import { SvgLoadoutSkin, SvgUserDiamond2 } from "../../../assets"
-import { useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets } from "../../../helpers"
 import { fonts } from "../../../theme/theme"
@@ -10,9 +9,6 @@ import { TypographyTruncated } from "../TypographyTruncated"
 
 export const MechTooltipRender = ({ mech }: { mech: NewMechStruct }) => {
     const theme = useTheme()
-    const { getFaction } = useSupremacy()
-
-    const ownerFaction = useMemo(() => getFaction(mech.owner.faction_id), [getFaction, mech.owner.faction_id])
 
     const rarityDeets = useMemo(() => getRarityDeets(mech.tier), [mech.tier])
 

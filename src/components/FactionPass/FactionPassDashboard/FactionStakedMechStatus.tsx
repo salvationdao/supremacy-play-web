@@ -164,7 +164,7 @@ const FactionStakedMechStatusBox = ({ title, value, caption, color }: FactionSta
                 </Typography>
             )
         return caption
-    }, [caption])
+    }, [caption, color])
     return (
         <NiceBoxThing background={{ colors: [`${colors.offWhite}20`] }} sx={{ width: "100%", height: "100%", p: "1.5rem" }}>
             <Stack direction="column" flex={1} height="100%">

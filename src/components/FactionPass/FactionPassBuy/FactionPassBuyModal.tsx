@@ -64,8 +64,8 @@ export const FactionPassBuyModal = ({ open, onClose, factionPass, onSupPurchaseC
     )
 
     const supsPrice = useMemo(() => supFormatter(factionPass.sups_price, 3), [factionPass.sups_price])
-    const ethPrice = useMemo(() => supFormatter(factionPass.eth_price_wei, 3), [factionPass.eth_price_wei])
-    const usdPrice = useMemo(() => factionPass.usd_price, [factionPass.usd_price])
+    // const ethPrice = useMemo(() => supFormatter(factionPass.eth_price_wei, 3), [factionPass.eth_price_wei])
+    // const usdPrice = useMemo(() => factionPass.usd_price, [factionPass.usd_price])
 
     const handleStripeSubmit = useCallback(
         async (_elements: StripeElements | null, _stripe: Stripe | null) => {
@@ -84,7 +84,7 @@ export const FactionPassBuyModal = ({ open, onClose, factionPass, onSupPurchaseC
                         return_url: `${origin}/faction-pass/buy`,
                     },
                 })
-            } catch (err: any) {
+            } catch (err) {
                 console.error(typeof err === "string" ? err : "Unable to process payments.")
             } finally {
                 setIsLoading(false)
@@ -110,48 +110,47 @@ export const FactionPassBuyModal = ({ open, onClose, factionPass, onSupPurchaseC
                         <Typography fontFamily={fonts.rajdhaniBold}>{newExpiryDate}</Typography>
                     </Stack>
                 </Stack>
-
-                {stripePromise && stripePaymentDetail && (
-                    <Elements
-                        stripe={stripePromise}
-                        options={{
-                            clientSecret: stripePaymentDetail.client_secret,
-                            appearance: {
-                                theme: "night",
-                                variables: {
-                                    fontFamily: fonts.rajdhaniBold,
-                                    fontWeightNormal: "500",
-                                    borderRadius: "1.5px",
-                                    colorBackground: factionTheme.background,
-                                    colorPrimary: factionTheme.primary,
-                                    colorPrimaryText: "#1A1B25",
-                                    colorText: "white",
-                                    colorTextPlaceholder: colors.grey,
-                                    colorIconTab: "white",
-                                    colorLogo: "dark",
-                                    spacingUnit: "3.4px",
-                                },
-                                rules: {
-                                    ".Label": {
-                                        marginBottom: "10px",
+                <Stack direction="column" spacing={1}>
+                    {stripePromise && stripePaymentDetail && (
+                        <Elements
+                            stripe={stripePromise}
+                            options={{
+                                clientSecret: stripePaymentDetail.client_secret,
+                                appearance: {
+                                    theme: "night",
+                                    variables: {
+                                        fontFamily: fonts.rajdhaniBold,
+                                        fontWeightNormal: "500",
+                                        borderRadius: "1.5px",
+                                        colorBackground: factionTheme.background,
+                                        colorPrimary: factionTheme.primary,
+                                        colorPrimaryText: "#1A1B25",
+                                        colorText: "white",
+                                        colorTextPlaceholder: colors.grey,
+                                        colorIconTab: "white",
+                                        colorLogo: "dark",
+                                        spacingUnit: "3.4px",
+                                    },
+                                    rules: {
+                                        ".Label": {
+                                            marginBottom: "10px",
+                                        },
                                     },
                                 },
-                            },
-                        }}
-                    >
-                        <StripPayment onSubmit={handleStripeSubmit} stripePromise={stripePromise} />
-                    </Elements>
-                )}
+                            }}
+                        >
+                            <StripPayment onSubmit={handleStripeSubmit} stripePromise={stripePromise} />
+                        </Elements>
+                    )}
 
-                {/*<Stack direction="column" spacing={1}>*/}
-                {/*    <NiceButton buttonColor={factionTheme.primary} onClick={() => onSupPurchaseConfirm(PaymentType.SUPS)}>*/}
-                {/*        {supsPrice} Sups Purchase*/}
-                {/*    </NiceButton>*/}
-                {/*    <NiceButton buttonColor={factionTheme.primary} onClick={() => onSupPurchaseConfirm(PaymentType.ETH)}>*/}
-                {/*        {ethPrice} ETH Purchase*/}
-                {/*    </NiceButton>*/}
-                {/*    <NiceButton buttonColor={factionTheme.primary}>{usdPrice} USD Purchase</NiceButton>*/}
-                {/*</Stack>*/}
+                    <NiceButton loading={isLoading} buttonColor={factionTheme.primary} onClick={() => onSupPurchaseConfirm(PaymentType.SUPS)}>
+                        {supsPrice} Sups Purchase
+                    </NiceButton>
+                    {/*    <NiceButton buttonColor={factionTheme.primary} onClick={() => onSupPurchaseConfirm(PaymentType.ETH)}>*/}
+                    {/*        {ethPrice} ETH Purchase*/}
+                    {/*    </NiceButton>*/}
+                    {/*    <NiceButton buttonColor={factionTheme.primary}>{usdPrice} USD Purchase</NiceButton>*/}
+                </Stack>
                 {error && (
                     <Typography color={colors.red} variant="caption">
                         {error}

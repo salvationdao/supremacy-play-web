@@ -8,7 +8,6 @@ import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { useSupremacy } from "../../../containers"
 import { RepairBlocks } from "../../Common/Mech/MechRepairBlocks"
-import { MechIdleStatus } from "../../Common/Mech/MechIdleStatus"
 import { getMechStatusDeets, getRarityDeets, numFormatter } from "../../../helpers"
 import {
     SvgLoadoutArmour,

@@ -1,25 +1,13 @@
-import { Box, Checkbox, Stack, SxProps, Typography } from "@mui/material"
+import { Checkbox, Stack, SxProps } from "@mui/material"
 import React, { useMemo } from "react"
 import { Link } from "react-router-dom"
-import {
-    SvgDoubleChevronUp,
-    SvgLoadoutArmour,
-    SvgLoadoutPowerCoreCapacity,
-    SvgLoadoutPowerCoreRegen,
-    SvgLoadoutShield,
-    SvgLoadoutShieldPowerCost,
-    SvgLoadoutShieldRegen,
-    SvgLoadoutSpeed,
-    SvgUserDiamond,
-    SvgWrapperProps,
-} from "../../../assets"
+import { SvgUserDiamond } from "../../../assets"
 import { useAuth, useSupremacy } from "../../../containers"
 import { colors, fonts } from "../../../theme/theme"
-import { MechBasic, NewMechStruct } from "../../../types"
+import { NewMechStruct } from "../../../types"
 import { MechWeaponSlot } from "../../../types/battle_queue"
 import { MediaPreview } from "../MediaPreview/MediaPreview"
 import { NiceBoxThing } from "../Nice/NiceBoxThing"
-import { NiceTooltip } from "../Nice/NiceTooltip"
 import { TypographyTruncated } from "../TypographyTruncated"
 
 const MIN_NUM_WEAPONS = 4
@@ -123,64 +111,64 @@ const WeaponSlot = React.memo(function WeaponSlot({ weaponSlot }: { weaponSlot?:
         />
     )
 })
-
-const MechStats = React.memo(function MechStats({ mech, sx }: { mech: MechBasic; sx?: SxProps }) {
-    const health = mech.max_hitpoints
-    const boostedHealth = mech.boosted_max_hitpoints
-    const speed = mech.speed
-    const boostedSpeed = mech.boosted_speed
-    const totalShield = mech.shield
-    const totalShieldRechargeRate = mech.shield_recharge_rate
-    const boostedTotalShieldRechargeRate = mech.shield_recharge_rate
-    const totalShieldRechargePowerCost = mech.shield_recharge_power_cost
-    const powerCoreCapacity = mech.power_core_capacity || 0
-    const powerCoreRechargeRate = mech.power_core_recharge_rate || 0
-
-    return (
-        <Stack sx={sx}>
-            <SingleStat label="HEALTH" current={health} Icon={SvgLoadoutArmour} boostedTo={boostedHealth} />
-            <SingleStat label="SHIELD" current={totalShield} Icon={SvgLoadoutShield} />
-            <SingleStat label="SHIELD REGEN" current={totalShieldRechargeRate} Icon={SvgLoadoutShieldRegen} boostedTo={boostedTotalShieldRechargeRate} />
-            <SingleStat label="SHIELD REGEN POWER COST" current={totalShieldRechargePowerCost} unit="/S" Icon={SvgLoadoutShieldPowerCost} />
-            <SingleStat label="SPEED" current={speed} unit="CM/S" Icon={SvgLoadoutSpeed} boostedTo={boostedSpeed} />
-            <SingleStat label="Power Core CAPACITY" current={powerCoreCapacity} Icon={SvgLoadoutPowerCoreCapacity} />
-            <SingleStat label="Power Core REGEN" current={powerCoreRechargeRate} unit="/S" Icon={SvgLoadoutPowerCoreRegen} />
-        </Stack>
-    )
-})
-
-const SingleStat = ({
-    label,
-    current: _current,
-    boostedTo: _boostedTo,
-    unit,
-    Icon,
-}: {
-    label: string
-    current: number | string
-    boostedTo?: number | string
-    unit?: string
-    Icon: React.VoidFunctionComponent<SvgWrapperProps>
-}) => {
-    const current = typeof _current === "string" ? parseFloat(_current) : _current
-    const boostedTo = typeof _boostedTo === "string" ? parseFloat(_boostedTo) : _boostedTo || current
-    const boostedBy = boostedTo == current ? 0 : boostedTo - current
-
-    return (
-        <Stack direction="row" alignItems="center" spacing=".3rem">
-            <Icon inline size="1.7rem" />
-
-            <Typography variant="body2">{label}</Typography>
-
-            <Box flex={1} />
-
-            <NiceTooltip text={boostedBy > 0 ? `Boosted from ${current} to ${current + boostedBy}` : ""} placement="top-end">
-                <Typography variant="body2" color={boostedBy > 0 ? colors.neonBlue : "#FFFFFF"}>
-                    {current + boostedBy}
-                    {unit}
-                    {boostedBy > 0 && <SvgDoubleChevronUp inline size="1.2rem" fill={colors.neonBlue} />}
-                </Typography>
-            </NiceTooltip>
-        </Stack>
-    )
-}
+//
+// const MechStats = React.memo(function MechStats({ mech, sx }: { mech: MechBasic; sx?: SxProps }) {
+//     const health = mech.max_hitpoints
+//     const boostedHealth = mech.boosted_max_hitpoints
+//     const speed = mech.speed
+//     const boostedSpeed = mech.boosted_speed
+//     const totalShield = mech.shield
+//     const totalShieldRechargeRate = mech.shield_recharge_rate
+//     const boostedTotalShieldRechargeRate = mech.shield_recharge_rate
+//     const totalShieldRechargePowerCost = mech.shield_recharge_power_cost
+//     const powerCoreCapacity = mech.power_core_capacity || 0
+//     const powerCoreRechargeRate = mech.power_core_recharge_rate || 0
+//
+//     return (
+//         <Stack sx={sx}>
+//             <SingleStat label="HEALTH" current={health} Icon={SvgLoadoutArmour} boostedTo={boostedHealth} />
+//             <SingleStat label="SHIELD" current={totalShield} Icon={SvgLoadoutShield} />
+//             <SingleStat label="SHIELD REGEN" current={totalShieldRechargeRate} Icon={SvgLoadoutShieldRegen} boostedTo={boostedTotalShieldRechargeRate} />
+//             <SingleStat label="SHIELD REGEN POWER COST" current={totalShieldRechargePowerCost} unit="/S" Icon={SvgLoadoutShieldPowerCost} />
+//             <SingleStat label="SPEED" current={speed} unit="CM/S" Icon={SvgLoadoutSpeed} boostedTo={boostedSpeed} />
+//             <SingleStat label="Power Core CAPACITY" current={powerCoreCapacity} Icon={SvgLoadoutPowerCoreCapacity} />
+//             <SingleStat label="Power Core REGEN" current={powerCoreRechargeRate} unit="/S" Icon={SvgLoadoutPowerCoreRegen} />
+//         </Stack>
+//     )
+// })
+//
+// const SingleStat = ({
+//     label,
+//     current: _current,
+//     boostedTo: _boostedTo,
+//     unit,
+//     Icon,
+// }: {
+//     label: string
+//     current: number | string
+//     boostedTo?: number | string
+//     unit?: string
+//     Icon: React.VoidFunctionComponent<SvgWrapperProps>
+// }) => {
+//     const current = typeof _current === "string" ? parseFloat(_current) : _current
+//     const boostedTo = typeof _boostedTo === "string" ? parseFloat(_boostedTo) : _boostedTo || current
+//     const boostedBy = boostedTo == current ? 0 : boostedTo - current
+//
+//     return (
+//         <Stack direction="row" alignItems="center" spacing=".3rem">
+//             <Icon inline size="1.7rem" />
+//
+//             <Typography variant="body2">{label}</Typography>
+//
+//             <Box flex={1} />
+//
+//             <NiceTooltip text={boostedBy > 0 ? `Boosted from ${current} to ${current + boostedBy}` : ""} placement="top-end">
+//                 <Typography variant="body2" color={boostedBy > 0 ? colors.neonBlue : "#FFFFFF"}>
+//                     {current + boostedBy}
+//                     {unit}
+//                     {boostedBy > 0 && <SvgDoubleChevronUp inline size="1.2rem" fill={colors.neonBlue} />}
+//                 </Typography>
+//             </NiceTooltip>
+//         </Stack>
+//     )
+// }
