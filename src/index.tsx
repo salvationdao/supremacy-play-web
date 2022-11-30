@@ -1,7 +1,6 @@
 import { Box, LinearProgress, Stack, Typography } from "@mui/material"
 import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment"
-import type {} from "@mui/x-date-pickers/themeAugmentation"
 import { TourProvider } from "@reactour/tour"
 import * as Sentry from "@sentry/react"
 import { Buffer } from "buffer"
@@ -90,7 +89,7 @@ ws.Initialize({ defaultHost: GAME_SERVER_HOSTNAME })
 const AppInner = () => {
     const history = useHistory()
     const isTutorial = location.pathname.includes("/tutorial")
-    const { isServerDown, serverConnectedBefore, firstConnectTimedOut } = useSupremacy()
+    const { isServerDown, serverConnectedBefore, firstConnectTimedOut, isTransparentMode } = useSupremacy()
     const { isMobile } = useMobile()
     const { userID, factionID } = useAuth()
     const [showLoading, toggleShowLoading] = useToggle(true)
@@ -163,7 +162,7 @@ const AppInner = () => {
                     position: "fixed",
                     width: "100vw",
                     height: "100%",
-                    backgroundColor: (theme) => theme.factionTheme.background,
+                    backgroundColor: (theme) => (isTransparentMode ? "none" : theme.factionTheme.background),
                 }}
             >
                 <Bar />
@@ -190,7 +189,7 @@ const AppInner = () => {
                             flex: 1,
                             position: "relative",
                             height: "100%",
-                            backgroundColor: (theme) => theme.factionTheme.background,
+                            backgroundColor: (theme) => (isTransparentMode ? "none" : theme.factionTheme.background),
                             overflow: "hidden",
                         }}
                     >
