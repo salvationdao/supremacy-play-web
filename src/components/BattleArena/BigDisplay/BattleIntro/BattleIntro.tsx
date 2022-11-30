@@ -68,6 +68,7 @@ export const BattleIntro = ({ currentBattle }: BattleIntroProps) => {
     return (
         <Stack
             sx={{
+                minHeight: "100%",
                 width: "100%",
                 backgroundImage: `url(${currentBattle?.game_map?.background_url})`,
                 backgroundRepeat: "no-repeat",

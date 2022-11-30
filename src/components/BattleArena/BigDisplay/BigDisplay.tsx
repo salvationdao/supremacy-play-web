@@ -13,17 +13,18 @@ export const BigDisplay = () => {
 
     return useMemo(() => {
         return (
-            <Box
-                sx={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    overflowY: "auto",
-                }}
-            >
-                <Box sx={{ position: "relative", width: "100%", zIndex: siteZIndex.Modal }}>
+            <>
+                <Box
+                    sx={{
+                        zIndex: siteZIndex.Modal,
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        overflowY: "auto",
+                    }}
+                >
                     <BattleIntro currentBattle={JSON.parse(MOCK_UPCOMING_BATTLE)} />
                 </Box>
                 {nextBattle && (
@@ -37,7 +38,7 @@ export const BigDisplay = () => {
                     <Stream />
                     <MiniMapNew />
                 </Box>
-            </Box>
+            </>
         )
     }, [nextBattle, setBigDisplayRef])
 }
