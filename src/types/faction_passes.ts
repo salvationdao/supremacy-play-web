@@ -2,7 +2,9 @@ export interface FactionPass {
     id: string
     label: string
     last_for_days: number
-    sups_cost: string
-    sups_discount_percentage: string
+    eth_price_wei: string
+    usd_price: string
+    sups_price: string
+    discount_percentage: string
     deleted_at?: Date
 }
