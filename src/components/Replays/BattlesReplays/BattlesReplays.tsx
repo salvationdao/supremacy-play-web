@@ -1,21 +1,20 @@
 import { Box, CircularProgress, Pagination, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { ClipThing, FancyButton } from "../.."
-import { EmptyWarMachinesPNG, HangarBg, ThreeMechsJPG } from "../../../assets"
+import { EmptyWarMachinesPNG, SvgSearch } from "../../../assets"
 import { useArena } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { parseString } from "../../../helpers"
 import { useDebounce, usePagination, useUrlQuery } from "../../../hooks"
 import { useGameServerCommands } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
-import { colors, fonts, siteZIndex } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { Arena, BattleReplay } from "../../../types"
 import { SortDir, SortTypeLabel } from "../../../types/marketplace"
-import { PageHeader } from "../../Common/Deprecated/PageHeader"
-import { TotalAndPageSizeOptions } from "../../Common/Deprecated/TotalAndPageSizeOptions"
-import { ArenaTypeSelect } from "./ArenaTypeSelect"
+import { NiceButton } from "../../Common/Nice/NiceButton"
+import { NiceButtonGroup } from "../../Common/Nice/NiceButtonGroup"
+import { NiceSelect } from "../../Common/Nice/NiceSelect"
+import { NiceTextField } from "../../Common/Nice/NiceTextField"
 import { BattleReplayItem } from "./BattleReplayItem"
-import { SearchBattle } from "./SearchBattle"
 
 export interface GetReplaysRequest {
     sort?: {
@@ -112,14 +111,6 @@ export const BattlesReplays = () => {
         getItems()
     }, [getItems])
 
-    const onChangeArenaType = useCallback(
-        (arena: Arena | undefined) => {
-            if (arena) setSelectedGID(arena.gid)
-            setSelectedArenaType(arena)
-        },
-        [setSelectedGID],
-    )
-
     const content = useMemo(() => {
         if (loadError) {
             return (
@@ -194,6 +185,7 @@ export const BattlesReplays = () => {
                     />
                     <Typography
                         sx={{
+                            mb: "1rem",
                             px: "1.28rem",
                             pt: "1.28rem",
                             color: colors.grey,
@@ -201,18 +193,14 @@ export const BattlesReplays = () => {
                             textAlign: "center",
                         }}
                     >
-                        {"There are no replays found."}
+                        There are no replays found.
                     </Typography>
 
-                    <FancyButton
-                        to={`/`}
-                        clipThingsProps={{
-                            clipSize: "9px",
-                            backgroundColor: theme.factionTheme.primary,
-                            border: { isFancy: true, borderColor: theme.factionTheme.primary },
-                            sx: { position: "relative", mt: "2rem" },
+                    <NiceButton
+                        route={{
+                            to: "/",
                         }}
-                        sx={{ px: "1.8rem", py: ".8rem", color: theme.factionTheme.text }}
+                        buttonColor={theme.factionTheme.primary}
                     >
                         <Typography
                             variant="body2"
@@ -224,120 +212,105 @@ export const BattlesReplays = () => {
                         >
                             GO TO BATTLE ARENA
                         </Typography>
-                    </FancyButton>
+                    </NiceButton>
                 </Stack>
             </Stack>
         )
     }, [loadError, battleReplays, isLoading, theme.factionTheme.primary, theme.factionTheme.text])
 
     return (
-        <Box
+        <Stack
             alignItems="center"
+            spacing="3rem"
             sx={{
+                p: "4rem 5rem",
+                mx: "auto",
+                position: "relative",
                 height: "100%",
-                p: "1rem",
-                zIndex: siteZIndex.RoutePage,
-                backgroundImage: `url(${HangarBg})`,
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-                backgroundSize: "cover",
+                maxWidth: "190rem",
             }}
         >
-            <ClipThing
-                clipSize="10px"
-                border={{
-                    borderColor: theme.factionTheme.primary,
-                    borderThickness: ".3rem",
-                }}
-                corners={{
-                    topRight: true,
-                    bottomLeft: true,
-                    bottomRight: true,
-                }}
-                opacity={0.9}
-                backgroundColor={theme.factionTheme.background}
-                sx={{ height: "100%" }}
-            >
-                <Stack sx={{ position: "relative", height: "100%" }}>
-                    <Stack sx={{ flex: 1 }}>
-                        <PageHeader
-                            title={
-                                <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                    BATTLE REPLAYS
-                                </Typography>
-                            }
-                            description={<Typography sx={{ fontSize: "1.85rem" }}>Share epic moments and learn strategies behind the battles.</Typography>}
-                            imageUrl={ThreeMechsJPG}
-                        ></PageHeader>
-
-                        <TotalAndPageSizeOptions
-                            countItems={battleReplays?.length}
-                            totalItems={totalItems}
-                            pageSize={pageSize}
-                            changePageSize={changePageSize}
-                            pageSizeOptions={[15, 25, 35]}
-                            changePage={changePage}
-                            manualRefresh={getItems}
-                            sortOptions={sortOptions}
-                            selectedSort={sort}
-                            onSetSort={setSort}
+            <Stack spacing="2rem" alignItems="stretch" flex={1} sx={{ overflow: "hidden", width: "100%" }}>
+                <Typography
+                    variant="h2"
+                    sx={{
+                        fontFamily: fonts.nostromoBlack,
+                    }}
+                >
+                    Replays
+                </Typography>
+                <Stack spacing="1rem" direction="row" alignItems="center" sx={{ overflowX: "auto", overflowY: "hidden", width: "100%", pb: ".2rem" }}>
+                    {arenaList.length > 0 && (
+                        <NiceSelect
+                            label="Battle Mode:"
+                            options={arenaList.map((a) => ({
+                                value: a.id,
+                                label: a.name,
+                            }))}
+                            selected={selectedArenaType?.name || arenaList[0].name}
+                            onSelected={(value) => setSelectedArenaType(arenaList.find((a) => a.id === value))}
+                            sx={{
+                                minWidth: "26rem",
+                            }}
                         />
-
-                        <Stack
-                            spacing="2.6rem"
-                            direction="row"
-                            alignItems="center"
-                            sx={{ p: ".8rem 1.8rem", borderBottom: (theme) => `${theme.factionTheme.primary}70 1.5px solid` }}
-                        >
-                            <Stack spacing="1rem" direction="row" alignItems="center">
-                                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                    SEARCH:
-                                </Typography>
-                                <SearchBattle searchValueInstant={searchValueInstant} setSearchValue={setSearchValue} />
-                            </Stack>
-
-                            <Box sx={{ flex: 1 }} />
-
-                            <Stack spacing="1rem" direction="row" alignItems="center">
-                                <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
-                                    BATTLE MODE:
-                                </Typography>
-                                <ArenaTypeSelect arenaTypeOptions={arenaList} selectedArenaType={selectedArenaType} onChangeArenaType={onChangeArenaType} />
-                            </Stack>
-                        </Stack>
-
-                        <Stack sx={{ px: "1rem", py: "1rem", flex: 1 }}>
-                            <Box
-                                sx={{
-                                    ml: "1.9rem",
-                                    mr: ".5rem",
-                                    pr: "1.4rem",
-                                    my: "1rem",
-                                    flex: 1,
-                                    overflowY: "auto",
-                                    overflowX: "hidden",
-                                    direction: "ltr",
-                                }}
-                            >
-                                {content}
-                            </Box>
-                        </Stack>
-
-                        {totalPages > 1 && (
-                            <Box
-                                sx={{
-                                    px: "1rem",
-                                    py: ".7rem",
-                                    borderTop: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
-                                    backgroundColor: "#00000070",
-                                }}
-                            >
-                                <Pagination count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
-                            </Box>
-                        )}
+                    )}
+                    <Box flex={1} />
+                    <Stack justifyContent="center" sx={{ height: "4.3rem", backgroundColor: "#00000015", border: "#FFFFFF30 1px solid", px: "1rem" }}>
+                        <Typography variant="h6" sx={{ whiteSpace: "nowrap" }}>
+                            {totalItems || 0} ITEMS
+                        </Typography>
                     </Stack>
+                    <NiceButtonGroup
+                        primaryColor={theme.factionTheme.primary}
+                        secondaryColor={theme.factionTheme.text}
+                        options={[
+                            {
+                                label: "15",
+                                value: 15,
+                            },
+                            {
+                                label: "25",
+                                value: 25,
+                            },
+                            {
+                                label: "35",
+                                value: 35,
+                            },
+                        ]}
+                        selected={pageSize}
+                        onSelected={(value) => {
+                            changePageSize(parseString(value, 1))
+                            changePage(1)
+                        }}
+                    />
+                    {/* Search bar */}
+                    <NiceTextField
+                        primaryColor={theme.factionTheme.primary}
+                        value={searchValueInstant}
+                        onChange={(value) => setSearchValue(value)}
+                        placeholder="Search..."
+                        InputProps={{
+                            endAdornment: <SvgSearch size="1.5rem" sx={{ opacity: 0.5 }} />,
+                        }}
+                    />
+                    {/* Sort */}
+                    <NiceSelect label="Sort:" options={sortOptions} selected={sort} onSelected={(value) => setSort(`${value}`)} sx={{ minWidth: "26rem" }} />
                 </Stack>
-            </ClipThing>
-        </Box>
+                <Box sx={{ flex: 1, overflowY: "auto" }}>{content}</Box>
+            </Stack>
+
+            {totalPages > 1 && (
+                <Box
+                    sx={{
+                        px: "1rem",
+                        py: ".7rem",
+                        borderTop: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
+                        backgroundColor: "#00000070",
+                    }}
+                >
+                    <Pagination count={totalPages} page={page} onChange={(e, p) => changePage(p)} />
+                </Box>
+            )}
+        </Stack>
     )
 }
