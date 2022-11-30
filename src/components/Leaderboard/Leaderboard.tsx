@@ -110,32 +110,40 @@ export const Leaderboard = () => {
                 maxWidth: "190rem",
             }}
         >
-            <Stack spacing="2rem" alignItems="stretch" flex={1} sx={{ overflow: "hidden", flex: 1, width: "100%" }}>
-                <Typography variant="h2" sx={{ fontFamily: fonts.nostromoBlack }}>
-                    {leaderboardTitle}
-                </Typography>
-                <Stack spacing="1rem" direction="row" alignItems="center" sx={{ overflowX: "auto", overflowY: "hidden", width: "100%", pb: ".2rem" }}>
-                    <NiceSelect
-                        label="Display:"
-                        options={sortOptions}
-                        selected={leaderboardType}
-                        onSelected={(value) => setLeaderboardType(value as LeaderboardTypeEnum)}
-                        sx={{ minWidth: "26rem" }}
-                    />
-                    {roundOptions.size > 0 && leaderboardType !== LeaderboardTypeEnum.PlayerMechsOwned && (
+            <Typography variant="h2" sx={{ fontFamily: fonts.nostromoBlack, alignSelf: "flex-start" }}>
+                {leaderboardTitle}
+            </Typography>
+
+            <Stack direction="row" alignItems="stretch" sx={{ flex: 1, width: "100%", overflow: "hidden" }}>
+                <Stack spacing="2rem" alignItems="stretch" flex={1} sx={{ overflow: "hidden" }}>
+                    {/* Search, sort, grid view, and other top buttons */}
+                    <Stack spacing="1rem" direction="row" alignItems="center" sx={{ overflowX: "auto", overflowY: "hidden", width: "100%", pb: ".2rem" }}>
+                        {/* Select the leaderboard type */}
                         <NiceSelect
-                            label="Round:"
-                            options={Array.from(roundOptions).map(([key, v]) => ({
-                                value: key,
-                                label: v.name,
-                            }))}
-                            selected={selectedRound?.id || Array.from(roundOptions)[0][0]}
-                            onSelected={(value) => setSelectedRound(roundOptions.get(value))}
+                            label="Display:"
+                            options={sortOptions}
+                            selected={leaderboardType}
+                            onSelected={(value) => setLeaderboardType(value as LeaderboardTypeEnum)}
                             sx={{ minWidth: "26rem" }}
                         />
-                    )}
+
+                        {/* Select the round */}
+                        {roundOptions.size > 0 && leaderboardType !== LeaderboardTypeEnum.PlayerMechsOwned && (
+                            <NiceSelect
+                                label="Round:"
+                                options={Array.from(roundOptions).map(([key, v]) => ({
+                                    value: key,
+                                    label: v.name,
+                                }))}
+                                selected={selectedRound?.id || Array.from(roundOptions)[0][0]}
+                                onSelected={(value) => setSelectedRound(roundOptions.get(value))}
+                                sx={{ minWidth: "26rem" }}
+                            />
+                        )}
+                    </Stack>
+
+                    <Box sx={{ flex: 1, overflowY: "auto" }}>{leaderboard}</Box>
                 </Stack>
-                <Box sx={{ flex: 1, overflowY: "auto" }}>{leaderboard}</Box>
             </Stack>
         </Stack>
     )
