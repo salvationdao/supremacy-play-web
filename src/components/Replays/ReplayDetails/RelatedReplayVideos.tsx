@@ -57,7 +57,7 @@ export const RelatedReplayVideos = ({ battleReplay }: { battleReplay?: BattleRep
 
             <Stack spacing="2rem">
                 {battleReplays.map((battleReplay) => {
-                    return <BattleReplayItem key={battleReplay.id} battleReplay={battleReplay} noBackgroundColor />
+                    return <BattleReplayItem key={battleReplay.id} battleReplay={battleReplay} />
                 })}
             </Stack>
         </Stack>
