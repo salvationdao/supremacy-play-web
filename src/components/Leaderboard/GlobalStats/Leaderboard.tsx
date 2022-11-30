@@ -24,7 +24,7 @@ const sortOptions = [
     { label: "Player Blocks Repaired", value: LeaderboardTypeEnum.PlayerRepairBlocks },
 ]
 
-export const GlobalStats = () => {
+export const Leaderboard = () => {
     const { send } = useGameServerCommands("/public/commander")
 
     const [roundOptions, setRoundOptions] = useState<Map<string, LeaderboardRound>>(new Map())

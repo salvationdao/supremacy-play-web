@@ -16,14 +16,14 @@ import {
     TablePagination,
     TableRow,
     TableRowProps,
-    Typography
+    Typography,
 } from "@mui/material"
 import { ReactNode, useMemo } from "react"
 import { useTheme } from "../../../containers/theme"
 import { mergeDeep } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 
-interface CoolTableProps<T> {
+interface NiceTableProps<T> {
     title?: string
     tableHeadings: string[]
     alignments?: ("left" | "right" | "center")[]
@@ -65,7 +65,7 @@ export const NiceTable = <T,>({
     titleRowHeight = "5.5rem",
     cellPadding = ".8rem 1rem",
     paginationProps,
-}: CoolTableProps<T>) => {
+}: NiceTableProps<T>) => {
     const theme = useTheme()
 
     const primaryColor = theme.factionTheme.primary
