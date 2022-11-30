@@ -468,7 +468,7 @@ export const checkIfIsEmoji = (message: string) => {
     return false
 }
 
-// Returns a random chat color for non faction users
+// Returns a random chat color for non faction users (hex code) e.g. #FF1298
 export const getRandomColor = () => {
     let color = "#"
     for (let i = 0; i < 3; i++) color += ("0" + Math.floor(((1 + Math.random()) * Math.pow(16, 2)) / 2).toString(16)).slice(-2)

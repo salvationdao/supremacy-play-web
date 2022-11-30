@@ -11,6 +11,7 @@ export const CentralQueue = ({ lobbies }: { lobbies: BattleLobby[] }) => {
 
     useEffect(() => {
         setDisplayLobbies((prev) => {
+            // Only ready stuff
             const bls = [...lobbies].filter((bl) => !!bl.ready_at)
 
             if (prev.length === 0)

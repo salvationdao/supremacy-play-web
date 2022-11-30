@@ -4,8 +4,8 @@ import { useAuth, useSupremacy, useUI } from "."
 import { useGameServerCommandsUser, useGameServerSubscription } from "../hooks/useGameServer"
 import { GameServerKeys } from "../keys"
 import { AbilityDetail, AIType, BattleEndDetail, BattleState, BattleZoneStruct, Map, WarMachineState } from "../types"
-import { useArena } from "./arena"
 import { BattleLobby } from "../types/battle_queue"
+import { useArena } from "./arena"
 
 export interface GameSettingsResponse {
     battle_id: string
@@ -148,6 +148,7 @@ export const GameContainer = createContainer(() => {
                 setNextBattle(undefined)
                 return
             }
+            console.log(payload)
             // set upcoming details
             setNextBattle(payload.upcoming_battle)
         },
