@@ -16,7 +16,7 @@ import { Supporters } from "./Supporters"
 
 export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) => {
     const { factionID } = useAuth()
-    const { factionTheme } = useTheme()
+    const theme = useTheme()
     const [showJoinLobbyModal, setShowJoinLobbyModal] = useState(false)
 
     const displayAccessCode = useMemo(() => battleLobby.access_code, [battleLobby.access_code])
@@ -119,12 +119,12 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
                         setShowJoinLobbyModal={setShowJoinLobbyModal}
                     />
                 }
-                color={factionTheme.primary}
+                color={theme.factionTheme.primary}
             >
                 <Box
                     sx={{
                         width: "100%",
-                        border: `${factionTheme.primary}38 1px solid`,
+                        border: `${theme.factionTheme.primary}38 1px solid`,
                     }}
                 >
                     <Stack

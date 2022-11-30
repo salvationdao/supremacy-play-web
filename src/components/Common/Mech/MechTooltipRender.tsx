@@ -7,13 +7,13 @@ import { NewMechStruct } from "../../../types"
 import { TypographyTruncated } from "../TypographyTruncated"
 
 export const MechTooltipRender = ({ mech }: { mech: NewMechStruct }) => {
-    const { factionTheme } = useTheme()
+    const theme = useTheme()
     const { getFaction } = useSupremacy()
 
     const ownerFaction = useMemo(() => getFaction(mech.owner.faction_id), [getFaction, mech.owner.faction_id])
 
     return (
-        <Box sx={{ width: "40rem", backgroundColor: factionTheme.s800 }}>
+        <Box sx={{ width: "40rem", backgroundColor: theme.factionTheme.s800 }}>
             {/* Mech name */}
             <Stack
                 direction="row"
@@ -23,7 +23,7 @@ export const MechTooltipRender = ({ mech }: { mech: NewMechStruct }) => {
                 sx={{
                     p: "1rem 1.5rem",
                     pr: ".5rem",
-                    backgroundColor: factionTheme.s600,
+                    backgroundColor: theme.factionTheme.s600,
                 }}
             >
                 <TypographyTruncated variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
