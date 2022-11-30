@@ -13,9 +13,9 @@ import { GameServerKeys } from "../../keys"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { FiatOrder } from "../../types/fiat"
 import { MysteryCrateBanner } from "../BannersPromotions/MysteryCrateBanner"
-import { CoolTable } from "../Common/Nice/NiceTable"
 import { PageHeader } from "../Common/Deprecated/PageHeader"
 import { NiceBoxThing } from "../Common/Nice/NiceBoxThing"
+import { NiceTable } from "../Common/Nice/NiceTable"
 
 export const BillingHistory = () => {
     const theme = useTheme()
@@ -94,7 +94,7 @@ export const BillingHistory = () => {
                             <PageHeader title="BILLING HISTORY" description="View your past transactions." imageUrl={SafePNG} />
 
                             <Box sx={{ flex: 1 }}>
-                                <CoolTable
+                                <NiceTable
                                     tableHeadings={["RECEIPT NUMBER", "DATE", "STATUS", "TOTAL"]}
                                     alignments={["left", "center", "center", "center"]}
                                     widths={["25%", "25%", "25%", "25%"]}

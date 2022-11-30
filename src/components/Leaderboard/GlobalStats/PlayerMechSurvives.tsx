@@ -6,7 +6,7 @@ import { useGameServerCommands } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { LeaderboardRound, User } from "../../../types"
-import { CoolTable } from "../../Common/Nice/NiceTable"
+import { NiceTable } from "../../Common/Nice/NiceTable"
 import { PlayerNameGid } from "../../Common/PlayerNameGid"
 import { TypographyTruncated } from "../../Common/TypographyTruncated"
 
@@ -49,7 +49,7 @@ export const PlayerMechSurvives = ({ selectedRound }: { selectedRound?: Leaderbo
     }, [newSnackbarMessage, selectedRound?.id, send])
 
     return (
-        <CoolTable
+        <NiceTable
             tableHeadings={["TOP 100", "PLAYER", "FACTION", "MECH SURVIVES"]}
             alignments={["center", "left", "left", "center"]}
             widths={["19rem", "auto", "auto", "23rem"]}

@@ -6,7 +6,7 @@ import { useGameServerCommands } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { User } from "../../../types"
-import { CoolTable } from "../../Common/Nice/NiceTable"
+import { NiceTable } from "../../Common/Nice/NiceTable"
 import { PlayerNameGid } from "../../Common/PlayerNameGid"
 import { TypographyTruncated } from "../../Common/TypographyTruncated"
 
@@ -49,7 +49,7 @@ export const PlayerMechsOwned = () => {
     }, [newSnackbarMessage, send])
 
     return (
-        <CoolTable
+        <NiceTable
             tableHeadings={["TOP 100", "PLAYER", "FACTION", "MECHS OWNED"]}
             alignments={["center", "left", "left", "center"]}
             widths={["19rem", "auto", "auto", "23rem"]}
