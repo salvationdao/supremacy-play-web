@@ -302,6 +302,7 @@ const FactionRow = ({ index, lobby }: FactionRowProps) => {
         )
     }, [factionID, lobby.faction.id, onOptIn, optInError, optedInSupporterSlots, selectedSupporterSlots, theme.background, theme.primary, theme.s700])
 
+    const isTablet = gameUIDimensions.width < 900
     return (
         <Slide in direction={index % 2 === 0 ? "left" : "right"}>
             <Stack
@@ -366,20 +367,21 @@ const FactionRow = ({ index, lobby }: FactionRowProps) => {
                                 maxWidth: 200,
                             }}
                         >
-                            <Stack direction="row" spacing=".5rem">
+                            <Stack direction={isTablet ? "column" : "row"} spacing=".5rem">
                                 {/* Mech avatar */}
                                 <Box
                                     component="img"
                                     src={ms.avatar_url}
                                     sx={{
                                         width: "100%",
-                                        maxWidth: 160,
+                                        maxWidth: isTablet ? "100%" : 160,
+                                        height: isTablet ? "8rem" : undefined,
                                         objectFit: "cover",
                                         border: `1px solid ${colors.black2}`,
                                     }}
                                 />
                                 {/* Weapon slots */}
-                                <Stack spacing=".5rem" flex={1}>
+                                <Stack spacing=".5rem" direction={isTablet ? "row" : "column"} flex={1}>
                                     {ms.weapon_slots &&
                                         ms.weapon_slots.map((w, index) => (
                                             <Box
@@ -388,6 +390,7 @@ const FactionRow = ({ index, lobby }: FactionRowProps) => {
                                                 src={w.weapon?.avatar_url}
                                                 sx={{
                                                     width: "100%",
+                                                    maxWidth: isTablet ? "4rem" : undefined,
                                                     objectFit: "contain",
                                                     backgroundColor: theme.background,
                                                     border: `1px solid ${colors.black2}`,
