@@ -67,6 +67,7 @@ export const Supporters = React.memo(function Supporters({ battleLobby, factionI
                         width: `calc(${SIZE} - .3rem)`,
                         height: `calc(${SIZE} - .3rem)`,
                         border: `${colors.grey}AA 1px solid`,
+                        backgroundColor: colors.grey,
                         borderRadius: 0.2,
                     },
                 }}
@@ -80,6 +81,7 @@ export const Supporters = React.memo(function Supporters({ battleLobby, factionI
                             src={faction.logo_url}
                             sx={{
                                 border: supporter.id === userID ? `${colors.gold} 1px solid !important` : `${faction.palette.primary}AA 1px solid !important`,
+                                backgroundColor: supporter.id === userID ? `${colors.gold}50 !important` : `${faction.palette.primary}50 !important`,
                             }}
                         />
                     )
