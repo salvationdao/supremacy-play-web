@@ -1,6 +1,6 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
-import { SvgContentCopyIcon, SvgLock, SvgSupToken, SvgUserDiamond } from "../../../assets"
+import { SvgContentCopyIcon, SvgLock, SvgMeteor, SvgSupToken, SvgUserDiamond } from "../../../assets"
 import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { supFormatter } from "../../../helpers"
@@ -45,7 +45,10 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
         if (battleLobby.ready_at) {
             return (
                 <Stack direction="row" alignItems="center" sx={{ height: "3rem", px: "1.5rem", backgroundColor: "#00000036" }}>
-                    <Typography fontWeight="bold">SUPPORTERS:</Typography>
+                    <Typography fontWeight="bold">
+                        <SvgMeteor inline size="1.6rem" />
+                        SUPPORTERS:
+                    </Typography>
                     <Supporters battleLobby={battleLobby} factionID={factionID} />
                 </Stack>
             )
