@@ -1,7 +1,6 @@
 import { SxProps } from "@mui/material"
 import BigNumber from "bignumber.js"
 import emojiRegex from "emoji-regex"
-import moment from "moment"
 import { VoidFunctionComponent } from "react"
 import {
     SafePNG,
@@ -435,7 +434,7 @@ export const secondsToWords = (secondsLeft: number) => {
 
 export const camelToTitle = (str: string) => {
     const result = str.replace(/([A-Z])/g, " $1")
-    return result.charAt(0).toUpperCase() + result.slice(1)
+    return (result.charAt(0).toUpperCase() + result.slice(1)).trim()
 }
 
 export const EMOJI_REGEX = emojiRegex()
@@ -747,7 +746,17 @@ export const deepEqual = (object1: Record<any, any>, object2: Record<any, any>) 
     return true
 }
 
-export const shortCodeGenerator = (length: number = 12, omitUppercase?: boolean, omitLowerCase?: boolean, omitNumber?: boolean): string => {
+export const shortCodeGenerator = ({
+    length = 12,
+    omitUppercase,
+    omitLowerCase,
+    omitNumber,
+}: {
+    length?: number
+    omitUppercase?: boolean
+    omitLowerCase?: boolean
+    omitNumber?: boolean
+}): string => {
     let result = ""
     let base = ""
     if (!omitUppercase) base += "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -757,10 +766,6 @@ export const shortCodeGenerator = (length: number = 12, omitUppercase?: boolean,
         result += base.charAt(Math.floor(Math.random() * base.length))
     }
     return result
-}
-
-export const combineDateTime = (date: moment.Moment, time: moment.Moment): moment.Moment => {
-    return moment(`${date.format("YYYY-MM-DD")} ${time.format("HH:mm")}`)
 }
 
 // Checks if given number is between two other numbers
@@ -812,11 +817,6 @@ export const truncateTextLines = (numLines = 1, isInline = false): SxProps => ({
     textOverflow: "ellipsis",
     WebkitLineClamp: numLines,
     WebkitBoxOrient: "vertical",
-
-    // ":hover": {
-    //     overflow: "visible",
-    //     zIndex: 1,
-    // },
 })
 
 // Return true, if a mech has equipped a power core and more than one weapon

@@ -1,10 +1,10 @@
-import { getCardStyles } from "./BattleArena/UpcomingBattle/MechCard"
+import { getCardStyles } from "./MechCard"
 import { Box, Typography } from "@mui/material"
 import React, { useState } from "react"
-import { CustomAvatar } from "./PublicProfile/Avatar/CustomAvatar"
-import { useGameServerSubscription } from "../hooks/useGameServer"
-import { GameServerKeys } from "../keys"
-import { NiceTooltip } from "./Common/Nice/NiceTooltip"
+import { CustomAvatar } from "../../PublicProfile/Avatar/CustomAvatar"
+import { useGameServerSubscription } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
+import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
 
 export const Avatar = ({
     zIndexAdded,

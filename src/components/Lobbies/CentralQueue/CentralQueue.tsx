@@ -13,7 +13,24 @@ export const CentralQueue = ({ lobbies }: { lobbies: BattleLobby[] }) => {
         setDisplayLobbies((prev) => {
             const bls = [...lobbies].filter((bl) => !!bl.ready_at)
 
-            if (prev.length === 0) return bls.filter((bl) => !bl.ended_at && !bl.deleted_at)
+            if (prev.length === 0)
+                return bls
+                    .filter((bl) => !bl.ended_at && !bl.deleted_at)
+                    .sort((a, b) => {
+                        if (a.ready_at && b.ready_at) {
+                            return a.ready_at > b.ready_at ? 1 : -1
+                        }
+
+                        if (a.ready_at) {
+                            return -1
+                        }
+
+                        if (b.ready_at) {
+                            return 1
+                        }
+
+                        return a.created_at > b.created_at ? 1 : -1
+                    })
 
             prev = prev.map((p) => bls.find((bl) => bl.id === p.id) || p)
 
@@ -25,12 +42,16 @@ export const CentralQueue = ({ lobbies }: { lobbies: BattleLobby[] }) => {
             return prev
                 .filter((p) => !p.ended_at && !p.deleted_at)
                 .sort((a, b) => {
-                    if (b.ready_at) {
-                        return 1
-                    }
-
                     if (a.ready_at && b.ready_at) {
                         return a.ready_at > b.ready_at ? 1 : -1
+                    }
+
+                    if (a.ready_at) {
+                        return -1
+                    }
+
+                    if (b.ready_at) {
+                        return 1
                     }
 
                     return a.created_at > b.created_at ? 1 : -1

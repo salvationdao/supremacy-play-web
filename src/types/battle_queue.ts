@@ -21,6 +21,7 @@ export interface BattleLobby {
     ended_at?: Date
     created_at: Date
     deleted_at?: Date
+    will_not_start_until?: Date
 
     expires_at?: Date
     fill_at?: Date

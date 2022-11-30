@@ -39,7 +39,23 @@ export const MyLobbies = () => {
             if (!payload) return
             setInvolvedLobbies((prev) => {
                 if (prev.length === 0)
-                    return payload.filter((bl) => !bl.ended_at && !bl.deleted_at).sort((a, b) => (a.ready_at && b.ready_at && a.ready_at > b.ready_at ? 1 : -1))
+                    return payload
+                        .filter((bl) => !bl.ended_at && !bl.deleted_at)
+                        .sort((a, b) => {
+                            if (a.ready_at && b.ready_at) {
+                                return a.ready_at > b.ready_at ? 1 : -1
+                            }
+
+                            if (a.ready_at) {
+                                return -1
+                            }
+
+                            if (b.ready_at) {
+                                return 1
+                            }
+
+                            return a.created_at > b.created_at ? 1 : -1
+                        })
 
                 const list = prev.map((bl) => payload.find((p) => p.id === bl.id) || bl)
 
@@ -56,12 +72,16 @@ export const MyLobbies = () => {
                 return list
                     .filter((bl) => !bl.ended_at && !bl.deleted_at)
                     .sort((a, b) => {
-                        if (b.ready_at) {
-                            return 1
-                        }
-
                         if (a.ready_at && b.ready_at) {
                             return a.ready_at > b.ready_at ? 1 : -1
+                        }
+
+                        if (a.ready_at) {
+                            return -1
+                        }
+
+                        if (b.ready_at) {
+                            return 1
                         }
 
                         return a.created_at > b.created_at ? 1 : -1
@@ -82,6 +102,22 @@ export const MyLobbies = () => {
             setAllLobbies((prev) => {
                 if (prev.length === 0) {
                     return payload
+                        .filter((p) => !p.ended_at && !p.deleted_at)
+                        .sort((a, b) => {
+                            if (a.ready_at && b.ready_at) {
+                                return a.ready_at > b.ready_at ? 1 : -1
+                            }
+
+                            if (a.ready_at) {
+                                return -1
+                            }
+
+                            if (b.ready_at) {
+                                return 1
+                            }
+
+                            return a.created_at > b.created_at ? 1 : -1
+                        })
                 }
 
                 // Replace current list
@@ -101,12 +137,16 @@ export const MyLobbies = () => {
                 return list
                     .filter((p) => !p.ended_at && !p.deleted_at)
                     .sort((a, b) => {
-                        if (b.ready_at) {
-                            return 1
-                        }
-
                         if (a.ready_at && b.ready_at) {
                             return a.ready_at > b.ready_at ? 1 : -1
+                        }
+
+                        if (a.ready_at) {
+                            return -1
+                        }
+
+                        if (b.ready_at) {
+                            return 1
                         }
 
                         return a.created_at > b.created_at ? 1 : -1
@@ -133,12 +173,16 @@ export const MyLobbies = () => {
             filteredLobbies
                 .filter((p) => !p.ready_at && !involvedLobbies.some((b) => b.id === p.id))
                 .sort((a, b) => {
-                    if (b.ready_at) {
-                        return 1
-                    }
-
                     if (a.ready_at && b.ready_at) {
                         return a.ready_at > b.ready_at ? 1 : -1
+                    }
+
+                    if (a.ready_at) {
+                        return -1
+                    }
+
+                    if (b.ready_at) {
+                        return 1
                     }
 
                     return a.created_at > b.created_at ? 1 : -1
@@ -279,6 +323,7 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
         },
         (payload) => {
             if (!payload) return
+
             setInvolvedLobbies((prev) => {
                 if (prev.length === 0)
                     return payload.filter((bl) => !bl.ended_at && !bl.deleted_at).sort((a, b) => (a.ready_at && b.ready_at && a.ready_at > b.ready_at ? 1 : -1))

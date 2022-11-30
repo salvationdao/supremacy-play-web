@@ -108,7 +108,21 @@ export const Lobbies = () => {
 
             setLobbies((prev) => {
                 if (prev.length === 0) {
-                    return payload
+                    return payload.sort((a, b) => {
+                        if (a.ready_at && b.ready_at) {
+                            return a.ready_at > b.ready_at ? 1 : -1
+                        }
+
+                        if (a.ready_at) {
+                            return -1
+                        }
+
+                        if (b.ready_at) {
+                            return 1
+                        }
+
+                        return a.created_at > b.created_at ? 1 : -1
+                    })
                 }
 
                 // Replace current list
@@ -125,12 +139,16 @@ export const Lobbies = () => {
                 })
 
                 return list.sort((a, b) => {
-                    if (b.ready_at) {
-                        return 1
-                    }
-
                     if (a.ready_at && b.ready_at) {
                         return a.ready_at > b.ready_at ? 1 : -1
+                    }
+
+                    if (a.ready_at) {
+                        return -1
+                    }
+
+                    if (b.ready_at) {
+                        return 1
                     }
 
                     return a.created_at > b.created_at ? 1 : -1
@@ -188,12 +206,16 @@ export const Lobbies = () => {
             result
                 .filter((p) => !p.ready_at)
                 .sort((a, b) => {
-                    if (b.ready_at) {
-                        return 1
-                    }
-
                     if (a.ready_at && b.ready_at) {
                         return a.ready_at > b.ready_at ? 1 : -1
+                    }
+
+                    if (a.ready_at) {
+                        return -1
+                    }
+
+                    if (b.ready_at) {
+                        return 1
                     }
 
                     return a.created_at > b.created_at ? 1 : -1
