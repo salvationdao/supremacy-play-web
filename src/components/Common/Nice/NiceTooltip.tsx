@@ -1,7 +1,6 @@
 import { Stack, SxProps, Tooltip, TooltipProps, Typography } from "@mui/material"
 import { ReactElement } from "react"
 import { useTheme } from "../../../containers/theme"
-import { autoTextColor } from "../../../helpers"
 import { fonts, siteZIndex } from "../../../theme/theme"
 import { NiceBoxThing } from "./NiceBoxThing"
 
@@ -29,12 +28,11 @@ export type TooltipPlacement =
     | "top-start"
     | "top"
 
-export const NiceTooltip = ({ text, renderNode, children, placement, color, textColor: tColor, tooltipSx, ...props }: NiceTooltipProps) => {
+export const NiceTooltip = ({ text, renderNode, children, placement, color, textColor, tooltipSx, ...props }: NiceTooltipProps) => {
     const theme = useTheme()
     if (!text && !renderNode) return <>{children}</>
 
     const primaryColor = color || "#555555"
-    const textColor = tColor || autoTextColor(primaryColor)
 
     return (
         <Tooltip
