@@ -1,9 +1,9 @@
-import { Box, Slide, Stack } from "@mui/material"
+import { Box, Fade, Slide, Stack } from "@mui/material"
 import { useMemo } from "react"
 import { SvgUserDiamond } from "../../../../assets"
 import { FactionIDs } from "../../../../constants"
 import { useAuth, useDimension, useSupremacy } from "../../../../containers"
-import { colors, fonts } from "../../../../theme/theme"
+import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { BattleLobby } from "../../../../types/battle_queue"
 import { TypographyTruncated } from "../../../Common/TypographyTruncated"
 import { Supporters } from "../../../Lobbies/CentralQueue/Supporters"
@@ -62,20 +62,34 @@ export const BattleIntro = ({ currentBattle }: BattleIntroProps) => {
     }, [currentBattle, factionsAll])
 
     return (
-        <Stack
-            sx={{
-                minHeight: "100%",
-                width: "100%",
-                backgroundImage: `url(${currentBattle?.game_map?.background_url})`,
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-                backgroundSize: "cover",
-            }}
-        >
-            {factions?.map((f, index) => (
-                <FactionRow key={index} index={index} lobby={f} />
-            ))}
-        </Stack>
+        <Fade in>
+            <Box
+                sx={{
+                    zIndex: siteZIndex.Modal,
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    overflowY: "auto",
+                }}
+            >
+                <Stack
+                    sx={{
+                        minHeight: "100%",
+                        width: "100%",
+                        backgroundImage: `url(${currentBattle?.game_map?.background_url})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                    }}
+                >
+                    {factions?.map((f, index) => (
+                        <FactionRow key={index} index={index} lobby={f} />
+                    ))}
+                </Stack>
+            </Box>
+        </Fade>
     )
 }
 
