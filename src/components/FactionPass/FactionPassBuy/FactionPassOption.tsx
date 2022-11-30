@@ -15,7 +15,7 @@ import {
     ZHIDailyPassArrowPNG,
     ZHIMonthlyPassArrowPNG,
 } from "../../../assets"
-import { FactionIDs } from "../../../constants"
+import { DEV_ONLY, FactionIDs } from "../../../constants"
 import { supFormatter } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -166,6 +166,7 @@ export const FactionPassOption = React.memo(function FactionPassOption({ faction
                         onClick={() => setOpenPaymentModal(true)}
                         sx={{ width: "100%", p: ".4rem 1rem" }}
                         loading={isLoading}
+                        disabled={!DEV_ONLY}
                     >
                         <Stack spacing=".8rem" direction="row" alignItems="center">
                             <SvgWallet />
@@ -175,7 +176,7 @@ export const FactionPassOption = React.memo(function FactionPassOption({ faction
                 </Box>
             </NiceBoxThing>
 
-            {openPaymentModal && (
+            {DEV_ONLY && openPaymentModal && (
                 <FactionPassBuyModal
                     open={openPaymentModal}
                     factionPass={factionPass}
