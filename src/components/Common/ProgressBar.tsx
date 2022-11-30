@@ -148,5 +148,5 @@ export const ProgressBar = ({
                 )}
             </Stack>
         )
-    }, [backgroundColor, boostedPercent, color, darkerShadeBackgroundColor, id, linePercent, orientation, percent, thickness])
+    }, [backgroundColor, boostedColor, boostedPercent, color, darkerShadeBackgroundColor, id, linePercent, orientation, percent, thickness])
 }

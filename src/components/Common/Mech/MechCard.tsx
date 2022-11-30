@@ -172,7 +172,6 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
     // Grid view
     return (
         <NiceTooltip
-            open={true}
             placement="right-start"
             enterDelay={450}
             enterNextDelay={700}
