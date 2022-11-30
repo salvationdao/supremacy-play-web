@@ -11,7 +11,7 @@ import { AllGameMapsCombined } from "../../Common/AllGameMapsCombined"
 import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
 import { TypographyTruncated } from "../../Common/TypographyTruncated"
 import { JoinLobbyModal } from "../LobbyItem/JoinLobbyModal"
-import { CentralQueueItemTooltip } from "./CentralQueueItemTooltip"
+import { CentralQueueItemTooltipRender } from "./CentralQueueItemTooltipRender"
 import { Supporters } from "./Supporters"
 
 export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) => {
@@ -113,7 +113,11 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
                 enterDelay={450}
                 enterNextDelay={700}
                 renderNode={
-                    <CentralQueueItemTooltip battleLobby={battleLobby} displayAccessCode={displayAccessCode} setShowJoinLobbyModal={setShowJoinLobbyModal} />
+                    <CentralQueueItemTooltipRender
+                        battleLobby={battleLobby}
+                        displayAccessCode={displayAccessCode}
+                        setShowJoinLobbyModal={setShowJoinLobbyModal}
+                    />
                 }
                 color={factionTheme.primary}
             >

@@ -27,7 +27,8 @@ import { BattleLobbiesMech, BattleLobby } from "../../../types/battle_queue"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 import { TypographyTruncated } from "../../Common/TypographyTruncated"
 import { Supporters } from "./Supporters"
-export const CentralQueueItemTooltip = ({
+
+export const CentralQueueItemTooltipRender = ({
     battleLobby,
     displayAccessCode,
     width,
