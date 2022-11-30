@@ -1,16 +1,12 @@
-import { Box, Slide, Stack, Typography } from "@mui/material"
-import { useCallback, useMemo, useState } from "react"
-import { SvgCheckMark, SvgPlus, SvgQuestionMark2, SvgUserDiamond } from "../../../../assets"
+import { Box, Slide, Stack } from "@mui/material"
+import { useMemo } from "react"
+import { SvgUserDiamond } from "../../../../assets"
 import { FactionIDs } from "../../../../constants"
-import { useAuth, useDimension, useGlobalNotifications, useSupremacy } from "../../../../containers"
-import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../../keys"
-import { pulseEffect } from "../../../../theme/keyframes"
+import { useAuth, useDimension, useSupremacy } from "../../../../containers"
 import { colors, fonts } from "../../../../theme/theme"
 import { BattleLobby } from "../../../../types/battle_queue"
-import { NiceBoxThing } from "../../../Common/Nice/NiceBoxThing"
-import { NiceButton } from "../../../Common/Nice/NiceButton"
 import { TypographyTruncated } from "../../../Common/TypographyTruncated"
+import { Supporters } from "../../../Lobbies/CentralQueue/Supporters"
 import { FactionLobbySlots } from "../../../Lobbies/LobbyItem/LobbyItem"
 
 export interface BattleIntroProps {
@@ -88,220 +84,13 @@ interface FactionRowProps {
     lobby: FactionLobbySlots
 }
 
-const MAX_SUPPORTER_SLOTS = 5
-const MAX_SUPPORTERS_TO_SHOW = 5
-
 const FactionRow = ({ index, lobby }: FactionRowProps) => {
     const { getFaction } = useSupremacy()
-    const { userID, factionID } = useAuth()
+    const { userID } = useAuth()
     const { gameUIDimensions } = useDimension()
 
     const theme = getFaction(lobby.faction.id).palette
-    const { details, selectedSupporterSlots, optedInSupporterSlots } = lobby
-
-    // Opt-in
-    const { send } = useGameServerCommandsFaction("/faction_commander")
-    const { newSnackbarMessage } = useGlobalNotifications()
-    const [optInError, setOptInError] = useState<string>()
-    const onOptIn = useCallback(async () => {
-        try {
-            await send(GameServerKeys.JoinBattleLobbySupporter, { battle_lobby_id: details.id, access_code: details.access_code })
-            setOptInError(undefined)
-            newSnackbarMessage(`Successfully opted-in to lobby ${details.name} as a supporter`, "success")
-        } catch (err) {
-            let message = "Failed to opt in to support battle."
-            if (typeof err === "string") {
-                message = err
-            } else if (err instanceof Error) {
-                message = err.message
-            }
-            setOptInError(message)
-        }
-    }, [details.access_code, details.id, details.name, newSnackbarMessage, send])
-
-    const supporterContent = useMemo(() => {
-        const isMyFaction = factionID === lobby.faction.id
-        const boxSize = "4rem"
-        if (!isMyFaction) {
-            if (selectedSupporterSlots.length === 0) {
-                return new Array(MAX_SUPPORTER_SLOTS).fill(null).map((_, index) => (
-                    <NiceBoxThing
-                        key={index}
-                        border={{
-                            color: theme.primary,
-                            thickness: "lean",
-                        }}
-                        background={{
-                            colors: [theme.background],
-                        }}
-                        sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            height: boxSize,
-                            width: boxSize,
-                        }}
-                    >
-                        <SvgQuestionMark2 fill={theme.s700} />
-                    </NiceBoxThing>
-                ))
-            }
-            return (
-                <>
-                    {selectedSupporterSlots.map((ss, index) => (
-                        <NiceBoxThing
-                            key={index}
-                            border={{
-                                color: theme.primary,
-                                thickness: "lean",
-                            }}
-                            background={{
-                                colors: [theme.background],
-                            }}
-                            sx={{
-                                position: "relative",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                height: boxSize,
-                                width: boxSize,
-                            }}
-                        >
-                            {ss.avatar_url && (
-                                <Box
-                                    component="img"
-                                    src={ss.avatar_url}
-                                    alt={`${ss.username}'s avatar`}
-                                    sx={{
-                                        width: "100%",
-                                        objectFit: "cover",
-                                    }}
-                                />
-                            )}
-                            <Stack
-                                sx={{
-                                    position: "absolute",
-                                    top: 0,
-                                    left: 0,
-                                    bottom: 0,
-                                    right: 0,
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                }}
-                            >
-                                <SvgCheckMark fill={colors.green} />
-                            </Stack>
-                        </NiceBoxThing>
-                    ))}
-                </>
-            )
-        }
-
-        if (selectedSupporterSlots.length === 0) {
-            return (
-                <>
-                    {optedInSupporterSlots.map((os, index) => {
-                        if (index > MAX_SUPPORTERS_TO_SHOW) return
-                        return (
-                            <Box
-                                key={index}
-                                component="img"
-                                src={os.avatar_url}
-                                alt={`${os.username}'s avatar`}
-                                sx={{
-                                    height: boxSize,
-                                    width: boxSize,
-                                    border: `1px solid ${theme.primary}`,
-                                }}
-                            />
-                        )
-                    })}
-                    {new Array(MAX_SUPPORTER_SLOTS - optedInSupporterSlots.length).fill(null).map((_, index) => (
-                        <NiceButton
-                            key={`${index}-empty`}
-                            onClick={onOptIn}
-                            buttonColor={theme.primary}
-                            sx={{
-                                height: boxSize,
-                                width: boxSize,
-                                animation: `${pulseEffect} 3s infinite`,
-                            }}
-                        >
-                            <SvgPlus fill={theme.s700} />
-                        </NiceButton>
-                    ))}
-                    {optedInSupporterSlots.length - MAX_SUPPORTERS_TO_SHOW > 0 && (
-                        <Typography
-                            sx={{
-                                height: boxSize,
-                                width: boxSize,
-                            }}
-                        >
-                            +{optedInSupporterSlots.length - MAX_SUPPORTERS_TO_SHOW} more
-                        </Typography>
-                    )}
-                    {optInError && (
-                        <TypographyTruncated
-                            sx={{
-                                color: colors.red,
-                            }}
-                        >
-                            {optInError}
-                        </TypographyTruncated>
-                    )}
-                </>
-            )
-        }
-        return (
-            <>
-                {selectedSupporterSlots.map((ss, index) => (
-                    <NiceBoxThing
-                        key={index}
-                        border={{
-                            color: theme.primary,
-                            thickness: "lean",
-                        }}
-                        background={{
-                            colors: [theme.background],
-                        }}
-                        sx={{
-                            position: "relative",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            height: boxSize,
-                            width: boxSize,
-                        }}
-                    >
-                        {ss.avatar_url && (
-                            <Box
-                                component="img"
-                                src={ss.avatar_url}
-                                alt={`${ss.username}'s avatar`}
-                                sx={{
-                                    width: "100%",
-                                    objectFit: "cover",
-                                }}
-                            />
-                        )}
-                        <Stack
-                            sx={{
-                                position: "absolute",
-                                top: 0,
-                                left: 0,
-                                bottom: 0,
-                                right: 0,
-                                justifyContent: "center",
-                                alignItems: "center",
-                            }}
-                        >
-                            <SvgCheckMark fill={colors.green} />
-                        </Stack>
-                    </NiceBoxThing>
-                ))}
-            </>
-        )
-    }, [factionID, lobby.faction.id, onOptIn, optInError, optedInSupporterSlots, selectedSupporterSlots, theme.background, theme.primary, theme.s700])
+    const { details } = lobby
 
     const isTablet = gameUIDimensions.width < 900
     return (
@@ -357,7 +146,7 @@ const FactionRow = ({ index, lobby }: FactionRowProps) => {
                                 gap: ".7rem",
                             }}
                         >
-                            {supporterContent}
+                            <Supporters battleLobby={details} factionID={lobby.faction.id} size="4rem" />
                         </Box>
                     </Stack>
                     {lobby.mechSlots.map((ms, index) => (

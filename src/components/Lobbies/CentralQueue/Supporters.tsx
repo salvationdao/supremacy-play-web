@@ -12,7 +12,15 @@ import { NiceButton } from "../../Common/Nice/NiceButton"
 const NUMBER_SUPPORTERS_REQUIRED = 5
 const SIZE = "2rem"
 
-export const Supporters = React.memo(function Supporters({ battleLobby, factionID }: { battleLobby: BattleLobby; factionID: string }) {
+export const Supporters = React.memo(function Supporters({
+    battleLobby,
+    factionID,
+    size = SIZE,
+}: {
+    battleLobby: BattleLobby
+    factionID: string
+    size?: string
+}) {
     const { userID, factionID: userFactionID } = useAuth()
     const { getFaction } = useSupremacy()
     const { send } = useGameServerCommandsFaction("/faction_commander")
@@ -64,8 +72,8 @@ export const Supporters = React.memo(function Supporters({ battleLobby, factionI
                 spacing={-7}
                 sx={{
                     ".MuiAvatar-root": {
-                        width: `calc(${SIZE} - .3rem)`,
-                        height: `calc(${SIZE} - .3rem)`,
+                        width: `calc(${size} - .3rem)`,
+                        height: `calc(${size} - .3rem)`,
                         border: `${colors.grey}AA 1px solid`,
                         borderRadius: 0.2,
                     },
@@ -106,8 +114,8 @@ export const Supporters = React.memo(function Supporters({ battleLobby, factionI
                 <NiceButton
                     buttonColor={faction.palette.primary}
                     sx={{
-                        width: `calc(${SIZE} - 1px)`,
-                        height: `calc(${SIZE} - 1px)`,
+                        width: `calc(${size} - 1px)`,
+                        height: `calc(${size} - 1px)`,
                         p: 0,
                         animation: `${pulseEffect} 3s infinite`,
                     }}
