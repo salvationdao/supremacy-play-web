@@ -1,4 +1,4 @@
-import { Box, Checkbox, Stack, Typography } from "@mui/material"
+import { Box, Checkbox, Stack } from "@mui/material"
 import React, { useMemo } from "react"
 import { Link } from "react-router-dom"
 import { SvgMechDeaths, SvgMechKills, SvgMechLosses, SvgMechWins, SvgUserDiamond } from "../../../assets"
@@ -12,7 +12,7 @@ import { NiceTooltip } from "../Nice/NiceTooltip"
 import { TypographyTruncated } from "../TypographyTruncated"
 import { MechIdleStatus } from "./MechIdleStatus"
 import { RepairBlocks } from "./MechRepairBlocks"
-import { MechTooltipRender } from "./MechTooltipRender"
+import { MechTooltipRender } from "./MechTooltipRender/MechTooltipRender"
 
 interface MechCardProps {
     mech: NewMechStruct
@@ -127,27 +127,27 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                         {!hide?.kdwlStats && (
                             <>
                                 <NiceTooltip placement="top-start" text="Total kills">
-                                    <Typography whiteSpace="nowrap">
+                                    <TypographyTruncated whiteSpace="nowrap">
                                         <SvgMechKills inline size="1.6rem" /> {numFormatter(mech.stats.total_kills)}
-                                    </Typography>
+                                    </TypographyTruncated>
                                 </NiceTooltip>
 
                                 <NiceTooltip placement="top-start" text="Total deaths">
-                                    <Typography whiteSpace="nowrap">
+                                    <TypographyTruncated whiteSpace="nowrap">
                                         <SvgMechDeaths inline size="1.6rem" /> {numFormatter(mech.stats.total_deaths)}
-                                    </Typography>
+                                    </TypographyTruncated>
                                 </NiceTooltip>
 
                                 <NiceTooltip placement="top-start" text="Total wins">
-                                    <Typography whiteSpace="nowrap">
+                                    <TypographyTruncated whiteSpace="nowrap">
                                         <SvgMechWins inline size="1.6rem" /> {numFormatter(mech.stats.total_wins)}
-                                    </Typography>
+                                    </TypographyTruncated>
                                 </NiceTooltip>
 
                                 <NiceTooltip placement="top-start" text="Total losses">
-                                    <Typography whiteSpace="nowrap">
+                                    <TypographyTruncated whiteSpace="nowrap">
                                         <SvgMechLosses inline size="1.6rem" /> {numFormatter(mech.stats.total_losses)}
-                                    </Typography>
+                                    </TypographyTruncated>
                                 </NiceTooltip>
                             </>
                         )}
@@ -241,42 +241,38 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                             }}
                         >
                             <NiceTooltip placement="top-start" text="Total kills">
-                                <Typography whiteSpace="nowrap">
+                                <TypographyTruncated whiteSpace="nowrap">
                                     <SvgMechKills inline size="1.6rem" /> {numFormatter(mech.stats.total_kills)}
-                                </Typography>
+                                </TypographyTruncated>
                             </NiceTooltip>
 
                             <NiceTooltip placement="top-start" text="Total deaths">
-                                <Typography whiteSpace="nowrap">
+                                <TypographyTruncated whiteSpace="nowrap">
                                     <SvgMechDeaths inline size="1.6rem" /> {numFormatter(mech.stats.total_deaths)}
-                                </Typography>
+                                </TypographyTruncated>
                             </NiceTooltip>
 
                             <NiceTooltip placement="top-start" text="Total wins">
-                                <Typography whiteSpace="nowrap">
+                                <TypographyTruncated whiteSpace="nowrap">
                                     <SvgMechWins inline size="1.6rem" /> {numFormatter(mech.stats.total_wins)}
-                                </Typography>
+                                </TypographyTruncated>
                             </NiceTooltip>
 
                             <NiceTooltip placement="top-start" text="Total losses">
-                                <Typography whiteSpace="nowrap">
+                                <TypographyTruncated whiteSpace="nowrap">
                                     <SvgMechLosses inline size="1.6rem" /> {numFormatter(mech.stats.total_losses)}
-                                </Typography>
+                                </TypographyTruncated>
                             </NiceTooltip>
                         </Stack>
                     )}
 
                     {/* Mech status and repair blocks */}
-                    <Stack direction="row" alignItems="center" justifyContent="space-between">
+                    <Stack direction="row" alignItems="center">
                         <MechIdleStatus mech={mech} />
 
-                        <RepairBlocks
-                            defaultBlocks={mech.repair_blocks}
-                            remainDamagedBlocks={mech.damaged_blocks}
-                            sx={{
-                                width: "fit-content",
-                            }}
-                        />
+                        <Box flex={1} />
+
+                        <RepairBlocks defaultBlocks={mech.repair_blocks} remainDamagedBlocks={mech.damaged_blocks} sx={{ width: "fit-content" }} />
                     </Stack>
                 </Stack>
             </NiceBoxThing>

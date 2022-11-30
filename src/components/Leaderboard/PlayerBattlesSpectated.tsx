@@ -1,20 +1,21 @@
-import { Stack, Typography } from "@mui/material"
+import { Stack } from "@mui/material"
 import { useEffect, useState } from "react"
-import { useAuth, useGlobalNotifications, useSupremacy } from "../../../containers"
-import { useTheme } from "../../../containers/theme"
-import { useGameServerCommands } from "../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../keys"
-import { colors, fonts } from "../../../theme/theme"
-import { LeaderboardRound, User } from "../../../types"
-import { CoolTable } from "../../Common/Nice/NiceTable"
-import { PlayerNameGid } from "../../Common/PlayerNameGid"
+import { useAuth, useGlobalNotifications, useSupremacy } from "../../containers"
+import { useTheme } from "../../containers/theme"
+import { useGameServerCommands } from "../../hooks/useGameServer"
+import { GameServerKeys } from "../../keys"
+import { colors, fonts } from "../../theme/theme"
+import { LeaderboardRound, User } from "../../types"
+import { NiceTable } from "../Common/Nice/NiceTable"
+import { PlayerNameGid } from "../Common/PlayerNameGid"
+import { TypographyTruncated } from "../Common/TypographyTruncated"
 
 interface RankItem {
     player: User
-    mech_kill_count: number
+    view_battle_count: number
 }
 
-export const PlayerMechKills = ({ selectedRound }: { selectedRound?: LeaderboardRound }) => {
+export const PlayerBattlesSpectated = ({ selectedRound }: { selectedRound?: LeaderboardRound }) => {
     const theme = useTheme()
     const { userID } = useAuth()
     const { getFaction } = useSupremacy()
@@ -31,13 +32,13 @@ export const PlayerMechKills = ({ selectedRound }: { selectedRound?: Leaderboard
             try {
                 setIsLoading(true)
 
-                const resp = await send<RankItem[]>(GameServerKeys.GetPlayerMechKills, { round_id: selectedRound?.id })
+                const resp = await send<RankItem[]>(GameServerKeys.GetPlayerBattlesSpectated, { round_id: selectedRound?.id })
 
                 if (!resp) return
                 setLoadError(undefined)
                 setRankItems(resp)
             } catch (e) {
-                const message = typeof e === "string" ? e : "Failed to player mech kills."
+                const message = typeof e === "string" ? e : "Failed to player battles spectated."
                 setLoadError(message)
                 newSnackbarMessage(message, "error")
                 console.error(e)
@@ -48,9 +49,8 @@ export const PlayerMechKills = ({ selectedRound }: { selectedRound?: Leaderboard
     }, [newSnackbarMessage, selectedRound?.id, send])
 
     return (
-        <CoolTable
-            title="MOST MECH KILLS"
-            tableHeadings={["TOP 100", "PLAYER", "FACTION", "MECH KILLS"]}
+        <NiceTable
+            tableHeadings={["TOP 100", "PLAYER", "FACTION", "BATTLES SPECTATED"]}
             alignments={["center", "left", "left", "center"]}
             widths={["19rem", "auto", "auto", "23rem"]}
             items={rankItems}
@@ -73,24 +73,24 @@ export const PlayerMechKills = ({ selectedRound }: { selectedRound?: Leaderboard
                         },
                     },
                     cells: [
-                        <Typography
+                        <TypographyTruncated
                             key={1}
                             variant="h6"
                             sx={{ textAlign: "center", fontWeight: "bold", color, fontFamily: rank <= 3 ? fonts.nostromoBlack : "inherit" }}
                         >
                             {index + 1}
-                        </Typography>,
+                        </TypographyTruncated>,
 
                         <PlayerNameGid key={2} player={item.player} styledImageTextProps={{ variant: "h6", imageSize: 2.4 }} />,
 
-                        <Typography variant="h6" key={3} sx={{ fontWeight: "bold", color: faction.palette.primary, textTransform: "uppercase" }}>
+                        <TypographyTruncated variant="h6" key={3} sx={{ fontWeight: "bold", color: faction.palette.primary, textTransform: "uppercase" }}>
                             {faction.label}
-                        </Typography>,
+                        </TypographyTruncated>,
 
                         <Stack key={4} direction="row" spacing=".4rem" alignItems="center" justifyContent="center">
-                            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                                {item.mech_kill_count}
-                            </Typography>
+                            <TypographyTruncated variant="h6" sx={{ fontWeight: "bold" }}>
+                                {item.view_battle_count}
+                            </TypographyTruncated>
                         </Stack>,
                     ],
                 }

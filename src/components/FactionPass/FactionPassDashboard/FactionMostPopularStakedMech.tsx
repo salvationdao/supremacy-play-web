@@ -1,29 +1,29 @@
-import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../keys"
 import { Box, Stack, Typography } from "@mui/material"
-import React, { useMemo, useState } from "react"
-import { NewMechStruct } from "../../../types"
-import { colors, fonts } from "../../../theme/theme"
-import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
-import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
-import { useSupremacy } from "../../../containers"
-import { RepairBlocks } from "../../Common/Mech/MechRepairBlocks"
-import { getMechStatusDeets, getRarityDeets, numFormatter } from "../../../helpers"
+import { useMemo, useState } from "react"
 import {
     SvgLoadoutArmour,
     SvgLoadoutPowerCoreCapacity,
     SvgLoadoutPowerCoreRegen,
+    SvgLoadoutSkin,
     SvgLoadoutSpeed,
+    SvgLoadoutUtility,
+    SvgLoadoutWeapon,
     SvgMechDeaths,
     SvgMechKills,
     SvgMechLosses,
     SvgMechWins,
     SvgPowerCore,
-    SvgLoadoutSkin,
-    SvgUtilities,
-    SvgWeapons,
 } from "../../../assets"
+import { useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
+import { getMechStatusDeets, getRarityDeets, numFormatter } from "../../../helpers"
+import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
+import { colors, fonts } from "../../../theme/theme"
+import { NewMechStruct } from "../../../types"
+import { RepairBlocks } from "../../Common/Mech/MechRepairBlocks"
+import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
+import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
 
 export const FactionMostPopularStakedMech = () => {
@@ -121,7 +121,7 @@ export const FactionMostPopularStakedMech = () => {
                     {/* Mech Equipments*/}
                     <Stack direction="row" alignItems="center" justifyContent="space-between">
                         <Stack spacing=".5rem">
-                            <SvgWeapons fill={colors.weapons} size="2.5rem" />
+                            <SvgLoadoutWeapon fill={colors.weapons} size="2.5rem" />
                             <Stack direction="row" alignItems="center" justifyContent="center" spacing=".25rem">
                                 {mostPopularMech.weapon_slots &&
                                     mostPopularMech.weapon_slots.map((ws, i) => (
@@ -138,7 +138,7 @@ export const FactionMostPopularStakedMech = () => {
                         </Stack>
 
                         <Stack spacing=".5rem">
-                            <SvgUtilities fill={colors.utilities} size="2.5rem" />
+                            <SvgLoadoutUtility fill={colors.utilities} size="2.5rem" />
                             <Stack direction="row" alignItems="center" justifyContent="center" spacing=".25rem">
                                 {mostPopularMech.utilities &&
                                     mostPopularMech.utilities.map((us, i) => (

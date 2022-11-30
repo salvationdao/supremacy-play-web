@@ -3,15 +3,15 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { SvgAbility, SvgAnnouncement, SvgDamage1, SvgEmptySet, SvgHistoryClock, SvgMail, SvgNotification, SvgSyndicateFlag } from "../../../../assets"
 import { useAuth } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
+import { truncateTextLines } from "../../../../helpers"
 import { usePagination } from "../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { useLocalStorage } from "../../../../hooks/useLocalStorage"
 import { GameServerKeys } from "../../../../keys"
-import { truncateTextLines } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
 import { FeatureName, SystemMessage, SystemMessageDataType } from "../../../../types"
-import { CoolTable } from "../../../Common/Nice/NiceTable"
 import { NiceButton } from "../../../Common/Nice/NiceButton"
+import { NiceTable } from "../../../Common/Nice/NiceTable"
 import { PreferenceToggle } from "../../ProfileCard/PreferencesModal/NotificationPreferences"
 import { SystemMessageDisplayable } from "../Messages"
 import { MessageDisplay } from "./MessageDisplay/MessageDisplay"
@@ -138,7 +138,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
             return (
                 <Stack sx={{ flex: 1 }}>
                     <Stack sx={{ flex: 1 }}>
-                        <CoolTable
+                        <NiceTable
                             tableHeadings={["FROM", "TITLE", "BODY", "TIME"]}
                             alignments={["left", "left", "left", "left"]}
                             widths={["18rem", "15rem", "auto", "8rem"]}

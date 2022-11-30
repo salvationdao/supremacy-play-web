@@ -1,5 +1,5 @@
 import { Stack, Typography } from "@mui/material"
-import { SvgLoadoutSkin, SvgStats, SvgWeapons } from "../../../../assets"
+import { SvgLoadoutSkin, SvgStats, SvgLoadoutWeapon } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { getRarityDeets, getWeaponTypeColor } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
@@ -23,7 +23,7 @@ export const WeaponStatsDetails = ({ weaponDetails }: Props) => {
         <Stack spacing="3rem">
             <Stack spacing="1rem">
                 <Stack direction="row" spacing=".8rem" alignItems="center">
-                    <SvgWeapons fill={primaryColor} size="1.8rem" />
+                    <SvgLoadoutWeapon fill={primaryColor} size="1.8rem" />
                     <Typography variant="h5" sx={{ color: primaryColor, fontFamily: fonts.nostromoBlack }}>
                         WEAPON TYPE
                     </Typography>

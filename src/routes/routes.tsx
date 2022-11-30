@@ -17,7 +17,7 @@ import { FleetSubmodels } from "../components/FleetSubmodels/FleetSubmodels"
 import { FleetWeapons } from "../components/FleetWeapons/FleetWeapons"
 import { MechPage } from "../components/Hangar/WarMachinesHangar/WarMachineDetails/MechPage"
 import { WeaponHangarDetails } from "../components/Hangar/WeaponsHangar/WeaponDetails/WeaponHangarDetails"
-import { GlobalStats } from "../components/Leaderboard/GlobalStats/GlobalStats"
+import { Leaderboard } from "../components/Leaderboard/Leaderboard"
 import { Lobbies } from "../components/Lobbies/Lobbies"
 import { HistoryMarket } from "../components/Marketplace/HistoryMarket/HistoryMarket"
 import { KeycardMarketDetails } from "../components/Marketplace/KeycardsMarket/KeycardMarketDetails/KeycardMarketDetails"
@@ -217,7 +217,7 @@ export const Routes: RouteSingle[] = [
         id: RouteSingleID.Leaderboard,
         path: "/leaderboard",
         exact: true,
-        Component: GlobalStats,
+        Component: Leaderboard,
         restrictions: {
             requireAuth: false,
             requireFaction: false,

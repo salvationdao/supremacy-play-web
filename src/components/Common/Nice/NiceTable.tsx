@@ -23,7 +23,7 @@ import { useTheme } from "../../../containers/theme"
 import { mergeDeep } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 
-interface CoolTableProps<T> {
+interface NiceTableProps<T> {
     title?: string
     tableHeadings: string[]
     alignments?: ("left" | "right" | "center")[]
@@ -52,7 +52,7 @@ interface CoolTableProps<T> {
     }
 }
 
-export const CoolTable = <T,>({
+export const NiceTable = <T,>({
     title,
     tableHeadings,
     alignments,
@@ -65,7 +65,7 @@ export const CoolTable = <T,>({
     titleRowHeight = "5.5rem",
     cellPadding = ".8rem 1rem",
     paginationProps,
-}: CoolTableProps<T>) => {
+}: NiceTableProps<T>) => {
     const theme = useTheme()
 
     const primaryColor = theme.factionTheme.primary

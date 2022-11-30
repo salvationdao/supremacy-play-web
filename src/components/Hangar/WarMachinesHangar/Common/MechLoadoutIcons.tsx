@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { NiceTooltip } from "../../.."
-import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgLoadoutSkin, SvgUtilities, SvgWeapons } from "../../../../assets"
+import { SvgIntroAnimation, SvgOutroAnimation, SvgPowerCore, SvgLoadoutSkin, SvgLoadoutUtility, SvgLoadoutWeapon } from "../../../../assets"
 import { getRarityDeets } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
@@ -72,7 +72,7 @@ export const MechLoadoutIcons = ({ mech, mechDetails }: { mech?: MechBasic; mech
                 new Array(weaponCount).fill(0).map((_, index) => (
                     <NiceTooltip color={colors.weapons} key={`mech-info-${index}`} text="Weapon" placement="bottom">
                         <Box>
-                            <SvgWeapons fill={colors.weapons} size="1.7rem" />
+                            <SvgLoadoutWeapon fill={colors.weapons} size="1.7rem" />
                         </Box>
                     </NiceTooltip>
                 ))}
@@ -81,7 +81,7 @@ export const MechLoadoutIcons = ({ mech, mechDetails }: { mech?: MechBasic; mech
                 new Array(weaponSlots - weaponCount).fill(0).map((_, index) => (
                     <NiceTooltip color={colors.weapons} key={`mech-info-${index}`} text="Weapon" placement="bottom">
                         <Box>
-                            <SvgWeapons fill={`${colors.darkGrey}80`} size="1.7rem" />
+                            <SvgLoadoutWeapon fill={`${colors.darkGrey}80`} size="1.7rem" />
                         </Box>
                     </NiceTooltip>
                 ))}
@@ -90,7 +90,7 @@ export const MechLoadoutIcons = ({ mech, mechDetails }: { mech?: MechBasic; mech
                 new Array(utilityCount).fill(0).map((_, index) => (
                     <NiceTooltip color={colors.utilities} key={`mech-info-${index}`} text="Utility" placement="bottom">
                         <Box>
-                            <SvgUtilities fill={colors.utilities} size="1.7rem" />
+                            <SvgLoadoutUtility fill={colors.utilities} size="1.7rem" />
                         </Box>
                     </NiceTooltip>
                 ))}
@@ -99,7 +99,7 @@ export const MechLoadoutIcons = ({ mech, mechDetails }: { mech?: MechBasic; mech
                 new Array(utilitySlots - utilityCount).fill(0).map((_, index) => (
                     <NiceTooltip color={colors.utilities} key={`mech-info-${index}`} text="Utility" placement="bottom">
                         <Box>
-                            <SvgUtilities fill={`${colors.darkGrey}80`} size="1.7rem" />
+                            <SvgLoadoutUtility fill={`${colors.darkGrey}80`} size="1.7rem" />
                         </Box>
                     </NiceTooltip>
                 ))}
