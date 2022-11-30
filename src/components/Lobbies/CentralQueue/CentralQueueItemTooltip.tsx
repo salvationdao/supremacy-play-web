@@ -10,6 +10,7 @@ import {
     SvgLobbies,
     SvgLock,
     SvgMap,
+    SvgMeteor,
     SvgSecondPlace,
     SvgSupToken,
     SvgThirdPlace,
@@ -26,7 +27,6 @@ import { BattleLobbiesMech, BattleLobby } from "../../../types/battle_queue"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 import { TypographyTruncated } from "../../Common/TypographyTruncated"
 import { Supporters } from "./Supporters"
-
 export const CentralQueueItemTooltip = ({
     battleLobby,
     displayAccessCode,
@@ -206,7 +206,7 @@ export const CentralQueueItemTooltip = ({
                 {/* Supporters */}
                 <Stack direction="row" justifyContent="space-between" spacing="1rem">
                     <Typography sx={{ fontFamily: fonts.nostromoBlack }} variant="body2">
-                        <SvgMap inline /> Supporters:
+                        <SvgMeteor inline /> Supporters:
                     </Typography>
                     <Supporters battleLobby={battleLobby} factionID={factionID} />
                 </Stack>
