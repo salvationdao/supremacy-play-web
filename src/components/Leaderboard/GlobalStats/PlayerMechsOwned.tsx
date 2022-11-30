@@ -1,4 +1,4 @@
-import { Stack, Typography } from "@mui/material"
+import { Stack } from "@mui/material"
 import { useEffect, useState } from "react"
 import { useAuth, useGlobalNotifications, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
@@ -8,6 +8,7 @@ import { colors, fonts } from "../../../theme/theme"
 import { User } from "../../../types"
 import { CoolTable } from "../../Common/Nice/NiceTable"
 import { PlayerNameGid } from "../../Common/PlayerNameGid"
+import { TypographyTruncated } from "../../Common/TypographyTruncated"
 
 interface RankItem {
     player: User
@@ -72,24 +73,24 @@ export const PlayerMechsOwned = () => {
                         },
                     },
                     cells: [
-                        <Typography
+                        <TypographyTruncated
                             key={1}
                             variant="h6"
                             sx={{ textAlign: "center", fontWeight: "bold", color, fontFamily: rank <= 3 ? fonts.nostromoBlack : "inherit" }}
                         >
                             {index + 1}
-                        </Typography>,
+                        </TypographyTruncated>,
 
                         <PlayerNameGid key={2} player={item.player} styledImageTextProps={{ variant: "h6", imageSize: 2.4 }} />,
 
-                        <Typography variant="h6" key={3} sx={{ fontWeight: "bold", color: faction.palette.primary, textTransform: "uppercase" }}>
+                        <TypographyTruncated variant="h6" key={3} sx={{ fontWeight: "bold", color: faction.palette.primary, textTransform: "uppercase" }}>
                             {faction.label}
-                        </Typography>,
+                        </TypographyTruncated>,
 
                         <Stack key={4} direction="row" spacing=".4rem" alignItems="center" justifyContent="center">
-                            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                            <TypographyTruncated variant="h6" sx={{ fontWeight: "bold" }}>
                                 {item.mechs_owned}
-                            </Typography>
+                            </TypographyTruncated>
                         </Stack>,
                     ],
                 }
