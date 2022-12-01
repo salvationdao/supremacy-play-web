@@ -107,6 +107,7 @@ const FactionRow = ({ index, lobby }: FactionRowProps) => {
     const { details } = lobby
 
     const isTablet = gameUIDimensions.width < 900
+
     return (
         <Slide in direction={index % 2 === 0 ? "left" : "right"}>
             <Stack

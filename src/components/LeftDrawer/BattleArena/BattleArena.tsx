@@ -50,7 +50,7 @@ export const BattleArena = () => {
                         justifyContent="space-between"
                         sx={{
                             p: ".4rem 1rem",
-                            backgroundColor: isAIDrivenMatch ? colors.green : colors.red,
+                            backgroundColor: isAIDrivenMatch ? colors.orange : colors.red,
                             boxShadow: 5,
                         }}
                     >

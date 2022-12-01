@@ -206,7 +206,7 @@ export const Routes: RouteSingle[] = [
             image: TutorialPNG,
             path: "/tutorial",
         },
-        enable: true,
+        enable: DEV_ONLY,
         tabTitle: "Tutorial",
     },
 
@@ -799,7 +799,7 @@ export const Routes: RouteSingle[] = [
             image: GenericPNG,
             path: "/faction-pass/dashboard",
         },
-        enable: DEV_ONLY,
+        enable: true,
         tabTitle: "Faction Dashboard",
     },
     {
@@ -818,7 +818,7 @@ export const Routes: RouteSingle[] = [
             image: GenericPNG,
             path: "/faction-pass/mech-pool",
         },
-        enable: DEV_ONLY,
+        enable: true,
         tabTitle: "Faction Mech Pool",
     },
 
