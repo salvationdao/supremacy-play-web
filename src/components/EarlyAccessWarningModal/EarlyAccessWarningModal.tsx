@@ -1,9 +1,9 @@
-import { Box, Modal, Stack, Typography } from "@mui/material"
-import { Alert } from "@mui/lab"
-import { colors, fonts } from "../../theme/theme"
-import { useToggle } from "../../hooks"
-import { ClipThing, FancyButton } from ".."
+import { Box, Stack, Typography } from "@mui/material"
 import { IS_TESTING_MODE } from "../../constants"
+import { useToggle } from "../../hooks"
+import { colors, fonts } from "../../theme/theme"
+import { NiceButton } from "../Common/Nice/NiceButton"
+import { NiceModal } from "../Common/Nice/NiceModal"
 
 export const EarlyAccessWarningModal = ({ onAcknowledged }: { onAcknowledged: () => void }) => {
     const [closed, toggleClosed] = useToggle()
@@ -11,58 +11,24 @@ export const EarlyAccessWarningModal = ({ onAcknowledged }: { onAcknowledged: ()
     if (closed) return null
 
     return (
-        <Modal open={!closed}>
-            <Box
-                sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    width: "45rem",
-                    boxShadow: 6,
-                    outline: "none",
-                }}
-            >
-                <ClipThing
-                    clipSize="8px"
-                    border={{
-                        borderColor: "#FFFFFF",
-                        borderThickness: ".3rem",
-                    }}
-                    sx={{ position: "relative" }}
-                    backgroundColor={colors.darkNavyBlue}
-                >
-                    <Box
-                        sx={{
-                            px: "3.2rem",
-                            py: "2.4rem",
-                        }}
-                    >
-                        {IS_TESTING_MODE ? <StagingMessage /> : <ProdMessage />}
+        <NiceModal open={!closed}>
+            <Box sx={{ px: "3.2rem", py: "2.4rem" }}>
+                {IS_TESTING_MODE ? <StagingMessage /> : <ProdMessage />}
 
-                        <FancyButton
-                            clipThingsProps={{
-                                clipSize: "9px",
-                                backgroundColor: colors.darkNavy,
-                                opacity: 1,
-                                border: { borderColor: colors.neonBlue, borderThickness: "2px" },
-                                sx: { position: "relative", mt: "2.4rem" },
-                            }}
-                            sx={{ px: "1.6rem", py: ".7rem", color: colors.neonBlue }}
-                            onClick={() => {
-                                toggleClosed(true)
-                                onAcknowledged()
-                                Notification.requestPermission()
-                            }}
-                        >
-                            <Typography variant="body2" sx={{ color: colors.neonBlue, fontFamily: fonts.nostromoBlack }}>
-                                I AGREE, LET ME IN!
-                            </Typography>
-                        </FancyButton>
-                    </Box>
-                </ClipThing>
+                <NiceButton
+                    corners
+                    buttonColor={colors.green}
+                    onClick={() => {
+                        toggleClosed(true)
+                        onAcknowledged()
+                        Notification.requestPermission()
+                    }}
+                    sx={{ mt: "2.4rem", width: "100%", py: "1.1rem" }}
+                >
+                    I AGREE, LET ME IN!
+                </NiceButton>
             </Box>
-        </Modal>
+        </NiceModal>
     )
 }
 
@@ -85,21 +51,6 @@ const StagingMessage = () => {
 const ProdMessage = () => {
     return (
         <Stack spacing="1.6rem">
-            <Alert
-                severity="warning"
-                sx={{
-                    alignItems: "center",
-                    ".MuiAlert-message": {
-                        pt: "1.12rem",
-                        fontSize: "1.3rem",
-                        fontWeight: "bold",
-                        fontFamily: fonts.nostromoBold,
-                    },
-                }}
-            >
-                The game is in early access and the $SUPS you use are real!
-            </Alert>
-
             <Typography variant="h5" sx={{ fontFamily: fonts.nostromoHeavy, color: colors.neonBlue }}>
                 EARLY ACCESS!
             </Typography>

@@ -1,15 +1,11 @@
 import { Box, Grow, Modal, Stack, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
 import { BattleRewardsBannerPNG } from "../../assets"
+import { useLocalStorage } from "../../hooks/useLocalStorage"
 import { colors, fonts } from "../../theme/theme"
 import { FancyButton } from "../Common/Deprecated/FancyButton"
 
 export const BattleRewardsSkyHighModal = () => {
-    const [dismissedSkyHighModal, setDismissedSkyHighModal] = useState(localStorage.getItem("dismissedSkyHighModal") === "true")
-
-    useEffect(() => {
-        localStorage.setItem("dismissedSkyHighModal", dismissedSkyHighModal.toString())
-    }, [dismissedSkyHighModal])
+    const [dismissedSkyHighModal, setDismissedSkyHighModal] = useLocalStorage<boolean>("dismissedSkyHighModal", false)
 
     if (dismissedSkyHighModal) return null
 

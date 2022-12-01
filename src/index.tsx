@@ -13,7 +13,6 @@ import { Helmet } from "react-helmet"
 import { BrowserRouter, Redirect, Route, Switch, useHistory } from "react-router-dom"
 import { SupremacyPNG } from "./assets"
 import { Bar, GlobalSnackbar, Maintenance, RightDrawer } from "./components"
-import { SupremacyWorldModal } from "./components/BannersPromotions/SupremacyWorldModal"
 import { BottomNav } from "./components/BattleArena/BottomNav/BottomNav"
 import { ErrorFallback } from "./components/ErrorFallback/ErrorFallback"
 import { LeftDrawer } from "./components/LeftDrawer/LeftDrawer"
@@ -168,7 +167,6 @@ const AppInner = () => {
             >
                 <Bar />
 
-                <SupremacyWorldModal />
                 <MainMenuNav />
 
                 <Stack
@@ -191,7 +189,7 @@ const AppInner = () => {
                             flex: 1,
                             position: "relative",
                             height: "100%",
-                            backgroundColor: isTransparentMode ? "none" : colors.darkNavy,
+                            backgroundColor: (theme) => (isTransparentMode ? "none" : theme.factionTheme.background),
                             overflow: "hidden",
                         }}
                     >

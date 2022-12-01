@@ -10,13 +10,14 @@ export enum GameServerKeys {
     ToggleGojiBerryTea = "GOJI:BERRY:TEA",
     PlayerRank = "PLAYER:RANK:GET",
     ListPunishments = "PLAYER:PUNISHMENT:LIST",
+    SubPlayerFactionPassExpiryDate = "PLAYER:FACTION:PASS:EXPIRY:DATE",
 
     // Notification container
     SubGameNotification = "GAME:NOTIFICATION",
 
     // Battle Arena
     SubGameMapList = "GAME:MAP:LIST",
-    SubPlayerQueueableMechs = "PLAYER:QUEUEABLE:MECHS",
+    SubPlayerQueueableMechs = "PLAYER:OWNED:MECHS",
     SubArenaStatus = "ARENA:STATUS:UPDATED",
     SunBattleETA = "BATTLE:ETA:UPDATE",
     SubBattleArenaList = "BATTLE:ARENA:LIST",
@@ -65,6 +66,7 @@ export enum GameServerKeys {
     LeaveBattleLobby = "BATTLE:LOBBY:LEAVE",
     JoinBattleLobbySupporter = "BATTLE:LOBBY:SUPPORTER:JOIN",
     TopUpBattleLobbyReward = "BATTLE:LOBBY:TOP:UP:REWARD",
+    GetPrivateBattleLobby = "PRIVATE:BATTLE:LOBBY:GET",
     StakeMechs = "MECHS:STAKE",
     UnstakeMechs = "MECHS:UNSTAKE",
 
@@ -73,6 +75,11 @@ export enum GameServerKeys {
     EquipMech = "PLAYER:ASSET:MECH:EQUIP",
     GetMechDetails = "PLAYER:ASSET:MECH:DETAIL",
     GetWeapons = "PLAYER:ASSET:WEAPON:LIST",
+    GetPlayerOwnedWeapons = "PLAYER:OWNED:WEAPONS",
+    GetPlayerOwnedMechSkins = "PLAYER:OWNED:MECH:SKINS",
+    GetPlayerOwnedWeaponSkins = "PLAYER:OWNED:WEAPON:SKINS",
+    GetPlayerOwnedMysteryCrates = "PLAYER:OWNED:MYSTERY:CRATES",
+    GetPlayerOwnedKeycards = "PLAYER:OWNED:KEYCARDS",
     GetWeaponsDetailed = "PLAYER:ASSET:WEAPON:DETAIL:LIST",
     GetWeaponDetails = "PLAYER:ASSET:WEAPON:DETAIL",
     GetPowerCores = "PLAYER:ASSET:POWER_CORE:LIST",
@@ -123,6 +130,7 @@ export enum GameServerKeys {
     GetBanOptions = "PUNISH:OPTIONS",
     GetPlayerListFaction = "FACTION:PLAYER:SEARCH",
     GetPlayerList = "PLAYER:SEARCH",
+    GetPlayerFriends = "PLAYER:FRIEND:SEARCH",
     GetBanPlayerCost = "PUNISH:VOTE:PRICE:QUOTE",
     SubmitBanProposal = "ISSUE:PUNISH:VOTE",
     SubBanProposals = "PUNISH:VOTE:SUBSCRIBE",
@@ -277,6 +285,20 @@ export enum GameServerKeys {
     VoiceChatVoteKick = "VOICE:VOTE:KICK",
     VoiceChatConnect = "VOICE:STREAM:CONNECT",
     VoiceChatDisconnect = "VOICE:STREAM:DISCONNECT",
+
+    // Faction Pass
+    SubFactionPassList = "FACTION:PASS:LIST",
+    ClaimFactionPassStripePayment = "FACTION:PASS:STRIPE:PAYMENT:CLAIM",
+    SubFactionPassStripePaymentIntent = "FACTION:PASS:STRIPE:PAYMENT:INTENT",
+    PurchaseFactionPassWithSups = "FACTION:PASS:SUPS:PURCHASE",
+    SubFactionMostPopularStakedMech = "FACTION:MOST:POPULAR:STAKED:MECH",
+    SubFactionStakedMechCount = "FACTION:STAKED:MECH:COUNT",
+    SubFactionStakedMechInQueueCount = "FACTION:STAKED:MECH:IN:QUEUE:COUNT",
+    SubFactionStakedMechDamagedCount = "FACTION:STAKED:MECH:DAMAGED:COUNT",
+    SubFactionStakedMechBattleReadyCount = "FACTION:STAKED:MECH:BATTLE:READY:COUNT",
+    SubFactionStakedMechInBattleCount = "FACTION:STAKED:MECH:IN:BATTLE:COUNT",
+    SubFactionStakedMechBattledCount = "FACTION:STAKED:MECH:BATTLED:COUNT",
+    SubFactionStakedMechInRepairBay = "FACTION:STAKED:MECH:IN:REPAIR:BAY",
 }
 
 export enum PassportServerKeys {

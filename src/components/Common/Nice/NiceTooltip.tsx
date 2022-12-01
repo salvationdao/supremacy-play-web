@@ -1,8 +1,18 @@
-import { Stack, SxProps, Tooltip, Typography } from "@mui/material"
+import { Stack, SxProps, Tooltip, TooltipProps, Typography } from "@mui/material"
 import { ReactElement } from "react"
-import { autoTextColor } from "../../../helpers"
+import { useTheme } from "../../../containers/theme"
 import { fonts, siteZIndex } from "../../../theme/theme"
 import { NiceBoxThing } from "./NiceBoxThing"
+
+interface NiceTooltipProps extends Omit<TooltipProps, "title"> {
+    text?: string
+    renderNode?: React.ReactNode
+    children: ReactElement
+    placement?: TooltipPlacement
+    color?: string
+    textColor?: string
+    tooltipSx?: SxProps
+}
 
 export type TooltipPlacement =
     | "bottom-end"
@@ -18,37 +28,16 @@ export type TooltipPlacement =
     | "top-start"
     | "top"
 
-export const NiceTooltip = ({
-    text,
-    renderNode,
-    children,
-    isCentered,
-    placement,
-    open,
-    color,
-    textColor: tColor,
-    tooltipSx,
-}: {
-    text?: string
-    renderNode?: React.ReactNode
-    children: ReactElement
-    isCentered?: boolean
-    placement?: TooltipPlacement
-    open?: boolean
-    color?: string
-    textColor?: string
-    tooltipSx?: SxProps
-}) => {
+export const NiceTooltip = ({ text, renderNode, children, placement, color, textColor, tooltipSx, ...props }: NiceTooltipProps) => {
+    const theme = useTheme()
     if (!text && !renderNode) return <>{children}</>
 
     const primaryColor = color || "#555555"
-    const textColor = tColor || autoTextColor(primaryColor)
 
     return (
         <Tooltip
-            open={open}
             arrow
-            placement={placement || (isCentered ? "bottom" : "bottom-start")}
+            placement={placement || "bottom-start"}
             sx={{
                 zIndex: `${siteZIndex.Tooltip} !important`,
                 ".MuiTooltip-popper": {
@@ -57,12 +46,25 @@ export const NiceTooltip = ({
                 },
             }}
             title={
-                <NiceBoxThing border={{ color: primaryColor }} background={{ colors: [primaryColor] }} sx={{ height: "100%" }}>
-                    <Stack sx={{ height: "100%", p: ".5rem 1.2rem", backgroundColor: "#00000038" }}>
+                <NiceBoxThing
+                    border={{
+                        color: `${primaryColor}50`,
+                        thickness: "very-lean",
+                    }}
+                    background={{ colors: [theme.factionTheme.background] }}
+                    sx={{ height: "100%", maxHeight: "calc(100vh - 4rem)", my: "2rem" }}
+                >
+                    <Stack sx={{ height: "100%", backgroundColor: "#FFFFFF10" }}>
                         {renderNode || (
                             <Typography
                                 variant="body1"
-                                sx={{ color: textColor || "#FFFFFF", fontFamily: fonts.shareTech, textAlign: isCentered ? "center" : "start" }}
+                                sx={{
+                                    p: ".5rem 1.2rem",
+                                    color: textColor || "#FFFFFF",
+                                    fontFamily: fonts.rajdhaniMedium,
+                                    lineHeight: 1.5,
+                                    textAlign: "start",
+                                }}
                             >
                                 <strong>{text}</strong>
                             </Typography>
@@ -74,9 +76,10 @@ export const NiceTooltip = ({
                 popper: {
                     style: { filter: "drop-shadow(0 3px 3px #00000050)", zIndex: 999999 },
                 },
-                arrow: { sx: { color: primaryColor } },
-                tooltip: { sx: { padding: "0 !important", maxWidth: "25rem", background: "unset", ...tooltipSx } },
+                arrow: { sx: { color: `${primaryColor}80` } },
+                tooltip: { sx: { padding: "0 !important", maxWidth: renderNode ? "unset" : "25rem", background: "unset", ...tooltipSx } },
             }}
+            {...props}
         >
             {children}
         </Tooltip>

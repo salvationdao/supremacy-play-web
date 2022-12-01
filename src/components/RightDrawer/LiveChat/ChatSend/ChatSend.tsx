@@ -1,16 +1,18 @@
-import { IconButton, InputAdornment, Stack, Typography } from "@mui/material"
+import { InputAdornment, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { v4 as uuidv4 } from "uuid"
-import { ChatSettings, EmojiPopover } from "../../.."
-import { SvgEmoji, SvgExternalLink, SvgSend } from "../../../../assets"
+import { EmojiPopover } from "../../.."
+import { SvgEmoji, SvgSend } from "../../../../assets"
 import { MAX_CHAT_MESSAGE_LENGTH } from "../../../../constants"
-import { useAuth, useChat, useGlobalNotifications, useMobile } from "../../../../containers"
+import { useAuth, useChat, useGlobalNotifications } from "../../../../containers"
+import { useTheme } from "../../../../containers/theme"
 import { getRandomColor } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
 import { ChatMessage, ChatMessageType } from "../../../../types"
+import { NiceButton } from "../../../Common/Nice/NiceButton"
 import { NiceTextField } from "../../../Common/Nice/NiceTextField"
 import { NiceTooltip } from "../../../Common/Nice/NiceTooltip"
 import { EmojiShortcut } from "./EmojiShortcut"
@@ -22,11 +24,11 @@ interface ChatSendProps {
 }
 
 export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
+    const theme = useTheme()
     const { newSnackbarMessage } = useGlobalNotifications()
     const { send } = useGameServerCommandsUser("/user_commander")
     const { user, userRank } = useAuth()
-    const { isMobile } = useMobile()
-    const { userGidRecord, onFailedMessage, handleIncomingMessage, isPoppedout, setIsPoppedout, clickedOnUser, setClickedOnUser } = useChat()
+    const { userGidRecord, onFailedMessage, handleIncomingMessage, clickedOnUser, setClickedOnUser } = useChat()
 
     // Message field
     const textfieldRef = useRef<HTMLInputElement>()
@@ -196,46 +198,26 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
                         maxRows={4}
                         hiddenLabel
                         InputProps={{
+                            sx: {
+                                minHeight: "5rem",
+                            },
                             endAdornment: (
                                 <InputAdornment position="end">
-                                    <ChatSettings primaryColor={primaryColor} />
-
-                                    {!isPoppedout && !isMobile && (
-                                        <IconButton
-                                            onClick={() => setIsPoppedout(true)}
-                                            edge="end"
-                                            size="small"
-                                            sx={{ opacity: 0.5, ":hover": { opacity: 1 }, transition: "all .1s" }}
-                                        >
-                                            <SvgExternalLink size="1.4rem" fill="#FFFFFF" sx={{ pb: 0 }} />
-                                        </IconButton>
-                                    )}
-
                                     <NiceTooltip placement="top-end" text="Use keyboard shortcut ' : '">
-                                        <IconButton
+                                        <NiceButton
                                             ref={popoverRef}
+                                            corners
+                                            buttonColor={theme.factionTheme.primary}
                                             onClick={() => toggleIsEmojiOpen()}
-                                            edge="end"
-                                            size="small"
-                                            sx={{
-                                                mr: 0,
-                                                opacity: isEmojiOpen ? 1 : 0.5,
-                                                ":hover": { opacity: 1 },
-                                                transition: "all .1s",
-                                            }}
+                                            sx={{ mr: "1rem", p: ".5rem" }}
                                         >
-                                            <SvgEmoji size="1.4rem" fill="#FFFFFF" sx={{ pb: 0 }} />
-                                        </IconButton>
+                                            <SvgEmoji size="2rem" fill="#FFFFFF" sx={{ pb: 0 }} />
+                                        </NiceButton>
                                     </NiceTooltip>
 
-                                    <IconButton
-                                        onClick={sendMessage}
-                                        edge="end"
-                                        size="small"
-                                        sx={{ opacity: 0.5, ":hover": { opacity: 1 }, transition: "all .1s" }}
-                                    >
-                                        <SvgSend size="1.4rem" fill="#FFFFFF" sx={{ pb: 0 }} />
-                                    </IconButton>
+                                    <NiceButton corners buttonColor={theme.factionTheme.primary} onClick={sendMessage} sx={{ p: ".5rem" }}>
+                                        <SvgSend size="2rem" fill="#FFFFFF" sx={{ pb: 0 }} />
+                                    </NiceButton>
                                 </InputAdornment>
                             ),
                         }}
@@ -272,14 +254,12 @@ export const ChatSend = ({ primaryColor, faction_id }: ChatSendProps) => {
             faction_id,
             focusCaretTextField,
             isEmojiOpen,
-            isMobile,
-            isPoppedout,
             message,
             primaryColor,
             sendMessage,
-            setIsPoppedout,
             setMessageWithCheck,
             showCharCount,
+            theme.factionTheme.primary,
             toggleIsEmojiOpen,
         ],
     )

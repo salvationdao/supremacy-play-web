@@ -14,7 +14,7 @@ export const SectionHeading = ({ label, tooltip }: { label: string; tooltip?: st
             justifyContent="space-between"
             sx={{ p: ".6rem 1.6rem", background: (theme) => `linear-gradient(${theme.factionTheme.primary} 26%, ${theme.factionTheme.primary}BB)` }}
         >
-            <Typography sx={{ color: (theme) => theme.factionTheme.secondary, fontFamily: fonts.nostromoHeavy }}>{label}</Typography>
+            <Typography sx={{ color: (theme) => theme.factionTheme.text, fontFamily: fonts.nostromoHeavy }}>{label}</Typography>
 
             {tooltip && (
                 <NiceTooltip text={tooltip} placement="right">
@@ -24,7 +24,7 @@ export const SectionHeading = ({ label, tooltip }: { label: string; tooltip?: st
                             ":hover": { opacity: 1 },
                         }}
                     >
-                        <SvgInfoCircular fill={`${theme.factionTheme.secondary}80`} size="1.5rem" />
+                        <SvgInfoCircular fill={`${theme.factionTheme.text}80`} size="1.5rem" />
                     </Box>
                 </NiceTooltip>
             )}

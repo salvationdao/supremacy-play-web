@@ -3,16 +3,16 @@ import { useMemo } from "react"
 import { ClipThing, StyledImageText } from "../../.."
 import { GenericWarMachinePNG, SvgEmergency } from "../../../../assets"
 import { colors } from "../../../../theme/theme"
-import { Faction, WarMachineAbilityAlertProps } from "../../../../types"
+import { FactionWithPalette, WarMachineAbilityAlertProps } from "../../../../types"
 
-export const WarMachineAbilityAlert = ({ data, getFaction }: { data: WarMachineAbilityAlertProps; getFaction: (factionID: string) => Faction }) => {
+export const WarMachineAbilityAlert = ({ data, getFaction }: { data: WarMachineAbilityAlertProps; getFaction: (factionID: string) => FactionWithPalette }) => {
     const { ability, warMachine } = data
     const { label, colour, image_url } = ability
     const { hash, name, imageAvatar: warMachineImageUrl, factionID } = warMachine
 
     const faction = getFaction(factionID)
     const wmImageUrl = useMemo(() => warMachineImageUrl || GenericWarMachinePNG, [warMachineImageUrl])
-    const mainColor = faction.primary_color
+    const mainColor = faction.palette.primary
 
     return (
         <ClipThing

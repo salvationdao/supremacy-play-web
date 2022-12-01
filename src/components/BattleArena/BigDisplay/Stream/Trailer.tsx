@@ -1,12 +1,12 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useRef } from "react"
-import { FancyButton } from "../../.."
 import { TrailerThumbPNG } from "../../../../assets"
 import { TRAILER_VIDEO } from "../../../../constants"
 import { useUI } from "../../../../containers"
 import { useOvenStream } from "../../../../containers/oven"
 import { useToggle } from "../../../../hooks"
 import { fonts, siteZIndex } from "../../../../theme/theme"
+import { NiceButton } from "../../../Common/Nice/NiceButton"
 
 export const Trailer = () => {
     const { toggleShowTrailer } = useUI()
@@ -66,21 +66,15 @@ export const Trailer = () => {
                         }}
                     />
                 ) : (
-                    <FancyButton
-                        clipThingsProps={{
-                            clipSize: "8px",
-                            backgroundColor: "#222222",
-                            opacity: 0.6,
-                            border: { borderColor: "#FFFFFF", borderThickness: "1px" },
-                            sx: { position: "absolute", bottom: "3rem", right: "3rem", zIndex: 9 },
-                        }}
-                        sx={{ px: "1.6rem", py: ".3rem", color: "#FFFFFF" }}
+                    <NiceButton
+                        buttonColor="#FFFFFF"
+                        sx={{ position: "absolute", bottom: "3rem", right: "3rem", px: "1.6rem", py: ".3rem", zIndex: 9 }}
                         onClick={onEnded}
                     >
-                        <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack, color: "#FFFFFF" }}>
+                        <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
                             CLOSE
                         </Typography>
-                    </FancyButton>
+                    </NiceButton>
                 )}
 
                 <video

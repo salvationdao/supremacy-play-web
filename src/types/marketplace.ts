@@ -37,8 +37,8 @@ export enum SortTypeLabel {
     DateAddedOldest = "Date added (oldest)",
     MostViewed = "Most viewed",
     QueuedAmountHighest = "Queued amount: highest",
-    ReadyTimeOldestFirst = "Ready time: oldest",
-    ReadyTimeNewestFirst = "Ready time: newly listed",
+    QueuedAmountLowest = "Queued amount: lowest",
+    AbilityType = "Ability type",
 }
 
 export interface MarketUser {

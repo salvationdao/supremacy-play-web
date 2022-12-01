@@ -10,16 +10,32 @@ import { GameServerKeys } from "../../../../../keys"
 import { colors, fonts } from "../../../../../theme/theme"
 import { BattleMechStats, MechBasicWithQueueStatus, MechDetails, MechStatus, MechStatusEnum } from "../../../../../types"
 import { SortDir, SortTypeLabel } from "../../../../../types/marketplace"
+import { MechRepairBlocks } from "../../../../Common/Mech/MechRepairBlocks"
 import { NiceAccordion } from "../../../../Common/Nice/NiceAccordion"
 import { NiceBoxThing } from "../../../../Common/Nice/NiceBoxThing"
 import { NiceSelect } from "../../../../Common/Nice/NiceSelect"
 import { NiceTextField } from "../../../../Common/Nice/NiceTextField"
 import { MechBarStats } from "../../Common/MechBarStats"
-import { MechRepairBlocks } from "../../Common/MechRepairBlocks"
-import { GetMechsRequest, GetMechsResponse } from "../../WarMachinesHangar"
 import { PlayerAssetMechEquipRequest } from "../MechLoadout/MechLoadout"
 import { MechName } from "../MechName"
 import { MechPickerItem } from "./MechPickerItem"
+
+interface GetMechsRequest {
+    queue_sort?: string
+    sort_by?: string
+    sort_dir?: string
+    search: string
+    page: number
+    page_size: number
+    rarities: string[]
+    statuses: string[]
+    include_market_listed: boolean
+}
+
+interface GetMechsResponse {
+    mechs: MechBasicWithQueueStatus[]
+    total: number
+}
 
 export interface MechPickerProps {
     mechDetails: MechDetails
@@ -257,7 +273,7 @@ export const MechPicker = ({ mechDetails, mechStatus, mechStaked, onUpdate }: Me
                     <Stack direction="row" justifyContent="space-between">
                         <Typography
                             sx={{
-                                fontFamily: fonts.shareTech,
+                                fontFamily: fonts.rajdhaniMedium,
                                 fontSize: "1.6rem",
                             }}
                         >
@@ -265,7 +281,7 @@ export const MechPicker = ({ mechDetails, mechStatus, mechStaked, onUpdate }: Me
                         </Typography>
                         <Typography
                             sx={{
-                                fontFamily: fonts.shareTech,
+                                fontFamily: fonts.rajdhaniMedium,
                                 fontSize: "1.6rem",
                                 color: rarity.color,
                             }}
@@ -522,8 +538,6 @@ const MechPickerDropdown = React.memo(function MechPickerDropdown() {
                         />
                         <NiceSelect
                             label="Sort:"
-                            primaryColor={theme.factionTheme.primary}
-                            secondaryColor={theme.factionTheme.secondary}
                             options={[
                                 { value: SortTypeLabel.MechQueueAsc, label: SortTypeLabel.MechQueueAsc },
                                 { value: SortTypeLabel.MechQueueDesc, label: SortTypeLabel.MechQueueDesc },

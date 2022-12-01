@@ -76,8 +76,8 @@ export const MysteryCratesMarket = () => {
     const ownedByFilterSection = useRef<ChipFilter>({
         label: "OWNED BY",
         options: [
-            { value: "self", label: "YOU", color: theme.factionTheme.primary, textColor: theme.factionTheme.secondary },
-            { value: "others", label: "OTHERS", color: theme.factionTheme.primary, textColor: theme.factionTheme.secondary },
+            { value: "self", label: "YOU", color: theme.factionTheme.primary, textColor: theme.factionTheme.text },
+            { value: "others", label: "OTHERS", color: theme.factionTheme.primary, textColor: theme.factionTheme.text },
         ],
         initialSelected: ownedBy,
         initialExpanded: true,

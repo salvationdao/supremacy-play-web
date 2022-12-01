@@ -6,7 +6,7 @@ import { ADD_MINI_MECH_PARTICIPANT_ID } from "../../../../constants"
 import { useAuth, useMiniMapPixi, useMobile, useSupremacy } from "../../../../containers"
 import { getRarityDeets } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
-import { TruncateTextLines } from "../../../../theme/styles"
+import { truncateTextLines } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
 import { AIType, WarMachineState } from "../../../../types"
 
@@ -47,8 +47,8 @@ export const WarMachineItem = ({
     const rarityDeets = useMemo(() => getRarityDeets(tier), [tier])
     const wmImageUrl = useMemo(() => imageAvatar || GenericWarMachinePNG, [imageAvatar])
     const selfOwned = useMemo(() => ownedByID === userID, [ownedByID, userID])
-    const primaryColor = useMemo(() => (selfOwned ? colors.gold : faction.primary_color), [faction.primary_color, selfOwned])
-    const backgroundColor = useMemo(() => faction.background_color, [faction.background_color])
+    const primaryColor = useMemo(() => (selfOwned ? colors.gold : faction.palette.primary), [faction.palette.primary, selfOwned])
+    const backgroundColor = useMemo(() => faction.palette.background, [faction.palette.background])
 
     // Highlighting on the map
     const handleClick = useCallback(() => {
@@ -214,7 +214,7 @@ export const WarMachineItem = ({
                                     lineHeight: 1,
                                     fontWeight: "bold",
                                     whiteSpace: "normal",
-                                    ...TruncateTextLines(1),
+                                    ...truncateTextLines(1),
                                 }}
                             >
                                 {isMiniMech ? "Support Machine" : name || hash}
@@ -226,7 +226,7 @@ export const WarMachineItem = ({
                                     sx={{
                                         lineHeight: 1,
                                         whiteSpace: "normal",
-                                        ...TruncateTextLines(1),
+                                        ...truncateTextLines(1),
                                     }}
                                 >
                                     @{ownerUsername}

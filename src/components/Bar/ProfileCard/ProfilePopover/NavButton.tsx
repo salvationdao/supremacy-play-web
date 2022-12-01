@@ -11,7 +11,7 @@ interface NavButtonProps {
 
 export const NavButton: React.FC<NavButtonProps> = ({ linkProps, startIcon, text, onClick }) => {
     return (
-        <NiceButton tabIndex={0} onClick={() => onClick && onClick()} sx={{ px: "1.6rem", py: ".4rem", justifyContent: "flex-start" }} {...linkProps}>
+        <NiceButton tabIndex={0} onClick={() => onClick && onClick()} sx={{ px: "1.6rem", py: ".8rem", justifyContent: "flex-start" }} {...linkProps}>
             <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
                 {startIcon} {text}
             </Typography>

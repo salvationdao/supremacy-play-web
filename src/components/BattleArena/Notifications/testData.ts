@@ -1,4 +1,5 @@
-import { AnyAbility, LocationSelectType, NotificationStruct, User, UserRank, RoleType } from "../../../types"
+import { theme } from "../../../theme/theme"
+import { AnyAbility, FactionWithPalette, LocationSelectType, NotificationStruct, RarityEnum, RoleType, User, UserRank } from "../../../types"
 
 enum NotificationType {
     Text = "TEXT",
@@ -18,15 +19,14 @@ export enum LocationSelectAlertType {
     Assigned = "ASSIGNED",
 }
 
-const faction1 = {
+const faction1: FactionWithPalette = {
     id: "aaa",
     background_url: "aaa",
     label: "Red Mountain Offworld Mining Corporation",
     logo_url: "91dae11d-eb07-4906-bbdd-6417b880770a",
-    primary_color: "#C24242",
-    secondary_color: "#FFFFFF",
-    background_color: "#0D0404",
     description: "aaa",
+    wallpaper_url: "",
+    palette: theme.factionTheme,
 }
 
 const user1: User = {
@@ -81,7 +81,7 @@ const wm1 = {
     maxHealth: 1,
     maxShield: 1,
     imageAvatar: "http://localhost:5005/static/media/GenericWarMachinePNG.df93230e7e423976eda9.png",
-    tier: "string",
+    tier: RarityEnum.Colossal,
     ownerUsername: "noob-0x14dc3eb9#12443",
     modelID: "ac27f3b9-753d-4ace-84a9-21c041195344",
     health: 1,
@@ -119,7 +119,7 @@ const wm2 = {
     maxHealth: 1,
     maxShield: 1,
     imageAvatar: "http://localhost:5005/static/media/GenericWarMachinePNG.df93230e7e423976eda9.png",
-    tier: "string",
+    tier: RarityEnum.Colossal,
     health: 1,
     shield: 1,
     position: { x: 1, y: 1 },

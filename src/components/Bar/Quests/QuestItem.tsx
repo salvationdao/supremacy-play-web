@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import React, { useState } from "react"
 import Confetti from "react-confetti"
 import { SvgChest, SvgInfoCircular } from "../../../assets"
-import { TruncateTextLines } from "../../../theme/styles"
+import { truncateTextLines } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { QuestProgress, QuestStat } from "../../../types"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
@@ -31,8 +31,8 @@ export const QuestItem = React.memo(function QuestItem({ questStat, progress, sh
 
     return (
         <NiceBoxThing
-            border={{ color: `${colors.purple}80`, thickness: "very-lean" }}
-            background={{ colors: [colors.purple], opacity: 0.1 }}
+            border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
+            background={{ colors: ["#FFFFFF"], opacity: 0.03 }}
             sx={{
                 position: "relative",
                 px: "1.4rem",
@@ -73,7 +73,7 @@ export const QuestItem = React.memo(function QuestItem({ questStat, progress, sh
                         sx={{
                             lineHeight: 1,
                             fontWeight: "bold",
-                            ...TruncateTextLines(1),
+                            ...truncateTextLines(1),
                         }}
                     >
                         {questStat.name}

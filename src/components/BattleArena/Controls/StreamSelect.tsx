@@ -1,72 +1,32 @@
-import { MenuItem, Select, Stack, Typography } from "@mui/material"
+import { Stack, Typography } from "@mui/material"
+import { useMemo } from "react"
 import { useOvenStream } from "../../../containers/oven"
-import { useTheme } from "../../../containers/theme"
-import { colors } from "../../../theme/theme"
+import { NiceSelect } from "../../Common/Nice/NiceSelect"
 
 export const OvenStreamSelect = () => {
-    const theme = useTheme()
     const { currentOvenStream, changeOvenStream, ovenStreamOptions } = useOvenStream()
-    const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
+
+    const options = useMemo(() => ovenStreamOptions.map((o) => ({ label: o.name, value: o.name })), [ovenStreamOptions])
 
     return (
-        <Stack direction="row" spacing=".24rem" alignItems="center">
-            <Typography variant="body2" sx={{ lineHeight: 1 }}>
-                STREAM SERVER:{" "}
+        <Stack direction="row" alignItems="center" spacing="1rem">
+            <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+                STREAM SERVER:
             </Typography>
 
-            <Select
-                sx={{
-                    width: "15rem",
-                    borderRadius: 0.5,
-                    ".MuiTypography-root": {
-                        px: ".8rem",
-                        pt: ".48rem",
-                    },
-                    "& .MuiSelect-outlined": { p: 0 },
-                }}
+            <NiceSelect
+                options={options}
                 defaultValue={currentOvenStream?.name}
-                value={currentOvenStream ? currentOvenStream.name : ""}
-                MenuProps={{
-                    variant: "menu",
-                    sx: {
-                        "&& .Mui-selected": {
-                            ".MuiTypography-root": {
-                                color: secondaryColor,
-                            },
-                            backgroundColor: primaryColor,
-                        },
-                    },
-                    PaperProps: {
-                        sx: {
-                            backgroundColor: colors.darkNavy,
-                            borderRadius: 0.5,
-                        },
-                    },
+                selected={currentOvenStream ? currentOvenStream.name : ""}
+                onSelected={(value) => {
+                    const ovenStream = ovenStreamOptions.find((o) => o.name === value)
+                    if (ovenStream) changeOvenStream(ovenStream)
                 }}
-            >
-                {ovenStreamOptions.map((x) => {
-                    return (
-                        <MenuItem
-                            key={x?.name}
-                            value={x?.name}
-                            onClick={() => {
-                                changeOvenStream(x)
-                            }}
-                            sx={{ "&:hover": { backgroundColor: `#FFFFFF30` } }}
-                        >
-                            <Typography
-                                sx={{
-                                    lineHeight: 1,
-                                }}
-                                variant="body2"
-                            >
-                                {x?.name}
-                            </Typography>
-                        </MenuItem>
-                    )
-                })}
-            </Select>
+                sx={{
+                    minWidth: "14rem",
+                    ".MuiOutlinedInput-root": { border: "none" },
+                }}
+            />
         </Stack>
     )
 }

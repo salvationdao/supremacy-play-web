@@ -1,3 +1,4 @@
+import { FactionTheme } from "@mui/material"
 import { BlueprintPlayerAbility } from "./game"
 
 export interface UserFromPassport {
@@ -88,10 +89,11 @@ export interface Faction {
     logo_url: string
     background_url: string
     wallpaper_url: string
-    primary_color: string
-    secondary_color: string
-    background_color: string
     description: string
+}
+
+export interface FactionWithPalette extends Faction {
+    palette: FactionTheme
 }
 
 export interface UserStat {
@@ -131,6 +133,7 @@ export enum SystemMessageDataType {
     Faction = "FACTION",
     PlayerAbilityRefunded = "PLAYER_ABILITY_REFUNDED",
     ExpiredBattleLobby = "EXPIRED_BATTLE_LOBBY",
+    BattleLobbyInvitation = "BATTLE_LOBBY_INVITATION",
 }
 
 export interface SystemMessage {

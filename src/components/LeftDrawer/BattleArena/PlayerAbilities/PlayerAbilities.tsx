@@ -206,7 +206,7 @@ export const FilterButton = ({
                     border: `1px solid ${theme.factionTheme.primary}`,
                 },
                 svg: {
-                    fill: isSelected ? `${theme.factionTheme.secondary} !important` : "#FFFFFF",
+                    fill: isSelected ? `${theme.factionTheme.text} !important` : "#FFFFFF",
                 },
             }}
             onClick={() => {

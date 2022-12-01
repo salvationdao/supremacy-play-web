@@ -1,11 +1,14 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { FactionPassBgPNG, FactionPassSs1PNG, FactionPassSs2PNG, SvgFactionPassArrow } from "../../../assets"
 import { FactionIDs } from "../../../constants"
 import { useAuth, useSupremacy } from "../../../containers"
 import { colors, fonts } from "../../../theme/theme"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { FactionPassOption } from "./FactionPassOption"
+import { useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
+import { FactionPass } from "../../../types/faction_passes"
 
 export const DAYS_IN_A_MONTH = 28
 
@@ -32,6 +35,18 @@ export const FactionPassBuy = () => {
         }
     }, [factionID, getFaction])
 
+    const [factionPasses, setFactionPasses] = useState<FactionPass[]>([])
+    useGameServerSubscriptionSecured<FactionPass[]>(
+        {
+            URI: "/faction_pass_list",
+            key: GameServerKeys.SubFactionPassList,
+        },
+        (payload) => {
+            if (!payload) return
+            setFactionPasses(payload)
+        },
+    )
+
     return (
         <Stack
             alignItems="center"
@@ -48,9 +63,9 @@ export const FactionPassBuy = () => {
             }}
         >
             <NiceBoxThing
-                border={{ color: faction.primary_color }}
-                background={{ colors: [colors.darkNavyBlue, faction.background_color, faction.background_color] }}
-                sx={{ position: "relative", filter: `drop-shadow(0 3px 4px ${faction.primary_color}80)`, zIndex: 2 }}
+                border={{ color: faction.palette.primary }}
+                background={{ colors: [colors.darkNavyBlue, faction.palette.background, faction.palette.background] }}
+                sx={{ position: "relative", filter: `drop-shadow(0 3px 4px ${faction.palette.primary}80)`, zIndex: 2, maxWidth: "89rem" }}
             >
                 {/* Centered faction logo */}
                 <Box
@@ -65,19 +80,19 @@ export const FactionPassBuy = () => {
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
                         backgroundSize: "cover",
-                        backgroundColor: faction.background_color,
+                        backgroundColor: faction.palette.background,
                         zIndex: 6,
-                        border: `${faction.primary_color} 2px solid`,
+                        border: `${faction.palette.primary} 2px solid`,
                         borderRadius: "50%",
                     }}
                 />
 
                 <Stack spacing="4rem" sx={{ position: "relative", p: "4.2rem 5.5rem" }}>
                     <Stack direction="row" alignItems="center" justifyContent="space-between" spacing="2rem">
-                        <Typography variant="h4" sx={{ color: faction.primary_color, fontFamily: fonts.nostromoHeavy }}>
+                        <Typography variant="h4" sx={{ color: faction.palette.primary, fontFamily: fonts.nostromoHeavy }}>
                             {faction.label} FACTION PASS
                         </Typography>
-                        <SvgFactionPassArrow size="5.5rem" fill={faction.primary_color} />
+                        <SvgFactionPassArrow size="5.5rem" fill={faction.palette.primary} />
                     </Stack>
 
                     <Stack spacing="5rem" direction="row" alignItems="center">
@@ -145,9 +160,9 @@ export const FactionPassBuy = () => {
 
                     {/* Buy options */}
                     <Stack direction="row" alignItems="center">
-                        <FactionPassOption faction={faction} days={1} />
-                        <FactionPassOption faction={faction} days={DAYS_IN_A_MONTH} />
-                        <FactionPassOption faction={faction} days={365} />
+                        {factionPasses.map((fp) => (
+                            <FactionPassOption key={fp.id} factionPass={fp} faction={faction} />
+                        ))}
                     </Stack>
                 </Stack>
             </NiceBoxThing>
@@ -160,7 +175,7 @@ export const FactionPassBuy = () => {
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    backgroundColor: `${faction.primary_color}10`,
+                    backgroundColor: `${faction.palette.primary}10`,
                     zIndex: 1,
                 }}
             />

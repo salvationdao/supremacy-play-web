@@ -5,8 +5,12 @@ import { FallbackFaction, useGlobalNotifications } from "."
 import { GAME_SERVER_HOSTNAME } from "../constants"
 import { GetFactionsAll } from "../fetching"
 import { useLocalStorage } from "../hooks/useLocalStorage"
-import { FactionsAll } from "../types"
+import { FactionWithPalette } from "../types"
 import { useWS } from "./ws/useWS"
+
+interface FactionsAll {
+    [faction_id: string]: FactionWithPalette
+}
 
 export const SupremacyContainer = createContainer(() => {
     const isTutorial = location.pathname.includes("/tutorial")

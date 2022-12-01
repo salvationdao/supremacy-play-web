@@ -1,15 +1,15 @@
-import { useState, useEffect, useCallback, useMemo } from "react"
-import { Box, Stack, Typography, TextField, CircularProgress, Button } from "@mui/material"
-import { SvgArrow, SvgSupToken, SvgBin } from "../../../../assets"
+import { Box, Button, CircularProgress, Stack, TextField, Typography } from "@mui/material"
+import BigNumber from "bignumber.js"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { SvgArrow, SvgBin, SvgSupToken } from "../../../../assets"
 import { IS_TESTING_MODE } from "../../../../constants"
-import { snakeToTitle, generatePriceText, supFormatter } from "../../../../helpers"
-import { colors, fonts } from "../../../../theme/theme"
+import { generatePriceText, snakeToTitle, supFormatter } from "../../../../helpers"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
+import { colors, fonts } from "../../../../theme/theme"
 import { ShoppingCart, ShoppingCartItem } from "../../../../types/fiat"
 import { ClipThing } from "../../../Common/Deprecated/ClipThing"
-import { GameServerKeys } from "../../../../keys"
 import { FancyButton } from "../../../Common/Deprecated/FancyButton"
-import BigNumber from "bignumber.js"
 
 interface Props {
     loading: boolean
@@ -37,7 +37,7 @@ export const ShoppingCartTable = ({ shoppingCart, loading, primaryColor, backgro
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                     <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", px: "3rem", pt: "1.28rem" }}>
-                        <Typography sx={{ fontFamily: fonts.shareTech }}>YOUR CART IS EMPTY</Typography>
+                        <Typography sx={{ fontFamily: fonts.rajdhaniMedium }}>YOUR CART IS EMPTY</Typography>
                     </Stack>
                 </Stack>
             )
@@ -109,7 +109,7 @@ export const ShoppingCartTable = ({ shoppingCart, loading, primaryColor, backgro
 
                         <Typography
                             sx={{
-                                fontFamily: fonts.shareTech,
+                                fontFamily: fonts.rajdhaniMedium,
                                 textAlign: "right",
                             }}
                         >
@@ -364,7 +364,7 @@ const ShoppingCartRow = ({ item, primaryColor, backgroundColor }: ShoppingCartRo
 
                 <Typography
                     sx={{
-                        fontFamily: fonts.shareTech,
+                        fontFamily: fonts.rajdhaniMedium,
                         textAlign: "right",
                     }}
                 >

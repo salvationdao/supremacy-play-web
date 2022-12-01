@@ -1,4 +1,4 @@
-import { Checkbox, Collapse, FormControlLabel, Modal, Stack, Typography } from "@mui/material"
+import { Checkbox, Collapse, Modal, Stack, Typography } from "@mui/material"
 import { useCallback, useState } from "react"
 import { SvgMail } from "../../assets"
 import { useAuth, useGlobalNotifications } from "../../containers"
@@ -74,20 +74,18 @@ export const MarketingModal = () => {
                             updateMarketingPreferences()
                         }}
                     >
-                        <Stack>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        disabled={isLoading}
-                                        checked={acceptMarketing}
-                                        onChange={(e) => {
-                                            setAcceptMarketing(e.currentTarget.checked)
-                                        }}
-                                        sx={{ ml: ".8rem", my: "1rem" }}
-                                    />
-                                }
-                                label="Subscribe to Supremacy news and updates"
-                            />
+                        <Stack spacing=".5rem">
+                            <Stack direction="row" spacing=".8rem" alignItems="center" sx={{ my: "1rem" }}>
+                                <Checkbox
+                                    disabled={isLoading}
+                                    checked={acceptMarketing}
+                                    onChange={(e) => {
+                                        setAcceptMarketing(e.currentTarget.checked)
+                                    }}
+                                />
+
+                                <Typography>Subscribe to Supremacy news and updates</Typography>
+                            </Stack>
 
                             <Collapse in={!userFromPassport?.email && acceptMarketing} unmountOnExit>
                                 <NiceTextField
@@ -107,7 +105,7 @@ export const MarketingModal = () => {
                                 />
                             </Collapse>
 
-                            <NiceButton type="submit" sheen={{ sheenSpeedFactor: 0.8 }} buttonColor={colors.yellow}>
+                            <NiceButton type="submit" corners sheen={{ sheenSpeedFactor: 0.8 }} buttonColor={colors.yellow}>
                                 UPDATE
                             </NiceButton>
                         </Stack>

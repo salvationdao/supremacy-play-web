@@ -6,7 +6,7 @@ import { colors } from "../../../theme/theme"
 import { getCardStyles, MechCard } from "./MechCard"
 import { BattleLobbiesMech, BattleLobby, BattleLobbySupporter } from "../../../types/battle_queue"
 import { FactionIDs } from "../../../constants"
-import { Avatar } from "../../Avatar"
+import { Avatar } from "./Avatar"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { SvgPlus } from "../../../assets"
@@ -180,7 +180,7 @@ const CardGroup = ({
         >
             <Grid container spacing={0} direction="row" sx={{ width: "100%", flexWrap: "nowrap", justifyContent: "space-evenly" }}>
                 {mechs.map((m) => (
-                    <Grid key={`${m.mech_id}-${m.is_destroyed}-${m.battle_lobby_id}`} item sm={4} maxHeight={"100%"}>
+                    <Grid key={`${m.id}-${m.is_destroyed}-${m.battle_lobby_id}`} item sm={4} maxHeight={"100%"}>
                         <MechCard mech={m} faction={faction} />
                     </Grid>
                 ))}

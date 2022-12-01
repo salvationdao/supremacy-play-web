@@ -1,10 +1,12 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
+import { useMemo } from "react"
 import Marquee from "react-fast-marquee"
 import { BuySupsButton, Logo, ProfileCard, WalletDetails } from ".."
 import { SvgDisconnected } from "../../assets"
 import { DRAWER_TRANSITION_DURATION, GAME_BAR_HEIGHT, IS_TESTING_MODE, STAGING_OR_DEV_ONLY } from "../../constants"
 import { useAuth, useSupremacy } from "../../containers"
-import { hexToRGB } from "../../helpers"
+import { useTheme } from "../../containers/theme"
+import { hexToRGB, shadeColor } from "../../helpers"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { User } from "../../types"
 import { BarButton } from "../MainMenuNav/BarButton"
@@ -15,8 +17,11 @@ import { Quests } from "./Quests/Quests"
 import { ShoppingCart } from "./ShoppingCart/ShoppingCart"
 
 export const Bar = () => {
+    const theme = useTheme()
     const { userID, user } = useAuth()
     const rgb = hexToRGB(colors.lightRed)
+
+    const darkerBg = useMemo(() => shadeColor(theme.factionTheme.background, -50), [theme.factionTheme.background])
 
     return (
         <>
@@ -38,19 +43,20 @@ export const Bar = () => {
                             </Typography>
                         </Marquee>
                     </Box>
-
-                    <Box
-                        sx={{
-                            position: "fixed",
-                            height: "100%",
-                            width: "100%",
-                            border: `${colors.lightRed} 3px solid`,
-                            zIndex: siteZIndex.Modal * 99,
-                            pointerEvents: "none",
-                        }}
-                    />
                 </>
             )}
+
+            {/* A border around the entire page */}
+            <Box
+                sx={{
+                    position: "fixed",
+                    height: "100%",
+                    width: "100%",
+                    border: (theme) => (IS_TESTING_MODE ? `${colors.lightRed} 3px solid` : `${theme.factionTheme.s700} 1px solid`),
+                    zIndex: siteZIndex.Modal * 99,
+                    pointerEvents: "none",
+                }}
+            />
 
             <Stack
                 direction="row"
@@ -63,11 +69,13 @@ export const Bar = () => {
                     height: `${GAME_BAR_HEIGHT}rem`,
                     width: "100vw",
                     color: "#FFFFFF",
-                    backgroundColor: (theme) => theme.factionTheme.background,
+                    backgroundColor: (theme) => theme.factionTheme.s800,
+                    borderBottom: (theme) => `${theme.factionTheme.s700} 1px solid`,
                     transition: `all ${DRAWER_TRANSITION_DURATION / 1000}s`,
                     zIndex: siteZIndex.TopBar,
                     overflowX: "auto",
                     overflowY: "hidden",
+                    boxShadow: 1.2,
                 }}
             >
                 <BarContent userID={userID} user={user} />
@@ -80,7 +88,8 @@ export const Bar = () => {
                         bottom: 0,
                         left: 0,
                         right: 0,
-                        background: (theme) => `linear-gradient(#FFFFFF10 26%, ${theme.factionTheme.background})`,
+                        backgroundColor: darkerBg,
+                        // background: (theme) => `linear-gradient(${theme.factionTheme.primary}10 26%, ${theme.factionTheme.background})`,
                         pointerEvents: "none",
                         zIndex: -1,
                     }}

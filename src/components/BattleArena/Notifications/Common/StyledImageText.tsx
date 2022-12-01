@@ -1,7 +1,8 @@
-import { Box, SxProps, Typography, TypographyPropsVariantOverrides } from "@mui/material"
+import { Box, SxProps, TypographyPropsVariantOverrides } from "@mui/material"
 import { Variant } from "@mui/material/styles/createTypography"
 import { OverridableStringUnion } from "@mui/types"
 import { ReactNode } from "react"
+import { TypographyTruncated } from "../../../Common/TypographyTruncated"
 
 export interface StyledImageTextProps {
     imageUrl?: string
@@ -41,7 +42,7 @@ export const StyledImageText = ({
     noImageBackgroundColor,
 }: StyledImageTextProps) => {
     return (
-        <span style={{ display: "inline" }}>
+        <span style={{ display: "flex", alignItems: "baseline" }}>
             {imageUrl && (
                 <Box
                     component="span"
@@ -61,8 +62,7 @@ export const StyledImageText = ({
                     }}
                 />
             )}
-            <Typography
-                component="span"
+            <TypographyTruncated
                 variant={variant}
                 sx={{
                     display: "inline",
@@ -85,7 +85,7 @@ export const StyledImageText = ({
             >
                 {text}
                 <span style={{ marginLeft: -1.5, visibility: "hidden" }}>.</span>
-            </Typography>
+            </TypographyTruncated>
         </span>
     )
 }

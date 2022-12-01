@@ -9,16 +9,16 @@ import { Claims } from "../components/Claims/Claims"
 import { FactionPassBuy } from "../components/FactionPass/FactionPassBuy/FactionPassBuy"
 import { FactionPassDashboard } from "../components/FactionPass/FactionPassDashboard/FactionPassDashboard"
 import { FactionPassMechPool } from "../components/FactionPass/FactionPassMechPool/FactionPassMechPool"
-import { KeycardsHangar } from "../components/Hangar/KeycardsHangar/KeycardsHangar"
-import { MysteryCratesHangar } from "../components/Hangar/MysteryCratesHangar/MysteryCratesHangar"
-import { PlayerAbilitiesHangar } from "../components/Hangar/PlayerAbilitiesHangar/PlayerAbilitiesHangar"
-import { SubmodelsHangar } from "../components/Hangar/SubmodelHangar/SubmodelsHangar"
+import { FleetCrates } from "../components/FleetCrates/FleetCrates"
+import { FleetKeycards } from "../components/FleetKeycards.tsx/FleetKeycards"
+import { FleetMechs } from "../components/FleetMechs/FleetMechs"
+import { FleetPlayerAbilities } from "../components/FleetPlayerAbilities/FleetPlayerAbilities"
+import { FleetSubmodels } from "../components/FleetSubmodels/FleetSubmodels"
+import { FleetWeapons } from "../components/FleetWeapons/FleetWeapons"
 import { MechPage } from "../components/Hangar/WarMachinesHangar/WarMachineDetails/MechPage"
-import { WarMachinesHangar } from "../components/Hangar/WarMachinesHangar/WarMachinesHangar"
 import { WeaponHangarDetails } from "../components/Hangar/WeaponsHangar/WeaponDetails/WeaponHangarDetails"
-import { WeaponsHangar } from "../components/Hangar/WeaponsHangar/WeaponsHangar"
-import { GlobalStats } from "../components/Leaderboard/GlobalStats/GlobalStats"
-import { BattleLobbiesPage } from "../components/Lobbies/BattleLobbiesPage"
+import { Leaderboard } from "../components/Leaderboard/Leaderboard"
+import { Lobbies } from "../components/Lobbies/Lobbies"
 import { HistoryMarket } from "../components/Marketplace/HistoryMarket/HistoryMarket"
 import { KeycardMarketDetails } from "../components/Marketplace/KeycardsMarket/KeycardMarketDetails/KeycardMarketDetails"
 import { KeycardsMarket } from "../components/Marketplace/KeycardsMarket/KeycardsMarket"
@@ -175,7 +175,7 @@ export const Routes: RouteSingle[] = [
         id: RouteSingleID.Lobbies,
         path: "/lobbies",
         exact: true,
-        Component: BattleLobbiesPage,
+        Component: Lobbies,
         restrictions: {
             requireAuth: true,
             requireFaction: true,
@@ -183,7 +183,7 @@ export const Routes: RouteSingle[] = [
         },
         showInMainMenu: {
             groupID: RouteGroupID.BattleArena,
-            label: "My Lobbies",
+            label: "Lobbies",
             image: GenericPNG,
             path: "/lobbies",
         },
@@ -217,7 +217,7 @@ export const Routes: RouteSingle[] = [
         id: RouteSingleID.Leaderboard,
         path: "/leaderboard",
         exact: true,
-        Component: GlobalStats,
+        Component: Leaderboard,
         restrictions: {
             requireAuth: false,
             requireFaction: false,
@@ -283,7 +283,7 @@ export const Routes: RouteSingle[] = [
         id: RouteSingleID.FleetMechs,
         path: "/fleet/mechs",
         exact: true,
-        Component: WarMachinesHangar,
+        Component: FleetMechs,
         restrictions: {
             requireAuth: true,
             requireFaction: true,
@@ -302,7 +302,7 @@ export const Routes: RouteSingle[] = [
         id: RouteSingleID.FleetWeapons,
         path: "/fleet/weapons",
         exact: true,
-        Component: WeaponsHangar,
+        Component: FleetWeapons,
         restrictions: {
             requireAuth: true,
             requireFaction: true,
@@ -321,7 +321,7 @@ export const Routes: RouteSingle[] = [
         id: RouteSingleID.FleetSubmodels,
         path: "/fleet/submodels",
         exact: true,
-        Component: SubmodelsHangar,
+        Component: FleetSubmodels,
         restrictions: {
             requireAuth: true,
             requireFaction: true,
@@ -340,7 +340,7 @@ export const Routes: RouteSingle[] = [
         id: RouteSingleID.FleetCrates,
         path: "/fleet/mystery-crates",
         exact: true,
-        Component: MysteryCratesHangar,
+        Component: FleetCrates,
         restrictions: {
             requireAuth: true,
             requireFaction: true,
@@ -348,7 +348,7 @@ export const Routes: RouteSingle[] = [
         },
         showInMainMenu: {
             groupID: RouteGroupID.Inventory,
-            label: "Mystery Crates",
+            label: "Crates",
             image: GenericPNG,
             path: "/fleet/mystery-crates",
         },
@@ -359,7 +359,7 @@ export const Routes: RouteSingle[] = [
         id: RouteSingleID.FleetAbilities,
         path: "/fleet/abilities",
         exact: true,
-        Component: PlayerAbilitiesHangar,
+        Component: FleetPlayerAbilities,
         restrictions: {
             requireAuth: true,
             requireFaction: true,
@@ -378,7 +378,7 @@ export const Routes: RouteSingle[] = [
         id: RouteSingleID.FleetKeycards,
         path: "/fleet/keycards",
         exact: true,
-        Component: KeycardsHangar,
+        Component: FleetKeycards,
         restrictions: {
             requireAuth: true,
             requireFaction: true,

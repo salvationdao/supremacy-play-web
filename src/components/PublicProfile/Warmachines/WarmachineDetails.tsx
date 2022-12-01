@@ -1,6 +1,6 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useMemo, useState } from "react"
-import { SvgCubes, SvgSkin, SvgStats } from "../../../assets"
+import { SvgCubes, SvgLoadoutSkin, SvgStats } from "../../../assets"
 import { getRarityDeets } from "../../../helpers"
 import { useGameServerSubscription } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
@@ -9,7 +9,7 @@ import { MechDetails } from "../../../types"
 import { ClipThing } from "../../Common/Deprecated/ClipThing"
 import { MediaPreview } from "../../Common/MediaPreview/MediaPreview"
 import { MechBarStats } from "../../Hangar/WarMachinesHangar/Common/MechBarStats"
-import { MechRepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
+import { MechRepairBlocks } from "../../Common/Mech/MechRepairBlocks"
 import { MechViewer } from "../../Hangar/WarMachinesHangar/WarMachineDetails/MechViewer/MechViewer"
 import { MechBattleHistoryDetails } from "../../Marketplace/WarMachinesMarket/WarMachineMarketDetails/MechBattleHistoryDetails"
 
@@ -85,7 +85,7 @@ export const WarmachineDetails = ({ mechID, primaryColor, backgroundColor }: { m
                                 {/* Mech avatar, label, name etc */}
                                 <Stack spacing=".5rem">
                                     <Stack spacing=".5rem" direction="row" alignItems="center">
-                                        <SvgSkin fill={rarityDeets.color} />
+                                        <SvgLoadoutSkin fill={rarityDeets.color} />
                                         <Typography variant="body2" sx={{ color: rarityDeets.color, fontFamily: fonts.nostromoHeavy }}>
                                             {rarityDeets.label}
                                         </Typography>

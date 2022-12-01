@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { Gabs } from "../../assets"
-import { FancyButton } from ".."
 import { colors, siteZIndex } from "../../theme/theme"
+import { NiceButton } from "../Common/Nice/NiceButton"
 
 export const NotFoundPage = () => {
     return (
@@ -54,6 +54,7 @@ export const NotFoundPage = () => {
                 >
                     404
                 </Typography>
+
                 <Typography
                     sx={{
                         fontSize: "5.8rem",
@@ -67,25 +68,21 @@ export const NotFoundPage = () => {
                 >
                     This page does not exist.
                 </Typography>
-                <FancyButton
-                    clipThingsProps={{
-                        clipSize: "8px",
-                        backgroundColor: colors.darkerNeonBlue,
-                        border: {
-                            borderColor: colors.neonBlue,
-                        },
-                    }}
+
+                <NiceButton
+                    corners
+                    buttonColor={colors.neonBlue}
                     sx={{
                         fontSize: "3rem",
-                        px: "2em",
+                        p: "1rem 3rem",
                         "@media (max-width:600px)": {
                             fontSize: "5vw",
                         },
                     }}
-                    to="/"
+                    route={{ to: "/" }}
                 >
                     Go to the Battle Arena
-                </FancyButton>
+                </NiceButton>
             </Stack>
 
             <Box

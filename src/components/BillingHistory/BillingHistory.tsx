@@ -5,7 +5,6 @@ import { useCallback, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { ClipThing } from ".."
 import { HangarBg, SafePNG } from "../../assets"
-import { MysteryCrateBanner } from "../BannersPromotions/MysteryCrateBanner"
 import { useTheme } from "../../containers/theme"
 import { generatePriceText, getOrderStatusDeets, parseString } from "../../helpers"
 import { usePagination, useUrlQuery } from "../../hooks"
@@ -13,8 +12,10 @@ import { useGameServerCommandsUser } from "../../hooks/useGameServer"
 import { GameServerKeys } from "../../keys"
 import { colors, fonts, siteZIndex } from "../../theme/theme"
 import { FiatOrder } from "../../types/fiat"
-import { CoolTable } from "../Common/CoolTable"
+import { MysteryCrateBanner } from "../BannersPromotions/MysteryCrateBanner"
 import { PageHeader } from "../Common/Deprecated/PageHeader"
+import { NiceBoxThing } from "../Common/Nice/NiceBoxThing"
+import { NiceTable } from "../Common/Nice/NiceTable"
 
 export const BillingHistory = () => {
     const theme = useTheme()
@@ -80,22 +81,20 @@ export const BillingHistory = () => {
                 <Stack direction="row" alignItems="center" sx={{ mb: "1.1rem", gap: "1.2rem" }}>
                     <MysteryCrateBanner />
                 </Stack>
-                <ClipThing
-                    clipSize="10px"
-                    border={{
-                        borderColor: theme.factionTheme.primary,
-                        borderThickness: ".3rem",
+                <NiceBoxThing
+                    border={{ color: theme.factionTheme.primary }}
+                    background={{
+                        colors: [theme.factionTheme.background],
+                        opacity: 0.7,
                     }}
-                    opacity={0.7}
-                    backgroundColor={theme.factionTheme.background}
-                    sx={{ height: "100%", flex: 1 }}
+                    sx={{ flex: 1, height: "100%" }}
                 >
                     <Stack sx={{ position: "relative", height: "100%" }}>
                         <Stack sx={{ flex: 1 }}>
                             <PageHeader title="BILLING HISTORY" description="View your past transactions." imageUrl={SafePNG} />
 
                             <Box sx={{ flex: 1 }}>
-                                <CoolTable
+                                <NiceTable
                                     tableHeadings={["RECEIPT NUMBER", "DATE", "STATUS", "TOTAL"]}
                                     alignments={["left", "center", "center", "center"]}
                                     widths={["25%", "25%", "25%", "25%"]}
@@ -156,7 +155,7 @@ export const BillingHistory = () => {
                                 sx={{
                                     px: "1rem",
                                     py: ".7rem",
-                                    borderTop: (theme) => `${theme.factionTheme.primary}70 1.5px solid`,
+                                    borderTop: (theme) => `${theme.factionTheme.s600} 1.5px solid`,
                                     backgroundColor: "#00000070",
                                 }}
                             >
@@ -167,7 +166,7 @@ export const BillingHistory = () => {
                                     sx={{
                                         ".MuiButtonBase-root": { borderRadius: 0.8, fontFamily: fonts.nostromoBold },
                                         ".Mui-selected": {
-                                            color: (theme) => theme.factionTheme.secondary,
+                                            color: (theme) => theme.factionTheme.text,
                                             backgroundColor: `${theme.factionTheme.primary} !important`,
                                         },
                                     }}
@@ -178,7 +177,7 @@ export const BillingHistory = () => {
                             </Box>
                         )}
                     </Stack>
-                </ClipThing>
+                </NiceBoxThing>
             </Stack>
         </Stack>
     )

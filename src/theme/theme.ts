@@ -15,14 +15,32 @@ declare module "@mui/material/styles" {
 
     export interface FactionTheme {
         primary: string
-        secondary: string
+        text: string
         background: string
+        s100: string
+        s200: string
+        s300: string
+        s400: string
+        s500: string
+        s600: string
+        s700: string
+        s800: string
+        s900: string
     }
     // allow configuration using `createTheme`
     interface FactionThemeOptions {
         primary?: string
-        secondary?: string
+        text?: string
         background?: string
+        s100?: string
+        s200?: string
+        s300?: string
+        s400?: string
+        s500?: string
+        s600?: string
+        s700?: string
+        s800?: string
+        s900?: string
     }
 }
 
@@ -43,29 +61,24 @@ export const colors = {
     blue2: "#309FFF",
     purple: "#9A73F5",
     black2: "#13161B",
-    black3: "#080303",
+    notStaked: "#50B1DE",
 
-    neonPink: "#F72485",
     lightNeonBlue: "#8DE9FF",
     neonBlue: "#3DE0E0",
-    darkNeonBlue: "#176969",
     darkerNeonBlue: "#073339",
+    darkestNeonBlue: "#050c12",
     darkNavyBlue: "#0C0C1A",
+
     navy: "#2A2A40",
     darkNavy: "#101019",
     darkerNavy: "#08080C",
 
     health: "#BFF600",
     shield: "#00F7F7",
-    warMachineSkillBar: "#9669FF",
 
     lightGrey: "#999999",
     grey: "#777777",
     darkGrey: "#444444",
-    battleQueueBanner: "#C24242",
-    darkestNeonBlue: "#050c12",
-
-    globalChat: "#35A679",
 
     // Transactions
     supsCredit: "#01FF70",
@@ -78,6 +91,8 @@ export const colors = {
     marketSold: "#2BA172",
     marketCreate: "#E6C85C",
     marketBidReturned: "#CC3F3F",
+
+    repair: "#EA8622",
 
     // Mech loadout
     chassisSkin: "#D4AA13",
@@ -104,8 +119,17 @@ export const colors = {
 
 const factionTheme: FactionTheme = {
     primary: "#00FAFA",
-    secondary: "#00FAFA",
-    background: "#050c12",
+    text: "#ffffff",
+    background: "#001919",
+    s100: "#ccfefe",
+    s200: "#80fdfd",
+    s300: "#33fbfb",
+    s400: "#00fafa",
+    s500: "#00c8c8",
+    s600: "#006464",
+    s700: "#004b4b",
+    s800: "#003232",
+    s900: "#001919",
 }
 
 export const fonts = {
@@ -116,6 +140,11 @@ export const fonts = {
     nostromoLight: ["Nostromo Regular Light", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
     shareTech: ["Share Tech", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
     shareTechMono: ["Share Tech Mono", "monospace"].join(","),
+    rajdhaniLight: ["Rajdhani Light", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+    rajdhaniRegular: ["Rajdhani Regular", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+    rajdhaniMedium: ["Rajdhani Medium", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+    rajdhaniSemibold: ["Rajdhani Semibold", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
+    rajdhaniBold: ["Rajdhani Bold", "Roboto", "Helvetica", "Arial", "sans-serif"].join(","),
 }
 
 export enum siteZIndex {
@@ -123,9 +152,9 @@ export enum siteZIndex {
     Tooltip = 900,
     TopBar = 800,
     MainMenuModal = 700,
-    Modal = 600,
-    Drawer = 500,
-    Popover = 400,
+    Popover = 600,
+    Modal = 500,
+    Drawer = 400,
 
     // Stream site top elements
     RoutePage = 101,
@@ -183,47 +212,47 @@ export const theme = createTheme({
             lineHeight: 1.5,
         },
         h3: {
-            fontFamily: fonts.shareTech,
+            fontFamily: fonts.rajdhaniMedium,
             fontSize: "4.13rem",
             lineHeight: 1.5,
         },
         h4: {
-            fontFamily: fonts.shareTech,
+            fontFamily: fonts.rajdhaniMedium,
             fontSize: "2.96rem",
             lineHeight: 1.5,
         },
         h5: {
-            fontFamily: fonts.shareTech,
+            fontFamily: fonts.rajdhaniMedium,
             fontSize: "2.13rem",
             lineHeight: 1.5,
         },
         h6: {
-            fontFamily: fonts.shareTech,
+            fontFamily: fonts.rajdhaniMedium,
             fontSize: "1.82rem",
             lineHeight: 1.5,
         },
         body1: {
-            fontFamily: fonts.shareTech,
+            fontFamily: fonts.rajdhaniMedium,
             fontSize: "1.7rem",
             lineHeight: 1.5,
         },
         body2: {
-            fontFamily: fonts.shareTech,
+            fontFamily: fonts.rajdhaniMedium,
             fontSize: "1.5rem",
             lineHeight: 1.5,
         },
         subtitle1: {
-            fontFamily: fonts.shareTech,
+            fontFamily: fonts.rajdhaniMedium,
             fontSize: "1.34rem",
             lineHeight: 1.5,
         },
         subtitle2: {
-            fontFamily: fonts.shareTech,
+            fontFamily: fonts.rajdhaniMedium,
             fontSize: "1.18rem",
             lineHeight: 1.5,
         },
         caption: {
-            fontFamily: fonts.shareTech,
+            fontFamily: fonts.rajdhaniMedium,
             fontSize: "1.25rem",
             lineHeight: 1.5,
         },
@@ -271,8 +300,13 @@ export const theme = createTheme({
             },
             styleOverrides: {
                 root: {
-                    marginTop: ".8rem",
                     zIndex: siteZIndex.Popover,
+
+                    ".MuiPaper-root": {
+                        backgroundImage: "unset",
+                        boxShadow: 0,
+                        borderRadius: 0,
+                    },
                 },
             },
         },
@@ -335,8 +369,9 @@ export const theme = createTheme({
                     borderRadius: 0,
                     "& > .MuiSvgIcon-root": { width: "2.6rem", height: "2.6rem" },
                     ".MuiSvgIcon-root": { transform: "scale(1.1)", transformOrigin: "left" },
-                    "&.Mui-checked > .MuiSvgIcon-root": { fill: `${colors.green} !important` },
-                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.green}50 !important` },
+                    "&.Mui-checked > .MuiSvgIcon-root": { fill: `${colors.neonBlue}` },
+                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.neonBlue}50` },
+                    "&.MuiCheckbox-indeterminate > .MuiSvgIcon-root": { color: colors.neonBlue },
                 },
             },
         },
@@ -348,15 +383,15 @@ export const theme = createTheme({
             },
             styleOverrides: {
                 root: {
-                    width: 36,
-                    height: 18,
+                    width: 30,
+                    height: 15,
                     padding: 0,
                     "& .MuiSwitch-switchBase": {
                         padding: 0,
                         margin: "2px",
                         transitionDuration: "300ms",
                         "&.Mui-checked": {
-                            transform: "translateX(18px)",
+                            transform: "translateX(15px)",
                             color: colors.neonBlue,
                             "& + .MuiSwitch-track": {
                                 backgroundColor: `${colors.neonBlue}44`,
@@ -380,11 +415,11 @@ export const theme = createTheme({
                     },
                     "& .MuiSwitch-thumb": {
                         boxSizing: "border-box",
-                        width: 14,
-                        height: 14,
+                        width: 11,
+                        height: 11,
                     },
                     "& .MuiSwitch-track": {
-                        borderRadius: 18 / 2,
+                        borderRadius: 15 / 2,
                         backgroundColor: colors.grey,
                         opacity: 1,
                         transition: `all .5s`,
@@ -424,8 +459,8 @@ export const theme = createTheme({
                     height: "1px",
                     borderRadius: 0,
                     ".MuiSlider-thumb": {
-                        width: "15px",
-                        height: "15px",
+                        width: "12px",
+                        height: "12px",
                         ":after": {
                             width: "100%",
                             height: "100%",

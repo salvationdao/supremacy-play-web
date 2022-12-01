@@ -3,7 +3,7 @@ import BigNumber from "bignumber.js"
 import { useEffect, useMemo, useRef } from "react"
 import { GenericWarMachinePNG, SvgInfoCircular, SvgSkull } from "../../../../assets"
 import { useAuth, useMobile, useSupremacy, useTraining } from "../../../../containers"
-import { getRarityDeets } from "../../../../helpers"
+import { getRarityDeets, truncateTextLines } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
 import { dropShadowEffect, zoomEffect } from "../../../../theme/keyframes"
 import { colors, fonts } from "../../../../theme/theme"
@@ -13,7 +13,6 @@ import { WarMachineAbilitiesPopoverBT } from "../WarMachineAbilitiesPopover/WarM
 import { WarMachineDestroyedInfoBT } from "../WarMachineDestroyedInfoBT"
 import { HealthShieldBarsBT } from "./HealthShieldBarsBT"
 import { MoveCommandBT } from "./MoveCommandBT"
-import { TruncateTextLines } from "../../../../theme/styles"
 
 // in rems
 const WIDTH_AVATAR = 8.6
@@ -86,8 +85,8 @@ export const WarMachineItemBT = ({
     const rarityDeets = useMemo(() => getRarityDeets(tier), [tier])
     const wmImageUrl = useMemo(() => imageAvatar || GenericWarMachinePNG, [imageAvatar])
     const selfOwned = useMemo(() => ownedByID === userID, [ownedByID, userID])
-    const primaryColor = useMemo(() => (selfOwned ? colors.gold : faction.primary_color), [faction.primary_color, selfOwned])
-    const backgroundColor = useMemo(() => faction.background_color, [faction.background_color])
+    const primaryColor = useMemo(() => (selfOwned ? colors.gold : faction.palette.primary), [faction.palette.primary, selfOwned])
+    const backgroundColor = useMemo(() => faction.palette.background, [faction.palette.background])
 
     // Toggle out isExpanded if other mech is highlighted
     useEffect(() => {
@@ -235,7 +234,7 @@ export const WarMachineItemBT = ({
                                     lineHeight: 1,
                                     fontWeight: "bold",
                                     whiteSpace: "normal",
-                                    ...TruncateTextLines(2),
+                                    ...truncateTextLines(2),
                                 }}
                             >
                                 {name || hash}
@@ -287,7 +286,7 @@ export const WarMachineItemBT = ({
                                         variant="body1"
                                         sx={{
                                             fontWeight: "bold",
-                                            color: (theme) => theme.factionTheme.secondary,
+                                            color: (theme) => theme.factionTheme.text,
                                             letterSpacing: 1,
                                             transition: "all .2s",
                                             animation: trainingStage === MechAbilityStages.ExplainMA ? `${zoomEffect(1.35)} 2s infinite` : "unset",
