@@ -132,14 +132,14 @@ export const VoiceChat = () => {
             })
 
             if (!resp) {
-                newSnackbarMessage("Failed to leave as faction commmander", "error")
+                newSnackbarMessage("Failed to leave as faction commander", "error")
                 return
             }
 
             stopStream()
             newSnackbarMessage("Successfully left as faction commander", "success")
         } catch (e) {
-            const message = typeof e === "string" ? e : "Failed to leave as faction commmander"
+            const message = typeof e === "string" ? e : "Failed to leave as faction commander"
             newSnackbarMessage(message, "error")
         }
     }, [currentArenaID, newSnackbarMessage, send])
@@ -183,13 +183,13 @@ export const VoiceChat = () => {
             })
 
             if (!resp) {
-                newSnackbarMessage("Failed to update faction commmander", "error")
+                newSnackbarMessage("Failed to update faction commander", "error")
                 return
             }
 
             newSnackbarMessage("You are now faction commander", "success")
         } catch (e) {
-            const message = typeof e === "string" ? e : "Failed to update faction commmander"
+            const message = typeof e === "string" ? e : "Failed to update faction commander"
             newSnackbarMessage(message, "error")
         }
     }, [currentArenaID, newSnackbarMessage, send])
@@ -201,13 +201,13 @@ export const VoiceChat = () => {
             })
 
             if (!resp) {
-                newSnackbarMessage("Failed to vote to kick faction commmander", "error")
+                newSnackbarMessage("Failed to vote to kick faction commander", "error")
                 return
             }
 
             newSnackbarMessage("Voted to kick faction commander", "success")
         } catch (e) {
-            const message = typeof e === "string" ? e : "Failed to vote to kick faction commmander"
+            const message = typeof e === "string" ? e : "Failed to vote to kick faction commander"
             newSnackbarMessage(message, "error")
         }
     }, [currentArenaID, newSnackbarMessage, send])

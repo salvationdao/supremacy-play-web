@@ -176,7 +176,6 @@ export const InviteUserItem = ({ user, remove }: { user: User; remove?: () => vo
                     features: [],
                     role_type: RoleType.player,
                 }}
-                styledImageTextProps={{ textColor: "#FFFFFF" }}
             />
 
             {remove && (

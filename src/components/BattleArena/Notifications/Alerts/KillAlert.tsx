@@ -3,6 +3,7 @@ import { ClipThing, StyledImageText, StyledNormalText } from "../../.."
 import { SvgDeath, SvgSkull2 } from "../../../../assets"
 import { colors } from "../../../../theme/theme"
 import { FactionWithPalette, KillAlertProps } from "../../../../types"
+import { NiceBoxThing } from "../../../Common/Nice/NiceBoxThing"
 import { PlayerNameGid } from "../../../Common/PlayerNameGid"
 
 export const KillAlert = ({ data, getFaction }: { data: KillAlertProps; getFaction: (factionID: string) => FactionWithPalette }) => {
@@ -26,6 +27,22 @@ export const KillAlert = ({ data, getFaction }: { data: KillAlertProps; getFacti
     } else {
         killedBy = <StyledNormalText sx={{ fontWeight: "bold" }} text={killed_by || "UNKNOWN"} />
     }
+
+    return (
+        <NiceBoxThing border={{ color: mainColor || colors.grey }} background={{ colors: [colors.darkNavy], opacity: 0.6 }}>
+            <Box sx={{ px: "1.44rem", pt: "1.2rem", pb: ".8rem" }}>
+                {killedBy}
+                <SvgDeath inline size="1.2rem" sx={{ mx: ".48rem" }} />
+                <SvgSkull2 inline size="1.2rem" sx={{ mr: ".64rem" }} />
+                <StyledImageText
+                    textSx={{ textDecoration: "line-through" }}
+                    text={destroyed_war_machine.name || destroyed_war_machine.hash}
+                    color={getFaction(destroyed_war_machine.factionID).palette.primary}
+                    imageUrl={destroyed_war_machine.imageAvatar}
+                />
+            </Box>
+        </NiceBoxThing>
+    )
 
     return (
         <ClipThing

@@ -1,26 +1,33 @@
+import { Box, TypographyProps } from "@mui/material"
 import { useMemo } from "react"
 import { useSupremacy } from "../../containers"
 import { User } from "../../types"
-import { StyledImageText, StyledImageTextProps } from "../BattleArena/Notifications/Common/StyledImageText"
+import { TypographyTruncated } from "./TypographyTruncated"
 
-export const PlayerNameGid = ({ player, styledImageTextProps }: { player: User; styledImageTextProps?: StyledImageTextProps }) => {
+interface PlayerNameGidProps extends TypographyProps {
+    player: User
+}
+
+export const PlayerNameGid = ({ player, ...props }: PlayerNameGidProps) => {
     const { getFaction } = useSupremacy()
-    const { username, gid, faction_id } = player
 
-    const faction = useMemo(() => getFaction(faction_id), [faction_id, getFaction])
-    const primaryColor = faction.palette.primary
+    const faction = useMemo(() => getFaction(player.faction_id), [player.faction_id, getFaction])
 
     return (
-        <StyledImageText
-            text={
-                <>
-                    {`${username}`}
-                    <span style={{ marginLeft: ".2rem", opacity: 0.8 }}>{`#${gid}`}</span>
-                </>
-            }
-            color={primaryColor}
-            imageUrl={faction.logo_url}
-            {...styledImageTextProps}
-        />
+        <TypographyTruncated {...props}>
+            <Box
+                sx={{
+                    display: "inline-block",
+                    width: "2.8rem",
+                    height: "2.8rem",
+                    verticalAlign: "middle",
+                    background: `url(${faction.logo_url})`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    backgroundSize: "contain",
+                }}
+            />{" "}
+            {player.username}#{player.gid}
+        </TypographyTruncated>
     )
 }

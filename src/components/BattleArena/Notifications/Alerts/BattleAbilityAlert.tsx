@@ -1,9 +1,10 @@
 import { Box, Stack } from "@mui/material"
-import { ClipThing, StyledImageText } from "../../.."
+import { StyledImageText } from "../../.."
 import { SvgEmergency } from "../../../../assets"
 import { acronym } from "../../../../helpers"
 import { colors } from "../../../../theme/theme"
 import { BattleFactionAbilityAlertProps, FactionWithPalette } from "../../../../types"
+import { NiceBoxThing } from "../../../Common/Nice/NiceBoxThing"
 
 export const BattleAbilityAlert = ({ data, getFaction }: { data: BattleFactionAbilityAlertProps; getFaction: (factionID: string) => FactionWithPalette }) => {
     const { user, ability } = data
@@ -13,22 +14,14 @@ export const BattleAbilityAlert = ({ data, getFaction }: { data: BattleFactionAb
     const mainColor = faction.palette.primary
 
     return (
-        <ClipThing
-            clipSize="3px"
-            border={{
-                borderColor: mainColor || colors.grey,
-                borderThickness: ".2rem",
-            }}
-            opacity={0.6}
-            backgroundColor={colors.darkNavy}
-        >
+        <NiceBoxThing border={{ color: mainColor || colors.grey }} background={{ colors: [colors.darkNavy], opacity: 0.6 }}>
             <Stack spacing=".5rem" sx={{ px: "1.44rem", pt: "1.2rem", pb: ".8rem" }}>
                 <Box>
                     <StyledImageText text={user ? acronym(faction.label) : "GABS"} color={mainColor || "grey !important"} imageUrl={faction.logo_url} />
-                    <SvgEmergency fill="#FFFFFF" size="1.3rem" sx={{ display: "inline", mx: ".4rem" }} />
+                    <SvgEmergency inline fill="#FFFFFF" size="1.3rem" sx={{ display: "inline", mx: ".4rem" }} />
                     <StyledImageText text={label} color={colour} imageUrl={`${image_url}`} />
                 </Box>
             </Stack>
-        </ClipThing>
+        </NiceBoxThing>
     )
 }

@@ -206,7 +206,7 @@ export const Routes: RouteSingle[] = [
             image: TutorialPNG,
             path: "/tutorial",
         },
-        enable: true,
+        enable: DEV_ONLY,
         tabTitle: "Tutorial",
     },
 

@@ -25,7 +25,6 @@ export const StyledImageText = ({
     variant = "body1",
     textColor,
     color,
-    truncateLine,
     textSx,
 
     fontFamily,
@@ -34,7 +33,7 @@ export const StyledImageText = ({
     imageBackgroundSize = "cover",
 }: StyledImageTextProps) => {
     return (
-        <span style={{ display: "flex", alignItems: "center" }}>
+        <span style={{ display: "inline-flex", alignItems: "center" }}>
             {imageUrl && (
                 <Box
                     component="span"
@@ -61,16 +60,6 @@ export const StyledImageText = ({
                     fontWeight,
                     color: textColor || color,
                     wordBreak: "break-all",
-                    ...(truncateLine
-                        ? {
-                              display: "-webkit-inline-box",
-                              overflow: "hidden",
-                              overflowWrap: "anywhere",
-                              textOverflow: "ellipsis",
-                              WebkitLineClamp: 1,
-                              WebkitBoxOrient: "vertical",
-                          }
-                        : {}),
                     ...textSx,
                 }}
             >
