@@ -130,7 +130,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const { query: getGlobalFeatures } = useQuery(GetGlobalFeatures())
     const [globalFeatures, setGlobalFeatures] = useState<Feature[]>([])
     const { query: gameserverLoginCheck } = useQuery(GameServerLoginCheck(fingerprint), false)
-    const { mutate: gameserverTokenLogin } = useMutation(GameServerTokenLoginCheck)
+    const { mutate: passportLoginCheck } = useMutation(GameServerTokenLoginCheck)
 
     const handleVisibilityChange = useCallback(() => {
         if (document["hidden"]) {
@@ -153,24 +153,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const authCheckCallback = useCallback(
         async (event?: MessageEvent) => {
-            if (!event || !("issue_token" in event.data)) return
+            if (event && !("issue_token" in event.data)) return
             const issueToken = event?.data.issue_token as string
             // Check passport server login
-            try {
-                const resp = await gameserverTokenLogin({
-                    issue_token: issueToken,
-                    fingerprint,
-                })
-                if (resp.error || !resp.payload) {
-                    setUserFromPassport(undefined)
-                    return
+            if (!userFromPassport) {
+                try {
+                    const resp = await passportLoginCheck({
+                        issue_token: issueToken,
+                        fingerprint,
+                    })
+                    if (resp.error || !resp.payload) {
+                        setUserFromPassport(undefined)
+                        return
+                    }
+                    setUserFromPassport(resp.payload)
+                } catch (err) {
+                    console.error(err)
                 }
-                setUserFromPassport(resp.payload)
-            } catch (err) {
-                console.error(err)
             }
         },
-        [fingerprint, gameserverTokenLogin],
+        [fingerprint, passportLoginCheck, userFromPassport],
     )
 
     useEffect(() => {
@@ -237,7 +239,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const onLogInClick = useCallback(async () => {
         if (isLoggingIn) return
         setIsLoggingIn(true)
-        const href = `${PASSPORT_WEB}external/login?origin=${window.location.origin}&redirectURL=${window.location.origin}/login-redirect`
+        const href = `${PASSPORT_WEB}external/login?origin=${window.location.origin}`
         const popup = window.open(href, "_blank")
 
         setPassportPopup(popup)
