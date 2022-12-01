@@ -11,8 +11,8 @@ import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
 import { BattleState, LocationSelectType, PlayerAbility } from "../../../../types"
 import { NiceButtonGroup } from "../../../Common/Nice/NiceButtonGroup"
+import { PlayerAbilitySmallCard } from "../../../Common/PlayerAbility/PlayerAbilitySmallCard"
 import { SectionCollapsible } from "../Common/SectionCollapsible"
-import { PlayerAbilityCard } from "./PlayerAbilityCard"
 
 const filterOptions = [
     { label: "", value: LocationSelectType.Global, svg: <SvgGlobal size="1.4rem" /> },
@@ -112,7 +112,7 @@ const PlayerAbilitiesInner = () => {
                     }}
                 >
                     {displayAbilities.map((p) => (
-                        <PlayerAbilityCard key={p.ability.id} playerAbility={p} />
+                        <PlayerAbilitySmallCard key={p.ability.id} anyAbility={p.ability} playerAbility={p} />
                     ))}
                 </Box>
             ) : (

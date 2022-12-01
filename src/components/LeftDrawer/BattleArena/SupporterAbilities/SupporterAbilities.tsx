@@ -8,8 +8,8 @@ import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
 import { AnyAbility, BattleState, LocationSelectType } from "../../../../types"
 import { NiceButtonGroup } from "../../../Common/Nice/NiceButtonGroup"
+import { PlayerAbilitySmallCard } from "../../../Common/PlayerAbility/PlayerAbilitySmallCard"
 import { SectionCollapsible } from "../Common/SectionCollapsible"
-import { SupportAbilityCard } from "./SupportAbilityCard"
 
 const filterOptions = [
     { label: "", value: LocationSelectType.Global, svg: <SvgGlobal size="1.4rem" /> },
@@ -108,7 +108,7 @@ const SupporterAbilitiesInner = () => {
                     }}
                 >
                     {displayAbilities.map((ab) => (
-                        <SupportAbilityCard key={`${ab.id}`} supportAbility={ab} />
+                        <PlayerAbilitySmallCard key={`${ab.id}`} anyAbility={ab} />
                     ))}
                 </Box>
             ) : (

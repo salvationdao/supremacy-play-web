@@ -4,7 +4,7 @@ import { SvgLoadoutSkin, SvgMechDeaths, SvgMechKills, SvgMechLosses, SvgMechWins
 import { useSupremacy } from "../../../../containers"
 import { getRarityDeets, numFormatter } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
-import { NewMechStruct } from "../../../../types"
+import { NewMechStruct, Utility } from "../../../../types"
 import { TypographyTruncated } from "../../TypographyTruncated"
 import { MechIdleStatus } from "../MechIdleStatus"
 import { RepairBlocks } from "../MechRepairBlocks"
@@ -17,6 +17,8 @@ export const MechTooltipRender = ({ mech }: { mech: NewMechStruct }) => {
     const ownerFaction = useMemo(() => getFaction(mech.owner.faction_id), [getFaction, mech.owner.faction_id])
 
     const rarityDeets = useMemo(() => getRarityDeets(mech.tier), [mech.tier])
+
+    const utilitySlots = useMemo(() => mech.utilities?.map((u) => u.utility).filter((u) => !!u) as Utility[] | undefined, [mech.utilities])
 
     return (
         <Stack sx={{ width: "45rem", backgroundColor: ownerFaction.palette.s900, overflow: "hidden", maxHeight: "calc(100vh - 4rem)" }}>
@@ -120,11 +122,11 @@ export const MechTooltipRender = ({ mech }: { mech: NewMechStruct }) => {
                         />
                     )}
 
-                    {mech.utilities && mech.utilities.length > 0 && (
+                    {utilitySlots && utilitySlots.length > 0 && (
                         <MechLoadout
-                            items={mech.utilities.map((x) => {
-                                const image = x.utility?.avatar_url || x.utility?.image_url || ""
-                                return { name: x.utility?.label || "Unknown", imageUrl: image, tier: x.utility?.tier }
+                            items={utilitySlots.map((x) => {
+                                const image = x.avatar_url || x.image_url || ""
+                                return { name: x.label || "Unknown", imageUrl: image, tier: x.tier }
                             })}
                             title="Utilities"
                             fallbackColor={ownerFaction.palette.primary}
