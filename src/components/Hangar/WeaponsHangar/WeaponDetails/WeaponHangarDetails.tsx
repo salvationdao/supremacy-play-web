@@ -34,7 +34,6 @@ export const WeaponHangarDetails = () => {
     )
 
     const primaryColor = theme.factionTheme.primary
-    const backgroundColor = theme.factionTheme.background
     const avatarUrl = weaponDetails?.weapon_skin?.avatar_url || weaponDetails?.avatar_url
     const imageUrl = weaponDetails?.weapon_skin?.image_url || weaponDetails?.image_url
 
@@ -54,17 +53,19 @@ export const WeaponHangarDetails = () => {
             <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
                 {/* Left side */}
                 <NiceBoxThing
-                        border={{
-                            color: theme.factionTheme.primary,
-                            thickness: "thicc",
-                        }}
-                        background={{
-                            colors: [theme.factionTheme.background],
-                        }}
-                        sx={{
-                            flexShrink: 0, height: "100%", width: "38rem"
-                        }}
-                    >
+                    border={{
+                        color: theme.factionTheme.primary,
+                        thickness: "thicc",
+                    }}
+                    background={{
+                        colors: [theme.factionTheme.background],
+                    }}
+                    sx={{
+                        flexShrink: 0,
+                        height: "100%",
+                        width: "38rem",
+                    }}
+                >
                     <Stack sx={{ height: "100%" }}>
                         <ClipThing clipSize="10px" corners={{ topRight: true }} opacity={0.7} sx={{ flexShrink: 0 }}>
                             <Box sx={{ position: "relative", borderBottom: `${primaryColor}60 1.5px solid` }}>
@@ -150,7 +151,7 @@ export const WeaponHangarDetails = () => {
                         {/* Status and buttons */}
                         {weaponDetails && <WeaponButtons weaponDetails={weaponDetails} />}
                     </Stack>
-                    </NiceBoxThing>
+                </NiceBoxThing>
 
                 {/* Right side */}
                 <NiceBoxThing
@@ -162,7 +163,8 @@ export const WeaponHangarDetails = () => {
                         colors: [theme.factionTheme.background],
                     }}
                     sx={{
-                        height: "100%", flex: 1
+                        height: "100%",
+                        flex: 1,
                     }}
                 >
                     {weaponDetails ? (

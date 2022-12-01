@@ -109,18 +109,17 @@ export const ChatMessages = React.memo(function ChatMessages({ faction_id, prima
                                             tabFactionID={faction_id}
                                         />
                                     )
-                                case ChatMessageType.PunishVote:
-                                    {
-                                        const data = message.data as PunishMessageData
-                                        return (
-                                            <PunishMessage
-                                                key={`${message.id}-${message.sent_at.toISOString()}`}
-                                                data={data}
-                                                sentAt={message.sent_at}
-                                                fontSize={fontSize}
-                                            />
-                                        )
-                                    }
+                                case ChatMessageType.PunishVote: {
+                                    const data = message.data as PunishMessageData
+                                    return (
+                                        <PunishMessage
+                                            key={`${message.id}-${message.sent_at.toISOString()}`}
+                                            data={data}
+                                            sentAt={message.sent_at}
+                                            fontSize={fontSize}
+                                        />
+                                    )
+                                }
                                 case ChatMessageType.ModBan:
                                 case ChatMessageType.SystemBan: {
                                     const data = message.data as SystemBanMessageData
@@ -138,8 +137,8 @@ export const ChatMessages = React.memo(function ChatMessages({ faction_id, prima
                                     const data = message.data as NewBattleMessageData
                                     return <NewBattleMessage key={`${message.id}-${message.sent_at.toISOString()}`} data={data} sentAt={message.sent_at} />
                                 }
-                                default: 
-                                return null
+                                default:
+                                    return null
                             }
                         })
                     ) : (
