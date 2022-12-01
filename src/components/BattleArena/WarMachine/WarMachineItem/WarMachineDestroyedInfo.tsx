@@ -131,7 +131,7 @@ export const WarMachineDestroyedInfo = ({
 
 const WarMachineIcon = ({ color, imageUrl, isDead, size }: { color: string; imageUrl?: string; isDead?: boolean; size: number }) => {
     return (
-        <NiceBoxThing border={{ color: color }} background={{ colors: [color, "#000000"] }} sx={{ width: "fit-content" }}>
+        <NiceBoxThing border={{ color: `${color}60` }} background={{ colors: [color, "#000000"] }} sx={{ width: "fit-content" }}>
             <Box>
                 <Box
                     sx={{

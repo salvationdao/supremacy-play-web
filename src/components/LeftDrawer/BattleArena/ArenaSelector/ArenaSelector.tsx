@@ -1,8 +1,9 @@
-import { Box } from "@mui/material"
+import { Box, Typography } from "@mui/material"
 import { useArena } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
-import { colors, fonts } from "../../../../theme/theme"
+import { fonts } from "../../../../theme/theme"
 import { NiceButton } from "../../../Common/Nice/NiceButton"
+import { TypographyTruncated } from "../../../Common/TypographyTruncated"
 
 export const ArenaSelector = () => {
     const { factionTheme } = useTheme()
@@ -14,29 +15,24 @@ export const ArenaSelector = () => {
                 <NiceButton
                     key={index}
                     fill={a.id === currentArena?.id}
+                    flat
                     buttonColor={factionTheme.primary}
                     onClick={() => {
                         setCurrentArena((prev) => arenaList.find((a1) => a1.id === a.id) || prev)
                     }}
                     sx={{
-                        flexDirection: "column",
-                        alignItems: "start",
-                        justifyContent: "space-between",
-                        fontFamily: fonts.nostromoBlack,
-                        fontSize: a.id === currentArena?.id ? "3rem" : "1.6rem",
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
                     }}
                 >
-                    <Box component="span">{a.name}</Box>
-                    <Box
-                        component="span"
-                        sx={{
-                            fontFamily: fonts.nostromoMedium,
-                            fontSize: "1rem",
-                            color: colors.lightGrey,
-                        }}
-                    >
+                    <TypographyTruncated sx={{ fontFamily: fonts.nostromoBlack }}>{a.name}</TypographyTruncated>
+
+                    <Box flex={1} />
+
+                    <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold }}>
                         {a.state}
-                    </Box>
+                    </Typography>
                 </NiceButton>
             ))}
         </>

@@ -7,7 +7,7 @@ import { SvgLobbies } from "../../../assets"
 import { useArena, useGame, useUI } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { HeaderProps, LeftRouteID, LeftRoutes } from "../../../routes"
-import { colors, fonts, siteZIndex } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { BattleState } from "../../../types"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 import { SectionMechRewards } from "./Sections/SectionMechRewards"
@@ -67,7 +67,6 @@ export const BattleEndScreen = () => {
             sx={{
                 height: "100%",
                 width: "100%",
-                pb: "1.8rem",
                 boxShadow: 20,
             }}
         >
@@ -81,7 +80,7 @@ export const BattleEndScreen = () => {
             </Box>
 
             <Stack sx={{ flex: 1, overflow: "hidden" }}>
-                <Stack spacing="3.2rem" flex={1} sx={{ overflowY: "auto", overflowX: "hidden" }}>
+                <Stack spacing="3.2rem" flex={1} sx={{ overflowY: "auto", overflowX: "hidden", pb: "1.8rem" }}>
                     <SectionWinner battleEndDetail={battleEndDetail} />
                     <SectionFactions battleEndDetail={battleEndDetail} />
                     <SectionMechRewards battleEndDetail={battleEndDetail} />
