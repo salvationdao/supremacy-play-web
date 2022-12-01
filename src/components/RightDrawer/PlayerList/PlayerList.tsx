@@ -1,76 +1,74 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { useMemo } from "react"
-import { PlayerListContent } from "../.."
-import { useAuth, useChat, useSupremacy } from "../../../containers"
+import { NiceTooltip, PlayerItem } from "../.."
+import { SvgUserDiamond2 } from "../../../assets"
+import { useChat } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { acronym, shadeColor } from "../../../helpers"
+import { HeaderProps } from "../../../routes"
 import { colors, fonts } from "../../../theme/theme"
-import { Faction, User } from "../../../types"
+import { User } from "../../../types"
+import { NiceButton } from "../../Common/Nice/NiceButton"
 
 export const PlayerList = () => {
-    const { getFaction } = useSupremacy()
-    const { user } = useAuth()
     const { activePlayers } = useChat()
 
     return (
         <Stack direction="row" sx={{ width: "100%", height: "100%" }}>
-            <Content getFaction={getFaction} user={user} activePlayers={activePlayers} />
+            <Content activePlayers={activePlayers} />
         </Stack>
     )
 }
 
-const Content = ({ getFaction, user, activePlayers }: { getFaction: (factionID: string) => Faction; user: User; activePlayers: User[] }) => {
+const Header = ({ isOpen, onClose }: HeaderProps) => {
     const theme = useTheme()
-    const bannerColor = useMemo(() => shadeColor(theme.factionTheme.primary, -60), [theme.factionTheme.primary])
+    const { activePlayers } = useChat()
 
     return (
-        <Stack sx={{ flex: 1 }}>
-            <Stack
-                direction="row"
-                spacing=".96rem"
-                alignItems="center"
+        <Stack
+            spacing="1rem"
+            direction="row"
+            sx={{
+                width: "100%",
+                p: "1rem",
+                alignItems: "center",
+                opacity: isOpen ? 1 : 0.7,
+                background: isOpen ? `linear-gradient(${theme.factionTheme.s500}70 26%, ${theme.factionTheme.s600})` : theme.factionTheme.s800,
+                transition: "background-color .2s ease-out",
+            }}
+        >
+            <NiceTooltip text="Active Players" placement="left">
+                <NiceButton
+                    onClick={onClose}
+                    buttonColor={theme.factionTheme.primary}
+                    corners
+                    sx={{
+                        p: ".8rem",
+                        pb: ".6rem",
+                    }}
+                >
+                    <SvgUserDiamond2 size="2.6rem" />
+                </NiceButton>
+            </NiceTooltip>
+            <Typography
                 sx={{
-                    position: "relative",
-                    pl: "2.2rem",
-                    pr: "4.8rem",
-                    height: `${5}rem`,
-                    background: `linear-gradient(${bannerColor} 26%, ${bannerColor}95)`,
-                    boxShadow: 1.5,
+                    fontFamily: fonts.nostromoBlack,
+                    fontSize: "1.6rem",
                 }}
             >
-                {user.faction_id && (
-                    <Box
-                        sx={{
-                            width: "3rem",
-                            height: "3rem",
-                            flexShrink: 0,
-                            mb: ".16rem",
-                            backgroundImage: `url(${getFaction(user.faction_id).logo_url})`,
-                            backgroundRepeat: "no-repeat",
-                            backgroundPosition: "center",
-                            backgroundSize: "contain",
-                            backgroundColor: (theme) => theme.factionTheme.primary,
-                            borderRadius: 0.5,
-                            border: (theme) => `${theme.factionTheme.primary} solid 1px`,
-                        }}
-                    />
-                )}
-                <Stack spacing=".1rem">
-                    <Typography variant="caption" sx={{ fontFamily: fonts.nostromoBlack }}>
-                        {user.faction_id ? `${acronym(getFaction(user.faction_id).label)} ACTIVE PLAYERS` : "ACTIVE PLAYERS"}
-                    </Typography>
-                    <Stack direction="row" alignItems="center" spacing="1.3rem">
-                        <Stack direction="row" alignItems="center" spacing=".4rem">
-                            <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: colors.green }} />
-                            <Typography variant="body2" sx={{ lineHeight: 1 }}>
-                                <strong>Active: </strong>
-                                {activePlayers.length}
-                            </Typography>
-                        </Stack>
-                    </Stack>
-                </Stack>
-            </Stack>
+                Active Players
+            </Typography>
 
+            <Box flex={1} />
+
+            <Box sx={{ minWidth: ".8rem", minHeight: ".8rem", borderRadius: "50%", backgroundColor: activePlayers.length > 0 ? colors.green : colors.grey }} />
+            <Typography>{activePlayers.length} active</Typography>
+        </Stack>
+    )
+}
+PlayerList.Header = Header
+
+const Content = ({ activePlayers }: { activePlayers: User[] }) => {
+    return (
+        <Stack sx={{ flex: 1 }}>
             <Box
                 sx={{
                     flex: 1,
@@ -83,7 +81,11 @@ const Content = ({ getFaction, user, activePlayers }: { getFaction: (factionID: 
                     direction: "ltr",
                 }}
             >
-                <PlayerListContent activePlayers={activePlayers} />
+                <Stack spacing=".5rem">
+                    {activePlayers.map((p) => (
+                        <PlayerItem key={`active-player-${p.id}`} player={p} isActive />
+                    ))}
+                </Stack>
             </Box>
         </Stack>
     )

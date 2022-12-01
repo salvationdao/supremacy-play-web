@@ -3,7 +3,7 @@ import { useMemo } from "react"
 import { useTheme } from "../../../containers/theme"
 import { fonts } from "../../../theme/theme"
 import { MechDetails } from "../../../types"
-import { MechCommonArea } from "../../Hangar/WarMachinesHangar/WarMachineHangarItem"
+import { MechCommonArea } from "../../Hangar/Deprecated/HangarItemDeprecated"
 
 export const ReplayMechs = ({ mechs }: { mechs?: MechDetails[] }) => {
     const theme = useTheme()
@@ -15,7 +15,7 @@ export const ReplayMechs = ({ mechs }: { mechs?: MechDetails[] }) => {
     }
 
     const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
+    const secondaryColor = theme.factionTheme.text
 
     return (
         <Stack spacing="1rem">

@@ -1,9 +1,9 @@
-import { Button, Popover, Stack, Typography } from "@mui/material"
+import { Button, Stack, Typography } from "@mui/material"
 import { MutableRefObject, useEffect, useRef } from "react"
 import { RIGHT_DRAWER_WIDTH, UserBanForm } from "../../.."
 import { useAuth } from "../../../../containers"
 import { useToggle } from "../../../../hooks"
-import { colors, siteZIndex } from "../../../../theme/theme"
+import { NicePopover } from "../../../Common/Nice/NicePopover"
 
 export const AdditionalOptionsButton = () => {
     const { userID } = useAuth()
@@ -19,15 +19,15 @@ export const AdditionalOptionsButton = () => {
                 ref={popoverRef}
                 onClick={() => toggleIsPopoverOpen()}
                 sx={{
-                    backgroundColor: colors.darkerNavy,
-                    height: "2rem",
+                    backgroundColor: "#00000090",
+                    height: "3rem",
                     width: "100%",
                     borderRadius: 0,
                     "*": {
                         opacity: isPopoverOpen ? 1 : 0.6,
                     },
                     ":hover": {
-                        backgroundColor: colors.darkerNavy,
+                        backgroundColor: "#00000090",
                         "*": {
                             opacity: 1,
                         },
@@ -75,7 +75,7 @@ const OptionsPopover = ({
     }, [localOpen, onClose])
 
     return (
-        <Popover
+        <NicePopover
             open={localOpen}
             anchorEl={popoverRef.current}
             onClose={() => toggleLocalOpen(false)}
@@ -88,18 +88,15 @@ const OptionsPopover = ({
                 horizontal: "center",
             }}
             sx={{
-                zIndex: siteZIndex.Popover,
+                mt: "-.4rem",
                 ".MuiPaper-root": {
                     ml: 2,
                     width: `${RIGHT_DRAWER_WIDTH}rem`,
-                    background: "none",
-                    backgroundColor: colors.darkerNavy,
-                    borderRadius: 0.2,
-                    boxShadow: 10,
+                    my: 0,
                 },
             }}
         >
-            <Stack spacing=".32rem" sx={{ px: ".8rem", py: "1.1rem" }}>
+            <Stack spacing=".32rem">
                 <Button
                     onClick={() => {
                         toggleLocalOpen(false)
@@ -112,6 +109,6 @@ const OptionsPopover = ({
                     </Typography>
                 </Button>
             </Stack>
-        </Popover>
+        </NicePopover>
     )
 }

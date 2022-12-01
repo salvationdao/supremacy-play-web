@@ -1,13 +1,14 @@
-import { Stack, SxProps, Tab, Tabs, Typography } from "@mui/material"
+import { Stack, SxProps, Tab, Tabs } from "@mui/material"
 import { useEffect } from "react"
 import { useTheme } from "../../../containers/theme"
-import { TruncateTextLines } from "../../../theme/styles"
-import { fonts } from "../../../theme/theme"
+import { truncateTextLines } from "../../../helpers"
+import { colors, fonts } from "../../../theme/theme"
+import { TypographyTruncated } from "../TypographyTruncated"
 import { ArrowButton } from "./ArrowButton"
 
 export const TAB_HEIGHT = 3.8 // rems
 
-interface OneTab<T> {
+export interface OneTab<T> {
     id: T
     label: string
 }
@@ -18,6 +19,7 @@ export const NavTabs = <T,>({
     tabs,
     prevTab,
     nextTab,
+    width,
     sx,
 }: {
     activeTabID?: T
@@ -25,6 +27,7 @@ export const NavTabs = <T,>({
     tabs: OneTab<T>[]
     prevTab: (activeTabID: T) => void
     nextTab: (activeTabID: T) => void
+    width?: string
     sx?: SxProps
 }) => {
     const theme = useTheme()
@@ -64,19 +67,37 @@ export const NavTabs = <T,>({
                     boxShadow: 1,
                     zIndex: 9,
                     minHeight: 0,
-                    ".MuiTab-root": { minWidth: "21rem" },
-                    ".MuiButtonBase-root": {
+
+                    ".MuiTab-root": {
+                        minWidth: width || "21rem",
                         height: `${TAB_HEIGHT}rem`,
                         pt: `${TAB_HEIGHT / 2}rem`,
                         minHeight: 0,
                         py: 0,
                         zIndex: 2,
+
+                        ":hover": {
+                            backgroundColor: `${theme.factionTheme.primary}10`,
+                        },
                     },
+
                     ".MuiTabs-indicator": {
                         height: "100%",
-                        background: `linear-gradient(${theme.factionTheme.primary} 30%, ${theme.factionTheme.primary}BA)`,
+                        backgroundColor: colors.darkNavy,
                         zIndex: 1,
                         transition: "none",
+
+                        "::after": {
+                            position: "absolute",
+                            content: '""',
+                            left: 0,
+                            right: 0,
+                            top: 0,
+                            bottom: 0,
+                            border: `${theme.factionTheme.primary} 1.5px solid`,
+                            background: `linear-gradient(180deg, ${theme.factionTheme.primary}90, ${theme.factionTheme.primary}30)`,
+                            zIndex: -1,
+                        },
                     },
                 }}
                 onChange={(_event, newValue) => {
@@ -89,15 +110,15 @@ export const NavTabs = <T,>({
                             key={i}
                             value={tab.id}
                             label={
-                                <Typography
+                                <TypographyTruncated
                                     sx={{
-                                        color: tab.id === activeTabID ? theme.factionTheme.secondary : "#FFFFFF",
+                                        color: tab.id === activeTabID ? theme.factionTheme.text : "#FFFFFF",
                                         fontFamily: fonts.nostromoBlack,
-                                        ...TruncateTextLines(1),
+                                        ...truncateTextLines(1),
                                     }}
                                 >
                                     {tab.label}
-                                </Typography>
+                                </TypographyTruncated>
                             }
                         />
                     )

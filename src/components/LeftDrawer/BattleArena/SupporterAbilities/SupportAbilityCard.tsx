@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo } from "react"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgQuestionMark, SvgTarget } from "../../../../assets"
 import { useMiniMapPixi } from "../../../../containers"
-import { TruncateTextLines } from "../../../../theme/styles"
+import { truncateTextLines } from "../../../../helpers"
 import { colors } from "../../../../theme/theme"
 import { LocationSelectType, AnyAbility } from "../../../../types"
 import { FancyButton } from "../../../Common/Deprecated/FancyButton"
@@ -108,7 +108,7 @@ export const SupportAbilityCard = ({ supportAbility }: { supportAbility: AnyAbil
                         variant="body2"
                         sx={{
                             lineHeight: 1.2,
-                            ...TruncateTextLines(2),
+                            ...truncateTextLines(2),
                             fontWeight: "bold",
                         }}
                     >

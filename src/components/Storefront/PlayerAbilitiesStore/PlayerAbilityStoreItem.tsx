@@ -209,7 +209,7 @@ export const PlayerAbilityStoreItem = React.memo(function PlayerAbilityStoreItem
                                 variant="body1"
                                 sx={{
                                     fontFamily: fonts.nostromoBlack,
-                                    color: theme.factionTheme.secondary,
+                                    color: theme.factionTheme.text,
                                 }}
                             >
                                 PURCHASE FOR{" "}

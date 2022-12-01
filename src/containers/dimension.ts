@@ -11,7 +11,7 @@ export const GAME_UI_ID = "game-ui-container"
 // Contains dimensions for the overall layout of the divs, iframe etc.
 export const DimensionContainer = createContainer(() => {
     const { isNavOpen } = useMobile()
-    const [remToPxRatio, setRemToPxRatio] = useState(10)
+    const [remToPxRatio, setRemToPxRatio] = useState(10) // rem value * remToPxRatio = pixel value
     const below600 = useMediaQuery("(max-width:600px)")
     const below900 = useMediaQuery("(max-width:900px)")
     const below1300 = useMediaQuery("(max-width:1300px)")

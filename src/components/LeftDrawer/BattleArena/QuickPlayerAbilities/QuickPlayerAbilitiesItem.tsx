@@ -7,7 +7,7 @@ import { useToggle } from "../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { scaleUpKeyframes } from "../../../../theme/keyframes"
-import { TruncateTextLines } from "../../../../theme/styles"
+import { truncateTextLines } from "../../../../helpers"
 import { colors } from "../../../../theme/theme"
 import { LocationSelectType, SaleAbility, SaleAbilityAvailability } from "../../../../types"
 import { PreferenceToggle } from "../../../Bar/ProfileCard/PreferencesModal/NotificationPreferences"
@@ -267,7 +267,7 @@ export const QuickPlayerAbilitiesItem = React.memo(function QuickPlayerAbilities
                                     variant="body2"
                                     sx={{
                                         lineHeight: 1.2,
-                                        ...TruncateTextLines(2),
+                                        ...truncateTextLines(2),
                                         fontWeight: "bold",
                                     }}
                                 >

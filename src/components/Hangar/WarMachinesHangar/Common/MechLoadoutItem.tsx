@@ -246,7 +246,7 @@ const MechLoadoutItemButton = ({
                         {subLabel && (
                             <Typography
                                 sx={{
-                                    fontFamily: fonts.shareTech,
+                                    fontFamily: fonts.rajdhaniMedium,
                                     fontSize: size === "regular" ? "1.4rem" : "1.2rem",
                                     color,
                                 }}

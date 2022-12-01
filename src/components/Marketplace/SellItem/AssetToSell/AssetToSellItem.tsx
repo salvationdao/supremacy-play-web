@@ -6,10 +6,7 @@ import { useGameServerCommandsUser, useGameServerSubscriptionFaction } from "../
 import { GameServerKeys } from "../../../../keys"
 import { Keycard, MechDetails, MysteryCrate, Weapon } from "../../../../types"
 import { ItemType } from "../../../../types/marketplace"
-import { KeycardCommonArea } from "../../../Hangar/KeycardsHangar/KeycardHangarItem"
-import { CrateCommonArea } from "../../../Hangar/MysteryCratesHangar/MysteryCrateHangarItem"
-import { MechCommonArea } from "../../../Hangar/WarMachinesHangar/WarMachineHangarItem"
-import { WeaponCommonArea } from "../../../Hangar/WeaponsHangar/WeaponHangarItem"
+import { CrateCommonArea, KeycardCommonArea, MechCommonArea, WeaponCommonArea } from "../../../Hangar/Deprecated/HangarItemDeprecated"
 import { AssetToSellStruct } from "../SellItem"
 
 export const AssetToSellItem = ({
@@ -96,7 +93,7 @@ export const AssetToSellItem = ({
             return (
                 <MechCommonArea
                     primaryColor={theme.factionTheme.primary}
-                    secondaryColor={theme.factionTheme.secondary}
+                    secondaryColor={theme.factionTheme.text}
                     isGridView={orientation === "vertical"}
                     mech={assetToSell.mech}
                     mechDetails={mechDetails}
@@ -108,7 +105,7 @@ export const AssetToSellItem = ({
             return (
                 <WeaponCommonArea
                     primaryColor={theme.factionTheme.primary}
-                    secondaryColor={theme.factionTheme.secondary}
+                    secondaryColor={theme.factionTheme.text}
                     isGridView={orientation === "vertical"}
                     weapon={assetToSell.weapon}
                     weaponDetails={weaponDetails}
@@ -177,7 +174,7 @@ export const AssetToSellItem = ({
         mysteryCrate?.label,
         orientation,
         theme.factionTheme.primary,
-        theme.factionTheme.secondary,
+        theme.factionTheme.text,
         weaponDetails,
     ])
 

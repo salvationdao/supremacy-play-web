@@ -15,7 +15,7 @@ export const NiceSnackBar = React.memo(function NiceSnackbar({ icon, message, co
         <Snackbar {...props}>
             <NiceBoxThing
                 border={{ color: color || colors.blue }}
-                background={{ colors: [color || colors.blue, color || colors.blue], opacity: 0.64 }}
+                background={{ colors: [color || colors.blue, color || colors.blue], opacity: 0.8 }}
                 sx={{
                     mb: "-1rem",
                     ml: "-1rem",
@@ -35,7 +35,7 @@ export const NiceSnackBar = React.memo(function NiceSnackbar({ icon, message, co
                     }}
                 >
                     <Typography variant="h6" sx={{ fontWeight: "bold", lineHeight: 1.75 }}>
-                        {icon || <SvgInfoCircular inline size="1.4rem" />} {message}
+                        {icon || <SvgInfoCircular inline size="1.8rem" />} {message}
                     </Typography>
 
                     <IconButton size="small" onClick={() => props.onClose}>

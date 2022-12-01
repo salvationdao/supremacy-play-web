@@ -41,7 +41,7 @@ export const BattleAbilityItemBT = () => {
             battleAbility={trainingAirStrike}
             fadeEffect={true}
             buttonColor={theme.factionTheme.primary}
-            buttonTextColor={theme.factionTheme.secondary}
+            buttonTextColor={theme.factionTheme.text}
         />
     )
 }

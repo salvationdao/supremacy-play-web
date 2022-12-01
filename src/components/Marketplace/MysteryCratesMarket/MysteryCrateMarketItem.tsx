@@ -1,5 +1,5 @@
 import { MarketplaceBuyAuctionItem } from "../../../types/marketplace"
-import { CrateCommonArea } from "../../Hangar/MysteryCratesHangar/MysteryCrateHangarItem"
+import { CrateCommonArea } from "../../Hangar/Deprecated/HangarItemDeprecated"
 import { MarketItem } from "../Common/MarketItem/MarketItem"
 
 interface MysteryCratesMarketItemProps {

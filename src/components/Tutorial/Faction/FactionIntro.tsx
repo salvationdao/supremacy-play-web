@@ -2,8 +2,8 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useMemo } from "react"
 import { TRAINING_ASSETS } from "../../../constants"
 import { useSupremacy } from "../../../containers"
-import { colors, fonts } from "../../../theme/theme"
-import { Faction } from "../../../types"
+import { colors, fonts, theme } from "../../../theme/theme"
+import { Faction, FactionWithPalette } from "../../../types"
 
 enum FactionLabels {
     BC = "Boston Cybernetics",
@@ -14,17 +14,15 @@ enum FactionLabels {
 export const FactionIntro = () => {
     const { factionsAll } = useSupremacy()
 
-    const getFaction = useCallback((faction: FactionLabels) => {
+    const getFaction = useCallback((faction: FactionLabels): FactionWithPalette => {
         return {
             id: "",
             label: faction,
             logo_url: "",
             background_url: "",
             wallpaper_url: "",
-            primary_color: "",
-            secondary_color: "",
-            background_color: "",
             description: "",
+            palette: theme.factionTheme,
         }
     }, [])
 

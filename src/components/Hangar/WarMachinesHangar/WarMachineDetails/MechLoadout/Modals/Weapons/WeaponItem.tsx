@@ -183,50 +183,50 @@ export const WeaponItem = ({ id, equipped, selected, onSelect }: WeaponItemProps
                 <Stack>
                     {typeof weaponDetails.damage !== "undefined" &&
                         renderStat("DAMAGE", {
-                            oldStat: equipped?.damage,
-                            newStat: weaponDetails.damage,
+                            oldStat: equipped?.damage ? parseFloat(equipped?.damage) : undefined,
+                            newStat: parseFloat(weaponDetails.damage),
                         })}
                     {typeof weaponDetails.damage_falloff !== "undefined" &&
                         renderStat("DAMAGE FALLOFF", {
-                            oldStat: equipped?.damage_falloff,
-                            newStat: weaponDetails.damage_falloff,
+                            oldStat: equipped?.damage_falloff ? parseFloat(equipped?.damage_falloff) : undefined,
+                            newStat: parseFloat(weaponDetails.damage_falloff),
                         })}
                     {typeof weaponDetails.radius !== "undefined" &&
                         renderStat("RADIUS", {
-                            oldStat: equipped?.radius,
-                            newStat: weaponDetails.radius,
+                            oldStat: equipped?.radius ? parseFloat(equipped?.radius) : undefined,
+                            newStat: parseFloat(weaponDetails.radius),
                         })}
                     {typeof weaponDetails.radius_damage_falloff !== "undefined" &&
                         renderStat("RADIAL DAMAGE FALLOFF", {
-                            oldStat: equipped?.radius_damage_falloff,
-                            newStat: weaponDetails.radius_damage_falloff,
+                            oldStat: equipped?.radius_damage_falloff ? parseFloat(equipped?.radius_damage_falloff) : undefined,
+                            newStat: parseFloat(weaponDetails.radius_damage_falloff),
                         })}
                     {typeof weaponDetails.spread !== "undefined" &&
                         renderStat("SPREAD", {
-                            oldStat: equipped?.spread,
-                            newStat: weaponDetails.spread,
+                            oldStat: equipped?.spread ? parseFloat(equipped?.spread) : undefined,
+                            newStat: parseFloat(weaponDetails.spread),
                             negated: true,
                         })}
                     {typeof weaponDetails.rate_of_fire !== "undefined" &&
                         renderStat("RATE OF FIRE", {
-                            oldStat: equipped?.rate_of_fire,
-                            newStat: weaponDetails.rate_of_fire,
+                            oldStat: equipped?.rate_of_fire ? parseFloat(equipped?.rate_of_fire) : undefined,
+                            newStat: parseFloat(weaponDetails.rate_of_fire),
                         })}
                     {typeof weaponDetails.projectile_speed !== "undefined" &&
                         renderStat("PROJECTILE SPEED", {
-                            oldStat: equipped?.projectile_speed,
-                            newStat: weaponDetails.projectile_speed,
+                            oldStat: equipped?.projectile_speed ? parseFloat(equipped?.projectile_speed) : undefined,
+                            newStat: parseFloat(weaponDetails.projectile_speed),
                         })}
                     {typeof weaponDetails.energy_cost !== "undefined" &&
                         renderStat("ENERGY COST", {
-                            oldStat: equipped?.energy_cost,
-                            newStat: weaponDetails.energy_cost,
+                            oldStat: equipped?.energy_cost ? parseFloat(equipped?.energy_cost) : undefined,
+                            newStat: parseFloat(weaponDetails.energy_cost),
                             negated: true,
                         })}
                     {typeof weaponDetails.max_ammo !== "undefined" &&
                         renderStat("MAX AMMO", {
-                            oldStat: equipped?.max_ammo,
-                            newStat: weaponDetails.max_ammo,
+                            oldStat: equipped?.max_ammo ? parseFloat(equipped?.max_ammo) : undefined,
+                            newStat: parseFloat(weaponDetails.max_ammo),
                         })}
                 </Stack>
             </Stack>

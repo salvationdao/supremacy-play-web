@@ -89,7 +89,7 @@ export const AdminLookup = () => {
                                             p="1rem"
                                             sx={{
                                                 borderRadius: "2px",
-                                                backgroundColor: `${faction.primary_color}33`,
+                                                backgroundColor: `${faction.palette.primary}33`,
                                             }}
                                         >
                                             <Stack direction="row">
@@ -100,7 +100,7 @@ export const AdminLookup = () => {
                                                         width: "2rem",
                                                         height: "2rem",
                                                         background: `url(${faction.logo_url})`,
-                                                        backgroundColor: faction.background_color,
+                                                        backgroundColor: faction.palette.background,
                                                         backgroundRepeat: "no-repeat",
                                                         backgroundPosition: "center",
                                                         backgroundSize: "contain",
@@ -205,7 +205,7 @@ export const LookupSearchBox = () => {
                             borderRadius: 1,
                             "& .MuiInputBase-root": {
                                 py: 0,
-                                fontFamily: fonts.shareTech,
+                                fontFamily: fonts.rajdhaniMedium,
                             },
                             ".Mui-disabled": {
                                 WebkitTextFillColor: "unset",

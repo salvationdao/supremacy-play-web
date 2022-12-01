@@ -32,7 +32,7 @@ const BottomNavInner = () => {
     )
 
     const primaryColor = theme.factionTheme.primary
-    const secondaryColor = theme.factionTheme.secondary
+    const secondaryColor = theme.factionTheme.text
     const backgroundColor = theme.factionTheme.background
 
     const tabs = [
@@ -94,7 +94,6 @@ const BottomNavInner = () => {
                                 }}
                                 label={
                                     <Stack direction="row" alignItems="center" spacing="1rem">
-                                        {item.icon}
                                         <Typography variant="caption" sx={{ color: "inherit", fontFamily: fonts.nostromoBold }}>
                                             {item.label}
                                         </Typography>

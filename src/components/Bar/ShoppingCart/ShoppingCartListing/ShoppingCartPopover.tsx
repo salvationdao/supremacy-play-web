@@ -1,10 +1,9 @@
-import { Box, Popover, Stack } from "@mui/material"
+import { Box, Stack } from "@mui/material"
 import { MutableRefObject, useCallback, useEffect } from "react"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
-import { siteZIndex } from "../../../../theme/theme"
 import { ShoppingCart } from "../../../../types/fiat"
-import { NiceBoxThing } from "../../../Common/Nice/NiceBoxThing"
+import { NicePopover } from "../../../Common/Nice/NicePopover"
 import { ShoppingCartTable } from "./ShoppingCartTable"
 
 interface Props {
@@ -35,7 +34,7 @@ export const ShoppingCartPopover = ({ open, loading, shoppingCart, popoverRef, o
     const backgroundColor = theme.factionTheme.background
 
     return (
-        <Popover
+        <NicePopover
             open={localOpen}
             anchorEl={popoverRef.current}
             onClose={closePopover}
@@ -47,29 +46,18 @@ export const ShoppingCartPopover = ({ open, loading, shoppingCart, popoverRef, o
                 vertical: "top",
                 horizontal: "center",
             }}
-            sx={{
-                mt: ".8rem",
-                zIndex: siteZIndex.Popover,
-                ".MuiPaper-root": {
-                    mt: ".8rem",
-                    background: "none",
-                    boxShadow: 0,
-                },
-            }}
         >
-            <NiceBoxThing border={{ color: theme.factionTheme.primary }} background={{ colors: [theme.factionTheme.background] }} sx={{ height: "100%" }}>
-                <Stack spacing="2rem" sx={{ position: "relative", minWidth: "35rem", maxHeight: "90vh", px: "2rem", pt: "1.6rem", pb: "2rem" }}>
-                    <Box sx={{ minWidth: "500px" }}>
-                        <ShoppingCartTable
-                            loading={loading}
-                            shoppingCart={shoppingCart}
-                            primaryColor={primaryColor}
-                            backgroundColor={backgroundColor}
-                            onCheckoutClicked={closePopover}
-                        />
-                    </Box>
-                </Stack>
-            </NiceBoxThing>
-        </Popover>
+            <Stack spacing="2rem" sx={{ position: "relative", minWidth: "35rem", maxHeight: "90vh", px: "2rem", pt: "1.6rem", pb: "2rem" }}>
+                <Box sx={{ minWidth: "500px" }}>
+                    <ShoppingCartTable
+                        loading={loading}
+                        shoppingCart={shoppingCart}
+                        primaryColor={primaryColor}
+                        backgroundColor={backgroundColor}
+                        onCheckoutClicked={closePopover}
+                    />
+                </Box>
+            </Stack>
+        </NicePopover>
     )
 }

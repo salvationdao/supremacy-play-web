@@ -1,240 +1,281 @@
-import { Box, Checkbox, Stack, Typography } from "@mui/material"
+import { Box, Checkbox, Stack } from "@mui/material"
 import React, { useMemo } from "react"
+import { Link } from "react-router-dom"
 import { SvgMechDeaths, SvgMechKills, SvgMechLosses, SvgMechWins, SvgUserDiamond } from "../../../assets"
-import { useSupremacy } from "../../../containers"
-import { getMechStatusDeets, getRarityDeets } from "../../../helpers"
-import { TruncateTextLines } from "../../../theme/styles"
+import { useAuth, useSupremacy } from "../../../containers"
+import { numFormatter } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
-import { LobbyMech } from "../../../types"
-import { RepairBlocks } from "../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
+import { NewMechStruct } from "../../../types"
+import { MediaPreview } from "../MediaPreview/MediaPreview"
 import { NiceBoxThing } from "../Nice/NiceBoxThing"
+import { NiceTooltip } from "../Nice/NiceTooltip"
+import { TypographyTruncated } from "../TypographyTruncated"
+import { MechIdleStatus } from "./MechIdleStatus"
+import { RepairBlocks } from "./MechRepairBlocks"
+import { MechTooltipRender } from "./MechTooltipRender/MechTooltipRender"
 
 interface MechCardProps {
-    mech: LobbyMech
+    mech: NewMechStruct
     isGridView: boolean
     isSelected?: boolean
-    toggleSelected?: (mech: LobbyMech) => void
+    toggleSelected?: (mech: NewMechStruct) => void
+    hide?: {
+        ownerName?: boolean
+        kdwlStats?: boolean
+    }
 }
 
-export const MechCard = React.memo(function MechCard({ mech, isSelected, toggleSelected, isGridView }: MechCardProps) {
+// CSS grid widths of each component in list view
+const MECH_IMAGE_GRID_WIDTH = "8rem"
+const MECH_NAME_GRID_WIDTH = "minmax(8rem, 1fr)"
+const OWNER_NAME_GRID_WIDTH = "minmax(8rem, 1fr)"
+const MECH_STATUS_GRID_WIDTH = "22rem"
+const MECH_BLOCKS_GRID_WIDTH = "15rem"
+const KDWL_GRID_WIDTH = "repeat(4, 5rem)"
+const CHECKBOX_GRID_WIDTH = "5rem"
+
+export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, toggleSelected, isGridView }: MechCardProps) {
+    const { userID } = useAuth()
     const { getFaction } = useSupremacy()
-    const { name, label } = mech
 
     const ownerFaction = useMemo(() => getFaction(mech.owner.faction_id), [getFaction, mech.owner.faction_id])
-    const rarityDeets = useMemo(() => getRarityDeets(mech.tier), [mech.tier])
-    const statusDeets = useMemo(() => getMechStatusDeets(mech.status), [mech.status])
+
+    // CSS grid widths
+    const cssGridWidths = useMemo(() => {
+        const result: string[] = []
+        result.push(MECH_IMAGE_GRID_WIDTH)
+        result.push(MECH_NAME_GRID_WIDTH)
+        if (!hide?.ownerName) result.push(OWNER_NAME_GRID_WIDTH)
+        result.push(MECH_STATUS_GRID_WIDTH)
+        result.push(MECH_BLOCKS_GRID_WIDTH)
+        if (!hide?.kdwlStats) result.push(KDWL_GRID_WIDTH)
+        result.push(CHECKBOX_GRID_WIDTH)
+        return result.join(" ")
+    }, [hide])
 
     // List view
     if (!isGridView) {
         return (
-            <NiceBoxThing
-                border={{
-                    color: isSelected ? `${colors.neonBlue}80` : "#FFFFFF38",
-                    thickness: isSelected ? "lean" : "very-lean",
-                }}
-                background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.08 }}
-                sx={{
-                    overflow: "hidden",
-                }}
+            <NiceTooltip
+                placement="right-start"
+                enterDelay={450}
+                enterNextDelay={700}
+                renderNode={<MechTooltipRender mech={mech} />}
+                color={ownerFaction.palette.primary}
             >
-                <Box
-                    sx={{
-                        p: "1rem 1.5rem",
-                        display: "grid",
-                        gridTemplateRows: "8rem",
-                        gridTemplateColumns: "8rem 1fr 1fr 10rem 15rem repeat(5, 5rem)",
-                        gap: "3rem",
-                        alignItems: "center",
-                        overflowY: "hidden",
-                        overflowX: "auto",
+                <NiceBoxThing
+                    border={{
+                        color: isSelected ? `${colors.neonBlue}80` : "#FFFFFF20",
+                        thickness: isSelected ? "lean" : "very-lean",
                     }}
+                    background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.06 }}
+                    sx={{ width: "100%", height: "100%", overflow: "hidden" }}
                 >
-                    {/* Mech image */}
-                    <NiceBoxThing
-                        border={{ color: `${rarityDeets.color}80`, thickness: "very-lean" }}
-                        caret={{ position: "bottom-right", size: "small" }}
-                        sx={{ height: "100%", width: "100%", boxShadow: 0.4 }}
+                    <Box
+                        sx={{
+                            p: "1rem 1.5rem",
+                            display: "grid",
+                            gridTemplateRows: "8rem",
+                            gridTemplateColumns: cssGridWidths,
+                            gap: "3rem",
+                            alignItems: "center",
+                            overflowY: "hidden",
+                            overflowX: "auto",
+                        }}
                     >
-                        <Box
-                            component="img"
-                            src={mech.avatar_url}
+                        {/* Mech image */}
+                        <NiceBoxThing
+                            border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
+                            background={{ colors: [ownerFaction.palette.background] }}
+                            sx={{ height: "100%", width: "100%", boxShadow: 0.4 }}
+                        >
+                            <MediaPreview imageUrl={mech.avatar_url} objectFit="cover" allowModal />
+                        </NiceBoxThing>
+
+                        {/* Mech name */}
+                        <Link to={`/mech/${mech.id}`}>
+                            <TypographyTruncated sx={{ fontFamily: fonts.nostromoBlack }}>{mech.name || mech.label}</TypographyTruncated>
+                        </Link>
+
+                        {/* Owner name */}
+                        {!hide?.ownerName && (
+                            <TypographyTruncated
+                                variant="h6"
+                                sx={{
+                                    color: userID === mech.owner.id ? colors.gold : ownerFaction.palette.primary,
+                                    fontWeight: "bold",
+                                    mt: ".3rem !important",
+                                }}
+                            >
+                                {mech.owner.username}#{mech.owner.gid}
+                            </TypographyTruncated>
+                        )}
+
+                        {/* Mech status */}
+                        <MechIdleStatus mech={mech} />
+
+                        {/* Repair blocks */}
+                        <RepairBlocks
+                            defaultBlocks={mech.repair_blocks}
+                            remainDamagedBlocks={mech.damaged_blocks}
                             sx={{
-                                height: "100%",
-                                width: "100%",
-                                objectFit: "cover",
-                                objectPosition: "center",
+                                width: "fit-content",
                             }}
                         />
-                    </NiceBoxThing>
 
-                    {/* Mech name */}
-                    <Typography sx={{ fontFamily: fonts.nostromoBlack, ...TruncateTextLines(1) }}>{name || label}</Typography>
+                        {/* KDWL stats */}
+                        {!hide?.kdwlStats && (
+                            <>
+                                <NiceTooltip placement="top-start" text="Total kills">
+                                    <TypographyTruncated whiteSpace="nowrap">
+                                        <SvgMechKills inline size="1.6rem" /> {numFormatter(mech.stats.total_kills)}
+                                    </TypographyTruncated>
+                                </NiceTooltip>
 
-                    {/* Owner name */}
-                    <Typography
-                        variant="h6"
-                        sx={{
-                            color: ownerFaction.primary_color,
-                            fontWeight: "bold",
-                            mt: ".3rem !important",
-                            ...TruncateTextLines(1),
-                        }}
-                    >
-                        {mech.owner.username}#{mech.owner.gid}
-                    </Typography>
+                                <NiceTooltip placement="top-start" text="Total deaths">
+                                    <TypographyTruncated whiteSpace="nowrap">
+                                        <SvgMechDeaths inline size="1.6rem" /> {numFormatter(mech.stats.total_deaths)}
+                                    </TypographyTruncated>
+                                </NiceTooltip>
 
-                    {/* Mech status */}
-                    <Typography
-                        sx={{
-                            width: "fit-content",
-                            p: ".1rem 1.6rem",
-                            fontWeight: "bold",
-                            color: statusDeets.color,
-                            backgroundColor: `${statusDeets.color}30`,
-                            boxShadow: 0.4,
-                        }}
-                    >
-                        {statusDeets.label}
-                    </Typography>
+                                <NiceTooltip placement="top-start" text="Total wins">
+                                    <TypographyTruncated whiteSpace="nowrap">
+                                        <SvgMechWins inline size="1.6rem" /> {numFormatter(mech.stats.total_wins)}
+                                    </TypographyTruncated>
+                                </NiceTooltip>
 
-                    {/* Repair blocks */}
-                    <RepairBlocks
-                        defaultBlocks={mech.repair_blocks}
-                        remainDamagedBlocks={mech.damaged_blocks}
-                        sx={{
-                            width: "fit-content",
-                        }}
-                    />
+                                <NiceTooltip placement="top-start" text="Total losses">
+                                    <TypographyTruncated whiteSpace="nowrap">
+                                        <SvgMechLosses inline size="1.6rem" /> {numFormatter(mech.stats.total_losses)}
+                                    </TypographyTruncated>
+                                </NiceTooltip>
+                            </>
+                        )}
 
-                    {/* KDWL stats */}
-                    <Typography>
-                        <SvgMechKills inline size="1.8rem" /> {mech.stats.total_kills}
-                    </Typography>
-                    <Typography>
-                        <SvgMechDeaths inline size="1.8rem" /> {mech.stats.total_deaths}
-                    </Typography>
-                    <Typography>
-                        <SvgMechWins inline size="1.8rem" /> {mech.stats.total_wins}
-                    </Typography>
-                    <Typography>
-                        <SvgMechLosses inline size="1.8rem" /> {mech.stats.total_losses}
-                    </Typography>
-
-                    {/* Checkbox */}
-                    {toggleSelected && (
-                        <Checkbox
-                            checked={isSelected}
-                            onClick={() => toggleSelected(mech)}
-                            sx={{
-                                "&.Mui-checked > .MuiSvgIcon-root": { fill: `${colors.neonBlue} !important` },
-                                ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.neonBlue}50 !important` },
-                            }}
-                        />
-                    )}
-                </Box>
-            </NiceBoxThing>
+                        {/* Checkbox */}
+                        {toggleSelected && (
+                            <Checkbox
+                                checked={isSelected}
+                                onClick={() => toggleSelected(mech)}
+                                sx={{
+                                    "&.Mui-checked > .MuiSvgIcon-root": { fill: `${colors.neonBlue} !important` },
+                                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.neonBlue}50 !important` },
+                                }}
+                            />
+                        )}
+                    </Box>
+                </NiceBoxThing>
+            </NiceTooltip>
         )
     }
 
     // Grid view
     return (
-        <NiceBoxThing
-            border={{
-                color: isSelected ? `${colors.neonBlue}80` : "#FFFFFF38",
-                thickness: isSelected ? "lean" : "very-lean",
-            }}
-            background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.1 }}
-            sx={{ p: "1rem 1.5rem" }}
+        <NiceTooltip
+            placement="right-start"
+            enterDelay={450}
+            enterNextDelay={700}
+            renderNode={<MechTooltipRender mech={mech} />}
+            color={ownerFaction.palette.primary}
         >
-            <Stack spacing="1.2rem">
-                {/* Mech name and checkbox */}
-                <Stack direction="row" alignItems="center" justifyContent="space-between" spacing=".5rem">
-                    <Typography sx={{ fontFamily: fonts.nostromoBlack, ...TruncateTextLines(1) }}>{name || label}</Typography>
-                    {toggleSelected && (
-                        <Checkbox
-                            checked={isSelected}
-                            onClick={() => toggleSelected(mech)}
+            <NiceBoxThing
+                border={{
+                    color: isSelected ? `${colors.neonBlue}80` : "#FFFFFF20",
+                    thickness: isSelected ? "lean" : "very-lean",
+                }}
+                background={{ colors: ["#FFFFFF", "#FFFFFF"], opacity: 0.06 }}
+                sx={{ p: "1rem 1.5rem", width: "100%", height: "100%", overflow: "hidden" }}
+            >
+                <Stack spacing="1.2rem">
+                    {/* Mech name and checkbox */}
+                    <Stack direction="row" alignItems="flex-start" justifyContent="space-between" spacing="1rem">
+                        {/* Mech name */}
+                        <Link to={`/mech/${mech.id}`}>
+                            <TypographyTruncated sx={{ fontFamily: fonts.nostromoBlack }}>{mech.name || mech.label}</TypographyTruncated>
+                        </Link>
+
+                        {toggleSelected && (
+                            <Checkbox
+                                checked={isSelected}
+                                onClick={() => toggleSelected(mech)}
+                                sx={{
+                                    "&.Mui-checked > .MuiSvgIcon-root": { fill: `${colors.neonBlue} !important` },
+                                    ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.neonBlue}50 !important` },
+                                }}
+                            />
+                        )}
+                    </Stack>
+
+                    {/* Owner name */}
+                    {!hide?.ownerName && (
+                        <TypographyTruncated
+                            variant="h6"
                             sx={{
-                                "&.Mui-checked > .MuiSvgIcon-root": { fill: `${colors.neonBlue} !important` },
-                                ".Mui-checked+.MuiSwitch-track": { backgroundColor: `${colors.neonBlue}50 !important` },
+                                color: userID === mech.owner.id ? colors.gold : ownerFaction.palette.primary,
+                                fontWeight: "bold",
+                                mt: ".3rem !important",
                             }}
-                        />
+                        >
+                            <SvgUserDiamond size="2.5rem" inline fill={userID === mech.owner.id ? colors.gold : ownerFaction.palette.primary} />{" "}
+                            {mech.owner.username}#{mech.owner.gid}
+                        </TypographyTruncated>
                     )}
-                </Stack>
 
-                {/* Owner name */}
-                <Typography
-                    variant="h6"
-                    sx={{
-                        color: ownerFaction.primary_color,
-                        fontWeight: "bold",
-                        mt: ".3rem !important",
-                        ...TruncateTextLines(1),
-                    }}
-                >
-                    <SvgUserDiamond size="2.5rem" inline fill={ownerFaction.primary_color} /> {mech.owner.username}#{mech.owner.gid}
-                </Typography>
-
-                {/* Mech image */}
-                <NiceBoxThing border={{ color: `${rarityDeets.color}80` }} caret={{ position: "bottom-right" }} sx={{ boxShadow: 0.4 }}>
-                    <Box
-                        component="img"
-                        src={mech.avatar_url}
-                        sx={{
-                            height: "20rem",
-                            width: "100%",
-                            objectFit: "cover",
-                            objectPosition: "center",
-                        }}
-                    />
-                </NiceBoxThing>
-
-                {/* Mech KDWL stats */}
-                <Stack
-                    direction="row"
-                    alignItems="center"
-                    spacing=".8rem"
-                    sx={{
-                        "&>*": { flex: 1, p: ".2rem 1rem", pt: ".5rem", lineHeight: 1, backgroundColor: "#FFFFFF16", boxShadow: 0.4 },
-                    }}
-                >
-                    <Typography>
-                        <SvgMechKills inline size="1.8rem" /> {mech.stats.total_kills}
-                    </Typography>
-                    <Typography>
-                        <SvgMechDeaths inline size="1.8rem" /> {mech.stats.total_deaths}
-                    </Typography>
-                    <Typography>
-                        <SvgMechWins inline size="1.8rem" /> {mech.stats.total_wins}
-                    </Typography>
-                    <Typography>
-                        <SvgMechLosses inline size="1.8rem" /> {mech.stats.total_losses}
-                    </Typography>
-                </Stack>
-
-                {/* Mech status and repair blocks */}
-                <Stack direction="row" alignItems="center" justifyContent="space-between">
-                    <Typography
-                        sx={{
-                            p: ".1rem 1.6rem",
-                            fontWeight: "bold",
-                            color: statusDeets.color,
-                            backgroundColor: `${statusDeets.color}30`,
-                            boxShadow: 0.4,
-                        }}
+                    {/* Mech image */}
+                    <NiceBoxThing
+                        border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
+                        background={{ colors: [ownerFaction.palette.background] }}
+                        sx={{ position: "relative", boxShadow: 0.4, flex: 1 }}
                     >
-                        {statusDeets.label}
-                    </Typography>
+                        <MediaPreview imageUrl={mech.avatar_url} objectFit="cover" sx={{ height: "20rem" }} allowModal />
+                    </NiceBoxThing>
 
-                    <RepairBlocks
-                        defaultBlocks={mech.repair_blocks}
-                        remainDamagedBlocks={mech.damaged_blocks}
-                        sx={{
-                            width: "fit-content",
-                        }}
-                    />
+                    {/* Mech KDWL stats */}
+                    {!hide?.kdwlStats && (
+                        <Stack
+                            direction="row"
+                            alignItems="center"
+                            spacing=".8rem"
+                            sx={{
+                                "&>*": { flex: 1, p: ".2rem 1rem", pt: ".5rem", lineHeight: 1, backgroundColor: "#FFFFFF16", boxShadow: 0.4 },
+                            }}
+                        >
+                            <NiceTooltip placement="top-start" text="Total kills">
+                                <TypographyTruncated whiteSpace="nowrap">
+                                    <SvgMechKills inline size="1.6rem" /> {numFormatter(mech.stats.total_kills)}
+                                </TypographyTruncated>
+                            </NiceTooltip>
+
+                            <NiceTooltip placement="top-start" text="Total deaths">
+                                <TypographyTruncated whiteSpace="nowrap">
+                                    <SvgMechDeaths inline size="1.6rem" /> {numFormatter(mech.stats.total_deaths)}
+                                </TypographyTruncated>
+                            </NiceTooltip>
+
+                            <NiceTooltip placement="top-start" text="Total wins">
+                                <TypographyTruncated whiteSpace="nowrap">
+                                    <SvgMechWins inline size="1.6rem" /> {numFormatter(mech.stats.total_wins)}
+                                </TypographyTruncated>
+                            </NiceTooltip>
+
+                            <NiceTooltip placement="top-start" text="Total losses">
+                                <TypographyTruncated whiteSpace="nowrap">
+                                    <SvgMechLosses inline size="1.6rem" /> {numFormatter(mech.stats.total_losses)}
+                                </TypographyTruncated>
+                            </NiceTooltip>
+                        </Stack>
+                    )}
+
+                    {/* Mech status and repair blocks */}
+                    <Stack direction="row" alignItems="center">
+                        <MechIdleStatus mech={mech} />
+
+                        <Box flex={1} />
+
+                        <RepairBlocks defaultBlocks={mech.repair_blocks} remainDamagedBlocks={mech.damaged_blocks} sx={{ width: "fit-content" }} />
+                    </Stack>
                 </Stack>
-            </Stack>
-        </NiceBoxThing>
+            </NiceBoxThing>
+        </NiceTooltip>
     )
 })

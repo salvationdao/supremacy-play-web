@@ -17,7 +17,7 @@ export const tourStyles: (PopoverStylesObj & StylesObj & MaskStylesObj & Partial
         backgroundColor: `${colors.navy}D9`,
         borderRadius: "5px",
         fontSize: "3rem",
-        fontFamily: fonts.shareTech,
+        fontFamily: fonts.rajdhaniMedium,
         lineHeight: 1.5,
         padding: "2.8rem 3rem",
         zIndex: siteZIndex.Modal,

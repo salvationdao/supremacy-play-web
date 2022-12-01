@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { TRAINING_ASSETS } from "../../constants"
 import { useAuth, useTraining } from "../../containers"
-import { BribeStage, Context, Map, MechAbilityStages, TrainingAbility, WarMachineState } from "../../types"
+import { BribeStage, Context, Map, MechAbilityStages, RarityEnum, TrainingAbility, WarMachineState } from "../../types"
 import { TrainingBribeStageResponse } from "./TrainingBattleAbility"
 import { TutorialContainer } from "./TutorialContainer"
 
@@ -399,7 +399,7 @@ export const trainingMoveCommand = (userID: string) => {
     }
 }
 
-const trainingMechs = (userID: string) => {
+const trainingMechs = (userID: string): WarMachineState[] => {
     return [
         {
             ownerUsername: "",
@@ -416,7 +416,7 @@ const trainingMechs = (userID: string) => {
             model: "XFVS",
             skin: "BlueWhite",
             speed: 2750,
-            tier: "ELITE_LEGENDARY",
+            tier: RarityEnum.EliteLegendary,
             weaponNames: [],
             image: "https://afiles.ninja-cdn.com/passport/genesis/img/boston-cybernetics_law-enforcer-x-1000_blue-white.png",
             imageAvatar: "https://afiles.ninja-cdn.com/passport/genesis/avatar/boston-cybernetics_law-enforcer-x-1000_blue-white_avatar.png",
@@ -452,7 +452,7 @@ const trainingMechs = (userID: string) => {
             model: "XFVS",
             skin: "BioHazard",
             speed: 2750,
-            tier: "MEGA",
+            tier: RarityEnum.Mega,
             weaponNames: [],
             image: "https://afiles.ninja-cdn.com/passport/genesis/img/boston-cybernetics_law-enforcer-x-1000_biohazard.png",
             imageAvatar: "https://afiles.ninja-cdn.com/passport/genesis/avatar/boston-cybernetics_law-enforcer-x-1000_biohazard_avatar.png",
@@ -488,7 +488,7 @@ const trainingMechs = (userID: string) => {
             model: "XFVS",
             skin: "BlueWhite",
             speed: 2750,
-            tier: "MEGA",
+            tier: RarityEnum.Mega,
             weaponNames: [],
             image: "https://afiles.ninja-cdn.com/passport/genesis/img/boston_cybernetics_xfvs_blue_white.png",
             imageAvatar: "https://afiles.ninja-cdn.com/passport/genesis/avatar/boston-cybernetics_law-enforcer-x-1000_dune_avatar.png",
@@ -524,7 +524,7 @@ const trainingMechs = (userID: string) => {
             model: "BXSD",
             skin: "Beetle",
             speed: 1750,
-            tier: "MEGA",
+            tier: RarityEnum.Mega,
             weaponNames: [],
             image: "https://afiles.ninja-cdn.com/passport/genesis/img/zaibatsu_tenshi-mk1_black-digi.png",
             imageAvatar: "https://afiles.ninja-cdn.com/passport/genesis/avatar/zaibatsu_tenshi-mk1_black-digi_avatar.png",
@@ -560,7 +560,7 @@ const trainingMechs = (userID: string) => {
             model: "BXSD",
             skin: "Beetle",
             speed: 1750,
-            tier: "MEGA",
+            tier: RarityEnum.Mega,
             weaponNames: [],
             image: "https://afiles.ninja-cdn.com/passport/genesis/img/zaibatsu_tenshi-mk1_black-digi.png",
             imageAvatar: "https://afiles.ninja-cdn.com/passport/genesis/avatar/zaibatsu_tenshi-mk1_black-digi_avatar.png",
@@ -596,7 +596,7 @@ const trainingMechs = (userID: string) => {
             model: "BXSD",
             skin: "Beetle",
             speed: 1750,
-            tier: "MEGA",
+            tier: RarityEnum.Mega,
             weaponNames: [],
             image: "https://afiles.ninja-cdn.com/passport/genesis/img/zaibatsu_tenshi-mk1_black-digi.png",
             imageAvatar: "https://afiles.ninja-cdn.com/passport/genesis/avatar/zaibatsu_tenshi-mk1_black-digi_avatar.png",
@@ -632,7 +632,7 @@ const trainingMechs = (userID: string) => {
             model: "BXSD",
             skin: "Beetle",
             speed: 1750,
-            tier: "MEGA",
+            tier: RarityEnum.Mega,
             weaponNames: [],
             image: "https://afiles.ninja-cdn.com/passport/genesis/img/red_mountain_bxsd_pink.png",
             imageAvatar: "https://afiles.ninja-cdn.com/passport/genesis/avatar/red-mountain_olympus-mons-ly07_red-hex_avatar.png",
@@ -668,7 +668,7 @@ const trainingMechs = (userID: string) => {
             model: "BXSD",
             skin: "Beetle",
             speed: 1750,
-            tier: "MEGA",
+            tier: RarityEnum.Mega,
             weaponNames: [],
             image: "https://afiles.ninja-cdn.com/passport/genesis/img/red_mountain_bxsd_pink.png",
             imageAvatar: "https://afiles.ninja-cdn.com/passport/genesis/avatar/red-mountain_olympus-mons-ly07_red-hex_avatar.png",
@@ -704,7 +704,7 @@ const trainingMechs = (userID: string) => {
             model: "BXSD",
             skin: "Beetle",
             speed: 1750,
-            tier: "MEGA",
+            tier: RarityEnum.Mega,
             weaponNames: [],
             image: "https://afiles.ninja-cdn.com/passport/genesis/img/red_mountain_bxsd_pink.png",
             imageAvatar: "https://afiles.ninja-cdn.com/passport/genesis/avatar/red-mountain_olympus-mons-ly07_red-hex_avatar.png",

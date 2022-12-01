@@ -3,13 +3,15 @@ import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { colors } from "../../../../../theme/theme"
 import { SystemMessageDataMechBattleBegin, SystemMessageDataMechBattleComplete, SystemMessageDataType, SystemMessageMechStruct } from "../../../../../types"
-import { FancyButton } from "../../../../Common/Deprecated/FancyButton"
+import { BattleLobby } from "../../../../../types/battle_queue"
+import { NiceButton } from "../../../../Common/Nice/NiceButton"
 import MessageRenderer from "../../MessageRenderer"
 import { SystemMessageDisplayable } from "../../Messages"
+import { BattleLobbyInvitation } from "./BattleLobbyInvitation"
+import { ExpiredBattleLobby } from "./ExpiredBattleLobby"
+import { MechBattleBeginDetails } from "./MechBattleBeginDetails"
 import { MechBattleCompleteDetails } from "./MechBattleCompleteDetails"
 import { PlayerAbilityRefundedData, PlayerAbilityRefundedMessage } from "./PlayerAbilityRefundedMessage"
-import { MechBattleBeginDetails } from "./MechBattleBeginDetails"
-import { ExpiredBattleLobby } from "./ExpiredBattleLobby"
 
 export interface MessageDisplayProps {
     message: SystemMessageDisplayable
@@ -27,6 +29,8 @@ export const MessageDisplay = ({ message, onClose }: MessageDisplayProps) => {
                 return <PlayerAbilityRefundedMessage message={message.message} data={message.data as PlayerAbilityRefundedData[]} />
             case SystemMessageDataType.ExpiredBattleLobby:
                 return <ExpiredBattleLobby message={message.message} data={message.data as SystemMessageMechStruct[]} />
+            case SystemMessageDataType.BattleLobbyInvitation:
+                return <BattleLobbyInvitation message={message.message} data={message.data as BattleLobby} />
         }
 
         return <MessageRenderer markdown={message.message} />
@@ -65,22 +69,9 @@ export const MessageDisplay = ({ message, onClose }: MessageDisplayProps) => {
             </Box>
 
             <Stack direction="row" alignItems="center">
-                <FancyButton
-                    clipThingsProps={{
-                        clipSize: "9px",
-                        clipSlantSize: "0px",
-                        backgroundColor: colors.grey,
-                        opacity: 1,
-                        border: { borderColor: colors.grey, borderThickness: "1px" },
-                        sx: { position: "relative" },
-                    }}
-                    sx={{ px: "1.6rem", py: ".2rem", color: "#FFFFFF" }}
-                    onClick={onClose}
-                >
-                    <Typography variant="body2" sx={{ fontWeight: "bold", color: "#FFFFFF" }}>
-                        CLOSE
-                    </Typography>
-                </FancyButton>
+                <NiceButton buttonColor={colors.grey} onClick={onClose}>
+                    CLOSE
+                </NiceButton>
             </Stack>
         </Stack>
     )

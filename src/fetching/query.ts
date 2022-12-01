@@ -2,9 +2,18 @@ import { Action } from "react-fetching-library"
 import { GAME_SERVER_HOSTNAME } from "../constants"
 import { Fingerprint } from "../containers"
 import { OvenStream } from "../containers/oven"
-import { Faction, Feature, PowerCoreMaxStats, SaleAbilityAvailability, User, UserFromPassport, WarMachineDestroyedRecord, WeaponMaxStats } from "../types"
+import {
+    FactionWithPalette,
+    Feature,
+    PowerCoreMaxStats,
+    SaleAbilityAvailability,
+    User,
+    UserFromPassport,
+    WarMachineDestroyedRecord,
+    WeaponMaxStats,
+} from "../types"
 
-export const PassportLoginCheck = (formValues: { issue_token: string; fingerprint?: Fingerprint }): Action<UserFromPassport> => {
+export const GameServerTokenLoginCheck = (formValues: { issue_token: string; fingerprint?: Fingerprint }): Action<UserFromPassport> => {
     const { issue_token, fingerprint } = formValues
     return {
         method: "POST",
@@ -25,7 +34,7 @@ export const GameServerLoginCheck = (fingerprint?: Fingerprint): Action<User> =>
     }
 }
 
-export const GetFactionsAll = (): Action<Faction[]> => {
+export const GetFactionsAll = (): Action<FactionWithPalette[]> => {
     return {
         method: "GET",
         endpoint: "/faction/all",

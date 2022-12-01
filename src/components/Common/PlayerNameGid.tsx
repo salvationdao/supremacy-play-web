@@ -8,7 +8,7 @@ export const PlayerNameGid = ({ player, styledImageTextProps }: { player: User; 
     const { username, gid, faction_id } = player
 
     const faction = useMemo(() => getFaction(faction_id), [faction_id, getFaction])
-    const primaryColor = faction.primary_color
+    const primaryColor = faction.palette.primary
 
     return (
         <StyledImageText

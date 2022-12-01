@@ -1,11 +1,11 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { ClipThing } from "../../.."
+import { useSupremacy } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
 import { getRarityDeets } from "../../../../helpers"
 import { fonts } from "../../../../theme/theme"
 import { MechBasic, MechDetails } from "../../../../types"
-import { useSupremacy } from "../../../../containers"
 
 export const MechThumbnail = ({
     avatarUrl,
@@ -32,7 +32,7 @@ export const MechThumbnail = ({
         if (factionID) {
             const faction = getFaction(factionID)
             if (faction) {
-                return faction.primary_color
+                return faction.palette.primary
             }
         }
         return theme.factionTheme.primary

@@ -2,15 +2,15 @@ import { Box } from "@mui/material"
 import { ClipThing, StyledImageText, StyledNormalText } from "../../.."
 import { SvgDeath, SvgSkull2 } from "../../../../assets"
 import { colors } from "../../../../theme/theme"
-import { Faction, KillAlertProps } from "../../../../types"
+import { FactionWithPalette, KillAlertProps } from "../../../../types"
 import { PlayerNameGid } from "../../../Common/PlayerNameGid"
 
-export const KillAlert = ({ data, getFaction }: { data: KillAlertProps; getFaction: (factionID: string) => Faction }) => {
+export const KillAlert = ({ data, getFaction }: { data: KillAlertProps; getFaction: (factionID: string) => FactionWithPalette }) => {
     const { destroyed_war_machine, killed_by_war_machine, killed_by, killed_by_user } = data
 
     if (!destroyed_war_machine) return null
 
-    const mainColor = getFaction(killed_by_war_machine?.factionID || killed_by_user?.faction_id || "").primary_color
+    const mainColor = getFaction(killed_by_war_machine?.factionID || killed_by_user?.faction_id || "").palette.primary
 
     let killedBy = null
     if (killed_by_war_machine) {
@@ -44,7 +44,7 @@ export const KillAlert = ({ data, getFaction }: { data: KillAlertProps; getFacti
                 <StyledImageText
                     textSx={{ textDecoration: "line-through" }}
                     text={destroyed_war_machine.name || destroyed_war_machine.hash}
-                    color={getFaction(destroyed_war_machine.factionID).primary_color}
+                    color={getFaction(destroyed_war_machine.factionID).palette.primary}
                     imageUrl={destroyed_war_machine.imageAvatar}
                 />
             </Box>

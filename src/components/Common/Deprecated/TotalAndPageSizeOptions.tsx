@@ -73,7 +73,7 @@ export const TotalAndPageSizeOptions = React.memo(function TotalAndPageSizeOptio
     const theme = useTheme()
 
     const primaryColor = pColor || theme.factionTheme.primary
-    const secondaryColor = pColor || theme.factionTheme.secondary
+    const secondaryColor = pColor || theme.factionTheme.text
 
     return (
         <Stack
@@ -134,7 +134,7 @@ export const TotalAndPageSizeOptions = React.memo(function TotalAndPageSizeOptio
                         borderRadius: 0.8,
                         fontFamily: fonts.nostromoBold,
                         ".Mui-selected": {
-                            color: (theme) => theme.factionTheme.secondary,
+                            color: (theme) => theme.factionTheme.text,
                             backgroundColor: `${primaryColor} !important`,
                         },
                     },
@@ -175,7 +175,7 @@ export const TotalAndPageSizeOptions = React.memo(function TotalAndPageSizeOptio
                                 <IconButton
                                     key={i}
                                     sx={{
-                                        color: (theme) => (pageSize === size ? `${theme.factionTheme.secondary} !important` : "#FFFFFF60 !important"),
+                                        color: (theme) => (pageSize === size ? `${theme.factionTheme.text} !important` : "#FFFFFF60 !important"),
                                         backgroundColor: pageSize === size ? `${primaryColor} !important` : "unset",
                                     }}
                                     size="small"
@@ -207,7 +207,7 @@ export const TotalAndPageSizeOptions = React.memo(function TotalAndPageSizeOptio
                                 borderRadius: 0.5,
                                 "&:hover": {
                                     backgroundColor: primaryColor,
-                                    ".MuiTypography-root": { color: (theme) => theme.factionTheme.secondary },
+                                    ".MuiTypography-root": { color: (theme) => theme.factionTheme.text },
                                 },
                                 ".MuiTypography-root": {
                                     px: ".1rem",
@@ -224,7 +224,7 @@ export const TotalAndPageSizeOptions = React.memo(function TotalAndPageSizeOptio
                                 sx: {
                                     "&& .Mui-selected": {
                                         ".MuiTypography-root": {
-                                            color: (theme) => theme.factionTheme.secondary,
+                                            color: (theme) => theme.factionTheme.text,
                                         },
                                         backgroundColor: primaryColor,
                                     },

@@ -1,16 +1,20 @@
-import { Badge, Box, Stack, Tab, Tabs, Typography } from "@mui/material"
-import React, { ReactNode, useMemo } from "react"
-import { AdditionalOptionsButton, FancyButton, NiceTooltip } from "../.."
-import { SvgGlobal, SvgInfoCircular } from "../../../assets"
-import { useAuth, useChat, useSupremacy } from "../../../containers"
+import { Badge, Box, Fade, Stack, Typography } from "@mui/material"
+import React, { ReactNode, useMemo, useRef, useState } from "react"
+import { AdditionalOptionsButton, NiceTooltip } from "../.."
+import { SvgChat, SvgChatGlobal, SvgExternalLink, SvgInfoCircular, SvgSettings } from "../../../assets"
+import { useAuth, useChat, useMobile, useSupremacy } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { acronym, shadeColor } from "../../../helpers"
+import { acronym } from "../../../helpers"
+import { HeaderProps } from "../../../routes"
 import { zoomEffect } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
 import { SplitOptionType } from "../../../types/chat"
+import { NiceButton } from "../../Common/Nice/NiceButton"
+import { NiceTab, NiceTabs } from "../../Common/Nice/NiceTabs"
 import { WindowPortal } from "../../Common/WindowPortal/WindowPortal"
 import { ChatMessages } from "./ChatMessages/ChatMessages"
 import { ChatSend } from "./ChatSend/ChatSend"
+import { SettingsPopover } from "./ChatSettings/SettingsPopover"
 
 export const LiveChat = () => {
     const { splitOption, isPoppedout, setIsPoppedout } = useChat()
@@ -39,23 +43,13 @@ export const LiveChat = () => {
                         {common}
                     </WindowPortal>
 
-                    <Stack spacing=".6rem" alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
+                    <Stack spacing="1rem" alignItems="center" justifyContent="center" sx={{ height: "100%" }}>
                         <Typography sx={{ color: colors.grey, textAlign: "center" }}>Live chat has been opened in a new window.</Typography>
-                        <FancyButton
-                            clipThingsProps={{
-                                clipSize: "6px",
-                                clipSlantSize: "0px",
-                                backgroundColor: "#333333",
-                                opacity: 1,
-                                sx: { position: "relative" },
-                            }}
-                            sx={{ px: "2rem", py: ".2rem", color: "#FFFFFF" }}
-                            onClick={() => setIsPoppedout(false)}
-                        >
-                            <Typography variant="caption" sx={{ fontWeight: "bold", color: "#FFFFFF" }}>
+                        <NiceButton corners buttonColor={colors.lightGrey} onClick={() => setIsPoppedout(false)}>
+                            <Typography variant="body2" sx={{ textAlign: "center" }}>
                                 RESTORE WINDOW
                             </Typography>
-                        </FancyButton>
+                        </NiceButton>
                     </Stack>
                 </>
             )
@@ -73,12 +67,11 @@ const TabbedLayout = () => {
 
     const faction = useMemo(() => getFaction(factionID), [factionID, getFaction])
 
-    const { isEnlisted, faction_id, primaryColor, secondaryColor, bannerBackgroundColor, factionTabLabel } = useMemo(() => {
+    const { isEnlisted, faction_id, primaryColor, secondaryColor, factionTabLabel } = useMemo(() => {
         const isEnlisted = !!factionID
         let faction_id = null
-        let primaryColor = colors.globalChat
+        let primaryColor = theme.factionTheme.primary
         let secondaryColor = "#FFFFFF"
-        let bannerBackgroundColor = shadeColor(primaryColor, -30)
         let factionTabLabel = ""
 
         if (isEnlisted) {
@@ -90,8 +83,7 @@ const TabbedLayout = () => {
         if (tabValue == 1 && isEnlisted) {
             faction_id = factionID
             primaryColor = theme.factionTheme.primary
-            secondaryColor = theme.factionTheme.secondary
-            bannerBackgroundColor = shadeColor(primaryColor, -60)
+            secondaryColor = theme.factionTheme.text
         }
 
         return {
@@ -99,10 +91,75 @@ const TabbedLayout = () => {
             faction_id,
             primaryColor,
             secondaryColor,
-            bannerBackgroundColor,
             factionTabLabel,
         }
-    }, [faction.label, factionID, tabValue, theme.factionTheme.primary, theme.factionTheme.secondary])
+    }, [faction.label, factionID, tabValue, theme.factionTheme.primary, theme.factionTheme.text])
+
+    const tabs = useMemo(() => {
+        const tabs: NiceTab[] = []
+
+        tabs.push({
+            value: 0,
+            label: (
+                <Stack direction="row" alignItems="center" justifyContent="center" spacing=".96rem">
+                    <UnreadBadge tabValue={0}>
+                        <SvgChatGlobal size="2.5rem" />
+                    </UnreadBadge>
+                    <Typography
+                        variant="caption"
+                        sx={{
+                            lineHeight: 1,
+                            fontFamily: fonts.nostromoBlack,
+                            textAlign: "start",
+                        }}
+                    >
+                        GLOBAL CHAT
+                    </Typography>
+                </Stack>
+            ),
+        })
+
+        if (isEnlisted) {
+            tabs.push({
+                value: 1,
+                label: (
+                    <Stack
+                        direction="row"
+                        alignItems="center"
+                        justifyContent="center"
+                        spacing=".96rem"
+                        sx={{ animation: banProposal ? `${zoomEffect(1.03)} 1s infinite` : "none" }}
+                    >
+                        <UnreadBadge tabValue={1}>
+                            <Box
+                                sx={{
+                                    width: "3.2rem",
+                                    height: "3.2rem",
+                                    flexShrink: 0,
+                                    backgroundImage: `url(${faction.logo_url})`,
+                                    backgroundRepeat: "no-repeat",
+                                    backgroundPosition: "center",
+                                    backgroundSize: "contain",
+                                }}
+                            />
+                        </UnreadBadge>
+                        {banProposal && (
+                            <NiceTooltip color={colors.orange} placement="bottom" text="Punish proposal ongoing">
+                                <Box sx={{ ml: "-.2rem", mr: ".4rem", animation: `${zoomEffect(1.1)} 1s infinite` }}>
+                                    <SvgInfoCircular size="1rem" fill={colors.orange} sx={{ pb: ".2rem" }} />
+                                </Box>
+                            </NiceTooltip>
+                        )}
+                        <Typography variant="caption" sx={{ lineHeight: 1, fontFamily: fonts.nostromoBlack, textAlign: "start" }}>
+                            {factionTabLabel}
+                        </Typography>
+                    </Stack>
+                ),
+            })
+        }
+
+        return tabs
+    }, [banProposal, faction.logo_url, factionTabLabel, isEnlisted])
 
     return useMemo(() => {
         return (
@@ -111,114 +168,14 @@ const TabbedLayout = () => {
                     flex: 1,
                     height: 0,
                     position: "relative",
-                    backgroundColor: (theme) => (tabValue == 1 ? `${theme.factionTheme.primary}06` : `${colors.globalChat}13`),
                     overflow: "hidden",
                 }}
             >
-                {/* Tabs */}
-                <Tabs
-                    value={tabValue}
-                    variant="fullWidth"
-                    sx={{
-                        height: `${4.8}rem`,
-                        background: `linear-gradient(${bannerBackgroundColor} 26%, ${bannerBackgroundColor}95)`,
-                        boxShadow: 1,
-                        zIndex: 9,
-                        minHeight: 0,
-                        ".MuiButtonBase-root": {
-                            height: `${4.8}rem`,
-                            minHeight: 0,
-                        },
-                        ".MuiTabs-indicator": {
-                            height: "3px",
-                            background: "#FFFFFF50",
-                        },
-                    }}
-                    onChange={(_event, newValue) => {
-                        changeTab(newValue)
-                    }}
-                >
-                    <Tab
-                        className="tutorial-global-chat"
-                        label={
-                            <Stack direction="row" alignItems="center" justifyContent="center" spacing=".96rem">
-                                <UnreadBadge tabValue={0}>
-                                    <SvgGlobal size="2rem" />
-                                </UnreadBadge>
-                                <Typography
-                                    variant="caption"
-                                    sx={{
-                                        lineHeight: 1,
-                                        fontFamily: fonts.nostromoBlack,
-                                        textAlign: "start",
-                                    }}
-                                >
-                                    GLOBAL CHAT
-                                </Typography>
-                            </Stack>
-                        }
-                    />
-                    {isEnlisted && (
-                        <Tab
-                            className="tutorial-faction-chat"
-                            label={
-                                <Stack
-                                    direction="row"
-                                    alignItems="center"
-                                    justifyContent="center"
-                                    spacing=".96rem"
-                                    sx={{ animation: banProposal ? `${zoomEffect(1.03)} 1s infinite` : "none" }}
-                                >
-                                    <UnreadBadge tabValue={1}>
-                                        <Box
-                                            sx={{
-                                                width: "2.1rem",
-                                                height: "2.1rem",
-                                                flexShrink: 0,
-                                                mb: ".16rem",
-                                                mr: ".8rem",
-                                                backgroundImage: `url(${faction.logo_url})`,
-                                                backgroundRepeat: "no-repeat",
-                                                backgroundPosition: "center",
-                                                backgroundSize: "contain",
-                                                backgroundColor: (theme) => theme.factionTheme.primary,
-                                                borderRadius: 0.5,
-                                                border: (theme) => `${theme.factionTheme.primary} solid 1px`,
-                                            }}
-                                        />
-                                    </UnreadBadge>
-                                    {banProposal && (
-                                        <NiceTooltip color={colors.orange} placement="bottom" text="Punish proposal ongoing">
-                                            <Box sx={{ ml: "-.2rem", mr: ".4rem", animation: `${zoomEffect(1.1)} 1s infinite` }}>
-                                                <SvgInfoCircular size="1rem" fill={colors.orange} sx={{ pb: ".2rem" }} />
-                                            </Box>
-                                        </NiceTooltip>
-                                    )}
-                                    <Typography variant="caption" sx={{ lineHeight: 1, fontFamily: fonts.nostromoBlack, textAlign: "start" }}>
-                                        {factionTabLabel}
-                                    </Typography>
-                                </Stack>
-                            }
-                        />
-                    )}
-                </Tabs>
-
+                <NiceTabs value={tabValue} onChange={(newValue) => changeTab(newValue)} tabs={tabs} />
                 <Content userID={userID} faction_id={faction_id} primaryColor={primaryColor} secondaryColor={secondaryColor} />
             </Stack>
         )
-    }, [
-        banProposal,
-        bannerBackgroundColor,
-        faction.logo_url,
-        factionTabLabel,
-        faction_id,
-        isEnlisted,
-        primaryColor,
-        secondaryColor,
-        changeTab,
-        tabValue,
-        userID,
-    ])
+    }, [changeTab, faction_id, primaryColor, secondaryColor, tabValue, tabs, userID])
 }
 
 const SplitLayout = () => {
@@ -229,11 +186,9 @@ const SplitLayout = () => {
 
     const faction = getFaction(factionID)
 
-    const { isEnlisted, factionTabLabel, globalChatBannerColor, factionChatBannerColor } = useMemo(() => {
+    const { isEnlisted, factionTabLabel } = useMemo(() => {
         const isEnlisted = !!factionID
         let factionTabLabel = ""
-        const globalChatBannerColor = shadeColor(colors.globalChat, -30)
-        const factionChatBannerColor = shadeColor(theme.factionTheme.primary, -60)
 
         if (isEnlisted) {
             factionTabLabel = faction.label
@@ -244,10 +199,8 @@ const SplitLayout = () => {
         return {
             isEnlisted,
             factionTabLabel,
-            globalChatBannerColor,
-            factionChatBannerColor,
         }
-    }, [faction.label, factionID, theme.factionTheme.primary])
+    }, [faction.label, factionID])
 
     return useMemo(() => {
         return (
@@ -258,7 +211,6 @@ const SplitLayout = () => {
                     sx={{
                         position: "relative",
                         height: isEnlisted ? "50%" : "100%",
-                        backgroundColor: `${colors.globalChat}13`,
                         overflow: "hidden",
                     }}
                 >
@@ -267,14 +219,14 @@ const SplitLayout = () => {
                         alignItems="center"
                         spacing=".8rem"
                         sx={{
+                            zIndex: 9,
                             height: `${5}rem`,
                             px: "1.8rem",
-                            background: `linear-gradient(${globalChatBannerColor} 26%, ${globalChatBannerColor}95)`,
+                            background: theme.factionTheme.s600,
                             boxShadow: 1,
-                            zIndex: 9,
                         }}
                     >
-                        <SvgGlobal size="2rem" />
+                        <SvgChatGlobal size="2.5rem" />
                         <Typography
                             variant="caption"
                             sx={{
@@ -287,45 +239,39 @@ const SplitLayout = () => {
                         </Typography>
                     </Stack>
 
-                    <Content userID={userID} faction_id={null} primaryColor={colors.globalChat} secondaryColor={"#FFFFFF"} />
+                    <Content userID={userID} faction_id={null} primaryColor={theme.factionTheme.primary} secondaryColor={theme.factionTheme.text} />
                 </Stack>
 
                 {/* Bottom half */}
                 {isEnlisted && (
-                    <Stack
-                        className="tutorial-faction-chat"
-                        sx={{ position: "relative", height: "50%", backgroundColor: (theme) => `${theme.factionTheme.primary}06`, overflow: "hidden" }}
-                    >
+                    <Stack className="tutorial-faction-chat" sx={{ position: "relative", height: "50%", overflow: "hidden" }}>
                         <Stack
                             justifyContent="center"
                             sx={{
+                                zIndex: 9,
                                 height: `${5}rem`,
                                 px: "1.8rem",
-                                background: `linear-gradient(${factionChatBannerColor} 26%, ${factionChatBannerColor}95)`,
+                                background: theme.factionTheme.s600,
                                 boxShadow: 1,
-                                zIndex: 9,
                             }}
                         >
                             <Stack
                                 direction="row"
                                 alignItems="center"
                                 spacing=".96rem"
-                                sx={{ animation: banProposal ? `${zoomEffect(1.03)} 1s infinite` : "none" }}
+                                sx={{
+                                    animation: banProposal ? `${zoomEffect(1.03)} 1s infinite` : "none",
+                                }}
                             >
                                 <Box
                                     sx={{
-                                        width: "2.1rem",
-                                        height: "2.1rem",
+                                        width: "3.2rem",
+                                        height: "3.2rem",
                                         flexShrink: 0,
-                                        mb: ".16rem",
-                                        mr: ".8rem",
                                         backgroundImage: `url(${faction.logo_url})`,
                                         backgroundRepeat: "no-repeat",
                                         backgroundPosition: "center",
                                         backgroundSize: "contain",
-                                        backgroundColor: (theme) => theme.factionTheme.primary,
-                                        borderRadius: 0.5,
-                                        border: (theme) => `${theme.factionTheme.primary} solid 1px`,
                                     }}
                                 />
                                 {banProposal && (
@@ -341,12 +287,7 @@ const SplitLayout = () => {
                             </Stack>
                         </Stack>
 
-                        <Content
-                            userID={userID}
-                            faction_id={factionID}
-                            primaryColor={theme.factionTheme.primary}
-                            secondaryColor={theme.factionTheme.secondary}
-                        />
+                        <Content userID={userID} faction_id={factionID} primaryColor={theme.factionTheme.primary} secondaryColor={theme.factionTheme.text} />
                     </Stack>
                 )}
             </Stack>
@@ -354,13 +295,12 @@ const SplitLayout = () => {
     }, [
         banProposal,
         faction.logo_url,
-        factionChatBannerColor,
         factionID,
         factionTabLabel,
-        globalChatBannerColor,
         isEnlisted,
         theme.factionTheme.primary,
-        theme.factionTheme.secondary,
+        theme.factionTheme.s600,
+        theme.factionTheme.text,
         userID,
     ])
 }
@@ -383,8 +323,8 @@ const Content = React.memo(function Content({
             {userID ? (
                 <ChatSend primaryColor={primaryColor} faction_id={faction_id} />
             ) : (
-                <Box sx={{ px: "1.6rem", py: ".4rem", backgroundColor: colors.red }}>
-                    <Typography sx={{ textAlign: "center", lineHeight: 1 }}>You must be signed in to send messages.</Typography>
+                <Box sx={{ px: "1.6rem", py: ".8rem", backgroundColor: colors.red }}>
+                    <Typography sx={{ textAlign: "center", lineHeight: 1 }}>You must be signed in to send messages</Typography>
                 </Box>
             )}
         </>
@@ -405,8 +345,9 @@ const UnreadBadge = ({ tabValue: forTabValue, children }: { tabValue: number; ch
             badgeContent={tabValue == forTabValue ? 0 : unreadCount}
             sx={{
                 ".MuiBadge-badge": {
+                    top: 8,
                     fontSize: "1.2rem",
-                    fontFamily: fonts.shareTech,
+                    fontFamily: fonts.rajdhaniMedium,
                     fontWeight: "bold",
                     lineHeight: 0,
                     color: "#FFFFFF",
@@ -418,3 +359,89 @@ const UnreadBadge = ({ tabValue: forTabValue, children }: { tabValue: number; ch
         </Badge>
     )
 }
+
+const Header = ({ isOpen, onClose }: HeaderProps) => {
+    const theme = useTheme()
+    const { isMobile } = useMobile()
+    const { isPoppedout, setIsPoppedout } = useChat()
+
+    const popoverRef = useRef(null)
+    const [showSettings, setShowSettings] = useState(false)
+
+    return (
+        <Stack
+            spacing="1rem"
+            direction="row"
+            sx={{
+                width: "100%",
+                p: "1rem",
+                alignItems: "center",
+                opacity: isOpen ? 1 : 0.7,
+                background: isOpen ? `linear-gradient(${theme.factionTheme.s500}70 26%, ${theme.factionTheme.s600})` : theme.factionTheme.s800,
+                transition: "background-color .2s ease-out",
+            }}
+        >
+            <NiceTooltip text="Live Chat" placement="left">
+                <NiceButton
+                    onClick={onClose}
+                    buttonColor={theme.factionTheme.primary}
+                    corners
+                    sx={{
+                        p: ".8rem",
+                        pb: ".6rem",
+                    }}
+                >
+                    <SvgChat size="2.6rem" />
+                </NiceButton>
+            </NiceTooltip>
+            <Typography
+                sx={{
+                    fontFamily: fonts.nostromoBlack,
+                    fontSize: "1.6rem",
+                }}
+            >
+                Live Chat
+            </Typography>
+            <Box flex={1} />
+            <Fade in={isOpen} unmountOnExit>
+                <Stack
+                    direction="row"
+                    spacing="1rem"
+                    sx={{
+                        alignItems: "center",
+                    }}
+                >
+                    {/* Pop-out */}
+                    {!isPoppedout && !isMobile && (
+                        <NiceButton
+                            corners
+                            buttonColor={theme.factionTheme.primary}
+                            onClick={() => setIsPoppedout(true)}
+                            sx={{
+                                p: ".5rem",
+                                pb: ".3rem",
+                            }}
+                        >
+                            <SvgExternalLink height="2rem" />
+                        </NiceButton>
+                    )}
+                    {/* Settings */}
+                    <NiceButton
+                        ref={popoverRef}
+                        corners
+                        buttonColor={theme.factionTheme.primary}
+                        onClick={() => setShowSettings(true)}
+                        sx={{
+                            p: ".5rem",
+                            pb: ".3rem",
+                        }}
+                    >
+                        <SvgSettings height="2rem" />
+                    </NiceButton>
+                </Stack>
+            </Fade>
+            <SettingsPopover open={showSettings} popoverRef={popoverRef} onClose={() => setShowSettings(false)} primaryColor={theme.factionTheme.primary} />
+        </Stack>
+    )
+}
+LiveChat.Header = Header

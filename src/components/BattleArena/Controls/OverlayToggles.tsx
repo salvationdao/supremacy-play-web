@@ -9,9 +9,10 @@ export const OverlayToggles = () => {
 
     return (
         <Stack direction="row" alignItems="center" sx={{ height: "100%" }}>
-            <Typography variant="body2" sx={{ lineHeight: 1, mr: ".4rem" }}>
+            <Typography variant="body2" sx={{ mr: ".4rem", whiteSpace: "nowrap" }}>
                 OVERLAYS:{" "}
             </Typography>
+
             {/* Battle history */}
             {/* <TooltipHelper text="Toggle the battle history page.">
                 <IconButton
@@ -28,6 +29,7 @@ export const OverlayToggles = () => {
                     <SvgHistory size="1.7rem" fill="#E8BB3F" />
                 </IconButton>
             </TooltipHelper> */}
+
             {/* Watch trailer */}
             <NiceTooltip text="Watch the Supremacy trailer video.">
                 <IconButton

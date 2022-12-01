@@ -1,17 +1,18 @@
-import { Stack, Typography } from "@mui/material"
+import { Fade, Stack, Typography } from "@mui/material"
 import { Box } from "@mui/system"
 import moment from "moment"
 import { useEffect, useRef } from "react"
-import { SectionFactions, SectionWinner } from "../.."
+import { NiceTooltip, SectionFactions, SectionWinner } from "../.."
+import { SvgLobbies } from "../../../assets"
 import { useArena, useGame, useUI } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
-import { LeftRouteID, LeftRoutes } from "../../../routes"
+import { HeaderProps, LeftRouteID, LeftRoutes } from "../../../routes"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { BattleState } from "../../../types"
+import { NiceButton } from "../../Common/Nice/NiceButton"
 import { SectionMechRewards } from "./Sections/SectionMechRewards"
 
 export const BattleEndScreen = () => {
-    const theme = useTheme()
     const { battleState, battleEndDetail } = useGame()
     const { currentArenaID } = useArena()
     const { hasModalsOpen, setLeftDrawerActiveTabID } = useUI()
@@ -49,11 +50,9 @@ export const BattleEndScreen = () => {
         }
     }, [battleEndDetail, hasModalsOpen, setLeftDrawerActiveTabID])
 
-    const backgroundColor = theme.factionTheme.background
-
     if (!battleEndDetail) {
         return (
-            <Stack spacing=".6rem" alignItems="center" justifyContent="center" sx={{ px: "6rem", height: "100%", backgroundColor }}>
+            <Stack spacing=".6rem" alignItems="center" justifyContent="center" sx={{ px: "6rem", height: "100%" }}>
                 <Typography variant="body2" sx={{ color: colors.grey, textAlign: "center", fontFamily: fonts.nostromoBold }}>
                     Please wait for the current battle to finish.
                 </Typography>
@@ -74,7 +73,6 @@ export const BattleEndScreen = () => {
                 width: "100%",
                 boxShadow: 20,
                 zIndex: siteZIndex.Popover,
-                backgroundColor,
             }}
         >
             <Box>
@@ -103,3 +101,55 @@ export const BattleEndScreen = () => {
         </Stack>
     )
 }
+
+const Header = ({ isOpen, isDrawerOpen, onClose }: HeaderProps) => {
+    const theme = useTheme()
+
+    const button = (
+        <NiceButton
+            onClick={onClose}
+            buttonColor={theme.factionTheme.primary}
+            corners
+            sx={{
+                p: ".8rem",
+                pb: ".6rem",
+            }}
+        >
+            <SvgLobbies size="2.6rem" />
+        </NiceButton>
+    )
+
+    return (
+        <Stack
+            spacing="1rem"
+            direction="row"
+            sx={{
+                width: "100%",
+                p: "1rem",
+                alignItems: "center",
+                opacity: isOpen ? 1 : 0.7,
+                background: isOpen ? `linear-gradient(${theme.factionTheme.s500}70 26%, ${theme.factionTheme.s600})` : theme.factionTheme.s800,
+                transition: "background-color .2s ease-out",
+            }}
+        >
+            {button}
+            <Typography
+                sx={{
+                    fontFamily: fonts.nostromoBlack,
+                    fontSize: "1.6rem",
+                }}
+            >
+                Previous Battle
+            </Typography>
+            {!isDrawerOpen && <Box flex={1} />}
+            <Fade in={!isDrawerOpen} unmountOnExit>
+                <Box>
+                    <NiceTooltip text="Previous Battle" placement="right">
+                        {button}
+                    </NiceTooltip>
+                </Box>
+            </Fade>
+        </Stack>
+    )
+}
+BattleEndScreen.Header = Header

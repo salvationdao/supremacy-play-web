@@ -1,17 +1,17 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
 import { ClipThing, FancyButton } from "../.."
 import { HangarBg, PlayerAbilityPNG } from "../../../assets"
 import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { GetSaleAbilityAvailability } from "../../../fetching"
-import { secondsToWords } from "../../../helpers"
 import { useGameServerSubscriptionSecured, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts, siteZIndex } from "../../../theme/theme"
 import { PlayerAbility, SaleAbility, SaleAbilityAvailability } from "../../../types"
 import { PageHeader } from "../../Common/Deprecated/PageHeader"
+import { TimeLeft } from "../../Common/TimeLeft"
 import { PlayerAbilityStoreItem } from "./PlayerAbilityStoreItem"
 
 export const PlayerAbilitiesStore = () => {
@@ -280,7 +280,7 @@ export const PlayerAbilitiesStore = () => {
                                 <Typography
                                     variant="caption"
                                     sx={{
-                                        color: theme.factionTheme.secondary,
+                                        color: theme.factionTheme.text,
                                         whiteSpace: "nowrap",
                                         fontFamily: fonts.nostromoBlack,
                                     }}
@@ -323,34 +323,6 @@ export const PlayerAbilitiesStore = () => {
                     </Stack>
                 </Stack>
             </ClipThing>
-        </Box>
-    )
-}
-
-interface TimeLeftProps {
-    dateTo: Date
-    timeUpMessage?: string
-}
-
-export const TimeLeft = ({ dateTo, timeUpMessage }: TimeLeftProps) => {
-    const secondsLeftRef = useRef(Math.round((dateTo.getTime() - new Date().getTime()) / 1000))
-    const containerRef = useRef<HTMLDivElement>()
-
-    useEffect(() => {
-        const t = setInterval(() => {
-            if (secondsLeftRef.current < 1) return
-            secondsLeftRef.current -= 1
-
-            if (!containerRef.current) return
-            containerRef.current.innerText = secondsLeftRef.current > 0 ? secondsToWords(secondsLeftRef.current) : timeUpMessage || "REFRESHING"
-        }, 1000)
-
-        return () => clearInterval(t)
-    }, [dateTo, timeUpMessage])
-
-    return (
-        <Box ref={containerRef} component="span">
-            {secondsLeftRef.current > 0 ? secondsToWords(secondsLeftRef.current) : timeUpMessage || "REFRESHING"}
         </Box>
     )
 }

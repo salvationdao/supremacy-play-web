@@ -55,50 +55,50 @@ export const WeaponPreview = ({ weapon, compareTo, disableCompare }: WeaponPrevi
         const stats = [
             typeof weapon.damage !== "undefined" &&
                 renderStatChange("DAMAGE", {
-                    oldStat: compareTo?.damage,
-                    newStat: weapon.damage,
+                    oldStat: compareTo?.damage ? parseFloat(compareTo?.damage) : undefined,
+                    newStat: parseFloat(weapon.damage),
                 }),
             typeof weapon.damage_falloff !== "undefined" &&
                 renderStatChange("DAMAGE FALLOFF", {
-                    oldStat: compareTo?.damage_falloff,
-                    newStat: weapon.damage_falloff,
+                    oldStat: compareTo?.damage_falloff ? parseFloat(compareTo?.damage_falloff) : undefined,
+                    newStat: parseFloat(weapon.damage_falloff),
                 }),
             typeof weapon.radius !== "undefined" &&
                 renderStatChange("RADIUS", {
-                    oldStat: compareTo?.radius,
-                    newStat: weapon.radius,
+                    oldStat: compareTo?.radius ? parseFloat(compareTo?.radius) : undefined,
+                    newStat: parseFloat(weapon.radius),
                 }),
             typeof weapon.radius_damage_falloff !== "undefined" &&
                 renderStatChange("RADIAL DAMAGE FALLOFF", {
-                    oldStat: compareTo?.radius_damage_falloff,
-                    newStat: weapon.radius_damage_falloff,
+                    oldStat: compareTo?.radius_damage_falloff ? parseFloat(compareTo?.radius_damage_falloff) : undefined,
+                    newStat: parseFloat(weapon.radius_damage_falloff),
                 }),
             typeof weapon.spread !== "undefined" &&
                 renderStatChange("SPREAD", {
-                    oldStat: compareTo?.spread,
-                    newStat: weapon.spread,
+                    oldStat: compareTo?.spread ? parseFloat(compareTo?.spread) : undefined,
+                    newStat: parseFloat(weapon.spread),
                     negated: true,
                 }),
             typeof weapon.rate_of_fire !== "undefined" &&
                 renderStatChange("RATE OF FIRE", {
-                    oldStat: compareTo?.rate_of_fire,
-                    newStat: weapon.rate_of_fire,
+                    oldStat: compareTo?.rate_of_fire ? parseFloat(compareTo?.rate_of_fire) : undefined,
+                    newStat: parseFloat(weapon.rate_of_fire),
                 }),
             typeof weapon.projectile_speed !== "undefined" &&
                 renderStatChange("PROJECTILE SPEED", {
-                    oldStat: compareTo?.projectile_speed,
-                    newStat: weapon.projectile_speed,
+                    oldStat: compareTo?.projectile_speed ? parseFloat(compareTo?.projectile_speed) : undefined,
+                    newStat: parseFloat(weapon.projectile_speed),
                 }),
             typeof weapon.energy_cost !== "undefined" &&
                 renderStatChange("ENERGY COST", {
-                    oldStat: compareTo?.energy_cost,
-                    newStat: weapon.energy_cost,
+                    oldStat: compareTo?.energy_cost ? parseFloat(compareTo?.energy_cost) : undefined,
+                    newStat: parseFloat(weapon.energy_cost),
                     negated: true,
                 }),
             typeof weapon.max_ammo !== "undefined" &&
                 renderStatChange("MAX AMMO", {
-                    oldStat: compareTo?.max_ammo,
-                    newStat: weapon.max_ammo,
+                    oldStat: compareTo?.max_ammo ? parseFloat(compareTo?.max_ammo) : undefined,
+                    newStat: parseFloat(weapon.max_ammo),
                 }),
         ]
 

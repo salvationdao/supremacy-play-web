@@ -23,6 +23,16 @@ export interface ChipFilterProps {
     setSelected: React.Dispatch<React.SetStateAction<string[]>>
 }
 
+const propsAreEqual = (prevProps: ChipFilterProps, nextProps: ChipFilterProps) => {
+    return (
+        prevProps.label === nextProps.label &&
+        prevProps.initialExpanded === nextProps.initialExpanded &&
+        prevProps.selected.length === nextProps.selected.length &&
+        prevProps.setSelected === nextProps.setSelected &&
+        prevProps.options.length === nextProps.options.length
+    )
+}
+
 export const ChipFilterSection = React.memo(function ChipFilterSection({ label, options, selected, setSelected, initialExpanded }: ChipFilterProps) {
     return (
         <Section label={label} initialExpanded={initialExpanded}>
@@ -33,6 +43,7 @@ export const ChipFilterSection = React.memo(function ChipFilterSection({ label, 
                     return (
                         <Box key={i} sx={{ p: ".6rem", opacity: isSelected ? 1 : 0.5, ":hover": { opacity: 1 } }}>
                             <NiceButton
+                                flat
                                 fill={isSelected}
                                 buttonColor={render?.color || "#EEEEEE"}
                                 sx={{
@@ -56,4 +67,4 @@ export const ChipFilterSection = React.memo(function ChipFilterSection({ label, 
             </Stack>
         </Section>
     )
-})
+}, propsAreEqual)

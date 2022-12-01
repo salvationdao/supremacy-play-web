@@ -3,14 +3,14 @@ import { ClipThing, StyledImageText } from "../../.."
 import { SvgEmergency } from "../../../../assets"
 import { acronym } from "../../../../helpers"
 import { colors } from "../../../../theme/theme"
-import { BattleFactionAbilityAlertProps, Faction } from "../../../../types"
+import { BattleFactionAbilityAlertProps, FactionWithPalette } from "../../../../types"
 
-export const BattleAbilityAlert = ({ data, getFaction }: { data: BattleFactionAbilityAlertProps; getFaction: (factionID: string) => Faction }) => {
+export const BattleAbilityAlert = ({ data, getFaction }: { data: BattleFactionAbilityAlertProps; getFaction: (factionID: string) => FactionWithPalette }) => {
     const { user, ability } = data
     const { label, colour, image_url } = ability
 
     const faction = getFaction(user.faction_id)
-    const mainColor = faction.primary_color
+    const mainColor = faction.palette.primary
 
     return (
         <ClipThing

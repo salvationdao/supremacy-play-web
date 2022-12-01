@@ -48,7 +48,7 @@ export const DropdownOptionsSection = ({
                             borderRadius: 0.5,
                             "&:hover": {
                                 backgroundColor: primaryColor,
-                                ".MuiTypography-root": { color: (theme) => theme.factionTheme.secondary },
+                                ".MuiTypography-root": { color: (theme) => theme.factionTheme.text },
                             },
                             ".MuiTypography-root": {
                                 px: "1rem",

@@ -86,7 +86,6 @@ export const VideoPlayerControls = () => {
                         min={0}
                         max={1}
                         step={0.01}
-                        aria-label="Volume"
                         value={isMute ? 0 : volume}
                         onChange={handleVolumeChange}
                         sx={{

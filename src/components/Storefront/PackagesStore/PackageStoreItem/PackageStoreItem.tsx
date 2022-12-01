@@ -1,17 +1,16 @@
-import { useState, useCallback, useMemo } from "react"
-import { Box, Stack, Skeleton, Typography, TextField } from "@mui/material"
+import { Box, Skeleton, Stack, TextField, Typography } from "@mui/material"
+import React, { useCallback, useMemo, useState } from "react"
 import { SafePNG, SvgArrow } from "../../../../assets"
 import { useGlobalNotifications } from "../../../../containers"
-import React from "react"
 import { useTheme } from "../../../../containers/theme"
 import { generatePriceText } from "../../../../helpers"
+import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../../keys"
 import { fonts } from "../../../../theme/theme"
 import { FiatProduct } from "../../../../types/fiat"
 import { ClipThing } from "../../../Common/Deprecated/ClipThing"
 import { FancyButton } from "../../../Common/Deprecated/FancyButton"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
-import { GameServerKeys } from "../../../../keys"
-import { useGameServerCommandsFaction } from "../../../../hooks/useGameServer"
 
 interface PackageStoreItemProps {
     enlargedView?: boolean
@@ -221,7 +220,7 @@ export const PackageStoreItem = React.memo(function PackageStoreItem({ enlargedV
                                 >
                                     <Typography
                                         variant={enlargedView ? "body1" : "caption"}
-                                        sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.secondary }}
+                                        sx={{ fontFamily: fonts.nostromoBlack, color: theme.factionTheme.text }}
                                     >
                                         Add to Cart
                                     </Typography>

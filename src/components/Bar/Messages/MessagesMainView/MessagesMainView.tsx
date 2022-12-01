@@ -1,19 +1,20 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { SvgAbility, SvgAnnouncement, SvgDamage1, SvgEmptySet, SvgHistoryClock, SvgNotification, SvgSyndicateFlag } from "../../../../assets"
+import { SvgAbility, SvgAnnouncement, SvgDamage1, SvgEmptySet, SvgHistoryClock, SvgMail, SvgNotification, SvgSyndicateFlag } from "../../../../assets"
 import { useAuth } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
+import { truncateTextLines } from "../../../../helpers"
 import { usePagination } from "../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
+import { useLocalStorage } from "../../../../hooks/useLocalStorage"
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { FeatureName, SystemMessage, SystemMessageDataType } from "../../../../types"
-import { CoolTable } from "../../../Common/CoolTable"
-import { FancyButton } from "../../../Common/Deprecated/FancyButton"
+import { NiceButton } from "../../../Common/Nice/NiceButton"
+import { NiceTable } from "../../../Common/Nice/NiceTable"
 import { PreferenceToggle } from "../../ProfileCard/PreferencesModal/NotificationPreferences"
 import { SystemMessageDisplayable } from "../Messages"
 import { MessageDisplay } from "./MessageDisplay/MessageDisplay"
-import { TruncateTextLines } from "../../../../theme/styles"
 
 export interface MessagesMainViewProps {
     lastUpdated: Date
@@ -28,15 +29,11 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
     const [messages, setMessages] = useState<SystemMessageDisplayable[]>([])
     const [focusedMessage, setFocusedMessage] = useState<SystemMessageDisplayable>()
     const [error, setError] = useState<string>()
-    const [hideRead, setHideRead] = useState(localStorage.getItem("hideReadMessages") === "true")
+    const [hideRead, setHideRead] = useLocalStorage<boolean>("hideReadMessages", false)
     const { page, changePage, setTotalItems, totalItems, changePageSize, pageSize } = usePagination({
         pageSize: 15,
         page: 0,
     })
-
-    useEffect(() => {
-        localStorage.setItem("hideReadMessages", hideRead.toString())
-    }, [hideRead])
 
     const fetchMessages = useCallback(async () => {
         try {
@@ -78,6 +75,9 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                         break
                     case SystemMessageDataType.ExpiredBattleLobby:
                         icon = <SvgEmptySet fill={colors.red} size="1.6rem" />
+                        break
+                    case SystemMessageDataType.BattleLobbyInvitation:
+                        icon = <SvgMail fill={colors.red} size="1.6rem" />
                         break
                 }
 
@@ -130,7 +130,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                             textAlign: "center",
                         }}
                     >
-                        YOUR INBOX IS EMPTY.
+                        YOUR INBOX IS EMPTY
                     </Typography>
                 </Stack>
             )
@@ -138,7 +138,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
             return (
                 <Stack sx={{ flex: 1 }}>
                     <Stack sx={{ flex: 1 }}>
-                        <CoolTable
+                        <NiceTable
                             tableHeadings={["FROM", "TITLE", "BODY", "TIME"]}
                             alignments={["left", "left", "left", "left"]}
                             widths={["18rem", "15rem", "auto", "8rem"]}
@@ -182,7 +182,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                                             {item.icon}
                                             <Typography
                                                 sx={{
-                                                    ...TruncateTextLines(1),
+                                                    ...truncateTextLines(1),
                                                     width: "100%",
                                                     maxWidth: "100px",
                                                     textAlign: "left",
@@ -195,7 +195,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                                         <Typography
                                             key={1}
                                             sx={{
-                                                ...TruncateTextLines(1),
+                                                ...truncateTextLines(1),
                                                 width: "100%",
                                                 maxWidth: "100px",
                                                 textAlign: "left",
@@ -206,7 +206,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                                         <Typography
                                             key={2}
                                             sx={{
-                                                ...TruncateTextLines(1),
+                                                ...truncateTextLines(1),
                                                 textAlign: "left",
                                                 textTransform: "none",
                                             }}
@@ -248,43 +248,21 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
     return (
         <Stack direction="row" height="100%">
             {userHasFeature(FeatureName.systemMessages) && (
-                <Stack sx={{ height: "100%", backgroundColor: "#000000", borderRight: `${theme.factionTheme.primary}70 1.5px solid` }}>
+                <Stack sx={{ height: "100%", backgroundColor: "#000000", borderRight: `${colors.darkGrey} 1px solid` }}>
                     <Stack spacing="1.4rem" flex={1} sx={{ p: "1.6rem" }}>
-                        <FancyButton
-                            clipThingsProps={{
-                                clipSize: "9px",
-                                clipSlantSize: "0px",
-                                backgroundColor: theme.factionTheme.primary,
-                                opacity: 1,
-                                border: { borderColor: theme.factionTheme.primary, borderThickness: "1px" },
-                                sx: { position: "relative" },
-                            }}
-                            sx={{ px: "1.6rem", py: ".6rem", color: theme.factionTheme.secondary }}
-                            onClick={() => onCompose(SystemMessageDataType.Global)}
-                        >
-                            <Typography sx={{ fontWeight: "bold", color: theme.factionTheme.secondary }}>Compose Global Message</Typography>
-                        </FancyButton>
+                        <NiceButton corners buttonColor={colors.green} onClick={() => onCompose(SystemMessageDataType.Global)}>
+                            Compose Global Message
+                        </NiceButton>
 
-                        <FancyButton
-                            clipThingsProps={{
-                                clipSize: "9px",
-                                clipSlantSize: "0px",
-                                backgroundColor: theme.factionTheme.primary,
-                                opacity: 1,
-                                border: { borderColor: theme.factionTheme.primary, borderThickness: "1px" },
-                                sx: { position: "relative" },
-                            }}
-                            sx={{ px: "1.6rem", py: ".6rem", color: theme.factionTheme.secondary }}
-                            onClick={() => onCompose(SystemMessageDataType.Faction)}
-                        >
-                            <Typography sx={{ fontWeight: "bold", color: theme.factionTheme.secondary }}>Compose Faction Message</Typography>
-                        </FancyButton>
+                        <NiceButton corners buttonColor={theme.factionTheme.primary} onClick={() => onCompose(SystemMessageDataType.Faction)}>
+                            Compose Faction Message
+                        </NiceButton>
                     </Stack>
                 </Stack>
             )}
 
             <Stack sx={{ flex: 1, height: "100%" }}>
-                <Stack sx={{ p: ".6rem 1.6rem", pt: "1rem", borderBottom: `${theme.factionTheme.primary}70 1.5px solid` }}>
+                <Stack sx={{ p: ".6rem 1.6rem", pt: "1rem", borderBottom: `${colors.darkGrey} 1px solid` }}>
                     <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
                         YOUR INBOX
                     </Typography>

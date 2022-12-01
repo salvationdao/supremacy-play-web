@@ -54,7 +54,7 @@ export const FancyButton = React.forwardRef(function FancyButton(
                 disabled={isDisabled}
                 sx={{
                     borderRadius: 0,
-                    fontFamily: fonts.shareTech,
+                    fontFamily: fonts.rajdhaniMedium,
                     fontWeight: "bold",
                     color: "#FFFFFF",
                     textTransform: "uppercase",

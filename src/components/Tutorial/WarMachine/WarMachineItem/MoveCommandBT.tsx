@@ -7,7 +7,7 @@ import { zoomEffect } from "../../../../theme/keyframes"
 import { colors } from "../../../../theme/theme"
 import { LocationSelectType, MechAbilityStages, PlayerAbility, WarMachineState } from "../../../../types"
 import { DEAD_OPACITY, WIDTH_SKILL_BUTTON } from "./WarMachineItemBT"
-import { TruncateTextLines } from "../../../../theme/styles"
+import { truncateTextLines } from "../../../../helpers"
 
 export const MechMoveCommandAbilityBT: PlayerAbility = {
     id: "mech_move_command",
@@ -140,7 +140,7 @@ const MoveCommandInner = ({ isAlive, isMoving, hash, smallVersion }: MoveCommand
                         pt: ".2rem",
                         lineHeight: 1,
                         fontWeight: "bold",
-                        ...TruncateTextLines(1),
+                        ...truncateTextLines(1),
                     }}
                 >
                     {trainingStage !== MechAbilityStages.MoveActionMA ? MechMoveCommandAbilityBT.ability.label : "CANCEL"}

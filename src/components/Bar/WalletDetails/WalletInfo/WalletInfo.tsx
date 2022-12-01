@@ -1,4 +1,4 @@
-import { CircularProgress, IconButton, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, IconButton, Stack, Typography } from "@mui/material"
 import BigNumber from "bignumber.js"
 import { MutableRefObject, useRef, useState } from "react"
 import { SvgHide, SvgSupToken, SvgUnhide } from "../../../../assets"
@@ -6,6 +6,7 @@ import { IS_TESTING_MODE } from "../../../../constants"
 import { useAuth, useWallet } from "../../../../containers"
 import { supFormatter } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
+import { useLocalStorage } from "../../../../hooks/useLocalStorage"
 import { usePassportSubscriptionAccount } from "../../../../hooks/usePassport"
 import { PassportServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
@@ -86,7 +87,7 @@ const WalletInfoInner = ({
 }) => {
     const walletPopoverRef = useRef(null)
     const [isWalletPopoverOpen, toggleIsWalletPopoverOpen] = useToggle()
-    const [isHideValue, setIsHideValue] = useState(localStorage.getItem("walletHide") === "true")
+    const [isHideValue, setIsHideValue] = useLocalStorage<boolean>("walletHide", false)
 
     if (!onWorldSupsRaw) {
         return (
@@ -98,14 +99,12 @@ const WalletInfoInner = ({
 
     return (
         <>
-            <Stack
-                direction="row"
-                alignItems="center"
+            <Box
                 ref={walletPopoverRef}
                 onClick={() => toggleIsWalletPopoverOpen()}
                 sx={{
                     mr: ".3rem",
-                    px: ".7rem",
+                    px: ".4rem",
                     py: ".6rem",
                     cursor: "pointer",
                     borderRadius: 1,
@@ -118,23 +117,14 @@ const WalletInfoInner = ({
                     },
                 }}
             >
-                <SvgSupToken size="1.9rem" fill={IS_TESTING_MODE ? colors.red : colors.yellow} sx={{ mr: ".2rem", pb: 0 }} />
                 <Typography sx={{ fontFamily: fonts.nostromoBold, lineHeight: 1, whiteSpace: "nowrap" }}>
+                    <SvgSupToken size="2rem" fill={IS_TESTING_MODE ? colors.red : colors.yellow} inline />
                     {!isHideValue && <>{onWorldSupsRaw ? supFormatter(onWorldSupsRaw, 2) : "0.00"}</>}
                     {isHideValue && "---"}
                 </Typography>
-            </Stack>
+            </Box>
 
-            <IconButton
-                size="small"
-                sx={{ ml: "-.4rem", opacity: 0.4, ":hover": { opacity: 1 } }}
-                onClick={() => {
-                    setIsHideValue((prev) => {
-                        localStorage.setItem("walletHide", (!prev).toString())
-                        return !prev
-                    })
-                }}
-            >
+            <IconButton size="small" sx={{ ml: "-.4rem", opacity: 0.4, ":hover": { opacity: 1 } }} onClick={() => setIsHideValue((prev) => !prev)}>
                 {isHideValue ? <SvgUnhide size="1.3rem" /> : <SvgHide size="1.3rem" />}
             </IconButton>
 

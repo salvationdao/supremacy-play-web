@@ -15,9 +15,32 @@ import { PageHeader } from "../../../../../Common/Deprecated/PageHeader"
 import { ChipFilter } from "../../../../../Common/Deprecated/SortAndFilters/ChipFilterSection"
 import { SortAndFilters } from "../../../../../Common/Deprecated/SortAndFilters/SortAndFilters"
 import { TotalAndPageSizeOptions } from "../../../../../Common/Deprecated/TotalAndPageSizeOptions"
-import { GetSubmodelsRequest, GetSubmodelsResponse } from "../../../../SubmodelHangar/SubmodelsHangar"
 import { MechSkinItem } from "./MechSkins/MechSkinItem"
 import { MechSkinPreview } from "./MechSkins/MechSkinPreview"
+
+export interface GetSubmodelsRequest {
+    search?: string
+    sort_by?: string
+    sort_dir: string
+    page_size: number
+    page?: number
+    display_xsyn: boolean
+    exclude_market_locked?: boolean
+    include_market_listed: boolean
+    display_genesis_and_limited?: boolean
+    display_unique?: boolean
+    exclude_ids: string[]
+    include_ids: string[]
+    model_id?: string
+    rarities: string[]
+    skin_compatibility: string[]
+    equipped_statuses: string[]
+}
+
+export interface GetSubmodelsResponse {
+    submodels: MechSkin[]
+    total: number
+}
 
 const sortOptions = [
     { label: SortTypeLabel.Alphabetical, value: SortTypeLabel.Alphabetical },
@@ -261,13 +284,13 @@ export const MechLoadoutMechSkinModal = ({
                             border: { isFancy: true, borderColor: theme.factionTheme.primary },
                             sx: { position: "relative", mt: "2rem" },
                         }}
-                        sx={{ px: "1.8rem", py: ".8rem", color: theme.factionTheme.secondary }}
+                        sx={{ px: "1.8rem", py: ".8rem", color: theme.factionTheme.text }}
                     >
                         <Typography
                             variant="body2"
                             sx={{
                                 textAlign: "center",
-                                color: theme.factionTheme.secondary,
+                                color: theme.factionTheme.text,
                                 fontFamily: fonts.nostromoBold,
                             }}
                         >
@@ -277,7 +300,7 @@ export const MechLoadoutMechSkinModal = ({
                 </Stack>
             </Stack>
         )
-    }, [loadError, submodels, isLoading, theme.factionTheme.primary, theme.factionTheme.secondary, mech.chassis_skin?.level, selectedSubmodel?.id])
+    }, [loadError, submodels, isLoading, theme.factionTheme.primary, theme.factionTheme.text, mech.chassis_skin?.level, selectedSubmodel?.id])
 
     return (
         <Modal open onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>

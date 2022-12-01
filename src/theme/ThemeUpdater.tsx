@@ -9,7 +9,7 @@ export const ThemeUpdater = ({ children }: { children: ReactNode }) => {
         <Box
             sx={{
                 "*": {
-                    scrollbarColor: `${theme.factionTheme.primary}50 #FFFFFF !important`,
+                    scrollbarColor: `${theme.factionTheme.s500} ${theme.factionTheme.s700} !important`,
 
                     "::-webkit-scrollbar-track": {
                         background: "#FFFFFF15",
@@ -28,14 +28,15 @@ export const ThemeUpdater = ({ children }: { children: ReactNode }) => {
                 ".MuiPagination-root": {
                     ".Mui-selected": {
                         borderRadius: 0,
-                        color: theme.factionTheme.secondary,
-                        backgroundColor: `${theme.factionTheme.primary} !important`,
+                        color: theme.factionTheme.text,
+                        border: `${theme.factionTheme.primary} 1px solid !important`,
+                        background: `linear-gradient(180deg, ${theme.factionTheme.primary}90, ${theme.factionTheme.primary}30) !important`,
                         boxShadow: 1,
                     },
                 },
 
                 ".MuiCircularProgress-root": {
-                    color: theme.factionTheme.primary,
+                    color: theme.factionTheme.s300,
                 },
 
                 ".MuiSlider-root": {

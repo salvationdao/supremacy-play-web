@@ -3,12 +3,11 @@ import { useMemo } from "react"
 import { SvgCrown, SvgDeath, SvgSkull, SvgSkull2 } from "../../../../../../assets"
 import { useSupremacy } from "../../../../../../containers"
 import { useTheme } from "../../../../../../containers/theme"
-import { getRarityDeets } from "../../../../../../helpers"
+import { getRarityDeets, truncateTextLines } from "../../../../../../helpers"
 import { colors, fonts } from "../../../../../../theme/theme"
 import { SystemMessageMechStruct } from "../../../../../../types"
 import { ClipThing } from "../../../../../Common/Deprecated/ClipThing"
-import { RepairBlocks } from "../../../../../Hangar/WarMachinesHangar/Common/MechRepairBlocks"
-import { TruncateTextLines } from "../../../../../../theme/styles"
+import { RepairBlocks } from "../../../../../Common/Mech/MechRepairBlocks"
 
 export const SystemMessageMech = ({ mech }: { mech: SystemMessageMechStruct }) => {
     const { name, image_url, tier, total_blocks, damaged_blocks, kills, killed } = mech
@@ -89,7 +88,7 @@ export const SystemMessageMech = ({ mech }: { mech: SystemMessageMechStruct }) =
                                 variant="body2"
                                 sx={{
                                     fontSize: "1.8rem",
-                                    ...TruncateTextLines(1),
+                                    ...truncateTextLines(1),
                                 }}
                             >
                                 {name}
@@ -112,9 +111,9 @@ export const SystemMessageMech = ({ mech }: { mech: SystemMessageMechStruct }) =
                         <Typography
                             sx={{
                                 fontWeight: "bold",
-                                color: getFaction(killed.faction_id).primary_color,
+                                color: getFaction(killed.faction_id).palette.primary,
                                 lineHeight: 1.2,
-                                ...TruncateTextLines(2),
+                                ...truncateTextLines(2),
                             }}
                         >
                             {killed.name}
@@ -138,10 +137,10 @@ export const SystemMessageMech = ({ mech }: { mech: SystemMessageMechStruct }) =
                                     <Typography
                                         sx={{
                                             fontWeight: "bold",
-                                            color: killedFaction.primary_color,
+                                            color: killedFaction.palette.primary,
                                             textDecoration: "line-through",
                                             lineHeight: 1.2,
-                                            ...TruncateTextLines(2),
+                                            ...truncateTextLines(2),
                                         }}
                                     >
                                         {kill.name}
