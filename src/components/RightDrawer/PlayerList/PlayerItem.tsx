@@ -6,6 +6,7 @@ import { useToggle } from "../../../hooks"
 import { colors, fonts } from "../../../theme/theme"
 import { User } from "../../../types"
 import { NiceButton } from "../../Common/Nice/NiceButton"
+import { TypographyTruncated } from "../../Common/TypographyTruncated"
 
 interface PlayerItemProps {
     player: User
@@ -29,20 +30,15 @@ export const PlayerItem = React.memo(function PlayerItem({ player, isActive }: P
             <Stack
                 direction="row"
                 alignItems="center"
-                sx={{
-                    px: "1.3rem",
-                    py: ".5rem",
-                    backgroundColor: (theme) => theme.factionTheme.s700,
-                    opacity: isActive ? 1 : 0.6,
-                }}
+                sx={{ p: ".5rem 1.3rem", opacity: isActive ? 1 : 0.6, backgroundColor: (theme) => theme.factionTheme.s800 }}
             >
                 <Box sx={{ width: ".8rem", height: ".8rem", borderRadius: "50%", backgroundColor: isActive ? colors.green : colors.yellow }} />
 
-                <Stack direction="row" spacing=".5rem" alignItems="center" sx={{ pt: ".3rem", ml: "1.1rem" }}>
+                <Stack direction="row" spacing=".8rem" alignItems="center" sx={{ pt: ".3rem", ml: "1.1rem" }}>
                     <Box
                         sx={{
-                            width: "3rem",
-                            height: "3rem",
+                            width: "2.8rem",
+                            height: "2.8rem",
                             flexShrink: 0,
                             backgroundImage: `url(${faction.logo_url})`,
                             backgroundRepeat: "no-repeat",
@@ -50,21 +46,13 @@ export const PlayerItem = React.memo(function PlayerItem({ player, isActive }: P
                             backgroundSize: "contain",
                         }}
                     />
-                    <Typography>
-                        {`${username}`}
-                        <span style={{ marginLeft: ".2rem", opacity: 0.8 }}>{`#${gid}`}</span>
-                    </Typography>
+                    <TypographyTruncated>
+                        {username}#{gid}
+                    </TypographyTruncated>
                 </Stack>
 
                 <NiceButton sx={{ px: "1rem", py: ".1rem", ml: "auto" }} onClick={() => toggleBanModalOpen()}>
-                    <Typography
-                        variant="caption"
-                        sx={{
-                            lineHeight: 1,
-                            color: "#FFFFFF80",
-                            fontFamily: fonts.nostromoBold,
-                        }}
-                    >
+                    <Typography variant="caption" sx={{ color: "#FFFFFF80", fontFamily: fonts.nostromoBold }}>
                         REPORT
                     </Typography>
                 </NiceButton>

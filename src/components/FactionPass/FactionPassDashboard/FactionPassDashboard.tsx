@@ -38,7 +38,7 @@ export const FactionPassDashboard = () => {
                             background: `url(${faction.logo_url})`,
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "center",
-                            backgroundSize: "cover",
+                            backgroundSize: "contain",
                         }}
                     />
                     <FactionMostPopularStakedMech />

@@ -69,7 +69,7 @@ export const PlayerMechsOwned = () => {
                     rowProps: {
                         sx: {
                             backgroundColor: item.player.id === userID ? `${rank <= 3 ? color : primaryColor}20` : "unset",
-                            border: item.player.id === userID ? `${rank <= 3 ? color : primaryColor} 3px solid` : "unset",
+                            border: item.player.id === userID ? `${rank <= 3 ? color : primaryColor} 1px solid` : "unset",
                         },
                     },
                     cells: [
@@ -83,7 +83,7 @@ export const PlayerMechsOwned = () => {
 
                         <PlayerNameGid key={2} player={item.player} styledImageTextProps={{ variant: "h6", imageSize: 2.4 }} />,
 
-                        <TypographyTruncated variant="h6" key={3} sx={{ fontWeight: "bold", color: faction.palette.primary, textTransform: "uppercase" }}>
+                        <TypographyTruncated variant="h6" key={3} sx={{ fontWeight: "bold", color: faction.palette.primary }}>
                             {faction.label}
                         </TypographyTruncated>,
 

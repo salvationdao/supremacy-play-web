@@ -7,9 +7,9 @@ import { useGameServerSubscriptionSecured, useGameServerSubscriptionSecuredUser 
 import { GameServerKeys } from "../../../../keys"
 import { colors, fonts } from "../../../../theme/theme"
 import { PlayerAbility, SaleAbility, SaleAbilityAvailability } from "../../../../types"
+import { PlayerAbilitySmallCard } from "../../../Common/PlayerAbility/PlayerAbilitySmallCard"
 import { TimeLeft } from "../../../Common/TimeLeft"
 import { SectionCollapsible } from "../Common/SectionCollapsible"
-import { QuickPlayerAbilitiesItem } from "./QuickPlayerAbilitiesItem"
 
 export const QuickPlayerAbilities = () => {
     const { userID } = useAuth()
@@ -161,17 +161,26 @@ const QuickPlayerAbilitiesInner = React.memo(function QuickPlayerAbilitiesInner(
                             width: "100%",
                         }}
                     >
-                        {saleAbilities.map((s, index) => (
-                            <QuickPlayerAbilitiesItem
-                                key={`${s.id}-${index}`}
-                                saleAbility={s}
-                                price={priceMap.get(s.id)}
-                                amount={ownedAbilities.get(s.blueprint_id)}
-                                setClaimError={setError}
-                                onPurchase={() => refetchSaleAvailability()}
-                                availability={availability}
-                            />
-                        ))}
+                        {saleAbilities.map((sa, index) => {
+                            const price = priceMap.get(sa.id)
+                            if (!price) return null
+
+                            const ownedCount = ownedAbilities.get(sa.blueprint_id) || 0
+
+                            return (
+                                <PlayerAbilitySmallCard
+                                    key={`${sa.id}-${index}`}
+                                    anyAbility={sa.ability}
+                                    ownedCount={ownedCount}
+                                    onClickAction="buy"
+                                    onClickCallback={() => refetchSaleAvailability()}
+                                    buyConfig={{
+                                        price: price,
+                                        availability: availability,
+                                    }}
+                                />
+                            )
+                        })}
                     </Box>
                 )}
 

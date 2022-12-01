@@ -89,7 +89,6 @@ export const Bar = () => {
                         left: 0,
                         right: 0,
                         backgroundColor: darkerBg,
-                        // background: (theme) => `linear-gradient(${theme.factionTheme.primary}10 26%, ${theme.factionTheme.background})`,
                         pointerEvents: "none",
                         zIndex: -1,
                     }}

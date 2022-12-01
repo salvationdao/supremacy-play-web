@@ -7,7 +7,7 @@ import { SvgLobbies } from "../../../assets"
 import { useArena, useGame, useUI } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { HeaderProps, LeftRouteID, LeftRoutes } from "../../../routes"
-import { colors, fonts, siteZIndex } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
 import { BattleState } from "../../../types"
 import { NiceButton } from "../../Common/Nice/NiceButton"
 import { SectionMechRewards } from "./Sections/SectionMechRewards"
@@ -64,18 +64,13 @@ export const BattleEndScreen = () => {
 
     return (
         <Stack
-            spacing="1rem"
             sx={{
-                pl: "2rem",
-                pr: "1rem",
-                py: "1.8rem",
                 height: "100%",
                 width: "100%",
                 boxShadow: 20,
-                zIndex: siteZIndex.Popover,
             }}
         >
-            <Box>
+            <Box sx={{ p: "1rem 1.6rem" }}>
                 <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
                     BATTLE ID #{battle_identifier.toString().padStart(4, "0")}
                 </Typography>
@@ -84,15 +79,8 @@ export const BattleEndScreen = () => {
                 </Typography>
             </Box>
 
-            <Stack
-                sx={{
-                    flex: 1,
-                    pr: "1rem",
-                    overflowY: "auto",
-                    overflowX: "auto",
-                }}
-            >
-                <Stack spacing="3.2rem" sx={{ py: "1rem" }}>
+            <Stack sx={{ flex: 1, overflow: "hidden" }}>
+                <Stack spacing="3.2rem" flex={1} sx={{ overflowY: "auto", overflowX: "hidden", pb: "1.8rem" }}>
                     <SectionWinner battleEndDetail={battleEndDetail} />
                     <SectionFactions battleEndDetail={battleEndDetail} />
                     <SectionMechRewards battleEndDetail={battleEndDetail} />

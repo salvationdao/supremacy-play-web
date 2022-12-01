@@ -148,7 +148,6 @@ export const GameContainer = createContainer(() => {
                 setNextBattle(undefined)
                 return
             }
-            console.log(payload)
             // set upcoming details
             setNextBattle(payload.upcoming_battle)
         },

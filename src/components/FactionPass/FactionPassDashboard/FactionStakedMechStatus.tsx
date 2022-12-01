@@ -1,9 +1,10 @@
-import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
-import { GameServerKeys } from "../../../keys"
 import { Box, Stack, Typography } from "@mui/material"
 import { ReactNode, useMemo, useState } from "react"
-import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
+import { useGameServerSubscriptionFaction } from "../../../hooks/useGameServer"
+import { GameServerKeys } from "../../../keys"
+import { pulseEffect } from "../../../theme/keyframes"
 import { colors, fonts } from "../../../theme/theme"
+import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { FactionStakedMechStatistic } from "./FactionStakedMechStatistic"
 
 interface FactionRepairBayStakedMech {
@@ -99,7 +100,8 @@ export const FactionStakedMechStatus = () => {
                     justifyContent: "center",
                 }}
             >
-                <Box
+                <Stack
+                    spacing="1rem"
                     sx={{
                         width: "100%",
                         height: "100%",
@@ -108,7 +110,24 @@ export const FactionStakedMechStatus = () => {
                         gridRow: "1 / span 2",
                         p: "1.5rem",
                     }}
-                ></Box>
+                >
+                    <Typography variant="h5" fontFamily={fonts.rajdhaniBold}>
+                        REVENUE DISTRIBUTION
+                    </Typography>
+
+                    <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        sx={{
+                            flex: 1,
+                            backgroundColor: "#00000050",
+                        }}
+                    >
+                        <Typography variant="h6" fontFamily={fonts.nostromoBold} textAlign="center" sx={{ animation: `${pulseEffect} 3s infinite` }}>
+                            COMING SOON WITH FACTION PASS
+                        </Typography>
+                    </Stack>
+                </Stack>
                 <FactionStakedMechStatusBox title={"STAKED MECHS BATTLED"} value={battledStakedMechCount} caption={" "} />
                 <FactionStakedMechStatusBox
                     title={"STAKED MECHS IN REPAIR BAY"}
@@ -116,15 +135,10 @@ export const FactionStakedMechStatus = () => {
                     caption={`${repairBayStakedMechs.total_repaired_blocks} of ${repairBayStakedMechs.total_required_repaired_blocks} blocks complete`}
                 />
                 <FactionStakedMechStatusBox title={"STAKED MECHS"} value={stakedMechCount} caption={" "} />
-                <FactionStakedMechStatusBox title={"STAKED MECHS IDLE"} value={idleMechCount} caption={"GO TO MECH POOL"} color={colors.green} />
-                <FactionStakedMechStatusBox title={"STAKED MECHS IN QUEUE"} value={inQueueStakedMechCount} caption={"GO TO MECH POOL"} color={colors.yellow} />
-                <FactionStakedMechStatusBox title={"STAKED MECHS DAMAGED"} value={damagedStakedMechCount} caption={"GO TO REPAIR BAY"} color={colors.bronze} />
-                <FactionStakedMechStatusBox
-                    title={"STAKED MECHS BATTLE READY"}
-                    value={battleReadyStakedMechCount}
-                    caption={"GO TO MECH POOL"}
-                    color={colors.red}
-                />
+                <FactionStakedMechStatusBox title={"STAKED MECHS IDLE"} value={idleMechCount} caption={"MECH POOL"} color={colors.green} />
+                <FactionStakedMechStatusBox title={"STAKED MECHS IN QUEUE"} value={inQueueStakedMechCount} caption={"MECH POOL"} color={colors.yellow} />
+                <FactionStakedMechStatusBox title={"STAKED MECHS DAMAGED"} value={damagedStakedMechCount} caption={"REPAIR BAY"} color={colors.bronze} />
+                <FactionStakedMechStatusBox title={"STAKED MECHS BATTLE READY"} value={battleReadyStakedMechCount} caption={"MECH POOL"} color={colors.red} />
                 <FactionStakedMechStatusBox title={"STAKED MECHS IN BATTLE"} value={inBattleStakedMechCount} caption={"MECH SUPPORTER"} color={colors.orange} />
             </Box>
             <FactionStakedMechStatistic
@@ -169,13 +183,16 @@ const FactionStakedMechStatusBox = ({ title, value, caption, color }: FactionSta
         <NiceBoxThing background={{ colors: [`${colors.offWhite}20`] }} sx={{ width: "100%", height: "100%", p: "1.5rem" }}>
             <Stack direction="column" flex={1} height="100%">
                 {label}
+
                 <Stack direction="row" alignItems="center" flex={1}>
                     <Typography variant="h2" fontFamily={fonts.nostromoBlack}>
                         {value}
                     </Typography>
                 </Stack>
+
                 <Stack direction="row" alignItems="center" justifyContent="space-between">
                     {description}
+
                     {color && (
                         <Box
                             sx={{

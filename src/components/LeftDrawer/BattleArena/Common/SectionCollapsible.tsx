@@ -1,6 +1,6 @@
 import { Box, Collapse, Stack, Typography } from "@mui/material"
 import { ReactNode, useEffect } from "react"
-import { SvgDropdownArrow, SvgInfoCircular } from "../../../../assets"
+import { SvgDropdownArrow, SvgInfoIcon } from "../../../../assets"
 import { useTheme } from "../../../../containers/theme"
 import { useToggle } from "../../../../hooks"
 import { fonts } from "../../../../theme/theme"
@@ -72,7 +72,7 @@ export const SectionCollapsible = ({
                                     ":hover": { opacity: 1 },
                                 }}
                             >
-                                <SvgInfoCircular fill={theme.factionTheme.text} size="1.5rem" />
+                                <SvgInfoIcon fill={theme.factionTheme.text} size="1.5rem" />
                             </Box>
                         </NiceTooltip>
                     )}

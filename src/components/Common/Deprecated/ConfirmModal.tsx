@@ -1,9 +1,8 @@
-import { Box, IconButton, Modal, Stack, SxProps, Typography } from "@mui/material"
+import { Stack, SxProps, Typography } from "@mui/material"
 import { ReactNode, useMemo } from "react"
-import { ClipThing, FancyButton } from "../.."
-import { SvgClose } from "../../../assets"
-import { useTheme } from "../../../containers/theme"
-import { colors, fonts, siteZIndex } from "../../../theme/theme"
+import { colors, fonts } from "../../../theme/theme"
+import { NiceButton } from "../Nice/NiceButton"
+import { NiceModal } from "../Nice/NiceModal"
 
 interface ConfirmModalProps {
     title: string
@@ -56,122 +55,58 @@ export const ConfirmModal = ({
     omitHeader,
     innerSx,
 }: ConfirmModalProps) => {
-    const theme = useTheme()
-
     const confirmButtonElement = useMemo(() => {
         if (omitConfirm) return null
         if (confirmButton) return confirmButton
+
         return (
-            <FancyButton
-                disabled={disableConfirm}
-                loading={isLoading}
-                clipThingsProps={{
-                    clipSize: "5px",
-                    backgroundColor: confirmBackground || colors.green,
-                    border: { borderColor: confirmBackground || colors.green, borderThickness: "2px" },
-                    sx: { flex: 2, position: "relative" },
-                }}
-                sx={{ pt: 0, pb: 0, minWidth: "5rem" }}
-                onClick={onConfirm}
-            >
-                <Stack direction="row" justifyContent="center">
-                    {confirmPrefix}
-                    <Typography variant="h6" sx={{ color: confirmColor || "#FFFFFF", fontWeight: "bold" }}>
-                        {confirmLabel || "CONFIRM"}
-                    </Typography>
-                    {confirmSuffix}
-                </Stack>
-            </FancyButton>
+            <NiceButton loading={isLoading} disabled={disableConfirm} buttonColor={confirmColor || confirmBackground || colors.green} onClick={onConfirm}>
+                {confirmPrefix}
+                {confirmLabel || "CONFIRM"}
+                {confirmSuffix}
+            </NiceButton>
         )
-    }, [omitConfirm, confirmButton, disableConfirm, isLoading, confirmBackground, onConfirm, confirmPrefix, confirmColor, confirmLabel, confirmSuffix])
+    }, [omitConfirm, confirmButton, isLoading, disableConfirm, confirmColor, confirmBackground, onConfirm, confirmPrefix, confirmLabel, confirmSuffix])
 
     return (
-        <Modal open={open !== undefined ? open : true} onClose={onClose} sx={{ zIndex: siteZIndex.Modal }}>
-            <Box
+        <NiceModal open={open !== undefined ? open : true} onClose={onClose} sx={width ? { width, maxWidth: width } : {}}>
+            <Stack
+                spacing="1.2rem"
                 sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    width: width || "50rem",
-                    boxShadow: 6,
-                    outline: "none",
+                    position: "relative",
+                    px: "2.5rem",
+                    py: "2.4rem",
+                    ".MuiTypography-root span": {
+                        color: colors.neonBlue,
+                        fontWeight: "bold",
+                    },
+                    ...innerSx,
                 }}
             >
-                <ClipThing
-                    clipSize="8px"
-                    border={{
-                        borderColor: theme.factionTheme.primary,
-                        borderThickness: ".2rem",
-                    }}
-                    sx={{ position: "relative" }}
-                    backgroundColor={theme.factionTheme.background}
-                >
-                    <Stack
-                        spacing="1.2rem"
-                        sx={{
-                            position: "relative",
-                            px: "2.5rem",
-                            py: "2.4rem",
-                            ".MuiTypography-root span": {
-                                color: colors.neonBlue,
-                                fontWeight: "bold",
-                            },
-                            ...innerSx,
-                        }}
-                    >
-                        {!omitHeader && (
-                            <Typography variant="h5" sx={{ lineHeight: 1, fontFamily: fonts.nostromoBlack }}>
-                                {title}
-                            </Typography>
-                        )}
+                {!omitHeader && (
+                    <Typography variant="h5" sx={{ fontFamily: fonts.nostromoBlack }}>
+                        {title}
+                    </Typography>
+                )}
 
-                        {children}
+                {children}
 
-                        {error && (
-                            <Typography
-                                sx={{
-                                    mt: ".3rem",
-                                    color: colors.red,
-                                }}
-                            >
-                                {error}
-                            </Typography>
-                        )}
+                {error && <Typography sx={{ mt: ".3rem", color: colors.red }}>{error}</Typography>}
 
-                        {!omitButtons && (
-                            <Stack direction="row" spacing="1rem" sx={{ pt: ".4rem" }}>
-                                <FancyButton
-                                    clipThingsProps={{
-                                        clipSize: "5px",
-                                        backgroundColor: cancelBackground || colors.red,
-                                        border: { borderColor: cancelBackground || colors.red, borderThickness: "2px" },
-                                        sx: {
-                                            flex: 2,
-                                            position: "relative",
-                                            visibility: omitCancel ? "hidden" : undefined,
-                                        },
-                                    }}
-                                    sx={{ pt: 0, pb: 0, minWidth: "5rem", visibility: omitCancel ? "hidden" : undefined }}
-                                    onClick={!omitCancel ? onClose : undefined}
-                                >
-                                    <Typography variant="h6" sx={{ color: cancelColor || "#FFFFFF", fontWeight: "bold" }}>
-                                        {cancelLabel || "CANCEL"}
-                                    </Typography>
-                                </FancyButton>
+                {!omitButtons && (
+                    <Stack direction="row" spacing="1rem" alignItems="center" sx={{ pt: ".4rem" }}>
+                        <NiceButton
+                            buttonColor={cancelColor || cancelBackground || colors.red}
+                            sx={{ visibility: omitCancel ? "hidden" : undefined }}
+                            onClick={!omitCancel ? onClose : undefined}
+                        >
+                            {cancelLabel || "CANCEL"}
+                        </NiceButton>
 
-                                {confirmButtonElement}
-                            </Stack>
-                        )}
+                        {confirmButtonElement}
                     </Stack>
-
-                    {!omitHeader && (
-                        <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
-                            <SvgClose size="2.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
-                        </IconButton>
-                    )}
-                </ClipThing>
-            </Box>
-        </Modal>
+                )}
+            </Stack>
+        </NiceModal>
     )
 }

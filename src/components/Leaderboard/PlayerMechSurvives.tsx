@@ -69,7 +69,7 @@ export const PlayerMechSurvives = ({ selectedRound }: { selectedRound?: Leaderbo
                     rowProps: {
                         sx: {
                             backgroundColor: item.player.id === userID ? `${rank <= 3 ? color : primaryColor}20` : "unset",
-                            border: item.player.id === userID ? `${rank <= 3 ? color : primaryColor} 3px solid` : "unset",
+                            border: item.player.id === userID ? `${rank <= 3 ? color : primaryColor} 1px solid` : "unset",
                         },
                     },
                     cells: [

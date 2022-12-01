@@ -75,7 +75,6 @@ const BattleNotStarted = React.memo(function BattleNotStarted() {
                 variant={!isStreamBigDisplay ? "h5" : "h6"}
                 sx={{
                     fontFamily: fonts.nostromoBold,
-                    WebkitTextStrokeWidth: !isStreamBigDisplay ? "1px" : "unset",
                     textAlign: "center",
                     zIndex: 2,
                 }}

@@ -22,6 +22,7 @@ import { ReactNode, useMemo } from "react"
 import { useTheme } from "../../../containers/theme"
 import { mergeDeep } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
+import { TypographyTruncated } from "../TypographyTruncated"
 
 interface NiceTableProps<T> {
     title?: string
@@ -113,7 +114,7 @@ export const NiceTable = <T,>({
                             <TableRow
                                 key={i}
                                 {...mergeDeep(
-                                    { sx: { height: 0, "&:nth-of-type(odd)": { backgroundColor: "#FFFFFF10" }, ".MuiTableCell-root": { p: cellPadding } } },
+                                    { sx: { height: 0, "&:nth-of-type(odd)": { backgroundColor: "#FFFFFF08" }, ".MuiTableCell-root": { p: cellPadding } } },
                                     rowProps,
                                 )}
                             >
@@ -184,9 +185,9 @@ export const NiceTable = <T,>({
                         {title && (
                             <TableRow sx={{ backgroundColor: primaryColor }}>
                                 <TableCell sx={{ flex: 1, height: titleRowHeight, justifyContent: "center" }}>
-                                    <Typography variant="h6" sx={{ textAlign: "center", color: secondaryColor, fontFamily: fonts.nostromoHeavy }}>
+                                    <TypographyTruncated variant="h6" sx={{ textAlign: "center", color: secondaryColor, fontFamily: fonts.nostromoHeavy }}>
                                         {title}
-                                    </Typography>
+                                    </TypographyTruncated>
                                 </TableCell>
                             </TableRow>
                         )}
@@ -206,9 +207,9 @@ export const NiceTable = <T,>({
                                             justifyContent: alignments ? alignments[i] : "left",
                                         }}
                                     >
-                                        <Typography variant="body2" sx={{ py: ".3rem", fontFamily: fonts.nostromoBlack }}>
+                                        <TypographyTruncated variant="body2" sx={{ py: ".3rem", fontFamily: fonts.nostromoBlack }}>
                                             {heading}
-                                        </Typography>
+                                        </TypographyTruncated>
                                     </TableCell>
                                 )
                             })}

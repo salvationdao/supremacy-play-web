@@ -23,22 +23,11 @@ export const BattleArena = () => {
             <>
                 <ArenaSelector />
 
-                {/* The minimap or the stream will mount here */}
-                <Box ref={setSmallDisplayRef} sx={{ flexShrink: 0, mt: ".5rem" }} />
+                <Box sx={{ flex: 1, overflow: "hidden" }}>
+                    <Stack sx={{ height: "100%", px: ".6rem", overflowX: "hidden", overflowY: "auto" }}>
+                        {/* The minimap or the stream will mount here */}
+                        <Box ref={setSmallDisplayRef} sx={{ flexShrink: 0, mt: ".5rem" }} />
 
-                <Box
-                    sx={{
-                        flex: 1,
-                        overflowY: "auto",
-                        overflowX: "hidden",
-                        my: ".5rem",
-                        mr: ".5rem",
-                        pr: ".5rem",
-                        pl: "1rem",
-                        direction: "ltr",
-                    }}
-                >
-                    <Stack>
                         {!userID && <UnauthPrompt />}
                         <SupporterAbilities />
                         <PlayerAbilities />
@@ -62,10 +51,16 @@ export const BattleArena = () => {
                         sx={{
                             p: ".4rem 1rem",
                             backgroundColor: isAIDrivenMatch ? colors.green : colors.red,
+                            boxShadow: 5,
                         }}
                     >
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>BATTLE ID #{battleIdentifier.toString().padStart(4, "0")}</Typography>
-                        <Typography sx={{ fontFamily: fonts.nostromoBlack }}>{isAIDrivenMatch ? "AI MATCH" : "PvP"}</Typography>
+                        <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                            BATTLE ID #{battleIdentifier.toString().padStart(4, "0")}
+                        </Typography>
+
+                        <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>
+                            {isAIDrivenMatch ? "AI MATCH" : "PvP"}
+                        </Typography>
                     </Stack>
                 )}
             </Stack>
@@ -104,6 +99,7 @@ const Header = ({ isOpen, isDrawerOpen, onClose }: HeaderProps) => {
             }}
         >
             {button}
+
             <Typography
                 sx={{
                     fontFamily: fonts.nostromoBlack,
@@ -112,7 +108,9 @@ const Header = ({ isOpen, isDrawerOpen, onClose }: HeaderProps) => {
             >
                 Battle Commands
             </Typography>
+
             {!isDrawerOpen && <Box flex={1} />}
+
             <Fade in={!isDrawerOpen} unmountOnExit>
                 <Box>
                     <NiceTooltip text="Battle Commands & Arena Selection" placement="right">

@@ -3,7 +3,6 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { SvgAbility, SvgAnnouncement, SvgDamage1, SvgEmptySet, SvgHistoryClock, SvgMail, SvgNotification, SvgSyndicateFlag } from "../../../../assets"
 import { useAuth } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
-import { truncateTextLines } from "../../../../helpers"
 import { usePagination } from "../../../../hooks"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { useLocalStorage } from "../../../../hooks/useLocalStorage"
@@ -12,6 +11,7 @@ import { colors, fonts } from "../../../../theme/theme"
 import { FeatureName, SystemMessage, SystemMessageDataType } from "../../../../types"
 import { NiceButton } from "../../../Common/Nice/NiceButton"
 import { NiceTable } from "../../../Common/Nice/NiceTable"
+import { TypographyTruncated } from "../../../Common/TypographyTruncated"
 import { PreferenceToggle } from "../../ProfileCard/PreferencesModal/NotificationPreferences"
 import { SystemMessageDisplayable } from "../Messages"
 import { MessageDisplay } from "./MessageDisplay/MessageDisplay"
@@ -180,9 +180,8 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                                     cells: [
                                         <Stack key={0} spacing="1rem" direction="row" alignItems="center">
                                             {item.icon}
-                                            <Typography
+                                            <TypographyTruncated
                                                 sx={{
-                                                    ...truncateTextLines(1),
                                                     width: "100%",
                                                     maxWidth: "100px",
                                                     textAlign: "left",
@@ -190,32 +189,30 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                                                 }}
                                             >
                                                 {item.sender.username}
-                                            </Typography>
+                                            </TypographyTruncated>
                                         </Stack>,
-                                        <Typography
+                                        <TypographyTruncated
                                             key={1}
                                             sx={{
-                                                ...truncateTextLines(1),
                                                 width: "100%",
                                                 maxWidth: "100px",
                                                 textAlign: "left",
                                             }}
                                         >
                                             {item.title}
-                                        </Typography>,
-                                        <Typography
+                                        </TypographyTruncated>,
+                                        <TypographyTruncated
                                             key={2}
                                             sx={{
-                                                ...truncateTextLines(1),
                                                 textAlign: "left",
                                                 textTransform: "none",
                                             }}
                                         >
                                             {item.message}
-                                        </Typography>,
-                                        <Typography key={3}>
+                                        </TypographyTruncated>,
+                                        <TypographyTruncated key={3}>
                                             {item.sent_at.getHours()}:{`${item.sent_at.getMinutes() < 10 ? "0" : ""}${item.sent_at.getMinutes()}`}
-                                        </Typography>,
+                                        </TypographyTruncated>,
                                     ],
                                 }
                             }}

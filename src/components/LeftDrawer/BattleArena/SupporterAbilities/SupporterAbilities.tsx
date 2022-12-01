@@ -1,16 +1,24 @@
-import { Box, ButtonGroup, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useState } from "react"
+import { Box, Stack, Typography } from "@mui/material"
+import { useEffect, useState } from "react"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgTarget } from "../../../../assets"
 import { useArena, useAuth, useGame, useSupremacy } from "../../../../containers"
+import { useTheme } from "../../../../containers/theme"
 import { useGameServerSubscription } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
-import { BattleState, LocationSelectType, AnyAbility } from "../../../../types"
+import { AnyAbility, BattleState, LocationSelectType } from "../../../../types"
+import { NiceButtonGroup } from "../../../Common/Nice/NiceButtonGroup"
+import { PlayerAbilitySmallCard } from "../../../Common/PlayerAbility/PlayerAbilitySmallCard"
 import { SectionCollapsible } from "../Common/SectionCollapsible"
-import { FilterButton } from "../PlayerAbilities/PlayerAbilities"
-import { SupportAbilityCard } from "./SupportAbilityCard"
 
-export interface PlayerSupportAbilitiesResponse {
+const filterOptions = [
+    { label: "", value: LocationSelectType.Global, svg: <SvgGlobal size="1.4rem" /> },
+    { label: "", value: LocationSelectType.LocationSelect, svg: <SvgTarget size="1.4rem" /> },
+    { label: "", value: LocationSelectType.MechSelect, svg: <SvgMicrochip size="1.4rem" /> },
+    { label: "", value: LocationSelectType.LineSelect, svg: <SvgLine size="1.4rem" /> },
+]
+
+export interface PlayerAbilitiesResponse {
     battle_id: string
     supporter_abilities: AnyAbility[]
 }
@@ -28,33 +36,26 @@ export const SupporterAbilities = () => {
                     <SupporterAbilitiesInner />
                 </Box>
 
-                {battleState !== BattleState.BattlingState && (
+                {/* {battleState !== BattleState.BattlingState && (
                     <Box sx={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "#000000AA" }} />
-                )}
+                )} */}
             </SectionCollapsible>
         </Box>
     )
 }
 
 const SupporterAbilitiesInner = () => {
+    const theme = useTheme()
     const { userID } = useAuth()
     const { currentArenaID } = useArena()
     const { battleID } = useSupremacy()
-    const [supportAbilities, setSupportAbilities] = useState<AnyAbility[]>([])
-    const [filteredSupportAbilities, setFilteredSupportAbilities] = useState<AnyAbility[]>([])
-    const [locationSelectTypes, setLocationSelectTypes] = useState<LocationSelectType[]>([])
-
-    useEffect(() => {
-        if (locationSelectTypes.length > 0) {
-            setFilteredSupportAbilities(supportAbilities.filter((p) => locationSelectTypes.includes(p.location_select_type)))
-        } else {
-            setFilteredSupportAbilities(supportAbilities)
-        }
-    }, [supportAbilities, locationSelectTypes])
+    const [abilities, setAbilities] = useState<AnyAbility[]>([])
+    const [displayAbilities, setDisplayAbilities] = useState<AnyAbility[]>([])
+    const [locationSelectType, setLocationSelectType] = useState<LocationSelectType>()
 
     // subscription for users supporter abilities
     // need battle? lobby? arena? id, then we have a subscription to get the users support abilities
-    useGameServerSubscription<PlayerSupportAbilitiesResponse>(
+    useGameServerSubscription<PlayerAbilitiesResponse>(
         {
             URI: `/user/${userID}/battle/${battleID}/supporter_abilities`,
             key: GameServerKeys.PlayerSupportAbilities,
@@ -62,66 +63,43 @@ const SupporterAbilitiesInner = () => {
         },
         (payload) => {
             if (battleID !== payload.battle_id) {
-                setSupportAbilities([])
+                setAbilities([])
                 return
             }
-            setSupportAbilities(payload.supporter_abilities || [])
+            setAbilities(payload.supporter_abilities || [])
         },
     )
 
-    const onLocationSelectTypeChange = useCallback((l: LocationSelectType[]) => {
-        setLocationSelectTypes(l)
-    }, [])
+    // Apply filter
+    useEffect(() => {
+        setDisplayAbilities(
+            abilities.filter((p) => {
+                if (!locationSelectType) return true
+
+                if (locationSelectType === LocationSelectType.MechSelect) {
+                    return (
+                        locationSelectType === p.location_select_type ||
+                        LocationSelectType.MechSelectAllied === p.location_select_type ||
+                        LocationSelectType.MechSelectOpponent === p.location_select_type
+                    )
+                }
+                return locationSelectType === p.location_select_type
+            }),
+        )
+    }, [abilities, locationSelectType])
 
     return (
         <Stack spacing="1rem">
-            <ButtonGroup
-                size="small"
-                sx={(theme) => ({
-                    width: "100%",
-                    "& .MuiButton-root": {
-                        flex: 1,
-                        height: "3rem",
-                        borderWidth: "2px",
-                        borderRadius: 0.8,
-                        transition: "none",
-                        "&:hover": {
-                            opacity: 0.9,
-                            backgroundColor: theme.factionTheme.primary,
-                        },
-                    },
-                })}
-            >
-                <FilterButton
-                    value={[LocationSelectType.Global]}
-                    currentSelectedValue={locationSelectTypes}
-                    onChange={onLocationSelectTypeChange}
-                    icon={<SvgGlobal size="1.4rem" />}
-                />
+            <NiceButtonGroup
+                primaryColor={theme.factionTheme.primary}
+                secondaryColor={theme.factionTheme.text}
+                options={filterOptions}
+                selected={locationSelectType}
+                onSelected={(value) => setLocationSelectType((prev) => (prev === value ? undefined : value))}
+                sx={{ height: "3rem", "&>*": { flex: "1 !important" } }}
+            />
 
-                <FilterButton
-                    value={[LocationSelectType.LocationSelect]}
-                    currentSelectedValue={locationSelectTypes}
-                    onChange={onLocationSelectTypeChange}
-                    icon={<SvgTarget size="1.4rem" />}
-                />
-
-                <FilterButton
-                    value={[LocationSelectType.MechSelect, LocationSelectType.MechSelectAllied, LocationSelectType.MechSelectOpponent]}
-                    currentSelectedValue={locationSelectTypes}
-                    onChange={onLocationSelectTypeChange}
-                    icon={<SvgMicrochip size="1.4rem" />}
-                />
-
-                <FilterButton
-                    value={[LocationSelectType.LineSelect]}
-                    currentSelectedValue={locationSelectTypes}
-                    onChange={onLocationSelectTypeChange}
-                    icon={<SvgLine size="1.4rem" />}
-                />
-            </ButtonGroup>
-
-            {filteredSupportAbilities && filteredSupportAbilities.length > 0 ? (
+            {displayAbilities && displayAbilities.length > 0 ? (
                 <Box
                     sx={{
                         display: "grid",
@@ -129,8 +107,8 @@ const SupporterAbilitiesInner = () => {
                         gap: ".6rem",
                     }}
                 >
-                    {filteredSupportAbilities.map((ab) => (
-                        <SupportAbilityCard key={`${ab.id}`} supportAbility={ab} />
+                    {displayAbilities.map((ab) => (
+                        <PlayerAbilitySmallCard key={`${ab.id}`} anyAbility={ab} onClickAction="use" />
                     ))}
                 </Box>
             ) : (

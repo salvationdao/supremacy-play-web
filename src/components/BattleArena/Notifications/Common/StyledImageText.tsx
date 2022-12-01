@@ -16,11 +16,7 @@ export interface StyledImageTextProps {
     fontWeight?: string
     fontFamily?: string
     imageSize?: number
-    imageBorderColor?: string
-    imageBackgroundColor?: string
-    imageBorderThickness?: string
     imageBackgroundSize?: string
-    noImageBackgroundColor?: boolean
 }
 
 export const StyledImageText = ({
@@ -34,15 +30,11 @@ export const StyledImageText = ({
 
     fontFamily,
     fontWeight = "bold",
-    imageSize = 1.6,
-    imageBorderColor,
-    imageBackgroundColor,
-    imageBorderThickness = "1px",
+    imageSize = 1.8,
     imageBackgroundSize = "cover",
-    noImageBackgroundColor,
 }: StyledImageTextProps) => {
     return (
-        <span style={{ display: "flex", alignItems: "baseline" }}>
+        <span style={{ display: "flex", alignItems: "center" }}>
             {imageUrl && (
                 <Box
                     component="span"
@@ -56,12 +48,11 @@ export const StyledImageText = ({
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
                         backgroundSize: imageBackgroundSize,
-                        backgroundColor: noImageBackgroundColor ? "unset" : imageBackgroundColor || imageBorderColor || color,
                         borderRadius: 0.5,
-                        border: `${imageBorderColor || color} solid ${imageBorderThickness}`,
                     }}
                 />
             )}
+
             <TypographyTruncated
                 variant={variant}
                 sx={{

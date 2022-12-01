@@ -1,4 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
+import { useMemo } from "react"
 import { BattleEndTooltip, StyledImageText } from "../../.."
 import { GenericWarMachinePNG, SvgCrown } from "../../../../assets"
 import { useSupremacy } from "../../../../containers"
@@ -9,7 +10,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
     const { getFaction } = useSupremacy()
     const { winning_faction_id_order, winning_war_machines } = battleEndDetail
 
-    const faction = getFaction(winning_faction_id_order[0])
+    const faction = useMemo(() => getFaction(winning_faction_id_order[0]), [getFaction, winning_faction_id_order])
 
     return (
         <Stack spacing="2.4rem">
@@ -20,7 +21,6 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                     sx={{
                         position: "relative",
                         fontFamily: fonts.nostromoBlack,
-                        fontWeight: "bold",
                     }}
                 >
                     The Winner
@@ -28,7 +28,7 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                 </Typography>
             </Box>
 
-            <Stack spacing="1.5rem" sx={{ px: "1.2rem" }}>
+            <Stack spacing="1.5rem" sx={{ px: "1.6rem" }}>
                 <Box sx={{ position: "relative" }}>
                     <SvgCrown fill={colors.yellow} size="2rem" sx={{ position: "absolute", bottom: "calc(100% - .7rem)", left: ".8rem" }} />
 
@@ -38,7 +38,6 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                         imageUrl={faction.logo_url}
                         variant="h6"
                         imageSize={3.6}
-                        imageBorderThickness="0px"
                         imageBackgroundSize="contain"
                         truncateLine
                         textSx={{ fontWeight: "bold" }}
@@ -48,18 +47,14 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                 {winning_war_machines && winning_war_machines.length > 0 ? (
                     <Stack spacing=".8rem" sx={{ pl: ".5rem" }}>
                         {winning_war_machines.map((wm) => {
-                            const faction = getFaction(wm.factionID)
                             return (
                                 <StyledImageText
                                     key={`${wm.hash}-${wm.participantID}`}
                                     color={colors.text}
-                                    imageBorderColor={faction.palette.primary}
-                                    imageBackgroundColor={`${faction.palette.primary}60`}
                                     text={(wm.name || wm.hash).toUpperCase()}
                                     imageUrl={wm.imageAvatar || GenericWarMachinePNG}
                                     variant="h6"
                                     imageSize={2.9}
-                                    imageBorderThickness=".2rem"
                                     fontWeight="normal"
                                     truncateLine
                                 />
