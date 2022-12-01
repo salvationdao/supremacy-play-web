@@ -152,8 +152,8 @@ export enum siteZIndex {
     Tooltip = 900,
     TopBar = 800,
     MainMenuModal = 700,
-    Popover = 600,
-    Modal = 500,
+    Modal = 600,
+    Popover = 500,
     Drawer = 400,
 
     // Stream site top elements
