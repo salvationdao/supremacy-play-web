@@ -16,7 +16,7 @@ export const JoinPrivateLobbyField = () => {
 
     return (
         <>
-            <JoinPrivateLobbyFieldInner accessCode={accessCode} setAccessCode={setAccessCode} setBattleLobby={setBattleLobby} />
+            <JoinPrivateLobbyFieldInner key={`aaa-${battleLobby?.id}`} accessCode={accessCode} setAccessCode={setAccessCode} setBattleLobby={setBattleLobby} />
 
             {battleLobby && accessCode && (
                 <PrivateLobbySingleModal
