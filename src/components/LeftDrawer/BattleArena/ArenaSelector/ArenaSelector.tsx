@@ -30,7 +30,7 @@ export const ArenaSelector = () => {
 
                     <Box flex={1} />
 
-                    <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold }}>
+                    <Typography variant="subtitle1" sx={{ fontFamily: fonts.nostromoBold }}>
                         {a.state}
                     </Typography>
                 </NiceButton>

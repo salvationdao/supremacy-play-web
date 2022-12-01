@@ -142,10 +142,11 @@ const AppInner = () => {
                     <Typography variant="body2" sx={{ textAlign: "center", fontFamily: fonts.nostromoBlack }}>
                         CONNECTING...
                     </Typography>
+
                     <LinearProgress
                         sx={{
-                            width: "13rem",
-                            height: "9px",
+                            width: "14rem",
+                            height: "12px",
                             backgroundColor: `${colors.gold}15`,
                             ".MuiLinearProgress-bar": { backgroundColor: colors.gold },
                         }}
