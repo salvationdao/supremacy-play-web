@@ -80,7 +80,7 @@ export const PlayerAbilitySmallCard = React.memo(function PlayerAbilitySmallCard
             const message = typeof err === "string" ? err : "Failed to purchase ability"
             console.error(message)
             setPurchaseError(message)
-            newSnackbarMessage(message)
+            newSnackbarMessage(message, "error")
         } finally {
             setIsLoading(false)
         }

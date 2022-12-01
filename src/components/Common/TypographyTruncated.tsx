@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react"
 const TRANSITION_SPEED = 60
 
 // Light weight wrapper on Typography, parent's width needs to be confined
+// Only works if used within a flex box!!!!!!!!!!!
 export const TypographyTruncated = ({ children, sx, ...props }: TypographyProps) => {
     const [spanRef, setSpanRef] = useState<HTMLSpanElement | null>(null)
     const [reRender, setReRender] = useState(new Date().toISOString())

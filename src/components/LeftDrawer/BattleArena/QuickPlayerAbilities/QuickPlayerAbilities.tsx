@@ -168,16 +168,6 @@ const QuickPlayerAbilitiesInner = React.memo(function QuickPlayerAbilitiesInner(
                             const ownedCount = ownedAbilities.get(sa.blueprint_id) || 0
 
                             return (
-                                // <QuickPlayerAbilitiesItem
-                                //     key={`${s.id}-${index}`}
-                                //     saleAbility={s}
-                                //     price={priceMap.get(s.id)}
-                                //     amount={ownedAbilities.get(s.blueprint_id)}
-                                //     setClaimError={setError}
-                                //     onPurchase={() => refetchSaleAvailability()}
-                                //     availability={availability}
-                                // />
-
                                 <PlayerAbilitySmallCard
                                     key={`${sa.id}-${index}`}
                                     anyAbility={sa.ability}
