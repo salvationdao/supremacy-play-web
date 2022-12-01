@@ -150,6 +150,8 @@ export const ChatContainer = createContainer(() => {
             // Buffer the results to be no more than X messages
             const finalArray = [...oldMessages, ...newMessages]
             const finalFinalArray = []
+
+            // Filter out battle messages if there were no messages sent in that battle
             let legitMessagesCount = 0
             for (let i = finalArray.length - 1; i >= 0; i--) {
                 const m = finalArray[i]
