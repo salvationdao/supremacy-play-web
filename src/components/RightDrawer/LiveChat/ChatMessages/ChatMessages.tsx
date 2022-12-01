@@ -94,47 +94,53 @@ export const ChatMessages = React.memo(function ChatMessages({ faction_id, prima
                 >
                     {chatMessages && chatMessages.length > 0 ? (
                         chatMessages.map((message, i) => {
-                            if (message.type === ChatMessageType.Text) {
-                                if (onlyShowSystemMessages) return null
-                                return (
-                                    <TextMessage
-                                        key={`${message.id}-${message.sent_at.toISOString()}`}
-                                        message={message}
-                                        containerRef={scrollableRef}
-                                        isScrolling={isScrolling}
-                                        isFailed={(message.data as TextMessageData).from_user.id === userID && failedMessages.includes(message.id)}
-                                        previousMessage={chatMessages[i - 1]}
-                                        latestMessage={latestMessage}
-                                        tabFactionID={faction_id}
-                                    />
-                                )
-                            } else if (message.type === ChatMessageType.PunishVote) {
-                                const data = message.data as PunishMessageData
-                                return (
-                                    <PunishMessage
-                                        key={`${message.id}-${message.sent_at.toISOString()}`}
-                                        data={data}
-                                        sentAt={message.sent_at}
-                                        fontSize={fontSize}
-                                    />
-                                )
-                            } else if (message.type === ChatMessageType.SystemBan || message.type === ChatMessageType.ModBan) {
-                                const data = message.data as SystemBanMessageData
-                                return (
-                                    <SystemBanMessage
-                                        key={`${message.id}-${message.sent_at.toISOString()}`}
-                                        data={data}
-                                        sentAt={message.sent_at}
-                                        fontSize={fontSize}
-                                        messageType={message.type}
-                                    />
-                                )
-                            } else if (message.type === ChatMessageType.NewBattle) {
-                                const data = message.data as NewBattleMessageData
-                                return <NewBattleMessage key={`${message.id}-${message.sent_at.toISOString()}`} data={data} sentAt={message.sent_at} />
+                            switch (message.type) {
+                                case ChatMessageType.Text:
+                                    if (onlyShowSystemMessages) return null
+                                    return (
+                                        <TextMessage
+                                            key={`${message.id}-${message.sent_at.toISOString()}`}
+                                            message={message}
+                                            containerRef={scrollableRef}
+                                            isScrolling={isScrolling}
+                                            isFailed={(message.data as TextMessageData).from_user.id === userID && failedMessages.includes(message.id)}
+                                            previousMessage={chatMessages[i - 1]}
+                                            latestMessage={latestMessage}
+                                            tabFactionID={faction_id}
+                                        />
+                                    )
+                                case ChatMessageType.PunishVote:
+                                    {
+                                        const data = message.data as PunishMessageData
+                                        return (
+                                            <PunishMessage
+                                                key={`${message.id}-${message.sent_at.toISOString()}`}
+                                                data={data}
+                                                sentAt={message.sent_at}
+                                                fontSize={fontSize}
+                                            />
+                                        )
+                                    }
+                                case ChatMessageType.ModBan:
+                                case ChatMessageType.SystemBan: {
+                                    const data = message.data as SystemBanMessageData
+                                    return (
+                                        <SystemBanMessage
+                                            key={`${message.id}-${message.sent_at.toISOString()}`}
+                                            data={data}
+                                            sentAt={message.sent_at}
+                                            fontSize={fontSize}
+                                            messageType={message.type}
+                                        />
+                                    )
+                                }
+                                case ChatMessageType.NewBattle: {
+                                    const data = message.data as NewBattleMessageData
+                                    return <NewBattleMessage key={`${message.id}-${message.sent_at.toISOString()}`} data={data} sentAt={message.sent_at} />
+                                }
+                                default: 
+                                return null
                             }
-
-                            return null
                         })
                     ) : (
                         <Stack alignItems="center" justifyContent="center" sx={{ height: "100%", p: "1rem" }}>
