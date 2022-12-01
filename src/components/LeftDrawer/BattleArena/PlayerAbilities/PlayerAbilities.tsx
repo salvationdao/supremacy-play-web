@@ -2,14 +2,15 @@ import { Box, Button, Pagination, Stack, Typography } from "@mui/material"
 import { ReactNode, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgTarget } from "../../../../assets"
-import { useGame } from "../../../../containers"
+import { useArena, useGame } from "../../../../containers"
 import { useAuth } from "../../../../containers/auth"
 import { useTheme } from "../../../../containers/theme"
+import { warMachineStatsBinaryParser } from "../../../../helpers/binaryDataParsers/warMachineStatsParser"
 import { usePagination } from "../../../../hooks"
-import { useGameServerSubscriptionSecuredUser } from "../../../../hooks/useGameServer"
+import { BinaryDataKey, useGameServerSubscription, useGameServerSubscriptionSecuredUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
-import { BattleState, LocationSelectType, PlayerAbility } from "../../../../types"
+import { BattleState, LocationSelectType, PlayerAbility, WarMachineLiveState } from "../../../../types"
 import { NiceButtonGroup } from "../../../Common/Nice/NiceButtonGroup"
 import { PlayerAbilitySmallCard } from "../../../Common/PlayerAbility/PlayerAbilitySmallCard"
 import { SectionCollapsible } from "../Common/SectionCollapsible"
@@ -67,6 +68,32 @@ const PlayerAbilitiesInner = () => {
         },
     )
 
+    // If all my faction mechs are dead, then disable my player abilities
+    const { currentArenaID } = useArena()
+    const { factionWarMachines } = useGame()
+    const [disableAbilities, setDisableAbilities] = useState(false)
+    useGameServerSubscription<WarMachineLiveState[]>(
+        {
+            URI: `/mini_map/arena/${currentArenaID}/public/mech_stats`,
+            binaryKey: BinaryDataKey.WarMachineStats,
+            binaryParser: warMachineStatsBinaryParser,
+            ready: !!currentArenaID,
+        },
+        (payload) => {
+            if (!payload || !factionWarMachines) return
+
+            const deadMechs = payload.filter((p) => {
+                if (p.health > 0) return false
+                return factionWarMachines.find((w) => w.participantID === p.participant_id)
+            })
+
+            setDisableAbilities(deadMechs.length === 3)
+        },
+    )
+    useEffect(() => {
+        console.log(disableAbilities)
+    }, [disableAbilities])
+
     // Apply filter
     useEffect(() => {
         let result = abilities.map((p) => p)
@@ -112,7 +139,13 @@ const PlayerAbilitiesInner = () => {
                     }}
                 >
                     {displayAbilities.map((p) => (
-                        <PlayerAbilitySmallCard key={p.ability.id} anyAbility={p.ability} playerAbility={p} onClickAction="use" ownedCount={p.count} />
+                        <PlayerAbilitySmallCard
+                            key={p.ability.id}
+                            anyAbility={p.ability}
+                            playerAbility={p}
+                            onClickAction={disableAbilities ? "nothing" : "use"}
+                            ownedCount={p.count}
+                        />
                     ))}
                 </Box>
             ) : (

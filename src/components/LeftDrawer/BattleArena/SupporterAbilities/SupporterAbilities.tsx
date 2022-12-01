@@ -3,10 +3,11 @@ import { useEffect, useState } from "react"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgTarget } from "../../../../assets"
 import { useArena, useAuth, useGame, useSupremacy } from "../../../../containers"
 import { useTheme } from "../../../../containers/theme"
-import { useGameServerSubscription } from "../../../../hooks/useGameServer"
+import { warMachineStatsBinaryParser } from "../../../../helpers/binaryDataParsers/warMachineStatsParser"
+import { BinaryDataKey, useGameServerSubscription } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
 import { colors } from "../../../../theme/theme"
-import { AnyAbility, BattleState, LocationSelectType } from "../../../../types"
+import { AnyAbility, BattleState, LocationSelectType, WarMachineLiveState } from "../../../../types"
 import { NiceButtonGroup } from "../../../Common/Nice/NiceButtonGroup"
 import { PlayerAbilitySmallCard } from "../../../Common/PlayerAbility/PlayerAbilitySmallCard"
 import { SectionCollapsible } from "../Common/SectionCollapsible"
@@ -70,6 +71,28 @@ const SupporterAbilitiesInner = () => {
         },
     )
 
+    // If all my faction mechs are dead, then disable my player abilities
+    const { factionWarMachines } = useGame()
+    const [disableAbilities, setDisableAbilities] = useState(false)
+    useGameServerSubscription<WarMachineLiveState[]>(
+        {
+            URI: `/mini_map/arena/${currentArenaID}/public/mech_stats`,
+            binaryKey: BinaryDataKey.WarMachineStats,
+            binaryParser: warMachineStatsBinaryParser,
+            ready: !!currentArenaID,
+        },
+        (payload) => {
+            if (!payload || !factionWarMachines) return
+
+            const deadMechs = payload.filter((p) => {
+                if (p.health > 0) return false
+                return factionWarMachines.find((w) => w.participantID === p.participant_id)
+            })
+
+            setDisableAbilities(deadMechs.length === 3)
+        },
+    )
+
     // Apply filter
     useEffect(() => {
         setDisplayAbilities(
@@ -108,7 +131,11 @@ const SupporterAbilitiesInner = () => {
                     }}
                 >
                     {displayAbilities.map((ab) => (
-                        <PlayerAbilitySmallCard key={`${ab.id}`} anyAbility={{ ...ab, isSupportAbility: true }} onClickAction="use" />
+                        <PlayerAbilitySmallCard
+                            key={`${ab.id}`}
+                            anyAbility={{ ...ab, isSupportAbility: true }}
+                            onClickAction={disableAbilities ? "nothing" : "use"}
+                        />
                     ))}
                 </Box>
             ) : (
