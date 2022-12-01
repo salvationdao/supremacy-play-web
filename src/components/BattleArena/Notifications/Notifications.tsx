@@ -34,7 +34,7 @@ import {
     warMachineAbilityNoti,
 } from "./testData"
 
-const SPAWN_TEST_NOTIFICATIONS = true
+const SPAWN_TEST_NOTIFICATIONS = false
 
 interface Notification extends NotificationStruct {
     notiID: string
