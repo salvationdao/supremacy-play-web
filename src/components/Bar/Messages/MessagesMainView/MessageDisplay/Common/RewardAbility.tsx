@@ -16,7 +16,12 @@ export const RewardAbility = ({ ability, amount }: { ability: BlueprintPlayerAbi
     return (
         <Stack alignItems="center" spacing=".8rem">
             <Box sx={{ width: "10rem", minHeight: "13rem" }}>
-                <PlayerAbilitySmallCard anyAbility={playerAbility.ability} playerAbility={playerAbility} viewOnly />
+                <PlayerAbilitySmallCard
+                    anyAbility={playerAbility.ability}
+                    playerAbility={playerAbility}
+                    onClickAction="nothing"
+                    ownedCount={playerAbility.count}
+                />
             </Box>
 
             <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBlack }}>

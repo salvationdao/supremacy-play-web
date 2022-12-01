@@ -112,7 +112,7 @@ const PlayerAbilitiesInner = () => {
                     }}
                 >
                     {displayAbilities.map((p) => (
-                        <PlayerAbilitySmallCard key={p.ability.id} anyAbility={p.ability} playerAbility={p} />
+                        <PlayerAbilitySmallCard key={p.ability.id} anyAbility={p.ability} playerAbility={p} onClickAction="use" ownedCount={p.count} />
                     ))}
                 </Box>
             ) : (
