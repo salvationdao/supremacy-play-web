@@ -149,7 +149,25 @@ export const ChatContainer = createContainer(() => {
 
             // Buffer the results to be no more than X messages
             const finalArray = [...oldMessages, ...newMessages]
-            return finalArray.slice(finalArray.length - MESSAGES_BUFFER_SIZE, finalArray.length)
+            const finalFinalArray = []
+
+            // Filter out battle messages if there were no messages sent in that battle
+            let legitMessagesCount = 0
+            for (let i = finalArray.length - 1; i >= 0; i--) {
+                const m = finalArray[i]
+                if (m.type !== ChatMessageType.NewBattle) {
+                    legitMessagesCount++
+                } else if (i < finalArray.length - 1) {
+                    if (legitMessagesCount === 0) {
+                        continue
+                    } else {
+                        legitMessagesCount = 0
+                    }
+                }
+                finalFinalArray.push(m)
+            }
+
+            return finalFinalArray.reverse().slice(finalFinalArray.length - MESSAGES_BUFFER_SIZE, finalFinalArray.length)
         })
     }, [])
 

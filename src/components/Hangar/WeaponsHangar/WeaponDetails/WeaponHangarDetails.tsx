@@ -9,6 +9,7 @@ import { fonts, siteZIndex } from "../../../../theme/theme"
 import { Weapon } from "../../../../types"
 import { ClipThing } from "../../../Common/Deprecated/ClipThing"
 import { MediaPreview } from "../../../Common/MediaPreview/MediaPreview"
+import { NiceBoxThing } from "../../../Common/Nice/NiceBoxThing"
 import { WeaponBarStats } from "../Common/WeaponBarStats"
 import { WeaponButtons } from "./WeaponHangarButtons"
 import { WeaponLoadout } from "./WeaponLoadout"
@@ -33,7 +34,6 @@ export const WeaponHangarDetails = () => {
     )
 
     const primaryColor = theme.factionTheme.primary
-    const backgroundColor = theme.factionTheme.background
     const avatarUrl = weaponDetails?.weapon_skin?.avatar_url || weaponDetails?.avatar_url
     const imageUrl = weaponDetails?.weapon_skin?.image_url || weaponDetails?.image_url
 
@@ -52,20 +52,19 @@ export const WeaponHangarDetails = () => {
         >
             <Stack direction="row" spacing="1rem" sx={{ height: "100%" }}>
                 {/* Left side */}
-                <ClipThing
-                    clipSize="10px"
+                <NiceBoxThing
                     border={{
-                        borderColor: primaryColor,
-                        borderThickness: ".3rem",
+                        color: theme.factionTheme.primary,
+                        thickness: "thicc",
                     }}
-                    corners={{
-                        topRight: true,
-                        bottomLeft: true,
-                        bottomRight: true,
+                    background={{
+                        colors: [theme.factionTheme.background],
                     }}
-                    opacity={0.7}
-                    backgroundColor={backgroundColor}
-                    sx={{ flexShrink: 0, height: "100%", width: "38rem" }}
+                    sx={{
+                        flexShrink: 0,
+                        height: "100%",
+                        width: "38rem",
+                    }}
                 >
                     <Stack sx={{ height: "100%" }}>
                         <ClipThing clipSize="10px" corners={{ topRight: true }} opacity={0.7} sx={{ flexShrink: 0 }}>
@@ -152,17 +151,21 @@ export const WeaponHangarDetails = () => {
                         {/* Status and buttons */}
                         {weaponDetails && <WeaponButtons weaponDetails={weaponDetails} />}
                     </Stack>
-                </ClipThing>
+                </NiceBoxThing>
 
                 {/* Right side */}
-                <ClipThing
-                    clipSize="10px"
+                <NiceBoxThing
                     border={{
-                        borderColor: primaryColor,
-                        borderThickness: ".3rem",
+                        color: theme.factionTheme.primary,
+                        thickness: "thicc",
                     }}
-                    backgroundColor={backgroundColor}
-                    sx={{ height: "100%", flex: 1 }}
+                    background={{
+                        colors: [theme.factionTheme.background],
+                    }}
+                    sx={{
+                        height: "100%",
+                        flex: 1,
+                    }}
                 >
                     {weaponDetails ? (
                         <>
@@ -174,7 +177,7 @@ export const WeaponHangarDetails = () => {
                             <CircularProgress />
                         </Stack>
                     )}
-                </ClipThing>
+                </NiceBoxThing>
             </Stack>
         </Box>
     )
