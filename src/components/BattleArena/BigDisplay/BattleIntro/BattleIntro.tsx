@@ -3,6 +3,7 @@ import { useMemo } from "react"
 import { SvgUserDiamond } from "../../../../assets"
 import { FactionIDs } from "../../../../constants"
 import { useAuth, useDimension, useSupremacy } from "../../../../containers"
+import { pulseEffect } from "../../../../theme/keyframes"
 import { colors, fonts, siteZIndex } from "../../../../theme/theme"
 import { BattleLobby } from "../../../../types/battle_queue"
 import { TypographyTruncated } from "../../../Common/TypographyTruncated"
@@ -100,7 +101,7 @@ interface FactionRowProps {
 
 const FactionRow = ({ index, lobby }: FactionRowProps) => {
     const { getFaction } = useSupremacy()
-    const { userID } = useAuth()
+    const { userID, factionID } = useAuth()
     const { gameUIDimensions } = useDimension()
 
     const theme = getFaction(lobby.faction.id).palette
@@ -151,18 +152,26 @@ const FactionRow = ({ index, lobby }: FactionRowProps) => {
                                 objectFit: "contain",
                             }}
                         />
+
                         {/* Supporters */}
-                        <Box
-                            sx={{
-                                display: "flex",
-                                flexWrap: "wrap",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                gap: ".7rem",
-                            }}
-                        >
+                        <Stack alignItems="center" spacing="1.4rem">
                             <Supporters battleLobby={details} factionID={lobby.faction.id} size="4rem" />
-                        </Box>
+
+                            {factionID === lobby.faction.id && (
+                                <TypographyTruncated
+                                    fontFamily={fonts.nostromoBlack}
+                                    sx={{
+                                        p: ".2rem 1rem",
+                                        color: "#000000",
+                                        backgroundColor: `${colors.neonBlue}`,
+                                        animation: `${pulseEffect} 3s infinite`,
+                                        animationDelay: ".3s",
+                                    }}
+                                >
+                                    JOIN AS SUPPORTER!
+                                </TypographyTruncated>
+                            )}
+                        </Stack>
                     </Stack>
                     {lobby.mechSlots.map((ms, index) => (
                         <Stack
@@ -185,6 +194,7 @@ const FactionRow = ({ index, lobby }: FactionRowProps) => {
                                         border: `1px solid ${colors.black2}`,
                                     }}
                                 />
+
                                 {/* Weapon slots */}
                                 <Stack spacing=".5rem" direction={isTablet ? "row" : "column"} flex={1}>
                                     {ms.weapon_slots &&
@@ -204,6 +214,7 @@ const FactionRow = ({ index, lobby }: FactionRowProps) => {
                                         ))}
                                 </Stack>
                             </Stack>
+
                             {/* Mech label */}
                             <TypographyTruncated
                                 sx={{
@@ -213,6 +224,7 @@ const FactionRow = ({ index, lobby }: FactionRowProps) => {
                             >
                                 {ms.name || ms.label}
                             </TypographyTruncated>
+
                             {/* Owner */}
                             <TypographyTruncated
                                 variant="h6"

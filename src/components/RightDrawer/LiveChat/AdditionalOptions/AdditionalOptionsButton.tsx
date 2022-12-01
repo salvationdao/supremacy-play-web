@@ -3,6 +3,8 @@ import { MutableRefObject, useEffect, useRef } from "react"
 import { RIGHT_DRAWER_WIDTH, UserBanForm } from "../../.."
 import { useAuth } from "../../../../containers"
 import { useToggle } from "../../../../hooks"
+import { fonts } from "../../../../theme/theme"
+import { NiceButton } from "../../../Common/Nice/NiceButton"
 import { NicePopover } from "../../../Common/Nice/NicePopover"
 
 export const AdditionalOptionsButton = () => {
@@ -34,7 +36,9 @@ export const AdditionalOptionsButton = () => {
                     },
                 }}
             >
-                <Typography>MORE OPTIONS</Typography>
+                <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
+                    MORE OPTIONS
+                </Typography>
             </Button>
 
             {isPopoverOpen && (
@@ -97,17 +101,15 @@ const OptionsPopover = ({
             }}
         >
             <Stack spacing=".32rem">
-                <Button
+                <NiceButton
                     onClick={() => {
                         toggleLocalOpen(false)
                         toggleBanModalOpen(true)
                     }}
-                    sx={{ pt: "1.1rem", pb: ".8rem", backgroundColor: "#00000050", borderRadius: 0.1 }}
+                    sx={{ pt: "1.1rem", pb: ".8rem", backgroundColor: "#00000050" }}
                 >
-                    <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                        PROPOSE TO PUNISH A PLAYER
-                    </Typography>
-                </Button>
+                    <Typography sx={{ fontWeight: "bold" }}>PROPOSE TO PUNISH A PLAYER</Typography>
+                </NiceButton>
             </Stack>
         </NicePopover>
     )

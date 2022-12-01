@@ -1,18 +1,21 @@
-import { Box, Stack, Typography } from "@mui/material"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { Box, Button, Stack, Typography } from "@mui/material"
+import { MutableRefObject, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import FlipMove from "react-flip-move"
 import { SvgLobbies } from "../../../assets"
 import { useTheme } from "../../../containers/theme"
+import { useToggle } from "../../../hooks"
 import { useGameServerSubscriptionFaction, useGameServerSubscriptionSecuredUser } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { HeaderProps } from "../../../routes"
 import { colors, fonts } from "../../../theme/theme"
 import { BattleLobby } from "../../../types/battle_queue"
 import { NiceButton } from "../../Common/Nice/NiceButton"
+import { NicePopover } from "../../Common/Nice/NicePopover"
 import { NiceTab, NiceTabs } from "../../Common/Nice/NiceTabs"
 import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
 import { VirtualizedGrid } from "../../Common/VirtualizedGrid"
 import { CentralQueueItem } from "../../Lobbies/CentralQueue/CentralQueueItem"
+import { RIGHT_DRAWER_WIDTH } from "../RightDrawer"
 
 const tabs: NiceTab[] = [
     {
@@ -23,11 +26,12 @@ const tabs: NiceTab[] = [
 ]
 
 export const MyLobbies = () => {
-    const theme = useTheme()
     const [involvedLobbies, setInvolvedLobbies] = useState<BattleLobby[]>([])
     const [allLobbies, setAllLobbies] = useState<BattleLobby[]>([])
     const [displayLobbies, setDisplayLobbies] = useState<BattleLobby[]>([])
     const [tabValue, setTabValue] = useState(0)
+    const popoverRef = useRef(null)
+    const [isPopoverOpen, toggleIsPopoverOpen] = useToggle()
 
     // Own lobbies
     useGameServerSubscriptionSecuredUser<BattleLobby[]>(
@@ -301,12 +305,32 @@ export const MyLobbies = () => {
                     </Stack>
                 </Stack>
 
-                {/* Some buttons */}
-                <NiceButton buttonColor={theme.factionTheme.primary} sx={{ mt: "auto !important", p: ".2rem 1rem", pt: ".4rem" }} route={{ to: "/lobbies" }}>
+                <Button
+                    ref={popoverRef}
+                    onClick={() => toggleIsPopoverOpen()}
+                    sx={{
+                        mt: "0 !important",
+                        backgroundColor: "#00000090",
+                        height: "3rem",
+                        width: "100%",
+                        borderRadius: 0,
+                        "*": {
+                            opacity: isPopoverOpen ? 1 : 0.6,
+                        },
+                        ":hover": {
+                            backgroundColor: "#00000090",
+                            "*": {
+                                opacity: 1,
+                            },
+                        },
+                    }}
+                >
                     <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
-                        Go to lobbies
+                        MORE OPTIONS
                     </Typography>
-                </NiceButton>
+                </Button>
+
+                {isPopoverOpen && <OptionsPopover open={isPopoverOpen} popoverRef={popoverRef} onClose={() => toggleIsPopoverOpen(false)} />}
             </Stack>
         </>
     )
@@ -388,3 +412,40 @@ const Header = ({ isOpen, onClose }: HeaderProps) => {
     )
 }
 MyLobbies.Header = Header
+
+const OptionsPopover = ({ open, popoverRef, onClose }: { open: boolean; popoverRef: MutableRefObject<null>; onClose: () => void }) => {
+    return (
+        <NicePopover
+            open={open}
+            anchorEl={popoverRef.current}
+            onClose={onClose}
+            closeAfterTransition
+            anchorOrigin={{
+                vertical: "top",
+                horizontal: "center",
+            }}
+            transformOrigin={{
+                vertical: "bottom",
+                horizontal: "center",
+            }}
+            sx={{
+                mt: "-.4rem",
+                ".MuiPaper-root": {
+                    ml: 2,
+                    width: `${RIGHT_DRAWER_WIDTH}rem`,
+                    my: 0,
+                },
+            }}
+        >
+            <Stack spacing=".32rem">
+                {/* <NiceButton route={{ to: "/lobbies" }} sx={{ pt: "1.1rem", pb: ".8rem", backgroundColor: "#00000050" }}>
+                    <Typography sx={{ fontWeight: "bold" }}>JOIN PRIVATE</Typography>
+                </NiceButton> */}
+
+                <NiceButton route={{ to: "/lobbies" }} sx={{ pt: "1.1rem", pb: ".8rem", backgroundColor: "#00000050" }}>
+                    <Typography sx={{ fontWeight: "bold" }}>GO TO LOBBIES</Typography>
+                </NiceButton>
+            </Stack>
+        </NicePopover>
+    )
+}
