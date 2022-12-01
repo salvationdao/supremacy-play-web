@@ -36,9 +36,9 @@ export const SupporterAbilities = () => {
                     <SupporterAbilitiesInner />
                 </Box>
 
-                {battleState !== BattleState.BattlingState && (
+                {/* {battleState !== BattleState.BattlingState && (
                     <Box sx={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "#000000AA" }} />
-                )}
+                )} */}
             </SectionCollapsible>
         </Box>
     )
