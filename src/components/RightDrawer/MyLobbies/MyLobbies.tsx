@@ -16,6 +16,7 @@ import { NiceTooltip } from "../../Common/Nice/NiceTooltip"
 import { VirtualizedGrid } from "../../Common/VirtualizedGrid"
 import { CentralQueueItem } from "../../Lobbies/CentralQueue/CentralQueueItem"
 import { RIGHT_DRAWER_WIDTH } from "../RightDrawer"
+import { JoinPrivateLobbyField } from "./JoinPrivateLobbyField"
 
 const tabs: NiceTab[] = [
     {
@@ -276,10 +277,13 @@ export const MyLobbies = () => {
 
     return (
         <>
-            <Stack spacing="1.2rem" sx={{ position: "relative", height: "100%", overflow: "hidden" }}>
+            <Stack sx={{ position: "relative", height: "100%", overflow: "hidden" }}>
+                <JoinPrivateLobbyField />
+
                 {/* Involved lobbies */}
                 <Stack
                     sx={{
+                        mb: "1.2rem",
                         p: "1rem",
                         flex: 1,
                         overflowY: "auto",
@@ -309,7 +313,6 @@ export const MyLobbies = () => {
                     ref={popoverRef}
                     onClick={() => toggleIsPopoverOpen()}
                     sx={{
-                        mt: "0 !important",
                         backgroundColor: "#00000090",
                         height: "3rem",
                         width: "100%",
@@ -438,10 +441,6 @@ const OptionsPopover = ({ open, popoverRef, onClose }: { open: boolean; popoverR
             }}
         >
             <Stack spacing=".32rem">
-                {/* <NiceButton route={{ to: "/lobbies" }} sx={{ pt: "1.1rem", pb: ".8rem", backgroundColor: "#00000050" }}>
-                    <Typography sx={{ fontWeight: "bold" }}>JOIN PRIVATE</Typography>
-                </NiceButton> */}
-
                 <NiceButton route={{ to: "/lobbies" }} sx={{ pt: "1.1rem", pb: ".8rem", backgroundColor: "#00000050" }}>
                     <Typography sx={{ fontWeight: "bold" }}>GO TO LOBBIES</Typography>
                 </NiceButton>
