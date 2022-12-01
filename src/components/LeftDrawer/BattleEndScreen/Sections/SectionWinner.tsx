@@ -31,14 +31,14 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
 
             <Stack spacing="1.5rem" sx={{ px: "1.6rem" }}>
                 <Box sx={{ position: "relative" }}>
-                    <SvgCrown fill={colors.yellow} size="2rem" sx={{ position: "absolute", bottom: "calc(100% - .7rem)", left: ".8rem" }} />
+                    <SvgCrown fill={colors.yellow} size="2rem" sx={{ position: "absolute", bottom: "calc(100% - .7rem)", left: ".9rem" }} />
 
-                    <TypographyTruncated variant="h6" fontWeight="bold">
+                    <TypographyTruncated variant="h5" fontWeight="bold">
                         <Box
                             sx={{
                                 display: "inline-block",
-                                width: "3.6rem",
-                                height: "3.6rem",
+                                width: "4rem",
+                                height: "4rem",
                                 verticalAlign: "middle",
                                 background: `url(${faction.logo_url})`,
                                 backgroundRepeat: "no-repeat",
@@ -54,17 +54,19 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
                     <Stack spacing=".8rem" sx={{ pl: ".5rem" }}>
                         {winning_war_machines.map((wm) => {
                             return (
-                                <TypographyTruncated key={`${wm.hash}-${wm.participantID}`} variant="h6" fontWeight="bold" sx={{ color: colors.text }}>
+                                <TypographyTruncated key={`${wm.hash}-${wm.participantID}`} variant="h6" fontWeight="bold">
                                     <Box
                                         sx={{
                                             display: "inline-block",
-                                            width: "2.8rem",
-                                            height: "2.8rem",
+                                            width: "3rem",
+                                            height: "3rem",
                                             verticalAlign: "middle",
                                             background: `url(${wm.imageAvatar || GenericWarMachinePNG})`,
                                             backgroundRepeat: "no-repeat",
                                             backgroundPosition: "center",
                                             backgroundSize: "contain",
+                                            borderRadius: 0.5,
+                                            border: `${faction.palette.primary}20 solid 1px`,
                                         }}
                                     />{" "}
                                     {(wm.name || wm.hash).toUpperCase()}

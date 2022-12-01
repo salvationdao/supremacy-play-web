@@ -1,11 +1,11 @@
-import { Box, Stack } from "@mui/material"
+import { Typography } from "@mui/material"
 import { useMemo } from "react"
-import { ClipThing, StyledImageText } from "../../.."
+import { StyledImageText } from "../../.."
 import { SvgLocation } from "../../../../assets"
 import { FallbackUser } from "../../../../containers"
 import { colors } from "../../../../theme/theme"
 import { FactionWithPalette, LocationSelectAlertProps } from "../../../../types"
-import { PlayerNameGid } from "../../../Common/PlayerNameGid"
+import { NiceBoxThing } from "../../../Common/Nice/NiceBoxThing"
 
 export const LocationSelectAlert = ({ data, getFaction }: { data: LocationSelectAlertProps; getFaction: (factionID: string) => FactionWithPalette }) => {
     const { currentUser, ability } = data
@@ -17,22 +17,16 @@ export const LocationSelectAlert = ({ data, getFaction }: { data: LocationSelect
     const mainColor = faction.palette.primary
 
     return (
-        <ClipThing
-            clipSize="3px"
-            border={{
-                borderColor: mainColor || colors.grey,
-                borderThickness: ".2rem",
-            }}
-            opacity={0.6}
-            backgroundColor={colors.darkNavy}
-        >
-            <Stack spacing=".5rem" sx={{ px: "1.44rem", pt: "1.2rem", pb: ".8rem" }}>
-                <Box>
-                    <PlayerNameGid player={currentUser || FallbackUser} />
-                    <SvgLocation fill="#FFFFFF" size="1.3rem" sx={{ display: "inline", mx: ".4rem" }} />
-                    <StyledImageText text={label} color={colour} imageUrl={abilityImageUrl} />
-                </Box>
-            </Stack>
-        </ClipThing>
+        <NiceBoxThing border={{ color: `${mainColor || colors.grey}80` }} background={{ colors: [colors.darkNavy], opacity: 0.3 }} sx={{ p: ".6rem 1.4rem" }}>
+            <Typography>
+                <StyledImageText sx={{ color: getFaction((currentUser || FallbackUser).faction_id).palette.primary }} imageUrl={faction.logo_url}>
+                    {(currentUser || FallbackUser).username}#{(currentUser || FallbackUser).gid}
+                </StyledImageText>{" "}
+                <SvgLocation inline fill="#FFFFFF" size="1.2rem" />{" "}
+                <StyledImageText sx={{ color: colour }} imageUrl={abilityImageUrl}>
+                    {label}
+                </StyledImageText>
+            </Typography>
+        </NiceBoxThing>
     )
 }
