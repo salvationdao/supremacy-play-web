@@ -160,7 +160,13 @@ const FactionRow = ({ index, lobby }: FactionRowProps) => {
                             {factionID === lobby.faction.id && (
                                 <TypographyTruncated
                                     fontFamily={fonts.nostromoBlack}
-                                    sx={{ p: ".2rem 1rem", color: "#000000", backgroundColor: `${colors.neonBlue}`, animation: `${pulseEffect} 3s infinite` }}
+                                    sx={{
+                                        p: ".2rem 1rem",
+                                        color: "#000000",
+                                        backgroundColor: `${colors.neonBlue}`,
+                                        animation: `${pulseEffect} 3s infinite`,
+                                        animationDelay: ".3s",
+                                    }}
                                 >
                                     JOIN AS SUPPORTER!
                                 </TypographyTruncated>
