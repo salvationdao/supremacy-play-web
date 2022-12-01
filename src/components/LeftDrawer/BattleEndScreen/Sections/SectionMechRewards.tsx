@@ -20,7 +20,6 @@ export const SectionMechRewards = ({ battleEndDetail }: { battleEndDetail: Battl
                     sx={{
                         position: "relative",
                         fontFamily: fonts.nostromoBlack,
-                        fontWeight: "bold",
                     }}
                 >
                     MECH OWNER REWARDS
@@ -29,7 +28,7 @@ export const SectionMechRewards = ({ battleEndDetail }: { battleEndDetail: Battl
             </Box>
 
             {mech_rewards && mech_rewards.length > 0 ? (
-                <Stack spacing="1.2rem" sx={{ px: "1.2rem" }}>
+                <Stack spacing="1.2rem" sx={{ px: "1.6rem" }}>
                     {mech_rewards.map((wm) => {
                         const faction = getFaction(wm.faction_id)
                         return (
@@ -37,15 +36,15 @@ export const SectionMechRewards = ({ battleEndDetail }: { battleEndDetail: Battl
                                 <Box
                                     sx={{
                                         flexShrink: 0,
-                                        width: "6rem",
-                                        height: "6rem",
+                                        width: "5rem",
+                                        height: "5rem",
                                         background: `url(${wm.avatar_url || GenericWarMachinePNG})`,
                                         backgroundRepeat: "no-repeat",
                                         backgroundPosition: "center",
                                         backgroundSize: "cover",
                                         backgroundColor: `${faction.palette.primary}60`,
                                         borderRadius: 0.5,
-                                        border: `${faction.palette.primary} solid .2rem`,
+                                        border: `${faction.palette.primary}20 solid 1px`,
                                     }}
                                 />
 
@@ -65,17 +64,23 @@ export const SectionMechRewards = ({ battleEndDetail }: { battleEndDetail: Battl
                                         {wm.name || wm.label}
                                     </Typography>
 
-                                    <Stack direction="row" alignItems="center">
-                                        <Typography sx={{ lineHeight: 1, fontWeight: "bold", color: colors.offWhite }}>REWARD:&nbsp;</Typography>
+                                    <Typography
+                                        sx={{
+                                            lineHeight: 1,
+                                            fontWeight: "bold",
+                                            color: colors.offWhite,
+                                        }}
+                                    >
+                                        REWARD:{" "}
                                         {wm.is_afk ? (
-                                            <Typography sx={{ lineHeight: 1, color: colors.red }}>AFK</Typography>
+                                            <span style={{ color: colors.red }}>AFK</span>
                                         ) : (
                                             <>
-                                                <SvgSupToken fill={colors.yellow} size="1.8rem" />
-                                                <Typography sx={{ lineHeight: 1 }}>{supFormatter(wm.rewarded_sups, 2)}</Typography>
+                                                <SvgSupToken inline fill={colors.yellow} size="1.8rem" />
+                                                {supFormatter(wm.rewarded_sups, 2)}
                                             </>
                                         )}
-                                    </Stack>
+                                    </Typography>
                                 </Stack>
                             </Stack>
                         )

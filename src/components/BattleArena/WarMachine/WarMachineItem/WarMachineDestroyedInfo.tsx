@@ -1,14 +1,15 @@
-import { Box, CircularProgress, IconButton, Modal, Stack, Typography } from "@mui/material"
+import { Box, CircularProgress, Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { useParameterizedQuery } from "react-fetching-library"
-import { ClipThing } from "../../.."
-import { FlamesPNG, GenericWarMachinePNG, SvgClose, SvgDamageCross, SvgDamageIcon, SvgSkull } from "../../../../assets"
+import { FlamesPNG, GenericWarMachinePNG, SvgDamageCross, SvgDamageIcon, SvgSkull } from "../../../../assets"
 import { useGlobalNotifications } from "../../../../containers"
-import { useTheme } from "../../../../containers/theme"
 import { GetMechDestroyedInfo } from "../../../../fetching"
 import { truncateTextLines } from "../../../../helpers"
-import { colors, fonts, siteZIndex } from "../../../../theme/theme"
+import { colors, fonts } from "../../../../theme/theme"
 import { DamageRecord, FactionWithPalette, WarMachineDestroyedRecord, WarMachineState } from "../../../../types"
+import { NiceBoxThing } from "../../../Common/Nice/NiceBoxThing"
+import { NiceModal } from "../../../Common/Nice/NiceModal"
+import { TypographyTruncated } from "../../../Common/TypographyTruncated"
 
 export const WarMachineDestroyedInfo = ({
     warMachine,
@@ -21,7 +22,6 @@ export const WarMachineDestroyedInfo = ({
     onClose: () => void
     getFaction: (factionID: string) => FactionWithPalette
 }) => {
-    const theme = useTheme()
     const { newSnackbarMessage } = useGlobalNotifications()
     const { query: queryGetMechDestroyedInfo } = useParameterizedQuery(GetMechDestroyedInfo)
     const [warMachineDestroyedRecord, setWarMachineDestroyedRecord] = useState<WarMachineDestroyedRecord>()
@@ -43,7 +43,7 @@ export const WarMachineDestroyedInfo = ({
         if (!warMachineDestroyedRecord)
             return (
                 <Stack alignItems="center" justifyContent="center" sx={{ height: "20rem" }}>
-                    <CircularProgress size="1.8rem" />
+                    <CircularProgress />
                 </Stack>
             )
 
@@ -105,112 +105,76 @@ export const WarMachineDestroyedInfo = ({
     }, [getFaction, warMachineDestroyedRecord])
 
     return (
-        <Modal open={open} onClose={onClose} sx={{ zIndex: siteZIndex.Modal }} BackdropProps={{ sx: { opacity: "0.1 !important" } }}>
-            <Box
-                sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    width: "63rem",
-                    border: "none",
-                    boxShadow: 6,
-                    outline: "none",
-                }}
-            >
-                <ClipThing
-                    clipSize="8px"
-                    border={{
-                        borderColor: theme.factionTheme.primary,
-                        borderThickness: ".3rem",
+        <NiceModal open={open} onClose={onClose} sx={{ position: "relative", width: "63rem", maxWidth: "unset" }}>
+            <Box>
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: 0,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        opacity: 0.06,
+                        backgroundImage: `url(${FlamesPNG})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                        zIndex: 0,
                     }}
-                    backgroundColor={theme.factionTheme.background}
-                    sx={{ position: "relative" }}
-                >
-                    <Box sx={{ position: "relative" }}>
-                        <Box
-                            sx={{
-                                position: "absolute",
-                                top: 0,
-                                bottom: 0,
-                                left: 0,
-                                right: 0,
-                                opacity: 0.06,
-                                backgroundImage: `url(${FlamesPNG})`,
-                                backgroundRepeat: "no-repeat",
-                                backgroundPosition: "center",
-                                backgroundSize: "cover",
-                                zIndex: 0,
-                            }}
-                        />
+                />
 
-                        {content}
-                    </Box>
-
-                    <IconButton size="small" onClick={onClose} sx={{ position: "absolute", top: ".5rem", right: ".5rem" }}>
-                        <SvgClose size="2.6rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
-                    </IconButton>
-                </ClipThing>
+                {content}
             </Box>
-        </Modal>
+        </NiceModal>
     )
 }
 
 const WarMachineIcon = ({ color, imageUrl, isDead, size }: { color: string; imageUrl?: string; isDead?: boolean; size: number }) => {
     return (
-        <Box sx={{ width: "fit-content" }}>
-            <ClipThing
-                clipSize="6px"
-                border={{
-                    borderThickness: ".2rem",
-                    borderColor: color,
-                }}
-                innerSx={{ background: `linear-gradient(${color}, #000000)` }}
-            >
-                <Box>
-                    <Box
+        <NiceBoxThing border={{ color: color }} background={{ colors: [color, "#000000"] }} sx={{ width: "fit-content" }}>
+            <Box>
+                <Box
+                    sx={{
+                        position: "relative",
+                        width: `${size}rem`,
+                        height: `${size}rem`,
+                        overflow: "hidden",
+                        backgroundImage: `url(${imageUrl})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                    }}
+                >
+                    <Stack
+                        alignItems="center"
+                        justifyContent="center"
                         sx={{
-                            position: "relative",
-                            width: `${size}rem`,
-                            height: `${size}rem`,
-                            overflow: "hidden",
-                            backgroundImage: `url(${imageUrl})`,
-                            backgroundRepeat: "no-repeat",
-                            backgroundPosition: "center",
-                            backgroundSize: "cover",
+                            px: "2.64rem",
+                            width: "100%",
+                            height: "100%",
+                            background: "linear-gradient(#00000010, #00000080)",
+                            opacity: isDead ? 1 : 0,
+                            transition: "all .2s",
                         }}
                     >
-                        <Stack
-                            alignItems="center"
-                            justifyContent="center"
-                            sx={{
-                                px: "2.64rem",
-                                width: "100%",
-                                height: "100%",
-                                background: "linear-gradient(#00000010, #00000080)",
-                                opacity: isDead ? 1 : 0,
-                                transition: "all .2s",
-                            }}
-                        >
-                            {isDead && <SvgDamageCross fill={colors.red} size={`${size * 1.3}rem`} sx={{ opacity: 0.6 }} />}
-                        </Stack>
+                        {isDead && <SvgDamageCross fill={colors.red} size={`${size * 1.3}rem`} sx={{ opacity: 0.6 }} />}
+                    </Stack>
 
-                        {!imageUrl && (
-                            <SvgDamageIcon
-                                size={`${size * 0.5}rem`}
-                                fill={colors.grey}
-                                sx={{
-                                    position: "absolute",
-                                    top: "50%",
-                                    left: "50%",
-                                    transform: "translate(-50%, -50%)",
-                                }}
-                            />
-                        )}
-                    </Box>
+                    {!imageUrl && (
+                        <SvgDamageIcon
+                            size={`${size * 0.5}rem`}
+                            fill={colors.grey}
+                            sx={{
+                                position: "absolute",
+                                top: "50%",
+                                left: "50%",
+                                transform: "translate(-50%, -50%)",
+                            }}
+                        />
+                    )}
                 </Box>
-            </ClipThing>
-        </Box>
+            </Box>
+        </NiceBoxThing>
     )
 }
 
@@ -233,7 +197,7 @@ const WarMachineBig = ({
             ) : (
                 <WarMachineIcon color={"#444444"} size={7.5} />
             )}
-            <Typography
+            <TypographyTruncated
                 variant="h6"
                 sx={{
                     textAlign: "center",
@@ -243,7 +207,7 @@ const WarMachineBig = ({
                 }}
             >
                 {name}
-            </Typography>
+            </TypographyTruncated>
         </Stack>
     )
 }
@@ -269,7 +233,7 @@ const WarMachineSmall = ({
             )}
 
             <Stack>
-                <Typography
+                <TypographyTruncated
                     variant="body2"
                     sx={{
                         fontFamily: fonts.nostromoBlack,
@@ -278,7 +242,7 @@ const WarMachineSmall = ({
                     }}
                 >
                     {name}
-                </Typography>
+                </TypographyTruncated>
                 <Typography variant="body2" sx={{ fontFamily: fonts.nostromoBold }}>
                     {damagePercent}%
                 </Typography>

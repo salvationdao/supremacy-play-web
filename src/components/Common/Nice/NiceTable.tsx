@@ -113,7 +113,7 @@ export const NiceTable = <T,>({
                             <TableRow
                                 key={i}
                                 {...mergeDeep(
-                                    { sx: { height: 0, "&:nth-of-type(odd)": { backgroundColor: "#FFFFFF10" }, ".MuiTableCell-root": { p: cellPadding } } },
+                                    { sx: { height: 0, "&:nth-of-type(odd)": { backgroundColor: "#FFFFFF08" }, ".MuiTableCell-root": { p: cellPadding } } },
                                     rowProps,
                                 )}
                             >

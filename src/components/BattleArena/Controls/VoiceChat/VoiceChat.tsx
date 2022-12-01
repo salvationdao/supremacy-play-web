@@ -340,6 +340,7 @@ export const VoiceChat = () => {
     return (
         <>
             <NiceButton
+                ref={popoverRef}
                 buttonColor={theme.factionTheme.primary}
                 sx={{ position: "relative", minWidth: "7rem", px: "1rem", py: ".1rem" }}
                 onClick={() => setOpen(!open)}
@@ -357,11 +358,11 @@ export const VoiceChat = () => {
                 anchorEl={popoverRef.current}
                 anchorOrigin={{
                     vertical: "top",
-                    horizontal: "center",
+                    horizontal: "left",
                 }}
                 transformOrigin={{
                     vertical: "bottom",
-                    horizontal: "center",
+                    horizontal: "left",
                 }}
             >
                 <Box sx={{ width: "50rem", height: "55rem" }}>
