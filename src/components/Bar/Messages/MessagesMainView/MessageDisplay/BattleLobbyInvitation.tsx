@@ -34,8 +34,8 @@ export const BattleLobbyInvitation = ({ message, data }: BattleLobbyInvitationPr
                 {battleLobby && (
                     <CentralQueueItemTooltipRender
                         battleLobby={battleLobby}
-                        displayAccessCode={battleLobby.access_code}
-                        width="100%"
+                        displayAccessCode={data.access_code}
+                        width="48rem"
                         setShowJoinLobbyModal={setShowJoinLobbyModal}
                     />
                 )}
@@ -46,7 +46,7 @@ export const BattleLobbyInvitation = ({ message, data }: BattleLobbyInvitationPr
                     open={showJoinLobbyModal}
                     onClose={() => setShowJoinLobbyModal(false)}
                     battleLobby={battleLobby}
-                    accessCode={battleLobby.access_code}
+                    accessCode={data.access_code}
                 />
             )}
         </>

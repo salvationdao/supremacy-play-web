@@ -232,7 +232,7 @@ export const MessagesMainView = ({ lastUpdated, onCompose }: MessagesMainViewPro
                                         textAlign: "center",
                                     }}
                                 >
-                                    Select a message to view here.
+                                    Select a message to view here
                                 </Typography>
                             </Stack>
                         )}

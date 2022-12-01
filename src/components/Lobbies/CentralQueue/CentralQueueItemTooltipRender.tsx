@@ -329,7 +329,7 @@ const FactionMechList = ({
                                 p: 0,
                             }}
                             disableAutoColor
-                            onClick={() => leaveLobby(mech.id)}
+                            onClick={() => mech?.queued_by?.id === userID && leaveLobby(mech.id)}
                         >
                             <Box
                                 sx={{
@@ -344,25 +344,27 @@ const FactionMechList = ({
                             />
 
                             {/* Minus overlay */}
-                            <Stack
-                                alignItems="center"
-                                justifyContent="center"
-                                sx={{
-                                    position: "absolute",
-                                    top: 0,
-                                    left: 0,
-                                    right: 0,
-                                    bottom: 0,
-                                    zIndex: 3,
-                                    backgroundColor: "#00000088",
-                                    opacity: 0,
-                                    ":hover": { opacity: 1 },
-                                }}
-                            >
-                                <Typography fontFamily={fonts.nostromoBold} variant="h4" color={colors.gold}>
-                                    -
-                                </Typography>
-                            </Stack>
+                            {mech?.queued_by?.id === userID && (
+                                <Stack
+                                    alignItems="center"
+                                    justifyContent="center"
+                                    sx={{
+                                        position: "absolute",
+                                        top: 0,
+                                        left: 0,
+                                        right: 0,
+                                        bottom: 0,
+                                        zIndex: 3,
+                                        backgroundColor: "#00000088",
+                                        opacity: 0,
+                                        ":hover": { opacity: 1 },
+                                    }}
+                                >
+                                    <Typography fontFamily={fonts.nostromoBold} variant="h4" color={colors.gold}>
+                                        -
+                                    </Typography>
+                                </Stack>
+                            )}
                         </NiceButton>
                     )
                 })}

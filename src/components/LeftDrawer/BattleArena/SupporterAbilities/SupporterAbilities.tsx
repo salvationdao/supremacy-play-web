@@ -108,7 +108,7 @@ const SupporterAbilitiesInner = () => {
                     }}
                 >
                     {displayAbilities.map((ab) => (
-                        <PlayerAbilitySmallCard key={`${ab.id}`} anyAbility={ab} onClickAction="use" />
+                        <PlayerAbilitySmallCard key={`${ab.id}`} anyAbility={{ ...ab, isSupportAbility: true }} onClickAction="use" />
                     ))}
                 </Box>
             ) : (
