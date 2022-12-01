@@ -142,7 +142,7 @@ export const PlayerAbilitySmallCard = React.memo(function PlayerAbilitySmallCard
                                 {/* Owned count */}
                                 {ownedCount !== undefined && (
                                     <Box sx={{ position: "absolute", top: ".6rem", right: ".5rem", zIndex: 2 }}>
-                                        <TypographyTruncated variant="subtitle1" lineHeight={1}>
+                                        <TypographyTruncated variant="subtitle1" lineHeight={1} fontWeight="bold">
                                             {ownedCount} OWNED
                                         </TypographyTruncated>
                                     </Box>
