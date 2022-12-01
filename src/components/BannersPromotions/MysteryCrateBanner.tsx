@@ -49,10 +49,7 @@ export const MysteryCrateBanner = () => {
 
     return (
         <NiceBoxThing
-            border={{
-                color: primaryColor,
-                thickness: "thicc",
-            }}
+            border={{ color: primaryColor }}
             background={{
                 colors: [backgroundColor],
             }}

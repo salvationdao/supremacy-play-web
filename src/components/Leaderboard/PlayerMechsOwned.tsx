@@ -81,7 +81,7 @@ export const PlayerMechsOwned = () => {
                             {index + 1}
                         </TypographyTruncated>,
 
-                        <PlayerNameGid key={2} player={item.player} styledImageTextProps={{ variant: "h6", imageSize: 2.4 }} />,
+                        <PlayerNameGid key={2} player={item.player} variant="h6" />,
 
                         <TypographyTruncated variant="h6" key={3} sx={{ fontWeight: "bold", color: faction.palette.primary }}>
                             {faction.label}

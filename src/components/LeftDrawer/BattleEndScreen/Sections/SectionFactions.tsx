@@ -1,8 +1,9 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { BattleEndTooltip, StyledImageText } from "../../.."
+import { BattleEndTooltip } from "../../.."
 import { useSupremacy } from "../../../../containers"
 import { colors, fonts } from "../../../../theme/theme"
 import { BattleEndDetail } from "../../../../types"
+import { TypographyTruncated } from "../../../Common/TypographyTruncated"
 
 export const SectionFactions = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
     const { getFaction } = useSupremacy()
@@ -41,16 +42,21 @@ export const SectionFactions = ({ battleEndDetail }: { battleEndDetail: BattleEn
                                     {index + 1}.
                                 </Typography>
 
-                                <StyledImageText
-                                    color={faction.palette.primary}
-                                    text={faction.label}
-                                    imageUrl={faction.logo_url}
-                                    variant="h6"
-                                    imageSize={2.9}
-                                    fontWeight="normal"
-                                    truncateLine
-                                    textSx={{ fontWeight: "bold" }}
-                                />
+                                <TypographyTruncated variant="h6" fontWeight="bold">
+                                    <Box
+                                        sx={{
+                                            display: "inline-block",
+                                            width: "2.8rem",
+                                            height: "2.8rem",
+                                            verticalAlign: "middle",
+                                            background: `url(${faction.logo_url})`,
+                                            backgroundRepeat: "no-repeat",
+                                            backgroundPosition: "center",
+                                            backgroundSize: "contain",
+                                        }}
+                                    />{" "}
+                                    {faction.label}
+                                </TypographyTruncated>
                             </Stack>
                         )
                     })}

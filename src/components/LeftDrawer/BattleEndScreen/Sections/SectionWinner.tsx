@@ -1,10 +1,11 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { BattleEndTooltip, StyledImageText } from "../../.."
+import { BattleEndTooltip } from "../../.."
 import { GenericWarMachinePNG, SvgCrown } from "../../../../assets"
 import { useSupremacy } from "../../../../containers"
 import { colors, fonts } from "../../../../theme/theme"
 import { BattleEndDetail } from "../../../../types"
+import { TypographyTruncated } from "../../../Common/TypographyTruncated"
 
 export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndDetail }) => {
     const { getFaction } = useSupremacy()
@@ -30,34 +31,46 @@ export const SectionWinner = ({ battleEndDetail }: { battleEndDetail: BattleEndD
 
             <Stack spacing="1.5rem" sx={{ px: "1.6rem" }}>
                 <Box sx={{ position: "relative" }}>
-                    <SvgCrown fill={colors.yellow} size="2rem" sx={{ position: "absolute", bottom: "calc(100% - .7rem)", left: ".8rem" }} />
+                    <SvgCrown fill={colors.yellow} size="2rem" sx={{ position: "absolute", bottom: "calc(100% - .7rem)", left: ".9rem" }} />
 
-                    <StyledImageText
-                        color={faction.palette.primary}
-                        text={faction.label}
-                        imageUrl={faction.logo_url}
-                        variant="h6"
-                        imageSize={3.6}
-                        imageBackgroundSize="contain"
-                        truncateLine
-                        textSx={{ fontWeight: "bold" }}
-                    />
+                    <TypographyTruncated variant="h5" fontWeight="bold">
+                        <Box
+                            sx={{
+                                display: "inline-block",
+                                width: "4rem",
+                                height: "4rem",
+                                verticalAlign: "middle",
+                                background: `url(${faction.logo_url})`,
+                                backgroundRepeat: "no-repeat",
+                                backgroundPosition: "center",
+                                backgroundSize: "contain",
+                            }}
+                        />{" "}
+                        {faction.label}
+                    </TypographyTruncated>
                 </Box>
 
                 {winning_war_machines && winning_war_machines.length > 0 ? (
                     <Stack spacing=".8rem" sx={{ pl: ".5rem" }}>
                         {winning_war_machines.map((wm) => {
                             return (
-                                <StyledImageText
-                                    key={`${wm.hash}-${wm.participantID}`}
-                                    color={colors.text}
-                                    text={(wm.name || wm.hash).toUpperCase()}
-                                    imageUrl={wm.imageAvatar || GenericWarMachinePNG}
-                                    variant="h6"
-                                    imageSize={2.9}
-                                    fontWeight="normal"
-                                    truncateLine
-                                />
+                                <TypographyTruncated key={`${wm.hash}-${wm.participantID}`} variant="h6" fontWeight="bold">
+                                    <Box
+                                        sx={{
+                                            display: "inline-block",
+                                            width: "3rem",
+                                            height: "3rem",
+                                            verticalAlign: "middle",
+                                            background: `url(${wm.imageAvatar || GenericWarMachinePNG})`,
+                                            backgroundRepeat: "no-repeat",
+                                            backgroundPosition: "center",
+                                            backgroundSize: "contain",
+                                            borderRadius: 0.5,
+                                            border: `${faction.palette.primary}20 solid 1px`,
+                                        }}
+                                    />{" "}
+                                    {(wm.name || wm.hash).toUpperCase()}
+                                </TypographyTruncated>
                             )
                         })}
                     </Stack>

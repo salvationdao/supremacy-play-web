@@ -1,9 +1,9 @@
-import { Box } from "@mui/material"
-import { ClipThing, StyledImageText, StyledNormalText } from "../../.."
+import { Typography } from "@mui/material"
+import { StyledImageText } from "../../.."
 import { SvgDeath, SvgSkull2 } from "../../../../assets"
 import { colors } from "../../../../theme/theme"
 import { FactionWithPalette, KillAlertProps } from "../../../../types"
-import { PlayerNameGid } from "../../../Common/PlayerNameGid"
+import { NiceBoxThing } from "../../../Common/Nice/NiceBoxThing"
 
 export const KillAlert = ({ data, getFaction }: { data: KillAlertProps; getFaction: (factionID: string) => FactionWithPalette }) => {
     const { destroyed_war_machine, killed_by_war_machine, killed_by, killed_by_user } = data
@@ -15,39 +15,33 @@ export const KillAlert = ({ data, getFaction }: { data: KillAlertProps; getFacti
     let killedBy = null
     if (killed_by_war_machine) {
         killedBy = (
-            <StyledImageText
-                text={killed_by_war_machine.name || killed_by_war_machine.hash}
-                color={mainColor || "grey !important"}
-                imageUrl={killed_by_war_machine.imageAvatar}
-            />
+            <StyledImageText sx={{ color: mainColor || "grey !important" }} imageUrl={killed_by_war_machine.imageAvatar}>
+                {killed_by_war_machine.name || killed_by_war_machine.hash}
+            </StyledImageText>
         )
     } else if (killed_by_user) {
-        killedBy = <PlayerNameGid player={killed_by_user} />
+        const faction = getFaction(killed_by_user.faction_id)
+        killedBy = (
+            <StyledImageText sx={{ color: getFaction(destroyed_war_machine.factionID).palette.primary }} imageUrl={faction.logo_url}>
+                {killed_by_user.username}#{killed_by_user.gid}
+            </StyledImageText>
+        )
     } else {
-        killedBy = <StyledNormalText sx={{ fontWeight: "bold" }} text={killed_by || "UNKNOWN"} />
+        killedBy = <StyledImageText>{killed_by || "UNKNOWN"}</StyledImageText>
     }
 
     return (
-        <ClipThing
-            clipSize="3px"
-            border={{
-                borderColor: mainColor || colors.grey,
-                borderThickness: ".2rem",
-            }}
-            opacity={0.6}
-            backgroundColor={colors.darkNavy}
-        >
-            <Box sx={{ px: "1.44rem", pt: "1.2rem", pb: ".8rem" }}>
-                {killedBy}
-                <SvgDeath size="1.2rem" sx={{ display: "inline", mx: ".48rem" }} />
-                <SvgSkull2 size="1.2rem" sx={{ display: "inline", mr: ".64rem" }} />
+        <NiceBoxThing border={{ color: `${mainColor || colors.grey}80` }} background={{ colors: [colors.darkNavy], opacity: 0.3 }} sx={{ p: ".6rem 1.4rem" }}>
+            <Typography>
+                {killedBy} <SvgDeath inline size="1.2rem" />
+                <SvgSkull2 inline size="1.2rem" />{" "}
                 <StyledImageText
-                    textSx={{ textDecoration: "line-through" }}
-                    text={destroyed_war_machine.name || destroyed_war_machine.hash}
-                    color={getFaction(destroyed_war_machine.factionID).palette.primary}
+                    sx={{ textDecoration: "line-through", color: getFaction(destroyed_war_machine.factionID).palette.primary }}
                     imageUrl={destroyed_war_machine.imageAvatar}
-                />
-            </Box>
-        </ClipThing>
+                >
+                    {destroyed_war_machine.name || destroyed_war_machine.hash}
+                </StyledImageText>
+            </Typography>
+        </NiceBoxThing>
     )
 }

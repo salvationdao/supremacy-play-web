@@ -1,9 +1,10 @@
-import { Box, Stack } from "@mui/material"
+import { Typography } from "@mui/material"
 import { useMemo } from "react"
-import { ClipThing, StyledImageText } from "../../.."
+import { StyledImageText } from "../../.."
 import { GenericWarMachinePNG, SvgEmergency } from "../../../../assets"
 import { colors } from "../../../../theme/theme"
 import { FactionWithPalette, WarMachineAbilityAlertProps } from "../../../../types"
+import { NiceBoxThing } from "../../../Common/Nice/NiceBoxThing"
 
 export const WarMachineAbilityAlert = ({ data, getFaction }: { data: WarMachineAbilityAlertProps; getFaction: (factionID: string) => FactionWithPalette }) => {
     const { ability, warMachine } = data
@@ -15,22 +16,16 @@ export const WarMachineAbilityAlert = ({ data, getFaction }: { data: WarMachineA
     const mainColor = faction.palette.primary
 
     return (
-        <ClipThing
-            clipSize="3px"
-            border={{
-                borderColor: mainColor || colors.grey,
-                borderThickness: ".2rem",
-            }}
-            opacity={0.6}
-            backgroundColor={colors.darkNavy}
-        >
-            <Stack spacing=".5rem" sx={{ px: "1.44rem", pt: "1.2rem", pb: ".8rem" }}>
-                <Box>
-                    <StyledImageText text={name || hash} color={mainColor} imageUrl={wmImageUrl} />
-                    <SvgEmergency fill="#FFFFFF" size="1.3rem" sx={{ display: "inline", mx: ".4rem" }} />
-                    <StyledImageText text={label} color={colour} imageUrl={`${image_url}`} />
-                </Box>
-            </Stack>
-        </ClipThing>
+        <NiceBoxThing border={{ color: `${mainColor || colors.grey}80` }} background={{ colors: [colors.darkNavy], opacity: 0.3 }} sx={{ p: ".6rem 1.4rem" }}>
+            <Typography>
+                <StyledImageText sx={{ color: mainColor }} imageUrl={wmImageUrl}>
+                    {name || hash}
+                </StyledImageText>{" "}
+                <SvgEmergency inline fill="#FFFFFF" size="1.2rem" />{" "}
+                <StyledImageText sx={{ color: colour }} imageUrl={`${image_url}`}>
+                    {label}
+                </StyledImageText>
+            </Typography>
+        </NiceBoxThing>
     )
 }

@@ -34,7 +34,6 @@ const UserItem = ({ banUser, sx }: { banUser: BanUser; sx?: SxProps }) => {
                     features: [],
                     role_type: RoleType.player,
                 }}
-                styledImageTextProps={{ textColor: "#FFFFFF" }}
             />
         </Stack>
     )

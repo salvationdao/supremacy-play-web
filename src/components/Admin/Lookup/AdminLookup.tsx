@@ -182,7 +182,7 @@ export const LookupSearchBox = () => {
                 }}
                 renderOption={(props, u) => (
                     <Stack component="li" direction="row" spacing=".6rem" alignItems="center" {...props}>
-                        <PlayerNameGid player={u} styledImageTextProps={{ textColor: "#FFFFFF" }} />
+                        <PlayerNameGid player={u} />
                     </Stack>
                 )}
                 getOptionLabel={(u) => `${u.username}#${u.gid}`}
