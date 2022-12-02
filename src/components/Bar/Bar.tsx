@@ -15,7 +15,6 @@ import { GetFactionPass } from "./GetFactionPass"
 import { Messages } from "./Messages/Messages"
 import { Quests } from "./Quests/Quests"
 import { ShoppingCart } from "./ShoppingCart/ShoppingCart"
-
 export const Bar = () => {
     const theme = useTheme()
     const { userID, user } = useAuth()
