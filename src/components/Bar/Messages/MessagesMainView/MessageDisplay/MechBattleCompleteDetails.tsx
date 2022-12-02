@@ -25,7 +25,13 @@ const RewardsSection = ({ data }: { data: BattleReward }) => {
     const supsBonus = data.rewarded_sups_bonus
     const ability = data.rewarded_player_ability
 
-    if (!sups && !supsBonus && !ability) {
+    console.log({
+        sups,
+        supsBonus,
+        ability,
+    })
+
+    if ((!sups || sups === "0") && (!supsBonus || supsBonus === "0") && !ability) {
         return null
     }
 
