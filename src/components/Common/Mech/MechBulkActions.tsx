@@ -48,19 +48,6 @@ export const MechBulkActions = React.memo(function MechBulkActions({
                 </Stack>
             </NiceBoxThing>
 
-            {/* <Stack direction="row" alignItems="center" spacing=".6rem">
-                <NiceButton
-                    buttonColor={theme.factionTheme.primary}
-                    sx={{ p: ".85rem 1rem" }}
-                    disabled={selectedMechs.length <= 0}
-                    onClick={() => setIsBulkPopoverOpen(true)}
-                >
-                    <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
-                        Actions ({selectedMechs.length})
-                    </Typography>
-                </NiceButton>
-            </Stack> */}
-
             <BulkActionPopover
                 open={isBulkPopoverOpen}
                 onClose={() => setIsBulkPopoverOpen(false)}
