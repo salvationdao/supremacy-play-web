@@ -46,29 +46,35 @@ export const FactionPassBuyModal = ({ onClose, factionPass, paymentType }: Facti
         return moment(startDate).add(factionPass.last_for_days, "d").format("DD/MM/YYYY")
     }, [factionPass.last_for_days, factionPassExpiryDate])
 
-    const icon = useMemo(() => {
+    const { icon, unit } = useMemo(() => {
         switch (paymentType) {
             case PaymentType.ETH:
-                return <SvgEthereum inline sx={{ ml: ".3rem" }} />
+                return { icon: <SvgEthereum inline sx={{ ml: ".3rem" }} />, unit: "SUPS" }
             case PaymentType.Stripe:
-                return <SvgCreditCard inline sx={{ ml: ".3rem" }} />
+                return { icon: <SvgCreditCard inline sx={{ ml: ".3rem" }} />, unit: "USD" }
             case PaymentType.SUPS:
-                return <SvgSupToken fill={colors.gold} inline />
+                return { icon: <SvgSupToken fill={colors.gold} inline />, unit: "ETH" }
         }
     }, [paymentType])
 
     // Buy
     const buyFactionPass = useCallback(
         async (paymentType: PaymentType) => {
-            setIsLoading(true)
-            setError(undefined)
+            console.log(overrideOnConfirm, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
             try {
-                const resp = await send<boolean>(GameServerKeys.PurchaseFactionPassWithSups, {
-                    faction_pass_id: factionPass.id,
-                    payment_type: paymentType,
-                })
-                if (!resp) return
+                setIsLoading(true)
+                setError(undefined)
+
+                if (overrideOnConfirm) {
+                    overrideOnConfirm()
+                } else {
+                    const resp = await send<boolean>(GameServerKeys.PurchaseFactionPassWithSups, {
+                        faction_pass_id: factionPass.id,
+                        payment_type: paymentType,
+                    })
+                    if (!resp) return
+                }
 
                 setError(undefined)
                 onClose()
@@ -79,13 +85,13 @@ export const FactionPassBuyModal = ({ onClose, factionPass, paymentType }: Facti
                 setIsLoading(false)
             }
         },
-        [factionPass.id, onClose, send],
+        [factionPass.id, onClose, overrideOnConfirm, send],
     )
 
     return (
         <ConfirmModal
             title="Confirm Purchase"
-            onConfirm={() => (overrideOnConfirm ? overrideOnConfirm() : buyFactionPass(paymentType))}
+            onConfirm={() => buyFactionPass(paymentType)}
             onClose={onClose}
             isLoading={isLoading}
             error={error}
@@ -94,7 +100,7 @@ export const FactionPassBuyModal = ({ onClose, factionPass, paymentType }: Facti
             <Typography variant="h6">
                 Purchase {factionPass.label} PASS for
                 {icon}
-                {supFormatter(factionPass.sups_price, 3)} SUPS?
+                {supFormatter(factionPass.sups_price, 3)} {unit}?
                 <br />
                 Valid from <span style={{ color: colors.neonBlue }}>{currentExpiryDate}</span> to{" "}
                 <span style={{ color: colors.neonBlue }}>{newExpiryDate}</span>

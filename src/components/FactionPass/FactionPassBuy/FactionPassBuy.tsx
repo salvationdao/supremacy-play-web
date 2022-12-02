@@ -106,12 +106,13 @@ export const FactionPassBuy = () => {
                                 sx={{
                                     mt: "1rem",
                                     ml: ".5rem",
-                                    color: colors.gold,
+                                    color: colors.neonBlue,
                                     span: {
                                         opacity: 0.8,
                                         color: colors.grey,
+
                                         span: {
-                                            color: colors.neonBlue,
+                                            color: colors.lightGrey,
                                         },
                                     },
                                 }}
