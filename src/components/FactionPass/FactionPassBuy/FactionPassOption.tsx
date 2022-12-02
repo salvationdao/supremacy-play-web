@@ -9,7 +9,6 @@ import {
     RMMonthlyPassArrowPNG,
     SvgCreditCard,
     SvgSupToken,
-    SvgWallet,
     ZHIAnnualPassArrowPNG,
     ZHIDailyPassArrowPNG,
     ZHIMonthlyPassArrowPNG,
@@ -124,49 +123,42 @@ export const FactionPassOption = React.memo(function FactionPassOption({ faction
                 </Box>
 
                 {/* SUPS */}
-                <Stack direction="row" justifyContent="space-between" sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.palette.s600} 1px solid` }}>
-                    <Typography fontWeight="bold">
+                <Stack direction="row" alignItems="center" sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.palette.s600} 1px solid` }}>
+                    <Typography variant="h6" fontWeight="bold">
                         SUPS <i style={{ color: colors.red }}>{factionPass.discount_percentage !== "0" ? `-${factionPass.discount_percentage} % OFF` : ""}</i>
                     </Typography>
-                    <Typography>
-                        <SvgSupToken fill={colors.gold} size="1.8rem" inline />
-                        {factionPass ? supFormatter(factionPass.sups_price, 3) : "---"}
-                    </Typography>
-                </Stack>
 
-                {/* ETH */}
-                {/* <Stack direction="row" justifyContent="space-between" sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.palette.s600} 1px solid` }}>
-                    <Typography fontWeight="bold">ETH</Typography>
-                    <Typography>
-                        <SvgEthereum size="1.8rem" inline />
-                        {factionPass ? supFormatter(factionPass.eth_price_wei, 3) : "---"}
-                    </Typography>
-                </Stack> */}
+                    <Box flex={1} />
+
+                    <NiceButton buttonColor={colors.gold} onClick={() => setOpenPaymentModal(true)} sx={{ width: "9rem", p: "0 1rem" }} loading={isLoading}>
+                        <Typography fontWeight="bold">
+                            <SvgSupToken fill={colors.gold} size="1.8rem" inline />
+                            {factionPass ? supFormatter(factionPass.sups_price, 3) : "---"}
+                        </Typography>
+                    </NiceButton>
+                </Stack>
 
                 {/* Fiat */}
-                <Stack direction="row" justifyContent="space-between" sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.palette.s600} 1px solid` }}>
-                    <Typography fontWeight="bold">USD</Typography>
-                    <Typography>
-                        <SvgCreditCard fill={colors.blue} size="1.6rem" inline /> ${factionPass ? factionPass.usd_price : "---"}
-                    </Typography>
-                </Stack>
+                {Math.round(parseFloat(factionPass.usd_price)) > 0 && (
+                    <Stack direction="row" alignItems="center" sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.palette.s600} 1px solid` }}>
+                        <Typography variant="h6" fontWeight="bold">
+                            USD
+                        </Typography>
 
-                {/* Buy button */}
-                <Box sx={{ p: ".8rem 1.5rem" }}>
-                    <NiceButton
-                        corners
-                        buttonColor={colors.green}
-                        onClick={() => setOpenPaymentModal(true)}
-                        sx={{ width: "100%", p: ".4rem 1rem" }}
-                        loading={isLoading}
-                        disabled={!DEV_ONLY}
-                    >
-                        <Stack spacing=".8rem" direction="row" alignItems="center">
-                            <SvgWallet />
-                            <Typography sx={{ fontFamily: fonts.nostromoBlack }}>BUY NOW</Typography>
-                        </Stack>
-                    </NiceButton>
-                </Box>
+                        <Box flex={1} />
+
+                        <NiceButton
+                            buttonColor={colors.blue2}
+                            onClick={() => setOpenPaymentModal(true)}
+                            sx={{ width: "9rem", p: "0 1rem" }}
+                            loading={isLoading}
+                        >
+                            <Typography fontWeight="bold">
+                                <SvgCreditCard size="1.6rem" inline /> ${factionPass ? factionPass.usd_price : "---"}
+                            </Typography>
+                        </NiceButton>
+                    </Stack>
+                )}
             </NiceBoxThing>
 
             {DEV_ONLY && openPaymentModal && (

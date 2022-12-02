@@ -179,7 +179,7 @@ export const FactionPassBuy = () => {
                     </Stack>
 
                     {/* Buy options */}
-                    <Stack direction="row" alignItems="center">
+                    <Stack direction="row" alignItems="flex-start">
                         {factionPasses.map((fp) => (
                             <FactionPassOption key={fp.id} factionPass={fp} faction={faction} />
                         ))}
