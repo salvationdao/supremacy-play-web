@@ -29,7 +29,7 @@ export const MyFactionMechCard = ({ mech, isLocked }: { mech: BattleLobbiesMech;
     )
 
     return (
-        <Box sx={{ position: "relative" }}>
+        <Box sx={{ position: "relative", maxWidth: "36rem" }}>
             <MechCardWeaponAndStats mech={{ ...mech, owner: mech.queued_by || mech.owner }} sx={{ height: "unset" }} />
 
             {!isLocked && mech.queued_by?.id === userID && (

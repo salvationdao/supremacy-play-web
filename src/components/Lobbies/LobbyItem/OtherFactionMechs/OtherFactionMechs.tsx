@@ -2,13 +2,20 @@ import { Box, Stack, Typography } from "@mui/material"
 import React from "react"
 import { useAuth } from "../../../../containers"
 import { colors, fonts } from "../../../../theme/theme"
-import { FactionLobbySlots, NUMBER_MECHS_REQUIRED } from "../LobbyItem"
+import { BattleLobby } from "../../../../types/battle_queue"
+import { FactionLobbySlots } from "../LobbyItem"
 
-export const OtherFactionMechs = React.memo(function OtherFactionMechs({ otherFactionLobbySlots }: { otherFactionLobbySlots: FactionLobbySlots[] }) {
+export const OtherFactionMechs = React.memo(function OtherFactionMechs({
+    battleLobby,
+    otherFactionLobbySlots,
+}: {
+    battleLobby: BattleLobby
+    otherFactionLobbySlots: FactionLobbySlots[]
+}) {
     return (
         <Stack direction="row" spacing="1.5rem">
             {otherFactionLobbySlots.map((fls) => (
-                <SingleColumn key={`fls-${fls.faction.id}`} otherFactionLobbySlots={fls} />
+                <SingleColumn key={`fls-${fls.faction.id}`} battleLobby={battleLobby} otherFactionLobbySlots={fls} />
             ))}
         </Stack>
     )
@@ -16,8 +23,10 @@ export const OtherFactionMechs = React.memo(function OtherFactionMechs({ otherFa
 
 const SIZE = "4rem"
 
-const SingleColumn = ({ otherFactionLobbySlots }: { otherFactionLobbySlots: FactionLobbySlots }) => {
+const SingleColumn = ({ battleLobby, otherFactionLobbySlots }: { battleLobby: BattleLobby; otherFactionLobbySlots: FactionLobbySlots }) => {
     const { userID } = useAuth()
+
+    const maxMechs = battleLobby.max_deploy_per_player
 
     return (
         <Stack alignItems="center" justifyContent="center" spacing="1.2rem" sx={{ width: SIZE }}>
@@ -53,8 +62,8 @@ const SingleColumn = ({ otherFactionLobbySlots }: { otherFactionLobbySlots: Fact
             })}
 
             {/* Empty slots */}
-            {NUMBER_MECHS_REQUIRED - otherFactionLobbySlots.mechSlots.length > 0 &&
-                new Array(NUMBER_MECHS_REQUIRED - otherFactionLobbySlots.mechSlots.length).fill(0).map((_, index) => (
+            {maxMechs - otherFactionLobbySlots.mechSlots.length > 0 &&
+                new Array(maxMechs - otherFactionLobbySlots.mechSlots.length).fill(0).map((_, index) => (
                     <Stack
                         key={`empty-slot-${index}`}
                         alignItems="center"
