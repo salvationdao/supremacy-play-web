@@ -68,7 +68,7 @@ export const FactionPassOption = React.memo(function FactionPassOption({ faction
     const { priceLabel, headerArrowImage } = useMemo(() => {
         const days = factionPass.last_for_days
 
-        const priceLabel = `${factionPass.label} PRICE`
+        const priceLabel = `${factionPass.label}`
         let headerArrowImage = ""
 
         if (days <= 3) {
