@@ -107,16 +107,29 @@ export const FactionPassBuy = () => {
                                     mt: "1rem",
                                     ml: ".5rem",
                                     span: {
-                                        color: colors.neonBlue,
+                                        opacity: 0.8,
+                                        color: colors.grey,
+                                        span: {
+                                            color: colors.neonBlue,
+                                        },
                                     },
                                 }}
                             >
                                 • Borrow staked mechs from the faction Mech Pool
                                 <br />
                                 • Earn $SUPS on staked mechs wins
-                                <br />• Enable direct repairs from other faction pass holders <span>(coming soon)</span>
-                                <br />• Earn multipliers by staking mechs <span>(coming soon)</span>
-                                <br />• See comprehensive statistics <span>(coming soon)</span>
+                                <br />
+                                <span>
+                                    • Enable direct repairs from other faction pass holders <span>(coming soon)</span>
+                                </span>
+                                <br />
+                                <span>
+                                    • Earn multipliers by staking mechs <span>(coming soon)</span>
+                                </span>
+                                <br />
+                                <span>
+                                    • See comprehensive statistics <span>(coming soon)</span>
+                                </span>
                                 <br />
                             </Typography>
                         </Box>
