@@ -157,7 +157,7 @@ const StripePayment = React.memo(function StripePayment({
                 const stripeError = await _stripe.confirmPayment({
                     elements: _elements,
                     confirmParams: {
-                        return_url: `${origin}/faction-pass/buy`,
+                        return_url: `${origin}/faction-pass/dashboard`,
                     },
                 })
 
