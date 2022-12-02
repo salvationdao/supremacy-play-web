@@ -255,11 +255,6 @@ import GenericWarMachinePNG from "./images/GenericWarMachine.png"
 import HangarBg from "./images/HangarBg.jpg"
 import KeycardPNG from "./images/Keycard.png"
 import LogoWEBP from "./images/Logo.webp"
-import MaintenancePNG from "./images/Maintenance.png"
-import CircleParticle from "./images/Particles/circle.png"
-import PlayerAbilityPNG from "./images/PlayerAbility.png"
-import SupremacyWorldPNG from "./images/supremacy_world.png"
-
 import BattleArenaPNG from "./images/MainMenu/BattleArena.png"
 import ExhibitionPNG from "./images/MainMenu/Exhibition.png"
 import GenericPNG from "./images/MainMenu/Generic.png"
@@ -268,7 +263,9 @@ import MechsPNG from "./images/MainMenu/Mechs.png"
 import RepairBayPNG from "./images/MainMenu/RepairBay.png"
 import StoryPNG from "./images/MainMenu/Story.png"
 import TutorialPNG from "./images/MainMenu/Tutorial.png"
-
+import MaintenancePNG from "./images/Maintenance.png"
+import CircleParticle from "./images/Particles/circle.png"
+import PlayerAbilityPNG from "./images/PlayerAbility.png"
 import AboutMeSVG from "./images/profileIcons/AboutMe.svg"
 import BattleHistorySVG from "./images/profileIcons/BattleHistory.svg"
 import StatsSVG from "./images/profileIcons/Stats.svg"
@@ -367,7 +364,6 @@ export {
     BattleRewardsBannerPNG,
     LightningBackgroundPNG,
     LightningBackgroundBluePNG,
-    SupremacyWorldPNG,
     CoinsLeftPNG,
     CoinsRightPNG,
     KeycardPNG,
