@@ -231,18 +231,24 @@ import CrossPNG from "./images/Cross.png"
 import Crosshair from "./images/Crosshair.png"
 import DeadSkullPNG from "./images/DeadSkull.png"
 import EmptyWarMachinesPNG from "./images/EmptyWarMachines.png"
-import BCWeeklyPassArrowPNG from "./images/FactionPass/BCWeeklyPassArrow.png"
+import BCBuyFactionPassPNG from "./images/FactionPass/BCBuyFactionPass.png"
 import BCDailyPassArrowPNG from "./images/FactionPass/BCDailyPassArrow.png"
+import BCFactionPassPNG from "./images/FactionPass/BCFactionPass.png"
 import BCMonthlyPassArrowPNG from "./images/FactionPass/BCMonthlyPassArrow.png"
+import BCWeeklyPassArrowPNG from "./images/FactionPass/BCWeeklyPassArrow.png"
 import FactionPassBgPNG from "./images/FactionPass/FactionPassBg.png"
 import FactionPassSs1PNG from "./images/FactionPass/FactionPassSs1.png"
 import FactionPassSs2PNG from "./images/FactionPass/FactionPassSs2.png"
-import RMWeeklyPassArrowPNG from "./images/FactionPass/RMWeeklyPassArrow.png"
+import RMBuyFactionPassPNG from "./images/FactionPass/RMBuyFactionPass.png"
 import RMDailyPassArrowPNG from "./images/FactionPass/RMDailyPassArrow.png"
+import RMFactionPassPNG from "./images/FactionPass/RMFactionPass.png"
 import RMMonthlyPassArrowPNG from "./images/FactionPass/RMMonthlyPassArrow.png"
-import ZHIWeeklyPassArrowPNG from "./images/FactionPass/ZHIWeeklyPassArrow.png"
+import RMWeeklyPassArrowPNG from "./images/FactionPass/RMWeeklyPassArrow.png"
+import ZHIBuyFactionPassPNG from "./images/FactionPass/ZHIBuyFactionPass.png"
 import ZHIDailyPassArrowPNG from "./images/FactionPass/ZHIDailyPassArrow.png"
+import ZHIFactionPassPNG from "./images/FactionPass/ZHIFactionPass.png"
 import ZHIMonthlyPassArrowPNG from "./images/FactionPass/ZHIMonthlyPassArrow.png"
+import ZHIWeeklyPassArrowPNG from "./images/FactionPass/ZHIWeeklyPassArrow.png"
 import FlamesPNG from "./images/Flames.png"
 import Gabs from "./images/Gabs.png"
 import GenericWarMachinePNG from "./images/GenericWarMachine.png"
@@ -404,6 +410,12 @@ export {
     ZHIWeeklyPassArrowPNG,
     ZHIDailyPassArrowPNG,
     ZHIMonthlyPassArrowPNG,
+    BCBuyFactionPassPNG,
+    BCFactionPassPNG,
+    RMBuyFactionPassPNG,
+    RMFactionPassPNG,
+    ZHIBuyFactionPassPNG,
+    ZHIFactionPassPNG,
     ThreeMechsJPG,
     CrossPNG,
     DeadSkullPNG,
