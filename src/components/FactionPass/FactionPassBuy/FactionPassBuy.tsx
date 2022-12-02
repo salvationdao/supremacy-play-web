@@ -112,7 +112,7 @@ export const FactionPassBuy = () => {
                                         color: colors.grey,
 
                                         span: {
-                                            color: colors.lightGrey,
+                                            color: "#FFFFFF",
                                         },
                                     },
                                 }}
