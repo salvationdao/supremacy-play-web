@@ -20,7 +20,7 @@ export const TransactionItem = ({ transaction, accountID }: { transaction: Trans
         }
     }, [copySuccess, toggleCopySuccess])
 
-    const isCredit = useMemo(() => accountID === transaction.credit, [accountID, transaction])
+    const isCredit = useMemo(() => accountID === transaction.credit_account_id, [accountID, transaction])
     const color = useMemo(() => (isCredit ? colors.supsCredit : colors.supsDebit), [isCredit])
     const tooltipText = useMemo(() => transaction.description || transaction.sub_group || transaction.group, [transaction])
 
