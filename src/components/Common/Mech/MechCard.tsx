@@ -84,13 +84,15 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                         }}
                     >
                         {/* Mech image */}
-                        <NiceBoxThing
-                            border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
-                            background={{ colors: [ownerFaction.palette.background] }}
-                            sx={{ height: "100%", width: "100%", boxShadow: 0.4 }}
-                        >
-                            <MediaPreview imageUrl={mech.avatar_url} objectFit="cover" allowModal />
-                        </NiceBoxThing>
+                        <Link to={`/mech/${mech.id}`}>
+                            <NiceBoxThing
+                                border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
+                                background={{ colors: [ownerFaction.palette.background] }}
+                                sx={{ height: "100%", width: "100%", boxShadow: 0.4 }}
+                            >
+                                <MediaPreview imageUrl={mech.avatar_url} objectFit="cover" />
+                            </NiceBoxThing>
+                        </Link>
 
                         {/* Mech name */}
                         <Link to={`/mech/${mech.id}`}>
@@ -222,13 +224,15 @@ export const MechCard = React.memo(function MechCard({ mech, hide, isSelected, t
                     )}
 
                     {/* Mech image */}
-                    <NiceBoxThing
-                        border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
-                        background={{ colors: [ownerFaction.palette.background] }}
-                        sx={{ position: "relative", boxShadow: 0.4, flex: 1 }}
-                    >
-                        <MediaPreview imageUrl={mech.avatar_url} objectFit="cover" sx={{ height: "20rem" }} allowModal />
-                    </NiceBoxThing>
+                    <Link to={`/mech/${mech.id}`}>
+                        <NiceBoxThing
+                            border={{ color: `#FFFFFF20`, thickness: "very-lean" }}
+                            background={{ colors: [ownerFaction.palette.background] }}
+                            sx={{ position: "relative", boxShadow: 0.4, flex: 1 }}
+                        >
+                            <MediaPreview imageUrl={mech.avatar_url} objectFit="cover" sx={{ height: "20rem" }} />
+                        </NiceBoxThing>
+                    </Link>
 
                     {/* Mech KDWL stats */}
                     {!hide?.kdwlStats && (

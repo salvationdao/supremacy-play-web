@@ -6,6 +6,7 @@ import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { MechStatusEnum, NewMechStruct } from "../../../types"
+import { NiceBoxThing } from "../Nice/NiceBoxThing"
 import { NiceButton } from "../Nice/NiceButton"
 import { NiceModal } from "../Nice/NiceModal"
 import { NicePopover } from "../Nice/NicePopover"
@@ -31,12 +32,19 @@ export const MechBulkActions = React.memo(function MechBulkActions({
     return (
         <>
             <Stack direction="row" alignItems="center" spacing=".6rem">
-                <Checkbox
-                    checked={(selectedCount || 0) >= totalItems}
-                    indeterminate={!!(selectedCount && selectedCount > 0 && selectedCount < totalItems)}
-                    onClick={(selectedCount || 0) >= totalItems ? () => setSelectedMechs([]) : () => setSelectedMechs(mechs)}
-                    sx={{ ".MuiSvgIcon-root": { width: "2rem", height: "2rem", color: `${theme.factionTheme.primary} !important` } }}
-                />
+                {/* Checkbox */}
+                <NiceBoxThing
+                    border={{ color: "#FFFFFF20" }}
+                    background={{ colors: ["#FFFFFF"], opacity: 0.06 }}
+                    sx={{ height: "4.3rem", p: ".3rem .8rem", display: "flex", alignItems: "center", justifyContent: "center" }}
+                >
+                    <Checkbox
+                        checked={(selectedCount || 0) >= totalItems}
+                        indeterminate={!!(selectedCount && selectedCount > 0 && selectedCount < totalItems)}
+                        onClick={(selectedCount || 0) >= totalItems ? () => setSelectedMechs([]) : () => setSelectedMechs(mechs)}
+                        sx={{ ".MuiSvgIcon-root": { width: "2rem", height: "2rem", color: `${theme.factionTheme.primary} !important` } }}
+                    />
+                </NiceBoxThing>
 
                 <NiceButton
                     ref={bulkPopoverRef}

@@ -31,7 +31,7 @@ export const FactionPassBuyModal = ({ onClose, factionPass, paymentType }: Facti
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string>()
-    const [overrideOnConfirm, setOverrideOnConfirm] = useState<() => void>() // If stripe, then setState to new onConfirm logic
+    const [overrideOnConfirm, setOverrideOnConfirm] = useState<() => Promise<void>>() // If stripe, then setState to new onConfirm logic
 
     // Dates
     const currentExpiryDate = useMemo(() => {
@@ -64,17 +64,12 @@ export const FactionPassBuyModal = ({ onClose, factionPass, paymentType }: Facti
                 setIsLoading(true)
                 setError(undefined)
 
-                if (overrideOnConfirm) {
-                    await overrideOnConfirm()
-                } else {
-                    const resp = await send<boolean>(GameServerKeys.PurchaseFactionPassWithSups, {
-                        faction_pass_id: factionPass.id,
-                        payment_type: paymentType,
-                    })
-                    if (!resp) return
-                }
+                const resp = await send<boolean>(GameServerKeys.PurchaseFactionPassWithSups, {
+                    faction_pass_id: factionPass.id,
+                    payment_type: paymentType,
+                })
+                if (!resp) return
 
-                setError(undefined)
                 onClose()
             } catch (err) {
                 console.error(err)
@@ -83,13 +78,13 @@ export const FactionPassBuyModal = ({ onClose, factionPass, paymentType }: Facti
                 setIsLoading(false)
             }
         },
-        [factionPass.id, onClose, overrideOnConfirm, send],
+        [factionPass.id, onClose, send],
     )
 
     return (
         <ConfirmModal
             title="Confirm Purchase"
-            onConfirm={() => buyFactionPass(paymentType)}
+            onConfirm={overrideOnConfirm || (() => buyFactionPass(paymentType))}
             onClose={onClose}
             isLoading={isLoading}
             error={error}
@@ -105,7 +100,13 @@ export const FactionPassBuyModal = ({ onClose, factionPass, paymentType }: Facti
             </Typography>
 
             {paymentType === PaymentType.Stripe && (
-                <StripePayment factionPass={factionPass} setIsLoading={setIsLoading} setError={setError} setOverrideOnConfirm={setOverrideOnConfirm} />
+                <StripePayment
+                    factionPass={factionPass}
+                    setIsLoading={setIsLoading}
+                    onClose={onClose}
+                    setError={setError}
+                    setOverrideOnConfirm={setOverrideOnConfirm}
+                />
             )}
         </ConfirmModal>
     )
@@ -114,21 +115,27 @@ export const FactionPassBuyModal = ({ onClose, factionPass, paymentType }: Facti
 const StripePayment = React.memo(function StripePayment({
     factionPass,
     setIsLoading,
+    onClose,
     setError,
     setOverrideOnConfirm,
 }: {
     factionPass: FactionPass
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+    onClose: () => void
     setError: React.Dispatch<React.SetStateAction<string | undefined>>
-    setOverrideOnConfirm: React.Dispatch<React.SetStateAction<(() => void) | undefined>>
+    setOverrideOnConfirm: React.Dispatch<React.SetStateAction<(() => Promise<void>) | undefined>>
 }) {
     const theme = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
 
     const [stripePromise, setStripePromise] = useState<Stripe | null>(null)
     useEffect(() => {
-        loadStripe(STRIPE_PUBLISHABLE_KEY).then((_stripPromise) => setStripePromise(_stripPromise))
-    }, [])
+        setIsLoading(true)
+        loadStripe(STRIPE_PUBLISHABLE_KEY).then((_stripPromise) => {
+            setStripePromise(_stripPromise)
+            setIsLoading(false)
+        })
+    }, [setIsLoading])
 
     const stripePaymentDetail = useGameServerSubscriptionFaction<StripePaymentDetail>({
         URI: `/faction_pass/${factionPass.id}/stripe_payment_intent`,
@@ -147,12 +154,19 @@ const StripePayment = React.memo(function StripePayment({
                 })
 
                 if (!data) return
-                await _stripe.confirmPayment({
+                const stripeError = await _stripe.confirmPayment({
                     elements: _elements,
                     confirmParams: {
                         return_url: `${origin}/faction-pass/buy`,
                     },
                 })
+
+                if (stripeError) {
+                    setError(stripeError.error.message)
+                    return
+                }
+
+                onClose()
             } catch (err) {
                 console.error(err)
                 setError(typeof err === "string" ? err : "Unable to Process payment.")
@@ -160,7 +174,7 @@ const StripePayment = React.memo(function StripePayment({
                 setIsLoading(false)
             }
         },
-        [send, setError, setIsLoading, stripePaymentDetail],
+        [onClose, send, setError, setIsLoading, stripePaymentDetail],
     )
 
     if (!stripePromise || !stripePaymentDetail) {
@@ -209,7 +223,7 @@ const StripPaymentInner = ({
 }: {
     stripePromise: Stripe
     handleStripeSubmit: (_elements: StripeElements | null, _stripe: Stripe | null) => Promise<void>
-    setOverrideOnConfirm: React.Dispatch<React.SetStateAction<(() => void) | undefined>>
+    setOverrideOnConfirm: React.Dispatch<React.SetStateAction<(() => Promise<void>) | undefined>>
 }) => {
     const elements = useElements()
 
