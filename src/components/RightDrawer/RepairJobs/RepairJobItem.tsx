@@ -3,8 +3,7 @@ import React, { useEffect, useMemo } from "react"
 import { useTimer } from "use-timer"
 import { SvgCubes, SvgSupToken } from "../../../assets"
 import { useAuth, useSupremacy } from "../../../containers"
-import { supFormatter, timeSinceInWords } from "../../../helpers"
-import { truncateTextLines } from "../../../helpers"
+import { supFormatter, timeSinceInWords, truncateTextLines } from "../../../helpers"
 import { colors, fonts } from "../../../theme/theme"
 import { RepairJob } from "../../../types/jobs"
 import { FancyButton } from "../../Common/Deprecated/FancyButton"
@@ -59,12 +58,7 @@ export const RepairJobItem = React.memo(function RepairJobItem({ repairJob, remo
                     clipThingsProps={{
                         clipSize: "7px",
                         clipSlantSize: "0px",
-                        corners: {
-                            topLeft: true,
-                            topRight: true,
-                            bottomLeft: true,
-                            bottomRight: true,
-                        },
+                        corners: {},
                         backgroundColor: backgroundColor,
                         opacity: isFinished ? 0.6 : 0.9,
                         border: { borderColor: primaryColor, borderThickness: isFinished ? "0" : ".15rem" },
