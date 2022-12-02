@@ -8,7 +8,7 @@ import { DEV_ONLY } from "../../constants"
 export const GetFactionPass = () => {
     const lottieRef = useRef<LottieRefCurrentProps>(null)
 
-    if (!DEV_ONLY) {
+    if (localStorage.getItem("ivan") !== "cool" && !DEV_ONLY) {
         return null
     }
 

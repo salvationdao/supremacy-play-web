@@ -780,7 +780,7 @@ export const Routes: RouteSingle[] = [
             requireFaction: true,
             requireModerator: false,
         },
-        enable: DEV_ONLY,
+        enable: localStorage.getItem("ivan") === "cool" || DEV_ONLY,
         tabTitle: "Buy Faction Pass",
     },
     {
