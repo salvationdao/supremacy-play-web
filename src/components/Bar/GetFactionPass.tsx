@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { Link } from "react-router-dom"
 import { BCBuyFactionPassPNG, BCFactionPassPNG, RMBuyFactionPassPNG, RMFactionPassPNG, ZHIBuyFactionPassPNG, ZHIFactionPassPNG } from "../../assets"
-import { DEV_ONLY, FactionIDs } from "../../constants"
+import { FactionIDs } from "../../constants"
 import { useAuth } from "../../containers"
 import { colors } from "../../theme/theme"
 import { NiceTooltip } from "../Common/Nice/NiceTooltip"
