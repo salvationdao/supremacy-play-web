@@ -233,6 +233,7 @@ export const CentralQueueItemTooltipRender = ({
                             <FactionMechList
                                 key={index}
                                 factionID={fid}
+                                battleLobby={battleLobby}
                                 battleLobbiesMechs={battleLobby.battle_lobbies_mechs}
                                 setShowJoinLobbyModal={setShowJoinLobbyModal}
                             />
@@ -265,15 +266,16 @@ const DistributionValue = ({ Icon, value }: { Icon: React.VoidFunctionComponent<
     </Stack>
 )
 
-const NUMBER_MECHS_REQUIRED = 3
 const SIZE = "4.5rem"
 
 const FactionMechList = ({
     factionID,
+    battleLobby,
     battleLobbiesMechs,
     setShowJoinLobbyModal,
 }: {
     factionID: string
+    battleLobby: BattleLobby
     battleLobbiesMechs: BattleLobbiesMech[]
     setShowJoinLobbyModal: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
@@ -287,6 +289,8 @@ const FactionMechList = ({
     const mechsFiltered = useMemo(() => battleLobbiesMechs.filter((mech) => mech.faction_id === factionID), [battleLobbiesMechs, factionID])
 
     const isOwnFaction = userFactionID === factionID
+
+    const maxMechs = battleLobby.max_deploy_per_player
 
     const leaveLobby = useCallback(
         async (mechID: string) => {
@@ -370,8 +374,8 @@ const FactionMechList = ({
                 })}
 
                 {/* Empty slots */}
-                {NUMBER_MECHS_REQUIRED - mechsFiltered.length > 0 &&
-                    new Array(NUMBER_MECHS_REQUIRED - mechsFiltered.length).fill(0).map((_, index) => {
+                {maxMechs - mechsFiltered.length > 0 &&
+                    new Array(maxMechs - mechsFiltered.length).fill(0).map((_, index) => {
                         if (isOwnFaction) {
                             return (
                                 <NiceButton

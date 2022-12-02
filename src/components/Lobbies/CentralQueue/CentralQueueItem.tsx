@@ -155,18 +155,20 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
                             </Stack>
 
                             <Stack direction="row" justifyContent="space-between">
+                                {/* Reward */}
                                 <Typography>
                                     Reward Pool:
                                     <SvgSupToken fill={colors.gold} size="1.6rem" inline />
                                     {supFormatter(battleLobby.sups_pool, 2)}
                                 </Typography>
 
+                                {/* Player count */}
                                 <Typography sx={{ color: battleLobby.battle_lobbies_mechs.length < 9 ? "#FFFFFF" : colors.green }}>
                                     <SvgUserDiamond inline size="1.8rem" />{" "}
                                     <span style={{ color: battleLobby.battle_lobbies_mechs.length < 9 ? colors.orange : "inherit" }}>
                                         {battleLobby.battle_lobbies_mechs.length}
                                     </span>
-                                    /9
+                                    /{battleLobby.max_deploy_per_player * 3}
                                 </Typography>
                             </Stack>
                         </Stack>

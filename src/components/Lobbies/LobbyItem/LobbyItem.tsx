@@ -14,7 +14,6 @@ import { TimeLeft } from "../../Common/TimeLeft"
 import { MyFactionMechs } from "./MyFactionMechs/MyFactionMechs"
 import { OtherFactionMechs } from "./OtherFactionMechs/OtherFactionMechs"
 import { PrizePool } from "./PrizePool"
-export const NUMBER_MECHS_REQUIRED = 3
 
 export interface FactionLobbySlots {
     details: BattleLobby
@@ -222,10 +221,15 @@ export const LobbyItem = React.memo(function LobbyItem({ battleLobby, joinBattle
                     <Box sx={{ borderRight: "#FFFFFF16 1px solid" }} />
 
                     {/* Mechs */}
-                    <MyFactionMechs myFactionLobbySlots={myFactionLobbySlots} isLocked={!!battleLobby.ready_at} onSlotClick={joinBattleLobby} />
+                    <MyFactionMechs
+                        battleLobby={battleLobby}
+                        myFactionLobbySlots={myFactionLobbySlots}
+                        isLocked={!!battleLobby.ready_at}
+                        onSlotClick={joinBattleLobby}
+                    />
 
                     {/* Other faction mechs */}
-                    <OtherFactionMechs otherFactionLobbySlots={otherFactionLobbySlots} />
+                    <OtherFactionMechs battleLobby={battleLobby} otherFactionLobbySlots={otherFactionLobbySlots} />
 
                     {/* Background map image */}
                     <Box
