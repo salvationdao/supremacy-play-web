@@ -1,15 +1,15 @@
 import { Box, Stack, Typography } from "@mui/material"
 import React, { useMemo, useState } from "react"
 import {
-    BCAnnualPassArrowPNG,
+    BCWeeklyPassArrowPNG,
     BCDailyPassArrowPNG,
     BCMonthlyPassArrowPNG,
-    RMAnnualPassArrowPNG,
+    RMWeeklyPassArrowPNG,
     RMDailyPassArrowPNG,
     RMMonthlyPassArrowPNG,
     SvgCreditCard,
     SvgSupToken,
-    ZHIAnnualPassArrowPNG,
+    ZHIWeeklyPassArrowPNG,
     ZHIDailyPassArrowPNG,
     ZHIMonthlyPassArrowPNG,
 } from "../../../assets"
@@ -31,17 +31,17 @@ const headerArrowImages: {
 } = {
     [FactionIDs.BC]: {
         daily: BCDailyPassArrowPNG,
-        weekly: BCAnnualPassArrowPNG,
+        weekly: BCWeeklyPassArrowPNG,
         monthly: BCMonthlyPassArrowPNG,
     },
     [FactionIDs.RM]: {
         daily: RMDailyPassArrowPNG,
-        weekly: RMAnnualPassArrowPNG,
+        weekly: RMWeeklyPassArrowPNG,
         monthly: RMMonthlyPassArrowPNG,
     },
     [FactionIDs.ZHI]: {
         daily: ZHIDailyPassArrowPNG,
-        weekly: ZHIAnnualPassArrowPNG,
+        weekly: ZHIWeeklyPassArrowPNG,
         monthly: ZHIMonthlyPassArrowPNG,
     },
 }
