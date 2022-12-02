@@ -12,6 +12,7 @@ interface NiceTooltipProps extends Omit<TooltipProps, "title"> {
     color?: string
     textColor?: string
     tooltipSx?: SxProps
+    parentSx?: SxProps
 }
 
 export type TooltipPlacement =
@@ -28,7 +29,7 @@ export type TooltipPlacement =
     | "top-start"
     | "top"
 
-export const NiceTooltip = ({ text, renderNode, children, placement, color, textColor, tooltipSx, ...props }: NiceTooltipProps) => {
+export const NiceTooltip = ({ text, renderNode, children, placement, color, textColor, tooltipSx, parentSx, ...props }: NiceTooltipProps) => {
     const theme = useTheme()
     if (!text && !renderNode) return <>{children}</>
 
@@ -52,7 +53,7 @@ export const NiceTooltip = ({ text, renderNode, children, placement, color, text
                         thickness: "very-lean",
                     }}
                     background={{ colors: [theme.factionTheme.background] }}
-                    sx={{ height: "100%", maxHeight: "calc(100vh - 4rem)" }}
+                    sx={{ height: "100%", maxHeight: "calc(100vh - 4rem)", ...parentSx }}
                 >
                     <Stack sx={{ height: "100%", backgroundColor: "#FFFFFF10" }}>
                         {renderNode || (

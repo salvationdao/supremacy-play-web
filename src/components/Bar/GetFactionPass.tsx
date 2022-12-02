@@ -25,7 +25,7 @@ export const GetFactionPass = () => {
                         <Typography sx={{ p: ".5rem 1.2rem" }}>
                             {factionPassExpiryDate && factionPassExpiryDate > new Date() ? (
                                 <>
-                                    Your Faction Pass is valid until:{" "}
+                                    Your current Faction Pass is valid until:{" "}
                                     <span style={{ color: colors.neonBlue }}>{factionPassExpiryDate.toLocaleDateString()}</span>
                                 </>
                             ) : (
@@ -33,6 +33,7 @@ export const GetFactionPass = () => {
                             )}
                         </Typography>
                     }
+                    parentSx={{ mt: "-2rem" }}
                 >
                     <Box
                         onMouseEnter={() => {

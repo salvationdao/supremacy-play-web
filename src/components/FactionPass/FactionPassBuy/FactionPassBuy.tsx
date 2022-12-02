@@ -97,9 +97,10 @@ export const FactionPassBuy = () => {
                     </Stack>
 
                     {factionPassExpiryDate && factionPassExpiryDate > new Date() && (
-                        <NiceBoxThing border={{ color: colors.green }} background={{ colors: [colors.green], opacity: 0.5 }} sx={{ p: "1rem 2rem" }}>
+                        <NiceBoxThing border={{ color: colors.green }} background={{ colors: [colors.green], opacity: 0.4 }} sx={{ p: "1rem 2rem" }}>
                             <Typography variant="h5" fontWeight="bold">
-                                Your current Faction Pass is valid until: {factionPassExpiryDate.toLocaleDateString()}
+                                Your current Faction Pass is valid until:{" "}
+                                <span style={{ color: colors.neonBlue }}>{factionPassExpiryDate.toLocaleDateString()}</span>
                             </Typography>
                         </NiceBoxThing>
                     )}
