@@ -11,6 +11,7 @@ import { colors, fonts } from "../../theme/theme"
 import { MysteryCrateType, OpenCrateResponse, RewardResponse } from "../../types"
 import { ClipThing } from "../Common/Deprecated/ClipThing"
 import { FancyButton } from "../Common/Deprecated/FancyButton"
+import { NiceBoxThing } from "../Common/Nice/NiceBoxThing"
 import { OpeningCrate } from "../FleetCrates/FleetCrates"
 
 interface ClaimedRewardsProps {
@@ -65,14 +66,10 @@ export const ClaimedRewards = ({ rewards, onClose, setOpeningCrate, setOpenedRew
     }, [crateToOpen, setOpeningCrate, send, setOpenedRewards, onClose, newSnackbarMessage])
 
     return (
-        <ClipThing
-            clipSize="8px"
-            border={{
-                borderColor: theme.factionTheme.primary,
-                borderThickness: ".3rem",
-            }}
+        <NiceBoxThing
+            border={{ color: `${theme.factionTheme.primary}50` }}
+            background={{ colors: [theme.factionTheme.background], opacity: 0.9 }}
             sx={{ m: "4rem", width: "110rem", maxWidth: "80%" }}
-            backgroundColor={theme.factionTheme.background}
         >
             <Stack spacing="2rem" justifyContent="center" alignItems="center" sx={{ position: "relative", py: "5rem", px: "5.5rem", textAlign: "center" }}>
                 {/* Background image */}
@@ -184,7 +181,7 @@ export const ClaimedRewards = ({ rewards, onClose, setOpeningCrate, setOpenedRew
                     <SvgClose size="3rem" sx={{ opacity: 0.1, ":hover": { opacity: 0.6 } }} />
                 </IconButton>
             )}
-        </ClipThing>
+        </NiceBoxThing>
     )
 }
 
