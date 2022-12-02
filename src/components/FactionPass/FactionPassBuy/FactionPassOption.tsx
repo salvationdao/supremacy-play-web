@@ -23,30 +23,29 @@ import { FactionWithPalette } from "../../../types"
 import { FactionPass } from "../../../types/faction_passes"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { NiceButton } from "../../Common/Nice/NiceButton"
-import { DAYS_IN_A_MONTH } from "./FactionPassBuy"
 import { FactionPassBuyModal } from "./FactionPassBuyModal"
 
 const headerArrowImages: {
     [factionID: string]: {
         daily: string
+        weekly: string
         monthly: string
-        yearly: string
     }
 } = {
     [FactionIDs.BC]: {
         daily: BCDailyPassArrowPNG,
+        weekly: BCAnnualPassArrowPNG,
         monthly: BCMonthlyPassArrowPNG,
-        yearly: BCAnnualPassArrowPNG,
     },
     [FactionIDs.RM]: {
         daily: RMDailyPassArrowPNG,
+        weekly: RMAnnualPassArrowPNG,
         monthly: RMMonthlyPassArrowPNG,
-        yearly: RMAnnualPassArrowPNG,
     },
     [FactionIDs.ZHI]: {
         daily: ZHIDailyPassArrowPNG,
+        weekly: ZHIAnnualPassArrowPNG,
         monthly: ZHIMonthlyPassArrowPNG,
-        yearly: ZHIAnnualPassArrowPNG,
     },
 }
 
@@ -69,20 +68,15 @@ export const FactionPassOption = React.memo(function FactionPassOption({ faction
     const { priceLabel, headerArrowImage } = useMemo(() => {
         const days = factionPass.last_for_days
 
-        let priceLabel = `${factionPass.label} PRICE`
+        const priceLabel = `${factionPass.label} PRICE`
         let headerArrowImage = ""
 
         if (days <= 3) {
-            priceLabel = `${days * 24} HOUR`
             headerArrowImage = headerArrowImages[faction.id]?.daily || ""
-        } else if (days < 365) {
-            const months = Math.floor(days / DAYS_IN_A_MONTH)
-            priceLabel = months > 1 ? `${months} MONTHLY` : "MONTHLY"
-            headerArrowImage = headerArrowImages[faction.id]?.monthly || ""
+        } else if (days <= 7) {
+            headerArrowImage = headerArrowImages[faction.id]?.weekly || ""
         } else {
-            const years = Math.floor(days / 365)
-            priceLabel = years > 1 ? `${years} YEARLY` : "YEARLY"
-            headerArrowImage = headerArrowImages[faction.id]?.yearly || ""
+            headerArrowImage = headerArrowImages[faction.id]?.monthly || ""
         }
 
         return { priceLabel, headerArrowImage }
