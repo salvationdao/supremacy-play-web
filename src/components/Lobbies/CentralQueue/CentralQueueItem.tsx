@@ -21,6 +21,8 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
 
     const displayAccessCode = useMemo(() => battleLobby.access_code, [battleLobby.access_code])
 
+    const maxMechsTotal = battleLobby.max_deploy_per_player * 3
+
     const lobbyStatus = useMemo(() => {
         let textColor = colors.lightGrey
         let text = "WAITING..."
@@ -163,12 +165,12 @@ export const CentralQueueItem = ({ battleLobby }: { battleLobby: BattleLobby }) 
                                 </Typography>
 
                                 {/* Player count */}
-                                <Typography sx={{ color: battleLobby.battle_lobbies_mechs.length < 9 ? "#FFFFFF" : colors.green }}>
+                                <Typography sx={{ color: battleLobby.battle_lobbies_mechs.length < maxMechsTotal ? "#FFFFFF" : colors.green }}>
                                     <SvgUserDiamond inline size="1.8rem" />{" "}
-                                    <span style={{ color: battleLobby.battle_lobbies_mechs.length < 9 ? colors.orange : "inherit" }}>
+                                    <span style={{ color: battleLobby.battle_lobbies_mechs.length < maxMechsTotal ? colors.orange : "inherit" }}>
                                         {battleLobby.battle_lobbies_mechs.length}
                                     </span>
-                                    /{battleLobby.max_deploy_per_player * 3}
+                                    /{maxMechsTotal}
                                 </Typography>
                             </Stack>
                         </Stack>

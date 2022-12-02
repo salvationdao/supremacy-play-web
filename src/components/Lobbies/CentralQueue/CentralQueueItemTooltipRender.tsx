@@ -48,6 +48,8 @@ export const CentralQueueItemTooltipRender = ({
 
     const arenaName = useMemo(() => arenaList.find((a) => a.id === battleLobby.assigned_to_arena_id)?.name, [arenaList, battleLobby.assigned_to_arena_id])
 
+    const maxMechs = battleLobby.max_deploy_per_player
+
     const topBanner = useMemo(() => {
         let textColor = colors.grey
         let text = "WAITING FOR PLAYERS..."
@@ -220,11 +222,11 @@ export const CentralQueueItemTooltipRender = ({
                         </Typography>
                         <Typography
                             sx={{
-                                color: battleLobby.battle_lobbies_mechs.length < 9 ? colors.lightGrey : colors.green,
+                                color: battleLobby.battle_lobbies_mechs.length < maxMechs * 3 ? colors.lightGrey : colors.green,
                                 fontFamily: fonts.rajdhaniBold,
                             }}
                         >
-                            {battleLobby.battle_lobbies_mechs.length}/9
+                            {battleLobby.battle_lobbies_mechs.length}/{maxMechs * 3}
                         </Typography>
                     </Stack>
 
