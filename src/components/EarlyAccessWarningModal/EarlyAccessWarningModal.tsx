@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { IS_TESTING_MODE } from "../../constants"
+import { STAGING_ONLY } from "../../constants"
 import { useToggle } from "../../hooks"
 import { colors, fonts } from "../../theme/theme"
 import { NiceButton } from "../Common/Nice/NiceButton"
@@ -13,7 +13,7 @@ export const EarlyAccessWarningModal = ({ onAcknowledged }: { onAcknowledged: ()
     return (
         <NiceModal open={!closed}>
             <Box sx={{ px: "3.2rem", py: "2.4rem" }}>
-                {IS_TESTING_MODE ? <StagingMessage /> : <ProdMessage />}
+                {STAGING_ONLY ? <StagingMessage /> : <ProdMessage />}
 
                 <NiceButton
                     corners

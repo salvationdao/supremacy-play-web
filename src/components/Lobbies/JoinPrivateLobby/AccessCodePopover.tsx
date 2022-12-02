@@ -115,6 +115,7 @@ const AccessCodePopoverInner = ({ open, onClose, popoverRef, accessCode, setAcce
                         buttonColor={theme.factionTheme.primary}
                         corners
                         onClick={() => accessCode && onConfirm(accessCode)}
+                        sx={{ py: "1rem" }}
                     >
                         <Typography variant="subtitle1" fontFamily={fonts.nostromoBold}>
                             Confirm

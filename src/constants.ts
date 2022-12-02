@@ -43,7 +43,6 @@ export const BATTLE_ARENA_OPEN = !!(
 )
 
 // Testing related
-export const IS_TESTING_MODE = STAGING_ONLY
 export const NEXT_RESET_TIME = new Date("Sep 07 2022 14:00:00 GMT+0800")
 
 if (USE_PROD_DATA) {

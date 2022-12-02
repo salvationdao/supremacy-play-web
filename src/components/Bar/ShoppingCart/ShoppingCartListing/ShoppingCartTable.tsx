@@ -2,7 +2,7 @@ import { Box, Button, CircularProgress, Stack, TextField, Typography } from "@mu
 import BigNumber from "bignumber.js"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { SvgArrow, SvgBin, SvgSupToken } from "../../../../assets"
-import { IS_TESTING_MODE } from "../../../../constants"
+import { STAGING_ONLY } from "../../../../constants"
 import { generatePriceText, snakeToTitle, supFormatter } from "../../../../helpers"
 import { useGameServerCommandsUser } from "../../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../../keys"
@@ -100,7 +100,7 @@ export const ShoppingCartTable = ({ shoppingCart, loading, primaryColor, backgro
                                     },
                                 }}
                             >
-                                <SvgSupToken size="1.9rem" fill={IS_TESTING_MODE ? colors.red : colors.yellow} sx={{ mr: ".2rem", pb: 0 }} />
+                                <SvgSupToken size="1.9rem" fill={STAGING_ONLY ? colors.red : colors.yellow} sx={{ mr: ".2rem", pb: 0 }} />
                                 <Typography sx={{ fontFamily: fonts.nostromoBold, lineHeight: 1, whiteSpace: "nowrap" }}>
                                     {supFormatter(totalSUPS.toString(), 2) || "0.00"}
                                 </Typography>
@@ -357,7 +357,7 @@ const ShoppingCartRow = ({ item, primaryColor, backgroundColor }: ShoppingCartRo
                             },
                         }}
                     >
-                        <SvgSupToken size="1.9rem" fill={IS_TESTING_MODE ? colors.red : colors.yellow} sx={{ mr: ".2rem", pb: 0 }} />
+                        <SvgSupToken size="1.9rem" fill={STAGING_ONLY ? colors.red : colors.yellow} sx={{ mr: ".2rem", pb: 0 }} />
                         <Typography sx={{ fontFamily: fonts.nostromoBold, lineHeight: 1, whiteSpace: "nowrap" }}>{supPrice}</Typography>
                     </Stack>
                 )}

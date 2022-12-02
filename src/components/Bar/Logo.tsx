@@ -2,13 +2,13 @@ import { Box, Stack, Typography } from "@mui/material"
 import React, { useState } from "react"
 import { Link } from "react-router-dom"
 import { SvgSupremacyLogo } from "../../assets"
-import { IS_TESTING_MODE, VERSION } from "../../constants"
+import { STAGING_ONLY, VERSION } from "../../constants"
 import { useMobile } from "../../containers"
 import { colors, fonts } from "../../theme/theme"
 
 export const Logo = React.memo(function Logo() {
     const { isMobile } = useMobile()
-    const [text, setText] = useState<string>(IS_TESTING_MODE ? "PROVING GROUNDS" : "EARLY ACCESS")
+    const [text, setText] = useState<string>(STAGING_ONLY ? "PROVING GROUNDS" : "EARLY ACCESS")
 
     return (
         <Stack
@@ -27,7 +27,7 @@ export const Logo = React.memo(function Logo() {
                         setText(`${VERSION.substring(0, 10)}...`)
                     }}
                     onMouseLeave={() => {
-                        setText(IS_TESTING_MODE ? "PROVING GROUNDS" : "EARLY ACCESS")
+                        setText(STAGING_ONLY ? "PROVING GROUNDS" : "EARLY ACCESS")
                     }}
                     sx={{ pb: "2px" }}
                 >
