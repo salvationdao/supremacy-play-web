@@ -211,6 +211,9 @@ const MiniMapInner = ({ map, isPoppedout, width = 100, height = 100, poppedOutCo
                     height: "100%",
                     pb: !isPoppedout && !isStreamBigDisplay ? `${BOTTOM_PADDING}rem` : 0,
                     boxShadow: 2,
+                    overscrollBehavior: "contain",
+                    overflowX: "hidden",
+                    overflowY: "auto",
                 }}
             >
                 <Box

@@ -8,7 +8,6 @@ import {
     RMDailyPassArrowPNG,
     RMMonthlyPassArrowPNG,
     SvgCreditCard,
-    SvgEthereum,
     SvgSupToken,
     SvgWallet,
     ZHIAnnualPassArrowPNG,
@@ -142,13 +141,13 @@ export const FactionPassOption = React.memo(function FactionPassOption({ faction
                 </Stack>
 
                 {/* ETH */}
-                <Stack direction="row" justifyContent="space-between" sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.palette.s600} 1px solid` }}>
+                {/* <Stack direction="row" justifyContent="space-between" sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.palette.s600} 1px solid` }}>
                     <Typography fontWeight="bold">ETH</Typography>
                     <Typography>
                         <SvgEthereum size="1.8rem" inline />
                         {factionPass ? supFormatter(factionPass.eth_price_wei, 3) : "---"}
                     </Typography>
-                </Stack>
+                </Stack> */}
 
                 {/* Fiat */}
                 <Stack direction="row" justifyContent="space-between" sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.palette.s600} 1px solid` }}>

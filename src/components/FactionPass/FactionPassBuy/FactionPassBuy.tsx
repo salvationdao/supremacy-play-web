@@ -3,12 +3,12 @@ import { useMemo, useState } from "react"
 import { FactionPassBgPNG, FactionPassSs1PNG, FactionPassSs2PNG, SvgFactionPassArrow } from "../../../assets"
 import { FactionIDs } from "../../../constants"
 import { useAuth, useSupremacy } from "../../../containers"
-import { colors, fonts } from "../../../theme/theme"
-import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
-import { FactionPassOption } from "./FactionPassOption"
 import { useGameServerSubscriptionSecured } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
+import { colors, fonts } from "../../../theme/theme"
 import { FactionPass } from "../../../types/faction_passes"
+import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
+import { FactionPassOption } from "./FactionPassOption"
 
 export const DAYS_IN_A_MONTH = 28
 
@@ -101,22 +101,28 @@ export const FactionPassBuy = () => {
                             <Typography variant="h6" sx={{ fontFamily: fonts.nostromoBlack }}>
                                 The faction pass allows you to:
                             </Typography>
-                            <Typography variant="h6" sx={{ mt: "1rem", ml: ".5rem", lineHeight: 2 }}>
+                            <Typography
+                                variant="h6"
+                                sx={{
+                                    mt: "1rem",
+                                    ml: ".5rem",
+                                    span: {
+                                        color: colors.neonBlue,
+                                    },
+                                }}
+                            >
                                 • Borrow staked mechs from the faction Mech Pool
                                 <br />
                                 • Earn $SUPS on staked mechs wins
-                                <br />
-                                • Enable direct repairs from other faction pass holders
-                                <br />
-                                • Earn multipliers by staking mechs
-                                <br />
-                                • See comprehensive statistics
+                                <br />• Enable direct repairs from other faction pass holders <span>(coming soon)</span>
+                                <br />• Earn multipliers by staking mechs <span>(coming soon)</span>
+                                <br />• See comprehensive statistics <span>(coming soon)</span>
                                 <br />
                             </Typography>
                         </Box>
 
                         {/* Screenshots */}
-                        <Box sx={{ position: "relative", alignSelf: "stretch", flex: 1, filter: `hue-rotate(${hueRotate}deg)` }}>
+                        <Box sx={{ position: "relative", alignSelf: "stretch", flex: 1, filter: `hue-rotate(${hueRotate}deg)`, minWidth: "30rem" }}>
                             <Box
                                 component="img"
                                 src={FactionPassSs1PNG}
