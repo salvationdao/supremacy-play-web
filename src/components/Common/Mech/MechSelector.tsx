@@ -1,6 +1,7 @@
 import { Box, CircularProgress, Stack, SxProps, Typography } from "@mui/material"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { EmptyWarMachinesPNG, SvgInfoCircular, SvgSearch } from "../../../assets"
+import { useAuth } from "../../../containers"
 import { useTheme } from "../../../containers/theme"
 import { getRarityDeets, mechHasPowerCoreAndWeapon } from "../../../helpers"
 import { useDebounce } from "../../../hooks"
@@ -43,6 +44,7 @@ export const MechSelector = React.memo(function MechSelector({
     sx?: SxProps
     onlyDeployableMechs?: boolean
 }) {
+    const { userID } = useAuth()
     const theme = useTheme()
 
     // Filter, search
@@ -128,6 +130,7 @@ export const MechSelector = React.memo(function MechSelector({
         {
             URI: "/staked_mechs",
             key: GameServerKeys.SubFactionStakedMechs,
+            ready: !!userID,
         },
         (payload) => {
             setTimeout(() => setIsLoading(false), 300)
@@ -164,7 +167,7 @@ export const MechSelector = React.memo(function MechSelector({
                     if (onlyDeployableMechs) {
                         return mechHasPowerCoreAndWeapon(mech) && mech.can_deploy
                     }
-                    return true
+                    return mech.owner_id !== userID
                 })
             })
         },
