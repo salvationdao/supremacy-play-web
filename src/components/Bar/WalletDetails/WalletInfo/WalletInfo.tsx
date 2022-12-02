@@ -2,7 +2,7 @@ import { Box, CircularProgress, IconButton, Stack, Typography } from "@mui/mater
 import BigNumber from "bignumber.js"
 import { MutableRefObject, useRef, useState } from "react"
 import { SvgHide, SvgSupToken, SvgUnhide } from "../../../../assets"
-import { IS_TESTING_MODE } from "../../../../constants"
+import { STAGING_ONLY } from "../../../../constants"
 import { useAuth, useWallet } from "../../../../containers"
 import { supFormatter } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
@@ -118,7 +118,7 @@ const WalletInfoInner = ({
                 }}
             >
                 <Typography sx={{ fontFamily: fonts.nostromoBold, lineHeight: 1, whiteSpace: "nowrap" }}>
-                    <SvgSupToken size="2rem" fill={IS_TESTING_MODE ? colors.red : colors.yellow} inline />
+                    <SvgSupToken size="2rem" fill={STAGING_ONLY ? colors.red : colors.yellow} inline />
                     {!isHideValue && <>{onWorldSupsRaw ? supFormatter(onWorldSupsRaw, 2) : "0.00"}</>}
                     {isHideValue && "---"}
                 </Typography>

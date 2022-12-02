@@ -38,7 +38,7 @@ import { PackagesStore } from "../components/Storefront/PackagesStore/PackagesSt
 import { PlayerAbilitiesStore } from "../components/Storefront/PlayerAbilitiesStore/PlayerAbilitiesStore"
 import { StorefrontShoppingCartPage } from "../components/Storefront/StorefrontShoppingCartPage"
 import { TutorialPage } from "../components/Tutorial/TutorialPage"
-import { DEV_ONLY, HANGAR_PAGE, IS_TESTING_MODE } from "../constants"
+import { DEV_ONLY, HANGAR_PAGE, STAGING_ONLY } from "../constants"
 
 export enum RouteSingleID {
     Home = "HOME",
@@ -333,7 +333,7 @@ export const Routes: RouteSingle[] = [
             image: GenericPNG,
             path: "/fleet/submodels",
         },
-        enable: DEV_ONLY,
+        enable: true,
         tabTitle: "Fleet - Submodels",
     },
     {
@@ -371,7 +371,7 @@ export const Routes: RouteSingle[] = [
             image: GenericPNG,
             path: "/fleet/abilities",
         },
-        enable: true,
+        enable: DEV_ONLY,
         tabTitle: "Fleet - Abilities",
     },
     {
@@ -407,7 +407,7 @@ export const Routes: RouteSingle[] = [
             requireFaction: true,
             requireModerator: false,
         },
-        enable: !IS_TESTING_MODE,
+        enable: DEV_ONLY,
         tabTitle: "Shopping Cart",
     },
     {
@@ -445,7 +445,7 @@ export const Routes: RouteSingle[] = [
             image: GenericPNG,
             path: "/storefront/abilities",
         },
-        enable: true,
+        enable: DEV_ONLY,
         tabTitle: "Storefront - Abilities",
     },
     {
@@ -464,7 +464,7 @@ export const Routes: RouteSingle[] = [
             image: GenericPNG,
             path: "/storefront/packages",
         },
-        enable: true,
+        enable: DEV_ONLY,
         tabTitle: "Storefront - Packages",
     },
 
@@ -481,7 +481,7 @@ export const Routes: RouteSingle[] = [
             requireFaction: true,
             requireModerator: false,
         },
-        enable: !IS_TESTING_MODE,
+        enable: !STAGING_ONLY,
         tabTitle: "Sell Item",
     },
     {
@@ -494,7 +494,7 @@ export const Routes: RouteSingle[] = [
             requireFaction: true,
             requireModerator: false,
         },
-        enable: !IS_TESTING_MODE,
+        enable: !STAGING_ONLY,
         tabTitle: "Marketplace Mech Item",
     },
     {
@@ -507,7 +507,7 @@ export const Routes: RouteSingle[] = [
             requireFaction: true,
             requireModerator: false,
         },
-        enable: !IS_TESTING_MODE,
+        enable: !STAGING_ONLY,
         tabTitle: "Marketplace Weapon Item",
     },
     {
@@ -520,7 +520,7 @@ export const Routes: RouteSingle[] = [
             requireFaction: true,
             requireModerator: false,
         },
-        enable: !IS_TESTING_MODE,
+        enable: !STAGING_ONLY,
         tabTitle: "Marketplace Keycard Item",
     },
     {
@@ -533,7 +533,7 @@ export const Routes: RouteSingle[] = [
             requireFaction: true,
             requireModerator: false,
         },
-        enable: !IS_TESTING_MODE,
+        enable: !STAGING_ONLY,
         tabTitle: "Marketplace Mystery Crate Item",
     },
     {
@@ -552,7 +552,7 @@ export const Routes: RouteSingle[] = [
             image: GenericPNG,
             path: "/marketplace/history",
         },
-        enable: !IS_TESTING_MODE,
+        enable: !STAGING_ONLY,
         tabTitle: "Marketplace - History",
     },
     {
@@ -571,7 +571,7 @@ export const Routes: RouteSingle[] = [
             image: GenericPNG,
             path: "/marketplace/mechs",
         },
-        enable: !IS_TESTING_MODE,
+        enable: !STAGING_ONLY,
         tabTitle: "Marketplace - Mechs",
     },
     {
@@ -590,7 +590,7 @@ export const Routes: RouteSingle[] = [
             image: GenericPNG,
             path: "/marketplace/weapons",
         },
-        enable: !IS_TESTING_MODE,
+        enable: !STAGING_ONLY,
         tabTitle: "Marketplace - Weapons",
     },
     {
@@ -609,7 +609,7 @@ export const Routes: RouteSingle[] = [
             image: GenericPNG,
             path: "/marketplace/keycards",
         },
-        enable: !IS_TESTING_MODE,
+        enable: !STAGING_ONLY,
         tabTitle: "Marketplace - Keycards",
     },
     {
@@ -628,7 +628,7 @@ export const Routes: RouteSingle[] = [
             image: GenericPNG,
             path: "/marketplace/mystery-crates",
         },
-        enable: !IS_TESTING_MODE,
+        enable: !STAGING_ONLY,
         tabTitle: "Marketplace - Mystery Crates",
     },
 
@@ -645,7 +645,7 @@ export const Routes: RouteSingle[] = [
             requireFaction: true,
             requireModerator: false,
         },
-        enable: true,
+        enable: DEV_ONLY,
         tabTitle: "Billing History Item",
     },
     {
@@ -658,7 +658,7 @@ export const Routes: RouteSingle[] = [
             requireFaction: true,
             requireModerator: false,
         },
-        enable: true,
+        enable: DEV_ONLY,
         tabTitle: "Billing History",
     },
 

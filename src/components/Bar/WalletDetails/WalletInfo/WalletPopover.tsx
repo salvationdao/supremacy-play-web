@@ -3,7 +3,7 @@ import BigNumber from "bignumber.js"
 import { MutableRefObject, useEffect } from "react"
 import { TransactionItem } from "../../.."
 import { SvgExternalLink, SvgSupToken } from "../../../../assets"
-import { IS_TESTING_MODE, PASSPORT_WEB } from "../../../../constants"
+import { STAGING_ONLY, PASSPORT_WEB } from "../../../../constants"
 import { useTheme } from "../../../../containers/theme"
 import { supFormatter } from "../../../../helpers"
 import { useToggle } from "../../../../hooks"
@@ -82,10 +82,10 @@ export const WalletPopover = ({
                 </Box>
 
                 <Stack spacing=".5rem">
-                    <Typography sx={{ fontFamily: fonts.nostromoBlack }}>TOTAL {IS_TESTING_MODE ? "V" : ""}SUPS</Typography>
+                    <Typography sx={{ fontFamily: fonts.nostromoBlack }}>TOTAL {STAGING_ONLY ? "V" : ""}SUPS</Typography>
 
                     <Typography sx={{ lineHeight: 1 }}>
-                        <SvgSupToken size="1.4rem" fill={IS_TESTING_MODE ? colors.red : colors.yellow} inline />
+                        <SvgSupToken size="1.4rem" fill={STAGING_ONLY ? colors.red : colors.yellow} inline />
                         {sups ? supFormatter(sups, 18) : "0.00"}
                     </Typography>
                 </Stack>
