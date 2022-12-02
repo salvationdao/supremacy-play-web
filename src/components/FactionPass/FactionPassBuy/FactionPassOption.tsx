@@ -13,16 +13,17 @@ import {
     ZHIDailyPassArrowPNG,
     ZHIMonthlyPassArrowPNG,
 } from "../../../assets"
-import { DEV_ONLY, FactionIDs } from "../../../constants"
+import { FactionIDs } from "../../../constants"
 import { supFormatter } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { FactionWithPalette } from "../../../types"
 import { FactionPass } from "../../../types/faction_passes"
+import { ConfirmModal } from "../../Common/Deprecated/ConfirmModal"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { NiceButton } from "../../Common/Nice/NiceButton"
-import { FactionPassBuyModal } from "./FactionPassBuyModal"
+import { FactionPassBuyFiatModal } from "./FactionPassBuyFiatModal"
 
 const headerArrowImages: {
     [factionID: string]: {
@@ -62,7 +63,8 @@ export const FactionPassOption = React.memo(function FactionPassOption({ faction
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState("")
-    const [openPaymentModal, setOpenPaymentModal] = useState(false)
+    const [isSupsBuyModalOpen, setIsSupsBuyModalOpen] = useState(false)
+    const [isFiatModalOpen, setIsFiatModalOpen] = useState(false)
 
     const { priceLabel, headerArrowImage } = useMemo(() => {
         const days = factionPass.last_for_days
@@ -81,7 +83,7 @@ export const FactionPassOption = React.memo(function FactionPassOption({ faction
         return { priceLabel, headerArrowImage }
     }, [factionPass.last_for_days, factionPass.label, faction.id])
 
-    const buyFactionPassWithSups = useCallback(
+    const buyFactionPass = useCallback(
         async (paymentType: PaymentType) => {
             setIsLoading(true)
             try {
@@ -92,7 +94,7 @@ export const FactionPassOption = React.memo(function FactionPassOption({ faction
                 if (!resp) return
 
                 setError("")
-                setOpenPaymentModal(false)
+                setIsFiatModalOpen(false)
             } catch (e) {
                 setError(typeof e === "string" ? e : "Failed to get lookup history.")
                 console.error(e)
@@ -130,7 +132,7 @@ export const FactionPassOption = React.memo(function FactionPassOption({ faction
 
                     <Box flex={1} />
 
-                    <NiceButton buttonColor={colors.gold} onClick={() => setOpenPaymentModal(true)} sx={{ width: "9rem", p: "0 1rem" }} loading={isLoading}>
+                    <NiceButton buttonColor={colors.gold} onClick={() => setIsSupsBuyModalOpen(true)} sx={{ width: "9rem", p: "0 1rem" }} loading={isLoading}>
                         <Typography fontWeight="bold">
                             <SvgSupToken fill={colors.gold} size="1.8rem" inline />
                             {factionPass ? supFormatter(factionPass.sups_price, 3) : "---"}
@@ -147,12 +149,7 @@ export const FactionPassOption = React.memo(function FactionPassOption({ faction
 
                         <Box flex={1} />
 
-                        <NiceButton
-                            buttonColor={colors.blue2}
-                            onClick={() => setOpenPaymentModal(true)}
-                            sx={{ width: "9rem", p: "0 1rem" }}
-                            loading={isLoading}
-                        >
+                        <NiceButton buttonColor={colors.blue2} onClick={() => setIsFiatModalOpen(true)} sx={{ width: "9rem", p: "0 1rem" }} loading={isLoading}>
                             <Typography fontWeight="bold">
                                 <SvgCreditCard size="1.6rem" inline /> ${factionPass ? factionPass.usd_price : "---"}
                             </Typography>
@@ -161,12 +158,29 @@ export const FactionPassOption = React.memo(function FactionPassOption({ faction
                 )}
             </NiceBoxThing>
 
-            {DEV_ONLY && openPaymentModal && (
-                <FactionPassBuyModal
-                    open={openPaymentModal}
+            {isSupsBuyModalOpen && (
+                <ConfirmModal
+                    title="Confirm Purchase"
+                    onConfirm={() => buyFactionPass(PaymentType.SUPS)}
+                    onClose={() => setIsSupsBuyModalOpen(false)}
+                    isLoading={isLoading}
+                    error={error}
+                    width="50rem"
+                >
+                    <Typography variant="h6">
+                        Purchase {factionPass.label} PASS for
+                        <SvgSupToken fill={colors.gold} inline />
+                        {supFormatter(factionPass.sups_price, 3)} SUPS?
+                    </Typography>
+                </ConfirmModal>
+            )}
+
+            {isFiatModalOpen && (
+                <FactionPassBuyFiatModal
+                    open={isFiatModalOpen}
                     factionPass={factionPass}
-                    onClose={() => setOpenPaymentModal(false)}
-                    onSupPurchaseConfirm={buyFactionPassWithSups}
+                    onClose={() => setIsFiatModalOpen(false)}
+                    onSupPurchaseConfirm={buyFactionPass}
                     error={error}
                 />
             )}

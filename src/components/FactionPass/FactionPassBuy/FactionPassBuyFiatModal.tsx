@@ -16,7 +16,7 @@ import { Elements, PaymentElement, useElements } from "@stripe/react-stripe-js"
 import { loadStripe, Stripe, StripeElements } from "@stripe/stripe-js"
 import { STRIPE_PUBLISHABLE_KEY } from "../../../constants"
 
-interface FactionPassBuyModalProps {
+interface FactionPassBuyFiatModalProps {
     open: boolean
     onClose: () => void
     factionPass: FactionPass
@@ -29,7 +29,7 @@ interface StripePaymentDetail {
     payment_intent_id: string
 }
 
-export const FactionPassBuyModal = ({ open, onClose, factionPass, onSupPurchaseConfirm, error }: FactionPassBuyModalProps) => {
+export const FactionPassBuyFiatModal = ({ open, onClose, factionPass, onSupPurchaseConfirm, error }: FactionPassBuyFiatModalProps) => {
     const { factionPassExpiryDate } = useAuth()
     const { factionTheme } = useTheme()
     const { send } = useGameServerCommandsFaction("/faction_commander")
