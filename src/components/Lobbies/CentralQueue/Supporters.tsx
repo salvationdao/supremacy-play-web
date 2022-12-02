@@ -39,7 +39,7 @@ export const Supporters = React.memo(function Supporters({
         }
     }, [send, battleLobby.id, battleLobby.access_code, newSnackbarMessage])
 
-    const { supporters, isAlreadySet, isAlreadySupporting, hasMechDeployed } = useMemo(() => {
+    const { supporters, isAlreadySet, isAlreadySupporting, hasUserMechDeployed } = useMemo(() => {
         let supporters: BattleLobbySupporter[] = []
         let isAlreadySet = false // This means battle already started, supporters are set and fixed
 
@@ -55,13 +55,13 @@ export const Supporters = React.memo(function Supporters({
         }
 
         const isAlreadySupporting = supporters.some((supporter) => supporter.id === userID)
-        const hasMechDeployed = battleLobby.battle_lobbies_mechs.some((mech) => mech.queued_by?.id === userID)
+        const hasUserMechDeployed = battleLobby.battle_lobbies_mechs.some((mech) => mech.queued_by?.id === userID)
 
         return {
             supporters,
             isAlreadySet,
             isAlreadySupporting,
-            hasMechDeployed,
+            hasUserMechDeployed,
         }
     }, [battleLobby, factionID, userID])
 
@@ -112,7 +112,7 @@ export const Supporters = React.memo(function Supporters({
                     })}
             </AvatarGroup>
 
-            {battleLobby.ready_at && !isAlreadySet && !isAlreadySupporting && !hasMechDeployed && userFactionID === factionID && (
+            {battleLobby.ready_at && !isAlreadySet && !isAlreadySupporting && !hasUserMechDeployed && userFactionID === factionID && (
                 <NiceButton
                     buttonColor={faction.palette.primary}
                     sx={{

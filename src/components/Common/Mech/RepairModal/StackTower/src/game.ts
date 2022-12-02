@@ -94,6 +94,9 @@ export class Game {
     }
 
     onKeydown(e: KeyboardEvent) {
+        e.stopPropagation()
+        e.preventDefault()
+
         // Dont execute if key being help down
         if (e.repeat) return
 
