@@ -76,6 +76,7 @@ export const StackTower = React.memo(function StackTower({ primaryColor, disable
 
     return (
         <NiceBoxThing
+            id="repair-game-stack"
             border={{ color: `${primaryColor}40`, thickness: "very-lean" }}
             background={{ colors: [`${primaryColor}20`] }}
             sx={{
