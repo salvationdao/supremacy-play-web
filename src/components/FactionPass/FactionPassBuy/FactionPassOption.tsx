@@ -9,21 +9,21 @@ import {
     RMMonthlyPassArrowPNG,
     SvgCreditCard,
     SvgSupToken,
-    SvgWallet,
     ZHIAnnualPassArrowPNG,
     ZHIDailyPassArrowPNG,
     ZHIMonthlyPassArrowPNG,
 } from "../../../assets"
-import { DEV_ONLY, FactionIDs } from "../../../constants"
+import { FactionIDs } from "../../../constants"
 import { supFormatter } from "../../../helpers"
 import { useGameServerCommandsFaction } from "../../../hooks/useGameServer"
 import { GameServerKeys } from "../../../keys"
 import { colors, fonts } from "../../../theme/theme"
 import { FactionWithPalette } from "../../../types"
 import { FactionPass } from "../../../types/faction_passes"
+import { ConfirmModal } from "../../Common/Deprecated/ConfirmModal"
 import { NiceBoxThing } from "../../Common/Nice/NiceBoxThing"
 import { NiceButton } from "../../Common/Nice/NiceButton"
-import { FactionPassBuyModal } from "./FactionPassBuyModal"
+import { FactionPassBuyFiatModal } from "./FactionPassBuyFiatModal"
 
 const headerArrowImages: {
     [factionID: string]: {
@@ -63,12 +63,13 @@ export const FactionPassOption = React.memo(function FactionPassOption({ faction
     const { send } = useGameServerCommandsFaction("/faction_commander")
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState("")
-    const [openPaymentModal, setOpenPaymentModal] = useState(false)
+    const [isSupsBuyModalOpen, setIsSupsBuyModalOpen] = useState(false)
+    const [isFiatModalOpen, setIsFiatModalOpen] = useState(false)
 
     const { priceLabel, headerArrowImage } = useMemo(() => {
         const days = factionPass.last_for_days
 
-        const priceLabel = `${factionPass.label} PRICE`
+        const priceLabel = `${factionPass.label}`
         let headerArrowImage = ""
 
         if (days <= 3) {
@@ -82,7 +83,7 @@ export const FactionPassOption = React.memo(function FactionPassOption({ faction
         return { priceLabel, headerArrowImage }
     }, [factionPass.last_for_days, factionPass.label, faction.id])
 
-    const buyFactionPassWithSups = useCallback(
+    const buyFactionPass = useCallback(
         async (paymentType: PaymentType) => {
             setIsLoading(true)
             try {
@@ -93,7 +94,7 @@ export const FactionPassOption = React.memo(function FactionPassOption({ faction
                 if (!resp) return
 
                 setError("")
-                setOpenPaymentModal(false)
+                setIsFiatModalOpen(false)
             } catch (e) {
                 setError(typeof e === "string" ? e : "Failed to get lookup history.")
                 console.error(e)
@@ -124,57 +125,62 @@ export const FactionPassOption = React.memo(function FactionPassOption({ faction
                 </Box>
 
                 {/* SUPS */}
-                <Stack direction="row" justifyContent="space-between" sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.palette.s600} 1px solid` }}>
-                    <Typography fontWeight="bold">
+                <Stack direction="row" alignItems="center" sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.palette.s600} 1px solid` }}>
+                    <Typography variant="h6" fontWeight="bold">
                         SUPS <i style={{ color: colors.red }}>{factionPass.discount_percentage !== "0" ? `-${factionPass.discount_percentage} % OFF` : ""}</i>
                     </Typography>
-                    <Typography>
-                        <SvgSupToken fill={colors.gold} size="1.8rem" inline />
-                        {factionPass ? supFormatter(factionPass.sups_price, 3) : "---"}
-                    </Typography>
-                </Stack>
 
-                {/* ETH */}
-                {/* <Stack direction="row" justifyContent="space-between" sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.palette.s600} 1px solid` }}>
-                    <Typography fontWeight="bold">ETH</Typography>
-                    <Typography>
-                        <SvgEthereum size="1.8rem" inline />
-                        {factionPass ? supFormatter(factionPass.eth_price_wei, 3) : "---"}
-                    </Typography>
-                </Stack> */}
+                    <Box flex={1} />
+
+                    <NiceButton buttonColor={colors.gold} onClick={() => setIsSupsBuyModalOpen(true)} sx={{ width: "9rem", p: "0 1rem" }} loading={isLoading}>
+                        <Typography fontWeight="bold">
+                            <SvgSupToken fill={colors.gold} size="1.8rem" inline />
+                            {factionPass ? supFormatter(factionPass.sups_price, 3) : "---"}
+                        </Typography>
+                    </NiceButton>
+                </Stack>
 
                 {/* Fiat */}
-                <Stack direction="row" justifyContent="space-between" sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.palette.s600} 1px solid` }}>
-                    <Typography fontWeight="bold">USD</Typography>
-                    <Typography>
-                        <SvgCreditCard fill={colors.blue} size="1.6rem" inline /> ${factionPass ? factionPass.usd_price : "---"}
-                    </Typography>
-                </Stack>
+                {Math.round(parseFloat(factionPass.usd_price)) > 0 && (
+                    <Stack direction="row" alignItems="center" sx={{ p: ".8rem 1.5rem", borderBottom: `${faction.palette.s600} 1px solid` }}>
+                        <Typography variant="h6" fontWeight="bold">
+                            USD
+                        </Typography>
 
-                {/* Buy button */}
-                <Box sx={{ p: ".8rem 1.5rem" }}>
-                    <NiceButton
-                        corners
-                        buttonColor={colors.green}
-                        onClick={() => setOpenPaymentModal(true)}
-                        sx={{ width: "100%", p: ".4rem 1rem" }}
-                        loading={isLoading}
-                        disabled={!DEV_ONLY}
-                    >
-                        <Stack spacing=".8rem" direction="row" alignItems="center">
-                            <SvgWallet />
-                            <Typography sx={{ fontFamily: fonts.nostromoBlack }}>BUY NOW</Typography>
-                        </Stack>
-                    </NiceButton>
-                </Box>
+                        <Box flex={1} />
+
+                        <NiceButton buttonColor={colors.blue2} onClick={() => setIsFiatModalOpen(true)} sx={{ width: "9rem", p: "0 1rem" }} loading={isLoading}>
+                            <Typography fontWeight="bold">
+                                <SvgCreditCard size="1.6rem" inline /> ${factionPass ? factionPass.usd_price : "---"}
+                            </Typography>
+                        </NiceButton>
+                    </Stack>
+                )}
             </NiceBoxThing>
 
-            {DEV_ONLY && openPaymentModal && (
-                <FactionPassBuyModal
-                    open={openPaymentModal}
+            {isSupsBuyModalOpen && (
+                <ConfirmModal
+                    title="Confirm Purchase"
+                    onConfirm={() => buyFactionPass(PaymentType.SUPS)}
+                    onClose={() => setIsSupsBuyModalOpen(false)}
+                    isLoading={isLoading}
+                    error={error}
+                    width="50rem"
+                >
+                    <Typography variant="h6">
+                        Purchase {factionPass.label} PASS for
+                        <SvgSupToken fill={colors.gold} inline />
+                        {supFormatter(factionPass.sups_price, 3)} SUPS?
+                    </Typography>
+                </ConfirmModal>
+            )}
+
+            {isFiatModalOpen && (
+                <FactionPassBuyFiatModal
+                    open={isFiatModalOpen}
                     factionPass={factionPass}
-                    onClose={() => setOpenPaymentModal(false)}
-                    onSupPurchaseConfirm={buyFactionPassWithSups}
+                    onClose={() => setIsFiatModalOpen(false)}
+                    onSupPurchaseConfirm={buyFactionPass}
                     error={error}
                 />
             )}

@@ -106,6 +106,7 @@ export const FactionPassBuy = () => {
                                 sx={{
                                     mt: "1rem",
                                     ml: ".5rem",
+                                    color: colors.gold,
                                     span: {
                                         opacity: 0.8,
                                         color: colors.grey,
@@ -178,7 +179,7 @@ export const FactionPassBuy = () => {
                     </Stack>
 
                     {/* Buy options */}
-                    <Stack direction="row" alignItems="center">
+                    <Stack direction="row" alignItems="flex-start">
                         {factionPasses.map((fp) => (
                             <FactionPassOption key={fp.id} factionPass={fp} faction={faction} />
                         ))}
