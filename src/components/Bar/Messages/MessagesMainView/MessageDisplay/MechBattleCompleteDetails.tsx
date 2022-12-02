@@ -25,6 +25,10 @@ const RewardsSection = ({ data }: { data: BattleReward }) => {
     const supsBonus = data.rewarded_sups_bonus
     const ability = data.rewarded_player_ability
 
+    if (!sups && !supsBonus && !ability) {
+        return null
+    }
+
     return (
         <Stack spacing="1rem">
             <Typography sx={{ fontFamily: fonts.nostromoBlack }}>YOUR REWARDS:</Typography>
