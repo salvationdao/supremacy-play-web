@@ -13,7 +13,7 @@ import { FactionPassOption } from "./FactionPassOption"
 export const DAYS_IN_A_MONTH = 28
 
 export const FactionPassBuy = () => {
-    const { factionID } = useAuth()
+    const { factionID, factionPassExpiryDate } = useAuth()
     const { getFaction } = useSupremacy()
 
     const { faction, hueRotate } = useMemo(() => {
@@ -88,12 +88,21 @@ export const FactionPassBuy = () => {
                 />
 
                 <Stack spacing="4rem" sx={{ position: "relative", p: "4.2rem 5.5rem" }}>
+                    {/* Heading */}
                     <Stack direction="row" alignItems="center" justifyContent="space-between" spacing="2rem">
                         <Typography variant="h4" sx={{ color: faction.palette.primary, fontFamily: fonts.nostromoHeavy }}>
                             {faction.label} FACTION PASS
                         </Typography>
                         <SvgFactionPassArrow size="5.5rem" fill={faction.palette.primary} />
                     </Stack>
+
+                    {factionPassExpiryDate && factionPassExpiryDate > new Date() && (
+                        <NiceBoxThing border={{ color: colors.green }} background={{ colors: [colors.green], opacity: 0.5 }} sx={{ p: "1rem 2rem" }}>
+                            <Typography variant="h5" fontWeight="bold">
+                                Your current Faction Pass is valid until: {factionPassExpiryDate.toLocaleDateString()}
+                            </Typography>
+                        </NiceBoxThing>
+                    )}
 
                     <Stack spacing="5rem" direction="row" alignItems="center">
                         {/* Brief description */}

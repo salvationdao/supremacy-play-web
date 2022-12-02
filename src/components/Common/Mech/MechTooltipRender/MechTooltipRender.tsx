@@ -5,6 +5,7 @@ import { useSupremacy } from "../../../../containers"
 import { getRarityDeets, numFormatter } from "../../../../helpers"
 import { colors, fonts } from "../../../../theme/theme"
 import { NewMechStruct, Utility } from "../../../../types"
+import { Weapon } from "../../../../types/battle_queue"
 import { TypographyTruncated } from "../../TypographyTruncated"
 import { MechIdleStatus } from "../MechIdleStatus"
 import { RepairBlocks } from "../MechRepairBlocks"
@@ -18,6 +19,7 @@ export const MechTooltipRender = ({ mech }: { mech: NewMechStruct }) => {
 
     const rarityDeets = useMemo(() => getRarityDeets(mech.tier), [mech.tier])
 
+    const weaponSlots = useMemo(() => mech.weapon_slots?.map((w) => w.weapon).filter((w) => !!w) as Weapon[] | undefined, [mech.weapon_slots])
     const utilitySlots = useMemo(() => mech.utilities?.map((u) => u.utility).filter((u) => !!u) as Utility[] | undefined, [mech.utilities])
 
     return (
@@ -110,37 +112,57 @@ export const MechTooltipRender = ({ mech }: { mech: NewMechStruct }) => {
 
                 {/* Mech loadout */}
                 <Stack spacing="1rem" sx={{ p: "1rem 1.6rem" }}>
-                    {mech.weapon_slots && mech.weapon_slots.length > 0 && (
+                    {
                         <MechLoadout
-                            items={mech.weapon_slots.map((x) => {
-                                const image = x.weapon?.avatar_url || x.weapon?.image_url || ""
-                                return { name: x.weapon?.label || "Unknown", imageUrl: image, tier: x.weapon?.tier }
-                            })}
+                            items={
+                                weaponSlots && weaponSlots.length > 0
+                                    ? weaponSlots.map((x) => {
+                                          const image = x.avatar_url || x.image_url || ""
+                                          return { name: x.label || "Unknown", imageUrl: image, tier: x.tier }
+                                      })
+                                    : []
+                            }
                             title="Weapons"
                             fallbackColor={ownerFaction.palette.primary}
                             totalSlots={mech.weapon_hardpoints}
                         />
-                    )}
+                    }
 
-                    {utilitySlots && utilitySlots.length > 0 && (
+                    {
                         <MechLoadout
-                            items={utilitySlots.map((x) => {
-                                const image = x.avatar_url || x.image_url || ""
-                                return { name: x.label || "Unknown", imageUrl: image, tier: x.tier }
-                            })}
+                            items={
+                                utilitySlots && utilitySlots.length > 0
+                                    ? utilitySlots.map((x) => {
+                                          const image = x.avatar_url || x.image_url || ""
+                                          return { name: x.label || "Unknown", imageUrl: image, tier: x.tier }
+                                      })
+                                    : []
+                            }
                             title="Utilities"
                             fallbackColor={ownerFaction.palette.primary}
                             totalSlots={mech.utility_slots}
                         />
-                    )}
+                    }
 
                     {/* Singular ones */}
                     <Stack direction="row" alignItems="center" spacing="1.6rem">
-                        <MechLoadout
-                            items={[{ name: mech.power_core?.label || "Unknown", imageUrl: mech.power_core?.avatar_url || mech.power_core?.image_url || "" }]}
-                            title="Core"
-                            fallbackColor={ownerFaction.palette.primary}
-                        />
+                        {
+                            <MechLoadout
+                                items={
+                                    mech.power_core
+                                        ? [
+                                              {
+                                                  name: mech.power_core.label || "Unknown",
+                                                  imageUrl: mech.power_core.avatar_url || mech.power_core.image_url || "",
+                                              },
+                                          ]
+                                        : []
+                                }
+                                title="Core"
+                                fallbackColor={ownerFaction.palette.primary}
+                                totalSlots={1}
+                            />
+                        }
 
                         <MechLoadout
                             items={[
@@ -152,6 +174,7 @@ export const MechTooltipRender = ({ mech }: { mech: NewMechStruct }) => {
                             ]}
                             title="Skin"
                             fallbackColor={ownerFaction.palette.primary}
+                            totalSlots={1}
                         />
                     </Stack>
                 </Stack>

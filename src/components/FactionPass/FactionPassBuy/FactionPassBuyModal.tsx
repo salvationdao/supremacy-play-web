@@ -35,7 +35,7 @@ export const FactionPassBuyModal = ({ onClose, factionPass, paymentType }: Facti
 
     // Dates
     const currentExpiryDate = useMemo(() => {
-        if (!factionPassExpiryDate) return "--/--/----, --:--"
+        if (!factionPassExpiryDate) return moment().format("DD/MM/YYYY")
         return moment(factionPassExpiryDate).format("DD/MM/YYYY")
     }, [factionPassExpiryDate])
 
