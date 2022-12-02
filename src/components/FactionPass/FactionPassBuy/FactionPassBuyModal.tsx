@@ -60,14 +60,12 @@ export const FactionPassBuyModal = ({ onClose, factionPass, paymentType }: Facti
     // Buy
     const buyFactionPass = useCallback(
         async (paymentType: PaymentType) => {
-            console.log(overrideOnConfirm, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-
             try {
                 setIsLoading(true)
                 setError(undefined)
 
                 if (overrideOnConfirm) {
-                    overrideOnConfirm()
+                    await overrideOnConfirm()
                 } else {
                     const resp = await send<boolean>(GameServerKeys.PurchaseFactionPassWithSups, {
                         faction_pass_id: factionPass.id,
@@ -149,7 +147,6 @@ const StripePayment = React.memo(function StripePayment({
                 })
 
                 if (!data) return
-
                 await _stripe.confirmPayment({
                     elements: _elements,
                     confirmParams: {
@@ -217,7 +214,9 @@ const StripPaymentInner = ({
     const elements = useElements()
 
     useEffect(() => {
-        setOverrideOnConfirm(() => handleStripeSubmit(elements, stripePromise))
+        setOverrideOnConfirm(() => {
+            return async () => await handleStripeSubmit(elements, stripePromise)
+        })
     }, [elements, handleStripeSubmit, setOverrideOnConfirm, stripePromise])
 
     return <PaymentElement />
