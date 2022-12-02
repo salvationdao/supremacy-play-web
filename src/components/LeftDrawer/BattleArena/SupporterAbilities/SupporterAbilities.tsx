@@ -26,20 +26,21 @@ export interface PlayerAbilitiesResponse {
 
 export const SupporterAbilities = () => {
     const { userID } = useAuth()
+    const { battleID } = useSupremacy()
     const { battleState } = useGame()
 
     if (battleState !== BattleState.BattlingState || !userID) return null
 
     return (
-        <Box sx={{ position: "relative" }}>
+        <Box key={battleID} sx={{ position: "relative" }}>
             <SectionCollapsible label={"SUPPORT ABILITIES"} tooltip="Your supporter abilities" initialExpanded={true} localStoragePrefix="supportAbility">
                 <Box sx={{ pointerEvents: battleState === BattleState.BattlingState ? "all" : "none" }}>
                     <SupporterAbilitiesInner />
                 </Box>
 
-                {/* {battleState !== BattleState.BattlingState && (
+                {battleState !== BattleState.BattlingState && (
                     <Box sx={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "#000000AA" }} />
-                )} */}
+                )}
             </SectionCollapsible>
         </Box>
     )
@@ -73,13 +74,13 @@ const SupporterAbilitiesInner = () => {
 
     // If all my faction mechs are dead, then disable my player abilities
     const { factionWarMachines } = useGame()
-    const [disableAbilities, setDisableAbilities] = useState(false)
+    const [disableAbilities, setDisableAbilities] = useState(true)
     useGameServerSubscription<WarMachineLiveState[]>(
         {
             URI: `/mini_map/arena/${currentArenaID}/public/mech_stats`,
             binaryKey: BinaryDataKey.WarMachineStats,
             binaryParser: warMachineStatsBinaryParser,
-            ready: !!currentArenaID,
+            ready: !!currentArenaID && !!factionWarMachines,
         },
         (payload) => {
             if (!payload || !factionWarMachines) return

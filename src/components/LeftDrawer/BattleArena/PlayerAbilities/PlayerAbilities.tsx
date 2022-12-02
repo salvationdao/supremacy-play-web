@@ -2,7 +2,7 @@ import { Box, Button, Pagination, Stack, Typography } from "@mui/material"
 import { ReactNode, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { SvgGlobal, SvgLine, SvgMicrochip, SvgTarget } from "../../../../assets"
-import { useArena, useGame } from "../../../../containers"
+import { useArena, useGame, useSupremacy } from "../../../../containers"
 import { useAuth } from "../../../../containers/auth"
 import { useTheme } from "../../../../containers/theme"
 import { warMachineStatsBinaryParser } from "../../../../helpers/binaryDataParsers/warMachineStatsParser"
@@ -24,12 +24,13 @@ const filterOptions = [
 
 export const PlayerAbilities = () => {
     const { userID } = useAuth()
+    const { battleID } = useSupremacy()
     const { battleState, isAIDrivenMatch } = useGame()
 
     if (battleState !== BattleState.BattlingState || !userID) return null
 
     return (
-        <Box sx={{ position: "relative" }}>
+        <Box key={battleID} sx={{ position: "relative" }}>
             <SectionCollapsible label="OWNED ABILITIES" tooltip="Launch your own abilities." initialExpanded={true} localStoragePrefix="playerAbility">
                 <Box sx={{ pointerEvents: battleState === BattleState.BattlingState ? "all" : "none" }}>
                     <PlayerAbilitiesInner />
@@ -71,13 +72,13 @@ const PlayerAbilitiesInner = () => {
     // If all my faction mechs are dead, then disable my player abilities
     const { currentArenaID } = useArena()
     const { factionWarMachines } = useGame()
-    const [disableAbilities, setDisableAbilities] = useState(false)
+    const [disableAbilities, setDisableAbilities] = useState(true)
     useGameServerSubscription<WarMachineLiveState[]>(
         {
             URI: `/mini_map/arena/${currentArenaID}/public/mech_stats`,
             binaryKey: BinaryDataKey.WarMachineStats,
             binaryParser: warMachineStatsBinaryParser,
-            ready: !!currentArenaID,
+            ready: !!currentArenaID && !!factionWarMachines,
         },
         (payload) => {
             if (!payload || !factionWarMachines) return
@@ -90,9 +91,6 @@ const PlayerAbilitiesInner = () => {
             setDisableAbilities(deadMechs.length === 3)
         },
     )
-    useEffect(() => {
-        console.log(disableAbilities)
-    }, [disableAbilities])
 
     // Apply filter
     useEffect(() => {
