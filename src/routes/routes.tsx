@@ -382,7 +382,7 @@ export const Routes: RouteSingle[] = [
             image: GenericPNG,
             path: "/fleet/abilities",
         },
-        enable: DEV_ONLY,
+        enable: true,
         tabTitle: "Fleet - Abilities",
     },
     {
