@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material"
+import { Box, Typography } from "@mui/material"
 import { Elements, PaymentElement, useElements } from "@stripe/react-stripe-js"
 import { loadStripe, Stripe, StripeElements } from "@stripe/stripe-js"
 import moment from "moment"
@@ -55,8 +55,6 @@ export const FactionPassBuyModal = ({ onClose, factionPass, paymentType }: Facti
             case PaymentType.SUPS:
                 return <SvgSupToken fill={colors.gold} inline />
         }
-
-        return null
     }, [paymentType])
 
     // Buy
@@ -167,35 +165,37 @@ const StripePayment = React.memo(function StripePayment({
     }
 
     return (
-        <Elements
-            stripe={stripePromise}
-            options={{
-                clientSecret: stripePaymentDetail.client_secret,
-                appearance: {
-                    theme: "night",
-                    variables: {
-                        fontFamily: fonts.rajdhaniBold,
-                        fontWeightNormal: "500",
-                        borderRadius: "1.5px",
-                        colorBackground: theme.factionTheme.background,
-                        colorPrimary: theme.factionTheme.primary,
-                        colorPrimaryText: "#1A1B25",
-                        colorText: "white",
-                        colorTextPlaceholder: colors.grey,
-                        colorIconTab: "white",
-                        colorLogo: "dark",
-                        spacingUnit: "3.4px",
-                    },
-                    rules: {
-                        ".Label": {
-                            marginBottom: "10px",
+        <Box sx={{ pb: "1rem" }}>
+            <Elements
+                stripe={stripePromise}
+                options={{
+                    clientSecret: stripePaymentDetail.client_secret,
+                    appearance: {
+                        theme: "night",
+                        variables: {
+                            fontFamily: fonts.rajdhaniBold,
+                            fontWeightNormal: "500",
+                            borderRadius: "1.5px",
+                            colorBackground: theme.factionTheme.background,
+                            colorPrimary: theme.factionTheme.primary,
+                            colorPrimaryText: "#1A1B25",
+                            colorText: "white",
+                            colorTextPlaceholder: colors.grey,
+                            colorIconTab: "white",
+                            colorLogo: "dark",
+                            spacingUnit: "3.4px",
+                        },
+                        rules: {
+                            ".Label": {
+                                marginBottom: "10px",
+                            },
                         },
                     },
-                },
-            }}
-        >
-            <StripPaymentInner stripePromise={stripePromise} handleStripeSubmit={handleStripeSubmit} setOverrideOnConfirm={setOverrideOnConfirm} />
-        </Elements>
+                }}
+            >
+                <StripPaymentInner stripePromise={stripePromise} handleStripeSubmit={handleStripeSubmit} setOverrideOnConfirm={setOverrideOnConfirm} />
+            </Elements>
+        </Box>
     )
 })
 
