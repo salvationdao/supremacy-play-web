@@ -100,7 +100,6 @@ export enum RouteSingleID {
 
 export enum RouteGroupID {
     BattleArena = "BATTLE_ARENA",
-    Armoury = "ARMOURY",
     Inventory = "INVENTORY",
     Store = "STORE",
     Marketplace = "MARKETPLACE",
@@ -141,10 +140,6 @@ export const RouteGroups: RouteGroup[] = [
     {
         id: RouteGroupID.BattleArena,
         label: "Battle Arena",
-    },
-    {
-        id: RouteGroupID.Armoury,
-        label: "Armoury",
     },
     {
         id: RouteGroupID.Inventory,
@@ -691,7 +686,7 @@ export const Routes: RouteSingle[] = [
             requireFaction: false,
             requireModerator: false,
         },
-        enable: true,
+        enable: DEV_ONLY,
         tabTitle: "Replay Item",
     },
     {
@@ -710,7 +705,7 @@ export const Routes: RouteSingle[] = [
             image: ReplaysPNG,
             path: "/replays",
         },
-        enable: true,
+        enable: DEV_ONLY,
         tabTitle: "Replays",
     },
 
@@ -858,7 +853,7 @@ export const Routes: RouteSingle[] = [
 
 export const MainMenuExternalLinks: MainMenuStruct[] = [
     {
-        groupID: RouteGroupID.Armoury,
+        groupID: RouteGroupID.Inventory,
         label: "Hangar",
         image: HangarPNG,
         path: HANGAR_PAGE,

@@ -19,7 +19,7 @@ export const TabContent = ({ activeTabID }: { activeTabID?: RouteGroupID }) => {
                     flex: 1,
                     display: "grid",
                     gridTemplateColumns: "repeat(4, 1fr)",
-                    gridTemplateRows: "repeat(auto-fit, 28rem)",
+                    gridTemplateRows: "repeat(auto-fill, 28rem)",
                     gap: "1.8rem",
                     alignItems: "center",
                     justifyContent: "center",

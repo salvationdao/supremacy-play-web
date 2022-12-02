@@ -70,6 +70,7 @@ export const TabContentItem = React.memo(function TabContentItem({
                 width: "100%",
                 height: "100%",
                 gridColumn: `span ${spanColumn}`,
+                border: `${"#FFFFFF"}15 1px solid`,
             }}
         >
             <TypographyTruncated variant="h5" sx={{ position: "absolute", top: "1.2rem", left: "1.3rem", fontFamily: fonts.nostromoBlack }}>
