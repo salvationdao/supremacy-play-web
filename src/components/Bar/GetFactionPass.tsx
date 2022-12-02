@@ -36,7 +36,7 @@ export const GetFactionPass = () => {
     const isFactionPassValid = factionPassExpiryDate && factionPassExpiryDate > new Date()
 
     return (
-        <Link style={{ margin: "0 1rem", height: "100%" }} to="/faction-pass/buy">
+        <Link style={{ margin: "0 1rem", height: "100%" }} to={isFactionPassValid ? "/faction-pass/dashboard" : "/faction-pass/buy"}>
             <Box sx={{ height: "100%" }}>
                 <NiceTooltip
                     placement="bottom-start"
