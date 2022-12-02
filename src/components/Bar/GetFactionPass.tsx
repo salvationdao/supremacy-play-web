@@ -29,10 +29,6 @@ const images: {
 export const GetFactionPass = () => {
     const { factionID, factionPassExpiryDate } = useAuth()
 
-    if (localStorage.getItem("ivan") !== "cool" && !DEV_ONLY) {
-        return null
-    }
-
     const isFactionPassValid = factionPassExpiryDate && factionPassExpiryDate > new Date()
 
     return (
